@@ -9,7 +9,7 @@ import { buildMcqQuestions } from './mcq';
 import { buildLocateQuestions } from './locate';
 
 export interface RevisionSetConfig {
-  types: QuestionType[];
+  types: readonly QuestionType[];
   region?: Region;
   subregion?: SubRegion;
   category?: Category;
