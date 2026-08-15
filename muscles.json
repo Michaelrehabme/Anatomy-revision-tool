@@ -1,0 +1,6617 @@
+{
+  "schemaVersion": 1,
+  "generated": "from ALL_Muscles_of_the_body.pdf",
+  "counts": {
+    "muscles": 122,
+    "regions": 5,
+    "groups": 44,
+    "actionTags": 63,
+    "nerves": 44,
+    "needsReview": 2
+  },
+  "muscles": [
+    {
+      "id": "iliacus",
+      "name": "Iliacus",
+      "latin": null,
+      "region": "hip-thigh",
+      "groups": [
+        "hip-flexors"
+      ],
+      "partOf": "Iliopsoas",
+      "origin": [
+        "Iliac fossa of the pelvis"
+      ],
+      "insertion": [
+        "Lesser trochanter of the femur"
+      ],
+      "nerve": [
+        {
+          "name": "Femoral nerve",
+          "roots": [
+            "L2",
+            "L3"
+          ]
+        }
+      ],
+      "actions": [
+        "hip-flexion",
+        "hip-external-rotation"
+      ],
+      "actionText": "Powerful hip flexor; assists external rotation of the femur and stabilises the pelvis.",
+      "clinical": "Tightness can cause lower back and hip discomfort, and hip flexor strain from running and walking.",
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/iliacus.png",
+        "hotspot": "renders/base/hip-thigh.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          3,
+          4
+        ]
+      }
+    },
+    {
+      "id": "psoas-major",
+      "name": "Psoas Major",
+      "latin": null,
+      "region": "hip-thigh",
+      "groups": [
+        "hip-flexors"
+      ],
+      "partOf": "Iliopsoas",
+      "origin": [
+        "Transverse processes of T12 and all lumbar vertebrae (L1–L5)"
+      ],
+      "insertion": [
+        "Lesser trochanter of the femur"
+      ],
+      "nerve": [
+        {
+          "name": "Branches from the lumbar plexus",
+          "roots": [
+            "L1",
+            "L2",
+            "L3"
+          ]
+        }
+      ],
+      "actions": [
+        "hip-flexion",
+        "hip-external-rotation"
+      ],
+      "actionText": "Most powerful hip flexor; assists external rotation of the femur and pelvic stabilisation.",
+      "clinical": "Tightness can cause lower back and hip discomfort, and hip flexor strain.",
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/psoas-major.png",
+        "hotspot": "renders/base/hip-thigh.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          3,
+          4
+        ]
+      }
+    },
+    {
+      "id": "rectus-femoris",
+      "name": "Rectus Femoris",
+      "latin": null,
+      "region": "hip-thigh",
+      "groups": [
+        "hip-flexors",
+        "knee-extensors",
+        "quadriceps"
+      ],
+      "partOf": null,
+      "origin": [
+        "Anterior Inferior Iliac Spine (AIIS)"
+      ],
+      "insertion": [
+        "Tibial tuberosity via the patellar tendon"
+      ],
+      "nerve": [
+        {
+          "name": "Femoral nerve",
+          "roots": [
+            "L2",
+            "L3",
+            "L4"
+          ]
+        }
+      ],
+      "actions": [
+        "hip-flexion",
+        "knee-extension"
+      ],
+      "actionText": "The only quadriceps muscle crossing the hip joint: flexes the hip and extends the knee.",
+      "clinical": "Weakness or tightness leads to limited hip extension or patellar tracking issues, common in runners and cyclists.",
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/rectus-femoris.png",
+        "hotspot": "renders/base/hip-thigh.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          5,
+          6,
+          33
+        ]
+      }
+    },
+    {
+      "id": "sartorius",
+      "name": "Sartorius",
+      "latin": null,
+      "region": "hip-thigh",
+      "groups": [
+        "hip-flexors"
+      ],
+      "partOf": null,
+      "origin": [
+        "Anterior superior iliac spine (ASIS)"
+      ],
+      "insertion": [
+        "Proximal medial surface of the tibia at the pes anserinus"
+      ],
+      "nerve": [
+        {
+          "name": "Femoral nerve",
+          "roots": [
+            "L2",
+            "L3"
+          ]
+        }
+      ],
+      "actions": [
+        "hip-flexion",
+        "hip-abduction",
+        "hip-external-rotation",
+        "knee-flexion"
+      ],
+      "actionText": "Hip flexion, abduction and external rotation plus knee flexion — crossing the legs, kicking.",
+      "clinical": "Tightness can cause anterior hip pain or inner thigh discomfort.",
+      "notes": "Longest muscle in the body; the 'tailor's muscle'.",
+      "images": {
+        "isolated": "renders/isolated/sartorius.png",
+        "hotspot": "renders/base/hip-thigh.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          7,
+          8
+        ]
+      }
+    },
+    {
+      "id": "gluteus-maximus",
+      "name": "Gluteus Maximus",
+      "latin": null,
+      "region": "hip-thigh",
+      "groups": [
+        "hip-extensors"
+      ],
+      "partOf": null,
+      "origin": [
+        "Iliac crest",
+        "Sacrum",
+        "Coccyx"
+      ],
+      "insertion": [
+        "Gluteal tuberosity of the femur",
+        "Iliotibial band (ITB)"
+      ],
+      "nerve": [
+        {
+          "name": "Inferior gluteal nerve",
+          "roots": [
+            "L5",
+            "S1",
+            "S2"
+          ]
+        }
+      ],
+      "actions": [
+        "hip-extension",
+        "hip-external-rotation",
+        "hip-abduction"
+      ],
+      "actionText": "Hip extension (running, squatting), external rotation and abduction of the thigh.",
+      "clinical": "Weakness leads to posterior pelvic tilt and low back pain — 'gluteal amnesia' in prolonged sitters.",
+      "notes": "Largest muscle in the body.",
+      "images": {
+        "isolated": "renders/isolated/gluteus-maximus.png",
+        "hotspot": "renders/base/hip-thigh.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          9,
+          10
+        ]
+      }
+    },
+    {
+      "id": "semitendinosus",
+      "name": "Semitendinosus",
+      "latin": null,
+      "region": "hip-thigh",
+      "groups": [
+        "hip-extensors",
+        "knee-flexors",
+        "hamstrings"
+      ],
+      "partOf": null,
+      "origin": [
+        "Ischial tuberosity"
+      ],
+      "insertion": [
+        "Proximal medial surface of the tibia (pes anserinus)"
+      ],
+      "nerve": [
+        {
+          "name": "Tibial nerve",
+          "roots": [
+            "L5",
+            "S1",
+            "S2"
+          ]
+        }
+      ],
+      "actions": [
+        "hip-extension",
+        "knee-flexion",
+        "knee-internal-rotation"
+      ],
+      "actionText": "Knee flexion, hip extension and internal rotation of the tibia when the knee is flexed.",
+      "clinical": "Hamstring strains are among the most common athletic injuries; eccentric strengthening is central to rehab.",
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/semitendinosus.png",
+        "hotspot": "renders/base/hip-thigh.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          12,
+          39
+        ]
+      }
+    },
+    {
+      "id": "semimembranosus",
+      "name": "Semimembranosus",
+      "latin": null,
+      "region": "hip-thigh",
+      "groups": [
+        "hip-extensors",
+        "knee-flexors",
+        "hamstrings"
+      ],
+      "partOf": null,
+      "origin": [
+        "Ischial tuberosity"
+      ],
+      "insertion": [
+        "Medial condyle of the tibia"
+      ],
+      "nerve": [
+        {
+          "name": "Tibial nerve",
+          "roots": [
+            "L5",
+            "S1",
+            "S2"
+          ]
+        }
+      ],
+      "actions": [
+        "hip-extension",
+        "knee-flexion",
+        "knee-internal-rotation"
+      ],
+      "actionText": "Knee flexion, hip extension and internal rotation of the tibia when the knee is flexed.",
+      "clinical": "Works with semitendinosus to stabilise the knee and decelerate knee extension during running.",
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/semimembranosus.png",
+        "hotspot": "renders/base/hip-thigh.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          13,
+          40
+        ]
+      }
+    },
+    {
+      "id": "biceps-femoris",
+      "name": "Biceps Femoris",
+      "latin": null,
+      "region": "hip-thigh",
+      "groups": [
+        "hip-extensors",
+        "knee-flexors",
+        "hamstrings"
+      ],
+      "partOf": null,
+      "origin": [
+        "Long head: ischial tuberosity",
+        "Short head: linea aspera of the femur"
+      ],
+      "insertion": [
+        "Head of the fibula"
+      ],
+      "nerve": [
+        {
+          "name": "Tibial nerve (long head)",
+          "roots": [
+            "L5",
+            "S1",
+            "S2"
+          ]
+        },
+        {
+          "name": "Common fibular nerve (short head)",
+          "roots": [
+            "L5",
+            "S1",
+            "S2"
+          ]
+        }
+      ],
+      "actions": [
+        "hip-extension",
+        "knee-flexion",
+        "knee-external-rotation"
+      ],
+      "actionText": "Knee flexion, hip extension and external rotation of the knee when flexed.",
+      "clinical": "Long head is key in hip extension during sprinting; common site of hamstring tear.",
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/biceps-femoris.png",
+        "hotspot": "renders/base/hip-thigh.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          14,
+          38
+        ]
+      }
+    },
+    {
+      "id": "gluteus-medius",
+      "name": "Gluteus Medius",
+      "latin": null,
+      "region": "hip-thigh",
+      "groups": [
+        "hip-abductors"
+      ],
+      "partOf": null,
+      "origin": [
+        "Outer surface of the ilium (between the anterior and posterior gluteal lines)"
+      ],
+      "insertion": [
+        "Greater trochanter of the femur"
+      ],
+      "nerve": [
+        {
+          "name": "Superior gluteal nerve",
+          "roots": [
+            "L4",
+            "L5",
+            "S1"
+          ]
+        }
+      ],
+      "actions": [
+        "hip-abduction",
+        "pelvic-stabilisation"
+      ],
+      "actionText": "Hip abduction and stabilisation of the pelvis during single-leg stance.",
+      "clinical": "Weakness is associated with Trendelenburg gait — pelvis drops toward the non-weight-bearing leg.",
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/gluteus-medius.png",
+        "hotspot": "renders/base/hip-thigh.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          15,
+          16
+        ]
+      }
+    },
+    {
+      "id": "gluteus-minimus",
+      "name": "Gluteus Minimus",
+      "latin": null,
+      "region": "hip-thigh",
+      "groups": [
+        "hip-abductors"
+      ],
+      "partOf": null,
+      "origin": [
+        "Outer surface of the ilium, just below the gluteus medius"
+      ],
+      "insertion": [
+        "Greater trochanter of the femur"
+      ],
+      "nerve": [
+        {
+          "name": "Superior gluteal nerve",
+          "roots": [
+            "L4",
+            "L5",
+            "S1"
+          ]
+        }
+      ],
+      "actions": [
+        "hip-abduction",
+        "hip-internal-rotation",
+        "pelvic-stabilisation"
+      ],
+      "actionText": "Works with gluteus medius for hip abduction and internal rotation of the thigh.",
+      "clinical": "Weakness leads to pelvic drop and hip instability.",
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/gluteus-minimus.png",
+        "hotspot": "renders/base/hip-thigh.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          17,
+          18
+        ]
+      }
+    },
+    {
+      "id": "tensor-fasciae-latae",
+      "name": "Tensor Fasciae Latae",
+      "latin": null,
+      "region": "hip-thigh",
+      "groups": [
+        "hip-abductors"
+      ],
+      "partOf": null,
+      "origin": [
+        "Anterior superior iliac spine (ASIS)",
+        "Anterior part of iliac crest"
+      ],
+      "insertion": [
+        "Iliotibial band (inserting into the lateral tibial condyle — Gerdy's tubercle)"
+      ],
+      "nerve": [
+        {
+          "name": "Superior gluteal nerve",
+          "roots": [
+            "L4",
+            "L5",
+            "S1"
+          ]
+        }
+      ],
+      "actions": [
+        "hip-abduction",
+        "hip-internal-rotation",
+        "hip-flexion"
+      ],
+      "actionText": "Abducts, medially rotates and flexes the thigh; tenses the fascia lata to stabilise the knee in standing and walking.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/tensor-fasciae-latae.png",
+        "hotspot": "renders/base/hip-thigh.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          19
+        ]
+      }
+    },
+    {
+      "id": "adductor-magnus",
+      "name": "Adductor Magnus",
+      "latin": null,
+      "region": "hip-thigh",
+      "groups": [
+        "hip-adductors"
+      ],
+      "partOf": null,
+      "origin": [
+        "Ischial tuberosity",
+        "Inferior ramus of the pubis"
+      ],
+      "insertion": [
+        "Linea aspera of the femur",
+        "Adductor tubercle of the femur"
+      ],
+      "nerve": [
+        {
+          "name": "Obturator nerve (adductor part)",
+          "roots": []
+        },
+        {
+          "name": "Tibial nerve (hamstring part)",
+          "roots": []
+        }
+      ],
+      "actions": [
+        "hip-adduction",
+        "hip-extension"
+      ],
+      "actionText": "Hip adduction; the hamstring portion also contributes to hip extension.",
+      "clinical": "Groin strains are common in athletes performing quick side-to-side movements.",
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/adductor-magnus.png",
+        "hotspot": "renders/base/hip-thigh.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          21
+        ]
+      }
+    },
+    {
+      "id": "adductor-longus",
+      "name": "Adductor Longus",
+      "latin": null,
+      "region": "hip-thigh",
+      "groups": [
+        "hip-adductors"
+      ],
+      "partOf": null,
+      "origin": [
+        "Pubis near the symphysis"
+      ],
+      "insertion": [
+        "Linea aspera of the femur"
+      ],
+      "nerve": [
+        {
+          "name": "Obturator nerve",
+          "roots": [
+            "L2",
+            "L3",
+            "L4"
+          ]
+        }
+      ],
+      "actions": [
+        "hip-adduction"
+      ],
+      "actionText": "Hip adduction; assists hip flexion.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/adductor-longus.png",
+        "hotspot": "renders/base/hip-thigh.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          22
+        ]
+      }
+    },
+    {
+      "id": "adductor-brevis",
+      "name": "Adductor Brevis",
+      "latin": null,
+      "region": "hip-thigh",
+      "groups": [
+        "hip-adductors"
+      ],
+      "partOf": null,
+      "origin": [
+        "Body of the pubis"
+      ],
+      "insertion": [
+        "Linea aspera of the femur"
+      ],
+      "nerve": [
+        {
+          "name": "Obturator nerve",
+          "roots": [
+            "L2",
+            "L3",
+            "L4"
+          ]
+        }
+      ],
+      "actions": [
+        "hip-adduction"
+      ],
+      "actionText": "Hip adduction; assists hip flexion.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/adductor-brevis.png",
+        "hotspot": "renders/base/hip-thigh.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          23
+        ]
+      }
+    },
+    {
+      "id": "pectineus",
+      "name": "Pectineus",
+      "latin": null,
+      "region": "hip-thigh",
+      "groups": [
+        "hip-adductors"
+      ],
+      "partOf": null,
+      "origin": [
+        "Superior ramus of pubis"
+      ],
+      "insertion": [
+        "Pectineal line of femur"
+      ],
+      "nerve": [
+        {
+          "name": "Femoral nerve",
+          "roots": [
+            "L2",
+            "L3",
+            "L4"
+          ]
+        },
+        {
+          "name": "Accessory obturator nerve (sometimes)",
+          "roots": []
+        }
+      ],
+      "actions": [
+        "hip-adduction",
+        "hip-flexion",
+        "hip-internal-rotation"
+      ],
+      "actionText": "Adducts and flexes the thigh; assists medial rotation.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/pectineus.png",
+        "hotspot": "renders/base/hip-thigh.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          24
+        ]
+      }
+    },
+    {
+      "id": "gracilis",
+      "name": "Gracilis",
+      "latin": null,
+      "region": "hip-thigh",
+      "groups": [
+        "hip-adductors"
+      ],
+      "partOf": null,
+      "origin": [
+        "Inferior ramus of pubis"
+      ],
+      "insertion": [
+        "Medial surface of tibia (pes anserinus)"
+      ],
+      "nerve": [
+        {
+          "name": "Obturator nerve",
+          "roots": [
+            "L2",
+            "L3"
+          ]
+        }
+      ],
+      "actions": [
+        "hip-adduction",
+        "knee-flexion",
+        "knee-internal-rotation"
+      ],
+      "actionText": "Adducts the thigh; flexes and medially rotates the leg at the knee.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/gracilis.png",
+        "hotspot": "renders/base/hip-thigh.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          25
+        ]
+      }
+    },
+    {
+      "id": "piriformis",
+      "name": "Piriformis",
+      "latin": null,
+      "region": "hip-thigh",
+      "groups": [
+        "hip-external-rotators"
+      ],
+      "partOf": null,
+      "origin": [
+        "Sacrum"
+      ],
+      "insertion": [
+        "Greater trochanter of the femur"
+      ],
+      "nerve": [
+        {
+          "name": "Nerve to piriformis",
+          "roots": [
+            "S1",
+            "S2"
+          ]
+        }
+      ],
+      "actions": [
+        "hip-external-rotation"
+      ],
+      "actionText": "External rotation and stabilisation of the hip joint.",
+      "clinical": "Piriformis syndrome — the muscle irritates the sciatic nerve, causing posterior leg pain.",
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/piriformis.png",
+        "hotspot": "renders/base/hip-thigh.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          27
+        ]
+      }
+    },
+    {
+      "id": "gemelli",
+      "name": "Gemelli (Superior & Inferior)",
+      "latin": null,
+      "region": "hip-thigh",
+      "groups": [
+        "hip-external-rotators"
+      ],
+      "partOf": null,
+      "origin": [
+        "Superior: ischial spine",
+        "Inferior: ischial tuberosity"
+      ],
+      "insertion": [
+        "Greater trochanter"
+      ],
+      "nerve": [
+        {
+          "name": "Nerve to obturator internus",
+          "roots": [
+            "L5",
+            "S1"
+          ]
+        }
+      ],
+      "actions": [
+        "hip-external-rotation"
+      ],
+      "actionText": "External rotation and stabilisation of the hip joint.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/gemelli.png",
+        "hotspot": "renders/base/hip-thigh.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          28
+        ]
+      }
+    },
+    {
+      "id": "obturator-internus",
+      "name": "Obturator Internus",
+      "latin": null,
+      "region": "hip-thigh",
+      "groups": [
+        "hip-external-rotators"
+      ],
+      "partOf": null,
+      "origin": [
+        "Obturator membrane"
+      ],
+      "insertion": [
+        "Greater trochanter"
+      ],
+      "nerve": [
+        {
+          "name": "Nerve to obturator internus",
+          "roots": [
+            "L5",
+            "S1"
+          ]
+        }
+      ],
+      "actions": [
+        "hip-external-rotation"
+      ],
+      "actionText": "External rotation and stabilisation of the hip joint.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/obturator-internus.png",
+        "hotspot": "renders/base/hip-thigh.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          29
+        ]
+      }
+    },
+    {
+      "id": "obturator-externus",
+      "name": "Obturator Externus",
+      "latin": null,
+      "region": "hip-thigh",
+      "groups": [
+        "hip-external-rotators"
+      ],
+      "partOf": null,
+      "origin": [
+        "Margin of bone immediately around the medial side of the obturator foramen"
+      ],
+      "insertion": [
+        "Trochanteric fossa of the femur"
+      ],
+      "nerve": [
+        {
+          "name": "Obturator nerve",
+          "roots": [
+            "L3",
+            "L4"
+          ]
+        }
+      ],
+      "actions": [
+        "hip-external-rotation"
+      ],
+      "actionText": "Lateral rotation of the hip.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/obturator-externus.png",
+        "hotspot": "renders/base/hip-thigh.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          30
+        ]
+      }
+    },
+    {
+      "id": "quadratus-femoris",
+      "name": "Quadratus Femoris",
+      "latin": null,
+      "region": "hip-thigh",
+      "groups": [
+        "hip-external-rotators"
+      ],
+      "partOf": null,
+      "origin": [
+        "Ischial tuberosity"
+      ],
+      "insertion": [
+        "Intertrochanteric crest of the femur"
+      ],
+      "nerve": [
+        {
+          "name": "Nerve to quadratus femoris",
+          "roots": [
+            "L4",
+            "L5",
+            "S1"
+          ]
+        }
+      ],
+      "actions": [
+        "hip-external-rotation"
+      ],
+      "actionText": "External rotation and stabilisation of the hip joint.",
+      "clinical": null,
+      "notes": "Spelled 'Quadrarus femoris' on the source slide.",
+      "images": {
+        "isolated": "renders/isolated/quadratus-femoris.png",
+        "hotspot": "renders/base/hip-thigh.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          31
+        ]
+      }
+    },
+    {
+      "id": "vastus-lateralis",
+      "name": "Vastus Lateralis",
+      "latin": null,
+      "region": "hip-thigh",
+      "groups": [
+        "knee-extensors",
+        "quadriceps"
+      ],
+      "partOf": null,
+      "origin": [
+        "Greater trochanter of the femur",
+        "Linea aspera of the femur"
+      ],
+      "insertion": [
+        "Tibial tuberosity via the patellar tendon"
+      ],
+      "nerve": [
+        {
+          "name": "Femoral nerve",
+          "roots": [
+            "L2",
+            "L3",
+            "L4"
+          ]
+        }
+      ],
+      "actions": [
+        "knee-extension"
+      ],
+      "actionText": "Knee extension; helps stabilise the patella. Largest of the quadriceps.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/vastus-lateralis.png",
+        "hotspot": "renders/base/hip-thigh.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": true,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          34
+        ]
+      }
+    },
+    {
+      "id": "vastus-medialis",
+      "name": "Vastus Medialis",
+      "latin": null,
+      "region": "hip-thigh",
+      "groups": [
+        "knee-extensors",
+        "quadriceps"
+      ],
+      "partOf": null,
+      "origin": [
+        "Medial side of the femur"
+      ],
+      "insertion": [
+        "Tibial tuberosity via the patellar tendon"
+      ],
+      "nerve": [
+        {
+          "name": "Femoral nerve",
+          "roots": [
+            "L2",
+            "L3",
+            "L4"
+          ]
+        }
+      ],
+      "actions": [
+        "knee-extension"
+      ],
+      "actionText": "Knee extension; key to patellar tracking and knee stability.",
+      "clinical": "Weakness contributes to poor patellar tracking and patellofemoral pain syndrome.",
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/vastus-medialis.png",
+        "hotspot": "renders/base/hip-thigh.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": true,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          35
+        ]
+      }
+    },
+    {
+      "id": "vastus-intermedius",
+      "name": "Vastus Intermedius",
+      "latin": null,
+      "region": "hip-thigh",
+      "groups": [
+        "knee-extensors",
+        "quadriceps"
+      ],
+      "partOf": null,
+      "origin": [
+        "Anterior and lateral surfaces of the femur"
+      ],
+      "insertion": [
+        "Tibial tuberosity via the patellar tendon"
+      ],
+      "nerve": [
+        {
+          "name": "Femoral nerve",
+          "roots": [
+            "L2",
+            "L3",
+            "L4"
+          ]
+        }
+      ],
+      "actions": [
+        "knee-extension"
+      ],
+      "actionText": "Knee extension, working in synergy with the other quadriceps.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/vastus-intermedius.png",
+        "hotspot": "renders/base/hip-thigh.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": true,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          36
+        ]
+      }
+    },
+    {
+      "id": "popliteus",
+      "name": "Popliteus",
+      "latin": null,
+      "region": "lower-leg-foot",
+      "groups": [
+        "knee-flexors",
+        "deep-posterior-compartment"
+      ],
+      "partOf": null,
+      "origin": [
+        "Lateral surface of the lateral femoral condyle",
+        "Lateral meniscus"
+      ],
+      "insertion": [
+        "Posterior surface of the tibia, above the soleal (popliteal) line"
+      ],
+      "nerve": [
+        {
+          "name": "Tibial nerve",
+          "roots": [
+            "L4",
+            "L5",
+            "S1"
+          ]
+        }
+      ],
+      "actions": [
+        "knee-flexion",
+        "knee-internal-rotation"
+      ],
+      "actionText": "Unlocks the knee by laterally rotating the femur on the fixed tibia; assists knee flexion; stabilises the lateral meniscus.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/popliteus.png",
+        "hotspot": "renders/base/lower-leg-foot.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          134
+        ]
+      }
+    },
+    {
+      "id": "supraspinatus",
+      "name": "Supraspinatus",
+      "latin": null,
+      "region": "shoulder-arm",
+      "groups": [
+        "rotator-cuff"
+      ],
+      "partOf": null,
+      "origin": [
+        "Supraspinous fossa of scapula"
+      ],
+      "insertion": [
+        "Greater tubercle of humerus"
+      ],
+      "nerve": [
+        {
+          "name": "Suprascapular nerve",
+          "roots": [
+            "C5",
+            "C6"
+          ]
+        }
+      ],
+      "actions": [
+        "shoulder-abduction",
+        "glenohumeral-stabilisation"
+      ],
+      "actionText": "Abducts the shoulder (first 15°) and stabilises the humeral head.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/supraspinatus.png",
+        "hotspot": "renders/base/shoulder-arm.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          42,
+          43
+        ]
+      }
+    },
+    {
+      "id": "infraspinatus",
+      "name": "Infraspinatus",
+      "latin": null,
+      "region": "shoulder-arm",
+      "groups": [
+        "rotator-cuff"
+      ],
+      "partOf": null,
+      "origin": [
+        "Infraspinous fossa of scapula"
+      ],
+      "insertion": [
+        "Greater tubercle of humerus"
+      ],
+      "nerve": [
+        {
+          "name": "Suprascapular nerve",
+          "roots": [
+            "C5",
+            "C6"
+          ]
+        }
+      ],
+      "actions": [
+        "shoulder-external-rotation",
+        "glenohumeral-stabilisation"
+      ],
+      "actionText": "External rotation of the shoulder; stabilises the humeral head.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/infraspinatus.png",
+        "hotspot": "renders/base/shoulder-arm.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          42,
+          44
+        ]
+      }
+    },
+    {
+      "id": "teres-minor",
+      "name": "Teres Minor",
+      "latin": null,
+      "region": "shoulder-arm",
+      "groups": [
+        "rotator-cuff"
+      ],
+      "partOf": null,
+      "origin": [
+        "Lateral border of scapula"
+      ],
+      "insertion": [
+        "Greater tubercle of humerus"
+      ],
+      "nerve": [
+        {
+          "name": "Axillary nerve",
+          "roots": [
+            "C5",
+            "C6"
+          ]
+        }
+      ],
+      "actions": [
+        "shoulder-external-rotation",
+        "glenohumeral-stabilisation"
+      ],
+      "actionText": "External rotation of the shoulder; stabilises the humeral head.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/teres-minor.png",
+        "hotspot": "renders/base/shoulder-arm.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          42,
+          45
+        ]
+      }
+    },
+    {
+      "id": "subscapularis",
+      "name": "Subscapularis",
+      "latin": null,
+      "region": "shoulder-arm",
+      "groups": [
+        "rotator-cuff"
+      ],
+      "partOf": null,
+      "origin": [
+        "Subscapular fossa of scapula"
+      ],
+      "insertion": [
+        "Lesser tubercle of humerus"
+      ],
+      "nerve": [
+        {
+          "name": "Upper & lower subscapular nerves",
+          "roots": [
+            "C5",
+            "C6",
+            "C7"
+          ]
+        }
+      ],
+      "actions": [
+        "shoulder-internal-rotation",
+        "shoulder-adduction",
+        "glenohumeral-stabilisation"
+      ],
+      "actionText": "Internal rotation of the shoulder; stabilises the humeral head.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/subscapularis.png",
+        "hotspot": "renders/base/shoulder-arm.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          42,
+          46
+        ]
+      }
+    },
+    {
+      "id": "deltoid",
+      "name": "Deltoid",
+      "latin": null,
+      "region": "shoulder-arm",
+      "groups": [
+        "shoulder"
+      ],
+      "partOf": null,
+      "origin": [
+        "Lateral 1/3 clavicle",
+        "Acromion",
+        "Spine of scapula"
+      ],
+      "insertion": [
+        "Deltoid tuberosity of humerus"
+      ],
+      "nerve": [
+        {
+          "name": "Axillary nerve",
+          "roots": [
+            "C5",
+            "C6"
+          ]
+        }
+      ],
+      "actions": [
+        "shoulder-abduction",
+        "shoulder-flexion",
+        "shoulder-extension",
+        "shoulder-internal-rotation",
+        "shoulder-external-rotation"
+      ],
+      "actionText": "Anterior fibres: flexion & medial rotation; middle: abduction; posterior: extension & lateral rotation.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/deltoid.png",
+        "hotspot": "renders/base/shoulder-arm.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          47,
+          48
+        ]
+      }
+    },
+    {
+      "id": "trapezius",
+      "name": "Trapezius",
+      "latin": null,
+      "region": "shoulder-arm",
+      "groups": [
+        "shoulder",
+        "scapular"
+      ],
+      "partOf": null,
+      "origin": [
+        "External occipital protuberance",
+        "Nuchal ligament",
+        "Spinous processes C7–T12"
+      ],
+      "insertion": [
+        "Lateral clavicle",
+        "Acromion",
+        "Spine of scapula"
+      ],
+      "nerve": [
+        {
+          "name": "Spinal accessory nerve (CN XI)",
+          "roots": []
+        },
+        {
+          "name": "C3–C4 (sensory)",
+          "roots": [
+            "C3",
+            "C4"
+          ]
+        }
+      ],
+      "actions": [
+        "scapular-elevation",
+        "scapular-retraction",
+        "scapular-depression",
+        "scapular-upward-rotation"
+      ],
+      "actionText": "Upper: elevates scapula; middle: retracts scapula; lower: depresses scapula; upper & lower together rotate the glenoid superiorly.",
+      "clinical": null,
+      "notes": "Spelled 'Trapezuis' on the source slide.",
+      "images": {
+        "isolated": "renders/isolated/trapezius.png",
+        "hotspot": "renders/base/shoulder-arm.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          47,
+          49
+        ]
+      }
+    },
+    {
+      "id": "levator-scapulae",
+      "name": "Levator Scapulae",
+      "latin": null,
+      "region": "shoulder-arm",
+      "groups": [
+        "shoulder",
+        "scapular"
+      ],
+      "partOf": null,
+      "origin": [
+        "Transverse processes C1–C4"
+      ],
+      "insertion": [
+        "Superior angle & medial border of scapula"
+      ],
+      "nerve": [
+        {
+          "name": "Dorsal scapular nerve",
+          "roots": [
+            "C5"
+          ]
+        },
+        {
+          "name": "C3–C4",
+          "roots": [
+            "C3",
+            "C4"
+          ]
+        }
+      ],
+      "actions": [
+        "scapular-elevation",
+        "scapular-downward-rotation",
+        "scapular-retraction"
+      ],
+      "actionText": "Elevates the scapula and tilts the glenoid inferiorly.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/levator-scapulae.png",
+        "hotspot": "renders/base/shoulder-arm.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          50
+        ]
+      }
+    },
+    {
+      "id": "rhomboid-minor",
+      "name": "Rhomboid Minor",
+      "latin": null,
+      "region": "shoulder-arm",
+      "groups": [
+        "shoulder",
+        "scapular"
+      ],
+      "partOf": null,
+      "origin": [
+        "Spinous processes C7–T1",
+        "Nuchal ligament"
+      ],
+      "insertion": [
+        "Medial border of scapula (at level of the spine)"
+      ],
+      "nerve": [
+        {
+          "name": "Dorsal scapular nerve",
+          "roots": [
+            "C5"
+          ]
+        }
+      ],
+      "actions": [
+        "scapular-retraction",
+        "scapular-downward-rotation"
+      ],
+      "actionText": "Retracts the scapula and rotates the glenoid inferiorly.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/rhomboid-minor.png",
+        "hotspot": "renders/base/shoulder-arm.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          51
+        ]
+      }
+    },
+    {
+      "id": "rhomboid-major",
+      "name": "Rhomboid Major",
+      "latin": null,
+      "region": "shoulder-arm",
+      "groups": [
+        "shoulder",
+        "scapular"
+      ],
+      "partOf": null,
+      "origin": [
+        "Spinous processes T2–T5"
+      ],
+      "insertion": [
+        "Medial border of scapula, below the spine"
+      ],
+      "nerve": [
+        {
+          "name": "Dorsal scapular nerve",
+          "roots": [
+            "C5"
+          ]
+        }
+      ],
+      "actions": [
+        "scapular-retraction",
+        "scapular-downward-rotation"
+      ],
+      "actionText": "Retracts the scapula and rotates the glenoid inferiorly.",
+      "clinical": null,
+      "notes": "Named in the scapular movement tables but has no dedicated slide — origin/insertion filled from standard anatomy; verify before publishing.",
+      "images": {
+        "isolated": "renders/isolated/rhomboid-major.png",
+        "hotspot": "renders/base/shoulder-arm.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": true,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          66,
+          67
+        ]
+      }
+    },
+    {
+      "id": "serratus-anterior",
+      "name": "Serratus Anterior",
+      "latin": null,
+      "region": "shoulder-arm",
+      "groups": [
+        "shoulder",
+        "scapular"
+      ],
+      "partOf": null,
+      "origin": [
+        "Lateral surfaces of ribs 1–8"
+      ],
+      "insertion": [
+        "Anterior surface of medial border of scapula"
+      ],
+      "nerve": [
+        {
+          "name": "Long thoracic nerve",
+          "roots": [
+            "C5",
+            "C6",
+            "C7"
+          ]
+        }
+      ],
+      "actions": [
+        "scapular-protraction",
+        "scapular-upward-rotation"
+      ],
+      "actionText": "Protracts the scapula, rotates the glenoid superiorly and stabilises the scapula against the thorax.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/serratus-anterior.png",
+        "hotspot": "renders/base/shoulder-arm.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          52
+        ]
+      }
+    },
+    {
+      "id": "pectoralis-major",
+      "name": "Pectoralis Major",
+      "latin": null,
+      "region": "shoulder-arm",
+      "groups": [
+        "chest"
+      ],
+      "partOf": null,
+      "origin": [
+        "Clavicular head: medial clavicle",
+        "Sternocostal head: sternum & costal cartilages 1–6"
+      ],
+      "insertion": [
+        "Lateral lip of intertubercular sulcus"
+      ],
+      "nerve": [
+        {
+          "name": "Lateral & medial pectoral nerves",
+          "roots": [
+            "C5",
+            "C6",
+            "C7",
+            "C8",
+            "T1"
+          ]
+        }
+      ],
+      "actions": [
+        "shoulder-adduction",
+        "shoulder-internal-rotation",
+        "shoulder-flexion",
+        "shoulder-extension"
+      ],
+      "actionText": "Adduction and medial rotation; clavicular head flexes; sternocostal head extends from a flexed position.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/pectoralis-major.png",
+        "hotspot": "renders/base/shoulder-arm.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          53,
+          54
+        ]
+      }
+    },
+    {
+      "id": "pectoralis-minor",
+      "name": "Pectoralis Minor",
+      "latin": null,
+      "region": "shoulder-arm",
+      "groups": [
+        "chest",
+        "scapular"
+      ],
+      "partOf": null,
+      "origin": [
+        "Ribs 3–5"
+      ],
+      "insertion": [
+        "Coracoid process of scapula"
+      ],
+      "nerve": [
+        {
+          "name": "Medial pectoral nerve",
+          "roots": [
+            "C8",
+            "T1"
+          ]
+        }
+      ],
+      "actions": [
+        "scapular-protraction",
+        "scapular-depression",
+        "scapular-downward-rotation"
+      ],
+      "actionText": "Stabilises the scapula; protraction and downward rotation. Assists rib elevation when the scapula is fixed.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/pectoralis-minor.png",
+        "hotspot": "renders/base/shoulder-arm.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          53,
+          55
+        ]
+      }
+    },
+    {
+      "id": "biceps-brachii",
+      "name": "Biceps Brachii",
+      "latin": null,
+      "region": "shoulder-arm",
+      "groups": [
+        "arm",
+        "elbow-flexors"
+      ],
+      "partOf": null,
+      "origin": [
+        "Short head: coracoid process",
+        "Long head: supraglenoid tubercle & adjacent glenoid labrum"
+      ],
+      "insertion": [
+        "Radial tuberosity",
+        "Bicipital aponeurosis"
+      ],
+      "nerve": [
+        {
+          "name": "Musculocutaneous nerve",
+          "roots": [
+            "C5",
+            "C6",
+            "C7"
+          ]
+        }
+      ],
+      "actions": [
+        "elbow-flexion",
+        "forearm-supination",
+        "shoulder-flexion"
+      ],
+      "actionText": "Elbow flexion, forearm supination and weak shoulder flexion.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/biceps-brachii.png",
+        "hotspot": "renders/base/shoulder-arm.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          56,
+          57
+        ]
+      }
+    },
+    {
+      "id": "brachialis",
+      "name": "Brachialis",
+      "latin": null,
+      "region": "shoulder-arm",
+      "groups": [
+        "arm",
+        "elbow-flexors"
+      ],
+      "partOf": null,
+      "origin": [
+        "Distal half of anterior humerus"
+      ],
+      "insertion": [
+        "Coronoid process & ulnar tuberosity"
+      ],
+      "nerve": [
+        {
+          "name": "Musculocutaneous nerve",
+          "roots": [
+            "C5",
+            "C6"
+          ]
+        }
+      ],
+      "actions": [
+        "elbow-flexion"
+      ],
+      "actionText": "Primary elbow flexor.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/brachialis.png",
+        "hotspot": "renders/base/shoulder-arm.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          56,
+          58
+        ]
+      }
+    },
+    {
+      "id": "coracobrachialis",
+      "name": "Coracobrachialis",
+      "latin": null,
+      "region": "shoulder-arm",
+      "groups": [
+        "arm"
+      ],
+      "partOf": null,
+      "origin": [
+        "Coracoid process"
+      ],
+      "insertion": [
+        "Medial humerus"
+      ],
+      "nerve": [
+        {
+          "name": "Musculocutaneous nerve",
+          "roots": [
+            "C5",
+            "C6",
+            "C7"
+          ]
+        }
+      ],
+      "actions": [
+        "shoulder-flexion",
+        "shoulder-adduction"
+      ],
+      "actionText": "Shoulder flexion and adduction; resists downward dislocation of the humerus.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/coracobrachialis.png",
+        "hotspot": "renders/base/shoulder-arm.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          56,
+          59
+        ]
+      }
+    },
+    {
+      "id": "triceps-brachii",
+      "name": "Triceps Brachii",
+      "latin": null,
+      "region": "shoulder-arm",
+      "groups": [
+        "arm",
+        "elbow-extensors"
+      ],
+      "partOf": null,
+      "origin": [
+        "Long head: infraglenoid tubercle",
+        "Lateral head: posterior humerus",
+        "Medial head: posterior humerus"
+      ],
+      "insertion": [
+        "Olecranon process of ulna"
+      ],
+      "nerve": [
+        {
+          "name": "Radial nerve",
+          "roots": [
+            "C6",
+            "C7",
+            "C8"
+          ]
+        }
+      ],
+      "actions": [
+        "elbow-extension",
+        "shoulder-extension",
+        "shoulder-adduction"
+      ],
+      "actionText": "Elbow extension; the long head assists shoulder extension and adduction.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/triceps-brachii.png",
+        "hotspot": "renders/base/shoulder-arm.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          60
+        ]
+      }
+    },
+    {
+      "id": "anconeus",
+      "name": "Anconeus",
+      "latin": null,
+      "region": "shoulder-arm",
+      "groups": [
+        "arm",
+        "elbow-extensors"
+      ],
+      "partOf": null,
+      "origin": [
+        "Lateral epicondyle of humerus"
+      ],
+      "insertion": [
+        "Lateral olecranon & proximal ulna"
+      ],
+      "nerve": [
+        {
+          "name": "Radial nerve",
+          "roots": [
+            "C7",
+            "C8"
+          ]
+        }
+      ],
+      "actions": [
+        "elbow-extension"
+      ],
+      "actionText": "Assists elbow extension and stabilises the elbow joint.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/anconeus.png",
+        "hotspot": "renders/base/shoulder-arm.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          61
+        ]
+      }
+    },
+    {
+      "id": "teres-major",
+      "name": "Teres Major",
+      "latin": null,
+      "region": "shoulder-arm",
+      "groups": [
+        "shoulder-posterior"
+      ],
+      "partOf": null,
+      "origin": [
+        "Inferior angle of scapula"
+      ],
+      "insertion": [
+        "Medial lip of intertubercular sulcus of humerus"
+      ],
+      "nerve": [
+        {
+          "name": "Lower subscapular nerve",
+          "roots": [
+            "C5",
+            "C6"
+          ]
+        }
+      ],
+      "actions": [
+        "shoulder-adduction",
+        "shoulder-internal-rotation",
+        "shoulder-extension"
+      ],
+      "actionText": "Shoulder adduction, internal rotation and extension.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/teres-major.png",
+        "hotspot": "renders/base/shoulder-arm.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          62,
+          63
+        ]
+      }
+    },
+    {
+      "id": "latissimus-dorsi",
+      "name": "Latissimus Dorsi",
+      "latin": null,
+      "region": "shoulder-arm",
+      "groups": [
+        "shoulder-posterior"
+      ],
+      "partOf": null,
+      "origin": [
+        "Spinous processes T7–L5",
+        "Iliac crest",
+        "Thoracolumbar fascia"
+      ],
+      "insertion": [
+        "Floor of intertubercular sulcus of humerus"
+      ],
+      "nerve": [
+        {
+          "name": "Thoracodorsal nerve",
+          "roots": [
+            "C6",
+            "C7",
+            "C8"
+          ]
+        }
+      ],
+      "actions": [
+        "shoulder-extension",
+        "shoulder-adduction",
+        "shoulder-internal-rotation"
+      ],
+      "actionText": "Shoulder extension, adduction and internal rotation.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/latissimus-dorsi.png",
+        "hotspot": "renders/base/shoulder-arm.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          62,
+          64
+        ]
+      }
+    },
+    {
+      "id": "diaphragm",
+      "name": "Diaphragm",
+      "latin": null,
+      "region": "back-core",
+      "groups": [
+        "breathing"
+      ],
+      "partOf": null,
+      "origin": [
+        "Xiphoid process",
+        "Costal cartilages of ribs 7–12",
+        "Lumbar vertebrae"
+      ],
+      "insertion": [
+        "Central tendon"
+      ],
+      "nerve": [
+        {
+          "name": "Phrenic nerve",
+          "roots": [
+            "C3",
+            "C4",
+            "C5"
+          ]
+        }
+      ],
+      "actions": [
+        "inspiration",
+        "core-stabilisation"
+      ],
+      "actionText": "Primary muscle of inspiration; flattens to expand the thoracic cavity.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/diaphragm.png",
+        "hotspot": "renders/base/back-core.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          73
+        ]
+      }
+    },
+    {
+      "id": "external-intercostals",
+      "name": "External Intercostals",
+      "latin": null,
+      "region": "back-core",
+      "groups": [
+        "breathing"
+      ],
+      "partOf": null,
+      "origin": [
+        "Inferior border of ribs above"
+      ],
+      "insertion": [
+        "Superior border of ribs below"
+      ],
+      "nerve": [
+        {
+          "name": "Intercostal nerves",
+          "roots": [
+            "T1",
+            "T2",
+            "T3",
+            "T4",
+            "T5",
+            "T6",
+            "T7",
+            "T8",
+            "T9",
+            "T10",
+            "T11"
+          ]
+        }
+      ],
+      "actions": [
+        "inspiration"
+      ],
+      "actionText": "Elevate the ribs during inspiration; increase thoracic volume.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/external-intercostals.png",
+        "hotspot": "renders/base/back-core.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          73
+        ]
+      }
+    },
+    {
+      "id": "internal-intercostals",
+      "name": "Internal Intercostals",
+      "latin": null,
+      "region": "back-core",
+      "groups": [
+        "breathing"
+      ],
+      "partOf": null,
+      "origin": [
+        "Superior border of ribs below"
+      ],
+      "insertion": [
+        "Inferior border of ribs above"
+      ],
+      "nerve": [
+        {
+          "name": "Intercostal nerves",
+          "roots": [
+            "T1",
+            "T2",
+            "T3",
+            "T4",
+            "T5",
+            "T6",
+            "T7",
+            "T8",
+            "T9",
+            "T10",
+            "T11"
+          ]
+        }
+      ],
+      "actions": [
+        "expiration"
+      ],
+      "actionText": "Depress the ribs during forced expiration.",
+      "clinical": null,
+      "notes": "Slide table was truncated in extraction — verify origin/insertion/action.",
+      "images": {
+        "isolated": "renders/isolated/internal-intercostals.png",
+        "hotspot": "renders/base/back-core.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": true,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          73
+        ]
+      }
+    },
+    {
+      "id": "sternocleidomastoid",
+      "name": "Sternocleidomastoid",
+      "latin": null,
+      "region": "back-core",
+      "groups": [
+        "neck"
+      ],
+      "partOf": null,
+      "origin": [
+        "Manubrium of sternum",
+        "Medial 1/3 clavicle"
+      ],
+      "insertion": [
+        "Mastoid process of temporal bone",
+        "Lateral superior nuchal line"
+      ],
+      "nerve": [
+        {
+          "name": "Spinal accessory nerve (CN XI)",
+          "roots": []
+        },
+        {
+          "name": "C2–C3 (sensory)",
+          "roots": [
+            "C2",
+            "C3"
+          ]
+        }
+      ],
+      "actions": [
+        "neck-flexion",
+        "neck-rotation",
+        "neck-lateral-flexion",
+        "accessory-inspiration"
+      ],
+      "actionText": "Unilateral: rotates head to the opposite side and tilts to the same side. Bilateral: flexes the neck. Elevates the sternum in forced breathing.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/sternocleidomastoid.png",
+        "hotspot": "renders/base/back-core.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          76,
+          77
+        ]
+      }
+    },
+    {
+      "id": "scalene-anterior",
+      "name": "Scalene Anterior",
+      "latin": null,
+      "region": "back-core",
+      "groups": [
+        "neck"
+      ],
+      "partOf": null,
+      "origin": [
+        "Transverse processes C3–C6"
+      ],
+      "insertion": [
+        "1st rib"
+      ],
+      "nerve": [
+        {
+          "name": "Cervical spinal nerves",
+          "roots": [
+            "C4",
+            "C5",
+            "C6"
+          ]
+        }
+      ],
+      "actions": [
+        "neck-lateral-flexion",
+        "accessory-inspiration"
+      ],
+      "actionText": "Elevates the 1st rib; lateral flexion of the neck.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/scalene-anterior.png",
+        "hotspot": "renders/base/back-core.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          76,
+          78
+        ]
+      }
+    },
+    {
+      "id": "scalene-middle",
+      "name": "Scalene Middle",
+      "latin": null,
+      "region": "back-core",
+      "groups": [
+        "neck"
+      ],
+      "partOf": null,
+      "origin": [
+        "Transverse processes C2–C7"
+      ],
+      "insertion": [
+        "1st rib"
+      ],
+      "nerve": [
+        {
+          "name": "Cervical spinal nerves",
+          "roots": []
+        }
+      ],
+      "actions": [
+        "neck-lateral-flexion",
+        "accessory-inspiration"
+      ],
+      "actionText": "Elevates the 1st rib; lateral flexion of the neck.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/scalene-middle.png",
+        "hotspot": "renders/base/back-core.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          78
+        ]
+      }
+    },
+    {
+      "id": "scalene-posterior",
+      "name": "Scalene Posterior",
+      "latin": null,
+      "region": "back-core",
+      "groups": [
+        "neck"
+      ],
+      "partOf": null,
+      "origin": [
+        "Transverse processes C4–C6"
+      ],
+      "insertion": [
+        "2nd rib"
+      ],
+      "nerve": [
+        {
+          "name": "Cervical spinal nerves",
+          "roots": []
+        }
+      ],
+      "actions": [
+        "neck-lateral-flexion",
+        "accessory-inspiration"
+      ],
+      "actionText": "Elevates the 2nd rib; lateral flexion of the neck.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/scalene-posterior.png",
+        "hotspot": "renders/base/back-core.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          78
+        ]
+      }
+    },
+    {
+      "id": "splenius-capitis",
+      "name": "Splenius Capitis",
+      "latin": null,
+      "region": "back-core",
+      "groups": [
+        "vertebral-column"
+      ],
+      "partOf": null,
+      "origin": [
+        "Ligamentum nuchae",
+        "Spinous processes C7–T3"
+      ],
+      "insertion": [
+        "Mastoid process",
+        "Lateral superior nuchal line"
+      ],
+      "nerve": [
+        {
+          "name": "Posterior rami of spinal nerves",
+          "roots": []
+        }
+      ],
+      "actions": [
+        "neck-extension",
+        "neck-rotation",
+        "neck-lateral-flexion"
+      ],
+      "actionText": "Extends, rotates and laterally flexes the head.",
+      "clinical": null,
+      "notes": "Spelled 'Splenius Capitus' on the source slide.",
+      "images": {
+        "isolated": "renders/isolated/splenius-capitis.png",
+        "hotspot": "renders/base/back-core.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          79,
+          80
+        ]
+      }
+    },
+    {
+      "id": "splenius-cervicis",
+      "name": "Splenius Cervicis",
+      "latin": null,
+      "region": "back-core",
+      "groups": [
+        "vertebral-column"
+      ],
+      "partOf": null,
+      "origin": [
+        "Spinous processes T3–T6"
+      ],
+      "insertion": [
+        "Transverse processes C1–C3"
+      ],
+      "nerve": [
+        {
+          "name": "Posterior rami of spinal nerves",
+          "roots": []
+        }
+      ],
+      "actions": [
+        "neck-extension",
+        "neck-rotation",
+        "neck-lateral-flexion"
+      ],
+      "actionText": "Extends, rotates and laterally flexes the neck.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/splenius-cervicis.png",
+        "hotspot": "renders/base/back-core.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          79,
+          81
+        ]
+      }
+    },
+    {
+      "id": "iliocostalis",
+      "name": "Iliocostalis",
+      "latin": null,
+      "region": "back-core",
+      "groups": [
+        "erector-spinae"
+      ],
+      "partOf": null,
+      "origin": [
+        "Iliac crest",
+        "Sacrum",
+        "Lumbar spinous processes"
+      ],
+      "insertion": [
+        "Angles of ribs",
+        "Cervical transverse processes"
+      ],
+      "nerve": [
+        {
+          "name": "Dorsal rami of spinal nerves",
+          "roots": []
+        }
+      ],
+      "actions": [
+        "spinal-extension",
+        "trunk-lateral-flexion"
+      ],
+      "actionText": "Extends and laterally flexes the vertebral column. Most lateral of the erector spinae.",
+      "clinical": null,
+      "notes": "Sub-muscles: lumborum, thoracis, cervicis.",
+      "images": {
+        "isolated": "renders/isolated/iliocostalis.png",
+        "hotspot": "renders/base/back-core.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          82,
+          83
+        ]
+      }
+    },
+    {
+      "id": "longissimus",
+      "name": "Longissimus",
+      "latin": null,
+      "region": "back-core",
+      "groups": [
+        "erector-spinae"
+      ],
+      "partOf": null,
+      "origin": [
+        "Sacrum",
+        "Iliac crest",
+        "Lumbar transverse processes"
+      ],
+      "insertion": [
+        "Ribs",
+        "Thoracic & cervical transverse processes",
+        "Mastoid process"
+      ],
+      "nerve": [
+        {
+          "name": "Dorsal rami of spinal nerves",
+          "roots": []
+        }
+      ],
+      "actions": [
+        "spinal-extension",
+        "trunk-lateral-flexion"
+      ],
+      "actionText": "Extends and laterally flexes the vertebral column and head. Longest of the erector spinae.",
+      "clinical": null,
+      "notes": "Sub-muscles: thoracis, cervicis, capitis.",
+      "images": {
+        "isolated": "renders/isolated/longissimus.png",
+        "hotspot": "renders/base/back-core.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          82,
+          84
+        ]
+      }
+    },
+    {
+      "id": "spinalis",
+      "name": "Spinalis",
+      "latin": null,
+      "region": "back-core",
+      "groups": [
+        "erector-spinae"
+      ],
+      "partOf": null,
+      "origin": [
+        "Spinous processes of upper lumbar & lower thoracic vertebrae"
+      ],
+      "insertion": [
+        "Spinous processes of upper thoracic & cervical vertebrae"
+      ],
+      "nerve": [
+        {
+          "name": "Dorsal rami of spinal nerves",
+          "roots": []
+        }
+      ],
+      "actions": [
+        "spinal-extension"
+      ],
+      "actionText": "Extends the vertebral column. Smallest and most medial of the erector spinae.",
+      "clinical": null,
+      "notes": "Sub-muscles: thoracis, cervicis, capitis.",
+      "images": {
+        "isolated": "renders/isolated/spinalis.png",
+        "hotspot": "renders/base/back-core.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          82,
+          85
+        ]
+      }
+    },
+    {
+      "id": "semispinalis",
+      "name": "Semispinalis",
+      "latin": null,
+      "region": "back-core",
+      "groups": [
+        "transversospinales"
+      ],
+      "partOf": null,
+      "origin": [
+        "Transverse processes of C4–T12"
+      ],
+      "insertion": [
+        "Spinous processes 4–6 segments above"
+      ],
+      "nerve": [
+        {
+          "name": "Dorsal rami of spinal nerves",
+          "roots": []
+        }
+      ],
+      "actions": [
+        "spinal-extension",
+        "trunk-rotation"
+      ],
+      "actionText": "Extends the vertebral column and head; rotates contralaterally.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/semispinalis.png",
+        "hotspot": "renders/base/back-core.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          86,
+          87
+        ]
+      }
+    },
+    {
+      "id": "multifidus",
+      "name": "Multifidus",
+      "latin": null,
+      "region": "back-core",
+      "groups": [
+        "transversospinales"
+      ],
+      "partOf": null,
+      "origin": [
+        "Sacrum",
+        "Transverse processes of vertebrae"
+      ],
+      "insertion": [
+        "Spinous processes 2–4 segments above"
+      ],
+      "nerve": [
+        {
+          "name": "Dorsal rami of spinal nerves",
+          "roots": []
+        }
+      ],
+      "actions": [
+        "spinal-stabilisation",
+        "spinal-extension",
+        "trunk-rotation"
+      ],
+      "actionText": "Stabilises the vertebrae; extends and rotates the spine.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/multifidus.png",
+        "hotspot": "renders/base/back-core.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          86,
+          88
+        ]
+      }
+    },
+    {
+      "id": "rotatores",
+      "name": "Rotatores",
+      "latin": null,
+      "region": "back-core",
+      "groups": [
+        "transversospinales"
+      ],
+      "partOf": null,
+      "origin": [
+        "Transverse processes"
+      ],
+      "insertion": [
+        "Base of spinous processes 1–2 segments above"
+      ],
+      "nerve": [
+        {
+          "name": "Dorsal rami of spinal nerves",
+          "roots": []
+        }
+      ],
+      "actions": [
+        "spinal-stabilisation",
+        "trunk-rotation"
+      ],
+      "actionText": "Stabilises and rotates the vertebrae.",
+      "clinical": null,
+      "notes": "Sub-muscles: rotatores breves, rotatores longi.",
+      "images": {
+        "isolated": "renders/isolated/rotatores.png",
+        "hotspot": "renders/base/back-core.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          86,
+          89
+        ]
+      }
+    },
+    {
+      "id": "interspinales",
+      "name": "Interspinales",
+      "latin": null,
+      "region": "back-core",
+      "groups": [
+        "segmental"
+      ],
+      "partOf": null,
+      "origin": [
+        "Spinous processes"
+      ],
+      "insertion": [
+        "Adjacent spinous processes"
+      ],
+      "nerve": [
+        {
+          "name": "Dorsal rami",
+          "roots": []
+        }
+      ],
+      "actions": [
+        "spinal-extension"
+      ],
+      "actionText": "Extends the vertebral column.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/interspinales.png",
+        "hotspot": "renders/base/back-core.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          90,
+          91
+        ]
+      }
+    },
+    {
+      "id": "intertransversarii",
+      "name": "Intertransversarii",
+      "latin": null,
+      "region": "back-core",
+      "groups": [
+        "segmental"
+      ],
+      "partOf": null,
+      "origin": [
+        "Transverse processes"
+      ],
+      "insertion": [
+        "Adjacent transverse processes"
+      ],
+      "nerve": [
+        {
+          "name": "Dorsal & ventral rami",
+          "roots": []
+        }
+      ],
+      "actions": [
+        "trunk-lateral-flexion"
+      ],
+      "actionText": "Lateral flexion of the vertebral column.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/intertransversarii.png",
+        "hotspot": "renders/base/back-core.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          90,
+          92
+        ]
+      }
+    },
+    {
+      "id": "longus-colli",
+      "name": "Longus Colli",
+      "latin": null,
+      "region": "back-core",
+      "groups": [
+        "vertebral-column-flexors"
+      ],
+      "partOf": null,
+      "origin": [
+        "Anterior bodies and transverse processes C3–T3"
+      ],
+      "insertion": [
+        "Anterior tubercle of C1",
+        "Bodies C1–C3",
+        "Transverse processes C3–C6"
+      ],
+      "nerve": [
+        {
+          "name": "Cervical spinal nerves",
+          "roots": []
+        }
+      ],
+      "actions": [
+        "neck-flexion",
+        "neck-rotation"
+      ],
+      "actionText": "Flexes and slightly rotates the neck.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/longus-colli.png",
+        "hotspot": "renders/base/back-core.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          93,
+          94
+        ]
+      }
+    },
+    {
+      "id": "longus-capitis",
+      "name": "Longus Capitis",
+      "latin": null,
+      "region": "back-core",
+      "groups": [
+        "vertebral-column-flexors"
+      ],
+      "partOf": null,
+      "origin": [
+        "Transverse processes C3–C6"
+      ],
+      "insertion": [
+        "Basilar part of occipital bone"
+      ],
+      "nerve": [
+        {
+          "name": "Cervical spinal nerves",
+          "roots": []
+        }
+      ],
+      "actions": [
+        "neck-flexion"
+      ],
+      "actionText": "Flexes the head and neck.",
+      "clinical": null,
+      "notes": "Spelled 'Longus Capitus' on the source slide.",
+      "images": {
+        "isolated": "renders/isolated/longus-capitis.png",
+        "hotspot": "renders/base/back-core.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          93,
+          95
+        ]
+      }
+    },
+    {
+      "id": "rectus-abdominis",
+      "name": "Rectus Abdominis",
+      "latin": null,
+      "region": "back-core",
+      "groups": [
+        "core"
+      ],
+      "partOf": null,
+      "origin": [
+        "Pubic crest & symphysis"
+      ],
+      "insertion": [
+        "Xiphoid process",
+        "Costal cartilages 5–7"
+      ],
+      "nerve": [
+        {
+          "name": "Thoracoabdominal nerves",
+          "roots": [
+            "T7",
+            "T8",
+            "T9",
+            "T10",
+            "T11"
+          ]
+        }
+      ],
+      "actions": [
+        "trunk-flexion",
+        "core-stabilisation"
+      ],
+      "actionText": "Flexes the vertebral column and stabilises the pelvis.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/rectus-abdominis.png",
+        "hotspot": "renders/base/back-core.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          96,
+          97
+        ]
+      }
+    },
+    {
+      "id": "external-oblique",
+      "name": "External Oblique",
+      "latin": null,
+      "region": "back-core",
+      "groups": [
+        "core"
+      ],
+      "partOf": null,
+      "origin": [
+        "Ribs 5–12"
+      ],
+      "insertion": [
+        "Linea alba",
+        "Pubic tubercle",
+        "Iliac crest"
+      ],
+      "nerve": [
+        {
+          "name": "Thoracoabdominal nerves",
+          "roots": [
+            "T7",
+            "T8",
+            "T9",
+            "T10",
+            "T11"
+          ]
+        },
+        {
+          "name": "Subcostal nerve",
+          "roots": [
+            "T12"
+          ]
+        }
+      ],
+      "actions": [
+        "trunk-rotation",
+        "trunk-lateral-flexion",
+        "core-stabilisation"
+      ],
+      "actionText": "Compresses the abdomen, rotates the trunk contralaterally, lateral flexion.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/external-oblique.png",
+        "hotspot": "renders/base/back-core.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          96,
+          98
+        ]
+      }
+    },
+    {
+      "id": "internal-oblique",
+      "name": "Internal Oblique",
+      "latin": null,
+      "region": "back-core",
+      "groups": [
+        "core"
+      ],
+      "partOf": null,
+      "origin": [
+        "Thoracolumbar fascia",
+        "Iliac crest",
+        "Inguinal ligament"
+      ],
+      "insertion": [
+        "Ribs 10–12",
+        "Linea alba"
+      ],
+      "nerve": [
+        {
+          "name": "Thoracoabdominal nerves",
+          "roots": [
+            "T7",
+            "T8",
+            "T9",
+            "T10",
+            "T11"
+          ]
+        },
+        {
+          "name": "Subcostal nerve",
+          "roots": [
+            "T12"
+          ]
+        },
+        {
+          "name": "L1",
+          "roots": [
+            "L1"
+          ]
+        }
+      ],
+      "actions": [
+        "trunk-rotation",
+        "trunk-lateral-flexion",
+        "core-stabilisation"
+      ],
+      "actionText": "Compresses the abdomen, rotates the trunk ipsilaterally, lateral flexion.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/internal-oblique.png",
+        "hotspot": "renders/base/back-core.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          99
+        ]
+      }
+    },
+    {
+      "id": "transversus-abdominis",
+      "name": "Transversus Abdominis",
+      "latin": null,
+      "region": "back-core",
+      "groups": [
+        "core"
+      ],
+      "partOf": null,
+      "origin": [
+        "Thoracolumbar fascia",
+        "Iliac crest",
+        "Inguinal ligament",
+        "Costal cartilages 7–12"
+      ],
+      "insertion": [
+        "Linea alba",
+        "Pubic crest"
+      ],
+      "nerve": [
+        {
+          "name": "Thoracoabdominal nerves",
+          "roots": [
+            "T7",
+            "T8",
+            "T9",
+            "T10",
+            "T11"
+          ]
+        },
+        {
+          "name": "Subcostal nerve",
+          "roots": [
+            "T12"
+          ]
+        },
+        {
+          "name": "L1",
+          "roots": [
+            "L1"
+          ]
+        }
+      ],
+      "actions": [
+        "core-stabilisation"
+      ],
+      "actionText": "Compresses the abdomen and stabilises the trunk.",
+      "clinical": null,
+      "notes": "Written 'Transverse abdominis' on the source slide.",
+      "images": {
+        "isolated": "renders/isolated/transversus-abdominis.png",
+        "hotspot": "renders/base/back-core.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          100
+        ]
+      }
+    },
+    {
+      "id": "quadratus-lumborum",
+      "name": "Quadratus Lumborum",
+      "latin": null,
+      "region": "back-core",
+      "groups": [
+        "core"
+      ],
+      "partOf": null,
+      "origin": [
+        "Iliac crest",
+        "Iliolumbar ligament"
+      ],
+      "insertion": [
+        "12th rib",
+        "Transverse processes L1–L4"
+      ],
+      "nerve": [
+        {
+          "name": "Ventral rami",
+          "roots": [
+            "T12",
+            "L1",
+            "L2",
+            "L3",
+            "L4"
+          ]
+        }
+      ],
+      "actions": [
+        "trunk-lateral-flexion",
+        "core-stabilisation"
+      ],
+      "actionText": "Lateral flexion of the trunk; stabilises the 12th rib.",
+      "clinical": null,
+      "notes": "The 'hip-hiker'; deep to erector spinae, between the 12th rib and pelvis.",
+      "images": {
+        "isolated": "renders/isolated/quadratus-lumborum.png",
+        "hotspot": "renders/base/back-core.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          101
+        ]
+      }
+    },
+    {
+      "id": "tibialis-anterior",
+      "name": "Tibialis Anterior",
+      "latin": null,
+      "region": "lower-leg-foot",
+      "groups": [
+        "anterior-compartment"
+      ],
+      "partOf": null,
+      "origin": [
+        "Lateral condyle and upper 2/3 of lateral tibia"
+      ],
+      "insertion": [
+        "Medial cuneiform",
+        "Base of 1st metatarsal"
+      ],
+      "nerve": [
+        {
+          "name": "Deep fibular nerve",
+          "roots": [
+            "L4",
+            "L5"
+          ]
+        }
+      ],
+      "actions": [
+        "ankle-dorsiflexion",
+        "foot-inversion"
+      ],
+      "actionText": "Dorsiflexion and inversion of the foot; controls foot drop during walking.",
+      "clinical": "Implicated in medial tibial stress syndrome and anterior compartment syndrome.",
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/tibialis-anterior.png",
+        "hotspot": "renders/base/lower-leg-foot.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          119,
+          123
+        ]
+      }
+    },
+    {
+      "id": "extensor-hallucis-longus",
+      "name": "Extensor Hallucis Longus",
+      "latin": null,
+      "region": "lower-leg-foot",
+      "groups": [
+        "anterior-compartment"
+      ],
+      "partOf": null,
+      "origin": [
+        "Middle anterior surface of fibula",
+        "Interosseous membrane"
+      ],
+      "insertion": [
+        "Base of distal phalanx of big toe"
+      ],
+      "nerve": [
+        {
+          "name": "Deep fibular nerve",
+          "roots": [
+            "L5"
+          ]
+        }
+      ],
+      "actions": [
+        "toe-extension",
+        "ankle-dorsiflexion"
+      ],
+      "actionText": "Extends the big toe and dorsiflexes the foot.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/extensor-hallucis-longus.png",
+        "hotspot": "renders/base/lower-leg-foot.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          120,
+          123
+        ]
+      }
+    },
+    {
+      "id": "extensor-digitorum-longus",
+      "name": "Extensor Digitorum Longus",
+      "latin": null,
+      "region": "lower-leg-foot",
+      "groups": [
+        "anterior-compartment"
+      ],
+      "partOf": null,
+      "origin": [
+        "Lateral condyle of tibia",
+        "Anterior fibula"
+      ],
+      "insertion": [
+        "Distal phalanges of toes 2–5"
+      ],
+      "nerve": [
+        {
+          "name": "Deep fibular nerve",
+          "roots": [
+            "L5",
+            "S1"
+          ]
+        }
+      ],
+      "actions": [
+        "toe-extension",
+        "ankle-dorsiflexion"
+      ],
+      "actionText": "Extends toes 2–5 and dorsiflexes the foot.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/extensor-digitorum-longus.png",
+        "hotspot": "renders/base/lower-leg-foot.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          121,
+          123
+        ]
+      }
+    },
+    {
+      "id": "peroneus-tertius",
+      "name": "Peroneus Tertius",
+      "latin": null,
+      "region": "lower-leg-foot",
+      "groups": [
+        "anterior-compartment"
+      ],
+      "partOf": null,
+      "origin": [
+        "Distal anterior fibula"
+      ],
+      "insertion": [
+        "Base of 5th metatarsal"
+      ],
+      "nerve": [
+        {
+          "name": "Deep fibular nerve",
+          "roots": [
+            "L5",
+            "S1"
+          ]
+        }
+      ],
+      "actions": [
+        "ankle-dorsiflexion",
+        "foot-eversion"
+      ],
+      "actionText": "Dorsiflexion and eversion of the foot.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/peroneus-tertius.png",
+        "hotspot": "renders/base/lower-leg-foot.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          122,
+          123
+        ]
+      }
+    },
+    {
+      "id": "peroneus-longus",
+      "name": "Peroneus Longus",
+      "latin": null,
+      "region": "lower-leg-foot",
+      "groups": [
+        "lateral-compartment"
+      ],
+      "partOf": null,
+      "origin": [
+        "Head & upper lateral fibula"
+      ],
+      "insertion": [
+        "Medial cuneiform",
+        "Base of 1st metatarsal"
+      ],
+      "nerve": [
+        {
+          "name": "Superficial fibular nerve",
+          "roots": [
+            "L5",
+            "S1"
+          ]
+        }
+      ],
+      "actions": [
+        "foot-eversion",
+        "ankle-plantarflexion"
+      ],
+      "actionText": "Eversion and plantarflexion; supports the arches of the foot.",
+      "clinical": "Peroneal strengthening helps prevent inversion ankle sprains; site of peroneal tendinopathy.",
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/peroneus-longus.png",
+        "hotspot": "renders/base/lower-leg-foot.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          124,
+          126
+        ]
+      }
+    },
+    {
+      "id": "peroneus-brevis",
+      "name": "Peroneus Brevis",
+      "latin": null,
+      "region": "lower-leg-foot",
+      "groups": [
+        "lateral-compartment"
+      ],
+      "partOf": null,
+      "origin": [
+        "Distal 2/3 lateral fibula"
+      ],
+      "insertion": [
+        "Tuberosity of 5th metatarsal"
+      ],
+      "nerve": [
+        {
+          "name": "Superficial fibular nerve",
+          "roots": [
+            "L5",
+            "S1"
+          ]
+        }
+      ],
+      "actions": [
+        "foot-eversion",
+        "ankle-plantarflexion"
+      ],
+      "actionText": "Eversion and weak plantarflexion.",
+      "clinical": "Peroneal tendinopathy behind the lateral malleolus; pain on resisted eversion.",
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/peroneus-brevis.png",
+        "hotspot": "renders/base/lower-leg-foot.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          125,
+          126
+        ]
+      }
+    },
+    {
+      "id": "gastrocnemius",
+      "name": "Gastrocnemius",
+      "latin": null,
+      "region": "lower-leg-foot",
+      "groups": [
+        "posterior-compartment"
+      ],
+      "partOf": null,
+      "origin": [
+        "Medial & lateral femoral condyles"
+      ],
+      "insertion": [
+        "Calcaneus via Achilles tendon"
+      ],
+      "nerve": [
+        {
+          "name": "Tibial nerve",
+          "roots": [
+            "S1",
+            "S2"
+          ]
+        }
+      ],
+      "actions": [
+        "ankle-plantarflexion",
+        "knee-flexion"
+      ],
+      "actionText": "Plantarflexion (especially with the knee extended) and knee flexion.",
+      "clinical": "Achilles tendinopathy and rupture; tightness contributes to plantar fasciitis.",
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/gastrocnemius.png",
+        "hotspot": "renders/base/lower-leg-foot.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          127,
+          130
+        ]
+      }
+    },
+    {
+      "id": "soleus",
+      "name": "Soleus",
+      "latin": null,
+      "region": "lower-leg-foot",
+      "groups": [
+        "posterior-compartment"
+      ],
+      "partOf": null,
+      "origin": [
+        "Upper posterior fibula & tibia"
+      ],
+      "insertion": [
+        "Calcaneus via Achilles tendon"
+      ],
+      "nerve": [
+        {
+          "name": "Tibial nerve",
+          "roots": [
+            "S1",
+            "S2"
+          ]
+        }
+      ],
+      "actions": [
+        "ankle-plantarflexion"
+      ],
+      "actionText": "Plantarflexion, independent of knee position.",
+      "clinical": "Involved in medial tibial stress syndrome and Achilles tendinopathy.",
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/soleus.png",
+        "hotspot": "renders/base/lower-leg-foot.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          128,
+          130
+        ]
+      }
+    },
+    {
+      "id": "plantaris",
+      "name": "Plantaris",
+      "latin": null,
+      "region": "lower-leg-foot",
+      "groups": [
+        "posterior-compartment"
+      ],
+      "partOf": null,
+      "origin": [
+        "Lateral supracondylar ridge of femur"
+      ],
+      "insertion": [
+        "Calcaneus via Achilles tendon"
+      ],
+      "nerve": [
+        {
+          "name": "Tibial nerve",
+          "roots": [
+            "S1",
+            "S2"
+          ]
+        }
+      ],
+      "actions": [
+        "ankle-plantarflexion",
+        "knee-flexion"
+      ],
+      "actionText": "Weak plantarflexion and knee flexion.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/plantaris.png",
+        "hotspot": "renders/base/lower-leg-foot.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          129
+        ]
+      }
+    },
+    {
+      "id": "tibialis-posterior",
+      "name": "Tibialis Posterior",
+      "latin": null,
+      "region": "lower-leg-foot",
+      "groups": [
+        "deep-posterior-compartment"
+      ],
+      "partOf": null,
+      "origin": [
+        "Posterior tibia",
+        "Fibula",
+        "Interosseous membrane"
+      ],
+      "insertion": [
+        "Navicular",
+        "Cuneiforms",
+        "Bases of 2nd–4th metatarsals"
+      ],
+      "nerve": [
+        {
+          "name": "Tibial nerve",
+          "roots": [
+            "L4",
+            "L5"
+          ]
+        }
+      ],
+      "actions": [
+        "foot-inversion",
+        "ankle-plantarflexion"
+      ],
+      "actionText": "Inversion and plantarflexion; supports the medial longitudinal arch.",
+      "clinical": "Key muscle in medial tibial stress syndrome.",
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/tibialis-posterior.png",
+        "hotspot": "renders/base/lower-leg-foot.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          131,
+          135
+        ]
+      }
+    },
+    {
+      "id": "flexor-digitorum-longus",
+      "name": "Flexor Digitorum Longus",
+      "latin": null,
+      "region": "lower-leg-foot",
+      "groups": [
+        "deep-posterior-compartment"
+      ],
+      "partOf": null,
+      "origin": [
+        "Posterior tibia"
+      ],
+      "insertion": [
+        "Distal phalanges of toes 2–5"
+      ],
+      "nerve": [
+        {
+          "name": "Tibial nerve",
+          "roots": [
+            "S2",
+            "S3"
+          ]
+        }
+      ],
+      "actions": [
+        "toe-flexion",
+        "ankle-plantarflexion"
+      ],
+      "actionText": "Flexes toes 2–5 and assists plantarflexion.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/flexor-digitorum-longus.png",
+        "hotspot": "renders/base/lower-leg-foot.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          132,
+          135
+        ]
+      }
+    },
+    {
+      "id": "flexor-hallucis-longus",
+      "name": "Flexor Hallucis Longus",
+      "latin": null,
+      "region": "lower-leg-foot",
+      "groups": [
+        "deep-posterior-compartment"
+      ],
+      "partOf": null,
+      "origin": [
+        "Posterior fibula"
+      ],
+      "insertion": [
+        "Distal phalanx of big toe"
+      ],
+      "nerve": [
+        {
+          "name": "Tibial nerve",
+          "roots": [
+            "S2",
+            "S3"
+          ]
+        }
+      ],
+      "actions": [
+        "toe-flexion",
+        "ankle-plantarflexion"
+      ],
+      "actionText": "Flexes the big toe and assists plantarflexion.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/flexor-hallucis-longus.png",
+        "hotspot": "renders/base/lower-leg-foot.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          133,
+          135
+        ]
+      }
+    },
+    {
+      "id": "extensor-digitorum-brevis",
+      "name": "Extensor Digitorum Brevis",
+      "latin": null,
+      "region": "lower-leg-foot",
+      "groups": [
+        "foot-dorsum",
+        "intrinsic-foot"
+      ],
+      "partOf": null,
+      "origin": [
+        "Dorsal and lateral surface of calcaneus"
+      ],
+      "insertion": [
+        "Digits 2–4"
+      ],
+      "nerve": [
+        {
+          "name": "Deep fibular (peroneal) nerve",
+          "roots": [
+            "L5",
+            "S1"
+          ]
+        }
+      ],
+      "actions": [
+        "toe-extension"
+      ],
+      "actionText": "Extends digits 2–4.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/extensor-digitorum-brevis.png",
+        "hotspot": "renders/base/lower-leg-foot.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          136
+        ]
+      }
+    },
+    {
+      "id": "extensor-hallucis-brevis",
+      "name": "Extensor Hallucis Brevis",
+      "latin": null,
+      "region": "lower-leg-foot",
+      "groups": [
+        "foot-dorsum",
+        "intrinsic-foot"
+      ],
+      "partOf": null,
+      "origin": [
+        "Dorsal portion of calcaneus"
+      ],
+      "insertion": [
+        "Proximal phalanx of digit 1"
+      ],
+      "nerve": [
+        {
+          "name": "Deep fibular (peroneal) nerve",
+          "roots": [
+            "L5",
+            "S1"
+          ]
+        }
+      ],
+      "actions": [
+        "toe-extension"
+      ],
+      "actionText": "Extends digit 1.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/extensor-hallucis-brevis.png",
+        "hotspot": "renders/base/lower-leg-foot.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          137
+        ]
+      }
+    },
+    {
+      "id": "flexor-digitorum-brevis",
+      "name": "Flexor Digitorum Brevis",
+      "latin": null,
+      "region": "lower-leg-foot",
+      "groups": [
+        "foot-plantar-layer-1",
+        "intrinsic-foot"
+      ],
+      "partOf": null,
+      "origin": [
+        "Medial tubercle of calcaneus",
+        "Plantar aponeurosis"
+      ],
+      "insertion": [
+        "Middle phalanges of toes 2–5"
+      ],
+      "nerve": [
+        {
+          "name": "Medial plantar nerve",
+          "roots": [
+            "S1",
+            "S2"
+          ]
+        }
+      ],
+      "actions": [
+        "toe-flexion"
+      ],
+      "actionText": "Flexes toes 2–5 at the proximal interphalangeal joints.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/flexor-digitorum-brevis.png",
+        "hotspot": "renders/base/lower-leg-foot.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          138,
+          141
+        ]
+      }
+    },
+    {
+      "id": "abductor-hallucis",
+      "name": "Abductor Hallucis",
+      "latin": null,
+      "region": "lower-leg-foot",
+      "groups": [
+        "foot-plantar-layer-1",
+        "intrinsic-foot"
+      ],
+      "partOf": null,
+      "origin": [
+        "Medial tubercle of calcaneus",
+        "Flexor retinaculum",
+        "Plantar aponeurosis"
+      ],
+      "insertion": [
+        "Medial side of base of proximal phalanx of big toe"
+      ],
+      "nerve": [
+        {
+          "name": "Medial plantar nerve",
+          "roots": [
+            "S1",
+            "S2"
+          ]
+        }
+      ],
+      "actions": [
+        "toe-abduction",
+        "toe-flexion"
+      ],
+      "actionText": "Abducts and flexes the big toe; supports the medial arch.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/abductor-hallucis.png",
+        "hotspot": "renders/base/lower-leg-foot.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          139,
+          141
+        ]
+      }
+    },
+    {
+      "id": "abductor-digiti-minimi-foot",
+      "name": "Abductor Digiti Minimi (Foot)",
+      "latin": null,
+      "region": "lower-leg-foot",
+      "groups": [
+        "foot-plantar-layer-1",
+        "intrinsic-foot"
+      ],
+      "partOf": null,
+      "origin": [
+        "Medial and lateral tubercles of calcaneus",
+        "Plantar aponeurosis"
+      ],
+      "insertion": [
+        "Lateral side of base of proximal phalanx of 5th toe"
+      ],
+      "nerve": [
+        {
+          "name": "Lateral plantar nerve",
+          "roots": [
+            "S2",
+            "S3"
+          ]
+        }
+      ],
+      "actions": [
+        "toe-abduction",
+        "toe-flexion"
+      ],
+      "actionText": "Abducts and flexes the 5th toe.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/abductor-digiti-minimi-foot.png",
+        "hotspot": "renders/base/lower-leg-foot.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          140,
+          141
+        ]
+      }
+    },
+    {
+      "id": "quadratus-plantae",
+      "name": "Quadratus Plantae",
+      "latin": null,
+      "region": "lower-leg-foot",
+      "groups": [
+        "foot-plantar-layer-2",
+        "intrinsic-foot"
+      ],
+      "partOf": null,
+      "origin": [
+        "Medial and lateral sides of calcaneus"
+      ],
+      "insertion": [
+        "Posterolateral margin of tendon of flexor digitorum longus"
+      ],
+      "nerve": [
+        {
+          "name": "Lateral plantar nerve",
+          "roots": [
+            "S2",
+            "S3"
+          ]
+        }
+      ],
+      "actions": [
+        "toe-flexion"
+      ],
+      "actionText": "Assists flexor digitorum longus in flexing toes 2–5.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/quadratus-plantae.png",
+        "hotspot": "renders/base/lower-leg-foot.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          142,
+          144
+        ]
+      }
+    },
+    {
+      "id": "lumbricals-foot",
+      "name": "Lumbricals (Foot)",
+      "latin": null,
+      "region": "lower-leg-foot",
+      "groups": [
+        "foot-plantar-layer-2",
+        "intrinsic-foot"
+      ],
+      "partOf": null,
+      "origin": [
+        "Tendons of flexor digitorum longus"
+      ],
+      "insertion": [
+        "Medial side of extensor expansions of toes 2–5"
+      ],
+      "nerve": [
+        {
+          "name": "Medial plantar nerve (1st lumbrical)",
+          "roots": [
+            "S2",
+            "S3"
+          ]
+        },
+        {
+          "name": "Lateral plantar nerve (2nd–4th lumbricals)",
+          "roots": [
+            "S2",
+            "S3"
+          ]
+        }
+      ],
+      "actions": [
+        "toe-flexion",
+        "toe-extension"
+      ],
+      "actionText": "Flex the metatarsophalangeal joints and extend the interphalangeal joints of toes 2–5.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/lumbricals-foot.png",
+        "hotspot": "renders/base/lower-leg-foot.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          143,
+          144
+        ]
+      }
+    },
+    {
+      "id": "flexor-hallucis-brevis",
+      "name": "Flexor Hallucis Brevis",
+      "latin": null,
+      "region": "lower-leg-foot",
+      "groups": [
+        "foot-plantar-layer-3",
+        "intrinsic-foot"
+      ],
+      "partOf": null,
+      "origin": [
+        "Plantar surfaces of cuboid and lateral cuneiform"
+      ],
+      "insertion": [
+        "Two tendons to the medial and lateral sides of the base of the proximal phalanx of the big toe"
+      ],
+      "nerve": [
+        {
+          "name": "Medial plantar nerve",
+          "roots": [
+            "S1",
+            "S2"
+          ]
+        }
+      ],
+      "actions": [
+        "toe-flexion"
+      ],
+      "actionText": "Flexes the big toe at the metatarsophalangeal joint.",
+      "clinical": null,
+      "notes": "The two sesamoid bones of the foot sit within its tendons.",
+      "images": {
+        "isolated": "renders/isolated/flexor-hallucis-brevis.png",
+        "hotspot": "renders/base/lower-leg-foot.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          145,
+          149
+        ]
+      }
+    },
+    {
+      "id": "adductor-hallucis",
+      "name": "Adductor Hallucis",
+      "latin": null,
+      "region": "lower-leg-foot",
+      "groups": [
+        "foot-plantar-layer-3",
+        "intrinsic-foot"
+      ],
+      "partOf": null,
+      "origin": [
+        "Oblique head: bases of 2nd–4th metatarsals",
+        "Transverse head: plantar ligaments of MTP joints 3–5"
+      ],
+      "insertion": [
+        "Lateral side of base of proximal phalanx of big toe"
+      ],
+      "nerve": [
+        {
+          "name": "Lateral plantar nerve",
+          "roots": [
+            "S2",
+            "S3"
+          ]
+        }
+      ],
+      "actions": [
+        "toe-adduction"
+      ],
+      "actionText": "Adducts the big toe; maintains the transverse arch.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/adductor-hallucis.png",
+        "hotspot": "renders/base/lower-leg-foot.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          146,
+          149
+        ]
+      }
+    },
+    {
+      "id": "flexor-digiti-minimi-brevis-foot",
+      "name": "Flexor Digiti Minimi Brevis (Foot)",
+      "latin": null,
+      "region": "lower-leg-foot",
+      "groups": [
+        "foot-plantar-layer-3",
+        "intrinsic-foot"
+      ],
+      "partOf": null,
+      "origin": [
+        "Base of 5th metatarsal"
+      ],
+      "insertion": [
+        "Base of proximal phalanx of 5th toe"
+      ],
+      "nerve": [
+        {
+          "name": "Lateral plantar nerve",
+          "roots": [
+            "S2",
+            "S3"
+          ]
+        }
+      ],
+      "actions": [
+        "toe-flexion"
+      ],
+      "actionText": "Flexes the 5th toe at the metatarsophalangeal joint.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/flexor-digiti-minimi-brevis-foot.png",
+        "hotspot": "renders/base/lower-leg-foot.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          147
+        ]
+      }
+    },
+    {
+      "id": "opponens-digiti-minimi-foot",
+      "name": "Opponens Digiti Minimi (Foot)",
+      "latin": null,
+      "region": "lower-leg-foot",
+      "groups": [
+        "foot-plantar-layer-3",
+        "intrinsic-foot"
+      ],
+      "partOf": null,
+      "origin": [
+        "Base of 5th metatarsal",
+        "Sheath of peroneus longus"
+      ],
+      "insertion": [
+        "Lateral part of 5th metatarsal"
+      ],
+      "nerve": [
+        {
+          "name": "Lateral plantar nerve",
+          "roots": [
+            "S1",
+            "S2"
+          ]
+        }
+      ],
+      "actions": [
+        "toe-flexion"
+      ],
+      "actionText": "Flexes the 5th toe; draws the metatarsal medially and downward.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/opponens-digiti-minimi-foot.png",
+        "hotspot": "renders/base/lower-leg-foot.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          148
+        ]
+      }
+    },
+    {
+      "id": "dorsal-interossei-foot",
+      "name": "Dorsal Interossei (Foot)",
+      "latin": null,
+      "region": "lower-leg-foot",
+      "groups": [
+        "foot-plantar-layer-4",
+        "intrinsic-foot"
+      ],
+      "partOf": null,
+      "origin": [
+        "Adjacent sides of metatarsals"
+      ],
+      "insertion": [
+        "Proximal phalanges and extensor expansions of toes 2–4"
+      ],
+      "nerve": [
+        {
+          "name": "Lateral plantar nerve",
+          "roots": [
+            "S2",
+            "S3"
+          ]
+        }
+      ],
+      "actions": [
+        "toe-abduction",
+        "toe-flexion",
+        "toe-extension"
+      ],
+      "actionText": "Abduct toes 2–4 from the second toe axis; flex MTP joints and extend IP joints.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/dorsal-interossei-foot.png",
+        "hotspot": "renders/base/lower-leg-foot.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          150,
+          152
+        ]
+      }
+    },
+    {
+      "id": "plantar-interossei",
+      "name": "Plantar Interossei",
+      "latin": null,
+      "region": "lower-leg-foot",
+      "groups": [
+        "foot-plantar-layer-4",
+        "intrinsic-foot"
+      ],
+      "partOf": null,
+      "origin": [
+        "Medial sides of metatarsals 3–5"
+      ],
+      "insertion": [
+        "Medial side of proximal phalanges 3–5"
+      ],
+      "nerve": [
+        {
+          "name": "Lateral plantar nerve",
+          "roots": [
+            "S2",
+            "S3"
+          ]
+        }
+      ],
+      "actions": [
+        "toe-adduction",
+        "toe-flexion",
+        "toe-extension"
+      ],
+      "actionText": "Adduct toes 3–5 toward the second toe; flex MTP joints and extend IP joints.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/plantar-interossei.png",
+        "hotspot": "renders/base/lower-leg-foot.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          151,
+          152
+        ]
+      }
+    },
+    {
+      "id": "pronator-teres",
+      "name": "Pronator Teres",
+      "latin": null,
+      "region": "forearm-hand",
+      "groups": [
+        "anterior-superficial"
+      ],
+      "partOf": null,
+      "origin": [
+        "Medial epicondyle of humerus (humeral head)",
+        "Coronoid process of ulna (ulnar head)"
+      ],
+      "insertion": [
+        "Lateral surface of the radius"
+      ],
+      "nerve": [
+        {
+          "name": "Median nerve",
+          "roots": [
+            "C6",
+            "C7"
+          ]
+        }
+      ],
+      "actions": [
+        "forearm-pronation",
+        "elbow-flexion"
+      ],
+      "actionText": "Pronation of the forearm and weak elbow flexion.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/pronator-teres.png",
+        "hotspot": "renders/base/forearm-hand.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          171,
+          172
+        ]
+      }
+    },
+    {
+      "id": "flexor-carpi-radialis",
+      "name": "Flexor Carpi Radialis",
+      "latin": null,
+      "region": "forearm-hand",
+      "groups": [
+        "anterior-superficial"
+      ],
+      "partOf": null,
+      "origin": [
+        "Medial epicondyle of humerus"
+      ],
+      "insertion": [
+        "Base of 2nd and 3rd metacarpals"
+      ],
+      "nerve": [
+        {
+          "name": "Median nerve",
+          "roots": [
+            "C6",
+            "C7"
+          ]
+        }
+      ],
+      "actions": [
+        "wrist-flexion",
+        "radial-deviation"
+      ],
+      "actionText": "Wrist flexion and radial deviation.",
+      "clinical": "Common flexor origin at the medial epicondyle — golfer's elbow.",
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/flexor-carpi-radialis.png",
+        "hotspot": "renders/base/forearm-hand.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          171,
+          173
+        ]
+      }
+    },
+    {
+      "id": "palmaris-longus",
+      "name": "Palmaris Longus",
+      "latin": null,
+      "region": "forearm-hand",
+      "groups": [
+        "anterior-superficial"
+      ],
+      "partOf": null,
+      "origin": [
+        "Medial epicondyle of humerus"
+      ],
+      "insertion": [
+        "Palmar aponeurosis"
+      ],
+      "nerve": [
+        {
+          "name": "Median nerve",
+          "roots": [
+            "C7",
+            "C8"
+          ]
+        }
+      ],
+      "actions": [
+        "wrist-flexion"
+      ],
+      "actionText": "Tenses the palmar fascia and assists wrist flexion.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/palmaris-longus.png",
+        "hotspot": "renders/base/forearm-hand.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          174
+        ]
+      }
+    },
+    {
+      "id": "flexor-carpi-ulnaris",
+      "name": "Flexor Carpi Ulnaris",
+      "latin": null,
+      "region": "forearm-hand",
+      "groups": [
+        "anterior-superficial"
+      ],
+      "partOf": null,
+      "origin": [
+        "Medial epicondyle of humerus",
+        "Olecranon process of ulna"
+      ],
+      "insertion": [
+        "Pisiform",
+        "Hook of hamate",
+        "Base of 5th metacarpal"
+      ],
+      "nerve": [
+        {
+          "name": "Ulnar nerve",
+          "roots": [
+            "C7",
+            "C8"
+          ]
+        }
+      ],
+      "actions": [
+        "wrist-flexion",
+        "ulnar-deviation"
+      ],
+      "actionText": "Wrist flexion and ulnar deviation.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/flexor-carpi-ulnaris.png",
+        "hotspot": "renders/base/forearm-hand.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          175
+        ]
+      }
+    },
+    {
+      "id": "flexor-digitorum-superficialis",
+      "name": "Flexor Digitorum Superficialis",
+      "latin": null,
+      "region": "forearm-hand",
+      "groups": [
+        "anterior-intermediate"
+      ],
+      "partOf": null,
+      "origin": [
+        "Medial epicondyle of humerus",
+        "Coronoid process of ulna",
+        "Radius"
+      ],
+      "insertion": [
+        "Middle phalanges of digits 2–5"
+      ],
+      "nerve": [
+        {
+          "name": "Median nerve",
+          "roots": [
+            "C7",
+            "C8",
+            "T1"
+          ]
+        }
+      ],
+      "actions": [
+        "finger-flexion",
+        "wrist-flexion"
+      ],
+      "actionText": "Flexes the PIP joints of digits 2–5 and assists wrist flexion.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/flexor-digitorum-superficialis.png",
+        "hotspot": "renders/base/forearm-hand.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          176
+        ]
+      }
+    },
+    {
+      "id": "flexor-digitorum-profundus",
+      "name": "Flexor Digitorum Profundus",
+      "latin": null,
+      "region": "forearm-hand",
+      "groups": [
+        "anterior-deep"
+      ],
+      "partOf": null,
+      "origin": [
+        "Anterior and medial surfaces of ulna",
+        "Interosseous membrane"
+      ],
+      "insertion": [
+        "Distal phalanges of digits 2–5"
+      ],
+      "nerve": [
+        {
+          "name": "Ulnar nerve (medial half)",
+          "roots": [
+            "C8",
+            "T1"
+          ]
+        },
+        {
+          "name": "Median nerve (lateral half)",
+          "roots": [
+            "C8",
+            "T1"
+          ]
+        }
+      ],
+      "actions": [
+        "finger-flexion",
+        "wrist-flexion"
+      ],
+      "actionText": "Flexes the DIP joints of digits 2–5 and assists wrist flexion.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/flexor-digitorum-profundus.png",
+        "hotspot": "renders/base/forearm-hand.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          177
+        ]
+      }
+    },
+    {
+      "id": "flexor-pollicis-longus",
+      "name": "Flexor Pollicis Longus",
+      "latin": null,
+      "region": "forearm-hand",
+      "groups": [
+        "anterior-deep"
+      ],
+      "partOf": null,
+      "origin": [
+        "Anterior surface of radius",
+        "Interosseous membrane"
+      ],
+      "insertion": [
+        "Distal phalanx of the thumb"
+      ],
+      "nerve": [
+        {
+          "name": "Median nerve",
+          "roots": [
+            "C8",
+            "T1"
+          ]
+        }
+      ],
+      "actions": [
+        "thumb-flexion"
+      ],
+      "actionText": "Flexes the thumb at the IP joint.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/flexor-pollicis-longus.png",
+        "hotspot": "renders/base/forearm-hand.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          178
+        ]
+      }
+    },
+    {
+      "id": "pronator-quadratus",
+      "name": "Pronator Quadratus",
+      "latin": null,
+      "region": "forearm-hand",
+      "groups": [
+        "anterior-deep"
+      ],
+      "partOf": null,
+      "origin": [
+        "Distal anterior surface of ulna"
+      ],
+      "insertion": [
+        "Distal anterior surface of radius"
+      ],
+      "nerve": [
+        {
+          "name": "Median nerve",
+          "roots": [
+            "C8",
+            "T1"
+          ]
+        }
+      ],
+      "actions": [
+        "forearm-pronation"
+      ],
+      "actionText": "Pronation of the forearm.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/pronator-quadratus.png",
+        "hotspot": "renders/base/forearm-hand.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          179
+        ]
+      }
+    },
+    {
+      "id": "brachioradialis",
+      "name": "Brachioradialis",
+      "latin": null,
+      "region": "forearm-hand",
+      "groups": [
+        "posterior-superficial",
+        "elbow-flexors"
+      ],
+      "partOf": null,
+      "origin": [
+        "Lateral supracondylar ridge of humerus"
+      ],
+      "insertion": [
+        "Styloid process of radius"
+      ],
+      "nerve": [
+        {
+          "name": "Radial nerve",
+          "roots": [
+            "C5",
+            "C6"
+          ]
+        }
+      ],
+      "actions": [
+        "elbow-flexion"
+      ],
+      "actionText": "Flexes the forearm in a semi-pronated position (the handshake grip).",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/brachioradialis.png",
+        "hotspot": "renders/base/forearm-hand.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          181,
+          182
+        ]
+      }
+    },
+    {
+      "id": "extensor-carpi-radialis-longus",
+      "name": "Extensor Carpi Radialis Longus",
+      "latin": null,
+      "region": "forearm-hand",
+      "groups": [
+        "posterior-superficial"
+      ],
+      "partOf": null,
+      "origin": [
+        "Lateral supracondylar ridge of humerus"
+      ],
+      "insertion": [
+        "Base of 2nd metacarpal"
+      ],
+      "nerve": [
+        {
+          "name": "Radial nerve",
+          "roots": [
+            "C6",
+            "C7"
+          ]
+        }
+      ],
+      "actions": [
+        "wrist-extension",
+        "radial-deviation"
+      ],
+      "actionText": "Wrist extension and radial deviation.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/extensor-carpi-radialis-longus.png",
+        "hotspot": "renders/base/forearm-hand.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          181,
+          183
+        ]
+      }
+    },
+    {
+      "id": "extensor-carpi-radialis-brevis",
+      "name": "Extensor Carpi Radialis Brevis",
+      "latin": null,
+      "region": "forearm-hand",
+      "groups": [
+        "posterior-superficial"
+      ],
+      "partOf": null,
+      "origin": [
+        "Lateral epicondyle of humerus"
+      ],
+      "insertion": [
+        "Base of 3rd metacarpal"
+      ],
+      "nerve": [
+        {
+          "name": "Deep branch of radial nerve",
+          "roots": [
+            "C7",
+            "C8"
+          ]
+        }
+      ],
+      "actions": [
+        "wrist-extension",
+        "radial-deviation"
+      ],
+      "actionText": "Wrist extension and radial deviation.",
+      "clinical": "Common extensor origin at the lateral epicondyle — tennis elbow.",
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/extensor-carpi-radialis-brevis.png",
+        "hotspot": "renders/base/forearm-hand.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          184
+        ]
+      }
+    },
+    {
+      "id": "extensor-digitorum",
+      "name": "Extensor Digitorum",
+      "latin": null,
+      "region": "forearm-hand",
+      "groups": [
+        "posterior-superficial"
+      ],
+      "partOf": null,
+      "origin": [
+        "Lateral epicondyle of humerus"
+      ],
+      "insertion": [
+        "Extensor expansions of digits 2–5"
+      ],
+      "nerve": [
+        {
+          "name": "Posterior interosseous nerve",
+          "roots": [
+            "C7",
+            "C8"
+          ]
+        }
+      ],
+      "actions": [
+        "finger-extension"
+      ],
+      "actionText": "Extends the MCP and IP joints of digits 2–5.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/extensor-digitorum.png",
+        "hotspot": "renders/base/forearm-hand.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          185
+        ]
+      }
+    },
+    {
+      "id": "extensor-digiti-minimi",
+      "name": "Extensor Digiti Minimi",
+      "latin": null,
+      "region": "forearm-hand",
+      "groups": [
+        "posterior-superficial"
+      ],
+      "partOf": null,
+      "origin": [
+        "Lateral epicondyle of humerus"
+      ],
+      "insertion": [
+        "Extensor expansion of digit 5"
+      ],
+      "nerve": [
+        {
+          "name": "Posterior interosseous nerve",
+          "roots": [
+            "C7",
+            "C8"
+          ]
+        }
+      ],
+      "actions": [
+        "finger-extension"
+      ],
+      "actionText": "Extends the MCP and IP joints of digit 5.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/extensor-digiti-minimi.png",
+        "hotspot": "renders/base/forearm-hand.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          186
+        ]
+      }
+    },
+    {
+      "id": "extensor-carpi-ulnaris",
+      "name": "Extensor Carpi Ulnaris",
+      "latin": null,
+      "region": "forearm-hand",
+      "groups": [
+        "posterior-superficial"
+      ],
+      "partOf": null,
+      "origin": [
+        "Lateral epicondyle of humerus",
+        "Posterior border of ulna"
+      ],
+      "insertion": [
+        "Base of 5th metacarpal"
+      ],
+      "nerve": [
+        {
+          "name": "Posterior interosseous nerve",
+          "roots": [
+            "C7",
+            "C8"
+          ]
+        }
+      ],
+      "actions": [
+        "wrist-extension",
+        "ulnar-deviation"
+      ],
+      "actionText": "Wrist extension and ulnar deviation.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/extensor-carpi-ulnaris.png",
+        "hotspot": "renders/base/forearm-hand.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          187
+        ]
+      }
+    },
+    {
+      "id": "supinator",
+      "name": "Supinator",
+      "latin": null,
+      "region": "forearm-hand",
+      "groups": [
+        "posterior-deep"
+      ],
+      "partOf": null,
+      "origin": [
+        "Lateral epicondyle of humerus",
+        "Radial collateral ligament",
+        "Ulna"
+      ],
+      "insertion": [
+        "Proximal radius"
+      ],
+      "nerve": [
+        {
+          "name": "Deep branch of radial nerve",
+          "roots": [
+            "C6",
+            "C7"
+          ]
+        }
+      ],
+      "actions": [
+        "forearm-supination"
+      ],
+      "actionText": "Supination of the forearm.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/supinator.png",
+        "hotspot": "renders/base/forearm-hand.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          188
+        ]
+      }
+    },
+    {
+      "id": "abductor-pollicis-longus",
+      "name": "Abductor Pollicis Longus",
+      "latin": null,
+      "region": "forearm-hand",
+      "groups": [
+        "posterior-deep"
+      ],
+      "partOf": null,
+      "origin": [
+        "Posterior surfaces of ulna and radius",
+        "Interosseous membrane"
+      ],
+      "insertion": [
+        "Base of 1st metacarpal"
+      ],
+      "nerve": [
+        {
+          "name": "Posterior interosseous nerve",
+          "roots": [
+            "C7",
+            "C8"
+          ]
+        }
+      ],
+      "actions": [
+        "thumb-abduction",
+        "thumb-extension"
+      ],
+      "actionText": "Abducts and extends the thumb at the CMC joint.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/abductor-pollicis-longus.png",
+        "hotspot": "renders/base/forearm-hand.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          189
+        ]
+      }
+    },
+    {
+      "id": "extensor-pollicis-brevis",
+      "name": "Extensor Pollicis Brevis",
+      "latin": null,
+      "region": "forearm-hand",
+      "groups": [
+        "posterior-deep"
+      ],
+      "partOf": null,
+      "origin": [
+        "Posterior surface of radius",
+        "Interosseous membrane"
+      ],
+      "insertion": [
+        "Base of proximal phalanx of thumb"
+      ],
+      "nerve": [
+        {
+          "name": "Posterior interosseous nerve",
+          "roots": [
+            "C7",
+            "C8"
+          ]
+        }
+      ],
+      "actions": [
+        "thumb-extension"
+      ],
+      "actionText": "Extends the thumb at the MCP joint.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/extensor-pollicis-brevis.png",
+        "hotspot": "renders/base/forearm-hand.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          190
+        ]
+      }
+    },
+    {
+      "id": "extensor-pollicis-longus",
+      "name": "Extensor Pollicis Longus",
+      "latin": null,
+      "region": "forearm-hand",
+      "groups": [
+        "posterior-deep"
+      ],
+      "partOf": null,
+      "origin": [
+        "Posterior surface of ulna",
+        "Interosseous membrane"
+      ],
+      "insertion": [
+        "Base of distal phalanx of thumb"
+      ],
+      "nerve": [
+        {
+          "name": "Posterior interosseous nerve",
+          "roots": [
+            "C7",
+            "C8"
+          ]
+        }
+      ],
+      "actions": [
+        "thumb-extension"
+      ],
+      "actionText": "Extends the thumb at the IP joint.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/extensor-pollicis-longus.png",
+        "hotspot": "renders/base/forearm-hand.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          191
+        ]
+      }
+    },
+    {
+      "id": "extensor-indicis",
+      "name": "Extensor Indicis",
+      "latin": null,
+      "region": "forearm-hand",
+      "groups": [
+        "posterior-deep"
+      ],
+      "partOf": null,
+      "origin": [
+        "Posterior surface of ulna",
+        "Interosseous membrane"
+      ],
+      "insertion": [
+        "Extensor expansion of digit 2"
+      ],
+      "nerve": [
+        {
+          "name": "Posterior interosseous nerve",
+          "roots": [
+            "C7",
+            "C8"
+          ]
+        }
+      ],
+      "actions": [
+        "finger-extension"
+      ],
+      "actionText": "Extends the MCP and IP joints of digit 2.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/extensor-indicis.png",
+        "hotspot": "renders/base/forearm-hand.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          192
+        ]
+      }
+    },
+    {
+      "id": "abductor-pollicis-brevis",
+      "name": "Abductor Pollicis Brevis",
+      "latin": null,
+      "region": "forearm-hand",
+      "groups": [
+        "thenar",
+        "intrinsic-hand"
+      ],
+      "partOf": null,
+      "origin": [
+        "Flexor retinaculum",
+        "Scaphoid",
+        "Trapezium"
+      ],
+      "insertion": [
+        "Base of proximal phalanx of thumb"
+      ],
+      "nerve": [
+        {
+          "name": "Median nerve",
+          "roots": [
+            "C8",
+            "T1"
+          ]
+        }
+      ],
+      "actions": [
+        "thumb-abduction"
+      ],
+      "actionText": "Abducts the thumb at the MCP joint.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/abductor-pollicis-brevis.png",
+        "hotspot": "renders/base/forearm-hand.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          194,
+          195
+        ]
+      }
+    },
+    {
+      "id": "flexor-pollicis-brevis",
+      "name": "Flexor Pollicis Brevis",
+      "latin": null,
+      "region": "forearm-hand",
+      "groups": [
+        "thenar",
+        "intrinsic-hand"
+      ],
+      "partOf": null,
+      "origin": [
+        "Flexor retinaculum",
+        "Trapezium"
+      ],
+      "insertion": [
+        "Base of proximal phalanx of thumb"
+      ],
+      "nerve": [
+        {
+          "name": "Median nerve",
+          "roots": [
+            "C8",
+            "T1"
+          ]
+        }
+      ],
+      "actions": [
+        "thumb-flexion"
+      ],
+      "actionText": "Flexes the thumb at the MCP joint.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/flexor-pollicis-brevis.png",
+        "hotspot": "renders/base/forearm-hand.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          194,
+          196
+        ]
+      }
+    },
+    {
+      "id": "opponens-pollicis",
+      "name": "Opponens Pollicis",
+      "latin": null,
+      "region": "forearm-hand",
+      "groups": [
+        "thenar",
+        "intrinsic-hand"
+      ],
+      "partOf": null,
+      "origin": [
+        "Flexor retinaculum",
+        "Trapezium"
+      ],
+      "insertion": [
+        "Lateral side of 1st metacarpal"
+      ],
+      "nerve": [
+        {
+          "name": "Median nerve",
+          "roots": [
+            "C8",
+            "T1"
+          ]
+        }
+      ],
+      "actions": [
+        "thumb-opposition"
+      ],
+      "actionText": "Opposes the thumb.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/opponens-pollicis.png",
+        "hotspot": "renders/base/forearm-hand.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          194,
+          197
+        ]
+      }
+    },
+    {
+      "id": "adductor-pollicis",
+      "name": "Adductor Pollicis",
+      "latin": null,
+      "region": "forearm-hand",
+      "groups": [
+        "midpalmar",
+        "intrinsic-hand"
+      ],
+      "partOf": null,
+      "origin": [
+        "Oblique head: 2nd–3rd metacarpals & capitate",
+        "Transverse head: 3rd metacarpal"
+      ],
+      "insertion": [
+        "Base of proximal phalanx of thumb"
+      ],
+      "nerve": [
+        {
+          "name": "Ulnar nerve",
+          "roots": [
+            "C8",
+            "T1"
+          ]
+        }
+      ],
+      "actions": [
+        "thumb-adduction"
+      ],
+      "actionText": "Adducts the thumb.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/adductor-pollicis.png",
+        "hotspot": "renders/base/forearm-hand.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          198
+        ]
+      }
+    },
+    {
+      "id": "abductor-digiti-minimi-hand",
+      "name": "Abductor Digiti Minimi (Hand)",
+      "latin": null,
+      "region": "forearm-hand",
+      "groups": [
+        "hypothenar",
+        "intrinsic-hand"
+      ],
+      "partOf": null,
+      "origin": [
+        "Pisiform"
+      ],
+      "insertion": [
+        "Proximal phalanx of digit 5"
+      ],
+      "nerve": [
+        {
+          "name": "Ulnar nerve",
+          "roots": [
+            "C8",
+            "T1"
+          ]
+        }
+      ],
+      "actions": [
+        "finger-abduction"
+      ],
+      "actionText": "Abducts digit 5.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/abductor-digiti-minimi-hand.png",
+        "hotspot": "renders/base/forearm-hand.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          199
+        ]
+      }
+    },
+    {
+      "id": "flexor-digiti-minimi-brevis-hand",
+      "name": "Flexor Digiti Minimi Brevis (Hand)",
+      "latin": null,
+      "region": "forearm-hand",
+      "groups": [
+        "hypothenar",
+        "intrinsic-hand"
+      ],
+      "partOf": null,
+      "origin": [
+        "Hook of hamate",
+        "Flexor retinaculum"
+      ],
+      "insertion": [
+        "Proximal phalanx of digit 5"
+      ],
+      "nerve": [
+        {
+          "name": "Ulnar nerve",
+          "roots": [
+            "C8",
+            "T1"
+          ]
+        }
+      ],
+      "actions": [
+        "finger-flexion"
+      ],
+      "actionText": "Flexes digit 5 at the MCP joint.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/flexor-digiti-minimi-brevis-hand.png",
+        "hotspot": "renders/base/forearm-hand.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          200
+        ]
+      }
+    },
+    {
+      "id": "opponens-digiti-minimi-hand",
+      "name": "Opponens Digiti Minimi (Hand)",
+      "latin": null,
+      "region": "forearm-hand",
+      "groups": [
+        "hypothenar",
+        "intrinsic-hand"
+      ],
+      "partOf": null,
+      "origin": [
+        "Hook of hamate",
+        "Flexor retinaculum"
+      ],
+      "insertion": [
+        "5th metacarpal"
+      ],
+      "nerve": [
+        {
+          "name": "Ulnar nerve",
+          "roots": [
+            "C8",
+            "T1"
+          ]
+        }
+      ],
+      "actions": [
+        "finger-opposition"
+      ],
+      "actionText": "Opposes digit 5.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/opponens-digiti-minimi-hand.png",
+        "hotspot": "renders/base/forearm-hand.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          201
+        ]
+      }
+    },
+    {
+      "id": "lumbricals-hand",
+      "name": "Lumbricals (Hand)",
+      "latin": null,
+      "region": "forearm-hand",
+      "groups": [
+        "midpalmar",
+        "intrinsic-hand"
+      ],
+      "partOf": null,
+      "origin": [
+        "Tendons of flexor digitorum profundus"
+      ],
+      "insertion": [
+        "Extensor expansions of digits 2–5"
+      ],
+      "nerve": [
+        {
+          "name": "Median nerve (lateral two)",
+          "roots": [
+            "C8",
+            "T1"
+          ]
+        },
+        {
+          "name": "Ulnar nerve (medial two)",
+          "roots": [
+            "C8",
+            "T1"
+          ]
+        }
+      ],
+      "actions": [
+        "finger-flexion",
+        "finger-extension"
+      ],
+      "actionText": "Flex the MCP joints and extend the IP joints.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/lumbricals-hand.png",
+        "hotspot": "renders/base/forearm-hand.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          202
+        ]
+      }
+    },
+    {
+      "id": "dorsal-interossei-hand",
+      "name": "Dorsal Interossei (Hand)",
+      "latin": null,
+      "region": "forearm-hand",
+      "groups": [
+        "midpalmar",
+        "intrinsic-hand"
+      ],
+      "partOf": null,
+      "origin": [
+        "Adjacent sides of two metacarpals (bipennate)"
+      ],
+      "insertion": [
+        "Extensor expansions of digits 2–4"
+      ],
+      "nerve": [
+        {
+          "name": "Ulnar nerve",
+          "roots": [
+            "C8",
+            "T1"
+          ]
+        }
+      ],
+      "actions": [
+        "finger-abduction"
+      ],
+      "actionText": "Abduct the digits — DAB: Dorsal ABduct.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/dorsal-interossei-hand.png",
+        "hotspot": "renders/base/forearm-hand.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          203
+        ]
+      }
+    },
+    {
+      "id": "palmar-interossei",
+      "name": "Palmar Interossei",
+      "latin": null,
+      "region": "forearm-hand",
+      "groups": [
+        "midpalmar",
+        "intrinsic-hand"
+      ],
+      "partOf": null,
+      "origin": [
+        "Metacarpals (unipennate)"
+      ],
+      "insertion": [
+        "Extensor expansions of digits 2, 4 and 5"
+      ],
+      "nerve": [
+        {
+          "name": "Ulnar nerve",
+          "roots": [
+            "C8",
+            "T1"
+          ]
+        }
+      ],
+      "actions": [
+        "finger-adduction"
+      ],
+      "actionText": "Adduct the digits — PAD: Palmar ADduct.",
+      "clinical": null,
+      "notes": null,
+      "images": {
+        "isolated": "renders/isolated/palmar-interossei.png",
+        "hotspot": "renders/base/forearm-hand.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "needsReview": false,
+      "nerveInferred": false,
+      "source": {
+        "deck": "ALL_Muscles_of_the_body.pdf",
+        "author": "Vinnie Maynard",
+        "slides": [
+          204
+        ]
+      }
+    }
+  ],
+  "indexes": {
+    "byAction": {
+      "accessory-inspiration": [
+        "scalene-anterior",
+        "scalene-middle",
+        "scalene-posterior",
+        "sternocleidomastoid"
+      ],
+      "ankle-dorsiflexion": [
+        "extensor-digitorum-longus",
+        "extensor-hallucis-longus",
+        "peroneus-tertius",
+        "tibialis-anterior"
+      ],
+      "ankle-plantarflexion": [
+        "flexor-digitorum-longus",
+        "flexor-hallucis-longus",
+        "gastrocnemius",
+        "peroneus-brevis",
+        "peroneus-longus",
+        "plantaris",
+        "soleus",
+        "tibialis-posterior"
+      ],
+      "core-stabilisation": [
+        "diaphragm",
+        "external-oblique",
+        "internal-oblique",
+        "quadratus-lumborum",
+        "rectus-abdominis",
+        "transversus-abdominis"
+      ],
+      "elbow-extension": [
+        "anconeus",
+        "triceps-brachii"
+      ],
+      "elbow-flexion": [
+        "biceps-brachii",
+        "brachialis",
+        "brachioradialis",
+        "pronator-teres"
+      ],
+      "expiration": [
+        "internal-intercostals"
+      ],
+      "finger-abduction": [
+        "abductor-digiti-minimi-hand",
+        "dorsal-interossei-hand"
+      ],
+      "finger-adduction": [
+        "palmar-interossei"
+      ],
+      "finger-extension": [
+        "extensor-digiti-minimi",
+        "extensor-digitorum",
+        "extensor-indicis",
+        "lumbricals-hand"
+      ],
+      "finger-flexion": [
+        "flexor-digiti-minimi-brevis-hand",
+        "flexor-digitorum-profundus",
+        "flexor-digitorum-superficialis",
+        "lumbricals-hand"
+      ],
+      "finger-opposition": [
+        "opponens-digiti-minimi-hand"
+      ],
+      "foot-eversion": [
+        "peroneus-brevis",
+        "peroneus-longus",
+        "peroneus-tertius"
+      ],
+      "foot-inversion": [
+        "tibialis-anterior",
+        "tibialis-posterior"
+      ],
+      "forearm-pronation": [
+        "pronator-quadratus",
+        "pronator-teres"
+      ],
+      "forearm-supination": [
+        "biceps-brachii",
+        "supinator"
+      ],
+      "glenohumeral-stabilisation": [
+        "infraspinatus",
+        "subscapularis",
+        "supraspinatus",
+        "teres-minor"
+      ],
+      "hip-abduction": [
+        "gluteus-maximus",
+        "gluteus-medius",
+        "gluteus-minimus",
+        "sartorius",
+        "tensor-fasciae-latae"
+      ],
+      "hip-adduction": [
+        "adductor-brevis",
+        "adductor-longus",
+        "adductor-magnus",
+        "gracilis",
+        "pectineus"
+      ],
+      "hip-extension": [
+        "adductor-magnus",
+        "biceps-femoris",
+        "gluteus-maximus",
+        "semimembranosus",
+        "semitendinosus"
+      ],
+      "hip-external-rotation": [
+        "gemelli",
+        "gluteus-maximus",
+        "iliacus",
+        "obturator-externus",
+        "obturator-internus",
+        "piriformis",
+        "psoas-major",
+        "quadratus-femoris",
+        "sartorius"
+      ],
+      "hip-flexion": [
+        "iliacus",
+        "pectineus",
+        "psoas-major",
+        "rectus-femoris",
+        "sartorius",
+        "tensor-fasciae-latae"
+      ],
+      "hip-internal-rotation": [
+        "gluteus-minimus",
+        "pectineus",
+        "tensor-fasciae-latae"
+      ],
+      "inspiration": [
+        "diaphragm",
+        "external-intercostals"
+      ],
+      "knee-extension": [
+        "rectus-femoris",
+        "vastus-intermedius",
+        "vastus-lateralis",
+        "vastus-medialis"
+      ],
+      "knee-external-rotation": [
+        "biceps-femoris"
+      ],
+      "knee-flexion": [
+        "biceps-femoris",
+        "gastrocnemius",
+        "gracilis",
+        "plantaris",
+        "popliteus",
+        "sartorius",
+        "semimembranosus",
+        "semitendinosus"
+      ],
+      "knee-internal-rotation": [
+        "gracilis",
+        "popliteus",
+        "semimembranosus",
+        "semitendinosus"
+      ],
+      "neck-extension": [
+        "splenius-capitis",
+        "splenius-cervicis"
+      ],
+      "neck-flexion": [
+        "longus-capitis",
+        "longus-colli",
+        "sternocleidomastoid"
+      ],
+      "neck-lateral-flexion": [
+        "scalene-anterior",
+        "scalene-middle",
+        "scalene-posterior",
+        "splenius-capitis",
+        "splenius-cervicis",
+        "sternocleidomastoid"
+      ],
+      "neck-rotation": [
+        "longus-colli",
+        "splenius-capitis",
+        "splenius-cervicis",
+        "sternocleidomastoid"
+      ],
+      "pelvic-stabilisation": [
+        "gluteus-medius",
+        "gluteus-minimus"
+      ],
+      "radial-deviation": [
+        "extensor-carpi-radialis-brevis",
+        "extensor-carpi-radialis-longus",
+        "flexor-carpi-radialis"
+      ],
+      "scapular-depression": [
+        "pectoralis-minor",
+        "trapezius"
+      ],
+      "scapular-downward-rotation": [
+        "levator-scapulae",
+        "pectoralis-minor",
+        "rhomboid-major",
+        "rhomboid-minor"
+      ],
+      "scapular-elevation": [
+        "levator-scapulae",
+        "trapezius"
+      ],
+      "scapular-protraction": [
+        "pectoralis-minor",
+        "serratus-anterior"
+      ],
+      "scapular-retraction": [
+        "levator-scapulae",
+        "rhomboid-major",
+        "rhomboid-minor",
+        "trapezius"
+      ],
+      "scapular-upward-rotation": [
+        "serratus-anterior",
+        "trapezius"
+      ],
+      "shoulder-abduction": [
+        "deltoid",
+        "supraspinatus"
+      ],
+      "shoulder-adduction": [
+        "coracobrachialis",
+        "latissimus-dorsi",
+        "pectoralis-major",
+        "subscapularis",
+        "teres-major",
+        "triceps-brachii"
+      ],
+      "shoulder-extension": [
+        "deltoid",
+        "latissimus-dorsi",
+        "pectoralis-major",
+        "teres-major",
+        "triceps-brachii"
+      ],
+      "shoulder-external-rotation": [
+        "deltoid",
+        "infraspinatus",
+        "teres-minor"
+      ],
+      "shoulder-flexion": [
+        "biceps-brachii",
+        "coracobrachialis",
+        "deltoid",
+        "pectoralis-major"
+      ],
+      "shoulder-internal-rotation": [
+        "deltoid",
+        "latissimus-dorsi",
+        "pectoralis-major",
+        "subscapularis",
+        "teres-major"
+      ],
+      "spinal-extension": [
+        "iliocostalis",
+        "interspinales",
+        "longissimus",
+        "multifidus",
+        "semispinalis",
+        "spinalis"
+      ],
+      "spinal-stabilisation": [
+        "multifidus",
+        "rotatores"
+      ],
+      "thumb-abduction": [
+        "abductor-pollicis-brevis",
+        "abductor-pollicis-longus"
+      ],
+      "thumb-adduction": [
+        "adductor-pollicis"
+      ],
+      "thumb-extension": [
+        "abductor-pollicis-longus",
+        "extensor-pollicis-brevis",
+        "extensor-pollicis-longus"
+      ],
+      "thumb-flexion": [
+        "flexor-pollicis-brevis",
+        "flexor-pollicis-longus"
+      ],
+      "thumb-opposition": [
+        "opponens-pollicis"
+      ],
+      "toe-abduction": [
+        "abductor-digiti-minimi-foot",
+        "abductor-hallucis",
+        "dorsal-interossei-foot"
+      ],
+      "toe-adduction": [
+        "adductor-hallucis",
+        "plantar-interossei"
+      ],
+      "toe-extension": [
+        "dorsal-interossei-foot",
+        "extensor-digitorum-brevis",
+        "extensor-digitorum-longus",
+        "extensor-hallucis-brevis",
+        "extensor-hallucis-longus",
+        "lumbricals-foot",
+        "plantar-interossei"
+      ],
+      "toe-flexion": [
+        "abductor-digiti-minimi-foot",
+        "abductor-hallucis",
+        "dorsal-interossei-foot",
+        "flexor-digiti-minimi-brevis-foot",
+        "flexor-digitorum-brevis",
+        "flexor-digitorum-longus",
+        "flexor-hallucis-brevis",
+        "flexor-hallucis-longus",
+        "lumbricals-foot",
+        "opponens-digiti-minimi-foot",
+        "plantar-interossei",
+        "quadratus-plantae"
+      ],
+      "trunk-flexion": [
+        "rectus-abdominis"
+      ],
+      "trunk-lateral-flexion": [
+        "external-oblique",
+        "iliocostalis",
+        "internal-oblique",
+        "intertransversarii",
+        "longissimus",
+        "quadratus-lumborum"
+      ],
+      "trunk-rotation": [
+        "external-oblique",
+        "internal-oblique",
+        "multifidus",
+        "rotatores",
+        "semispinalis"
+      ],
+      "ulnar-deviation": [
+        "extensor-carpi-ulnaris",
+        "flexor-carpi-ulnaris"
+      ],
+      "wrist-extension": [
+        "extensor-carpi-radialis-brevis",
+        "extensor-carpi-radialis-longus",
+        "extensor-carpi-ulnaris"
+      ],
+      "wrist-flexion": [
+        "flexor-carpi-radialis",
+        "flexor-carpi-ulnaris",
+        "flexor-digitorum-profundus",
+        "flexor-digitorum-superficialis",
+        "palmaris-longus"
+      ]
+    },
+    "byNerve": {
+      "Accessory obturator nerve": [
+        "pectineus"
+      ],
+      "Axillary nerve": [
+        "deltoid",
+        "teres-minor"
+      ],
+      "Branches from the lumbar plexus": [
+        "psoas-major"
+      ],
+      "C2–C3": [
+        "sternocleidomastoid"
+      ],
+      "C3–C4": [
+        "levator-scapulae",
+        "trapezius"
+      ],
+      "Cervical spinal nerves": [
+        "longus-capitis",
+        "longus-colli",
+        "scalene-anterior",
+        "scalene-middle",
+        "scalene-posterior"
+      ],
+      "Common fibular nerve": [
+        "biceps-femoris"
+      ],
+      "Deep branch of radial nerve": [
+        "extensor-carpi-radialis-brevis",
+        "supinator"
+      ],
+      "Deep fibular nerve": [
+        "extensor-digitorum-brevis",
+        "extensor-digitorum-longus",
+        "extensor-hallucis-brevis",
+        "extensor-hallucis-longus",
+        "peroneus-tertius",
+        "tibialis-anterior"
+      ],
+      "Dorsal & ventral rami": [
+        "intertransversarii"
+      ],
+      "Dorsal rami": [
+        "interspinales"
+      ],
+      "Dorsal rami of spinal nerves": [
+        "iliocostalis",
+        "longissimus",
+        "multifidus",
+        "rotatores",
+        "semispinalis",
+        "spinalis"
+      ],
+      "Dorsal scapular nerve": [
+        "levator-scapulae",
+        "rhomboid-major",
+        "rhomboid-minor"
+      ],
+      "Femoral nerve": [
+        "iliacus",
+        "pectineus",
+        "rectus-femoris",
+        "sartorius",
+        "vastus-intermedius",
+        "vastus-lateralis",
+        "vastus-medialis"
+      ],
+      "Inferior gluteal nerve": [
+        "gluteus-maximus"
+      ],
+      "Intercostal nerves": [
+        "external-intercostals",
+        "internal-intercostals"
+      ],
+      "L1": [
+        "internal-oblique",
+        "transversus-abdominis"
+      ],
+      "Lateral & medial pectoral nerves": [
+        "pectoralis-major"
+      ],
+      "Lateral plantar nerve": [
+        "abductor-digiti-minimi-foot",
+        "adductor-hallucis",
+        "dorsal-interossei-foot",
+        "flexor-digiti-minimi-brevis-foot",
+        "lumbricals-foot",
+        "opponens-digiti-minimi-foot",
+        "plantar-interossei",
+        "quadratus-plantae"
+      ],
+      "Long thoracic nerve": [
+        "serratus-anterior"
+      ],
+      "Lower subscapular nerve": [
+        "teres-major"
+      ],
+      "Medial pectoral nerve": [
+        "pectoralis-minor"
+      ],
+      "Medial plantar nerve": [
+        "abductor-hallucis",
+        "flexor-digitorum-brevis",
+        "flexor-hallucis-brevis",
+        "lumbricals-foot"
+      ],
+      "Median nerve": [
+        "abductor-pollicis-brevis",
+        "flexor-carpi-radialis",
+        "flexor-digitorum-profundus",
+        "flexor-digitorum-superficialis",
+        "flexor-pollicis-brevis",
+        "flexor-pollicis-longus",
+        "lumbricals-hand",
+        "opponens-pollicis",
+        "palmaris-longus",
+        "pronator-quadratus",
+        "pronator-teres"
+      ],
+      "Musculocutaneous nerve": [
+        "biceps-brachii",
+        "brachialis",
+        "coracobrachialis"
+      ],
+      "Nerve to obturator internus": [
+        "gemelli",
+        "obturator-internus"
+      ],
+      "Nerve to piriformis": [
+        "piriformis"
+      ],
+      "Nerve to quadratus femoris": [
+        "quadratus-femoris"
+      ],
+      "Obturator nerve": [
+        "adductor-brevis",
+        "adductor-longus",
+        "adductor-magnus",
+        "gracilis",
+        "obturator-externus"
+      ],
+      "Phrenic nerve": [
+        "diaphragm"
+      ],
+      "Posterior interosseous nerve": [
+        "abductor-pollicis-longus",
+        "extensor-carpi-ulnaris",
+        "extensor-digiti-minimi",
+        "extensor-digitorum",
+        "extensor-indicis",
+        "extensor-pollicis-brevis",
+        "extensor-pollicis-longus"
+      ],
+      "Posterior rami of spinal nerves": [
+        "splenius-capitis",
+        "splenius-cervicis"
+      ],
+      "Radial nerve": [
+        "anconeus",
+        "brachioradialis",
+        "extensor-carpi-radialis-longus",
+        "triceps-brachii"
+      ],
+      "Spinal accessory nerve": [
+        "sternocleidomastoid",
+        "trapezius"
+      ],
+      "Subcostal nerve": [
+        "external-oblique",
+        "internal-oblique",
+        "transversus-abdominis"
+      ],
+      "Superficial fibular nerve": [
+        "peroneus-brevis",
+        "peroneus-longus"
+      ],
+      "Superior gluteal nerve": [
+        "gluteus-medius",
+        "gluteus-minimus",
+        "tensor-fasciae-latae"
+      ],
+      "Suprascapular nerve": [
+        "infraspinatus",
+        "supraspinatus"
+      ],
+      "Thoracoabdominal nerves": [
+        "external-oblique",
+        "internal-oblique",
+        "rectus-abdominis",
+        "transversus-abdominis"
+      ],
+      "Thoracodorsal nerve": [
+        "latissimus-dorsi"
+      ],
+      "Tibial nerve": [
+        "adductor-magnus",
+        "biceps-femoris",
+        "flexor-digitorum-longus",
+        "flexor-hallucis-longus",
+        "gastrocnemius",
+        "plantaris",
+        "popliteus",
+        "semimembranosus",
+        "semitendinosus",
+        "soleus",
+        "tibialis-posterior"
+      ],
+      "Ulnar nerve": [
+        "abductor-digiti-minimi-hand",
+        "adductor-pollicis",
+        "dorsal-interossei-hand",
+        "flexor-carpi-ulnaris",
+        "flexor-digiti-minimi-brevis-hand",
+        "flexor-digitorum-profundus",
+        "lumbricals-hand",
+        "opponens-digiti-minimi-hand",
+        "palmar-interossei"
+      ],
+      "Upper & lower subscapular nerves": [
+        "subscapularis"
+      ],
+      "Ventral rami": [
+        "quadratus-lumborum"
+      ]
+    }
+  }
+}

@@ -1,0 +1,352 @@
+{
+  "schemaVersion": 1,
+  "counts": {
+    "total": 34,
+    "resolved": 31,
+    "unresolved": 3
+  },
+  "mapping": [
+    {
+      "id": "auricular-surface-ilium",
+      "name": "Auricular Surface (Ilium)",
+      "region": "back-core",
+      "blenderObjects": [
+        "Auricular surface of ilium.i"
+      ],
+      "resolution": "manual",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "auricular-surface-sacrum",
+      "name": "Auricular Surface (Sacrum)",
+      "region": "back-core",
+      "blenderObjects": [
+        "Auricular surface of sacrum.j"
+      ],
+      "resolution": "manual",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "inferior-articular-facet-vertebra",
+      "name": "Inferior Articular Facet",
+      "region": "back-core",
+      "blenderObjects": [
+        "Inferior articular facet of vertebra.j"
+      ],
+      "resolution": "manual",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "inferior-costal-facet",
+      "name": "Inferior Costal Facet",
+      "region": "back-core",
+      "blenderObjects": [
+        "Inferior costal facet.j"
+      ],
+      "resolution": "fuzzy",
+      "resolutionConfidence": 0.955
+    },
+    {
+      "id": "intervertebral-disc",
+      "name": "Intervertebral Disc",
+      "region": "back-core",
+      "blenderObjects": [
+        "Intervertebral disc L4-L5"
+      ],
+      "resolution": "manual",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "vertebra-l4",
+      "name": "L4 Vertebra",
+      "region": "back-core",
+      "blenderObjects": [
+        "Vertebra L4"
+      ],
+      "resolution": "manual",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "sacroiliac-joint",
+      "name": "Sacroiliac Joint",
+      "region": "back-core",
+      "blenderObjects": [],
+      "resolution": null,
+      "resolutionConfidence": 0.0
+    },
+    {
+      "id": "superior-costal-facet",
+      "name": "Superior Costal Facet",
+      "region": "back-core",
+      "blenderObjects": [
+        "Superior costal facet.j"
+      ],
+      "resolution": "fuzzy",
+      "resolutionConfidence": 0.955
+    },
+    {
+      "id": "transverse-costal-facet",
+      "name": "Transverse Costal Facet",
+      "region": "back-core",
+      "blenderObjects": [
+        "Transverse costal facet.j"
+      ],
+      "resolution": "fuzzy",
+      "resolutionConfidence": 0.958
+    },
+    {
+      "id": "coronoid-process-ulna",
+      "name": "Coronoid Process",
+      "region": "forearm-hand",
+      "blenderObjects": [
+        "Coronoid process of ulna.i"
+      ],
+      "resolution": "manual",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "radial-notch-ulna",
+      "name": "Radial Notch of Ulna",
+      "region": "forearm-hand",
+      "blenderObjects": [
+        "Radial notch.i"
+      ],
+      "resolution": "manual",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "trochlear-notch-ulna",
+      "name": "Trochlear Notch",
+      "region": "forearm-hand",
+      "blenderObjects": [
+        "Trochlear notch.i"
+      ],
+      "resolution": "fuzzy",
+      "resolutionConfidence": 0.938
+    },
+    {
+      "id": "acetabular-notch",
+      "name": "Acetabular Notch",
+      "region": "hip-thigh",
+      "blenderObjects": [
+        "Acetabular notch.i"
+      ],
+      "resolution": "fuzzy",
+      "resolutionConfidence": 0.941
+    },
+    {
+      "id": "acetabulum",
+      "name": "Acetabulum",
+      "region": "hip-thigh",
+      "blenderObjects": [
+        "Acetabulum.i"
+      ],
+      "resolution": "fuzzy",
+      "resolutionConfidence": 0.909
+    },
+    {
+      "id": "fovea-capitis",
+      "name": "Fovea Capitis",
+      "region": "hip-thigh",
+      "blenderObjects": [
+        "Fovea for ligament of head of femur.i"
+      ],
+      "resolution": "manual",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "greater-trochanter",
+      "name": "Greater Trochanter",
+      "region": "hip-thigh",
+      "blenderObjects": [
+        "Greater trochanter.i"
+      ],
+      "resolution": "fuzzy",
+      "resolutionConfidence": 0.947
+    },
+    {
+      "id": "iliac-fossa",
+      "name": "Iliac Fossa",
+      "region": "hip-thigh",
+      "blenderObjects": [
+        "Iliac fossa.i"
+      ],
+      "resolution": "fuzzy",
+      "resolutionConfidence": 0.917
+    },
+    {
+      "id": "intercondylar-eminence-tibia",
+      "name": "Intercondylar Eminence",
+      "region": "hip-thigh",
+      "blenderObjects": [
+        "Intercondylar eminence.i"
+      ],
+      "resolution": "fuzzy",
+      "resolutionConfidence": 0.957
+    },
+    {
+      "id": "lesser-trochanter",
+      "name": "Lesser Trochanter",
+      "region": "hip-thigh",
+      "blenderObjects": [
+        "Lesser trochanter.i"
+      ],
+      "resolution": "fuzzy",
+      "resolutionConfidence": 0.944
+    },
+    {
+      "id": "menisci",
+      "name": "Menisci",
+      "region": "hip-thigh",
+      "blenderObjects": [
+        "Lateral meniscus.l",
+        "Lateral meniscus.r",
+        "Medial meniscus.l",
+        "Medial meniscus.r"
+      ],
+      "resolution": "manual",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "tibial-plateau",
+      "name": "Tibial Plateau",
+      "region": "hip-thigh",
+      "blenderObjects": [
+        "Tibial plateau.i"
+      ],
+      "resolution": "fuzzy",
+      "resolutionConfidence": 0.933
+    },
+    {
+      "id": "calcaneus",
+      "name": "Calcaneus",
+      "region": "lower-leg-foot",
+      "blenderObjects": [
+        "Calcaneus.l",
+        "Calcaneus.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "cuboid",
+      "name": "Cuboid",
+      "region": "lower-leg-foot",
+      "blenderObjects": [
+        "Cuboid bone.l",
+        "Cuboid bone.r"
+      ],
+      "resolution": "manual",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "lateral-malleolus",
+      "name": "Lateral Malleolus",
+      "region": "lower-leg-foot",
+      "blenderObjects": [
+        "Lateral malleolus.i"
+      ],
+      "resolution": "fuzzy",
+      "resolutionConfidence": 0.944
+    },
+    {
+      "id": "medial-malleolus",
+      "name": "Medial Malleolus",
+      "region": "lower-leg-foot",
+      "blenderObjects": [
+        "Medial malleolus.i"
+      ],
+      "resolution": "fuzzy",
+      "resolutionConfidence": 0.941
+    },
+    {
+      "id": "navicular",
+      "name": "Navicular",
+      "region": "lower-leg-foot",
+      "blenderObjects": [
+        "Navicular bone.l",
+        "Navicular bone.r"
+      ],
+      "resolution": "manual",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "talus",
+      "name": "Talus",
+      "region": "lower-leg-foot",
+      "blenderObjects": [
+        "Talus.l",
+        "Talus.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "acromioclavicular-joint",
+      "name": "Acromioclavicular Joint",
+      "region": "shoulder-arm",
+      "blenderObjects": [],
+      "resolution": null,
+      "resolutionConfidence": 0.0
+    },
+    {
+      "id": "acromion",
+      "name": "Acromion",
+      "region": "shoulder-arm",
+      "blenderObjects": [
+        "Acromion.i"
+      ],
+      "resolution": "manual",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "coracoid-process",
+      "name": "Coracoid Process",
+      "region": "shoulder-arm",
+      "blenderObjects": [
+        "Coracoid process.i"
+      ],
+      "resolution": "fuzzy",
+      "resolutionConfidence": 0.941
+    },
+    {
+      "id": "glenoid-cavity",
+      "name": "Glenoid Cavity",
+      "region": "shoulder-arm",
+      "blenderObjects": [
+        "Glenoid fossa.i"
+      ],
+      "resolution": "manual",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "glenoid-labrum",
+      "name": "Glenoid Labrum",
+      "region": "shoulder-arm",
+      "blenderObjects": [
+        "Glenoid labrum.l",
+        "Glenoid labrum.r"
+      ],
+      "resolution": "manual",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "olecranon-fossa",
+      "name": "Olecranon Fossa",
+      "region": "shoulder-arm",
+      "blenderObjects": [
+        "Olecranon fossa.i"
+      ],
+      "resolution": "fuzzy",
+      "resolutionConfidence": 0.938
+    },
+    {
+      "id": "sternoclavicular-joint",
+      "name": "Sternoclavicular Joint",
+      "region": "shoulder-arm",
+      "blenderObjects": [],
+      "resolution": null,
+      "resolutionConfidence": 0.0
+    }
+  ]
+}

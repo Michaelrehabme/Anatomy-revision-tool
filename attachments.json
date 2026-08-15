@@ -1,0 +1,234 @@
+[
+  {
+    "muscleId": "iliacus",
+    "muscleName": "Iliacus",
+    "landmarkId": "iliac-fossa",
+    "landmarkName": "Iliac Fossa",
+    "relation": "origin",
+    "sourceText": "Iliac fossa of the pelvis"
+  },
+  {
+    "muscleId": "iliacus",
+    "muscleName": "Iliacus",
+    "landmarkId": "lesser-trochanter",
+    "landmarkName": "Lesser Trochanter",
+    "relation": "insertion",
+    "sourceText": "Lesser trochanter of the femur"
+  },
+  {
+    "muscleId": "psoas-major",
+    "muscleName": "Psoas Major",
+    "landmarkId": "lesser-trochanter",
+    "landmarkName": "Lesser Trochanter",
+    "relation": "insertion",
+    "sourceText": "Lesser trochanter of the femur"
+  },
+  {
+    "muscleId": "gluteus-medius",
+    "muscleName": "Gluteus Medius",
+    "landmarkId": "greater-trochanter",
+    "landmarkName": "Greater Trochanter",
+    "relation": "insertion",
+    "sourceText": "Greater trochanter of the femur"
+  },
+  {
+    "muscleId": "gluteus-minimus",
+    "muscleName": "Gluteus Minimus",
+    "landmarkId": "greater-trochanter",
+    "landmarkName": "Greater Trochanter",
+    "relation": "insertion",
+    "sourceText": "Greater trochanter of the femur"
+  },
+  {
+    "muscleId": "piriformis",
+    "muscleName": "Piriformis",
+    "landmarkId": "greater-trochanter",
+    "landmarkName": "Greater Trochanter",
+    "relation": "insertion",
+    "sourceText": "Greater trochanter of the femur"
+  },
+  {
+    "muscleId": "gemelli",
+    "muscleName": "Gemelli (Superior & Inferior)",
+    "landmarkId": "greater-trochanter",
+    "landmarkName": "Greater Trochanter",
+    "relation": "insertion",
+    "sourceText": "Greater trochanter"
+  },
+  {
+    "muscleId": "obturator-internus",
+    "muscleName": "Obturator Internus",
+    "landmarkId": "greater-trochanter",
+    "landmarkName": "Greater Trochanter",
+    "relation": "insertion",
+    "sourceText": "Greater trochanter"
+  },
+  {
+    "muscleId": "vastus-lateralis",
+    "muscleName": "Vastus Lateralis",
+    "landmarkId": "greater-trochanter",
+    "landmarkName": "Greater Trochanter",
+    "relation": "origin",
+    "sourceText": "Greater trochanter of the femur"
+  },
+  {
+    "muscleId": "deltoid",
+    "muscleName": "Deltoid",
+    "landmarkId": "acromion",
+    "landmarkName": "Acromion",
+    "relation": "origin",
+    "sourceText": "Acromion"
+  },
+  {
+    "muscleId": "trapezius",
+    "muscleName": "Trapezius",
+    "landmarkId": "acromion",
+    "landmarkName": "Acromion",
+    "relation": "insertion",
+    "sourceText": "Acromion"
+  },
+  {
+    "muscleId": "pectoralis-minor",
+    "muscleName": "Pectoralis Minor",
+    "landmarkId": "coracoid-process",
+    "landmarkName": "Coracoid Process",
+    "relation": "insertion",
+    "sourceText": "Coracoid process of scapula"
+  },
+  {
+    "muscleId": "biceps-brachii",
+    "muscleName": "Biceps Brachii",
+    "landmarkId": "coracoid-process",
+    "landmarkName": "Coracoid Process",
+    "relation": "origin",
+    "sourceText": "Short head: coracoid process"
+  },
+  {
+    "muscleId": "biceps-brachii",
+    "muscleName": "Biceps Brachii",
+    "landmarkId": "glenoid-labrum",
+    "landmarkName": "Glenoid Labrum",
+    "relation": "origin",
+    "sourceText": "Long head: supraglenoid tubercle & adjacent glenoid labrum"
+  },
+  {
+    "muscleId": "brachialis",
+    "muscleName": "Brachialis",
+    "landmarkId": "coronoid-process-ulna",
+    "landmarkName": "Coronoid Process",
+    "relation": "insertion",
+    "sourceText": "Coronoid process & ulnar tuberosity"
+  },
+  {
+    "muscleId": "coracobrachialis",
+    "muscleName": "Coracobrachialis",
+    "landmarkId": "coracoid-process",
+    "landmarkName": "Coracoid Process",
+    "relation": "origin",
+    "sourceText": "Coracoid process"
+  },
+  {
+    "muscleId": "gastrocnemius",
+    "muscleName": "Gastrocnemius",
+    "landmarkId": "calcaneus",
+    "landmarkName": "Calcaneus",
+    "relation": "insertion",
+    "sourceText": "Calcaneus via Achilles tendon"
+  },
+  {
+    "muscleId": "soleus",
+    "muscleName": "Soleus",
+    "landmarkId": "calcaneus",
+    "landmarkName": "Calcaneus",
+    "relation": "insertion",
+    "sourceText": "Calcaneus via Achilles tendon"
+  },
+  {
+    "muscleId": "plantaris",
+    "muscleName": "Plantaris",
+    "landmarkId": "calcaneus",
+    "landmarkName": "Calcaneus",
+    "relation": "insertion",
+    "sourceText": "Calcaneus via Achilles tendon"
+  },
+  {
+    "muscleId": "tibialis-posterior",
+    "muscleName": "Tibialis Posterior",
+    "landmarkId": "navicular",
+    "landmarkName": "Navicular",
+    "relation": "insertion",
+    "sourceText": "Navicular"
+  },
+  {
+    "muscleId": "extensor-digitorum-brevis",
+    "muscleName": "Extensor Digitorum Brevis",
+    "landmarkId": "calcaneus",
+    "landmarkName": "Calcaneus",
+    "relation": "origin",
+    "sourceText": "Dorsal and lateral surface of calcaneus"
+  },
+  {
+    "muscleId": "extensor-hallucis-brevis",
+    "muscleName": "Extensor Hallucis Brevis",
+    "landmarkId": "calcaneus",
+    "landmarkName": "Calcaneus",
+    "relation": "origin",
+    "sourceText": "Dorsal portion of calcaneus"
+  },
+  {
+    "muscleId": "flexor-digitorum-brevis",
+    "muscleName": "Flexor Digitorum Brevis",
+    "landmarkId": "calcaneus",
+    "landmarkName": "Calcaneus",
+    "relation": "origin",
+    "sourceText": "Medial tubercle of calcaneus"
+  },
+  {
+    "muscleId": "abductor-hallucis",
+    "muscleName": "Abductor Hallucis",
+    "landmarkId": "calcaneus",
+    "landmarkName": "Calcaneus",
+    "relation": "origin",
+    "sourceText": "Medial tubercle of calcaneus"
+  },
+  {
+    "muscleId": "abductor-digiti-minimi-foot",
+    "muscleName": "Abductor Digiti Minimi (Foot)",
+    "landmarkId": "calcaneus",
+    "landmarkName": "Calcaneus",
+    "relation": "origin",
+    "sourceText": "Medial and lateral tubercles of calcaneus"
+  },
+  {
+    "muscleId": "quadratus-plantae",
+    "muscleName": "Quadratus Plantae",
+    "landmarkId": "calcaneus",
+    "landmarkName": "Calcaneus",
+    "relation": "origin",
+    "sourceText": "Medial and lateral sides of calcaneus"
+  },
+  {
+    "muscleId": "flexor-hallucis-brevis",
+    "muscleName": "Flexor Hallucis Brevis",
+    "landmarkId": "cuboid",
+    "landmarkName": "Cuboid",
+    "relation": "origin",
+    "sourceText": "Plantar surfaces of cuboid and lateral cuneiform"
+  },
+  {
+    "muscleId": "pronator-teres",
+    "muscleName": "Pronator Teres",
+    "landmarkId": "coronoid-process-ulna",
+    "landmarkName": "Coronoid Process",
+    "relation": "origin",
+    "sourceText": "Coronoid process of ulna (ulnar head)"
+  },
+  {
+    "muscleId": "flexor-digitorum-superficialis",
+    "muscleName": "Flexor Digitorum Superficialis",
+    "landmarkId": "coronoid-process-ulna",
+    "landmarkName": "Coronoid Process",
+    "relation": "origin",
+    "sourceText": "Coronoid process of ulna"
+  }
+]

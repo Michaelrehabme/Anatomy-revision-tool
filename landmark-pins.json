@@ -1,0 +1,132 @@
+{
+  "schemaVersion": 1,
+  "note": "Pin (x, y) coordinates are APPROXIMATE. Z-Anatomy's marker objects sit in a parent chain that fails to evaluate in headless Blender, so positions are reconstructed from each marker's delta_location with an empirically-found X-axis correction. Visually verified against 3 landmarks: 2 landed correctly, 1 (acromion) landed visibly outside its bone. Treat every pin here as a best-effort placement, not a verified one - see render_landmarks.py's approx_world_centroid().",
+  "pins": {
+    "auricular-surface-ilium": {
+      "contextImage": "renders/landmark-context/hip-bone-l.png",
+      "x": 0.34817,
+      "y": 0.38419,
+      "parentBone": "Hip bone.l",
+      "approximate": true
+    },
+    "acetabular-notch": {
+      "contextImage": "renders/landmark-context/hip-bone-l.png",
+      "x": 0.62246,
+      "y": 0.65679,
+      "parentBone": "Hip bone.l",
+      "approximate": true
+    },
+    "acetabulum": {
+      "contextImage": "renders/landmark-context/hip-bone-l.png",
+      "x": 0.65846,
+      "y": 0.61862,
+      "parentBone": "Hip bone.l",
+      "approximate": true
+    },
+    "iliac-fossa": {
+      "contextImage": "renders/landmark-context/hip-bone-l.png",
+      "x": 0.51011,
+      "y": 0.36127,
+      "parentBone": "Hip bone.l",
+      "approximate": true
+    },
+    "coronoid-process-ulna": {
+      "contextImage": "renders/landmark-context/ulna-l.png",
+      "x": 0.46934,
+      "y": 0.13699,
+      "parentBone": "Ulna.l",
+      "approximate": true
+    },
+    "radial-notch-ulna": {
+      "contextImage": "renders/landmark-context/ulna-l.png",
+      "x": 0.54923,
+      "y": 0.15917,
+      "parentBone": "Ulna.l",
+      "approximate": true
+    },
+    "trochlear-notch-ulna": {
+      "contextImage": "renders/landmark-context/ulna-l.png",
+      "x": 0.46417,
+      "y": 0.12219,
+      "parentBone": "Ulna.l",
+      "approximate": true
+    },
+    "fovea-capitis": {
+      "contextImage": "renders/landmark-context/femur-l.png",
+      "x": 0.39084,
+      "y": 0.10984,
+      "parentBone": "Femur.l",
+      "approximate": true
+    },
+    "greater-trochanter": {
+      "contextImage": "renders/landmark-context/femur-l.png",
+      "x": 0.66424,
+      "y": 0.1838,
+      "parentBone": "Femur.l",
+      "approximate": true
+    },
+    "lesser-trochanter": {
+      "contextImage": "renders/landmark-context/femur-l.png",
+      "x": 0.44294,
+      "y": 0.27875,
+      "parentBone": "Femur.l",
+      "approximate": true
+    },
+    "intercondylar-eminence-tibia": {
+      "contextImage": "renders/landmark-context/tibia-l.png",
+      "x": 0.48662,
+      "y": 0.07416,
+      "parentBone": "Tibia.l",
+      "approximate": true
+    },
+    "tibial-plateau": {
+      "contextImage": "renders/landmark-context/tibia-l.png",
+      "x": 0.3424,
+      "y": 0.15493,
+      "parentBone": "Tibia.l",
+      "approximate": true
+    },
+    "medial-malleolus": {
+      "contextImage": "renders/landmark-context/tibia-l.png",
+      "x": 0.35687,
+      "y": 0.85319,
+      "parentBone": "Tibia.l",
+      "approximate": true
+    },
+    "lateral-malleolus": {
+      "contextImage": "renders/landmark-context/fibula-l.png",
+      "x": 0.59201,
+      "y": 0.8545,
+      "parentBone": "Fibula.l",
+      "approximate": true
+    },
+    "acromion": {
+      "contextImage": "renders/landmark-context/scapula-l.png",
+      "x": 0.70978,
+      "y": 0.03,
+      "parentBone": "Scapula.l",
+      "approximate": true
+    },
+    "coracoid-process": {
+      "contextImage": "renders/landmark-context/scapula-l.png",
+      "x": 0.68625,
+      "y": 0.24165,
+      "parentBone": "Scapula.l",
+      "approximate": true
+    },
+    "glenoid-cavity": {
+      "contextImage": "renders/landmark-context/scapula-l.png",
+      "x": 0.74503,
+      "y": 0.28318,
+      "parentBone": "Scapula.l",
+      "approximate": true
+    },
+    "olecranon-fossa": {
+      "contextImage": "renders/landmark-context/humerus-l.png",
+      "x": 0.54917,
+      "y": 0.81896,
+      "parentBone": "Humerus.l",
+      "approximate": true
+    }
+  }
+}

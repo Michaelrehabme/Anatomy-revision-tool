@@ -1,0 +1,777 @@
+{
+  "schemaVersion": 1,
+  "generated": "seeded from Joints_of_the_Body_Multiple_Choice_Test_3.md + vertebral landmarks",
+  "counts": {
+    "landmarks": 34,
+    "regions": 5
+  },
+  "landmarks": [
+    {
+      "id": "trochlear-notch-ulna",
+      "name": "Trochlear Notch",
+      "bone": "Ulna",
+      "region": "forearm-hand",
+      "articulatesWith": "Trochlea of humerus",
+      "notes": "Forms the primary hinge (humeroulnar) articulation of the elbow.",
+      "images": {
+        "isolated": null,
+        "hotspot": "renders/landmark-context/ulna-l.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "source": {
+        "deck": "Joints_of_the_Body_Multiple_Choice_Test_3.md",
+        "questions": [
+          1,
+          2,
+          4
+        ]
+      },
+      "pin": {
+        "x": 0.46417,
+        "y": 0.12219,
+        "approximate": true
+      },
+      "kind": "pin"
+    },
+    {
+      "id": "radial-notch-ulna",
+      "name": "Radial Notch of Ulna",
+      "bone": "Ulna",
+      "region": "forearm-hand",
+      "articulatesWith": "Head of radius",
+      "notes": "Site of the proximal radio-ulnar (pivot) joint.",
+      "images": {
+        "isolated": null,
+        "hotspot": "renders/landmark-context/ulna-l.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "source": {
+        "deck": "Joints_of_the_Body_Multiple_Choice_Test_3.md",
+        "questions": [
+          3,
+          6,
+          7
+        ]
+      },
+      "pin": {
+        "x": 0.54923,
+        "y": 0.15917,
+        "approximate": true
+      },
+      "kind": "pin"
+    },
+    {
+      "id": "olecranon-fossa",
+      "name": "Olecranon Fossa",
+      "bone": "Humerus",
+      "region": "shoulder-arm",
+      "notes": "Posterior depression that receives the olecranon in full elbow extension.",
+      "images": {
+        "isolated": null,
+        "hotspot": "renders/landmark-context/humerus-l.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "source": {
+        "deck": "Joints_of_the_Body_Multiple_Choice_Test_3.md",
+        "questions": [
+          6
+        ]
+      },
+      "pin": {
+        "x": 0.54917,
+        "y": 0.81896,
+        "approximate": true
+      },
+      "kind": "pin"
+    },
+    {
+      "id": "coronoid-process-ulna",
+      "name": "Coronoid Process",
+      "bone": "Ulna",
+      "region": "forearm-hand",
+      "notes": "Anterior projection of the proximal ulna; part of the trochlear notch.",
+      "images": {
+        "isolated": null,
+        "hotspot": "renders/landmark-context/ulna-l.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "source": {
+        "deck": "Joints_of_the_Body_Multiple_Choice_Test_3.md",
+        "questions": [
+          6
+        ]
+      },
+      "pin": {
+        "x": 0.46934,
+        "y": 0.13699,
+        "approximate": true
+      },
+      "kind": "pin"
+    },
+    {
+      "id": "acromion",
+      "name": "Acromion",
+      "bone": "Scapula",
+      "region": "shoulder-arm",
+      "articulatesWith": "Clavicle",
+      "notes": "Forms the acromioclavicular joint with the lateral clavicle.",
+      "images": {
+        "isolated": null,
+        "hotspot": "renders/landmark-context/scapula-l.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "source": {
+        "deck": "Joints_of_the_Body_Multiple_Choice_Test_3.md",
+        "questions": [
+          11,
+          18
+        ]
+      },
+      "pin": {
+        "x": 0.70978,
+        "y": 0.03,
+        "approximate": true
+      },
+      "kind": "pin"
+    },
+    {
+      "id": "coracoid-process",
+      "name": "Coracoid Process",
+      "bone": "Scapula",
+      "region": "shoulder-arm",
+      "notes": "Anterior scapular projection; attachment for coracoclavicular ligaments and several muscles/tendons.",
+      "images": {
+        "isolated": null,
+        "hotspot": "renders/landmark-context/scapula-l.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "source": {
+        "deck": "Joints_of_the_Body_Multiple_Choice_Test_3.md",
+        "questions": [
+          16,
+          19
+        ]
+      },
+      "pin": {
+        "x": 0.68625,
+        "y": 0.24165,
+        "approximate": true
+      },
+      "kind": "pin"
+    },
+    {
+      "id": "glenoid-cavity",
+      "name": "Glenoid Cavity",
+      "bone": "Scapula",
+      "region": "shoulder-arm",
+      "articulatesWith": "Head of humerus",
+      "notes": "Shallow socket of the ball-and-socket glenohumeral joint, deepened by the glenoid labrum.",
+      "images": {
+        "isolated": null,
+        "hotspot": "renders/landmark-context/scapula-l.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "source": {
+        "deck": "Joints_of_the_Body_Multiple_Choice_Test_3.md",
+        "questions": [
+          13,
+          14,
+          15
+        ]
+      },
+      "pin": {
+        "x": 0.74503,
+        "y": 0.28318,
+        "approximate": true
+      },
+      "kind": "pin"
+    },
+    {
+      "id": "glenoid-labrum",
+      "name": "Glenoid Labrum",
+      "bone": "Scapula (fibrocartilage rim)",
+      "region": "shoulder-arm",
+      "notes": "Fibrocartilaginous rim that deepens the glenoid cavity.",
+      "images": {
+        "isolated": "renders/isolated/glenoid-labrum.png",
+        "hotspot": null,
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "source": {
+        "deck": "Joints_of_the_Body_Multiple_Choice_Test_3.md",
+        "questions": [
+          13
+        ]
+      },
+      "kind": "solid"
+    },
+    {
+      "id": "talus",
+      "name": "Talus",
+      "bone": "Talus",
+      "region": "lower-leg-foot",
+      "articulatesWith": "Tibia, fibula, calcaneus, navicular",
+      "notes": "Forms the ankle joint with the tibia/fibula and the subtalar joint with the calcaneus.",
+      "images": {
+        "isolated": "renders/isolated/talus.png",
+        "hotspot": null,
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "source": {
+        "deck": "Joints_of_the_Body_Multiple_Choice_Test_3.md",
+        "questions": [
+          21,
+          27
+        ]
+      },
+      "kind": "solid"
+    },
+    {
+      "id": "calcaneus",
+      "name": "Calcaneus",
+      "bone": "Calcaneus",
+      "region": "lower-leg-foot",
+      "notes": "Largest tarsal bone; forms the heel and the subtalar joint with the talus.",
+      "images": {
+        "isolated": "renders/isolated/calcaneus.png",
+        "hotspot": null,
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "source": {
+        "deck": "Joints_of_the_Body_Multiple_Choice_Test_3.md",
+        "questions": [
+          24,
+          27,
+          28,
+          30
+        ]
+      },
+      "kind": "solid"
+    },
+    {
+      "id": "navicular",
+      "name": "Navicular",
+      "bone": "Navicular",
+      "region": "lower-leg-foot",
+      "images": {
+        "isolated": "renders/isolated/navicular.png",
+        "hotspot": null,
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "source": {
+        "deck": "Joints_of_the_Body_Multiple_Choice_Test_3.md",
+        "questions": [
+          23,
+          29,
+          30
+        ]
+      },
+      "kind": "solid"
+    },
+    {
+      "id": "cuboid",
+      "name": "Cuboid",
+      "bone": "Cuboid",
+      "region": "lower-leg-foot",
+      "images": {
+        "isolated": "renders/isolated/cuboid.png",
+        "hotspot": null,
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "source": {
+        "deck": "Joints_of_the_Body_Multiple_Choice_Test_3.md",
+        "questions": [
+          23,
+          24,
+          30
+        ]
+      },
+      "kind": "solid"
+    },
+    {
+      "id": "medial-malleolus",
+      "name": "Medial Malleolus",
+      "bone": "Tibia",
+      "region": "lower-leg-foot",
+      "notes": "Attachment point of the deltoid ligament.",
+      "images": {
+        "isolated": null,
+        "hotspot": "renders/landmark-context/tibia-l.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "source": {
+        "deck": "Joints_of_the_Body_Multiple_Choice_Test_3.md",
+        "questions": [
+          25
+        ]
+      },
+      "pin": {
+        "x": 0.35687,
+        "y": 0.85319,
+        "approximate": true
+      },
+      "kind": "pin"
+    },
+    {
+      "id": "lateral-malleolus",
+      "name": "Lateral Malleolus",
+      "bone": "Fibula",
+      "region": "lower-leg-foot",
+      "images": {
+        "isolated": null,
+        "hotspot": "renders/landmark-context/fibula-l.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "source": {
+        "deck": "Joints_of_the_Body_Multiple_Choice_Test_3.md",
+        "questions": [
+          26
+        ]
+      },
+      "pin": {
+        "x": 0.59201,
+        "y": 0.8545,
+        "approximate": true
+      },
+      "kind": "pin"
+    },
+    {
+      "id": "acetabulum",
+      "name": "Acetabulum",
+      "bone": "Hip bone (ilium, ischium, pubis)",
+      "region": "hip-thigh",
+      "articulatesWith": "Head of femur",
+      "notes": "Formed by fusion of the ilium, ischium and pubis; deepened by the acetabular labrum.",
+      "images": {
+        "isolated": null,
+        "hotspot": "renders/landmark-context/hip-bone-l.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "source": {
+        "deck": "Joints_of_the_Body_Multiple_Choice_Test_3.md",
+        "questions": [
+          31,
+          32,
+          33
+        ]
+      },
+      "pin": {
+        "x": 0.65846,
+        "y": 0.61862,
+        "approximate": true
+      },
+      "kind": "pin"
+    },
+    {
+      "id": "acetabular-notch",
+      "name": "Acetabular Notch",
+      "bone": "Hip bone",
+      "region": "hip-thigh",
+      "notes": "Bridged by the transverse acetabular ligament.",
+      "images": {
+        "isolated": null,
+        "hotspot": "renders/landmark-context/hip-bone-l.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "source": {
+        "deck": "Joints_of_the_Body_Multiple_Choice_Test_3.md",
+        "questions": [
+          40
+        ]
+      },
+      "pin": {
+        "x": 0.62246,
+        "y": 0.65679,
+        "approximate": true
+      },
+      "kind": "pin"
+    },
+    {
+      "id": "fovea-capitis",
+      "name": "Fovea Capitis",
+      "bone": "Femur",
+      "region": "hip-thigh",
+      "notes": "Small pit on the femoral head; site of ligamentum teres attachment.",
+      "images": {
+        "isolated": null,
+        "hotspot": "renders/landmark-context/femur-l.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "source": {
+        "deck": "Joints_of_the_Body_Multiple_Choice_Test_3.md",
+        "questions": [
+          35
+        ]
+      },
+      "pin": {
+        "x": 0.39084,
+        "y": 0.10984,
+        "approximate": true
+      },
+      "kind": "pin"
+    },
+    {
+      "id": "greater-trochanter",
+      "name": "Greater Trochanter",
+      "bone": "Femur",
+      "region": "hip-thigh",
+      "notes": "Common muscle insertion site (e.g. gluteus medius/minimus, piriformis, obturator/gemelli).",
+      "images": {
+        "isolated": null,
+        "hotspot": "renders/landmark-context/femur-l.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "source": {
+        "deck": "muscles.json insertion cross-reference",
+        "questions": []
+      },
+      "pin": {
+        "x": 0.66424,
+        "y": 0.1838,
+        "approximate": true
+      },
+      "kind": "pin"
+    },
+    {
+      "id": "lesser-trochanter",
+      "name": "Lesser Trochanter",
+      "bone": "Femur",
+      "region": "hip-thigh",
+      "notes": "Insertion of iliopsoas (iliacus + psoas major).",
+      "images": {
+        "isolated": null,
+        "hotspot": "renders/landmark-context/femur-l.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "source": {
+        "deck": "muscles.json insertion cross-reference",
+        "questions": []
+      },
+      "pin": {
+        "x": 0.44294,
+        "y": 0.27875,
+        "approximate": true
+      },
+      "kind": "pin"
+    },
+    {
+      "id": "intercondylar-eminence-tibia",
+      "name": "Intercondylar Eminence",
+      "bone": "Tibia",
+      "region": "hip-thigh",
+      "notes": "Attachment site for the cruciate ligaments and menisci.",
+      "images": {
+        "isolated": null,
+        "hotspot": "renders/landmark-context/tibia-l.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "source": {
+        "deck": "Joints_of_the_Body_Multiple_Choice_Test_3.md",
+        "questions": [
+          39
+        ]
+      },
+      "pin": {
+        "x": 0.48662,
+        "y": 0.07416,
+        "approximate": true
+      },
+      "kind": "pin"
+    },
+    {
+      "id": "tibial-plateau",
+      "name": "Tibial Plateau",
+      "bone": "Tibia",
+      "region": "hip-thigh",
+      "notes": "Two concave articular surfaces (medial and lateral) forming the tibiofemoral joint.",
+      "images": {
+        "isolated": null,
+        "hotspot": "renders/landmark-context/tibia-l.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "source": {
+        "deck": "Joints_of_the_Body_Multiple_Choice_Test_3.md",
+        "questions": [
+          38
+        ]
+      },
+      "pin": {
+        "x": 0.3424,
+        "y": 0.15493,
+        "approximate": true
+      },
+      "kind": "pin"
+    },
+    {
+      "id": "menisci",
+      "name": "Menisci",
+      "bone": "Tibia (fibrocartilage)",
+      "region": "hip-thigh",
+      "notes": "Fibrocartilage pads between femoral and tibial condyles.",
+      "images": {
+        "isolated": "renders/isolated/menisci.png",
+        "hotspot": null,
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "source": {
+        "deck": "Joints_of_the_Body_Multiple_Choice_Test_3.md",
+        "questions": [
+          37,
+          39
+        ]
+      },
+      "kind": "solid"
+    },
+    {
+      "id": "vertebra-l4",
+      "name": "L4 Vertebra",
+      "bone": "Lumbar vertebra",
+      "region": "back-core",
+      "notes": "4th lumbar vertebra.",
+      "images": {
+        "isolated": "renders/isolated/vertebra-l4.png",
+        "hotspot": null,
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "source": {
+        "deck": "screenshot reference (Z-Anatomy object: 'Vertebra L4')",
+        "questions": []
+      },
+      "kind": "solid"
+    },
+    {
+      "id": "auricular-surface-ilium",
+      "name": "Auricular Surface (Ilium)",
+      "bone": "Ilium",
+      "region": "back-core",
+      "articulatesWith": "Auricular surface of sacrum",
+      "notes": "Forms the sacroiliac joint.",
+      "images": {
+        "isolated": null,
+        "hotspot": "renders/landmark-context/hip-bone-l.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "source": {
+        "deck": "screenshot reference (Z-Anatomy object: 'Auricular surface of ilium')",
+        "questions": []
+      },
+      "pin": {
+        "x": 0.34817,
+        "y": 0.38419,
+        "approximate": true
+      },
+      "kind": "pin"
+    },
+    {
+      "id": "auricular-surface-sacrum",
+      "name": "Auricular Surface (Sacrum)",
+      "bone": "Sacrum",
+      "region": "back-core",
+      "articulatesWith": "Auricular surface of ilium",
+      "notes": "Forms the sacroiliac joint.",
+      "images": {
+        "isolated": null,
+        "hotspot": null,
+        "credit": null,
+        "licence": null
+      },
+      "source": {
+        "deck": "screenshot reference (Z-Anatomy object: 'Auricular surface of sacrum')",
+        "questions": []
+      }
+    },
+    {
+      "id": "superior-costal-facet",
+      "name": "Superior Costal Facet",
+      "bone": "Thoracic vertebra",
+      "region": "back-core",
+      "articulatesWith": "Head of rib",
+      "notes": "Costovertebral joint surface on the vertebral body.",
+      "images": {
+        "isolated": null,
+        "hotspot": null,
+        "credit": null,
+        "licence": null
+      },
+      "source": {
+        "deck": "screenshot reference (Z-Anatomy object: 'Superior costal facet')",
+        "questions": []
+      }
+    },
+    {
+      "id": "inferior-costal-facet",
+      "name": "Inferior Costal Facet",
+      "bone": "Thoracic vertebra",
+      "region": "back-core",
+      "articulatesWith": "Head of rib (vertebra below)",
+      "images": {
+        "isolated": null,
+        "hotspot": null,
+        "credit": null,
+        "licence": null
+      },
+      "source": {
+        "deck": "screenshot reference (Z-Anatomy object: 'Inferior costal facet')",
+        "questions": []
+      }
+    },
+    {
+      "id": "transverse-costal-facet",
+      "name": "Transverse Costal Facet",
+      "bone": "Thoracic vertebra",
+      "region": "back-core",
+      "articulatesWith": "Tubercle of rib",
+      "images": {
+        "isolated": null,
+        "hotspot": null,
+        "credit": null,
+        "licence": null
+      },
+      "source": {
+        "deck": "screenshot reference (Z-Anatomy object: 'Transverse costal facet')",
+        "questions": []
+      }
+    },
+    {
+      "id": "intervertebral-disc",
+      "name": "Intervertebral Disc",
+      "bone": "(fibrocartilage, between vertebral bodies)",
+      "region": "back-core",
+      "notes": "Z-Anatomy models one per level (e.g. 'Intervertebral disc L4-L5') - id here refers to the structure generically; a specific level can be picked at render time.",
+      "images": {
+        "isolated": "renders/isolated/intervertebral-disc.png",
+        "hotspot": null,
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "source": {
+        "deck": "screenshot reference (Z-Anatomy objects: 'Intervertebral disc <level>')",
+        "questions": []
+      },
+      "kind": "solid"
+    },
+    {
+      "id": "inferior-articular-facet-vertebra",
+      "name": "Inferior Articular Facet",
+      "bone": "Vertebra",
+      "region": "back-core",
+      "notes": "Part of the zygapophyseal (facet) joint with the vertebra below.",
+      "images": {
+        "isolated": null,
+        "hotspot": null,
+        "credit": null,
+        "licence": null
+      },
+      "source": {
+        "deck": "Z-Anatomy object: 'Inferior articular facet of vertebra'",
+        "questions": []
+      }
+    },
+    {
+      "id": "iliac-fossa",
+      "name": "Iliac Fossa",
+      "bone": "Ilium",
+      "region": "hip-thigh",
+      "notes": "Origin of iliacus.",
+      "images": {
+        "isolated": null,
+        "hotspot": "renders/landmark-context/hip-bone-l.png",
+        "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
+        "licence": "CC BY-SA 4.0"
+      },
+      "source": {
+        "deck": "muscles.json origin cross-reference",
+        "questions": []
+      },
+      "pin": {
+        "x": 0.51011,
+        "y": 0.36127,
+        "approximate": true
+      },
+      "kind": "pin"
+    },
+    {
+      "id": "sacroiliac-joint",
+      "name": "Sacroiliac Joint",
+      "bone": "Ilium + Sacrum",
+      "region": "back-core",
+      "notes": "Joint between the auricular surfaces of ilium and sacrum.",
+      "images": {
+        "isolated": null,
+        "hotspot": null,
+        "credit": null,
+        "licence": null
+      },
+      "source": {
+        "deck": "screenshot reference",
+        "questions": []
+      }
+    },
+    {
+      "id": "acromioclavicular-joint",
+      "name": "Acromioclavicular Joint",
+      "bone": "Acromion + Clavicle",
+      "region": "shoulder-arm",
+      "notes": "Plane synovial joint; NOT the same as the coracoclavicular ligament complex.",
+      "images": {
+        "isolated": null,
+        "hotspot": null,
+        "credit": null,
+        "licence": null
+      },
+      "source": {
+        "deck": "Joints_of_the_Body_Multiple_Choice_Test_3.md",
+        "questions": [
+          11,
+          16,
+          18,
+          20
+        ]
+      }
+    },
+    {
+      "id": "sternoclavicular-joint",
+      "name": "Sternoclavicular Joint",
+      "bone": "Sternum + Clavicle",
+      "region": "shoulder-arm",
+      "notes": "Only true bony articulation between the upper limb and the axial skeleton.",
+      "images": {
+        "isolated": null,
+        "hotspot": null,
+        "credit": null,
+        "licence": null
+      },
+      "source": {
+        "deck": "Joints_of_the_Body_Multiple_Choice_Test_3.md",
+        "questions": [
+          16,
+          17
+        ]
+      }
+    }
+  ]
+}

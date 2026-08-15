@@ -1,0 +1,13 @@
+# vendored local tooling (Blender, portable Node, netlify-cli + node_modules)
+tools/
+
+# netlify CLI local site-link state
+.netlify/
+
+# build output — regenerated copy of msk-quiz.html + renders/, published via netlify-cli
+deploy/
+
+# third-party source atlas (CC BY-SA 4.0, github.com/Z-Anatomy/Models-of-human-anatomy)
+# fetched per README step 0; too large for git history
+atlas/Z-Anatomy.zip
+atlas/Z-Anatomy/

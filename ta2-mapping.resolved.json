@@ -1,0 +1,2533 @@
+{
+  "schemaVersion": 1,
+  "counts": {
+    "total": 122,
+    "resolved": 122,
+    "unresolved": 0
+  },
+  "mapping": [
+    {
+      "id": "diaphragm",
+      "name": "Diaphragm",
+      "region": "back-core",
+      "ta2id": 2327,
+      "ta2_english": "Diaphragm",
+      "ta2_latin": "Diaphragma",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Diaphragm"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "external-intercostals",
+      "name": "External Intercostals",
+      "region": "back-core",
+      "ta2id": 2311,
+      "ta2_english": "External intercostal muscles",
+      "ta2_latin": "Musculi intercostales externi",
+      "match": "fuzzy",
+      "confidence": 0.51,
+      "verified": false,
+      "extraParts": [],
+      "alternatives": [
+        {
+          "ta2id": 2426,
+          "english": "External anal sphincter",
+          "confidence": 0.355
+        },
+        {
+          "ta2id": 2312,
+          "english": "Internal intercostal muscles",
+          "confidence": 0.351
+        },
+        {
+          "ta2id": 2364,
+          "english": "External abdominal oblique muscle",
+          "confidence": 0.307
+        }
+      ],
+      "blenderObjects": [
+        "External intercostal muscles.l",
+        "External intercostal muscles.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "external-oblique",
+      "name": "External Oblique",
+      "region": "back-core",
+      "ta2id": 2364,
+      "ta2_english": "External abdominal oblique muscle",
+      "ta2_latin": "Musculus obliquus externus abdominis",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "External abdominal oblique muscle.l",
+        "External abdominal oblique muscle.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "iliocostalis",
+      "name": "Iliocostalis",
+      "region": "back-core",
+      "ta2id": 2257,
+      "ta2_english": "Iliocostalis muscles",
+      "ta2_latin": "Musculi iliocostales",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Iliocostalis colli muscle",
+        "Iliocostalis colli muscle.r",
+        "Iliocostalis lumborum muscle.l",
+        "Iliocostalis lumborum muscle.r",
+        "Iliocostalis thoracis muscle.l",
+        "Iliocostalis thoracis muscle.r"
+      ],
+      "resolution": "manual",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "internal-intercostals",
+      "name": "Internal Intercostals",
+      "region": "back-core",
+      "ta2id": 2312,
+      "ta2_english": "Internal intercostal muscles",
+      "ta2_latin": "Musculi intercostales interni",
+      "match": "fuzzy",
+      "confidence": 0.51,
+      "verified": false,
+      "extraParts": [],
+      "alternatives": [
+        {
+          "ta2id": 2311,
+          "english": "External intercostal muscles",
+          "confidence": 0.351
+        },
+        {
+          "ta2id": 2373,
+          "english": "Internal abdominal oblique muscle",
+          "confidence": 0.307
+        },
+        {
+          "ta2id": 2313,
+          "english": "Innermost intercostal muscles",
+          "confidence": 0.305
+        }
+      ],
+      "blenderObjects": [
+        "Internal intercostal muscles.l",
+        "Internal intercostal muscles.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "internal-oblique",
+      "name": "Internal Oblique",
+      "region": "back-core",
+      "ta2id": 2373,
+      "ta2_english": "Internal abdominal oblique muscle",
+      "ta2_latin": "Musculus obliquus internus abdominis",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Internal abdominal oblique muscle.l",
+        "Internal abdominal oblique muscle.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "interspinales",
+      "name": "Interspinales",
+      "region": "back-core",
+      "ta2id": 2290,
+      "ta2_english": "Interspinales muscles",
+      "ta2_latin": "Musculi interspinales",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Interspinales colli muscles.l",
+        "Interspinales colli muscles.r",
+        "Interspinales lumborum muscles.l",
+        "Interspinales lumborum muscles.r",
+        "Interspinales thoracis muscles.l",
+        "Interspinales thoracis muscles.r"
+      ],
+      "resolution": "manual",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "intertransversarii",
+      "name": "Intertransversarii",
+      "region": "back-core",
+      "ta2id": 2294,
+      "ta2_english": "Intertransversarii muscles",
+      "ta2_latin": "Musculi intertransversarii",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Dorsal parts of lateral intertransversarii lumborum muscles.l",
+        "Dorsal parts of lateral intertransversarii lumborum muscles.r",
+        "Ventral parts of lateral intertransversarii lumborum muscles.l",
+        "Ventral parts of lateral intertransversarii lumborum muscles.r"
+      ],
+      "resolution": "manual",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "longissimus",
+      "name": "Longissimus",
+      "region": "back-core",
+      "ta2id": 2262,
+      "ta2_english": "Longissimus muscles",
+      "ta2_latin": "Musculi longissimi",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Longissimus capitis muscle.l",
+        "Longissimus capitis muscle.r",
+        "Longissimus colli muscle.l",
+        "Longissimus colli muscle.r",
+        "Longissimus thoracis muscle.l",
+        "Longissimus thoracis muscle.r"
+      ],
+      "resolution": "manual",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "longus-capitis",
+      "name": "Longus Capitis",
+      "region": "back-core",
+      "ta2id": 2149,
+      "ta2_english": "Longus capitis muscle",
+      "ta2_latin": "Musculus longus capitis",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Longus capitis muscle.l",
+        "Longus capitis muscle.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "longus-colli",
+      "name": "Longus Colli",
+      "region": "back-core",
+      "ta2id": 2148,
+      "ta2_english": "Longus colli muscle",
+      "ta2_latin": "Musculus longus colli",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Longus colli muscle.l",
+        "Longus colli muscle.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "multifidus",
+      "name": "Multifidus",
+      "region": "back-core",
+      "ta2id": 2276,
+      "ta2_english": "Multifidus muscles",
+      "ta2_latin": "Musculi multifidi",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Multifidus colli muscle.l",
+        "Multifidus colli muscle.r",
+        "Multifidus lumborum muscle.l",
+        "Multifidus lumborum muscle.r",
+        "Multifidus thoracis muscle.l",
+        "Multifidus thoracis muscle.r"
+      ],
+      "resolution": "manual",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "quadratus-lumborum",
+      "name": "Quadratus Lumborum",
+      "region": "back-core",
+      "ta2id": 2382,
+      "ta2_english": "Quadratus lumborum muscle",
+      "ta2_latin": "Musculus quadratus lumborum",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Quadratus lumborum muscle.l",
+        "Quadratus lumborum muscle.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "rectus-abdominis",
+      "name": "Rectus Abdominis",
+      "region": "back-core",
+      "ta2id": 2357,
+      "ta2_english": "Rectus abdominis muscle",
+      "ta2_latin": "Musculus rectus abdominis",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Rectus abdominis muscle.l",
+        "Rectus abdominis muscle.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "rotatores",
+      "name": "Rotatores",
+      "region": "back-core",
+      "ta2id": 2284,
+      "ta2_english": "Rotatores",
+      "ta2_latin": "Rotatores",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Rotatores.l",
+        "Rotatores.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "scalene-anterior",
+      "name": "Scalene Anterior",
+      "region": "back-core",
+      "ta2id": 2152,
+      "ta2_english": "Scalenus anterior muscle",
+      "ta2_latin": "Musculus scalenus anterior",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Scalenus anterior muscle.l",
+        "Scalenus anterior muscle.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "scalene-middle",
+      "name": "Scalene Middle",
+      "region": "back-core",
+      "ta2id": 2153,
+      "ta2_english": "Scalenus medius muscle",
+      "ta2_latin": "Musculus scalenus medius",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Scalenus medius muscle.l",
+        "Scalenus medius muscle.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "scalene-posterior",
+      "name": "Scalene Posterior",
+      "region": "back-core",
+      "ta2id": 2154,
+      "ta2_english": "Scalenus posterior muscle",
+      "ta2_latin": "Musculus scalenus posterior",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Scalenus posterior muscle.l",
+        "Scalenus posterior muscle.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "semispinalis",
+      "name": "Semispinalis",
+      "region": "back-core",
+      "ta2id": 2280,
+      "ta2_english": "Semispinalis muscles",
+      "ta2_latin": "Musculus semispinalis",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Semispinalis colli muscle.l",
+        "Semispinalis colli muscle.r",
+        "Semispinalis thoracis muscle.l",
+        "Semispinalis thoracis muscle.r"
+      ],
+      "resolution": "manual",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "spinalis",
+      "name": "Spinalis",
+      "region": "back-core",
+      "ta2id": 2267,
+      "ta2_english": "Spinalis muscles",
+      "ta2_latin": "Musculi spinales",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Spinalis capitis muscle.l",
+        "Spinalis capitis muscle.r",
+        "Spinalis colli muscle.l",
+        "Spinalis colli muscle.r",
+        "Spinalis thoracis muscle.l",
+        "Spinalis thoracis muscle.r"
+      ],
+      "resolution": "manual",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "splenius-capitis",
+      "name": "Splenius Capitis",
+      "region": "back-core",
+      "ta2id": 2273,
+      "ta2_english": "Splenius capitis muscle",
+      "ta2_latin": "Musculus splenius capitis",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Splenius capitis muscle.l",
+        "Splenius capitis muscle.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "splenius-cervicis",
+      "name": "Splenius Cervicis",
+      "region": "back-core",
+      "ta2id": 2274,
+      "ta2_english": "Splenius colli muscle",
+      "ta2_latin": "Musculus splenius colli",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Splenius colli muscle.l",
+        "Splenius colli muscle.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "sternocleidomastoid",
+      "name": "Sternocleidomastoid",
+      "region": "back-core",
+      "ta2id": 2156,
+      "ta2_english": "Sternocleidomastoid muscle",
+      "ta2_latin": "Musculus sternocleidomastoideus",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Sternocleidomastoid muscle.l",
+        "Sternocleidomastoid muscle.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "transversus-abdominis",
+      "name": "Transversus Abdominis",
+      "region": "back-core",
+      "ta2id": 2375,
+      "ta2_english": "Transversus abdominis muscle",
+      "ta2_latin": "Musculus transversus abdominis",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Transversus abdominis muscle.l",
+        "Transversus abdominis muscle.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "abductor-digiti-minimi-hand",
+      "name": "Abductor Digiti Minimi (Hand)",
+      "region": "forearm-hand",
+      "ta2id": 2529,
+      "ta2_english": "Abductor digiti minimi of hand",
+      "ta2_latin": "Abductor digiti minimi manus",
+      "match": "fuzzy",
+      "confidence": 0.802,
+      "verified": false,
+      "extraParts": [],
+      "alternatives": [
+        {
+          "ta2id": 2506,
+          "english": "Extensor digiti minimi",
+          "confidence": 0.609
+        },
+        {
+          "ta2id": 2530,
+          "english": "Flexor digiti minimi of hand",
+          "confidence": 0.588
+        },
+        {
+          "ta2id": 2531,
+          "english": "Opponens digiti minimi muscle of hand",
+          "confidence": 0.561
+        }
+      ],
+      "blenderObjects": [
+        "Abductor digiti minimi of hand.l",
+        "Abductor digiti minimi of hand.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "abductor-pollicis-brevis",
+      "name": "Abductor Pollicis Brevis",
+      "region": "forearm-hand",
+      "ta2id": 2521,
+      "ta2_english": "Abductor pollicis brevis",
+      "ta2_latin": "Abductor brevis pollicis",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Abductor pollicis brevis.l",
+        "Abductor pollicis brevis.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "abductor-pollicis-longus",
+      "name": "Abductor Pollicis Longus",
+      "region": "forearm-hand",
+      "ta2id": 2517,
+      "ta2_english": "Abductor pollicis longus",
+      "ta2_latin": "Abductor longus pollicis",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Abductor pollicis longus.l",
+        "Abductor pollicis longus.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "adductor-pollicis",
+      "name": "Adductor Pollicis",
+      "region": "forearm-hand",
+      "ta2id": 2526,
+      "ta2_english": "Adductor pollicis",
+      "ta2_latin": "Adductor pollicis",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Oblique head of adductor pollicis.l",
+        "Oblique head of adductor pollicis.r",
+        "Transverse head of adductor pollicis.l",
+        "Transverse head of adductor pollicis.r"
+      ],
+      "resolution": "manual",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "brachioradialis",
+      "name": "Brachioradialis",
+      "region": "forearm-hand",
+      "ta2id": 2496,
+      "ta2_english": "Brachioradialis muscle",
+      "ta2_latin": "Musculus brachioradialis",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Brachioradialis muscle.l",
+        "Brachioradialis muscle.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "dorsal-interossei-hand",
+      "name": "Dorsal Interossei (Hand)",
+      "region": "forearm-hand",
+      "ta2id": 2533,
+      "ta2_english": "Dorsal interossei muscles of hand",
+      "ta2_latin": "Musculi interossei dorsales manus",
+      "match": "fuzzy",
+      "confidence": 0.674,
+      "verified": false,
+      "extraParts": [],
+      "alternatives": [
+        {
+          "ta2id": 2534,
+          "english": "Palmar interossei muscles",
+          "confidence": 0.456
+        },
+        {
+          "ta2id": 2687,
+          "english": "Plantar interossei muscles",
+          "confidence": 0.424
+        },
+        {
+          "ta2id": 2584,
+          "english": "Fibrous sheaths of digits of hand",
+          "confidence": 0.317
+        }
+      ],
+      "blenderObjects": [
+        "Dorsal interossei muscles of hand.l",
+        "Dorsal interossei muscles of hand.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "extensor-carpi-radialis-brevis",
+      "name": "Extensor Carpi Radialis Brevis",
+      "region": "forearm-hand",
+      "ta2id": 2499,
+      "ta2_english": "Extensor carpi radialis brevis",
+      "ta2_latin": "Extensor radialis brevis carpi",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Extensor carpi radialis brevis.l",
+        "Extensor carpi radialis brevis.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "extensor-carpi-radialis-longus",
+      "name": "Extensor Carpi Radialis Longus",
+      "region": "forearm-hand",
+      "ta2id": 2497,
+      "ta2_english": "Extensor carpi radialis longus",
+      "ta2_latin": "Extensor radialis longus carpi",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Extensor carpi radialis longus.l",
+        "Extensor carpi radialis longus.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "extensor-carpi-ulnaris",
+      "name": "Extensor Carpi Ulnaris",
+      "region": "forearm-hand",
+      "ta2id": 2507,
+      "ta2_english": "Extensor carpi ulnaris",
+      "ta2_latin": "Extensor ulnaris carpi",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Humeral head of extensor carpi ulnaris.l",
+        "Humeral head of extensor carpi ulnaris.r",
+        "Ulnar head of extensor carpi ulnaris.l",
+        "Ulnar head of extensor carpi ulnaris.r"
+      ],
+      "resolution": "manual",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "extensor-digiti-minimi",
+      "name": "Extensor Digiti Minimi",
+      "region": "forearm-hand",
+      "ta2id": 2506,
+      "ta2_english": "Extensor digiti minimi",
+      "ta2_latin": "Extensor digiti minimi",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Extensor digiti minimi.l",
+        "Extensor digiti minimi.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "extensor-digitorum",
+      "name": "Extensor Digitorum",
+      "region": "forearm-hand",
+      "ta2id": 2500,
+      "ta2_english": "Extensor digitorum",
+      "ta2_latin": "Extensor digitorum",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Extensor digitorum.l",
+        "Extensor digitorum.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "extensor-indicis",
+      "name": "Extensor Indicis",
+      "region": "forearm-hand",
+      "ta2id": 2515,
+      "ta2_english": "Extensor indicis",
+      "ta2_latin": "Extensor indicis",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Extensor indicis.l",
+        "Extensor indicis.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "extensor-pollicis-brevis",
+      "name": "Extensor Pollicis Brevis",
+      "region": "forearm-hand",
+      "ta2id": 2518,
+      "ta2_english": "Extensor pollicis brevis",
+      "ta2_latin": "Extensor brevis pollicis",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Extensor pollicis brevis.l",
+        "Extensor pollicis brevis.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "extensor-pollicis-longus",
+      "name": "Extensor Pollicis Longus",
+      "region": "forearm-hand",
+      "ta2id": 2516,
+      "ta2_english": "Extensor pollicis longus",
+      "ta2_latin": "Extensor longus pollicis",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Extensor pollicis longus.l",
+        "Extensor pollicis longus.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "flexor-carpi-radialis",
+      "name": "Flexor Carpi Radialis",
+      "region": "forearm-hand",
+      "ta2id": 2481,
+      "ta2_english": "Flexor carpi radialis",
+      "ta2_latin": "Flexor radialis carpi",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Flexor carpi radialis.l",
+        "Flexor carpi radialis.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "flexor-carpi-ulnaris",
+      "name": "Flexor Carpi Ulnaris",
+      "region": "forearm-hand",
+      "ta2id": 2483,
+      "ta2_english": "Flexor carpi ulnaris",
+      "ta2_latin": "Flexor ulnaris carpi",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Humeral head of flexor carpi ulnaris.l",
+        "Humeral head of flexor carpi ulnaris.r",
+        "Ulnar head of flexor carpi ulnaris.l",
+        "Ulnar head of flexor carpi ulnaris.r"
+      ],
+      "resolution": "manual",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "flexor-digiti-minimi-brevis-hand",
+      "name": "Flexor Digiti Minimi Brevis (Hand)",
+      "region": "forearm-hand",
+      "ta2id": 2530,
+      "ta2_english": "Flexor digiti minimi of hand",
+      "ta2_latin": "Flexor digiti minimi manus",
+      "match": "fuzzy",
+      "confidence": 0.739,
+      "verified": false,
+      "extraParts": [],
+      "alternatives": [
+        {
+          "ta2id": 2522,
+          "english": "Flexor pollicis brevis",
+          "confidence": 0.651
+        },
+        {
+          "ta2id": 2529,
+          "english": "Abductor digiti minimi of hand",
+          "confidence": 0.562
+        },
+        {
+          "ta2id": 2683,
+          "english": "Flexor digitorum brevis",
+          "confidence": 0.56
+        }
+      ],
+      "blenderObjects": [
+        "Flexor digiti minimi of hand.l",
+        "Flexor digiti minimi of hand.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "flexor-digitorum-profundus",
+      "name": "Flexor Digitorum Profundus",
+      "region": "forearm-hand",
+      "ta2id": 2491,
+      "ta2_english": "Flexor digitorum profundus",
+      "ta2_latin": "Flexor profundus digitorum",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Flexor digitorum profundus.l",
+        "Flexor digitorum profundus.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "flexor-digitorum-superficialis",
+      "name": "Flexor Digitorum Superficialis",
+      "region": "forearm-hand",
+      "ta2id": 2486,
+      "ta2_english": "Flexor digitorum superficialis",
+      "ta2_latin": "Flexor superficialis digitorum superficialis",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Humero-ulnar head of flexor digitorum superficialis.l",
+        "Humero-ulnar head of flexor digitorum superficialis.r",
+        "Radial head of flexor digitorum superficialis.l",
+        "Radial head of flexor digitorum superficialis.r"
+      ],
+      "resolution": "manual",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "flexor-pollicis-brevis",
+      "name": "Flexor Pollicis Brevis",
+      "region": "forearm-hand",
+      "ta2id": 2522,
+      "ta2_english": "Flexor pollicis brevis",
+      "ta2_latin": "Flexor brevis pollicis",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Deep head of flexor pollicis brevis.l",
+        "Deep head of flexor pollicis brevis.r",
+        "Superficial head of flexor pollicis brevis.l",
+        "Superficial head of flexor pollicis brevis.r"
+      ],
+      "resolution": "manual",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "flexor-pollicis-longus",
+      "name": "Flexor Pollicis Longus",
+      "region": "forearm-hand",
+      "ta2id": 2492,
+      "ta2_english": "Flexor pollicis longus",
+      "ta2_latin": "Flexor longus pollicis",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Flexor pollicis longus.l",
+        "Flexor pollicis longus.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "lumbricals-hand",
+      "name": "Lumbricals (Hand)",
+      "region": "forearm-hand",
+      "ta2id": 2532,
+      "ta2_english": "Lumbrical muscles of hand",
+      "ta2_latin": "Musculi lumbricales manus",
+      "match": "pinned",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Lumbrical muscles of hand.l",
+        "Lumbrical muscles of hand.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "opponens-digiti-minimi-hand",
+      "name": "Opponens Digiti Minimi (Hand)",
+      "region": "forearm-hand",
+      "ta2id": 2531,
+      "ta2_english": "Opponens digiti minimi muscle of hand",
+      "ta2_latin": "Musculus opponens digiti minimi manus",
+      "match": "fuzzy",
+      "confidence": 0.802,
+      "verified": false,
+      "extraParts": [],
+      "alternatives": [
+        {
+          "ta2id": 2506,
+          "english": "Extensor digiti minimi",
+          "confidence": 0.609
+        },
+        {
+          "ta2id": 2530,
+          "english": "Flexor digiti minimi of hand",
+          "confidence": 0.571
+        },
+        {
+          "ta2id": 2529,
+          "english": "Abductor digiti minimi of hand",
+          "confidence": 0.561
+        }
+      ],
+      "blenderObjects": [
+        "Opponens digiti minimi muscle of hand.l",
+        "Opponens digiti minimi muscle of hand.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "opponens-pollicis",
+      "name": "Opponens Pollicis",
+      "region": "forearm-hand",
+      "ta2id": 2525,
+      "ta2_english": "Opponens pollicis muscle",
+      "ta2_latin": "Musculus opponens pollicis",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Opponens pollicis muscle.l",
+        "Opponens pollicis muscle.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "palmar-interossei",
+      "name": "Palmar Interossei",
+      "region": "forearm-hand",
+      "ta2id": 2534,
+      "ta2_english": "Palmar interossei muscles",
+      "ta2_latin": "Musculi interossei palmares",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Palmar interossei muscles.l",
+        "Palmar interossei muscles.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "palmaris-longus",
+      "name": "Palmaris Longus",
+      "region": "forearm-hand",
+      "ta2id": 2482,
+      "ta2_english": "Palmaris longus muscle",
+      "ta2_latin": "Musculus palmaris longus",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Palmaris longus muscle.l",
+        "Palmaris longus muscle.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "pronator-quadratus",
+      "name": "Pronator Quadratus",
+      "region": "forearm-hand",
+      "ta2id": 2493,
+      "ta2_english": "Pronator quadratus",
+      "ta2_latin": "Pronator quadratus",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Pronator quadratus.l",
+        "Pronator quadratus.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "pronator-teres",
+      "name": "Pronator Teres",
+      "region": "forearm-hand",
+      "ta2id": 2478,
+      "ta2_english": "Pronator teres",
+      "ta2_latin": "Pronator teres",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Deep head of pronator teres.l",
+        "Deep head of pronator teres.r",
+        "Superficial head of pronator teres.l",
+        "Superficial head of pronator teres.r"
+      ],
+      "resolution": "manual",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "supinator",
+      "name": "Supinator",
+      "region": "forearm-hand",
+      "ta2id": 2512,
+      "ta2_english": "Supinator",
+      "ta2_latin": "Supinator",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Supinator.l",
+        "Supinator.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "adductor-brevis",
+      "name": "Adductor Brevis",
+      "region": "hip-thigh",
+      "ta2id": 2629,
+      "ta2_english": "Adductor brevis",
+      "ta2_latin": "Adductor brevis",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Adductor brevis.l",
+        "Adductor brevis.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "adductor-longus",
+      "name": "Adductor Longus",
+      "region": "hip-thigh",
+      "ta2id": 2628,
+      "ta2_english": "Adductor longus",
+      "ta2_latin": "Adductor longus",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Adductor longus.l",
+        "Adductor longus.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "adductor-magnus",
+      "name": "Adductor Magnus",
+      "region": "hip-thigh",
+      "ta2id": 2630,
+      "ta2_english": "Adductor magnus",
+      "ta2_latin": "Adductor magnus",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Adductor magnus.l",
+        "Adductor magnus.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "biceps-femoris",
+      "name": "Biceps Femoris",
+      "region": "hip-thigh",
+      "ta2id": 2638,
+      "ta2_english": "Biceps femoris muscle",
+      "ta2_latin": "Musculus biceps femoris",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Long head of biceps femoris.l",
+        "Long head of biceps femoris.r",
+        "Short head of biceps femoris.l",
+        "Short head of biceps femoris.r"
+      ],
+      "resolution": "manual",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "gemelli",
+      "name": "Gemelli (Superior & Inferior)",
+      "region": "hip-thigh",
+      "ta2id": 2606,
+      "ta2_english": "Superior gemellus muscle",
+      "ta2_latin": "Musculus gemellus superior",
+      "match": "pinned",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [
+        2607
+      ],
+      "alternatives": [],
+      "blenderObjects": [
+        "Superior gemellus muscle.l",
+        "Superior gemellus muscle.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "gluteus-maximus",
+      "name": "Gluteus Maximus",
+      "region": "hip-thigh",
+      "ta2id": 2598,
+      "ta2_english": "Gluteus maximus muscle",
+      "ta2_latin": "Musculus gluteus maximus",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Gluteus maximus muscle.l",
+        "Gluteus maximus muscle.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "gluteus-medius",
+      "name": "Gluteus Medius",
+      "region": "hip-thigh",
+      "ta2id": 2599,
+      "ta2_english": "Gluteus medius muscle",
+      "ta2_latin": "Musculus gluteus medius",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Gluteus medius muscle.l",
+        "Gluteus medius muscle.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "gluteus-minimus",
+      "name": "Gluteus Minimus",
+      "region": "hip-thigh",
+      "ta2id": 2600,
+      "ta2_english": "Gluteus minimus muscle",
+      "ta2_latin": "Musculus gluteus minimus",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Gluteus minimus muscle.l",
+        "Gluteus minimus muscle.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "gracilis",
+      "name": "Gracilis",
+      "region": "hip-thigh",
+      "ta2id": 2635,
+      "ta2_english": "Gracilis muscle",
+      "ta2_latin": "Musculus gracilis",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Gracilis muscle.l",
+        "Gracilis muscle.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "iliacus",
+      "name": "Iliacus",
+      "region": "hip-thigh",
+      "ta2id": 2594,
+      "ta2_english": "Iliacus muscle",
+      "ta2_latin": "Musculus iliacus",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Iliacus muscle.l",
+        "Iliacus muscle.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "obturator-externus",
+      "name": "Obturator Externus",
+      "region": "hip-thigh",
+      "ta2id": 2636,
+      "ta2_english": "Obturator externus",
+      "ta2_latin": "Obturator externus",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Obturator externus.l",
+        "Obturator externus.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "obturator-internus",
+      "name": "Obturator Internus",
+      "region": "hip-thigh",
+      "ta2id": 2605,
+      "ta2_english": "Obturator internus",
+      "ta2_latin": "Obturator internus",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Obturator internus.l",
+        "Obturator internus.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "pectineus",
+      "name": "Pectineus",
+      "region": "hip-thigh",
+      "ta2id": 2627,
+      "ta2_english": "Pectineus muscle",
+      "ta2_latin": "Musculus pectineus",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Pectineus muscle.l",
+        "Pectineus muscle.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "piriformis",
+      "name": "Piriformis",
+      "region": "hip-thigh",
+      "ta2id": 2604,
+      "ta2_english": "Piriformis muscle",
+      "ta2_latin": "Musculus piriformis",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Piriformis muscle.l",
+        "Piriformis muscle.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "psoas-major",
+      "name": "Psoas Major",
+      "region": "hip-thigh",
+      "ta2id": 2595,
+      "ta2_english": "Psoas major",
+      "ta2_latin": "Psoas major",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Psoas major.l",
+        "Psoas major.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "quadratus-femoris",
+      "name": "Quadratus Femoris",
+      "region": "hip-thigh",
+      "ta2id": 2608,
+      "ta2_english": "Quadratus femoris muscle",
+      "ta2_latin": "Musculus quadratus femoris",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Quadratus femoris muscle.l",
+        "Quadratus femoris muscle.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "rectus-femoris",
+      "name": "Rectus Femoris",
+      "region": "hip-thigh",
+      "ta2id": 2614,
+      "ta2_english": "Rectus femoris muscle",
+      "ta2_latin": "Musculus rectus femoris",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Rectus femoris muscle.l",
+        "Rectus femoris muscle.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "sartorius",
+      "name": "Sartorius",
+      "region": "hip-thigh",
+      "ta2id": 2610,
+      "ta2_english": "Sartorius muscle",
+      "ta2_latin": "Musculus sartorius",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Sartorius muscle.l",
+        "Sartorius muscle.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "semimembranosus",
+      "name": "Semimembranosus",
+      "region": "hip-thigh",
+      "ta2id": 2642,
+      "ta2_english": "Semimembranosus muscle",
+      "ta2_latin": "Musculus semimembranosus",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Semimembranosus muscle.l",
+        "Semimembranosus muscle.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "semitendinosus",
+      "name": "Semitendinosus",
+      "region": "hip-thigh",
+      "ta2id": 2641,
+      "ta2_english": "Semitendinosus muscle",
+      "ta2_latin": "Musculus semitendinosus",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Semitendinosus muscle.l",
+        "Semitendinosus muscle.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "tensor-fasciae-latae",
+      "name": "Tensor Fasciae Latae",
+      "region": "hip-thigh",
+      "ta2id": 2602,
+      "ta2_english": "Tensor fasciae latae",
+      "ta2_latin": "Tensor fasciae latae",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Tensor fasciae latae.l",
+        "Tensor fasciae latae.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "vastus-intermedius",
+      "name": "Vastus Intermedius",
+      "region": "hip-thigh",
+      "ta2id": 2619,
+      "ta2_english": "Vastus intermedius muscle",
+      "ta2_latin": "Musculus vastus intermedius",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Vastus intermedius muscle.l",
+        "Vastus intermedius muscle.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "vastus-lateralis",
+      "name": "Vastus Lateralis",
+      "region": "hip-thigh",
+      "ta2id": 2618,
+      "ta2_english": "Vastus lateralis muscle",
+      "ta2_latin": "Musculus vastus lateralis",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Vastus lateralis muscle.l",
+        "Vastus lateralis muscle.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "vastus-medialis",
+      "name": "Vastus Medialis",
+      "region": "hip-thigh",
+      "ta2id": 2620,
+      "ta2_english": "Vastus medialis muscle",
+      "ta2_latin": "Musculus vastus medialis",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Vastus medialis muscle.l",
+        "Vastus medialis muscle.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "abductor-digiti-minimi-foot",
+      "name": "Abductor Digiti Minimi (Foot)",
+      "region": "lower-leg-foot",
+      "ta2id": 2679,
+      "ta2_english": "Abductor digiti minimi of foot",
+      "ta2_latin": "Abductor digiti minimi pedis",
+      "match": "fuzzy",
+      "confidence": 0.802,
+      "verified": false,
+      "extraParts": [],
+      "alternatives": [
+        {
+          "ta2id": 2506,
+          "english": "Extensor digiti minimi",
+          "confidence": 0.609
+        },
+        {
+          "ta2id": 2682,
+          "english": "Flexor digiti minimi of foot",
+          "confidence": 0.577
+        },
+        {
+          "ta2id": 2672,
+          "english": "Abductor hallucis",
+          "confidence": 0.505
+        }
+      ],
+      "blenderObjects": [
+        "Abductor digiti minimi of foot.l",
+        "Abductor digiti minimi of foot.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "abductor-hallucis",
+      "name": "Abductor Hallucis",
+      "region": "lower-leg-foot",
+      "ta2id": 2672,
+      "ta2_english": "Abductor hallucis",
+      "ta2_latin": "Abductor hallucis",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Abductor hallucis.l",
+        "Abductor hallucis.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "adductor-hallucis",
+      "name": "Adductor Hallucis",
+      "region": "lower-leg-foot",
+      "ta2id": 2676,
+      "ta2_english": "Adductor hallucis",
+      "ta2_latin": "Adductor hallucis",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Abductor hallucis.l",
+        "Abductor hallucis.r"
+      ],
+      "resolution": "fuzzy",
+      "resolutionConfidence": 0.941
+    },
+    {
+      "id": "dorsal-interossei-foot",
+      "name": "Dorsal Interossei (Foot)",
+      "region": "lower-leg-foot",
+      "ta2id": 2686,
+      "ta2_english": "Dorsal interossei muscles of foot",
+      "ta2_latin": "Musculi interossei dorsales pedis",
+      "match": "fuzzy",
+      "confidence": 0.674,
+      "verified": false,
+      "extraParts": [],
+      "alternatives": [
+        {
+          "ta2id": 2534,
+          "english": "Palmar interossei muscles",
+          "confidence": 0.456
+        },
+        {
+          "ta2id": 2687,
+          "english": "Plantar interossei muscles",
+          "confidence": 0.424
+        },
+        {
+          "ta2id": 2672,
+          "english": "Abductor hallucis",
+          "confidence": 0.315
+        }
+      ],
+      "blenderObjects": [
+        "Dorsal interossei muscles of foot.l",
+        "Dorsal interossei muscles of foot.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "extensor-digitorum-brevis",
+      "name": "Extensor Digitorum Brevis",
+      "region": "lower-leg-foot",
+      "ta2id": 2671,
+      "ta2_english": "Extensor digitorum brevis",
+      "ta2_latin": "Extensor brevis digitorum",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Extensor digitorum brevis.l",
+        "Extensor digitorum brevis.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "extensor-digitorum-longus",
+      "name": "Extensor Digitorum Longus",
+      "region": "lower-leg-foot",
+      "ta2id": 2645,
+      "ta2_english": "Extensor digitorum longus",
+      "ta2_latin": "Extensor longus digitorum",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Extensor digitorum longus.l",
+        "Extensor digitorum longus.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "extensor-hallucis-brevis",
+      "name": "Extensor Hallucis Brevis",
+      "region": "lower-leg-foot",
+      "ta2id": 2670,
+      "ta2_english": "Extensor hallucis brevis",
+      "ta2_latin": "Extensor brevis hallucis",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Extensor hallucis brevis.l",
+        "Extensor hallucis brevis.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "extensor-hallucis-longus",
+      "name": "Extensor Hallucis Longus",
+      "region": "lower-leg-foot",
+      "ta2id": 2650,
+      "ta2_english": "Extensor hallucis longus",
+      "ta2_latin": "Extensor longus hallucis",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Extensor hallucis longus.l",
+        "Extensor hallucis longus.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "flexor-digiti-minimi-brevis-foot",
+      "name": "Flexor Digiti Minimi Brevis (Foot)",
+      "region": "lower-leg-foot",
+      "ta2id": 2682,
+      "ta2_english": "Flexor digiti minimi of foot",
+      "ta2_latin": "Flexor digiti minimi pedis pedis",
+      "match": "fuzzy",
+      "confidence": 0.733,
+      "verified": false,
+      "extraParts": [],
+      "alternatives": [
+        {
+          "ta2id": 2673,
+          "english": "Flexor hallucis brevis",
+          "confidence": 0.635
+        },
+        {
+          "ta2id": 2679,
+          "english": "Abductor digiti minimi of foot",
+          "confidence": 0.591
+        },
+        {
+          "ta2id": 2683,
+          "english": "Flexor digitorum brevis",
+          "confidence": 0.56
+        }
+      ],
+      "blenderObjects": [
+        "Flexor digiti minimi of foot.l",
+        "Flexor digiti minimi of foot.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "flexor-digitorum-brevis",
+      "name": "Flexor Digitorum Brevis",
+      "region": "lower-leg-foot",
+      "ta2id": 2683,
+      "ta2_english": "Flexor digitorum brevis",
+      "ta2_latin": "Flexor brevis digitorum",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Flexor digitorum brevis.l",
+        "Flexor digitorum brevis.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "flexor-digitorum-longus",
+      "name": "Flexor Digitorum Longus",
+      "region": "lower-leg-foot",
+      "ta2id": 2667,
+      "ta2_english": "Flexor digitorum longus",
+      "ta2_latin": "Musculus flexor digitorum longus",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Flexor digitorum longus.l",
+        "Flexor digitorum longus.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "flexor-hallucis-brevis",
+      "name": "Flexor Hallucis Brevis",
+      "region": "lower-leg-foot",
+      "ta2id": 2673,
+      "ta2_english": "Flexor hallucis brevis",
+      "ta2_latin": "Flexor brevis hallucis",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Lateral head of flexor hallucis brevis.l",
+        "Lateral head of flexor hallucis brevis.r",
+        "Medial head of flexor hallucis brevis.l",
+        "Medial head of flexor hallucis brevis.r"
+      ],
+      "resolution": "manual",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "flexor-hallucis-longus",
+      "name": "Flexor Hallucis Longus",
+      "region": "lower-leg-foot",
+      "ta2id": 2668,
+      "ta2_english": "Flexor hallucis longus",
+      "ta2_latin": "Flexor longus hallucis",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Flexor hallucis longus.l",
+        "Flexor hallucis longus.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "gastrocnemius",
+      "name": "Gastrocnemius",
+      "region": "lower-leg-foot",
+      "ta2id": 2657,
+      "ta2_english": "Gastrocnemius muscle",
+      "ta2_latin": "Musculus gastrocnemius",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Lateral head of gastrocnemius.l",
+        "Lateral head of gastrocnemius.r",
+        "Medial head of gastrocnemius.l",
+        "Medial head of gastrocnemius.r"
+      ],
+      "resolution": "manual",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "lumbricals-foot",
+      "name": "Lumbricals (Foot)",
+      "region": "lower-leg-foot",
+      "ta2id": 2682,
+      "ta2_english": "Flexor digiti minimi of foot",
+      "ta2_latin": "Flexor digiti minimi pedis pedis",
+      "match": "pinned",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Flexor digiti minimi of foot.l",
+        "Flexor digiti minimi of foot.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "opponens-digiti-minimi-foot",
+      "name": "Opponens Digiti Minimi (Foot)",
+      "region": "lower-leg-foot",
+      "ta2id": 2681,
+      "ta2_english": "(Opponens digiti minimi muscle of foot)",
+      "ta2_latin": "(Musculus opponens digiti minimi pedis)",
+      "match": "pinned",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "(Opponens digiti minimi muscle of foot).l",
+        "(Opponens digiti minimi muscle of foot).r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "peroneus-brevis",
+      "name": "Peroneus Brevis",
+      "region": "lower-leg-foot",
+      "ta2id": 2653,
+      "ta2_english": "Fibularis brevis muscle",
+      "ta2_latin": "Musculus fibularis brevis",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Fibularis brevis muscle.l",
+        "Fibularis brevis muscle.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "peroneus-longus",
+      "name": "Peroneus Longus",
+      "region": "lower-leg-foot",
+      "ta2id": 2652,
+      "ta2_english": "Fibularis longus muscle",
+      "ta2_latin": "Musculus fibularis longus",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Fibularis longus muscle.l",
+        "Fibularis longus muscle.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "peroneus-tertius",
+      "name": "Peroneus Tertius",
+      "region": "lower-leg-foot",
+      "ta2id": 2649,
+      "ta2_english": "Fibularis tertius muscle",
+      "ta2_latin": "Musculus fibularis tertius",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Fibularis tertius muscle.l",
+        "Fibularis tertius muscle.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "plantar-interossei",
+      "name": "Plantar Interossei",
+      "region": "lower-leg-foot",
+      "ta2id": 2687,
+      "ta2_english": "Plantar interossei muscles",
+      "ta2_latin": "Musculi interossei plantares",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Plantar interossei muscles.l",
+        "Plantar interossei muscles.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "plantaris",
+      "name": "Plantaris",
+      "region": "lower-leg-foot",
+      "ta2id": 2663,
+      "ta2_english": "Plantaris muscle",
+      "ta2_latin": "Musculus plantaris",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Plantaris muscle.l",
+        "Plantaris muscle.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "popliteus",
+      "name": "Popliteus",
+      "region": "lower-leg-foot",
+      "ta2id": 2665,
+      "ta2_english": "Popliteus muscle",
+      "ta2_latin": "Musculus popliteus",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Popliteus muscle.l",
+        "Popliteus muscle.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "quadratus-plantae",
+      "name": "Quadratus Plantae",
+      "region": "lower-leg-foot",
+      "ta2id": 2684,
+      "ta2_english": "Quadratus plantae muscle",
+      "ta2_latin": "Musculus quadratus plantae",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Quadratus plantae muscle.l",
+        "Quadratus plantae muscle.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "soleus",
+      "name": "Soleus",
+      "region": "lower-leg-foot",
+      "ta2id": 2660,
+      "ta2_english": "Soleus muscle",
+      "ta2_latin": "Musculus soleus",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Soleus muscle.l",
+        "Soleus muscle.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "tibialis-anterior",
+      "name": "Tibialis Anterior",
+      "region": "lower-leg-foot",
+      "ta2id": 2644,
+      "ta2_english": "Tibialis anterior muscle",
+      "ta2_latin": "Musculus tibialis anterior",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Tibialis anterior muscle.l",
+        "Tibialis anterior muscle.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "tibialis-posterior",
+      "name": "Tibialis Posterior",
+      "region": "lower-leg-foot",
+      "ta2id": 2666,
+      "ta2_english": "Tibialis posterior muscle",
+      "ta2_latin": "Musculus tibialis posterior",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Tibialis posterior muscle.l",
+        "Tibialis posterior muscle.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "anconeus",
+      "name": "Anconeus",
+      "region": "shoulder-arm",
+      "ta2id": 2510,
+      "ta2_english": "Anconeus muscle",
+      "ta2_latin": "Musculus anconeus",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Anconeus muscle.l",
+        "Anconeus muscle.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "biceps-brachii",
+      "name": "Biceps Brachii",
+      "region": "shoulder-arm",
+      "ta2id": 2464,
+      "ta2_english": "Biceps brachii muscle",
+      "ta2_latin": "Musculus biceps brachii",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Long head of biceps brachii.l",
+        "Long head of biceps brachii.r",
+        "Short head of biceps brachii.l",
+        "Short head of biceps brachii.r"
+      ],
+      "resolution": "manual",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "brachialis",
+      "name": "Brachialis",
+      "region": "shoulder-arm",
+      "ta2id": 2469,
+      "ta2_english": "Brachialis muscle",
+      "ta2_latin": "Musculus brachialis",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Brachialis muscle.l",
+        "Brachialis muscle.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "coracobrachialis",
+      "name": "Coracobrachialis",
+      "region": "shoulder-arm",
+      "ta2id": 2468,
+      "ta2_english": "Coracobrachialis muscle",
+      "ta2_latin": "Musculus coracobrachialis",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Coracobrachialis muscle.l",
+        "Coracobrachialis muscle.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "deltoid",
+      "name": "Deltoid",
+      "region": "shoulder-arm",
+      "ta2id": 2452,
+      "ta2_english": "Deltoid muscle",
+      "ta2_latin": "Musculus deltoideus",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Acromial part of deltoid muscle.l",
+        "Acromial part of deltoid muscle.r",
+        "Clavicular part of deltoid muscle.l",
+        "Clavicular part of deltoid muscle.r",
+        "Scapular spinal part of deltoid muscle.l",
+        "Scapular spinal part of deltoid muscle.r"
+      ],
+      "resolution": "manual",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "infraspinatus",
+      "name": "Infraspinatus",
+      "region": "shoulder-arm",
+      "ta2id": 2458,
+      "ta2_english": "Infraspinatus muscle",
+      "ta2_latin": "Musculus infraspinatus",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Infraspinatus muscle.l",
+        "Infraspinatus muscle.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "latissimus-dorsi",
+      "name": "Latissimus Dorsi",
+      "region": "shoulder-arm",
+      "ta2id": 2231,
+      "ta2_english": "Latissimus dorsi muscle",
+      "ta2_latin": "Musculus latissimus dorsi",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Latissimus dorsi muscle.l",
+        "Latissimus dorsi muscle.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "levator-scapulae",
+      "name": "Levator Scapulae",
+      "region": "shoulder-arm",
+      "ta2id": 2234,
+      "ta2_english": "Levator scapulae",
+      "ta2_latin": "Levator scapulae",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Levator scapulae.l",
+        "Levator scapulae.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "pectoralis-major",
+      "name": "Pectoralis Major",
+      "region": "shoulder-arm",
+      "ta2id": 2301,
+      "ta2_english": "Pectoralis major muscle",
+      "ta2_latin": "Musculus pectoralis major",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "(Abdominal part of pectoralis major muscle).l",
+        "(Abdominal part of pectoralis major muscle).r",
+        "Clavicular head of pectoralis major muscle.l",
+        "Clavicular head of pectoralis major muscle.r",
+        "Sternocostal head of pectoralis major muscle.l",
+        "Sternocostal head of pectoralis major muscle.r"
+      ],
+      "resolution": "manual",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "pectoralis-minor",
+      "name": "Pectoralis Minor",
+      "region": "shoulder-arm",
+      "ta2id": 2305,
+      "ta2_english": "Pectoralis minor muscle",
+      "ta2_latin": "Musculus pectoralis minor",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Pectoralis minor muscle.l",
+        "Pectoralis minor muscle.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "rhomboid-major",
+      "name": "Rhomboid Major",
+      "region": "shoulder-arm",
+      "ta2id": 2232,
+      "ta2_english": "Rhomboid major muscle",
+      "ta2_latin": "Musculus rhomboideus major",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Rhomboid major muscle.l",
+        "Rhomboid major muscle.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "rhomboid-minor",
+      "name": "Rhomboid Minor",
+      "region": "shoulder-arm",
+      "ta2id": 2233,
+      "ta2_english": "Rhomboid minor muscle",
+      "ta2_latin": "Musculus rhomboideus minor",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Rhomboid minor muscle.l",
+        "Rhomboid minor muscle.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "serratus-anterior",
+      "name": "Serratus Anterior",
+      "region": "shoulder-arm",
+      "ta2id": 2307,
+      "ta2_english": "Serratus anterior muscle",
+      "ta2_latin": "Musculus serratus anterior",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Serratus anterior muscle.l",
+        "Serratus anterior muscle.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "subscapularis",
+      "name": "Subscapularis",
+      "region": "shoulder-arm",
+      "ta2id": 2460,
+      "ta2_english": "Subscapularis muscle",
+      "ta2_latin": "Musculus subscapularis",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Subscapularis muscle.l",
+        "Subscapularis muscle.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "supraspinatus",
+      "name": "Supraspinatus",
+      "region": "shoulder-arm",
+      "ta2id": 2457,
+      "ta2_english": "Supraspinatus muscle",
+      "ta2_latin": "Musculus supraspinatus",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Supraspinatus muscle.l",
+        "Supraspinatus muscle.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "teres-major",
+      "name": "Teres Major",
+      "region": "shoulder-arm",
+      "ta2id": 2462,
+      "ta2_english": "Teres major muscle",
+      "ta2_latin": "Musculus teres major",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Teres major muscle.l",
+        "Teres major muscle.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "teres-minor",
+      "name": "Teres Minor",
+      "region": "shoulder-arm",
+      "ta2id": 2459,
+      "ta2_english": "Teres minor muscle",
+      "ta2_latin": "Musculus teres minor",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Teres minor muscle.l",
+        "Teres minor muscle.r"
+      ],
+      "resolution": "exact",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "trapezius",
+      "name": "Trapezius",
+      "region": "shoulder-arm",
+      "ta2id": 2226,
+      "ta2_english": "Trapezius muscle",
+      "ta2_latin": "Musculus trapezius",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Ascending part of trapezius muscle.l",
+        "Ascending part of trapezius muscle.r",
+        "Descending part of trapezius muscle.l",
+        "Descending part of trapezius muscle.r",
+        "Transverse part of trapezius muscle.l",
+        "Transverse part of trapezius muscle.r"
+      ],
+      "resolution": "manual",
+      "resolutionConfidence": 1.0
+    },
+    {
+      "id": "triceps-brachii",
+      "name": "Triceps Brachii",
+      "region": "shoulder-arm",
+      "ta2id": 2471,
+      "ta2_english": "Triceps brachii muscle",
+      "ta2_latin": "Musculus triceps brachii",
+      "match": "exact",
+      "confidence": 1.0,
+      "verified": true,
+      "extraParts": [],
+      "alternatives": [],
+      "blenderObjects": [
+        "Lateral head of triceps brachii.l",
+        "Lateral head of triceps brachii.r",
+        "Long head of triceps brachii.l",
+        "Long head of triceps brachii.r",
+        "Medial head of triceps brachii.l",
+        "Medial head of triceps brachii.r"
+      ],
+      "resolution": "manual",
+      "resolutionConfidence": 1.0
+    }
+  ]
+}
