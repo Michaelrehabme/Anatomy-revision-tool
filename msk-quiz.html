@@ -398,8 +398,6 @@
   .answer-reveal.correct b { color: var(--ok); }
   .answer-reveal.incorrect { border-color: var(--bad); }
   .answer-reveal.incorrect b { color: var(--bad); }
-  #type-answer-input.correct { border-color: var(--ok); }
-  #type-answer-input.incorrect { border-color: var(--bad); }
   #flash-answer-input.correct { border-color: var(--ok); }
   #flash-answer-input.incorrect { border-color: var(--bad); }
   .hint-text {
@@ -410,6 +408,10 @@
   }
 
   .action-row { display: flex; gap: 10px; flex-wrap: wrap; }
+  .type-answer-inputs { display: flex; gap: 10px; flex-wrap: wrap; }
+  .type-answer-inputs .n-input { flex: 1; min-width: 160px; width: auto; }
+  .type-answer-inputs .n-input.correct { border-color: var(--ok); }
+  .type-answer-inputs .n-input.incorrect { border-color: var(--bad); }
   .grade-btn.yes { border-color: var(--ok); color: var(--ok); }
   .grade-btn.no { border-color: var(--bad); color: var(--bad); }
   .grade-btn.yes:hover { background: var(--ok); color: var(--ok-ink); }
@@ -562,8 +564,8 @@
         <div id="mc-area" class="choice-list hidden"></div>
 
         <div id="type-area" class="hidden">
-          <div class="action-row">
-            <input id="type-answer-input" class="n-input" type="text" style="flex:1;width:auto;" placeholder="Type the muscle name…" autocomplete="off" autocapitalize="off" spellcheck="false">
+          <div id="type-answer-inputs" class="type-answer-inputs"></div>
+          <div class="action-row" style="margin-top:10px;">
             <button id="check-answer-btn" class="primary-btn" type="button">Check</button>
           </div>
           <div id="type-answer-feedback" class="answer-reveal hidden" style="margin-top:12px;">
@@ -39778,14 +39780,17 @@
     return { prompt: "Name the muscle: " + clue, answer: m.name };
   }
   function genOrigin(m) {
-    return { prompt: "What is the origin of " + m.name + "?", answer: (m.origin && m.origin.length ? m.origin.join("; ") : "(none recorded)") };
+    var parts = m.origin && m.origin.length ? m.origin : null;
+    return { prompt: "What is the origin of " + m.name + "?", answer: (parts ? parts.join("; ") : "(none recorded)"), answerParts: parts };
   }
   function genInsertion(m) {
-    return { prompt: "What is the insertion of " + m.name + "?", answer: (m.insertion && m.insertion.length ? m.insertion.join("; ") : "(none recorded)") };
+    var parts = m.insertion && m.insertion.length ? m.insertion : null;
+    return { prompt: "What is the insertion of " + m.name + "?", answer: (parts ? parts.join("; ") : "(none recorded)"), answerParts: parts };
   }
   function genNerve(m) {
     var names = (m.nerve || []).map(function (n) { return n.name; });
-    return { prompt: "What nerve innervates " + m.name + "?", answer: names.join("; ") || "(none recorded)" };
+    var parts = names.length ? names : null;
+    return { prompt: "What nerve innervates " + m.name + "?", answer: parts ? parts.join("; ") : "(none recorded)", answerParts: parts };
   }
   function genAction(m) {
     var text = m.actionText || (m.actions || []).map(humanizeTag).join(", ");
@@ -39901,7 +39906,7 @@
    "progress-current","progress-total","progress-label","qtype-tag","question-prompt",
    "question-image-area","question-image","question-pin","question-highlight",
    "mc-area","flash-area","flash-answer-input","hint-btn","hint-text","reveal-btn","flash-answer","flash-answer-text","flash-grade-row",
-   "type-area","type-answer-input","check-answer-btn","type-answer-feedback","type-answer-verdict","type-answer-text","type-giveup-btn",
+   "type-area","type-answer-inputs","check-answer-btn","type-answer-feedback","type-answer-verdict","type-answer-text","type-giveup-btn",
    "quit-btn","next-btn","score-big","score-pct","breakdown-list","restart-btn",
    "rail-muscle-count","rail-question-count","rail-note",
    "nav-quiz-btn","nav-learn-btn","learn-panel","learn-region-chips","learn-grid","learn-test-btn","learn-count"
@@ -40107,6 +40112,28 @@
     });
   }
 
+  var typeInputEls = [];
+
+  function renderTypeInputs(parts) {
+    el.typeAnswerInputs.innerHTML = "";
+    typeInputEls = [];
+    var n = parts && parts.length > 1 ? parts.length : 1;
+    for (var i = 0; i < n; i++) {
+      var input = document.createElement("input");
+      input.className = "n-input";
+      input.type = "text";
+      input.autocomplete = "off";
+      input.autocapitalize = "off";
+      input.spellcheck = false;
+      input.placeholder = n > 1 ? ("Answer " + (i + 1) + " of " + n + "…") : "Type your answer…";
+      input.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") { e.preventDefault(); checkTypedAnswer(); }
+      });
+      el.typeAnswerInputs.appendChild(input);
+      typeInputEls.push(input);
+    }
+  }
+
   function choicesForItem(item, answer) {
     if (item.qtype === "attachment") return buildAttachmentChoices(item.attachment, answer);
     if (item.qtype === "identify-structure") return buildStructureChoices(item.landmark, answer);
@@ -40132,7 +40159,7 @@
       : item.qtype === "identify-structure" ? item.landmark
       : item.muscle;
     var gen = GENERATORS[item.qtype](genSource);
-    state.current = { muscle: item.muscle, qtype: item.qtype, format: item.format, prompt: gen.prompt, answer: gen.answer, graded: false };
+    state.current = { muscle: item.muscle, qtype: item.qtype, format: item.format, prompt: gen.prompt, answer: gen.answer, answerParts: gen.answerParts || null, graded: false };
 
     el.progressCurrent.textContent = String(state.qIndex + 1);
     el.qtypeTag.textContent = item.qtype.toUpperCase();
@@ -40146,9 +40173,6 @@
     el.flashGradeRow.classList.add("hidden");
     el.revealBtn.classList.remove("hidden");
     el.typeArea.classList.add("hidden");
-    el.typeAnswerInput.value = "";
-    el.typeAnswerInput.classList.remove("correct", "incorrect");
-    el.typeAnswerInput.disabled = false;
     el.typeAnswerFeedback.classList.add("hidden");
     el.typeAnswerFeedback.classList.remove("correct", "incorrect");
     el.checkAnswerBtn.disabled = false;
@@ -40178,8 +40202,8 @@
       renderMcChoices(item, gen.answer);
     } else if (item.format === "type-answer") {
       el.typeArea.classList.remove("hidden");
-      el.typeAnswerInput.placeholder = "Type your answer…";
-      el.typeAnswerInput.focus();
+      renderTypeInputs(gen.answerParts);
+      if (typeInputEls[0]) typeInputEls[0].focus();
     } else {
       el.flashArea.classList.remove("hidden");
       el.flashAnswerText.textContent = gen.answer;
@@ -40196,12 +40220,56 @@
       .trim();
   }
 
-  function settleTypedAnswer(isCorrect, revealedAnswer) {
+  var ANSWER_ABBREVIATIONS = {
+    "tfl": "tensor fasciae latae"
+  };
+
+  function isAbbreviationMatch(normTyped, normAnswer) {
+    var full = ANSWER_ABBREVIATIONS[normTyped];
+    return !!full && (normAnswer === full || normAnswer.indexOf(full) >= 0);
+  }
+
+  function levenshtein(a, b) {
+    var m = a.length, n = b.length;
+    if (m === 0) return n;
+    if (n === 0) return m;
+    var prev = new Array(n + 1);
+    var curr = new Array(n + 1);
+    for (var j = 0; j <= n; j++) prev[j] = j;
+    for (var i = 1; i <= m; i++) {
+      curr[0] = i;
+      for (var j2 = 1; j2 <= n; j2++) {
+        var cost = a.charAt(i - 1) === b.charAt(j2 - 1) ? 0 : 1;
+        curr[j2] = Math.min(prev[j2] + 1, curr[j2 - 1] + 1, prev[j2 - 1] + cost);
+      }
+      var tmp = prev; prev = curr; curr = tmp;
+    }
+    return prev[n];
+  }
+
+  var SPELLING_GRACE = 2;
+
+  function isCloseSpelling(normTyped, normAnswer) {
+    if (normTyped.length < 4 || normAnswer.length < 4) return false;
+    return levenshtein(normTyped, normAnswer) <= SPELLING_GRACE;
+  }
+
+  function isAnswerMatch(normTyped, normAnswer) {
+    return normTyped === normAnswer ||
+      (normTyped.length > 2 && (normAnswer.indexOf(normTyped) >= 0 || normTyped.indexOf(normAnswer) >= 0)) ||
+      isAbbreviationMatch(normTyped, normAnswer) ||
+      isCloseSpelling(normTyped, normAnswer);
+  }
+
+  function settleTypedAnswer(isCorrect, revealedAnswer, perBoxCorrect) {
     state.current.graded = true;
-    el.typeAnswerInput.disabled = true;
+    typeInputEls.forEach(function (input, i) {
+      input.disabled = true;
+      var boxCorrect = perBoxCorrect ? !!perBoxCorrect[i] : isCorrect;
+      input.classList.add(boxCorrect ? "correct" : "incorrect");
+    });
     el.checkAnswerBtn.disabled = true;
     el.typeGiveupBtn.classList.add("hidden");
-    el.typeAnswerInput.classList.add(isCorrect ? "correct" : "incorrect");
     el.typeAnswerFeedback.classList.remove("hidden");
     el.typeAnswerFeedback.classList.add(isCorrect ? "correct" : "incorrect");
     el.typeAnswerVerdict.textContent = isCorrect ? "Correct" : "Answer";
@@ -40212,19 +40280,24 @@
 
   function checkTypedAnswer() {
     if (state.current.graded) return;
-    var typed = el.typeAnswerInput.value.trim();
-    if (!typed) return;
-    var normTyped = normalizeAnswer(typed);
-    var normAnswer = normalizeAnswer(state.current.answer);
-    var isCorrect = normTyped === normAnswer ||
-      (normTyped.length > 2 && (normAnswer.indexOf(normTyped) >= 0 || normTyped.indexOf(normAnswer) >= 0));
-    settleTypedAnswer(isCorrect, state.current.answer);
+    var values = typeInputEls.map(function (input) { return input.value.trim(); });
+    if (values.every(function (v) { return !v; })) return;
+    var expectedParts = (state.current.answerParts && state.current.answerParts.length > 1)
+      ? state.current.answerParts : [state.current.answer];
+    var remaining = expectedParts.map(normalizeAnswer);
+    var perBoxCorrect = values.map(function (v) {
+      var normV = normalizeAnswer(v);
+      if (!normV) return false;
+      for (var i = 0; i < remaining.length; i++) {
+        if (isAnswerMatch(normV, remaining[i])) { remaining.splice(i, 1); return true; }
+      }
+      return false;
+    });
+    var isCorrect = perBoxCorrect.length === expectedParts.length && perBoxCorrect.every(Boolean);
+    settleTypedAnswer(isCorrect, state.current.answer, perBoxCorrect);
   }
 
   el.checkAnswerBtn.addEventListener("click", checkTypedAnswer);
-  el.typeAnswerInput.addEventListener("keydown", function (e) {
-    if (e.key === "Enter") { e.preventDefault(); checkTypedAnswer(); }
-  });
   el.typeGiveupBtn.addEventListener("click", function () {
     if (state.current.graded) return;
     settleTypedAnswer(false, state.current.answer);
@@ -40271,8 +40344,7 @@
       if (typed) {
         var normTyped = normalizeAnswer(typed);
         var normAnswer = normalizeAnswer(state.current.answer);
-        var looksCorrect = normTyped === normAnswer ||
-          (normTyped.length > 2 && (normAnswer.indexOf(normTyped) >= 0 || normTyped.indexOf(normAnswer) >= 0));
+        var looksCorrect = isAnswerMatch(normTyped, normAnswer);
         el.flashAnswerInput.classList.add(looksCorrect ? "correct" : "incorrect");
       }
     }
