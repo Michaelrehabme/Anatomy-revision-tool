@@ -4,7 +4,7 @@ import { generateRevisionSet } from '../questionGenerators/generateSet';
 import { buildIndexes } from '../indexes';
 import { pickNameDistractors } from '../distractors';
 import { createRng } from '../rng';
-import { isMcqQuestion } from '../../types/question';
+import { isMcqQuestion, isFillBlankQuestion } from '../../types/question';
 
 describe('generateRevisionSet', () => {
   it('generates flashcards and MCQs for the full seed dataset deterministically', () => {
@@ -43,6 +43,28 @@ describe('generateRevisionSet', () => {
       seed: 7,
     });
     expect(result).toHaveLength(3);
+  });
+
+  it('generates fill-blank questions for bones and landmarks, deterministically', () => {
+    const config = { types: ['fill-blank'] as const, mode: 'practice' as const, seed: 11 };
+    const a = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, config);
+    const b = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, config);
+    expect(a.length).toBeGreaterThan(0);
+    expect(a.map((q) => q.id)).toEqual(b.map((q) => q.id));
+    for (const q of a.filter(isFillBlankQuestion)) {
+      expect(q.category === 'bone' || q.category === 'landmark').toBe(true);
+      expect(q.answer.length).toBeGreaterThan(0);
+      expect(q.before + q.after).not.toBe('');
+    }
+  });
+
+  it('never generates identify-typed questions when no images have hotspots (atlas-slide gap), but does for single-structure images', () => {
+    const result = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+      types: ['identify-typed'],
+      mode: 'practice',
+      seed: 1,
+    });
+    expect(result.every((q) => q.type === 'identify-typed')).toBe(true);
   });
 
   it('MCQ choices always include the correct answer exactly once', () => {

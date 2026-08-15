@@ -2,7 +2,7 @@ import type { Category, Difficulty } from './structure';
 import type { ImageMode } from './image';
 import type { Region, SubRegion } from './region';
 
-export type QuestionType = 'flashcard' | 'mcq' | 'locate';
+export type QuestionType = 'flashcard' | 'mcq' | 'locate' | 'fill-blank' | 'identify-typed';
 
 export type PromptKind =
   | 'identify'
@@ -56,8 +56,37 @@ export interface LocateQuestion extends RevisionQuestionBase {
   prompt: string;
 }
 
-export type RevisionQuestion = FlashcardQuestion | MCQQuestion | LocateQuestion;
+export interface FillBlankQuestion extends RevisionQuestionBase {
+  type: 'fill-blank';
+  /** Text rendered before the blank. */
+  before: string;
+  /** Text rendered after the blank. */
+  after: string;
+  /** The blanked word/phrase the student must supply. */
+  answer: string;
+  /** The original, unblanked statement — shown as feedback after answering. */
+  fullStatement: string;
+}
+
+export interface TypedIdentifyQuestion extends RevisionQuestionBase {
+  type: 'identify-typed';
+  prompt: string;
+  promptImageId: string;
+  /** Structure name plus any aliases — any of these count as correct. */
+  acceptedAnswers: string[];
+  explanation: string;
+}
+
+export type RevisionQuestion =
+  | FlashcardQuestion
+  | MCQQuestion
+  | LocateQuestion
+  | FillBlankQuestion
+  | TypedIdentifyQuestion;
 
 export const isFlashcardQuestion = (q: RevisionQuestion): q is FlashcardQuestion => q.type === 'flashcard';
 export const isMcqQuestion = (q: RevisionQuestion): q is MCQQuestion => q.type === 'mcq';
 export const isLocateQuestion = (q: RevisionQuestion): q is LocateQuestion => q.type === 'locate';
+export const isFillBlankQuestion = (q: RevisionQuestion): q is FillBlankQuestion => q.type === 'fill-blank';
+export const isTypedIdentifyQuestion = (q: RevisionQuestion): q is TypedIdentifyQuestion =>
+  q.type === 'identify-typed';

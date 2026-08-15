@@ -26,11 +26,13 @@ const CONFIDENCE_OPTIONS: { value: Confidence; label: string; className: string 
 export function FlashcardSession({ question, imagesById, onAnswer, onNext }: FlashcardSessionProps) {
   const [revealed, setRevealed] = useState(false);
   const [rated, setRated] = useState(false);
+  const [attempt, setAttempt] = useState('');
 
-  // New question -> reset local flip/rate state.
+  // New question -> reset local flip/rate/attempt state.
   useEffect(() => {
     setRevealed(false);
     setRated(false);
+    setAttempt('');
   }, [question.id]);
 
   const frontImage = question.front.imageId ? imagesById.get(question.front.imageId) : undefined;
@@ -51,6 +53,13 @@ export function FlashcardSession({ question, imagesById, onAnswer, onNext }: Fla
             ) : (
               <p className="text-xl font-semibold text-slate-900">{question.front.text}</p>
             )}
+            <textarea
+              value={attempt}
+              onChange={(e) => setAttempt(e.target.value)}
+              placeholder="Type your answer (optional)…"
+              rows={3}
+              className="w-full resize-none rounded-lg border border-slate-300 p-2 text-sm text-slate-900"
+            />
             <button
               type="button"
               onClick={() => setRevealed(true)}
@@ -62,7 +71,16 @@ export function FlashcardSession({ question, imagesById, onAnswer, onNext }: Fla
         ) : (
           <div className="space-y-3">
             {backImage && <AnatomyImageFigure image={backImage} alt={question.structureId} />}
-            <p className="whitespace-pre-line text-sm text-slate-700">{question.back.text}</p>
+            {attempt.trim() && (
+              <div>
+                <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-slate-400">Your answer</p>
+                <p className="whitespace-pre-line rounded-lg bg-slate-50 p-2 text-sm text-slate-600">{attempt}</p>
+              </div>
+            )}
+            <div>
+              <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-slate-400">Correct answer</p>
+              <p className="whitespace-pre-line text-sm text-slate-700">{question.back.text}</p>
+            </div>
           </div>
         )}
       </div>

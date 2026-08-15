@@ -7,6 +7,8 @@ import { createRng, sample, shuffle } from '../rng';
 import { buildFlashcardQuestions } from './flashcards';
 import { buildMcqQuestions } from './mcq';
 import { buildLocateQuestions } from './locate';
+import { buildFillBlankQuestions } from './fillBlank';
+import { buildIdentifyTypedQuestions } from './identifyTyped';
 
 export interface RevisionSetConfig {
   types: readonly QuestionType[];
@@ -14,9 +16,9 @@ export interface RevisionSetConfig {
   subregion?: SubRegion;
   category?: Category;
   difficulty?: Difficulty;
-  /** practice = every eligible question once (shuffled); assessment = a random sample of `count`. */
+  /** practice = every eligible question once (shuffled), optionally capped at `count`; assessment = a random sample of `count`. */
   mode: 'practice' | 'assessment';
-  /** Required for 'assessment' mode; ignored in 'practice' mode. */
+  /** Assessment: required, sampled with repeats-free randomness. Practice: optional cap on the shuffled set; omit for every eligible question. */
   count?: number;
   /** Restrict to specific structure ids — used by RevisionResults' "retry incorrect". */
   structureIds?: string[];
@@ -64,9 +66,16 @@ export function generateRevisionSet(
   if (config.types.includes('locate')) {
     generated.push(...buildLocateQuestions(pool, relevantImages));
   }
+  if (config.types.includes('fill-blank')) {
+    generated.push(...buildFillBlankQuestions(pool, rng));
+  }
+  if (config.types.includes('identify-typed')) {
+    generated.push(...buildIdentifyTypedQuestions(pool, relevantImages));
+  }
 
   if (config.mode === 'assessment') {
     return sample(generated, config.count ?? generated.length, rng);
   }
-  return shuffle(generated, rng);
+  const shuffled = shuffle(generated, rng);
+  return config.count ? shuffled.slice(0, config.count) : shuffled;
 }

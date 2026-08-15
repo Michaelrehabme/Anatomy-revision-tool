@@ -1,4 +1,4 @@
-import { isMuscle, isBone, isLandmark } from '../../types/structure';
+import { isMuscle, isBone } from '../../types/structure';
 import type { AnatomyStructure } from '../../types/structure';
 import type { AnatomyImageAsset } from '../../types/image';
 import type { MCQQuestion, PromptKind } from '../../types/question';
@@ -15,8 +15,12 @@ export interface McqGenOptions {
 }
 
 const MUSCLE_KINDS: PromptKind[] = ['identify', 'origin', 'insertion', 'nerve', 'action'];
-const BONE_KINDS: PromptKind[] = ['identify', 'attachment', 'articulation'];
-const LANDMARK_KINDS: PromptKind[] = ['identify', 'attachment'];
+// Bones are image/spatial-recognition only for now: no text-only attachment/articulation
+// detail questions, and buildOne() below also skips the text-clue identify variant for bones.
+const BONE_KINDS: PromptKind[] = ['identify'];
+// Attachment/articulation detail now lives in fill-blank questions (see fillBlank.ts) — one
+// statement at a time is far more answerable than the old joined-string MCQ choice was.
+const LANDMARK_KINDS: PromptKind[] = ['identify'];
 
 function kindsFor(structure: AnatomyStructure, requested?: PromptKind[]): PromptKind[] {
   const supported = isMuscle(structure) ? MUSCLE_KINDS : isBone(structure) ? BONE_KINDS : LANDMARK_KINDS;
@@ -89,17 +93,22 @@ function buildOne(
   const out: MCQQuestion[] = [];
 
   if (promptKind === 'identify') {
-    // Text-based: clue built from the structure's own facts, answer = name.
     const distractors = pickNameDistractors(structure, all, distractorCount, rng);
-    const { choices, correctIndex } = buildChoices(structure.name, distractors, choiceCount, rng);
-    out.push({
-      ...baseFields(structure, promptKind),
-      id: `mcq-${structure.id}-identify-text`,
-      prompt: `Name the structure: ${buildIdentifyClue(structure)}`,
-      choices,
-      correctIndex,
-      explanation: summarizeStructure(structure),
-    });
+
+    // Text-based: clue built from the structure's own facts, answer = name.
+    // Bones skip this variant — image/spatial recognition is the priority skill for them,
+    // not recalling a structure from a text clue.
+    if (!isBone(structure)) {
+      const { choices, correctIndex } = buildChoices(structure.name, distractors, choiceCount, rng);
+      out.push({
+        ...baseFields(structure, promptKind),
+        id: `mcq-${structure.id}-identify-text`,
+        prompt: `Name the structure: ${buildIdentifyClue(structure)}`,
+        choices,
+        correctIndex,
+        explanation: summarizeStructure(structure),
+      });
+    }
 
     // Image-based variants (one per matching image).
     for (const image of images.filter((img) => imageDepicts(img, structure.id))) {
@@ -184,52 +193,10 @@ function buildOne(
     return out;
   }
 
-  if ((isBone(structure) || isLandmark(structure)) && promptKind === 'attachment') {
-    const correctValue = structure.attachments.join('; ');
-    const distractors = pickTextFieldDistractors(
-      correctValue,
-      structure,
-      all,
-      (s) => (isBone(s) || isLandmark(s) ? s.attachments : undefined),
-      distractorCount,
-      rng,
-    );
-    const { choices, correctIndex } = buildChoices(correctValue, distractors, choiceCount, rng);
-    out.push({
-      ...baseFields(structure, promptKind),
-      id: `mcq-${structure.id}-attachment`,
-      prompt: `What attaches to the ${structure.name}?`,
-      choices,
-      correctIndex,
-      explanation: summarizeStructure(structure),
-    });
-  }
-
-  if (isBone(structure) && promptKind === 'articulation') {
-    const correctValue = structure.articulations.join('; ');
-    const distractors = pickTextFieldDistractors(
-      correctValue,
-      structure,
-      all,
-      (s) => (isBone(s) ? s.articulations : undefined),
-      distractorCount,
-      rng,
-    );
-    const { choices, correctIndex } = buildChoices(correctValue, distractors, choiceCount, rng);
-    out.push({
-      ...baseFields(structure, promptKind),
-      id: `mcq-${structure.id}-articulation`,
-      prompt: `Which joint(s) does the ${structure.name} form?`,
-      choices,
-      correctIndex,
-      explanation: summarizeStructure(structure),
-    });
-  }
-
   return out;
 }
 
-function imageDepicts(image: AnatomyImageAsset, structureId: string): boolean {
+export function imageDepicts(image: AnatomyImageAsset, structureId: string): boolean {
   if (image.mode === 'single-structure') return image.structureId === structureId;
   return (image.hotspots ?? []).some((h) => h.structureId === structureId);
 }

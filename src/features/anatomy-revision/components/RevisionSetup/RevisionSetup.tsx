@@ -12,6 +12,8 @@ const QUESTION_TYPE_OPTIONS: { value: QuestionType; label: string; description: 
   { value: 'flashcard', label: 'Flashcards', description: 'Flip cards, self-rate your recall.' },
   { value: 'mcq', label: 'Multiple choice', description: 'Pick the correct answer from 4 options.' },
   { value: 'locate', label: 'Locate the structure', description: 'Tap the structure on an image.' },
+  { value: 'identify-typed', label: 'Identify (typed)', description: "Type the structure's name from an image — small typos are OK." },
+  { value: 'fill-blank', label: 'Fill in the blank', description: 'Complete the missing word in a bone/landmark fact.' },
 ];
 
 const CATEGORY_OPTIONS: { value: Category | 'all'; label: string }[] = [
@@ -51,7 +53,7 @@ export function RevisionSetup({ content, onStart }: RevisionSetupProps) {
       region: params.region,
       category: params.category,
       mode,
-      count: mode === 'assessment' ? count : undefined,
+      count,
     });
     onStart(questions, params);
   };
@@ -128,7 +130,7 @@ export function RevisionSetup({ content, onStart }: RevisionSetupProps) {
             onClick={() => setMode('practice')}
             className={`flex-1 rounded-lg border p-3 text-sm ${mode === 'practice' ? 'border-brand-600 bg-brand-50 ring-1 ring-brand-600' : 'border-slate-200 bg-white'}`}
           >
-            Practice — every matching question, once
+            Practice — shuffled, up to a fixed number
           </button>
           <button
             type="button"
@@ -138,20 +140,18 @@ export function RevisionSetup({ content, onStart }: RevisionSetupProps) {
             Assessment — fixed-size random sample
           </button>
         </div>
-        {mode === 'assessment' && (
-          <label className="mt-3 block">
-            <span className="mb-1 block text-sm font-medium text-slate-700">Number of questions: {count}</span>
-            <input
-              type="range"
-              min={5}
-              max={50}
-              step={5}
-              value={count}
-              onChange={(e) => setCount(Number(e.target.value))}
-              className="w-full"
-            />
-          </label>
-        )}
+        <label className="mt-3 block">
+          <span className="mb-1 block text-sm font-medium text-slate-700">Number of questions: {count}</span>
+          <input
+            type="range"
+            min={5}
+            max={50}
+            step={5}
+            value={count}
+            onChange={(e) => setCount(Number(e.target.value))}
+            className="w-full"
+          />
+        </label>
       </section>
 
       <button

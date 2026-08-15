@@ -7,8 +7,16 @@ import { RevisionSetup } from './features/anatomy-revision/components/RevisionSe
 import { FlashcardSession } from './features/anatomy-revision/components/FlashcardSession/FlashcardSession';
 import { MCQSession } from './features/anatomy-revision/components/MCQSession/MCQSession';
 import { LocateStructureSession } from './features/anatomy-revision/components/LocateStructureSession/LocateStructureSession';
+import { FillBlankSession } from './features/anatomy-revision/components/FillBlankSession/FillBlankSession';
+import { IdentifyTypedSession } from './features/anatomy-revision/components/IdentifyTypedSession/IdentifyTypedSession';
 import { RevisionResults } from './features/anatomy-revision/components/RevisionResults/RevisionResults';
-import { isFlashcardQuestion, isMcqQuestion, isLocateQuestion } from './features/anatomy-revision/types/question';
+import {
+  isFlashcardQuestion,
+  isMcqQuestion,
+  isLocateQuestion,
+  isFillBlankQuestion,
+  isTypedIdentifyQuestion,
+} from './features/anatomy-revision/types/question';
 
 /**
  * Top-level setup -> in-progress -> results state machine (no router — see
@@ -113,6 +121,23 @@ function App() {
           question={question}
           imagesById={content.imagesById}
           structuresById={content.structuresById}
+          onAnswer={(params) => session.submitAnswer({ ...params, questionId: question.id })}
+          onNext={advance}
+        />
+      )}
+      {isFillBlankQuestion(question) && (
+        <FillBlankSession
+          key={question.id}
+          question={question}
+          onAnswer={(params) => session.submitAnswer({ ...params, questionId: question.id })}
+          onNext={advance}
+        />
+      )}
+      {isTypedIdentifyQuestion(question) && (
+        <IdentifyTypedSession
+          key={question.id}
+          question={question}
+          imagesById={content.imagesById}
           onAnswer={(params) => session.submitAnswer({ ...params, questionId: question.id })}
           onNext={advance}
         />
