@@ -23,6 +23,14 @@ import type { AnatomyImageAsset } from '../../types/image';
 const AI_GENERATED_CREDIT = 'Rory Neary (AI-generated illustration)';
 const AI_GENERATED_LICENCE = 'All rights reserved';
 
+// Per-landmark renders from the Z-Anatomy/Blender pipeline (see the sibling
+// static-quiz repo's render_landmarks.py) — a genuinely different licence
+// family from the AI-generated atlas slides above, so never reuse the
+// AI_GENERATED_* constants for these.
+const Z_ANATOMY_CREDIT =
+  'Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).';
+const Z_ANATOMY_LICENCE = 'CC BY-SA 4.0';
+
 export const IMAGE_ASSETS: AnatomyImageAsset[] = [
   // --- Muscle atlas slides (10) ---
   {
@@ -362,5 +370,90 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
     ],
     region: 'back-core', subregion: 'spine', view: 'posterior', layer: 'skeletal',
     hotspots: [], credit: AI_GENERATED_CREDIT, licence: AI_GENERATED_LICENCE,
+  },
+
+  // --- Single-structure landmark renders (8) ---
+  // Each shows its target landmark highlighted among its real neighboring
+  // bones (e.g. talus between the tibia/fibula and calcaneus/navicular),
+  // instead of an isolated, context-free cutout.
+  {
+    id: 'talus-context',
+    filePath: '/anatomy/lower-leg-foot/talus.png',
+    slideTitle: 'Talus in context',
+    mode: 'single-structure',
+    structureId: 'talus',
+    region: 'lower-leg-foot', subregion: 'ankle-foot', view: 'anterior', layer: 'landmark',
+    hotspots: [], credit: Z_ANATOMY_CREDIT, licence: Z_ANATOMY_LICENCE,
+    width: 1400, height: 1400,
+  },
+  {
+    id: 'calcaneus-context',
+    filePath: '/anatomy/lower-leg-foot/calcaneus.png',
+    slideTitle: 'Calcaneus in context',
+    mode: 'single-structure',
+    structureId: 'calcaneus',
+    region: 'lower-leg-foot', subregion: 'ankle-foot', view: 'anterior', layer: 'landmark',
+    hotspots: [], credit: Z_ANATOMY_CREDIT, licence: Z_ANATOMY_LICENCE,
+    width: 1400, height: 1400,
+  },
+  {
+    id: 'navicular-context',
+    filePath: '/anatomy/lower-leg-foot/navicular.png',
+    slideTitle: 'Navicular in context',
+    mode: 'single-structure',
+    structureId: 'navicular',
+    region: 'lower-leg-foot', subregion: 'ankle-foot', view: 'anterior', layer: 'landmark',
+    hotspots: [], credit: Z_ANATOMY_CREDIT, licence: Z_ANATOMY_LICENCE,
+    width: 1400, height: 1400,
+  },
+  {
+    id: 'cuboid-context',
+    filePath: '/anatomy/lower-leg-foot/cuboid.png',
+    slideTitle: 'Cuboid in context',
+    mode: 'single-structure',
+    structureId: 'cuboid',
+    region: 'lower-leg-foot', subregion: 'ankle-foot', view: 'anterior', layer: 'landmark',
+    hotspots: [], credit: Z_ANATOMY_CREDIT, licence: Z_ANATOMY_LICENCE,
+    width: 1400, height: 1400,
+  },
+  {
+    id: 'glenoid-labrum-context',
+    filePath: '/anatomy/shoulder-arm/glenoid-labrum.png',
+    slideTitle: 'Glenoid labrum in context',
+    mode: 'single-structure',
+    structureId: 'glenoid-labrum',
+    region: 'shoulder-arm', subregion: 'shoulder', view: 'anterior', layer: 'landmark',
+    hotspots: [], credit: Z_ANATOMY_CREDIT, licence: Z_ANATOMY_LICENCE,
+    width: 1400, height: 1400,
+  },
+  {
+    id: 'menisci-context',
+    filePath: '/anatomy/hip-thigh/menisci.png',
+    slideTitle: 'Menisci in context',
+    mode: 'single-structure',
+    structureId: 'menisci',
+    region: 'hip-thigh', subregion: 'knee', view: 'anterior', layer: 'landmark',
+    hotspots: [], credit: Z_ANATOMY_CREDIT, licence: Z_ANATOMY_LICENCE,
+    width: 1400, height: 1400,
+  },
+  {
+    id: 'l4-vertebra-context',
+    filePath: '/anatomy/back-core/l4-vertebra.png',
+    slideTitle: 'L4 vertebra in context',
+    mode: 'single-structure',
+    structureId: 'l4-vertebra',
+    region: 'back-core', subregion: 'spine', view: 'anterior', layer: 'landmark',
+    hotspots: [], credit: Z_ANATOMY_CREDIT, licence: Z_ANATOMY_LICENCE,
+    width: 1400, height: 1400,
+  },
+  {
+    id: 'intervertebral-disc-context',
+    filePath: '/anatomy/back-core/intervertebral-disc.png',
+    slideTitle: 'Intervertebral disc in context',
+    mode: 'single-structure',
+    structureId: 'intervertebral-disc',
+    region: 'back-core', subregion: 'spine', view: 'anterior', layer: 'landmark',
+    hotspots: [], credit: Z_ANATOMY_CREDIT, licence: Z_ANATOMY_LICENCE,
+    width: 1400, height: 1400,
   },
 ];
