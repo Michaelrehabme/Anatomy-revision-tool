@@ -201,7 +201,7 @@
       "notes": "Fibrocartilaginous rim that deepens the glenoid cavity.",
       "images": {
         "isolated": "renders/isolated/glenoid-labrum.png",
-        "hotspot": null,
+        "hotspot": "renders/landmark-context/glenoid-labrum.png",
         "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
         "licence": "CC BY-SA 4.0"
       },
@@ -222,7 +222,7 @@
       "notes": "Forms the ankle joint with the tibia/fibula and the subtalar joint with the calcaneus.",
       "images": {
         "isolated": "renders/isolated/talus.png",
-        "hotspot": null,
+        "hotspot": "renders/landmark-context/talus.png",
         "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
         "licence": "CC BY-SA 4.0"
       },
@@ -243,7 +243,7 @@
       "notes": "Largest tarsal bone; forms the heel and the subtalar joint with the talus.",
       "images": {
         "isolated": "renders/isolated/calcaneus.png",
-        "hotspot": null,
+        "hotspot": "renders/landmark-context/calcaneus.png",
         "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
         "licence": "CC BY-SA 4.0"
       },
@@ -265,7 +265,7 @@
       "region": "lower-leg-foot",
       "images": {
         "isolated": "renders/isolated/navicular.png",
-        "hotspot": null,
+        "hotspot": "renders/landmark-context/navicular.png",
         "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
         "licence": "CC BY-SA 4.0"
       },
@@ -286,7 +286,7 @@
       "region": "lower-leg-foot",
       "images": {
         "isolated": "renders/isolated/cuboid.png",
-        "hotspot": null,
+        "hotspot": "renders/landmark-context/cuboid.png",
         "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
         "licence": "CC BY-SA 4.0"
       },
@@ -531,7 +531,7 @@
       "notes": "Fibrocartilage pads between femoral and tibial condyles.",
       "images": {
         "isolated": "renders/isolated/menisci.png",
-        "hotspot": null,
+        "hotspot": "renders/landmark-context/menisci.png",
         "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
         "licence": "CC BY-SA 4.0"
       },
@@ -552,7 +552,7 @@
       "notes": "4th lumbar vertebra.",
       "images": {
         "isolated": "renders/isolated/vertebra-l4.png",
-        "hotspot": null,
+        "hotspot": "renders/landmark-context/vertebra-l4.png",
         "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
         "licence": "CC BY-SA 4.0"
       },
@@ -664,7 +664,7 @@
       "notes": "Z-Anatomy models one per level (e.g. 'Intervertebral disc L4-L5') - id here refers to the structure generically; a specific level can be picked at render time.",
       "images": {
         "isolated": "renders/isolated/intervertebral-disc.png",
-        "hotspot": null,
+        "hotspot": "renders/landmark-context/intervertebral-disc.png",
         "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
         "licence": "CC BY-SA 4.0"
       },

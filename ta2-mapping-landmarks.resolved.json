@@ -53,6 +53,10 @@
       "blenderObjects": [
         "Intervertebral disc L4-L5"
       ],
+      "contextObjects": [
+        "Vertebra L4",
+        "Vertebra L5"
+      ],
       "resolution": "manual",
       "resolutionConfidence": 1.0
     },
@@ -62,6 +66,10 @@
       "region": "back-core",
       "blenderObjects": [
         "Vertebra L4"
+      ],
+      "contextObjects": [
+        "Vertebra L3",
+        "Vertebra L5"
       ],
       "resolution": "manual",
       "resolutionConfidence": 1.0
@@ -204,6 +212,10 @@
         "Medial meniscus.l",
         "Medial meniscus.r"
       ],
+      "contextObjects": [
+        "Femur.l",
+        "Tibia.l"
+      ],
       "resolution": "manual",
       "resolutionConfidence": 1.0
     },
@@ -225,6 +237,10 @@
         "Calcaneus.l",
         "Calcaneus.r"
       ],
+      "contextObjects": [
+        "Talus.l",
+        "Cuboid bone.l"
+      ],
       "resolution": "exact",
       "resolutionConfidence": 1.0
     },
@@ -235,6 +251,11 @@
       "blenderObjects": [
         "Cuboid bone.l",
         "Cuboid bone.r"
+      ],
+      "contextObjects": [
+        "Calcaneus.l",
+        "Navicular bone.l",
+        "Lateral cuneiform bone.l"
       ],
       "resolution": "manual",
       "resolutionConfidence": 1.0
@@ -267,6 +288,11 @@
         "Navicular bone.l",
         "Navicular bone.r"
       ],
+      "contextObjects": [
+        "Talus.l",
+        "Cuboid bone.l",
+        "Medial cuneiform bone.l"
+      ],
       "resolution": "manual",
       "resolutionConfidence": 1.0
     },
@@ -277,6 +303,12 @@
       "blenderObjects": [
         "Talus.l",
         "Talus.r"
+      ],
+      "contextObjects": [
+        "Tibia.l",
+        "Fibula.l",
+        "Calcaneus.l",
+        "Navicular bone.l"
       ],
       "resolution": "exact",
       "resolutionConfidence": 1.0
@@ -326,6 +358,10 @@
       "blenderObjects": [
         "Glenoid labrum.l",
         "Glenoid labrum.r"
+      ],
+      "contextObjects": [
+        "Scapula.l",
+        "Humerus.l"
       ],
       "resolution": "manual",
       "resolutionConfidence": 1.0

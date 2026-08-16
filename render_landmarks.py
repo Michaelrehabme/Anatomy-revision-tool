@@ -6,7 +6,12 @@
 Landmarks come in two kinds (see ta2-mapping-landmarks.resolved.json):
   "solid" - a real bone/structure with fillable geometry (Talus, Calcaneus,
             L4 vertebra, menisci, glenoid labrum...). Rendered exactly like a
-            muscle isolated portrait: renders/isolated/<id>.png
+            muscle isolated portrait: renders/isolated/<id>.png. Entries that
+            also carry a "contextObjects" list (a hand-picked set of real
+            neighbor bones) get a second render at
+            renders/landmark-context/<id>.png: the target bone highlighted
+            in a distinct color among its (muted-color) neighbors, one side
+            only, so it reads in situ instead of as an isolated cutout.
   "pin"   - Z-Anatomy's own 2-vertex label-pin markers (facets, notches,
             processes...) with no surface to render on their own. Its direct
             parent (a ".s" surface patch object) is itself parented to the
@@ -32,10 +37,14 @@ ap.add_argument("--out", default="./renders")
 ap.add_argument("--res", type=int, default=1400)
 ap.add_argument("--samples", type=int, default=32)
 ap.add_argument("--engine", default="BLENDER_EEVEE")
+ap.add_argument("--only", default=None, help="comma-separated landmark ids to restrict processing to")
 a = ap.parse_args(argv)
 
 mapping = json.load(open(a.mapping, encoding="utf-8"))["mapping"]
 entries = [m for m in mapping if m.get("blenderObjects")]
+if a.only:
+    wanted = set(a.only.split(","))
+    entries = [m for m in entries if m["id"] in wanted]
 
 scene = bpy.data.scenes.new("RenderScene")
 bpy.context.window.scene = scene
@@ -78,6 +87,7 @@ def isolated_material(name, color):
 
 bone_mat = isolated_material("bone_context", (0.88, 0.85, 0.76, 1.0))
 solid_mat = isolated_material("landmark_solid", (0.88, 0.85, 0.76, 1.0))
+highlight_mat = isolated_material("landmark_highlight", (0.85, 0.45, 0.15, 1.0))
 
 
 def bake_world_mesh(object_names, mesh_name):
@@ -205,6 +215,51 @@ for e, mesh in solids:
     render_to(os.path.join(a.out, "isolated", f"{e['id']}.png"))
     scene.collection.objects.unlink(ob)
 
+# --- solid landmarks with contextObjects: target bone highlighted among its
+# real neighbors, same idea as the pin-landmark context plates below but for
+# landmarks that are themselves a whole bone rather than a marker on one.
+# Renders one side only (".l", or unsided objects like vertebrae) - matching
+# both sides would double the bbox and shrink everything to match the old
+# isolated renders' problem of two tiny bones with dead space between them.
+for e, _mesh in solids:
+    ctx = e.get("contextObjects")
+    if not ctx:
+        continue
+    target_names = [n for n in e["blenderObjects"] if not n.endswith(".r")] or e["blenderObjects"][:1]
+    target_mesh = bake_world_mesh(target_names, f"ctxtarget_{e['id']}")
+    if len(target_mesh.polygons) == 0:
+        print(f"[warn] {e['id']}: context target mesh empty, skipping context render")
+        bpy.data.meshes.remove(target_mesh)
+        continue
+    neighbor_mesh = bake_world_mesh(ctx, f"ctxneighbors_{e['id']}")
+
+    clear_render_objects()
+    t_ob = bpy.data.objects.new(f"ctxtarget_{e['id']}", target_mesh)
+    t_ob.data.materials.clear()
+    t_ob.data.materials.append(highlight_mat)
+    for p in t_ob.data.polygons:
+        p.material_index = 0
+    scene.collection.objects.link(t_ob)
+    bmin, bmax = mesh_bbox(target_mesh)
+
+    if len(neighbor_mesh.vertices) > 0:
+        n_ob = bpy.data.objects.new(f"ctxneighbors_{e['id']}", neighbor_mesh)
+        n_ob.data.materials.clear()
+        n_ob.data.materials.append(bone_mat)
+        for p in n_ob.data.polygons:
+            p.material_index = 0
+        scene.collection.objects.link(n_ob)
+    else:
+        print(f"[warn] {e['id']}: none of contextObjects resolved, rendering target only")
+
+    # Frame on the TARGET's own bbox, not the combined one - a neighbor that's
+    # a full long bone (femur, humerus, tibia+fibula) would otherwise dominate
+    # the shot and shrink the target to a speck. The wide margin still pulls
+    # in nearby neighbor geometry as visible context; distal ends of long
+    # bones simply run off-frame instead of setting the zoom level.
+    frame_camera(bmin, bmax, margin=2.4)
+    render_to(os.path.join(a.out, "landmark-context", f"{e['id']}.png"))
+
 # --- pin landmarks: render each unique parent bone once, project pins onto it ---
 pins_by_bone = {}
 for e, bone, centroid in pins:
@@ -269,4 +324,6 @@ json.dump({
              "placement, not a verified one - see render_landmarks.py's approx_world_centroid()."),
     "pins": landmark_pins,
 }, open(out_path, "w", encoding="utf-8"), indent=2)
-print(f"[render_landmarks] {len(solids)} solid renders, {len(landmark_pins)} pins -> {out_path}")
+context_count = len([e for e, _mesh in solids if e.get("contextObjects")])
+print(f"[render_landmarks] {len(solids)} solid renders, {context_count} solid-context renders, "
+      f"{len(landmark_pins)} pins -> {out_path}")

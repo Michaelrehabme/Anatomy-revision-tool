@@ -539,7 +539,7 @@
 
         <div class="field-group">
           <h2>Structure questions <span class="sel-count" id="structure-sel-count"></span></h2>
-          <p class="note" style="margin:-4px 0 8px;">Image-based questions on bones and landmarks, independent of the region filter above. Off by default.</p>
+          <p class="note" style="margin:-4px 0 8px;">Image-based questions on bones and landmarks within your selected regions above. Off by default.</p>
           <div id="structure-chips" class="chip-grid"></div>
           <div class="chip-tools">
             <button class="link-btn" data-action="structure-all">Select all</button>
@@ -7525,7 +7525,7 @@
       "notes": "Fibrocartilaginous rim that deepens the glenoid cavity.",
       "images": {
         "isolated": "renders/isolated/glenoid-labrum.png",
-        "hotspot": null,
+        "hotspot": "renders/landmark-context/glenoid-labrum.png",
         "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
         "licence": "CC BY-SA 4.0"
       },
@@ -7546,7 +7546,7 @@
       "notes": "Forms the ankle joint with the tibia/fibula and the subtalar joint with the calcaneus.",
       "images": {
         "isolated": "renders/isolated/talus.png",
-        "hotspot": null,
+        "hotspot": "renders/landmark-context/talus.png",
         "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
         "licence": "CC BY-SA 4.0"
       },
@@ -7567,7 +7567,7 @@
       "notes": "Largest tarsal bone; forms the heel and the subtalar joint with the talus.",
       "images": {
         "isolated": "renders/isolated/calcaneus.png",
-        "hotspot": null,
+        "hotspot": "renders/landmark-context/calcaneus.png",
         "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
         "licence": "CC BY-SA 4.0"
       },
@@ -7589,7 +7589,7 @@
       "region": "lower-leg-foot",
       "images": {
         "isolated": "renders/isolated/navicular.png",
-        "hotspot": null,
+        "hotspot": "renders/landmark-context/navicular.png",
         "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
         "licence": "CC BY-SA 4.0"
       },
@@ -7610,7 +7610,7 @@
       "region": "lower-leg-foot",
       "images": {
         "isolated": "renders/isolated/cuboid.png",
-        "hotspot": null,
+        "hotspot": "renders/landmark-context/cuboid.png",
         "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
         "licence": "CC BY-SA 4.0"
       },
@@ -7855,7 +7855,7 @@
       "notes": "Fibrocartilage pads between femoral and tibial condyles.",
       "images": {
         "isolated": "renders/isolated/menisci.png",
-        "hotspot": null,
+        "hotspot": "renders/landmark-context/menisci.png",
         "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
         "licence": "CC BY-SA 4.0"
       },
@@ -7876,7 +7876,7 @@
       "notes": "4th lumbar vertebra.",
       "images": {
         "isolated": "renders/isolated/vertebra-l4.png",
-        "hotspot": null,
+        "hotspot": "renders/landmark-context/vertebra-l4.png",
         "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
         "licence": "CC BY-SA 4.0"
       },
@@ -7988,7 +7988,7 @@
       "notes": "Z-Anatomy models one per level (e.g. 'Intervertebral disc L4-L5') - id here refers to the structure generically; a specific level can be picked at render time.",
       "images": {
         "isolated": "renders/isolated/intervertebral-disc.png",
-        "hotspot": null,
+        "hotspot": "renders/landmark-context/intervertebral-disc.png",
         "credit": "Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).",
         "licence": "CC BY-SA 4.0"
       },
@@ -53218,8 +53218,8 @@
   }
   function structureImage(lm) {
     if (!lm) return null;
-    if (lm.kind === "solid") return { src: lm.images.isolated, pin: null };
-    if (lm.kind === "pin") return { src: lm.images.hotspot, pin: lm.pin };
+    if (lm.images.hotspot) return { src: lm.images.hotspot, pin: lm.kind === "pin" ? lm.pin : null };
+    if (lm.images.isolated) return { src: lm.images.isolated, pin: null };
     return null;
   }
   function genAttachment(a) {
@@ -53382,12 +53382,17 @@
     });
     var structureCount = 0;
     if (state.structureTypes.has("attachment")) {
-      ATTACHMENTS.forEach(function (a) { pool.push({ attachment: a, qtype: "attachment", format: pickFormat() }); });
-      structureCount += ATTACHMENTS.length;
+      var regionAttachments = ATTACHMENTS.filter(function (a) {
+        var lm = LANDMARKS_BY_ID[a.landmarkId];
+        return lm && dataRegions.has(lm.region);
+      });
+      regionAttachments.forEach(function (a) { pool.push({ attachment: a, qtype: "attachment", format: pickFormat() }); });
+      structureCount += regionAttachments.length;
     }
     if (state.structureTypes.has("identify-structure")) {
-      LANDMARKS.forEach(function (lm) { pool.push({ landmark: lm, qtype: "identify-structure", format: pickFormat() }); });
-      structureCount += LANDMARKS.length;
+      var regionLandmarks = LANDMARKS.filter(function (lm) { return dataRegions.has(lm.region); });
+      regionLandmarks.forEach(function (lm) { pool.push({ landmark: lm, qtype: "identify-structure", format: pickFormat() }); });
+      structureCount += regionLandmarks.length;
     }
     state.pool = pool;
     el.poolSummary.textContent = state.filteredMuscles.length + " muscles matched, " + structureCount + " structure questions, "
