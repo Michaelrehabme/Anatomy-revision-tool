@@ -398,8 +398,24 @@
   .answer-reveal.correct b { color: var(--ok); }
   .answer-reveal.incorrect { border-color: var(--bad); }
   .answer-reveal.incorrect b { color: var(--bad); }
-  #flash-answer-input.correct { border-color: var(--ok); }
-  #flash-answer-input.incorrect { border-color: var(--bad); }
+  #flash-answer-input.correct,
+  .type-answer-inputs .n-input.correct {
+    border-color: var(--ok);
+    padding-right: 34px;
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 18px 18px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='20' height='20'%3E%3Ccircle cx='12' cy='12' r='11' fill='%2316a34a'/%3E%3Cpath d='M7 12.5l3 3 7-7' stroke='white' stroke-width='2.2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  }
+  #flash-answer-input.incorrect,
+  .type-answer-inputs .n-input.incorrect {
+    border-color: var(--bad);
+    padding-right: 34px;
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 18px 18px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='20' height='20'%3E%3Ccircle cx='12' cy='12' r='11' fill='%23dc2626'/%3E%3Cpath d='M8 8l8 8M16 8l-8 8' stroke='white' stroke-width='2.2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  }
   .hint-text {
     font-size: 13.5px;
     color: var(--muted);
@@ -410,12 +426,14 @@
   .action-row { display: flex; gap: 10px; flex-wrap: wrap; }
   .type-answer-inputs { display: flex; gap: 10px; flex-wrap: wrap; }
   .type-answer-inputs .n-input { flex: 1; min-width: 160px; width: auto; }
-  .type-answer-inputs .n-input.correct { border-color: var(--ok); }
-  .type-answer-inputs .n-input.incorrect { border-color: var(--bad); }
   .grade-btn.yes { border-color: var(--ok); color: var(--ok); }
   .grade-btn.no { border-color: var(--bad); color: var(--bad); }
   .grade-btn.yes:hover { background: var(--ok); color: var(--ok-ink); }
   .grade-btn.no:hover { background: var(--bad); color: var(--bad-ink); }
+  .grade-btn.selected.yes { background: var(--ok); color: var(--ok-ink); }
+  .grade-btn.selected.no { background: var(--bad); color: var(--bad-ink); }
+  .grade-btn:disabled { opacity: 0.55; cursor: default; }
+  .grade-btn.selected:disabled { opacity: 1; }
 
   .score-hero { display: flex; align-items: baseline; gap: 10px; }
   .score-hero .big { font-family: var(--font-heading); font-size: 48px; font-variant-numeric: tabular-nums; font-weight: 600; }
@@ -489,6 +507,16 @@
       <div id="quiz-flow">
       <!-- SETUP -->
       <section id="setup-panel" class="panel">
+        <div class="field-group">
+          <h2>Limb <span class="sel-count" id="limb-sel-count"></span></h2>
+          <p class="note" style="margin:-4px 0 8px;">Quick filter for a whole upper or lower limb.</p>
+          <div id="limb-chips" class="chip-grid"></div>
+          <div class="chip-tools">
+            <button class="link-btn" data-action="limb-all">Select all</button>
+            <button class="link-btn" data-action="limb-none">Select none</button>
+          </div>
+        </div>
+
         <div class="field-group">
           <h2>Body regions <span class="sel-count" id="region-sel-count"></span></h2>
           <p class="note" style="margin:-4px 0 8px;">Tap to toggle any combination on or off.</p>
@@ -39734,12 +39762,16 @@
     return HOTSPOTS[m.region] && HOTSPOTS[m.region][m.id];
   });
 
-  var REGION_MAP = {
+  var LIMB_MAP = {
     "All upper limb": { data: ["shoulder-arm", "forearm-hand"], parts: ["arm-l-upper","arm-r-upper","arm-l-lower","arm-r-lower","hand-l","hand-r"] },
+    "All lower limb": { data: ["hip-thigh", "lower-leg-foot"], parts: ["thigh-l","thigh-r","leg-l","leg-r","foot-l","foot-r"] }
+  };
+  var LIMB_LABELS = Object.keys(LIMB_MAP);
+
+  var REGION_MAP = {
     "Shoulder":       { data: ["shoulder-arm"], parts: ["arm-l-upper","arm-r-upper","arm-l-lower","arm-r-lower"] },
     "Elbow":          { data: ["shoulder-arm"], parts: ["arm-l-upper","arm-r-upper","arm-l-lower","arm-r-lower"] },
     "Wrist & hand":   { data: ["forearm-hand"], parts: ["arm-l-lower","arm-r-lower","hand-l","hand-r"] },
-    "All lower limb": { data: ["hip-thigh", "lower-leg-foot"], parts: ["thigh-l","thigh-r","leg-l","leg-r","foot-l","foot-r"] },
     "Hip":            { data: ["hip-thigh"], parts: ["hip","thigh-l","thigh-r"] },
     "Knee":           { data: ["hip-thigh"], parts: ["thigh-l","thigh-r"] },
     "Ankle & foot":   { data: ["lower-leg-foot"], parts: ["leg-l","leg-r","foot-l","foot-r"] },
@@ -39747,6 +39779,8 @@
     "Torso":          { data: ["back-core"], parts: ["torso"] }
   };
   var REGION_LABELS = Object.keys(REGION_MAP);
+  var ALL_REGION_MAP = Object.assign({}, LIMB_MAP, REGION_MAP);
+  var ALL_REGION_LABELS = LIMB_LABELS.concat(REGION_LABELS);
   var QUESTION_TYPES = ["identify", "origin", "insertion", "nerve", "action", "locate"];
   var STRUCTURE_TYPES = ["attachment", "identify-structure"];
   var FORMAT_TYPES = ["flashcard", "multiple-choice", "type-answer"];
@@ -39884,10 +39918,10 @@
 
   // --- state ---
   var state = {
-    regions: new Set(REGION_LABELS),
-    types: new Set(QUESTION_TYPES),
+    regions: new Set(),
+    types: new Set(),
     structureTypes: new Set(),
-    formats: new Set(FORMAT_TYPES),
+    formats: new Set(),
     mode: "practice",
     pool: [],
     filteredMuscles: [],
@@ -39901,7 +39935,7 @@
 
   // --- DOM refs ---
   var el = {};
-  ["region-chips","type-chips","structure-chips","format-chips","region-sel-count","type-sel-count","structure-sel-count","format-sel-count","mode-segmented","assessment-count-row","assessment-count",
+  ["limb-chips","limb-sel-count","region-chips","type-chips","structure-chips","format-chips","region-sel-count","type-sel-count","structure-sel-count","format-sel-count","mode-segmented","assessment-count-row","assessment-count",
    "pool-summary","start-btn","setup-panel","quiz-panel","results-panel",
    "progress-current","progress-total","progress-label","qtype-tag","question-prompt",
    "question-image-area","question-image","question-pin","question-highlight",
@@ -39931,13 +39965,13 @@
 
   function dataRegionsFor(labels) {
     var set = new Set();
-    labels.forEach(function (l) { REGION_MAP[l].data.forEach(function (d) { set.add(d); }); });
+    labels.forEach(function (l) { ALL_REGION_MAP[l].data.forEach(function (d) { set.add(d); }); });
     return set;
   }
 
   function updateFigure() {
     var activeParts = new Set();
-    state.regions.forEach(function (l) { REGION_MAP[l].parts.forEach(function (p) { activeParts.add(p); }); });
+    state.regions.forEach(function (l) { ALL_REGION_MAP[l].parts.forEach(function (p) { activeParts.add(p); }); });
     figureParts.forEach(function (node) {
       var part = node.getAttribute("data-part");
       node.classList.toggle("active", activeParts.has(part));
@@ -39976,18 +40010,24 @@
     el.railQuestionCount.textContent = pool.length;
     el.startBtn.disabled = pool.length === 0 || state.formats.size === 0;
     updateFigure();
+    renderChips(el.limbChips, LIMB_LABELS, state.regions, recompute);
     renderChips(el.regionChips, REGION_LABELS, state.regions, recompute);
     renderChips(el.typeChips, QUESTION_TYPES, state.types, recompute);
     renderChips(el.structureChips, STRUCTURE_TYPES, state.structureTypes, recompute);
     renderChips(el.formatChips, FORMAT_TYPES, state.formats, recompute);
-    el.regionSelCount.textContent = state.regions.size + " of " + REGION_LABELS.length + " selected";
+    var limbSelected = LIMB_LABELS.filter(function (l) { return state.regions.has(l); }).length;
+    var regionSelected = REGION_LABELS.filter(function (l) { return state.regions.has(l); }).length;
+    el.limbSelCount.textContent = limbSelected + " of " + LIMB_LABELS.length + " selected";
+    el.regionSelCount.textContent = regionSelected + " of " + REGION_LABELS.length + " selected";
     el.typeSelCount.textContent = state.types.size + " of " + QUESTION_TYPES.length + " selected";
     el.structureSelCount.textContent = state.structureTypes.size + " of " + STRUCTURE_TYPES.length + " selected";
     el.formatSelCount.textContent = state.formats.size + " of " + FORMAT_TYPES.length + " selected";
   }
 
-  document.querySelector('[data-action="regions-all"]').addEventListener("click", function () { state.regions = new Set(REGION_LABELS); recompute(); });
-  document.querySelector('[data-action="regions-none"]').addEventListener("click", function () { state.regions = new Set(); recompute(); });
+  document.querySelector('[data-action="limb-all"]').addEventListener("click", function () { LIMB_LABELS.forEach(function (l) { state.regions.add(l); }); recompute(); });
+  document.querySelector('[data-action="limb-none"]').addEventListener("click", function () { LIMB_LABELS.forEach(function (l) { state.regions.delete(l); }); recompute(); });
+  document.querySelector('[data-action="regions-all"]').addEventListener("click", function () { REGION_LABELS.forEach(function (l) { state.regions.add(l); }); recompute(); });
+  document.querySelector('[data-action="regions-none"]').addEventListener("click", function () { REGION_LABELS.forEach(function (l) { state.regions.delete(l); }); recompute(); });
   document.querySelector('[data-action="types-all"]').addEventListener("click", function () { state.types = new Set(QUESTION_TYPES); recompute(); });
   document.querySelector('[data-action="types-none"]').addEventListener("click", function () { state.types = new Set(); recompute(); });
   document.querySelector('[data-action="structure-all"]').addEventListener("click", function () { state.structureTypes = new Set(STRUCTURE_TYPES); recompute(); });
@@ -39996,7 +40036,7 @@
   document.querySelector('[data-action="formats-none"]').addEventListener("click", function () { state.formats = new Set(); recompute(); });
 
   // --- Learn mode: pure browsing, no grading ---
-  state.learnRegions = new Set(REGION_LABELS);
+  state.learnRegions = new Set();
 
   function learnCardHtml(kind, item) {
     var img = (item.images && (item.images.isolated || item.images.hotspot)) || "";
@@ -40028,10 +40068,10 @@
     var dataRegions = dataRegionsFor(Array.from(state.learnRegions));
     var muscles = MUSCLES.filter(function (m) { return dataRegions.has(m.region); });
     var landmarks = LANDMARKS.filter(function (lm) { return dataRegions.has(lm.region); });
-    el.learnCount.textContent = state.learnRegions.size + " of " + REGION_LABELS.length + " selected";
+    el.learnCount.textContent = state.learnRegions.size + " of " + ALL_REGION_LABELS.length + " selected";
     el.learnGrid.innerHTML = muscles.map(function (m) { return learnCardHtml("muscle", m); }).join("") +
       landmarks.map(function (lm) { return learnCardHtml("landmark", lm); }).join("");
-    renderChips(el.learnRegionChips, REGION_LABELS, state.learnRegions, recomputeLearn);
+    renderChips(el.learnRegionChips, ALL_REGION_LABELS, state.learnRegions, recomputeLearn);
   }
 
   document.getElementById("learn-test-btn").addEventListener("click", function () {
@@ -40180,6 +40220,10 @@
     if (el.hintText) { el.hintText.classList.add("hidden"); el.hintText.textContent = ""; }
     if (el.flashAnswerInput) { el.flashAnswerInput.value = ""; el.flashAnswerInput.disabled = false; el.flashAnswerInput.classList.remove("correct", "incorrect"); }
     if (el.hintBtn) el.hintBtn.disabled = false;
+    Array.prototype.slice.call(el.flashGradeRow.querySelectorAll(".grade-btn")).forEach(function (b) {
+      b.disabled = false;
+      b.classList.remove("selected");
+    });
 
     if (gen.image && gen.image.src) {
       el.questionImageArea.classList.remove("hidden");
@@ -40272,7 +40316,7 @@
     el.typeGiveupBtn.classList.add("hidden");
     el.typeAnswerFeedback.classList.remove("hidden");
     el.typeAnswerFeedback.classList.add(isCorrect ? "correct" : "incorrect");
-    el.typeAnswerVerdict.textContent = isCorrect ? "Correct" : "Answer";
+    el.typeAnswerVerdict.textContent = isCorrect ? "✓ Correct" : "✗ Incorrect";
     el.typeAnswerText.textContent = revealedAnswer;
     recordResult(state.current.qtype, isCorrect);
     el.nextBtn.classList.remove("hidden");
@@ -40316,9 +40360,10 @@
     state.current.graded = true;
     var buttons = Array.prototype.slice.call(el.mcArea.querySelectorAll(".choice-btn"));
     buttons.forEach(function (b) {
+      var isAnswer = b.textContent === answer;
       b.disabled = true;
-      if (b.textContent === answer) b.classList.add("correct");
-      else if (b === btn) b.classList.add("incorrect");
+      if (isAnswer) { b.classList.add("correct"); b.textContent = "✓ " + b.textContent; }
+      else if (b === btn) { b.classList.add("incorrect"); b.textContent = "✗ " + b.textContent; }
     });
     recordResult(state.current.qtype, choice === answer);
     el.nextBtn.classList.remove("hidden");
@@ -40353,6 +40398,11 @@
     btn.addEventListener("click", function () {
       if (state.current.graded) return;
       state.current.graded = true;
+      var buttons = Array.prototype.slice.call(el.flashGradeRow.querySelectorAll(".grade-btn"));
+      buttons.forEach(function (b) {
+        b.disabled = true;
+        if (b === btn) b.classList.add("selected");
+      });
       recordResult(state.current.qtype, btn.getAttribute("data-grade") === "yes");
       el.nextBtn.classList.remove("hidden");
     });
