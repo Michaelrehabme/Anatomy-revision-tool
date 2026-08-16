@@ -1,0 +1,28 @@
+{
+  "back-core": [
+    "iliocostalis", "longissimus", "spinalis", "multifidus", "semispinalis",
+    "rotatores", "interspinales", "intertransversarii", "quadratus-lumborum",
+    "splenius-capitis", "splenius-cervicis"
+  ],
+  "hip-thigh": [
+    "gluteus-maximus", "gluteus-medius", "gluteus-minimus", "biceps-femoris",
+    "semimembranosus", "semitendinosus", "piriformis", "gemelli",
+    "obturator-internus", "obturator-externus", "quadratus-femoris"
+  ],
+  "lower-leg-foot": [
+    "gastrocnemius", "soleus", "plantaris", "popliteus", "tibialis-posterior",
+    "flexor-digitorum-longus", "flexor-hallucis-longus"
+  ],
+  "shoulder-arm": [
+    "infraspinatus", "latissimus-dorsi", "levator-scapulae", "rhomboid-major",
+    "rhomboid-minor", "teres-major", "teres-minor", "trapezius",
+    "triceps-brachii", "supraspinatus", "anconeus"
+  ],
+  "forearm-hand": [
+    "abductor-pollicis-longus", "extensor-carpi-radialis-brevis",
+    "extensor-carpi-radialis-longus", "extensor-carpi-ulnaris",
+    "extensor-digiti-minimi", "extensor-digitorum", "extensor-indicis",
+    "extensor-pollicis-brevis", "extensor-pollicis-longus", "brachioradialis",
+    "supinator", "dorsal-interossei-hand"
+  ]
+}

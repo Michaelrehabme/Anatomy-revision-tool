@@ -35,6 +35,8 @@ ap.add_argument("--samples", type=int, default=32)
 ap.add_argument("--engine", default="BLENDER_EEVEE",
                  help="BLENDER_EEVEE (fast, rasterized - default) or CYCLES "
                       "(path-traced, much slower on CPU; only worth it for final polish)")
+ap.add_argument("--view-axis", default="-Y", choices=["-Y", "+Y"],
+                 help="camera side: -Y front (default) or +Y back/posterior")
 a = ap.parse_args(argv)
 
 mapping = json.load(open(a.mapping))["mapping"]
@@ -68,7 +70,14 @@ sun_data = bpy.data.lights.new("rendersun", type="SUN")
 sun_data.energy = 3.0
 sun = bpy.data.objects.new("rendersun", sun_data)
 scene.collection.objects.link(sun)
-sun.rotation_euler = (0.9, 0.3, 0.6)
+# base light direction (front-view tuning); for the posterior pass, mirror
+# it across the Y axis so the flipped camera isn't shooting into backlight
+_base_light_dir = mathutils.Euler((0.9, 0.3, 0.6), 'XYZ').to_quaternion() @ mathutils.Vector((0, 0, -1))
+if a.view_axis == "-Y":
+    _light_dir = _base_light_dir
+else:
+    _light_dir = mathutils.Vector((_base_light_dir.x, -_base_light_dir.y, _base_light_dir.z))
+sun.rotation_euler = _light_dir.to_track_quat('-Z', 'Y').to_euler()
 
 
 def flat_white():
@@ -180,7 +189,7 @@ for region in regions:
         print(f"[skip] {region}: all bakes empty")
         continue
 
-    frame_camera(region_min, region_max)
+    frame_camera(region_min, region_max, view_axis=a.view_axis)
 
     # 1. regional base plate - every muscle in the region, one shared material
     clear_render_objects()
@@ -233,7 +242,7 @@ for region in regions:
         for p in ob.data.polygons:
             p.material_index = 0
         scene.collection.objects.link(ob)
-        frame_camera(bmin, bmax, margin=1.15)
+        frame_camera(bmin, bmax, view_axis=a.view_axis, margin=1.15)
         render_to(os.path.join(a.out, "isolated", f"{mid}.png"))
         scene.collection.objects.unlink(ob)
 
