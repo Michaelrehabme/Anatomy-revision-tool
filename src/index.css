@@ -1,13 +1,74 @@
 @import 'tailwindcss';
 
+/*
+ * Press · light — the MSK Atlas design tokens (from the Claude Design
+ * handoff). Short names match the spec verbatim so BodyFigure.tsx and any
+ * future dark-mode swap can reference var(--acc) etc. directly; the @theme
+ * block below aliases them to Tailwind v4 color/font utilities (bg-pg,
+ * text-ink2, font-display, ...) without duplicating the literal values.
+ */
+:root {
+  --pg: #f3f2f2;
+  --sf: #faf9f8;
+  --ink: #201e1d;
+  --ink2: #4a4644;
+  --ink3: #7a7472;
+  --line: #d8d4d1;
+  --acc: #0088b0;
+  --accd: #00647f;
+  --accs: #e2f1f6;
+  --acc2: #d6006c;
+  --acc2d: #a30053;
+  --acc2s: #fbe4ef;
+  --onacc: #ffffff;
+  --fig-off: #e8e4e1;
+  --fig-line: #b3aca8;
+  --fig-ink: #5c5651;
+  --shadow-card: 0 3px 16px rgba(32, 30, 29, 0.14);
+}
+
 @theme {
-  --color-brand-50: #eff6ff;
-  --color-brand-100: #dbeafe;
-  --color-brand-500: #3b82f6;
-  --color-brand-600: #2563eb;
-  --color-brand-700: #1d4ed8;
+  --color-pg: var(--pg);
+  --color-sf: var(--sf);
+  --color-ink: var(--ink);
+  --color-ink2: var(--ink2);
+  --color-ink3: var(--ink3);
+  --color-line: var(--line);
+  --color-acc: var(--acc);
+  --color-accd: var(--accd);
+  --color-accs: var(--accs);
+  --color-acc2: var(--acc2);
+  --color-acc2d: var(--acc2d);
+  --color-acc2s: var(--acc2s);
+  --color-onacc: var(--onacc);
+  --color-fig-off: var(--fig-off);
+  --color-fig-line: var(--fig-line);
+  --color-fig-ink: var(--fig-ink);
+
+  --font-display: 'Newsreader', Georgia, serif;
+  --font-ui: 'IBM Plex Sans', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  /* Legacy alias: FillBlankSession isn't one of the mockup's four session
+     formats (out of scope for this pass) and still references brand-600/700
+     — point those two shades at the accent ramp so it stays usable rather
+     than rendering unstyled. Remove once FillBlankSession gets its own pass. */
+  --color-brand-600: var(--acc);
+  --color-brand-700: var(--accd);
 }
 
 body {
-  @apply bg-slate-50 text-slate-900 antialiased;
+  @apply antialiased;
+  background: var(--pg);
+  color: var(--ink);
+  font-family: var(--font-ui);
+}
+
+::selection {
+  background: var(--accs);
+}
+
+:focus-visible {
+  outline: 2px solid var(--acc);
+  outline-offset: 2px;
 }

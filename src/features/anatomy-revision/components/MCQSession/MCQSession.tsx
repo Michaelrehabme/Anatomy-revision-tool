@@ -1,99 +1,154 @@
 import { useEffect, useState } from 'react';
 import type { MCQQuestion } from '../../types/question';
 import type { AnatomyImageAsset } from '../../types/image';
+import type { Confidence } from '../../types/attempt';
+import { REGION_LABELS } from '../../types/region';
 import { AttributionBadge } from '../shared/AttributionBadge';
 import { HotspotOverlay } from '../LocateStructureSession/HotspotOverlay';
+import { ConfidenceButtons } from '../shared/ConfidenceButtons';
+import { Button } from '../shared/Button';
 
 interface MCQSessionProps {
   question: MCQQuestion;
   imagesById: Map<string, AnatomyImageAsset>;
-  onAnswer: (params: { structureId: string; correct: boolean }) => void;
+  onAnswer: (params: { structureId: string; correct: boolean; confidence: Confidence }) => void;
   onNext: () => void;
 }
 
+const LETTERS = ['A', 'B', 'C', 'D'];
+
 export function MCQSession({ question, imagesById, onAnswer, onNext }: MCQSessionProps) {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [checked, setChecked] = useState(false);
+  const [rated, setRated] = useState(false);
 
   useEffect(() => {
     setSelectedIndex(null);
+    setChecked(false);
+    setRated(false);
   }, [question.id]);
 
   const promptImage = question.promptImageId ? imagesById.get(question.promptImageId) : undefined;
-  // Atlas-slide images need the polygon drawn to show which structure is "highlighted";
-  // single-structure images already ARE the answer, so no overlay is needed.
-  const highlightHotspots =
-    promptImage?.mode === 'atlas-slide' ? (promptImage.hotspots ?? []) : [];
+  const highlightHotspots = promptImage?.mode === 'atlas-slide' ? (promptImage.hotspots ?? []) : [];
+  const isCorrect = selectedIndex === question.correctIndex;
 
-  const handleSelect = (index: number) => {
-    if (selectedIndex !== null) return;
-    setSelectedIndex(index);
-    onAnswer({ structureId: question.structureId, correct: index === question.correctIndex });
+  const handleRate = (confidence: Confidence) => {
+    setRated(true);
+    onAnswer({ structureId: question.structureId, correct: isCorrect, confidence });
   };
 
-  const answered = selectedIndex !== null;
-
   return (
-    <div className="mx-auto max-w-xl space-y-4 p-6">
-      <p className="text-lg font-semibold text-slate-900">{question.prompt}</p>
-
-      {promptImage && (
-        <figure>
+    <div className="flex flex-col">
+      <div className="flex flex-1 flex-col justify-center px-24 py-10">
+        <div className="mx-auto w-full max-w-[920px]">
           <div
-            className="relative w-full overflow-hidden rounded-lg border border-slate-200 bg-slate-100"
-            style={
-              promptImage.width && promptImage.height
-                ? { aspectRatio: `${promptImage.width} / ${promptImage.height}` }
-                : undefined
-            }
+            className="text-center"
+            style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--acc)' }}
           >
-            <img src={promptImage.filePath} alt={question.prompt} className="h-full w-full object-cover" />
-            {highlightHotspots.length > 0 && (
-              <HotspotOverlay hotspots={highlightHotspots} highlightStructureId={question.structureId} />
-            )}
+            {question.promptKind[0].toUpperCase() + question.promptKind.slice(1)} · {REGION_LABELS[question.region]}
           </div>
-          <AttributionBadge image={promptImage} />
-        </figure>
-      )}
+          <h2
+            className="mx-auto mt-6 text-center"
+            style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 52, lineHeight: 1.1, letterSpacing: '-.022em' }}
+          >
+            {question.prompt}
+          </h2>
 
-      <div className="space-y-2">
-        {question.choices.map((choice, index) => {
-          const isCorrect = index === question.correctIndex;
-          const isSelected = index === selectedIndex;
-          let className = 'border-slate-200 bg-white hover:border-slate-300';
-          if (answered && isCorrect) className = 'border-emerald-500 bg-emerald-50';
-          else if (answered && isSelected && !isCorrect) className = 'border-rose-500 bg-rose-50';
+          {promptImage && (
+            <figure className="mt-8">
+              <div
+                className="relative mx-auto max-w-md overflow-hidden rounded-[3px]"
+                style={{
+                  background: 'var(--sf)',
+                  aspectRatio: promptImage.width && promptImage.height ? `${promptImage.width} / ${promptImage.height}` : undefined,
+                }}
+              >
+                <img src={promptImage.filePath} alt={question.prompt} className="h-full w-full object-cover" />
+                {highlightHotspots.length > 0 && (
+                  <HotspotOverlay hotspots={highlightHotspots} highlightStructureId={question.structureId} />
+                )}
+              </div>
+              <AttributionBadge image={promptImage} />
+            </figure>
+          )}
 
-          return (
-            <button
-              key={choice}
-              type="button"
-              disabled={answered}
-              onClick={() => handleSelect(index)}
-              className={`w-full rounded-lg border p-3 text-left text-sm transition disabled:cursor-default ${className}`}
-            >
-              {choice}
-            </button>
-          );
-        })}
+          <div className="mt-14 grid grid-cols-2 gap-4">
+            {question.choices.map((choice, index) => {
+              const isSelected = index === selectedIndex;
+              const isAnswerCorrect = index === question.correctIndex;
+              let border = '1.2px solid var(--line)';
+              let background = 'var(--sf)';
+              let color = 'var(--ink)';
+              if (checked && isAnswerCorrect) {
+                border = '1.4px solid var(--acc)';
+                background = 'var(--accs)';
+                color = 'var(--accd)';
+              } else if (checked && isSelected && !isAnswerCorrect) {
+                border = '1.4px solid var(--acc2)';
+                background = 'var(--acc2s)';
+                color = 'var(--acc2d)';
+              } else if (isSelected) {
+                border = '1.4px solid var(--acc)';
+                background = 'var(--accs)';
+                color = 'var(--accd)';
+              }
+              return (
+                <button
+                  key={choice}
+                  type="button"
+                  disabled={checked}
+                  onClick={() => setSelectedIndex(index)}
+                  className="flex min-h-[82px] items-center gap-4 rounded-[3px] px-6 text-left text-xl disabled:cursor-default"
+                  style={{ border, background, color }}
+                >
+                  <span className="w-4 flex-none" style={{ font: '400 12.5px/1 var(--font-mono)', color: checked || isSelected ? color : 'var(--ink3)' }}>
+                    {LETTERS[index]}
+                  </span>
+                  <span className="flex-1">{choice}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          {!checked && (
+            <div className="mt-12 flex justify-center">
+              <Button
+                onClick={() => setChecked(true)}
+                disabled={selectedIndex === null}
+                className="min-w-[260px] min-h-[58px]"
+              >
+                Check answer
+              </Button>
+            </div>
+          )}
+        </div>
       </div>
 
-      {answered && (
-        <div className="space-y-3">
-          <div
-            className={`rounded-lg p-3 text-sm ${selectedIndex === question.correctIndex ? 'bg-emerald-50 text-emerald-800' : 'bg-rose-50 text-rose-800'}`}
-          >
-            <p className="font-medium">
-              {selectedIndex === question.correctIndex ? 'Correct.' : 'Not quite.'}
-            </p>
-            <p className="mt-1 whitespace-pre-line text-slate-700">{question.explanation}</p>
+      {checked && (
+        <div className="flex-none px-24 py-10" style={{ background: isCorrect ? 'var(--accs)' : 'var(--acc2s)' }}>
+          <div className="mx-auto flex max-w-[1000px] items-start gap-[72px]">
+            <div className="flex-1">
+              <div className="flex items-baseline gap-3.5">
+                <span style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 32, color: isCorrect ? 'var(--accd)' : 'var(--acc2d)' }}>
+                  {isCorrect ? 'Correct' : 'Not quite'}
+                </span>
+              </div>
+              <p className="mt-3.5 max-w-[56ch] text-lg leading-relaxed" style={{ color: 'var(--ink)' }}>
+                <strong className="font-semibold">{question.choices[question.correctIndex]}.</strong>{' '}
+                {question.explanation}
+              </p>
+              {rated && (
+                <Button onClick={onNext} className="mt-6 min-w-[180px] min-h-[50px]">
+                  Next
+                </Button>
+              )}
+            </div>
+            {!rated && (
+              <div className="w-[420px] flex-none">
+                <ConfidenceButtons onRate={handleRate} />
+              </div>
+            )}
           </div>
-          <button
-            type="button"
-            onClick={onNext}
-            className="w-full rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800"
-          >
-            Next
-          </button>
         </div>
       )}
     </div>

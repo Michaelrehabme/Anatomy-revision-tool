@@ -2,13 +2,16 @@ import { useEffect, useState } from 'react';
 import type { LocateQuestion } from '../../types/question';
 import type { AnatomyImageAsset } from '../../types/image';
 import type { AnatomyStructure } from '../../types/structure';
+import type { Confidence } from '../../types/attempt';
 import { HotspotImage, type HotspotAnswerResult } from './HotspotImage';
+import { ConfidenceButtons } from '../shared/ConfidenceButtons';
+import { Button } from '../shared/Button';
 
 interface LocateStructureSessionProps {
   question: LocateQuestion;
   imagesById: Map<string, AnatomyImageAsset>;
   structuresById: Map<string, AnatomyStructure>;
-  onAnswer: (params: { structureId: string; correct: boolean; hitDistance?: number }) => void;
+  onAnswer: (params: { structureId: string; correct: boolean; hitDistance?: number; confidence: Confidence }) => void;
   onNext: () => void;
 }
 
@@ -17,7 +20,7 @@ const ZOOM_LEVELS = [1, 1.5, 2];
 /**
  * Wraps HotspotImage with zoom controls and a keyboard/list-based fallback
  * for students who can't (or don't want to) click precisely on the image —
- * both paths funnel through the same onAnswer/result handling so scoring is
+ * both paths funnel through the same result handling so scoring is
  * identical either way.
  */
 export function LocateStructureSession({
@@ -30,29 +33,29 @@ export function LocateStructureSession({
   const [result, setResult] = useState<HotspotAnswerResult | null>(null);
   const [zoomIndex, setZoomIndex] = useState(0);
   const [listMode, setListMode] = useState(false);
+  const [rated, setRated] = useState(false);
 
   useEffect(() => {
     setResult(null);
     setZoomIndex(0);
     setListMode(false);
+    setRated(false);
   }, [question.id]);
 
   const image = imagesById.get(question.imageId);
   if (!image) {
-    return <p className="p-6 text-sm text-rose-600">Image "{question.imageId}" not found.</p>;
+    return <p className="p-6 text-sm" style={{ color: 'var(--acc2d)' }}>Image "{question.imageId}" not found.</p>;
   }
 
-  const handleImageAnswer = (r: HotspotAnswerResult) => {
-    setResult(r);
-    onAnswer({ structureId: question.targetStructureId, correct: r.correct, hitDistance: r.hitDistance });
-  };
-
+  const handleImageAnswer = (r: HotspotAnswerResult) => setResult(r);
   const handleListAnswer = (structureId: string) => {
     if (result) return;
-    const correct = structureId === question.targetStructureId;
-    const fakeResult: HotspotAnswerResult = { structureId, correct, point: [0, 0] };
-    setResult(fakeResult);
-    onAnswer({ structureId: question.targetStructureId, correct });
+    setResult({ structureId, correct: structureId === question.targetStructureId, point: [0, 0] });
+  };
+  const handleRate = (confidence: Confidence) => {
+    if (!result) return;
+    setRated(true);
+    onAnswer({ structureId: question.targetStructureId, correct: result.correct, hitDistance: result.hitDistance, confidence });
   };
 
   const candidateStructures = (image.hotspots ?? [])
@@ -60,37 +63,42 @@ export function LocateStructureSession({
     .filter((s): s is AnatomyStructure => !!s);
 
   return (
-    <div className="mx-auto max-w-2xl space-y-4 p-6">
-      <p className="text-lg font-semibold text-slate-900">{question.prompt}</p>
+    <div className="flex flex-col items-center px-24 pt-14 pb-12">
+      <div
+        className="text-center"
+        style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--acc)' }}
+      >
+        Locate
+      </div>
+      <h2
+        className="mt-5 text-center"
+        style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 52, lineHeight: 1.05, letterSpacing: '-.024em' }}
+      >
+        {question.prompt}
+      </h2>
 
-      <div className="flex items-center justify-between text-xs text-slate-500">
+      <div className="mt-3 flex items-center gap-4" style={{ color: 'var(--ink3)' }}>
         <div className="flex gap-1">
           {ZOOM_LEVELS.map((level, i) => (
             <button
               key={level}
               type="button"
               onClick={() => setZoomIndex(i)}
-              className={`rounded px-2 py-1 ${zoomIndex === i ? 'bg-slate-900 text-white' : 'bg-slate-100 hover:bg-slate-200'}`}
+              className="rounded px-2 py-1 text-xs"
+              style={{ background: zoomIndex === i ? 'var(--ink)' : 'var(--sf)', color: zoomIndex === i ? 'var(--sf)' : 'var(--ink3)' }}
             >
               {level}x
             </button>
           ))}
         </div>
-        <button
-          type="button"
-          onClick={() => setListMode((v) => !v)}
-          className="rounded px-2 py-1 underline decoration-dotted hover:bg-slate-100"
-        >
+        <button type="button" onClick={() => setListMode((v) => !v)} className="text-xs underline decoration-dotted">
           {listMode ? 'Switch to image click' : "Can't click precisely? Choose from a list"}
         </button>
       </div>
 
       {!listMode ? (
-        <div className="overflow-auto rounded-lg border border-slate-200">
-          <div
-            style={{ transform: `scale(${ZOOM_LEVELS[zoomIndex]})`, transformOrigin: 'top left' }}
-            className="transition-transform"
-          >
+        <div className="mt-2 flex min-h-0 flex-1 items-center justify-center overflow-auto">
+          <div style={{ transform: `scale(${ZOOM_LEVELS[zoomIndex]})`, transformOrigin: 'center', maxHeight: 560 }}>
             <HotspotImage
               key={question.id}
               image={image}
@@ -101,20 +109,21 @@ export function LocateStructureSession({
           </div>
         </div>
       ) : (
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+        <div className="mt-6 grid max-w-2xl grid-cols-3 gap-2.5">
           {candidateStructures.map((s) => {
             const isTarget = s.id === question.targetStructureId;
             const isSelected = result?.structureId === s.id;
-            let className = 'border-slate-200 bg-white hover:border-slate-300';
-            if (result && isTarget) className = 'border-emerald-500 bg-emerald-50';
-            else if (result && isSelected) className = 'border-rose-500 bg-rose-50';
+            let style = { border: '1.2px solid var(--line)', background: 'var(--sf)', color: 'var(--ink)' };
+            if (result && isTarget) style = { border: '1.4px solid var(--acc)', background: 'var(--accs)', color: 'var(--accd)' };
+            else if (result && isSelected) style = { border: '1.4px solid var(--acc2)', background: 'var(--acc2s)', color: 'var(--acc2d)' };
             return (
               <button
                 key={s.id}
                 type="button"
                 disabled={!!result}
                 onClick={() => handleListAnswer(s.id)}
-                className={`rounded-lg border p-2 text-sm transition disabled:cursor-default ${className}`}
+                className="rounded-[3px] p-2.5 text-sm disabled:cursor-default"
+                style={style}
               >
                 {s.name}
               </button>
@@ -124,21 +133,21 @@ export function LocateStructureSession({
       )}
 
       {result && (
-        <div className="space-y-3">
-          <div
-            className={`rounded-lg p-3 text-sm ${result.correct ? 'bg-emerald-50 text-emerald-800' : 'bg-rose-50 text-rose-800'}`}
-          >
+        <div className="mt-8 w-full max-w-[720px] rounded-[3px] p-6" style={{ background: result.correct ? 'var(--accs)' : 'var(--acc2s)' }}>
+          <p style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 24, color: result.correct ? 'var(--accd)' : 'var(--acc2d)' }}>
             {result.correct
-              ? 'Correct.'
-              : `Not quite — the highlighted area shows ${structuresById.get(question.targetStructureId)?.name ?? question.targetStructureId}.`}
-          </div>
-          <button
-            type="button"
-            onClick={onNext}
-            className="w-full rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800"
-          >
-            Next
-          </button>
+              ? 'Correct'
+              : `Not quite — that was ${structuresById.get(question.targetStructureId)?.name ?? question.targetStructureId}.`}
+          </p>
+          {!rated ? (
+            <div className="mt-4">
+              <ConfidenceButtons onRate={handleRate} />
+            </div>
+          ) : (
+            <Button onClick={onNext} className="mt-4 min-w-[180px] min-h-[50px]">
+              Next
+            </Button>
+          )}
         </div>
       )}
     </div>

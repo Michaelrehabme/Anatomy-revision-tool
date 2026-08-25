@@ -3,17 +3,20 @@ import type { AnatomyContent } from '../../hooks/useAnatomyContent';
 import type { QuestionType } from '../../types/question';
 import type { Category } from '../../types/structure';
 import type { Region } from '../../types/region';
-import { REGIONS, REGION_LABELS } from '../../types/region';
+import { REGION_LABELS } from '../../types/region';
 import { generateRevisionSet } from '../../lib/questionGenerators/generateSet';
 import type { RevisionSetupParams } from '../../hooks/useRevisionSession';
 import type { RevisionQuestion } from '../../types/question';
+import type { AnatomyRepository } from '../../data/repository';
+import { Button } from '../shared/Button';
+import { AppShell } from '../shell/AppShell';
+import { NavSidebar, type NavSection } from '../shell/NavSidebar';
 
-const QUESTION_TYPE_OPTIONS: { value: QuestionType; label: string; description: string }[] = [
-  { value: 'flashcard', label: 'Flashcards', description: 'Flip cards, self-rate your recall.' },
-  { value: 'mcq', label: 'Multiple choice', description: 'Pick the correct answer from 4 options.' },
-  { value: 'locate', label: 'Locate the structure', description: 'Tap the structure on an image.' },
-  { value: 'identify-typed', label: 'Identify (typed)', description: "Type the structure's name from an image — small typos are OK." },
-  { value: 'fill-blank', label: 'Fill in the blank', description: 'Complete the missing word in a bone/landmark fact.' },
+const QUESTION_TYPE_OPTIONS: { value: QuestionType; label: string }[] = [
+  { value: 'mcq', label: 'Multiple choice' },
+  { value: 'locate', label: 'Locate' },
+  { value: 'identify-typed', label: 'Type answer' },
+  { value: 'flashcard', label: 'Flashcard' },
 ];
 
 const CATEGORY_OPTIONS: { value: Category | 'all'; label: string }[] = [
@@ -23,145 +26,234 @@ const CATEGORY_OPTIONS: { value: Category | 'all'; label: string }[] = [
   { value: 'landmark', label: 'Landmarks' },
 ];
 
+const LENGTHS = [10, 20, 40];
+
 interface RevisionSetupProps {
   content: AnatomyContent;
+  repository: AnatomyRepository | null;
+  userId: string | null;
+  regions: Set<Region>;
   onStart: (questions: RevisionQuestion[], params: RevisionSetupParams) => void;
+  onBack: () => void;
+  onNavigate: (section: NavSection) => void;
 }
 
-export function RevisionSetup({ content, onStart }: RevisionSetupProps) {
-  const [types, setTypes] = useState<QuestionType[]>(['flashcard', 'mcq']);
-  const [region, setRegion] = useState<Region | 'all'>('all');
+function chipStyle(selected: boolean) {
+  return selected
+    ? { border: '1.2px solid var(--acc)', background: 'var(--accs)', color: 'var(--accd)' }
+    : { border: '1.2px solid var(--line)', background: 'transparent', color: 'var(--ink2)' };
+}
+
+export function RevisionSetup({ content, repository, userId, regions, onStart, onBack, onNavigate }: RevisionSetupProps) {
+  const [types, setTypes] = useState<QuestionType[]>(['mcq', 'locate']);
   const [category, setCategory] = useState<Category | 'all'>('all');
   const [mode, setMode] = useState<'practice' | 'assessment'>('practice');
-  const [count, setCount] = useState(10);
+  const [count, setCount] = useState(20);
+  const [useSrs, setUseSrs] = useState(true);
+  const [starting, setStarting] = useState(false);
 
   const toggleType = (type: QuestionType) => {
     setTypes((prev) => (prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]));
   };
 
-  const canStart = types.length > 0 && !content.loading;
+  const regionsArray = [...regions];
+  const poolSize = content.structures.filter(
+    (s) => (regions.size === 0 || regions.has(s.region)) && (category === 'all' || s.category === category),
+  ).length;
+  const canStart = types.length > 0 && !content.loading && poolSize > 0;
 
-  const handleStart = () => {
+  const handleStart = async () => {
+    setStarting(true);
+    let structureIds: string[] | undefined;
+    if (useSrs && repository && userId) {
+      const due = await repository.listDueMastery(userId, new Date().toISOString());
+      const pool = new Set(
+        content.structures
+          .filter((s) => (regions.size === 0 || regions.has(s.region)) && (category === 'all' || s.category === category))
+          .map((s) => s.id),
+      );
+      const dueInPool = due.map((m) => m.structureId).filter((id) => pool.has(id));
+      if (dueInPool.length > 0) structureIds = dueInPool;
+    }
+
     const params: RevisionSetupParams = {
       types,
-      region: region === 'all' ? undefined : region,
+      regions: regionsArray.length ? regionsArray : undefined,
       category: category === 'all' ? undefined : category,
       mode,
     };
     const questions = generateRevisionSet(content.structures, content.images, {
       types,
-      region: params.region,
+      regions: regionsArray,
       category: params.category,
       mode,
       count,
+      structureIds,
     });
     onStart(questions, params);
   };
 
+  const regionSummary = regionsArray.length ? regionsArray.map((r) => REGION_LABELS[r]).join(', ') : 'All regions';
+
   return (
-    <div className="mx-auto max-w-2xl space-y-8 p-6">
-      <header>
-        <h1 className="text-2xl font-bold text-slate-900">Anatomy Revision</h1>
-        <p className="mt-1 text-sm text-slate-600">
-          Set up a session across muscles, bones, and landmarks.
+    <AppShell
+      sidebar={
+        <NavSidebar
+          active="study"
+          onNavigate={onNavigate}
+          footer={
+            <div style={{ font: '400 11.5px/1.6 var(--font-mono)', color: 'var(--ink3)' }}>
+              Step 2 of 2
+              <br />
+              Session
+            </div>
+          }
+        />
+      }
+    >
+      <div className="flex flex-col px-16 pt-16 pb-14">
+        <button type="button" onClick={onBack} className="mb-3 text-left text-[15px]" style={{ color: 'var(--ink3)' }}>
+          &larr; Regions
+        </button>
+        <h2
+          style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 52, lineHeight: 1.02, letterSpacing: '-.026em', margin: '0 0 10px' }}
+        >
+          Session
+        </h2>
+        <p className="text-base" style={{ color: 'var(--ink2)' }}>
+          {regionSummary} · {poolSize} {category === 'all' ? 'structures' : category === 'muscle' ? 'muscles' : `${category}s`} in the pool
         </p>
-      </header>
 
-      <section>
-        <h2 className="mb-2 text-sm font-semibold text-slate-700">Question types</h2>
-        <div className="grid gap-2 sm:grid-cols-3">
-          {QUESTION_TYPE_OPTIONS.map((opt) => (
-            <button
-              key={opt.value}
-              type="button"
-              onClick={() => toggleType(opt.value)}
-              className={`rounded-lg border p-3 text-left transition ${
-                types.includes(opt.value)
-                  ? 'border-brand-600 bg-brand-50 ring-1 ring-brand-600'
-                  : 'border-slate-200 bg-white hover:border-slate-300'
-              }`}
-              aria-pressed={types.includes(opt.value)}
+        <div className="mt-14 flex gap-[88px]">
+          <div className="flex flex-1 flex-col">
+            <div style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
+              Question formats
+            </div>
+            <div className="mt-4 flex flex-wrap gap-2.5">
+              {QUESTION_TYPE_OPTIONS.map((opt) => (
+                <button
+                  key={opt.value}
+                  type="button"
+                  onClick={() => toggleType(opt.value)}
+                  aria-pressed={types.includes(opt.value)}
+                  className="inline-flex min-h-[46px] items-center justify-center whitespace-nowrap rounded-full px-5"
+                  style={{ fontFamily: 'var(--font-display)', fontSize: 17, ...chipStyle(types.includes(opt.value)) }}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+            <p className="mt-3.5 max-w-[44ch] text-sm" style={{ color: 'var(--ink3)' }}>
+              Mixed formats interleave within one session.
+            </p>
+
+            <div
+              className="mt-12"
+              style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}
             >
-              <div className="text-sm font-medium text-slate-900">{opt.label}</div>
-              <div className="mt-0.5 text-xs text-slate-500">{opt.description}</div>
-            </button>
-          ))}
+              Category
+            </div>
+            <div className="mt-4 flex flex-wrap gap-2.5">
+              {CATEGORY_OPTIONS.map((opt) => (
+                <button
+                  key={opt.value}
+                  type="button"
+                  onClick={() => setCategory(opt.value)}
+                  aria-pressed={category === opt.value}
+                  className="inline-flex min-h-[40px] items-center justify-center whitespace-nowrap rounded-full px-4 text-sm"
+                  style={chipStyle(category === opt.value)}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="w-[380px] flex-none">
+            <div style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
+              Length
+            </div>
+            <div className="mt-4 flex gap-2.5">
+              {LENGTHS.map((n) => (
+                <button
+                  key={n}
+                  type="button"
+                  onClick={() => setCount(n)}
+                  aria-pressed={count === n}
+                  className="inline-flex min-h-[56px] flex-1 items-center justify-center whitespace-nowrap rounded-[3px]"
+                  style={{
+                    fontFamily: 'var(--font-display)',
+                    fontSize: 20,
+                    border: count === n ? '1.4px solid var(--acc)' : '1.2px solid var(--line)',
+                    background: count === n ? 'var(--accs)' : 'transparent',
+                    color: count === n ? 'var(--accd)' : 'var(--ink2)',
+                  }}
+                >
+                  {n}
+                </button>
+              ))}
+            </div>
+
+            <label className="mt-12 flex cursor-pointer items-start gap-4">
+              <span
+                className="relative h-[31px] w-[52px] flex-none rounded-full transition-colors"
+                style={{ background: useSrs ? 'var(--acc)' : 'var(--line)' }}
+              >
+                <span
+                  className="absolute top-[3px] h-[25px] w-[25px] rounded-full transition-all"
+                  style={{ left: useSrs ? 24 : 3, background: 'var(--sf)', boxShadow: '0 1px 3px rgba(0,0,0,.3)' }}
+                />
+              </span>
+              <span className="flex-1">
+                <span className="block" style={{ fontFamily: 'var(--font-display)', fontSize: 19, lineHeight: 1.25 }}>
+                  Spaced repetition
+                </span>
+                <span className="mt-1 block text-sm" style={{ color: 'var(--ink3)' }}>
+                  Prioritise what&rsquo;s due over random picks.
+                </span>
+              </span>
+              <input type="checkbox" checked={useSrs} onChange={(e) => setUseSrs(e.target.checked)} className="sr-only" />
+            </label>
+
+            <label className="mt-7 flex cursor-pointer items-start gap-4">
+              <span
+                className="relative h-[31px] w-[52px] flex-none rounded-full transition-colors"
+                style={{ background: mode === 'assessment' ? 'var(--acc)' : 'var(--line)' }}
+              >
+                <span
+                  className="absolute top-[3px] h-[25px] w-[25px] rounded-full transition-all"
+                  style={{ left: mode === 'assessment' ? 24 : 3, background: 'var(--sf)', boxShadow: '0 1px 3px rgba(0,0,0,.3)' }}
+                />
+              </span>
+              <span className="flex-1">
+                <span className="block" style={{ fontFamily: 'var(--font-display)', fontSize: 19, lineHeight: 1.25 }}>
+                  Assessment mode
+                </span>
+                <span className="mt-1 block text-sm" style={{ color: 'var(--ink3)' }}>
+                  No feedback until the end.
+                </span>
+              </span>
+              <input
+                type="checkbox"
+                checked={mode === 'assessment'}
+                onChange={(e) => setMode(e.target.checked ? 'assessment' : 'practice')}
+                className="sr-only"
+              />
+            </label>
+
+            <Button
+              onClick={handleStart}
+              disabled={!canStart || starting}
+              className="mt-10 min-h-[58px] w-full"
+            >
+              {content.loading ? 'Loading content…' : starting ? 'Starting…' : 'Begin session'}
+            </Button>
+            <p className="mt-3.5 text-center" style={{ font: '400 12.5px/1.6 var(--font-mono)', color: 'var(--ink3)' }}>
+              {count} questions · about {Math.max(1, Math.round(count * 0.45))} minutes
+            </p>
+          </div>
         </div>
-      </section>
-
-      <section className="grid gap-4 sm:grid-cols-2">
-        <label className="block">
-          <span className="mb-1 block text-sm font-semibold text-slate-700">Region</span>
-          <select
-            value={region}
-            onChange={(e) => setRegion(e.target.value as Region | 'all')}
-            className="w-full rounded-md border border-slate-300 p-2 text-sm"
-          >
-            <option value="all">All regions</option>
-            {REGIONS.map((r) => (
-              <option key={r} value={r}>
-                {REGION_LABELS[r]}
-              </option>
-            ))}
-          </select>
-        </label>
-
-        <label className="block">
-          <span className="mb-1 block text-sm font-semibold text-slate-700">Category</span>
-          <select
-            value={category}
-            onChange={(e) => setCategory(e.target.value as Category | 'all')}
-            className="w-full rounded-md border border-slate-300 p-2 text-sm"
-          >
-            {CATEGORY_OPTIONS.map((opt) => (
-              <option key={opt.value} value={opt.value}>
-                {opt.label}
-              </option>
-            ))}
-          </select>
-        </label>
-      </section>
-
-      <section>
-        <h2 className="mb-2 text-sm font-semibold text-slate-700">Mode</h2>
-        <div className="flex gap-2">
-          <button
-            type="button"
-            onClick={() => setMode('practice')}
-            className={`flex-1 rounded-lg border p-3 text-sm ${mode === 'practice' ? 'border-brand-600 bg-brand-50 ring-1 ring-brand-600' : 'border-slate-200 bg-white'}`}
-          >
-            Practice — shuffled, up to a fixed number
-          </button>
-          <button
-            type="button"
-            onClick={() => setMode('assessment')}
-            className={`flex-1 rounded-lg border p-3 text-sm ${mode === 'assessment' ? 'border-brand-600 bg-brand-50 ring-1 ring-brand-600' : 'border-slate-200 bg-white'}`}
-          >
-            Assessment — fixed-size random sample
-          </button>
-        </div>
-        <label className="mt-3 block">
-          <span className="mb-1 block text-sm font-medium text-slate-700">Number of questions: {count}</span>
-          <input
-            type="range"
-            min={5}
-            max={50}
-            step={5}
-            value={count}
-            onChange={(e) => setCount(Number(e.target.value))}
-            className="w-full"
-          />
-        </label>
-      </section>
-
-      <button
-        type="button"
-        disabled={!canStart}
-        onClick={handleStart}
-        className="w-full rounded-lg bg-brand-600 px-4 py-3 text-sm font-semibold text-white transition enabled:hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-50"
-      >
-        {content.loading ? 'Loading content…' : 'Start revision'}
-      </button>
-    </div>
+      </div>
+    </AppShell>
   );
 }

@@ -13,6 +13,8 @@ import { buildIdentifyTypedQuestions } from './identifyTyped';
 export interface RevisionSetConfig {
   types: readonly QuestionType[];
   region?: Region;
+  /** OR-matched; takes precedence over `region` when non-empty. */
+  regions?: Region[];
   subregion?: SubRegion;
   category?: Category;
   difficulty?: Difficulty;
@@ -42,6 +44,7 @@ export function generateRevisionSet(
   let pool = filterStructures(structures, {
     category: config.category,
     region: config.region,
+    regions: config.regions,
     subregion: config.subregion,
     difficulty: config.difficulty,
   });

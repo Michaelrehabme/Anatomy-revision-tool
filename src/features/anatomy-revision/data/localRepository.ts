@@ -69,6 +69,18 @@ export function createLocalRepository(): AnatomyRepository {
       return Object.values(mastery).filter((m) => m.userId === userId);
     },
 
+    async listMastery(userId: string) {
+      const mastery = readJson<Record<string, StructureMastery>>(MASTERY_KEY, {});
+      return Object.values(mastery).filter((m) => m.userId === userId);
+    },
+
+    async listDueMastery(userId: string, before: string) {
+      const mastery = readJson<Record<string, StructureMastery>>(MASTERY_KEY, {});
+      return Object.values(mastery)
+        .filter((m) => m.userId === userId && m.dueAt !== undefined && m.dueAt <= before)
+        .sort((a, b) => a.dueAt!.localeCompare(b.dueAt!));
+    },
+
     async upsertMastery(mastery: StructureMastery) {
       const all = readJson<Record<string, StructureMastery>>(MASTERY_KEY, {});
       all[masteryKey(mastery.userId, mastery.structureId)] = mastery;

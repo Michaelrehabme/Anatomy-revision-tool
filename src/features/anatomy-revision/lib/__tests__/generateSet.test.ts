@@ -35,6 +35,33 @@ describe('generateRevisionSet', () => {
     expect(result.every((q) => q.region === 'hip-thigh')).toBe(true);
   });
 
+  it('respects multi-region filtering (OR-matched), taking precedence over `region`', () => {
+    const result = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+      types: ['flashcard'],
+      region: 'back-core', // should be ignored since `regions` is set
+      regions: ['hip-thigh', 'lower-leg-foot'],
+      mode: 'practice',
+      seed: 1,
+    });
+    expect(result.length).toBeGreaterThan(0);
+    expect(result.every((q) => q.region === 'hip-thigh' || q.region === 'lower-leg-foot')).toBe(true);
+  });
+
+  it('an empty `regions` array applies no region filter at all', () => {
+    const filtered = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+      types: ['flashcard'],
+      regions: [],
+      mode: 'practice',
+      seed: 1,
+    });
+    const unfiltered = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+      types: ['flashcard'],
+      mode: 'practice',
+      seed: 1,
+    });
+    expect(filtered.length).toBe(unfiltered.length);
+  });
+
   it('assessment mode samples the requested count (or fewer if pool is smaller)', () => {
     const result = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
       types: ['flashcard'],

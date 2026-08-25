@@ -21,6 +21,7 @@ export interface AnswerRecord {
 export interface RevisionSetupParams {
   types: QuestionType[];
   region?: Region;
+  regions?: Region[];
   subregion?: SubRegion;
   category?: Category;
   difficulty?: Difficulty;
@@ -110,7 +111,8 @@ function buildSummary(state: SessionState, userId: string): RevisionSessionSumma
     startedAt: state.startedAt ?? new Date().toISOString(),
     finishedAt: new Date().toISOString(),
     questionTypes: state.setupParams?.types ?? [],
-    regionFilter: state.setupParams?.region ? [state.setupParams.region] : undefined,
+    regionFilter:
+      state.setupParams?.regions ?? (state.setupParams?.region ? [state.setupParams.region] : undefined),
     totalQuestions: state.questions.length,
     correctCount: state.answers.filter((a) => a.correct).length,
     breakdownByCategory,

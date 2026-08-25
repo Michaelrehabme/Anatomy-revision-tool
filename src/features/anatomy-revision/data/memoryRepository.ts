@@ -44,6 +44,16 @@ export function createMemoryRepository(): AnatomyRepository {
       return [...masteryByKey.values()].filter((m) => m.userId === userId);
     },
 
+    async listMastery(userId: string) {
+      return [...masteryByKey.values()].filter((m) => m.userId === userId);
+    },
+
+    async listDueMastery(userId: string, before: string) {
+      return [...masteryByKey.values()]
+        .filter((m) => m.userId === userId && m.dueAt !== undefined && m.dueAt <= before)
+        .sort((a, b) => a.dueAt!.localeCompare(b.dueAt!));
+    },
+
     async upsertMastery(mastery: StructureMastery) {
       masteryByKey.set(masteryKey(mastery.userId, mastery.structureId), mastery);
     },

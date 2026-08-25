@@ -24,6 +24,10 @@ export interface AnatomyRepository {
   recordAttempt(attempt: UserAttempt): Promise<void>;
   getMastery(userId: string): Promise<StructureMastery[]>;
   upsertMastery(mastery: StructureMastery): Promise<void>;
+  /** Every mastery row for a user — same data as getMastery, named for the Today/Progress screens' use case. */
+  listMastery(userId: string): Promise<StructureMastery[]>;
+  /** Mastery rows with dueAt <= before (ISO), sorted soonest-due first. Powers the Today screen's due queue. */
+  listDueMastery(userId: string, before: string): Promise<StructureMastery[]>;
 
   saveSessionSummary(summary: RevisionSessionSummary): Promise<void>;
   listSessionSummaries(userId: string, limit?: number): Promise<RevisionSessionSummary[]>;

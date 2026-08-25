@@ -5,6 +5,7 @@ import {
   getDocs,
   query,
   orderBy,
+  where,
   limit as fsLimit,
 } from 'firebase/firestore';
 import type { AnatomyRepository, ImageAssetFilter } from './repository';
@@ -53,6 +54,28 @@ export async function createFirestoreRepository(): Promise<AnatomyRepository> {
 
     async getMastery(userId: string) {
       const snapshot = await getDocs(collection(db, 'users', userId, 'mastery'));
+      return snapshot.docs.map((d) => d.data() as StructureMastery);
+    },
+
+    async listMastery(userId: string) {
+      const snapshot = await getDocs(collection(db, 'users', userId, 'mastery'));
+      return snapshot.docs.map((d) => d.data() as StructureMastery);
+    },
+
+    /**
+     * Requires a composite index on the users/{uid}/mastery subcollection
+     * (dueAt ASC, filtered by equality isn't needed — the collection is
+     * already scoped to the user by path) — create it in the Firebase
+     * console (or via the link in the error the first time this runs)
+     * before relying on this in a deployed Firestore-backed environment.
+     */
+    async listDueMastery(userId: string, before: string) {
+      const q = query(
+        collection(db, 'users', userId, 'mastery'),
+        where('dueAt', '<=', before),
+        orderBy('dueAt', 'asc'),
+      );
+      const snapshot = await getDocs(q);
       return snapshot.docs.map((d) => d.data() as StructureMastery);
     },
 

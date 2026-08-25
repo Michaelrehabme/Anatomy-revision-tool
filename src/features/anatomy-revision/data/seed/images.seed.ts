@@ -1,4 +1,5 @@
-import type { AnatomyImageAsset } from '../../types/image';
+import type { AnatomyImageAsset, LayerType } from '../../types/image';
+import type { Region, SubRegion } from '../../types/region';
 
 /**
  * 24 real atlas-slide images, copied into /public/anatomy/atlas/ from
@@ -363,4 +364,45 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
     region: 'back-core', subregion: 'spine', view: 'posterior', layer: 'skeletal',
     hotspots: [], credit: AI_GENERATED_CREDIT, licence: AI_GENERATED_LICENCE,
   },
+
+  // --- Single-muscle panel crops (21), for the Muscle Card screen ---
+  // mode: 'single-structure' links via structureId directly (see
+  // lib/linkImages.ts) rather than panelStructureNames matching.
+  ...([
+    ['supraspinatus', 'shoulder-arm', 'shoulder', 'deep-muscle'],
+    ['infraspinatus', 'shoulder-arm', 'shoulder', 'deep-muscle'],
+    ['teres-minor', 'shoulder-arm', 'shoulder', 'deep-muscle'],
+    ['subscapularis', 'shoulder-arm', 'shoulder', 'deep-muscle'],
+    ['deltoid', 'shoulder-arm', 'shoulder', 'superficial-muscle'],
+    ['trapezius', 'shoulder-arm', 'shoulder', 'superficial-muscle'],
+    ['latissimus-dorsi', 'shoulder-arm', 'shoulder', 'superficial-muscle'],
+    ['biceps-brachii', 'shoulder-arm', 'elbow', 'superficial-muscle'],
+    ['brachialis', 'shoulder-arm', 'elbow', 'deep-muscle'],
+    ['triceps-brachii', 'shoulder-arm', 'elbow', 'superficial-muscle'],
+    ['brachioradialis', 'forearm-hand', 'elbow', 'superficial-muscle'],
+    ['gluteus-maximus', 'hip-thigh', 'hip', 'superficial-muscle'],
+    ['gluteus-medius', 'hip-thigh', 'hip', 'deep-muscle'],
+    ['gluteus-minimus', 'hip-thigh', 'hip', 'deep-muscle'],
+    ['tensor-fasciae-latae', 'hip-thigh', 'hip', 'superficial-muscle'],
+    ['semitendinosus', 'hip-thigh', 'knee', 'superficial-muscle'],
+    ['biceps-femoris', 'hip-thigh', 'knee', 'superficial-muscle'],
+    ['tibialis-anterior', 'lower-leg-foot', 'ankle-foot', 'superficial-muscle'],
+    ['tibialis-posterior', 'lower-leg-foot', 'ankle-foot', 'deep-muscle'],
+    ['gastrocnemius', 'lower-leg-foot', 'ankle-foot', 'superficial-muscle'],
+    ['soleus', 'lower-leg-foot', 'ankle-foot', 'deep-muscle'],
+  ] as [string, Region, SubRegion, LayerType][]).map(
+    ([structureId, region, subregion, layer]): AnatomyImageAsset => ({
+      id: `panel-${structureId}`,
+      filePath: `/anatomy/panels/${structureId}.png`,
+      mode: 'single-structure',
+      structureId,
+      region,
+      subregion,
+      view: 'posterior',
+      layer,
+      hotspots: [],
+      credit: AI_GENERATED_CREDIT,
+      licence: AI_GENERATED_LICENCE,
+    }),
+  ),
 ];

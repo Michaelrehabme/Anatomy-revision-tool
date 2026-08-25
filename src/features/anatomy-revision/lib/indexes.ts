@@ -48,6 +48,8 @@ export function buildIndexes(structures: AnatomyStructure[]): StructureIndexes {
 export interface StructureFilter {
   category?: Category;
   region?: Region;
+  /** OR-matched against s.region; takes precedence over `region` when non-empty. Empty/undefined = no region filter. */
+  regions?: Region[];
   subregion?: SubRegion;
   difficulty?: Difficulty;
 }
@@ -57,10 +59,12 @@ export function filterStructures(
   filter?: StructureFilter,
 ): AnatomyStructure[] {
   if (!filter) return structures;
+  const regionMatch = (region: Region) =>
+    filter.regions?.length ? filter.regions.includes(region) : !filter.region || region === filter.region;
   return structures.filter(
     (s) =>
       (!filter.category || s.category === filter.category) &&
-      (!filter.region || s.region === filter.region) &&
+      regionMatch(s.region) &&
       (!filter.subregion || s.subregion === filter.subregion) &&
       (!filter.difficulty || s.difficulty === filter.difficulty),
   );
