@@ -33,12 +33,12 @@
   } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
   var firebaseConfig = {
-    apiKey: "REPLACE_ME",
-    authDomain: "REPLACE_ME.firebaseapp.com",
-    projectId: "REPLACE_ME",
-    storageBucket: "REPLACE_ME.appspot.com",
-    messagingSenderId: "REPLACE_ME",
-    appId: "REPLACE_ME"
+    apiKey: "AIzaSyCVbQdOti6o6lJQJV0StakHvODtixeDPtQ",
+    authDomain: "mskanatomyquiz.firebaseapp.com",
+    projectId: "mskanatomyquiz",
+    storageBucket: "mskanatomyquiz.firebasestorage.app",
+    messagingSenderId: "276674934223",
+    appId: "1:276674934223:web:90a69a74beb92021e1ceba"
   };
   var app = initializeApp(firebaseConfig);
   window.__fb = {
@@ -736672,11 +736672,18 @@
 
     el.authGuestBtn.addEventListener("click", function () { clearAuthError(); });
 
+    // Linking an anonymous user (linkWithCredential/linkWithPopup/linkWithPhoneNumber)
+    // mutates auth.currentUser in place - Firebase doesn't reliably re-fire
+    // onAuthStateChanged for that, since the uid hasn't changed, only its
+    // isAnonymous flag and providers. So the UI can't rely solely on the
+    // listener here; explicitly refresh it after every successful call.
+    function onAuthActionSuccess() { updateAuthUI(f.auth.currentUser); }
+
     el.authSigninBtn.addEventListener("click", function () {
       clearAuthError();
       var email = el.authEmailInput.value.trim(), pw = el.authPasswordInput.value;
       if (!email || !pw) { showAuthError("Enter an email and password."); return; }
-      f.signInWithEmailAndPassword(f.auth, email, pw).catch(function (err) { showAuthError(err.message); });
+      f.signInWithEmailAndPassword(f.auth, email, pw).then(onAuthActionSuccess).catch(function (err) { showAuthError(err.message); });
     });
 
     el.authSignupBtn.addEventListener("click", function () {
@@ -736688,7 +736695,7 @@
       var promise = (user && user.isAnonymous)
         ? f.linkWithCredential(user, f.EmailAuthProvider.credential(email, pw))
         : f.createUserWithEmailAndPassword(f.auth, email, pw);
-      promise.catch(function (err) { showAuthError(err.message); });
+      promise.then(onAuthActionSuccess).catch(function (err) { showAuthError(err.message); });
     });
 
     el.authGoogleBtn.addEventListener("click", function () {
@@ -736696,7 +736703,7 @@
       var provider = new f.GoogleAuthProvider();
       var user = f.auth.currentUser;
       var promise = (user && user.isAnonymous) ? f.linkWithPopup(user, provider) : f.signInWithPopup(f.auth, provider);
-      promise.catch(function (err) { showAuthError(err.message); });
+      promise.then(onAuthActionSuccess).catch(function (err) { showAuthError(err.message); });
     });
 
     el.authPhoneSendBtn.addEventListener("click", function () {
@@ -736718,7 +736725,7 @@
       clearAuthError();
       var code = el.authCodeInput.value.trim();
       if (!confirmationResult || !code) { showAuthError("Request a code first."); return; }
-      confirmationResult.confirm(code).catch(function (err) { showAuthError(err.message); });
+      confirmationResult.confirm(code).then(onAuthActionSuccess).catch(function (err) { showAuthError(err.message); });
     });
 
     el.accountSaveNameBtn.addEventListener("click", function () {
