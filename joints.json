@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "note": "Joint groupings for the turntable render pipeline (render_joints.py). Each joint bakes its listed bones (single side, .l, for tight framing - same convention landmark-pins.json already uses) into one context mesh and rotates a camera around it. 'sideViewAzimuth' is the degrees-from-anterior angle used for the UI's 'Side' quick-jump button - a starting guess, tune per joint after the first render pass (README philosophy: look before batching). Bone names verified against objects.json.",
+  "joints": [
+    {
+      "id": "elbow",
+      "label": "Elbow",
+      "bones": ["Humerus.l", "Ulna.l", "Radius.l"],
+      "sideViewAzimuth": 90,
+      "landmarks": ["trochlear-notch-ulna", "radial-notch-ulna", "coronoid-process-ulna", "olecranon-fossa"]
+    },
+    {
+      "id": "shoulder",
+      "label": "Shoulder (glenohumeral)",
+      "bones": ["Scapula.l", "Humerus.l", "Clavicle.l"],
+      "sideViewAzimuth": 90,
+      "landmarks": ["coracoid-process", "glenoid-cavity", "glenoid-labrum", "acromion", "acromioclavicular-joint"]
+    },
+    {
+      "id": "sternoclavicular",
+      "label": "Sternoclavicular joint",
+      "bones": ["Manubrium of sternum", "Body of sternum", "Xiphoid process", "Clavicle.l"],
+      "sideViewAzimuth": 90,
+      "landmarks": ["sternoclavicular-joint"]
+    },
+    {
+      "id": "hip",
+      "label": "Hip",
+      "bones": ["Hip bone.l", "Femur.l"],
+      "sideViewAzimuth": 90,
+      "landmarks": ["acetabulum", "acetabular-notch", "fovea-capitis", "iliac-fossa", "greater-trochanter", "lesser-trochanter"]
+    },
+    {
+      "id": "knee",
+      "label": "Knee",
+      "bones": ["Femur.l", "Tibia.l", "Patella.l"],
+      "sideViewAzimuth": 90,
+      "landmarks": ["intercondylar-eminence-tibia", "tibial-plateau", "menisci"]
+    },
+    {
+      "id": "ankle",
+      "label": "Ankle",
+      "bones": ["Tibia.l", "Fibula.l", "Talus.l"],
+      "sideViewAzimuth": 90,
+      "landmarks": ["medial-malleolus", "lateral-malleolus", "talus"]
+    },
+    {
+      "id": "subtalar-midfoot",
+      "label": "Subtalar / midfoot",
+      "bones": ["Talus.l", "Calcaneus.l", "Navicular bone.l", "Cuboid bone.l"],
+      "sideViewAzimuth": 90,
+      "landmarks": ["calcaneus", "navicular", "cuboid"]
+    },
+    {
+      "id": "sacroiliac",
+      "label": "Sacroiliac joint",
+      "bones": ["Hip bone.l", "Sacrum"],
+      "sideViewAzimuth": 90,
+      "landmarks": ["auricular-surface-ilium", "auricular-surface-sacrum", "sacroiliac-joint"]
+    },
+    {
+      "id": "facet-joint",
+      "label": "Facet (zygapophyseal) joint",
+      "bones": ["Vertebra L4", "Vertebra L5"],
+      "sideViewAzimuth": 90,
+      "landmarks": ["vertebra-l4", "inferior-articular-facet-vertebra", "intervertebral-disc"]
+    },
+    {
+      "id": "costovertebral",
+      "label": "Costovertebral joint",
+      "bones": ["Vertebra T5", "Fifth rib.l"],
+      "sideViewAzimuth": 90,
+      "landmarks": ["superior-costal-facet", "inferior-costal-facet", "transverse-costal-facet"]
+    }
+  ]
+}

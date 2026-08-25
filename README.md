@@ -91,7 +91,29 @@ I'm not a lawyer. If you're taking payment, have someone check the stack.
 | `reconcile.py` | Python | mapping → concrete Blender object lists |
 | `render_muscles.py` | Blender | base plates, masks, isolated renders |
 | `masks_to_svg.py` | Python | masks → normalised hotspot polygons |
+| `joints.json` | — | 10 joints: id, label, member bones, landmark membership |
+| `render_joints.py` | Blender | per-joint turntable base plates + landmark pins/masks |
+| `render_regions.py` | Blender | per-region (muscle) turntable base plates + masks |
+| `joint_masks_to_hotspots.py` | Python | per-frame masks → normalised hotspot polygons (joints and regions both) |
+| `convert_frames_to_webp.py` | Python | re-encodes shipped turntable frames PNG → WebP (~35x smaller; masks stay PNG, untouched) |
+| `add_primary_joint.py` | Python | tags each muscle with a `primaryJoint` display label from its `actions` tags |
+| `apply_joints.py` | Python | folds a joint render pass into `landmarks.json` + `msk-quiz.html` |
+| `apply_regions.py` | Python | folds a region render pass into `msk-quiz.html` |
 
-`dump_objects.py` and `render_muscles.py` need Blender and the atlas, so I
-couldn't execute them here — treat them as reviewed drafts, not tested code.
-`masks_to_svg.py` and `reconcile.py` are plain Python and were tested.
+`dump_objects.py`, `render_muscles.py`, `render_joints.py` and
+`render_regions.py` need Blender and the atlas. Everything else is plain
+Python. All of it has now actually been run end-to-end in this environment
+(Blender + the atlas are present locally) rather than left as reviewed
+drafts - see `joints.json`'s 10 joints and every muscle region's turntable
+under `renders/joints/` and `renders/regions/`.
+
+Every structure and muscle now gets a drag-to-rotate turntable (24 frames)
+instead of one fixed camera angle, with Anterior/Posterior/Side quick-jump
+buttons and the highlighted structure/muscle tracked per frame. Landmarks
+render against just their own joint's bones (tight framing); muscles render
+against their whole region's base plate (a muscle can span more than one
+joint) with a `primaryJoint` label for orientation. This also retired the
+old single-camera-plus-manual-posterior-pass system
+(`posterior_classification.json` / `apply_posterior.py` /
+`merge_posterior_hotspots.py`, now removed) - every back view is just frame
+12 of the same rotation, not a separately classified and rendered pass.

@@ -32,7 +32,8 @@
         "y": 0.12219,
         "approximate": true
       },
-      "kind": "pin"
+      "kind": "pin",
+      "joint": "elbow"
     },
     {
       "id": "radial-notch-ulna",
@@ -60,7 +61,8 @@
         "y": 0.15917,
         "approximate": true
       },
-      "kind": "pin"
+      "kind": "pin",
+      "joint": "elbow"
     },
     {
       "id": "olecranon-fossa",
@@ -85,7 +87,8 @@
         "y": 0.81896,
         "approximate": true
       },
-      "kind": "pin"
+      "kind": "pin",
+      "joint": "elbow"
     },
     {
       "id": "coronoid-process-ulna",
@@ -110,7 +113,8 @@
         "y": 0.13699,
         "approximate": true
       },
-      "kind": "pin"
+      "kind": "pin",
+      "joint": "elbow"
     },
     {
       "id": "acromion",
@@ -137,7 +141,8 @@
         "y": 0.03,
         "approximate": true
       },
-      "kind": "pin"
+      "kind": "pin",
+      "joint": "shoulder"
     },
     {
       "id": "coracoid-process",
@@ -163,7 +168,8 @@
         "y": 0.24165,
         "approximate": true
       },
-      "kind": "pin"
+      "kind": "pin",
+      "joint": "shoulder"
     },
     {
       "id": "glenoid-cavity",
@@ -191,7 +197,8 @@
         "y": 0.28318,
         "approximate": true
       },
-      "kind": "pin"
+      "kind": "pin",
+      "joint": "shoulder"
     },
     {
       "id": "glenoid-labrum",
@@ -211,7 +218,8 @@
           13
         ]
       },
-      "kind": "solid"
+      "kind": "solid",
+      "joint": "shoulder"
     },
     {
       "id": "talus",
@@ -233,7 +241,8 @@
           27
         ]
       },
-      "kind": "solid"
+      "kind": "solid",
+      "joint": "ankle"
     },
     {
       "id": "calcaneus",
@@ -256,7 +265,8 @@
           30
         ]
       },
-      "kind": "solid"
+      "kind": "solid",
+      "joint": "subtalar-midfoot"
     },
     {
       "id": "navicular",
@@ -277,7 +287,8 @@
           30
         ]
       },
-      "kind": "solid"
+      "kind": "solid",
+      "joint": "subtalar-midfoot"
     },
     {
       "id": "cuboid",
@@ -298,7 +309,8 @@
           30
         ]
       },
-      "kind": "solid"
+      "kind": "solid",
+      "joint": "subtalar-midfoot"
     },
     {
       "id": "medial-malleolus",
@@ -323,7 +335,8 @@
         "y": 0.85319,
         "approximate": true
       },
-      "kind": "pin"
+      "kind": "pin",
+      "joint": "ankle"
     },
     {
       "id": "lateral-malleolus",
@@ -347,7 +360,8 @@
         "y": 0.8545,
         "approximate": true
       },
-      "kind": "pin"
+      "kind": "pin",
+      "joint": "ankle"
     },
     {
       "id": "acetabulum",
@@ -375,7 +389,8 @@
         "y": 0.61862,
         "approximate": true
       },
-      "kind": "pin"
+      "kind": "pin",
+      "joint": "hip"
     },
     {
       "id": "acetabular-notch",
@@ -400,7 +415,8 @@
         "y": 0.65679,
         "approximate": true
       },
-      "kind": "pin"
+      "kind": "pin",
+      "joint": "hip"
     },
     {
       "id": "fovea-capitis",
@@ -425,7 +441,8 @@
         "y": 0.10984,
         "approximate": true
       },
-      "kind": "pin"
+      "kind": "pin",
+      "joint": "hip"
     },
     {
       "id": "greater-trochanter",
@@ -448,7 +465,8 @@
         "y": 0.1838,
         "approximate": true
       },
-      "kind": "pin"
+      "kind": "pin",
+      "joint": "hip"
     },
     {
       "id": "lesser-trochanter",
@@ -471,7 +489,8 @@
         "y": 0.27875,
         "approximate": true
       },
-      "kind": "pin"
+      "kind": "pin",
+      "joint": "hip"
     },
     {
       "id": "intercondylar-eminence-tibia",
@@ -496,7 +515,8 @@
         "y": 0.07416,
         "approximate": true
       },
-      "kind": "pin"
+      "kind": "pin",
+      "joint": "knee"
     },
     {
       "id": "tibial-plateau",
@@ -521,7 +541,8 @@
         "y": 0.15493,
         "approximate": true
       },
-      "kind": "pin"
+      "kind": "pin",
+      "joint": "knee"
     },
     {
       "id": "menisci",
@@ -542,7 +563,8 @@
           39
         ]
       },
-      "kind": "solid"
+      "kind": "solid",
+      "joint": "knee"
     },
     {
       "id": "vertebra-l4",
@@ -560,7 +582,8 @@
         "deck": "screenshot reference (Z-Anatomy object: 'Vertebra L4')",
         "questions": []
       },
-      "kind": "solid"
+      "kind": "solid",
+      "joint": "facet-joint"
     },
     {
       "id": "auricular-surface-ilium",
@@ -584,7 +607,8 @@
         "y": 0.38419,
         "approximate": true
       },
-      "kind": "pin"
+      "kind": "pin",
+      "joint": "sacroiliac"
     },
     {
       "id": "auricular-surface-sacrum",
@@ -602,7 +626,8 @@
       "source": {
         "deck": "screenshot reference (Z-Anatomy object: 'Auricular surface of sacrum')",
         "questions": []
-      }
+      },
+      "joint": "sacroiliac"
     },
     {
       "id": "superior-costal-facet",
@@ -620,7 +645,8 @@
       "source": {
         "deck": "screenshot reference (Z-Anatomy object: 'Superior costal facet')",
         "questions": []
-      }
+      },
+      "joint": "costovertebral"
     },
     {
       "id": "inferior-costal-facet",
@@ -637,7 +663,8 @@
       "source": {
         "deck": "screenshot reference (Z-Anatomy object: 'Inferior costal facet')",
         "questions": []
-      }
+      },
+      "joint": "costovertebral"
     },
     {
       "id": "transverse-costal-facet",
@@ -654,7 +681,8 @@
       "source": {
         "deck": "screenshot reference (Z-Anatomy object: 'Transverse costal facet')",
         "questions": []
-      }
+      },
+      "joint": "costovertebral"
     },
     {
       "id": "intervertebral-disc",
@@ -672,7 +700,8 @@
         "deck": "screenshot reference (Z-Anatomy objects: 'Intervertebral disc <level>')",
         "questions": []
       },
-      "kind": "solid"
+      "kind": "solid",
+      "joint": "facet-joint"
     },
     {
       "id": "inferior-articular-facet-vertebra",
@@ -689,7 +718,8 @@
       "source": {
         "deck": "Z-Anatomy object: 'Inferior articular facet of vertebra'",
         "questions": []
-      }
+      },
+      "joint": "facet-joint"
     },
     {
       "id": "iliac-fossa",
@@ -712,7 +742,8 @@
         "y": 0.36127,
         "approximate": true
       },
-      "kind": "pin"
+      "kind": "pin",
+      "joint": "hip"
     },
     {
       "id": "sacroiliac-joint",
@@ -729,7 +760,8 @@
       "source": {
         "deck": "screenshot reference",
         "questions": []
-      }
+      },
+      "joint": "sacroiliac"
     },
     {
       "id": "acromioclavicular-joint",
@@ -751,7 +783,8 @@
           18,
           20
         ]
-      }
+      },
+      "joint": "shoulder"
     },
     {
       "id": "sternoclavicular-joint",
@@ -771,7 +804,8 @@
           16,
           17
         ]
-      }
+      },
+      "joint": "sternoclavicular"
     }
   ]
 }

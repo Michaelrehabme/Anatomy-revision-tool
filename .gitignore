@@ -11,3 +11,13 @@ deploy/
 # fetched per README step 0; too large for git history
 atlas/Z-Anatomy.zip
 atlas/Z-Anatomy/
+
+# per-frame silhouette masks for the joint/region turntables - build-time
+# intermediates only, traced into join(t|_)-hotspots.json by
+# joint_masks_to_hotspots.py / masks_to_svg.py and never read by the client
+# (which only ever loads the base-plate frames + those JSON polygons).
+# Regenerable via render_joints.py; too large for git history at 24
+# frames/landmark (unlike renders/masks, committed earlier when the muscle
+# pipeline only rendered one angle per muscle).
+renders/joints/*/masks/
+renders/regions/*/masks/

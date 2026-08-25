@@ -56,7 +56,8 @@
           3,
           4
         ]
-      }
+      },
+      "primaryJoint": "Hip"
     },
     {
       "id": "psoas-major",
@@ -105,7 +106,8 @@
           3,
           4
         ]
-      }
+      },
+      "primaryJoint": "Hip"
     },
     {
       "id": "rectus-femoris",
@@ -157,7 +159,8 @@
           6,
           33
         ]
-      }
+      },
+      "primaryJoint": "Knee"
     },
     {
       "id": "sartorius",
@@ -207,7 +210,8 @@
           7,
           8
         ]
-      }
+      },
+      "primaryJoint": "Hip"
     },
     {
       "id": "gluteus-maximus",
@@ -261,7 +265,8 @@
           10
         ]
       },
-      "hotspotRegion": "hip-thigh-posterior"
+      "hotspotRegion": "hip-thigh-posterior",
+      "primaryJoint": "Hip"
     },
     {
       "id": "semitendinosus",
@@ -314,7 +319,8 @@
           39
         ]
       },
-      "hotspotRegion": "hip-thigh-posterior"
+      "hotspotRegion": "hip-thigh-posterior",
+      "primaryJoint": "Knee"
     },
     {
       "id": "semimembranosus",
@@ -367,7 +373,8 @@
           40
         ]
       },
-      "hotspotRegion": "hip-thigh-posterior"
+      "hotspotRegion": "hip-thigh-posterior",
+      "primaryJoint": "Knee"
     },
     {
       "id": "biceps-femoris",
@@ -429,7 +436,8 @@
           38
         ]
       },
-      "hotspotRegion": "hip-thigh-posterior"
+      "hotspotRegion": "hip-thigh-posterior",
+      "primaryJoint": "Knee"
     },
     {
       "id": "gluteus-medius",
@@ -479,7 +487,8 @@
           16
         ]
       },
-      "hotspotRegion": "hip-thigh-posterior"
+      "hotspotRegion": "hip-thigh-posterior",
+      "primaryJoint": "Hip"
     },
     {
       "id": "gluteus-minimus",
@@ -530,7 +539,8 @@
           18
         ]
       },
-      "hotspotRegion": "hip-thigh-posterior"
+      "hotspotRegion": "hip-thigh-posterior",
+      "primaryJoint": "Hip"
     },
     {
       "id": "tensor-fasciae-latae",
@@ -580,7 +590,8 @@
         "slides": [
           19
         ]
-      }
+      },
+      "primaryJoint": "Hip"
     },
     {
       "id": "adductor-magnus",
@@ -630,7 +641,8 @@
         "slides": [
           21
         ]
-      }
+      },
+      "primaryJoint": "Hip"
     },
     {
       "id": "adductor-longus",
@@ -677,7 +689,8 @@
         "slides": [
           22
         ]
-      }
+      },
+      "primaryJoint": "Hip"
     },
     {
       "id": "adductor-brevis",
@@ -724,7 +737,8 @@
         "slides": [
           23
         ]
-      }
+      },
+      "primaryJoint": "Hip"
     },
     {
       "id": "pectineus",
@@ -777,7 +791,8 @@
         "slides": [
           24
         ]
-      }
+      },
+      "primaryJoint": "Hip"
     },
     {
       "id": "gracilis",
@@ -825,7 +840,8 @@
         "slides": [
           25
         ]
-      }
+      },
+      "primaryJoint": "Hip"
     },
     {
       "id": "piriformis",
@@ -872,7 +888,8 @@
           27
         ]
       },
-      "hotspotRegion": "hip-thigh-posterior"
+      "hotspotRegion": "hip-thigh-posterior",
+      "primaryJoint": "Hip"
     },
     {
       "id": "gemelli",
@@ -920,7 +937,8 @@
           28
         ]
       },
-      "hotspotRegion": "hip-thigh-posterior"
+      "hotspotRegion": "hip-thigh-posterior",
+      "primaryJoint": "Hip"
     },
     {
       "id": "obturator-internus",
@@ -967,7 +985,8 @@
           29
         ]
       },
-      "hotspotRegion": "hip-thigh-posterior"
+      "hotspotRegion": "hip-thigh-posterior",
+      "primaryJoint": "Hip"
     },
     {
       "id": "obturator-externus",
@@ -1014,7 +1033,8 @@
           30
         ]
       },
-      "hotspotRegion": "hip-thigh-posterior"
+      "hotspotRegion": "hip-thigh-posterior",
+      "primaryJoint": "Hip"
     },
     {
       "id": "quadratus-femoris",
@@ -1062,7 +1082,8 @@
           31
         ]
       },
-      "hotspotRegion": "hip-thigh-posterior"
+      "hotspotRegion": "hip-thigh-posterior",
+      "primaryJoint": "Hip"
     },
     {
       "id": "vastus-lateralis",
@@ -1111,7 +1132,8 @@
         "slides": [
           34
         ]
-      }
+      },
+      "primaryJoint": "Knee"
     },
     {
       "id": "vastus-medialis",
@@ -1159,7 +1181,8 @@
         "slides": [
           35
         ]
-      }
+      },
+      "primaryJoint": "Knee"
     },
     {
       "id": "vastus-intermedius",
@@ -1207,7 +1230,8 @@
         "slides": [
           36
         ]
-      }
+      },
+      "primaryJoint": "Knee"
     },
     {
       "id": "popliteus",
@@ -1258,7 +1282,8 @@
           134
         ]
       },
-      "hotspotRegion": "lower-leg-foot-posterior"
+      "hotspotRegion": "lower-leg-foot-posterior",
+      "primaryJoint": "Knee"
     },
     {
       "id": "supraspinatus",
@@ -1307,7 +1332,8 @@
           43
         ]
       },
-      "hotspotRegion": "shoulder-arm-posterior"
+      "hotspotRegion": "shoulder-arm-posterior",
+      "primaryJoint": "Shoulder"
     },
     {
       "id": "infraspinatus",
@@ -1356,7 +1382,8 @@
           44
         ]
       },
-      "hotspotRegion": "shoulder-arm-posterior"
+      "hotspotRegion": "shoulder-arm-posterior",
+      "primaryJoint": "Shoulder"
     },
     {
       "id": "teres-minor",
@@ -1405,7 +1432,8 @@
           45
         ]
       },
-      "hotspotRegion": "shoulder-arm-posterior"
+      "hotspotRegion": "shoulder-arm-posterior",
+      "primaryJoint": "Shoulder"
     },
     {
       "id": "subscapularis",
@@ -1455,7 +1483,8 @@
           42,
           46
         ]
-      }
+      },
+      "primaryJoint": "Shoulder"
     },
     {
       "id": "deltoid",
@@ -1508,7 +1537,8 @@
           47,
           48
         ]
-      }
+      },
+      "primaryJoint": "Shoulder"
     },
     {
       "id": "trapezius",
@@ -1568,7 +1598,8 @@
           49
         ]
       },
-      "hotspotRegion": "shoulder-arm-posterior"
+      "hotspotRegion": "shoulder-arm-posterior",
+      "primaryJoint": "Shoulder"
     },
     {
       "id": "levator-scapulae",
@@ -1624,7 +1655,8 @@
           50
         ]
       },
-      "hotspotRegion": "shoulder-arm-posterior"
+      "hotspotRegion": "shoulder-arm-posterior",
+      "primaryJoint": "Shoulder"
     },
     {
       "id": "rhomboid-minor",
@@ -1673,7 +1705,8 @@
           51
         ]
       },
-      "hotspotRegion": "shoulder-arm-posterior"
+      "hotspotRegion": "shoulder-arm-posterior",
+      "primaryJoint": "Shoulder"
     },
     {
       "id": "rhomboid-major",
@@ -1722,7 +1755,8 @@
           67
         ]
       },
-      "hotspotRegion": "shoulder-arm-posterior"
+      "hotspotRegion": "shoulder-arm-posterior",
+      "primaryJoint": "Shoulder"
     },
     {
       "id": "serratus-anterior",
@@ -1771,7 +1805,8 @@
         "slides": [
           52
         ]
-      }
+      },
+      "primaryJoint": "Shoulder"
     },
     {
       "id": "pectoralis-major",
@@ -1825,7 +1860,8 @@
           53,
           54
         ]
-      }
+      },
+      "primaryJoint": "Shoulder"
     },
     {
       "id": "pectoralis-minor",
@@ -1875,7 +1911,8 @@
           53,
           55
         ]
-      }
+      },
+      "primaryJoint": "Shoulder"
     },
     {
       "id": "biceps-brachii",
@@ -1928,7 +1965,8 @@
           56,
           57
         ]
-      }
+      },
+      "primaryJoint": "Elbow"
     },
     {
       "id": "brachialis",
@@ -1976,7 +2014,8 @@
           56,
           58
         ]
-      }
+      },
+      "primaryJoint": "Elbow"
     },
     {
       "id": "coracobrachialis",
@@ -2025,7 +2064,8 @@
           56,
           59
         ]
-      }
+      },
+      "primaryJoint": "Shoulder"
     },
     {
       "id": "triceps-brachii",
@@ -2078,7 +2118,8 @@
           60
         ]
       },
-      "hotspotRegion": "shoulder-arm-posterior"
+      "hotspotRegion": "shoulder-arm-posterior",
+      "primaryJoint": "Elbow"
     },
     {
       "id": "anconeus",
@@ -2126,7 +2167,8 @@
           61
         ]
       },
-      "hotspotRegion": "shoulder-arm-posterior"
+      "hotspotRegion": "shoulder-arm-posterior",
+      "primaryJoint": "Elbow"
     },
     {
       "id": "teres-major",
@@ -2176,7 +2218,8 @@
           63
         ]
       },
-      "hotspotRegion": "shoulder-arm-posterior"
+      "hotspotRegion": "shoulder-arm-posterior",
+      "primaryJoint": "Shoulder"
     },
     {
       "id": "latissimus-dorsi",
@@ -2229,7 +2272,8 @@
           64
         ]
       },
-      "hotspotRegion": "shoulder-arm-posterior"
+      "hotspotRegion": "shoulder-arm-posterior",
+      "primaryJoint": "Shoulder"
     },
     {
       "id": "diaphragm",
@@ -2279,7 +2323,8 @@
         "slides": [
           73
         ]
-      }
+      },
+      "primaryJoint": "Torso"
     },
     {
       "id": "external-intercostals",
@@ -2334,7 +2379,8 @@
         "slides": [
           73
         ]
-      }
+      },
+      "primaryJoint": "Torso"
     },
     {
       "id": "internal-intercostals",
@@ -2389,7 +2435,8 @@
         "slides": [
           73
         ]
-      }
+      },
+      "primaryJoint": "Torso"
     },
     {
       "id": "sternocleidomastoid",
@@ -2445,7 +2492,8 @@
           76,
           77
         ]
-      }
+      },
+      "primaryJoint": "Spine & back"
     },
     {
       "id": "scalene-anterior",
@@ -2494,7 +2542,8 @@
           76,
           78
         ]
-      }
+      },
+      "primaryJoint": "Spine & back"
     },
     {
       "id": "scalene-middle",
@@ -2538,7 +2587,8 @@
         "slides": [
           78
         ]
-      }
+      },
+      "primaryJoint": "Spine & back"
     },
     {
       "id": "scalene-posterior",
@@ -2582,7 +2632,8 @@
         "slides": [
           78
         ]
-      }
+      },
+      "primaryJoint": "Spine & back"
     },
     {
       "id": "splenius-capitis",
@@ -2631,7 +2682,8 @@
           80
         ]
       },
-      "hotspotRegion": "back-core-posterior"
+      "hotspotRegion": "back-core-posterior",
+      "primaryJoint": "Spine & back"
     },
     {
       "id": "splenius-cervicis",
@@ -2678,7 +2730,8 @@
           81
         ]
       },
-      "hotspotRegion": "back-core-posterior"
+      "hotspotRegion": "back-core-posterior",
+      "primaryJoint": "Spine & back"
     },
     {
       "id": "iliocostalis",
@@ -2727,7 +2780,8 @@
           83
         ]
       },
-      "hotspotRegion": "back-core-posterior"
+      "hotspotRegion": "back-core-posterior",
+      "primaryJoint": "Spine & back"
     },
     {
       "id": "longissimus",
@@ -2777,7 +2831,8 @@
           84
         ]
       },
-      "hotspotRegion": "back-core-posterior"
+      "hotspotRegion": "back-core-posterior",
+      "primaryJoint": "Spine & back"
     },
     {
       "id": "spinalis",
@@ -2822,7 +2877,8 @@
           85
         ]
       },
-      "hotspotRegion": "back-core-posterior"
+      "hotspotRegion": "back-core-posterior",
+      "primaryJoint": "Spine & back"
     },
     {
       "id": "semispinalis",
@@ -2868,7 +2924,8 @@
           87
         ]
       },
-      "hotspotRegion": "back-core-posterior"
+      "hotspotRegion": "back-core-posterior",
+      "primaryJoint": "Spine & back"
     },
     {
       "id": "multifidus",
@@ -2916,7 +2973,8 @@
           88
         ]
       },
-      "hotspotRegion": "back-core-posterior"
+      "hotspotRegion": "back-core-posterior",
+      "primaryJoint": "Spine & back"
     },
     {
       "id": "rotatores",
@@ -2962,7 +3020,8 @@
           89
         ]
       },
-      "hotspotRegion": "back-core-posterior"
+      "hotspotRegion": "back-core-posterior",
+      "primaryJoint": "Spine & back"
     },
     {
       "id": "interspinales",
@@ -3007,7 +3066,8 @@
           91
         ]
       },
-      "hotspotRegion": "back-core-posterior"
+      "hotspotRegion": "back-core-posterior",
+      "primaryJoint": "Spine & back"
     },
     {
       "id": "intertransversarii",
@@ -3052,7 +3112,8 @@
           92
         ]
       },
-      "hotspotRegion": "back-core-posterior"
+      "hotspotRegion": "back-core-posterior",
+      "primaryJoint": "Spine & back"
     },
     {
       "id": "longus-colli",
@@ -3099,7 +3160,8 @@
           93,
           94
         ]
-      }
+      },
+      "primaryJoint": "Spine & back"
     },
     {
       "id": "longus-capitis",
@@ -3143,7 +3205,8 @@
           93,
           95
         ]
-      }
+      },
+      "primaryJoint": "Spine & back"
     },
     {
       "id": "rectus-abdominis",
@@ -3195,7 +3258,8 @@
           96,
           97
         ]
-      }
+      },
+      "primaryJoint": "Torso"
     },
     {
       "id": "external-oblique",
@@ -3255,7 +3319,8 @@
           96,
           98
         ]
-      }
+      },
+      "primaryJoint": "Torso"
     },
     {
       "id": "internal-oblique",
@@ -3321,7 +3386,8 @@
         "slides": [
           99
         ]
-      }
+      },
+      "primaryJoint": "Torso"
     },
     {
       "id": "transversus-abdominis",
@@ -3386,7 +3452,8 @@
         "slides": [
           100
         ]
-      }
+      },
+      "primaryJoint": "Torso"
     },
     {
       "id": "quadratus-lumborum",
@@ -3439,7 +3506,8 @@
           101
         ]
       },
-      "hotspotRegion": "back-core-posterior"
+      "hotspotRegion": "back-core-posterior",
+      "primaryJoint": "Torso"
     },
     {
       "id": "tibialis-anterior",
@@ -3488,7 +3556,8 @@
           119,
           123
         ]
-      }
+      },
+      "primaryJoint": "Ankle & foot"
     },
     {
       "id": "extensor-hallucis-longus",
@@ -3536,7 +3605,8 @@
           120,
           123
         ]
-      }
+      },
+      "primaryJoint": "Ankle & foot"
     },
     {
       "id": "extensor-digitorum-longus",
@@ -3585,7 +3655,8 @@
           121,
           123
         ]
-      }
+      },
+      "primaryJoint": "Ankle & foot"
     },
     {
       "id": "peroneus-tertius",
@@ -3633,7 +3704,8 @@
           122,
           123
         ]
-      }
+      },
+      "primaryJoint": "Ankle & foot"
     },
     {
       "id": "peroneus-longus",
@@ -3682,7 +3754,8 @@
           124,
           126
         ]
-      }
+      },
+      "primaryJoint": "Ankle & foot"
     },
     {
       "id": "peroneus-brevis",
@@ -3730,7 +3803,8 @@
           125,
           126
         ]
-      }
+      },
+      "primaryJoint": "Ankle & foot"
     },
     {
       "id": "gastrocnemius",
@@ -3779,7 +3853,8 @@
           130
         ]
       },
-      "hotspotRegion": "lower-leg-foot-posterior"
+      "hotspotRegion": "lower-leg-foot-posterior",
+      "primaryJoint": "Ankle & foot"
     },
     {
       "id": "soleus",
@@ -3827,7 +3902,8 @@
           130
         ]
       },
-      "hotspotRegion": "lower-leg-foot-posterior"
+      "hotspotRegion": "lower-leg-foot-posterior",
+      "primaryJoint": "Ankle & foot"
     },
     {
       "id": "plantaris",
@@ -3875,7 +3951,8 @@
           129
         ]
       },
-      "hotspotRegion": "lower-leg-foot-posterior"
+      "hotspotRegion": "lower-leg-foot-posterior",
+      "primaryJoint": "Ankle & foot"
     },
     {
       "id": "tibialis-posterior",
@@ -3928,7 +4005,8 @@
           135
         ]
       },
-      "hotspotRegion": "lower-leg-foot-posterior"
+      "hotspotRegion": "lower-leg-foot-posterior",
+      "primaryJoint": "Ankle & foot"
     },
     {
       "id": "flexor-digitorum-longus",
@@ -3977,7 +4055,8 @@
           135
         ]
       },
-      "hotspotRegion": "lower-leg-foot-posterior"
+      "hotspotRegion": "lower-leg-foot-posterior",
+      "primaryJoint": "Ankle & foot"
     },
     {
       "id": "flexor-hallucis-longus",
@@ -4026,7 +4105,8 @@
           135
         ]
       },
-      "hotspotRegion": "lower-leg-foot-posterior"
+      "hotspotRegion": "lower-leg-foot-posterior",
+      "primaryJoint": "Ankle & foot"
     },
     {
       "id": "extensor-digitorum-brevis",
@@ -4073,7 +4153,8 @@
         "slides": [
           136
         ]
-      }
+      },
+      "primaryJoint": "Ankle & foot"
     },
     {
       "id": "extensor-hallucis-brevis",
@@ -4120,7 +4201,8 @@
         "slides": [
           137
         ]
-      }
+      },
+      "primaryJoint": "Ankle & foot"
     },
     {
       "id": "flexor-digitorum-brevis",
@@ -4169,7 +4251,8 @@
           138,
           141
         ]
-      }
+      },
+      "primaryJoint": "Ankle & foot"
     },
     {
       "id": "abductor-hallucis",
@@ -4220,7 +4303,8 @@
           139,
           141
         ]
-      }
+      },
+      "primaryJoint": "Ankle & foot"
     },
     {
       "id": "abductor-digiti-minimi-foot",
@@ -4270,7 +4354,8 @@
           140,
           141
         ]
-      }
+      },
+      "primaryJoint": "Ankle & foot"
     },
     {
       "id": "quadratus-plantae",
@@ -4318,7 +4403,8 @@
           142,
           144
         ]
-      }
+      },
+      "primaryJoint": "Ankle & foot"
     },
     {
       "id": "lumbricals-foot",
@@ -4374,7 +4460,8 @@
           143,
           144
         ]
-      }
+      },
+      "primaryJoint": "Ankle & foot"
     },
     {
       "id": "flexor-hallucis-brevis",
@@ -4422,7 +4509,8 @@
           145,
           149
         ]
-      }
+      },
+      "primaryJoint": "Ankle & foot"
     },
     {
       "id": "adductor-hallucis",
@@ -4471,7 +4559,8 @@
           146,
           149
         ]
-      }
+      },
+      "primaryJoint": "Ankle & foot"
     },
     {
       "id": "flexor-digiti-minimi-brevis-foot",
@@ -4518,7 +4607,8 @@
         "slides": [
           147
         ]
-      }
+      },
+      "primaryJoint": "Ankle & foot"
     },
     {
       "id": "opponens-digiti-minimi-foot",
@@ -4566,7 +4656,8 @@
         "slides": [
           148
         ]
-      }
+      },
+      "primaryJoint": "Ankle & foot"
     },
     {
       "id": "dorsal-interossei-foot",
@@ -4616,7 +4707,8 @@
           150,
           152
         ]
-      }
+      },
+      "primaryJoint": "Ankle & foot"
     },
     {
       "id": "plantar-interossei",
@@ -4666,7 +4758,8 @@
           151,
           152
         ]
-      }
+      },
+      "primaryJoint": "Ankle & foot"
     },
     {
       "id": "pronator-teres",
@@ -4715,7 +4808,8 @@
           171,
           172
         ]
-      }
+      },
+      "primaryJoint": "Elbow"
     },
     {
       "id": "flexor-carpi-radialis",
@@ -4763,7 +4857,8 @@
           171,
           173
         ]
-      }
+      },
+      "primaryJoint": "Wrist & hand"
     },
     {
       "id": "palmaris-longus",
@@ -4809,7 +4904,8 @@
         "slides": [
           174
         ]
-      }
+      },
+      "primaryJoint": "Wrist & hand"
     },
     {
       "id": "flexor-carpi-ulnaris",
@@ -4859,7 +4955,8 @@
         "slides": [
           175
         ]
-      }
+      },
+      "primaryJoint": "Wrist & hand"
     },
     {
       "id": "flexor-digitorum-superficialis",
@@ -4909,7 +5006,8 @@
         "slides": [
           176
         ]
-      }
+      },
+      "primaryJoint": "Wrist & hand"
     },
     {
       "id": "flexor-digitorum-profundus",
@@ -4964,7 +5062,8 @@
         "slides": [
           177
         ]
-      }
+      },
+      "primaryJoint": "Wrist & hand"
     },
     {
       "id": "flexor-pollicis-longus",
@@ -5011,7 +5110,8 @@
         "slides": [
           178
         ]
-      }
+      },
+      "primaryJoint": "Wrist & hand"
     },
     {
       "id": "pronator-quadratus",
@@ -5057,7 +5157,8 @@
         "slides": [
           179
         ]
-      }
+      },
+      "primaryJoint": "Elbow"
     },
     {
       "id": "brachioradialis",
@@ -5106,7 +5207,8 @@
           182
         ]
       },
-      "hotspotRegion": "forearm-hand-posterior"
+      "hotspotRegion": "forearm-hand-posterior",
+      "primaryJoint": "Elbow"
     },
     {
       "id": "extensor-carpi-radialis-longus",
@@ -5155,7 +5257,8 @@
           183
         ]
       },
-      "hotspotRegion": "forearm-hand-posterior"
+      "hotspotRegion": "forearm-hand-posterior",
+      "primaryJoint": "Wrist & hand"
     },
     {
       "id": "extensor-carpi-radialis-brevis",
@@ -5203,7 +5306,8 @@
           184
         ]
       },
-      "hotspotRegion": "forearm-hand-posterior"
+      "hotspotRegion": "forearm-hand-posterior",
+      "primaryJoint": "Wrist & hand"
     },
     {
       "id": "extensor-digitorum",
@@ -5250,7 +5354,8 @@
           185
         ]
       },
-      "hotspotRegion": "forearm-hand-posterior"
+      "hotspotRegion": "forearm-hand-posterior",
+      "primaryJoint": "Wrist & hand"
     },
     {
       "id": "extensor-digiti-minimi",
@@ -5297,7 +5402,8 @@
           186
         ]
       },
-      "hotspotRegion": "forearm-hand-posterior"
+      "hotspotRegion": "forearm-hand-posterior",
+      "primaryJoint": "Wrist & hand"
     },
     {
       "id": "extensor-carpi-ulnaris",
@@ -5346,7 +5452,8 @@
           187
         ]
       },
-      "hotspotRegion": "forearm-hand-posterior"
+      "hotspotRegion": "forearm-hand-posterior",
+      "primaryJoint": "Wrist & hand"
     },
     {
       "id": "supinator",
@@ -5395,7 +5502,8 @@
           188
         ]
       },
-      "hotspotRegion": "forearm-hand-posterior"
+      "hotspotRegion": "forearm-hand-posterior",
+      "primaryJoint": "Elbow"
     },
     {
       "id": "abductor-pollicis-longus",
@@ -5444,7 +5552,8 @@
           189
         ]
       },
-      "hotspotRegion": "forearm-hand-posterior"
+      "hotspotRegion": "forearm-hand-posterior",
+      "primaryJoint": "Wrist & hand"
     },
     {
       "id": "extensor-pollicis-brevis",
@@ -5492,7 +5601,8 @@
           190
         ]
       },
-      "hotspotRegion": "forearm-hand-posterior"
+      "hotspotRegion": "forearm-hand-posterior",
+      "primaryJoint": "Wrist & hand"
     },
     {
       "id": "extensor-pollicis-longus",
@@ -5540,7 +5650,8 @@
           191
         ]
       },
-      "hotspotRegion": "forearm-hand-posterior"
+      "hotspotRegion": "forearm-hand-posterior",
+      "primaryJoint": "Wrist & hand"
     },
     {
       "id": "extensor-indicis",
@@ -5588,7 +5699,8 @@
           192
         ]
       },
-      "hotspotRegion": "forearm-hand-posterior"
+      "hotspotRegion": "forearm-hand-posterior",
+      "primaryJoint": "Wrist & hand"
     },
     {
       "id": "abductor-pollicis-brevis",
@@ -5638,7 +5750,8 @@
           194,
           195
         ]
-      }
+      },
+      "primaryJoint": "Wrist & hand"
     },
     {
       "id": "flexor-pollicis-brevis",
@@ -5687,7 +5800,8 @@
           194,
           196
         ]
-      }
+      },
+      "primaryJoint": "Wrist & hand"
     },
     {
       "id": "opponens-pollicis",
@@ -5736,7 +5850,8 @@
           194,
           197
         ]
-      }
+      },
+      "primaryJoint": "Wrist & hand"
     },
     {
       "id": "adductor-pollicis",
@@ -5784,7 +5899,8 @@
         "slides": [
           198
         ]
-      }
+      },
+      "primaryJoint": "Wrist & hand"
     },
     {
       "id": "abductor-digiti-minimi-hand",
@@ -5831,7 +5947,8 @@
         "slides": [
           199
         ]
-      }
+      },
+      "primaryJoint": "Wrist & hand"
     },
     {
       "id": "flexor-digiti-minimi-brevis-hand",
@@ -5879,7 +5996,8 @@
         "slides": [
           200
         ]
-      }
+      },
+      "primaryJoint": "Wrist & hand"
     },
     {
       "id": "opponens-digiti-minimi-hand",
@@ -5927,7 +6045,8 @@
         "slides": [
           201
         ]
-      }
+      },
+      "primaryJoint": "Wrist & hand"
     },
     {
       "id": "lumbricals-hand",
@@ -5982,7 +6101,8 @@
         "slides": [
           202
         ]
-      }
+      },
+      "primaryJoint": "Wrist & hand"
     },
     {
       "id": "dorsal-interossei-hand",
@@ -6030,7 +6150,8 @@
           203
         ]
       },
-      "hotspotRegion": "forearm-hand-posterior"
+      "hotspotRegion": "forearm-hand-posterior",
+      "primaryJoint": "Wrist & hand"
     },
     {
       "id": "palmar-interossei",
@@ -6077,7 +6198,8 @@
         "slides": [
           204
         ]
-      }
+      },
+      "primaryJoint": "Wrist & hand"
     }
   ],
   "indexes": {
