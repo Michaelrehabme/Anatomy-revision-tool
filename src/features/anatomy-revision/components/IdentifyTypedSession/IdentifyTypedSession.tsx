@@ -12,7 +12,13 @@ import { isAnswerMatch } from '../../lib/answerMatching';
 interface IdentifyTypedSessionProps {
   question: TypedIdentifyQuestion;
   imagesById: Map<string, AnatomyImageAsset>;
-  onAnswer: (params: { structureId: string; correct: boolean; confidence: Confidence }) => void;
+  onAnswer: (params: {
+    structureId: string;
+    correct: boolean;
+    confidence: Confidence;
+    selectedAnswer: string;
+    correctAnswer: string;
+  }) => void;
   onNext: () => void;
 }
 
@@ -44,7 +50,13 @@ export function IdentifyTypedSession({ question, imagesById, onAnswer, onNext }:
   const handleRate = (confidence: Confidence) => {
     if (!submitted) return;
     setRated(true);
-    onAnswer({ structureId: question.structureId, correct: submitted.correct, confidence });
+    onAnswer({
+      structureId: question.structureId,
+      correct: submitted.correct,
+      confidence,
+      selectedAnswer: attempt,
+      correctAnswer: canonical,
+    });
   };
 
   return (

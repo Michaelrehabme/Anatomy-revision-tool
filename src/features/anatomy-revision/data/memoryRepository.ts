@@ -1,4 +1,4 @@
-import type { AnatomyRepository, ImageAssetFilter } from './repository';
+import type { AnatomyRepository, AttemptFilter, ImageAssetFilter } from './repository';
 import type { UserAttempt, StructureMastery, RevisionSessionSummary } from '../types/attempt';
 import type { StructureFilter } from '../lib/indexes';
 import { filterStructures } from '../lib/indexes';
@@ -11,10 +11,12 @@ import { ALL_STRUCTURES, ALL_IMAGES } from './seed';
  */
 export function createMemoryRepository(): AnatomyRepository {
   const attempts: UserAttempt[] = [];
+  const exposureByKey = new Map<string, number>();
   const masteryByKey = new Map<string, StructureMastery>();
   const sessions: RevisionSessionSummary[] = [];
 
   const masteryKey = (userId: string, structureId: string) => `${userId}::${structureId}`;
+  const exposureKey = (userId: string, questionId: string) => `${userId}::${questionId}`;
 
   return {
     async listStructures(filter?: StructureFilter) {
@@ -38,6 +40,26 @@ export function createMemoryRepository(): AnatomyRepository {
 
     async recordAttempt(attempt: UserAttempt) {
       attempts.push(attempt);
+    },
+
+    async listAttempts(filter: AttemptFilter) {
+      const results = attempts
+        .filter(
+          (a) =>
+            (!filter.userId || a.userId === filter.userId) &&
+            (!filter.structureId || a.structureId === filter.structureId) &&
+            (!filter.questionId || a.questionId === filter.questionId) &&
+            (!filter.since || a.timestamp >= filter.since),
+        )
+        .sort((a, b) => b.timestamp.localeCompare(a.timestamp));
+      return filter.limit !== undefined ? results.slice(0, filter.limit) : results;
+    },
+
+    async recordQuestionExposure(userId: string, questionId: string) {
+      const key = exposureKey(userId, questionId);
+      const next = (exposureByKey.get(key) ?? 0) + 1;
+      exposureByKey.set(key, next);
+      return next;
     },
 
     async getMastery(userId: string) {

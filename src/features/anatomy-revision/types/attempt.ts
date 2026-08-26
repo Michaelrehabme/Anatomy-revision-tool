@@ -19,6 +19,16 @@ export interface UserAttempt {
   confidence?: Confidence;
   /** Locate questions: normalized click-to-centroid distance, for analytics. */
   hitDistance?: number;
+  /**
+   * The literal choice text (MCQ) or typed string (fill-blank, identify-typed)
+   * the student submitted. Never an index — choices are shuffled per session,
+   * so an index means nothing once detached from that session's ordering.
+   */
+  selectedAnswer?: string;
+  /** Denormalised canonical answer, so analytics never needs a question lookup. */
+  correctAnswer?: string;
+  /** 1 = first time this user has ever attempted this questionId. See recordQuestionExposure. */
+  attemptNumber: number;
   timestamp: string;
   durationMs?: number;
 }

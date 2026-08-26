@@ -46,19 +46,30 @@ function maskStyle(src: string): CSSProperties {
 }
 
 export interface BodyFigureProps {
-  selected: ReadonlySet<Region>;
-  onToggle: (region: Region) => void;
+  /** Selection mode (Region Picker): binary selected/unselected tint, clickable. Ignored when `fills` is set. */
+  selected?: ReadonlySet<Region>;
+  onToggle?: (region: Region) => void;
+  /**
+   * Read-only mode (Progress screen): an explicit CSS color per region
+   * (e.g. a mastery-mixed `color-mix(...)`), not clickable. Presence of
+   * this prop — even partial — switches the whole figure to read-only,
+   * matching the mobile mockup's Progress screen (no `interactive`/`on-*`
+   * handlers passed to its BodyFigure there, unlike the Region Picker).
+   */
+  fills?: Partial<Record<Region, string>>;
   className?: string;
 }
 
 /**
- * Posterior body figure with five clickable, multi-select regions, tinted
- * when selected. Used by the Region Picker (desktop screen 03). Not used
- * for locate-question hit-testing — that stays on the existing per-image
- * polygon system in lib/hotspot/, which targets a single cropped structure
- * image rather than the whole-body figure.
+ * Posterior body figure with five regions, either clickable multi-select
+ * (Region Picker, desktop + mobile) or read-only with an explicit color per
+ * region (Progress, mastery-shaded). Not used for locate-question hit-
+ * testing — that stays on the existing per-image polygon system in
+ * lib/hotspot/, which targets a single cropped structure image rather than
+ * the whole-body figure.
  */
-export function BodyFigure({ selected, onToggle, className }: BodyFigureProps) {
+export function BodyFigure({ selected, onToggle, fills, className }: BodyFigureProps) {
+  const readOnly = fills !== undefined;
   return (
     <div className={className} style={{ position: 'relative', width: '100%', aspectRatio: '608 / 1440' }}>
       {/* Approximate outline: same mask, upscaled, in the darker stroke color, behind the fill */}
@@ -80,30 +91,49 @@ export function BodyFigure({ selected, onToggle, className }: BodyFigureProps) {
 
       {REGION_RECTS.map(({ region, rect }, i) => {
         const [x, y, w, h] = rect;
-        const isSelected = selected.has(region);
+        const fillColor = fills?.[region];
+        const isSelected = !readOnly && (selected?.has(region) ?? false);
+        const color = readOnly ? (fillColor ?? 'transparent') : isSelected ? 'var(--acc)' : 'transparent';
+        const tint = (
+          <span
+            aria-hidden
+            className={readOnly ? 'block' : 'block transition-colors duration-150 group-hover:[background-color:var(--accs)]'}
+            style={{
+              position: 'absolute',
+              left: `${-(x / w) * 100}%`,
+              top: `${-(y / h) * 100}%`,
+              width: `${(1 / w) * 100}%`,
+              height: `${(1 / h) * 100}%`,
+              backgroundColor: color,
+              ...maskStyle(FILL_SRC),
+            }}
+          />
+        );
+
+        if (readOnly) {
+          return (
+            <div
+              key={`${region}-${i}`}
+              aria-hidden
+              className="absolute"
+              style={{ left: `${x * 100}%`, top: `${y * 100}%`, width: `${w * 100}%`, height: `${h * 100}%`, overflow: 'hidden' }}
+            >
+              {tint}
+            </div>
+          );
+        }
+
         return (
           <button
             key={`${region}-${i}`}
             type="button"
             title={REGION_LABELS[region]}
             aria-pressed={isSelected}
-            onClick={() => onToggle(region)}
+            onClick={() => onToggle?.(region)}
             className="group absolute cursor-pointer border-0 bg-transparent p-0"
             style={{ left: `${x * 100}%`, top: `${y * 100}%`, width: `${w * 100}%`, height: `${h * 100}%`, overflow: 'hidden' }}
           >
-            <span
-              aria-hidden
-              className="block transition-colors duration-150 group-hover:[background-color:var(--accs)]"
-              style={{
-                position: 'absolute',
-                left: `${-(x / w) * 100}%`,
-                top: `${-(y / h) * 100}%`,
-                width: `${(1 / w) * 100}%`,
-                height: `${(1 / h) * 100}%`,
-                backgroundColor: isSelected ? 'var(--acc)' : 'transparent',
-                ...maskStyle(FILL_SRC),
-              }}
-            />
+            {tint}
           </button>
         );
       })}

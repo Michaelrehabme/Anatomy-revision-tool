@@ -10,12 +10,15 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "eslint .",
-    "validate-content": "tsx src/scripts/validateContent.ts"
+    "validate-content": "tsx src/scripts/validateContent.ts",
+    "admin:set-claim": "tsx scripts/setAdmin.ts",
+    "admin:seed-changes": "tsx scripts/seedChangeRequests.ts"
   },
   "dependencies": {
     "firebase": "^11.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-router-dom": "^7.18.2",
     "zod": "^3.24.0"
   },
   "devDependencies": {
@@ -30,6 +33,7 @@
     "eslint": "^9.17.0",
     "eslint-plugin-react-hooks": "^5.1.0",
     "eslint-plugin-react-refresh": "^0.4.16",
+    "firebase-admin": "^14.3.0",
     "jsdom": "^25.0.1",
     "tailwindcss": "^4.0.0",
     "tsx": "^4.19.0",

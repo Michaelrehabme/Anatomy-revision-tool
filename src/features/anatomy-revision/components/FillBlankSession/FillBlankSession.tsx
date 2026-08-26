@@ -4,7 +4,7 @@ import { isAnswerMatch } from '../../lib/answerMatching';
 
 interface FillBlankSessionProps {
   question: FillBlankQuestion;
-  onAnswer: (params: { structureId: string; correct: boolean }) => void;
+  onAnswer: (params: { structureId: string; correct: boolean; selectedAnswer: string; correctAnswer: string }) => void;
   onNext: () => void;
 }
 
@@ -21,7 +21,7 @@ export function FillBlankSession({ question, onAnswer, onNext }: FillBlankSessio
     if (submitted || !attempt.trim()) return;
     const correct = isAnswerMatch(attempt, [question.answer]);
     setSubmitted({ correct });
-    onAnswer({ structureId: question.structureId, correct });
+    onAnswer({ structureId: question.structureId, correct, selectedAnswer: attempt, correctAnswer: question.answer });
   };
 
   return (

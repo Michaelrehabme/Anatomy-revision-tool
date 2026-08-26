@@ -1,16 +1,13 @@
-import { useEffect, useMemo, useState } from 'react';
-import type { AnatomyContent } from '../../hooks/useAnatomyContent';
-import type { AnatomyRepository } from '../../data/repository';
-import type { StructureMastery } from '../../types/attempt';
-import { isMuscle } from '../../types/structure';
-import { REGIONS, REGION_LABELS } from '../../types/region';
+import { REGION_LABELS } from '../../types/region';
 import { generateRevisionSet } from '../../lib/questionGenerators/generateSet';
+import { useProgressData } from '../../hooks/useProgressData';
 import { Button } from '../shared/Button';
 import { AppShell } from '../shell/AppShell';
 import { NavSidebar, type NavSection } from '../shell/NavSidebar';
 import type { RevisionSetupParams } from '../../hooks/useRevisionSession';
 import type { RevisionQuestion } from '../../types/question';
-import { computeStreak } from '../../lib/streak';
+import type { AnatomyContent } from '../../hooks/useAnatomyContent';
+import type { AnatomyRepository } from '../../data/repository';
 
 interface ProgressProps {
   content: AnatomyContent;
@@ -20,57 +17,11 @@ interface ProgressProps {
   onNavigate: (section: NavSection) => void;
 }
 
-const FORECAST_DAYS = 14;
-
 export function Progress({ content, repository, userId, onStart, onNavigate }: ProgressProps) {
-  const [mastery, setMastery] = useState<StructureMastery[]>([]);
-  const [streak, setStreak] = useState(0);
-
-  useEffect(() => {
-    if (!repository || !userId) return;
-    let cancelled = false;
-    Promise.all([repository.listMastery(userId), repository.listSessionSummaries(userId, 60)]).then(
-      ([m, summaries]) => {
-        if (cancelled) return;
-        setMastery(m);
-        setStreak(computeStreak(summaries));
-      },
-    );
-    return () => {
-      cancelled = true;
-    };
-  }, [repository, userId]);
-
-  const muscles = useMemo(() => content.structures.filter(isMuscle), [content.structures]);
-  const masteryByStructureId = useMemo(() => new Map(mastery.map((m) => [m.structureId, m])), [mastery]);
-  const seenIds = new Set(mastery.map((m) => m.structureId));
-  const seenCount = muscles.filter((m) => seenIds.has(m.id)).length;
-  const untouched = muscles.filter((m) => !seenIds.has(m.id));
-
-  const byRegion = REGIONS.map((region) => {
-    const regionMuscles = muscles.filter((m) => m.region === region);
-    const seen = regionMuscles.filter((m) => {
-      const row = masteryByStructureId.get(m.id);
-      return row && row.attemptsCorrect / Math.max(1, row.attemptsTotal) >= 0.01; // seen at all
-    });
-    const correct = regionMuscles.reduce((sum, m) => {
-      const row = masteryByStructureId.get(m.id);
-      return sum + (row ? row.attemptsCorrect / Math.max(1, row.attemptsTotal) : 0);
-    }, 0);
-    const pct = regionMuscles.length > 0 ? Math.round((correct / regionMuscles.length) * 100) : 0;
-    return { region, total: regionMuscles.length, seenCount: seen.length, pct };
-  })
-    .filter((r) => r.total > 0)
-    .sort((a, b) => b.pct - a.pct);
-
-  const now = new Date();
-  const forecast = Array.from({ length: FORECAST_DAYS }, (_, i) => {
-    const day = new Date(now);
-    day.setDate(day.getDate() + i);
-    const key = day.toISOString().slice(0, 10);
-    return mastery.filter((m) => m.dueAt?.slice(0, 10) === key).length;
-  });
-  const forecastMax = Math.max(1, ...forecast);
+  const { streak, muscles, seenCount, untouched, byRegion: byRegionUnsorted, forecast, forecastMax } =
+    useProgressData(repository, userId, content);
+  // Desktop shows strongest-first; the mobile mockup keeps REGIONS' natural order instead.
+  const byRegion = [...byRegionUnsorted].sort((a, b) => b.pct - a.pct);
 
   const handleDrillUntouched = () => {
     const questions = generateRevisionSet(content.structures, content.images, {

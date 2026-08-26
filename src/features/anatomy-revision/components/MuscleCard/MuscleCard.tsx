@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import type { AnatomyContent } from '../../hooks/useAnatomyContent';
 import type { AnatomyRepository } from '../../data/repository';
-import type { StructureMastery } from '../../types/attempt';
 import { isMuscle } from '../../types/structure';
+import { useMuscleHistory } from '../../hooks/useMuscleHistory';
 import { REGION_LABELS } from '../../types/region';
 import { AttributionBadge } from '../shared/AttributionBadge';
 import { Button } from '../shared/Button';
@@ -38,18 +38,7 @@ export function MuscleCard({
   onDrill,
   onNavigate,
 }: MuscleCardProps) {
-  const [mastery, setMastery] = useState<StructureMastery | undefined>(undefined);
-
-  useEffect(() => {
-    if (!repository || !userId) return;
-    let cancelled = false;
-    repository.listMastery(userId).then((all) => {
-      if (!cancelled) setMastery(all.find((m) => m.structureId === structureId));
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [repository, userId, structureId]);
+  const mastery = useMuscleHistory(repository, userId, structureId);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {

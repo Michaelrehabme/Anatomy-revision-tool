@@ -1,0 +1,44 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // users/{uid} profile doc, plus every subcollection under it
+    // (mastery, questionExposure, sessions) — owner-only for writes, always.
+    // Admins (custom claim, set via scripts/setAdmin.ts) get read-only access
+    // across every user for the /admin/users screens — never write access,
+    // since admin tooling should never be able to alter a student's progress.
+    match /users/{uid} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+      allow read: if request.auth != null && request.auth.token.admin == true;
+
+      match /{document=**} {
+        allow read, write: if request.auth != null && request.auth.uid == uid;
+        allow read: if request.auth != null && request.auth.token.admin == true;
+      }
+    }
+
+    // Top-level, append-only event log — lives outside users/{uid} because
+    // cross-user analytics needs to query across owners, which Firestore
+    // cannot do over a per-user subcollection. Each event is immutable once
+    // written: no update or delete rule is granted, ever.
+    match /attemptEvents/{attemptId} {
+      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
+      allow read: if request.auth != null &&
+        (resource.data.userId == request.auth.uid || request.auth.token.admin == true);
+    }
+
+    // Admin-only Change Register backlog (see src/features/admin). Regular
+    // users get no access at all — this is the enforcement the client-side
+    // <RequireAdmin> route guard depends on; the guard alone is not security.
+    match /changeRequests/{ref} {
+      allow read, write: if request.auth != null && request.auth.token.admin == true;
+    }
+
+    // Admin-only "reviewed" markers for the Question Health screen (CR-005) —
+    // keyed by questionId, so a reviewed question doesn't keep resurfacing in
+    // the flagged list. Same admin-only shape as changeRequests.
+    match /questionReviews/{questionId} {
+      allow read, write: if request.auth != null && request.auth.token.admin == true;
+    }
+  }
+}

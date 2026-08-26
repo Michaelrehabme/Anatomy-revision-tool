@@ -1,4 +1,6 @@
-import type { ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
+import { useAuth } from '../../context/AuthProvider';
+import { AuthScreen } from '../Auth/AuthScreen';
 
 export type NavSection = 'today' | 'study' | 'atlas' | 'progress';
 
@@ -16,7 +18,55 @@ interface NavSidebarProps {
   footer?: ReactNode;
 }
 
-/** The standard persistent sidebar: brand mark, 4-item nav, footer slot. */
+/** Account UI only makes sense once there's a real Firebase project to sign into — local dev stays a plain anonymous id with no dead buttons. */
+const AUTH_ENABLED = (import.meta.env.VITE_PERSISTENCE ?? 'local') === 'firestore';
+
+function AccountSection() {
+  const { user, signOut } = useAuth();
+  const [showAuthScreen, setShowAuthScreen] = useState(false);
+
+  if (!user) return null;
+
+  return (
+    <div className="mt-6 border-t pt-4" style={{ borderColor: 'var(--line)' }}>
+      {user.isAnonymous ? (
+        <>
+          <div style={{ font: '400 12px/1.5 var(--font-mono)', color: 'var(--ink3)' }}>
+            Create an account to save your progress across devices.
+          </div>
+          <button
+            type="button"
+            onClick={() => setShowAuthScreen(true)}
+            className="mt-2 rounded-[3px] px-3 py-2 text-left"
+            style={{ font: '500 13px/1 var(--font-ui)', background: 'var(--accs)', color: 'var(--accd)' }}
+          >
+            Create account
+          </button>
+        </>
+      ) : (
+        <div className="flex items-center justify-between gap-2">
+          <span
+            className="truncate"
+            style={{ font: '500 13.5px/1 var(--font-ui)', color: 'var(--ink2)' }}
+            title={user.displayName ?? user.email ?? undefined}
+          >
+            {user.displayName ?? user.email}
+          </span>
+          <button
+            type="button"
+            onClick={() => signOut()}
+            style={{ font: '400 12.5px/1 var(--font-ui)', color: 'var(--ink3)' }}
+          >
+            Sign out
+          </button>
+        </div>
+      )}
+      {showAuthScreen && <AuthScreen onClose={() => setShowAuthScreen(false)} />}
+    </div>
+  );
+}
+
+/** The standard persistent sidebar: brand mark, 4-item nav, footer slot, account section. */
 export function NavSidebar({ active, onNavigate, footer }: NavSidebarProps) {
   return (
     <>
@@ -46,6 +96,7 @@ export function NavSidebar({ active, onNavigate, footer }: NavSidebarProps) {
       </nav>
       <div className="flex-1" />
       {footer}
+      {AUTH_ENABLED && <AccountSection />}
     </>
   );
 }

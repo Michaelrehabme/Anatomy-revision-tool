@@ -8,22 +8,28 @@ const OPTIONS: { value: Confidence; label: string; hint: string }[] = [
 
 interface ConfidenceButtonsProps {
   onRate: (confidence: Confidence) => void;
+  /** Desktop mockup says "How confident?", mobile says "How did that feel?" — shared component, per-breakpoint copy. */
+  label?: string;
 }
 
 /**
  * The three confidence buttons on the answer-feedback band (mockup screen
- * 08), shared across every question type — this is what actually drives
+ * 08) / bottom sheet (mobile screen 08), shared across every question type
+ * and both breakpoints — this is what actually drives
  * updateMasteryAfterAttempt/dueAt (see useRevisionSession.submitAnswer), so
  * every format needs it, not just flashcards. Hints show representative
- * next-review intervals (the mockup's own 1/4/10-day example) rather than a
- * live per-structure computeNextReview preview, to avoid an extra fetch per
+ * next-review intervals (the desktop mockup's 1/4/10-day example — the
+ * mobile mockup's own numbers differ slightly, tomorrow/4/11 days;
+ * standardized on one set app-wide rather than forking copy per breakpoint,
+ * consistent with the "Medium" vs "Fine" label decision) rather than a live
+ * per-structure computeNextReview preview, to avoid an extra fetch per
  * question just for a label.
  */
-export function ConfidenceButtons({ onRate }: ConfidenceButtonsProps) {
+export function ConfidenceButtons({ onRate, label = 'How confident?' }: ConfidenceButtonsProps) {
   return (
     <div>
       <div style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
-        How confident?
+        {label}
       </div>
       <div className="mt-3.5 flex gap-2.5">
         {OPTIONS.map((opt) => (

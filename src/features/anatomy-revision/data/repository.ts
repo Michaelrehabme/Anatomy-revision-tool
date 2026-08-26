@@ -9,6 +9,15 @@ export interface ImageAssetFilter {
   structureId?: string;
 }
 
+export interface AttemptFilter {
+  userId?: string;
+  structureId?: string;
+  questionId?: string;
+  /** ISO timestamp — only attempts at or after this instant. */
+  since?: string;
+  limit?: number;
+}
+
 /**
  * Anatomy content (structures/images) is intentionally read-only here and
  * always resolves from the static seed modules — see data/seed/index.ts.
@@ -21,7 +30,23 @@ export interface AnatomyRepository {
   getStructure(id: string): Promise<AnatomyStructure | null>;
   listImageAssets(filter?: ImageAssetFilter): Promise<AnatomyImageAsset[]>;
 
+  /** Appends one attempt event. attemptEvents is an append-only log — nothing ever updates or deletes a row. */
   recordAttempt(attempt: UserAttempt): Promise<void>;
+  /** Cross-user analytics query over attemptEvents — the reason attempts live in a top-level collection, not a per-user subcollection. */
+  listAttempts(filter: AttemptFilter): Promise<UserAttempt[]>;
+  /**
+   * Increments and returns this user's exposure count for a question ID —
+   * the returned value becomes attemptNumber on the resulting UserAttempt.
+   * Backed by a lightweight users/{uid}/questionExposure/{questionId}
+   * counter doc rather than folding a count into StructureMastery: many
+   * questionIds share one structureId, so per-question counts would need
+   * either an unbounded map on the mastery doc (write contention with its
+   * SM-2 scheduling updates) or one mastery doc per question (breaking its
+   * per-structure meaning). A dedicated counter also works for every
+   * question type, not just the ones that carry a confidence rating —
+   * mastery updates only happen when confidence is present.
+   */
+  recordQuestionExposure(userId: string, questionId: string): Promise<number>;
   getMastery(userId: string): Promise<StructureMastery[]>;
   upsertMastery(mastery: StructureMastery): Promise<void>;
   /** Every mastery row for a user — same data as getMastery, named for the Today/Progress screens' use case. */

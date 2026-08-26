@@ -15,6 +15,8 @@ export interface AnswerRecord {
   correct: boolean;
   confidence?: Confidence;
   hitDistance?: number;
+  selectedAnswer?: string;
+  correctAnswer?: string;
   durationMs?: number;
 }
 
@@ -151,6 +153,7 @@ export function useRevisionSession(repository: AnatomyRepository | null, userId:
       dispatch({ type: 'ANSWER', record });
 
       if (repository && userId && currentQuestion) {
+        const attemptNumber = await repository.recordQuestionExposure(userId, record.questionId);
         const attempt: UserAttempt = {
           id: `attempt-${state.sessionId}-${state.currentIndex}`,
           userId,
@@ -164,6 +167,9 @@ export function useRevisionSession(repository: AnatomyRepository | null, userId:
           correct: record.correct,
           confidence: record.confidence,
           hitDistance: record.hitDistance,
+          selectedAnswer: record.selectedAnswer,
+          correctAnswer: record.correctAnswer,
+          attemptNumber,
           timestamp: new Date().toISOString(),
           durationMs,
         };

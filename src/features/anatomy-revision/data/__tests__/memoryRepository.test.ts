@@ -1,6 +1,24 @@
 import { describe, it, expect } from 'vitest';
 import { createMemoryRepository } from '../memoryRepository';
-import type { StructureMastery } from '../../types/attempt';
+import type { StructureMastery, UserAttempt } from '../../types/attempt';
+
+function attempt(overrides: Partial<UserAttempt> = {}): UserAttempt {
+  return {
+    id: `attempt-${Math.random().toString(36).slice(2)}`,
+    userId: 'user-1',
+    sessionId: 'session-1',
+    questionId: 'q-deltoid-mcq',
+    questionType: 'mcq',
+    structureId: 'deltoid',
+    promptKind: 'identify',
+    region: 'shoulder-arm',
+    category: 'muscle',
+    correct: true,
+    attemptNumber: 1,
+    timestamp: '2026-08-20T00:00:00.000Z',
+    ...overrides,
+  };
+}
 
 function mastery(structureId: string, dueAt: string): StructureMastery {
   return {
@@ -55,5 +73,63 @@ describe('memoryRepository listDueMastery/listMastery', () => {
     const due = await repo.listDueMastery('user-1', '2026-08-25T00:00:00.000Z');
     expect(due).toHaveLength(1);
     expect(due[0].userId).toBe('user-1');
+  });
+});
+
+describe('memoryRepository recordAttempt/listAttempts', () => {
+  it('listAttempts filters by userId across every attempt, newest first', async () => {
+    const repo = createMemoryRepository();
+    await repo.recordAttempt(attempt({ id: 'a1', userId: 'user-1', timestamp: '2026-08-20T00:00:00.000Z' }));
+    await repo.recordAttempt(attempt({ id: 'a2', userId: 'user-2', timestamp: '2026-08-21T00:00:00.000Z' }));
+    await repo.recordAttempt(attempt({ id: 'a3', userId: 'user-1', timestamp: '2026-08-22T00:00:00.000Z' }));
+
+    const results = await repo.listAttempts({ userId: 'user-1' });
+    expect(results.map((a) => a.id)).toEqual(['a3', 'a1']);
+  });
+
+  it('listAttempts filters by structureId, supporting cross-user analytics', async () => {
+    const repo = createMemoryRepository();
+    await repo.recordAttempt(attempt({ id: 'a1', userId: 'user-1', structureId: 'deltoid' }));
+    await repo.recordAttempt(attempt({ id: 'a2', userId: 'user-2', structureId: 'deltoid' }));
+    await repo.recordAttempt(attempt({ id: 'a3', userId: 'user-1', structureId: 'trapezius' }));
+
+    const results = await repo.listAttempts({ structureId: 'deltoid' });
+    expect(results.map((a) => a.id).sort()).toEqual(['a1', 'a2']);
+  });
+
+  it('listAttempts respects questionId, since, and limit filters', async () => {
+    const repo = createMemoryRepository();
+    await repo.recordAttempt(attempt({ id: 'a1', questionId: 'q-1', timestamp: '2026-08-19T00:00:00.000Z' }));
+    await repo.recordAttempt(attempt({ id: 'a2', questionId: 'q-1', timestamp: '2026-08-20T00:00:00.000Z' }));
+    await repo.recordAttempt(attempt({ id: 'a3', questionId: 'q-2', timestamp: '2026-08-21T00:00:00.000Z' }));
+
+    const byQuestion = await repo.listAttempts({ questionId: 'q-1' });
+    expect(byQuestion.map((a) => a.id)).toEqual(['a2', 'a1']);
+
+    const since = await repo.listAttempts({ since: '2026-08-20T00:00:00.000Z' });
+    expect(since.map((a) => a.id).sort()).toEqual(['a2', 'a3']);
+
+    const limited = await repo.listAttempts({ limit: 1 });
+    expect(limited).toHaveLength(1);
+    expect(limited[0].id).toBe('a3');
+  });
+});
+
+describe('memoryRepository recordQuestionExposure', () => {
+  it('returns 1 on first exposure and increments per (userId, questionId) pair', async () => {
+    const repo = createMemoryRepository();
+
+    expect(await repo.recordQuestionExposure('user-1', 'q-1')).toBe(1);
+    expect(await repo.recordQuestionExposure('user-1', 'q-1')).toBe(2);
+    expect(await repo.recordQuestionExposure('user-1', 'q-1')).toBe(3);
+  });
+
+  it('tracks exposure independently per user and per question', async () => {
+    const repo = createMemoryRepository();
+
+    expect(await repo.recordQuestionExposure('user-1', 'q-1')).toBe(1);
+    expect(await repo.recordQuestionExposure('user-2', 'q-1')).toBe(1);
+    expect(await repo.recordQuestionExposure('user-1', 'q-2')).toBe(1);
+    expect(await repo.recordQuestionExposure('user-1', 'q-1')).toBe(2);
   });
 });

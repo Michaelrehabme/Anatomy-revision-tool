@@ -164,20 +164,70 @@ Two `AnatomyRepository` implementations exist (`src/features/anatomy-revision/da
 - **`local`** (default) — everything in `localStorage`, no backend required. Good for
   development and for running the app standalone.
 - **`firestore`** — real Firebase project. Set `VITE_PERSISTENCE=firestore` and fill in the
-  `VITE_FIREBASE_*` values in `.env` (see `.env.example`). Uses Firebase **Anonymous Auth**
-  (silent sign-in, no login UI) so Firestore security rules can trust `request.auth.uid`
-  instead of a client-supplied id. Suggested rules:
-
-  ```
-  match /users/{userId}/{document=**} {
-    allow read, write: if request.auth != null && request.auth.uid == userId;
-  }
-  ```
+  `VITE_FIREBASE_*` values in `.env` (see `.env.example`), then enable the **Anonymous**,
+  **Google**, and **Email/Password** sign-in providers in the Firebase console (Authentication →
+  Sign-in method). New visitors are silently signed in via Firebase **Anonymous Auth** (no
+  login wall) so Firestore security rules can trust `request.auth.uid`; signing up from the
+  in-app account screen links that anonymous session to the chosen provider via
+  `linkWithPopup`/`linkWithCredential`, so the uid — and every `users/{uid}/**` doc — carries
+  over untouched. If the credential already belongs to an account from another device
+  (`auth/credential-already-in-use`), the user is signed into that existing account instead and
+  told this device's progress couldn't be merged. See `firestore.rules` at the repo root for the
+  matching security rules (owner-only access to `users/{uid}` and everything under it).
 
 Either way, anatomy **content** (structures/images) always comes from the static seed modules,
 never from Firestore — only user-generated data (attempts, mastery, session summaries) is
 actually persisted per-backend. This keeps content changes a normal PR, with no admin UI or
 read costs.
+
+## Admin section
+
+`/admin/*` (Change Register, Users, Analytics placeholder) is a separate, code-split part of the
+app — students never download it, and it only works against a real Firebase project
+(`VITE_PERSISTENCE=firestore`). See `src/features/admin/`.
+
+**Authorisation is a Firebase custom claim (`admin: true`), not a Firestore field.** A role field
+on a `users/{uid}` document would mean the security rule has to *read a document to authorise a
+read of that document* — circular, and an extra read on every request. A custom claim is baked
+into the user's ID token and checked with zero reads. The client-side `<RequireAdmin>` route guard
+(`src/features/admin/components/RequireAdmin.tsx`) only exists to redirect a non-admin away from a
+screen that would fail every query anyway — it is trivially bypassable and **is not the security
+boundary**. The actual boundary is `firestore.rules`: every admin-only collection (`changeRequests`)
+and every admin-only read path (`users/{uid}` and its subcollections, for the Users screens) requires
+`request.auth.token.admin == true`.
+
+### Granting admin access
+
+1. Get a service account key: Firebase console → Project settings → Service accounts → Generate
+   new private key. Save the JSON somewhere outside the repo (never commit it).
+2. Find the target user's uid (Firebase console → Authentication → Users, or from the app's own
+   `users` collection).
+3. Run:
+
+   ```bash
+   GOOGLE_APPLICATION_CREDENTIALS=/path/to/service-account.json npm run admin:set-claim -- <uid>
+
+   # to revoke:
+   GOOGLE_APPLICATION_CREDENTIALS=/path/to/service-account.json npm run admin:set-claim -- <uid> --remove
+   ```
+
+4. The affected user must sign out and back in (custom claims only land on ID token refresh, not
+   immediately) before `/admin` stops redirecting them.
+
+### Change Register
+
+The backlog is version-controlled at `src/features/admin/data/changeRequests.seed.ts` — Firestore
+is a mirror of it, not the source of truth. After editing that file (adding a new `CR-00N` entry,
+say), sync it to Firestore with:
+
+```bash
+GOOGLE_APPLICATION_CREDENTIALS=/path/to/service-account.json npm run admin:seed-changes
+```
+
+This only **creates** documents whose `ref` doesn't already exist in Firestore — it never
+overwrites one, so it's safe to re-run after an admin has changed a status/note in the live app.
+Status/notes edits made in `/admin/changes` itself are NOT written back to the seed file; if a
+completed change request's history is worth preserving in git, update the seed file by hand.
 
 ## Project structure
 
@@ -185,7 +235,8 @@ read costs.
 public/anatomy/atlas/                  # 24 real atlas-slide images (10 muscle + 14 bone/landmark)
 
 src/
-  App.tsx                              # setup -> in-progress -> results state machine, no router
+  App.tsx                              # react-router route table; session phase (setup -> in-progress ->
+                                        # results) still drives its own full-screen takeover on top of routing
   features/anatomy-revision/
     types/                             # AnatomyStructure, AnatomyImageAsset, RevisionQuestion, ...
     data/
@@ -204,10 +255,28 @@ src/
     components/                        # RevisionSetup, FlashcardSession, MCQSession,
                                         # LocateStructureSession, RevisionResults, shared/
     hooks/                             # useRevisionSession, useAnatomyContent, useRepository
-    context/                           # RepositoryProvider, AnonymousUserProvider
+    context/                           # RepositoryProvider, AuthProvider (useAuth)
+  features/admin/                      # /admin/* — code-split (React.lazy), see "Admin section" above
+    AdminApp.tsx                       # lazy-loaded entry point; nests RequireAdmin + its own <Routes>
+    components/
+      RequireAdmin.tsx                 # UI-only route guard — real enforcement is firestore.rules
+      shell/                           # AdminShell, AdminSidebar
+      ChangeRegister/                  # table, filters, detail panel, new-request form
+      Users/                           # UsersPage, UserDetailPage
+      Analytics/                       # placeholder — CR-005
+    data/
+      changeRequests.seed.ts           # version-controlled backlog — see "Change Register" above
+      changeRequestsRepository.ts      # Firestore CRUD for changeRequests
+      usersRepository.ts               # admin-only reads of the users collection
+    lib/statusTransition.ts            # pure status/timestamp rule — see the Testing section
   scripts/
     validateContent.ts                 # npm run validate-content
     importHotspots.ts                  # npx tsx src/scripts/importHotspots.ts <hotspots.json>
+
+scripts/                                # Node-only, run via tsx — NOT part of the Vite app bundle
+  setAdmin.ts                          # npm run admin:set-claim -- <uid> — see "Admin section" above
+  seedChangeRequests.ts                # npm run admin:seed-changes
+  firebaseAdmin.ts                     # shared firebase-admin bootstrap for the two scripts above
 ```
 
 ## Testing
@@ -215,3 +284,5 @@ src/
 `npm run test` runs Vitest against `lib/` — the pure-function layer (indexes, distractors,
 question generation, mastery scheduling, hotspot hit-testing) with no React/Firebase
 dependency, so it's the fastest and most valuable place to add coverage as content grows.
+`src/features/admin/lib/statusTransition.ts` (the Change Register's inline status-editing rule)
+follows the same pattern and is covered the same way.

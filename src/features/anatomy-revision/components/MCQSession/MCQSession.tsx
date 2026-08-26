@@ -11,7 +11,13 @@ import { Button } from '../shared/Button';
 interface MCQSessionProps {
   question: MCQQuestion;
   imagesById: Map<string, AnatomyImageAsset>;
-  onAnswer: (params: { structureId: string; correct: boolean; confidence: Confidence }) => void;
+  onAnswer: (params: {
+    structureId: string;
+    correct: boolean;
+    confidence: Confidence;
+    selectedAnswer: string;
+    correctAnswer: string;
+  }) => void;
   onNext: () => void;
 }
 
@@ -33,8 +39,15 @@ export function MCQSession({ question, imagesById, onAnswer, onNext }: MCQSessio
   const isCorrect = selectedIndex === question.correctIndex;
 
   const handleRate = (confidence: Confidence) => {
+    if (selectedIndex === null) return;
     setRated(true);
-    onAnswer({ structureId: question.structureId, correct: isCorrect, confidence });
+    onAnswer({
+      structureId: question.structureId,
+      correct: isCorrect,
+      confidence,
+      selectedAnswer: question.choices[selectedIndex],
+      correctAnswer: question.choices[question.correctIndex],
+    });
   };
 
   return (

@@ -7,8 +7,10 @@ import {
   orderBy,
   where,
   limit as fsLimit,
+  runTransaction,
+  type QueryConstraint,
 } from 'firebase/firestore';
-import type { AnatomyRepository, ImageAssetFilter } from './repository';
+import type { AnatomyRepository, AttemptFilter, ImageAssetFilter } from './repository';
 import type { UserAttempt, StructureMastery, RevisionSessionSummary } from '../types/attempt';
 import type { StructureFilter } from '../lib/indexes';
 import { filterStructures } from '../lib/indexes';
@@ -16,10 +18,17 @@ import { ALL_STRUCTURES, ALL_IMAGES } from './seed';
 import { getDb } from './firebase';
 
 /**
- * Firestore layout: users/{uid}/attempts/{attemptId}, users/{uid}/mastery/{structureId},
- * users/{uid}/sessions/{sessionId} — see project README for the matching
- * security rules (request.auth.uid == userId, paired with Anonymous Auth
- * from firebase.ts/AnonymousUserProvider).
+ * Firestore layout: top-level attemptEvents/{attemptId} (queryable by userId
+ * or structureId for cross-user analytics — see firestore.indexes.json for
+ * the composite indexes this requires), plus users/{uid}/mastery/{structureId},
+ * users/{uid}/questionExposure/{questionId}, users/{uid}/sessions/{sessionId}
+ * — see firestore.rules at the repo root for the matching security rules,
+ * paired with the auth lifecycle in firebase.ts/AuthProvider.
+ *
+ * attemptEvents intentionally sits outside users/{uid}: Firestore has no
+ * cross-subcollection query, so a per-user attempts subcollection can never
+ * answer "how did all users do on structure X" — only a top-level collection
+ * with userId as a plain field can.
  *
  * Content (structures/images) is NOT read from Firestore — same static seed
  * modules as localRepository, keeping the read-only content contract
@@ -49,7 +58,58 @@ export async function createFirestoreRepository(): Promise<AnatomyRepository> {
     },
 
     async recordAttempt(attempt: UserAttempt) {
-      await setDoc(doc(db, 'users', attempt.userId, 'attempts', attempt.id), attempt);
+      await setDoc(doc(db, 'attemptEvents', attempt.id), attempt);
+    },
+
+    /**
+     * Supports two indexed query shapes — filter by userId or by
+     * structureId, each ordered by timestamp desc (see
+     * firestore.indexes.json). Only one of those two equality filters can
+     * be pushed to Firestore at once without a further composite index, so
+     * when both (or questionId) are given, the non-primary filters are
+     * applied client-side after the primary indexed fetch. `since` rides
+     * on the same composite index because it's a range filter on the same
+     * field (timestamp) as the orderBy.
+     */
+    async listAttempts(filter: AttemptFilter) {
+      const constraints: QueryConstraint[] = [];
+      const primaryIsUserId = !!filter.userId;
+      const primaryIsStructureId = !primaryIsUserId && !!filter.structureId;
+
+      if (primaryIsUserId) {
+        constraints.push(where('userId', '==', filter.userId));
+      } else if (primaryIsStructureId) {
+        constraints.push(where('structureId', '==', filter.structureId));
+      }
+      if (filter.since) {
+        constraints.push(where('timestamp', '>=', filter.since));
+      }
+      constraints.push(orderBy('timestamp', 'desc'));
+
+      const snapshot = await getDocs(query(collection(db, 'attemptEvents'), ...constraints));
+      let results = snapshot.docs.map((d) => d.data() as UserAttempt);
+
+      if (!primaryIsUserId && filter.userId) {
+        results = results.filter((a) => a.userId === filter.userId);
+      }
+      if (!primaryIsStructureId && filter.structureId) {
+        results = results.filter((a) => a.structureId === filter.structureId);
+      }
+      if (filter.questionId) {
+        results = results.filter((a) => a.questionId === filter.questionId);
+      }
+
+      return filter.limit !== undefined ? results.slice(0, filter.limit) : results;
+    },
+
+    async recordQuestionExposure(userId: string, questionId: string) {
+      const ref = doc(db, 'users', userId, 'questionExposure', questionId);
+      return runTransaction(db, async (tx) => {
+        const snap = await tx.get(ref);
+        const count = ((snap.data()?.count as number | undefined) ?? 0) + 1;
+        tx.set(ref, { count });
+        return count;
+      });
     },
 
     async getMastery(userId: string) {

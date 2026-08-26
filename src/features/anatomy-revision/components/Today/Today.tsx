@@ -1,19 +1,15 @@
-import { useEffect, useState } from 'react';
 import type { AnatomyRepository } from '../../data/repository';
 import type { AnatomyContent } from '../../hooks/useAnatomyContent';
-import type { StructureMastery, RevisionSessionSummary } from '../../types/attempt';
 import type { RevisionQuestion, QuestionType } from '../../types/question';
-import { isMuscle } from '../../types/structure';
 import { REGION_LABELS } from '../../types/region';
 import { generateRevisionSet } from '../../lib/questionGenerators/generateSet';
-import { computeStreak } from '../../lib/streak';
+import { useTodayData, relativeDue } from '../../hooks/useTodayData';
 import { AppShell } from '../shell/AppShell';
 import { NavSidebar, type NavSection } from '../shell/NavSidebar';
 import { Button } from '../shared/Button';
 import type { RevisionSetupParams } from '../../hooks/useRevisionSession';
 
 const DEFAULT_TYPES: QuestionType[] = ['flashcard', 'mcq', 'locate', 'identify-typed'];
-const DAY_LABELS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 
 interface TodayProps {
   repository: AnatomyRepository | null;
@@ -25,69 +21,10 @@ interface TodayProps {
   onNavigate: (section: NavSection) => void;
 }
 
-function relativeDue(dueAt: string, now: Date): string {
-  const days = Math.round((Date.parse(dueAt) - now.getTime()) / 86_400_000);
-  if (days <= 0) return 'today';
-  if (days === 1) return 'tomorrow';
-  return `in ${days} days`;
-}
-
 export function Today({ repository, userId, content, onStart, onCustomSession, onOpenMuscle, onNavigate }: TodayProps) {
-  const [due, setDue] = useState<StructureMastery[]>([]);
-  const [allMastery, setAllMastery] = useState<StructureMastery[]>([]);
-  const [summaries, setSummaries] = useState<RevisionSessionSummary[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (!repository || !userId) return;
-    let cancelled = false;
-    const now = new Date().toISOString();
-    Promise.all([
-      repository.listDueMastery(userId, now),
-      repository.listMastery(userId),
-      repository.listSessionSummaries(userId, 30),
-    ]).then(([dueMastery, mastery, sessions]) => {
-      if (cancelled) return;
-      setDue(dueMastery);
-      setAllMastery(mastery);
-      setSummaries(sessions);
-      setLoading(false);
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [repository, userId]);
-
-  const streak = computeStreak(summaries);
-  // Muscles only in this footer stat, matching the mockup's "122 muscles" framing —
-  // content also includes bones/landmarks, which aren't part of this count.
-  const muscleIds = new Set(content.structures.filter(isMuscle).map((s) => s.id));
-  const totalCount = muscleIds.size;
-  const seenCount = allMastery.filter((m) => muscleIds.has(m.structureId)).length;
-  const seenPct = totalCount > 0 ? Math.round((seenCount / totalCount) * 100) : 0;
-  const dueMuscles = due.filter((m) => muscleIds.has(m.structureId));
-
-  // Weakest/coming-due stay muscle-scoped too — this whole screen frames
-  // itself around the muscle atlas ("122 muscles"), even though the
-  // underlying repository also tracks bones/landmarks.
-  const weakest = [...allMastery]
-    .filter((m) => m.attemptsTotal > 0 && muscleIds.has(m.structureId))
-    .sort((a, b) => a.attemptsCorrect / a.attemptsTotal - b.attemptsCorrect / b.attemptsTotal)
-    .slice(0, 5);
-
-  const comingDue = [...allMastery]
-    .filter((m) => m.dueAt && muscleIds.has(m.structureId) && !dueMuscles.some((d) => d.structureId === m.structureId))
-    .sort((a, b) => a.dueAt!.localeCompare(b.dueAt!))
-    .slice(0, 3);
-
+  const { loading, streak, totalMuscleCount, seenMusclePct, dueMuscles, weakest, comingDue, weekBuckets, weekMax, dayLabels } =
+    useTodayData(repository, userId, content);
   const now = new Date();
-  const weekBuckets = Array.from({ length: 7 }, (_, i) => {
-    const day = new Date(now);
-    day.setDate(day.getDate() - (6 - i));
-    const key = day.toISOString().slice(0, 10);
-    return summaries.filter((s) => s.startedAt.slice(0, 10) === key).length;
-  });
-  const weekMax = Math.max(1, ...weekBuckets);
 
   const handleStart = () => {
     const structureIds = dueMuscles.map((m) => m.structureId);
@@ -112,7 +49,7 @@ export function Today({ repository, userId, content, onStart, onCustomSession, o
                 {streak}-day streak
               </div>
               <div className="mt-1.5" style={{ font: '400 11.5px/1.5 var(--font-mono)', color: 'var(--ink3)' }}>
-                {totalCount} muscles · {seenPct}% seen
+                {totalMuscleCount} muscles · {seenMusclePct}% seen
               </div>
             </>
           }
@@ -161,7 +98,7 @@ export function Today({ repository, userId, content, onStart, onCustomSession, o
             ))}
           </div>
           <div className="mt-2.5 flex gap-3">
-            {DAY_LABELS.map((d, i) => (
+            {dayLabels.map((d, i) => (
               <div key={i} className="flex-1 text-center" style={{ font: '400 11px/1 var(--font-mono)', color: 'var(--ink3)' }}>
                 {d}
               </div>
