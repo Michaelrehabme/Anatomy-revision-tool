@@ -93,21 +93,27 @@ function main(): void {
       continue;
     }
 
-    const decoded = views.map((f) => decodePng(join(dir, f)));
-    const height = decoded[0].height;
-    if (decoded.some((d) => d.height !== height)) {
-      console.error(`${muscle}: views differ in height, skipping`);
-      continue;
-    }
+    // Trim each view to its own content BEFORE composing. Trimming only the
+    // finished strip leaves every view's empty side margins in place, which
+    // makes the result far wider than it is tall; the Muscle Card scales the
+    // panel with object-contain inside a roughly square box, so a 3:1 strip
+    // renders at about a third of the height it could and wastes the card.
+    const decoded = views
+      .map((f) => decodePng(join(dir, f)))
+      .map((d) => trimTransparent(new Uint8Array(d.data), d.width, d.height, 8));
 
+    // Pad each back to a common height so they sit on a shared baseline rather
+    // than each floating at its own vertical offset.
+    const height = Math.max(...decoded.map((d) => d.height));
     const width = decoded.reduce((n, d) => n + d.width, 0) + gap * (decoded.length - 1);
     const canvas = new Uint8Array(width * height * 4);
 
     let xOffset = 0;
     for (const view of decoded) {
-      for (let y = 0; y < height; y++) {
+      const yOffset = Math.floor((height - view.height) / 2);
+      for (let y = 0; y < view.height; y++) {
         const src = y * view.width * 4;
-        const dst = (y * width + xOffset) * 4;
+        const dst = ((y + yOffset) * width + xOffset) * 4;
         canvas.set(view.data.subarray(src, src + view.width * 4), dst);
       }
       xOffset += view.width + gap;
