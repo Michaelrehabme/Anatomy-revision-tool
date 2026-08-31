@@ -17,6 +17,9 @@ ap.add_argument("--plates", required=True)
 ap.add_argument("--out", required=True)
 ap.add_argument("--views", default="anterior=0,lateral=6,posterior=12")
 ap.add_argument("--quality", type=int, default=82)
+ap.add_argument("--prefix", default="composited",
+                help="'composited' for the subject-over-context plates the app ships, "
+                     "'frame' for the raw region-only subject plate")
 a = ap.parse_args(argv)
 
 views = {}
@@ -37,7 +40,7 @@ for region_dir in sorted(glob.glob(os.path.join(a.plates, "*"))):
         continue
     region = os.path.basename(region_dir)
     for view, frame in views.items():
-        src = os.path.join(region_dir, f"frame-{frame:02d}.png")
+        src = os.path.join(region_dir, f"{a.prefix}-{frame:02d}.png")
         if not os.path.exists(src):
             print(f"[warn] missing {src}")
             continue

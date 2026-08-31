@@ -123,6 +123,11 @@ mask_mat = flat_white()
 # pink barely distinguishable from bone.
 plate_mat = principled("isolated_flesh", (0.76, 0.27, 0.25, 1.0))
 bone_mat = principled("bone", (0.90, 0.88, 0.83, 1.0), roughness=0.6)
+# Muscles outside the region are drawn muted, so the composited plate reads as
+# "this region, in a body" rather than one undifferentiated slab of muscle. At
+# the same saturation as the subject the two layers are indistinguishable and
+# the composite looks like a rendering error.
+context_mat = principled("context_flesh", (0.78, 0.47, 0.45, 1.0), roughness=0.65)
 
 
 def bake_world_mesh(object_names, mesh_name):
@@ -195,14 +200,53 @@ def link(mesh, name, material, holdout=False):
     return ob
 
 
+# Z-Anatomy files nasal, ear and laryngeal cartilage under the skeletal system.
+# Rendered, they give the skull a nose and ears — a skeleton that could not
+# exist, and the first thing anyone notices. Costal cartilage stays: it joins
+# the ribs to the sternum and is drawn in every skeletal atlas.
+SOFT_CARTILAGE = (
+    "nasal septal cartilage",
+    "nasal cartilages",
+    "major alar cartilage",
+    "cartilages of ear",
+    "thyroid cartilage",
+    "cricoid cartilage",
+    "arytenoid cartilage",
+    "corniculate cartilage",
+    "laryngeal cartilages",
+)
+
+
+def is_soft_cartilage(name):
+    lowered = name.lower()
+    return any(k in lowered for k in SOFT_CARTILAGE)
+
+
 skel = bpy.data.collections.get("1: Skeletal system")
 if skel is None:
     print("[fatal] collection '1: Skeletal system' not found")
     sys.exit(1)
-bone_names = [o.name for o in skel.all_objects if o.type == "MESH"]
-print(f"[bones] baking {len(bone_names)} skeletal meshes...", flush=True)
+all_skel = [o.name for o in skel.all_objects if o.type == "MESH"]
+bone_names = [n for n in all_skel if not is_soft_cartilage(n)]
+print(f"[bones] baking {len(bone_names)} skeletal meshes "
+      f"({len(all_skel) - len(bone_names)} soft cartilage excluded)...", flush=True)
 bone_mesh = bake_world_mesh(bone_names, "baked_bones")
 print(f"[bones] {len(bone_mesh.vertices)} verts", flush=True)
+
+# Every muscle in the body, for the plate. The regional renders previously drew
+# only their own region's muscles, which left the figure looking amputated and
+# removed the surrounding landmarks that help you orient. Baked once and reused
+# across regions.
+all_muscle_entries = [m for m in mapping if m.get("blenderObjects")]
+print(f"[muscles] baking all {len(all_muscle_entries)} muscles for the plate...", flush=True)
+all_muscle_meshes = {}
+for e in all_muscle_entries:
+    mesh = bake_world_mesh(e["blenderObjects"], f"all_{e['id']}")
+    if len(mesh.vertices) == 0:
+        bpy.data.meshes.remove(mesh)
+        continue
+    all_muscle_meshes[e["id"]] = mesh
+print(f"[muscles] {len(all_muscle_meshes)} baked", flush=True)
 
 total_renders = 0
 t_start = time.time()
@@ -244,13 +288,30 @@ for region in regions:
               f"ortho={cam_data.ortho_scale:.4f}", flush=True)
 
         if not a.skip_plate:
+            # Two plates per view, composited later by compositeRegionPlates.ts.
+            #
+            # SUBJECT: bones + this region's muscles. Matches the masks exactly,
+            # so it is the layer the hotspots describe.
             clear_render_objects()
             link(bone_mesh, "plate_bones", bone_mat)
             for mid, mesh in baked.items():
                 link(mesh, f"plate_{mid}", plate_mat)
             dt = render_to(os.path.join(a.out, region, f"frame-{frame:02d}.png"))
             total_renders += 1
-            print(f"[plate] {region} frame-{frame:02d} {dt:.1f}s", flush=True)
+
+            # CONTEXT: bones + every muscle in the body, for the surrounding
+            # figure. Drawn on its own because compositing the subject back over
+            # it is what keeps the region's muscles visible: rendering all the
+            # muscles together instead would bury the deep regions entirely —
+            # back-core's erector spinae and intercostals disappear behind
+            # latissimus dorsi and trapezius, taking their hotspots with them.
+            clear_render_objects()
+            link(bone_mesh, "context_bones", bone_mat)
+            for mid, mesh in all_muscle_meshes.items():
+                link(mesh, f"context_{mid}", context_mat)
+            dtc = render_to(os.path.join(a.out, region, f"context-{frame:02d}.png"))
+            total_renders += 1
+            print(f"[plate] {region} frame-{frame:02d} subject {dt:.1f}s context {dtc:.1f}s", flush=True)
 
         if a.plates_only:
             continue
