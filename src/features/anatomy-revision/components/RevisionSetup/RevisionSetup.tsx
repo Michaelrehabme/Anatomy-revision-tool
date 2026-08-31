@@ -8,6 +8,7 @@ import { generateRevisionSet } from '../../lib/questionGenerators/generateSet';
 import type { RevisionSetupParams } from '../../hooks/useRevisionSession';
 import type { RevisionQuestion } from '../../types/question';
 import type { AnatomyRepository } from '../../data/repository';
+import type { StructureMastery } from '../../types/attempt';
 import { Button } from '../shared/Button';
 import { AppShell } from '../shell/AppShell';
 import { NavSidebar, type NavSection } from '../shell/NavSidebar';
@@ -64,16 +65,23 @@ export function RevisionSetup({ content, repository, userId, regions, onStart, o
 
   const handleStart = async () => {
     setStarting(true);
-    let structureIds: string[] | undefined;
+    let dueStructureIds: string[] | undefined;
+    let mastery: StructureMastery[] = [];
+    // Gated on the toggle: its copy promises "prioritise what's due over random
+    // picks", so switching it off has to mean genuinely unweighted picks.
     if (useSrs && repository && userId) {
-      const due = await repository.listDueMastery(userId, new Date().toISOString());
+      const [due, allMastery] = await Promise.all([
+        repository.listDueMastery(userId, new Date().toISOString()),
+        repository.listMastery(userId),
+      ]);
+      mastery = allMastery;
       const pool = new Set(
         content.structures
           .filter((s) => (regions.size === 0 || regions.has(s.region)) && (category === 'all' || s.category === category))
           .map((s) => s.id),
       );
       const dueInPool = due.map((m) => m.structureId).filter((id) => pool.has(id));
-      if (dueInPool.length > 0) structureIds = dueInPool;
+      if (dueInPool.length > 0) dueStructureIds = dueInPool;
     }
 
     const params: RevisionSetupParams = {
@@ -88,7 +96,10 @@ export function RevisionSetup({ content, repository, userId, regions, onStart, o
       category: params.category,
       mode,
       count,
-      structureIds,
+      // A priority, not a restriction: without the cap, answering a due structure
+      // reschedules it, the queue refills itself and new material never gets in.
+      priorityStructureIds: dueStructureIds,
+      mastery,
     });
     onStart(questions, params);
   };

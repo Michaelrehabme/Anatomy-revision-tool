@@ -2,8 +2,11 @@ import type { AnatomyStructure, Category, Difficulty } from '../../types/structu
 import type { AnatomyImageAsset } from '../../types/image';
 import type { QuestionType, RevisionQuestion } from '../../types/question';
 import type { Region, SubRegion } from '../../types/region';
+import type { StructureMastery } from '../../types/attempt';
 import { buildIndexes, filterStructures } from '../indexes';
-import { createRng, sample, shuffle } from '../rng';
+import type { Rng } from '../rng';
+import { createRng, shuffle, weightedShuffle } from '../rng';
+import { buildWeightMap, REVIEW_SHARE, UNSEEN_WEIGHT } from '../scheduling';
 import { buildFlashcardQuestions } from './flashcards';
 import { buildMcqQuestions } from './mcq';
 import { buildLocateQuestions } from './locate';
@@ -24,8 +27,27 @@ export interface RevisionSetConfig {
   count?: number;
   /** Restrict to specific structure ids — used by RevisionResults' "retry incorrect". */
   structureIds?: string[];
+  /**
+   * Structures the review schedule says are due. Unlike `structureIds` this is
+   * a priority, not a restriction: they get at most `reviewShare` of the set and
+   * the remainder is drawn from the wider pool, so a due queue can never crowd
+   * out new material. Ignored without a `count` — an uncapped set contains
+   * everything anyway.
+   */
+  priorityStructureIds?: string[];
+  /** Ceiling on the share of the set drawn from `priorityStructureIds`. Defaults to REVIEW_SHARE. */
+  reviewShare?: number;
   /** Fixed seed for deterministic/testable generation. Defaults to time-based. */
   seed?: number;
+  /**
+   * The user's recorded per-structure performance. When supplied, question
+   * order is weighted by it (see lib/scheduling.ts) instead of being uniformly
+   * random: structures answered wrong resurface sooner, well-known ones later.
+   * Omit for a signed-out or first-ever session — selection stays uniform.
+   */
+  mastery?: readonly StructureMastery[];
+  /** Reference time for the due-date side of the weighting. Defaults to now. */
+  now?: Date;
 }
 
 /**
@@ -33,6 +55,9 @@ export interface RevisionSetConfig {
  * question type from them, and returns a shuffled (practice) or randomly
  * sampled (assessment) set — mirroring the old quiz.py's practice-vs-
  * assessment distinction.
+ *
+ * Pass `config.mastery` to order by measured correctness rather than uniformly;
+ * generation stays deterministic under `config.seed` either way.
  */
 export function generateRevisionSet(
   structures: AnatomyStructure[],
@@ -76,9 +101,52 @@ export function generateRevisionSet(
     generated.push(...buildIdentifyTypedQuestions(pool, relevantImages));
   }
 
-  if (config.mode === 'assessment') {
-    return sample(generated, config.count ?? generated.length, rng);
+  // Both modes order the pool then take from the front; assessment differs only
+  // in that `count` is expected rather than optional.
+  const weights = config.mastery?.length ? buildWeightMap(config.mastery, config.now) : null;
+  const ordered = weights
+    ? weightedShuffle(generated, (q) => weights.get(q.structureId) ?? UNSEEN_WEIGHT, rng)
+    : shuffle(generated, rng);
+
+  if (!config.count) return ordered;
+  if (!config.priorityStructureIds?.length) return ordered.slice(0, config.count);
+
+  return blendReviewWithNew(ordered, config.priorityStructureIds, config.count, config.reviewShare, rng);
+}
+
+/**
+ * Caps the due queue's share of a session and fills the rest from the wider
+ * pool, so review and new material both get airtime.
+ *
+ * Restricting a session to the due queue outright — which is what passing those
+ * ids as `structureIds` does — locks a daily user into whatever they saw first:
+ * answering a due structure reschedules it, so the queue refills itself and no
+ * new structure is ever reachable.
+ *
+ * Both halves keep the weighted order they arrived in; the result is reshuffled
+ * so review questions aren't all bunched at the front.
+ */
+function blendReviewWithNew(
+  ordered: RevisionQuestion[],
+  priorityStructureIds: string[],
+  count: number,
+  reviewShare: number | undefined,
+  rng: Rng,
+): RevisionQuestion[] {
+  const priority = new Set(priorityStructureIds);
+  const share = Math.min(1, Math.max(0, reviewShare ?? REVIEW_SHARE));
+
+  const due: RevisionQuestion[] = [];
+  const rest: RevisionQuestion[] = [];
+  for (const question of ordered) {
+    (priority.has(question.structureId) ? due : rest).push(question);
   }
-  const shuffled = shuffle(generated, rng);
-  return config.count ? shuffled.slice(0, config.count) : shuffled;
+
+  const fromDue = due.slice(0, Math.min(Math.round(count * share), due.length));
+  // Whatever the due queue could not fill goes to the wider pool, and vice
+  // versa — a short pool on either side must not shrink the session.
+  const fromRest = rest.slice(0, count - fromDue.length);
+  const topUp = due.slice(fromDue.length, fromDue.length + (count - fromDue.length - fromRest.length));
+
+  return shuffle([...fromDue, ...fromRest, ...topUp], rng);
 }

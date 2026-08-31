@@ -6,6 +6,7 @@ import { useAnatomyContent, type AnatomyContent } from './features/anatomy-revis
 import { useRevisionSession } from './features/anatomy-revision/hooks/useRevisionSession';
 import { useIsDesktop } from './features/anatomy-revision/hooks/useIsDesktop';
 import { generateRevisionSet } from './features/anatomy-revision/lib/questionGenerators/generateSet';
+import { useMastery } from './features/anatomy-revision/hooks/useMastery';
 import { computeStreak } from './features/anatomy-revision/lib/streak';
 import type { Region } from './features/anatomy-revision/types/region';
 import type { AnatomyRepository } from './features/anatomy-revision/data/repository';
@@ -148,6 +149,8 @@ function App() {
     };
   }, [repository, userId, session.phase]);
 
+  const mastery = useMastery(repository, userId);
+
   const prevPhaseRef = useRef(session.phase);
   useEffect(() => {
     const prevPhase = prevPhaseRef.current;
@@ -209,6 +212,8 @@ function App() {
   const openMuscle = (structureId: string, contextIds: string[]) =>
     navigate(`/structure/${structureId}`, { state: { contextIds } });
 
+  // No mastery here on purpose: a one-structure drill gives the weighting nothing
+  // to choose between — every question would carry the same weight.
   const drillStructure = (structureId: string) => {
     const questions = generateRevisionSet(content.structures, content.images, {
       types: ['flashcard', 'mcq'],
@@ -335,7 +340,10 @@ function App() {
                 const retryQuestions = generateRevisionSet(content.structures, content.images, {
                   types: session.setupParams?.types ?? ['flashcard', 'mcq'],
                   mode: 'practice',
+                  // Deliberately still a hard restriction — "retry the N missed" means
+                  // those N. Mastery only orders them, worst-known first.
                   structureIds: session.summary!.missedStructureIds,
+                  mastery,
                 });
                 session.start(retryQuestions, session.setupParams ?? { types: ['flashcard', 'mcq'], mode: 'practice' });
               }}
@@ -354,6 +362,7 @@ function App() {
                 const nextQuestions = generateRevisionSet(content.structures, content.images, {
                   ...params,
                   count: session.summary!.totalQuestions,
+                  mastery,
                 });
                 session.start(nextQuestions, params);
               }}

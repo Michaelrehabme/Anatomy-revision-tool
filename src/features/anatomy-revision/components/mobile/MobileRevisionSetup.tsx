@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { AnatomyContent } from '../../hooks/useAnatomyContent';
 import type { AnatomyRepository } from '../../data/repository';
+import type { StructureMastery } from '../../types/attempt';
 import type { QuestionType, RevisionQuestion } from '../../types/question';
 import type { Region } from '../../types/region';
 import { REGION_LABELS } from '../../types/region';
@@ -50,14 +51,21 @@ export function MobileRevisionSetup({ content, repository, userId, regions, onSt
 
   const handleStart = async () => {
     setStarting(true);
-    let structureIds: string[] | undefined;
+    let dueStructureIds: string[] | undefined;
+    let mastery: StructureMastery[] = [];
+    // Gated on the toggle: its copy promises "prioritise what's due over random
+    // picks", so switching it off has to mean genuinely unweighted picks.
     if (useSrs && repository && userId) {
-      const due = await repository.listDueMastery(userId, new Date().toISOString());
+      const [due, allMastery] = await Promise.all([
+        repository.listDueMastery(userId, new Date().toISOString()),
+        repository.listMastery(userId),
+      ]);
+      mastery = allMastery;
       const pool = new Set(
         content.structures.filter(isMuscle).filter((s) => regions.size === 0 || regions.has(s.region)).map((s) => s.id),
       );
       const dueInPool = due.map((m) => m.structureId).filter((id) => pool.has(id));
-      if (dueInPool.length > 0) structureIds = dueInPool;
+      if (dueInPool.length > 0) dueStructureIds = dueInPool;
     }
 
     const params: RevisionSetupParams = { types, regions: regionsArray, category: 'muscle', mode: 'practice' };
@@ -67,7 +75,10 @@ export function MobileRevisionSetup({ content, repository, userId, regions, onSt
       category: 'muscle',
       mode: 'practice',
       count,
-      structureIds,
+      // A priority, not a restriction: without the cap, answering a due structure
+      // reschedules it, the queue refills itself and new material never gets in.
+      priorityStructureIds: dueStructureIds,
+      mastery,
     });
     onStart(questions, params);
   };

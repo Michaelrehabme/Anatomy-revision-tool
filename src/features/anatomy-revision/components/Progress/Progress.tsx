@@ -23,6 +23,8 @@ export function Progress({ content, repository, userId, onStart, onNavigate }: P
   // Desktop shows strongest-first; the mobile mockup keeps REGIONS' natural order instead.
   const byRegion = [...byRegionUnsorted].sort((a, b) => b.pct - a.pct);
 
+  // No mastery here on purpose: every structure in `untouched` is by definition
+  // unattempted, so they all carry UNSEEN_WEIGHT and the ordering stays uniform.
   const handleDrillUntouched = () => {
     const questions = generateRevisionSet(content.structures, content.images, {
       types: ['flashcard', 'mcq'],

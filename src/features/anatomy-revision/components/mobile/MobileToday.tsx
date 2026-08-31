@@ -22,7 +22,7 @@ interface MobileTodayProps {
 
 /** Screen 02 (mobile). Single decision on open: due count, one primary action. */
 export function MobileToday({ repository, userId, content, onStart, onCustomSession, onOpenMuscle, onNavigateTab }: MobileTodayProps) {
-  const { loading, streak, dueMuscles, weakest, weekBuckets, weekMax, dayLabels } = useTodayData(repository, userId, content);
+  const { loading, streak, dueMuscles, allMastery, weakest, weekBuckets, weekMax, dayLabels } = useTodayData(repository, userId, content);
   const now = new Date();
 
   const handleStart = () => {
@@ -30,7 +30,8 @@ export function MobileToday({ repository, userId, content, onStart, onCustomSess
     const questions = generateRevisionSet(content.structures, content.images, {
       types: DEFAULT_TYPES,
       mode: 'practice',
-      structureIds: structureIds.length ? structureIds : undefined,
+      mastery: allMastery,
+      priorityStructureIds: structureIds.length ? structureIds : undefined,
       count: 20,
     });
     onStart(questions, { types: DEFAULT_TYPES, mode: 'practice' });

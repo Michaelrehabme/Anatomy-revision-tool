@@ -22,7 +22,7 @@ interface TodayProps {
 }
 
 export function Today({ repository, userId, content, onStart, onCustomSession, onOpenMuscle, onNavigate }: TodayProps) {
-  const { loading, streak, totalMuscleCount, seenMusclePct, dueMuscles, weakest, comingDue, weekBuckets, weekMax, dayLabels } =
+  const { loading, streak, totalMuscleCount, seenMusclePct, dueMuscles, allMastery, weakest, comingDue, weekBuckets, weekMax, dayLabels } =
     useTodayData(repository, userId, content);
   const now = new Date();
 
@@ -31,7 +31,8 @@ export function Today({ repository, userId, content, onStart, onCustomSession, o
     const questions = generateRevisionSet(content.structures, content.images, {
       types: DEFAULT_TYPES,
       mode: 'practice',
-      structureIds: structureIds.length ? structureIds : undefined,
+      mastery: allMastery,
+      priorityStructureIds: structureIds.length ? structureIds : undefined,
       count: 20,
     });
     onStart(questions, { types: DEFAULT_TYPES, mode: 'practice' });
