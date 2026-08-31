@@ -14,6 +14,7 @@ function summaryOn(isoDate: string): RevisionSessionSummary {
       muscle: { total: 10, correct: 8 },
       bone: { total: 0, correct: 0 },
       landmark: { total: 0, correct: 0 },
+      joint: { total: 0, correct: 0 },
     },
     breakdownByRegion: {},
     missedStructureIds: [],
