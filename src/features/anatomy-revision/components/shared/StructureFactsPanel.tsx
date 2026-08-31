@@ -1,12 +1,17 @@
 import type { AnatomyStructure } from '../../types/structure';
 import { describeStructure } from '../../lib/facts';
+import { PronounceButton } from './PronounceButton';
 
 export function StructureFactsPanel({ structure }: { structure: AnatomyStructure }) {
   const lines = describeStructure(structure);
 
   return (
     <div className="rounded-lg border border-slate-200 bg-white p-4">
-      <h3 className="text-lg font-semibold text-slate-900">{structure.name}</h3>
+      <div className="flex items-center gap-1.5">
+        <h3 className="text-lg font-semibold text-slate-900">{structure.name}</h3>
+        <PronounceButton structure={structure} size={16} />
+      </div>
+      {structure.phoneticSpelling && <p className="text-sm text-slate-500">{structure.phoneticSpelling}</p>}
       {structure.latin && <p className="text-sm italic text-slate-500">{structure.latin}</p>}
       <p className="mt-2 text-sm text-slate-700">{structure.description}</p>
       <dl className="mt-3 space-y-1 text-sm text-slate-600">

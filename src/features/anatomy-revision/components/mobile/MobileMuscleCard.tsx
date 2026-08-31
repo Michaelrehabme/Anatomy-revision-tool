@@ -5,6 +5,7 @@ import { REGION_LABELS } from '../../types/region';
 import { useMuscleHistory } from '../../hooks/useMuscleHistory';
 import { relativeDue } from '../../hooks/useTodayData';
 import { AttributionBadge } from '../shared/AttributionBadge';
+import { PronounceButton } from '../shared/PronounceButton';
 
 interface MobileMuscleCardProps {
   structureId: string;
@@ -52,12 +53,19 @@ export function MobileMuscleCard({ structureId, content, repository, userId, onB
       <div style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--accd)' }}>
         {REGION_LABELS[structure.region]}
       </div>
-      <h2
-        className="mt-2.5"
-        style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 38, lineHeight: 1.02, letterSpacing: '-.024em' }}
-      >
-        {structure.name}
-      </h2>
+      <div className="mt-2.5 flex items-center gap-2">
+        <h2
+          style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 38, lineHeight: 1.02, letterSpacing: '-.024em' }}
+        >
+          {structure.name}
+        </h2>
+        <PronounceButton structure={structure} size={19} />
+      </div>
+      {structure.phoneticSpelling && (
+        <div className="mt-0.5" style={{ font: '400 12.5px/1.4 var(--font-mono)', color: 'var(--ink3)' }}>
+          {structure.phoneticSpelling}
+        </div>
+      )}
       {structure.groups?.length ? (
         <p className="mt-1.5" style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', fontSize: 17, color: 'var(--ink3)' }}>
           {structure.groups[0]}

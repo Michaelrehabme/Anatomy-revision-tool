@@ -6,6 +6,7 @@ import { useMuscleHistory } from '../../hooks/useMuscleHistory';
 import { REGION_LABELS } from '../../types/region';
 import { AttributionBadge } from '../shared/AttributionBadge';
 import { Button } from '../shared/Button';
+import { PronounceButton } from '../shared/PronounceButton';
 import { AppShell } from '../shell/AppShell';
 import { NavSidebar, type NavSection } from '../shell/NavSidebar';
 
@@ -129,11 +130,19 @@ export function MuscleCard({
             {REGION_LABELS[structure.region]}
             {structure.groups?.length ? ` · ${structure.groups[0]}` : ''}
           </div>
-          <h2
-            style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 58, lineHeight: 1, letterSpacing: '-.028em', margin: '18px 0 0' }}
-          >
-            {structure.name}
-          </h2>
+          <div className="mt-[18px] flex items-center gap-2.5">
+            <h2
+              style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 58, lineHeight: 1, letterSpacing: '-.028em', margin: 0 }}
+            >
+              {structure.name}
+            </h2>
+            <PronounceButton structure={structure} size={22} />
+          </div>
+          {structure.phoneticSpelling && (
+            <div className="mt-1.5" style={{ font: '400 14px/1.4 var(--font-mono)', color: 'var(--ink3)' }}>
+              {structure.phoneticSpelling}
+            </div>
+          )}
 
           <div className="mt-9 flex flex-col">
             {muscle &&
