@@ -12,11 +12,14 @@ import { Button } from '../shared/Button';
 import { AppShell } from '../shell/AppShell';
 import { NavSidebar, type NavSection } from '../shell/NavSidebar';
 
+// 'locate' is intentionally not offered here — see images.seed.ts's panel-crop comment
+// (CR-016): no image in the current dataset is suited to a locate question, since every
+// single-muscle panel already highlights its target muscle rather than staying neutral.
 const QUESTION_TYPE_OPTIONS: { value: QuestionType; label: string }[] = [
   { value: 'mcq', label: 'Multiple choice' },
-  { value: 'locate', label: 'Locate' },
   { value: 'identify-typed', label: 'Type answer' },
   { value: 'flashcard', label: 'Flashcard' },
+  { value: 'multi-select', label: 'Select all' },
 ];
 
 const CATEGORY_OPTIONS: { value: Category | 'all'; label: string }[] = [
@@ -24,6 +27,7 @@ const CATEGORY_OPTIONS: { value: Category | 'all'; label: string }[] = [
   { value: 'muscle', label: 'Muscles' },
   { value: 'bone', label: 'Bones' },
   { value: 'landmark', label: 'Landmarks' },
+  { value: 'joint', label: 'Joints' },
 ];
 
 const LENGTHS = [10, 20, 40];
@@ -44,12 +48,23 @@ function chipStyle(selected: boolean) {
     : { border: '1.2px solid var(--line)', background: 'transparent', color: 'var(--ink2)' };
 }
 
+const SESSION_TYPE_OPTIONS: { value: 'practice' | 'adaptive' | 'assessment'; label: string; blurb: string }[] = [
+  { value: 'practice', label: 'Study', blurb: 'Immediate feedback, self-paced, no timer.' },
+  { value: 'adaptive', label: 'Adaptive', blurb: 'Weighted toward what’s due and weak, still with feedback.' },
+  { value: 'assessment', label: 'Exam', blurb: 'No feedback until the end. Scored report, optional timer.' },
+];
+
+const TIMER_OPTIONS = [0, 10, 20, 30];
+
 export function RevisionSetup({ content, repository, userId, regions, onStart, onBack, onNavigate }: RevisionSetupProps) {
-  const [types, setTypes] = useState<QuestionType[]>(['mcq', 'locate']);
+  const [types, setTypes] = useState<QuestionType[]>(['mcq']);
   const [category, setCategory] = useState<Category | 'all'>('all');
-  const [mode, setMode] = useState<'practice' | 'assessment'>('practice');
+  const [mode, setMode] = useState<'practice' | 'assessment' | 'adaptive'>('practice');
   const [count, setCount] = useState(20);
+  const [customLength, setCustomLength] = useState('');
+  const [customActive, setCustomActive] = useState(false);
   const [useSrs, setUseSrs] = useState(true);
+  const [timerMinutes, setTimerMinutes] = useState(0);
   const [starting, setStarting] = useState(false);
 
   const toggleType = (type: QuestionType) => {
@@ -65,7 +80,9 @@ export function RevisionSetup({ content, repository, userId, regions, onStart, o
   const handleStart = async () => {
     setStarting(true);
     let structureIds: string[] | undefined;
-    if (useSrs && repository && userId) {
+    // Adaptive mode does its own due/weak/known weighting over the full pool — a due-only
+    // pre-filter would fight it, so the SRS toggle only applies to practice/exam.
+    if (useSrs && mode !== 'adaptive' && repository && userId) {
       const due = await repository.listDueMastery(userId, new Date().toISOString());
       const pool = new Set(
         content.structures
@@ -76,11 +93,14 @@ export function RevisionSetup({ content, repository, userId, regions, onStart, o
       if (dueInPool.length > 0) structureIds = dueInPool;
     }
 
+    const mastery = mode === 'adaptive' && repository && userId ? await repository.listMastery(userId) : undefined;
+
     const params: RevisionSetupParams = {
       types,
       regions: regionsArray.length ? regionsArray : undefined,
       category: category === 'all' ? undefined : category,
       mode,
+      timerMinutes: mode === 'assessment' && timerMinutes > 0 ? timerMinutes : undefined,
     };
     const questions = generateRevisionSet(content.structures, content.images, {
       types,
@@ -89,6 +109,7 @@ export function RevisionSetup({ content, repository, userId, regions, onStart, o
       mode,
       count,
       structureIds,
+      mastery,
     });
     onStart(questions, params);
   };
@@ -178,20 +199,48 @@ export function RevisionSetup({ content, repository, userId, regions, onStart, o
                 <button
                   key={n}
                   type="button"
-                  onClick={() => setCount(n)}
-                  aria-pressed={count === n}
+                  onClick={() => {
+                    setCount(n);
+                    setCustomActive(false);
+                  }}
+                  aria-pressed={!customActive && count === n}
                   className="inline-flex min-h-[56px] flex-1 items-center justify-center whitespace-nowrap rounded-[3px]"
                   style={{
                     fontFamily: 'var(--font-display)',
                     fontSize: 20,
-                    border: count === n ? '1.4px solid var(--acc)' : '1.2px solid var(--line)',
-                    background: count === n ? 'var(--accs)' : 'transparent',
-                    color: count === n ? 'var(--accd)' : 'var(--ink2)',
+                    border: !customActive && count === n ? '1.4px solid var(--acc)' : '1.2px solid var(--line)',
+                    background: !customActive && count === n ? 'var(--accs)' : 'transparent',
+                    color: !customActive && count === n ? 'var(--accd)' : 'var(--ink2)',
                   }}
                 >
                   {n}
                 </button>
               ))}
+              <input
+                type="number"
+                min={1}
+                inputMode="numeric"
+                placeholder="Custom"
+                value={customLength}
+                onFocus={() => setCustomActive(true)}
+                onChange={(e) => {
+                  const raw = e.target.value;
+                  setCustomLength(raw);
+                  setCustomActive(true);
+                  const n = parseInt(raw, 10);
+                  if (!Number.isNaN(n) && n > 0) setCount(n);
+                }}
+                aria-pressed={customActive}
+                aria-label="Custom session length"
+                className="inline-flex min-h-[56px] w-0 flex-1 items-center justify-center whitespace-nowrap rounded-[3px] text-center"
+                style={{
+                  fontFamily: 'var(--font-display)',
+                  fontSize: 20,
+                  border: customActive ? '1.4px solid var(--acc)' : '1.2px solid var(--line)',
+                  background: customActive ? 'var(--accs)' : 'transparent',
+                  color: customActive ? 'var(--accd)' : 'var(--ink2)',
+                }}
+              />
             </div>
 
             <label className="mt-12 flex cursor-pointer items-start gap-4">
@@ -215,31 +264,60 @@ export function RevisionSetup({ content, repository, userId, regions, onStart, o
               <input type="checkbox" checked={useSrs} onChange={(e) => setUseSrs(e.target.checked)} className="sr-only" />
             </label>
 
-            <label className="mt-7 flex cursor-pointer items-start gap-4">
-              <span
-                className="relative h-[31px] w-[52px] flex-none rounded-full transition-colors"
-                style={{ background: mode === 'assessment' ? 'var(--acc)' : 'var(--line)' }}
-              >
-                <span
-                  className="absolute top-[3px] h-[25px] w-[25px] rounded-full transition-all"
-                  style={{ left: mode === 'assessment' ? 24 : 3, background: 'var(--sf)', boxShadow: '0 1px 3px rgba(0,0,0,.3)' }}
-                />
-              </span>
-              <span className="flex-1">
-                <span className="block" style={{ fontFamily: 'var(--font-display)', fontSize: 19, lineHeight: 1.25 }}>
-                  Assessment mode
-                </span>
-                <span className="mt-1 block text-sm" style={{ color: 'var(--ink3)' }}>
-                  No feedback until the end.
-                </span>
-              </span>
-              <input
-                type="checkbox"
-                checked={mode === 'assessment'}
-                onChange={(e) => setMode(e.target.checked ? 'assessment' : 'practice')}
-                className="sr-only"
-              />
-            </label>
+            <div
+              className="mt-10"
+              style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}
+            >
+              Session type
+            </div>
+            <div className="mt-4 flex flex-col gap-2">
+              {SESSION_TYPE_OPTIONS.map((opt) => (
+                <button
+                  key={opt.value}
+                  type="button"
+                  onClick={() => setMode(opt.value)}
+                  aria-pressed={mode === opt.value}
+                  className="flex flex-col items-start rounded-[3px] px-4 py-3 text-left"
+                  style={{
+                    border: mode === opt.value ? '1.4px solid var(--acc)' : '1.2px solid var(--line)',
+                    background: mode === opt.value ? 'var(--accs)' : 'transparent',
+                  }}
+                >
+                  <span style={{ fontFamily: 'var(--font-display)', fontSize: 19, color: mode === opt.value ? 'var(--accd)' : 'var(--ink)' }}>
+                    {opt.label}
+                  </span>
+                  <span className="mt-0.5 text-sm" style={{ color: 'var(--ink3)' }}>
+                    {opt.blurb}
+                  </span>
+                </button>
+              ))}
+            </div>
+
+            {mode === 'assessment' && (
+              <div className="mt-4">
+                <div style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
+                  Timer
+                </div>
+                <div className="mt-3 flex gap-2">
+                  {TIMER_OPTIONS.map((n) => (
+                    <button
+                      key={n}
+                      type="button"
+                      onClick={() => setTimerMinutes(n)}
+                      aria-pressed={timerMinutes === n}
+                      className="flex-1 rounded-[3px] py-2.5 text-sm"
+                      style={{
+                        border: timerMinutes === n ? '1.4px solid var(--acc)' : '1.2px solid var(--line)',
+                        background: timerMinutes === n ? 'var(--accs)' : 'transparent',
+                        color: timerMinutes === n ? 'var(--accd)' : 'var(--ink2)',
+                      }}
+                    >
+                      {n === 0 ? 'No timer' : `${n} min`}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
 
             <Button
               onClick={handleStart}

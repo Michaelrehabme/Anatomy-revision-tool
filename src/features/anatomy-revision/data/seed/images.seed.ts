@@ -16,9 +16,22 @@ import type { Region, SubRegion } from '../../types/region';
  * Until populated, these images are usable for flashcard/MCQ prompts but
  * generate zero locate questions.
  *
+ * `width`/`height` MUST match the real PNG's pixel dimensions (verified via
+ * pngjs — see git history for the one-off script) for every image that has
+ * hotspot data. HotspotImage.tsx locks the rendered box to this
+ * aspect-ratio specifically so click coordinates line up with the
+ * coordinate space the hotspots were authored against; without it,
+ * `object-cover` silently crops to whatever shape the surrounding layout
+ * happens to produce, and a dead-center click on the correct muscle can
+ * register as wrong. Found as a real bug (all 45 images were missing this
+ * before), not a hypothetical — see validateContent.ts's matching warning.
+ * All panel crops share 255x259; atlas slides are 1122x1402 except the 4
+ * spine-atlas-* ones, which are 1254x1254.
+ *
  * ADD MORE IMAGES HERE: append another AnatomyImageAsset literal with
  * verbatim panelStructureNames — imageIds link automatically, no manual
- * cross-referencing needed.
+ * cross-referencing needed. Set width/height to the file's real pixel
+ * dimensions, not a guess.
  */
 
 const AI_GENERATED_CREDIT = 'Rory Neary (AI-generated illustration)';
@@ -38,6 +51,7 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
       'Longissimus', 'Spinalis', 'Rhomboid minor', 'Rhomboid major',
     ],
     region: 'back-core', subregion: 'neck', view: 'posterior', layer: 'deep-muscle',
+    width: 1122, height: 1402,
     hotspots: [], credit: AI_GENERATED_CREDIT, licence: AI_GENERATED_LICENCE,
   },
   {
@@ -52,6 +66,7 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
       'Rhomboid minor', 'Rhomboid major', 'Levator scapulae', 'Trapezius',
     ],
     region: 'shoulder-arm', subregion: 'shoulder', view: 'posterior', layer: 'superficial-muscle',
+    width: 1122, height: 1402,
     hotspots: [], credit: AI_GENERATED_CREDIT, licence: AI_GENERATED_LICENCE,
   },
   {
@@ -66,6 +81,7 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
       'Pronator quadratus', 'Extensor carpi radialis longus', 'Extensor carpi radialis brevis', 'Anconeus',
     ],
     region: 'shoulder-arm', subregion: 'elbow', view: 'anterior', layer: 'superficial-muscle',
+    width: 1122, height: 1402,
     hotspots: [], credit: AI_GENERATED_CREDIT, licence: AI_GENERATED_LICENCE,
   },
   {
@@ -80,6 +96,7 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
       'Flexor digiti minimi brevis', 'Opponens digiti minimi', 'Lumbricals', 'Dorsal interossei',
     ],
     region: 'forearm-hand', subregion: 'wrist-hand', view: 'posterior', layer: 'superficial-muscle',
+    width: 1122, height: 1402,
     hotspots: [], credit: AI_GENERATED_CREDIT, licence: AI_GENERATED_LICENCE,
   },
   {
@@ -94,6 +111,7 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
       'Inferior gemellus', 'Quadratus femoris', 'Levator ani', 'Coccygeus',
     ],
     region: 'back-core', subregion: 'torso', view: 'anterior', layer: 'deep-muscle',
+    width: 1122, height: 1402,
     hotspots: [], credit: AI_GENERATED_CREDIT, licence: AI_GENERATED_LICENCE,
   },
   {
@@ -108,6 +126,7 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
       'Pectineus', 'Adductor longus', 'Adductor brevis', 'Adductor magnus',
     ],
     region: 'hip-thigh', subregion: 'hip', view: 'posterior', layer: 'superficial-muscle',
+    width: 1122, height: 1402,
     hotspots: [], credit: AI_GENERATED_CREDIT, licence: AI_GENERATED_LICENCE,
   },
   {
@@ -122,6 +141,7 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
       'Articularis genus', 'Semitendinosus', 'Semimembranosus', 'Biceps femoris',
     ],
     region: 'hip-thigh', subregion: 'hip', view: 'anterior', layer: 'superficial-muscle',
+    width: 1122, height: 1402,
     hotspots: [], credit: AI_GENERATED_CREDIT, licence: AI_GENERATED_LICENCE,
   },
   {
@@ -136,6 +156,7 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
       'Tibialis anterior', 'Extensor digitorum longus', 'Extensor hallucis longus', 'Fibularis tertius',
     ],
     region: 'lower-leg-foot', subregion: 'knee', view: 'posterior', layer: 'superficial-muscle',
+    width: 1122, height: 1402,
     hotspots: [], credit: AI_GENERATED_CREDIT, licence: AI_GENERATED_LICENCE,
   },
   {
@@ -150,6 +171,7 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
       'Tibialis posterior', 'Fibularis longus', 'Fibularis brevis', 'Flexor hallucis longus',
     ],
     region: 'lower-leg-foot', subregion: 'ankle-foot', view: 'plantar', layer: 'superficial-muscle',
+    width: 1122, height: 1402,
     hotspots: [], credit: AI_GENERATED_CREDIT, licence: AI_GENERATED_LICENCE,
   },
   {
@@ -164,6 +186,7 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
       'Dorsal interossei (foot)', 'Flexor digitorum brevis', 'Quadratus plantae', 'Abductor hallucis',
     ],
     region: 'forearm-hand', subregion: 'wrist-hand', view: 'palmar', layer: 'superficial-muscle',
+    width: 1122, height: 1402,
     hotspots: [], credit: AI_GENERATED_CREDIT, licence: AI_GENERATED_LICENCE,
   },
 
@@ -180,6 +203,7 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
       'Femur', 'Patella', 'Tibia', 'Fibula',
     ],
     region: 'back-core', subregion: 'torso', view: 'anterior', layer: 'skeletal',
+    width: 1122, height: 1402,
     hotspots: [], credit: AI_GENERATED_CREDIT, licence: AI_GENERATED_LICENCE,
   },
   {
@@ -194,6 +218,7 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
       'Surgical neck of humerus', 'Anatomical neck of humerus', 'Medial epicondyle of humerus', 'Lateral epicondyle of humerus',
     ],
     region: 'shoulder-arm', subregion: 'shoulder', view: 'anterior', layer: 'landmark',
+    width: 1122, height: 1402,
     hotspots: [], credit: AI_GENERATED_CREDIT, licence: AI_GENERATED_LICENCE,
   },
   {
@@ -208,6 +233,7 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
       'Trapezoid', 'Capitate', 'Hamate', 'Carpals (grouped)',
     ],
     region: 'forearm-hand', subregion: 'wrist-hand', view: 'anterior', layer: 'landmark',
+    width: 1122, height: 1402,
     hotspots: [], credit: AI_GENERATED_CREDIT, licence: AI_GENERATED_LICENCE,
   },
   {
@@ -222,6 +248,7 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
       'Pisiform', 'Scaphoid tubercle', 'Trapezium', 'Anatomical snuffbox region',
     ],
     region: 'forearm-hand', subregion: 'wrist-hand', view: 'dorsal', layer: 'skeletal',
+    width: 1122, height: 1402,
     hotspots: [], credit: AI_GENERATED_CREDIT, licence: AI_GENERATED_LICENCE,
   },
   {
@@ -236,6 +263,7 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
       'First rib', 'Twelfth rib', 'Sacral promontory', 'Sacral hiatus',
     ],
     region: 'back-core', subregion: 'spine', view: 'anterior', layer: 'landmark',
+    width: 1122, height: 1402,
     hotspots: [], credit: AI_GENERATED_CREDIT, licence: AI_GENERATED_LICENCE,
   },
   {
@@ -250,6 +278,7 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
       'Greater trochanter', 'Lesser trochanter', 'Intertrochanteric line', 'Obturator foramen',
     ],
     region: 'hip-thigh', subregion: 'hip', view: 'anterior', layer: 'landmark',
+    width: 1122, height: 1402,
     hotspots: [], credit: AI_GENERATED_CREDIT, licence: AI_GENERATED_LICENCE,
   },
   {
@@ -264,6 +293,7 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
       "Neck of fibula", "Gerdy's tubercle", 'Tibial plateau', 'Intercondylar fossa of femur',
     ],
     region: 'hip-thigh', subregion: 'knee', view: 'anterior', layer: 'landmark',
+    width: 1122, height: 1402,
     hotspots: [], credit: AI_GENERATED_CREDIT, licence: AI_GENERATED_LICENCE,
   },
   {
@@ -278,6 +308,7 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
       'Distal phalanges of the foot (grouped)', 'Base of fifth metatarsal', 'Head of first metatarsal', 'Tarsals (grouped)',
     ],
     region: 'lower-leg-foot', subregion: 'ankle-foot', view: 'dorsal', layer: 'skeletal',
+    width: 1122, height: 1402,
     hotspots: [], credit: AI_GENERATED_CREDIT, licence: AI_GENERATED_LICENCE,
   },
   {
@@ -292,6 +323,7 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
       'Medial malleolus', 'Lateral malleolus', 'Calcaneal tuberosity', 'Navicular tuberosity',
     ],
     region: 'hip-thigh', subregion: 'hip', view: 'anterior', layer: 'landmark',
+    width: 1122, height: 1402,
     hotspots: [], credit: AI_GENERATED_CREDIT, licence: AI_GENERATED_LICENCE,
   },
   {
@@ -306,6 +338,7 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
       'Sustentaculum tali', 'Calcaneal tuberosity', 'Tibial crest (anterior border of tibia)', 'Base of fifth metatarsal',
     ],
     region: 'back-core', subregion: 'torso', view: 'anterior', layer: 'skeletal',
+    width: 1122, height: 1402,
     hotspots: [], credit: AI_GENERATED_CREDIT, licence: AI_GENERATED_LICENCE,
   },
   {
@@ -320,6 +353,7 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
       'Superior Articular Process (Cervical)', 'Inferior Articular Process (Cervical)', 'Intervertebral Disc (Cervical)', 'Cervical Region (C1–C7)',
     ],
     region: 'back-core', subregion: 'neck', view: 'posterior', layer: 'skeletal',
+    width: 1254, height: 1254,
     hotspots: [], credit: AI_GENERATED_CREDIT, licence: AI_GENERATED_LICENCE,
   },
   {
@@ -334,6 +368,7 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
       'Transverse Costal Facet', 'Thoracic Intervertebral Disc', 'Thoracic Zygapophyseal (Facet) Joint', 'Rib Articulation to Thoracic Vertebra',
     ],
     region: 'back-core', subregion: 'spine', view: 'posterior', layer: 'skeletal',
+    width: 1254, height: 1254,
     hotspots: [], credit: AI_GENERATED_CREDIT, licence: AI_GENERATED_LICENCE,
   },
   {
@@ -348,6 +383,7 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
       'L4 Vertebra', 'L5 Vertebra', 'L5–S1 Junction', 'Lumbar Facet Joint',
     ],
     region: 'back-core', subregion: 'spine', view: 'posterior', layer: 'skeletal',
+    width: 1254, height: 1254,
     hotspots: [], credit: AI_GENERATED_CREDIT, licence: AI_GENERATED_LICENCE,
   },
   {
@@ -362,12 +398,27 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
       'Superior Articular Process of Sacrum', 'Sacral Cornua', 'Coccygeal Cornua', 'Sacroiliac Articular Surface',
     ],
     region: 'back-core', subregion: 'spine', view: 'posterior', layer: 'skeletal',
+    width: 1254, height: 1254,
     hotspots: [], credit: AI_GENERATED_CREDIT, licence: AI_GENERATED_LICENCE,
   },
 
   // --- Single-muscle panel crops (21), for the Muscle Card screen ---
   // mode: 'single-structure' links via structureId directly (see
   // lib/linkImages.ts) rather than panelStructureNames matching.
+  //
+  // hotspots is always [] here, deliberately: these panels already render
+  // the target muscle pre-highlighted in a distinct colour against the rest
+  // of the (bone-coloured) figure — see MuscleCard's identify-by-image MCQ
+  // and identify-typed questions ("Which structure is shown?"), which are
+  // the right fit for that. A locate ("tap the muscle") question on an
+  // image that already visually singles out the answer isn't testing
+  // spatial recognition, it's testing whether the student can find the
+  // oddly-coloured blob — CR-007 originally hand-traced 4 of these
+  // (deltoid, gluteus-maximus, biceps-brachii, trapezius) as a locate
+  // proof-of-concept, but CR-015/CR-016 removed them for exactly this
+  // reason (see the Change Register). Locate questions belong on images
+  // where nothing is pre-highlighted — a genuinely blank/neutral regional
+  // diagram — which doesn't exist in this dataset yet.
   ...([
     ['supraspinatus', 'shoulder-arm', 'shoulder', 'deep-muscle'],
     ['infraspinatus', 'shoulder-arm', 'shoulder', 'deep-muscle'],
@@ -400,6 +451,7 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
       subregion,
       view: 'posterior',
       layer,
+      width: 255, height: 259,
       hotspots: [],
       credit: AI_GENERATED_CREDIT,
       licence: AI_GENERATED_LICENCE,

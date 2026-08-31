@@ -9,14 +9,25 @@ import { generateRevisionSet } from '../../lib/questionGenerators/generateSet';
 import type { RevisionSetupParams } from '../../hooks/useRevisionSession';
 import { MobileShell } from './MobileShell';
 
+// 'locate' is intentionally not offered here — see images.seed.ts's panel-crop comment
+// (CR-016): no image in the current dataset is suited to a locate question, since every
+// single-muscle panel already highlights its target muscle rather than staying neutral.
 const FORMAT_OPTIONS: { value: QuestionType; label: string }[] = [
   { value: 'flashcard', label: 'flashcard' },
   { value: 'mcq', label: 'multiple-choice' },
-  { value: 'locate', label: 'locate' },
   { value: 'identify-typed', label: 'type-answer' },
+  { value: 'multi-select', label: 'select-all' },
 ];
 
 const LENGTHS = [8, 15, 30];
+
+const SESSION_TYPE_OPTIONS: { value: 'practice' | 'adaptive' | 'assessment'; label: string }[] = [
+  { value: 'practice', label: 'Study' },
+  { value: 'adaptive', label: 'Adaptive' },
+  { value: 'assessment', label: 'Exam' },
+];
+
+const TIMER_OPTIONS = [0, 10, 20, 30];
 
 interface MobileRevisionSetupProps {
   content: AnatomyContent;
@@ -35,9 +46,11 @@ function chipStyle(selected: boolean) {
 
 /** Screen 04 (mobile). No tab bar (not in the mockup's showTabs list) — a step within the Study flow. */
 export function MobileRevisionSetup({ content, repository, userId, regions, onStart, onBack }: MobileRevisionSetupProps) {
-  const [types, setTypes] = useState<QuestionType[]>(['mcq', 'locate', 'identify-typed']);
+  const [types, setTypes] = useState<QuestionType[]>(['mcq', 'identify-typed']);
   const [count, setCount] = useState(15);
   const [useSrs, setUseSrs] = useState(true);
+  const [mode, setMode] = useState<'practice' | 'adaptive' | 'assessment'>('practice');
+  const [timerMinutes, setTimerMinutes] = useState(0);
   const [starting, setStarting] = useState(false);
 
   const toggleType = (type: QuestionType) => {
@@ -51,7 +64,7 @@ export function MobileRevisionSetup({ content, repository, userId, regions, onSt
   const handleStart = async () => {
     setStarting(true);
     let structureIds: string[] | undefined;
-    if (useSrs && repository && userId) {
+    if (useSrs && mode !== 'adaptive' && repository && userId) {
       const due = await repository.listDueMastery(userId, new Date().toISOString());
       const pool = new Set(
         content.structures.filter(isMuscle).filter((s) => regions.size === 0 || regions.has(s.region)).map((s) => s.id),
@@ -60,14 +73,23 @@ export function MobileRevisionSetup({ content, repository, userId, regions, onSt
       if (dueInPool.length > 0) structureIds = dueInPool;
     }
 
-    const params: RevisionSetupParams = { types, regions: regionsArray, category: 'muscle', mode: 'practice' };
+    const mastery = mode === 'adaptive' && repository && userId ? await repository.listMastery(userId) : undefined;
+
+    const params: RevisionSetupParams = {
+      types,
+      regions: regionsArray,
+      category: 'muscle',
+      mode,
+      timerMinutes: mode === 'assessment' && timerMinutes > 0 ? timerMinutes : undefined,
+    };
     const questions = generateRevisionSet(content.structures, content.images, {
       types,
       regions: regionsArray,
       category: 'muscle',
-      mode: 'practice',
+      mode,
       count,
       structureIds,
+      mastery,
     });
     onStart(questions, params);
   };
@@ -105,12 +127,6 @@ export function MobileRevisionSetup({ content, repository, userId, regions, onSt
             </button>
           ))}
         </div>
-        <p className="mt-3 text-[13px] leading-relaxed" style={{ color: 'var(--ink3)' }}>
-          {types.includes('locate')
-            ? 'Locate questions need hotspot data; regions without it fall back to multiple choice.'
-            : 'Image questions are off — this session is text only.'}
-        </p>
-
         <div
           className="mt-7.5"
           style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}
@@ -133,6 +149,55 @@ export function MobileRevisionSetup({ content, repository, userId, regions, onSt
             );
           })}
         </div>
+
+        <div
+          className="mt-7.5"
+          style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}
+        >
+          Session type
+        </div>
+        <div className="mt-3.5 flex gap-2.5">
+          {SESSION_TYPE_OPTIONS.map((opt) => (
+            <button
+              key={opt.value}
+              type="button"
+              onClick={() => setMode(opt.value)}
+              className="flex-1 rounded-[3px]"
+              style={{ fontFamily: 'var(--font-display)', fontSize: 15.5, minHeight: 46, ...chipStyle(mode === opt.value) }}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
+        <p className="mt-2.5 text-[13px] leading-relaxed" style={{ color: 'var(--ink3)' }}>
+          {mode === 'practice' && 'Immediate feedback, self-paced, no timer.'}
+          {mode === 'adaptive' && 'Weighted toward what’s due and weak, still with feedback.'}
+          {mode === 'assessment' && 'No feedback until the end. Scored report, optional timer.'}
+        </p>
+
+        {mode === 'assessment' && (
+          <>
+            <div
+              className="mt-6"
+              style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}
+            >
+              Timer
+            </div>
+            <div className="mt-3.5 flex gap-2">
+              {TIMER_OPTIONS.map((n) => (
+                <button
+                  key={n}
+                  type="button"
+                  onClick={() => setTimerMinutes(n)}
+                  className="flex-1 rounded-[3px] text-sm"
+                  style={{ minHeight: 42, ...chipStyle(timerMinutes === n) }}
+                >
+                  {n === 0 ? 'None' : `${n}m`}
+                </button>
+              ))}
+            </div>
+          </>
+        )}
 
         <div className="mt-7.5 flex items-start gap-3.5">
           <button

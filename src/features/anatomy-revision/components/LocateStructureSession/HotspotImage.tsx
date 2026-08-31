@@ -18,6 +18,8 @@ interface HotspotImageProps {
   targetStructureId: string;
   toleranceMultiplier?: number;
   onAnswer: (result: HotspotAnswerResult) => void;
+  /** Suppresses the correct/incorrect overlay reveal — CR-009 exam mode. */
+  examMode?: boolean;
 }
 
 /**
@@ -32,7 +34,7 @@ interface HotspotImageProps {
  * normalizePointerEvent's coordinates correct; see that module's comment
  * for why object-fit: contain letterboxing would otherwise corrupt them.
  */
-export function HotspotImage({ image, targetStructureId, toleranceMultiplier, onAnswer }: HotspotImageProps) {
+export function HotspotImage({ image, targetStructureId, toleranceMultiplier, onAnswer, examMode }: HotspotImageProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [answer, setAnswer] = useState<HotspotAnswerResult | null>(null);
 
@@ -76,7 +78,7 @@ export function HotspotImage({ image, targetStructureId, toleranceMultiplier, on
         aria-label={image.slideTitle ?? 'Anatomy image, click to answer'}
       >
         <img src={image.filePath} alt={image.slideTitle ?? 'Anatomy structure'} className="h-full w-full object-cover" />
-        {answer && (
+        {answer && !examMode && (
           <HotspotOverlay
             hotspots={hotspots}
             highlightStructureId={targetStructureId}

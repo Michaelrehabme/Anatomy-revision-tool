@@ -9,6 +9,7 @@
  * real bug, not just incomplete content.
  */
 import { ALL_STRUCTURES, ALL_IMAGES } from '../features/anatomy-revision/data/seed';
+import { isJoint } from '../features/anatomy-revision/types/structure';
 
 let errors = 0;
 let warnings = 0;
@@ -45,6 +46,13 @@ function main(): void {
     if (s.category === 'landmark' && s.parentBoneId && !structureIds.has(s.parentBoneId)) {
       warn(`Landmark "${s.id}" has parentBoneId "${s.parentBoneId}" which does not resolve to a bone`);
     }
+    if (isJoint(s)) {
+      for (const articulatingId of s.articulatingStructureIds) {
+        if (!structureIds.has(articulatingId)) {
+          warn(`Joint "${s.id}" has articulatingStructureIds entry "${articulatingId}" which does not resolve to a structure`);
+        }
+      }
+    }
     if (s.needsReview) {
       warn(`Structure "${s.id}" is flagged needsReview — verify before publishing`);
     }
@@ -62,6 +70,13 @@ function main(): void {
       if (!structureIds.has(hotspot.structureId)) {
         warn(`Image "${img.id}" has a hotspot for unknown structureId "${hotspot.structureId}"`);
       }
+    }
+    if ((img.hotspots ?? []).length > 0 && (!img.width || !img.height)) {
+      warn(
+        `Image "${img.id}" has hotspot data but no width/height — HotspotImage.tsx can't lock the ` +
+          'aspect ratio without them, so the rendered click area silently drifts from the coordinates ' +
+          'the hotspots were authored against (found via a real misalignment bug — see CR register).',
+      );
     }
     if (img.licence.toLowerCase().includes('todo')) {
       warn(`Image "${img.id}" has an unconfirmed licence — see README "Licensing" section`);
