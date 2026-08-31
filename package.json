@@ -12,7 +12,8 @@
     "lint": "eslint .",
     "validate-content": "tsx src/scripts/validateContent.ts",
     "admin:set-claim": "tsx scripts/setAdmin.ts",
-    "admin:seed-changes": "tsx scripts/seedChangeRequests.ts"
+    "admin:seed-changes": "tsx scripts/seedChangeRequests.ts",
+    "educator:set-claim": "tsx scripts/setEducator.ts"
   },
   "dependencies": {
     "firebase": "^11.0.0",
@@ -27,6 +28,7 @@
     "@testing-library/jest-dom": "^6.6.0",
     "@testing-library/react": "^16.1.0",
     "@types/node": "^22.10.0",
+    "@types/pngjs": "^6.0.5",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "@vitejs/plugin-react": "^4.3.0",
@@ -35,6 +37,7 @@
     "eslint-plugin-react-refresh": "^0.4.16",
     "firebase-admin": "^14.3.0",
     "jsdom": "^25.0.1",
+    "pngjs": "^7.0.0",
     "tailwindcss": "^4.0.0",
     "tsx": "^4.19.0",
     "typescript": "^5.7.0",

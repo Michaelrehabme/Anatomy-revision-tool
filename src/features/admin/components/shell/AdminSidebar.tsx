@@ -4,6 +4,7 @@ const ADMIN_NAV_ITEMS: { path: string; label: string }[] = [
   { path: '/admin/changes', label: 'Change Register' },
   { path: '/admin/users', label: 'Users' },
   { path: '/admin/analytics', label: 'Analytics' },
+  { path: '/admin/cohorts', label: 'Cohorts' },
 ];
 
 /** Admin-section counterpart to NavSidebar — same brand mark + nav-list treatment, different item set. */

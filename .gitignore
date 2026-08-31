@@ -7,3 +7,9 @@ dist-ssr
 coverage
 .DS_Store
 *.log
+
+# Local Netlify folder
+.netlify
+
+# Derived working files, not source content
+/atlas-panel-exports

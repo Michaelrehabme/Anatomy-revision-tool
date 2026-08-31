@@ -5,6 +5,8 @@ import { REGION_LABELS } from '../../types/region';
 import { useProgressData } from '../../hooks/useProgressData';
 import { BodyFigure } from '../shared/BodyFigure';
 import { MobileShell } from './MobileShell';
+import { MobileAccountSection } from './MobileAccountSection';
+import { AUTH_ENABLED } from '../../context/AuthProvider';
 import type { MobileTab } from './MobileTabBar';
 
 interface MobileProgressProps {
@@ -12,6 +14,7 @@ interface MobileProgressProps {
   repository: AnatomyRepository | null;
   userId: string | null;
   onNavigateTab: (tab: MobileTab) => void;
+  onOpenAchievements: () => void;
 }
 
 function masteryFill(pct: number): string {
@@ -20,7 +23,7 @@ function masteryFill(pct: number): string {
 }
 
 /** Screen 11 (mobile). BodyFigure shaded per-region by mastery, not just bars (desktop is bars-only). */
-export function MobileProgress({ content, repository, userId, onNavigateTab }: MobileProgressProps) {
+export function MobileProgress({ content, repository, userId, onNavigateTab, onOpenAchievements }: MobileProgressProps) {
   const { streak, masteryByStructureId, byRegion, forecast } = useProgressData(repository, userId, content);
 
   const fills = Object.fromEntries(byRegion.map((r) => [r.region, masteryFill(r.pct)])) as Partial<Record<Region, string>>;
@@ -38,6 +41,14 @@ export function MobileProgress({ content, repository, userId, onNavigateTab }: M
         <p className="mt-2.5 text-[14.5px] leading-relaxed" style={{ color: 'var(--ink3)' }}>
           Mastery shades the map. Pale means unseen, deep means retained.
         </p>
+        <button
+          type="button"
+          onClick={onOpenAchievements}
+          className="mt-2 border-0 bg-transparent p-0"
+          style={{ font: '500 13px/1 var(--font-ui)', color: 'var(--accd)' }}
+        >
+          View achievements →
+        </button>
 
         <div className="flex justify-center">
           <div style={{ width: 132 }}>
@@ -83,6 +94,8 @@ export function MobileProgress({ content, repository, userId, onNavigateTab }: M
             </div>
           </div>
         </div>
+
+        {AUTH_ENABLED && <MobileAccountSection />}
       </div>
     </MobileShell>
   );

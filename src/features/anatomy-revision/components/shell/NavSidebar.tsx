@@ -1,6 +1,9 @@
-import { useState, type ReactNode } from 'react';
-import { useAuth } from '../../context/AuthProvider';
+import { useEffect, useState, type ReactNode } from 'react';
+import { useAuth, AUTH_ENABLED } from '../../context/AuthProvider';
 import { AuthScreen } from '../Auth/AuthScreen';
+import { useRepository } from '../../hooks/useRepository';
+import { levelProgress } from '../../lib/levels';
+import { CohortMembership } from '../shared/CohortMembership';
 
 export type NavSection = 'today' | 'study' | 'atlas' | 'progress';
 
@@ -18,8 +21,46 @@ interface NavSidebarProps {
   footer?: ReactNode;
 }
 
-/** Account UI only makes sense once there's a real Firebase project to sign into — local dev stays a plain anonymous id with no dead buttons. */
-const AUTH_ENABLED = (import.meta.env.VITE_PERSISTENCE ?? 'local') === 'firestore';
+/**
+ * Fetches its own data (repository/auth context, no props) rather than
+ * threading xpTotal through every one of the 7 screens that render
+ * NavSidebar — matches AccountSection's own self-contained pattern below.
+ * Re-fetches on mount, which is enough to pick up a just-finished session's
+ * XP: finish() always navigates to a new route, so whichever screen renders
+ * next mounts a fresh NavSidebar instance.
+ */
+function LevelProgress() {
+  const { repository } = useRepository();
+  const { user } = useAuth();
+  const userId = user?.uid ?? null;
+  const [xpTotal, setXpTotal] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (!repository || !userId) return;
+    let cancelled = false;
+    repository.getGamificationProfile(userId).then((profile) => {
+      if (!cancelled) setXpTotal(profile.xpTotal);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [repository, userId]);
+
+  if (xpTotal === null) return null;
+  const progress = levelProgress(xpTotal);
+
+  return (
+    <div className="mt-6" title={`${progress.xpIntoLevel} / ${progress.xpForNextLevel} XP to level ${progress.level + 1}`}>
+      <div className="flex items-baseline justify-between">
+        <span style={{ font: '500 12px/1 var(--font-mono)', color: 'var(--ink2)' }}>Level {progress.level}</span>
+        <span style={{ font: '400 10.5px/1 var(--font-mono)', color: 'var(--ink3)' }}>{xpTotal} XP</span>
+      </div>
+      <div className="mt-1.5 h-1 overflow-hidden rounded-full" style={{ background: 'var(--line)' }}>
+        <div className="h-full" style={{ width: `${progress.pct}%`, background: 'var(--acc)' }} />
+      </div>
+    </div>
+  );
+}
 
 function AccountSection() {
   const { user, signOut } = useAuth();
@@ -62,6 +103,7 @@ function AccountSection() {
         </div>
       )}
       {showAuthScreen && <AuthScreen onClose={() => setShowAuthScreen(false)} />}
+      <CohortMembership uid={user.uid} />
     </div>
   );
 }
@@ -95,6 +137,7 @@ export function NavSidebar({ active, onNavigate, footer }: NavSidebarProps) {
         })}
       </nav>
       <div className="flex-1" />
+      <LevelProgress />
       {footer}
       {AUTH_ENABLED && <AccountSection />}
     </>

@@ -7,24 +7,66 @@ service cloud.firestore {
     // Admins (custom claim, set via scripts/setAdmin.ts) get read-only access
     // across every user for the /admin/users screens — never write access,
     // since admin tooling should never be able to alter a student's progress.
+    // Educators (custom claim { educator: true, cohorts: [...] }, set via
+    // scripts/setEducator.ts — CR-012) get the same read-only access, but
+    // only for users whose `cohort` field is one of their claimed cohort
+    // ids — an educator's own token is the only input to that check, so a
+    // claim scoped to cohort A can never read cohort B by any client-side
+    // trick. The nested match can't read `resource.data.cohort` directly
+    // (resource there is the subdocument, not the parent profile), hence the
+    // explicit get() back to the parent users/{uid} doc.
     match /users/{uid} {
       allow read, write: if request.auth != null && request.auth.uid == uid;
       allow read: if request.auth != null && request.auth.token.admin == true;
+      allow read: if request.auth != null && request.auth.token.educator == true &&
+        resource.data.cohort in request.auth.token.cohorts;
 
       match /{document=**} {
         allow read, write: if request.auth != null && request.auth.uid == uid;
         allow read: if request.auth != null && request.auth.token.admin == true;
+        allow read: if request.auth != null && request.auth.token.educator == true &&
+          get(/databases/$(database)/documents/users/$(uid)).data.cohort in request.auth.token.cohorts;
       }
     }
 
     // Top-level, append-only event log — lives outside users/{uid} because
     // cross-user analytics needs to query across owners, which Firestore
     // cannot do over a per-user subcollection. Each event is immutable once
-    // written: no update or delete rule is granted, ever.
+    // written: no update or delete rule is granted, ever. The educator
+    // clause costs one extra get() per document read (looking up the
+    // attempt's owner's cohort) — acceptable at classroom scale, same
+    // documented tradeoff as ClientAggregatedAnalytics' own scaling notes.
     match /attemptEvents/{attemptId} {
       allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
       allow read: if request.auth != null &&
-        (resource.data.userId == request.auth.uid || request.auth.token.admin == true);
+        (resource.data.userId == request.auth.uid ||
+         request.auth.token.admin == true ||
+         (request.auth.token.educator == true &&
+          get(/databases/$(database)/documents/users/$(resource.data.userId)).data.cohort in request.auth.token.cohorts));
+    }
+
+    // cohorts/{cohortId} (CR-012) — name/institution/joinCode are readable by
+    // any signed-in user, same trust model as an invite code: the real
+    // privacy boundary is student DATA above, not whether a cohort's name is
+    // visible. Only an admin can create/edit a cohort doc (educators get
+    // read access to the *data* their claim covers, not write access to the
+    // roster/join-code itself — that stays an admin-issued setup step,
+    // consistent with there being no Cloud Functions in this project to
+    // safely let a client mint its own claim-worthy resource).
+    match /cohorts/{cohortId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && request.auth.token.admin == true;
+
+      // Assignments (CR-012): visible to any signed-in user (so a student
+      // could in principle see what's assigned, even though today's UI only
+      // surfaces them to the educator), writable only by an educator claimed
+      // for this specific cohort or an admin.
+      match /assignments/{assignmentId} {
+        allow read: if request.auth != null;
+        allow write: if request.auth != null &&
+          (request.auth.token.admin == true ||
+           (request.auth.token.educator == true && cohortId in request.auth.token.cohorts));
+      }
     }
 
     // Admin-only Change Register backlog (see src/features/admin). Regular

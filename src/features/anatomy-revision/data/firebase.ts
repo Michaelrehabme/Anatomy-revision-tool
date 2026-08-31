@@ -99,9 +99,11 @@ export function signOutUser(): Promise<void> {
 /**
  * users/{uid} profile doc — written on first sign-in and refreshed
  * (lastActiveAt + whatever changed via linking) on every subsequent app
- * load. `cohort` is a placeholder for a later educator feature and is never
- * set here. Distinct from AnatomyRepository: this is auth-adjacent account
- * data, not anatomy content or revision history.
+ * load. `cohort` starts null here and is only ever set/cleared by the student
+ * themselves via educator/data/cohortsRepository's joinCohortByCode/
+ * leaveCohort (CR-012) — this function always merges, so it never touches
+ * `cohort` once set. Distinct from AnatomyRepository: this is auth-adjacent
+ * account data, not anatomy content or revision history.
  */
 export async function touchUserProfile(user: User): Promise<void> {
   const db = getDb();

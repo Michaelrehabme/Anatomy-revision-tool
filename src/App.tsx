@@ -18,6 +18,8 @@ import { RevisionResults } from './features/anatomy-revision/components/Revision
 import { MuscleCard } from './features/anatomy-revision/components/MuscleCard/MuscleCard';
 import { Atlas } from './features/anatomy-revision/components/Atlas/Atlas';
 import { Progress } from './features/anatomy-revision/components/Progress/Progress';
+import { Achievements } from './features/anatomy-revision/components/Achievements/Achievements';
+import { MobileAchievements } from './features/anatomy-revision/components/mobile/MobileAchievements';
 import type { NavSection } from './features/anatomy-revision/components/shell/NavSidebar';
 import { MobileOnboarding } from './features/anatomy-revision/components/mobile/MobileOnboarding';
 import { MobileToday } from './features/anatomy-revision/components/mobile/MobileToday';
@@ -31,6 +33,10 @@ import type { MobileTab } from './features/anatomy-revision/components/mobile/Mo
 
 /** Code-split so students never download the admin bundle — see src/features/admin/AdminApp.tsx. */
 const AdminApp = lazy(() => import('./features/admin/AdminApp'));
+/** Code-split so students never download the educator bundle — see src/features/educator/EducatorApp.tsx. */
+const EducatorApp = lazy(() => import('./features/educator/EducatorApp'));
+/** Dev-only hotspot authoring tool (CR-007) — route only registered in dev, see the /dev/hotspots Route below. */
+const HotspotEditorApp = lazy(() => import('./features/hotspotEditor/HotspotEditorApp'));
 
 const ONBOARDED_KEY = 'anatomy-revision:v1:onboarded';
 
@@ -117,7 +123,7 @@ function StructureRoute({ content, repository, userId, isDesktop, onNavigateSect
  * old lg:hidden branch was static placeholder text).
  */
 function App() {
-  const { repository, loading: repoLoading } = useRepository();
+  const { repository, loading: repoLoading, error: repoError, retry: retryRepository } = useRepository();
   const { user } = useAuth();
   const userId = user?.uid ?? null;
   const content = useAnatomyContent(repository);
@@ -149,6 +155,22 @@ function App() {
     if (session.phase === 'in-progress') navigate('/session');
     else if (session.phase === 'results') navigate('/session/results');
   }, [session.phase, navigate]);
+
+  if (repoError || content.error) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center gap-3 px-6 text-center text-sm" style={{ color: 'var(--ink3)' }}>
+        <div>{repoError ?? content.error}</div>
+        <button
+          type="button"
+          onClick={content.error ? content.retry : retryRepository}
+          className="rounded-[3px] px-4 py-2"
+          style={{ font: '500 13px/1 var(--font-ui)', background: 'var(--accs)', color: 'var(--accd)' }}
+        >
+          Retry
+        </button>
+      </div>
+    );
+  }
 
   if (repoLoading || content.loading) {
     return (
@@ -305,6 +327,8 @@ function App() {
               summary={session.summary}
               structuresById={content.structuresById}
               streak={streak}
+              gamification={session.gamification}
+              sessionMode={session.setupParams?.mode}
               onRestart={endSession}
               onOpenMuscle={(id) => openMuscle(id, session.summary!.missedStructureIds)}
               onNavigate={onNavigateSection}
@@ -322,6 +346,8 @@ function App() {
               summary={session.summary}
               answers={session.answers}
               structuresById={content.structuresById}
+              gamification={session.gamification}
+              sessionMode={session.setupParams?.mode}
               onDone={endSession}
               onRetry={() => {
                 // Mobile's "Another N" re-runs the same setup fresh (not missed-only) — the
@@ -361,9 +387,32 @@ function App() {
         path="/progress"
         element={
           isDesktop ? (
-            <Progress content={content} repository={repository} userId={userId} onStart={session.start} onNavigate={onNavigateSection} />
+            <Progress
+              content={content}
+              repository={repository}
+              userId={userId}
+              onStart={session.start}
+              onNavigate={onNavigateSection}
+              onOpenAchievements={() => navigate('/achievements')}
+            />
           ) : (
-            <MobileProgress content={content} repository={repository} userId={userId} onNavigateTab={mobileNavigate} />
+            <MobileProgress
+              content={content}
+              repository={repository}
+              userId={userId}
+              onNavigateTab={mobileNavigate}
+              onOpenAchievements={() => navigate('/achievements')}
+            />
+          )
+        }
+      />
+      <Route
+        path="/achievements"
+        element={
+          isDesktop ? (
+            <Achievements repository={repository} userId={userId} onNavigate={onNavigateSection} />
+          ) : (
+            <MobileAchievements repository={repository} userId={userId} onBack={() => navigate('/progress')} />
           )
         }
       />
@@ -381,6 +430,36 @@ function App() {
           </Suspense>
         }
       />
+      <Route
+        path="/educator/*"
+        element={
+          <Suspense
+            fallback={
+              <div className="flex min-h-screen items-center justify-center text-sm" style={{ color: 'var(--ink3)' }}>
+                Loading educator dashboard…
+              </div>
+            }
+          >
+            <EducatorApp />
+          </Suspense>
+        }
+      />
+      {import.meta.env.DEV && (
+        <Route
+          path="/dev/hotspots"
+          element={
+            <Suspense
+              fallback={
+                <div className="flex min-h-screen items-center justify-center text-sm" style={{ color: 'var(--ink3)' }}>
+                  Loading hotspot editor…
+                </div>
+              }
+            >
+              <HotspotEditorApp />
+            </Suspense>
+          }
+        />
+      )}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
