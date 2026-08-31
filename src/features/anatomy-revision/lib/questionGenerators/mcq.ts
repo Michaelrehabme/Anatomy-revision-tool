@@ -1,4 +1,4 @@
-import { isMuscle, isBone } from '../../types/structure';
+import { isMuscle, isBone, isJoint } from '../../types/structure';
 import type { AnatomyStructure } from '../../types/structure';
 import type { AnatomyImageAsset } from '../../types/image';
 import type { MCQQuestion, PromptKind } from '../../types/question';
@@ -21,9 +21,19 @@ const BONE_KINDS: PromptKind[] = ['identify'];
 // Attachment/articulation detail now lives in fill-blank questions (see fillBlank.ts) — one
 // statement at a time is far more answerable than the old joined-string MCQ choice was.
 const LANDMARK_KINDS: PromptKind[] = ['identify'];
+// Joints (CR-014): identify by text clue (no image/hotspot content exists for joints yet,
+// so no image-based identify variant fires — see eligibility.locate: false on joint entries),
+// plus a classification question exercising the ball-and-socket/hinge/pivot/etc. taxonomy.
+const JOINT_KINDS: PromptKind[] = ['identify', 'joint-type'];
 
 function kindsFor(structure: AnatomyStructure, requested?: PromptKind[]): PromptKind[] {
-  const supported = isMuscle(structure) ? MUSCLE_KINDS : isBone(structure) ? BONE_KINDS : LANDMARK_KINDS;
+  const supported = isMuscle(structure)
+    ? MUSCLE_KINDS
+    : isBone(structure)
+      ? BONE_KINDS
+      : isJoint(structure)
+        ? JOINT_KINDS
+        : LANDMARK_KINDS;
   return requested ? supported.filter((k) => requested.includes(k)) : supported;
 }
 
@@ -191,6 +201,26 @@ function buildOne(
       });
     }
     return out;
+  }
+
+  if (isJoint(structure) && promptKind === 'joint-type') {
+    const formatJointType = (t: string) => `${t.replace(/-/g, ' ')} joint`;
+    const otherTypes = all.reduce<string[]>((acc, s) => {
+      if (isJoint(s) && s.id !== structure.id) acc.push(formatJointType(s.jointType));
+      return acc;
+    }, []);
+    const distractors = sample([...new Set(otherTypes)], distractorCount, rng);
+    if (distractors.length > 0) {
+      const { choices, correctIndex } = buildChoices(formatJointType(structure.jointType), distractors, choiceCount, rng);
+      out.push({
+        ...baseFields(structure, promptKind),
+        id: `mcq-${structure.id}-joint-type`,
+        prompt: `What type of joint is the ${structure.name}?`,
+        choices,
+        correctIndex,
+        explanation: summarizeStructure(structure),
+      });
+    }
   }
 
   return out;

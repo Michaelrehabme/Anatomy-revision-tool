@@ -2,7 +2,7 @@ import type { Category, Difficulty } from './structure';
 import type { ImageMode } from './image';
 import type { Region, SubRegion } from './region';
 
-export type QuestionType = 'flashcard' | 'mcq' | 'locate' | 'fill-blank' | 'identify-typed';
+export type QuestionType = 'flashcard' | 'mcq' | 'locate' | 'fill-blank' | 'identify-typed' | 'multi-select';
 
 export type PromptKind =
   | 'identify'
@@ -12,7 +12,16 @@ export type PromptKind =
   | 'action'
   | 'attachment'
   | 'articulation'
-  | 'group-membership';
+  | 'group-membership'
+  // --- Clinical layer (CR-010) ---
+  | 'myotome'
+  | 'palpation'
+  | 'special-test'
+  | 'injury-mechanism'
+  | 'functional'
+  // --- Joints (CR-014) ---
+  | 'joint-type'
+  | 'joint-movement';
 
 interface RevisionQuestionBase {
   id: string;
@@ -77,12 +86,28 @@ export interface TypedIdentifyQuestion extends RevisionQuestionBase {
   explanation: string;
 }
 
+/**
+ * "Select all that apply" — CR-010, built from the byNerve/byAction reverse
+ * indexes (e.g. "select ALL muscles innervated by the ulnar nerve", or the
+ * inverted "which of these does NOT contribute to shoulder abduction").
+ * Scored partially, not all-or-nothing — see lib/multiSelectScoring.ts.
+ */
+export interface MultiSelectQuestion extends RevisionQuestionBase {
+  type: 'multi-select';
+  prompt: string;
+  choices: string[];
+  /** Indices into `choices` the student should select. */
+  correctIndices: number[];
+  explanation: string;
+}
+
 export type RevisionQuestion =
   | FlashcardQuestion
   | MCQQuestion
   | LocateQuestion
   | FillBlankQuestion
-  | TypedIdentifyQuestion;
+  | TypedIdentifyQuestion
+  | MultiSelectQuestion;
 
 export const isFlashcardQuestion = (q: RevisionQuestion): q is FlashcardQuestion => q.type === 'flashcard';
 export const isMcqQuestion = (q: RevisionQuestion): q is MCQQuestion => q.type === 'mcq';
@@ -90,3 +115,4 @@ export const isLocateQuestion = (q: RevisionQuestion): q is LocateQuestion => q.
 export const isFillBlankQuestion = (q: RevisionQuestion): q is FillBlankQuestion => q.type === 'fill-blank';
 export const isTypedIdentifyQuestion = (q: RevisionQuestion): q is TypedIdentifyQuestion =>
   q.type === 'identify-typed';
+export const isMultiSelectQuestion = (q: RevisionQuestion): q is MultiSelectQuestion => q.type === 'multi-select';

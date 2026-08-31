@@ -4,16 +4,17 @@ import type { Category } from '../../../anatomy-revision/types/structure';
 import type { QuestionType } from '../../../anatomy-revision/types/question';
 import type { AnalyticsFilters as AnalyticsFiltersState } from '../../types/analytics';
 
-const CATEGORIES: Category[] = ['muscle', 'bone', 'landmark'];
-const CATEGORY_LABELS: Record<Category, string> = { muscle: 'Muscle', bone: 'Bone', landmark: 'Landmark' };
+const CATEGORIES: Category[] = ['muscle', 'bone', 'landmark', 'joint'];
+const CATEGORY_LABELS: Record<Category, string> = { muscle: 'Muscle', bone: 'Bone', landmark: 'Landmark', joint: 'Joint' };
 
-const QUESTION_TYPES: QuestionType[] = ['flashcard', 'mcq', 'locate', 'fill-blank', 'identify-typed'];
+const QUESTION_TYPES: QuestionType[] = ['flashcard', 'mcq', 'locate', 'fill-blank', 'identify-typed', 'multi-select'];
 const QUESTION_TYPE_LABELS: Record<QuestionType, string> = {
   flashcard: 'Flashcard',
   mcq: 'MCQ',
   locate: 'Locate',
   'fill-blank': 'Fill in the blank',
   'identify-typed': 'Identify (typed)',
+  'multi-select': 'Multi-select',
 };
 
 interface AnalyticsFiltersProps {
