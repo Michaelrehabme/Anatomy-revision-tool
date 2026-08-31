@@ -5,12 +5,16 @@
  * Two jobs, and both matter:
  *
  * 1. WHICH muscles are candidates for this view at all. The Blender masks are
- *    SOLO silhouettes — each muscle was rendered alone — so a muscle facing
- *    away from the camera still produces a full silhouette rather than an empty
- *    one. Nothing in the mask set represents the ribcage, scapula or the rest
- *    of the body, so occlusion subtraction alone cannot remove it: listing
- *    infraspinatus under an anterior view would put a hotspot over pectoralis
- *    major. Only list muscles genuinely visible from that direction.
+ *    solo silhouettes — each muscle is rendered alone — so a muscle facing away
+ *    from the camera still produces a full silhouette rather than an empty one.
+ *    Listing infraspinatus under an anterior view would put a hotspot over
+ *    pectoralis major. Only list muscles genuinely visible from that direction.
+ *
+ *    Masks ARE bone-occluded (renderRegionsWithBones.py renders the skeleton as
+ *    a holdout), so anything hidden behind the tibia, scapula or ribcage is
+ *    already gone from the silhouette. Bone is the only non-muscle occluder
+ *    modelled; other soft tissue is not, so this list still carries the
+ *    judgement about what actually faces the camera.
  *
  * 2. WHAT ORDER they layer in. Overlapping polygons resolve smallest-area-wins
  *    in hitTest, so without subtraction a correct tap on a superficial muscle

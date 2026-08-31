@@ -26,7 +26,7 @@ npm run build                # type-checks + production build
 On first run you'll get a large, immediately-usable content library: all 122 muscles (from
 `muscles.json`) plus ~180 bones/landmarks/joints, illustrated by 14 bone/landmark atlas slides,
 21 single-muscle panel crops and 15 Z-Anatomy regional renders. Locate-the-structure questions
-cover 72 muscles across all five regions — see "Image and hotspot status" below.
+cover 74 muscles across all five regions — see "Image and hotspot status" below.
 
 ## Image and hotspot status
 
@@ -44,18 +44,25 @@ retired in favour of the Z-Anatomy renders.
 
 15 regional renders live under `/public/anatomy/regions/` — anterior, lateral and posterior for
 each of the 5 regions, from the Z-Anatomy 3D model. These carry **every hotspot in the app**:
-104 polygons over 72 muscles, traced from the Blender per-muscle masks by
+107 polygons over 74 muscles, traced from the Blender per-muscle masks by
 `src/scripts/masksToHotspots.ts`. All three views are frames of one turntable, so they share a
 camera and the masks align to all of them.
 
+The renders include the **skeleton**, and the masks are **bone-occluded**. That is not
+decoration. Rendered muscle-only, the views have holes where bones belong: from the front the
+calf showed through the gap between tibia and fibula, and the intercostals read as floating
+slats with no ribs between them. Worse, the occlusion model had no concept of bone at all, so a
+student could tap a visibly bony area and be graded as having hit the muscle behind it.
+`src/scripts/blender/renderRegionsWithBones.py` renders the skeleton as a holdout so anything
+hidden behind bone drops out of its own mask.
+
 What's still missing, and what that means:
 
-1. **50 of the 122 muscles have no locate question.** They are occluded in every view a solo
+1. **48 of the 122 muscles have no locate question.** They are occluded in every view a solo
    silhouette can offer — you cannot tap what you cannot see. Unlocking them needs a *layered*
-   render pass (superficial muscles hidden), which means writing a new Blender script: the
-   307MB model and Blender itself are present, but the original render scripts are not in this
-   repo. Run `masksToHotspots.ts` and read its closing "occluded in every view" list to see
-   exactly which muscles that would buy.
+   render pass that also hides superficial *muscles*, not just bone. Run `masksToHotspots.ts`
+   and read its closing "occluded in every view" list to see exactly which muscles that would
+   buy.
 2. **Hotspots for bones and landmarks.** The Blender masks only cover muscles, so the 163
    bone/landmark structures have no polygons and generate no locate questions. Author these by
    hand with the dev tool — see "Adding hotspots" below.
@@ -69,7 +76,7 @@ The 24 atlas-slide images currently in the app are AI-generated illustrations th
 created — credited as `'Rory Neary (AI-generated illustration)'` / `'All rights reserved'` (see
 the `AI_GENERATED_CREDIT`/`AI_GENERATED_LICENCE` constants in `images.seed.ts`).
 
-The 5 posterior regional renders under `/public/anatomy/regions/` come from the
+The 15 regional renders under `/public/anatomy/regions/` come from the
 [Z-Anatomy](https://github.com/Z-Anatomy/Models-of-human-anatomy) 3D atlas and are
 **CC BY-SA 4.0** — attribution required, derivatives must stay share-alike, commercial use is
 fine. Share-alike covers the **traced hotspot polygons too**, not just the images: they are
@@ -139,7 +146,7 @@ directories (see `.gitignore`) — they are ~2GB of build output, not source:
 
 ```bash
 # Trace polygons from the per-muscle turntable masks, depth-subtracted (see below).
-npx tsx src/scripts/masksToHotspots.ts --out hotspots.regions.json
+npx tsx src/scripts/masksToHotspots.ts --masks renders/regions-bones --out hotspots.regions.json
 
 # Validate against the current seed data and regenerate the typed module.
 npx tsx src/scripts/importHotspots.ts hotspots.regions.json --emit-ts \
@@ -150,8 +157,42 @@ Use `--out` on the second command rather than redirecting stdout: the script imp
 data, and `>` would truncate the very module it is regenerating before it could read it.
 
 The converter prints a per-structure table (solid px / visible px / % / vertices / kept or
-dropped). Scan it: a muscle you know is visible showing a low percentage means the layering in
-`src/scripts/data/occlusionOrder.ts` is wrong.
+dropped), then a list of muscles that have a mask in the region but no place in that view's
+occlusion order, with the area each would add. Scan both: a muscle you know is visible showing
+a low percentage, or a large unlisted one, means the layering in
+`src/scripts/data/occlusionOrder.ts` needs a look. Those unlisted entries are *candidates*, not
+defects — a solo silhouette projects even when the muscle faces away from the camera.
+
+To check a whole view at a glance, draw the generated polygons back onto the render:
+
+```bash
+npx tsx src/scripts/renderHotspotOverlay.ts \
+  --renders <dir of region PNGs> --hotspots hotspots.regions.json --out overlays
+```
+
+A wrong occlusion order fails *silently* — a polygon over the wrong muscle still grades
+consistently against itself, so no test catches it. Looking at the picture is the only check.
+
+**Regenerating the renders themselves** needs Blender (vendored in `tools/`) and the Z-Anatomy
+scene in `atlas/`:
+
+```bash
+./tools/blender-*/blender.exe --background atlas/Z-Anatomy/Startup.blend \
+  --python src/scripts/blender/renderRegionsWithBones.py -- \
+  --mapping ta2-mapping.resolved.json --out renders/regions-bones --views 0,6,12
+
+./tools/blender-*/blender.exe --background --factory-startup \
+  --python src/scripts/blender/platesToWebp.py -- \
+  --plates renders/regions-bones --out public/anatomy/regions
+```
+
+~16 minutes for 381 renders. `ta2-mapping.resolved.json` maps all 122 muscle ids to their
+Z-Anatomy object names; it and the original `render_regions.py` are in git history (commits
+`c56f780` and `a8fb5c1`) rather than the working tree. **The camera framing in
+`renderRegionsWithBones.py` is copied verbatim from that original**, including deriving the
+region bounding box from the region's muscles only — that is what keeps new renders aligned
+with the stored polygons (verified at IoU 1.000000). Changing it silently invalidates every
+hotspot in the app.
 
 **Why the depth subtraction matters.** Each mask is a *solo* silhouette, rendered with only that
 muscle visible, so a deep muscle's mask covers ground that a superficial muscle hides in the
@@ -260,7 +301,7 @@ completed change request's history is worth preserving in git, update the seed f
 ```
 public/anatomy/atlas/                  # 24 real atlas-slide images (10 muscle + 14 bone/landmark)
 public/anatomy/panels/                 # 21 single-muscle crops for the Muscle Card screen
-public/anatomy/regions/                # 5 Z-Anatomy posterior renders — the only images with hotspots
+public/anatomy/regions/                # 15 Z-Anatomy renders, skeleton included — the only images with hotspots
 
 src/
   App.tsx                              # react-router route table; session phase (setup -> in-progress ->
@@ -304,9 +345,13 @@ src/
     validateContent.ts                 # npm run validate-content
     importHotspots.ts                  # validates hotspots.json, --emit-ts regenerates the seed module
     masksToHotspots.ts                 # Blender masks -> depth-subtracted polygons
+    renderHotspotOverlay.ts            # draws polygons back onto a render, to check by eye
     data/occlusionOrder.ts             # superficial->deep layering per render (hand-authored)
     lib/png.ts                         # dependency-free PNG decoder
+    lib/pngEncode.ts                   # and the writer half, for the overlays
     lib/maskToPolygons.ts              # binarise, subtract, component-label, trace, simplify
+    blender/renderRegionsWithBones.py  # re-renders regions with the skeleton, bone-occluded masks
+    blender/platesToWebp.py            # rendered plates -> the .webp the app loads
 
 scripts/                                # Node-only, run via tsx — NOT part of the Vite app bundle
   setAdmin.ts                          # npm run admin:set-claim -- <uid> — see "Admin section" above
