@@ -5,7 +5,7 @@ import { Button } from '../shared/Button';
 import { AppShell } from '../shell/AppShell';
 import { NavSidebar, type NavSection } from '../shell/NavSidebar';
 import type { RevisionSetupParams } from '../../hooks/useRevisionSession';
-import type { RevisionQuestion } from '../../types/question';
+import type { RevisionQuestion, QuestionType } from '../../types/question';
 import type { AnatomyContent } from '../../hooks/useAnatomyContent';
 import type { AnatomyRepository } from '../../data/repository';
 
@@ -15,10 +15,11 @@ interface ProgressProps {
   userId: string | null;
   onStart: (questions: RevisionQuestion[], params: RevisionSetupParams) => void;
   onNavigate: (section: NavSection) => void;
+  onOpenAchievements: () => void;
 }
 
-export function Progress({ content, repository, userId, onStart, onNavigate }: ProgressProps) {
-  const { streak, muscles, seenCount, untouched, byRegion: byRegionUnsorted, forecast, forecastMax } =
+export function Progress({ content, repository, userId, onStart, onNavigate, onOpenAchievements }: ProgressProps) {
+  const { streak, muscles, seenCount, untouched, leeches, byRegion: byRegionUnsorted, forecast, forecastMax } =
     useProgressData(repository, userId, content);
   // Desktop shows strongest-first; the mobile mockup keeps REGIONS' natural order instead.
   const byRegion = [...byRegionUnsorted].sort((a, b) => b.pct - a.pct);
@@ -30,6 +31,16 @@ export function Progress({ content, repository, userId, onStart, onNavigate }: P
       structureIds: untouched.map((m) => m.id),
     });
     onStart(questions, { types: ['flashcard', 'mcq'], mode: 'practice' });
+  };
+
+  const handleDrillLeeches = () => {
+    const types: QuestionType[] = ['mcq', 'fill-blank', 'identify-typed'];
+    const questions = generateRevisionSet(content.structures, content.images, {
+      types,
+      mode: 'practice',
+      structureIds: leeches.map((m) => m.id),
+    });
+    onStart(questions, { types, mode: 'practice' });
   };
 
   return (
@@ -48,9 +59,14 @@ export function Progress({ content, repository, userId, onStart, onNavigate }: P
         >
           Progress
         </h2>
-        <p className="text-base" style={{ color: 'var(--ink2)' }}>
-          {muscles.length} muscles · {seenCount} seen at least once · {untouched.length} still untouched
-        </p>
+        <div className="flex items-baseline justify-between">
+          <p className="text-base" style={{ color: 'var(--ink2)' }}>
+            {muscles.length} muscles · {seenCount} seen at least once · {untouched.length} still untouched
+          </p>
+          <button type="button" onClick={onOpenAchievements} style={{ font: '500 13px/1 var(--font-ui)', color: 'var(--accd)' }}>
+            View achievements →
+          </button>
+        </div>
 
         <div className="mt-13 flex gap-[88px]">
           <div className="flex-1">
@@ -119,6 +135,23 @@ export function Progress({ content, repository, userId, onStart, onNavigate }: P
             {untouched.length > 0 && (
               <Button variant="secondary" onClick={handleDrillUntouched} className="mt-5 min-h-[52px] px-6">
                 Drill the untouched {untouched.length}
+              </Button>
+            )}
+
+            <div
+              className="mt-13"
+              style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}
+            >
+              Leeches
+            </div>
+            <p className="mt-3.5 text-base leading-relaxed" style={{ color: 'var(--ink2)' }}>
+              {leeches.length > 0
+                ? `${leeches.length} structures keep coming back wrong. Worth isolating.`
+                : 'No leeches — nothing is stuck.'}
+            </p>
+            {leeches.length > 0 && (
+              <Button variant="secondary" onClick={handleDrillLeeches} className="mt-5 min-h-[52px] px-6">
+                Drill the {leeches.length} leech{leeches.length === 1 ? '' : 'es'}
               </Button>
             )}
           </div>

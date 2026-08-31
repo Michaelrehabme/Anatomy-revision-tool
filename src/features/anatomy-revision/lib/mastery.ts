@@ -2,6 +2,10 @@ import type { StructureMastery, Confidence } from '../types/attempt';
 
 const DEFAULT_EASE_FACTOR = 2.5;
 const MIN_EASE_FACTOR = 1.3;
+const DURATION_EWMA_ALPHA = 0.3;
+const LAPSE_INTERVAL_THRESHOLD_DAYS = 7;
+const LEECH_THRESHOLD_LAPSES = 4;
+const LEECH_INTERVAL_CAP_DAYS = 7;
 
 /**
  * SM-2-lite: confidence rating drives a simplified spaced-repetition
@@ -43,13 +47,56 @@ export function computeNextReview(
   return { intervalDays: nextInterval, easeFactor: nextEase, dueAt: dueAt.toISOString() };
 }
 
+/**
+ * Derives a confidence rating from objective correctness and answer speed,
+ * for question types (currently: fill-blank) that don't collect a self-rated
+ * confidence. Explicit self-ratings always take priority over this — see
+ * updateMasteryAfterAttempt.
+ *
+ * - incorrect -> 'hard', regardless of duration.
+ * - correct but no duration/baseline to compare against yet -> 'medium'
+ *   (can't judge "fast" with nothing to compare to, so don't guess 'easy').
+ * - correct and faster than the structure's running duration baseline -> 'easy'.
+ * - correct and at or slower than the baseline -> 'medium'.
+ */
+export function deriveImplicitConfidence(
+  correct: boolean,
+  durationMs: number | undefined,
+  previousDurationEwmaMs: number | undefined,
+): Confidence {
+  if (!correct) return 'hard';
+  if (durationMs === undefined || previousDurationEwmaMs === undefined) return 'medium';
+  return durationMs < previousDurationEwmaMs ? 'easy' : 'medium';
+}
+
 export function updateMasteryAfterAttempt(
   existing: StructureMastery | undefined,
-  params: { structureId: string; userId: string; correct: boolean; confidence?: Confidence },
+  params: { structureId: string; userId: string; correct: boolean; confidence?: Confidence; durationMs?: number },
   now: Date = new Date(),
 ): StructureMastery {
   const attemptsTotal = (existing?.attemptsTotal ?? 0) + 1;
   const attemptsCorrect = (existing?.attemptsCorrect ?? 0) + (params.correct ? 1 : 0);
+
+  // A lapse is a structure that had earned a 7+ day interval through prior
+  // good performance, then got answered wrong — checked against the
+  // pre-attempt interval, since an incorrect answer always resets the
+  // interval to 1 (so checking the post-attempt interval could never fire).
+  const hadLongInterval = (existing?.intervalDays ?? 0) >= LAPSE_INTERVAL_THRESHOLD_DAYS;
+  const lapses = (existing?.lapses ?? 0) + (hadLongInterval && !params.correct ? 1 : 0);
+  const isLeech = lapses >= LEECH_THRESHOLD_LAPSES;
+
+  const resolvedConfidence = params.confidence ?? deriveImplicitConfidence(params.correct, params.durationMs, existing?.durationEwmaMs);
+
+  // The duration baseline only exists to serve deriveImplicitConfidence, so
+  // it's only updated on the implicit path — mixing in durations from
+  // self-rated question types (very different interaction shapes) would make
+  // "fast vs slow" meaningless.
+  const durationEwmaMs =
+    params.confidence !== undefined || params.durationMs === undefined
+      ? existing?.durationEwmaMs
+      : existing?.durationEwmaMs === undefined
+        ? params.durationMs
+        : DURATION_EWMA_ALPHA * params.durationMs + (1 - DURATION_EWMA_ALPHA) * existing.durationEwmaMs;
 
   const base: StructureMastery = {
     structureId: params.structureId,
@@ -58,12 +105,17 @@ export function updateMasteryAfterAttempt(
     attemptsCorrect,
     lastAttemptAt: now.toISOString(),
     lastConfidence: params.confidence ?? existing?.lastConfidence,
+    lapses,
+    isLeech,
+    durationEwmaMs,
   };
 
-  if (!params.confidence) {
-    return { ...existing, ...base, intervalDays: existing?.intervalDays, easeFactor: existing?.easeFactor };
-  }
+  const { intervalDays, easeFactor, dueAt } = computeNextReview(existing, resolvedConfidence, now);
+  const cappedIntervalDays = isLeech ? Math.min(intervalDays, LEECH_INTERVAL_CAP_DAYS) : intervalDays;
+  const cappedDueAt =
+    cappedIntervalDays === intervalDays
+      ? dueAt
+      : new Date(now.getTime() + cappedIntervalDays * 24 * 60 * 60 * 1000).toISOString();
 
-  const { intervalDays, easeFactor, dueAt } = computeNextReview(existing, params.confidence, now);
-  return { ...base, intervalDays, easeFactor, dueAt };
+  return { ...base, intervalDays: cappedIntervalDays, easeFactor, dueAt: cappedDueAt };
 }

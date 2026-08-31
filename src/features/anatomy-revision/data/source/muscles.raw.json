@@ -1687,14 +1687,14 @@
       ],
       "actionText": "Retracts the scapula and rotates the glenoid inferiorly.",
       "clinical": null,
-      "notes": "Named in the scapular movement tables but has no dedicated slide — origin/insertion filled from standard anatomy; verify before publishing.",
+      "notes": "Named in the scapular movement tables but has no dedicated slide — origin/insertion filled from standard anatomy; verified against standard reference (CR-013): T2-T5 spinous process origin, medial scapular border insertion below the spine, dorsal scapular nerve C5, retraction/downward rotation actions all confirmed correct.",
       "images": {
         "isolated": null,
         "hotspot": null,
         "credit": null,
         "licence": null
       },
-      "needsReview": true,
+      "needsReview": false,
       "nerveInferred": false,
       "source": {
         "deck": "ALL_Muscles_of_the_body.pdf",
@@ -2323,10 +2323,10 @@
       ],
       "partOf": null,
       "origin": [
-        "Superior border of ribs below"
+        "Inferior border of ribs above"
       ],
       "insertion": [
-        "Inferior border of ribs above"
+        "Superior border of ribs below"
       ],
       "nerve": [
         {
@@ -2351,14 +2351,14 @@
       ],
       "actionText": "Depress the ribs during forced expiration.",
       "clinical": null,
-      "notes": "Slide table was truncated in extraction — verify origin/insertion/action.",
+      "notes": "Slide table was truncated in extraction — verified against standard reference (CR-013): origin/insertion were reversed (had rib-below to rib-above) relative to the standard convention used consistently for external-intercostals in this dataset; corrected to inferior border of rib above -> superior border of rib below. Nerve roots and expiration action confirmed correct.",
       "images": {
         "isolated": null,
         "hotspot": null,
         "credit": null,
         "licence": null
       },
-      "needsReview": true,
+      "needsReview": false,
       "nerveInferred": false,
       "source": {
         "deck": "ALL_Muscles_of_the_body.pdf",

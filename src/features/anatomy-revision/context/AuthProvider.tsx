@@ -2,6 +2,9 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from '
 import type { User } from 'firebase/auth';
 import type { LinkInput } from '../data/firebase';
 
+/** Account UI only makes sense once there's a real Firebase project to sign into — local dev stays a plain anonymous id with no dead buttons. */
+export const AUTH_ENABLED = (import.meta.env.VITE_PERSISTENCE ?? 'local') === 'firestore';
+
 export interface AuthUser {
   uid: string;
   displayName: string | null;

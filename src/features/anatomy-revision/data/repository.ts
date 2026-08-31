@@ -2,6 +2,28 @@ import type { AnatomyStructure } from '../types/structure';
 import type { AnatomyImageAsset } from '../types/image';
 import type { UserAttempt, StructureMastery, RevisionSessionSummary } from '../types/attempt';
 import type { StructureFilter } from '../lib/indexes';
+import type { AchievementDoc } from '../lib/achievements';
+import { type StreakFreezeState, INITIAL_STREAK_FREEZE_STATE } from '../lib/streakFreeze';
+import type { QuestionType } from '../types/question';
+
+/** Per-user XP/streak-freeze state — CR-008. Kept separate from the users/{uid} auth profile doc (see firebase.ts's touchUserProfile), which is auth-layer, not repository-layer. */
+export interface GamificationProfile {
+  xpTotal: number;
+  /** Day-key (YYYY-MM-DD) the xpToday counter applies to — reset when a new day is first seen. */
+  xpTodayDayKey: string;
+  xpToday: number;
+  streakFreeze: StreakFreezeState;
+  /** Cumulative set of question types ever answered — cheaper to maintain incrementally here than to scan the full attemptEvents history for the "every angle" milestone. */
+  questionTypesUsedEver: QuestionType[];
+}
+
+export const INITIAL_GAMIFICATION_PROFILE: GamificationProfile = {
+  xpTotal: 0,
+  xpTodayDayKey: '',
+  xpToday: 0,
+  streakFreeze: INITIAL_STREAK_FREEZE_STATE,
+  questionTypesUsedEver: [],
+};
 
 export interface ImageAssetFilter {
   region?: AnatomyImageAsset['region'];
@@ -43,11 +65,12 @@ export interface AnatomyRepository {
    * either an unbounded map on the mastery doc (write contention with its
    * SM-2 scheduling updates) or one mastery doc per question (breaking its
    * per-structure meaning). A dedicated counter also works for every
-   * question type, not just the ones that carry a confidence rating —
-   * mastery updates only happen when confidence is present.
+   * question type, not just the ones that carry a confidence rating.
    */
   recordQuestionExposure(userId: string, questionId: string): Promise<number>;
   getMastery(userId: string): Promise<StructureMastery[]>;
+  /** Single-structure mastery read — avoids fetching the entire mastery subcollection just to find one row. */
+  getMasteryForStructure(userId: string, structureId: string): Promise<StructureMastery | null>;
   upsertMastery(mastery: StructureMastery): Promise<void>;
   /** Every mastery row for a user — same data as getMastery, named for the Today/Progress screens' use case. */
   listMastery(userId: string): Promise<StructureMastery[]>;
@@ -56,6 +79,13 @@ export interface AnatomyRepository {
 
   saveSessionSummary(summary: RevisionSessionSummary): Promise<void>;
   listSessionSummaries(userId: string, limit?: number): Promise<RevisionSessionSummary[]>;
+
+  /** Never null — an unset profile reads back as INITIAL_GAMIFICATION_PROFILE. */
+  getGamificationProfile(userId: string): Promise<GamificationProfile>;
+  upsertGamificationProfile(userId: string, profile: GamificationProfile): Promise<void>;
+  listAchievements(userId: string): Promise<AchievementDoc[]>;
+  /** Achievement docs are keyed by their own id (one row per achievement, updated in place as records improve). */
+  upsertAchievement(userId: string, achievement: AchievementDoc): Promise<void>;
 }
 
 export type PersistenceMode = 'local' | 'firestore';

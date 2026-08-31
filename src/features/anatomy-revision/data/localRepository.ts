@@ -1,8 +1,10 @@
-import type { AnatomyRepository, AttemptFilter, ImageAssetFilter } from './repository';
+import type { AnatomyRepository, AttemptFilter, ImageAssetFilter, GamificationProfile } from './repository';
+import { INITIAL_GAMIFICATION_PROFILE } from './repository';
 import type { UserAttempt, StructureMastery, RevisionSessionSummary } from '../types/attempt';
 import type { StructureFilter } from '../lib/indexes';
 import { filterStructures } from '../lib/indexes';
 import { ALL_STRUCTURES, ALL_IMAGES } from './seed';
+import type { AchievementDoc } from '../lib/achievements';
 
 const STORAGE_PREFIX = 'anatomy-revision:v1:';
 // Already a single flat array, not per-user-namespaced by key — mirrors the
@@ -12,6 +14,8 @@ const ATTEMPTS_KEY = `${STORAGE_PREFIX}attempts`;
 const EXPOSURE_KEY = `${STORAGE_PREFIX}questionExposure`;
 const MASTERY_KEY = `${STORAGE_PREFIX}mastery`;
 const SESSIONS_KEY = `${STORAGE_PREFIX}sessions`;
+const GAMIFICATION_KEY = `${STORAGE_PREFIX}gamification`;
+const ACHIEVEMENTS_KEY = `${STORAGE_PREFIX}achievements`;
 
 function readJson<T>(key: string, fallback: T): T {
   try {
@@ -96,6 +100,11 @@ export function createLocalRepository(): AnatomyRepository {
       return Object.values(mastery).filter((m) => m.userId === userId);
     },
 
+    async getMasteryForStructure(userId: string, structureId: string) {
+      const mastery = readJson<Record<string, StructureMastery>>(MASTERY_KEY, {});
+      return mastery[masteryKey(userId, structureId)] ?? null;
+    },
+
     async listMastery(userId: string) {
       const mastery = readJson<Record<string, StructureMastery>>(MASTERY_KEY, {});
       return Object.values(mastery).filter((m) => m.userId === userId);
@@ -126,6 +135,28 @@ export function createLocalRepository(): AnatomyRepository {
         .filter((s) => s.userId === userId)
         .sort((a, b) => b.startedAt.localeCompare(a.startedAt))
         .slice(0, limit);
+    },
+
+    async getGamificationProfile(userId: string) {
+      const all = readJson<Record<string, GamificationProfile>>(GAMIFICATION_KEY, {});
+      return all[userId] ?? INITIAL_GAMIFICATION_PROFILE;
+    },
+
+    async upsertGamificationProfile(userId: string, profile: GamificationProfile) {
+      const all = readJson<Record<string, GamificationProfile>>(GAMIFICATION_KEY, {});
+      all[userId] = profile;
+      writeJson(GAMIFICATION_KEY, all);
+    },
+
+    async listAchievements(userId: string) {
+      const all = readJson<Record<string, Record<string, AchievementDoc>>>(ACHIEVEMENTS_KEY, {});
+      return Object.values(all[userId] ?? {});
+    },
+
+    async upsertAchievement(userId: string, achievement: AchievementDoc) {
+      const all = readJson<Record<string, Record<string, AchievementDoc>>>(ACHIEVEMENTS_KEY, {});
+      all[userId] = { ...(all[userId] ?? {}), [achievement.id]: achievement };
+      writeJson(ACHIEVEMENTS_KEY, all);
     },
   };
 }

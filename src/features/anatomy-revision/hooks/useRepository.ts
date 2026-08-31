@@ -6,7 +6,12 @@ import type { AnatomyRepository } from '../data/repository';
  * is ready (RepositoryProvider mounts children immediately, so guard with
  * `loading` at the call site — e.g. RevisionSetup shows a loading state).
  */
-export function useRepository(): { repository: AnatomyRepository | null; loading: boolean } {
-  const { repository, loading } = useRepositoryContext();
-  return { repository, loading };
+export function useRepository(): {
+  repository: AnatomyRepository | null;
+  loading: boolean;
+  error: string | null;
+  retry: () => void;
+} {
+  const { repository, loading, error, retry } = useRepositoryContext();
+  return { repository, loading, error, retry };
 }

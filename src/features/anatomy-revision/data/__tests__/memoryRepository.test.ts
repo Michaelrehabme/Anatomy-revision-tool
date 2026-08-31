@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { createMemoryRepository } from '../memoryRepository';
+import { INITIAL_GAMIFICATION_PROFILE } from '../repository';
 import type { StructureMastery, UserAttempt } from '../../types/attempt';
 
 function attempt(overrides: Partial<UserAttempt> = {}): UserAttempt {
@@ -76,6 +77,32 @@ describe('memoryRepository listDueMastery/listMastery', () => {
   });
 });
 
+describe('memoryRepository getMasteryForStructure', () => {
+  it('returns null before any upsertMastery for that structure', async () => {
+    const repo = createMemoryRepository();
+    expect(await repo.getMasteryForStructure('user-1', 'deltoid')).toBeNull();
+  });
+
+  it('returns the exact row after upsertMastery', async () => {
+    const repo = createMemoryRepository();
+    const row = mastery('deltoid', '2026-08-30T00:00:00.000Z');
+    await repo.upsertMastery(row);
+
+    expect(await repo.getMasteryForStructure('user-1', 'deltoid')).toEqual(row);
+  });
+
+  it('scopes per-user and per-structure, not leaking across either', async () => {
+    const repo = createMemoryRepository();
+    await repo.upsertMastery(mastery('deltoid', '2026-08-30T00:00:00.000Z'));
+    await repo.upsertMastery({ ...mastery('deltoid', '2026-08-30T00:00:00.000Z'), userId: 'user-2' });
+    await repo.upsertMastery(mastery('trapezius', '2026-08-30T00:00:00.000Z'));
+
+    expect(await repo.getMasteryForStructure('user-1', 'soleus')).toBeNull();
+    expect((await repo.getMasteryForStructure('user-2', 'deltoid'))?.userId).toBe('user-2');
+    expect((await repo.getMasteryForStructure('user-1', 'trapezius'))?.structureId).toBe('trapezius');
+  });
+});
+
 describe('memoryRepository recordAttempt/listAttempts', () => {
   it('listAttempts filters by userId across every attempt, newest first', async () => {
     const repo = createMemoryRepository();
@@ -131,5 +158,45 @@ describe('memoryRepository recordQuestionExposure', () => {
     expect(await repo.recordQuestionExposure('user-2', 'q-1')).toBe(1);
     expect(await repo.recordQuestionExposure('user-1', 'q-2')).toBe(1);
     expect(await repo.recordQuestionExposure('user-1', 'q-1')).toBe(2);
+  });
+});
+
+describe('memoryRepository gamification profile', () => {
+  it('returns the initial profile before any upsert', async () => {
+    const repo = createMemoryRepository();
+    expect(await repo.getGamificationProfile('user-1')).toEqual(INITIAL_GAMIFICATION_PROFILE);
+  });
+
+  it('returns the exact profile after upsert, scoped per user', async () => {
+    const repo = createMemoryRepository();
+    const profile = { ...INITIAL_GAMIFICATION_PROFILE, xpTotal: 150 };
+    await repo.upsertGamificationProfile('user-1', profile);
+
+    expect(await repo.getGamificationProfile('user-1')).toEqual(profile);
+    expect(await repo.getGamificationProfile('user-2')).toEqual(INITIAL_GAMIFICATION_PROFILE);
+  });
+});
+
+describe('memoryRepository achievements', () => {
+  it('returns an empty list before any achievement is earned', async () => {
+    const repo = createMemoryRepository();
+    expect(await repo.listAchievements('user-1')).toEqual([]);
+  });
+
+  it('upserts by achievement id, scoped per user', async () => {
+    const repo = createMemoryRepository();
+    await repo.upsertAchievement('user-1', { id: 'record-longest-streak', earnedAt: '2026-08-20T00:00:00.000Z', value: 3 });
+    await repo.upsertAchievement('user-1', { id: 'milestone-30-day-streak', earnedAt: '2026-08-21T00:00:00.000Z' });
+    await repo.upsertAchievement('user-2', { id: 'record-longest-streak', earnedAt: '2026-08-22T00:00:00.000Z', value: 1 });
+
+    const user1 = await repo.listAchievements('user-1');
+    expect(user1).toHaveLength(2);
+
+    await repo.upsertAchievement('user-1', { id: 'record-longest-streak', earnedAt: '2026-08-25T00:00:00.000Z', value: 6 });
+    const updated = await repo.listAchievements('user-1');
+    expect(updated).toHaveLength(2); // still 2 — the record was updated in place, not duplicated
+    expect(updated.find((a) => a.id === 'record-longest-streak')?.value).toBe(6);
+
+    expect(await repo.listAchievements('user-2')).toHaveLength(1);
   });
 });

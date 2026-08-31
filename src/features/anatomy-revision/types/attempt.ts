@@ -44,6 +44,12 @@ export interface StructureMastery {
   dueAt?: string;
   intervalDays?: number;
   easeFactor?: number;
+  /** Running per-structure answer-speed baseline (EWMA), used to derive an implicit confidence. */
+  durationEwmaMs?: number;
+  /** Times a structure that had reached a 7+ day interval was then answered incorrectly. */
+  lapses?: number;
+  /** True once lapses reaches the leech threshold; interval growth is capped while true. */
+  isLeech?: boolean;
 }
 
 export interface RevisionSessionSummary {

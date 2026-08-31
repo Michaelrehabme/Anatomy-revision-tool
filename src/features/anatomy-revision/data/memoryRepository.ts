@@ -1,8 +1,10 @@
-import type { AnatomyRepository, AttemptFilter, ImageAssetFilter } from './repository';
+import type { AnatomyRepository, AttemptFilter, ImageAssetFilter, GamificationProfile } from './repository';
+import { INITIAL_GAMIFICATION_PROFILE } from './repository';
 import type { UserAttempt, StructureMastery, RevisionSessionSummary } from '../types/attempt';
 import type { StructureFilter } from '../lib/indexes';
 import { filterStructures } from '../lib/indexes';
 import { ALL_STRUCTURES, ALL_IMAGES } from './seed';
+import type { AchievementDoc } from '../lib/achievements';
 
 /**
  * Pure in-memory implementation — no localStorage, no Firestore. Used by
@@ -14,6 +16,8 @@ export function createMemoryRepository(): AnatomyRepository {
   const exposureByKey = new Map<string, number>();
   const masteryByKey = new Map<string, StructureMastery>();
   const sessions: RevisionSessionSummary[] = [];
+  const gamificationByUser = new Map<string, GamificationProfile>();
+  const achievementsByUser = new Map<string, Map<string, AchievementDoc>>();
 
   const masteryKey = (userId: string, structureId: string) => `${userId}::${structureId}`;
   const exposureKey = (userId: string, questionId: string) => `${userId}::${questionId}`;
@@ -66,6 +70,10 @@ export function createMemoryRepository(): AnatomyRepository {
       return [...masteryByKey.values()].filter((m) => m.userId === userId);
     },
 
+    async getMasteryForStructure(userId: string, structureId: string) {
+      return masteryByKey.get(masteryKey(userId, structureId)) ?? null;
+    },
+
     async listMastery(userId: string) {
       return [...masteryByKey.values()].filter((m) => m.userId === userId);
     },
@@ -89,6 +97,24 @@ export function createMemoryRepository(): AnatomyRepository {
         .filter((s) => s.userId === userId)
         .sort((a, b) => b.startedAt.localeCompare(a.startedAt))
         .slice(0, limit);
+    },
+
+    async getGamificationProfile(userId: string) {
+      return gamificationByUser.get(userId) ?? INITIAL_GAMIFICATION_PROFILE;
+    },
+
+    async upsertGamificationProfile(userId: string, profile: GamificationProfile) {
+      gamificationByUser.set(userId, profile);
+    },
+
+    async listAchievements(userId: string) {
+      return [...(achievementsByUser.get(userId)?.values() ?? [])];
+    },
+
+    async upsertAchievement(userId: string, achievement: AchievementDoc) {
+      const forUser = achievementsByUser.get(userId) ?? new Map<string, AchievementDoc>();
+      forUser.set(achievement.id, achievement);
+      achievementsByUser.set(userId, forUser);
     },
   };
 }

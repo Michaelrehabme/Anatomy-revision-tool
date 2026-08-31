@@ -9,14 +9,15 @@ export interface AnatomyContent {
   structuresById: Map<string, AnatomyStructure>;
   imagesById: Map<string, AnatomyImageAsset>;
   loading: boolean;
+  error: string | null;
+  retry: () => void;
 }
 
-const EMPTY: AnatomyContent = {
-  structures: [],
-  images: [],
-  structuresById: new Map(),
-  imagesById: new Map(),
-  loading: true,
+const EMPTY_DATA = {
+  structures: [] as AnatomyStructure[],
+  images: [] as AnatomyImageAsset[],
+  structuresById: new Map<string, AnatomyStructure>(),
+  imagesById: new Map<string, AnatomyImageAsset>(),
 };
 
 /**
@@ -27,29 +28,39 @@ const EMPTY: AnatomyContent = {
  * session views need id -> object lookups to render questions.
  */
 export function useAnatomyContent(repository: AnatomyRepository | null): AnatomyContent {
-  const [content, setContent] = useState<AnatomyContent>(EMPTY);
+  const [data, setData] = useState(EMPTY_DATA);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     if (!repository) return;
     let cancelled = false;
+    setLoading(true);
+    setError(null);
 
-    Promise.all([repository.listStructures(), repository.listImageAssets()]).then(
-      ([structures, images]) => {
+    Promise.all([repository.listStructures(), repository.listImageAssets()])
+      .then(([structures, images]) => {
         if (cancelled) return;
-        setContent({
+        setData({
           structures,
           images,
           structuresById: new Map(structures.map((s) => [s.id, s])),
           imagesById: new Map(images.map((i) => [i.id, i])),
-          loading: false,
         });
-      },
-    );
+        setLoading(false);
+      })
+      .catch((err) => {
+        if (cancelled) return;
+        setError('Could not load anatomy content. Check your connection and try again.');
+        setLoading(false);
+        console.error('Failed to load anatomy content:', err);
+      });
 
     return () => {
       cancelled = true;
     };
-  }, [repository]);
+  }, [repository, attempt]);
 
-  return content;
+  return { ...data, loading, error, retry: () => setAttempt((n) => n + 1) };
 }

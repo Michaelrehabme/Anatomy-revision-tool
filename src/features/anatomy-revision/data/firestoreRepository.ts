@@ -2,6 +2,7 @@ import {
   collection,
   doc,
   setDoc,
+  getDoc,
   getDocs,
   query,
   orderBy,
@@ -10,20 +11,24 @@ import {
   runTransaction,
   type QueryConstraint,
 } from 'firebase/firestore';
-import type { AnatomyRepository, AttemptFilter, ImageAssetFilter } from './repository';
+import type { AnatomyRepository, AttemptFilter, ImageAssetFilter, GamificationProfile } from './repository';
+import { INITIAL_GAMIFICATION_PROFILE } from './repository';
 import type { UserAttempt, StructureMastery, RevisionSessionSummary } from '../types/attempt';
 import type { StructureFilter } from '../lib/indexes';
 import { filterStructures } from '../lib/indexes';
 import { ALL_STRUCTURES, ALL_IMAGES } from './seed';
 import { getDb } from './firebase';
+import type { AchievementDoc } from '../lib/achievements';
 
 /**
  * Firestore layout: top-level attemptEvents/{attemptId} (queryable by userId
  * or structureId for cross-user analytics — see firestore.indexes.json for
  * the composite indexes this requires), plus users/{uid}/mastery/{structureId},
- * users/{uid}/questionExposure/{questionId}, users/{uid}/sessions/{sessionId}
- * — see firestore.rules at the repo root for the matching security rules,
- * paired with the auth lifecycle in firebase.ts/AuthProvider.
+ * users/{uid}/questionExposure/{questionId}, users/{uid}/sessions/{sessionId},
+ * users/{uid}/gamification/profile (single doc: XP totals, streak-freeze
+ * state — CR-008), users/{uid}/achievements/{achievementId} — see
+ * firestore.rules at the repo root for the matching security rules, paired
+ * with the auth lifecycle in firebase.ts/AuthProvider.
  *
  * attemptEvents intentionally sits outside users/{uid}: Firestore has no
  * cross-subcollection query, so a per-user attempts subcollection can never
@@ -117,6 +122,11 @@ export async function createFirestoreRepository(): Promise<AnatomyRepository> {
       return snapshot.docs.map((d) => d.data() as StructureMastery);
     },
 
+    async getMasteryForStructure(userId: string, structureId: string) {
+      const snap = await getDoc(doc(db, 'users', userId, 'mastery', structureId));
+      return snap.exists() ? (snap.data() as StructureMastery) : null;
+    },
+
     async listMastery(userId: string) {
       const snapshot = await getDocs(collection(db, 'users', userId, 'mastery'));
       return snapshot.docs.map((d) => d.data() as StructureMastery);
@@ -155,6 +165,24 @@ export async function createFirestoreRepository(): Promise<AnatomyRepository> {
       );
       const snapshot = await getDocs(q);
       return snapshot.docs.map((d) => d.data() as RevisionSessionSummary);
+    },
+
+    async getGamificationProfile(userId: string) {
+      const snap = await getDoc(doc(db, 'users', userId, 'gamification', 'profile'));
+      return snap.exists() ? (snap.data() as GamificationProfile) : INITIAL_GAMIFICATION_PROFILE;
+    },
+
+    async upsertGamificationProfile(userId: string, profile: GamificationProfile) {
+      await setDoc(doc(db, 'users', userId, 'gamification', 'profile'), profile);
+    },
+
+    async listAchievements(userId: string) {
+      const snapshot = await getDocs(collection(db, 'users', userId, 'achievements'));
+      return snapshot.docs.map((d) => d.data() as AchievementDoc);
+    },
+
+    async upsertAchievement(userId: string, achievement: AchievementDoc) {
+      await setDoc(doc(db, 'users', userId, 'achievements', achievement.id), achievement);
     },
   };
 }

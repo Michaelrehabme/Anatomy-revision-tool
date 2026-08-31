@@ -22,6 +22,7 @@ export interface ProgressData {
   masteryByStructureId: Map<string, StructureMastery>;
   seenCount: number;
   untouched: MuscleStructure[];
+  leeches: MuscleStructure[];
   byRegion: RegionProgress[];
   forecast: number[];
   forecastMax: number;
@@ -52,6 +53,7 @@ export function useProgressData(repository: AnatomyRepository | null, userId: st
   const seenIds = new Set(mastery.map((m) => m.structureId));
   const seenCount = muscles.filter((m) => seenIds.has(m.id)).length;
   const untouched = muscles.filter((m) => !seenIds.has(m.id));
+  const leeches = muscles.filter((m) => masteryByStructureId.get(m.id)?.isLeech);
 
   const byRegion: RegionProgress[] = REGIONS.map((region) => {
     const regionMuscles = muscles.filter((m) => m.region === region);
@@ -76,5 +78,5 @@ export function useProgressData(repository: AnatomyRepository | null, userId: st
   });
   const forecastMax = Math.max(1, ...forecast);
 
-  return { streak, muscles, masteryByStructureId, seenCount, untouched, byRegion, forecast, forecastMax };
+  return { streak, muscles, masteryByStructureId, seenCount, untouched, leeches, byRegion, forecast, forecastMax };
 }
