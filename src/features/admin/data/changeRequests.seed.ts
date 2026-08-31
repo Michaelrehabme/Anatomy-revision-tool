@@ -11,6 +11,9 @@ import type { ChangeRequest } from '../types/changeRequest';
  * CR-001 and CR-003's `prompt` fields are reconstructed from this project's
  * README/commit history, not the literal original prompt text (the Change
  * Register didn't exist yet when they were done) — see each entry's `notes`.
+ * CR-006 and CR-014 to CR-016 are likewise reconstructed: they were tracked in
+ * a separate BACKLOG-IMAGES.md document rather than here, so the register
+ * disagreed with what had actually been built. Nothing references CR-002.
  */
 export const CHANGE_REQUESTS_SEED: ChangeRequest[] = [
   {
@@ -162,5 +165,106 @@ export const CHANGE_REQUESTS_SEED: ChangeRequest[] = [
     startedAt: null,
     completedAt: null,
     notes: 'Placeholder backlog entry so the Analytics screen\'s "see CR-005" pointer resolves to something real.',
+  },
+  {
+    ref: 'CR-006',
+    title: 'Objective correctness scheduling',
+    category: 'content',
+    priority: 'p2',
+    effort: 'm',
+    status: 'new',
+    description:
+      'Drive question scheduling from measured correctness per structure rather than the current fixed rotation, so weak structures ' +
+      'resurface sooner and well-known ones stop consuming session time.',
+    prompt:
+      'Replace the fixed question rotation with scheduling driven by per-structure correctness.\n\n'
+      + 'Attempt history already lands in Firestore under users/{uid}/**; use it to weight which structures a session picks, so a\n'
+      + 'structure answered wrong recently comes back sooner and one answered right repeatedly comes back later.\n'
+      + 'Keep the generator deterministic under a seed (see lib/rng.ts and the generateSet tests) so sessions stay reproducible.',
+    dependsOn: [],
+    createdAt: '2026-08-26T08:00:00.000Z',
+    startedAt: null,
+    completedAt: null,
+    notes:
+      'Carried over from BACKLOG-IMAGES.md, which tracked CR-006 and CR-014 to CR-016 outside this register. The only one of '
+      + 'those four still outstanding.',
+  },
+  {
+    ref: 'CR-014',
+    title: 'Locate-the-structure hotspots from the Z-Anatomy renders',
+    category: 'content',
+    priority: 'p1',
+    effort: 'l',
+    status: 'completed',
+    description:
+      'The app generated zero locate-the-structure questions: every image shipped with `hotspots: []` and all 122 muscles had '
+      + '`eligibility.locate: false`, and buildLocateQuestions needs both. Build a converter from the Blender per-muscle render masks '
+      + 'to normalised hotspot polygons, plus a dev-only authoring tool for structures that have no mask.',
+    prompt:
+      'The app generates no locate-the-structure questions. Two independent causes: every image in images.seed.ts has\n'
+      + 'hotspots: [], and all 122 muscles are eligibility.locate: false. Fixing either alone still yields zero.\n\n'
+      + 'Build a converter from the untracked Blender per-muscle masks to normalised 0-1 hotspot polygons, and a dev-only\n'
+      + 'authoring tool at /dev/hotspots for bones and landmarks, which have no masks.\n\n'
+      + 'The masks are SOLO silhouettes, so a deep muscle\'s mask covers ground a superficial one hides in the real image.\n'
+      + 'hitTest resolves overlaps smallest-area-wins, so importing raw silhouettes attributes a correct trapezius tap to\n'
+      + 'rhomboid minor. Depth-ordered subtraction before tracing is the core of this, not the tracing.\n\n'
+      + 'Constraints: do not modify pointInPolygon.ts, normalizeCoordinates.ts, or the existing hotspot.test.ts cases; never\n'
+      + 'hand-maintain imageIds; keep images.seed.ts as typed TS; the dev tool must not reach a production build.',
+    dependsOn: [],
+    createdAt: '2026-08-31T09:00:00.000Z',
+    startedAt: '2026-08-31T09:10:00.000Z',
+    completedAt: '2026-08-31T15:30:00.000Z',
+    notes:
+      'Prompt reconstructed from BACKLOG-IMAGES.md and the session that implemented it; that document referenced commit eef8161, '
+      + 'which does not exist in this repo, and omitted the eligibility.locate blocker entirely. Shipped 107 polygons over 74 '
+      + 'muscles across 15 views. Scope grew twice on evidence: the renders were re-done to include the skeleton (see the '
+      + 'README\'s "Image and hotspot status"), because without bone occlusion a student could tap a visibly bony area and be '
+      + 'graded as hitting the muscle behind it. 48 muscles remain unreachable without a layered render pass.',
+  },
+  {
+    ref: 'CR-015',
+    title: 'Image optimisation',
+    category: 'content',
+    priority: 'p2',
+    effort: 's',
+    status: 'completed',
+    description:
+      'public/anatomy was 26MB, dominated by 14 atlas slides stored as ~1.6MB PNGs, and the 21 muscle panels were 255px and '
+      + 'visibly soft on a modern phone.',
+    prompt:
+      'public/anatomy is 26MB and ships on every visit. The 14 atlas slides are ~1.6MB PNGs each, and the 21 single-muscle\n'
+      + 'panel crops are 255px square and visibly soft on a phone. Reduce the payload and fix the softness.',
+    dependsOn: ['CR-014'],
+    createdAt: '2026-08-31T09:00:00.000Z',
+    startedAt: '2026-08-31T15:35:00.000Z',
+    completedAt: '2026-08-31T16:10:00.000Z',
+    notes:
+      'public/anatomy 26MB -> 4.6MB. Atlas slides to webp at quality 90 (labels stay crisp) for 22.2MB -> 1.9MB. The panels were '
+      + 'NOT swapped for the 1400px Z-Anatomy isolated renders as originally proposed: those float the muscle alone against white, '
+      + 'losing the skeleton context the 255px crops had, which matters more than sharpness for learning where a muscle sits. They '
+      + 'were re-rendered in place on the skeleton instead, reusing CR-014\'s pipeline. Also fixed an unanchored .gitignore rule '
+      + 'that was silently ignoring public/anatomy/atlas/.',
+  },
+  {
+    ref: 'CR-016',
+    title: 'Z-Anatomy render pilot',
+    category: 'content',
+    priority: 'p2',
+    effort: 'm',
+    status: 'completed',
+    description:
+      'Establish whether the Z-Anatomy 3D atlas could be rendered into app imagery, and on what licence terms, before committing '
+      + 'to it as the project\'s image source.',
+    prompt:
+      'Assess whether we can render our own anatomy imagery from the Z-Anatomy Blender model rather than commissioning or\n'
+      + 'generating illustrations. Confirm the licence terms and what they oblige us to do, and produce a pilot render.',
+    dependsOn: [],
+    createdAt: '2026-08-31T09:00:00.000Z',
+    startedAt: '2026-08-31T09:10:00.000Z',
+    completedAt: '2026-08-31T16:10:00.000Z',
+    notes:
+      'Answered in the course of CR-014/CR-015 rather than as separate work. Licence is CC BY-SA 4.0, and share-alike reaches the '
+      + 'traced polygons as well as the images — see the README\'s "Licensing" section. The pipeline is committed under '
+      + 'src/scripts/blender/ and now produces all 15 regional renders and all 21 muscle panels, so this is past pilot stage.',
   },
 ];
