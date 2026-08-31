@@ -325,7 +325,10 @@ export const BONE_STRUCTURES: BoneStructure[] = [
       'Uncovertebral joints (C3–C7) at the lateral vertebral body margins',
       'Intervertebral discs between adjacent vertebral bodies',
     ],
-    aliases: ['Cervical spine (typical)', 'Cervical Region (C1–C7)', 'Typical Cervical Vertebra'],
+    // 'Cervical Region (C1–C7)' was removed as an alias: this entry covers C3–C6 only, and
+    // linkImages() matches images by name/alias, so a whole-cervical-spine image was linking
+    // to an entry that explicitly excludes C1, C2 and C7.
+    aliases: ['Cervical spine (typical)', 'Typical Cervical Vertebra'],
     imageIds: [],
     eligibility: { flashcard: false, mcq: true, locate: true },
     difficulty: 'medium',
@@ -372,6 +375,41 @@ export const BONE_STRUCTURES: BoneStructure[] = [
     difficulty: 'medium',
     tags: ['vertebra', 'craniocervical'],
     clinical: 'The atlanto-axial joint provides roughly half of all cervical rotation; dens fractures are a significant traumatic injury requiring careful clearance.',
+    notes: null,
+  },
+  {
+    // C7 gets its own entry for the same reason C1 and C2 do: it is atypical, so the
+    // "typical cervical vertebra" entry (C3-C6) cannot honestly stand in for it. Without
+    // this the cervical spine was one vertebra short — C1, C2 and C3-C6 account for only
+    // 6 of the 7 — and c7-spinous-process pointed at a parent bone whose own name and
+    // description explicitly exclude C7.
+    id: 'c7-vertebra',
+    name: 'C7 Vertebra',
+    category: 'bone',
+    region: 'back-core',
+    subregion: 'neck',
+    groups: ['vertebra'],
+    description:
+      'The seventh and lowest cervical vertebra, atypical for its long, non-bifid, near-horizontal spinous ' +
+      'process — the most prominent bony point at the base of the neck, which is why it is called the ' +
+      'vertebra prominens and used as the reference for counting spinal levels. Its transverse foramen is ' +
+      'small or absent and does not transmit the vertebral artery, unlike C1-C6.',
+    attachments: [
+      'Ligamentum nuchae attaches to the spinous process',
+      'Trapezius and rhomboid minor attach at the spinous process',
+      'Serratus posterior superior and splenius capitis arise nearby',
+    ],
+    articulations: [
+      'Zygapophyseal (facet) joints with C6 above and T1 below',
+      'Intervertebral discs with C6 and T1',
+      'Costal facet for the first rib is absent — that belongs to T1, a common point of confusion',
+    ],
+    aliases: ['C7', 'Seventh cervical vertebra'],
+    imageIds: [],
+    eligibility: { flashcard: false, mcq: true, locate: true },
+    difficulty: 'medium',
+    tags: ['vertebra', 'craniocervical', 'spine'],
+    clinical: 'The palpable spinous process is the standard surface landmark for counting spinal levels, and a cervical rib arising from the C7 transverse process is a cause of thoracic outlet syndrome.',
     notes: null,
   },
   {

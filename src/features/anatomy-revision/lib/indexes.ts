@@ -1,7 +1,7 @@
 import type { AnatomyStructure } from '../types/structure';
-import { isMuscle } from '../types/structure';
+import { isMuscle, areaOf } from '../types/structure';
 import type { Category, Difficulty } from '../types/structure';
-import type { Region, SubRegion } from '../types/region';
+import type { Area, Region, SubRegion } from '../types/region';
 
 export interface StructureIndexes {
   /** Nerve name -> muscle ids innervated by it. Mirrors muscles.json's indexes.byNerve. */
@@ -51,6 +51,8 @@ export interface StructureFilter {
   /** OR-matched against s.region; takes precedence over `region` when non-empty. Empty/undefined = no region filter. */
   regions?: Region[];
   subregion?: SubRegion;
+  /** OR-matched against the structure's area (CR-017). Empty/undefined = no area filter. */
+  areas?: Area[];
   difficulty?: Difficulty;
 }
 
@@ -61,11 +63,17 @@ export function filterStructures(
   if (!filter) return structures;
   const regionMatch = (region: Region) =>
     filter.regions?.length ? filter.regions.includes(region) : !filter.region || region === filter.region;
+  const areaMatch = (s: AnatomyStructure) => {
+    if (!filter.areas?.length) return true;
+    const area = areaOf(s);
+    return !!area && filter.areas.includes(area);
+  };
   return structures.filter(
     (s) =>
       (!filter.category || s.category === filter.category) &&
       regionMatch(s.region) &&
       (!filter.subregion || s.subregion === filter.subregion) &&
+      areaMatch(s) &&
       (!filter.difficulty || s.difficulty === filter.difficulty),
   );
 }

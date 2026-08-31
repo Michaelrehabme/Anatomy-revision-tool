@@ -1,6 +1,6 @@
-import { isMuscle, isBone, isLandmark, isJoint } from '../types/structure';
+import { isMuscle, isBone, isLandmark, isJoint, areaOf, JOINT_TYPE_LABELS } from '../types/structure';
 import type { AnatomyStructure } from '../types/structure';
-import { REGION_LABELS, SUBREGION_LABELS } from '../types/region';
+import { REGION_LABELS, SUBREGION_LABELS, AREA_LABELS } from '../types/region';
 
 /**
  * Shared fact-line builder used by flashcards, MCQ explanations, and
@@ -8,9 +8,14 @@ import { REGION_LABELS, SUBREGION_LABELS } from '../types/region';
  * AnatomyStructure into readable prose lines.
  */
 export function describeStructure(s: AnatomyStructure): string[] {
-  const lines: string[] = [
-    `Region: ${REGION_LABELS[s.region]}${s.subregion ? ` (${SUBREGION_LABELS[s.subregion]})` : ''}`,
-  ];
+  // Leads with the area, since that is what the user filtered by (CR-017). The
+  // finer subregion is kept in brackets where it adds something the area does not —
+  // "Back & Core (Cervical)" is worth more than "Back & Core" alone — but it is
+  // dropped where the two would just repeat each other ("Shoulder (Shoulder)").
+  const area = areaOf(s);
+  const areaLabel = area ? AREA_LABELS[area] : REGION_LABELS[s.region];
+  const sub = s.subregion ? SUBREGION_LABELS[s.subregion] : undefined;
+  const lines: string[] = [`Area: ${areaLabel}${sub && sub !== areaLabel ? ` (${sub})` : ''}`];
 
   if (isMuscle(s)) {
     lines.push(`Origin: ${s.origin.join('; ')}`);
@@ -28,7 +33,7 @@ export function describeStructure(s: AnatomyStructure): string[] {
     if (s.attachments.length) lines.push(`Attachments: ${s.attachments.join('; ')}`);
     if (s.articulations?.length) lines.push(`Articulations: ${s.articulations.join('; ')}`);
   } else if (isJoint(s)) {
-    lines.push(`Type: ${s.jointType.replace(/-/g, ' ')} joint`);
+    lines.push(`Type: ${JOINT_TYPE_LABELS[s.jointType]}`);
     lines.push(`Movements: ${s.movements.join('; ')}`);
     if (s.stabilizers?.length) lines.push(`Stabilizers: ${s.stabilizers.join('; ')}`);
   }
@@ -53,7 +58,7 @@ export function summarizeStructure(s: AnatomyStructure): string {
  */
 export function buildIdentifyClue(s: AnatomyStructure): string {
   if (isMuscle(s)) return `${s.origin.join('; ')} — ${s.actionText}`;
-  if (isJoint(s)) return `${s.jointType.replace(/-/g, ' ')} joint — ${s.movements.join('; ')}`;
+  if (isJoint(s)) return `${JOINT_TYPE_LABELS[s.jointType]} — ${s.movements.join('; ')}`;
   if (s.attachments.length) return s.attachments.join('; ');
   if (s.articulations?.length) return s.articulations.join('; ');
   return s.description;

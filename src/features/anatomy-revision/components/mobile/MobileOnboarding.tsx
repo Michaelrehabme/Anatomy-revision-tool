@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { BodyFigure } from '../shared/BodyFigure';
+import { RegionBodyFigure } from '../shared/BodyFigure';
 import type { Region } from '../../types/region';
 import { REGIONS } from '../../types/region';
 
@@ -67,7 +67,7 @@ export function MobileOnboarding({ onDone }: MobileOnboardingProps) {
 
       <div className="flex flex-1 items-center justify-center py-3.5">
         <div style={{ width: 112 }}>
-          <BodyFigure fills={fills} />
+          <RegionBodyFigure fills={fills} />
         </div>
       </div>
 

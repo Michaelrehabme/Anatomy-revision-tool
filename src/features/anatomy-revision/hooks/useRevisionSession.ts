@@ -2,7 +2,7 @@ import { useCallback, useReducer, useRef } from 'react';
 import type { RevisionQuestion } from '../types/question';
 import type { Category, Difficulty } from '../types/structure';
 import { isMuscle } from '../types/structure';
-import type { Region, SubRegion } from '../types/region';
+import type { Area, Region, SubRegion } from '../types/region';
 import { REGIONS } from '../types/region';
 import type { Confidence, RevisionSessionSummary, UserAttempt } from '../types/attempt';
 import type { QuestionType } from '../types/question';
@@ -35,6 +35,7 @@ export interface RevisionSetupParams {
   region?: Region;
   regions?: Region[];
   subregion?: SubRegion;
+  areas?: Area[];
   category?: Category;
   difficulty?: Difficulty;
   /** practice/adaptive = study session (immediate feedback); assessment = exam session (no feedback until the end). See CR-009. */

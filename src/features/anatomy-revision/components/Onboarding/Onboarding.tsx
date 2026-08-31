@@ -1,8 +1,8 @@
 import { BodyFigure } from '../shared/BodyFigure';
 import { Button } from '../shared/Button';
-import type { Region } from '../../types/region';
+import type { Area } from '../../types/region';
 
-const NOOP = new Set<Region>();
+const NOOP = new Set<Area>();
 
 interface OnboardingProps {
   onDone: () => void;

@@ -35,7 +35,26 @@ describe('buildMcqQuestions (joints, CR-014)', () => {
     const q = result.find((r) => r.id === 'mcq-glenohumeral-joint-joint-type');
     expect(q).toBeDefined();
     if (!q || !isMcqQuestion(q)) return;
-    expect(q.choices[q.correctIndex]).toBe('ball and socket joint');
+    expect(q.choices[q.correctIndex]).toBe('ball-and-socket joint');
+  });
+
+  // CR-017 added two non-synovial types to JointType. The old formatter mangled the raw
+  // value ('symphysis' -> "symphysis joint"), which is not a thing; JOINT_TYPE_LABELS
+  // names them properly, and this locks that in for the correct answer and distractors alike.
+  it('names non-synovial joint types properly rather than suffixing "joint" onto the raw value', () => {
+    const PUBIC_SYMPHYSIS = joint({ id: 'pubic-symphysis', name: 'Pubic Symphysis', jointType: 'symphysis' });
+    const SYNDESMOSIS = joint({ id: 'distal-tibiofibular-joint', name: 'Distal Tibiofibular Joint', jointType: 'syndesmosis' });
+    const fixture = [...FIXTURE, PUBIC_SYMPHYSIS, SYNDESMOSIS];
+    const indexes = buildIndexes(fixture);
+    const result = buildMcqQuestions(fixture, [], indexes, createRng(3));
+
+    const q = result.find((r) => r.id === 'mcq-pubic-symphysis-joint-type');
+    expect(q).toBeDefined();
+    if (!q || !isMcqQuestion(q)) return;
+    expect(q.choices[q.correctIndex]).toBe('secondary cartilaginous joint (symphysis)');
+    for (const choice of q.choices) {
+      expect(choice).not.toMatch(/^(symphysis|syndesmosis) joint$/);
+    }
   });
 
   it('generates a text-clue identify question for a joint (unlike bones, which skip this variant)', () => {

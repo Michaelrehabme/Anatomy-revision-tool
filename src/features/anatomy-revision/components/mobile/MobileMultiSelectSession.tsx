@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { MultiSelectQuestion } from '../../types/question';
 import type { Confidence } from '../../types/attempt';
-import { REGION_LABELS } from '../../types/region';
+import { questionLocationLabel } from '../../types/region';
 import { scoreMultiSelect } from '../../lib/multiSelectScoring';
 import { ConfidenceButtons } from '../shared/ConfidenceButtons';
 import { BottomSheet } from '../shared/BottomSheet';
@@ -62,7 +62,7 @@ export function MobileMultiSelectSession({ question, onAnswer, onNext, examMode 
     <div className="flex min-h-0 flex-1 flex-col">
       <div className="flex-1 overflow-y-auto px-6.5 pb-5">
         <div className="mt-4.5" style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--accd)' }}>
-          Select all · {REGION_LABELS[question.region]}
+          Select all · {questionLocationLabel(question)}
         </div>
         <h2 className="mt-3" style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 26, lineHeight: 1.16, letterSpacing: '-.012em' }}>
           {question.prompt}

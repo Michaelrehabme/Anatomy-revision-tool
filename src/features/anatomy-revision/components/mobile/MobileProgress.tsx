@@ -3,7 +3,7 @@ import type { AnatomyRepository } from '../../data/repository';
 import type { Region } from '../../types/region';
 import { REGION_LABELS } from '../../types/region';
 import { useProgressData } from '../../hooks/useProgressData';
-import { BodyFigure } from '../shared/BodyFigure';
+import { RegionBodyFigure } from '../shared/BodyFigure';
 import { MobileShell } from './MobileShell';
 import { MobileAccountSection } from './MobileAccountSection';
 import { AUTH_ENABLED } from '../../context/AuthProvider';
@@ -52,7 +52,7 @@ export function MobileProgress({ content, repository, userId, onNavigateTab, onO
 
         <div className="flex justify-center">
           <div style={{ width: 132 }}>
-            <BodyFigure fills={fills} />
+            <RegionBodyFigure fills={fills} />
           </div>
         </div>
 

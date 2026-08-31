@@ -1,6 +1,6 @@
 import type { Category, Difficulty } from './structure';
 import type { ImageMode } from './image';
-import type { Region, SubRegion } from './region';
+import type { Area, Region, SubRegion } from './region';
 
 export type QuestionType = 'flashcard' | 'mcq' | 'locate' | 'fill-blank' | 'identify-typed' | 'multi-select';
 
@@ -29,6 +29,10 @@ interface RevisionQuestionBase {
   structureId: string;
   region: Region;
   subregion?: SubRegion;
+  /** The area this question belongs to (CR-017) — what session headers show, since areas
+   * are what the user filtered by. Region is too coarse to name here: a knee question
+   * labelled "Lower Leg & Foot" contradicts the "Knee" chip they picked. */
+  area?: Area;
   category: Category;
   difficulty: Difficulty;
   promptKind: PromptKind;

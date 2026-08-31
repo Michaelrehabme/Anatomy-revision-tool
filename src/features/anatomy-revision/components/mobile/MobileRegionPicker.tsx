@@ -1,33 +1,40 @@
 import type { AnatomyContent } from '../../hooks/useAnatomyContent';
-import type { Region } from '../../types/region';
-import { REGIONS, REGION_LABELS } from '../../types/region';
-import { isMuscle } from '../../types/structure';
+import type { Area } from '../../types/region';
+import { AREAS, AREA_LABELS } from '../../types/region';
+import { areaOf } from '../../types/structure';
 import { BodyFigure } from '../shared/BodyFigure';
 import { MobileShell } from './MobileShell';
 import type { MobileTab } from './MobileTabBar';
 
 interface MobileRegionPickerProps {
   content: AnatomyContent;
-  selected: Set<Region>;
-  onChange: (next: Set<Region>) => void;
+  selected: Set<Area>;
+  onChange: (next: Set<Area>) => void;
   onContinue: () => void;
   onBack: () => void;
   onNavigateTab: (tab: MobileTab) => void;
 }
 
-/** Screen 03 (mobile). Figure and region list stacked vertically (desktop puts them side by side). */
+/** Screen 03 (mobile). Figure and area list stacked vertically (desktop puts them side by side). */
 export function MobileRegionPicker({ content, selected, onChange, onContinue, onBack, onNavigateTab }: MobileRegionPickerProps) {
-  const countByRegion = new Map<Region, number>();
-  for (const s of content.structures.filter(isMuscle)) countByRegion.set(s.region, (countByRegion.get(s.region) ?? 0) + 1);
+  // Counts every category, not just muscles — matching the desktop picker (CR-017).
+  const countByArea = new Map<Area, number>();
+  for (const s of content.structures) {
+    const area = areaOf(s);
+    if (area) countByArea.set(area, (countByArea.get(area) ?? 0) + 1);
+  }
 
-  const toggle = (region: Region) => {
+  const toggle = (area: Area) => {
     const next = new Set(selected);
-    if (next.has(region)) next.delete(region);
-    else next.add(region);
+    if (next.has(area)) next.delete(area);
+    else next.add(area);
     onChange(next);
   };
 
-  const poolSize = content.structures.filter(isMuscle).filter((s) => selected.size === 0 || selected.has(s.region)).length;
+  const poolSize = content.structures.filter((s) => {
+    const area = areaOf(s);
+    return selected.size === 0 || (!!area && selected.has(area));
+  }).length;
 
   return (
     <MobileShell tabs={{ active: 'picker', onNavigate: onNavigateTab }}>
@@ -38,7 +45,7 @@ export function MobileRegionPicker({ content, selected, onChange, onContinue, on
         <h2
           style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 30, lineHeight: 1.05, letterSpacing: '-.02em', margin: '2px 0 5px' }}
         >
-          Pick your regions
+          Pick your areas
         </h2>
         <p style={{ fontSize: 13.5, lineHeight: 1.5, color: 'var(--ink3)' }}>
           Tap the body. Everything outside your selection stays out of the pool.
@@ -51,13 +58,13 @@ export function MobileRegionPicker({ content, selected, onChange, onContinue, on
         </div>
 
         <div className="mt-0.5 grid grid-cols-2 gap-x-3.5 gap-y-0.5">
-          {REGIONS.map((region) => {
-            const isSelected = selected.has(region);
+          {AREAS.map((area) => {
+            const isSelected = selected.has(area);
             return (
               <button
-                key={region}
+                key={area}
                 type="button"
-                onClick={() => toggle(region)}
+                onClick={() => toggle(area)}
                 className="flex min-h-[44px] items-start gap-2.5 border-0 bg-transparent py-1.5 text-left"
                 style={{ opacity: isSelected ? 1 : 1 }}
               >
@@ -67,10 +74,10 @@ export function MobileRegionPicker({ content, selected, onChange, onContinue, on
                 />
                 <span className="flex-1">
                   <span className="block" style={{ fontFamily: 'var(--font-display)', fontSize: 17, lineHeight: 1.2, color: isSelected ? 'var(--ink)' : 'var(--ink3)' }}>
-                    {REGION_LABELS[region]}
+                    {AREA_LABELS[area]}
                   </span>
                   <span className="mt-0.5 block" style={{ font: '400 10.5px/1.4 var(--font-mono)', color: 'var(--ink3)' }}>
-                    {countByRegion.get(region) ?? 0} muscles
+                    {countByArea.get(area) ?? 0} structures
                   </span>
                 </span>
               </button>
@@ -79,7 +86,7 @@ export function MobileRegionPicker({ content, selected, onChange, onContinue, on
         </div>
 
         <div className="flex gap-4.5">
-          <button type="button" onClick={() => onChange(new Set(REGIONS))} className="border-0 bg-transparent py-1.5 text-[13.5px] underline" style={{ color: 'var(--accd)' }}>
+          <button type="button" onClick={() => onChange(new Set(AREAS))} className="border-0 bg-transparent py-1.5 text-[13.5px] underline" style={{ color: 'var(--accd)' }}>
             Select all
           </button>
           <button type="button" onClick={() => onChange(new Set())} className="border-0 bg-transparent py-1.5 text-[13.5px] underline" style={{ color: 'var(--accd)' }}>
@@ -94,7 +101,7 @@ export function MobileRegionPicker({ content, selected, onChange, onContinue, on
           className="mt-2.5 w-full rounded-[3px] border-0 disabled:opacity-45"
           style={{ minHeight: 52, background: 'var(--acc)', color: 'var(--onacc)', font: '500 16.5px/1 var(--font-ui)' }}
         >
-          {poolSize > 0 ? `${poolSize} muscles — continue` : 'Select at least one region'}
+          {poolSize > 0 ? `${poolSize} structures — continue` : 'Select at least one area'}
         </button>
       </div>
     </MobileShell>

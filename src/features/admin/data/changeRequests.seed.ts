@@ -1005,4 +1005,177 @@ export const CHANGE_REQUESTS_SEED: ChangeRequest[] = [
       'hit-testing are untouched — Locate still works correctly end-to-end for any future image that does get ' +
       'real hotspot data; it\'s just not offered as a dead-end choice in the meantime.',
   },
+  {
+    ref: 'CR-017',
+    title: 'Areas replace Regions as the study axis; full joint coverage',
+    category: 'content',
+    priority: 'p1',
+    effort: 'l',
+    status: 'completed',
+    description:
+      'Replace the 5 anatomical Regions with the 7 major Areas (shoulder, elbow, wrist & hand, hip, knee, ' +
+      'ankle/foot, back & core) as the axis the whole app is studied and filtered by, for every category of ' +
+      'structure — and author joints for every area instead of the shoulder-arm complex alone.',
+    prompt:
+      'The user asked to change the joint specification, stating the major joints should be shoulder, elbow, ' +
+      'wrist & hand, hip, knee, ankle/foot, and back & core/trunk. Two separate problems sat behind that.\n\n' +
+      'First, the organising axis was wrong. Joints inherited Region (5 anatomical regions) and SubRegion ' +
+      '(9 values), and neither expresses how joints are actually taught: Region splits the knee across ' +
+      'hip-thigh and lower-leg-foot, while SubRegion splits the trunk into spine/torso/neck. Second, coverage ' +
+      "was a fifth of what it should be — CR-014 deliberately piloted on shoulder-arm only, and its own notes " +
+      "deferred 'the 4 other regions\\' joints' to a later pass.\n\n" +
+      'Three decisions were confirmed with the user before implementation: (1) do both the taxonomy change ' +
+      'and the content expansion, not just one; (2) apply the spine/torso/neck merge to joints ONLY — bones ' +
+      'and landmarks keep the finer SubRegion split, since 66 entries use it and distractors.ts relies on it ' +
+      'for distractor plausibility; (3) author the new joints at core depth (description, jointType, ' +
+      'articulatingStructureIds, movements, stabilizers) with the CR-010 clinical layer deferred.\n\n' +
+      'WHAT WAS BUILT\n' +
+      '1. New JointGroup type (7 values) + JOINT_GROUPS/JOINT_GROUP_LABELS in types/region.ts. Region and ' +
+      'SubRegion are unchanged. JointStructure gains a required `jointGroup`, hand-declared rather than ' +
+      'derived from region/subregion because the interesting cases disagree with both: sacroiliac-joint is ' +
+      "subregion 'spine' but revises with the hip, and proximal-tibiofibular-joint is region 'lower-leg-foot' " +
+      'but revises with the knee. A derivation would have silently mis-grouped exactly those.\n' +
+      "2. JointType extended with 'symphysis' and 'syndesmosis'. The union was the six synovial " +
+      'classifications only, but three joints the spec requires are not synovial — the intervertebral discs, ' +
+      'the pubic symphysis, the distal tibiofibular syndesmosis. Keeping the union tidy would have cost the ' +
+      "back & core group its headline joint. Both formatting call sites string-mangled the raw value " +
+      '(`t.replace(/-/g, \' \') + \' joint\'`), which yields "symphysis joint" — replaced with a shared ' +
+      'JOINT_TYPE_LABELS map used by mcq.ts and facts.ts alike. This also fixes the pre-existing ' +
+      '"ball and socket joint" (the correct form is hyphenated).\n' +
+      '3. Six joints were modelled as `category: \'landmark\'` tagged `groups: [..., \'joint\']`, so no joint ' +
+      'generator ever saw them: sacroiliac, facet, costovertebral, distal radioulnar, carpometacarpal of ' +
+      'thumb, proximal tibiofibular. Migrated to real JointStructures with ids and names preserved byte-for-' +
+      'byte, since user progress records are keyed on structureId and linkImages() matches on name/alias. All ' +
+      'six already had eligibility.locate: false, so no locate coverage was lost.\n' +
+      '4. 18 new joints authored, bringing the dataset to 29 joints across all 7 groups (308 structures ' +
+      'total). radiocarpal finally supplies the condyloid representative CR-014 noted the shoulder-arm pilot ' +
+      'could not provide; all 8 joint types are now represented.\n' +
+      '5. UI: RevisionSetup shows a 7-chip joint-group row when the Joints category is selected, reusing the ' +
+      'existing chipStyle/aria-pressed pattern. `jointGroups` threaded through StructureFilter, ' +
+      'RevisionSetConfig and RevisionSetupParams the same way `subregion` already was. facts.ts leads joints ' +
+      'with "Joint group: Wrist & Hand" instead of "Region: Forearm & Hand (Wrist & Hand)".\n\n' +
+      'THE REAL RISK, AND WHAT IT COST\n' +
+      'buildJointMovementQuestions builds "which movement is NOT possible here" by taking movement strings ' +
+      'from other joints and filtering with a literal `!joint.movements.includes(m)`. Safe with 5 joints; ' +
+      'actively dangerous with 29, because it will confidently assert a falsehood if the strings disagree. ' +
+      'Three separate ways that bites, all now closed:\n' +
+      '- Spelling drift. `movements` is now typed `JointMovement[]` against a closed canonical union rather ' +
+      'than `string[]`, so a one-off "Medial rotation" is a compile error instead of a wrong question. This ' +
+      'caught a live bug already in the data: acromioclavicular-joint listed ' +
+      "'Rotation (accessory, during scapular movement)' while sternoclavicular-joint listed 'Rotation', so " +
+      'the generator could already claim rotation was impossible at the AC joint. The nuance moved into the ' +
+      'description where it belongs.\n' +
+      '- Accessory movements. Gliding occurs at essentially every synovial joint, so it can never be a ' +
+      'truthful odd-one-out even when a joint only bothers to list flexion/extension.\n' +
+      '- Regional synonyms. Wrist radial deviation IS abduction, so offering "Abduction" against the ' +
+      'radiocarpal joint (which lists \'Radial deviation\') asserts something false. Handled by ' +
+      'EQUIVALENT_MOVEMENT_GROUPS.\n' +
+      'Separately, the odd-one-out is now drawn from the joint\'s own group first (falling back to the whole ' +
+      'dataset when the group cannot supply one). Drawing from all 29 made the question trivial — "which ' +
+      'movement is NOT possible at the atlantoaxial joint? Plantarflexion" tests nothing.\n\n' +
+      'DELIBERATELY OUT OF SCOPE\n' +
+      '- The CR-010 clinical layer (specialTests, commonInjuries, palpationNotes, functionalContext) on the ' +
+      '24 non-pilot joints. Authoring that at once would have meant inventing content to fill a shape rather ' +
+      'than recording established teaching. The 5 original shoulder-arm joints keep theirs, and `clinical` is ' +
+      'authored on new joints where there is a single well-established point worth making. Depth is therefore ' +
+      'uneven by design, and the seed file header says so.\n' +
+      '- Locate questions: still false on every joint, for CR-014\'s unchanged reason (no atlas hotspot ' +
+      'pinpoints a joint space as opposed to the bones forming it).\n' +
+      '- SubRegion itself is untouched; bones and landmarks keep spine/torso/neck.\n\n' +
+      'ACCEPTANCE\n' +
+      '- npm run test, npm run build, npm run lint and npm run validate-content all pass.',
+    dependsOn: ['CR-014'],
+    createdAt: '2026-08-31T11:00:00.000Z',
+    startedAt: '2026-08-31T11:10:00.000Z',
+    completedAt: '2026-08-31T12:30:00.000Z',
+    notes:
+      'One assumption made while planning turned out to be wrong, and the test suite is what caught it. The ' +
+      'planned seed-integrity assertion was "no landmark has \'joint\' in its groups" — but 11 landmarks ' +
+      'legitimately do, because they are articular surfaces that FORM joints rather than joints themselves ' +
+      '(glenoid cavity, acetabulum, trochlear notch, femoral head, ankle mortise, the costal facets, talus). ' +
+      'The assertion was rewritten to key on the name instead: nothing named "<Something> Joint" may be a ' +
+      'landmark, which is the property actually intended.\n\n' +
+      'validateContent.ts gained two joint checks: a hard error if any of the 7 groups is empty (an empty ' +
+      'group is a dead end in the UI — the chip renders, the user picks it, the session generates nothing), ' +
+      'and a warning when a trunk-subregion joint is grouped anywhere but back-core, with sacroiliac-joint ' +
+      'named as the one deliberate exception. The canonical-movement check the plan called for turned out to ' +
+      'be unnecessary at runtime: typing `movements` as JointMovement[] enforces it at compile time, which ' +
+      'is strictly stronger.\n\n' +
+      'New tests: joints.seed.test.ts (new file) covers group coverage, the migration\'s id stability, joint-' +
+      'type coverage including the two non-synovial additions, and that every joint has at least one ' +
+      'movement. multiSelect.test.ts gained a 4-test block sweeping 25 rng seeds — a single seed only ' +
+      'exercises a fraction of the candidate pool, so it would not reliably catch a bad odd-one-out. ' +
+      'mcq.test.ts gained a non-synovial formatting test and had its "ball and socket joint" expectation ' +
+      'corrected to the hyphenated form. 308 structures validate with 0 errors and 0 warnings.\n\n' +
+      'FOUND WHILE REVIEWING THE RUNNING APP, not by any test: filtering to the Knee group and starting a ' +
+      'session produced a question header reading "IDENTIFY · LOWER LEG & FOOT" — all five session components ' +
+      'rendered REGION_LABELS[question.region], which contradicts the very chip the user just picked and ' +
+      'reintroduces the exact confusion this CR exists to remove. Fixed by carrying an optional `jointGroup` ' +
+      'on RevisionQuestionBase (set in every generator\'s baseFields) plus a shared questionLocationLabel() ' +
+      'helper that the desktop and mobile MCQ, identify-typed and multi-select headers all call. The whole ' +
+      'suite passed both before and after this fix — a wiring mismatch between two individually correct ' +
+      'halves is exactly the class of bug only running the real app catches.\n\n' +
+      'STILL OPEN (pre-existing, not introduced here): summarizeStructure joins its fact lines with a newline, ' +
+      'but the MCQ explanation panel does not preserve whitespace, so they render run-together as "...below ' +
+      'the knee. Joint group: Knee Type: plane joint Movements: Gliding". This predates the CR (it ran ' +
+      '"Region: ... Type: ..." together the same way before) and affects every category, so it is left for a ' +
+      'separate presentation fix rather than widened into this one.\n\n' +
+      'SCOPE WIDENED MID-CR, AFTER THE USER REVIEWED IT LOCALLY. The first implementation scoped the seven ' +
+      'groups to the Joints category only and left the top-level picker on the old five Regions. The user ' +
+      'tried it and said the filtering had not really changed, "whether it\'s muscles or joints" — correctly. ' +
+      'That narrow scope came from misreading an earlier clarification: asked whether the spine/torso/neck ' +
+      'merge should apply to everything or joints only, they answered joints only, which was about the DATA ' +
+      'MODEL. It was taken as "groups are a joints-only concept", which was never said.\n\n' +
+      'Worse, the reason given for not widening it was wrong on the facts. The claim was that muscles carry ' +
+      'no subregion, so filtering them by joint group would need 122 muscles re-authored. That came from ' +
+      'grepping structures.muscles.seed.ts, which has no literal subregion lines because muscles are ' +
+      'generated from muscles.raw.json. Checking the built dataset instead: all 308 structures have a ' +
+      'subregion (muscle 122/122, bone 29/29, landmark 128/128, joint 29/29). The widening therefore needed ' +
+      'no content authoring whatsoever. Lesson: check the built data, not the source file, before declaring ' +
+      'something infeasible.\n\n' +
+      'WHAT THE WIDENING CHANGED\n' +
+      "1. JointGroup became Area — the same seven values, now a property of every structure, not just joints. " +
+      'Derived from `subregion` via AREA_BY_SUBREGION rather than hand-declared, with an optional `area` ' +
+      'override on AnatomyStructureBase for the one case the derivation gets wrong (sacroiliac-joint, ' +
+      "subregion 'spine' but examined with the hip). That deleted 28 of the 29 hand-written jointGroup lines.\n" +
+      '2. Region is no longer the study filter. It survives in the data model and still drives the Atlas, ' +
+      'Progress mastery shading and admin analytics — it was too coarse to revise by, but it is not wrong.\n' +
+      '3. Both region pickers became area pickers (desktop + mobile), as did the session setup screens. The ' +
+      'joints-only chip row added earlier in this CR was deleted as redundant once the picker itself is areas.\n' +
+      '4. BodyFigure became generic over its band key, so the pickers band the silhouette by Area (the arm ' +
+      'and leg bands subdivide: shoulder/elbow, and hip/knee/ankle-foot) while Progress keeps banding by ' +
+      'Region for mastery shading. Both callers keep full type safety instead of sharing a stringly-typed prop.\n' +
+      '5. The picker counts every category, not just muscles. They were muscles-only to match the original ' +
+      'mockup\'s "122 muscles", which under-reported an area by up to 5x — the shoulder shows "15 muscles · 3 ' +
+      'bones · 14 landmarks · 3 joints" now, where it used to claim 15. Reported by the user in the same pass.\n\n' +
+      'Structures per area after the change: Shoulder 35, Elbow 17, Wrist & Hand 54, Hip 39, Knee 29, ' +
+      'Ankle & Foot 50, Back & Core 85. validateContent now fails if any structure resolves to no area (it ' +
+      'would be unreachable from the picker) or if any area is empty (a dead-end selection).\n\n' +
+      'C7 WAS MISSING — found by the user reading the new picker counts. They asked how Back & Core could ' +
+      'have only 9 bones when there are 33 vertebrae. Most of the answer is that the bone entries are ' +
+      'deliberately grouped (structures.bones.seed.ts documents this: "Thoracic Vertebrae (T1-T12)" is one ' +
+      'study item, as is "Ribs" for all 24), so 9 was a count of entries and not of bones. But the question ' +
+      'surfaced a real gap underneath it: C1, C2 and a "typical cervical vertebra" entry scoped C3-C6 ' +
+      'accounted for only 6 of the 7 cervical vertebrae. C7 had no bone entry at all — the one vertebra that ' +
+      'least deserved to be dropped, since it is atypical (long non-bifid spinous process, transverse ' +
+      'foramen small or absent) and is the standard surface landmark for counting spinal levels.\n\n' +
+      'Two related defects came with it: c7-spinous-process carried parentBoneId \'cervical-vertebrae\', a ' +
+      'parent whose own name and description explicitly exclude C7; and that same C3-C6 entry carried the ' +
+      "alias 'Cervical Region (C1-C7)', which linkImages() matches on, so a whole-cervical-spine image was " +
+      'linking to an entry covering neither end of the range. Added a c7-vertebra bone alongside atlas and ' +
+      'axis, repointed the landmark at it, and dropped the contradictory alias. Back & Core bones 9 -> 10, ' +
+      'dataset 308 -> 309 structures.\n\n' +
+      'The picker now makes the grouping legible rather than leaving the count to be re-litigated: each ' +
+      'category count is hover-underlined and lists the entries behind it, whose names already carry their ' +
+      'ranges. Hovering "10 bones" spells out Sternum / Ribs / Cervical Vertebrae (C3-C6) / Atlas (C1) / ' +
+      'Axis (C2) / C7 Vertebra / Thoracic (T1-T12) / Lumbar (L1-L5) / Sacrum / Coccyx, which reconciles the ' +
+      'number with the 33 vertebrae a reader is counting in their head.\n\n' +
+      'MOBILE HAD NO CATEGORY FILTER AT ALL, asked about by the user just before committing. Desktop has ' +
+      'had one since CR-014 (all / muscles / bones / landmarks / joints); MobileRevisionSetup was ' +
+      "hardcoded to category: 'muscle', so 187 of the 309 structures — every bone, bony landmark and " +
+      'joint — were unreachable on a phone. Pre-existing, but this CR made it actively inconsistent: ' +
+      'widening the mobile area picker to count all structures meant it promised "17 structures" for the ' +
+      'elbow while the session behind it still served only the 5 muscles. Added the same category chip ' +
+      'row to mobile and removed the hardcode.',
+  },
 ];

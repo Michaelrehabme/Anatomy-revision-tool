@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import type { TypedIdentifyQuestion } from '../../types/question';
 import type { AnatomyImageAsset } from '../../types/image';
 import type { Confidence } from '../../types/attempt';
-import { REGION_LABELS } from '../../types/region';
+import { questionLocationLabel } from '../../types/region';
 import { AttributionBadge } from '../shared/AttributionBadge';
 import { HotspotOverlay } from '../LocateStructureSession/HotspotOverlay';
 import { ConfidenceButtons } from '../shared/ConfidenceButtons';
@@ -70,7 +70,7 @@ export function MobileIdentifyTypedSession({ question, imagesById, onAnswer, onN
             {question.promptKind}
           </span>
           <span style={{ font: '400 10px/1 var(--font-mono)', letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
-            {REGION_LABELS[question.region]}
+            {questionLocationLabel(question)}
           </span>
         </div>
         <h2

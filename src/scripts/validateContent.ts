@@ -9,7 +9,8 @@
  * real bug, not just incomplete content.
  */
 import { ALL_STRUCTURES, ALL_IMAGES } from '../features/anatomy-revision/data/seed';
-import { isJoint } from '../features/anatomy-revision/types/structure';
+import { isJoint, areaOf } from '../features/anatomy-revision/types/structure';
+import { AREAS, AREA_LABELS } from '../features/anatomy-revision/types/region';
 
 let errors = 0;
 let warnings = 0;
@@ -83,8 +84,34 @@ function main(): void {
     }
   }
 
+  // Area is the axis the whole app filters by (CR-017), so a structure with no area is
+  // unreachable from the picker, and an empty area is a dead end in the UI: the user
+  // selects it and gets a zero-question session.
+  const joints = ALL_STRUCTURES.filter(isJoint);
+  for (const s of ALL_STRUCTURES) {
+    if (!areaOf(s)) {
+      fail(
+        `Structure "${s.id}" resolves to no area (needs a subregion, or an explicit area ` +
+          'override) — it would be unreachable from the area picker',
+      );
+    }
+  }
+  for (const area of AREAS) {
+    const inArea = ALL_STRUCTURES.filter((s) => areaOf(s) === area);
+    if (inArea.length === 0) {
+      fail(`Area "${AREA_LABELS[area]}" has no structures — it is offered in the area picker and would yield an empty session`);
+    } else if (!inArea.some(isJoint)) {
+      warn(`Area "${AREA_LABELS[area]}" has ${inArea.length} structures but no joints`);
+    }
+  }
+
   console.log(
-    `\nChecked ${ALL_STRUCTURES.length} structures and ${ALL_IMAGES.length} images: ${errors} error(s), ${warnings} warning(s).`,
+    `\nStructures per area: ` +
+      AREAS.map((a) => `${AREA_LABELS[a]} ${ALL_STRUCTURES.filter((s) => areaOf(s) === a).length}`).join(', '),
+  );
+  console.log(
+    `Checked ${ALL_STRUCTURES.length} structures (${joints.length} joints) across ${AREAS.length} areas ` +
+      `and ${ALL_IMAGES.length} images: ${errors} error(s), ${warnings} warning(s).`,
   );
 
   if (errors > 0) process.exit(1);

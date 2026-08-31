@@ -1,5 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { ALL_STRUCTURES } from '../../data/seed';
+import { isJoint, areaOf, EQUIVALENT_MOVEMENT_GROUPS } from '../../types/structure';
+import type { JointMovement } from '../../types/structure';
 import { buildIndexes } from '../indexes';
 import { buildMultiSelectQuestions } from '../questionGenerators/multiSelect';
 import { createRng } from '../rng';
@@ -57,6 +59,64 @@ describe('buildMultiSelectQuestions', () => {
     if (!q) return;
     const oddOneOut = q.choices[q.correctIndices[0]];
     expect(['Flexion', 'Extension']).not.toContain(oddOneOut);
+  });
+
+  // The three CR-017 correctness guards on the odd-one-out. All of these were reachable
+  // once the joint pool grew from 5 to 29 — the generator compares movement strings
+  // literally, so a "not possible here" answer can be flatly false without them.
+  describe('joint-movement odd-one-out truthfulness (CR-017)', () => {
+    const joints = ALL_STRUCTURES.filter(isJoint);
+    const byId = new Map(joints.map((j) => [j.id, j]));
+    // Sweep seeds rather than trusting one: which odd-one-out gets sampled is rng-dependent,
+    // so a single seed would only exercise a fraction of the candidate pool.
+    const allJointQuestions = Array.from({ length: 25 }, (_, i) =>
+      buildMultiSelectQuestions(ALL_STRUCTURES, indexes, createRng(i + 1)),
+    )
+      .flat()
+      .filter((q) => q.id.startsWith('multiselect-joint-movement-'));
+
+    it('never offers a movement the joint actually performs', () => {
+      for (const q of allJointQuestions) {
+        const joint = byId.get(q.id.replace('multiselect-joint-movement-', ''));
+        expect(joint).toBeDefined();
+        if (!joint) continue;
+        const oddOneOut = q.choices[q.correctIndices[0]];
+        expect(joint.movements).not.toContain(oddOneOut);
+      }
+    });
+
+    it('never offers gliding, which occurs at essentially every synovial joint', () => {
+      for (const q of allJointQuestions) {
+        expect(q.choices[q.correctIndices[0]]).not.toBe('Gliding');
+      }
+    });
+
+    it('never offers a regional synonym of a movement the joint performs', () => {
+      // e.g. the radiocarpal joint lists 'Radial deviation'; offering 'Abduction' as the
+      // movement it cannot do would be false, since at the wrist they are the same motion.
+      for (const q of allJointQuestions) {
+        const joint = byId.get(q.id.replace('multiselect-joint-movement-', ''));
+        if (!joint) continue;
+        const oddOneOut = q.choices[q.correctIndices[0]] as JointMovement;
+        const synonyms = EQUIVALENT_MOVEMENT_GROUPS.find((g) => g.includes(oddOneOut)) ?? [];
+        for (const synonym of synonyms) {
+          expect(joint.movements).not.toContain(synonym);
+        }
+      }
+    });
+
+    it('prefers an odd-one-out from the joint\'s own area, so the question stays discriminating', () => {
+      // The wrist has five other joints to draw from, so it should never need the fallback.
+      const radiocarpal = byId.get('radiocarpal-joint');
+      expect(radiocarpal).toBeDefined();
+      if (!radiocarpal) return;
+      const sameAreaMovements = new Set(
+        joints.filter((j) => areaOf(j) === 'wrist-hand' && j.id !== radiocarpal.id).flatMap((j) => j.movements),
+      );
+      for (const q of allJointQuestions.filter((q) => q.id.endsWith('radiocarpal-joint'))) {
+        expect(sameAreaMovements).toContain(q.choices[q.correctIndices[0]]);
+      }
+    });
   });
 
   it('nerve questions only mark muscles actually on that nerve as correct', () => {

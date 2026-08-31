@@ -7,7 +7,7 @@ import { useRevisionSession } from './features/anatomy-revision/hooks/useRevisio
 import { useIsDesktop } from './features/anatomy-revision/hooks/useIsDesktop';
 import { generateRevisionSet } from './features/anatomy-revision/lib/questionGenerators/generateSet';
 import { computeStreak } from './features/anatomy-revision/lib/streak';
-import type { Region } from './features/anatomy-revision/types/region';
+import type { Area } from './features/anatomy-revision/types/region';
 import type { AnatomyRepository } from './features/anatomy-revision/data/repository';
 import { Onboarding } from './features/anatomy-revision/components/Onboarding/Onboarding';
 import { Today } from './features/anatomy-revision/components/Today/Today';
@@ -133,7 +133,7 @@ function App() {
   const location = useLocation();
 
   const [onboarded, setOnboarded] = useState(() => localStorage.getItem(ONBOARDED_KEY) === 'true');
-  const [selectedRegions, setSelectedRegions] = useState<Set<Region>>(new Set());
+  const [selectedAreas, setSelectedAreas] = useState<Set<Area>>(new Set());
   const [streak, setStreak] = useState(0);
 
   useEffect(() => {
@@ -263,16 +263,16 @@ function App() {
           isDesktop ? (
             <RegionPicker
               content={content}
-              selected={selectedRegions}
-              onChange={setSelectedRegions}
+              selected={selectedAreas}
+              onChange={setSelectedAreas}
               onContinue={() => navigate('/study/setup')}
               onNavigate={onNavigateSection}
             />
           ) : (
             <MobileRegionPicker
               content={content}
-              selected={selectedRegions}
-              onChange={setSelectedRegions}
+              selected={selectedAreas}
+              onChange={setSelectedAreas}
               onContinue={() => navigate('/study/setup')}
               onBack={() => mobileNavigate('today')}
               onNavigateTab={mobileNavigate}
@@ -288,7 +288,7 @@ function App() {
               content={content}
               repository={repository}
               userId={userId}
-              regions={selectedRegions}
+              areas={selectedAreas}
               onStart={session.start}
               onBack={() => navigate('/study')}
               onNavigate={onNavigateSection}
@@ -298,7 +298,7 @@ function App() {
               content={content}
               repository={repository}
               userId={userId}
-              regions={selectedRegions}
+              areas={selectedAreas}
               onStart={session.start}
               onBack={() => navigate('/study')}
             />

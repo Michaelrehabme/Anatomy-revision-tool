@@ -1,7 +1,7 @@
 import type { AnatomyStructure, Category, Difficulty } from '../../types/structure';
 import type { AnatomyImageAsset } from '../../types/image';
 import type { QuestionType, RevisionQuestion } from '../../types/question';
-import type { Region, SubRegion } from '../../types/region';
+import type { Area, Region, SubRegion } from '../../types/region';
 import type { StructureMastery } from '../../types/attempt';
 import { buildIndexes, filterStructures, type StructureIndexes } from '../indexes';
 import { createRng, sample, shuffle, type Rng } from '../rng';
@@ -20,6 +20,8 @@ export interface RevisionSetConfig {
   /** OR-matched; takes precedence over `region` when non-empty. */
   regions?: Region[];
   subregion?: SubRegion;
+  /** OR-matched against each structure's area (CR-017). Empty/undefined = all areas. */
+  areas?: Area[];
   category?: Category;
   difficulty?: Difficulty;
   /**
@@ -89,6 +91,7 @@ export function generateRevisionSet(
     region: config.region,
     regions: config.regions,
     subregion: config.subregion,
+    areas: config.areas,
     difficulty: config.difficulty,
   });
   if (config.structureIds?.length) {

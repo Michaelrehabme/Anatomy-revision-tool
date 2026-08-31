@@ -2,8 +2,9 @@ import { useState } from 'react';
 import type { AnatomyContent } from '../../hooks/useAnatomyContent';
 import type { QuestionType } from '../../types/question';
 import type { Category } from '../../types/structure';
-import type { Region } from '../../types/region';
-import { REGION_LABELS } from '../../types/region';
+import type { Area } from '../../types/region';
+import { AREA_LABELS } from '../../types/region';
+import { areaOf } from '../../types/structure';
 import { generateRevisionSet } from '../../lib/questionGenerators/generateSet';
 import type { RevisionSetupParams } from '../../hooks/useRevisionSession';
 import type { RevisionQuestion } from '../../types/question';
@@ -36,7 +37,7 @@ interface RevisionSetupProps {
   content: AnatomyContent;
   repository: AnatomyRepository | null;
   userId: string | null;
-  regions: Set<Region>;
+  areas: Set<Area>;
   onStart: (questions: RevisionQuestion[], params: RevisionSetupParams) => void;
   onBack: () => void;
   onNavigate: (section: NavSection) => void;
@@ -56,7 +57,7 @@ const SESSION_TYPE_OPTIONS: { value: 'practice' | 'adaptive' | 'assessment'; lab
 
 const TIMER_OPTIONS = [0, 10, 20, 30];
 
-export function RevisionSetup({ content, repository, userId, regions, onStart, onBack, onNavigate }: RevisionSetupProps) {
+export function RevisionSetup({ content, repository, userId, areas, onStart, onBack, onNavigate }: RevisionSetupProps) {
   const [types, setTypes] = useState<QuestionType[]>(['mcq']);
   const [category, setCategory] = useState<Category | 'all'>('all');
   const [mode, setMode] = useState<'practice' | 'assessment' | 'adaptive'>('practice');
@@ -71,10 +72,15 @@ export function RevisionSetup({ content, repository, userId, regions, onStart, o
     setTypes((prev) => (prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]));
   };
 
-  const regionsArray = [...regions];
-  const poolSize = content.structures.filter(
-    (s) => (regions.size === 0 || regions.has(s.region)) && (category === 'all' || s.category === category),
-  ).length;
+  const areasArray = [...areas];
+  const inPool = (s: (typeof content.structures)[number]) => {
+    const area = areaOf(s);
+    return (
+      (areas.size === 0 || (!!area && areas.has(area))) &&
+      (category === 'all' || s.category === category)
+    );
+  };
+  const poolSize = content.structures.filter(inPool).length;
   const canStart = types.length > 0 && !content.loading && poolSize > 0;
 
   const handleStart = async () => {
@@ -84,11 +90,7 @@ export function RevisionSetup({ content, repository, userId, regions, onStart, o
     // pre-filter would fight it, so the SRS toggle only applies to practice/exam.
     if (useSrs && mode !== 'adaptive' && repository && userId) {
       const due = await repository.listDueMastery(userId, new Date().toISOString());
-      const pool = new Set(
-        content.structures
-          .filter((s) => (regions.size === 0 || regions.has(s.region)) && (category === 'all' || s.category === category))
-          .map((s) => s.id),
-      );
+      const pool = new Set(content.structures.filter(inPool).map((s) => s.id));
       const dueInPool = due.map((m) => m.structureId).filter((id) => pool.has(id));
       if (dueInPool.length > 0) structureIds = dueInPool;
     }
@@ -97,14 +99,14 @@ export function RevisionSetup({ content, repository, userId, regions, onStart, o
 
     const params: RevisionSetupParams = {
       types,
-      regions: regionsArray.length ? regionsArray : undefined,
+      areas: areasArray.length ? areasArray : undefined,
       category: category === 'all' ? undefined : category,
       mode,
       timerMinutes: mode === 'assessment' && timerMinutes > 0 ? timerMinutes : undefined,
     };
     const questions = generateRevisionSet(content.structures, content.images, {
       types,
-      regions: regionsArray,
+      areas: areasArray,
       category: params.category,
       mode,
       count,
@@ -114,7 +116,7 @@ export function RevisionSetup({ content, repository, userId, regions, onStart, o
     onStart(questions, params);
   };
 
-  const regionSummary = regionsArray.length ? regionsArray.map((r) => REGION_LABELS[r]).join(', ') : 'All regions';
+  const areaSummary = areasArray.length ? areasArray.map((a) => AREA_LABELS[a]).join(', ') : 'All areas';
 
   return (
     <AppShell
@@ -134,7 +136,7 @@ export function RevisionSetup({ content, repository, userId, regions, onStart, o
     >
       <div className="flex flex-col px-16 pt-16 pb-14">
         <button type="button" onClick={onBack} className="mb-3 text-left text-[15px]" style={{ color: 'var(--ink3)' }}>
-          &larr; Regions
+          &larr; Areas
         </button>
         <h2
           style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 52, lineHeight: 1.02, letterSpacing: '-.026em', margin: '0 0 10px' }}
@@ -142,7 +144,7 @@ export function RevisionSetup({ content, repository, userId, regions, onStart, o
           Session
         </h2>
         <p className="text-base" style={{ color: 'var(--ink2)' }}>
-          {regionSummary} · {poolSize} {category === 'all' ? 'structures' : category === 'muscle' ? 'muscles' : `${category}s`} in the pool
+          {areaSummary} · {poolSize} {category === 'all' ? 'structures' : category === 'muscle' ? 'muscles' : `${category}s`} in the pool
         </p>
 
         <div className="mt-14 flex gap-[88px]">
@@ -188,6 +190,7 @@ export function RevisionSetup({ content, repository, userId, regions, onStart, o
                 </button>
               ))}
             </div>
+
           </div>
 
           <div className="w-[380px] flex-none">

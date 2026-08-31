@@ -1,4 +1,4 @@
-import { isMuscle, isBone, isJoint } from '../../types/structure';
+import { isMuscle, isBone, isJoint, areaOf, JOINT_TYPE_LABELS } from '../../types/structure';
 import type { AnatomyStructure } from '../../types/structure';
 import type { AnatomyImageAsset } from '../../types/image';
 import type { MCQQuestion, PromptKind } from '../../types/question';
@@ -53,6 +53,7 @@ function baseFields(structure: AnatomyStructure, promptKind: PromptKind) {
     structureId: structure.id,
     region: structure.region,
     subregion: structure.subregion,
+    area: areaOf(structure),
     category: structure.category,
     difficulty: structure.difficulty,
     promptKind,
@@ -204,14 +205,13 @@ function buildOne(
   }
 
   if (isJoint(structure) && promptKind === 'joint-type') {
-    const formatJointType = (t: string) => `${t.replace(/-/g, ' ')} joint`;
     const otherTypes = all.reduce<string[]>((acc, s) => {
-      if (isJoint(s) && s.id !== structure.id) acc.push(formatJointType(s.jointType));
+      if (isJoint(s) && s.id !== structure.id) acc.push(JOINT_TYPE_LABELS[s.jointType]);
       return acc;
     }, []);
     const distractors = sample([...new Set(otherTypes)], distractorCount, rng);
     if (distractors.length > 0) {
-      const { choices, correctIndex } = buildChoices(formatJointType(structure.jointType), distractors, choiceCount, rng);
+      const { choices, correctIndex } = buildChoices(JOINT_TYPE_LABELS[structure.jointType], distractors, choiceCount, rng);
       out.push({
         ...baseFields(structure, promptKind),
         id: `mcq-${structure.id}-joint-type`,

@@ -2,9 +2,10 @@ import { useState } from 'react';
 import type { AnatomyContent } from '../../hooks/useAnatomyContent';
 import type { AnatomyRepository } from '../../data/repository';
 import type { QuestionType, RevisionQuestion } from '../../types/question';
-import type { Region } from '../../types/region';
-import { REGION_LABELS } from '../../types/region';
-import { isMuscle } from '../../types/structure';
+import type { Area } from '../../types/region';
+import { AREA_LABELS } from '../../types/region';
+import type { Category } from '../../types/structure';
+import { areaOf } from '../../types/structure';
 import { generateRevisionSet } from '../../lib/questionGenerators/generateSet';
 import type { RevisionSetupParams } from '../../hooks/useRevisionSession';
 import { MobileShell } from './MobileShell';
@@ -17,6 +18,17 @@ const FORMAT_OPTIONS: { value: QuestionType; label: string }[] = [
   { value: 'mcq', label: 'multiple-choice' },
   { value: 'identify-typed', label: 'type-answer' },
   { value: 'multi-select', label: 'select-all' },
+];
+
+// Mirrors the desktop picker. Mobile was hardcoded to muscles before CR-017, which put
+// 187 of the 309 structures — every bone, bony landmark and joint — out of reach on a
+// phone, and left the area picker promising counts the session would not honour.
+const CATEGORY_OPTIONS: { value: Category | 'all'; label: string }[] = [
+  { value: 'all', label: 'all' },
+  { value: 'muscle', label: 'muscles' },
+  { value: 'bone', label: 'bones' },
+  { value: 'landmark', label: 'landmarks' },
+  { value: 'joint', label: 'joints' },
 ];
 
 const LENGTHS = [8, 15, 30];
@@ -33,7 +45,7 @@ interface MobileRevisionSetupProps {
   content: AnatomyContent;
   repository: AnatomyRepository | null;
   userId: string | null;
-  regions: Set<Region>;
+  areas: Set<Area>;
   onStart: (questions: RevisionQuestion[], params: RevisionSetupParams) => void;
   onBack: () => void;
 }
@@ -45,8 +57,9 @@ function chipStyle(selected: boolean) {
 }
 
 /** Screen 04 (mobile). No tab bar (not in the mockup's showTabs list) — a step within the Study flow. */
-export function MobileRevisionSetup({ content, repository, userId, regions, onStart, onBack }: MobileRevisionSetupProps) {
+export function MobileRevisionSetup({ content, repository, userId, areas, onStart, onBack }: MobileRevisionSetupProps) {
   const [types, setTypes] = useState<QuestionType[]>(['mcq', 'identify-typed']);
+  const [category, setCategory] = useState<Category | 'all'>('all');
   const [count, setCount] = useState(15);
   const [useSrs, setUseSrs] = useState(true);
   const [mode, setMode] = useState<'practice' | 'adaptive' | 'assessment'>('practice');
@@ -57,8 +70,15 @@ export function MobileRevisionSetup({ content, repository, userId, regions, onSt
     setTypes((prev) => (prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]));
   };
 
-  const regionsArray = [...regions];
-  const poolSize = content.structures.filter(isMuscle).filter((s) => regions.size === 0 || regions.has(s.region)).length;
+  const areasArray = [...areas];
+  const inPool = (s: (typeof content.structures)[number]) => {
+    const area = areaOf(s);
+    return (
+      (areas.size === 0 || (!!area && areas.has(area))) &&
+      (category === 'all' || s.category === category)
+    );
+  };
+  const poolSize = content.structures.filter(inPool).length;
   const canStart = types.length > 0 && poolSize > 0;
 
   const handleStart = async () => {
@@ -66,9 +86,7 @@ export function MobileRevisionSetup({ content, repository, userId, regions, onSt
     let structureIds: string[] | undefined;
     if (useSrs && mode !== 'adaptive' && repository && userId) {
       const due = await repository.listDueMastery(userId, new Date().toISOString());
-      const pool = new Set(
-        content.structures.filter(isMuscle).filter((s) => regions.size === 0 || regions.has(s.region)).map((s) => s.id),
-      );
+      const pool = new Set(content.structures.filter(inPool).map((s) => s.id));
       const dueInPool = due.map((m) => m.structureId).filter((id) => pool.has(id));
       if (dueInPool.length > 0) structureIds = dueInPool;
     }
@@ -77,15 +95,15 @@ export function MobileRevisionSetup({ content, repository, userId, regions, onSt
 
     const params: RevisionSetupParams = {
       types,
-      regions: regionsArray,
-      category: 'muscle',
+      areas: areasArray,
+      category: category === 'all' ? undefined : category,
       mode,
       timerMinutes: mode === 'assessment' && timerMinutes > 0 ? timerMinutes : undefined,
     };
     const questions = generateRevisionSet(content.structures, content.images, {
       types,
-      regions: regionsArray,
-      category: 'muscle',
+      areas: areasArray,
+      category: category === 'all' ? undefined : category,
       mode,
       count,
       structureIds,
@@ -94,13 +112,14 @@ export function MobileRevisionSetup({ content, repository, userId, regions, onSt
     onStart(questions, params);
   };
 
-  const summary = `${regionsArray.length ? regionsArray.map((r) => REGION_LABELS[r]).join(', ') : 'No regions selected'} · ${poolSize} muscles in the pool.`;
+  const noun = category === 'all' ? 'structures' : category === 'muscle' ? 'muscles' : `${category}s`;
+  const summary = `${areasArray.length ? areasArray.map((a) => AREA_LABELS[a]).join(', ') : 'All areas'} · ${poolSize} ${noun} in the pool.`;
 
   return (
     <MobileShell>
       <div className="px-6.5 pt-4 pb-7.5">
         <button type="button" onClick={onBack} className="border-0 bg-transparent p-0 pb-2.5" style={{ fontSize: 14.5, color: 'var(--ink3)' }}>
-          &larr; Regions
+          &larr; Areas
         </button>
         <h2
           style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 33, lineHeight: 1.05, letterSpacing: '-.02em', margin: '2px 0 4px' }}
@@ -122,6 +141,26 @@ export function MobileRevisionSetup({ content, repository, userId, regions, onSt
               onClick={() => toggleType(opt.value)}
               className="inline-flex min-h-[44px] items-center justify-center rounded-full px-4.5"
               style={{ fontFamily: 'var(--font-display)', fontSize: 15.5, ...chipStyle(types.includes(opt.value)) }}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
+        <div
+          className="mt-7.5"
+          style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}
+        >
+          Category
+        </div>
+        <div className="mt-3.5 flex flex-wrap gap-2.5">
+          {CATEGORY_OPTIONS.map((opt) => (
+            <button
+              key={opt.value}
+              type="button"
+              onClick={() => setCategory(opt.value)}
+              aria-pressed={category === opt.value}
+              className="inline-flex min-h-[44px] items-center justify-center rounded-full px-4.5"
+              style={{ fontFamily: 'var(--font-display)', fontSize: 15.5, ...chipStyle(category === opt.value) }}
             >
               {opt.label}
             </button>

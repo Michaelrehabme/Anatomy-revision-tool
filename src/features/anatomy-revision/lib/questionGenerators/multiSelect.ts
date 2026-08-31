@@ -1,5 +1,11 @@
-import { isMuscle, isJoint } from '../../types/structure';
-import type { AnatomyStructure } from '../../types/structure';
+import {
+  isMuscle,
+  isJoint,
+  areaOf,
+  EQUIVALENT_MOVEMENT_GROUPS,
+  UNIVERSAL_ACCESSORY_MOVEMENTS,
+} from '../../types/structure';
+import type { AnatomyStructure, JointMovement, JointStructure } from '../../types/structure';
 import type { MultiSelectQuestion } from '../../types/question';
 import type { StructureIndexes } from '../indexes';
 import { pickStructureDistractors } from '../distractors';
@@ -19,6 +25,7 @@ function baseFields(structure: AnatomyStructure, promptKind: MultiSelectQuestion
     structureId: structure.id,
     region: structure.region,
     subregion: structure.subregion,
+    area: areaOf(structure),
     category: structure.category,
     difficulty: structure.difficulty,
     promptKind,
@@ -97,11 +104,34 @@ function buildActionExclusionQuestions(pool: AnatomyStructure[], indexes: Struct
 }
 
 /**
+ * Movements that cannot honestly serve as an odd-one-out for `joint` (CR-017).
+ * Two ways a naive `!joint.movements.includes(m)` string test lies:
+ *
+ * 1. Accessory movements. Gliding occurs at essentially every synovial joint,
+ *    so "gliding is NOT possible at the tibiofemoral joint" is false even
+ *    though the tibiofemoral entry only bothers to list flexion/extension/
+ *    rotation.
+ * 2. Regional synonyms. Wrist radial deviation *is* abduction, so offering
+ *    "Abduction" against the radiocarpal joint (which lists 'Radial deviation')
+ *    asserts something untrue.
+ */
+function isTruthfulOddOneOut(movement: JointMovement, joint: JointStructure): boolean {
+  if (UNIVERSAL_ACCESSORY_MOVEMENTS.includes(movement)) return false;
+  const equivalents = EQUIVALENT_MOVEMENT_GROUPS.find((g) => g.includes(movement)) ?? [movement];
+  return !equivalents.some((m) => joint.movements.includes(m));
+}
+
+/**
  * "Which of these movements is NOT possible at the humeroulnar joint" (CR-014)
  * — same odd-one-out shape as buildActionExclusionQuestions, but computed
- * directly from each joint's own `movements` list rather than a reverse
- * index (only 5 joints exist in this pilot, not enough to justify a
- * dataset-wide byMovement index yet — revisit if joint content grows).
+ * directly from each joint's own `movements` list rather than a reverse index
+ * (29 joints still isn't enough to justify a dataset-wide byMovement index).
+ *
+ * CR-017 scopes the odd-one-out to the joint's own group first. Drawing from
+ * all 29 joints made the question trivial — "which movement is NOT possible at
+ * the atlantoaxial joint? Plantarflexion" tests nothing. Within a group the
+ * wrong answer is a movement that plausibly belongs to a neighbouring joint,
+ * which is the discrimination actually worth practising.
  */
 function buildJointMovementQuestions(pool: AnatomyStructure[], rng: Rng): MultiSelectQuestion[] {
   const joints = pool.filter(isJoint);
@@ -112,11 +142,20 @@ function buildJointMovementQuestions(pool: AnatomyStructure[], rng: Rng): MultiS
     // question with 2 correct + 1 odd-one-out choice, so 2 is the floor, not 3.
     if (joint.movements.length < 2) continue;
 
-    const otherMovements = joints
-      .filter((j) => j.id !== joint.id)
-      .flatMap((j) => j.movements)
-      .filter((m) => !joint.movements.includes(m));
-    const oddOneOut = sample([...new Set(otherMovements)], 1, rng)[0];
+    const candidatesFrom = (others: JointStructure[]) => [
+      ...new Set(
+        others
+          .flatMap((j) => j.movements)
+          .filter((m) => isTruthfulOddOneOut(m, joint)),
+      ),
+    ];
+    const others = joints.filter((j) => j.id !== joint.id);
+    const sameGroup = candidatesFrom(others.filter((j) => areaOf(j) === areaOf(joint)));
+    // Groups where every other joint is a gliding-only plane joint (the hip group's
+    // sacroiliac + pubic symphysis, for instance) yield nothing — fall back to the
+    // whole dataset rather than dropping the question entirely.
+    const otherMovements = sameGroup.length > 0 ? sameGroup : candidatesFrom(others);
+    const oddOneOut = sample(otherMovements, 1, rng)[0];
     if (!oddOneOut) continue;
 
     const chosenMatching = sample(joint.movements, Math.min(3, joint.movements.length), rng);

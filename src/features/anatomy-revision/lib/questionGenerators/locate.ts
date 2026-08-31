@@ -1,3 +1,4 @@
+import { areaOf } from '../../types/structure';
 import type { AnatomyStructure } from '../../types/structure';
 import type { AnatomyImageAsset } from '../../types/image';
 import type { LocateQuestion } from '../../types/question';
@@ -37,6 +38,7 @@ export function buildLocateQuestions(
         structureId: structure.id,
         region: structure.region,
         subregion: structure.subregion,
+    area: areaOf(structure),
         category: structure.category,
         difficulty: structure.difficulty,
         promptKind: 'identify',
