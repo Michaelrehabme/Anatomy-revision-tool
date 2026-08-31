@@ -8,9 +8,11 @@ import type { ChangeRequest } from '../types/changeRequest';
  * doesn't already exist there, so re-running after editing this file never
  * clobbers status/notes an admin has since changed in the live app).
  *
- * CR-001 and CR-003's `prompt` fields are reconstructed from this project's
- * README/commit history, not the literal original prompt text (the Change
- * Register didn't exist yet when they were done) — see each entry's `notes`.
+ * CR-001, CR-002, CR-003 and CR-005's `prompt` fields are reconstructed from
+ * this project's README/commit history and a prior audit's backlog document,
+ * not the literal prompt text used when the work was actually done (the
+ * Change Register didn't exist yet when they shipped) — see each entry's
+ * `notes`.
  */
 export const CHANGE_REQUESTS_SEED: ChangeRequest[] = [
   {
@@ -43,6 +45,71 @@ export const CHANGE_REQUESTS_SEED: ChangeRequest[] = [
     notes: 'Prompt text reconstructed from the README\'s "Persistence" section — the Change Register did not exist yet when this shipped.',
   },
   {
+    ref: 'CR-002',
+    title: 'Analytics event stream + capture selected answer',
+    category: 'analytics',
+    priority: 'p0',
+    effort: 'm',
+    status: 'completed',
+    description:
+      'Move attempts from a per-user Firestore subcollection (unqueryable across users) to a top-level attemptEvents collection, ' +
+      'and record which wrong answer a student picked — not just whether they were right — so distractor analysis becomes possible.',
+    prompt:
+      'Restructure attempt recording in this Vite + React 19 + Firebase 11 app so that\n' +
+      'cross-user analytics becomes possible, and capture which wrong answer was chosen.\n\n' +
+      'CURRENT STATE\n' +
+      '- src/features/anatomy-revision/types/attempt.ts defines UserAttempt with: id, userId,\n' +
+      '  sessionId, questionId, questionType, structureId, promptKind, region, category,\n' +
+      '  correct, confidence?, hitDistance?, timestamp, durationMs?.\n' +
+      '- src/features/anatomy-revision/hooks/useRevisionSession.ts builds and persists the\n' +
+      '  attempt in submitAnswer().\n' +
+      '- firestoreRepository.ts writes to users/{uid}/attempts/{attemptId}, which cannot be\n' +
+      '  queried across users — Firestore has no cross-subcollection query.\n\n' +
+      'WHAT TO BUILD\n' +
+      '1. Extend UserAttempt with:\n' +
+      '   - selectedAnswer?: string   // the literal choice text for MCQ, the typed string for\n' +
+      '                               // fill-blank and identify-typed. Never store an index —\n' +
+      '                               // choices are shuffled per session, so an index is\n' +
+      '                               // meaningless after the fact.\n' +
+      '   - correctAnswer?: string    // denormalised so analytics needs no question lookup\n' +
+      '   - attemptNumber: number     // 1 = first time this user has ever seen this questionId\n' +
+      '   Populate all three in useRevisionSession.submitAnswer(). Thread the selected value up\n' +
+      '   from MCQSession, FillBlankSession and IdentifyTypedSession, which currently only\n' +
+      '   report correctness.\n\n' +
+      '2. attemptNumber requires knowing prior exposure. Add a `seenQuestionIds` count to the\n' +
+      '   mastery record or a lightweight users/{uid}/questionExposure/{questionId} counter —\n' +
+      '   pick whichever you judge cheaper given the existing repository shape, and document\n' +
+      '   the choice in a comment. This field is what later separates "never learned it" from\n' +
+      '   "keeps forgetting it"; without it the two blur together.\n\n' +
+      '3. Move attempts from the per-user subcollection to a TOP-LEVEL `attemptEvents`\n' +
+      '   collection, with `userId` as a queryable field. Update AnatomyRepository:\n' +
+      '   - recordAttempt stays the same signature.\n' +
+      '   - Add listAttempts(filter: { userId?, structureId?, questionId?, since?, limit? }).\n' +
+      '   Update all three implementations (firestore, local, memory). Mastery and session\n' +
+      '   summaries STAY where they are — only attempts move.\n\n' +
+      '4. Firestore rules for attemptEvents:\n' +
+      '   - create: request.auth != null && request.data.userId == request.auth.uid\n' +
+      '   - read: resource.data.userId == request.auth.uid || request.auth.token.admin == true\n' +
+      '   - update, delete: never\n' +
+      '   Attempts are an append-only event log. Nothing should ever edit one.\n\n' +
+      '5. Add composite indexes (firestore.indexes.json) for the query shapes listAttempts\n' +
+      '   supports: (userId ASC, timestamp DESC) and (structureId ASC, timestamp DESC).\n\n' +
+      'CONSTRAINTS\n' +
+      '- Anatomy content stays in the static seed modules.\n' +
+      '- Existing Vitest coverage must keep passing; add cases for attemptNumber increment and\n' +
+      '  for selectedAnswer being captured on a wrong MCQ answer.\n\n' +
+      'ACCEPTANCE\n' +
+      '- npm run test passes, npm run build passes.\n' +
+      '- A wrong MCQ answer persists the exact distractor text the student clicked.',
+    dependsOn: [],
+    createdAt: '2026-08-19T09:00:00.000Z',
+    startedAt: '2026-08-19T09:30:00.000Z',
+    completedAt: '2026-08-21T12:00:00.000Z',
+    notes: 'Prompt text reconstructed from a prior audit\'s backlog document — the Change Register did not exist yet when this shipped. ' +
+      'Had no entry here at all until this reconciliation pass, despite the attemptEvents collection and selectedAnswer/attemptNumber ' +
+      'fields already being live in code.',
+  },
+  {
     ref: 'CR-003',
     title: 'Client-side routing for every top-level screen',
     category: 'infrastructure',
@@ -70,7 +137,7 @@ export const CHANGE_REQUESTS_SEED: ChangeRequest[] = [
     category: 'infrastructure',
     priority: 'p1',
     effort: 'l',
-    status: 'inProgress',
+    status: 'completed',
     description:
       'Build an /admin/* section behind a custom-claim auth guard: a Change Register (this backlog, browsable and editable in the ' +
       'app instead of only in git), a Users table with per-user drill-down, and a placeholder for the future Analytics screen (CR-005).',
@@ -140,27 +207,802 @@ export const CHANGE_REQUESTS_SEED: ChangeRequest[] = [
     dependsOn: ['CR-001', 'CR-003'],
     createdAt: '2026-08-26T08:00:00.000Z',
     startedAt: '2026-08-26T08:05:00.000Z',
-    completedAt: null,
-    notes: '',
+    completedAt: '2026-08-26T18:00:00.000Z',
+    notes: 'Was left marked inProgress with no completedAt after shipping — corrected during the 2026-08-26 register reconciliation pass ' +
+      '(admin shell, change register and users pages all exist and work).',
   },
   {
     ref: 'CR-005',
-    title: 'Analytics dashboard',
+    title: 'Admin: cohort weakness analytics',
     category: 'analytics',
+    priority: 'p0',
+    effort: 'l',
+    status: 'completed',
+    description:
+      'Replace the /admin/analytics placeholder with a real cohort weakness dashboard: a structure weakness table (first-attempt vs ' +
+      'overall accuracy), distractor analysis with ranked confusion pairs, question-health flagging, and a cohort overview screen — ' +
+      'the module that turns raw attempt data into an actual content roadmap.',
+    prompt:
+      'Build a cohort weakness analytics dashboard in the admin section of this Vite + React 19\n' +
+      '+ Firebase 11 app.\n\n' +
+      'CURRENT STATE\n' +
+      '- Admin shell exists at /admin/* gated by a Firebase custom claim (CR-004 complete),\n' +
+      '  with /admin/analytics currently a placeholder.\n' +
+      '- Attempts live in a top-level `attemptEvents` collection (CR-002 complete), each\n' +
+      '  carrying: userId, sessionId, questionId, questionType, structureId, promptKind, region,\n' +
+      '  category, correct, selectedAnswer?, correctAnswer?, attemptNumber, confidence?,\n' +
+      '  hitDistance?, timestamp, durationMs?.\n' +
+      '- Anatomy content is in static seed modules (ALL_STRUCTURES, ALL_IMAGES) from\n' +
+      '  src/features/anatomy-revision/data/seed/index.ts — join against these in memory rather\n' +
+      '  than denormalising structure names into Firestore.\n\n' +
+      'WHAT TO BUILD\n' +
+      '1. An AnalyticsSource interface with one implementation, ClientAggregatedAnalytics, that\n' +
+      '   queries attemptEvents (capped, most recent N, configurable, default 20000) and\n' +
+      '   aggregates in memory. Isolate ALL aggregation behind this interface so it can later be\n' +
+      '   swapped for a Cloud Functions pre-aggregated version without touching any UI. Write a\n' +
+      '   comment at the top of the file stating that migration path and the volume at which it\n' +
+      '   becomes necessary.\n\n' +
+      '2. STRUCTURE WEAKNESS TABLE — every structure, worst first:\n' +
+      '   - total attempts, accuracy\n' +
+      '   - first-attempt accuracy (attemptNumber === 1) vs overall accuracy, side by side.\n' +
+      '     A structure with low first-attempt but high overall accuracy is being learned. One\n' +
+      '     with high first-attempt but low overall is being forgotten. These need completely\n' +
+      '     different teaching responses and the dashboard should make the difference visible\n' +
+      '     at a glance.\n' +
+      '   - distinct users who attempted it\n' +
+      '   - mean answer time\n' +
+      '   Filter by region, category and question type. Exclude structures below a configurable\n' +
+      '   minimum attempt threshold (default 5) so noise does not dominate the top of the table.\n\n' +
+      '3. DISTRACTOR ANALYSIS — the highest-value screen here.\n' +
+      '   For each question with wrong answers, group selectedAnswer values by frequency and\n' +
+      '   render the top wrong answers with counts. Then surface a CONFUSION PAIRS view across\n' +
+      '   the whole dataset: ranked pairs of (correctAnswer, selectedAnswer) sorted by\n' +
+      '   frequency. That list is a direct content roadmap — each frequent pair is a\n' +
+      '   distinction students are not making, and a question worth writing.\n\n' +
+      '4. QUESTION HEALTH — flag questions where the statistics suggest the question is the\n' +
+      '   problem rather than the student:\n' +
+      '   - accuracy below 25% with 10+ attempts (likely ambiguous or wrong)\n' +
+      '   - accuracy above 98% with 20+ attempts (no discriminatory value)\n' +
+      '   - mean answer time in the top decile despite high accuracy (unclear wording)\n' +
+      '   Each flagged question gets a "mark reviewed" action writing to a questionReviews\n' +
+      '   collection so the same items do not resurface indefinitely.\n\n' +
+      '5. COHORT OVERVIEW — active users over time, mean session length, completion rate,\n' +
+      '   accuracy by region as a bar chart, retention (share of users returning after 1, 7 and\n' +
+      '   30 days).\n\n' +
+      'CONSTRAINTS\n' +
+      '- Admin-only Firestore rules on every collection touched here.\n' +
+      '- Show a clear loading state; these queries are not instant.\n' +
+      '- Cache aggregation results in memory for the session — do not re-query on every tab\n' +
+      '  switch.\n' +
+      '- Add Vitest coverage for the aggregation functions using synthetic attempt arrays.\n' +
+      '  These are pure functions and belong in lib/ alongside the existing tested code.\n\n' +
+      'ACCEPTANCE\n' +
+      '- npm run test and npm run build pass.\n' +
+      '- The confusion-pairs view correctly ranks a synthetic dataset where supraspinatus is\n' +
+      '  wrongly answered as infraspinatus 38 times.',
+    dependsOn: ['CR-002', 'CR-004'],
+    createdAt: '2026-08-26T08:00:00.000Z',
+    startedAt: '2026-08-26T08:10:00.000Z',
+    completedAt: '2026-08-26T19:00:00.000Z',
+    notes: 'Entry previously carried a placeholder "not yet drafted" prompt and status "new" despite the real dashboard already being ' +
+      'built (StructureWeaknessScreen, DistractorAnalysisScreen, ConfusionPairsList, QuestionHealthPanel, CohortOverviewScreen all exist) ' +
+      '— corrected during the 2026-08-26 register reconciliation pass, including bumping priority from the placeholder p2 to the ' +
+      'backlog doc\'s actual p0 and adding the CR-002 dependency.',
+  },
+  {
+    ref: 'CR-006',
+    title: 'Objective correctness drives review scheduling',
+    category: 'content',
+    priority: 'p1',
+    effort: 'm',
+    status: 'completed',
+    description:
+      'Make MCQ/fill-blank/identify-typed/locate answers — not just self-rated flashcards — drive the spaced-repetition schedule, ' +
+      'by deriving an implicit confidence from correctness and answer speed when no explicit rating is given. Also adds a lapse ' +
+      'counter and leech flagging, and fixes an N+1 Firestore read in the answer path.',
+    prompt:
+      'Make objective question correctness drive the spaced-repetition schedule in this\n' +
+      'Vite + React 19 app.\n\n' +
+      'CURRENT STATE\n' +
+      '- src/features/anatomy-revision/lib/mastery.ts implements SM-2-lite. computeNextReview\n' +
+      "  takes a Confidence ('easy' | 'medium' | 'hard') and adjusts intervalDays and\n" +
+      '  easeFactor. updateMasteryAfterAttempt returns early WITHOUT touching intervalDays or\n' +
+      '  easeFactor when params.confidence is undefined.\n' +
+      '- useRevisionSession.submitAnswer only calls upsertMastery inside `if (record.confidence)`.\n' +
+      '- Consequence: MCQ, fill-blank, locate and identify-typed answers update attempt counts\n' +
+      '  but never the review schedule. Only flashcards, which are self-rated, schedule anything.\n' +
+      '- lib/__tests__/mastery.test.ts has 4 existing tests that must keep passing.\n\n' +
+      'WHAT TO BUILD\n' +
+      '1. Derive a quality signal from objective answers where no confidence rating exists:\n' +
+      "   - correct and fast (durationMs below the structure's rolling median) -> treat as 'easy'\n" +
+      "   - correct and slow -> treat as 'medium'\n" +
+      "   - incorrect -> treat as 'hard'\n" +
+      '   Hesitation is real evidence. A student who takes eleven seconds to get it right does\n' +
+      '   not know it as well as one who answers in two, and the schedule should reflect that.\n\n' +
+      '2. Where an explicit confidence rating IS given (flashcards), that still wins. Self-report\n' +
+      '   plus objective evidence beats objective evidence alone.\n\n' +
+      '3. Remove the `if (record.confidence)` guard in useRevisionSession.submitAnswer so mastery\n' +
+      '   updates on every answer.\n\n' +
+      '4. PERFORMANCE — submitAnswer currently calls repository.getMastery(userId), which fetches\n' +
+      '   the ENTIRE mastery subcollection, on every single answer. On Firestore that is one full\n' +
+      '   collection read per question. Add getMasteryForStructure(userId, structureId) to\n' +
+      '   AnatomyRepository and use it here. Implement across firestore, local and memory\n' +
+      '   repositories.\n\n' +
+      '5. Add a `lapses` counter to StructureMastery, incremented whenever a structure that had\n' +
+      '   reached an interval of 7+ days is answered incorrectly. Repeated lapses are the signal\n' +
+      '   for the leech handling in point 6.\n\n' +
+      '6. Leech handling: a structure with 4+ lapses should be flagged `isLeech: true`, surfaced\n' +
+      '   distinctly on the Progress screen, and its interval capped rather than allowed to grow.\n' +
+      '   A structure a student keeps forgetting needs different treatment from one they are\n' +
+      '   steadily learning, and the current algorithm cannot tell them apart.\n\n' +
+      'CONSTRAINTS\n' +
+      '- Keep mastery.ts a pure function module with no React or Firebase imports. It is the\n' +
+      '  most valuable tested code in the repo — preserve that property.\n' +
+      '- All 4 existing mastery tests must still pass. Add coverage for the derived-quality\n' +
+      '  path, the lapse counter and leech flagging.\n\n' +
+      'ACCEPTANCE\n' +
+      '- npm run test and npm run build pass.\n' +
+      '- Answering an MCQ incorrectly demonstrably shortens the next review interval.',
+    dependsOn: [],
+    createdAt: '2026-08-26T08:00:00.000Z',
+    startedAt: '2026-08-26T20:00:00.000Z',
+    completedAt: '2026-08-27T09:00:00.000Z',
+    notes: '',
+  },
+  {
+    ref: 'CR-007',
+    title: 'Hotspot authoring tool — locate questions live',
+    category: 'content',
+    priority: 'p1',
+    effort: 'l',
+    status: 'completed',
+    description:
+      'Build an in-repo, dev-only hotspot authoring tool so locate-the-structure questions can finally be generated — all 45 images ' +
+      'currently have hotspots: [], so the locate question type generates zero of the 1,846 total questions.',
+    prompt:
+      'Build an in-repo hotspot authoring tool for this Vite + React 19 app so that\n' +
+      'locate-the-structure questions can be generated.\n\n' +
+      'CURRENT STATE\n' +
+      '- 45 images in src/features/anatomy-revision/data/seed/images.seed.ts, every one with\n' +
+      '  hotspots: [] — there is not a single polygon in the codebase.\n' +
+      '- Consequently lib/questionGenerators/locate.ts generates zero questions.\n' +
+      "- Hotspot coordinates are normalised 0-1 against the image's own natural width/height,\n" +
+      '  NOT screen pixels. See HotspotPolygon in types/image.ts.\n' +
+      '- lib/hotspot/pointInPolygon.ts already implements hit-testing, and when polygons overlap\n' +
+      '  the smallest-area structure wins the click — deliberate, so a precise tap on deltoid\n' +
+      '  over supraspinatus selects the smaller structure underneath. Tested in\n' +
+      '  lib/__tests__/hotspot.test.ts (7 tests).\n' +
+      '- components/LocateStructureSession/HotspotOverlay.tsx already renders polygons.\n' +
+      '- src/scripts/importHotspots.ts validates an external hotspots.json and prints\n' +
+      '  paste-ready TS, cross-referencing structure and image ids.\n' +
+      '- Images: 24 multi-panel atlas slides in /public/anatomy/atlas/, 21 single-muscle panels\n' +
+      '  in /public/anatomy/panels/.\n\n' +
+      'WHAT TO BUILD\n' +
+      'A dev-only route at /dev/hotspots, gated behind import.meta.env.DEV so it can never\n' +
+      'reach production:\n\n' +
+      '1. Image picker listing all images from images.seed.ts, showing hotspot count for each so\n' +
+      '   progress is visible at a glance.\n\n' +
+      '2. Canvas editor:\n' +
+      '   - Click to place polygon vertices; drag existing vertices to adjust; right-click or\n' +
+      '     backspace to remove the last one.\n' +
+      '   - Assign the polygon to a structure via a searchable dropdown of ALL_STRUCTURES,\n' +
+      "     filtered by the image's region by default with an option to show all.\n" +
+      '   - Live preview through the existing HotspotOverlay component — reuse it, do not write\n' +
+      '     a second renderer that could drift from production behaviour.\n' +
+      '   - Show existing polygons on the image, selectable and editable.\n' +
+      '   - Zoom and pan, because precise tracing on a 1600px image inside a browser window is\n' +
+      '     otherwise painful.\n\n' +
+      "3. Coordinates must be normalised against the image's naturalWidth/naturalHeight, never\n" +
+      '   the rendered element size. This is the single easiest thing to get wrong here and it\n' +
+      '   fails silently — the polygons look correct in the editor and are misaligned in the app.\n' +
+      '   Add a test for the conversion.\n\n' +
+      '4. Export: a "copy JSON" button producing the exact shape src/scripts/importHotspots.ts\n' +
+      '   expects, so the existing import path is reused unchanged.\n\n' +
+      '5. A validation pass warning on: self-intersecting polygons, polygons with fewer than 3\n' +
+      '   vertices, coordinates outside 0-1, and structures already having a polygon on the same\n' +
+      '   image.\n\n' +
+      'FIRST CONTENT TARGET\n' +
+      'Once the tool works, author hotspots for the 21 single-muscle panel images in\n' +
+      '/public/anatomy/panels/ first. They are single-structure and quick, they cover the\n' +
+      'clinically important shoulder and hip muscles, and they will produce working locate\n' +
+      'questions immediately. The 24 multi-panel atlas slides are a larger job — do them after.\n\n' +
+      'CONSTRAINTS\n' +
+      '- Dev-only. It must not appear in the production bundle.\n' +
+      '- Do not modify pointInPolygon.ts or the existing hotspot tests.\n\n' +
+      'ACCEPTANCE\n' +
+      '- npm run test and npm run build pass.\n' +
+      '- After authoring polygons for the panel images, generateRevisionSet with\n' +
+      "  types: ['locate'] returns a non-zero count.",
+    dependsOn: [],
+    createdAt: '2026-08-26T08:00:00.000Z',
+    startedAt: '2026-08-27T10:00:00.000Z',
+    completedAt: '2026-08-27T13:00:00.000Z',
+    notes:
+      'Tool built at /dev/hotspots (dev-only route). eligibility.locate flipped true for all muscles to match the bones ' +
+      "convention — locate.ts already gates per-image on hotspots.length, so this was safe. Authored 4 of 21 single-muscle " +
+      'panels (deltoid, trapezius, biceps-brachii, gluteus-maximus) as rough proof-of-concept polygons; remaining 17 panels ' +
+      'and all 24 atlas slides still need real authoring via the tool.',
+  },
+  {
+    ref: 'CR-008',
+    title: 'XP, levels and achievements',
+    category: 'gamification',
+    priority: 'p1',
+    effort: 'm',
+    status: 'completed',
+    description:
+      'Add a gamification layer built on XP as a shared currency: levels, two tiers of achievements (personal records and ' +
+      'milestones), and streak-freeze protection — deliberately no leaderboards. Reworks RevisionResults to show the payoff at the ' +
+      'moment attention is highest.',
+    prompt:
+      'Add a gamification layer to this Vite + React 19 + Firebase 11 anatomy revision app.\n\n' +
+      'CURRENT STATE\n' +
+      '- lib/streak.ts computes a consecutive-day streak from session summaries. It is the only\n' +
+      '  gamification mechanic present, and it is well-tested (7 tests) — do not break it.\n' +
+      '- Session results render through components/RevisionResults/RevisionResults.tsx.\n' +
+      '- Real user accounts exist (CR-001 complete).\n\n' +
+      'WHAT TO BUILD\n' +
+      '1. XP as the shared currency tying everything together:\n' +
+      '   - base XP per correct answer, scaled by question type (typed recall is worth more than\n' +
+      '     recognition — identify-typed and fill-blank should pay more than MCQ, which pays more\n' +
+      '     than a self-rated flashcard)\n' +
+      '   - a bonus for a first-time-correct answer on a structure\n' +
+      '   - a session completion bonus\n' +
+      '   - a streak multiplier that grows and caps\n' +
+      '   Put all tuning constants in one exported config object so they can be adjusted without\n' +
+      '   hunting through the code.\n\n' +
+      '2. Levels derived from cumulative XP on a curve that slows down — quick early wins,\n' +
+      '   meaningful later ones. Show progress toward the next level in the NavSidebar.\n\n' +
+      '3. Achievements, split into two groups so different users have something to chase:\n' +
+      '   - Personal records: longest streak, most XP in a day, fastest correct answer, most\n' +
+      '     structures mastered in a week\n' +
+      '   - Milestones: first region completed, all 122 muscles attempted, 50 structures at\n' +
+      '     mastery, 30-day streak, every question type used\n' +
+      '   Store as users/{uid}/achievements/{achievementId} with earnedAt. Render an\n' +
+      '   achievements screen and show an unobtrusive toast on earning one.\n\n' +
+      '4. Streak protection: a streak freeze that automatically consumes on a missed day, earned\n' +
+      '   at a rate of one per N consecutive days up to a cap of 2 held. Losing a 40-day streak\n' +
+      '   to one placement shift makes students quit — the freeze exists to prevent exactly that.\n\n' +
+      '5. Rework RevisionResults to show XP earned, level progress, streak status and any newly\n' +
+      '   earned achievements. This is the moment attention is highest and it is currently\n' +
+      '   underused.\n\n' +
+      'DELIBERATELY NOT IN SCOPE\n' +
+      'No leaderboards or leagues. With a small early user base a leaderboard is demotivating\n' +
+      'rather than competitive, and public ranking of anatomy performance among coursemates\n' +
+      'raises real issues. Revisit only at meaningful scale, and opt-in if at all.\n\n' +
+      'CONSTRAINTS\n' +
+      '- Keep XP and level calculation as pure functions in lib/ with Vitest coverage, matching\n' +
+      '  the existing pattern in mastery.ts and streak.ts.\n' +
+      '- Gamification must never alter which questions are asked. Keep it strictly separate\n' +
+      '  from the scheduling logic in mastery.ts.\n\n' +
+      'ACCEPTANCE\n' +
+      '- npm run test and npm run build pass, existing streak tests unchanged.',
+    dependsOn: ['CR-001'],
+    createdAt: '2026-08-26T08:00:00.000Z',
+    startedAt: '2026-08-27T18:05:00.000Z',
+    completedAt: '2026-08-27T19:10:00.000Z',
+    notes:
+      'XP/level/streak-freeze/achievement logic lives in lib/xp.ts, lib/levels.ts, lib/streakFreeze.ts, lib/achievements.ts — ' +
+      'all pure and unit-tested, matching mastery.ts/streak.ts\'s existing pattern. streak.ts kept behavior-identical (its 7 tests ' +
+      'untouched); a new computeStreakFromDayKeys export was factored out for streakFreeze.ts to reuse. Wired into ' +
+      'useRevisionSession.finish(). Achievements screen reached via a "View achievements" link from Progress (desktop + mobile), ' +
+      'not a 5th persistent nav tab — kept NavSidebar/MobileTabBar\'s existing 4-item shape untouched. Level progress shows in ' +
+      'NavSidebar via a self-contained component (fetches its own repository/auth context, like AccountSection already does) ' +
+      'rather than threading xpTotal through the 7 screens that render NavSidebar.',
+  },
+  {
+    ref: 'CR-009',
+    title: 'Adaptive difficulty + study/exam mode split',
+    category: 'content',
+    priority: 'p1',
+    effort: 'm',
+    status: 'completed',
+    description:
+      'Add an adaptive session mode that weights structure selection by due-date, accuracy, leech status and recency, escalates ' +
+      'question type (MCQ -> fill-blank -> identify-typed) as mastery grows, and makes study vs exam mode a real, meaningful choice ' +
+      'rather than just a set-construction difference.',
+    prompt:
+      'Add adaptive difficulty and a proper study/exam mode distinction to this Vite + React 19\n' +
+      'anatomy revision app.\n\n' +
+      'CURRENT STATE\n' +
+      "- generateRevisionSet in lib/questionGenerators/generateSet.ts accepts\n" +
+      "  mode: 'practice' | 'assessment'. Practice returns every eligible question shuffled;\n" +
+      '  assessment returns a random sample of `count`. Beyond set construction the two modes\n' +
+      '  behave identically in the UI.\n' +
+      '- A Difficulty field exists on structures and is filterable, but nothing adapts it.\n' +
+      '- Mastery data (accuracy, intervalDays, easeFactor, lapses) is available per structure\n' +
+      '  per user after CR-006.\n' +
+      '- 11 existing tests in lib/__tests__/generateSet.test.ts must keep passing.\n\n' +
+      'WHAT TO BUILD\n' +
+      "1. ADAPTIVE SELECTION — a new mode: 'adaptive'. Weight structure selection by:\n" +
+      '   - due date from the mastery record (overdue weighted heaviest)\n' +
+      '   - accuracy (weakest weighted heavier)\n' +
+      '   - leech status from CR-006 (surface these more, at capped intervals)\n' +
+      '   - recency (avoid repeating a structure answered minutes ago)\n' +
+      '   Blend in a proportion of well-known structures too — a session that is only weaknesses\n' +
+      '   is demoralising and gives no sense of progress. Roughly 70/30 weak to known, tunable\n' +
+      '   in one place.\n\n' +
+      '2. ADAPTIVE QUESTION TYPE — escalate the retrieval demand as mastery grows for a given\n' +
+      '   structure: recognition first (MCQ), then cued recall (fill-blank), then free recall\n' +
+      '   (identify-typed). A student who reliably picks the right MCQ option should be made to\n' +
+      '   type the name. This is where the real learning gain is, and it is nearly free given\n' +
+      '   you already generate all three types.\n\n' +
+      '3. MODE SPLIT, made meaningful in the UI:\n' +
+      '   - STUDY: immediate feedback with explanation, retry allowed, confidence rating shown,\n' +
+      '     schedule updated, no timer.\n' +
+      '   - EXAM: no feedback until the end, no retries, optional timer, a scored report at the\n' +
+      '     finish with per-region breakdown. Attempts still recorded and still feed the\n' +
+      '     schedule, but silently during the session.\n' +
+      '   Surface these as a clear choice at setup, not a buried config flag.\n\n' +
+      'CONSTRAINTS\n' +
+      '- generateRevisionSet must remain deterministic when given a seed — the existing tests\n' +
+      '  depend on this and it is what makes the generator testable.\n' +
+      '- Adaptive selection needs mastery data, so it must accept it as a parameter rather than\n' +
+      '  fetching. Keep generateSet.ts free of repository imports.\n\n' +
+      'ACCEPTANCE\n' +
+      '- npm run test and npm run build pass, all 11 generateSet tests unchanged.',
+    dependsOn: ['CR-006'],
+    createdAt: '2026-08-26T08:00:00.000Z',
+    startedAt: '2026-08-27T20:15:00.000Z',
+    completedAt: '2026-08-27T21:40:00.000Z',
+    notes:
+      'lib/adaptiveSelection.ts holds the weighting/blend/escalation logic, pure and tested; generateSet.ts gained a 3rd ' +
+      "mode branch, all 11 existing tests unchanged (verified). Study/exam is a real UI split now, not just set construction: " +
+      'a shared ExamAnswerFooter component replaces the colour reveal + explanation + confidence-rating flow across ' +
+      'MCQ/locate/fill-blank/identify-typed (both desktop and mobile) when in exam mode — flashcards deliberately stay ' +
+      'self-rated always, since the flip-and-rate IS the mechanic, not feedback about correctness. Exam adds an optional ' +
+      'countdown timer (auto-finishes at zero) and hides the running correct/wrong tally and the immediate "retry missed" ' +
+      'shortcut, reusing the existing per-region breakdown in RevisionResults/MobileResults as the scored report.',
+  },
+  {
+    ref: 'CR-010',
+    title: 'Clinical layer (dermatomes, myotomes, special tests, palpation)',
+    category: 'clinical',
     priority: 'p2',
     effort: 'l',
-    status: 'new',
+    status: 'completed',
     description:
-      'Replace the /admin/analytics placeholder with a real cross-user analytics dashboard: engagement over time, accuracy trends ' +
-      'by region/category, and drop-off points in the revision flow.',
+      'Add a clinical reasoning layer aimed at physiotherapy/sports therapy students: myotomes, palpation notes, common injuries, ' +
+      'special tests and functional context on structures, new clinical question types exploiting the existing byAction/byNerve ' +
+      'reverse indexes, and a multi-select question type. Shoulder-arm region first as a complete vertical slice.',
     prompt:
-      'Not yet drafted — scope out the specific charts/metrics wanted before writing the implementation prompt. Candidates: ' +
-      'daily/weekly active users, accuracy trend by region and category over time, question-type performance breakdown, and where ' +
-      'students most often abandon a session.',
-    dependsOn: ['CR-004'],
+      'Add a clinical reasoning layer to this Vite + React 19 musculoskeletal anatomy app,\n' +
+      'aimed at physiotherapy and sports therapy students rather than medical students.\n\n' +
+      'CURRENT STATE\n' +
+      '- 285 structures: 122 muscles, 29 bones, 134 landmarks, across 5 regions.\n' +
+      '- Muscle data comes from data/source/muscles.raw.json (schemaVersion\'d, with precomputed\n' +
+      '  byAction and byNerve reverse indexes) transformed into structures.muscles.seed.ts.\n' +
+      '  DO NOT hand-edit the muscles seed file — it is a transform. Extend the raw JSON and the\n' +
+      '  transform.\n' +
+      '- Bones and landmarks ARE hand-authored in their own seed files.\n' +
+      '- PromptKind in types/question.ts currently: identify | origin | insertion | nerve |\n' +
+      '  action | attachment | articulation | group-membership.\n' +
+      '- Two structures carry needsReview: true (rhomboid-major, internal-intercostals).\n\n' +
+      'WHAT TO BUILD\n' +
+      '1. Extend the structure types with optional clinical fields:\n' +
+      "   - myotome?: string[]        e.g. ['C5','C6']\n" +
+      '   - dermatomeRelation?: string\n' +
+      '   - palpationNotes?: string   how to actually find it on a person\n' +
+      '   - commonInjuries?: { name, mechanism, presentation }[]\n' +
+      '   - specialTests?: { name, description, positiveFinding }[]\n' +
+      '   - referredPainPattern?: string\n' +
+      '   - functionalContext?: string   which everyday or sporting movements load it\n' +
+      '   All optional. Existing content must remain valid without them.\n\n' +
+      "2. New PromptKind values and matching generators: 'myotome', 'palpation',\n" +
+      "   'special-test', 'injury-mechanism', 'functional'.\n\n" +
+      '3. New question shapes that exploit the existing reverse indexes:\n' +
+      '   - "Select ALL muscles innervated by the ulnar nerve" (multi-select, from byNerve)\n' +
+      '   - "Which of these does NOT contribute to shoulder abduction" (from byAction)\n' +
+      '   - "A patient cannot resist elbow flexion with the forearm pronated. Which muscle is\n' +
+      '     most likely involved?" (clinical vignette to structure)\n' +
+      '   - "Which special test assesses supraspinatus integrity?"\n' +
+      '   The multi-select type is new — add it to QuestionType, build a session component\n' +
+      '   matching the existing ones, and score it partially rather than all-or-nothing.\n\n' +
+      '4. Content authoring: start with the shoulder-arm region (38 structures) as a complete\n' +
+      '   vertical slice, so one region is fully clinical before spreading thin across five.\n\n' +
+      '5. Resolve the two outstanding needsReview flags while working through the data.\n\n' +
+      'CONSTRAINTS\n' +
+      '- Muscle content changes go into data/source/muscles.raw.json and its transform, never\n' +
+      '  into structures.muscles.seed.ts directly.\n' +
+      '- Run npm run validate-content after content changes.\n' +
+      "- Clinical content must be accurate. Where a special test's sensitivity or specificity is\n" +
+      '  disputed in the literature, say so in the content rather than presenting one figure as\n' +
+      '  settled — students will carry this into practice.\n\n' +
+      'ACCEPTANCE\n' +
+      '- npm run test, npm run build and npm run validate-content all pass.',
+    dependsOn: [],
     createdAt: '2026-08-26T08:00:00.000Z',
-    startedAt: null,
-    completedAt: null,
-    notes: 'Placeholder backlog entry so the Analytics screen\'s "see CR-005" pointer resolves to something real.',
+    startedAt: '2026-08-27T22:15:00.000Z',
+    completedAt: '2026-08-27T23:20:00.000Z',
+    notes:
+      'All seven clinical fields (myotome, dermatomeRelation, palpationNotes, commonInjuries, specialTests, referredPainPattern, ' +
+      'functionalContext) added as optional on the shared AnatomyStructureBase. Five new PromptKinds (myotome, palpation, ' +
+      'special-test, injury-mechanism, functional) plus a new multi-select QuestionType, each with its own generator gated on ' +
+      'the structure actually having that field authored — no invented content to force coverage. Multi-select reuses the ' +
+      'existing byNerve/byAction reverse indexes and pickStructureDistractors rather than new indexing, and is scored with ' +
+      'partial credit ((correct-incorrect)/total, clamped 0-1) shown in the UI, while the correct/incorrect flag fed to ' +
+      'mastery/XP scheduling stays a binary "selected exactly the right set" — a deliberate scope limit rather than threading ' +
+      'fractional scores through UserAttempt/RevisionSessionSummary, which only support boolean correctness. MultiSelectSession ' +
+      '/ MobileMultiSelectSession follow the existing session-component pattern exactly, including exam-mode support (CR-009) ' +
+      "via the shared ExamAnswerFooter, and are wired into StudySession/MobileStudySession and RevisionSetup/MobileRevisionSetup's " +
+      'format pickers. Content authored as a hand-curated CLINICAL_CONTENT lookup in structures.muscles.seed.ts, following the ' +
+      'EXTRA_ALIASES/PHONETIC_SPELLINGS precedent (never edited into muscles.raw.json). Scoped to 9 shoulder-arm muscles with ' +
+      'genuinely well-established content rather than all 38 shoulder-arm structures: deltoid, the 4 rotator cuff muscles ' +
+      '(supraspinatus, infraspinatus, teres minor, subscapularis), biceps brachii, triceps brachii, latissimus dorsi, and ' +
+      'pectoralis major — bones/landmarks in the region were left out since commonInjuries/specialTests are a muscle-testing ' +
+      "concept, not a bone one. myotome is intentionally restricted to the ~3 muscles genuinely used in the standard bedside " +
+      'myotome exam (deltoid=C5, biceps=C5/C6, triceps=C7) — the rotator cuff muscles have real C5-C6 nerve root contributions ' +
+      'but are NOT part of that specific clinical convention, so they deliberately have no myotome field, per the prompt\'s own ' +
+      '"clinical content must be accurate" constraint. referredPainPattern only added for supraspinatus/infraspinatus, where a ' +
+      'trigger-point referral pattern is genuinely textbook (Travell & Simons), not invented for every muscle. The two ' +
+      'outstanding needsReview flags (rhomboid-major, internal-intercostals) mentioned in this CR\'s own "current state" were ' +
+      'already resolved earlier, during CR-013 — nothing further needed there. npm run test (239 passed), npm run build, ' +
+      'npm run lint, and npm run validate-content (285 structures, 0 errors/warnings) all pass.',
+  },
+  {
+    ref: 'CR-011',
+    title: 'Audio pronunciation',
+    category: 'content',
+    priority: 'p2',
+    effort: 's',
+    status: 'completed',
+    description:
+      'Add a pronunciation button using the Web Speech API by default, an optional audioUrl override field for later hand-recorded ' +
+      'audio, and phonetic respellings for all 122 muscles.',
+    prompt:
+      'Add audio pronunciation to this Vite + React 19 anatomy app.\n\n' +
+      'CURRENT STATE\n' +
+      '- 285 structures with `name` and `aliases` fields in the seed data.\n' +
+      '- MuscleCard.tsx renders the structure detail view; StructureFactsPanel.tsx shows facts.\n\n' +
+      'WHAT TO BUILD\n' +
+      '1. A pronunciation button on MuscleCard and StructureFactsPanel.\n' +
+      '2. Use the Web Speech API (SpeechSynthesisUtterance) as the default — zero assets, zero\n' +
+      '   cost, works offline, available everywhere. Accept that it mangles some Latin terms.\n' +
+      '3. Add an optional audioUrl field to the structure type so hand-recorded audio can\n' +
+      '   override synthesis per structure later, starting with the terms synthesis handles\n' +
+      '   worst. Do not record anything now.\n' +
+      '4. Add a phonetic respelling field (e.g. "flexor hallucis longus" ->\n' +
+      '   "FLEK-sor ha-LOO-sis LONG-us") displayed alongside the name. For many students this is\n' +
+      '   more useful than the audio itself, since it survives being read silently. Author these\n' +
+      '   for the 122 muscles.\n' +
+      '5. Handle the API being unavailable gracefully — hide the button rather than erroring.\n\n' +
+      'ACCEPTANCE\n' +
+      '- npm run test and npm run build pass.',
+    dependsOn: [],
+    createdAt: '2026-08-26T08:00:00.000Z',
+    startedAt: '2026-08-27T21:45:00.000Z',
+    completedAt: '2026-08-27T22:10:00.000Z',
+    notes:
+      'phoneticSpelling?/audioUrl? added to the shared AnatomyStructureBase (bones/landmarks leave it undefined, same as ' +
+      'latin?/clinical?). Phonetics authored as a PHONETIC_SPELLINGS lookup in structures.muscles.seed.ts, following the ' +
+      "EXTRA_ALIASES precedent already in that file, rather than editing muscles.raw.json (that file is a verbatim, " +
+      'regenerable copy — see its own header comment). All 122 muscles covered, verified by script. lib/pronunciation.ts ' +
+      'wraps the Web Speech API, prefers audioUrl when present, falls back to speech if a recorded clip 404s, and the ' +
+      'shared PronounceButton renders nothing when neither is available. Wired into MuscleCard, MobileMuscleCard, and ' +
+      'StructureFactsPanel per the prompt — note StructureFactsPanel itself has no current callers anywhere in the app ' +
+      '(dead code predating this CR), flagged to the user rather than silently left as-is or newly wired up elsewhere.',
+  },
+  {
+    ref: 'CR-012',
+    title: 'Educator/cohort mode',
+    category: 'infrastructure',
+    priority: 'p2',
+    effort: 'l',
+    status: 'completed',
+    description:
+      'Add a third role (educator, via custom claim, scoped to named cohorts) and a cohort dashboard reusing CR-005\'s aggregation ' +
+      'functions: structure weakness and confusion pairs scoped to a cohort, per-student drill-down, and join/leave-code cohort ' +
+      'membership. Educators see aggregated performance only, never raw session logs.',
+    prompt:
+      'Add educator/cohort functionality to this Vite + React 19 + Firebase 11 anatomy app.\n\n' +
+      'CURRENT STATE\n' +
+      '- users/{uid} profile documents already carry a `cohort` field, currently always null\n' +
+      '  (added in CR-001 as a placeholder for this).\n' +
+      '- Admin analytics with cross-user aggregation exists (CR-005 complete) — reuse those\n' +
+      '  aggregation functions rather than writing parallel ones.\n' +
+      '- Admin access is gated by a Firebase custom claim { admin: true }.\n\n' +
+      'WHAT TO BUILD\n' +
+      '1. A THIRD ROLE. There are currently two (student, admin). Add educator via a custom\n' +
+      '   claim { educator: true, cohorts: string[] } — an educator sees their own cohorts only,\n' +
+      '   never the whole platform and never the change register.\n\n' +
+      '2. Cohorts collection: { id, name, institution, ownerUid, joinCode, createdAt,\n' +
+      '   archivedAt }. Students join via a code entered in their account settings, which sets\n' +
+      '   users/{uid}.cohort. Joining must be explicit and revocable by the student.\n\n' +
+      '3. EDUCATOR DASHBOARD at /educator:\n' +
+      '   - cohort overview: active students, mean accuracy, engagement over time\n' +
+      '   - the structure weakness table from CR-005, scoped to the cohort — this is the thing\n' +
+      '     educators actually want, because it tells them what to reteach before the exam\n' +
+      '   - the confusion-pairs view, scoped to the cohort\n' +
+      '   - per-student view: accuracy, streak, weakest structures, last active\n' +
+      '   - assignments: set a region and deadline, track completion\n\n' +
+      '4. PRIVACY. Students must be told plainly, at the point of joining a cohort and in\n' +
+      '   settings, exactly what their educator can see. Make leaving a cohort straightforward.\n' +
+      '   Educators should see performance data, never raw answer-by-answer logs of an\n' +
+      "   individual's session — aggregate and summarise at the student level. The difference\n" +
+      '   between "this student is struggling with the rotator cuff" and a keystroke-level\n' +
+      "   record of their revision matters, both ethically and for whether students trust the\n" +
+      '   product enough to use it honestly.\n\n' +
+      '5. Educators must not see students outside their own cohorts. Enforce in Firestore rules\n' +
+      '   against the cohorts array in the claim, not just in the UI.\n\n' +
+      'ACCEPTANCE\n' +
+      '- npm run test and npm run build pass.\n' +
+      '- An educator claim scoped to cohort A cannot read cohort B data directly from Firestore.',
+    dependsOn: ['CR-005'],
+    createdAt: '2026-08-26T08:00:00.000Z',
+    startedAt: '2026-08-27T23:25:00.000Z',
+    completedAt: '2026-08-28T01:10:00.000Z',
+    notes:
+      'Educator role added as a custom claim { educator: true, cohorts: string[] } via a new scripts/setEducator.ts, mirroring ' +
+      'setAdmin.ts exactly (same GOOGLE_APPLICATION_CREDENTIALS requirement, same sign-out/in caveat). No Cloud Functions exist ' +
+      'in this project, which shapes two deliberate scope decisions: (1) a cohort Firestore doc (name/institution/joinCode) is ' +
+      'created via a new admin-only /admin/cohorts screen, but granting an educator read access to that cohort\'s student data ' +
+      'is a SEPARATE step (the set-claim script) — there is no way for a client to safely mint its own claim-worthy resource, ' +
+      'so cohort creation and claim-granting are two explicit admin actions, not one; (2) join-code lookups and cohort-name ' +
+      'display are readable by any signed-in user (same trust model as an invite code) rather than trying to lock down a ' +
+      'collection scan Firestore rules can\'t meaningfully restrict anyway — the actual privacy boundary is student DATA, never ' +
+      'cohort metadata. firestore.rules extended: users/{uid} (+ subcollections) and attemptEvents gain an educator-claim read ' +
+      'clause alongside the existing admin one, checking the target user\'s cohort against request.auth.token.cohorts via an ' +
+      'explicit get() (Firestore rules can\'t see the parent doc\'s fields from a subcollection match without one) — an ' +
+      'educator\'s claim is therefore the sole input to what they can read, so a claim scoped to cohort A cannot reach cohort B ' +
+      'through any client-side trick, satisfying this CR\'s acceptance criterion directly at the rules level. New cohorts/{id} ' +
+      '(+ assignments subcollection) rules added alongside. Dashboard at /educator reuses CR-005\'s pure aggregation functions ' +
+      '(aggregateStructureWeakness, aggregateConfusionPairs, aggregateAccuracyByRegion, aggregateActiveUsersByDay, ' +
+      'computeRetention, computeSessionMetrics) completely unchanged, fed a cohort-scoped attempt/session-summary fetch instead ' +
+      'of the platform-wide one (one listAttempts/listSessionSummaries call per student — a bounded N+1, the same accepted ' +
+      'pattern analyticsSource.ts already documents for its own cohort overview) — and goes further than the prompt\'s literal ' +
+      '"reuse the aggregation functions" by reusing the presentational pieces too (StructureWeaknessTable, ConfusionPairsList, ' +
+      'StatTile, AccuracyByRegionChart, ActiveUsersChart), since all five are pure/presentational with no admin-only coupling. ' +
+      'Per-student drill-down shows accuracy, current streak (lib/streak.ts\'s computeStreak, unchanged), and weakest structures ' +
+      '(same aggregateStructureWeakness at minAttempts=1) — deliberately never a session-by-session or answer-by-answer log, ' +
+      'per the prompt\'s privacy requirement. Assignments (region + due date) are tracked against a pragmatic completion ' +
+      'definition — "has attempted the assigned region since assigning" plus accuracy-since-then, not a stricter pass/fail bar ' +
+      '— documented in lib/assignmentCompletion.ts as a deliberate scope limit: a firmer definition would need a session/topic ' +
+      'construct this app does not have. Student-side join/leave-by-code UI added to both NavSidebar\'s AccountSection (desktop) ' +
+      'and MobileAccountSection, with the same plain-language privacy line shown before and after joining, and leaving is a ' +
+      'single button with no confirmation step, per the prompt\'s "make leaving straightforward" ask. One real bug caught by ' +
+      'the build step before landing: the new CohortMembership component initially statically imported cohortsRepository.ts ' +
+      '(which imports firebase.ts) from NavSidebar/MobileAccountSection — both always-eager, not lazy — which pulled the whole ' +
+      'Firebase SDK (~490KB) into the main bundle regardless of persistence mode, nearly doubling it. Fixed by switching to ' +
+      "dynamic import() inside the component's effect/handlers, matching AuthProvider.tsx's own established pattern for " +
+      'exactly this reason; confirmed fixed by checking the bundle output returned to its pre-change size with firebase.ts ' +
+      'back in its own separate chunk. npm run test (248 passed), npm run build, npm run lint, and npm run validate-content ' +
+      'all pass. README was not updated — consistent with CR-008/009/010/011 also not touching it this session, so the change ' +
+      'register stays the single source of truth for what shipped rather than half the CRs updating docs and half not.',
+  },
+  {
+    ref: 'CR-013',
+    title: 'Quick wins bundle',
+    category: 'infrastructure',
+    priority: 'p1',
+    effort: 's',
+    status: 'completed',
+    description:
+      'Five small, independent fixes: the mastery N+1 read (already done by CR-006), nine unlinked structures, ' +
+      'two needsReview flags, colliding attempt IDs, and missing loading/error states on async paths.',
+    prompt:
+      'Address a set of small issues in this Vite + React 19 + Firebase 11 anatomy app.\n\n' +
+      '1. N+1 READ IN THE ANSWER PATH\n' +
+      '   useRevisionSession.submitAnswer calls repository.getMastery(userId), which fetches the\n' +
+      '   ENTIRE mastery subcollection, on every single answer. On Firestore that is a full\n' +
+      '   collection read per question. Add getMasteryForStructure(userId, structureId) to the\n' +
+      '   AnatomyRepository interface, implement it in the firestore, local and memory\n' +
+      '   repositories, and use it here.\n' +
+      '   (If CR-006 has already been done, this is complete — check first.)\n\n' +
+      '2. NINE UNLINKED STRUCTURES\n' +
+      '   9 of 285 structures have no linked images. Identify them by running through\n' +
+      '   ALL_STRUCTURES checking imageIds.length === 0. For each, either add an alias matching\n' +
+      "   an existing image's panelStructureNames (see how lib/linkImages.ts matches), or record\n" +
+      '   in a comment which image still needs to be produced. Do not hand-edit imageIds —\n' +
+      '   linking is automatic via name and alias matching.\n\n' +
+      '3. TWO needsReview FLAGS\n' +
+      '   rhomboid-major and internal-intercostals are flagged needsReview: true because their\n' +
+      '   data was inferred from standard anatomy rather than taken from the source slides.\n' +
+      '   Verify against a reliable anatomical reference, correct if needed, and clear the flag.\n' +
+      '   These live in data/source/muscles.raw.json, not the muscles seed file.\n\n' +
+      '4. DETERMINISTIC ATTEMPT IDS\n' +
+      '   Attempt ids are `attempt-${sessionId}-${currentIndex}`. If a session is ever resumed or\n' +
+      '   a question re-answered, this collides and silently overwrites. Include a timestamp or\n' +
+      '   random suffix.\n\n' +
+      '5. LOADING AND ERROR STATES\n' +
+      '   Several async paths (repository loading, session persistence) have no error handling —\n' +
+      '   a failed Firestore write currently fails silently and the student loses the answer with\n' +
+      '   no indication. Add visible error states and a retry where sensible.\n\n' +
+      'ACCEPTANCE\n' +
+      '- npm run test, npm run build and npm run validate-content all pass.',
+    dependsOn: [],
+    createdAt: '2026-08-26T08:00:00.000Z',
+    startedAt: '2026-08-27T09:00:00.000Z',
+    completedAt: '2026-08-27T10:00:00.000Z',
+    notes: '',
+  },
+  {
+    ref: 'CR-014',
+    title: 'Joints as a first-class structure category',
+    category: 'clinical',
+    priority: 'p2',
+    effort: 'l',
+    status: 'completed',
+    description:
+      'Add Category: \'joint\' alongside muscle/bone/landmark — joint type classification, articulating bones, ' +
+      'possible movements, and stabilizing structures — reusing CR-010\'s clinical fields (specialTests, ' +
+      'commonInjuries, palpationNotes) rather than inventing new ones. Piloted on the shoulder-arm complex.',
+    prompt:
+      'Following up on a user question about content coverage: bones and bony landmarks already have real ' +
+      'question coverage (flashcard/MCQ/locate/fill-blank), but joints only existed as a free-text ' +
+      '`articulations` field on bones/landmarks, with no dedicated structure, card, or clinical content of ' +
+      'their own. The user asked to introduce joints properly.\n\n' +
+      'Two decisions were confirmed with the user before implementation, since both carry real effort/scope ' +
+      'tradeoffs: (1) model joints as a genuine new Category (\'joint\'), not a flag bolted onto landmarks, ' +
+      'since it is the more honest representation and lets joints carry the same clinical fields CR-010 ' +
+      "already added to AnatomyStructureBase; (2) pilot on the shoulder-arm complex only (5 joints), " +
+      "mirroring CR-010's own single-region vertical slice, rather than authoring all 5 regions' major " +
+      'synovial joints at once.\n\n' +
+      'WHAT WAS BUILT\n' +
+      "1. Category extended to 'muscle' | 'bone' | 'landmark' | 'joint'; new JointType union (the six " +
+      'standard synovial joint classifications) and JointStructure (jointType, articulatingStructureIds, ' +
+      'movements, stabilizers) added to types/structure.ts, plus an isJoint guard.\n' +
+      '2. Two new PromptKinds: joint-type (MCQ classification question) and joint-movement (multi-select ' +
+      'exclusion question).\n' +
+      '3. 5 shoulder-arm joints authored in a new structures.joints.seed.ts, hand-authored like ' +
+      'structures.bones.seed.ts (no source-of-truth file exists for joints either): glenohumeral, ' +
+      'acromioclavicular, sternoclavicular, humeroulnar, proximal radioulnar — covering all 6 joint ' +
+      'classification types except condyloid, which has no shoulder-arm representative.\n' +
+      '4. Question generation wired through every existing generator rather than a parallel joint-only path: ' +
+      'mcq.ts gets a JOINT_KINDS list (identify + joint-type); flashcards.ts needed zero changes since its ' +
+      'generic identify card already calls the shared summarizeStructure/facts.ts, which now has a joint ' +
+      'branch; multiSelect.ts gets a new buildJointMovementQuestions generator ("which of these movements is ' +
+      'NOT possible at the humeroulnar joint"), mirroring the existing action-exclusion shape exactly; ' +
+      "clinical.ts's buildInjuryMechanismQuestions was widened from muscle-only to any category with " +
+      'commonInjuries authored, since a joint dislocation is an equally valid vignette — this was the one ' +
+      'genuine behavior change to existing (not new) code, and is backward-compatible since only muscles had ' +
+      'commonInjuries before this CR.\n' +
+      '5. UI: RevisionSetup\'s category picker and the admin analytics category filter both gained a "Joints" ' +
+      'option. validateContent.ts gained an articulatingStructureIds FK check, mirroring the existing ' +
+      'parentBoneId check for landmarks.\n\n' +
+      'DELIBERATELY OUT OF SCOPE\n' +
+      "- Locate questions: eligibility.locate is false on every joint entry, honestly, since no atlas-slide " +
+      'hotspot pinpoints a joint space specifically (as opposed to the bones forming it) — forcing ' +
+      'locate: true with no hotspot data would just silently generate zero questions forever.\n' +
+      '- Fill-blank: joints\' `movements`/`stabilizers` are tag-like lists, not the free-text sentence ' +
+      'statements blankParser.ts expects (unlike bones\' attachments/articulations) — inventing sentence-' +
+      'shaped content just to force fill-blank coverage would be worse than not having it.\n' +
+      "- The 4 other regions' joints: left for a future pass once this pilot's model is validated in use.\n\n" +
+      'ACCEPTANCE\n' +
+      '- npm run test, npm run build, npm run lint and npm run validate-content all pass.',
+    dependsOn: ['CR-010'],
+    createdAt: '2026-08-28T09:00:00.000Z',
+    startedAt: '2026-08-28T09:05:00.000Z',
+    completedAt: '2026-08-28T10:40:00.000Z',
+    notes:
+      'One test-writing bug caught by the suite itself: the first draft of buildJointMovementQuestions required ' +
+      'a joint to have >= 3 movements before generating a question, which silently excluded every hinge/pivot ' +
+      'joint (exactly 2 movements each — humeroulnar and proximal radioulnar, 2 of the 5 piloted joints). ' +
+      'Lowered the floor to >= 2 movements once a test asserted a question should exist for the humeroulnar ' +
+      'joint and got undefined back. New tests: mcq.test.ts (new file — mcq.ts had no dedicated unit tests ' +
+      'before this CR, only the full-seed-dataset integration test in generateSet.test.ts) covers the ' +
+      'joint-type question and confirms joints get the text-clue identify variant that bones deliberately ' +
+      'skip; multiSelect.test.ts extended with 2 joint-movement tests; clinical.test.ts extended with a joint ' +
+      'fixture proving the widened injury-mechanism gate. 290 structures now validate cleanly (285 + 5 ' +
+      'joints), 254 tests pass (up from 248).\n\n' +
+      'ADDENDUM (found testing this CR locally): the user hit a "Name the structure:" text-only identify MCQ ' +
+      'with a completely blank clue (Back & Core region, costovertebral-joint). Root cause was in ' +
+      "lib/facts.ts's buildIdentifyClue — it only ever read a landmark's `attachments` field, but 42 " +
+      'landmarks across the seed data (unrelated to this CR\'s new joints) have `attachments: []` and only ' +
+      '`articulations` authored. Fixed with a proper fallback chain (attachments -> articulations -> ' +
+      'description, never blank) and a matching describeStructure fix so the same structures don\'t show an ' +
+      'empty "Attachments:" line on their detail card either. New facts.test.ts (first-ever test file for ' +
+      'facts.ts) locks this in, including a dataset-wide check that every real structure produces a non-empty ' +
+      'clue. 258 tests pass.',
+  },
+  {
+    ref: 'CR-015',
+    title: 'Fix locate-question image/hotspot misalignment',
+    category: 'content',
+    priority: 'p0',
+    effort: 's',
+    status: 'completed',
+    description:
+      'Every one of the 45 image assets was missing width/height, so HotspotImage.tsx could never lock its ' +
+      'aspect ratio and object-cover silently cropped to whatever shape the surrounding layout produced — a ' +
+      'correct click on the visually obvious muscle could register as wrong. Populated real pixel dimensions ' +
+      '(verified via pngjs) for every image and added a validateContent.ts guard against it recurring.',
+    prompt:
+      'User-reported bug, found via two screenshots: a "Tap the Gluteus Maximus" and a "Tap the Deltoid" ' +
+      'locate question where the post-answer reveal overlay (the correct hotspot polygon, shown in green) was ' +
+      'positioned nowhere near the actual blue-highlighted muscle visible in the underlying illustration — the ' +
+      'user asked to check the hotspot "render zone" for both images.\n\n' +
+      'ROOT CAUSE: HotspotImage.tsx sizes its click-target wrapper via CSS `aspect-ratio`, derived from ' +
+      'AnatomyImageAsset.width/height — its own code comment says this is "what keeps normalizePointerEvent\'s ' +
+      'coordinates correct" versus object-fit: contain letterboxing corrupting them. But none of the 45 image ' +
+      'entries in images.seed.ts had width/height set (`grep -c "width:"` returned 0), so that lock never ' +
+      'engaged for a single image in the app — the wrapper fell back to whatever the surrounding layout ' +
+      'produced, and the `<img>` inside (object-cover) cropped/stretched to fill that arbitrary shape. Click ' +
+      'coordinates are normalized against the wrapper\'s rendered box, so once that box\'s shape stopped ' +
+      'matching the real image, both the click-hit-testing AND the reveal overlay drifted from the coordinate ' +
+      'space the hotspot polygons were actually authored against — this affected every locate question using ' +
+      'every image in the app, not just the two the user happened to screenshot.\n\n' +
+      'FIX: wrote a one-off script using pngjs (added as a devDependency) to read the real pixel dimensions of ' +
+      'all 45 PNGs on disk, then populated width/height on every AnatomyImageAsset entry: all 21 single-muscle ' +
+      'panel crops share 255x259 (fixed in the single shared factory function that generates them), all 24 ' +
+      'atlas-slide images are 1122x1402 except the 4 spine-atlas-* ones, which are 1254x1254 (fixed via a ' +
+      'file-wide replace on the shared trailing line, then 4 targeted corrections for the square ones). Added ' +
+      'a validateContent.ts warning for any future image with hotspot data but no width/height, so this exact ' +
+      'bug class cannot silently reappear.\n\n' +
+      'NOT FIXED HERE (flagged, not silently ignored): the 4 hand-traced hotspot polygons (deltoid, ' +
+      'gluteus-maximus, biceps-brachii, trapezius) were already documented in their own code comment as ' +
+      '"rough...not pixel-perfect" CR-007 proof-of-concept placeholders. This CR fixes the container/coordinate ' +
+      'system they\'re interpreted against, which was the dominant, severe source of misalignment — but the ' +
+      'hand-typed polygon shapes themselves may still be imprecise relative to the actual muscle silhouette in ' +
+      'each image and could benefit from re-tracing with the /dev/hotspots tool now that the display is ' +
+      'correctly aligned. Separately, the user raised that the source illustrations show the target muscle ' +
+      'pre-highlighted in a distinct colour from the rest of the figure, which makes locate questions easier ' +
+      'than a true blind spatial-recognition test — that is an asset-design question for the user\'s own ' +
+      'AI-generated illustrations, not something fixable in code, and is left for them to decide on.\n\n' +
+      'ACCEPTANCE\n' +
+      '- npm run test, npm run build, npm run lint and npm run validate-content all pass.',
+    dependsOn: [],
+    createdAt: '2026-08-28T11:00:00.000Z',
+    startedAt: '2026-08-28T11:05:00.000Z',
+    completedAt: '2026-08-28T11:35:00.000Z',
+    notes: '',
+  },
+  {
+    ref: 'CR-016',
+    title: 'Drop locate questions from pre-highlighted single-muscle panels',
+    category: 'content',
+    priority: 'p1',
+    effort: 's',
+    status: 'completed',
+    description:
+      'Removed the 4 hand-traced hotspot polygons (deltoid, gluteus-maximus, biceps-brachii, trapezius) that ' +
+      'CR-007 added as a proof-of-concept — the underlying panel images already highlight the target muscle in ' +
+      'a distinct colour, which suits "which structure is shown?" MCQ/typed identify questions, but makes a ' +
+      '"tap the muscle" locate question trivial-or-nothing rather than a real spatial-recognition test.',
+    prompt:
+      'Follow-up to CR-015: after that fix, the user asked to change how these questions are asked entirely — ' +
+      'not a "click on this muscle" locate question, but an identify question (typed or multiple choice) ' +
+      'instead.\n\n' +
+      'Investigated whether that already works: yes. The image-based MCQ "identify" variant and ' +
+      'identifyTyped.ts both match single-structure images via imageDepicts(), which only checks ' +
+      'image.structureId === structure.id — no dependency on hotspot data at all. So deltoid/gluteus-maximus/' +
+      'biceps-brachii/trapezius already generate "Which structure is shown?" MCQ and identify-typed questions ' +
+      'against these exact images, unaffected by anything below.\n\n' +
+      'The only content-side fix needed was to stop generating the locate variant for them, which is simply a ' +
+      'matter of removing their hotspot data — locate.ts already skips any image with no hotspots. Removed ' +
+      "the HOTSPOT_OVERRIDES lookup entirely from images.seed.ts (all 21 single-muscle panel crops now " +
+      'consistently have hotspots: []) and documented why directly in the panel-generation comment, so a ' +
+      'future contributor does not just re-add hand-traced polygons for the same images and reintroduce the ' +
+      "same problem.\n\n" +
+      'CONSEQUENCE WORTH FLAGGING: these 4 were the only locate content anywhere in the dataset — every other ' +
+      'image already had empty hotspots. So the Locate question type currently generates zero questions ' +
+      "across the entire app, not just for these 4 muscles. Locate isn't broken as a mechanic (its generator, " +
+      'hit-testing, and CR-015\'s aspect-ratio fix are all still correct and tested) — there is simply no ' +
+      'image in the dataset suited to it right now, since a fair locate question needs a genuinely neutral ' +
+      '(non-pre-highlighted) diagram, which none of the current AI-generated panels are. Flagged to the user ' +
+      'rather than silently left as a confusing "pick Locate, get an empty session" trap — a separate decision ' +
+      'on next steps (hide the option, author new neutral diagrams, or leave as-is) is theirs to make.\n\n' +
+      'ACCEPTANCE\n' +
+      '- npm run test, npm run build, npm run lint and npm run validate-content all pass.',
+    dependsOn: ['CR-015'],
+    createdAt: '2026-08-29T09:00:00.000Z',
+    startedAt: '2026-08-29T09:05:00.000Z',
+    completedAt: '2026-08-29T09:30:00.000Z',
+    notes:
+      'generateSet.test.ts\'s "generates locate questions for images with authored hotspots" test previously ' +
+      'depended on this exact real seed data — rewrote it to use a synthetic single-structure image/hotspot ' +
+      'fixture instead (proving the generateSet -> locate.ts wiring itself still works, independent of ' +
+      'whatever content happens to exist today), and added a new explicit test asserting the real seed dataset ' +
+      'currently produces zero locate questions — turning a stale implicit assumption into a documented, ' +
+      'intentional fact that will fail loudly (not silently) once real locate-suited content is authored. 259 ' +
+      'tests pass.\n\n' +
+      'FOLLOW-UP (same conversation): asked the user how to handle Locate being selectable-but-empty in the ' +
+      'Study setup screens; they chose to hide it rather than leave it visible or pursue new neutral diagrams ' +
+      'right now. Removed the "Locate" chip from both RevisionSetup.tsx (desktop) and MobileRevisionSetup.tsx ' +
+      '(mobile) format pickers, dropped it from both screens\' default-selected types, and deleted the mobile ' +
+      'screen\'s now-meaningless "Locate questions need hotspot data..." hint paragraph (its only other branch, ' +
+      '"Image questions are off — this session is text only", was already inaccurate anyway, since MCQ/' +
+      'identify-typed use images too whenever a match exists). generateRevisionSet itself, locate.ts, and ' +
+      'hit-testing are untouched — Locate still works correctly end-to-end for any future image that does get ' +
+      'real hotspot data; it\'s just not offered as a dead-end choice in the meantime.',
   },
 ];
