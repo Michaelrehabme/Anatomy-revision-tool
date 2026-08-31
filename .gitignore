@@ -7,3 +7,11 @@ dist-ssr
 coverage
 .DS_Store
 *.log
+
+# Blender source model, render output and the bundled prototype viewer (~2GB).
+# Renders that ship with the app are copied into public/anatomy/ instead.
+atlas/
+renders/
+deploy/
+tools/
+.netlify/

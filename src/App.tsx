@@ -32,6 +32,13 @@ import type { MobileTab } from './features/anatomy-revision/components/mobile/Mo
 /** Code-split so students never download the admin bundle — see src/features/admin/AdminApp.tsx. */
 const AdminApp = lazy(() => import('./features/admin/AdminApp'));
 
+/**
+ * Hotspot authoring tooling. The ternary folds to `null` at build time, which
+ * leaves the import() in a dead branch for Rollup to drop entirely — students
+ * never receive this and it cannot be reached in production.
+ */
+const DevRoutes = import.meta.env.DEV ? lazy(() => import('./features/dev/DevRoutes')) : null;
+
 const ONBOARDED_KEY = 'anatomy-revision:v1:onboarded';
 
 const SECTION_PATH: Record<NavSection, string> = {
@@ -149,6 +156,22 @@ function App() {
     if (session.phase === 'in-progress') navigate('/session');
     else if (session.phase === 'results') navigate('/session/results');
   }, [session.phase, navigate]);
+
+  // Above the loading and onboarding gates on purpose: the dev tools read seed
+  // content directly and need no repository, auth or completed onboarding.
+  if (DevRoutes && location.pathname.startsWith('/dev')) {
+    return (
+      <Suspense
+        fallback={
+          <div className="flex min-h-screen items-center justify-center text-sm" style={{ color: 'var(--ink3)' }}>
+            Loading dev tools…
+          </div>
+        }
+      >
+        <DevRoutes />
+      </Suspense>
+    );
+  }
 
   if (repoLoading || content.loading) {
     return (

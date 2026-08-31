@@ -123,7 +123,10 @@ export const MUSCLE_STRUCTURES: MuscleStructure[] = RAW_MUSCLES.map((m): MuscleS
     description: m.actionText,
     aliases: buildAliases(m.id),
     imageIds: [],
-    eligibility: { flashcard: true, mcq: true, locate: false },
+    // locate is safe to enable for every muscle: buildLocateQuestions
+    // independently requires a hotspot to exist, so muscles without traced
+    // polygons still produce nothing.
+    eligibility: { flashcard: true, mcq: true, locate: true },
     difficulty: 'medium',
     tags: m.groups,
     clinical: m.clinical,

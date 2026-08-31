@@ -23,10 +23,10 @@ npm run validate-content    # checks seed data for broken cross-references
 npm run build                # type-checks + production build
 ```
 
-On first run you'll get a large, immediately-usable content library for flashcards and MCQs:
-all 122 muscles (from `muscles.json`) plus ~180 bones/landmarks/joints, illustrated by 24 real
-atlas-slide images. **Locate-the-structure questions still show zero results** — see "Image and
-hotspot status" below for why.
+On first run you'll get a large, immediately-usable content library: all 122 muscles (from
+`muscles.json`) plus ~180 bones/landmarks/joints, illustrated by 14 bone/landmark atlas slides,
+21 single-muscle panel crops and 15 Z-Anatomy regional renders. Locate-the-structure questions
+cover 72 muscles across all five regions — see "Image and hotspot status" below.
 
 ## Image and hotspot status
 
@@ -35,20 +35,33 @@ verbatim copies of `Downloads/muscles.json`/`ta2-mapping.json` — `structures.m
 a small transform over them (see that file), not hand-typed data, so re-copy those two files
 here and the seed content updates automatically.
 
-24 real atlas-slide images live under `/public/anatomy/atlas/` — 10 muscle atlas slides plus 14
-bone/landmark atlas slides, each an `AnatomyImageAsset` with `mode: 'atlas-slide'` in
-`images.seed.ts`. Every structure's `imageIds` is populated **automatically** by
-`lib/linkImages.ts`, which matches each image's `panelStructureNames` against structure
-name/id/aliases — you never hand-maintain `imageIds` (see "Adding a new structure" below).
+14 bone/landmark atlas slides live under `/public/anatomy/atlas/`, each an `AnatomyImageAsset`
+with `mode: 'atlas-slide'` in `images.seed.ts`. Every structure's `imageIds` is populated
+**automatically** by `lib/linkImages.ts`, which matches each image's `panelStructureNames`
+against structure name/id/aliases — you never hand-maintain `imageIds` (see "Adding a new
+structure" below). The 10 AI-generated *muscle* slides that used to sit alongside them were
+retired in favour of the Z-Anatomy renders.
+
+15 regional renders live under `/public/anatomy/regions/` — anterior, lateral and posterior for
+each of the 5 regions, from the Z-Anatomy 3D model. These carry **every hotspot in the app**:
+104 polygons over 72 muscles, traced from the Blender per-muscle masks by
+`src/scripts/masksToHotspots.ts`. All three views are frames of one turntable, so they share a
+camera and the masks align to all of them.
 
 What's still missing, and what that means:
 
-1. **Hotspot polygon data.** None of the 24 images have `hotspots` populated yet, so every
-   image works for flashcard/MCQ prompts but **zero** locate-the-structure questions exist. See
-   "Adding hotspots" below for the two authoring paths.
-2. **Individual single-structure images** (e.g. one isolated render per muscle, cropped/labelled
-   on its own) — the current image library is all multi-panel atlas slides. Nothing stops adding
-   single-structure images later; they'd link the same way via `linkImages.ts`.
+1. **50 of the 122 muscles have no locate question.** They are occluded in every view a solo
+   silhouette can offer — you cannot tap what you cannot see. Unlocking them needs a *layered*
+   render pass (superficial muscles hidden), which means writing a new Blender script: the
+   307MB model and Blender itself are present, but the original render scripts are not in this
+   repo. Run `masksToHotspots.ts` and read its closing "occluded in every view" list to see
+   exactly which muscles that would buy.
+2. **Hotspots for bones and landmarks.** The Blender masks only cover muscles, so the 163
+   bone/landmark structures have no polygons and generate no locate questions. Author these by
+   hand with the dev tool — see "Adding hotspots" below.
+3. **The 21 panel crops are 255px square** and visibly soft on a modern phone. 130 per-muscle
+   Z-Anatomy renders at 1400px exist in the render output and could replace them, though each
+   uses its own camera so they cannot carry hotspots.
 
 ## Licensing — read before adding images
 
@@ -56,9 +69,11 @@ The 24 atlas-slide images currently in the app are AI-generated illustrations th
 created — credited as `'Rory Neary (AI-generated illustration)'` / `'All rights reserved'` (see
 the `AI_GENERATED_CREDIT`/`AI_GENERATED_LICENCE` constants in `images.seed.ts`).
 
-Images rendered from the [Z-Anatomy](https://github.com/Z-Anatomy/Models-of-human-anatomy) 3D
-atlas (via the Blender pipeline described below) are **CC BY-SA 4.0** — attribution required,
-derivatives must stay share-alike, commercial use is fine. Any *other* image source (slide decks,
+The 5 posterior regional renders under `/public/anatomy/regions/` come from the
+[Z-Anatomy](https://github.com/Z-Anatomy/Models-of-human-anatomy) 3D atlas and are
+**CC BY-SA 4.0** — attribution required, derivatives must stay share-alike, commercial use is
+fine. Share-alike covers the **traced hotspot polygons too**, not just the images: they are
+derived from the same renders, so `hotspots.regions.generated.ts` carries the same obligation. Any *other* image source (slide decks,
 textbook scans, someone else's photography) has whatever licence *that* source actually carries —
 **do not assume CC BY-SA, and do not assume the AI-generated credit above, for anything that
 didn't come from one of those two places.** For anything with unconfirmed terms, leave
@@ -119,43 +134,54 @@ Content rules to keep in mind (see `types/structure.ts` and the seed files' own 
 
 ## Adding hotspots (for locate-the-structure questions)
 
-**Muscles**, via the Blender pipeline already scaffolded in `Downloads/` (not yet run):
+**Muscles**, from the Blender render masks. These live in the untracked `deploy/` and `renders/`
+directories (see `.gitignore`) — they are ~2GB of build output, not source:
 
 ```bash
-# In Downloads/, per its own README.md:
-blender Z-Anatomy.blend --background --python dump_objects.py -- --out objects.json
-python3 reconcile.py --objects objects.json --mapping ta2-mapping.json
-blender Z-Anatomy.blend --background --python render_muscles.py -- \
-    --mapping ta2-mapping.resolved.json --out ./renders --region shoulder-arm
-python3 masks_to_svg.py --masks ./renders/masks --out hotspots.json
+# Trace polygons from the per-muscle turntable masks, depth-subtracted (see below).
+npx tsx src/scripts/masksToHotspots.ts --out hotspots.regions.json
+
+# Validate against the current seed data and regenerate the typed module.
+npx tsx src/scripts/importHotspots.ts hotspots.regions.json --emit-ts \
+  --out src/features/anatomy-revision/data/seed/hotspots.regions.generated.ts
 ```
 
-Then feed the output into this project:
+Use `--out` on the second command rather than redirecting stdout: the script imports the seed
+data, and `>` would truncate the very module it is regenerating before it could read it.
+
+The converter prints a per-structure table (solid px / visible px / % / vertices / kept or
+dropped). Scan it: a muscle you know is visible showing a low percentage means the layering in
+`src/scripts/data/occlusionOrder.ts` is wrong.
+
+**Why the depth subtraction matters.** Each mask is a *solo* silhouette, rendered with only that
+muscle visible, so a deep muscle's mask covers ground that a superficial muscle hides in the
+actual image — rhomboid minor's silhouette lies entirely inside trapezius'. Since overlapping
+polygons resolve smallest-area-wins (below), importing the raw silhouettes would attribute a
+correct trapezius tap to a muscle the student cannot see: measured, trapezius graded correct
+only 56% of the time. `occlusionOrder.ts` lists each render's muscles superficial-to-deep, the
+converter subtracts everything already claimed, and the resulting polygons are mutually
+exclusive. **Never import `--no-occlusion` output as content** — that flag exists only to
+compare the tracer against the polygons embedded in the prototype viewer.
+
+**Bones and landmarks** have no masks, so author them by hand:
 
 ```bash
-npx tsx src/scripts/importHotspots.ts path/to/hotspots.json
+npm run dev     # then open /dev/hotspots
 ```
 
-This validates the file, cross-references muscle ids and image ids against the current seed
-data, and prints ready-to-paste TS snippets (plus a mismatch report) for anything that matches
-— it does not rewrite `images.seed.ts` automatically, since seed content is deliberately typed
-TS (not raw JSON) so the compiler catches shape errors immediately.
+The dev-only route (gated behind `import.meta.env.DEV`, so it cannot reach a production build)
+lets you pick any image, click to place vertices, close rings, drag vertices to adjust, and copy
+the result as `importHotspots.ts` v2 JSON. It loads any existing hotspots into the editor first,
+so it doubles as the correction surface for whatever the converter produced. For simple shapes
+you can also eyeball pixel coordinates in an image viewer and divide by the image's dimensions.
 
-**Bones and landmarks** have no equivalent Blender pipeline. Two options:
-
-1. A small in-repo dev-only route (not yet built — a natural next addition) at e.g.
-   `/dev/hotspot-authoring`, gated behind `import.meta.env.DEV`, that loads an image, lets you
-   click to place polygon vertices, previews live via the existing `HotspotOverlay` component,
-   and gives you a "copy JSON" button for the resulting `HotspotPolygon`.
-2. For simple/small landmark shapes, eyeball pixel coordinates in any image viewer and divide
-   by the image's width/height to get normalized 0–1 points by hand.
-
-Either way, hotspot coordinates are normalized **0–1** against the image's own natural
-width/height (not screen pixels) — see `HotspotPolygon` in `types/image.ts` and
-`lib/hotspot/pointInPolygon.ts`'s point-in-polygon test, which is the same algorithm documented
-in `Downloads/README.md`. When polygons overlap (e.g. deltoid over supraspinatus), the
-smallest-area structure wins a click — this is deliberate, matching how a student tapping
-precisely usually means the smaller structure underneath.
+Hotspot coordinates are normalized **0–1** against the image's own natural width/height (not
+screen pixels) — see `HotspotPolygon` in `types/image.ts` and `lib/hotspot/pointInPolygon.ts`.
+An image carrying hotspots **must** have `width`/`height` set in `images.seed.ts`: `HotspotImage`
+derives its wrapper's aspect-ratio from them, and without it the rendered box stops matching the
+image 1:1 and every click normalizes to the wrong point. `npm run validate-content` warns about
+this. When polygons overlap, the smallest-area structure wins a click — deliberate, matching how
+a student tapping precisely usually means the smaller structure underneath.
 
 ## Persistence
 
@@ -233,6 +259,8 @@ completed change request's history is worth preserving in git, update the seed f
 
 ```
 public/anatomy/atlas/                  # 24 real atlas-slide images (10 muscle + 14 bone/landmark)
+public/anatomy/panels/                 # 21 single-muscle crops for the Muscle Card screen
+public/anatomy/regions/                # 5 Z-Anatomy posterior renders — the only images with hotspots
 
 src/
   App.tsx                              # react-router route table; session phase (setup -> in-progress ->
@@ -269,9 +297,16 @@ src/
       changeRequestsRepository.ts      # Firestore CRUD for changeRequests
       usersRepository.ts               # admin-only reads of the users collection
     lib/statusTransition.ts            # pure status/timestamp rule — see the Testing section
+  features/dev/                        # /dev/* — dev-only, absent from production builds
+    DevRoutes.tsx                      # lazy-loaded behind import.meta.env.DEV in App.tsx
+    HotspotAuthoring.tsx               # /dev/hotspots — trace and correct polygons by hand
   scripts/
     validateContent.ts                 # npm run validate-content
-    importHotspots.ts                  # npx tsx src/scripts/importHotspots.ts <hotspots.json>
+    importHotspots.ts                  # validates hotspots.json, --emit-ts regenerates the seed module
+    masksToHotspots.ts                 # Blender masks -> depth-subtracted polygons
+    data/occlusionOrder.ts             # superficial->deep layering per render (hand-authored)
+    lib/png.ts                         # dependency-free PNG decoder
+    lib/maskToPolygons.ts              # binarise, subtract, component-label, trace, simplify
 
 scripts/                                # Node-only, run via tsx — NOT part of the Vite app bundle
   setAdmin.ts                          # npm run admin:set-claim -- <uid> — see "Admin section" above
