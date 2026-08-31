@@ -21,6 +21,21 @@
  * This is anatomical judgement, not generated data. It is the only hand-authored
  * input to the pipeline. Check it by running the converter and reading the
  * kept/dropped table, then visually in /dev/hotspots.
+ *
+ * OCCLUSION IS DELIBERATELY PER-REGION. Do not "fix" a list by borrowing a
+ * muscle from another region's mask directory. Two independent reasons:
+ *
+ *   1. Every region has its OWN camera, framed and zoomed to that body part —
+ *      back-core fills the frame with the torso, lower-leg-foot with the
+ *      calves. A mask rendered under one region's camera is in a different
+ *      projection entirely, so subtracting it would carve a wrong-shaped hole.
+ *   2. Each region's render contains only its own muscles. Verified by
+ *      unioning every frame-12 mask in a region and comparing with that
+ *      region's base render: IoU 1.0000 (shoulder-arm, hip-thigh) and 0.9998
+ *      (back-core), with under 60 of ~320k base pixels unexplained.
+ *
+ * So latissimus dorsi genuinely does not cover anything in a back-core view —
+ * it is not drawn there. Subtracting it would delete area the student can see.
  */
 
 /** Turntable frame index per view — see region-meta-data in the prototype viewer. */
@@ -59,8 +74,6 @@ export const OCCLUSION_ORDER: Record<string, string[]> = {
     'serratus-anterior',
   ],
   'region-shoulder-arm-posterior': [
-    // No deltoid mask contributes here in the curated set, so the muscles it
-    // partly covers keep slightly more area than they visibly occupy.
     'trapezius',
     'latissimus-dorsi',
     'deltoid',
@@ -87,9 +100,6 @@ export const OCCLUSION_ORDER: Record<string, string[]> = {
     'external-intercostals',
     'internal-intercostals',
   ],
-  // latissimus dorsi covers much of this view but its mask lives under
-  // shoulder-arm, so it cannot occlude here — the trunk muscles below keep
-  // slightly more area than they visibly occupy.
   'region-back-core-lateral': [
     'external-oblique',
     'sternocleidomastoid',

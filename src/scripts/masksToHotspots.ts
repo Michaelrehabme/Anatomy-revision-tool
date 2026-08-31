@@ -97,6 +97,10 @@ function main(): void {
 
       const frame = `frame-${String(VIEW_FRAMES[view]).padStart(2, '0')}.png`;
       const result = traceView(imageId, maskRoot, order, frame, options);
+      // Meaningless without subtraction: `covered` is never populated then.
+      if (options.occlusion) {
+        reportUnlisted(imageId, maskRoot, available, order, frame, result, options.minPx);
+      }
 
       images[imageId] = {
         filePath: `/anatomy/regions/${region}-${view}.webp`,
@@ -127,6 +131,8 @@ interface ViewResult {
   hotspots: Record<string, unknown>;
   panelStructureNames: string[];
   dropped: string[];
+  /** Union of every listed silhouette, for the unlisted-coverage audit. */
+  covered: Uint8Array;
 }
 
 function traceView(
@@ -202,7 +208,64 @@ function traceView(
   }
 
   printRegionTable(imageId, rows);
-  return { width, height, hotspots, panelStructureNames, dropped: droppedIds };
+  return {
+    width,
+    height,
+    hotspots,
+    panelStructureNames,
+    dropped: droppedIds,
+    covered: covered ?? new Uint8Array(0),
+  };
+}
+
+/**
+ * Flags muscles that have a mask in this region but are absent from the view's
+ * occlusion order, reporting the area each would add outside every listed
+ * silhouette.
+ *
+ * These are CANDIDATES, not defects. The masks are solo silhouettes, so a
+ * muscle hidden behind bone still projects a full outline and will show up here
+ * with a large number — the occlusion order exists precisely to exclude those.
+ * A big number means "go look at this view in /dev/hotspots", not "add it".
+ */
+function reportUnlisted(
+  imageId: string,
+  maskRoot: string,
+  available: Set<string>,
+  order: string[],
+  frame: string,
+  result: ViewResult,
+  minPx: number,
+): void {
+  const listed = new Set(order);
+  const rows: { id: string; ownPx: number; uncovered: number }[] = [];
+
+  for (const structureId of available) {
+    if (listed.has(structureId)) continue;
+    const maskPath = join(maskRoot, structureId, frame);
+    if (!existsSync(maskPath)) continue;
+
+    const decoded = decodePng(maskPath);
+    if (decoded.width !== result.width || decoded.height !== result.height) continue;
+
+    let ownPx = 0;
+    let uncovered = 0;
+    for (let i = 0; i < result.covered.length; i++) {
+      if (decoded.data[i * 4 + 3] <= 128) continue;
+      ownPx++;
+      if (result.covered[i] === 0) uncovered++;
+    }
+    if (uncovered >= minPx) rows.push({ id: structureId, ownPx, uncovered });
+  }
+
+  if (rows.length === 0) return;
+  console.log(`  unlisted muscles with visible-looking area in ${imageId}:`);
+  for (const row of rows.sort((a, b) => b.uncovered - a.uncovered)) {
+    console.log(
+      `    ${row.id.padEnd(30)}${String(row.ownPx).padStart(8)} solid` +
+        `${String(row.uncovered).padStart(9)} outside all listed`,
+    );
+  }
 }
 
 function countSet(mask: Uint8Array): number {
