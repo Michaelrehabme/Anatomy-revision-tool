@@ -40,6 +40,11 @@ ap.add_argument("--frames", type=int, default=24, help="full turntable length; s
 ap.add_argument("--res", type=int, default=1400)
 ap.add_argument("--samples", type=int, default=32)
 ap.add_argument("--skip-plate", action="store_true")
+ap.add_argument("--plates-only", action="store_true",
+                help="re-render just the base plates. Masks are emission + holdout, so lighting "
+                     "changes cannot affect them and the stored hotspots stay valid.")
+ap.add_argument("--ambient", type=float, default=0.45, help="world fill strength")
+ap.add_argument("--fill-energy", type=float, default=1.2, help="opposing fill sun energy")
 a = ap.parse_args(argv)
 
 mapping = json.load(open(a.mapping))["mapping"]
@@ -62,6 +67,14 @@ scene.render.image_settings.color_mode = "RGBA"
 world = bpy.data.worlds.new("RenderWorld")
 world.use_nodes = True
 scene.world = world
+# A fresh world defaults to a near-black background, which with a single sun
+# left every surface facing away from it in deep shadow: whole muscle groups
+# read as silhouettes and adjacent bellies became impossible to tell apart.
+# White ambient lifts the shadow side so the form still reads there.
+_bg = world.node_tree.nodes.get("Background")
+if _bg:
+    _bg.inputs[0].default_value = (1.0, 1.0, 1.0, 1.0)
+    _bg.inputs[1].default_value = a.ambient
 
 cam_data = bpy.data.cameras.new("rendercam")
 cam_data.type = "ORTHO"
@@ -73,6 +86,14 @@ sun_data = bpy.data.lights.new("rendersun", type="SUN")
 sun_data.energy = 3.0
 sun = bpy.data.objects.new("rendersun", sun_data)
 scene.collection.objects.link(sun)
+
+# Fill light opposite the key, so the shading that separates one muscle belly
+# from the next survives on the side the key does not reach. Ambient alone
+# flattens the form; ambient plus a fill keeps the creases readable.
+fill_data = bpy.data.lights.new("renderfill", type="SUN")
+fill_data.energy = a.fill_energy
+fill = bpy.data.objects.new("renderfill", fill_data)
+scene.collection.objects.link(fill)
 
 
 def flat_white():
@@ -97,8 +118,11 @@ def principled(name, colour, roughness=0.5):
 
 
 mask_mat = flat_white()
-plate_mat = principled("isolated_flesh", (0.72, 0.32, 0.30, 1.0))
-bone_mat = principled("bone", (0.87, 0.85, 0.78, 1.0), roughness=0.6)
+# Saturated a little beyond the original (0.72, 0.32, 0.30) to hold its colour
+# under the white ambient fill, which otherwise washes the muscle out to a pale
+# pink barely distinguishable from bone.
+plate_mat = principled("isolated_flesh", (0.76, 0.27, 0.25, 1.0))
+bone_mat = principled("bone", (0.90, 0.88, 0.83, 1.0), roughness=0.6)
 
 
 def bake_world_mesh(object_names, mesh_name):
@@ -136,6 +160,9 @@ def frame_camera_azimuth(bbox_min, bbox_max, angle_deg, margin=1.3):
     cam.rotation_euler = (center - loc).to_track_quat('-Z', 'Y').to_euler()
     cam_data.ortho_scale = size * margin
     sun.rotation_euler = mathutils.Euler((0.9, 0.3, 0.6 + theta), 'XYZ')
+    # Roughly opposite the key in azimuth, and from below the horizon, to lift
+    # the underside of each belly rather than re-lighting the same face.
+    fill.rotation_euler = mathutils.Euler((-0.7, -0.2, 0.6 + theta + math.pi), 'XYZ')
     return center, size
 
 
@@ -150,7 +177,7 @@ def render_to(path):
 
 def clear_render_objects():
     for ob in list(scene.collection.objects):
-        if ob not in (cam, sun):
+        if ob not in (cam, sun, fill):
             scene.collection.objects.unlink(ob)
 
 
@@ -224,6 +251,9 @@ for region in regions:
             dt = render_to(os.path.join(a.out, region, f"frame-{frame:02d}.png"))
             total_renders += 1
             print(f"[plate] {region} frame-{frame:02d} {dt:.1f}s", flush=True)
+
+        if a.plates_only:
+            continue
 
         for mid, mesh in baked.items():
             clear_render_objects()
