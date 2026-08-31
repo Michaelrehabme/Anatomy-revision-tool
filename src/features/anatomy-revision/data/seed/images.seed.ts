@@ -11,8 +11,13 @@ import { REGION_HOTSPOTS, REGION_PANEL_NAMES } from './hotspots.regions.generate
  *    name/id/aliases to populate `imageIds`, so keep them exact if a slide is
  *    ever regenerated. No hotspots, so these serve flashcard/MCQ prompts only.
  *    (The 10 AI *muscle* slides were retired in favour of set 3.)
- * 2. 21 single-muscle panel crops for the Muscle Card screen. No hotspots, and
- *    only 255px square — flagged for re-export.
+ * 2. 21 single-muscle panels for the Muscle Card screen — one muscle picked out
+ *    in blue on the skeleton, anterior/lateral/posterior side by side. No
+ *    hotspots. Rendered by src/scripts/blender/renderMusclePanels.py and
+ *    stitched by compositePanels.ts, replacing 255px AI crops that were
+ *    visibly soft. Note these deliberately show the muscle IN CONTEXT: the
+ *    Z-Anatomy isolated renders are sharper still but float the muscle alone
+ *    against white, which is worse for learning where it actually sits.
  * 3. 15 Z-Anatomy regional renders (anterior/lateral/posterior x 5 regions).
  *    These carry every hotspot in the app and are what makes locate questions
  *    work. Their hotspots and panel names come from the generated module, not
@@ -37,7 +42,7 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
   // --- Bone / landmark atlas images (14) ---
   {
     id: 'bones-named-overview',
-    filePath: '/anatomy/atlas/bones-named-overview.png',
+    filePath: '/anatomy/atlas/bones-named-overview.webp',
     slideTitle: 'Named Bones Overview',
     mode: 'atlas-slide',
     panelStructureNames: [
@@ -51,7 +56,7 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
   },
   {
     id: 'landmarks-scapula-humerus',
-    filePath: '/anatomy/atlas/landmarks-scapula-humerus.png',
+    filePath: '/anatomy/atlas/landmarks-scapula-humerus.webp',
     slideTitle: 'Scapula and Humerus Landmarks',
     mode: 'atlas-slide',
     panelStructureNames: [
@@ -65,7 +70,7 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
   },
   {
     id: 'landmarks-elbow-wrist-carpals',
-    filePath: '/anatomy/atlas/landmarks-elbow-wrist-carpals.png',
+    filePath: '/anatomy/atlas/landmarks-elbow-wrist-carpals.webp',
     slideTitle: 'Elbow, Wrist and Carpal Landmarks',
     mode: 'atlas-slide',
     panelStructureNames: [
@@ -79,7 +84,7 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
   },
   {
     id: 'bones-hand',
-    filePath: '/anatomy/atlas/bones-hand.png',
+    filePath: '/anatomy/atlas/bones-hand.webp',
     slideTitle: 'Hand Bones',
     mode: 'atlas-slide',
     panelStructureNames: [
@@ -93,7 +98,7 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
   },
   {
     id: 'landmarks-spine-thorax-overview',
-    filePath: '/anatomy/atlas/landmarks-spine-thorax-overview.png',
+    filePath: '/anatomy/atlas/landmarks-spine-thorax-overview.webp',
     slideTitle: 'Spine and Thorax Landmarks Overview',
     mode: 'atlas-slide',
     panelStructureNames: [
@@ -107,7 +112,7 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
   },
   {
     id: 'bones-pelvis-hip',
-    filePath: '/anatomy/atlas/bones-pelvis-hip.png',
+    filePath: '/anatomy/atlas/bones-pelvis-hip.webp',
     slideTitle: 'Pelvis and Hip Bones and Landmarks',
     mode: 'atlas-slide',
     panelStructureNames: [
@@ -121,7 +126,7 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
   },
   {
     id: 'landmarks-knee',
-    filePath: '/anatomy/atlas/landmarks-knee.png',
+    filePath: '/anatomy/atlas/landmarks-knee.webp',
     slideTitle: 'Knee Region Landmarks',
     mode: 'atlas-slide',
     panelStructureNames: [
@@ -135,7 +140,7 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
   },
   {
     id: 'bones-foot',
-    filePath: '/anatomy/atlas/bones-foot.png',
+    filePath: '/anatomy/atlas/bones-foot.webp',
     slideTitle: 'Foot Bones',
     mode: 'atlas-slide',
     panelStructureNames: [
@@ -149,7 +154,7 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
   },
   {
     id: 'landmarks-16-clinical',
-    filePath: '/anatomy/atlas/landmarks-16-clinical.png',
+    filePath: '/anatomy/atlas/landmarks-16-clinical.webp',
     slideTitle: '16 Core Clinical Bony Landmarks',
     mode: 'atlas-slide',
     panelStructureNames: [
@@ -163,7 +168,7 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
   },
   {
     id: 'bones-landmarks-grouped-overview',
-    filePath: '/anatomy/atlas/bones-landmarks-grouped-overview.png',
+    filePath: '/anatomy/atlas/bones-landmarks-grouped-overview.webp',
     slideTitle: 'Slide 10: Additional Clinically Useful Grouped Bones and Landmarks',
     mode: 'atlas-slide',
     panelStructureNames: [
@@ -177,7 +182,7 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
   },
   {
     id: 'spine-atlas-cervical',
-    filePath: '/anatomy/atlas/spine-atlas-cervical.png',
+    filePath: '/anatomy/atlas/spine-atlas-cervical.webp',
     slideTitle: 'Cervical Spine Atlas',
     mode: 'atlas-slide',
     panelStructureNames: [
@@ -191,7 +196,7 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
   },
   {
     id: 'spine-atlas-thoracic',
-    filePath: '/anatomy/atlas/spine-atlas-thoracic.png',
+    filePath: '/anatomy/atlas/spine-atlas-thoracic.webp',
     slideTitle: 'Thoracic Spine Atlas',
     mode: 'atlas-slide',
     panelStructureNames: [
@@ -205,7 +210,7 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
   },
   {
     id: 'spine-atlas-lumbar',
-    filePath: '/anatomy/atlas/spine-atlas-lumbar.png',
+    filePath: '/anatomy/atlas/spine-atlas-lumbar.webp',
     slideTitle: 'Lumbar Spine Atlas',
     mode: 'atlas-slide',
     panelStructureNames: [
@@ -219,7 +224,7 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
   },
   {
     id: 'spine-atlas-sacrum-coccyx',
-    filePath: '/anatomy/atlas/spine-atlas-sacrum-coccyx.png',
+    filePath: '/anatomy/atlas/spine-atlas-sacrum-coccyx.webp',
     slideTitle: 'Sacrum and Coccyx Atlas',
     mode: 'atlas-slide',
     panelStructureNames: [
@@ -260,7 +265,7 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
   ] as [string, Region, SubRegion, LayerType][]).map(
     ([structureId, region, subregion, layer]): AnatomyImageAsset => ({
       id: `panel-${structureId}`,
-      filePath: `/anatomy/panels/${structureId}.png`,
+      filePath: `/anatomy/panels/${structureId}.webp`,
       mode: 'single-structure',
       structureId,
       region,
@@ -268,8 +273,8 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
       view: 'posterior',
       layer,
       hotspots: [],
-      credit: AI_GENERATED_CREDIT,
-      licence: AI_GENERATED_LICENCE,
+      credit: Z_ANATOMY_CREDIT,
+      licence: Z_ANATOMY_LICENCE,
     }),
   ),
 

@@ -25,7 +25,7 @@ npm run build                # type-checks + production build
 
 On first run you'll get a large, immediately-usable content library: all 122 muscles (from
 `muscles.json`) plus ~180 bones/landmarks/joints, illustrated by 14 bone/landmark atlas slides,
-21 single-muscle panel crops and 15 Z-Anatomy regional renders. Locate-the-structure questions
+21 single-muscle panels and 15 Z-Anatomy regional renders. Locate-the-structure questions
 cover 74 muscles across all five regions — see "Image and hotspot status" below.
 
 ## Image and hotspot status
@@ -66,17 +66,20 @@ What's still missing, and what that means:
 2. **Hotspots for bones and landmarks.** The Blender masks only cover muscles, so the 163
    bone/landmark structures have no polygons and generate no locate questions. Author these by
    hand with the dev tool — see "Adding hotspots" below.
-3. **The 21 panel crops are 255px square** and visibly soft on a modern phone. 130 per-muscle
-   Z-Anatomy renders at 1400px exist in the render output and could replace them, though each
-   uses its own camera so they cannot carry hotspots.
+3. **Hotspots on the panel images.** The 21 muscle panels are `mode: 'single-structure'`, so
+   they answer "which structure is shown?" but cannot be tapped. Each is a strip of three
+   views, so hotspots would need per-view polygons.
 
 ## Licensing — read before adding images
 
-The 24 atlas-slide images currently in the app are AI-generated illustrations the project owner
-created — credited as `'Rory Neary (AI-generated illustration)'` / `'All rights reserved'` (see
-the `AI_GENERATED_CREDIT`/`AI_GENERATED_LICENCE` constants in `images.seed.ts`).
+The 14 atlas slides under `/public/anatomy/atlas/` are AI-generated illustrations the project
+owner created — credited as `'Rory Neary (AI-generated illustration)'` / `'All rights reserved'`
+(see the `AI_GENERATED_CREDIT`/`AI_GENERATED_LICENCE` constants in `images.seed.ts`). They are
+now the *only* AI-generated images left: the 21 muscle panels were re-rendered from Z-Anatomy
+and carry its licence instead, so check which constant an entry uses before copying one.
 
-The 15 regional renders under `/public/anatomy/regions/` come from the
+The 15 regional renders under `/public/anatomy/regions/` and the 21 muscle panels under
+`/public/anatomy/panels/` come from the
 [Z-Anatomy](https://github.com/Z-Anatomy/Models-of-human-anatomy) 3D atlas and are
 **CC BY-SA 4.0** — attribution required, derivatives must stay share-alike, commercial use is
 fine. Share-alike covers the **traced hotspot polygons too**, not just the images: they are
@@ -299,8 +302,8 @@ completed change request's history is worth preserving in git, update the seed f
 ## Project structure
 
 ```
-public/anatomy/atlas/                  # 24 real atlas-slide images (10 muscle + 14 bone/landmark)
-public/anatomy/panels/                 # 21 single-muscle crops for the Muscle Card screen
+public/anatomy/atlas/                  # 14 bone/landmark atlas slides (webp)
+public/anatomy/panels/                 # 21 muscle-on-skeleton panels, 3 views each (webp)
 public/anatomy/regions/                # 15 Z-Anatomy renders, skeleton included — the only images with hotspots
 
 src/
