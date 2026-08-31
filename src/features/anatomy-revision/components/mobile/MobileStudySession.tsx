@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react';
 import type { AnatomyContent } from '../../hooks/useAnatomyContent';
 import type { useRevisionSession } from '../../hooks/useRevisionSession';
 import {
@@ -6,12 +7,15 @@ import {
   isLocateQuestion,
   isFillBlankQuestion,
   isTypedIdentifyQuestion,
+  isMultiSelectQuestion,
 } from '../../types/question';
 import { MobileFlashcardSession } from './MobileFlashcardSession';
 import { MobileMCQSession } from './MobileMCQSession';
 import { MobileLocateStructureSession } from './MobileLocateStructureSession';
 import { MobileIdentifyTypedSession } from './MobileIdentifyTypedSession';
+import { MobileMultiSelectSession } from './MobileMultiSelectSession';
 import { FillBlankSession } from '../FillBlankSession/FillBlankSession';
+import { PersistErrorBanner } from '../shared/PersistErrorBanner';
 
 interface MobileStudySessionProps {
   session: ReturnType<typeof useRevisionSession>;
@@ -20,12 +24,35 @@ interface MobileStudySessionProps {
   onOpenMuscle: (structureId: string, contextIds: string[]) => void;
 }
 
+function formatClock(totalSeconds: number): string {
+  const mins = Math.floor(totalSeconds / 60);
+  const secs = totalSeconds % 60;
+  return `${mins}:${secs.toString().padStart(2, '0')}`;
+}
+
 /** Screens 05–08 (mobile). Top bar (close + progress + counter), no persistent sidebar. */
 export function MobileStudySession({ session, content, onEnd, onOpenMuscle }: MobileStudySessionProps) {
   const question = session.currentQuestion;
   const advance = () => (session.isLastQuestion ? session.finish() : session.next());
   const openFullCard = (structureId: string) =>
     onOpenMuscle(structureId, session.questions.map((q) => q.structureId));
+
+  // See StudySession.tsx (desktop) for why exam mode/timer work this way.
+  const examMode = session.setupParams?.mode === 'assessment';
+  const timerMinutes = session.setupParams?.timerMinutes;
+  const [remainingSeconds, setRemainingSeconds] = useState<number | null>(timerMinutes ? timerMinutes * 60 : null);
+  const sessionRef = useRef(session);
+  sessionRef.current = session;
+
+  useEffect(() => {
+    if (remainingSeconds === null || sessionRef.current.phase !== 'in-progress') return;
+    if (remainingSeconds <= 0) {
+      sessionRef.current.finish();
+      return;
+    }
+    const id = setTimeout(() => setRemainingSeconds((s) => (s !== null ? s - 1 : null)), 1000);
+    return () => clearTimeout(id);
+  }, [remainingSeconds]);
 
   if (!question) {
     return (
@@ -59,7 +86,20 @@ export function MobileStudySession({ session, content, onEnd, onOpenMuscle }: Mo
             {session.currentIndex + 1} / {session.questions.length}
           </span>
         </div>
+        {examMode && (
+          <div className="mt-1.5" style={{ font: '500 11px/1 var(--font-mono)', color: 'var(--accd)' }}>
+            Exam{remainingSeconds !== null ? ` · ${formatClock(remainingSeconds)} left` : ''}
+          </div>
+        )}
       </div>
+
+      {session.persistError && (
+        <PersistErrorBanner
+          message={session.persistError}
+          onRetry={session.retryPersist}
+          onDismiss={session.dismissPersistError}
+        />
+      )}
 
       {isFlashcardQuestion(question) && (
         <MobileFlashcardSession
@@ -78,6 +118,7 @@ export function MobileStudySession({ session, content, onEnd, onOpenMuscle }: Mo
           onAnswer={(params) => session.submitAnswer({ ...params, questionId: question.id })}
           onNext={advance}
           onFullCard={() => openFullCard(question.structureId)}
+          examMode={examMode}
         />
       )}
       {isLocateQuestion(question) && (
@@ -89,6 +130,7 @@ export function MobileStudySession({ session, content, onEnd, onOpenMuscle }: Mo
           onAnswer={(params) => session.submitAnswer({ ...params, questionId: question.id })}
           onNext={advance}
           onFullCard={() => openFullCard(question.targetStructureId)}
+          examMode={examMode}
         />
       )}
       {isFillBlankQuestion(question) && (
@@ -97,6 +139,7 @@ export function MobileStudySession({ session, content, onEnd, onOpenMuscle }: Mo
           question={question}
           onAnswer={(params) => session.submitAnswer({ ...params, questionId: question.id })}
           onNext={advance}
+          examMode={examMode}
         />
       )}
       {isTypedIdentifyQuestion(question) && (
@@ -107,6 +150,16 @@ export function MobileStudySession({ session, content, onEnd, onOpenMuscle }: Mo
           onAnswer={(params) => session.submitAnswer({ ...params, questionId: question.id })}
           onNext={advance}
           onFullCard={() => openFullCard(question.structureId)}
+          examMode={examMode}
+        />
+      )}
+      {isMultiSelectQuestion(question) && (
+        <MobileMultiSelectSession
+          key={question.id}
+          question={question}
+          onAnswer={(params) => session.submitAnswer({ ...params, questionId: question.id })}
+          onNext={advance}
+          examMode={examMode}
         />
       )}
     </div>

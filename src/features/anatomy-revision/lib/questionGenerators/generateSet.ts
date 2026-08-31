@@ -2,13 +2,17 @@ import type { AnatomyStructure, Category, Difficulty } from '../../types/structu
 import type { AnatomyImageAsset } from '../../types/image';
 import type { QuestionType, RevisionQuestion } from '../../types/question';
 import type { Region, SubRegion } from '../../types/region';
-import { buildIndexes, filterStructures } from '../indexes';
-import { createRng, sample, shuffle } from '../rng';
+import type { StructureMastery } from '../../types/attempt';
+import { buildIndexes, filterStructures, type StructureIndexes } from '../indexes';
+import { createRng, sample, shuffle, type Rng } from '../rng';
+import { selectAdaptiveStructures, pickAdaptiveQuestionType } from '../adaptiveSelection';
 import { buildFlashcardQuestions } from './flashcards';
 import { buildMcqQuestions } from './mcq';
 import { buildLocateQuestions } from './locate';
 import { buildFillBlankQuestions } from './fillBlank';
 import { buildIdentifyTypedQuestions } from './identifyTyped';
+import { buildMultiSelectQuestions } from './multiSelect';
+import { buildClinicalQuestions } from './clinical';
 
 export interface RevisionSetConfig {
   types: readonly QuestionType[];
@@ -18,14 +22,53 @@ export interface RevisionSetConfig {
   subregion?: SubRegion;
   category?: Category;
   difficulty?: Difficulty;
-  /** practice = every eligible question once (shuffled), optionally capped at `count`; assessment = a random sample of `count`. */
-  mode: 'practice' | 'assessment';
-  /** Assessment: required, sampled with repeats-free randomness. Practice: optional cap on the shuffled set; omit for every eligible question. */
+  /**
+   * practice = every eligible question once (shuffled), optionally capped at
+   * `count`; assessment = a random sample of `count`; adaptive = `count`
+   * structures blended ~70/30 weak-to-known by mastery data, each escalated
+   * to the hardest requested question type its mastery supports (CR-009).
+   */
+  mode: 'practice' | 'assessment' | 'adaptive';
+  /** Assessment/adaptive: required, sampled without repeats. Practice: optional cap on the shuffled set; omit for every eligible question. */
   count?: number;
   /** Restrict to specific structure ids — used by RevisionResults' "retry incorrect". */
   structureIds?: string[];
   /** Fixed seed for deterministic/testable generation. Defaults to time-based. */
   seed?: number;
+  /**
+   * Adaptive mode only. generateSet stays repository-free (CR-009 constraint)
+   * — the caller fetches mastery and passes it in rather than this module
+   * reaching into AnatomyRepository itself.
+   */
+  mastery?: StructureMastery[];
+  /** Adaptive mode only. Injectable for deterministic tests; defaults to real time. */
+  now?: Date;
+}
+
+function generateOneQuestionForStructure(
+  structure: AnatomyStructure,
+  type: QuestionType,
+  images: AnatomyImageAsset[],
+  indexes: StructureIndexes,
+  rng: Rng,
+): RevisionQuestion | null {
+  const pool = [structure];
+  switch (type) {
+    case 'flashcard':
+      return buildFlashcardQuestions(pool, images)[0] ?? null;
+    case 'mcq':
+      return buildMcqQuestions(pool, images, indexes, rng)[0] ?? buildClinicalQuestions(pool, rng)[0] ?? null;
+    case 'locate':
+      return buildLocateQuestions(pool, images)[0] ?? null;
+    case 'fill-blank':
+      return buildFillBlankQuestions(pool, rng)[0] ?? null;
+    case 'identify-typed':
+      return buildIdentifyTypedQuestions(pool, images)[0] ?? null;
+    case 'multi-select':
+      // Multi-select is inherently a "compare several structures" question, not a
+      // per-structure one — it doesn't fit the adaptive escalation ladder's shape.
+      return null;
+  }
 }
 
 /**
@@ -59,12 +102,38 @@ export function generateRevisionSet(
     return (img.hotspots ?? []).some((h) => pool.some((s) => s.id === h.structureId));
   });
 
+  if (config.mode === 'adaptive') {
+    const masteryByStructureId = new Map((config.mastery ?? []).map((m) => [m.structureId, m]));
+    const desiredCount = config.count ?? pool.length;
+    const selected = selectAdaptiveStructures(pool, masteryByStructureId, desiredCount, rng, config.now ?? new Date());
+
+    const adaptiveQuestions: RevisionQuestion[] = [];
+    for (const structure of selected) {
+      const mastery = masteryByStructureId.get(structure.id);
+      const preferredType = pickAdaptiveQuestionType(mastery, config.types);
+      if (!preferredType) continue;
+      const orderedTypes = [preferredType, ...config.types.filter((t) => t !== preferredType)];
+      for (const type of orderedTypes) {
+        const question = generateOneQuestionForStructure(structure, type, relevantImages, indexes, rng);
+        if (question) {
+          adaptiveQuestions.push(question);
+          break;
+        }
+      }
+    }
+    return shuffle(adaptiveQuestions, rng);
+  }
+
   const generated: RevisionQuestion[] = [];
   if (config.types.includes('flashcard')) {
     generated.push(...buildFlashcardQuestions(pool, relevantImages));
   }
   if (config.types.includes('mcq')) {
     generated.push(...buildMcqQuestions(pool, relevantImages, indexes, rng));
+    // Clinical MCQs (CR-010) are just another mcq promptKind family, gated on the
+    // structure actually having the relevant clinical field authored — same
+    // convention as buildMcqQuestions itself generating several promptKinds at once.
+    generated.push(...buildClinicalQuestions(pool, rng));
   }
   if (config.types.includes('locate')) {
     generated.push(...buildLocateQuestions(pool, relevantImages));
@@ -74,6 +143,9 @@ export function generateRevisionSet(
   }
   if (config.types.includes('identify-typed')) {
     generated.push(...buildIdentifyTypedQuestions(pool, relevantImages));
+  }
+  if (config.types.includes('multi-select')) {
+    generated.push(...buildMultiSelectQuestions(pool, indexes, rng));
   }
 
   if (config.mode === 'assessment') {

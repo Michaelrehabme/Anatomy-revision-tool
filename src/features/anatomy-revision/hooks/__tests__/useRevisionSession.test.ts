@@ -114,4 +114,58 @@ describe('useRevisionSession submitAnswer', () => {
     const attempts = await repository.listAttempts({ userId: 'user-1' });
     expect(attempts.every((a) => a.attemptNumber === 1)).toBe(true);
   });
+
+  it('updates the mastery schedule even with no explicit confidence (e.g. fill-blank)', async () => {
+    const repository = createMemoryRepository();
+    const { result } = renderHook(() => useRevisionSession(repository, 'user-1'));
+    const question = mcqQuestion();
+
+    act(() => result.current.start([question], { types: ['mcq'], mode: 'practice' }));
+
+    await act(async () => {
+      await result.current.submitAnswer({
+        questionId: question.id,
+        structureId: question.structureId,
+        correct: false,
+        selectedAnswer: 'Biceps brachii',
+        correctAnswer: 'Deltoid',
+      });
+    });
+
+    const [mastery] = await repository.listMastery('user-1');
+    expect(mastery.structureId).toBe(question.structureId);
+    expect(mastery.intervalDays).toBe(1);
+    expect(mastery.dueAt).toBeDefined();
+  });
+});
+
+describe('useRevisionSession finish', () => {
+  it('awards session XP, updates the running total, and persists the gamification profile', async () => {
+    const repository = createMemoryRepository();
+    const { result } = renderHook(() => useRevisionSession(repository, 'user-1'));
+    const question = mcqQuestion();
+
+    act(() => result.current.start([question], { types: ['mcq'], mode: 'practice' }));
+    await act(async () => {
+      await result.current.submitAnswer({
+        questionId: question.id,
+        structureId: question.structureId,
+        correct: true,
+        confidence: 'easy',
+        selectedAnswer: 'Deltoid',
+        correctAnswer: 'Deltoid',
+      });
+    });
+    await act(async () => {
+      await result.current.finish();
+    });
+
+    expect(result.current.gamification).not.toBeNull();
+    expect(result.current.gamification!.xpEarned).toBeGreaterThan(0);
+    expect(result.current.gamification!.streak).toBe(1);
+
+    const profile = await repository.getGamificationProfile('user-1');
+    expect(profile.xpTotal).toBe(result.current.gamification!.xpEarned);
+    expect(profile.questionTypesUsedEver).toContain('mcq');
+  });
 });

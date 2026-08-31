@@ -7,6 +7,7 @@ import { AttributionBadge } from '../shared/AttributionBadge';
 import { HotspotOverlay } from '../LocateStructureSession/HotspotOverlay';
 import { ConfidenceButtons } from '../shared/ConfidenceButtons';
 import { Button } from '../shared/Button';
+import { ExamAnswerFooter } from '../shared/ExamAnswerFooter';
 
 interface MCQSessionProps {
   question: MCQQuestion;
@@ -14,29 +15,49 @@ interface MCQSessionProps {
   onAnswer: (params: {
     structureId: string;
     correct: boolean;
-    confidence: Confidence;
+    confidence?: Confidence;
     selectedAnswer: string;
     correctAnswer: string;
   }) => void;
   onNext: () => void;
+  /** No color reveal, no explanation, no self-rating — answer submits and advances silently. See CR-009. */
+  examMode?: boolean;
 }
 
 const LETTERS = ['A', 'B', 'C', 'D'];
 
-export function MCQSession({ question, imagesById, onAnswer, onNext }: MCQSessionProps) {
+export function MCQSession({ question, imagesById, onAnswer, onNext, examMode }: MCQSessionProps) {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [checked, setChecked] = useState(false);
   const [rated, setRated] = useState(false);
+  const [examSubmitted, setExamSubmitted] = useState(false);
 
   useEffect(() => {
     setSelectedIndex(null);
     setChecked(false);
     setRated(false);
+    setExamSubmitted(false);
   }, [question.id]);
 
   const promptImage = question.promptImageId ? imagesById.get(question.promptImageId) : undefined;
   const highlightHotspots = promptImage?.mode === 'atlas-slide' ? (promptImage.hotspots ?? []) : [];
   const isCorrect = selectedIndex === question.correctIndex;
+
+  const handleSelect = (index: number) => {
+    if (examMode) {
+      if (examSubmitted) return;
+      setSelectedIndex(index);
+      setExamSubmitted(true);
+      onAnswer({
+        structureId: question.structureId,
+        correct: index === question.correctIndex,
+        selectedAnswer: question.choices[index],
+        correctAnswer: question.choices[question.correctIndex],
+      });
+      return;
+    }
+    setSelectedIndex(index);
+  };
 
   const handleRate = (confidence: Confidence) => {
     if (selectedIndex === null) return;
@@ -89,14 +110,15 @@ export function MCQSession({ question, imagesById, onAnswer, onNext }: MCQSessio
             {question.choices.map((choice, index) => {
               const isSelected = index === selectedIndex;
               const isAnswerCorrect = index === question.correctIndex;
+              const revealing = checked && !examMode;
               let border = '1.2px solid var(--line)';
               let background = 'var(--sf)';
               let color = 'var(--ink)';
-              if (checked && isAnswerCorrect) {
+              if (revealing && isAnswerCorrect) {
                 border = '1.4px solid var(--acc)';
                 background = 'var(--accs)';
                 color = 'var(--accd)';
-              } else if (checked && isSelected && !isAnswerCorrect) {
+              } else if (revealing && isSelected && !isAnswerCorrect) {
                 border = '1.4px solid var(--acc2)';
                 background = 'var(--acc2s)';
                 color = 'var(--acc2d)';
@@ -109,8 +131,8 @@ export function MCQSession({ question, imagesById, onAnswer, onNext }: MCQSessio
                 <button
                   key={choice}
                   type="button"
-                  disabled={checked}
-                  onClick={() => setSelectedIndex(index)}
+                  disabled={examMode ? examSubmitted : checked}
+                  onClick={() => handleSelect(index)}
                   className="flex min-h-[82px] items-center gap-4 rounded-[3px] px-6 text-left text-xl disabled:cursor-default"
                   style={{ border, background, color }}
                 >
@@ -123,7 +145,7 @@ export function MCQSession({ question, imagesById, onAnswer, onNext }: MCQSessio
             })}
           </div>
 
-          {!checked && (
+          {!examMode && !checked && (
             <div className="mt-12 flex justify-center">
               <Button
                 onClick={() => setChecked(true)}
@@ -137,7 +159,9 @@ export function MCQSession({ question, imagesById, onAnswer, onNext }: MCQSessio
         </div>
       </div>
 
-      {checked && (
+      {examMode && examSubmitted && <ExamAnswerFooter onNext={onNext} />}
+
+      {!examMode && checked && (
         <div className="flex-none px-24 py-10" style={{ background: isCorrect ? 'var(--accs)' : 'var(--acc2s)' }}>
           <div className="mx-auto flex max-w-[1000px] items-start gap-[72px]">
             <div className="flex-1">

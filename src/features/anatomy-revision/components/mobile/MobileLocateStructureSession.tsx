@@ -6,14 +6,17 @@ import type { Confidence } from '../../types/attempt';
 import { HotspotImage, type HotspotAnswerResult } from '../LocateStructureSession/HotspotImage';
 import { ConfidenceButtons } from '../shared/ConfidenceButtons';
 import { BottomSheet } from '../shared/BottomSheet';
+import { ExamAnswerFooter } from '../shared/ExamAnswerFooter';
 
 interface MobileLocateStructureSessionProps {
   question: LocateQuestion;
   imagesById: Map<string, AnatomyImageAsset>;
   structuresById: Map<string, AnatomyStructure>;
-  onAnswer: (params: { structureId: string; correct: boolean; hitDistance?: number; confidence: Confidence }) => void;
+  onAnswer: (params: { structureId: string; correct: boolean; hitDistance?: number; confidence?: Confidence }) => void;
   onNext: () => void;
   onFullCard: () => void;
+  /** No color reveal, no self-rating — answer submits and advances silently. See CR-009. */
+  examMode?: boolean;
 }
 
 /**
@@ -32,6 +35,7 @@ export function MobileLocateStructureSession({
   onAnswer,
   onNext,
   onFullCard,
+  examMode,
 }: MobileLocateStructureSessionProps) {
   const [result, setResult] = useState<HotspotAnswerResult | null>(null);
   const [listMode, setListMode] = useState(false);
@@ -52,10 +56,18 @@ export function MobileLocateStructureSession({
     );
   }
 
-  const handleImageAnswer = (r: HotspotAnswerResult) => setResult(r);
+  const submitExamAnswer = (r: HotspotAnswerResult) => {
+    onAnswer({ structureId: question.targetStructureId, correct: r.correct, hitDistance: r.hitDistance });
+  };
+  const handleImageAnswer = (r: HotspotAnswerResult) => {
+    setResult(r);
+    if (examMode) submitExamAnswer(r);
+  };
   const handleListAnswer = (structureId: string) => {
     if (result) return;
-    setResult({ structureId, correct: structureId === question.targetStructureId, point: [0, 0] });
+    const r: HotspotAnswerResult = { structureId, correct: structureId === question.targetStructureId, point: [0, 0] as [number, number] };
+    setResult(r);
+    if (examMode) submitExamAnswer(r);
   };
   const handleRate = (confidence: Confidence) => {
     if (!result) return;
@@ -101,6 +113,7 @@ export function MobileLocateStructureSession({
                 targetStructureId={question.targetStructureId}
                 toleranceMultiplier={question.toleranceMultiplier}
                 onAnswer={handleImageAnswer}
+                examMode={examMode}
               />
             </div>
           </div>
@@ -110,8 +123,8 @@ export function MobileLocateStructureSession({
               const isTarget = s.id === question.targetStructureId;
               const isSelected = result?.structureId === s.id;
               let style = { border: '1.2px solid var(--line)', background: 'transparent', color: 'var(--ink)' };
-              if (result && isTarget) style = { border: '1.4px solid var(--acc)', background: 'var(--accs)', color: 'var(--accd)' };
-              else if (result && isSelected) style = { border: '1.4px solid var(--acc2)', background: 'var(--acc2s)', color: 'var(--acc2d)' };
+              if (result && !examMode && isTarget) style = { border: '1.4px solid var(--acc)', background: 'var(--accs)', color: 'var(--accd)' };
+              else if (result && !examMode && isSelected) style = { border: '1.4px solid var(--acc2)', background: 'var(--acc2s)', color: 'var(--acc2d)' };
               return (
                 <button
                   key={s.id}
@@ -129,7 +142,9 @@ export function MobileLocateStructureSession({
         )}
       </div>
 
-      {result && (
+      {result && examMode && <ExamAnswerFooter onNext={onNext} compact />}
+
+      {result && !examMode && (
         <BottomSheet
           correct={result.correct}
           title={result.correct ? 'Correct' : 'Not quite'}

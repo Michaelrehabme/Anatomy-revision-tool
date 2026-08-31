@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react';
 import type { AnatomyContent } from '../../hooks/useAnatomyContent';
 import type { useRevisionSession } from '../../hooks/useRevisionSession';
 import {
@@ -6,14 +7,17 @@ import {
   isLocateQuestion,
   isFillBlankQuestion,
   isTypedIdentifyQuestion,
+  isMultiSelectQuestion,
 } from '../../types/question';
 import { FlashcardSession } from '../FlashcardSession/FlashcardSession';
 import { MCQSession } from '../MCQSession/MCQSession';
 import { LocateStructureSession } from '../LocateStructureSession/LocateStructureSession';
 import { FillBlankSession } from '../FillBlankSession/FillBlankSession';
 import { IdentifyTypedSession } from '../IdentifyTypedSession/IdentifyTypedSession';
+import { MultiSelectSession } from '../MultiSelectSession/MultiSelectSession';
 import { AppShell } from '../shell/AppShell';
 import { SessionSidebar } from '../shell/SessionSidebar';
+import { PersistErrorBanner } from '../shared/PersistErrorBanner';
 
 interface StudySessionProps {
   session: ReturnType<typeof useRevisionSession>;
@@ -21,13 +25,42 @@ interface StudySessionProps {
   onEnd: () => void;
 }
 
+function formatClock(totalSeconds: number): string {
+  const mins = Math.floor(totalSeconds / 60);
+  const secs = totalSeconds % 60;
+  return `${mins}:${secs.toString().padStart(2, '0')}`;
+}
+
 /** Screens 05–08: the active-question shell shared by every question format. */
 export function StudySession({ session, content, onEnd }: StudySessionProps) {
   const question = session.currentQuestion;
   const advance = () => (session.isLastQuestion ? session.finish() : session.next());
 
-  const correctCount = session.answers.filter((a) => a.correct).length;
-  const wrongCount = session.answers.length - correctCount;
+  // EXAM: no feedback until the end, no per-question retries, an optional timer — see CR-009.
+  // Flashcards stay self-rated even in exam mode (see FlashcardSession — there's no objective
+  // right/wrong to withhold; the self-rating IS the mechanic, not feedback about it).
+  const examMode = session.setupParams?.mode === 'assessment';
+  const timerMinutes = session.setupParams?.timerMinutes;
+  const [remainingSeconds, setRemainingSeconds] = useState<number | null>(timerMinutes ? timerMinutes * 60 : null);
+
+  // session is a fresh object every render (useRevisionSession returns a literal) — a ref
+  // keeps this effect's dependency array to just `remainingSeconds`, so the countdown ticks
+  // once per second regardless of how often the parent re-renders (e.g. on every answer).
+  const sessionRef = useRef(session);
+  sessionRef.current = session;
+
+  useEffect(() => {
+    if (remainingSeconds === null || sessionRef.current.phase !== 'in-progress') return;
+    if (remainingSeconds <= 0) {
+      sessionRef.current.finish();
+      return;
+    }
+    const id = setTimeout(() => setRemainingSeconds((s) => (s !== null ? s - 1 : null)), 1000);
+    return () => clearTimeout(id);
+  }, [remainingSeconds]);
+
+  const correctCount = examMode ? 0 : session.answers.filter((a) => a.correct).length;
+  const wrongCount = examMode ? 0 : session.answers.length - correctCount;
 
   if (!question) {
     return (
@@ -60,10 +93,24 @@ export function StudySession({ session, content, onEnd }: StudySessionProps) {
           correctCount={correctCount}
           wrongCount={wrongCount}
           onEnd={onEnd}
+          hint={
+            examMode
+              ? remainingSeconds !== null
+                ? `Exam · ${formatClock(remainingSeconds)} left`
+                : 'Exam · untimed'
+              : undefined
+          }
         />
       }
     >
       <div className="flex min-h-screen flex-col">
+        {session.persistError && (
+          <PersistErrorBanner
+            message={session.persistError}
+            onRetry={session.retryPersist}
+            onDismiss={session.dismissPersistError}
+          />
+        )}
         {isFlashcardQuestion(question) && (
           <FlashcardSession
             key={question.id}
@@ -80,6 +127,7 @@ export function StudySession({ session, content, onEnd }: StudySessionProps) {
             imagesById={content.imagesById}
             onAnswer={(params) => session.submitAnswer({ ...params, questionId: question.id })}
             onNext={advance}
+            examMode={examMode}
           />
         )}
         {isLocateQuestion(question) && (
@@ -90,6 +138,7 @@ export function StudySession({ session, content, onEnd }: StudySessionProps) {
             structuresById={content.structuresById}
             onAnswer={(params) => session.submitAnswer({ ...params, questionId: question.id })}
             onNext={advance}
+            examMode={examMode}
           />
         )}
         {isFillBlankQuestion(question) && (
@@ -98,6 +147,7 @@ export function StudySession({ session, content, onEnd }: StudySessionProps) {
             question={question}
             onAnswer={(params) => session.submitAnswer({ ...params, questionId: question.id })}
             onNext={advance}
+            examMode={examMode}
           />
         )}
         {isTypedIdentifyQuestion(question) && (
@@ -107,6 +157,16 @@ export function StudySession({ session, content, onEnd }: StudySessionProps) {
             imagesById={content.imagesById}
             onAnswer={(params) => session.submitAnswer({ ...params, questionId: question.id })}
             onNext={advance}
+            examMode={examMode}
+          />
+        )}
+        {isMultiSelectQuestion(question) && (
+          <MultiSelectSession
+            key={question.id}
+            question={question}
+            onAnswer={(params) => session.submitAnswer({ ...params, questionId: question.id })}
+            onNext={advance}
+            examMode={examMode}
           />
         )}
       </div>

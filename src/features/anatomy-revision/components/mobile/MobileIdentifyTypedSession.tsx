@@ -7,6 +7,7 @@ import { AttributionBadge } from '../shared/AttributionBadge';
 import { HotspotOverlay } from '../LocateStructureSession/HotspotOverlay';
 import { ConfidenceButtons } from '../shared/ConfidenceButtons';
 import { BottomSheet } from '../shared/BottomSheet';
+import { ExamAnswerFooter } from '../shared/ExamAnswerFooter';
 import { isAnswerMatch } from '../../lib/answerMatching';
 
 interface MobileIdentifyTypedSessionProps {
@@ -15,15 +16,17 @@ interface MobileIdentifyTypedSessionProps {
   onAnswer: (params: {
     structureId: string;
     correct: boolean;
-    confidence: Confidence;
+    confidence?: Confidence;
     selectedAnswer: string;
     correctAnswer: string;
   }) => void;
   onNext: () => void;
   onFullCard: () => void;
+  /** No color reveal, no explanation, no self-rating — answer submits and advances silently. See CR-009. */
+  examMode?: boolean;
 }
 
-export function MobileIdentifyTypedSession({ question, imagesById, onAnswer, onNext, onFullCard }: MobileIdentifyTypedSessionProps) {
+export function MobileIdentifyTypedSession({ question, imagesById, onAnswer, onNext, onFullCard, examMode }: MobileIdentifyTypedSessionProps) {
   const [attempt, setAttempt] = useState('');
   const [submitted, setSubmitted] = useState<{ correct: boolean } | null>(null);
   const [rated, setRated] = useState(false);
@@ -41,7 +44,11 @@ export function MobileIdentifyTypedSession({ question, imagesById, onAnswer, onN
 
   const handleSubmit = () => {
     if (submitted || !attempt.trim()) return;
-    setSubmitted({ correct: isAnswerMatch(attempt, question.acceptedAnswers) });
+    const correct = isAnswerMatch(attempt, question.acceptedAnswers);
+    setSubmitted({ correct });
+    if (examMode) {
+      onAnswer({ structureId: question.structureId, correct, selectedAnswer: attempt, correctAnswer: canonical });
+    }
   };
   const handleRate = (confidence: Confidence) => {
     if (!submitted) return;
@@ -105,7 +112,7 @@ export function MobileIdentifyTypedSession({ question, imagesById, onAnswer, onN
             fontSize: 22,
             padding: '14px 2px',
             border: 0,
-            borderBottom: `1.6px solid ${submitted && !submitted.correct ? 'var(--acc2)' : 'var(--fig-line)'}`,
+            borderBottom: `1.6px solid ${submitted && !submitted.correct && !examMode ? 'var(--acc2)' : 'var(--fig-line)'}`,
             background: 'none',
             color: 'var(--ink)',
             boxSizing: 'border-box',
@@ -139,7 +146,9 @@ export function MobileIdentifyTypedSession({ question, imagesById, onAnswer, onN
         )}
       </div>
 
-      {submitted && (
+      {submitted && examMode && <ExamAnswerFooter onNext={onNext} compact />}
+
+      {submitted && !examMode && (
         <BottomSheet
           correct={submitted.correct}
           title={submitted.correct ? 'Correct' : 'Not quite'}

@@ -1,7 +1,9 @@
 import type { RevisionSessionSummary } from '../../types/attempt';
 import type { AnatomyStructure } from '../../types/structure';
-import type { AnswerRecord } from '../../hooks/useRevisionSession';
+import type { AnswerRecord, GamificationResult } from '../../hooks/useRevisionSession';
 import { REGION_LABELS } from '../../types/region';
+import { levelProgress } from '../../lib/levels';
+import { AchievementToastStack } from '../shared/AchievementToast';
 
 const DUE_TEXT: Record<'hard' | 'medium' | 'easy', string> = { hard: 'tomorrow', medium: '4 days', easy: '10 days' };
 
@@ -9,6 +11,10 @@ interface MobileResultsProps {
   summary: RevisionSessionSummary;
   answers: AnswerRecord[];
   structuresById: Map<string, AnatomyStructure>;
+  /** Null until useRevisionSession.finish()'s async XP/achievement computation resolves — renders in when ready. */
+  gamification: GamificationResult | null;
+  /** From session.setupParams?.mode — RevisionSessionSummary itself doesn't carry mode, so App.tsx passes it separately. */
+  sessionMode?: 'practice' | 'adaptive' | 'assessment';
   onDone: () => void;
   onRetry: () => void;
 }
@@ -30,7 +36,9 @@ function resultsLine(summary: RevisionSessionSummary, structuresById: Map<string
 }
 
 /** Screen 09 (mobile). Score, then "back in the queue" — no by-region chart (not in the mobile spec). */
-export function MobileResults({ summary, answers, structuresById, onDone, onRetry }: MobileResultsProps) {
+export function MobileResults({ summary, answers, structuresById, gamification, sessionMode, onDone, onRetry }: MobileResultsProps) {
+  const isExam = sessionMode === 'assessment';
+  const progress = gamification ? levelProgress(gamification.xpTotal) : null;
   const queueRows = summary.missedStructureIds.map((id) => {
     const structure = structuresById.get(id);
     const answer = [...answers].reverse().find((a) => a.structureId === id);
@@ -45,7 +53,7 @@ export function MobileResults({ summary, answers, structuresById, onDone, onRetr
   return (
     <div className="flex min-h-screen flex-col px-6.5 pt-5 pb-7.5" style={{ background: 'var(--pg)', color: 'var(--ink)' }}>
       <div style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
-        Session complete
+        {isExam ? 'Exam results' : 'Session complete'}
       </div>
       <div className="mt-3.5 flex items-baseline gap-2.5">
         <span style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 80, lineHeight: 0.86, letterSpacing: '-.04em' }}>
@@ -56,6 +64,25 @@ export function MobileResults({ summary, answers, structuresById, onDone, onRetr
       <p className="mt-4 text-[15px] leading-relaxed" style={{ color: 'var(--ink2)' }}>
         {resultsLine(summary, structuresById)}
       </p>
+
+      {gamification && progress && (
+        <div className="mt-5 rounded-[4px] p-3.5" style={{ background: 'var(--accs)' }}>
+          <div className="flex items-baseline justify-between">
+            <span style={{ font: '600 17px/1 var(--font-display)', color: 'var(--accd)' }}>+{gamification.xpEarned} XP</span>
+            <span style={{ font: '500 11.5px/1 var(--font-mono)', color: 'var(--ink2)' }}>
+              {gamification.leveledUp ? 'Level up! ' : ''}Lv {progress.level}
+            </span>
+          </div>
+          <div className="mt-2 h-1.5 overflow-hidden rounded-full" style={{ background: 'var(--line)' }}>
+            <div className="h-full" style={{ width: `${progress.pct}%`, background: 'var(--acc)' }} />
+          </div>
+          <div className="mt-1.5" style={{ font: '500 11px/1 var(--font-mono)', color: 'var(--acc2d)' }}>
+            {gamification.streak}-day streak{gamification.freezeConsumed ? ' · freeze used' : ''}
+          </div>
+        </div>
+      )}
+
+      {gamification && <AchievementToastStack achievements={gamification.newAchievements} />}
 
       {queueRows.length > 0 && (
         <>

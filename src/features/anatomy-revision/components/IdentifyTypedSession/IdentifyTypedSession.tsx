@@ -7,6 +7,7 @@ import { AttributionBadge } from '../shared/AttributionBadge';
 import { HotspotOverlay } from '../LocateStructureSession/HotspotOverlay';
 import { ConfidenceButtons } from '../shared/ConfidenceButtons';
 import { Button } from '../shared/Button';
+import { ExamAnswerFooter } from '../shared/ExamAnswerFooter';
 import { isAnswerMatch } from '../../lib/answerMatching';
 
 interface IdentifyTypedSessionProps {
@@ -15,14 +16,16 @@ interface IdentifyTypedSessionProps {
   onAnswer: (params: {
     structureId: string;
     correct: boolean;
-    confidence: Confidence;
+    confidence?: Confidence;
     selectedAnswer: string;
     correctAnswer: string;
   }) => void;
   onNext: () => void;
+  /** No color reveal, no explanation, no self-rating — answer submits and advances silently. See CR-009. */
+  examMode?: boolean;
 }
 
-export function IdentifyTypedSession({ question, imagesById, onAnswer, onNext }: IdentifyTypedSessionProps) {
+export function IdentifyTypedSession({ question, imagesById, onAnswer, onNext, examMode }: IdentifyTypedSessionProps) {
   const [attempt, setAttempt] = useState('');
   const [submitted, setSubmitted] = useState<{ correct: boolean } | null>(null);
   const [rated, setRated] = useState(false);
@@ -44,7 +47,11 @@ export function IdentifyTypedSession({ question, imagesById, onAnswer, onNext }:
 
   const handleSubmit = () => {
     if (submitted || !attempt.trim()) return;
-    setSubmitted({ correct: isAnswerMatch(attempt, question.acceptedAnswers) });
+    const correct = isAnswerMatch(attempt, question.acceptedAnswers);
+    setSubmitted({ correct });
+    if (examMode) {
+      onAnswer({ structureId: question.structureId, correct, selectedAnswer: attempt, correctAnswer: canonical });
+    }
   };
 
   const handleRate = (confidence: Confidence) => {
@@ -108,7 +115,7 @@ export function IdentifyTypedSession({ question, imagesById, onAnswer, onNext }:
               fontSize: 30,
               border: '1.4px solid var(--acc)',
               background: 'var(--sf)',
-              color: submitted ? (submitted.correct ? 'var(--accd)' : 'var(--acc2d)') : 'var(--ink)',
+              color: submitted && !examMode ? (submitted.correct ? 'var(--accd)' : 'var(--acc2d)') : 'var(--ink)',
               boxSizing: 'border-box',
             }}
           />
@@ -142,7 +149,9 @@ export function IdentifyTypedSession({ question, imagesById, onAnswer, onNext }:
         </div>
       </div>
 
-      {submitted && (
+      {submitted && examMode && <ExamAnswerFooter onNext={onNext} />}
+
+      {submitted && !examMode && (
         <div className="flex-none px-24 py-10" style={{ background: submitted.correct ? 'var(--accs)' : 'var(--acc2s)' }}>
           <div className="mx-auto flex max-w-[1000px] items-start gap-[72px]">
             <div className="flex-1">

@@ -2,14 +2,21 @@ import type { RevisionSessionSummary } from '../../types/attempt';
 import type { AnatomyStructure } from '../../types/structure';
 import { isMuscle } from '../../types/structure';
 import { REGION_LABELS } from '../../types/region';
+import type { GamificationResult } from '../../hooks/useRevisionSession';
+import { levelProgress } from '../../lib/levels';
 import { Button } from '../shared/Button';
 import { AppShell } from '../shell/AppShell';
 import { NavSidebar, type NavSection } from '../shell/NavSidebar';
+import { AchievementToastStack } from '../shared/AchievementToast';
 
 interface RevisionResultsProps {
   summary: RevisionSessionSummary;
   structuresById: Map<string, AnatomyStructure>;
   streak: number;
+  /** Null until useRevisionSession.finish()'s async XP/achievement computation resolves — renders in when ready. */
+  gamification: GamificationResult | null;
+  /** From session.setupParams?.mode — RevisionSessionSummary itself doesn't carry mode, so App.tsx passes it separately. */
+  sessionMode?: 'practice' | 'adaptive' | 'assessment';
   onRetryIncorrect: () => void;
   onRestart: () => void;
   onOpenMuscle: (structureId: string) => void;
@@ -28,11 +35,14 @@ export function RevisionResults({
   summary,
   structuresById,
   streak,
+  gamification,
+  sessionMode,
   onRetryIncorrect,
   onRestart,
   onOpenMuscle,
   onNavigate,
 }: RevisionResultsProps) {
+  const isExam = sessionMode === 'assessment';
   const missedStructures = summary.missedStructureIds
     .map((id) => structuresById.get(id))
     .filter((s): s is AnatomyStructure => !!s);
@@ -43,6 +53,8 @@ export function RevisionResults({
     summary.finishedAt && summary.totalQuestions > 0
       ? Math.round((Date.parse(summary.finishedAt) - Date.parse(summary.startedAt)) / 1000 / summary.totalQuestions)
       : null;
+  const displayStreak = gamification?.streak ?? streak;
+  const progress = gamification ? levelProgress(gamification.xpTotal) : null;
 
   return (
     <AppShell
@@ -50,14 +62,25 @@ export function RevisionResults({
         <NavSidebar
           active="study"
           onNavigate={onNavigate}
-          footer={<div style={{ font: '500 11.5px/1 var(--font-mono)', color: 'var(--acc2d)' }}>{streak}-day streak</div>}
+          footer={
+            <div className="flex flex-col gap-1">
+              <div style={{ font: '500 11.5px/1 var(--font-mono)', color: 'var(--acc2d)' }}>
+                {displayStreak}-day streak
+                {gamification?.freezeConsumed && ' · freeze used'}
+              </div>
+              {gamification?.freezeEarned && (
+                <div style={{ font: '400 11px/1 var(--font-mono)', color: 'var(--accd)' }}>Streak freeze earned</div>
+              )}
+            </div>
+          }
         />
       }
     >
+      {gamification && <AchievementToastStack achievements={gamification.newAchievements} />}
       <div className="flex gap-[88px] px-16 pt-[72px] pb-12">
         <div className="w-[400px] flex-none">
           <div style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
-            Session complete
+            {isExam ? 'Exam results' : 'Session complete'}
           </div>
           <div className="mt-5 flex items-baseline gap-3.5">
             <span style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 130, lineHeight: 0.82, letterSpacing: '-.05em' }}>
@@ -66,8 +89,29 @@ export function RevisionResults({
             <span style={{ fontFamily: 'var(--font-display)', fontSize: 38, color: 'var(--ink3)' }}>/ {summary.totalQuestions}</span>
           </div>
 
+          {gamification && progress && (
+            <div className="mt-7 rounded-[4px] p-4" style={{ background: 'var(--accs)' }}>
+              <div className="flex items-baseline justify-between">
+                <span style={{ font: '600 20px/1 var(--font-display)', color: 'var(--accd)' }}>+{gamification.xpEarned} XP</span>
+                {gamification.leveledUp && (
+                  <span style={{ font: '600 12px/1 var(--font-mono)', color: 'var(--accd)' }}>LEVEL UP!</span>
+                )}
+              </div>
+              <div className="mt-2.5 flex items-baseline justify-between">
+                <span style={{ font: '500 12px/1 var(--font-mono)', color: 'var(--ink2)' }}>Level {progress.level}</span>
+                <span style={{ font: '400 10.5px/1 var(--font-mono)', color: 'var(--ink3)' }}>
+                  {progress.xpIntoLevel} / {progress.xpForNextLevel} XP
+                </span>
+              </div>
+              <div className="mt-1.5 h-1.5 overflow-hidden rounded-full" style={{ background: 'var(--line)' }}>
+                <div className="h-full" style={{ width: `${progress.pct}%`, background: 'var(--acc)' }} />
+              </div>
+            </div>
+          )}
+
           <div className="mt-10 flex flex-col gap-3">
-            {missedStructures.length > 0 && (
+            {/* Exam: no immediate retry — that undermines a one-shot assessment. Review the missed list below instead. */}
+            {!isExam && missedStructures.length > 0 && (
               <Button onClick={onRetryIncorrect} className="min-h-[56px] w-full">
                 Retry the {missedStructures.length} missed
               </Button>
@@ -121,7 +165,7 @@ export function RevisionResults({
                 className="mt-12"
                 style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}
               >
-                By region this session
+                {isExam ? 'Scored report · by region' : 'By region this session'}
               </div>
               <div className="mt-5 flex max-w-[520px] flex-col gap-4.5">
                 {regionEntries.map(([region, v]) => {

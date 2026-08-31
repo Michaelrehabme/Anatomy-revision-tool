@@ -1,14 +1,17 @@
 import { useEffect, useState } from 'react';
 import type { FillBlankQuestion } from '../../types/question';
 import { isAnswerMatch } from '../../lib/answerMatching';
+import { ExamAnswerFooter } from '../shared/ExamAnswerFooter';
 
 interface FillBlankSessionProps {
   question: FillBlankQuestion;
   onAnswer: (params: { structureId: string; correct: boolean; selectedAnswer: string; correctAnswer: string }) => void;
   onNext: () => void;
+  /** No color reveal, no full statement — answer submits and advances silently. See CR-009. */
+  examMode?: boolean;
 }
 
-export function FillBlankSession({ question, onAnswer, onNext }: FillBlankSessionProps) {
+export function FillBlankSession({ question, onAnswer, onNext, examMode }: FillBlankSessionProps) {
   const [attempt, setAttempt] = useState('');
   const [submitted, setSubmitted] = useState<{ correct: boolean } | null>(null);
 
@@ -58,7 +61,9 @@ export function FillBlankSession({ question, onAnswer, onNext }: FillBlankSessio
         )}
       </form>
 
-      {submitted && (
+      {submitted && examMode && <ExamAnswerFooter onNext={onNext} compact />}
+
+      {submitted && !examMode && (
         <div className="space-y-3">
           <div className={`rounded-lg p-3 text-sm ${submitted.correct ? 'bg-emerald-50 text-emerald-800' : 'bg-rose-50 text-rose-800'}`}>
             <p className="font-medium">{submitted.correct ? 'Correct.' : 'Not quite.'}</p>

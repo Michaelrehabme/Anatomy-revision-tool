@@ -7,6 +7,7 @@ import { AttributionBadge } from '../shared/AttributionBadge';
 import { HotspotOverlay } from '../LocateStructureSession/HotspotOverlay';
 import { ConfidenceButtons } from '../shared/ConfidenceButtons';
 import { BottomSheet } from '../shared/BottomSheet';
+import { ExamAnswerFooter } from '../shared/ExamAnswerFooter';
 
 interface MobileMCQSessionProps {
   question: MCQQuestion;
@@ -14,17 +15,19 @@ interface MobileMCQSessionProps {
   onAnswer: (params: {
     structureId: string;
     correct: boolean;
-    confidence: Confidence;
+    confidence?: Confidence;
     selectedAnswer: string;
     correctAnswer: string;
   }) => void;
   onNext: () => void;
   onFullCard: () => void;
+  /** No color reveal, no explanation, no self-rating — answer submits and advances silently. See CR-009. */
+  examMode?: boolean;
 }
 
 const LETTERS = ['A', 'B', 'C', 'D'];
 
-export function MobileMCQSession({ question, imagesById, onAnswer, onNext, onFullCard }: MobileMCQSessionProps) {
+export function MobileMCQSession({ question, imagesById, onAnswer, onNext, onFullCard, examMode }: MobileMCQSessionProps) {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [checked, setChecked] = useState(false);
   const [rated, setRated] = useState(false);
@@ -43,6 +46,14 @@ export function MobileMCQSession({ question, imagesById, onAnswer, onNext, onFul
     if (checked) return;
     setSelectedIndex(index);
     setChecked(true);
+    if (examMode) {
+      onAnswer({
+        structureId: question.structureId,
+        correct: index === question.correctIndex,
+        selectedAnswer: question.choices[index],
+        correctAnswer: question.choices[question.correctIndex],
+      });
+    }
   };
   const handleRate = (confidence: Confidence) => {
     if (selectedIndex === null) return;
@@ -96,13 +107,14 @@ export function MobileMCQSession({ question, imagesById, onAnswer, onNext, onFul
           {question.choices.map((choice, index) => {
             const isSelected = index === selectedIndex;
             const isAnswerCorrect = index === question.correctIndex;
+            const revealing = checked && !examMode;
             let border = '1.4px solid var(--line)';
             let background = 'transparent';
             let color = 'var(--ink)';
-            if (checked && isAnswerCorrect) {
+            if (revealing && isAnswerCorrect) {
               border = '1.4px solid var(--acc)';
               background = 'var(--accs)';
-            } else if (checked && isSelected && !isAnswerCorrect) {
+            } else if (revealing && isSelected && !isAnswerCorrect) {
               border = '1.4px solid var(--acc2)';
               background = 'var(--acc2s)';
             } else if (checked) {
@@ -127,7 +139,9 @@ export function MobileMCQSession({ question, imagesById, onAnswer, onNext, onFul
         </div>
       </div>
 
-      {checked && (
+      {checked && examMode && <ExamAnswerFooter onNext={onNext} compact />}
+
+      {checked && !examMode && (
         <BottomSheet
           correct={isCorrect}
           title={isCorrect ? 'Correct' : 'Not quite'}

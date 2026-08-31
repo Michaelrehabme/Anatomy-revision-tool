@@ -6,13 +6,16 @@ import type { Confidence } from '../../types/attempt';
 import { HotspotImage, type HotspotAnswerResult } from './HotspotImage';
 import { ConfidenceButtons } from '../shared/ConfidenceButtons';
 import { Button } from '../shared/Button';
+import { ExamAnswerFooter } from '../shared/ExamAnswerFooter';
 
 interface LocateStructureSessionProps {
   question: LocateQuestion;
   imagesById: Map<string, AnatomyImageAsset>;
   structuresById: Map<string, AnatomyStructure>;
-  onAnswer: (params: { structureId: string; correct: boolean; hitDistance?: number; confidence: Confidence }) => void;
+  onAnswer: (params: { structureId: string; correct: boolean; hitDistance?: number; confidence?: Confidence }) => void;
   onNext: () => void;
+  /** No color reveal, no self-rating — answer submits and advances silently. See CR-009. */
+  examMode?: boolean;
 }
 
 const ZOOM_LEVELS = [1, 1.5, 2];
@@ -29,6 +32,7 @@ export function LocateStructureSession({
   structuresById,
   onAnswer,
   onNext,
+  examMode,
 }: LocateStructureSessionProps) {
   const [result, setResult] = useState<HotspotAnswerResult | null>(null);
   const [zoomIndex, setZoomIndex] = useState(0);
@@ -47,10 +51,18 @@ export function LocateStructureSession({
     return <p className="p-6 text-sm" style={{ color: 'var(--acc2d)' }}>Image "{question.imageId}" not found.</p>;
   }
 
-  const handleImageAnswer = (r: HotspotAnswerResult) => setResult(r);
+  const submitExamAnswer = (r: HotspotAnswerResult) => {
+    onAnswer({ structureId: question.targetStructureId, correct: r.correct, hitDistance: r.hitDistance });
+  };
+  const handleImageAnswer = (r: HotspotAnswerResult) => {
+    setResult(r);
+    if (examMode) submitExamAnswer(r);
+  };
   const handleListAnswer = (structureId: string) => {
     if (result) return;
-    setResult({ structureId, correct: structureId === question.targetStructureId, point: [0, 0] });
+    const r: HotspotAnswerResult = { structureId, correct: structureId === question.targetStructureId, point: [0, 0] as [number, number] };
+    setResult(r);
+    if (examMode) submitExamAnswer(r);
   };
   const handleRate = (confidence: Confidence) => {
     if (!result) return;
@@ -105,6 +117,7 @@ export function LocateStructureSession({
               targetStructureId={question.targetStructureId}
               toleranceMultiplier={question.toleranceMultiplier}
               onAnswer={handleImageAnswer}
+              examMode={examMode}
             />
           </div>
         </div>
@@ -114,8 +127,8 @@ export function LocateStructureSession({
             const isTarget = s.id === question.targetStructureId;
             const isSelected = result?.structureId === s.id;
             let style = { border: '1.2px solid var(--line)', background: 'var(--sf)', color: 'var(--ink)' };
-            if (result && isTarget) style = { border: '1.4px solid var(--acc)', background: 'var(--accs)', color: 'var(--accd)' };
-            else if (result && isSelected) style = { border: '1.4px solid var(--acc2)', background: 'var(--acc2s)', color: 'var(--acc2d)' };
+            if (result && !examMode && isTarget) style = { border: '1.4px solid var(--acc)', background: 'var(--accs)', color: 'var(--accd)' };
+            else if (result && !examMode && isSelected) style = { border: '1.4px solid var(--acc2)', background: 'var(--acc2s)', color: 'var(--acc2d)' };
             return (
               <button
                 key={s.id}
@@ -132,7 +145,9 @@ export function LocateStructureSession({
         </div>
       )}
 
-      {result && (
+      {result && examMode && <ExamAnswerFooter onNext={onNext} compact />}
+
+      {result && !examMode && (
         <div className="mt-8 w-full max-w-[720px] rounded-[3px] p-6" style={{ background: result.correct ? 'var(--accs)' : 'var(--acc2s)' }}>
           <p style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 24, color: result.correct ? 'var(--accd)' : 'var(--acc2d)' }}>
             {result.correct
