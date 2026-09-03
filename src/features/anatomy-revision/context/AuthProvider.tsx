@@ -27,6 +27,9 @@ interface AuthContextValue extends AuthState {
   linkAnonymousAccount: (input: LinkInput) => Promise<AuthActionResult>;
 }
 
+/** Account UI only makes sense once there's a real Firebase project to sign into — local dev stays a plain anonymous id with no dead buttons. */
+export const AUTH_ENABLED = (import.meta.env.VITE_PERSISTENCE ?? 'local') === 'firestore';
+
 const NOT_AVAILABLE_LOCALLY = async (): Promise<never> => {
   throw new Error(
     'Real sign-in requires a configured Firebase project (VITE_PERSISTENCE=firestore) — see .env.example.',

@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from 'react';
-import { useAuth } from '../../context/AuthProvider';
+import { AUTH_ENABLED, useAuth } from '../../context/AuthProvider';
 import { AuthScreen } from '../Auth/AuthScreen';
 
 export type NavSection = 'today' | 'study' | 'atlas' | 'progress';
@@ -17,9 +17,6 @@ interface NavSidebarProps {
   /** Streak pill / muscle count footer, or any other per-screen sidebar footer content. */
   footer?: ReactNode;
 }
-
-/** Account UI only makes sense once there's a real Firebase project to sign into — local dev stays a plain anonymous id with no dead buttons. */
-const AUTH_ENABLED = (import.meta.env.VITE_PERSISTENCE ?? 'local') === 'firestore';
 
 function AccountSection() {
   const { user, signOut } = useAuth();
