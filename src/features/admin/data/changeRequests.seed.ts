@@ -187,7 +187,7 @@ export const CHANGE_REQUESTS_SEED: ChangeRequest[] = [
     category: 'content',
     priority: 'p2',
     effort: 'm',
-    status: 'new',
+    status: 'completed',
     description:
       'Drive question scheduling from measured correctness per structure rather than the current fixed rotation, so weak structures ' +
       'resurface sooner and well-known ones stop consuming session time.',
@@ -198,11 +198,23 @@ export const CHANGE_REQUESTS_SEED: ChangeRequest[] = [
       + 'Keep the generator deterministic under a seed (see lib/rng.ts and the generateSet tests) so sessions stay reproducible.',
     dependsOn: [],
     createdAt: '2026-08-26T08:00:00.000Z',
-    startedAt: null,
-    completedAt: null,
+    startedAt: '2026-08-31T15:00:00.000Z',
+    completedAt: '2026-08-31T18:55:31.000Z',
     notes:
-      'Carried over from BACKLOG-IMAGES.md, which tracked CR-006 and CR-014 to CR-016 outside this register. The only one of '
-      + 'those four still outstanding.',
+      'Carried over from BACKLOG-IMAGES.md, which tracked CR-006 and CR-014 to CR-016 outside this register. '
+      + 'Shipped as lib/scheduling.ts, the read side of the mastery data lib/mastery.ts already wrote but nothing consumed for '
+      + 'selection: the weight of a structure combines Laplace-smoothed accuracy with its existing SM-2-lite schedule, measured '
+      + 'against its own interval, and nothing is ever weighted to zero. Weighting is opt-in per call site, so a signed-out or '
+      + 'first-ever session keeps the previous uniform behaviour exactly. '
+      + 'The work also surfaced a separate defect, fixed in the same commit: Today and both revision setup screens passed the due '
+      + 'queue as structureIds, restricting a session to those structures outright. Since answering a due structure reschedules '
+      + 'it, the queue refilled itself and no new structure was reachable — simulating seven days of daily use, a student met 19 '
+      + 'of 285 structures and none after day one. The due list is now priorityStructureIds, a priority capped at REVIEW_SHARE '
+      + 'rather than a restriction, so a thin due queue can no longer shrink the session; the same simulation reaches 56 '
+      + 'structures on identical effort. Verified against a seeded account on the live project: a 20-question session splits '
+      + '12 due / 5 new / 3 seen-but-not-due, where the old path gave all 20 to the due queue. '
+      + 'Known limitation: weighting is applied per question, not per structure, so a heavy structure can contribute several '
+      + 'questions to one session. startedAt is approximate — only the completing commit (e32c933) is dated precisely.',
   },
   {
     ref: 'CR-014',
