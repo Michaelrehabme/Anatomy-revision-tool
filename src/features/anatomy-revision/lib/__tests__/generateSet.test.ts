@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { ALL_STRUCTURES, ALL_IMAGES } from '../../data/seed';
-import { generateRevisionSet } from '../questionGenerators/generateSet';
+import { generateRevisionSet, REVIEW_SHARE } from '../questionGenerators/generateSet';
 import { buildIndexes } from '../indexes';
 import { pickNameDistractors } from '../distractors';
 import { createRng } from '../rng';
@@ -204,6 +204,91 @@ describe('generateRevisionSet adaptive mode (CR-009)', () => {
       now,
     });
     expect(result.length).toBeGreaterThan(0);
+  });
+});
+
+describe('due-queue priority (prioritised, not restricted)', () => {
+  const TYPES = ['flashcard', 'mcq'] as const;
+
+  // Ids that provably yield questions, so the blend always has both sides to work with.
+  const answerableIds = [
+    ...new Set(
+      generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, { types: TYPES, mode: 'practice', seed: 7 }).map((q) => q.structureId),
+    ),
+  ];
+
+  it('leaves room for structures outside the priority list', () => {
+    // The regression this guards: passing the due queue as structureIds restricted the
+    // session to it, and since answering a due structure reschedules it, the queue
+    // refilled itself and no new structure was ever reachable.
+    const priorityStructureIds = answerableIds.slice(0, 5);
+    const result = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+      types: TYPES,
+      mode: 'practice',
+      count: 20,
+      seed: 11,
+      priorityStructureIds,
+    });
+    expect(result).toHaveLength(20);
+    expect(result.some((q) => !priorityStructureIds.includes(q.structureId))).toBe(true);
+  });
+
+  it('caps the priority share even when the due queue could fill the session', () => {
+    expect(answerableIds.length).toBeGreaterThan(60);
+    const priorityStructureIds = answerableIds.slice(0, 60);
+    const result = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+      types: TYPES,
+      mode: 'practice',
+      count: 20,
+      seed: 12,
+      priorityStructureIds,
+    });
+    const fromPriority = result.filter((q) => priorityStructureIds.includes(q.structureId));
+    expect(fromPriority).toHaveLength(Math.round(20 * REVIEW_SHARE));
+  });
+
+  it('honours an explicit reviewShare', () => {
+    const priorityStructureIds = answerableIds.slice(0, 60);
+    const result = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+      types: TYPES,
+      mode: 'practice',
+      count: 20,
+      seed: 13,
+      priorityStructureIds,
+      reviewShare: 0.25,
+    });
+    expect(result.filter((q) => priorityStructureIds.includes(q.structureId))).toHaveLength(5);
+  });
+
+  it('does not shrink the session when the due queue is thin', () => {
+    const result = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+      types: TYPES,
+      mode: 'practice',
+      count: 20,
+      seed: 14,
+      priorityStructureIds: answerableIds.slice(0, 1),
+    });
+    expect(result).toHaveLength(20);
+  });
+
+  it('treats an empty priority list as no priority at all', () => {
+    const base = { types: TYPES, mode: 'practice' as const, count: 20, seed: 15 };
+    const withEmpty = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, { ...base, priorityStructureIds: [] });
+    const without = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, base);
+    expect(withEmpty.map((q) => q.id)).toEqual(without.map((q) => q.id));
+  });
+
+  it('is ignored in adaptive mode, which already weights due-ness over the whole pool', () => {
+    const priorityStructureIds = answerableIds.slice(0, 3);
+    const result = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+      types: TYPES,
+      mode: 'adaptive',
+      count: 20,
+      seed: 16,
+      priorityStructureIds,
+      now: new Date('2026-09-03T09:00:00.000Z'),
+    });
+    expect(result.some((q) => !priorityStructureIds.includes(q.structureId))).toBe(true);
   });
 });
 

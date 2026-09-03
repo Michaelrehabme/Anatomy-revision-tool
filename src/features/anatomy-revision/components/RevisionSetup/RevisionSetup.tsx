@@ -85,14 +85,14 @@ export function RevisionSetup({ content, repository, userId, areas, onStart, onB
 
   const handleStart = async () => {
     setStarting(true);
-    let structureIds: string[] | undefined;
+    let dueStructureIds: string[] | undefined;
     // Adaptive mode does its own due/weak/known weighting over the full pool — a due-only
     // pre-filter would fight it, so the SRS toggle only applies to practice/exam.
     if (useSrs && mode !== 'adaptive' && repository && userId) {
       const due = await repository.listDueMastery(userId, new Date().toISOString());
       const pool = new Set(content.structures.filter(inPool).map((s) => s.id));
       const dueInPool = due.map((m) => m.structureId).filter((id) => pool.has(id));
-      if (dueInPool.length > 0) structureIds = dueInPool;
+      if (dueInPool.length > 0) dueStructureIds = dueInPool;
     }
 
     const mastery = mode === 'adaptive' && repository && userId ? await repository.listMastery(userId) : undefined;
@@ -110,7 +110,9 @@ export function RevisionSetup({ content, repository, userId, areas, onStart, onB
       category: params.category,
       mode,
       count,
-      structureIds,
+      // Prioritised, not restricted — see the toggle's own copy. A hard due-only
+      // filter refills its own queue, since answering a due structure reschedules it.
+      priorityStructureIds: dueStructureIds,
       mastery,
     });
     onStart(questions, params);

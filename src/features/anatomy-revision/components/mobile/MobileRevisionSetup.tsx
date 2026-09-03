@@ -83,12 +83,12 @@ export function MobileRevisionSetup({ content, repository, userId, areas, onStar
 
   const handleStart = async () => {
     setStarting(true);
-    let structureIds: string[] | undefined;
+    let dueStructureIds: string[] | undefined;
     if (useSrs && mode !== 'adaptive' && repository && userId) {
       const due = await repository.listDueMastery(userId, new Date().toISOString());
       const pool = new Set(content.structures.filter(inPool).map((s) => s.id));
       const dueInPool = due.map((m) => m.structureId).filter((id) => pool.has(id));
-      if (dueInPool.length > 0) structureIds = dueInPool;
+      if (dueInPool.length > 0) dueStructureIds = dueInPool;
     }
 
     const mastery = mode === 'adaptive' && repository && userId ? await repository.listMastery(userId) : undefined;
@@ -106,7 +106,9 @@ export function MobileRevisionSetup({ content, repository, userId, areas, onStar
       category: category === 'all' ? undefined : category,
       mode,
       count,
-      structureIds,
+      // Prioritised, not restricted — see the toggle's own copy. A hard due-only
+      // filter refills its own queue, since answering a due structure reschedules it.
+      priorityStructureIds: dueStructureIds,
       mastery,
     });
     onStart(questions, params);

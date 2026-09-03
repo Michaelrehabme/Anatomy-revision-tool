@@ -4,7 +4,7 @@ import type { QuestionType, RevisionQuestion } from '../../types/question';
 import type { Area, Region, SubRegion } from '../../types/region';
 import type { StructureMastery } from '../../types/attempt';
 import { buildIndexes, filterStructures, type StructureIndexes } from '../indexes';
-import { createRng, sample, shuffle, type Rng } from '../rng';
+import { createRng, shuffle, type Rng } from '../rng';
 import { selectAdaptiveStructures, pickAdaptiveQuestionType } from '../adaptiveSelection';
 import { buildFlashcardQuestions } from './flashcards';
 import { buildMcqQuestions } from './mcq';
@@ -35,6 +35,16 @@ export interface RevisionSetConfig {
   count?: number;
   /** Restrict to specific structure ids — used by RevisionResults' "retry incorrect". */
   structureIds?: string[];
+  /**
+   * Prefer these structures without restricting the session to them — the due
+   * queue, typically. Capped at `reviewShare` so new material always has room:
+   * answering a due structure reschedules it, so a hard restriction lets the
+   * queue refill itself and nothing new is ever reachable. Ignored in adaptive
+   * mode, which already weights due-ness across the whole pool.
+   */
+  priorityStructureIds?: string[];
+  /** Fraction of `count` reserved for `priorityStructureIds`. Defaults to REVIEW_SHARE. */
+  reviewShare?: number;
   /** Fixed seed for deterministic/testable generation. Defaults to time-based. */
   seed?: number;
   /**
@@ -45,6 +55,34 @@ export interface RevisionSetConfig {
   mastery?: StructureMastery[];
   /** Adaptive mode only. Injectable for deterministic tests; defaults to real time. */
   now?: Date;
+}
+
+/** Share of a session reserved for `priorityStructureIds` when enough of them exist. */
+export const REVIEW_SHARE = 0.6;
+
+/**
+ * Fills up to `count * share` from the priority structures and the rest from
+ * everything else, with either side topping up when the other runs short — so a
+ * thin due queue prioritises without shortening the session.
+ */
+function blendPriorityWithRest(
+  ordered: RevisionQuestion[],
+  priorityStructureIds: string[],
+  count: number,
+  reviewShare: number | undefined,
+  rng: Rng,
+): RevisionQuestion[] {
+  const priority = new Set(priorityStructureIds);
+  const share = Math.min(1, Math.max(0, reviewShare ?? REVIEW_SHARE));
+
+  const due: RevisionQuestion[] = [];
+  const rest: RevisionQuestion[] = [];
+  for (const question of ordered) (priority.has(question.structureId) ? due : rest).push(question);
+
+  const fromDue = due.slice(0, Math.min(Math.round(count * share), due.length));
+  const fromRest = rest.slice(0, count - fromDue.length);
+  const topUp = due.slice(fromDue.length, fromDue.length + (count - fromDue.length - fromRest.length));
+  return shuffle([...fromDue, ...fromRest, ...topUp], rng);
 }
 
 function generateOneQuestionForStructure(
@@ -151,9 +189,9 @@ export function generateRevisionSet(
     generated.push(...buildMultiSelectQuestions(pool, indexes, rng));
   }
 
-  if (config.mode === 'assessment') {
-    return sample(generated, config.count ?? generated.length, rng);
-  }
   const shuffled = shuffle(generated, rng);
-  return config.count ? shuffled.slice(0, config.count) : shuffled;
+  const count = config.mode === 'assessment' ? (config.count ?? generated.length) : config.count;
+  if (!count) return shuffled;
+  if (!config.priorityStructureIds?.length) return shuffled.slice(0, count);
+  return blendPriorityWithRest(shuffled, config.priorityStructureIds, count, config.reviewShare, rng);
 }
