@@ -252,7 +252,7 @@ read costs.
 
 ## Admin section
 
-`/admin/*` (Change Register, Users, Analytics placeholder) is a separate, code-split part of the
+`/admin/*` (Change Register, Users, Analytics) is a separate, code-split part of the
 app — students never download it, and it only works against a real Firebase project
 (`VITE_PERSISTENCE=firestore`). See `src/features/admin/`.
 
@@ -335,7 +335,7 @@ src/
       shell/                           # AdminShell, AdminSidebar
       ChangeRegister/                  # table, filters, detail panel, new-request form
       Users/                           # UsersPage, UserDetailPage
-      Analytics/                       # placeholder — CR-005
+      Analytics/                       # structure weakness, distractor analysis, question health, cohort overview
     data/
       changeRequests.seed.ts           # version-controlled backlog — see "Change Register" above
       changeRequestsRepository.ts      # Firestore CRUD for changeRequests

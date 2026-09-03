@@ -14,6 +14,10 @@ import type { ChangeRequest } from '../types/changeRequest';
  * CR-006 and CR-014 to CR-016 are likewise reconstructed: they were tracked in
  * a separate BACKLOG-IMAGES.md document rather than here, so the register
  * disagreed with what had actually been built. Nothing references CR-002.
+ *
+ * CR-005's `prompt` is reconstructed too: it shipped in the same pass as
+ * CR-004 rather than as separately scoped work, so no discrete prompt for it
+ * ever existed — see its `notes`.
  */
 export const CHANGE_REQUESTS_SEED: ChangeRequest[] = [
   {
@@ -73,7 +77,7 @@ export const CHANGE_REQUESTS_SEED: ChangeRequest[] = [
     category: 'infrastructure',
     priority: 'p1',
     effort: 'l',
-    status: 'inProgress',
+    status: 'completed',
     description:
       'Build an /admin/* section behind a custom-claim auth guard: a Change Register (this backlog, browsable and editable in the ' +
       'app instead of only in git), a Users table with per-user drill-down, and a placeholder for the future Analytics screen (CR-005).',
@@ -143,8 +147,14 @@ export const CHANGE_REQUESTS_SEED: ChangeRequest[] = [
     dependsOn: ['CR-001', 'CR-003'],
     createdAt: '2026-08-26T08:00:00.000Z',
     startedAt: '2026-08-26T08:05:00.000Z',
-    completedAt: null,
-    notes: '',
+    completedAt: '2026-08-26T19:32:55.000Z',
+    notes:
+      'Analytics was NOT left as a CR-005 placeholder as the prompt specified — it was built out fully in this same pass ' +
+      '(structure weakness, distractor analysis, question health, cohort overview), along with the questionReviews/attemptEvents ' +
+      'collections and rules it needed. Everything else matches the prompt as scoped: custom-claim auth (scripts/setAdmin.ts, ' +
+      'RequireAdmin, firestore.rules), the admin shell, Change Register, and Users + per-user drill-down. Register updated on ' +
+      '2026-08-31 after an audit found the code already complete and 135/135 tests + build passing — see CR-005\'s notes for why ' +
+      'its entry was rewritten rather than left as an undrafted placeholder.',
   },
   {
     ref: 'CR-005',
@@ -152,19 +162,24 @@ export const CHANGE_REQUESTS_SEED: ChangeRequest[] = [
     category: 'analytics',
     priority: 'p2',
     effort: 'l',
-    status: 'new',
+    status: 'completed',
     description:
-      'Replace the /admin/analytics placeholder with a real cross-user analytics dashboard: engagement over time, accuracy trends ' +
-      'by region/category, and drop-off points in the revision flow.',
+      'Cross-user analytics dashboard at /admin/analytics with four views: structure weakness ranking, distractor analysis ' +
+      '(including confusion pairs), question health flags, and a cohort overview (active users by day, retention, session metrics).',
     prompt:
-      'Not yet drafted — scope out the specific charts/metrics wanted before writing the implementation prompt. Candidates: ' +
-      'daily/weekly active users, accuracy trend by region and category over time, question-type performance breakdown, and where ' +
-      'students most often abandon a session.',
+      'Not yet drafted at the time CR-004 was scoped — see notes. Reconstructed scope: structure weakness ranking, distractor/' +
+      'confusion-pair analysis, question health flagging, and a cohort overview (daily/weekly active users, retention, session ' +
+      'metrics), all computed client-side from existing attempt/session data with an explicit migration note for moving to ' +
+      'server-side rollups at scale.',
     dependsOn: ['CR-004'],
     createdAt: '2026-08-26T08:00:00.000Z',
-    startedAt: null,
-    completedAt: null,
-    notes: 'Placeholder backlog entry so the Analytics screen\'s "see CR-005" pointer resolves to something real.',
+    startedAt: '2026-08-26T08:05:00.000Z',
+    completedAt: '2026-08-26T19:32:55.000Z',
+    notes:
+      'Originally logged as an undrafted placeholder ("see CR-005") so CR-004\'s pointer resolved to something. It shipped for real ' +
+      'in the same commit as CR-004 rather than staying deferred — an audit on 2026-08-31 found the dashboard, its aggregation ' +
+      'logic (analyticsAggregation.ts, 20 passing tests), and its supporting Firestore collections/rules already complete, so this ' +
+      'entry was rewritten from "new"/undrafted to "completed" to match. See CR-004\'s notes for the same correction on that entry.',
   },
   {
     ref: 'CR-006',
