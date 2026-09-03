@@ -13,14 +13,12 @@ import { Button } from '../shared/Button';
 import { AppShell } from '../shell/AppShell';
 import { NavSidebar, type NavSection } from '../shell/NavSidebar';
 
-// 'locate' is intentionally not offered here — see images.seed.ts's panel-crop comment
-// (CR-016): no image in the current dataset is suited to a locate question, since every
-// single-muscle panel already highlights its target muscle rather than staying neutral.
 const QUESTION_TYPE_OPTIONS: { value: QuestionType; label: string }[] = [
   { value: 'mcq', label: 'Multiple choice' },
   { value: 'identify-typed', label: 'Type answer' },
   { value: 'flashcard', label: 'Flashcard' },
   { value: 'multi-select', label: 'Select all' },
+  { value: 'locate', label: 'Locate' },
 ];
 
 const CATEGORY_OPTIONS: { value: Category | 'all'; label: string }[] = [

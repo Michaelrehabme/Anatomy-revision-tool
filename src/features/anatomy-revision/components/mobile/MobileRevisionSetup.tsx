@@ -10,14 +10,12 @@ import { generateRevisionSet } from '../../lib/questionGenerators/generateSet';
 import type { RevisionSetupParams } from '../../hooks/useRevisionSession';
 import { MobileShell } from './MobileShell';
 
-// 'locate' is intentionally not offered here — see images.seed.ts's panel-crop comment
-// (CR-016): no image in the current dataset is suited to a locate question, since every
-// single-muscle panel already highlights its target muscle rather than staying neutral.
 const FORMAT_OPTIONS: { value: QuestionType; label: string }[] = [
   { value: 'flashcard', label: 'flashcard' },
   { value: 'mcq', label: 'multiple-choice' },
   { value: 'identify-typed', label: 'type-answer' },
   { value: 'multi-select', label: 'select-all' },
+  { value: 'locate', label: 'locate' },
 ];
 
 // Mirrors the desktop picker. Mobile was hardcoded to muscles before CR-017, which put
