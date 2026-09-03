@@ -13,6 +13,11 @@ import type { ChangeRequest } from '../types/changeRequest';
  * not the literal prompt text used when the work was actually done (the
  * Change Register didn't exist yet when they shipped) — see each entry's
  * `notes`.
+ *
+ * CR-018 through CR-021 are reconstructed the same way: they were tracked in
+ * a separate BACKLOG-IMAGES.md document and in commit messages on a long-lived
+ * feature branch rather than here, so this register only picked them up once
+ * that branch was merged.
  */
 export const CHANGE_REQUESTS_SEED: ChangeRequest[] = [
   {
@@ -1177,5 +1182,109 @@ export const CHANGE_REQUESTS_SEED: ChangeRequest[] = [
       'widening the mobile area picker to count all structures meant it promised "17 structures" for the ' +
       'elbow while the session behind it still served only the 5 muscles. Added the same category chip ' +
       'row to mobile and removed the hardcode.',
+  },
+  {
+    ref: 'CR-018',
+    title: 'Automated Z-Anatomy hotspot pipeline',
+    category: 'content',
+    priority: 'p1',
+    effort: 'l',
+    status: 'completed',
+    description:
+      'CR-007\'s dev-only authoring tool made hand-tracing hotspots possible but nobody had actually traced any — locate ' +
+      'questions still generated zero. Render the Z-Anatomy 3D model per-region and per-muscle, derive hotspot polygons from the ' +
+      'per-muscle masks automatically, and retire the 10 AI-generated muscle atlas slides in favour of the real renders.',
+    prompt:
+      'Not a single discrete prompt — reconstructed from BACKLOG-IMAGES.md and the commit history of a long-lived ' +
+      'feature branch. The work, in the order it happened:\n\n' +
+      '1. Render 5 regions x 3 views (anterior/lateral/posterior) from the Z-Anatomy Blender model, plus a solo silhouette ' +
+      'mask per muscle for occlusion ordering.\n' +
+      '2. Convert each mask to a normalised 0-1 hotspot polygon (src/scripts/masksToHotspots.ts), subtracting whatever a ' +
+      'shallower structure occludes so a correct tap is never stolen by a deeper muscle the student cannot see ' +
+      '(src/scripts/data/occlusionOrder.ts) — verified with a dev-only overlay renderer, not just by eye on the final crop.\n' +
+      '3. Re-render the 21 single-muscle Muscle Card panels from the same model, replacing the softer AI crops, composited ' +
+      'in-context on the skeleton rather than floated alone against white.\n' +
+      '4. Convert every atlas/panel/region image to webp.\n\n' +
+      'Licence: Z-Anatomy is CC BY-SA 4.0 (based on BodyParts3D) — share-alike reaches the traced polygons as well as the ' +
+      'renders themselves, credited via AttributionBadge.',
+    dependsOn: ['CR-007'],
+    createdAt: '2026-08-31T13:00:00.000Z',
+    startedAt: '2026-08-31T13:00:00.000Z',
+    completedAt: '2026-08-31T19:36:00.000Z',
+    notes:
+      'The real seed dataset generates at least 25 locate questions post-merge, up from zero — see ' +
+      'generateSet.test.ts. CR-007\'s manual authoring tool and src/scripts/importHotspots.ts stay in the tree as a ' +
+      'fallback path for structures with no mask (bones, landmarks), which this pipeline does not cover.',
+  },
+  {
+    ref: 'CR-019',
+    title: 'Correctness-weighted ordering for practice and assessment sessions',
+    category: 'content',
+    priority: 'p2',
+    effort: 's',
+    status: 'completed',
+    description:
+      'CR-006 weights structure selection in adaptive mode only. Extend the same idea — a structure answered wrong ' +
+      'resurfaces sooner, a well-known one later — to the ordering of practice and assessment sessions, which previously ' +
+      'shuffled uniformly regardless of recorded performance.',
+    prompt:
+      'Reconstructed from a long-lived feature branch\'s commit history. lib/scheduling.ts is the read side of the ' +
+      'mastery data lib/mastery.ts already wrote but nothing outside adaptive mode consumed for ordering: a structure\'s ' +
+      'weight combines Laplace-smoothed accuracy — so one lucky or unlucky early answer does not over-correct — with the ' +
+      'existing SM-2-lite schedule, measured against the structure\'s own interval. Nothing is ever weighted to zero, so a ' +
+      'long-running account never permanently retires most of the dataset.',
+    dependsOn: ['CR-006'],
+    createdAt: '2026-08-31T19:55:00.000Z',
+    startedAt: '2026-08-31T19:55:00.000Z',
+    completedAt: '2026-09-03T15:00:00.000Z',
+    notes:
+      'Landed alongside CR-018\'s merge, not as its own commit — the branch this was reconstructed from also carried its ' +
+      'own competing due-queue fix, superseded by CR-020, and its own CR-006 register entry, superseded by the one already ' +
+      'shipped on this line of history.',
+  },
+  {
+    ref: 'CR-020',
+    title: 'Due queue prioritised, not restricted',
+    category: 'content',
+    priority: 'p1',
+    effort: 's',
+    status: 'completed',
+    description:
+      'Today, MobileToday and both revision setup screens passed the due review queue to the question generator as a hard ' +
+      'restriction. Since answering a due structure reschedules it, the queue refilled itself faster than it drained: ' +
+      'simulating seven days of daily use, a student met 19 of 285 structures and none at all after day one.',
+    prompt:
+      'No discrete prompt — found while starting CR-006 and fixed directly. Cap the due queue at a share of the session ' +
+      '(REVIEW_SHARE) instead of restricting the pool to it, with either side topping up when the other runs short so the ' +
+      'session always reaches its requested count.',
+    dependsOn: [],
+    createdAt: '2026-09-03T13:00:00.000Z',
+    startedAt: '2026-09-03T13:00:00.000Z',
+    completedAt: '2026-09-03T13:40:00.000Z',
+    notes:
+      'Shipped directly to main ahead of CR-018 — see generateSet.ts\'s priorityStructureIds/reviewShare and the four call ' +
+      'sites that pass the due queue that way instead of as structureIds. Verified against a seeded account on the live ' +
+      'project: a 20-question session split 12 due / 5 new / 3 seen-but-not-due, where the old path gave all 20 to the due ' +
+      'queue.',
+  },
+  {
+    ref: 'CR-021',
+    title: 'Mobile sign-in entry point',
+    category: 'auth',
+    priority: 'p2',
+    effort: 's',
+    status: 'completed',
+    description:
+      'The mobile shell had no sign-in entry point at all — CR-001\'s auth (Google + email/password, anonymous-account ' +
+      'linking) was reachable on desktop only.',
+    prompt:
+      'No discrete prompt — reconstructed from commit history. Add a mobile-equivalent account button (sign-in / real ' +
+      'name + sign-out) to MobileShell, hidden entirely when VITE_PERSISTENCE=local, matching desktop\'s no-dead-buttons ' +
+      'convention.',
+    dependsOn: ['CR-001'],
+    createdAt: '2026-09-03T13:44:00.000Z',
+    startedAt: '2026-09-03T13:44:00.000Z',
+    completedAt: '2026-09-03T13:44:00.000Z',
+    notes: 'Small, self-contained: MobileAccountButton.tsx plus a few lines each in MobileShell.tsx, NavSidebar.tsx and AuthProvider.tsx.',
   },
 ];

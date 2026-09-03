@@ -67,9 +67,27 @@ function main(): void {
         warn(`Image "${img.id}" references unknown structureId "${img.structureId}"`);
       }
     }
+    // Hotspot coordinates are normalized against the image's own natural size,
+    // so an image carrying hotspots without dimensions cannot be rendered with
+    // a matching aspect-ratio box and every click lands off-target.
+    if ((img.hotspots?.length ?? 0) > 0 && (!img.width || !img.height)) {
+      warn(`Image "${img.id}" has hotspots but no width/height — clicks will not line up`);
+    }
     for (const hotspot of img.hotspots ?? []) {
       if (!structureIds.has(hotspot.structureId)) {
         warn(`Image "${img.id}" has a hotspot for unknown structureId "${hotspot.structureId}"`);
+      }
+      if (hotspot.area <= 0 || hotspot.area > 1) {
+        warn(`Image "${img.id}" hotspot "${hotspot.structureId}" has area ${hotspot.area} outside 0-1`);
+      }
+      const [cx, cy] = hotspot.centroid;
+      if (cx < 0 || cx > 1 || cy < 0 || cy > 1) {
+        warn(`Image "${img.id}" hotspot "${hotspot.structureId}" has a centroid outside the image`);
+      }
+      for (const ring of hotspot.polygons) {
+        if (ring.length < 3) {
+          warn(`Image "${img.id}" hotspot "${hotspot.structureId}" has a ring with only ${ring.length} point(s)`);
+        }
       }
     }
     if ((img.hotspots ?? []).length > 0 && (!img.width || !img.height)) {

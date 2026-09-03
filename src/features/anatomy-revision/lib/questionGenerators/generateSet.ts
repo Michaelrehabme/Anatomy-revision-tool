@@ -4,8 +4,9 @@ import type { QuestionType, RevisionQuestion } from '../../types/question';
 import type { Area, Region, SubRegion } from '../../types/region';
 import type { StructureMastery } from '../../types/attempt';
 import { buildIndexes, filterStructures, type StructureIndexes } from '../indexes';
-import { createRng, shuffle, type Rng } from '../rng';
+import { createRng, shuffle, weightedShuffle, type Rng } from '../rng';
 import { selectAdaptiveStructures, pickAdaptiveQuestionType } from '../adaptiveSelection';
+import { buildWeightMap, UNSEEN_WEIGHT } from '../scheduling';
 import { buildFlashcardQuestions } from './flashcards';
 import { buildMcqQuestions } from './mcq';
 import { buildLocateQuestions } from './locate';
@@ -25,10 +26,11 @@ export interface RevisionSetConfig {
   category?: Category;
   difficulty?: Difficulty;
   /**
-   * practice = every eligible question once (shuffled), optionally capped at
-   * `count`; assessment = a random sample of `count`; adaptive = `count`
-   * structures blended ~70/30 weak-to-known by mastery data, each escalated
-   * to the hardest requested question type its mastery supports (CR-009).
+   * practice = every eligible question once (shuffled, or mastery-weighted — see
+   * `mastery` below), optionally capped at `count`; assessment = a random sample
+   * of `count`; adaptive = `count` structures blended ~70/30 weak-to-known by
+   * mastery data, each escalated to the hardest requested question type its
+   * mastery supports (CR-009).
    */
   mode: 'practice' | 'assessment' | 'adaptive';
   /** Assessment/adaptive: required, sampled without repeats. Practice: optional cap on the shuffled set; omit for every eligible question. */
@@ -43,17 +45,22 @@ export interface RevisionSetConfig {
    * mode, which already weights due-ness across the whole pool.
    */
   priorityStructureIds?: string[];
-  /** Fraction of `count` reserved for `priorityStructureIds`. Defaults to REVIEW_SHARE. */
+  /** Ceiling on the share of the set drawn from `priorityStructureIds`. Defaults to REVIEW_SHARE. */
   reviewShare?: number;
   /** Fixed seed for deterministic/testable generation. Defaults to time-based. */
   seed?: number;
   /**
-   * Adaptive mode only. generateSet stays repository-free (CR-009 constraint)
-   * — the caller fetches mastery and passes it in rather than this module
-   * reaching into AnatomyRepository itself.
+   * The user's recorded per-structure performance. In practice/assessment mode
+   * it weights question order (see lib/scheduling.ts) so structures answered
+   * wrong resurface sooner and well-known ones later — omit for a signed-out or
+   * first-ever session to keep selection uniform. In adaptive mode it instead
+   * drives selectAdaptiveStructures' weak/known blend (CR-009). generateSet
+   * stays repository-free either way (CR-009 constraint) — the caller fetches
+   * mastery and passes it in rather than this module reaching into
+   * AnatomyRepository itself.
    */
-  mastery?: StructureMastery[];
-  /** Adaptive mode only. Injectable for deterministic tests; defaults to real time. */
+  mastery?: readonly StructureMastery[];
+  /** Reference time for due-date weighting / adaptive selection. Defaults to now. */
   now?: Date;
 }
 
@@ -61,9 +68,14 @@ export interface RevisionSetConfig {
 export const REVIEW_SHARE = 0.6;
 
 /**
- * Fills up to `count * share` from the priority structures and the rest from
- * everything else, with either side topping up when the other runs short — so a
- * thin due queue prioritises without shortening the session.
+ * Caps the priority list's share of a session and fills the rest from the
+ * wider pool, so priority and new material both get airtime.
+ *
+ * Restricting a session to the due queue outright — which is what passing those
+ * ids as `structureIds` does — locks a daily user into whatever they saw first:
+ * answering a due structure reschedules it, so the queue refills itself and no
+ * new structure is ever reachable. Either side tops up when the other runs
+ * short, so a thin queue on either side can't shrink the session.
  */
 function blendPriorityWithRest(
   ordered: RevisionQuestion[],
@@ -116,6 +128,9 @@ function generateOneQuestionForStructure(
  * question type from them, and returns a shuffled (practice) or randomly
  * sampled (assessment) set — mirroring the old quiz.py's practice-vs-
  * assessment distinction.
+ *
+ * Pass `config.mastery` to order by measured correctness rather than uniformly;
+ * generation stays deterministic under `config.seed` either way.
  */
 export function generateRevisionSet(
   structures: AnatomyStructure[],
@@ -189,9 +204,13 @@ export function generateRevisionSet(
     generated.push(...buildMultiSelectQuestions(pool, indexes, rng));
   }
 
-  const shuffled = shuffle(generated, rng);
+  const weights = config.mastery?.length ? buildWeightMap(config.mastery, config.now) : null;
+  const ordered = weights
+    ? weightedShuffle(generated, (q) => weights.get(q.structureId) ?? UNSEEN_WEIGHT, rng)
+    : shuffle(generated, rng);
+
   const count = config.mode === 'assessment' ? (config.count ?? generated.length) : config.count;
-  if (!count) return shuffled;
-  if (!config.priorityStructureIds?.length) return shuffled.slice(0, count);
-  return blendPriorityWithRest(shuffled, config.priorityStructureIds, count, config.reviewShare, rng);
+  if (!count) return ordered;
+  if (!config.priorityStructureIds?.length) return ordered.slice(0, count);
+  return blendPriorityWithRest(ordered, config.priorityStructureIds, count, config.reviewShare, rng);
 }

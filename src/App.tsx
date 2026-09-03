@@ -6,6 +6,7 @@ import { useAnatomyContent, type AnatomyContent } from './features/anatomy-revis
 import { useRevisionSession } from './features/anatomy-revision/hooks/useRevisionSession';
 import { useIsDesktop } from './features/anatomy-revision/hooks/useIsDesktop';
 import { generateRevisionSet } from './features/anatomy-revision/lib/questionGenerators/generateSet';
+import { useMastery } from './features/anatomy-revision/hooks/useMastery';
 import { computeStreak } from './features/anatomy-revision/lib/streak';
 import type { Area } from './features/anatomy-revision/types/region';
 import type { AnatomyRepository } from './features/anatomy-revision/data/repository';
@@ -37,6 +38,13 @@ const AdminApp = lazy(() => import('./features/admin/AdminApp'));
 const EducatorApp = lazy(() => import('./features/educator/EducatorApp'));
 /** Dev-only hotspot authoring tool (CR-007) — route only registered in dev, see the /dev/hotspots Route below. */
 const HotspotEditorApp = lazy(() => import('./features/hotspotEditor/HotspotEditorApp'));
+
+/**
+ * Hotspot authoring tooling. The ternary folds to `null` at build time, which
+ * leaves the import() in a dead branch for Rollup to drop entirely — students
+ * never receive this and it cannot be reached in production.
+ */
+const DevRoutes = import.meta.env.DEV ? lazy(() => import('./features/dev/DevRoutes')) : null;
 
 const ONBOARDED_KEY = 'anatomy-revision:v1:onboarded';
 
@@ -147,6 +155,8 @@ function App() {
     };
   }, [repository, userId, session.phase]);
 
+  const mastery = useMastery(repository, userId);
+
   const prevPhaseRef = useRef(session.phase);
   useEffect(() => {
     const prevPhase = prevPhaseRef.current;
@@ -155,6 +165,22 @@ function App() {
     if (session.phase === 'in-progress') navigate('/session');
     else if (session.phase === 'results') navigate('/session/results');
   }, [session.phase, navigate]);
+
+  // Above every other gate on purpose: the dev tools read seed content
+  // directly and need no repository, auth, or completed onboarding.
+  if (DevRoutes && location.pathname.startsWith('/dev')) {
+    return (
+      <Suspense
+        fallback={
+          <div className="flex min-h-screen items-center justify-center text-sm" style={{ color: 'var(--ink3)' }}>
+            Loading dev tools…
+          </div>
+        }
+      >
+        <DevRoutes />
+      </Suspense>
+    );
+  }
 
   if (repoError || content.error) {
     return (
@@ -208,6 +234,8 @@ function App() {
   const openMuscle = (structureId: string, contextIds: string[]) =>
     navigate(`/structure/${structureId}`, { state: { contextIds } });
 
+  // No mastery here on purpose: a one-structure drill gives the weighting nothing
+  // to choose between — every question would carry the same weight.
   const drillStructure = (structureId: string) => {
     const questions = generateRevisionSet(content.structures, content.images, {
       types: ['flashcard', 'mcq'],
@@ -336,7 +364,10 @@ function App() {
                 const retryQuestions = generateRevisionSet(content.structures, content.images, {
                   types: session.setupParams?.types ?? ['flashcard', 'mcq'],
                   mode: 'practice',
+                  // Deliberately still a hard restriction — "retry the N missed" means
+                  // those N. Mastery only orders them, worst-known first.
                   structureIds: session.summary!.missedStructureIds,
+                  mastery,
                 });
                 session.start(retryQuestions, session.setupParams ?? { types: ['flashcard', 'mcq'], mode: 'practice' });
               }}
@@ -357,6 +388,7 @@ function App() {
                 const nextQuestions = generateRevisionSet(content.structures, content.images, {
                   ...params,
                   count: session.summary!.totalQuestions,
+                  mastery,
                 });
                 session.start(nextQuestions, params);
               }}
