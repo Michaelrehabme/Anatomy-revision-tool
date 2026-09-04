@@ -13,18 +13,22 @@ import {
 } from 'firebase/firestore';
 import type { AnatomyRepository, AttemptFilter, ImageAssetFilter, GamificationProfile } from './repository';
 import { INITIAL_GAMIFICATION_PROFILE } from './repository';
-import type { UserAttempt, StructureMastery, RevisionSessionSummary } from '../types/attempt';
+import type { UserAttempt, StructureMastery, FactMastery, RevisionSessionSummary } from '../types/attempt';
 import type { StructureFilter } from '../lib/indexes';
 import { filterStructures } from '../lib/indexes';
 import { ALL_STRUCTURES, ALL_IMAGES } from './seed';
 import { getDb } from './firebase';
 import type { AchievementDoc } from '../lib/achievements';
+import { factMasteryKey } from '../lib/factMastery';
 
 /**
  * Firestore layout: top-level attemptEvents/{attemptId} (queryable by userId
  * or structureId for cross-user analytics — see firestore.indexes.json for
  * the composite indexes this requires), plus users/{uid}/mastery/{structureId},
  * users/{uid}/questionExposure/{questionId}, users/{uid}/sessions/{sessionId},
+ * users/{uid}/factMastery/{structureId}__{promptKind} (CR-018 — covered by
+ * the existing `match /users/{uid}/{document=**}` rule, and read whole with
+ * no where/orderBy, so it needs neither a rules change nor a composite index),
  * users/{uid}/gamification/profile (single doc: XP totals, streak-freeze
  * state — CR-008), users/{uid}/achievements/{achievementId} — see
  * firestore.rules at the repo root for the matching security rules, paired
@@ -39,6 +43,22 @@ import type { AchievementDoc } from '../lib/achievements';
  * modules as localRepository, keeping the read-only content contract
  * identical across both implementations.
  */
+/**
+ * Firestore rejects any document containing an `undefined` field value, and
+ * every one of our records has optional fields — a flashcard attempt carries
+ * no confidence since CR-018 made learn cards ungraded, an exam answer
+ * carries none either, and StructureMastery has no dueAt until it has been
+ * scheduled. Dropping the keys entirely is the right shape anyway: absent
+ * and "explicitly undefined" mean the same thing to every reader here.
+ *
+ * Found by running a real session against Firestore — the flashcard reveal
+ * failed with "Unsupported field value: undefined (found in field
+ * confidence)" and surfaced the persist-error banner on the very first card.
+ */
+function omitUndefined<T extends object>(value: T): T {
+  return Object.fromEntries(Object.entries(value).filter(([, v]) => v !== undefined)) as T;
+}
+
 export async function createFirestoreRepository(): Promise<AnatomyRepository> {
   const db = getDb();
 
@@ -63,7 +83,7 @@ export async function createFirestoreRepository(): Promise<AnatomyRepository> {
     },
 
     async recordAttempt(attempt: UserAttempt) {
-      await setDoc(doc(db, 'attemptEvents', attempt.id), attempt);
+      await setDoc(doc(db, 'attemptEvents', attempt.id), omitUndefined(attempt));
     },
 
     /**
@@ -150,11 +170,23 @@ export async function createFirestoreRepository(): Promise<AnatomyRepository> {
     },
 
     async upsertMastery(mastery: StructureMastery) {
-      await setDoc(doc(db, 'users', mastery.userId, 'mastery', mastery.structureId), mastery);
+      await setDoc(doc(db, 'users', mastery.userId, 'mastery', mastery.structureId), omitUndefined(mastery));
+    },
+
+    async listFactMastery(userId: string) {
+      const snapshot = await getDocs(collection(db, 'users', userId, 'factMastery'));
+      return snapshot.docs.map((d) => d.data() as FactMastery);
+    },
+
+    async upsertFactMastery(fact: FactMastery) {
+      await setDoc(
+        doc(db, 'users', fact.userId, 'factMastery', factMasteryKey(fact.structureId, fact.promptKind)),
+        omitUndefined(fact),
+      );
     },
 
     async saveSessionSummary(summary: RevisionSessionSummary) {
-      await setDoc(doc(db, 'users', summary.userId, 'sessions', summary.id), summary);
+      await setDoc(doc(db, 'users', summary.userId, 'sessions', summary.id), omitUndefined(summary));
     },
 
     async listSessionSummaries(userId: string, limitCount = 20) {
@@ -173,7 +205,7 @@ export async function createFirestoreRepository(): Promise<AnatomyRepository> {
     },
 
     async upsertGamificationProfile(userId: string, profile: GamificationProfile) {
-      await setDoc(doc(db, 'users', userId, 'gamification', 'profile'), profile);
+      await setDoc(doc(db, 'users', userId, 'gamification', 'profile'), omitUndefined(profile));
     },
 
     async listAchievements(userId: string) {
@@ -182,7 +214,7 @@ export async function createFirestoreRepository(): Promise<AnatomyRepository> {
     },
 
     async upsertAchievement(userId: string, achievement: AchievementDoc) {
-      await setDoc(doc(db, 'users', userId, 'achievements', achievement.id), achievement);
+      await setDoc(doc(db, 'users', userId, 'achievements', achievement.id), omitUndefined(achievement));
     },
   };
 }

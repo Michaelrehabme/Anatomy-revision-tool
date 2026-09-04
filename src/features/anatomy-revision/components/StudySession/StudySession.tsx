@@ -8,6 +8,7 @@ import {
   isFillBlankQuestion,
   isTypedIdentifyQuestion,
   isMultiSelectQuestion,
+  isOinaQuestion,
 } from '../../types/question';
 import { FlashcardSession } from '../FlashcardSession/FlashcardSession';
 import { MCQSession } from '../MCQSession/MCQSession';
@@ -15,6 +16,7 @@ import { LocateStructureSession } from '../LocateStructureSession/LocateStructur
 import { FillBlankSession } from '../FillBlankSession/FillBlankSession';
 import { IdentifyTypedSession } from '../IdentifyTypedSession/IdentifyTypedSession';
 import { MultiSelectSession } from '../MultiSelectSession/MultiSelectSession';
+import { OinaSession } from '../OinaSession/OinaSession';
 import { AppShell } from '../shell/AppShell';
 import { SessionSidebar } from '../shell/SessionSidebar';
 import { PersistErrorBanner } from '../shared/PersistErrorBanner';
@@ -59,8 +61,21 @@ export function StudySession({ session, content, onEnd }: StudySessionProps) {
     return () => clearTimeout(id);
   }, [remainingSeconds]);
 
-  const correctCount = examMode ? 0 : session.answers.filter((a) => a.correct).length;
-  const wrongCount = examMode ? 0 : session.answers.length - correctCount;
+  // Learn cards are ungraded (CR-018) — counting them would put "1 correct" in
+  // the sidebar the moment a card is revealed, before anything was answered.
+  const gradedAnswers = session.answers.filter((a) => a.graded !== false);
+  const correctCount = examMode ? 0 : gradedAnswers.filter((a) => a.correct).length;
+  const wrongCount = examMode ? 0 : gradedAnswers.length - correctCount;
+
+  // ...and the counter tracks questions, not cards, so it matches both the
+  // length promised at setup and the score on the results screen. Falls back
+  // to a raw count for a flashcard-only session, which has no graded questions.
+  const gradedTotal = session.questions.filter((q) => q.type !== 'flashcard').length;
+  const gradedSoFar = session.questions
+    .slice(0, session.currentIndex + 1)
+    .filter((q) => q.type !== 'flashcard').length;
+  const progressTotal = gradedTotal > 0 ? gradedTotal : session.questions.length;
+  const progressCurrent = gradedTotal > 0 ? Math.max(1, gradedSoFar) : session.currentIndex + 1;
 
   if (!question) {
     return (
@@ -88,8 +103,8 @@ export function StudySession({ session, content, onEnd }: StudySessionProps) {
     <AppShell
       sidebar={
         <SessionSidebar
-          current={session.currentIndex + 1}
-          total={session.questions.length}
+          current={progressCurrent}
+          total={progressTotal}
           correctCount={correctCount}
           wrongCount={wrongCount}
           onEnd={onEnd}
@@ -162,6 +177,15 @@ export function StudySession({ session, content, onEnd }: StudySessionProps) {
         )}
         {isMultiSelectQuestion(question) && (
           <MultiSelectSession
+            key={question.id}
+            question={question}
+            onAnswer={(params) => session.submitAnswer({ ...params, questionId: question.id })}
+            onNext={advance}
+            examMode={examMode}
+          />
+        )}
+        {isOinaQuestion(question) && (
+          <OinaSession
             key={question.id}
             question={question}
             onAnswer={(params) => session.submitAnswer({ ...params, questionId: question.id })}

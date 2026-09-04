@@ -1,12 +1,19 @@
 import { useState } from 'react';
 import type { AnatomyContent } from '../../hooks/useAnatomyContent';
 import type { AnatomyRepository } from '../../data/repository';
-import type { QuestionType, RevisionQuestion } from '../../types/question';
+import type { OinaPromptKind, QuestionType, RevisionQuestion } from '../../types/question';
+import { OINA_PROMPT_KINDS } from '../../types/question';
 import type { Area } from '../../types/region';
 import { AREA_LABELS } from '../../types/region';
 import type { Category } from '../../types/structure';
-import { areaOf } from '../../types/structure';
+import { areaOf, isMuscle, MUSCLE_GROUP_LABELS } from '../../types/structure';
 import { generateRevisionSet } from '../../lib/questionGenerators/generateSet';
+import {
+  LEARN_CARD_ATTEMPT_LABELS,
+  LEARN_CARD_ATTEMPT_OPTIONS,
+  getLearnCardAttempts,
+  setLearnCardAttempts,
+} from '../../lib/preferences';
 import type { RevisionSetupParams } from '../../hooks/useRevisionSession';
 import { MobileShell } from './MobileShell';
 
@@ -18,7 +25,15 @@ const FORMAT_OPTIONS: { value: QuestionType; label: string }[] = [
   { value: 'mcq', label: 'multiple-choice' },
   { value: 'identify-typed', label: 'type-answer' },
   { value: 'multi-select', label: 'select-all' },
+  { value: 'oina', label: 'OINA cards' },
 ];
+
+const OINA_FACT_LABELS: Record<OinaPromptKind, string> = {
+  origin: 'origin',
+  insertion: 'insertion',
+  nerve: 'nerve supply',
+  action: 'action',
+};
 
 // Mirrors the desktop picker. Mobile was hardcoded to muscles before CR-017, which put
 // 187 of the 309 structures — every bone, bony landmark and joint — out of reach on a
@@ -65,26 +80,52 @@ export function MobileRevisionSetup({ content, repository, userId, areas, onStar
   const [mode, setMode] = useState<'practice' | 'adaptive' | 'assessment'>('practice');
   const [timerMinutes, setTimerMinutes] = useState(0);
   const [starting, setStarting] = useState(false);
+  const [oinaFacts, setOinaFacts] = useState<OinaPromptKind[]>([...OINA_PROMPT_KINDS]);
+  const [groups, setGroups] = useState<string[]>([]);
+  const [learnCards, setLearnCards] = useState(getLearnCardAttempts);
+
+  const chooseLearnCards = (value: number) => {
+    setLearnCards(value);
+    setLearnCardAttempts(value);
+  };
 
   const toggleType = (type: QuestionType) => {
     setTypes((prev) => (prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]));
   };
+
+  const oinaSelected = types.includes('oina');
+  const oinaOnly = oinaSelected && types.length === 1;
+  const toggleFact = (fact: OinaPromptKind) => {
+    setOinaFacts((prev) => (prev.includes(fact) ? prev.filter((f) => f !== fact) : [...prev, fact]));
+  };
+  const toggleGroup = (group: string) => {
+    setGroups((prev) => (prev.includes(group) ? prev.filter((g) => g !== group) : [...prev, group]));
+  };
+  const availableGroups = Object.keys(MUSCLE_GROUP_LABELS).filter((group) =>
+    content.structures.some(
+      (s) => isMuscle(s) && (s.groups ?? []).includes(group) && (areas.size === 0 || (!!areaOf(s) && areas.has(areaOf(s)!))),
+    ),
+  );
 
   const areasArray = [...areas];
   const inPool = (s: (typeof content.structures)[number]) => {
     const area = areaOf(s);
     return (
       (areas.size === 0 || (!!area && areas.has(area))) &&
-      (category === 'all' || s.category === category)
+      (category === 'all' || s.category === category) &&
+      (groups.length === 0 || (s.groups ?? []).some((g) => groups.includes(g)))
     );
   };
   const poolSize = content.structures.filter(inPool).length;
-  const canStart = types.length > 0 && poolSize > 0;
+  // See RevisionSetup: an OINA session covers every fact in scope, not a fixed count.
+  const oinaMuscleCount = content.structures.filter((s) => isMuscle(s) && inPool(s)).length;
+  const oinaQuestionCount = oinaMuscleCount * oinaFacts.length;
+  const canStart = types.length > 0 && poolSize > 0 && (!oinaSelected || oinaFacts.length > 0);
 
   const handleStart = async () => {
     setStarting(true);
     let structureIds: string[] | undefined;
-    if (useSrs && mode !== 'adaptive' && repository && userId) {
+    if (useSrs && mode !== 'adaptive' && !oinaOnly && repository && userId) {
       const due = await repository.listDueMastery(userId, new Date().toISOString());
       const pool = new Set(content.structures.filter(inPool).map((s) => s.id));
       const dueInPool = due.map((m) => m.structureId).filter((id) => pool.has(id));
@@ -92,10 +133,14 @@ export function MobileRevisionSetup({ content, repository, userId, areas, onStar
     }
 
     const mastery = mode === 'adaptive' && repository && userId ? await repository.listMastery(userId) : undefined;
+    const factMastery = oinaSelected && repository && userId ? await repository.listFactMastery(userId) : undefined;
 
     const params: RevisionSetupParams = {
       types,
       areas: areasArray,
+      groups: groups.length ? groups : undefined,
+      oinaPromptKinds: oinaSelected ? oinaFacts : undefined,
+      learnCardAttempts: oinaSelected ? learnCards : undefined,
       category: category === 'all' ? undefined : category,
       mode,
       timerMinutes: mode === 'assessment' && timerMinutes > 0 ? timerMinutes : undefined,
@@ -103,11 +148,15 @@ export function MobileRevisionSetup({ content, repository, userId, areas, onStar
     const questions = generateRevisionSet(content.structures, content.images, {
       types,
       areas: areasArray,
+      groups: params.groups,
+      oinaPromptKinds: params.oinaPromptKinds,
+      learnCardAttempts: params.learnCardAttempts,
       category: category === 'all' ? undefined : category,
       mode,
-      count,
+      count: oinaSelected ? undefined : count,
       structureIds,
       mastery,
+      factMastery,
     });
     onStart(questions, params);
   };
@@ -146,6 +195,74 @@ export function MobileRevisionSetup({ content, repository, userId, areas, onStar
             </button>
           ))}
         </div>
+
+        {oinaSelected && (
+          <>
+            <div
+              className="mt-7.5"
+              style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}
+            >
+              OINA facts
+            </div>
+            <div className="mt-3.5 flex flex-wrap gap-2.5">
+              {OINA_PROMPT_KINDS.map((fact) => (
+                <button
+                  key={fact}
+                  type="button"
+                  onClick={() => toggleFact(fact)}
+                  aria-pressed={oinaFacts.includes(fact)}
+                  className="inline-flex min-h-[44px] items-center justify-center rounded-full px-4.5"
+                  style={{ fontFamily: 'var(--font-display)', fontSize: 15.5, ...chipStyle(oinaFacts.includes(fact)) }}
+                >
+                  {OINA_FACT_LABELS[fact]}
+                </button>
+              ))}
+            </div>
+
+            <div
+              className="mt-7.5"
+              style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}
+            >
+              Show the answer first
+            </div>
+            <div className="mt-3.5 flex flex-wrap gap-2.5">
+              {LEARN_CARD_ATTEMPT_OPTIONS.map((n) => (
+                <button
+                  key={n}
+                  type="button"
+                  onClick={() => chooseLearnCards(n)}
+                  aria-pressed={learnCards === n}
+                  className="inline-flex min-h-[44px] items-center justify-center rounded-full px-4.5"
+                  style={{ fontFamily: 'var(--font-display)', fontSize: 15.5, ...chipStyle(learnCards === n) }}
+                >
+                  {LEARN_CARD_ATTEMPT_LABELS[n]}
+                </button>
+              ))}
+            </div>
+
+            <div
+              className="mt-7.5"
+              style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}
+            >
+              Muscle group
+            </div>
+            <div className="mt-3.5 flex flex-wrap gap-2.5">
+              {availableGroups.map((group) => (
+                <button
+                  key={group}
+                  type="button"
+                  onClick={() => toggleGroup(group)}
+                  aria-pressed={groups.includes(group)}
+                  className="inline-flex min-h-[44px] items-center justify-center rounded-full px-4.5"
+                  style={{ fontFamily: 'var(--font-display)', fontSize: 15.5, ...chipStyle(groups.includes(group)) }}
+                >
+                  {MUSCLE_GROUP_LABELS[group]}
+                </button>
+              ))}
+            </div>
+          </>
+        )}
+
         <div
           className="mt-7.5"
           style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}
@@ -172,22 +289,32 @@ export function MobileRevisionSetup({ content, repository, userId, areas, onStar
         >
           Length
         </div>
-        <div className="mt-3.5 flex gap-2.5">
-          {LENGTHS.map((n) => {
-            const on = count === n;
-            return (
-              <button
-                key={n}
-                type="button"
-                onClick={() => setCount(n)}
-                className="flex-1 rounded-[3px]"
-                style={{ fontFamily: 'var(--font-display)', fontSize: 18, minHeight: 52, ...chipStyle(on) }}
-              >
-                {n}
-              </button>
-            );
-          })}
-        </div>
+        {oinaSelected ? (
+          <div className="mt-3.5 rounded-[3px] px-4 py-3.5" style={{ border: '1.2px solid var(--line)', background: 'var(--sf)' }}>
+            <div style={{ fontFamily: 'var(--font-display)', fontSize: 17, color: 'var(--ink)' }}>Every card in scope</div>
+            <p className="mt-1 text-[13px] leading-relaxed" style={{ color: 'var(--ink3)' }}>
+              {oinaQuestionCount} questions — {oinaFacts.length} fact{oinaFacts.length === 1 ? '' : 's'} for each of{' '}
+              {oinaMuscleCount} muscle{oinaMuscleCount === 1 ? '' : 's'}.
+            </p>
+          </div>
+        ) : (
+          <div className="mt-3.5 flex gap-2.5">
+            {LENGTHS.map((n) => {
+              const on = count === n;
+              return (
+                <button
+                  key={n}
+                  type="button"
+                  onClick={() => setCount(n)}
+                  className="flex-1 rounded-[3px]"
+                  style={{ fontFamily: 'var(--font-display)', fontSize: 18, minHeight: 52, ...chipStyle(on) }}
+                >
+                  {n}
+                </button>
+              );
+            })}
+          </div>
+        )}
 
         <div
           className="mt-7.5"

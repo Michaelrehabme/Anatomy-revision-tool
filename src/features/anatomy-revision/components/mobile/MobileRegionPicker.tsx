@@ -4,7 +4,6 @@ import { AREAS, AREA_LABELS } from '../../types/region';
 import { areaOf } from '../../types/structure';
 import { BodyFigure } from '../shared/BodyFigure';
 import { MobileShell } from './MobileShell';
-import type { MobileTab } from './MobileTabBar';
 
 interface MobileRegionPickerProps {
   content: AnatomyContent;
@@ -12,11 +11,15 @@ interface MobileRegionPickerProps {
   onChange: (next: Set<Area>) => void;
   onContinue: () => void;
   onBack: () => void;
-  onNavigateTab: (tab: MobileTab) => void;
 }
 
-/** Screen 03 (mobile). Figure and area list stacked vertically (desktop puts them side by side). */
-export function MobileRegionPicker({ content, selected, onChange, onContinue, onBack, onNavigateTab }: MobileRegionPickerProps) {
+/**
+ * Screen 03 (mobile). Figure and area list stacked vertically (desktop puts
+ * them side by side). No tab bar since CR-018: the Atlas tab now leads to
+ * MobileAtlas, and this is the first step of starting a session — the same
+ * treatment Setup already had.
+ */
+export function MobileRegionPicker({ content, selected, onChange, onContinue, onBack }: MobileRegionPickerProps) {
   // Counts every category, not just muscles — matching the desktop picker (CR-017).
   const countByArea = new Map<Area, number>();
   for (const s of content.structures) {
@@ -37,7 +40,7 @@ export function MobileRegionPicker({ content, selected, onChange, onContinue, on
   }).length;
 
   return (
-    <MobileShell tabs={{ active: 'picker', onNavigate: onNavigateTab }}>
+    <MobileShell>
       <div className="px-6.5 pt-4 pb-6">
         <button type="button" onClick={onBack} className="border-0 bg-transparent p-0 pb-2.5" style={{ fontSize: 14.5, color: 'var(--ink3)' }}>
           &larr; Today

@@ -1,5 +1,6 @@
 import { REGION_LABELS } from '../../types/region';
 import { generateRevisionSet } from '../../lib/questionGenerators/generateSet';
+import { getLearnCardAttempts } from '../../lib/preferences';
 import { useProgressData } from '../../hooks/useProgressData';
 import { Button } from '../shared/Button';
 import { AppShell } from '../shell/AppShell';
@@ -24,23 +25,36 @@ export function Progress({ content, repository, userId, onStart, onNavigate, onO
   // Desktop shows strongest-first; the mobile mockup keeps REGIONS' natural order instead.
   const byRegion = [...byRegionUnsorted].sort((a, b) => b.pct - a.pct);
 
-  const handleDrillUntouched = () => {
+  // A never-attempted muscle has no fact mastery, so every OINA question here
+  // arrives preceded by its learn card — which is what "start these" should mean.
+  const handleDrillUntouched = async () => {
+    const types: QuestionType[] = ['oina', 'mcq'];
+    const factMastery = repository && userId ? await repository.listFactMastery(userId) : undefined;
+    const learnCardAttempts = getLearnCardAttempts();
     const questions = generateRevisionSet(content.structures, content.images, {
-      types: ['flashcard', 'mcq'],
+      types,
       mode: 'practice',
       structureIds: untouched.map((m) => m.id),
+      factMastery,
+      learnCardAttempts,
     });
-    onStart(questions, { types: ['flashcard', 'mcq'], mode: 'practice' });
+    onStart(questions, { types, mode: 'practice', learnCardAttempts });
   };
 
-  const handleDrillLeeches = () => {
-    const types: QuestionType[] = ['mcq', 'fill-blank', 'identify-typed'];
+  const handleDrillLeeches = async () => {
+    // Leeches are the muscles a student keeps losing, which is exactly what
+    // per-fact drilling is for — OINA leads.
+    const types: QuestionType[] = ['oina', 'mcq', 'fill-blank', 'identify-typed'];
+    const factMastery = repository && userId ? await repository.listFactMastery(userId) : undefined;
+    const learnCardAttempts = getLearnCardAttempts();
     const questions = generateRevisionSet(content.structures, content.images, {
       types,
       mode: 'practice',
       structureIds: leeches.map((m) => m.id),
+      factMastery,
+      learnCardAttempts,
     });
-    onStart(questions, { types, mode: 'practice' });
+    onStart(questions, { types, mode: 'practice', learnCardAttempts });
   };
 
   return (

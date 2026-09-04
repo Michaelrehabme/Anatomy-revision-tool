@@ -3,13 +3,17 @@ import type { AnatomyContent } from '../../hooks/useAnatomyContent';
 import type { RevisionQuestion, QuestionType } from '../../types/question';
 import { REGION_LABELS } from '../../types/region';
 import { generateRevisionSet } from '../../lib/questionGenerators/generateSet';
+import { getLearnCardAttempts } from '../../lib/preferences';
 import { useTodayData, relativeDue } from '../../hooks/useTodayData';
 import { AppShell } from '../shell/AppShell';
 import { NavSidebar, type NavSection } from '../shell/NavSidebar';
 import { Button } from '../shared/Button';
 import type { RevisionSetupParams } from '../../hooks/useRevisionSession';
 
-const DEFAULT_TYPES: QuestionType[] = ['flashcard', 'mcq', 'locate', 'identify-typed'];
+// OINA is in the default mix because attachments are the thing students come back
+// to relearn (CR-018); its own learn cards handle teaching, so 'flashcard' stays for
+// the whole-muscle identify cards rather than as the teaching step.
+const DEFAULT_TYPES: QuestionType[] = ['flashcard', 'mcq', 'locate', 'identify-typed', 'oina'];
 
 interface TodayProps {
   repository: AnatomyRepository | null;
@@ -26,15 +30,20 @@ export function Today({ repository, userId, content, onStart, onCustomSession, o
     useTodayData(repository, userId, content);
   const now = new Date();
 
-  const handleStart = () => {
+  const handleStart = async () => {
     const structureIds = dueMuscles.map((m) => m.structureId);
+    // generateSet is repository-free (CR-009), so fact mastery is fetched here.
+    const factMastery = repository && userId ? await repository.listFactMastery(userId) : undefined;
+    const learnCardAttempts = getLearnCardAttempts();
     const questions = generateRevisionSet(content.structures, content.images, {
       types: DEFAULT_TYPES,
       mode: 'practice',
       structureIds: structureIds.length ? structureIds : undefined,
       count: 20,
+      factMastery,
+      learnCardAttempts,
     });
-    onStart(questions, { types: DEFAULT_TYPES, mode: 'practice' });
+    onStart(questions, { types: DEFAULT_TYPES, mode: 'practice', learnCardAttempts });
   };
 
   return (

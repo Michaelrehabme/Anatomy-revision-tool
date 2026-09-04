@@ -46,6 +46,20 @@ function percentile(values: number[], p: number): number {
   return sorted[lo] + (sorted[hi] - sorted[lo]) * (idx - lo);
 }
 
+/**
+ * Drops exposures that carry no judgement — since CR-018 that means
+ * flashcards, which are purely for learning and record `correct: true`
+ * only so they can be seen in the study record. Counting them as correct
+ * answers would inflate every accuracy figure below.
+ *
+ * Applied per aggregation rather than at the data source on purpose: the
+ * activity and retention measures further down count *engagement*, and a
+ * student who spent a session on learn cards was not idle.
+ */
+function gradedOnly(attempts: UserAttempt[]): UserAttempt[] {
+  return attempts.filter((a) => a.graded !== false);
+}
+
 function matchesFilters(attempt: UserAttempt, filters: AnalyticsFilters): boolean {
   return (
     (!filters.region || attempt.region === filters.region) &&
@@ -76,7 +90,7 @@ export function aggregateStructureWeakness(
   const structuresById = new Map(structures.map((s) => [s.id, s] as const));
   const byStructure = new Map<string, UserAttempt[]>();
 
-  for (const attempt of attempts) {
+  for (const attempt of gradedOnly(attempts)) {
     if (!matchesFilters(attempt, filters)) continue;
     const group = byStructure.get(attempt.structureId);
     if (group) group.push(attempt);
@@ -123,7 +137,7 @@ export function aggregateDistractors(
   const structuresById = new Map(structures.map((s) => [s.id, s] as const));
   const byQuestion = new Map<string, UserAttempt[]>();
 
-  for (const attempt of attempts) {
+  for (const attempt of gradedOnly(attempts)) {
     const group = byQuestion.get(attempt.questionId);
     if (group) group.push(attempt);
     else byQuestion.set(attempt.questionId, [attempt]);
@@ -174,7 +188,7 @@ export function aggregateConfusionPairs(attempts: UserAttempt[]): ConfusionPair[
   const bySeparator = '␟';
   const byPair = new Map<string, { correctAnswer: string; selectedAnswer: string; count: number; structureIds: Set<string> }>();
 
-  for (const attempt of attempts) {
+  for (const attempt of gradedOnly(attempts)) {
     if (attempt.correct) continue;
     if (!attempt.correctAnswer || !attempt.selectedAnswer) continue;
     if (attempt.correctAnswer === attempt.selectedAnswer) continue;
@@ -211,7 +225,7 @@ export function flagQuestionHealth(attempts: UserAttempt[], structures: AnatomyS
   const structuresById = new Map(structures.map((s) => [s.id, s] as const));
   const byQuestion = new Map<string, UserAttempt[]>();
 
-  for (const attempt of attempts) {
+  for (const attempt of gradedOnly(attempts)) {
     const group = byQuestion.get(attempt.questionId);
     if (group) group.push(attempt);
     else byQuestion.set(attempt.questionId, [attempt]);
@@ -305,7 +319,7 @@ export function flagQuestionHealth(attempts: UserAttempt[], structures: AnatomyS
 
 export function aggregateAccuracyByRegion(attempts: UserAttempt[]): RegionAccuracyBar[] {
   const byRegion = new Map<string, { total: number; correct: number }>();
-  for (const attempt of attempts) {
+  for (const attempt of gradedOnly(attempts)) {
     const bucket = byRegion.get(attempt.region) ?? { total: 0, correct: 0 };
     bucket.total += 1;
     if (attempt.correct) bucket.correct += 1;

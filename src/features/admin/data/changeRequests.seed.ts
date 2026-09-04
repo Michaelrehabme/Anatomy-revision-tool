@@ -1178,4 +1178,172 @@ export const CHANGE_REQUESTS_SEED: ChangeRequest[] = [
       'elbow while the session behind it still served only the 5 muscles. Added the same category chip ' +
       'row to mobile and removed the hardcode.',
   },
+  {
+    ref: 'CR-018',
+    title: 'OINA Cards: per-fact muscle drilling, and flashcards demoted to pure learning',
+    category: 'content',
+    priority: 'p1',
+    effort: 'l',
+    status: 'completed',
+    description:
+      'Ask about origin, insertion, nerve supply and action one authored value at a time, as select-all ' +
+      'questions that escalate to typed recall per (muscle, fact) as the student improves — and stop ' +
+      'flashcards being answerable, so they are the teaching step rather than a self-graded question.',
+    prompt:
+      'The user asked for a question style aimed squarely at origins and insertions, which students find ' +
+      'hardest, studiable from within the Atlas and scoped to a specific muscle group. Multiple choice to ' +
+      'begin with, switching to typed answers over time to push the individual further. One answer box per ' +
+      'value, so a two-headed muscle like biceps femoris gets two. For the multiple-choice phase, several ' +
+      'options can be correct and ALL of them must be selected — possibly every option.\n\n' +
+      'Mid-implementation the user added two things: in the early stages a flashcard should precede the ' +
+      'question, and the answering facility should come off flashcards entirely — they should purely be ' +
+      'for learning.\n\n' +
+      'Four decisions were confirmed before implementation: (1) one field = one question, not a composite ' +
+      'card screen; (2) the MCQ phase is a per-field select-all, all-or-nothing; (3) escalation is tracked ' +
+      'per (muscle, fact), not per muscle; (4) the name is OINA Cards. Two more for the flashcard change: ' +
+      'both the typed box and the Easy/Medium/Hard rating go, and a revealed card keeps its 5 XP. The ' +
+      "learn-card rule was the user's: the first 3 attempts at a fact, and any time the last one was wrong.\n\n" +
+      'THE STARTING POINT WAS NOT NOTHING\n' +
+      'mcq.ts already emitted origin/insertion/nerve/action MCQs. They were unanswerable in a specific ' +
+      "way: field.join('; ') collapsed a whole field into one choice, so \"What is the origin of biceps " +
+      'femoris?" offered "Long head: ischial tuberosity; Short head: linea aspera of the femur" against ' +
+      'three other blobs. That tests blob-shape recognition, not anatomy. Those MCQs are untouched; OINA ' +
+      'is the per-item counterpart.\n\n' +
+      'WHAT WAS BUILT\n' +
+      "1. ONE QuestionType 'oina', with select/typed as a nested `format` discriminant — not two members. " +
+      'Two would have silently broken adaptive mode: pickAdaptiveQuestionType is a flat QuestionType[] ' +
+      'ladder, so neither member appears in any tier and every adaptive session falls through to ' +
+      'requestedTypes[0], pinning every student to select format regardless of mastery. It also costs ' +
+      '~10 integration sites per member for a distinction the user never makes.\n' +
+      '2. lib/oinaValues.ts — head-prefix stripping, nerve-name canonicalisation, action-tag equivalence, ' +
+      'and a conflictsWith predicate rejecting any distractor that names the same site as the answer in ' +
+      'different words. lib/oinaAnswer.ts — the typed grader. lib/factMastery.ts — the escalation ladder ' +
+      '(promote after 3 consecutive correct AND >=70% accuracy; demote after 2 typed misses).\n' +
+      '3. FactMastery, a new per-(structure, promptKind) record beside StructureMastery, in all three ' +
+      'repositories. firestore.rules and firestore.indexes.json were checked and deliberately NOT changed: ' +
+      'the existing users/{uid} document wildcard already covers the new subcollection for owner write, ' +
+      'admin read and cohort-scoped educator read, and it is read whole with no where/orderBy so there is ' +
+      'no composite index to add. Recorded here so a later reader does not assume it was forgotten.\n' +
+      '4. Learn cards are inserted AFTER the shuffle/sample/slice in generateRevisionSet, so the pairing ' +
+      'survives shuffling and cards do not eat the question budget — count: 20 means 20 questions to ' +
+      'answer plus however many cards are needed to teach them. Exam sessions get none; they test rather ' +
+      'than teach.\n' +
+      '5. Flashcards: reveal and move on. AnswerRecord/UserAttempt gained `graded?: boolean`, false for a ' +
+      'card. Ungraded exposures are still recorded and still pay 5 XP, but are excluded from the session ' +
+      'score, from SM-2 scheduling, and from every accuracy figure in admin and educator analytics.\n' +
+      '6. Launch surfaces: an OINA Cards chip plus a facts row and muscle-group picker on both setup ' +
+      'screens; "Drill these facts" on the Atlas, scoped to the current filter; OINA added to the Today ' +
+      'default mix and to the Progress untouched/leech drills; MUSCLE_GROUP_LABELS authored for the ~28 ' +
+      'groups worth offering, on the JOINT_TYPE_LABELS precedent.\n' +
+      '7. On review the user asked for the number of teaching repeats to be settable, saying once would ' +
+      'suit them but not necessarily others — so it is a per-device preference (Never / Once / 3 times / ' +
+      '5 times) on both setup screens, persisted in localStorage beside the onboarding flag rather than ' +
+      'in Firestore, since it describes how one person likes to study and a session should not have to ' +
+      'wait on a read to start. The default stays 3: a student who already knows the material finds ' +
+      'repeats tedious, but one who does not cannot recall an attachment they have been shown once. 0 ' +
+      'turns teaching off entirely, including the re-teach after a wrong answer — someone who asks for no ' +
+      'cards means it.\n' +
+      '8. Also on review, the user asked for the alternatives to be drawn from the same muscle group as the ' +
+      'question. They were right that they were not: nerve and action distractors were sampled from the ' +
+      'reverse indexes globally, and only ~18% of that key pool sits in any given muscle\'s own group or ' +
+      'region — so roughly four in five alternatives could be eliminated without knowing the anatomy, on ' +
+      'the grounds that the median nerve belongs to the arm. Added a shared-group tier to tieredPool and a ' +
+      'pickTieredKeyDistractors that walks the same tiers, with the global index kept only as a top-up for ' +
+      'muscles whose neighbours all share their nerve (every hamstring is tibial, so every group-mate\'s ' +
+      'key is rejected as a true answer). Measured after: 0% unrelated across all four facts, with 86% of ' +
+      'origin and 78% of insertion alternatives now coming from the same group. Pinned as a test.\n' +
+      '9. MobileAtlas, so the Atlas is not desktop-only. MobileTabBar\'s own comment noted its "Atlas" tab ' +
+      'pointed at the area picker because no browsable muscle list existed on mobile — which meant the ' +
+      'premise of the feature, studying a muscle\'s facts from the atlas, was unreachable on a phone. The ' +
+      'tab now goes where its label says; the area picker keeps its place as the first step of starting a ' +
+      'session, reached from Today, and loses its tab bar the way Setup already had.\n' +
+      '10. Finally, the user asked for OINA to drop the session-length picker and simply cover every card ' +
+      'for the muscles in scope. "Do the hamstrings" is the unit a student thinks in, and a 20-question ' +
+      'cap leaves a group half-learned with no indication of which half. Selecting OINA now replaces the ' +
+      'Length control with the count it will actually generate — muscles in scope x facts chosen, which is ' +
+      'exact rather than an estimate because validateContent asserts every muscle yields all four — and ' +
+      'passes no `count`, which practice mode already treats as "every eligible question". The Atlas ' +
+      'drill lost its cap of 20 for the same reason.\n\n' +
+      'ACCEPTANCE\n' +
+      '- npm run test, npm run build, npm run lint and npm run validate-content all pass.',
+    dependsOn: ['CR-017'],
+    createdAt: '2026-09-03T09:00:00.000Z',
+    startedAt: '2026-09-03T09:10:00.000Z',
+    completedAt: '2026-09-03T13:40:00.000Z',
+    notes:
+      'THE CONTENT WAS THE REAL WORK. Per-item questions make a closed-world claim the data did not ' +
+      'support, and every wording inconsistency that used to hide inside a joined string became a choice ' +
+      'a student could not fairly answer.\n\n' +
+      'actions[] disagreed with actionText on 7 muscles. adductor-longus and adductor-brevis were tagged ' +
+      'hip-adduction only while their own actionText said "assists hip flexion" — a student ticking Hip ' +
+      'flexion would have been marked wrong by a screen that then told them they were right. The four ' +
+      'deep external rotators said "and stabilisation of the hip joint" with no stabilisation tag; ' +
+      'gluteus medius lacked hip-internal-rotation while gluteus minimus had it, on near-identical prose. ' +
+      'Fixed in the raw JSON (new hip-stabilisation tag), plus EQUIVALENT_ACTION_GROUPS for the four ' +
+      'stabilisation synonyms and for inspiration/accessory-inspiration, which a student cannot choose ' +
+      'between.\n\n' +
+      'Nerve names needed five rules, not one. Head/part qualifiers strip ("Tibial nerve (long head)"); ' +
+      'mid-string synonyms are not trailing, so a $-anchored regex silently no-ops ("Deep fibular ' +
+      '(peroneal) nerve", which the other four muscles it supplies already author as "Deep fibular ' +
+      'nerve"); compounds split by explicit allowlist, never a generic "&" rule, which would also shred ' +
+      '"Superior angle & medial border of scapula"; dorsal and posterior rami fold onto one name. Two ' +
+      'classes are excluded from the correct set rather than normalised: the accessory obturator nerve on ' +
+      'pectineus, authored "(sometimes)" and present in roughly 10-15% of people, which select-ALL would ' +
+      'have made mandatory; and the bare root designations ("C3-C4 (sensory)" on trapezius, ' +
+      'sternocleidomastoid and levator scapulae), which are not answers to "what nerve innervates this".\n\n' +
+      "THE 28 FALSE ACCEPTS THAT KILLED THE OBVIOUS GRADER. isAnswerMatch's fixed edit distance of 1 is " +
+      'far too strict for an attachment phrase, and the obvious fix — scaling tolerance by string length ' +
+      '— is worse than the problem: it hands out the most slack exactly where the discriminating ' +
+      'difference is one character. Swept against every pair of authored values it accepted "anterior ' +
+      'inferior iliac spine" for "anterior superior", "base of 2nd metacarpal" for "3rd", "spinous ' +
+      'processes C7-T12" for "C7-T1", and "supraspinous fossa" for "infraspinous". Replaced with ' +
+      'token-set matching: identifier tokens (digits, vertebral levels, laterality) must match exactly, ' +
+      "ordinary words tolerate one typo, and 85% of the answer's words must appear. That threshold was " +
+      'not guessed — it was swept over all 234 distinct attachment values, and 0.85 is the lowest that ' +
+      'still rejects "Lesser" for "Greater trochanter of the femur" (2 of 3 words shared) and flexor ' +
+      'digitorum "profundus" for "longus" (3 of 4). oinaAnswer.test.ts pins the invariant against every ' +
+      'pair in the dataset, with the five remaining accepts listed by name — each is the same site worded ' +
+      'two ways, so accepting them is correct behaviour, and a regression shows up as a new entry rather ' +
+      'than a larger number.\n\n' +
+      'FOUND ONLY BY RUNNING THE GENERATOR OVER ALL 122 MUSCLES: triceps brachii is the one muscle whose ' +
+      'values collapse. Its three heads strip to two distinct origins, because the lateral and medial ' +
+      'heads both read "Posterior humerus". Left alone that is two identical choice buttons and, with the ' +
+      'key={choice} pattern MultiSelectSession uses, a duplicate React key desyncing the reveal state. ' +
+      'Deduped, keyed by index as well as text, and asserted in validateContent so the content cannot ' +
+      'drift back.\n\n' +
+      'ONE SUBTLE XP BUG, caught while wiring the ungraded path: a learn card sits immediately before its ' +
+      'question and both name the same structure, so without excluding ungraded records from ' +
+      'seenCorrectStructures the card would take the 10 XP first-correct bonus off the question it exists ' +
+      'to teach. Same class of problem for fastestCorrectAnswerMs — revealing a card is instantaneous and ' +
+      'would have taken that record off every real answer.\n\n' +
+      'FOUR BUGS THAT ONLY A REAL SESSION FOUND. The unit tests were green and the build was clean before ' +
+      'any of these surfaced; all four came out of driving the app over CDP.\n' +
+      '(1) Every learn card failed to save, with the persist-error banner up from the very first card. ' +
+      'This environment runs VITE_PERSISTENCE=firestore, and Firestore rejects any document holding an ' +
+      'undefined field: taking the rating off flashcards left `confidence: undefined` on every card ' +
+      'attempt. Fixed by stripping undefined keys in firestoreRepository before every setDoc, which also ' +
+      'covers exam-mode answers and unscheduled mastery rows — both of which had the same latent problem.\n' +
+      '(2) The session sidebar read "1 correct" the moment a card was revealed, because it counted every ' +
+      'answer rather than the graded ones. (3) The counter read "1 / 31" on a session the setup screen had ' +
+      'promised 20 questions for, because the total included learn cards. Both now count questions only, ' +
+      'matching the results screen, with a fallback for a flashcard-only session that has no graded ' +
+      'questions at all.\n' +
+      '(4) The distractor retiering shifted the RNG stream and broke an existing MCQ test — which turned ' +
+      'out to be a pre-existing bug in mcq.ts, not a regression: infraspinatus and teres minor have ' +
+      'byte-identical actionText, and the action MCQ sampled a flat un-deduped list, so it could render ' +
+      'the same string as two separate choices. It had simply never landed on seed 5 before. Deduped.\n\n' +
+      'STILL OPEN. Select-all is degenerate for most muscles: 104 of 122 insertions and 74 of 122 origins ' +
+      'have exactly one value, so most questions have a single correct answer. The count is shown up ' +
+      'front ("2 correct answers") to stop all-or-nothing scoring punishing doubt about whether one was ' +
+      'missed; if that reads as too generous it is one line in OinaSelectSession. The muscle-group axis ' +
+      'is still imperfect as authored — quadriceps and knee-extensors are byte-identical four-muscle ' +
+      'sets, so only one is offered. Component behaviour is covered by a smoke test, a deliberate ' +
+      "deviation from this repo's pure-lib testing convention, because these are the first components " +
+      'with real grading logic inside them.\n\n' +
+      'VERIFIED IN THE APP, not just in tests: an OINA-only hamstrings session answered through four ' +
+      'rounds against the real Firestore backend, watching origin escalate from select to typed on the ' +
+      'fourth (and its learn card correctly stop appearing once the fact had three attempts behind it); ' +
+      'the mobile Atlas searched down to two muscles and drilled exactly those eight facts; and no ' +
+      'persist error in either.',
+  },
 ];

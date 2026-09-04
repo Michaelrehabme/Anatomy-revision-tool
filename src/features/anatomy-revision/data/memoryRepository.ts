@@ -1,6 +1,6 @@
 import type { AnatomyRepository, AttemptFilter, ImageAssetFilter, GamificationProfile } from './repository';
 import { INITIAL_GAMIFICATION_PROFILE } from './repository';
-import type { UserAttempt, StructureMastery, RevisionSessionSummary } from '../types/attempt';
+import type { UserAttempt, StructureMastery, FactMastery, RevisionSessionSummary } from '../types/attempt';
 import type { StructureFilter } from '../lib/indexes';
 import { filterStructures } from '../lib/indexes';
 import { ALL_STRUCTURES, ALL_IMAGES } from './seed';
@@ -15,12 +15,14 @@ export function createMemoryRepository(): AnatomyRepository {
   const attempts: UserAttempt[] = [];
   const exposureByKey = new Map<string, number>();
   const masteryByKey = new Map<string, StructureMastery>();
+  const factMasteryByKey = new Map<string, FactMastery>();
   const sessions: RevisionSessionSummary[] = [];
   const gamificationByUser = new Map<string, GamificationProfile>();
   const achievementsByUser = new Map<string, Map<string, AchievementDoc>>();
 
   const masteryKey = (userId: string, structureId: string) => `${userId}::${structureId}`;
   const exposureKey = (userId: string, questionId: string) => `${userId}::${questionId}`;
+  const factKey = (userId: string, structureId: string, promptKind: string) => `${userId}::${structureId}::${promptKind}`;
 
   return {
     async listStructures(filter?: StructureFilter) {
@@ -86,6 +88,14 @@ export function createMemoryRepository(): AnatomyRepository {
 
     async upsertMastery(mastery: StructureMastery) {
       masteryByKey.set(masteryKey(mastery.userId, mastery.structureId), mastery);
+    },
+
+    async listFactMastery(userId: string) {
+      return [...factMasteryByKey.values()].filter((f) => f.userId === userId);
+    },
+
+    async upsertFactMastery(fact: FactMastery) {
+      factMasteryByKey.set(factKey(fact.userId, fact.structureId, fact.promptKind), fact);
     },
 
     async saveSessionSummary(summary: RevisionSessionSummary) {

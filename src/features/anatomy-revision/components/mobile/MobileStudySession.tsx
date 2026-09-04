@@ -8,12 +8,14 @@ import {
   isFillBlankQuestion,
   isTypedIdentifyQuestion,
   isMultiSelectQuestion,
+  isOinaQuestion,
 } from '../../types/question';
 import { MobileFlashcardSession } from './MobileFlashcardSession';
 import { MobileMCQSession } from './MobileMCQSession';
 import { MobileLocateStructureSession } from './MobileLocateStructureSession';
 import { MobileIdentifyTypedSession } from './MobileIdentifyTypedSession';
 import { MobileMultiSelectSession } from './MobileMultiSelectSession';
+import { MobileOinaSession } from './MobileOinaSession';
 import { FillBlankSession } from '../FillBlankSession/FillBlankSession';
 import { PersistErrorBanner } from '../shared/PersistErrorBanner';
 
@@ -70,7 +72,14 @@ export function MobileStudySession({ session, content, onEnd, onOpenMuscle }: Mo
     );
   }
 
-  const progressPct = Math.round(((session.currentIndex + 1) / session.questions.length) * 100);
+  // Counts questions, not learn cards (CR-018) — see StudySession for why.
+  const gradedTotal = session.questions.filter((q) => q.type !== 'flashcard').length;
+  const gradedSoFar = session.questions
+    .slice(0, session.currentIndex + 1)
+    .filter((q) => q.type !== 'flashcard').length;
+  const progressTotal = gradedTotal > 0 ? gradedTotal : session.questions.length;
+  const progressCurrent = gradedTotal > 0 ? Math.max(1, gradedSoFar) : session.currentIndex + 1;
+  const progressPct = Math.round((progressCurrent / progressTotal) * 100);
 
   return (
     <div className="flex min-h-screen flex-col" style={{ background: 'var(--pg)', color: 'var(--ink)' }}>
@@ -83,7 +92,7 @@ export function MobileStudySession({ session, content, onEnd, onOpenMuscle }: Mo
             <div className="absolute inset-y-0 left-0 transition-all duration-300" style={{ width: `${progressPct}%`, background: 'var(--acc)' }} />
           </div>
           <span style={{ font: '400 11.5px/1 var(--font-mono)', color: 'var(--ink3)' }}>
-            {session.currentIndex + 1} / {session.questions.length}
+            {progressCurrent} / {progressTotal}
           </span>
         </div>
         {examMode && (
@@ -155,6 +164,15 @@ export function MobileStudySession({ session, content, onEnd, onOpenMuscle }: Mo
       )}
       {isMultiSelectQuestion(question) && (
         <MobileMultiSelectSession
+          key={question.id}
+          question={question}
+          onAnswer={(params) => session.submitAnswer({ ...params, questionId: question.id })}
+          onNext={advance}
+          examMode={examMode}
+        />
+      )}
+      {isOinaQuestion(question) && (
+        <MobileOinaSession
           key={question.id}
           question={question}
           onAnswer={(params) => session.submitAnswer({ ...params, questionId: question.id })}

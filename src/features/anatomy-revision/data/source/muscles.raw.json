@@ -454,9 +454,10 @@
       ],
       "actions": [
         "hip-abduction",
+        "hip-internal-rotation",
         "pelvic-stabilisation"
       ],
-      "actionText": "Hip abduction and stabilisation of the pelvis during single-leg stance.",
+      "actionText": "Hip abduction and stabilisation of the pelvis during single-leg stance; the anterior fibres assist internal rotation of the thigh.",
       "clinical": "Weakness is associated with Trendelenburg gait — pelvis drops toward the non-weight-bearing leg.",
       "notes": null,
       "images": {
@@ -652,7 +653,8 @@
         }
       ],
       "actions": [
-        "hip-adduction"
+        "hip-adduction",
+        "hip-flexion"
       ],
       "actionText": "Hip adduction; assists hip flexion.",
       "clinical": null,
@@ -699,7 +701,8 @@
         }
       ],
       "actions": [
-        "hip-adduction"
+        "hip-adduction",
+        "hip-flexion"
       ],
       "actionText": "Hip adduction; assists hip flexion.",
       "clinical": null,
@@ -846,7 +849,8 @@
         }
       ],
       "actions": [
-        "hip-external-rotation"
+        "hip-external-rotation",
+        "hip-stabilisation"
       ],
       "actionText": "External rotation and stabilisation of the hip joint.",
       "clinical": "Piriformis syndrome — the muscle irritates the sciatic nerve, causing posterior leg pain.",
@@ -881,7 +885,7 @@
         "Inferior: ischial tuberosity"
       ],
       "insertion": [
-        "Greater trochanter"
+        "Greater trochanter of the femur"
       ],
       "nerve": [
         {
@@ -893,7 +897,8 @@
         }
       ],
       "actions": [
-        "hip-external-rotation"
+        "hip-external-rotation",
+        "hip-stabilisation"
       ],
       "actionText": "External rotation and stabilisation of the hip joint.",
       "clinical": null,
@@ -927,7 +932,7 @@
         "Obturator membrane"
       ],
       "insertion": [
-        "Greater trochanter"
+        "Greater trochanter of the femur"
       ],
       "nerve": [
         {
@@ -939,7 +944,8 @@
         }
       ],
       "actions": [
-        "hip-external-rotation"
+        "hip-external-rotation",
+        "hip-stabilisation"
       ],
       "actionText": "External rotation and stabilisation of the hip joint.",
       "clinical": null,
@@ -1032,7 +1038,8 @@
         }
       ],
       "actions": [
-        "hip-external-rotation"
+        "hip-external-rotation",
+        "hip-stabilisation"
       ],
       "actionText": "External rotation and stabilisation of the hip joint.",
       "clinical": null,
@@ -2898,7 +2905,7 @@
       ],
       "partOf": null,
       "origin": [
-        "Transverse processes"
+        "Transverse processes of the thoracic vertebrae"
       ],
       "insertion": [
         "Base of spinous processes 1–2 segments above"
@@ -2943,7 +2950,7 @@
       ],
       "partOf": null,
       "origin": [
-        "Spinous processes"
+        "Spinous processes of the cervical and lumbar vertebrae"
       ],
       "insertion": [
         "Adjacent spinous processes"
@@ -2987,7 +2994,7 @@
       ],
       "partOf": null,
       "origin": [
-        "Transverse processes"
+        "Transverse processes of the cervical and lumbar vertebrae"
       ],
       "insertion": [
         "Adjacent transverse processes"
@@ -4350,7 +4357,7 @@
         "Plantar surfaces of cuboid and lateral cuneiform"
       ],
       "insertion": [
-        "Two tendons to the medial and lateral sides of the base of the proximal phalanx of the big toe"
+        "Medial and lateral sides of the base of the proximal phalanx of the big toe"
       ],
       "nerve": [
         {

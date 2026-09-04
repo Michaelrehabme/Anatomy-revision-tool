@@ -5,9 +5,11 @@ import { isMuscle } from '../types/structure';
 import type { Area, Region, SubRegion } from '../types/region';
 import { REGIONS } from '../types/region';
 import type { Confidence, RevisionSessionSummary, UserAttempt } from '../types/attempt';
-import type { QuestionType } from '../types/question';
+import type { OinaPromptKind, QuestionType } from '../types/question';
+import { isOinaQuestion } from '../types/question';
 import type { AnatomyRepository } from '../data/repository';
 import { updateMasteryAfterAttempt } from '../lib/mastery';
+import { updateFactMasteryAfterAttempt } from '../lib/factMastery';
 import { ALL_STRUCTURES } from '../data/seed';
 import { toDayKey, computeStreak } from '../lib/streak';
 import { reconcileStreakFreezes } from '../lib/streakFreeze';
@@ -23,6 +25,14 @@ export interface AnswerRecord {
   questionId: string;
   structureId: string;
   correct: boolean;
+  /**
+   * False for an exposure with nothing to be right or wrong about — since
+   * CR-018 that means a flashcard, which is purely for learning. Ungraded
+   * answers still earn their XP and still record an attempt, but they are
+   * excluded from the session score and never touch SM-2 scheduling.
+   * Absent means graded.
+   */
+  graded?: boolean;
   confidence?: Confidence;
   hitDistance?: number;
   selectedAnswer?: string;
@@ -36,6 +46,12 @@ export interface RevisionSetupParams {
   regions?: Region[];
   subregion?: SubRegion;
   areas?: Area[];
+  /** OINA only (CR-018) — the muscle groups the session was scoped to. */
+  groups?: string[];
+  /** OINA only (CR-018) — which of the four facts the session asks about. */
+  oinaPromptKinds?: OinaPromptKind[];
+  /** OINA only (CR-018) — how many attempts get a teaching card first; 0 for none. */
+  learnCardAttempts?: number;
   category?: Category;
   difficulty?: Difficulty;
   /** practice/adaptive = study session (immediate feedback); assessment = exam session (no feedback until the end). See CR-009. */
@@ -135,6 +151,9 @@ function buildSummary(state: SessionState, userId: string): RevisionSessionSumma
   for (const answer of state.answers) {
     const question = state.questions.find((q) => q.id === answer.questionId);
     if (!question) continue;
+    // A learn card has no answer to be right or wrong about, so counting it
+    // would put "16/24" on a session with 16 questions in it (CR-018).
+    if (answer.graded === false) continue;
 
     breakdownByCategory[question.category].total += 1;
     if (answer.correct) breakdownByCategory[question.category].correct += 1;
@@ -155,8 +174,8 @@ function buildSummary(state: SessionState, userId: string): RevisionSessionSumma
     questionTypes: state.setupParams?.types ?? [],
     regionFilter:
       state.setupParams?.regions ?? (state.setupParams?.region ? [state.setupParams.region] : undefined),
-    totalQuestions: state.questions.length,
-    correctCount: state.answers.filter((a) => a.correct).length,
+    totalQuestions: state.questions.filter((q) => q.type !== 'flashcard').length,
+    correctCount: state.answers.filter((a) => a.graded !== false && a.correct).length,
     breakdownByCategory,
     breakdownByRegion,
     missedStructureIds: [...missed],
@@ -182,8 +201,12 @@ async function computeGamification(
   const answerXp = answers.map((a) => {
     const question = questions.find((q) => q.id === a.questionId);
     if (!question) return 0;
-    const isFirstCorrect = a.correct && !seenCorrectStructures.has(a.structureId);
-    if (a.correct) seenCorrectStructures.add(a.structureId);
+    // An ungraded learn card still pays its base XP, but it can neither claim
+    // the first-correct bonus nor consume it — otherwise the card shown
+    // immediately before a question would take the bonus that question earned.
+    const graded = a.graded !== false;
+    const isFirstCorrect = graded && a.correct && !seenCorrectStructures.has(a.structureId);
+    if (graded && a.correct) seenCorrectStructures.add(a.structureId);
     return xpForAnswer(a.correct, question.type, isFirstCorrect);
   });
 
@@ -238,7 +261,9 @@ async function computeGamification(
     if (allMastered) completedRegionCount += 1;
   }
 
-  const correctDurations = answers.filter((a) => a.correct && a.durationMs !== undefined).map((a) => a.durationMs!);
+  const correctDurations = answers
+    .filter((a) => a.graded !== false && a.correct && a.durationMs !== undefined)
+    .map((a) => a.durationMs!);
   const fastestCorrectAnswerMs = correctDurations.length > 0 ? Math.min(...correctDurations) : null;
 
   const existingAchievements = await repository.listAchievements(userId);
@@ -330,8 +355,14 @@ export function useRevisionSession(repository: AnatomyRepository | null, userId:
             attemptNumber,
             timestamp: new Date().toISOString(),
             durationMs,
+            graded: record.graded,
           };
           await repository.recordAttempt(attempt);
+
+          // Flashcards are purely for learning since CR-018 — they carry no
+          // judgement, so they must not feed SM-2 scheduling. The exposure is
+          // still recorded above, so analytics can see what was studied.
+          if (record.graded === false) return;
 
           const existingMastery = await repository.getMasteryForStructure(userId, record.structureId);
           const nextMastery = updateMasteryAfterAttempt(existingMastery ?? undefined, {
@@ -342,6 +373,24 @@ export function useRevisionSession(repository: AnatomyRepository | null, userId:
             durationMs,
           });
           await repository.upsertMastery(nextMastery);
+
+          // Per-(muscle, fact) progress, which is what decides whether this
+          // fact is next asked as recognition or recall (CR-018). Inside the
+          // same persist() so the existing retry banner covers it too.
+          if (isOinaQuestion(currentQuestion)) {
+            const existingFacts = await repository.listFactMastery(userId);
+            const existingFact = existingFacts.find(
+              (f) => f.structureId === record.structureId && f.promptKind === currentQuestion.promptKind,
+            );
+            await repository.upsertFactMastery(
+              updateFactMasteryAfterAttempt(existingFact, {
+                userId,
+                structureId: record.structureId,
+                promptKind: currentQuestion.promptKind,
+                correct: record.correct,
+              }),
+            );
+          }
         };
 
         try {

@@ -1,7 +1,7 @@
 import { isMuscle, areaOf } from '../../types/structure';
 import type { AnatomyStructure } from '../../types/structure';
 import type { AnatomyImageAsset } from '../../types/image';
-import type { FlashcardQuestion, PromptKind } from '../../types/question';
+import type { FlashcardQuestion, OinaPromptKind, PromptKind } from '../../types/question';
 import { summarizeStructure } from '../facts';
 
 export interface FlashcardGenOptions {
@@ -9,7 +9,7 @@ export interface FlashcardGenOptions {
   imageFirstWhenAvailable?: boolean;
 }
 
-const MUSCLE_FIELD_KINDS: PromptKind[] = ['origin', 'insertion', 'nerve', 'action'];
+const MUSCLE_FIELD_KINDS: OinaPromptKind[] = ['origin', 'insertion', 'nerve', 'action'];
 
 function baseFields(structure: AnatomyStructure, promptKind: PromptKind) {
   return {
@@ -88,15 +88,30 @@ export function buildFlashcardQuestions(
 
     if (isMuscle(structure)) {
       for (const promptKind of MUSCLE_FIELD_KINDS) {
-        questions.push({
-          ...baseFields(structure, promptKind),
-          id: `flashcard-${structure.id}-${promptKind}`,
-          front: { text: `What is the ${promptKind === 'nerve' ? 'nerve supply' : promptKind} of ${structure.name}?` },
-          back: { text: fieldBackText(structure, promptKind) },
-        });
+        const card = buildFieldFlashcard(structure, promptKind);
+        if (card) questions.push(card);
       }
     }
   }
 
   return questions;
+}
+
+/**
+ * One muscle's card for one fact. Extracted so generateSet can put it in
+ * front of the matching OINA question as a teaching step (CR-018) — a
+ * student cannot recall an attachment they have never been shown, and a
+ * first encounter that is a blind guess teaches nothing.
+ */
+export function buildFieldFlashcard(
+  structure: AnatomyStructure,
+  promptKind: OinaPromptKind,
+): FlashcardQuestion | null {
+  if (!isMuscle(structure)) return null;
+  return {
+    ...baseFields(structure, promptKind),
+    id: `flashcard-${structure.id}-${promptKind}`,
+    front: { text: `What is the ${promptKind === 'nerve' ? 'nerve supply' : promptKind} of ${structure.name}?` },
+    back: { text: fieldBackText(structure, promptKind) },
+  };
 }

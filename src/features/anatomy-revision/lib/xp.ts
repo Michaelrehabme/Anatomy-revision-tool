@@ -28,6 +28,9 @@ export const DEFAULT_XP_CONFIG: XpConfig = {
     'fill-blank': 12,
     'identify-typed': 12,
     'multi-select': 10,
+    // Pays the most because it is the strictest: every value of the fact must
+    // be right and nothing extra, whether selected or typed (CR-018).
+    oina: 14,
   },
   firstCorrectBonus: 10,
   sessionCompletionBonus: 20,

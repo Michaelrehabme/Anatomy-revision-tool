@@ -53,6 +53,13 @@ export interface StructureFilter {
   subregion?: SubRegion;
   /** OR-matched against the structure's area (CR-017). Empty/undefined = no area filter. */
   areas?: Area[];
+  /**
+   * OR-matched against the structure's `groups` (CR-018) — the axis OINA
+   * sessions target, since "the hamstrings" is how a student thinks about
+   * which attachments to drill. Note this cannot be served by the byGroup
+   * index: filterStructures takes a plain array and never sees StructureIndexes.
+   */
+  groups?: string[];
   difficulty?: Difficulty;
 }
 
@@ -68,12 +75,15 @@ export function filterStructures(
     const area = areaOf(s);
     return !!area && filter.areas.includes(area);
   };
+  const groupMatch = (s: AnatomyStructure) =>
+    !filter.groups?.length || (s.groups ?? []).some((g) => filter.groups!.includes(g));
   return structures.filter(
     (s) =>
       (!filter.category || s.category === filter.category) &&
       regionMatch(s.region) &&
       (!filter.subregion || s.subregion === filter.subregion) &&
       areaMatch(s) &&
+      groupMatch(s) &&
       (!filter.difficulty || s.difficulty === filter.difficulty),
   );
 }

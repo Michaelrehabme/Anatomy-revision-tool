@@ -9,8 +9,12 @@
  * real bug, not just incomplete content.
  */
 import { ALL_STRUCTURES, ALL_IMAGES } from '../features/anatomy-revision/data/seed';
-import { isJoint, areaOf } from '../features/anatomy-revision/types/structure';
+import { isJoint, isMuscle, areaOf } from '../features/anatomy-revision/types/structure';
 import { AREAS, AREA_LABELS } from '../features/anatomy-revision/types/region';
+import { OINA_PROMPT_KINDS } from '../features/anatomy-revision/types/question';
+import { correctValuesFor } from '../features/anatomy-revision/lib/questionGenerators/oina';
+import { acceptedVariantsFor, matchesSlot } from '../features/anatomy-revision/lib/oinaAnswer';
+import { stripHeadPrefix } from '../features/anatomy-revision/lib/oinaValues';
 
 let errors = 0;
 let warnings = 0;
@@ -23,6 +27,69 @@ function fail(message: string): void {
 function warn(message: string): void {
   console.warn(`WARN:  ${message}`);
   warnings += 1;
+}
+
+/**
+ * OINA Cards (CR-018) ask about each authored value on its own, which makes
+ * the content assumptions the generator relies on load-bearing in a way the
+ * old joined-string MCQs never made them. Each check below corresponds to a
+ * way the question would silently become unanswerable rather than fail.
+ */
+function validateOina(): void {
+  const muscles = ALL_STRUCTURES.filter(isMuscle);
+
+  for (const m of muscles) {
+    for (const promptKind of OINA_PROMPT_KINDS) {
+      const values = correctValuesFor(m, promptKind);
+      if (values.length === 0) {
+        fail(
+          `Muscle "${m.id}" has no answerable ${promptKind} — OINA would emit a question with ` +
+            'no correct choice, so it is skipped entirely and the fact becomes unstudiable',
+        );
+      }
+    }
+
+    // Head prefixes are stripped so a prefixed choice isn't the answer by shape
+    // alone. Two heads attaching to the same place then collapse to one value —
+    // fine, and deduplicated — but an authored value that strips to nothing, or
+    // a colon left behind by a prefix the regex didn't match, is a real problem.
+    for (const field of ['origin', 'insertion'] as const) {
+      for (const raw of m[field]) {
+        const stripped = stripHeadPrefix(raw);
+        if (!stripped.trim()) fail(`Muscle "${m.id}" ${field} value ${JSON.stringify(raw)} strips to nothing`);
+        if (stripped.includes(':')) {
+          warn(
+            `Muscle "${m.id}" ${field} value ${JSON.stringify(stripped)} still contains a colon — ` +
+              'an unrecognised head prefix would be shown as a choice, giving the answer away',
+          );
+        }
+      }
+    }
+
+    // gradeTypedSlots matches inputs to slots first-fit rather than solving an
+    // optimal assignment, which is only sound while no muscle has two of its own
+    // values that could satisfy the same typed answer.
+    for (const promptKind of OINA_PROMPT_KINDS) {
+      const values = correctValuesFor(m, promptKind);
+      for (const a of values) {
+        for (const b of values) {
+          if (a === b) continue;
+          if (matchesSlot(b, acceptedVariantsFor(promptKind, a))) {
+            fail(
+              `Muscle "${m.id}" ${promptKind}: ${JSON.stringify(b)} also grades as ${JSON.stringify(a)} — ` +
+                'one typed answer could satisfy two slots, so first-fit matching is no longer sound',
+            );
+          }
+        }
+      }
+    }
+  }
+
+  const noNerve = muscles.filter((m) => m.nerve.length > 0 && correctValuesFor(m, 'nerve').length === 0);
+  console.log(
+    `\nOINA: ${muscles.length} muscles x ${OINA_PROMPT_KINDS.length} facts checked` +
+      (noNerve.length ? `; ${noNerve.length} with no answerable nerve` : ''),
+  );
 }
 
 function main(): void {
@@ -104,6 +171,8 @@ function main(): void {
       warn(`Area "${AREA_LABELS[area]}" has ${inArea.length} structures but no joints`);
     }
   }
+
+  validateOina();
 
   console.log(
     `\nStructures per area: ` +

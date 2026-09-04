@@ -1,9 +1,12 @@
 import { Link, useParams } from 'react-router-dom';
 import { useCohortAnalytics } from '../../hooks/useCohortAnalytics';
 
-function accuracyPct(attempts: { correct: boolean }[]): number | null {
-  if (attempts.length === 0) return null;
-  return Math.round((attempts.filter((a) => a.correct).length / attempts.length) * 100);
+function accuracyPct(attempts: { correct: boolean; graded?: boolean }[]): number | null {
+  // Learn cards are ungraded since CR-018 — counting them as correct would put
+  // every student who studied a deck of cards at or near 100%.
+  const graded = attempts.filter((a) => a.graded !== false);
+  if (graded.length === 0) return null;
+  return Math.round((graded.filter((a) => a.correct).length / graded.length) * 100);
 }
 
 /** Per-student accuracy/attempt-count summary, worst accuracy first, linking to each student's drill-down. Never shows raw answer-by-answer logs — see CR-012's privacy requirement. */
