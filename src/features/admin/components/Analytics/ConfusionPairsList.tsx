@@ -16,14 +16,17 @@ export function ConfusionPairsList({ pairs }: { pairs: ConfusionPair[] }) {
     <div className="mt-4 flex flex-col gap-2.5">
       {pairs.map((pair) => (
         <div key={`${pair.correctAnswer}→${pair.selectedAnswer}`} className="flex items-center gap-4">
-          <div className="flex w-72 flex-none items-baseline gap-2 whitespace-nowrap" style={{ font: '400 13px/1.3 var(--font-ui)' }}>
-            <span style={{ color: 'var(--ink)' }} title="Correct answer">
-              {pair.correctAnswer}
-            </span>
-            <span style={{ color: 'var(--ink3)' }}>→</span>
-            <span style={{ color: 'var(--acc2d)' }} title="What students selected instead">
-              {pair.selectedAnswer}
-            </span>
+          {/* Block, not flex, and never nowrap: full anatomical names ("Posterior Superior Iliac
+              Spine (PSIS)") are long, and both truncating them and letting them run under the bar
+              destroy the one thing this row exists to say — which two structures got mixed up. */}
+          <div
+            className="w-64 flex-none md:w-96"
+            style={{ font: '400 13px/1.35 var(--font-ui)' }}
+            title={`${pair.correctAnswer} → ${pair.selectedAnswer}`}
+          >
+            <span style={{ color: 'var(--ink)' }}>{pair.correctAnswer}</span>{' '}
+            <span style={{ color: 'var(--ink3)' }}>→</span>{' '}
+            <span style={{ color: 'var(--acc2d)' }}>{pair.selectedAnswer}</span>
           </div>
           <div className="min-w-0 flex-1" style={{ background: 'var(--line)', height: 8, borderRadius: 4 }}>
             <div
