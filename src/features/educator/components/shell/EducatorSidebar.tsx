@@ -1,5 +1,5 @@
 import { Link, NavLink, useNavigate, useParams } from 'react-router-dom';
-import { useCohorts } from '../../hooks/useCohorts';
+import { useCohorts } from '../CohortsProvider';
 
 /** Educator-section counterpart to AdminSidebar/NavSidebar — same brand mark + nav-list treatment, plus a cohort switcher since one educator can hold multiple cohorts. */
 export function EducatorSidebar() {
@@ -77,6 +77,13 @@ export function EducatorSidebar() {
         ))}
       </nav>
       <div className="flex-1" />
+      <Link
+        to="/educator/new"
+        className="rounded-[3px] px-3.5 py-2.5"
+        style={{ fontFamily: 'var(--font-display)', fontSize: 16, color: 'var(--accd)', textDecoration: 'none' }}
+      >
+        + New class
+      </Link>
       <Link
         to="/"
         className="mt-6 border-t pt-4"

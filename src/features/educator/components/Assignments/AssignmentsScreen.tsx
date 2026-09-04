@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { REGIONS, REGION_LABELS, type Region } from '../../../anatomy-revision/types/region';
 import type { UserAttempt } from '../../../anatomy-revision/types/attempt';
 import { useCohortAnalytics } from '../../hooks/useCohortAnalytics';
-import { useEducatorClaims } from '../RequireEducator';
+import { useEducatorSession } from '../RequireEducator';
 import { listAssignments, createAssignment } from '../../data/assignmentsRepository';
 import { computeAssignmentCompletion } from '../../lib/assignmentCompletion';
 import type { Assignment } from '../../types/cohort';
@@ -51,7 +51,7 @@ function AssignmentCard({ assignment, studentUids, attemptsByUid }: {
 /** List + create form for cohorts/{cohortId}/assignments — completion is "has attempted the assigned region since assignment", not a strict pass/fail bar. See lib/assignmentCompletion.ts for why. */
 export function EducatorAssignmentsScreen() {
   const { cohortId } = useParams<{ cohortId: string }>();
-  const { uid: educatorUid } = useEducatorClaims();
+  const { uid: educatorUid } = useEducatorSession();
   const { students, snapshot, loading, error } = useCohortAnalytics(cohortId);
   const [assignments, setAssignments] = useState<Assignment[] | null>(null);
   const [assignmentsError, setAssignmentsError] = useState<string | null>(null);

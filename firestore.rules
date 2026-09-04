@@ -2,70 +2,157 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
+
+    // ---------------------------------------------------------------------
+    // Authorisation model
+    //
+    // TEACHING is self-service and needs no grant. Anyone signed in can
+    // create a cohort; creating it makes them its owner, and owning it is
+    // what lets them see their students — the Kahoot/Google Classroom shape.
+    // Nobody has to be promoted to "educator" first, which is what made every
+    // previous model need an admin, a script, or both.
+    //
+    // The privacy line that makes that safe is the student's own choice: an
+    // educator sees a student only once that student has typed the cohort's
+    // join code in, and leaving removes them again. Owning a cohort grants
+    // access to the people who opted into it — never to anyone else.
+    //
+    // ADMIN is still granted, because it is genuinely privileged (every
+    // user's data, the Change Register, platform analytics). It comes from a
+    // custom claim, a roles/{uid} document written at /admin/people, or the
+    // bootstrap owner address below — without that last one no admin could
+    // ever exist, since granting admin requires already being one.
+    //
+    // COST: an educator's read of student data spends up to three extra
+    // document reads evaluating the rule (the student's profile, the cohort,
+    // and the roles doc when isAdmin is reached). That is the price of
+    // ownership-based access at classroom scale.
+    // ---------------------------------------------------------------------
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isBootstrapAdmin() {
+      return isSignedIn()
+        && request.auth.token.get('email_verified', false) == true
+        && request.auth.token.get('email', '') == 'nearyomichael@gmail.com';
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        request.auth.token.get('admin', false) == true
+        || isBootstrapAdmin()
+        || (
+          exists(/databases/$(database)/documents/roles/$(request.auth.uid))
+          && get(/databases/$(database)/documents/roles/$(request.auth.uid)).data.get('admin', false) == true
+        )
+      );
+    }
+
+    // Guarded by exists(): get() on a missing document errors, and a rule that
+    // errors denies the request outright — so an attempt whose author has no
+    // profile doc would otherwise become unreadable BY ITS OWN AUTHOR.
+    function cohortOfUser(uid) {
+      return exists(/databases/$(database)/documents/users/$(uid))
+        ? get(/databases/$(database)/documents/users/$(uid)).data.get('cohort', '')
+        : '';
+    }
+
+    function ownsCohort(cohortId) {
+      return isSignedIn() && cohortId is string && cohortId != ''
+        && exists(/databases/$(database)/documents/cohorts/$(cohortId))
+        && get(/databases/$(database)/documents/cohorts/$(cohortId)).data.get('ownerUid', '') == request.auth.uid;
+    }
+
+    // roles/{uid} — admin grants only. Readable by its owner (the route guard
+    // needs it) and by admins (the /admin/people list); writable only by an
+    // admin, so admin can never be self-issued.
+    match /roles/{uid} {
+      allow read: if isSignedIn() && (request.auth.uid == uid || isAdmin());
+      allow write: if isAdmin();
+    }
+
     // users/{uid} profile doc, plus every subcollection under it
     // (mastery, questionExposure, sessions) — owner-only for writes, always.
-    // Admins (custom claim, set via scripts/setAdmin.ts) get read-only access
-    // across every user for the /admin/users screens — never write access,
-    // since admin tooling should never be able to alter a student's progress.
-    // Educators (custom claim { educator: true, cohorts: [...] }, set via
-    // scripts/setEducator.ts — CR-012) get the same read-only access, but
-    // only for users whose `cohort` field is one of their claimed cohort
-    // ids — an educator's own token is the only input to that check, so a
-    // claim scoped to cohort A can never read cohort B by any client-side
-    // trick. The nested match can't read `resource.data.cohort` directly
-    // (resource there is the subdocument, not the parent profile), hence the
-    // explicit get() back to the parent users/{uid} doc.
+    // Admins get read-only access across every user for the /admin/users
+    // screens; never write access, since admin tooling should never be able
+    // to alter a student's progress. An educator gets the same read-only
+    // access to a student who has joined a cohort THEY own — the requester's
+    // own uid is the only input to that check, so access to one class can
+    // never be turned into access to another.
     match /users/{uid} {
-      allow read, write: if request.auth != null && request.auth.uid == uid;
-      allow read: if request.auth != null && request.auth.token.admin == true;
-      allow read: if request.auth != null && request.auth.token.educator == true &&
-        resource.data.cohort in request.auth.token.cohorts;
+      allow read, write: if isSignedIn() && request.auth.uid == uid;
+      allow read: if isAdmin();
+      allow read: if ownsCohort(resource.data.get('cohort', ''));
 
+      // The nested match can't read the parent's `cohort` from `resource`
+      // (that's the subdocument), hence the explicit lookup.
       match /{document=**} {
-        allow read, write: if request.auth != null && request.auth.uid == uid;
-        allow read: if request.auth != null && request.auth.token.admin == true;
-        allow read: if request.auth != null && request.auth.token.educator == true &&
-          get(/databases/$(database)/documents/users/$(uid)).data.cohort in request.auth.token.cohorts;
+        allow read, write: if isSignedIn() && request.auth.uid == uid;
+        allow read: if isAdmin();
+        allow read: if ownsCohort(cohortOfUser(uid));
       }
     }
 
     // Top-level, append-only event log — lives outside users/{uid} because
     // cross-user analytics needs to query across owners, which Firestore
     // cannot do over a per-user subcollection. Each event is immutable once
-    // written: no update or delete rule is granted, ever. The educator
-    // clause costs one extra get() per document read (looking up the
-    // attempt's owner's cohort) — acceptable at classroom scale, same
-    // documented tradeoff as ClientAggregatedAnalytics' own scaling notes.
+    // written: no update or delete rule is granted, ever.
     match /attemptEvents/{attemptId} {
-      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
-      allow read: if request.auth != null &&
-        (resource.data.userId == request.auth.uid ||
-         request.auth.token.admin == true ||
-         (request.auth.token.educator == true &&
-          get(/databases/$(database)/documents/users/$(resource.data.userId)).data.cohort in request.auth.token.cohorts));
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow read: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow read: if isAdmin();
+      allow read: if ownsCohort(cohortOfUser(resource.data.userId));
     }
 
-    // cohorts/{cohortId} (CR-012) — name/institution/joinCode are readable by
-    // any signed-in user, same trust model as an invite code: the real
-    // privacy boundary is student DATA above, not whether a cohort's name is
-    // visible. Only an admin can create/edit a cohort doc (educators get
-    // read access to the *data* their claim covers, not write access to the
-    // roster/join-code itself — that stays an admin-issued setup step,
-    // consistent with there being no Cloud Functions in this project to
-    // safely let a client mint its own claim-worthy resource).
-    match /cohorts/{cohortId} {
-      allow read: if request.auth != null;
-      allow write: if request.auth != null && request.auth.token.admin == true;
+    // joinCodes/{CODE} — the code IS the document id, which is what makes a
+    // code unique: Firestore's create fails if the document already exists,
+    // so two people generating the same code is settled by the database
+    // rather than by a client-side check that can race.
+    //
+    // It exists as its own collection so a student can resolve a code with a
+    // single get() by id, without being able to LIST cohorts. Reading the
+    // cohorts collection with a `where joinCode ==` query would have meant
+    // granting list access to every class on the platform, which is an
+    // enumeration of every join code.
+    //
+    // Immutable once written (no update): a code that could be repointed at a
+    // different cohort would silently redirect students mid-term.
+    match /joinCodes/{code} {
+      allow get: if isSignedIn();
+      allow list: if isAdmin();
+      allow create: if isSignedIn() && request.resource.data.ownerUid == request.auth.uid;
+      allow delete: if isSignedIn() && (resource.data.get('ownerUid', '') == request.auth.uid || isAdmin());
+      allow update: if false;
+    }
 
-      // Assignments (CR-012): visible to any signed-in user (so a student
-      // could in principle see what's assigned, even though today's UI only
-      // surfaces them to the educator), writable only by an educator claimed
-      // for this specific cohort or an admin.
+    // cohorts/{cohortId} — anyone signed in can create one and thereby own
+    // it. `get` is open to any signed-in user because a student needs to read
+    // the cohort they have joined, and the id is an unguessable uuid reached
+    // only through a join code they were given. `list` is restricted to your
+    // own cohorts (or an admin's), so the collection cannot be enumerated.
+    match /cohorts/{cohortId} {
+      allow get: if isSignedIn();
+      allow list: if isAdmin() || (isSignedIn() && resource.data.get('ownerUid', '') == request.auth.uid);
+
+      allow create: if isSignedIn()
+        && request.resource.data.ownerUid == request.auth.uid
+        && request.resource.data.joinCode is string
+        && request.resource.data.name is string
+        && request.resource.data.name.size() > 0;
+
+      // Ownership is pinned on update: a cohort that could be reassigned would
+      // hand another account every student who joined it.
+      allow update: if (ownsCohort(cohortId) && request.resource.data.ownerUid == resource.data.ownerUid)
+        || isAdmin();
+      allow delete: if ownsCohort(cohortId) || isAdmin();
+
+      // Assignments: visible to any signed-in user (so a student could in
+      // principle see what is set), writable only by the cohort's owner.
       match /assignments/{assignmentId} {
-        allow read: if request.auth != null;
-        allow write: if request.auth != null &&
-          (request.auth.token.admin == true ||
-           (request.auth.token.educator == true && cohortId in request.auth.token.cohorts));
+        allow read: if isSignedIn();
+        allow write: if ownsCohort(cohortId) || isAdmin();
       }
     }
 
@@ -73,14 +160,14 @@ service cloud.firestore {
     // users get no access at all — this is the enforcement the client-side
     // <RequireAdmin> route guard depends on; the guard alone is not security.
     match /changeRequests/{ref} {
-      allow read, write: if request.auth != null && request.auth.token.admin == true;
+      allow read, write: if isAdmin();
     }
 
     // Admin-only "reviewed" markers for the Question Health screen (CR-005) —
     // keyed by questionId, so a reviewed question doesn't keep resurfacing in
     // the flagged list. Same admin-only shape as changeRequests.
     match /questionReviews/{questionId} {
-      allow read, write: if request.auth != null && request.auth.token.admin == true;
+      allow read, write: if isAdmin();
     }
   }
 }

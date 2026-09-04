@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:educator-demo": "vite --mode educator-demo",
     "build": "tsc --noEmit -p tsconfig.app.json && vite build",
     "preview": "vite preview",
     "test": "vitest run",
@@ -12,8 +13,7 @@
     "lint": "eslint .",
     "validate-content": "tsx src/scripts/validateContent.ts",
     "admin:set-claim": "tsx scripts/setAdmin.ts",
-    "admin:seed-changes": "tsx scripts/seedChangeRequests.ts",
-    "educator:set-claim": "tsx scripts/setEducator.ts"
+    "admin:seed-changes": "tsx scripts/seedChangeRequests.ts"
   },
   "dependencies": {
     "firebase": "^11.0.0",

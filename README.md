@@ -256,33 +256,45 @@ read costs.
 app — students never download it, and it only works against a real Firebase project
 (`VITE_PERSISTENCE=firestore`). See `src/features/admin/`.
 
-**Authorisation is a Firebase custom claim (`admin: true`), not a Firestore field.** A role field
-on a `users/{uid}` document would mean the security rule has to *read a document to authorise a
-read of that document* — circular, and an extra read on every request. A custom claim is baked
-into the user's ID token and checked with zero reads. The client-side `<RequireAdmin>` route guard
-(`src/features/admin/components/RequireAdmin.tsx`) only exists to redirect a non-admin away from a
-screen that would fail every query anyway — it is trivially bypassable and **is not the security
-boundary**. The actual boundary is `firestore.rules`: every admin-only collection (`changeRequests`)
-and every admin-only read path (`users/{uid}` and its subcollections, for the Users screens) requires
-`request.auth.token.admin == true`.
+**Teaching is self-service; admin is granted.** Anyone signed in can create a class from
+`/educator`, and creating it makes them its owner — ownership is what grants access to that
+class's students, so there is no educator role, no approval step and no script. The privacy line
+that makes this safe is the student's: an educator sees a student only after that student enters
+the join code, and leaving removes them again.
+
+Admin is different, because it reaches every user's data, the Change Register and platform
+analytics. It comes from a `roles/{uid}` document written at `/admin/people`, a legacy `admin`
+custom claim, or the bootstrap owner address. Claims were the original mechanism and still work,
+but they can only be minted with service-account credentials, which made every grant a terminal
+command run by whoever held the key.
+
+**Join codes are document ids.** A code lives at `joinCodes/{CODE}` holding the cohort it points
+at, which buys two things a `where joinCode ==` query could not. Uniqueness is settled by the
+database — Firestore refuses to create a document that already exists, so two people generating
+the same code at the same moment cannot both win. And a student resolves a code with a single
+`get()` by id, so nobody needs list access to the `cohorts` collection; granting that would have
+made every join code on the platform enumerable. Codes are immutable (`allow update: if false`) —
+a code that could be repointed would silently redirect a class mid-term.
+
+The client-side `<RequireAdmin>` / `<RequireEducator>` guards are **not** the security boundary —
+`firestore.rules` is, and it re-runs every check server-side. `<RequireEducator>` only asks
+whether you are signed in; what you can actually see comes from which cohorts you own.
 
 ### Granting admin access
 
-1. Get a service account key: Firebase console → Project settings → Service accounts → Generate
-   new private key. Save the JSON somewhere outside the repo (never commit it).
-2. Find the target user's uid (Firebase console → Authentication → Users, or from the app's own
-   `users` collection).
-3. Run:
+1. Sign in at `/admin/people` as an admin.
+2. Find the person — they must have signed in at least once, since a role attaches to a uid.
+3. Tick **Admin** and Save. It takes effect on their next page load, with no sign-out.
 
-   ```bash
-   GOOGLE_APPLICATION_CREDENTIALS=/path/to/service-account.json npm run admin:set-claim -- <uid>
+**The first admin** is the bootstrap: `nearyomichael@gmail.com` is admin by definition, in
+`isBootstrapAdmin()` in `firestore.rules` and in `src/features/roles/bootstrap.ts`. Without it no
+admin could exist, because granting admin requires already being one. It requires a verified
+email. **Change it in both places or not at all** — changing only the app locks the owner out of
+`/admin`; changing only the rules leaves a former owner with access the app cannot revoke.
 
-   # to revoke:
-   GOOGLE_APPLICATION_CREDENTIALS=/path/to/service-account.json npm run admin:set-claim -- <uid> --remove
-   ```
+### Granting admin access with the script (break-glass)
 
-4. The affected user must sign out and back in (custom claims only land on ID token refresh, not
-   immediately) before `/admin` stops redirecting them.
+Still supported, and the only route if the rules ever deny you the People screen:
 
 ### Change Register
 

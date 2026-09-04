@@ -1,83 +1,45 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
+import { createContext, useContext, type ReactNode } from 'react';
 import { Navigate } from 'react-router-dom';
-import { subscribeToAuthState } from '../../anatomy-revision/data/firebase';
+import { useCurrentRole } from '../../roles/useCurrentRole';
 
-type Status = 'checking' | 'allowed' | 'denied';
-
-interface EducatorClaims {
+interface EducatorSession {
   uid: string;
-  cohorts: string[];
 }
 
-const EducatorClaimsContext = createContext<EducatorClaims | null>(null);
+const EducatorSessionContext = createContext<EducatorSession | null>(null);
 
-/** Cohort ids (and uid) this signed-in educator is claimed for — read once by RequireEducator rather than every screen re-parsing the ID token. */
-export function useEducatorClaims(): EducatorClaims {
-  const claims = useContext(EducatorClaimsContext);
-  if (!claims) throw new Error('useEducatorClaims must be used inside <RequireEducator>.');
-  return claims;
+/** The signed-in person viewing /educator. Their uid is the only input to every ownership check. */
+export function useEducatorSession(): EducatorSession {
+  const session = useContext(EducatorSessionContext);
+  if (!session) throw new Error('useEducatorSession must be used inside <RequireEducator>.');
+  return session;
 }
 
 /**
- * Route guard for /educator/* — same shape and same caveat as
- * admin/components/RequireAdmin.tsx: this only hides UI, it is not the
- * security boundary. The real boundary is firestore.rules, which checks
- * request.auth.token.educator == true and the cohorts array on every
- * educator-scoped read of users/attemptEvents. An educator with an empty
- * `cohorts` claim (set via scripts/setEducator.ts) is denied here too —
- * there's nothing useful to show them.
+ * Route guard for /educator/* — signed in is the whole requirement.
+ *
+ * There is deliberately no educator role to hold: teaching is self-service,
+ * so anyone can create a class and thereby become its owner (see
+ * firestore.rules). Someone who owns no class gets the create form rather
+ * than a redirect, because "you are not an educator" is not a thing this app
+ * can know about a person — only whether they have made a class yet.
+ *
+ * The security boundary is firestore.rules, which grants student data by
+ * cohort ownership. A signed-in stranger reaching these screens sees their
+ * own empty state, not somebody else's class.
  */
 export function RequireEducator({ children }: { children: ReactNode }) {
-  const [status, setStatus] = useState<Status>('checking');
-  const [claims, setClaims] = useState<EducatorClaims | null>(null);
+  const { uid, loading } = useCurrentRole();
 
-  useEffect(() => {
-    let cancelled = false;
-    let unsubscribe: (() => void) | undefined;
-
-    try {
-      unsubscribe = subscribeToAuthState((user) => {
-        if (cancelled) return;
-        if (!user) {
-          setStatus('denied');
-          return;
-        }
-        user
-          .getIdTokenResult()
-          .then((token) => {
-            if (cancelled) return;
-            const cohorts = Array.isArray(token.claims.cohorts) ? (token.claims.cohorts as string[]) : [];
-            if (token.claims.educator === true && cohorts.length > 0) {
-              setClaims({ uid: user.uid, cohorts });
-              setStatus('allowed');
-            } else {
-              setStatus('denied');
-            }
-          })
-          .catch(() => {
-            if (!cancelled) setStatus('denied');
-          });
-      });
-    } catch {
-      // No Firebase project configured (e.g. VITE_PERSISTENCE=local) — educator mode is meaningless without it.
-      setStatus('denied');
-    }
-
-    return () => {
-      cancelled = true;
-      unsubscribe?.();
-    };
-  }, []);
-
-  if (status === 'checking') {
+  if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center text-sm" style={{ color: 'var(--ink3)' }}>
-        Checking educator access…
+        Loading…
       </div>
     );
   }
 
-  if (status === 'denied' || !claims) return <Navigate to="/" replace />;
+  if (!uid) return <Navigate to="/" replace />;
 
-  return <EducatorClaimsContext.Provider value={claims}>{children}</EducatorClaimsContext.Provider>;
+  return <EducatorSessionContext.Provider value={{ uid }}>{children}</EducatorSessionContext.Provider>;
 }

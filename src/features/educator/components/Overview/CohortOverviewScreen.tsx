@@ -1,5 +1,7 @@
 import { useParams } from 'react-router-dom';
 import { useCohortAnalytics } from '../../hooks/useCohortAnalytics';
+import { useCohorts } from '../CohortsProvider';
+import { JoinCodePanel } from './JoinCodePanel';
 import { StatTile } from '../../../admin/components/Analytics/StatTile';
 import { AccuracyByRegionChart } from '../../../admin/components/Analytics/AccuracyByRegionChart';
 import { ActiveUsersChart } from '../../../admin/components/Analytics/ActiveUsersChart';
@@ -20,6 +22,8 @@ function pctOrDash(value: number | null): string {
 export function EducatorCohortOverviewScreen() {
   const { cohortId } = useParams<{ cohortId: string }>();
   const { students, snapshot, loading, error } = useCohortAnalytics(cohortId);
+  const { cohorts } = useCohorts();
+  const cohort = cohorts?.find((c) => c.id === cohortId) ?? null;
 
   if (loading) {
     return (
@@ -44,6 +48,8 @@ export function EducatorCohortOverviewScreen() {
         attempt data only — no individual answer-by-answer logs are shown here. See the Students tab for per-student
         breakdowns.
       </p>
+
+      <JoinCodePanel cohort={cohort} />
 
       <div className="mt-6 flex flex-wrap gap-3">
         <StatTile label="Enrolled students" value={String(students.length)} />

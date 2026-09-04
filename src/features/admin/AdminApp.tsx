@@ -6,6 +6,7 @@ import { UsersPage } from './components/Users/UsersPage';
 import { UserDetailPage } from './components/Users/UserDetailPage';
 import { AnalyticsPage } from './components/Analytics/AnalyticsPage';
 import { CohortsPage } from './components/Cohorts/CohortsPage';
+import { PeoplePage } from './components/People/PeoplePage';
 
 /**
  * Entry point for the whole /admin/* subtree — this is the module App.tsx
@@ -24,6 +25,7 @@ export default function AdminApp() {
           <Route path="users/:uid" element={<UserDetailPage />} />
           <Route path="analytics" element={<AnalyticsPage />} />
           <Route path="cohorts" element={<CohortsPage />} />
+          <Route path="people" element={<PeoplePage />} />
           <Route path="*" element={<Navigate to="changes" replace />} />
         </Route>
       </Routes>

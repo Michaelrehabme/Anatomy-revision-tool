@@ -8,6 +8,7 @@ import { EducatorConfusionPairsScreen } from './components/Confusion/ConfusionPa
 import { EducatorStudentsListScreen } from './components/Students/StudentsListScreen';
 import { EducatorStudentDetailScreen } from './components/Students/StudentDetailScreen';
 import { EducatorAssignmentsScreen } from './components/Assignments/AssignmentsScreen';
+import { CreateClassScreen } from './components/CreateClass/CreateClassScreen';
 
 /**
  * Entry point for /educator/* — mirrors admin/AdminApp.tsx's shape (a
@@ -21,6 +22,7 @@ export default function EducatorApp() {
       <Routes>
         <Route element={<EducatorShell />}>
           <Route index element={<EducatorHome />} />
+          <Route path="new" element={<CreateClassScreen />} />
           <Route path=":cohortId" element={<EducatorCohortOverviewScreen />} />
           <Route path=":cohortId/weakness" element={<EducatorStructureWeaknessScreen />} />
           <Route path=":cohortId/confusion" element={<EducatorConfusionPairsScreen />} />
