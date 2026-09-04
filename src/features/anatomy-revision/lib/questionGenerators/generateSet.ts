@@ -1,19 +1,22 @@
 import type { AnatomyStructure, Category, Difficulty } from '../../types/structure';
 import type { AnatomyImageAsset } from '../../types/image';
-import type { QuestionType, RevisionQuestion } from '../../types/question';
+import type { OinaPromptKind, QuestionType, RevisionQuestion } from '../../types/question';
 import type { Area, Region, SubRegion } from '../../types/region';
-import type { StructureMastery } from '../../types/attempt';
+import type { FactMastery, StructureMastery } from '../../types/attempt';
 import { buildIndexes, filterStructures, type StructureIndexes } from '../indexes';
-import { createRng, shuffle, weightedShuffle, type Rng } from '../rng';
+import { createRng, sample, shuffle, weightedShuffle, type Rng } from '../rng';
 import { selectAdaptiveStructures, pickAdaptiveQuestionType } from '../adaptiveSelection';
 import { buildWeightMap, UNSEEN_WEIGHT } from '../scheduling';
-import { buildFlashcardQuestions } from './flashcards';
+import { buildFlashcardQuestions, buildFieldFlashcard } from './flashcards';
 import { buildMcqQuestions } from './mcq';
 import { buildLocateQuestions } from './locate';
 import { buildFillBlankQuestions } from './fillBlank';
 import { buildIdentifyTypedQuestions } from './identifyTyped';
 import { buildMultiSelectQuestions } from './multiSelect';
 import { buildClinicalQuestions } from './clinical';
+import { buildOinaQuestions } from './oina';
+import { indexFactMastery, shouldPrecedeWithLearnCard } from '../factMastery';
+import { isOinaQuestion } from '../../types/question';
 
 export interface RevisionSetConfig {
   types: readonly QuestionType[];
@@ -23,6 +26,8 @@ export interface RevisionSetConfig {
   subregion?: SubRegion;
   /** OR-matched against each structure's area (CR-017). Empty/undefined = all areas. */
   areas?: Area[];
+  /** OR-matched against each structure's `groups` (CR-018) — how OINA sessions target "the hamstrings". */
+  groups?: string[];
   category?: Category;
   difficulty?: Difficulty;
   /**
@@ -62,6 +67,56 @@ export interface RevisionSetConfig {
   mastery?: readonly StructureMastery[];
   /** Reference time for due-date weighting / adaptive selection. Defaults to now. */
   now?: Date;
+  /**
+   * OINA only (CR-018). Same repository-free contract as `mastery`: the
+   * caller fetches it and passes it in. Drives both the per-(muscle, fact)
+   * select/typed escalation and whether a question is preceded by its
+   * teaching flashcard. Omitted, every OINA question is select and every one
+   * gets a learn card — which is the right behaviour for a new student.
+   */
+  factMastery?: FactMastery[];
+  /** OINA only. Which of the four facts to ask about; omit for all four. */
+  oinaPromptKinds?: readonly OinaPromptKind[];
+  /** OINA only. Overrides the mastery-driven escalation with an explicit difficulty. */
+  oinaForceFormat?: 'select' | 'typed';
+  /**
+   * OINA only. How many attempts at a fact are preceded by its teaching
+   * flashcard; 0 turns them off. The student's own setting — see
+   * lib/preferences.ts. Omitted, FACT_MASTERY_CONFIG's default applies.
+   */
+  learnCardAttempts?: number;
+}
+
+/**
+ * Puts each OINA question's teaching flashcard immediately in front of it,
+ * for facts the student is still learning or last got wrong.
+ *
+ * Runs after the shuffle/sample/slice below rather than inside the generator,
+ * for two reasons: the pairing has to survive shuffling, and learn cards must
+ * not consume the `count` budget — a 20-question session means 20 questions
+ * to answer, plus however many cards are needed to teach them.
+ */
+function withLearnCards(
+  questions: RevisionQuestion[],
+  indexes: StructureIndexes,
+  factMastery: readonly FactMastery[] | undefined,
+  attempts: number | undefined,
+): RevisionQuestion[] {
+  if (attempts !== undefined && attempts <= 0) return questions;
+  const masteryByKey = indexFactMastery(factMastery ?? []);
+  const out: RevisionQuestion[] = [];
+  for (const question of questions) {
+    if (isOinaQuestion(question)) {
+      const structure = indexes.byId.get(question.structureId);
+      const fact = masteryByKey.get(`${question.structureId}__${question.promptKind}`);
+      if (structure && shouldPrecedeWithLearnCard(fact, attempts)) {
+        const card = buildFieldFlashcard(structure, question.promptKind);
+        if (card) out.push(card);
+      }
+    }
+    out.push(question);
+  }
+  return out;
 }
 
 /** Share of a session reserved for `priorityStructureIds` when enough of them exist. */
@@ -103,6 +158,7 @@ function generateOneQuestionForStructure(
   images: AnatomyImageAsset[],
   indexes: StructureIndexes,
   rng: Rng,
+  config?: RevisionSetConfig,
 ): RevisionQuestion | null {
   const pool = [structure];
   switch (type) {
@@ -120,6 +176,19 @@ function generateOneQuestionForStructure(
       // Multi-select is inherently a "compare several structures" question, not a
       // per-structure one — it doesn't fit the adaptive escalation ladder's shape.
       return null;
+    case 'oina': {
+      // OINA runs its own per-(muscle, fact) escalation, so the adaptive
+      // ladder's per-structure accuracy has no say in the format here — it
+      // only decides whether an OINA question is asked at all. A random one
+      // of the requested facts, since the ladder wants one question per
+      // structure, not four.
+      const questions = buildOinaQuestions(pool, [...indexes.byId.values()], indexes, rng, {
+        promptKinds: config?.oinaPromptKinds,
+        factMastery: config?.factMastery,
+        forceFormat: config?.oinaForceFormat,
+      });
+      return sample(questions, 1, rng)[0] ?? null;
+    }
   }
 }
 
@@ -145,6 +214,7 @@ export function generateRevisionSet(
     regions: config.regions,
     subregion: config.subregion,
     areas: config.areas,
+    groups: config.groups,
     difficulty: config.difficulty,
   });
   if (config.structureIds?.length) {
@@ -170,14 +240,14 @@ export function generateRevisionSet(
       if (!preferredType) continue;
       const orderedTypes = [preferredType, ...config.types.filter((t) => t !== preferredType)];
       for (const type of orderedTypes) {
-        const question = generateOneQuestionForStructure(structure, type, relevantImages, indexes, rng);
+        const question = generateOneQuestionForStructure(structure, type, relevantImages, indexes, rng, config);
         if (question) {
           adaptiveQuestions.push(question);
           break;
         }
       }
     }
-    return shuffle(adaptiveQuestions, rng);
+    return withLearnCards(shuffle(adaptiveQuestions, rng), indexes, config.factMastery, config.learnCardAttempts);
   }
 
   const generated: RevisionQuestion[] = [];
@@ -203,6 +273,15 @@ export function generateRevisionSet(
   if (config.types.includes('multi-select')) {
     generated.push(...buildMultiSelectQuestions(pool, indexes, rng));
   }
+  if (config.types.includes('oina')) {
+    generated.push(
+      ...buildOinaQuestions(pool, structures, indexes, rng, {
+        promptKinds: config.oinaPromptKinds,
+        factMastery: config.factMastery,
+        forceFormat: config.oinaForceFormat,
+      }),
+    );
+  }
 
   const weights = config.mastery?.length ? buildWeightMap(config.mastery, config.now) : null;
   const ordered = weights
@@ -210,7 +289,13 @@ export function generateRevisionSet(
     : shuffle(generated, rng);
 
   const count = config.mode === 'assessment' ? (config.count ?? generated.length) : config.count;
-  if (!count) return ordered;
-  if (!config.priorityStructureIds?.length) return ordered.slice(0, count);
-  return blendPriorityWithRest(ordered, config.priorityStructureIds, count, config.reviewShare, rng);
+  const selected = !count
+    ? ordered
+    : config.priorityStructureIds?.length
+      ? blendPriorityWithRest(ordered, config.priorityStructureIds, count, config.reviewShare, rng)
+      : ordered.slice(0, count);
+
+  // An exam tests rather than teaches, so it never gets a learn card (CR-018).
+  if (config.mode === 'assessment') return selected;
+  return withLearnCards(selected, indexes, config.factMastery, config.learnCardAttempts);
 }

@@ -1,5 +1,6 @@
 import { REGION_LABELS } from '../../types/region';
 import { generateRevisionSet } from '../../lib/questionGenerators/generateSet';
+import { getLearnCardAttempts } from '../../lib/preferences';
 import { useProgressData } from '../../hooks/useProgressData';
 import { Button } from '../shared/Button';
 import { AppShell } from '../shell/AppShell';
@@ -24,25 +25,39 @@ export function Progress({ content, repository, userId, onStart, onNavigate, onO
   // Desktop shows strongest-first; the mobile mockup keeps REGIONS' natural order instead.
   const byRegion = [...byRegionUnsorted].sort((a, b) => b.pct - a.pct);
 
-  // No mastery here on purpose: every structure in `untouched` is by definition
-  // unattempted, so they all carry UNSEEN_WEIGHT and the ordering stays uniform.
-  const handleDrillUntouched = () => {
+  // No mastery passed here on purpose: every structure in `untouched` is by
+  // definition unattempted, so they all carry UNSEEN_WEIGHT and the ordering
+  // stays uniform. For the same reason none of them has fact mastery either, so
+  // every OINA question arrives preceded by its learn card — which is what
+  // "start these" should mean.
+  const handleDrillUntouched = async () => {
+    const types: QuestionType[] = ['oina', 'mcq'];
+    const factMastery = repository && userId ? await repository.listFactMastery(userId) : undefined;
+    const learnCardAttempts = getLearnCardAttempts();
     const questions = generateRevisionSet(content.structures, content.images, {
-      types: ['flashcard', 'mcq'],
+      types,
       mode: 'practice',
       structureIds: untouched.map((m) => m.id),
+      factMastery,
+      learnCardAttempts,
     });
-    onStart(questions, { types: ['flashcard', 'mcq'], mode: 'practice' });
+    onStart(questions, { types, mode: 'practice', learnCardAttempts });
   };
 
-  const handleDrillLeeches = () => {
-    const types: QuestionType[] = ['mcq', 'fill-blank', 'identify-typed'];
+  const handleDrillLeeches = async () => {
+    // Leeches are the muscles a student keeps losing, which is exactly what
+    // per-fact drilling is for — OINA leads.
+    const types: QuestionType[] = ['oina', 'mcq', 'fill-blank', 'identify-typed'];
+    const factMastery = repository && userId ? await repository.listFactMastery(userId) : undefined;
+    const learnCardAttempts = getLearnCardAttempts();
     const questions = generateRevisionSet(content.structures, content.images, {
       types,
       mode: 'practice',
       structureIds: leeches.map((m) => m.id),
+      factMastery,
+      learnCardAttempts,
     });
-    onStart(questions, { types, mode: 'practice' });
+    onStart(questions, { types, mode: 'practice', learnCardAttempts });
   };
 
   return (

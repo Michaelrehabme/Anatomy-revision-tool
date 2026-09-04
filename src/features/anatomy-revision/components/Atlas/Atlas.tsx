@@ -5,6 +5,7 @@ import type { StructureMastery } from '../../types/attempt';
 import { isMuscle } from '../../types/structure';
 import type { Region } from '../../types/region';
 import { REGIONS, REGION_LABELS } from '../../types/region';
+import { Button } from '../shared/Button';
 import { AppShell } from '../shell/AppShell';
 import { NavSidebar, type NavSection } from '../shell/NavSidebar';
 
@@ -13,10 +14,12 @@ interface AtlasProps {
   repository: AnatomyRepository | null;
   userId: string | null;
   onOpenMuscle: (structureId: string, contextIds: string[]) => void;
+  /** Starts an OINA session over the muscles currently listed (CR-018). */
+  onDrillOina: (structureIds: string[]) => void;
   onNavigate: (section: NavSection) => void;
 }
 
-export function Atlas({ content, repository, userId, onOpenMuscle, onNavigate }: AtlasProps) {
+export function Atlas({ content, repository, userId, onOpenMuscle, onDrillOina, onNavigate }: AtlasProps) {
   const [regionFilter, setRegionFilter] = useState<Region | 'all'>('all');
   const [query, setQuery] = useState('');
   const [masteryByStructureId, setMasteryByStructureId] = useState<Map<string, StructureMastery>>(new Map());
@@ -107,7 +110,18 @@ export function Atlas({ content, repository, userId, onOpenMuscle, onNavigate }:
             className="w-[340px] flex-none rounded-[3px] px-4.5 py-3.5"
             style={{ fontFamily: 'var(--font-display)', fontSize: 19, border: '1.4px solid var(--acc)', background: 'var(--sf)', color: 'var(--ink)' }}
           />
+          <Button
+            onClick={() => onDrillOina(contextIds)}
+            disabled={contextIds.length === 0}
+            className="flex-none min-h-[54px] min-w-[190px]"
+          >
+            Drill these facts
+          </Button>
         </div>
+        <p className="mt-2.5" style={{ color: 'var(--ink3)', fontSize: 13.5 }}>
+          Origin, insertion, nerve supply and action for the {filtered.length}{' '}
+          {filtered.length === 1 ? 'muscle' : 'muscles'} listed below.
+        </p>
 
         <div
           className="mt-7 flex gap-5 pb-3"

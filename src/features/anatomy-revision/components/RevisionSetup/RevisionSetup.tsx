@@ -1,11 +1,18 @@
 import { useState } from 'react';
 import type { AnatomyContent } from '../../hooks/useAnatomyContent';
-import type { QuestionType } from '../../types/question';
+import type { OinaPromptKind, QuestionType } from '../../types/question';
+import { OINA_PROMPT_KINDS } from '../../types/question';
 import type { Category } from '../../types/structure';
 import type { Area } from '../../types/region';
 import { AREA_LABELS } from '../../types/region';
-import { areaOf } from '../../types/structure';
+import { areaOf, isMuscle, MUSCLE_GROUP_LABELS } from '../../types/structure';
 import { generateRevisionSet } from '../../lib/questionGenerators/generateSet';
+import {
+  LEARN_CARD_ATTEMPT_LABELS,
+  LEARN_CARD_ATTEMPT_OPTIONS,
+  getLearnCardAttempts,
+  setLearnCardAttempts,
+} from '../../lib/preferences';
 import type { RevisionSetupParams } from '../../hooks/useRevisionSession';
 import type { RevisionQuestion } from '../../types/question';
 import type { AnatomyRepository } from '../../data/repository';
@@ -19,7 +26,15 @@ const QUESTION_TYPE_OPTIONS: { value: QuestionType; label: string }[] = [
   { value: 'flashcard', label: 'Flashcard' },
   { value: 'multi-select', label: 'Select all' },
   { value: 'locate', label: 'Locate' },
+  { value: 'oina', label: 'OINA Cards' },
 ];
+
+const OINA_FACT_LABELS: Record<OinaPromptKind, string> = {
+  origin: 'Origin',
+  insertion: 'Insertion',
+  nerve: 'Nerve supply',
+  action: 'Action',
+};
 
 const CATEGORY_OPTIONS: { value: Category | 'all'; label: string }[] = [
   { value: 'all', label: 'All categories' },
@@ -63,23 +78,58 @@ export function RevisionSetup({ content, repository, userId, areas, onStart, onB
   const [customLength, setCustomLength] = useState('');
   const [customActive, setCustomActive] = useState(false);
   const [useSrs, setUseSrs] = useState(true);
+  const [oinaFacts, setOinaFacts] = useState<OinaPromptKind[]>([...OINA_PROMPT_KINDS]);
+  const [groups, setGroups] = useState<string[]>([]);
+  // Sticky across sessions — how many repeats help is a property of the
+  // student, not of one session (see lib/preferences.ts).
+  const [learnCards, setLearnCards] = useState(getLearnCardAttempts);
   const [timerMinutes, setTimerMinutes] = useState(0);
   const [starting, setStarting] = useState(false);
+
+  const chooseLearnCards = (value: number) => {
+    setLearnCards(value);
+    setLearnCardAttempts(value);
+  };
 
   const toggleType = (type: QuestionType) => {
     setTypes((prev) => (prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]));
   };
+
+  const oinaSelected = types.includes('oina');
+  const toggleFact = (fact: OinaPromptKind) => {
+    setOinaFacts((prev) => (prev.includes(fact) ? prev.filter((f) => f !== fact) : [...prev, fact]));
+  };
+  const toggleGroup = (group: string) => {
+    setGroups((prev) => (prev.includes(group) ? prev.filter((g) => g !== group) : [...prev, group]));
+  };
+
+  // Only groups that actually have muscles in the chosen areas — offering an
+  // empty one is the same dead end CR-017 removed from the area picker.
+  const availableGroups = Object.keys(MUSCLE_GROUP_LABELS).filter((group) =>
+    content.structures.some(
+      (s) => isMuscle(s) && (s.groups ?? []).includes(group) && (areas.size === 0 || (!!areaOf(s) && areas.has(areaOf(s)!))),
+    ),
+  );
 
   const areasArray = [...areas];
   const inPool = (s: (typeof content.structures)[number]) => {
     const area = areaOf(s);
     return (
       (areas.size === 0 || (!!area && areas.has(area))) &&
-      (category === 'all' || s.category === category)
+      (category === 'all' || s.category === category) &&
+      (groups.length === 0 || (s.groups ?? []).some((g) => groups.includes(g)))
     );
   };
   const poolSize = content.structures.filter(inPool).length;
-  const canStart = types.length > 0 && !content.loading && poolSize > 0;
+  // An OINA session covers every fact of every muscle in scope rather than a
+  // fixed number of questions — "do the hamstrings" is the unit a student
+  // thinks in, and a 20-question cap would leave a group half-learned with no
+  // indication of which half. Exact, not an estimate: validateContent asserts
+  // every muscle yields a question for all four facts.
+  const oinaMuscleCount = content.structures.filter((s) => isMuscle(s) && inPool(s)).length;
+  const oinaQuestionCount = oinaMuscleCount * oinaFacts.length;
+  const effectiveCount = oinaSelected ? oinaQuestionCount : count;
+  const canStart = types.length > 0 && !content.loading && poolSize > 0 && (!oinaSelected || oinaFacts.length > 0);
 
   const handleStart = async () => {
     setStarting(true);
@@ -94,10 +144,17 @@ export function RevisionSetup({ content, repository, userId, areas, onStart, onB
     }
 
     const mastery = mode === 'adaptive' && repository && userId ? await repository.listMastery(userId) : undefined;
+    // generateSet stays repository-free (CR-009), so fact mastery is fetched here and
+    // passed in — it decides both the select/typed format per fact and whether a
+    // question is preceded by its teaching flashcard.
+    const factMastery = oinaSelected && repository && userId ? await repository.listFactMastery(userId) : undefined;
 
     const params: RevisionSetupParams = {
       types,
       areas: areasArray.length ? areasArray : undefined,
+      groups: groups.length ? groups : undefined,
+      oinaPromptKinds: oinaSelected ? oinaFacts : undefined,
+      learnCardAttempts: oinaSelected ? learnCards : undefined,
       category: category === 'all' ? undefined : category,
       mode,
       timerMinutes: mode === 'assessment' && timerMinutes > 0 ? timerMinutes : undefined,
@@ -105,13 +162,19 @@ export function RevisionSetup({ content, repository, userId, areas, onStart, onB
     const questions = generateRevisionSet(content.structures, content.images, {
       types,
       areas: areasArray,
+      groups: params.groups,
+      oinaPromptKinds: params.oinaPromptKinds,
+      learnCardAttempts: params.learnCardAttempts,
       category: params.category,
       mode,
-      count,
+      // Undefined caps nothing: practice mode then emits every eligible question,
+      // which is what an OINA session is for (CR-018).
+      count: oinaSelected ? undefined : count,
       // Prioritised, not restricted — see the toggle's own copy. A hard due-only
       // filter refills its own queue, since answering a due structure reschedules it.
       priorityStructureIds: dueStructureIds,
       mastery,
+      factMastery,
     });
     onStart(questions, params);
   };
@@ -170,6 +233,82 @@ export function RevisionSetup({ content, repository, userId, areas, onStart, onB
               Mixed formats interleave within one session.
             </p>
 
+            {oinaSelected && (
+              <>
+                <div
+                  className="mt-12"
+                  style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}
+                >
+                  OINA facts
+                </div>
+                <div className="mt-4 flex flex-wrap gap-2.5">
+                  {OINA_PROMPT_KINDS.map((fact) => (
+                    <button
+                      key={fact}
+                      type="button"
+                      onClick={() => toggleFact(fact)}
+                      aria-pressed={oinaFacts.includes(fact)}
+                      className="inline-flex min-h-[40px] items-center justify-center whitespace-nowrap rounded-full px-4 text-sm"
+                      style={chipStyle(oinaFacts.includes(fact))}
+                    >
+                      {OINA_FACT_LABELS[fact]}
+                    </button>
+                  ))}
+                </div>
+                <p className="mt-3.5 max-w-[44ch] text-sm" style={{ color: 'var(--ink3)' }}>
+                  Multiple choice to begin with; each fact switches to typed recall once
+                  you have it consistently right.
+                </p>
+
+                <div
+                  className="mt-12"
+                  style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}
+                >
+                  Show the answer first
+                </div>
+                <div className="mt-4 flex flex-wrap gap-2.5">
+                  {LEARN_CARD_ATTEMPT_OPTIONS.map((n) => (
+                    <button
+                      key={n}
+                      type="button"
+                      onClick={() => chooseLearnCards(n)}
+                      aria-pressed={learnCards === n}
+                      className="inline-flex min-h-[40px] items-center justify-center whitespace-nowrap rounded-full px-4 text-sm"
+                      style={chipStyle(learnCards === n)}
+                    >
+                      {LEARN_CARD_ATTEMPT_LABELS[n]}
+                    </button>
+                  ))}
+                </div>
+                <p className="mt-3.5 max-w-[44ch] text-sm" style={{ color: 'var(--ink3)' }}>
+                  {learnCards === 0
+                    ? 'Straight to the question, every time.'
+                    : `A flashcard comes first for your first ${learnCards === 1 ? 'attempt' : `${learnCards} attempts`} at each fact, and again whenever you get one wrong. Learn cards are never scored.`}
+                </p>
+
+                <div
+                  className="mt-12"
+                  style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}
+                >
+                  Muscle group <span style={{ textTransform: 'none', letterSpacing: 0 }}>· optional</span>
+                </div>
+                <div className="mt-4 flex flex-wrap gap-2.5">
+                  {availableGroups.map((group) => (
+                    <button
+                      key={group}
+                      type="button"
+                      onClick={() => toggleGroup(group)}
+                      aria-pressed={groups.includes(group)}
+                      className="inline-flex min-h-[40px] items-center justify-center whitespace-nowrap rounded-full px-4 text-sm"
+                      style={chipStyle(groups.includes(group))}
+                    >
+                      {MUSCLE_GROUP_LABELS[group]}
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
+
             <div
               className="mt-12"
               style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}
@@ -197,6 +336,18 @@ export function RevisionSetup({ content, repository, userId, areas, onStart, onB
             <div style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
               Length
             </div>
+            {oinaSelected ? (
+              <div className="mt-4 rounded-[3px] px-5 py-4" style={{ border: '1.2px solid var(--line)', background: 'var(--sf)' }}>
+                <div style={{ fontFamily: 'var(--font-display)', fontSize: 20, color: 'var(--ink)' }}>
+                  Every card in scope
+                </div>
+                <p className="mt-1.5 text-sm" style={{ color: 'var(--ink3)' }}>
+                  {oinaQuestionCount} questions — {oinaFacts.length} fact{oinaFacts.length === 1 ? '' : 's'} for each of{' '}
+                  {oinaMuscleCount} muscle{oinaMuscleCount === 1 ? '' : 's'}.
+                  {groups.length === 0 && ' Narrow it with a muscle group below.'}
+                </p>
+              </div>
+            ) : (
             <div className="mt-4 flex gap-2.5">
               {LENGTHS.map((n) => (
                 <button
@@ -245,6 +396,7 @@ export function RevisionSetup({ content, repository, userId, areas, onStart, onB
                 }}
               />
             </div>
+            )}
 
             <label className="mt-12 flex cursor-pointer items-start gap-4">
               <span
@@ -330,7 +482,7 @@ export function RevisionSetup({ content, repository, userId, areas, onStart, onB
               {content.loading ? 'Loading content…' : starting ? 'Starting…' : 'Begin session'}
             </Button>
             <p className="mt-3.5 text-center" style={{ font: '400 12.5px/1.6 var(--font-mono)', color: 'var(--ink3)' }}>
-              {count} questions · about {Math.max(1, Math.round(count * 0.45))} minutes
+              {effectiveCount} questions · about {Math.max(1, Math.round(effectiveCount * 0.45))} minutes
             </p>
           </div>
         </div>

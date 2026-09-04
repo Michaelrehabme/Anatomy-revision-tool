@@ -6,9 +6,11 @@ import { useAnatomyContent, type AnatomyContent } from './features/anatomy-revis
 import { useRevisionSession } from './features/anatomy-revision/hooks/useRevisionSession';
 import { useIsDesktop } from './features/anatomy-revision/hooks/useIsDesktop';
 import { generateRevisionSet } from './features/anatomy-revision/lib/questionGenerators/generateSet';
+import { getLearnCardAttempts } from './features/anatomy-revision/lib/preferences';
 import { useMastery } from './features/anatomy-revision/hooks/useMastery';
 import { computeStreak } from './features/anatomy-revision/lib/streak';
 import type { Area } from './features/anatomy-revision/types/region';
+import type { QuestionType } from './features/anatomy-revision/types/question';
 import type { AnatomyRepository } from './features/anatomy-revision/data/repository';
 import { Onboarding } from './features/anatomy-revision/components/Onboarding/Onboarding';
 import { Today } from './features/anatomy-revision/components/Today/Today';
@@ -18,6 +20,7 @@ import { StudySession } from './features/anatomy-revision/components/StudySessio
 import { RevisionResults } from './features/anatomy-revision/components/RevisionResults/RevisionResults';
 import { MuscleCard } from './features/anatomy-revision/components/MuscleCard/MuscleCard';
 import { Atlas } from './features/anatomy-revision/components/Atlas/Atlas';
+import { MobileAtlas } from './features/anatomy-revision/components/mobile/MobileAtlas';
 import { Progress } from './features/anatomy-revision/components/Progress/Progress';
 import { Achievements } from './features/anatomy-revision/components/Achievements/Achievements';
 import { MobileAchievements } from './features/anatomy-revision/components/mobile/MobileAchievements';
@@ -60,7 +63,7 @@ const SECTION_PATH: Record<NavSection, string> = {
 
 const MOBILE_TAB_PATH: Record<MobileTab, string> = {
   today: '/',
-  picker: '/study',
+  atlas: '/atlas',
   progress: '/progress',
   account: '/account',
 };
@@ -238,15 +241,49 @@ function App() {
   const openMuscle = (structureId: string, contextIds: string[]) =>
     navigate(`/structure/${structureId}`, { state: { contextIds } });
 
-  // No mastery here on purpose: a one-structure drill gives the weighting nothing
-  // to choose between — every question would carry the same weight.
-  const drillStructure = (structureId: string) => {
+  /**
+   * "Drill this muscle" from a muscle card. OINA is in the mix because the four
+   * facts are the point of drilling one muscle.
+   *
+   * No `mastery` on purpose: a one-structure drill gives the weighting nothing
+   * to choose between — every question would carry the same weight. Fact
+   * mastery is still needed, since it decides the format of each fact and
+   * whether it gets a learn card, and generateSet stays repository-free (CR-009).
+   */
+  const drillStructure = async (structureId: string) => {
+    const types: QuestionType[] = ['oina', 'mcq'];
+    const factMastery = repository && userId ? await repository.listFactMastery(userId) : undefined;
+    // This path bypasses the setup screen, so it reads the student's saved
+    // learn-card preference directly rather than defaulting to 3.
+    const learnCardAttempts = getLearnCardAttempts();
     const questions = generateRevisionSet(content.structures, content.images, {
-      types: ['flashcard', 'mcq'],
+      types,
       mode: 'practice',
       structureIds: [structureId],
+      factMastery,
+      learnCardAttempts,
     });
-    session.start(questions, { types: ['flashcard', 'mcq'], mode: 'practice' });
+    session.start(questions, { types, mode: 'practice', learnCardAttempts });
+  };
+
+  /**
+   * OINA session over an explicit set of muscles — the Atlas' "Drill these
+   * facts", scoped to whatever the list is currently filtered to.
+   */
+  const drillOina = async (structureIds: string[]) => {
+    const types: QuestionType[] = ['oina'];
+    const factMastery = repository && userId ? await repository.listFactMastery(userId) : undefined;
+    const learnCardAttempts = getLearnCardAttempts();
+    const questions = generateRevisionSet(content.structures, content.images, {
+      types,
+      mode: 'practice',
+      structureIds,
+      // No cap: drilling from the Atlas covers every fact of every muscle
+      // currently listed, the same as an OINA session from setup.
+      factMastery,
+      learnCardAttempts,
+    });
+    session.start(questions, { types, mode: 'practice', learnCardAttempts });
   };
 
   return (
@@ -282,7 +319,7 @@ function App() {
               userId={userId}
               content={content}
               onStart={session.start}
-              onCustomSession={() => mobileNavigate('picker')}
+              onCustomSession={() => navigate('/study')}
               onOpenMuscle={(id) => openMuscle(id, [])}
               onNavigateTab={mobileNavigate}
             />
@@ -307,7 +344,6 @@ function App() {
               onChange={setSelectedAreas}
               onContinue={() => navigate('/study/setup')}
               onBack={() => mobileNavigate('today')}
-              onNavigateTab={mobileNavigate}
             />
           )
         }
@@ -364,16 +400,27 @@ function App() {
               onRestart={endSession}
               onOpenMuscle={(id) => openMuscle(id, session.summary!.missedStructureIds)}
               onNavigate={onNavigateSection}
-              onRetryIncorrect={() => {
+              onRetryIncorrect={async () => {
+                const params = session.setupParams ?? { types: ['oina', 'mcq'] as QuestionType[], mode: 'practice' as const };
+                // Without the OINA fields a retry of an origin-only session would come
+                // back asking all four facts, every one of them back on multiple choice.
+                const factMastery =
+                  params.types.includes('oina') && repository && userId
+                    ? await repository.listFactMastery(userId)
+                    : undefined;
                 const retryQuestions = generateRevisionSet(content.structures, content.images, {
-                  types: session.setupParams?.types ?? ['flashcard', 'mcq'],
+                  types: params.types,
+                  oinaPromptKinds: params.oinaPromptKinds,
+                  groups: params.groups,
+                  learnCardAttempts: params.learnCardAttempts,
                   mode: 'practice',
                   // Deliberately still a hard restriction — "retry the N missed" means
                   // those N. Mastery only orders them, worst-known first.
                   structureIds: session.summary!.missedStructureIds,
+                  factMastery,
                   mastery,
                 });
-                session.start(retryQuestions, session.setupParams ?? { types: ['flashcard', 'mcq'], mode: 'practice' });
+                session.start(retryQuestions, params);
               }}
             />
           ) : (
@@ -384,14 +431,19 @@ function App() {
               gamification={session.gamification}
               sessionMode={session.setupParams?.mode}
               onDone={endSession}
-              onRetry={() => {
+              onRetry={async () => {
                 // Mobile's "Another N" re-runs the same setup fresh (not missed-only) — the
                 // mockup's startSession/`this.go('session')` resets and starts over, unlike
                 // desktop's "Retry the N missed" which is deliberately missed-scoped.
-                const params = session.setupParams ?? { types: ['flashcard', 'mcq'], mode: 'practice' };
+                const params = session.setupParams ?? { types: ['oina', 'mcq'] as QuestionType[], mode: 'practice' as const };
+                const factMastery =
+                  params.types.includes('oina') && repository && userId
+                    ? await repository.listFactMastery(userId)
+                    : undefined;
                 const nextQuestions = generateRevisionSet(content.structures, content.images, {
                   ...params,
                   count: session.summary!.totalQuestions,
+                  factMastery,
                   mastery,
                 });
                 session.start(nextQuestions, params);
@@ -403,7 +455,26 @@ function App() {
       <Route
         path="/atlas"
         element={
-          <Atlas content={content} repository={repository} userId={userId} onOpenMuscle={openMuscle} onNavigate={onNavigateSection} />
+          isDesktop ? (
+            <Atlas
+              content={content}
+              repository={repository}
+              userId={userId}
+              onOpenMuscle={openMuscle}
+              onDrillOina={drillOina}
+              onNavigate={onNavigateSection}
+            />
+          ) : (
+            <MobileAtlas
+              content={content}
+              repository={repository}
+              userId={userId}
+              onOpenMuscle={openMuscle}
+              onDrillOina={drillOina}
+              onBack={() => mobileNavigate('today')}
+              onNavigateTab={mobileNavigate}
+            />
+          )
         }
       />
       <Route

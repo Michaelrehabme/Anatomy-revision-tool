@@ -5,8 +5,8 @@ import { buildIndexes } from '../indexes';
 import { pickNameDistractors } from '../distractors';
 import { createRng } from '../rng';
 import { pointInAnyPolygon } from '../hotspot/pointInPolygon';
-import { isMcqQuestion, isFillBlankQuestion } from '../../types/question';
-import type { StructureMastery } from '../../types/attempt';
+import { isMcqQuestion, isFillBlankQuestion, isOinaQuestion, isFlashcardQuestion } from '../../types/question';
+import type { FactMastery, StructureMastery } from '../../types/attempt';
 
 describe('generateRevisionSet', () => {
   it('generates flashcards and MCQs for the full seed dataset deterministically', () => {
@@ -453,4 +453,180 @@ describe('pickNameDistractors', () => {
     });
   });
 
+});
+
+describe('OINA sessions (CR-018)', () => {
+  const HAMSTRINGS = ALL_STRUCTURES.filter((s) => (s.groups ?? []).includes('hamstrings')).map((s) => s.id);
+
+  function fact(structureId: string, promptKind: FactMastery['promptKind'], overrides: Partial<FactMastery> = {}): FactMastery {
+    return {
+      userId: 'user-1',
+      structureId,
+      promptKind,
+      attemptsTotal: 5,
+      attemptsCorrect: 5,
+      streak: 5,
+      missStreak: 0,
+      lastCorrect: true,
+      lastAttemptAt: '2026-09-01T00:00:00.000Z',
+      typed: false,
+      ...overrides,
+    };
+  }
+
+  /** Every fact of every hamstring is well known, so nothing needs a learn card. */
+  const KNOWN_HAMSTRINGS = HAMSTRINGS.flatMap((id) =>
+    (['origin', 'insertion', 'nerve', 'action'] as const).map((k) => fact(id, k)),
+  );
+
+  it('scopes a session to a muscle group', () => {
+    const questions = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+      types: ['oina'],
+      groups: ['hamstrings'],
+      mode: 'practice',
+      seed: 7,
+      factMastery: KNOWN_HAMSTRINGS,
+    });
+    expect(questions.length).toBeGreaterThan(0);
+    expect(new Set(questions.map((q) => q.structureId))).toEqual(new Set(HAMSTRINGS));
+  });
+
+  it('asks only the facts requested', () => {
+    const questions = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+      types: ['oina'],
+      groups: ['hamstrings'],
+      oinaPromptKinds: ['origin', 'insertion'],
+      mode: 'practice',
+      seed: 7,
+      factMastery: KNOWN_HAMSTRINGS,
+    });
+    expect(new Set(questions.map((q) => q.promptKind))).toEqual(new Set(['origin', 'insertion']));
+  });
+
+  it('puts a learn card in front of every fact the student has not met', () => {
+    const questions = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+      types: ['oina'],
+      groups: ['hamstrings'],
+      oinaPromptKinds: ['origin'],
+      mode: 'practice',
+      seed: 7,
+    });
+    const oina = questions.filter(isOinaQuestion);
+    expect(oina.length).toBeGreaterThan(0);
+    // Each OINA question is immediately preceded by its own muscle's card.
+    for (const [i, q] of questions.entries()) {
+      if (!isOinaQuestion(q)) continue;
+      const before = questions[i - 1];
+      expect(before && isFlashcardQuestion(before)).toBe(true);
+      expect(before.structureId).toBe(q.structureId);
+      expect(before.promptKind).toBe(q.promptKind);
+    }
+  });
+
+  it('drops the learn card once the fact is known, and brings it back after a miss', () => {
+    const base = {
+      types: ['oina'] as const,
+      groups: ['hamstrings'],
+      oinaPromptKinds: ['origin'] as const,
+      mode: 'practice' as const,
+      seed: 7,
+    };
+    const known = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, { ...base, factMastery: KNOWN_HAMSTRINGS });
+    expect(known.every(isOinaQuestion)).toBe(true);
+
+    const lapsed = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+      ...base,
+      factMastery: KNOWN_HAMSTRINGS.map((f) =>
+        f.structureId === HAMSTRINGS[0] && f.promptKind === 'origin' ? { ...f, lastCorrect: false } : f,
+      ),
+    });
+    expect(lapsed.filter(isFlashcardQuestion)).toHaveLength(1);
+    expect(lapsed.filter(isFlashcardQuestion)[0].structureId).toBe(HAMSTRINGS[0]);
+  });
+
+  it('shows the card only once when the student asks for that', () => {
+    const base = {
+      types: ['oina'] as const,
+      groups: ['hamstrings'],
+      oinaPromptKinds: ['origin'] as const,
+      mode: 'practice' as const,
+      seed: 7,
+    };
+    // Seen once already: the default of 3 still teaches, a setting of 1 does not.
+    const seenOnce = HAMSTRINGS.map((id) => fact(id, 'origin', { attemptsTotal: 1, attemptsCorrect: 1, streak: 1 }));
+
+    expect(
+      generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, { ...base, factMastery: seenOnce }).filter(isFlashcardQuestion),
+    ).toHaveLength(HAMSTRINGS.length);
+    expect(
+      generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, { ...base, factMastery: seenOnce, learnCardAttempts: 1 }).filter(
+        isFlashcardQuestion,
+      ),
+    ).toHaveLength(0);
+  });
+
+  it('shows no cards at all at 0, even for a fact never seen', () => {
+    const questions = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+      types: ['oina'],
+      groups: ['hamstrings'],
+      oinaPromptKinds: ['origin'],
+      mode: 'practice',
+      seed: 7,
+      learnCardAttempts: 0,
+    });
+    expect(questions.length).toBeGreaterThan(0);
+    expect(questions.every(isOinaQuestion)).toBe(true);
+  });
+
+  it('covers every fact of every muscle in the group when uncapped', () => {
+    const questions = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+      types: ['oina'],
+      groups: ['hamstrings'],
+      mode: 'practice',
+      seed: 7,
+      factMastery: KNOWN_HAMSTRINGS,
+    });
+    // 3 hamstrings x 4 facts, with nothing dropped and nothing capped.
+    expect(questions.filter(isOinaQuestion)).toHaveLength(HAMSTRINGS.length * 4);
+    for (const id of HAMSTRINGS) {
+      const facts = questions.filter(isOinaQuestion).filter((q) => q.structureId === id).map((q) => q.promptKind);
+      expect(new Set(facts), id).toEqual(new Set(['origin', 'insertion', 'nerve', 'action']));
+    }
+  });
+
+  it('does not spend the question budget on learn cards', () => {
+    const questions = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+      types: ['oina'],
+      groups: ['hamstrings'],
+      mode: 'practice',
+      count: 5,
+      seed: 7,
+    });
+    expect(questions.filter(isOinaQuestion)).toHaveLength(5);
+    expect(questions.length).toBeGreaterThan(5);
+  });
+
+  it('teaches nothing in an exam — those test rather than teach', () => {
+    const questions = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+      types: ['oina'],
+      groups: ['hamstrings'],
+      mode: 'assessment',
+      count: 5,
+      seed: 7,
+    });
+    expect(questions.every(isOinaQuestion)).toBe(true);
+  });
+
+  it('escalates only the facts the student has mastered', () => {
+    const questions = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+      types: ['oina'],
+      groups: ['hamstrings'],
+      mode: 'practice',
+      seed: 7,
+      factMastery: KNOWN_HAMSTRINGS.map((f) => (f.promptKind === 'nerve' ? { ...f, typed: true } : f)),
+    });
+    for (const q of questions.filter(isOinaQuestion)) {
+      expect(q.format, `${q.structureId}/${q.promptKind}`).toBe(q.promptKind === 'nerve' ? 'typed' : 'select');
+    }
+  });
 });

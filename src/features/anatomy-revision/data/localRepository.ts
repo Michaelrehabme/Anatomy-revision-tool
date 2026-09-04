@@ -1,6 +1,6 @@
 import type { AnatomyRepository, AttemptFilter, ImageAssetFilter, GamificationProfile } from './repository';
 import { INITIAL_GAMIFICATION_PROFILE } from './repository';
-import type { UserAttempt, StructureMastery, RevisionSessionSummary } from '../types/attempt';
+import type { UserAttempt, StructureMastery, FactMastery, RevisionSessionSummary } from '../types/attempt';
 import type { StructureFilter } from '../lib/indexes';
 import { filterStructures } from '../lib/indexes';
 import { ALL_STRUCTURES, ALL_IMAGES } from './seed';
@@ -13,6 +13,7 @@ const STORAGE_PREFIX = 'anatomy-revision:v1:';
 const ATTEMPTS_KEY = `${STORAGE_PREFIX}attempts`;
 const EXPOSURE_KEY = `${STORAGE_PREFIX}questionExposure`;
 const MASTERY_KEY = `${STORAGE_PREFIX}mastery`;
+const FACT_MASTERY_KEY = `${STORAGE_PREFIX}factMastery`;
 const SESSIONS_KEY = `${STORAGE_PREFIX}sessions`;
 const GAMIFICATION_KEY = `${STORAGE_PREFIX}gamification`;
 const ACHIEVEMENTS_KEY = `${STORAGE_PREFIX}achievements`;
@@ -38,6 +39,7 @@ function writeJson<T>(key: string, value: T): void {
 
 const masteryKey = (userId: string, structureId: string) => `${userId}::${structureId}`;
 const exposureKey = (userId: string, questionId: string) => `${userId}::${questionId}`;
+const factKey = (userId: string, structureId: string, promptKind: string) => `${userId}::${structureId}::${promptKind}`;
 
 /**
  * Default dev-mode persistence: everything lives in localStorage under this
@@ -121,6 +123,17 @@ export function createLocalRepository(): AnatomyRepository {
       const all = readJson<Record<string, StructureMastery>>(MASTERY_KEY, {});
       all[masteryKey(mastery.userId, mastery.structureId)] = mastery;
       writeJson(MASTERY_KEY, all);
+    },
+
+    async listFactMastery(userId: string) {
+      const all = readJson<Record<string, FactMastery>>(FACT_MASTERY_KEY, {});
+      return Object.values(all).filter((f) => f.userId === userId);
+    },
+
+    async upsertFactMastery(fact: FactMastery) {
+      const all = readJson<Record<string, FactMastery>>(FACT_MASTERY_KEY, {});
+      all[factKey(fact.userId, fact.structureId, fact.promptKind)] = fact;
+      writeJson(FACT_MASTERY_KEY, all);
     },
 
     async saveSessionSummary(summary: RevisionSessionSummary) {

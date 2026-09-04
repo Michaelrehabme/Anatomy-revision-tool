@@ -68,6 +68,14 @@ export interface AchievementStats {
   questionTypesUsedEver: Set<QuestionType>;
 }
 
+/**
+ * Deliberately not every member of QuestionType — this is the set the "Every
+ * angle" milestone asks for, and its description names them one by one.
+ * 'multi-select' was left out when it landed (CR-010) and 'oina' is left out
+ * for the same reason (CR-018): both are optional formats, and a milestone
+ * that silently grows each time a format ships would un-earn itself for
+ * students who already had it.
+ */
 const ALL_QUESTION_TYPES: QuestionType[] = ['flashcard', 'mcq', 'locate', 'fill-blank', 'identify-typed'];
 
 /**

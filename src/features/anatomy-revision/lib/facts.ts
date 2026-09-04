@@ -1,6 +1,7 @@
 import { isMuscle, isBone, isLandmark, isJoint, areaOf, JOINT_TYPE_LABELS } from '../types/structure';
 import type { AnatomyStructure } from '../types/structure';
 import { REGION_LABELS, SUBREGION_LABELS, AREA_LABELS } from '../types/region';
+import type { OinaPromptKind } from '../types/question';
 
 /**
  * Shared fact-line builder used by flashcards, MCQ explanations, and
@@ -44,6 +45,32 @@ export function describeStructure(s: AnatomyStructure): string[] {
 
 export function summarizeStructure(s: AnatomyStructure): string {
   return [s.description, ...describeStructure(s)].join('\n');
+}
+
+/**
+ * One fact of one muscle, for OINA explanations (CR-018). Deliberately not
+ * summarizeStructure: OINA asks origin, insertion, nerve and action as four
+ * separate questions about the same muscle, so an explanation that printed
+ * all four would answer the next three the moment the student got one wrong.
+ *
+ * Origins and insertions keep their authored head prefixes here even though
+ * the choices strip them — once the answer is being explained, knowing that
+ * the ischial tuberosity is specifically the long head is the useful part.
+ */
+export function describeFact(s: AnatomyStructure, promptKind: OinaPromptKind): string {
+  if (!isMuscle(s)) return '';
+  switch (promptKind) {
+    case 'origin':
+      return `${s.name} — origin: ${s.origin.join('; ')}`;
+    case 'insertion':
+      return `${s.name} — insertion: ${s.insertion.join('; ')}`;
+    case 'nerve':
+      return `${s.name} — nerve supply: ${s.nerve
+        .map((n) => `${n.name}${n.roots.length ? ` (${n.roots.join(', ')})` : ''}`)
+        .join('; ')}`;
+    case 'action':
+      return `${s.name} — action: ${s.actionText}`;
+  }
 }
 
 /**

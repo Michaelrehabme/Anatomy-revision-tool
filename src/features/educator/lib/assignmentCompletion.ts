@@ -32,13 +32,17 @@ export function computeAssignmentCompletion(
     const relevant = (attemptsByUid.get(uid) ?? []).filter(
       (a) => a.region === assignment.region && Date.parse(a.timestamp) >= Date.parse(assignment.createdAt),
     );
-    const correct = relevant.filter((a) => a.correct).length;
+    // attemptCount stays over every exposure — a student who worked through the
+    // learn cards did engage with the assignment — but accuracy only counts
+    // answers that were graded (CR-018).
+    const graded = relevant.filter((a) => a.graded !== false);
+    const correct = graded.filter((a) => a.correct).length;
 
     return {
       uid,
       attempted: relevant.length > 0,
       attemptCount: relevant.length,
-      accuracyPct: relevant.length > 0 ? Math.round((correct / relevant.length) * 100) : null,
+      accuracyPct: graded.length > 0 ? Math.round((correct / graded.length) * 100) : null,
       isOverdue,
     };
   });

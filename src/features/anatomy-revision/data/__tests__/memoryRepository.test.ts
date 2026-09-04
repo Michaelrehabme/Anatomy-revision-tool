@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { createMemoryRepository } from '../memoryRepository';
 import { INITIAL_GAMIFICATION_PROFILE } from '../repository';
-import type { StructureMastery, UserAttempt } from '../../types/attempt';
+import type { FactMastery, StructureMastery, UserAttempt } from '../../types/attempt';
 
 function attempt(overrides: Partial<UserAttempt> = {}): UserAttempt {
   return {
@@ -198,5 +198,58 @@ describe('memoryRepository achievements', () => {
     expect(updated.find((a) => a.id === 'record-longest-streak')?.value).toBe(6);
 
     expect(await repo.listAchievements('user-2')).toHaveLength(1);
+  });
+});
+
+describe('fact mastery (CR-018)', () => {
+  function fact(overrides: Partial<FactMastery> = {}): FactMastery {
+    return {
+      userId: 'user-1',
+      structureId: 'biceps-femoris',
+      promptKind: 'origin',
+      attemptsTotal: 1,
+      attemptsCorrect: 1,
+      streak: 1,
+      missStreak: 0,
+      lastCorrect: true,
+      lastAttemptAt: '2026-09-01T00:00:00.000Z',
+      typed: false,
+      ...overrides,
+    };
+  }
+
+  it('starts empty', async () => {
+    const repo = createMemoryRepository();
+    expect(await repo.listFactMastery('user-1')).toEqual([]);
+  });
+
+  it('keys per fact, not per structure', async () => {
+    const repo = createMemoryRepository();
+    await repo.upsertFactMastery(fact({ promptKind: 'origin' }));
+    await repo.upsertFactMastery(fact({ promptKind: 'nerve', typed: true }));
+
+    const rows = await repo.listFactMastery('user-1');
+    expect(rows).toHaveLength(2);
+    expect(rows.find((r) => r.promptKind === 'origin')!.typed).toBe(false);
+    expect(rows.find((r) => r.promptKind === 'nerve')!.typed).toBe(true);
+  });
+
+  it('overwrites the same fact rather than appending', async () => {
+    const repo = createMemoryRepository();
+    await repo.upsertFactMastery(fact({ attemptsTotal: 1 }));
+    await repo.upsertFactMastery(fact({ attemptsTotal: 2, typed: true }));
+
+    const rows = await repo.listFactMastery('user-1');
+    expect(rows).toHaveLength(1);
+    expect(rows[0]).toMatchObject({ attemptsTotal: 2, typed: true });
+  });
+
+  it('scopes rows to their own user', async () => {
+    const repo = createMemoryRepository();
+    await repo.upsertFactMastery(fact());
+    await repo.upsertFactMastery(fact({ userId: 'user-2' }));
+
+    expect(await repo.listFactMastery('user-1')).toHaveLength(1);
+    expect(await repo.listFactMastery('user-2')).toHaveLength(1);
   });
 });

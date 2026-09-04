@@ -1,8 +1,8 @@
-export type MobileTab = 'today' | 'picker' | 'progress' | 'account';
+export type MobileTab = 'today' | 'atlas' | 'progress' | 'account';
 
 const TABS: { tab: MobileTab; label: string }[] = [
   { tab: 'today', label: 'Today' },
-  { tab: 'picker', label: 'Atlas' },
+  { tab: 'atlas', label: 'Atlas' },
   { tab: 'progress', label: 'Progress' },
   { tab: 'account', label: 'Account' },
 ];
@@ -13,11 +13,13 @@ interface MobileTabBarProps {
 }
 
 /**
- * Bottom tab bar: Today / Atlas / Progress / Account. "Atlas" here targets the Region
- * Picker, not a searchable table — mobile has no table screen (see plan's
- * IA-differences note; the desktop Atlas table has no mobile equivalent).
- * Only shown on Today/Picker/Progress themselves, never during a session or
- * on Onboarding/Setup/Muscle Card — see MobileShell's `showTabs` prop.
+ * Bottom tab bar: Today / Atlas / Progress / Account. "Atlas" pointed at the
+ * Region Picker until CR-018, because mobile had no browsable muscle list to
+ * send it to; MobileAtlas is that screen, so the tab now goes where its label
+ * says. The area picker is still one tap away — from Today's "Custom session"
+ * and from the Atlas itself — and, like Setup and the Muscle Card, is a step
+ * in a flow rather than a tab destination. Account is where a student joins a
+ * class and anyone creates one.
  */
 export function MobileTabBar({ active, onNavigate }: MobileTabBarProps) {
   return (

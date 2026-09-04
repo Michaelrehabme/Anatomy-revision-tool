@@ -39,6 +39,51 @@ export const JOINT_TYPE_LABELS: Record<JointType, string> = {
 };
 
 /**
+ * Display names for the muscle groups worth offering as a study scope
+ * (CR-018). A lookup for the same reason JOINT_TYPE_LABELS is one: a
+ * `.replace(/-/g, ' ')` mangle yields "Anterior superficial", "Midpalmar"
+ * and "Segmental", which name nothing a student would recognise, and it
+ * cannot say which limb "Anterior compartment" belongs to — the forearm and
+ * the leg both have one.
+ *
+ * Deliberately a subset of the 44 authored group tags. The rest are either
+ * duplicates of an entry here (`knee-extensors` is the same four muscles as
+ * `quadriceps`) or too broad to be a useful scope (`shoulder`, `arm`,
+ * `core`). Groups are still matched on the full tag set — this only controls
+ * what the picker offers.
+ */
+export const MUSCLE_GROUP_LABELS: Record<string, string> = {
+  hamstrings: 'Hamstrings',
+  quadriceps: 'Quadriceps',
+  'hip-flexors': 'Hip flexors',
+  'hip-adductors': 'Hip adductors',
+  'hip-abductors': 'Hip abductors',
+  'hip-extensors': 'Hip extensors',
+  'hip-external-rotators': 'Deep hip rotators',
+  'anterior-compartment': 'Leg — anterior compartment',
+  'lateral-compartment': 'Leg — lateral compartment',
+  'posterior-compartment': 'Calf — superficial',
+  'deep-posterior-compartment': 'Calf — deep',
+  'intrinsic-foot': 'Intrinsic foot muscles',
+  'rotator-cuff': 'Rotator cuff',
+  scapular: 'Scapular muscles',
+  chest: 'Chest',
+  'elbow-flexors': 'Elbow flexors',
+  'elbow-extensors': 'Elbow extensors',
+  'anterior-superficial': 'Forearm flexors — superficial',
+  'anterior-deep': 'Forearm flexors — deep',
+  'posterior-superficial': 'Forearm extensors — superficial',
+  'posterior-deep': 'Forearm extensors — deep',
+  thenar: 'Thenar muscles',
+  hypothenar: 'Hypothenar muscles',
+  'intrinsic-hand': 'Intrinsic hand muscles',
+  'erector-spinae': 'Erector spinae',
+  transversospinales: 'Transversospinales',
+  neck: 'Neck',
+  breathing: 'Muscles of breathing',
+};
+
+/**
  * Canonical movement vocabulary for joints (CR-017). Deliberately a closed
  * union rather than free text, because multiSelect.ts's "which movement is NOT
  * possible here" generator compares movement strings across joints literally:

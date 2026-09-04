@@ -1,6 +1,6 @@
 import type { AnatomyStructure } from '../types/structure';
 import type { AnatomyImageAsset } from '../types/image';
-import type { UserAttempt, StructureMastery, RevisionSessionSummary } from '../types/attempt';
+import type { UserAttempt, StructureMastery, FactMastery, RevisionSessionSummary } from '../types/attempt';
 import type { StructureFilter } from '../lib/indexes';
 import type { AchievementDoc } from '../lib/achievements';
 import { type StreakFreezeState, INITIAL_STREAK_FREEZE_STATE } from '../lib/streakFreeze';
@@ -76,6 +76,17 @@ export interface AnatomyRepository {
   listMastery(userId: string): Promise<StructureMastery[]>;
   /** Mastery rows with dueAt <= before (ISO), sorted soonest-due first. Powers the Today screen's due queue. */
   listDueMastery(userId: string, before: string): Promise<StructureMastery[]>;
+
+  /**
+   * Per-(muscle, fact) OINA progress (CR-018). Kept beside mastery rather
+   * than inside it: StructureMastery is one SM-2 row per structure by
+   * design, and four facts per muscle would either quadruple that
+   * collection or need an unbounded map on the mastery doc, contending with
+   * its scheduling writes. Read whole — a session needs every row to decide
+   * formats and learn cards up front, and there are at most four per muscle.
+   */
+  listFactMastery(userId: string): Promise<FactMastery[]>;
+  upsertFactMastery(fact: FactMastery): Promise<void>;
 
   saveSessionSummary(summary: RevisionSessionSummary): Promise<void>;
   listSessionSummaries(userId: string, limit?: number): Promise<RevisionSessionSummary[]>;

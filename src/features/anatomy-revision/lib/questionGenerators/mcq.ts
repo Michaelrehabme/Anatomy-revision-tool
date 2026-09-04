@@ -190,11 +190,15 @@ function buildOne(
 
     if (promptKind === 'action') {
       const correctValue = structure.actionText;
-      const otherMuscleActionTexts = all.reduce<string[]>((acc, s) => {
-        if (isMuscle(s) && s.id !== structure.id) acc.push(s.actionText);
+      // Deduped: several muscles share an identical actionText — infraspinatus
+      // and teres minor are both "External rotation of the shoulder; stabilises
+      // the humeral head." — and sampling a flat list could draw the same
+      // string twice and render it as two separate choices (CR-018).
+      const otherMuscleActionTexts = all.reduce<Set<string>>((acc, s) => {
+        if (isMuscle(s) && s.id !== structure.id) acc.add(s.actionText);
         return acc;
-      }, []);
-      const otherActionTexts = sample(otherMuscleActionTexts, distractorCount, rng);
+      }, new Set<string>());
+      const otherActionTexts = sample([...otherMuscleActionTexts], distractorCount, rng);
       const { choices, correctIndex } = buildChoices(correctValue, otherActionTexts, choiceCount, rng);
       out.push({
         ...baseFields(structure, promptKind),

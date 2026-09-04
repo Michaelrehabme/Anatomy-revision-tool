@@ -46,8 +46,10 @@ export function EducatorStudentDetailScreen() {
     );
   }
 
-  const correct = attempts.filter((a) => a.correct).length;
-  const accuracyPct = attempts.length > 0 ? Math.round((correct / attempts.length) * 100) : null;
+  // Learn cards are ungraded since CR-018 and belong in neither half of this ratio.
+  const graded = attempts.filter((a) => a.graded !== false);
+  const correct = graded.filter((a) => a.correct).length;
+  const accuracyPct = graded.length > 0 ? Math.round((correct / graded.length) * 100) : null;
   const streak = computeStreak(summaries);
   const weakest = structureWeaknessForStudent(attempts).slice(0, WEAKEST_LIMIT);
   const trend = accuracyTrend(attempts, [...snapshot.attemptsByUid.values()].flat());
