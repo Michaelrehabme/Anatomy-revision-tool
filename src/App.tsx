@@ -22,6 +22,8 @@ import { Progress } from './features/anatomy-revision/components/Progress/Progre
 import { Achievements } from './features/anatomy-revision/components/Achievements/Achievements';
 import { MobileAchievements } from './features/anatomy-revision/components/mobile/MobileAchievements';
 import type { NavSection } from './features/anatomy-revision/components/shell/NavSidebar';
+import { Account } from './features/anatomy-revision/components/Account/Account';
+import { MobileAccount } from './features/anatomy-revision/components/mobile/MobileAccount';
 import { MobileOnboarding } from './features/anatomy-revision/components/mobile/MobileOnboarding';
 import { MobileToday } from './features/anatomy-revision/components/mobile/MobileToday';
 import { MobileRegionPicker } from './features/anatomy-revision/components/mobile/MobileRegionPicker';
@@ -53,12 +55,14 @@ const SECTION_PATH: Record<NavSection, string> = {
   study: '/study',
   atlas: '/atlas',
   progress: '/progress',
+  account: '/account',
 };
 
 const MOBILE_TAB_PATH: Record<MobileTab, string> = {
   today: '/',
   picker: '/study',
   progress: '/progress',
+  account: '/account',
 };
 
 interface StructureRouteProps {
@@ -435,6 +439,16 @@ function App() {
               onNavigateTab={mobileNavigate}
               onOpenAchievements={() => navigate('/achievements')}
             />
+          )
+        }
+      />
+      <Route
+        path="/account"
+        element={
+          isDesktop ? (
+            <Account content={content} repository={repository} userId={userId} onNavigate={onNavigateSection} />
+          ) : (
+            <MobileAccount content={content} repository={repository} userId={userId} onNavigateTab={mobileNavigate} />
           )
         }
       />

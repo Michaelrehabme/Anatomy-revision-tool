@@ -5,8 +5,6 @@ import { REGION_LABELS } from '../../types/region';
 import { useProgressData } from '../../hooks/useProgressData';
 import { RegionBodyFigure } from '../shared/BodyFigure';
 import { MobileShell } from './MobileShell';
-import { MobileAccountSection } from './MobileAccountSection';
-import { AUTH_ENABLED } from '../../context/AuthProvider';
 import type { MobileTab } from './MobileTabBar';
 
 interface MobileProgressProps {
@@ -95,7 +93,6 @@ export function MobileProgress({ content, repository, userId, onNavigateTab, onO
           </div>
         </div>
 
-        {AUTH_ENABLED && <MobileAccountSection />}
       </div>
     </MobileShell>
   );

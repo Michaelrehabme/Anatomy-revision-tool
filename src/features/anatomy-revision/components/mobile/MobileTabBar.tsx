@@ -1,9 +1,10 @@
-export type MobileTab = 'today' | 'picker' | 'progress';
+export type MobileTab = 'today' | 'picker' | 'progress' | 'account';
 
 const TABS: { tab: MobileTab; label: string }[] = [
   { tab: 'today', label: 'Today' },
   { tab: 'picker', label: 'Atlas' },
   { tab: 'progress', label: 'Progress' },
+  { tab: 'account', label: 'Account' },
 ];
 
 interface MobileTabBarProps {
@@ -12,7 +13,7 @@ interface MobileTabBarProps {
 }
 
 /**
- * Bottom tab bar: Today / Atlas / Progress. "Atlas" here targets the Region
+ * Bottom tab bar: Today / Atlas / Progress / Account. "Atlas" here targets the Region
  * Picker, not a searchable table — mobile has no table screen (see plan's
  * IA-differences note; the desktop Atlas table has no mobile equivalent).
  * Only shown on Today/Picker/Progress themselves, never during a session or

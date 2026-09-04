@@ -3,15 +3,15 @@ import { useAuth, AUTH_ENABLED } from '../../context/AuthProvider';
 import { AuthScreen } from '../Auth/AuthScreen';
 import { useRepository } from '../../hooks/useRepository';
 import { levelProgress } from '../../lib/levels';
-import { CohortMembership } from '../shared/CohortMembership';
 
-export type NavSection = 'today' | 'study' | 'atlas' | 'progress';
+export type NavSection = 'today' | 'study' | 'atlas' | 'progress' | 'account';
 
 const NAV_ITEMS: { section: NavSection; label: string }[] = [
   { section: 'today', label: 'Today' },
   { section: 'study', label: 'Study' },
   { section: 'atlas', label: 'Atlas' },
   { section: 'progress', label: 'Progress' },
+  { section: 'account', label: 'Account' },
 ];
 
 interface NavSidebarProps {
@@ -62,6 +62,12 @@ function LevelProgress() {
   );
 }
 
+/**
+ * Identity and sign-out only. Joining and creating classes moved to the
+ * Account screen — repeating them in a 260px sidebar meant two join-code
+ * fields on screen at once, and the sidebar is the wrong place to explain
+ * what joining a class shares with an educator.
+ */
 function AccountSection() {
   const { user, signOut } = useAuth();
   const [showAuthScreen, setShowAuthScreen] = useState(false);
@@ -103,7 +109,6 @@ function AccountSection() {
         </div>
       )}
       {showAuthScreen && <AuthScreen onClose={() => setShowAuthScreen(false)} />}
-      <CohortMembership uid={user.uid} />
     </div>
   );
 }
