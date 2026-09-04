@@ -17,14 +17,12 @@ import {
 import type { RevisionSetupParams } from '../../hooks/useRevisionSession';
 import { MobileShell } from './MobileShell';
 
-// 'locate' is intentionally not offered here — see images.seed.ts's panel-crop comment
-// (CR-016): no image in the current dataset is suited to a locate question, since every
-// single-muscle panel already highlights its target muscle rather than staying neutral.
 const FORMAT_OPTIONS: { value: QuestionType; label: string }[] = [
   { value: 'flashcard', label: 'flashcard' },
   { value: 'mcq', label: 'multiple-choice' },
   { value: 'identify-typed', label: 'type-answer' },
   { value: 'multi-select', label: 'select-all' },
+  { value: 'locate', label: 'locate' },
   { value: 'oina', label: 'OINA cards' },
 ];
 
@@ -94,7 +92,6 @@ export function MobileRevisionSetup({ content, repository, userId, areas, onStar
   };
 
   const oinaSelected = types.includes('oina');
-  const oinaOnly = oinaSelected && types.length === 1;
   const toggleFact = (fact: OinaPromptKind) => {
     setOinaFacts((prev) => (prev.includes(fact) ? prev.filter((f) => f !== fact) : [...prev, fact]));
   };
@@ -124,12 +121,12 @@ export function MobileRevisionSetup({ content, repository, userId, areas, onStar
 
   const handleStart = async () => {
     setStarting(true);
-    let structureIds: string[] | undefined;
-    if (useSrs && mode !== 'adaptive' && !oinaOnly && repository && userId) {
+    let dueStructureIds: string[] | undefined;
+    if (useSrs && mode !== 'adaptive' && repository && userId) {
       const due = await repository.listDueMastery(userId, new Date().toISOString());
       const pool = new Set(content.structures.filter(inPool).map((s) => s.id));
       const dueInPool = due.map((m) => m.structureId).filter((id) => pool.has(id));
-      if (dueInPool.length > 0) structureIds = dueInPool;
+      if (dueInPool.length > 0) dueStructureIds = dueInPool;
     }
 
     const mastery = mode === 'adaptive' && repository && userId ? await repository.listMastery(userId) : undefined;
@@ -153,8 +150,12 @@ export function MobileRevisionSetup({ content, repository, userId, areas, onStar
       learnCardAttempts: params.learnCardAttempts,
       category: category === 'all' ? undefined : category,
       mode,
+      // Undefined caps nothing: practice mode then emits every eligible question,
+      // which is what an OINA session is for (CR-018).
       count: oinaSelected ? undefined : count,
-      structureIds,
+      // Prioritised, not restricted — see the toggle's own copy. A hard due-only
+      // filter refills its own queue, since answering a due structure reschedules it.
+      priorityStructureIds: dueStructureIds,
       mastery,
       factMastery,
     });

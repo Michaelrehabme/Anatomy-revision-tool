@@ -20,14 +20,12 @@ import { Button } from '../shared/Button';
 import { AppShell } from '../shell/AppShell';
 import { NavSidebar, type NavSection } from '../shell/NavSidebar';
 
-// 'locate' is intentionally not offered here — see images.seed.ts's panel-crop comment
-// (CR-016): no image in the current dataset is suited to a locate question, since every
-// single-muscle panel already highlights its target muscle rather than staying neutral.
 const QUESTION_TYPE_OPTIONS: { value: QuestionType; label: string }[] = [
   { value: 'mcq', label: 'Multiple choice' },
   { value: 'identify-typed', label: 'Type answer' },
   { value: 'flashcard', label: 'Flashcard' },
   { value: 'multi-select', label: 'Select all' },
+  { value: 'locate', label: 'Locate' },
   { value: 'oina', label: 'OINA Cards' },
 ];
 
@@ -98,7 +96,6 @@ export function RevisionSetup({ content, repository, userId, areas, onStart, onB
   };
 
   const oinaSelected = types.includes('oina');
-  const oinaOnly = oinaSelected && types.length === 1;
   const toggleFact = (fact: OinaPromptKind) => {
     setOinaFacts((prev) => (prev.includes(fact) ? prev.filter((f) => f !== fact) : [...prev, fact]));
   };
@@ -136,19 +133,14 @@ export function RevisionSetup({ content, repository, userId, areas, onStart, onB
 
   const handleStart = async () => {
     setStarting(true);
-    let structureIds: string[] | undefined;
+    let dueStructureIds: string[] | undefined;
     // Adaptive mode does its own due/weak/known weighting over the full pool — a due-only
     // pre-filter would fight it, so the SRS toggle only applies to practice/exam.
-    //
-    // OINA is also exempt: the due queue is per-structure across every category, so an
-    // OINA-only session whose due rows happen to be bones and joints would pre-filter
-    // itself down to zero questions and dead-end on "No questions matched this filter".
-    // OINA does its own per-fact scheduling anyway (see lib/factMastery.ts).
-    if (useSrs && mode !== 'adaptive' && !oinaOnly && repository && userId) {
+    if (useSrs && mode !== 'adaptive' && repository && userId) {
       const due = await repository.listDueMastery(userId, new Date().toISOString());
       const pool = new Set(content.structures.filter(inPool).map((s) => s.id));
       const dueInPool = due.map((m) => m.structureId).filter((id) => pool.has(id));
-      if (dueInPool.length > 0) structureIds = dueInPool;
+      if (dueInPool.length > 0) dueStructureIds = dueInPool;
     }
 
     const mastery = mode === 'adaptive' && repository && userId ? await repository.listMastery(userId) : undefined;
@@ -175,9 +167,12 @@ export function RevisionSetup({ content, repository, userId, areas, onStart, onB
       learnCardAttempts: params.learnCardAttempts,
       category: params.category,
       mode,
-      // Undefined caps nothing: practice mode then emits every eligible question.
+      // Undefined caps nothing: practice mode then emits every eligible question,
+      // which is what an OINA session is for (CR-018).
       count: oinaSelected ? undefined : count,
-      structureIds,
+      // Prioritised, not restricted — see the toggle's own copy. A hard due-only
+      // filter refills its own queue, since answering a due structure reschedules it.
+      priorityStructureIds: dueStructureIds,
       mastery,
       factMastery,
     });

@@ -30,14 +30,16 @@ export function MobileToday({ repository, userId, content, onStart, onCustomSess
   const now = new Date();
 
   const handleStart = async () => {
-    const structureIds = dueMuscles.map((m) => m.structureId);
+    const dueStructureIds = dueMuscles.map((m) => m.structureId);
     // generateSet is repository-free (CR-009), so fact mastery is fetched here.
     const factMastery = repository && userId ? await repository.listFactMastery(userId) : undefined;
     const learnCardAttempts = getLearnCardAttempts();
     const questions = generateRevisionSet(content.structures, content.images, {
       types: DEFAULT_TYPES,
       mode: 'practice',
-      structureIds: structureIds.length ? structureIds : undefined,
+      // Prioritised, not restricted: answering a due structure reschedules it, so a
+      // due-only session refills its own queue and never reaches new material.
+      priorityStructureIds: dueStructureIds.length ? dueStructureIds : undefined,
       count: 20,
       factMastery,
       learnCardAttempts,

@@ -13,3 +13,14 @@ coverage
 
 # Derived working files, not source content
 /atlas-panel-exports
+
+# Blender source model, render output and the bundled prototype viewer (~2GB).
+# Renders that ship with the app are copied into public/anatomy/ instead.
+#
+# Leading slashes matter: these are repo-root directories only. Unanchored
+# "atlas/" also matches public/anatomy/atlas/, which silently stopped the app's
+# own atlas slides from being committed.
+/atlas/
+/renders/
+/deploy/
+/tools/

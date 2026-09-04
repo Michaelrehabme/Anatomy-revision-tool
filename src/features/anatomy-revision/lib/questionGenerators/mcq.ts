@@ -43,7 +43,11 @@ function buildChoices(
   choiceCount: number,
   rng: Rng,
 ): { choices: string[]; correctIndex: number } {
-  const pool = [correctValue, ...distractors.filter((d) => d !== correctValue)].slice(0, choiceCount);
+  // De-duplicate the whole pool, not just against the correct value: distinct
+  // structures can share identical text (extensor carpi radialis longus and
+  // brevis have the same actionText), which would otherwise render the same
+  // answer twice and make the question unanswerable.
+  const pool = [...new Set([correctValue, ...distractors])].slice(0, choiceCount);
   const choices = shuffle(pool, rng);
   return { choices, correctIndex: choices.indexOf(correctValue) };
 }

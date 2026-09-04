@@ -14,6 +14,8 @@ export interface TodayData {
   totalMuscleCount: number;
   seenMusclePct: number;
   dueMuscles: StructureMastery[];
+  /** Every mastery row for the user, for correctness-weighted question selection. */
+  allMastery: StructureMastery[];
   weakest: StructureMastery[];
   comingDue: StructureMastery[];
   weekBuckets: number[];
@@ -84,6 +86,7 @@ export function useTodayData(repository: AnatomyRepository | null, userId: strin
     totalMuscleCount,
     seenMusclePct,
     dueMuscles,
+    allMastery,
     weakest,
     comingDue,
     weekBuckets,

@@ -7,6 +7,7 @@ import { useRevisionSession } from './features/anatomy-revision/hooks/useRevisio
 import { useIsDesktop } from './features/anatomy-revision/hooks/useIsDesktop';
 import { generateRevisionSet } from './features/anatomy-revision/lib/questionGenerators/generateSet';
 import { getLearnCardAttempts } from './features/anatomy-revision/lib/preferences';
+import { useMastery } from './features/anatomy-revision/hooks/useMastery';
 import { computeStreak } from './features/anatomy-revision/lib/streak';
 import type { Area } from './features/anatomy-revision/types/region';
 import type { QuestionType } from './features/anatomy-revision/types/question';
@@ -40,6 +41,13 @@ const AdminApp = lazy(() => import('./features/admin/AdminApp'));
 const EducatorApp = lazy(() => import('./features/educator/EducatorApp'));
 /** Dev-only hotspot authoring tool (CR-007) — route only registered in dev, see the /dev/hotspots Route below. */
 const HotspotEditorApp = lazy(() => import('./features/hotspotEditor/HotspotEditorApp'));
+
+/**
+ * Hotspot authoring tooling. The ternary folds to `null` at build time, which
+ * leaves the import() in a dead branch for Rollup to drop entirely — students
+ * never receive this and it cannot be reached in production.
+ */
+const DevRoutes = import.meta.env.DEV ? lazy(() => import('./features/dev/DevRoutes')) : null;
 
 const ONBOARDED_KEY = 'anatomy-revision:v1:onboarded';
 
@@ -150,6 +158,8 @@ function App() {
     };
   }, [repository, userId, session.phase]);
 
+  const mastery = useMastery(repository, userId);
+
   const prevPhaseRef = useRef(session.phase);
   useEffect(() => {
     const prevPhase = prevPhaseRef.current;
@@ -158,6 +168,22 @@ function App() {
     if (session.phase === 'in-progress') navigate('/session');
     else if (session.phase === 'results') navigate('/session/results');
   }, [session.phase, navigate]);
+
+  // Above every other gate on purpose: the dev tools read seed content
+  // directly and need no repository, auth, or completed onboarding.
+  if (DevRoutes && location.pathname.startsWith('/dev')) {
+    return (
+      <Suspense
+        fallback={
+          <div className="flex min-h-screen items-center justify-center text-sm" style={{ color: 'var(--ink3)' }}>
+            Loading dev tools…
+          </div>
+        }
+      >
+        <DevRoutes />
+      </Suspense>
+    );
+  }
 
   if (repoError || content.error) {
     return (
@@ -212,14 +238,18 @@ function App() {
     navigate(`/structure/${structureId}`, { state: { contextIds } });
 
   /**
-   * "Drill this muscle" from a muscle card. OINA is in the mix because the
-   * four facts are the point of drilling one muscle — which means fetching
-   * fact mastery first, since generateSet stays repository-free (CR-009).
+   * "Drill this muscle" from a muscle card. OINA is in the mix because the four
+   * facts are the point of drilling one muscle.
+   *
+   * No `mastery` on purpose: a one-structure drill gives the weighting nothing
+   * to choose between — every question would carry the same weight. Fact
+   * mastery is still needed, since it decides the format of each fact and
+   * whether it gets a learn card, and generateSet stays repository-free (CR-009).
    */
   const drillStructure = async (structureId: string) => {
     const types: QuestionType[] = ['oina', 'mcq'];
     const factMastery = repository && userId ? await repository.listFactMastery(userId) : undefined;
-    // These paths bypass the setup screen, so they read the student's saved
+    // This path bypasses the setup screen, so it reads the student's saved
     // learn-card preference directly rather than defaulting to 3.
     const learnCardAttempts = getLearnCardAttempts();
     const questions = generateRevisionSet(content.structures, content.images, {
@@ -380,8 +410,11 @@ function App() {
                   groups: params.groups,
                   learnCardAttempts: params.learnCardAttempts,
                   mode: 'practice',
+                  // Deliberately still a hard restriction — "retry the N missed" means
+                  // those N. Mastery only orders them, worst-known first.
                   structureIds: session.summary!.missedStructureIds,
                   factMastery,
+                  mastery,
                 });
                 session.start(retryQuestions, params);
               }}
@@ -407,6 +440,7 @@ function App() {
                   ...params,
                   count: session.summary!.totalQuestions,
                   factMastery,
+                  mastery,
                 });
                 session.start(nextQuestions, params);
               }}

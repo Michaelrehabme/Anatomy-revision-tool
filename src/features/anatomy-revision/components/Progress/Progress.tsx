@@ -25,8 +25,11 @@ export function Progress({ content, repository, userId, onStart, onNavigate, onO
   // Desktop shows strongest-first; the mobile mockup keeps REGIONS' natural order instead.
   const byRegion = [...byRegionUnsorted].sort((a, b) => b.pct - a.pct);
 
-  // A never-attempted muscle has no fact mastery, so every OINA question here
-  // arrives preceded by its learn card — which is what "start these" should mean.
+  // No mastery passed here on purpose: every structure in `untouched` is by
+  // definition unattempted, so they all carry UNSEEN_WEIGHT and the ordering
+  // stays uniform. For the same reason none of them has fact mastery either, so
+  // every OINA question arrives preceded by its learn card — which is what
+  // "start these" should mean.
   const handleDrillUntouched = async () => {
     const types: QuestionType[] = ['oina', 'mcq'];
     const factMastery = repository && userId ? await repository.listFactMastery(userId) : undefined;
