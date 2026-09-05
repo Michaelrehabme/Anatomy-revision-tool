@@ -250,6 +250,37 @@ never from Firestore — only user-generated data (attempts, mastery, session su
 actually persisted per-backend. This keeps content changes a normal PR, with no admin UI or
 read costs.
 
+## Deploying
+
+**One repository, one deploy path.** This project has been checked out more than
+once on the same machine, and on 2026-09-04 a deploy ran from the checkout that was
+missing two days of committed work — the live site silently lost a whole question
+type. Nothing in the deploy path had an opinion about which commit the build came
+from, so nothing caught it.
+
+Two things guard against a repeat:
+
+- `netlify.toml` lives in the repo, so the build command and publish directory come
+  from version control rather than from the linked site's own settings (which
+  published the project root, meaning every correct deploy needed a hand-passed
+  `--dir=dist`).
+- `npm run deploy` refuses to publish a tree that is dirty, on an untracked branch,
+  or ahead of / behind its remote — see `scripts/deployCheck.mjs`. It checks
+  identity, not correctness: whether what you are about to publish is a commit
+  other people can see.
+
+```bash
+npm run deploy          # check, build, publish
+npm run deploy:check    # just the check
+```
+
+**Better: let Netlify build from git.** Connecting the site to the GitHub repo
+removes the local working tree from the deploy path entirely — deploys become a
+function of a commit, the wrong-checkout failure stops being possible, and
+`scripts/deployCheck.mjs` becomes redundant. That is a change made in the Netlify
+UI (Site configuration → Build & deploy → link repository); `netlify.toml` already
+carries the build settings it needs.
+
 ## Admin section
 
 `/admin/*` (Change Register, Users, Analytics) is a separate, code-split part of the

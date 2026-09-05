@@ -1,0 +1,20 @@
+# Deploy configuration, in the repo on purpose.
+#
+# The site previously had no netlify.toml, so the linked site's own setting
+# governed — and it published the PROJECT ROOT rather than dist/. A plain
+# `netlify deploy --prod` would have uploaded the whole checkout, node_modules
+# included, and every deploy needed a hand-passed --dir to be correct.
+#
+# With this file the build is described by the repository: whoever deploys,
+# from wherever, gets the same command and the same publish directory.
+
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+# SPA fallback. dist/_redirects (from public/) says the same thing; this is
+# here so the rule survives a build that loses the public/ copy.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

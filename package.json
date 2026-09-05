@@ -13,7 +13,9 @@
     "lint": "eslint .",
     "validate-content": "tsx src/scripts/validateContent.ts",
     "admin:set-claim": "tsx scripts/setAdmin.ts",
-    "admin:seed-changes": "tsx scripts/seedChangeRequests.ts"
+    "admin:seed-changes": "tsx scripts/seedChangeRequests.ts",
+    "deploy:check": "node scripts/deployCheck.mjs",
+    "deploy": "npm run deploy:check && npm run build && netlify deploy --prod --dir=dist"
   },
   "dependencies": {
     "firebase": "^11.0.0",
