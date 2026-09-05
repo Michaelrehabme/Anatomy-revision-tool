@@ -74,6 +74,8 @@ export function MobileRevisionSetup({ content, repository, userId, areas, onStar
   const [types, setTypes] = useState<QuestionType[]>(['mcq', 'identify-typed']);
   const [category, setCategory] = useState<Category | 'all'>('all');
   const [count, setCount] = useState(15);
+  const [customLength, setCustomLength] = useState('');
+  const [customActive, setCustomActive] = useState(false);
   const [useSrs, setUseSrs] = useState(true);
   const [mode, setMode] = useState<'practice' | 'adaptive' | 'assessment'>('practice');
   const [timerMinutes, setTimerMinutes] = useState(0);
@@ -301,12 +303,15 @@ export function MobileRevisionSetup({ content, repository, userId, areas, onStar
         ) : (
           <div className="mt-3.5 flex gap-2.5">
             {LENGTHS.map((n) => {
-              const on = count === n;
+              const on = !customActive && count === n;
               return (
                 <button
                   key={n}
                   type="button"
-                  onClick={() => setCount(n)}
+                  onClick={() => {
+                    setCount(n);
+                    setCustomActive(false);
+                  }}
                   className="flex-1 rounded-[3px]"
                   style={{ fontFamily: 'var(--font-display)', fontSize: 18, minHeight: 52, ...chipStyle(on) }}
                 >
@@ -314,6 +319,29 @@ export function MobileRevisionSetup({ content, repository, userId, areas, onStar
                 </button>
               );
             })}
+            <input
+              type="number"
+              min={1}
+              inputMode="numeric"
+              placeholder="Custom"
+              value={customLength}
+              onFocus={() => setCustomActive(true)}
+              onChange={(e) => {
+                const raw = e.target.value;
+                setCustomLength(raw);
+                setCustomActive(true);
+                const n = parseInt(raw, 10);
+                if (!Number.isNaN(n) && n > 0) setCount(n);
+              }}
+              aria-label="Custom session length"
+              className="w-0 flex-1 rounded-[3px] text-center"
+              style={{
+                fontFamily: 'var(--font-display)',
+                fontSize: 18,
+                minHeight: 52,
+                ...chipStyle(customActive),
+              }}
+            />
           </div>
         )}
 
