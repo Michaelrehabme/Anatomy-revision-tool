@@ -1,5 +1,6 @@
 import { Link, NavLink, useNavigate, useParams } from 'react-router-dom';
 import { useCohorts } from '../CohortsProvider';
+import { educatorNavItems } from './educatorNav';
 
 /** Educator-section counterpart to AdminSidebar/NavSidebar — same brand mark + nav-list treatment, plus a cohort switcher since one educator can hold multiple cohorts. */
 export function EducatorSidebar() {
@@ -7,15 +8,8 @@ export function EducatorSidebar() {
   const { cohorts, loading } = useCohorts();
   const navigate = useNavigate();
 
-  const navItems = cohortId
-    ? [
-        { path: `/educator/${cohortId}`, label: 'Overview', end: true },
-        { path: `/educator/${cohortId}/weakness`, label: 'Structure weakness' },
-        { path: `/educator/${cohortId}/confusion`, label: 'Confusion pairs' },
-        { path: `/educator/${cohortId}/students`, label: 'Students' },
-        { path: `/educator/${cohortId}/assignments`, label: 'Assignments' },
-      ]
-    : [];
+  // Shared with EducatorMobileShell so a section cannot reach one shell only.
+  const navItems = educatorNavItems(cohortId);
 
   return (
     <>
