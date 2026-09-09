@@ -17,7 +17,8 @@ import type { UserAttempt, StructureMastery, FactMastery, RevisionSessionSummary
 import type { StructureFilter } from '../lib/indexes';
 import { filterStructures } from '../lib/indexes';
 import { ALL_STRUCTURES, ALL_IMAGES } from './seed';
-import { getDb } from './firebase';
+import { rollUpAttemptDetached } from '../../educator/data/cohortRollups';
+import { getDb, getFirebaseAuth } from './firebase';
 import type { AchievementDoc } from '../lib/achievements';
 import { factMasteryKey } from '../lib/factMastery';
 
@@ -82,8 +83,19 @@ export async function createFirestoreRepository(): Promise<AnatomyRepository> {
       );
     },
 
+    /**
+     * The attempt is the write that matters and is awaited; the cohort rollup
+     * is not (CR-031). If a student is in a class, answering also increments
+     * that class's aggregate counters — which is what an educator reads, so
+     * that nobody needs read access to these rows. See educator/data/
+     * cohortRollups.ts for why the counters exist and why they are counters.
+     *
+     * Detached on purpose: a dropped counter is a slightly wrong chart, a
+     * thrown one is a lost answer.
+     */
     async recordAttempt(attempt: UserAttempt) {
       await setDoc(doc(db, 'attemptEvents', attempt.id), omitUndefined(attempt));
+      rollUpAttemptDetached(db, attempt, getFirebaseAuth().currentUser?.displayName ?? null);
     },
 
     /**

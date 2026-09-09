@@ -103,7 +103,14 @@ service cloud.firestore {
       allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
       allow read: if isSignedIn() && resource.data.userId == request.auth.uid;
       allow read: if isAdmin();
-      allow read: if ownsCohort(cohortOfUser(resource.data.userId));
+      // NO cohort-owner read (CR-031). This grant used to exist, and it is why
+      // the join notice could not promise that an educator never sees your
+      // individual answers — it let a class owner read every attemptEvent of
+      // every student in their class, selectedAnswer included, and
+      // cohortAnalytics pulled those rows into their browser to aggregate
+      // client-side. Educators now read the counters under
+      // cohorts/{id}/structureStats, confusionStats and studentStats instead,
+      // written on the student's own device. See educator/data/cohortRollups.ts.
     }
 
     // joinCodes/{CODE} — the code IS the document id, which is what makes a
@@ -132,6 +139,45 @@ service cloud.firestore {
     // the cohort they have joined, and the id is an unguessable uuid reached
     // only through a join code they were given. `list` is restricted to your
     // own cohorts (or an admin's), so the collection cannot be enumerated.
+    // -------------------------------------------------------------------
+    // Cohort rollups (CR-031). What an educator reads instead of student rows.
+    //
+    // structureStats and confusionStats are COUNTERS — no uid, no timestamp,
+    // no document per answer — so there is nothing in them to correlate back
+    // to a person, even for someone reading the raw database. Anonymised event
+    // rows would not achieve that: in a class of forty, timing re-identifies.
+    //
+    // studentStats IS per-student, and that is the point: name, accuracy and
+    // last-active are exactly what the join notice has always said a module
+    // leader sees.
+    //
+    // Writes come from the student's own device, so they are constrained to
+    // members of that cohort. The residual risk is integrity, not privacy — a
+    // determined student could inflate their own class's counters. That is a
+    // far smaller problem than an educator reading everyone's answers, and it
+    // goes away entirely if these move to a Cloud Function later.
+    // -------------------------------------------------------------------
+    function isMemberOfCohort(cohortId) {
+      return isSignedIn() && cohortOfUser(request.auth.uid) == cohortId;
+    }
+
+    match /cohorts/{cohortId}/structureStats/{structureId} {
+      allow read: if isAdmin() || ownsCohort(cohortId);
+      allow write: if isMemberOfCohort(cohortId);
+    }
+
+    match /cohorts/{cohortId}/confusionStats/{pairKey} {
+      allow read: if isAdmin() || ownsCohort(cohortId);
+      allow write: if isMemberOfCohort(cohortId);
+    }
+
+    match /cohorts/{cohortId}/studentStats/{uid} {
+      allow read: if isAdmin() || ownsCohort(cohortId);
+      // Your own row only — a student cannot write another's totals, which is
+      // what stops one member rewriting a classmate's accuracy.
+      allow write: if isMemberOfCohort(cohortId) && request.auth.uid == uid;
+    }
+
     match /cohorts/{cohortId} {
       allow get: if isSignedIn();
       allow list: if isAdmin() || (isSignedIn() && resource.data.get('ownerUid', '') == request.auth.uid);
