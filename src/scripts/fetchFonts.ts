@@ -24,11 +24,18 @@ const ROOT = fileURLToPath(new URL('../..', import.meta.url));
 const FONT_DIR = `${ROOT}/public/fonts`;
 const CSS_OUT = `${ROOT}/src/fonts.generated.css`;
 
-/** Exactly the families and weights index.html used to request from the CDN. */
+/**
+ * Source Serif 4 only — weights 400 and 600 plus 400 italic, per the design
+ * handoff, which sets one family for the whole product. It replaced Newsreader,
+ * IBM Plex Sans and IBM Plex Mono together.
+ *
+ * SIL Open Font Licence, so self-hosting carries no fee and no per-pageview
+ * term — worth checking before any future family, since a commercial webfont
+ * licence is a real annual cost and a real liability when selling to
+ * universities.
+ */
 const SPEC =
-  'family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400' +
-  '&family=IBM+Plex+Sans:wght@400;500;600' +
-  '&family=IBM+Plex+Mono:wght@400;500;600' +
+  'family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400' +
   '&display=swap';
 
 /** Google serves woff2 only to a browser-like UA; with the default it returns truetype. */
@@ -49,7 +56,7 @@ async function main(): Promise<void> {
 
   // Each block is preceded by a /* subset */ comment. Whole blocks are kept
   // and only their src rewritten, so whatever descriptors Google emits —
-  // including Newsreader's variable opsz range — survive untouched.
+  // including Source Serif 4's variable opsz range — survive untouched.
   const blocks = [...css.matchAll(/\/\*\s*([\w-]+)\s*\*\/\s*(@font-face\s*\{[^}]+\})/g)];
   if (blocks.length === 0) throw new Error('No @font-face blocks parsed — did the response format change?');
 

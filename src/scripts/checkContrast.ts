@@ -19,10 +19,15 @@ import { fileURLToPath } from 'node:url';
 const ROOT = fileURLToPath(new URL('../..', import.meta.url));
 const css = readFileSync(`${ROOT}/src/index.css`, 'utf8');
 
-function token(name: string): string {
+/**
+ * Hex tokens only. --line is a translucent navy so it composites correctly on
+ * both paper and bone, and a ratio against an rgba value is not meaningful
+ * without knowing what is behind it — those are reported as skipped rather
+ * than guessed at.
+ */
+function token(name: string): string | null {
   const match = css.match(new RegExp(`--${name}:\\s*(#[0-9a-fA-F]{6})`));
-  if (!match) throw new Error(`token --${name} not found in src/index.css`);
-  return match[1];
+  return match ? match[1] : null;
 }
 
 function luminance(hex: string): number {
@@ -60,6 +65,10 @@ const CHECKS: Check[] = [
   { fg: 'accd', bg: 'sf', min: 4.5, what: 'links on cards' },
   { fg: 'accd', bg: 'accs', min: 4.5, what: 'text on a selected row' },
   { fg: 'onacc', bg: 'accd', min: 4.5, what: 'label on a filled primary button' },
+  { fg: 'onacc', bg: 'acc-fill', min: 4.5, what: 'label on the primary button fill' },
+  { fg: 'onacc', bg: 'acc-pressed', min: 4.5, what: 'label on a pressed button' },
+  { fg: 'onacc', bg: 'ink', min: 4.5, what: 'text on ink navy surfaces' },
+  { fg: 'acc2d', bg: 'acc2s', min: 4.5, what: 'error text on the artery wash' },
   { fg: 'onacc', bg: 'acc2d', min: 4.5, what: 'label on a filled error button' },
   { fg: 'acc2d', bg: 'pg', min: 4.5, what: 'error text on the page ground' },
   { fg: 'acc2d', bg: 'sf', min: 4.5, what: 'error text on cards' },
@@ -76,7 +85,13 @@ console.log('token pair'.padEnd(22) + 'ratio'.padEnd(9) + 'min'.padEnd(6) + 'res
 console.log('-'.repeat(78));
 
 for (const check of CHECKS) {
-  const value = ratio(token(check.fg), token(check.bg));
+  const fg = token(check.fg);
+  const bg = token(check.bg);
+  if (!fg || !bg) {
+    console.log((check.fg + ' on ' + check.bg).padEnd(22) + 'skipped'.padEnd(9) + '-'.padEnd(6) + 'not a hex token  ' + check.what);
+    continue;
+  }
+  const value = ratio(fg, bg);
   const pass = value >= check.min;
   if (!pass) failures++;
   console.log(

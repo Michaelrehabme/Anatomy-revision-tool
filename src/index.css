@@ -20,23 +20,44 @@
    * is split, and every pair here is checked by
    * src/scripts/checkContrast.ts. Run it after touching any of these.
    */
-  --pg: #efe9da; /* bone — page ground */
-  --sf: #f7f3e9; /* raised bone — cards, sidebars */
-  --ink: #1f2a44; /* ink navy — headings, body copy */
-  --ink2: #3d4759;
-  --ink3: #5e687c; /* muted; the old #7a7472 was 4.11:1 and failed AA */
-  --line: #dcd5c3;
-  --acc: #3f8f8a; /* cartilage as drawn — fills, icons, never text */
-  --accd: #2f6b67; /* cartilage darkened — links, labels, filled buttons */
-  --accs: #dce9e7;
-  --acc2: #b3403a; /* artery — errors only */
-  --acc2d: #8f332e;
-  --acc2s: #f6e3e1;
+  /* Ground and surfaces. Paper is the page, bone is what sits on it — the
+     handoff is explicit that bone is for cards and secondary surfaces, which
+     is the opposite way round from the first pass at this palette. */
+  --pg: #f7f4ec; /* paper — page/app ground */
+  --sf: #efe9da; /* bone — cards, secondary surfaces */
+
+  /* Text. Ink navy is for headings and dark surfaces; body copy is slate,
+     which is a deliberate step down from the heading colour rather than the
+     same navy at a lighter weight. */
+  --ink: #1f2a44; /* ink navy — headings, dark surfaces */
+  --ink-pressed: #16203a;
+  --ink2: #46505f; /* slate — body copy on light */
+  --ink3: #5d6779; /* slate muted — meta, secondary text */
+
+  /* Hairlines are a translucent navy, not a solid grey, so they sit correctly
+     on both paper and bone without a second token. */
+  --line: rgba(31, 42, 68, 0.14);
+  --line-strong: rgba(31, 42, 68, 0.25);
+
+  /* Teal, split three ways because one value cannot do all three jobs: the
+     drawn colour is 3.15:1 on paper — right for a fill, a fail for link text. */
+  --acc: #3f8f8a; /* cartilage — selection, correctness, progress */
+  --accd: #2f6c68; /* text-safe — links and small text on light */
+  --acc-fill: #34756f; /* primary button fill */
+  --acc-pressed: #2a5f5a;
+  --accs: #e3efed; /* selected-row wash */
+
+  --acc2: #b3403a; /* artery — errors, wrong answers */
+  --acc2d: #8f332e; /* artery darkened, for error text on light */
+  --acc2s: #fbf3f1; /* artery wash */
+
   --onacc: #ffffff;
-  --fig-off: #e2dccb;
+
+  /* Body figure. */
+  --fig-off: #e6e0d2;
   --fig-line: #a9a492;
-  --fig-ink: #4a5468;
-  --shadow-card: 0 3px 16px rgba(31, 42, 68, 0.14);
+  --fig-ink: #46505f;
+  --shadow-card: 0 20px 60px rgba(31, 42, 68, 0.16);
 }
 
 @theme {
@@ -53,13 +74,20 @@
   --color-acc2d: var(--acc2d);
   --color-acc2s: var(--acc2s);
   --color-onacc: var(--onacc);
+  --color-ink-pressed: var(--ink-pressed);
+  --color-acc-fill: var(--acc-fill);
+  --color-acc-pressed: var(--acc-pressed);
   --color-fig-off: var(--fig-off);
   --color-fig-line: var(--fig-line);
   --color-fig-ink: var(--fig-ink);
 
-  --font-display: 'Newsreader', Georgia, serif;
-  --font-ui: 'IBM Plex Sans', system-ui, sans-serif;
-  --font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  /* One family for the whole product, per the handoff. The three tokens stay
+     because every component references them, but they now resolve to the same
+     face — eyebrows and labels are distinguished by uppercase and letter
+     spacing rather than by switching to a mono. */
+  --font-display: 'Source Serif 4', Georgia, serif;
+  --font-ui: 'Source Serif 4', Georgia, serif;
+  --font-mono: 'Source Serif 4', Georgia, serif;
 
   /* Legacy alias: FillBlankSession isn't one of the mockup's four session
      formats (out of scope for this pass) and still references brand-600/700
