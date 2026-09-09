@@ -37,8 +37,16 @@ import { MobileMuscleCard } from './features/anatomy-revision/components/mobile/
 import { MobileProgress } from './features/anatomy-revision/components/mobile/MobileProgress';
 import type { MobileTab } from './features/anatomy-revision/components/mobile/MobileTabBar';
 
+/**
+ * True only in the public demo build (npm run build:demo). The demo aliases
+ * the admin guard to one that always says yes, so the deployed demo must not
+ * carry /admin at all — this ternary folds at build time and leaves the
+ * import() in a dead branch for Rollup to drop, exactly as DevRoutes does.
+ */
+const PUBLIC_DEMO = import.meta.env.VITE_PUBLIC_DEMO === '1';
+
 /** Code-split so students never download the admin bundle — see src/features/admin/AdminApp.tsx. */
-const AdminApp = lazy(() => import('./features/admin/AdminApp'));
+const AdminApp = PUBLIC_DEMO ? null : lazy(() => import('./features/admin/AdminApp'));
 /** Code-split so students never download the educator bundle — see src/features/educator/EducatorApp.tsx. */
 const EducatorApp = lazy(() => import('./features/educator/EducatorApp'));
 /** Dev-only hotspot authoring tool (CR-007) — route only registered in dev, see the /dev/hotspots Route below. */
@@ -533,20 +541,22 @@ function App() {
           )
         }
       />
-      <Route
-        path="/admin/*"
-        element={
-          <Suspense
-            fallback={
-              <div className="flex min-h-screen items-center justify-center text-sm" style={{ color: 'var(--ink3)' }}>
-                Loading admin…
-              </div>
-            }
-          >
-            <AdminApp />
-          </Suspense>
-        }
-      />
+      {AdminApp && (
+        <Route
+          path="/admin/*"
+          element={
+            <Suspense
+              fallback={
+                <div className="flex min-h-screen items-center justify-center text-sm" style={{ color: 'var(--ink3)' }}>
+                  Loading admin…
+                </div>
+              }
+            >
+              <AdminApp />
+            </Suspense>
+          }
+        />
+      )}
       <Route
         path="/educator/*"
         element={

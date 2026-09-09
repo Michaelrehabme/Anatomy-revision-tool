@@ -29,7 +29,7 @@ export function useAuth(): ReturnType<typeof realUseAuth> {
 
   return {
     ...real,
-    user: real.user ? { ...real.user, displayName: 'Rory Neary', email: 'nearyomichael@gmail.com', isAnonymous: false } : null,
+    user: real.user ? { ...real.user, displayName: 'Rory Neary', email: 'r.neary@riverside.ac.uk', isAnonymous: false } : null,
     // Local mode's signOut is already a no-op; named here so it is obvious that
     // the demo's Sign out button cannot strand someone with no way back in.
     signOut: async () => {},

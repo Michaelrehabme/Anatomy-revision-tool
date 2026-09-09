@@ -23,7 +23,7 @@ const demoFile = (name: string) =>
  * a regex alias replaces only the matched portion, so a pattern that matched
  * just the tail would leave the '..' prefix glued to an absolute path.
  */
-const educatorDemoAliases = [
+export const educatorDemoAliases = [
   { find: /^.*\/data\/cohortsRepository$/, replacement: demoFile('cohortsRepository.demo.ts') },
   { find: /^.*\/data\/assignmentsRepository$/, replacement: demoFile('assignmentsRepository.demo.ts') },
   { find: /^.*\/data\/cohortAnalytics$/, replacement: demoFile('cohortAnalytics.demo.ts') },
@@ -40,18 +40,30 @@ const educatorDemoAliases = [
   { find: /^.*\/context\/AuthProvider$/, replacement: demoFile('authDemo.ts') },
 ];
 
+/**
+ * Everything both this config and vite.config.demo.ts need. A factory rather
+ * than a shared object so each config evaluation gets its own plugin
+ * instances instead of two loads passing the same ones between them.
+ */
+export const baseConfig = () => ({
+  plugins: [react(), tailwindcss()],
+  test: {
+    environment: 'jsdom',
+    globals: true,
+    setupFiles: './src/test/setup.ts',
+  },
+});
+
 export default defineConfig(({ command, mode }) => {
   // `command === 'serve'` is the hard guarantee: `npm run build` cannot resolve
-  // to the demo modules whatever the mode or env says.
+  // to the demo modules whatever the mode or env says. The public demo build
+  // reaches them through vite.config.demo.ts, which must be named on the
+  // command line — see that file for why it is a separate config and not
+  // another mode here.
   const demo = command === 'serve' && (mode === 'educator-demo' || process.env.VITE_EDUCATOR_DEMO === '1');
 
   return {
-    plugins: [react(), tailwindcss()],
+    ...baseConfig(),
     resolve: demo ? { alias: educatorDemoAliases } : {},
-    test: {
-      environment: 'jsdom',
-      globals: true,
-      setupFiles: './src/test/setup.ts',
-    },
   };
 });

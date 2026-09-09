@@ -15,7 +15,7 @@ import type { CurrentRole, RoleGrant, UserRole } from '../../roles/types';
  */
 
 const STAFF: AdminUserProfile[] = [
-  { uid: DEMO_EDUCATOR_UID, displayName: 'Rory Neary', email: 'nearyomichael@gmail.com', createdAt: '2026-01-05T09:00:00.000Z', lastActiveAt: new Date().toISOString() },
+  { uid: DEMO_EDUCATOR_UID, displayName: 'Rory Neary', email: 'r.neary@riverside.ac.uk', createdAt: '2026-01-05T09:00:00.000Z', lastActiveAt: new Date().toISOString() },
   { uid: 'demo-staff-2', displayName: 'Helen Adeyemi', email: 'h.adeyemi@riverside.ac.uk', createdAt: '2026-01-20T09:00:00.000Z', lastActiveAt: new Date().toISOString() },
   { uid: 'demo-staff-3', displayName: 'Marcus Doyle', email: 'm.doyle@riverside.ac.uk', createdAt: '2026-02-11T09:00:00.000Z', lastActiveAt: new Date().toISOString() },
 ];
