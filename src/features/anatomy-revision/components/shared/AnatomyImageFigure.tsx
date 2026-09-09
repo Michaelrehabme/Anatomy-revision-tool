@@ -11,7 +11,7 @@ export function AnatomyImageFigure({ image, alt }: { image: AnatomyImageAsset; a
   return (
     <figure>
       <div
-        className="w-full overflow-hidden rounded-lg border border-slate-200 bg-slate-100"
+        className="w-full overflow-hidden rounded-lg border border-line bg-sf"
         style={image.width && image.height ? { aspectRatio: `${image.width} / ${image.height}` } : undefined}
       >
         <img src={image.filePath} alt={alt} className="h-full w-full object-cover" />

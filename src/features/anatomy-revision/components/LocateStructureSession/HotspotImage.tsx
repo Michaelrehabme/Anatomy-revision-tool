@@ -61,7 +61,7 @@ export function HotspotImage({ image, targetStructureId, toleranceMultiplier, on
 
   if (hotspots.length === 0) {
     return (
-      <p className="rounded-lg border border-dashed border-slate-300 p-6 text-center text-sm text-slate-500">
+      <p className="rounded-lg border border-dashed border-line p-6 text-center text-sm text-ink3">
         No hotspot data for this image yet.
       </p>
     );
@@ -72,7 +72,7 @@ export function HotspotImage({ image, targetStructureId, toleranceMultiplier, on
       <div
         ref={wrapperRef}
         onClick={handleClick}
-        className={`relative w-full overflow-hidden rounded-lg border border-slate-200 bg-slate-100 ${answer ? '' : 'cursor-crosshair'}`}
+        className={`relative w-full overflow-hidden rounded-lg border border-line bg-sf ${answer ? '' : 'cursor-crosshair'}`}
         style={image.width && image.height ? { aspectRatio: `${image.width} / ${image.height}` } : undefined}
         role="button"
         aria-label={image.slideTitle ?? 'Anatomy image, click to answer'}

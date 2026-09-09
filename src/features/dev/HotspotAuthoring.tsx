@@ -111,14 +111,14 @@ export function HotspotAuthoring() {
   return (
     <div className="mx-auto max-w-6xl p-6 text-sm">
       <h1 className="mb-1 text-xl font-semibold">Hotspot authoring</h1>
-      <p className="mb-4 text-slate-500">
+      <p className="mb-4 text-ink3">
         Dev-only. Click to place vertices, close the ring, then copy the JSON into
-        <code className="mx-1 rounded bg-slate-100 px-1">importHotspots.ts</code>.
+        <code className="mx-1 rounded bg-sf px-1">importHotspots.ts</code>.
       </p>
 
       <div className="mb-4 flex flex-wrap gap-3">
         <label className="flex flex-col">
-          <span className="text-xs uppercase text-slate-500">Image</span>
+          <span className="text-xs uppercase text-ink3">Image</span>
           <select className="rounded border px-2 py-1" value={imageId} onChange={(e) => loadImage(e.target.value)}>
             {ALL_IMAGES.map((img) => (
               <option key={img.id} value={img.id}>
@@ -129,7 +129,7 @@ export function HotspotAuthoring() {
         </label>
 
         <label className="flex flex-col">
-          <span className="text-xs uppercase text-slate-500">Structure</span>
+          <span className="text-xs uppercase text-ink3">Structure</span>
           <select
             className="rounded border px-2 py-1"
             value={structureId}
@@ -160,7 +160,7 @@ export function HotspotAuthoring() {
           <div
             ref={wrapperRef}
             onClick={handleClick}
-            className="relative w-full cursor-crosshair overflow-hidden rounded border bg-slate-100"
+            className="relative w-full cursor-crosshair overflow-hidden rounded border bg-sf"
             style={natural ? { aspectRatio: `${natural[0]} / ${natural[1]}` } : undefined}
           >
             <img
@@ -202,10 +202,10 @@ export function HotspotAuthoring() {
             <button className="rounded border px-3 py-1" onClick={clearStructure} disabled={!structureId}>
               Clear structure
             </button>
-            {dragging && <span className="self-center text-orange-600">Click a new spot to move the grabbed vertex</span>}
+            {dragging && <span className="self-center text-acc2d">Click a new spot to move the grabbed vertex</span>}
           </div>
 
-          <p className="mt-2 text-slate-500">
+          <p className="mt-2 text-ink3">
             {natural ? `Natural size ${natural[0]}×${natural[1]}.` : 'Loading image…'}{' '}
             {draft
               ? `${draft.polygons.length} part(s), area ${polygonsArea(draft.polygons).toFixed(5)}.`

@@ -12,7 +12,7 @@ export function AttributionBadge({ image }: { image: AnatomyImageAsset }) {
 
   return (
     <p
-      className={`mt-1 text-xs ${isTodo ? 'text-amber-600' : 'text-slate-400'}`}
+      className={`mt-1 text-xs ${isTodo ? 'text-acc2d' : 'text-ink3'}`}
       title={image.filePath}
     >
       {image.credit} · {image.licence}
