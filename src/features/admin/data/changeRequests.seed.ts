@@ -1455,4 +1455,286 @@ export const CHANGE_REQUESTS_SEED: ChangeRequest[] = [
       'the mobile Atlas searched down to two muscles and drilled exactly those eight facts; and no ' +
       'persist error in either.',
   },
+  {
+    ref: 'CR-023',
+    title: 'PWA foundation and offline revision',
+    category: 'infrastructure',
+    priority: 'p0',
+    effort: 'l',
+    status: 'new',
+    description:
+      'Convert the Vite SPA into an installable, offline-capable PWA: self-hosted fonts, web app manifest, service worker, ' +
+      'Firestore offline persistence and per-area image downloads. Offline is the feature, not just the store requirement — ' +
+      'students revise on placement, on public transport and in hospital basements with no signal.',
+    prompt:
+      'Convert this Vite 6 + React 19 + TypeScript app into an installable, offline-capable PWA.\n\n' +
+      '1. SELF-HOST THE FONTS. Download Newsreader, IBM Plex Sans and IBM Plex Mono, serve from public/fonts/, remove the\n' +
+      '   Google Fonts <link>. The CDN request fails offline and blocks first paint, and passing user IP addresses to Google\n' +
+      '   has been found to breach GDPR in EU case law. font-display: swap, preload the two above-the-fold weights.\n' +
+      '2. MANIFEST at public/manifest.webmanifest: name, short_name (under 12 chars), start_url "/", display "standalone",\n' +
+      '   background_color/theme_color from the CSS custom properties in src/index.css, icons at 192/256/384/512 plus a\n' +
+      '   maskable 512. Add apple-touch-icon, theme-color and a real description meta tag — there is currently none.\n' +
+      '3. SERVICE WORKER via vite-plugin-pwa + Workbox: precache the shell/JS/CSS/fonts; CacheFirst for /anatomy/** with a\n' +
+      '   30-day expiry; NetworkFirst for Firestore; an update prompt that does NOT silently reload mid-session and lose answers.\n' +
+      '4. OFFLINE REVISION. Firestore persistentLocalCache with multi-tab so attempts/mastery/summaries queue and sync on\n' +
+      '   reconnect. An explicit per-area "download for offline" showing size, with removal. An offline indicator, and grey out\n' +
+      '   what genuinely needs network (sign-in, class join) rather than letting it fail silently. Content is static in the\n' +
+      '   bundle, so verify nothing in the session path awaits a Firestore read before rendering a question.\n' +
+      '5. BUNDLE. Split the index chunk — Firebase is the bulk. manualChunks for firebase/auth and firebase/firestore, and\n' +
+      '   lazy-load Firestore so revision can start before it resolves.\n\n' +
+      'CONSTRAINTS: offline degrades gracefully, never blank-screens; do not cache auth tokens in the service worker;\n' +
+      'all existing tests pass, plus new ones for the offline queue-and-sync path.\n' +
+      'ACCEPTANCE: npm run build passes; Lighthouse PWA installability passes; with the network disabled after first load a\n' +
+      'full revision session completes and syncs on reconnect.',
+    dependsOn: [],
+    createdAt: '2026-09-08T09:00:00.000Z',
+    startedAt: null,
+    completedAt: null,
+    notes:
+      'Icons are blocked on the logo (CR-028 part 2). Everything else — fonts, manifest, service worker, offline persistence, ' +
+      'bundle split — can proceed without it.',
+  },
+  {
+    ref: 'CR-024',
+    title: 'Capacitor native shell and review notifications',
+    category: 'infrastructure',
+    priority: 'p0',
+    effort: 'l',
+    status: 'new',
+    description:
+      'Package the PWA as native iOS and Android apps with genuine native capability — local review notifications, filesystem-backed ' +
+      'offline downloads, native auth — rather than a webview wrapper. Minimum functionality (App Store guideline 4.2) is the most ' +
+      'common rejection reason and is used specifically to filter out web wrappers.',
+    prompt:
+      'Package this PWA as native iOS and Android apps using Capacitor, with genuine native functionality.\n\n' +
+      '1. Capacitor with ios/ and android/ projects. Bundle web assets LOCALLY — do not point a webview at the Netlify URL.\n' +
+      '2. NATIVE CAPABILITIES, each genuinely functional:\n' +
+      '   - LOCAL NOTIFICATIONS for due reviews, scheduled from existing mastery data. The strongest single justification: a\n' +
+      '     website cannot tell a student 14 structures are due this morning. Schedule locally so it works offline; settings\n' +
+      '     screen for time-of-day and opt-out.\n' +
+      '   - OFFLINE AREA DOWNLOADS on the native filesystem so they survive storage pressure.\n' +
+      '   - Native status bar, splash screen, safe-area insets, haptics on answer submission, share sheet.\n' +
+      '3. NATIVE AUTH via the Capacitor Firebase Authentication plugin. Sign in with Apple is REQUIRED on iOS if any\n' +
+      '   third-party sign-in is offered.\n' +
+      '4. Hide /admin/* and /educator/* from native builds unless shipping them — unreachable UI in a binary can trigger a\n' +
+      '   hidden-features rejection under 2.3.1.\n' +
+      '5. REVIEW-NOTES.md listing every native capability with exact steps to exercise it, plus a demo account with seeded\n' +
+      '   progress. State plainly what the app does that the website cannot.\n\n' +
+      'CONSTRAINTS: one codebase, no forked native UI; never load remote code at runtime (guideline 2.5.2); test on a real device.\n' +
+      'ACCEPTANCE: both platforms build from a clean checkout; a due-review notification fires in airplane mode; a downloaded\n' +
+      'area is fully revisable after a cold start.',
+    dependsOn: ['CR-023'],
+    createdAt: '2026-09-08T09:00:00.000Z',
+    startedAt: null,
+    completedAt: null,
+    notes: 'Needs an Apple Developer account, native toolchains and a physical device — not startable unattended.',
+  },
+  {
+    ref: 'CR-025',
+    title: 'Legal, privacy and store compliance',
+    category: 'infrastructure',
+    priority: 'p0',
+    effort: 'm',
+    status: 'new',
+    description:
+      'Privacy policy, terms, attributions page, in-app account deletion and data export, educator consent and an age gate. ' +
+      'Not primarily store compliance — UK GDPR. Named students generate performance data a course leader can see, which needs a ' +
+      'published policy, a stated lawful basis and a deletion route before a pilot can run, free or not.',
+    prompt:
+      'Add the legal and privacy infrastructure this app needs before pilots and store submission.\n\n' +
+      '1. PRIVACY POLICY at /privacy, reachable without sign-in, linked from footer, account screen and both store listings.\n' +
+      '   State: what is collected (email, display name, answer-level performance data, device identifiers), the lawful basis\n' +
+      '   under UK GDPR, that class owners see named performance data for students who join their class, retention periods,\n' +
+      '   third-party processors (Google Firebase), and how to exercise access, rectification, erasure and portability.\n' +
+      '2. TERMS at /terms, including that this is an educational revision tool, not a clinical or diagnostic resource, with no\n' +
+      '   warranty of anatomical accuracy for clinical decision-making.\n' +
+      '3. ACCOUNT DELETION in-app, at most two taps from the account screen. Must delete profile, attempts, mastery, session\n' +
+      '   summaries and class membership — not deactivate. Server-side so it cannot partially complete.\n' +
+      '4. DATA EXPORT — JSON download of the user\'s own data. Cheap alongside deletion and satisfies portability.\n' +
+      '5. EDUCATOR CONSENT. Joining a class must show, before joining, exactly what the owner will see. Leaving is one action\n' +
+      '   and stops further visibility. Educators see aggregate and summary performance, never a keystroke-level record.\n' +
+      '6. AGE. Appropriate rating plus a date-of-birth or over-16 confirmation at sign-up. Avoid inheriting UK GDPR\n' +
+      '   children\'s provisions and Google Play Families policy deliberately rather than by accident.\n' +
+      '7. ATTRIBUTIONS at /attributions: every image credit and licence, the Z-Anatomy attribution linking the source and the\n' +
+      '   CC BY-SA 4.0 deed, the muscle dataset source, and open-source licences. A licence field on a badge is not sufficient\n' +
+      '   for a shipped commercial product.\n' +
+      '8. Play Data Safety and Apple privacy labels as a checked-in markdown file, so they match the code.\n\n' +
+      'ACCEPTANCE: /privacy, /terms and /attributions render without authentication; account deletion removes every trace of a\n' +
+      'test user from Firestore, verified by query.',
+    dependsOn: [],
+    createdAt: '2026-09-08T09:00:00.000Z',
+    startedAt: null,
+    completedAt: null,
+    notes:
+      'THE PILOT BLOCKER — a university will ask, and it applies to a free pilot exactly as to a paid product. Note there is no ' +
+      'functions/ directory and firebase.json declares only firestore rules and indexes, so item 3 needs a Cloud Functions project ' +
+      'bootstrapped first; that is unscoped in this prompt. Items 1, 2 and 6 need Rory\'s own details (legal entity, contact ' +
+      'address, retention periods); item 7 is derivable from the image data alone.',
+  },
+  {
+    ref: 'CR-026',
+    title: 'Image coverage completion; retire AI illustrations',
+    category: 'content',
+    priority: 'p1',
+    effort: 'l',
+    status: 'new',
+    description:
+      'Close the 68 structures with no image (44 muscles, 23 joints, 1 bone) using the Z-Anatomy Blender pipeline, and retire the ' +
+      '14 remaining AI-generated illustrations. Escalated from polish to competitive necessity: every rival leads with visuals, and ' +
+      'for an app teaching attachments, AI anatomy is the content most likely to be confidently wrong.',
+    prompt:
+      'Complete image coverage and remove the remaining AI-generated illustrations.\n\n' +
+      '1. Run the existing Z-Anatomy pipeline for the 44 uncovered muscles, matching established render settings so the library\n' +
+      '   stays visually consistent.\n' +
+      '2. JOINTS need a different treatment — an articulation is a relationship between bones, not an isolated object. Render each\n' +
+      '   showing its articulating surfaces with the relevant ligaments, from the view that best shows the articulation. Decide and\n' +
+      '   document the convention BEFORE rendering 23 of them.\n' +
+      '3. Retire each of the 14 AI images as a Z-Anatomy equivalent lands. Where none is practical, remove the image rather than\n' +
+      '   shipping it — a structure with no image degrades gracefully; one with a wrong image teaches something false.\n' +
+      '4. Author hotspots for every new render via the existing editor so locate coverage grows with image coverage. Target locate\n' +
+      '   questions for the substantial majority of the 122 muscles.\n' +
+      '5. Re-run the audit and record in the README: structures without images, images by licence, questions by type.\n\n' +
+      'CONSTRAINTS: accurate credit and licence on every new image (Z-Anatomy, CC BY-SA 4.0); never hand-edit imageIds, they are\n' +
+      'auto-linked by lib/linkImages.ts; run npm run validate-content after integration.\n' +
+      'ACCEPTANCE: zero structures with no linked image (or a documented exception list); zero images licensed All rights reserved;\n' +
+      'test, build and validate-content all pass.',
+    dependsOn: [],
+    createdAt: '2026-09-08T09:00:00.000Z',
+    startedAt: null,
+    completedAt: null,
+    notes:
+      'Needs the Blender source models under /atlas and /renders, which are gitignored and ~2GB — this runs on Rory\'s machine, not ' +
+      'unattended. The joint convention in item 2 is a judgement call to make before bulk rendering.',
+  },
+  {
+    ref: 'CR-027',
+    title: 'Monetisation: entitlements, paywall and institutional licences',
+    category: 'infrastructure',
+    priority: 'p1',
+    effort: 'l',
+    status: 'new',
+    description:
+      'An entitlement layer every gate checks, a permanently free area, a paywall, Stripe on web and RevenueCat-normalised IAP on ' +
+      'native, and redeemable institutional licences with seat tracking. The individual subscription pays the bills; the ' +
+      'institutional licence is the business.',
+    prompt:
+      'Add monetisation supporting both individual subscriptions and institutional licences.\n\n' +
+      '1. ENTITLEMENT LAYER FIRST, and route everything through it. An `entitlement` on the user document:\n' +
+      '   { tier, source, expiresAt, seatId } where tier is free|individual|institutional and source is web|apple|google|licence.\n' +
+      '   One useEntitlement() hook and a matching Firestore rules helper. Every gate checks the entitlement, never the payment\n' +
+      '   provider — this is what lets pricing change without touching feature code.\n' +
+      '2. FREE TIER — one complete area, permanently, with every question type. Not a trial, not a crippled demo. Every competitor\n' +
+      '   has a free tier. Make the area configurable, not hardcoded.\n' +
+      '3. PAYWALL on reaching locked content, never mid-session. Monthly, annual (default-selected, best value), and a three-year\n' +
+      '   course pass once retention data justifies it. 7-day trial, not 3. Do NOT show a discount on the main paywall; implement a\n' +
+      '   post-close offer for users who dismissed without converting.\n' +
+      '4. WEB PAYMENTS via Stripe Checkout with a Cloud Function webhook writing the entitlement. Handle renewal, cancellation,\n' +
+      '   failure and refund. Never let the client write its own entitlement — enforce in firestore.rules.\n' +
+      '5. NATIVE PAYMENTS must use platform IAP (guideline 3.1.1); Stripe is not permitted. RevenueCat to normalise both stores\n' +
+      '   against the same entitlement document. Register for Apple\'s Small Business Program (15% rather than 30%).\n' +
+      '6. INSTITUTIONAL LICENCES — the highest-value part. A licences collection { id, institution, seats, seatsUsed, validFrom,\n' +
+      '   validUntil, code, ownerEmail }; redemption from account settings that increments seatsUsed and refuses when exhausted;\n' +
+      '   admin screens to issue, extend, revoke and monitor; auto-link redeemers to the institution\'s class so cohort analytics\n' +
+      '   populate without the educator chasing anyone. Sold direct and invoiced, so no platform commission.\n' +
+      '7. Do not build ads, an ad-removal purchase, or any ad SDK.\n\n' +
+      'CONSTRAINTS: entitlement writes server-side only; fully usable offline for an entitled user; a lapsed subscriber keeps their\n' +
+      'history and free area. Vitest coverage for expiry, seat exhaustion, and precedence when a user holds both entitlements.',
+    dependsOn: ['CR-025'],
+    createdAt: '2026-09-08T09:00:00.000Z',
+    startedAt: null,
+    completedAt: null,
+    notes:
+      'Needs a Stripe account and, for item 5, the native builds from CR-024. Pricing is settled in the backlog document: free area, ' +
+      'GBP 4.99/mo, GBP 29.99/yr, GBP 10-12/student/yr institutional; the course pass ships later, once a renewal rate exists to price it against.',
+  },
+  {
+    ref: 'CR-028',
+    title: 'Demo deploy, brand and commercial site',
+    category: 'infrastructure',
+    priority: 'p1',
+    effort: 'm',
+    status: 'inProgress',
+    description:
+      'Three separable pieces in order of value per hour: deploy the seeded educator demo as the asset every pilot approach links to; ' +
+      'clear and register the LocusMSK name and commission a logo; build a static marketing site separate from the SPA, which renders ' +
+      'client-side and cannot be indexed.',
+    prompt:
+      'PART 1 — Deploy the educator demo build as a standalone public site (DONE, see notes).\n\n' +
+      'PART 2 — Trademark and logo. Not a coding task. Clear "LocusMSK": UK IPO classes 9 and 41, locusmsk.com and .co.uk, App Store\n' +
+      'and Play Store name search, Companies House. Commission a logo (GBP 200-500): must work at 48px and as a 512px maskable icon,\n' +
+      'light and dark; no anatomical illustration — every competitor uses a muscle or skeleton and it renders as mush small. SVG master\n' +
+      'plus the full PWA icon set for CR-023. Rename the codebase in ONE commit before CR-023 so the manifest and icons are generated\n' +
+      'under the final name. Register the mark once cleared and in use, before store submission.\n\n' +
+      'PART 3 — Commercial site. Static (Astro or plain HTML), its own Netlify site, because the app is a client-rendered SPA that\n' +
+      'search engines see as an empty shell. Pages: home; for students; for educators (the one that matters — cohort dashboard, pilot\n' +
+      'offer, link to the demo, contact form, and the Part 0 positioning table largely verbatim); pricing with institutional as\n' +
+      '"contact us"; legal linking through to the app\'s own pages. Two distinct audiences: students go straight into the free area\n' +
+      'with no sign-up, educators want evidence and a person — do not funnel both through one CTA. Stripe Checkout for individuals;\n' +
+      'institutional is a contact form and an invoice, because universities pay by purchase order. SEO: target long-tail MSK terms,\n' +
+      'not head keywords. Comparison pages ("LocusMSK vs Kenhub", "vs TeachMeAnatomy") are the exception and are winnable — be\n' +
+      'scrupulously accurate about competitor prices and date every claim.\n' +
+      'ACCEPTANCE: Lighthouse SEO and performance above 90; a student reaches a working question within two clicks; an educator\n' +
+      'reaches the populated demo dashboard within one.',
+    dependsOn: [],
+    createdAt: '2026-09-08T09:00:00.000Z',
+    startedAt: '2026-09-08T14:00:00.000Z',
+    completedAt: null,
+    notes:
+      'Part 1 is built: npm run build:demo through vite.config.demo.ts, /admin dropped from the bundle, VITE_PERSISTENCE pinned local, ' +
+      'demo fixtures made realistic, sample-data banner and reset added, and a [context.demo] block in netlify.toml so a second site ' +
+      'does not inherit the production build. Outstanding: create the Netlify site, and Parts 2 and 3. Part 2 gates the PWA icons in ' +
+      'CR-023, and nothing should be promised at demo.locusmsk.com until the name clears.',
+  },
+  {
+    ref: 'CR-029',
+    title: 'Educator dashboard works below 1024px',
+    category: 'infrastructure',
+    priority: 'p1',
+    effort: 'm',
+    status: 'completed',
+    description:
+      'The educator section rendered through AppShell, a fixed 260px sidebar documented desktop-only, inside px-16 padding — on a 375px ' +
+      'phone that is more than the viewport before any content. App.tsx routed /educator/* with no mobile branch, unlike every student ' +
+      'screen. A course leader sent a link by email opens it on a phone.',
+    prompt:
+      'Make /educator/* usable below 1024px.\n\n' +
+      'Prefer a responsive shell to the parallel Mobile* screen tree the student side uses: the student screens differ by design across\n' +
+      'the breakpoint, whereas every educator screen is a table or list that reflows once given the width (the students table is already\n' +
+      'wrapped for overflow). The shell is the whole problem.\n\n' +
+      '- EducatorShell branches on useIsDesktop() into a mobile shell below 1024px, with CohortsProvider outside the branch so crossing\n' +
+      '  the breakpoint does not refetch.\n' +
+      '- The mobile shell: header with brand, class switcher and a horizontally scrollable section strip; 44px tap targets; its own\n' +
+      '  tighter padding. No bottom tab bar — five sections with long labels are a section index, not top-level destinations.\n' +
+      '- Nav items move to a shared module, since two shells now render them.\n' +
+      'ACCEPTANCE: every educator screen is readable and operable at 375px; the desktop sidebar is unchanged above 1024px.',
+    dependsOn: [],
+    createdAt: '2026-09-09T09:00:00.000Z',
+    startedAt: '2026-09-09T09:30:00.000Z',
+    completedAt: '2026-09-09T10:30:00.000Z',
+    notes:
+      'Raised by Rory from the demo build. Shipped as EducatorMobileShell plus educatorNav.ts; the desktop sidebar now reads its nav from ' +
+      'the same module so a new section cannot reach one shell only.',
+  },
+  {
+    ref: 'CR-030',
+    title: 'List the educator\'s classes at /educator',
+    category: 'infrastructure',
+    priority: 'p2',
+    effort: 's',
+    status: 'completed',
+    description:
+      '/educator redirected everyone to cohorts[0]. With two classes that silently picked one and left the other reachable only through a ' +
+      'select in the desktop sidebar — invisible on a phone and easy to miss on a laptop.',
+    prompt:
+      'Show a class list at /educator when the educator owns more than one class. Keep the straight-in redirect for exactly one, because a\n' +
+      'list of one is a click that buys nothing, and keep the create form for none. Archived classes sort last and are labelled rather than\n' +
+      'hidden, so last year\'s cohort is still findable. Rows need 44px tap targets — on a phone this is the section\'s landing screen.',
+    dependsOn: [],
+    createdAt: '2026-09-09T09:00:00.000Z',
+    startedAt: '2026-09-09T10:30:00.000Z',
+    completedAt: '2026-09-09T11:00:00.000Z',
+    notes:
+      'Raised by Rory alongside CR-029. Note the account screen was never the gap: MyClasses has listed owned classes on both Account and ' +
+      'MobileAccount since CR-012. What was missing was any class list inside the educator section itself.',
+  },
 ];
