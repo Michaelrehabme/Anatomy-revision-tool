@@ -56,6 +56,19 @@ const AdminApp = PUBLIC_DEMO ? null : lazy(() => import('./features/admin/AdminA
 const DemoBanner = PUBLIC_DEMO ? lazy(() => import('./features/educator/demo/DemoBanner')) : null;
 /** Code-split so students never download the educator bundle — see src/features/educator/EducatorApp.tsx. */
 const EducatorApp = lazy(() => import('./features/educator/EducatorApp'));
+/**
+ * Public legal pages (CR-025). Lazy because they are rarely visited and must
+ * not sit in the chunk every student downloads to answer a question.
+ */
+const LegalRoutes = lazy(() => import('./features/legal/LegalRoutes'));
+
+/**
+ * Paths LegalRoutes owns. Checked before every gate below — both stores and
+ * UK GDPR require these reachable by someone with no account who has not been
+ * through onboarding. /privacy and /terms join this list under CR-025.
+ */
+const LEGAL_PATHS = ['/attributions'];
+
 /** Dev-only hotspot authoring tool (CR-007) — route only registered in dev, see the /dev/hotspots Route below. */
 const HotspotEditorApp = lazy(() => import('./features/hotspotEditor/HotspotEditorApp'));
 
@@ -187,6 +200,18 @@ function App() {
     if (session.phase === 'in-progress') navigate('/session');
     else if (session.phase === 'results') navigate('/session/results');
   }, [session.phase, navigate]);
+
+  // Above every other gate, for the same reason as /dev below but with a
+  // compliance edge: a legal notice nobody can reach without an account is not
+  // a published notice. These pages read seed content directly and need no
+  // repository, auth, or completed onboarding.
+  if (LEGAL_PATHS.some((path) => location.pathname.startsWith(path))) {
+    return (
+      <Suspense fallback={null}>
+        <LegalRoutes />
+      </Suspense>
+    );
+  }
 
   // Above every other gate on purpose: the dev tools read seed content
   // directly and need no repository, auth, or completed onboarding.
