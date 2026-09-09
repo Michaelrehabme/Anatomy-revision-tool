@@ -1,5 +1,5 @@
-import { Link } from 'react-router-dom';
 import { ALL_IMAGES } from '../anatomy-revision/data/seed';
+import { LegalLayout, legalHeading, legalLabel, legalProse } from './LegalLayout';
 import { OSS_LICENCES } from './data/ossLicences.generated';
 
 /**
@@ -38,35 +38,19 @@ function groupImages(): Group[] {
   return [...groups.values()].sort((a, b) => b.images.length - a.images.length);
 }
 
-const headingStyle = { fontFamily: 'var(--font-display)', fontSize: 21, letterSpacing: '-0.01em' } as const;
-const proseStyle = { color: 'var(--ink2)', font: '400 14.5px/1.65 var(--font-ui)' } as const;
-const labelStyle = {
-  font: '500 10px/1 var(--font-mono)',
-  letterSpacing: '.12em',
-  textTransform: 'uppercase' as const,
-  color: 'var(--ink3)',
-};
-
 export function AttributionsPage() {
   const groups = groupImages();
 
   return (
-    <div className="mx-auto max-w-[760px] px-5 py-10" style={{ color: 'var(--ink)' }}>
-      <Link to="/" style={{ font: '400 12.5px/1 var(--font-ui)', color: 'var(--ink3)', textDecoration: 'none' }}>
-        ← Back to the app
-      </Link>
-
-      <h1 className="mt-6" style={{ fontFamily: 'var(--font-display)', fontSize: 32, letterSpacing: '-0.02em' }}>
-        Attributions and licences
-      </h1>
-      <p className="mt-3" style={proseStyle}>
+    <LegalLayout title="Attributions and licences" updated="9 September 2026">
+      <p className="mt-4" style={legalProse}>
         This app is built on work by other people. Everything below says who made what, and under which licence it is
         used and may be reused.
       </p>
 
       <section className="mt-9">
-        <h2 style={headingStyle}>Anatomical imagery</h2>
-        <p className="mt-2" style={proseStyle}>
+        <h2 style={legalHeading}>Anatomical imagery</h2>
+        <p className="mt-2" style={legalProse}>
           Most anatomical renders in this app are derived from{' '}
           <a href={Z_ANATOMY} target="_blank" rel="noreferrer noopener" style={{ color: 'var(--accd)' }}>
             Z-Anatomy
@@ -78,7 +62,7 @@ export function AttributionsPage() {
           </a>
           .
         </p>
-        <p className="mt-3" style={proseStyle}>
+        <p className="mt-3" style={legalProse}>
           These images remain under CC BY-SA 4.0 here. Anyone may redistribute or adapt them under the same licence,
           with attribution — including images that have been cropped, recoloured or annotated for this app. That applies
           to the imagery only; the question bank, scheduling and analytics in this app are not covered by it.
@@ -86,8 +70,8 @@ export function AttributionsPage() {
       </section>
 
       <section className="mt-9">
-        <h2 style={headingStyle}>Muscle dataset</h2>
-        <p className="mt-2" style={proseStyle}>
+        <h2 style={legalHeading}>Muscle dataset</h2>
+        <p className="mt-2" style={legalProse}>
           Origin, insertion, nerve supply and action data for the 122 muscles derives from
           &ldquo;ALL_Muscles_of_the_body&rdquo; by Vinnie Maynard, University of Salford, cross-referenced against
           Terminologia Anatomica (TA2) identifiers.
@@ -95,17 +79,17 @@ export function AttributionsPage() {
       </section>
 
       <section className="mt-9">
-        <h2 style={headingStyle}>Every image</h2>
-        <p className="mt-2" style={proseStyle}>
+        <h2 style={legalHeading}>Every image</h2>
+        <p className="mt-2" style={legalProse}>
           All {ALL_IMAGES.length} images currently shipped, grouped by source.
         </p>
 
         {groups.map((group) => (
           <div key={`${group.credit}::${group.licence}`} className="mt-6">
-            <div style={labelStyle}>
+            <div style={legalLabel}>
               {group.images.length} {group.images.length === 1 ? 'image' : 'images'} · {group.licence}
             </div>
-            <p className="mt-1.5" style={{ ...proseStyle, color: 'var(--ink)' }}>
+            <p className="mt-1.5" style={{ ...legalProse, color: 'var(--ink)' }}>
               {group.credit}
             </p>
             <ul className="mt-2 flex list-none flex-col gap-0.5 p-0">
@@ -123,8 +107,8 @@ export function AttributionsPage() {
       </section>
 
       <section className="mt-9">
-        <h2 style={headingStyle}>Open-source software</h2>
-        <p className="mt-2" style={proseStyle}>
+        <h2 style={legalHeading}>Open-source software</h2>
+        <p className="mt-2" style={legalProse}>
           Direct runtime dependencies and their declared licences. Full licence texts are distributed with each package.
         </p>
         <ul className="mt-3 flex list-none flex-col gap-1 p-0">
@@ -135,7 +119,7 @@ export function AttributionsPage() {
           ))}
         </ul>
       </section>
-    </div>
+    </LegalLayout>
   );
 }
 
