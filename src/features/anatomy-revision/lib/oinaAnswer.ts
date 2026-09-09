@@ -1,5 +1,6 @@
 import type { PromptKind } from '../types/question';
 import { ATTACHMENT_SYNONYMS, stripHeadPrefix } from './oinaValues';
+import { swapFibularPeroneal } from './nameVariants';
 
 /**
  * Typed-answer grading for OINA questions (CR-018).
@@ -216,6 +217,13 @@ export function acceptedVariantsFor(promptKind: PromptKind, raw: string): string
   if (promptKind === 'nerve') {
     // "Musculocutaneous nerve" typed as "musculocutaneous" is a correct answer.
     add(raw.replace(/\s+nerve$/i, ''));
+    // Fibular and peroneal are the same nerve under two conventions, and this
+    // dataset uses fibular for nerves while naming the muscles peroneus.
+    const swapped = swapFibularPeroneal(raw);
+    if (swapped) {
+      add(swapped);
+      add(swapped.replace(/\s+nerve$/i, ''));
+    }
   }
   return [...variants];
 }

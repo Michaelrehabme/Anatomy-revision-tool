@@ -1,4 +1,5 @@
 import { areaOf } from '../../types/structure';
+import { structureNameVariants } from '../nameVariants';
 import type { AnatomyStructure } from '../../types/structure';
 import type { AnatomyImageAsset } from '../../types/image';
 import type { TypedIdentifyQuestion } from '../../types/question';
@@ -34,7 +35,7 @@ export function buildIdentifyTypedQuestions(
         id: `identify-typed-${structure.id}-${image.id}`,
         prompt: image.mode === 'atlas-slide' ? 'Which structure is highlighted?' : 'Which structure is shown?',
         promptImageId: image.id,
-        acceptedAnswers: [structure.name, ...structure.aliases],
+        acceptedAnswers: structureNameVariants(structure.name, structure.aliases),
         explanation: summarizeStructure(structure),
       });
     }
