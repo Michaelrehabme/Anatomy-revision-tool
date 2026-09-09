@@ -1,4 +1,5 @@
-import type { AnatomyImageAsset, LayerType } from '../../types/image';
+import type { AnatomyImageAsset } from '../../types/image';
+import { MUSCLE_PANELS } from './panels.generated';
 import type { Region, SubRegion } from '../../types/region';
 import { REGION_HOTSPOTS, REGION_PANEL_NAMES } from './hotspots.regions.generated';
 
@@ -281,30 +282,13 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
   // reason (see the Change Register). Locate questions belong on images
   // where nothing is pre-highlighted — a genuinely blank/neutral regional
   // diagram — which doesn't exist in this dataset yet.
-  ...([
-    ['supraspinatus', 'shoulder-arm', 'shoulder', 'deep-muscle'],
-    ['infraspinatus', 'shoulder-arm', 'shoulder', 'deep-muscle'],
-    ['teres-minor', 'shoulder-arm', 'shoulder', 'deep-muscle'],
-    ['subscapularis', 'shoulder-arm', 'shoulder', 'deep-muscle'],
-    ['deltoid', 'shoulder-arm', 'shoulder', 'superficial-muscle'],
-    ['trapezius', 'shoulder-arm', 'shoulder', 'superficial-muscle'],
-    ['latissimus-dorsi', 'shoulder-arm', 'shoulder', 'superficial-muscle'],
-    ['biceps-brachii', 'shoulder-arm', 'elbow', 'superficial-muscle'],
-    ['brachialis', 'shoulder-arm', 'elbow', 'deep-muscle'],
-    ['triceps-brachii', 'shoulder-arm', 'elbow', 'superficial-muscle'],
-    ['brachioradialis', 'forearm-hand', 'elbow', 'superficial-muscle'],
-    ['gluteus-maximus', 'hip-thigh', 'hip', 'superficial-muscle'],
-    ['gluteus-medius', 'hip-thigh', 'hip', 'deep-muscle'],
-    ['gluteus-minimus', 'hip-thigh', 'hip', 'deep-muscle'],
-    ['tensor-fasciae-latae', 'hip-thigh', 'hip', 'superficial-muscle'],
-    ['semitendinosus', 'hip-thigh', 'knee', 'superficial-muscle'],
-    ['biceps-femoris', 'hip-thigh', 'knee', 'superficial-muscle'],
-    ['tibialis-anterior', 'lower-leg-foot', 'ankle-foot', 'superficial-muscle'],
-    ['tibialis-posterior', 'lower-leg-foot', 'ankle-foot', 'deep-muscle'],
-    ['gastrocnemius', 'lower-leg-foot', 'ankle-foot', 'superficial-muscle'],
-    ['soleus', 'lower-leg-foot', 'ankle-foot', 'deep-muscle'],
-  ] as [string, Region, SubRegion, LayerType][]).map(
-    ([structureId, region, subregion, layer]): AnatomyImageAsset => ({
+  // The list itself is generated from the files in public/anatomy/panels/ —
+  // 65 of them since CR-026 — so the seed cannot claim an image that is not
+  // there, and each entry carries the real pixel dimensions of its own file
+  // rather than one nominal pair shared by all of them. Regenerate with
+  // src/scripts/generateMusclePanels.ts.
+  ...MUSCLE_PANELS.map(
+    ({ structureId, region, subregion, layer, width, height }): AnatomyImageAsset => ({
       id: `panel-${structureId}`,
       filePath: `/anatomy/panels/${structureId}.webp`,
       mode: 'single-structure',
@@ -313,7 +297,8 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
       subregion,
       view: 'posterior',
       layer,
-      width: 255, height: 259,
+      width,
+      height,
       hotspots: [],
       credit: Z_ANATOMY_CREDIT,
       licence: Z_ANATOMY_LICENCE,

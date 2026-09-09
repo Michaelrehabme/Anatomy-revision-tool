@@ -101,11 +101,29 @@ def bake_world_mesh(object_names, mesh_name):
     return mesh
 
 
+# How much tighter one side must be before the union is judged to be measuring
+# the gap between a pair rather than the muscle. 3x clears the hand and foot
+# intrinsics without touching the thigh and shoulder muscles, whose two halves
+# sit about their own width apart.
+SIDE_FRAMING_RATIO = 3.0
+
+
+def mesh_bbox(mesh):
+    xs = [v.co.x for v in mesh.vertices]
+    ys = [v.co.y for v in mesh.vertices]
+    zs = [v.co.z for v in mesh.vertices]
+    return (min(xs), min(ys), min(zs)), (max(xs), max(ys), max(zs))
+
+
+def bbox_size(bbox_min, bbox_max):
+    return max(bbox_max[0] - bbox_min[0], bbox_max[1] - bbox_min[1], bbox_max[2] - bbox_min[2])
+
+
 def frame_camera(bbox_min, bbox_max, angle_deg, margin):
     center = mathutils.Vector(((bbox_min[0] + bbox_max[0]) / 2,
                                (bbox_min[1] + bbox_max[1]) / 2,
                                (bbox_min[2] + bbox_max[2]) / 2))
-    size = max(bbox_max[0] - bbox_min[0], bbox_max[1] - bbox_min[1], bbox_max[2] - bbox_min[2])
+    size = bbox_size(bbox_min, bbox_max)
     dist = size * 4 + 0.5
     theta = math.radians(angle_deg)
     offset = mathutils.Vector((-dist * math.sin(theta), -dist * math.cos(theta), 0))
@@ -145,16 +163,37 @@ for mid in wanted:
         print(f"[warn] no mapping for {mid}, skipping", flush=True)
         continue
 
-    mesh = bake_world_mesh(entry["blenderObjects"], f"panel_{mid}")
+    objects = entry["blenderObjects"]
+    mesh = bake_world_mesh(objects, f"panel_{mid}")
     if len(mesh.vertices) == 0:
         print(f"[warn] {mid}: empty bake, skipping", flush=True)
         continue
 
-    xs = [v.co.x for v in mesh.vertices]
-    ys = [v.co.y for v in mesh.vertices]
-    zs = [v.co.z for v in mesh.vertices]
-    bmin = (min(xs), min(ys), min(zs))
-    bmax = (max(xs), max(ys), max(zs))
+    bmin, bmax = mesh_bbox(mesh)
+
+    # FRAME ONE SIDE WHEN THE PAIR IS WHAT IS WIDE, NOT THE MUSCLE.
+    #
+    # Nearly every muscle here is a .l/.r pair, and framing their union means
+    # framing the gap between them. For a thigh or a shoulder that gap is
+    # roughly the muscle's own size and the shot is fine. For the hand
+    # intrinsics it is the entire width of the body: opponens pollicis came
+    # out as a full skeleton with two invisible specks in it, and eight
+    # panels were unusable for exactly this reason.
+    #
+    # So: if one side alone is dramatically tighter than the union, the union
+    # is measuring the pose rather than the anatomy — frame the side instead.
+    # Both sides still render highlighted; only the camera changes. The
+    # threshold is deliberately loose so muscles that genuinely read better
+    # as a symmetric pair keep their existing framing.
+    side = [o for o in objects if o.endswith(".l")] or [o for o in objects if o.endswith(".r")]
+    if side and len(side) < len(objects):
+        side_mesh = bake_world_mesh(side, f"frame_{mid}")
+        if len(side_mesh.vertices) > 0:
+            smin, smax = mesh_bbox(side_mesh)
+            if bbox_size(bmin, bmax) > bbox_size(smin, smax) * SIDE_FRAMING_RATIO:
+                bmin, bmax = smin, smax
+                print(f"[frame] {mid}: framed on one side", flush=True)
+        bpy.data.meshes.remove(side_mesh)
 
     for frame in views:
         frame_camera(bmin, bmax, frame * 360.0 / a.frames, a.margin)
