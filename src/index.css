@@ -1,4 +1,6 @@
 @import 'tailwindcss';
+/* Self-hosted web fonts (CR-023) — see src/scripts/fetchFonts.ts. */
+@import "./fonts.generated.css";
 
 /*
  * Press · light — the MSK Atlas design tokens (from the Claude Design
