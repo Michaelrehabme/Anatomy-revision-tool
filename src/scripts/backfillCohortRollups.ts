@@ -1,15 +1,5 @@
-import { initializeApp } from 'firebase/app';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
-import {
-  collection,
-  doc,
-  getDocs,
-  getFirestore,
-  query,
-  where,
-  writeBatch,
-  type Firestore,
-} from 'firebase/firestore';
+import { getFirestore, type Firestore } from 'firebase-admin/firestore';
+import { getAdminApp } from '../../scripts/firebaseAdmin';
 import type { UserAttempt } from '../features/anatomy-revision/types/attempt';
 import { buildConfusionStats, buildStudentStats, confusionKeyFor } from '../features/educator/lib/rollupFromAttempts';
 
@@ -17,63 +7,46 @@ import { buildConfusionStats, buildStudentStats, confusionKeyFor } from '../feat
  * One-off migration for CR-031: rebuilds every cohort's rollup counters from
  * the attempt log.
  *
- * WHY IT HAS TO EXIST. The counters are written incrementally as students
- * answer questions, so without this a class that has been running all term
- * shows its educator an empty dashboard from the moment the new read path
- * ships — the worst possible morning for it to happen, since that is the
- * morning they were told to go and look at it.
+ * WHY IT EXISTS. The counters are written incrementally as students answer
+ * questions, so without this a class that has been running all term shows its
+ * educator an empty dashboard from the moment the new read path ships — the
+ * worst possible morning for it, since that is the morning they were told to
+ * go and look at it.
  *
- * WHY IT RUNS AS AN ADMIN. It reads attemptEvents across every user, which is
- * exactly the access CR-031 takes away from educators and leaves with admins.
- * The rollup collections grant admin write for this script and nothing else;
- * see the comments on those rules.
+ * WHY THE ADMIN SDK. It reads attemptEvents across every user, which is
+ * exactly the access CR-031 takes away from educators. Going through the
+ * Admin SDK rather than signing in as an admin in the client means the rules
+ * need no admin write grant on the rollup collections at all — a permanent
+ * widening of who may write derived student data, in exchange for a migration
+ * that runs once, was the wrong trade. It also sidesteps the fact that an
+ * owner who only ever signs in with Google has no password to sign a script
+ * in with.
  *
- * WHAT IT CANNOT RECOVER. Nothing, from the attempt log — the confusion pairs
+ * WHAT IT CANNOT RECOVER. Nothing, from the attempt log — confusion pairs
  * included, since attemptEvents still carries the answer text. This is the
  * last moment that is true for any data being migrated: the counters are the
  * only record from here on.
  *
  * Usage — dry run first, always:
  *
- *   npx tsx src/scripts/backfillCohortRollups.ts
- *   npx tsx src/scripts/backfillCohortRollups.ts --write
+ *   GOOGLE_APPLICATION_CREDENTIALS=./service-account.json \
+ *     npx tsx src/scripts/backfillCohortRollups.ts
+ *   GOOGLE_APPLICATION_CREDENTIALS=./service-account.json \
+ *     npx tsx src/scripts/backfillCohortRollups.ts --write
  *
- * Needs the VITE_FIREBASE_* values from .env plus an admin's credentials:
- *
- *   BACKFILL_EMAIL=you@example.com BACKFILL_PASSWORD=... npx tsx ... --write
+ * The key comes from Firebase console -> Project settings -> Service accounts
+ * -> Generate new private key, the same one scripts/setAdmin.ts needs. Never
+ * commit it.
  *
  * Idempotent: every document is written with set() rather than incremented,
- * so running it twice produces the same result as running it once. It is a
+ * so running it twice gives the same result as running it once. It is a
  * REPLACEMENT, though — run it while students are actively answering and any
- * counter that moved between the read and the write is lost. Run it before
- * the rules are deployed, or at a quiet hour.
+ * counter that moved between the read and the write is lost. Run it at a
+ * quiet hour, or before the class is told about the dashboard.
  */
 
 const WRITE = process.argv.includes('--write');
 const BATCH_LIMIT = 400; // Firestore's limit is 500; leave headroom.
-
-function env(name: string): string {
-  const value = process.env[name];
-  if (!value) throw new Error(`${name} is not set. Source it from .env, or pass it on the command line.`);
-  return value;
-}
-
-async function connect(): Promise<Firestore> {
-  const app = initializeApp({
-    apiKey: env('VITE_FIREBASE_API_KEY'),
-    authDomain: env('VITE_FIREBASE_AUTH_DOMAIN'),
-    projectId: env('VITE_FIREBASE_PROJECT_ID'),
-    storageBucket: process.env.VITE_FIREBASE_STORAGE_BUCKET,
-    messagingSenderId: process.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-    appId: process.env.VITE_FIREBASE_APP_ID,
-  });
-
-  // Signed in as a real admin rather than through the Admin SDK: this needs no
-  // service-account key on anyone's laptop, and it exercises the same rules
-  // the app does, so a run that succeeds is evidence the rules permit it.
-  await signInWithEmailAndPassword(getAuth(app), env('BACKFILL_EMAIL'), env('BACKFILL_PASSWORD'));
-  return getFirestore(app);
-}
 
 interface CohortPlan {
   cohortId: string;
@@ -82,23 +55,22 @@ interface CohortPlan {
 }
 
 async function plan(db: Firestore): Promise<CohortPlan[]> {
-  const cohorts = await getDocs(collection(db, 'cohorts'));
+  const cohorts = await db.collection('cohorts').get();
   const plans: CohortPlan[] = [];
 
   for (const cohortDoc of cohorts.docs) {
     const cohortId = cohortDoc.id;
     const cohortName = (cohortDoc.data().name as string) ?? cohortId;
 
-    // Membership lives on the student's own profile, not on a roster array in
-    // the cohort — see cohortsRepository.
-    const members = await getDocs(query(collection(db, 'users'), where('cohort', '==', cohortId)));
+    // Membership lives on the student's own profile, not in a roster array on
+    // the cohort — see educator/data/cohortsRepository.ts.
+    const members = await db.collection('users').where('cohort', '==', cohortId).get();
 
     const students = [];
     for (const member of members.docs) {
-      const uid = member.id;
-      const snapshot = await getDocs(query(collection(db, 'attemptEvents'), where('userId', '==', uid)));
+      const snapshot = await db.collection('attemptEvents').where('userId', '==', member.id).get();
       students.push({
-        uid,
+        uid: member.id,
         displayName: (member.data().displayName as string | null) ?? null,
         attempts: snapshot.docs.map((d) => d.data() as UserAttempt),
       });
@@ -112,13 +84,13 @@ async function plan(db: Firestore): Promise<CohortPlan[]> {
 
 async function apply(db: Firestore, plans: CohortPlan[]): Promise<void> {
   for (const { cohortId, students } of plans) {
-    let batch = writeBatch(db);
+    let batch = db.batch();
     let queued = 0;
 
     const flush = async () => {
       if (queued === 0) return;
       await batch.commit();
-      batch = writeBatch(db);
+      batch = db.batch();
       queued = 0;
     };
 
@@ -126,7 +98,7 @@ async function apply(db: Firestore, plans: CohortPlan[]): Promise<void> {
       if (student.attempts.length === 0) continue;
       const stats = buildStudentStats(student.uid, student.displayName, student.attempts);
 
-      batch.set(doc(db, 'cohorts', cohortId, 'studentStats', student.uid), {
+      batch.set(db.doc(`cohorts/${cohortId}/studentStats/${student.uid}`), {
         uid: stats.uid,
         displayName: stats.displayName,
         attemptsTotal: stats.attemptsTotal,
@@ -134,8 +106,10 @@ async function apply(db: Firestore, plans: CohortPlan[]): Promise<void> {
         gradedCorrect: stats.gradedCorrect,
         lastActiveAt: stats.lastActiveAt,
         structures: stats.structures,
-        // Back to the wire shape: a map of day -> counters, which is what the
-        // incremental writes produce and what the read path parses.
+        // Back to the wire shape: day -> counters, which is what the
+        // incremental writes produce and what the read path parses. attempts
+        // counts everything (a learn-card day is still a day worked), graded
+        // and correct are the accuracy pair.
         days: Object.fromEntries(
           stats.activeDays.map((day) => {
             const tally = stats.dayTallies.get(day);
@@ -148,7 +122,10 @@ async function apply(db: Firestore, plans: CohortPlan[]): Promise<void> {
     }
 
     for (const pair of buildConfusionStats(students.flatMap((s) => s.attempts))) {
-      batch.set(doc(db, 'cohorts', cohortId, 'confusionStats', confusionKeyFor(pair.correctAnswer, pair.selectedAnswer)), pair);
+      batch.set(
+        db.doc(`cohorts/${cohortId}/confusionStats/${confusionKeyFor(pair.correctAnswer, pair.selectedAnswer)}`),
+        pair,
+      );
       queued += 1;
       if (queued >= BATCH_LIMIT) await flush();
     }
@@ -158,8 +135,10 @@ async function apply(db: Firestore, plans: CohortPlan[]): Promise<void> {
 }
 
 async function main(): Promise<void> {
-  const db = await connect();
+  const db = getFirestore(getAdminApp());
   const plans = await plan(db);
+
+  if (plans.length === 0) console.log('No cohorts found.');
 
   for (const { cohortId, cohortName, students } of plans) {
     const active = students.filter((s) => s.attempts.length > 0);

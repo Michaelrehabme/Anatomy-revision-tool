@@ -165,21 +165,19 @@ service cloud.firestore {
 
     match /cohorts/{cohortId}/confusionStats/{pairKey} {
       allow read: if isAdmin() || ownsCohort(cohortId);
-      // Admin write is for the one-off backfill (src/scripts/backfillCohortRollups.ts).
-      // Unlike the users/{uid} rules above, which withhold write from admins
-      // on purpose, these documents are DERIVED — an admin rebuilding them
-      // from the attempt log they can already read alters no student's
-      // progress, and without it a class that existed before this shipped
-      // shows an educator an empty dashboard.
-      allow write: if isMemberOfCohort(cohortId) || isAdmin();
+      // Students only. The backfill that rebuilds these runs through the
+      // Admin SDK (src/scripts/backfillCohortRollups.ts), which bypasses rules
+      // entirely — so there is no reason to widen who may write derived
+      // student data here, permanently, for a migration that runs once.
+      allow write: if isMemberOfCohort(cohortId);
     }
 
     match /cohorts/{cohortId}/studentStats/{uid} {
       allow read: if isAdmin() || ownsCohort(cohortId);
       // Your own row only — a student cannot write another's totals, which is
-      // what stops one member rewriting a classmate's accuracy. Admin again
-      // for the backfill, same reasoning as above.
-      allow write: if (isMemberOfCohort(cohortId) && request.auth.uid == uid) || isAdmin();
+      // what stops one member rewriting a classmate's accuracy. No admin
+      // grant, for the reason given above.
+      allow write: if isMemberOfCohort(cohortId) && request.auth.uid == uid;
     }
 
     match /cohorts/{cohortId} {
