@@ -190,8 +190,10 @@ scene in `atlas/`:
 ```
 
 ~16 minutes for 381 renders. `ta2-mapping.resolved.json` maps all 122 muscle ids to their
-Z-Anatomy object names; it and the original `render_regions.py` are in git history (commits
-`c56f780` and `a8fb5c1`) rather than the working tree. **The camera framing in
+Z-Anatomy object names, and the original `render_regions.py` is kept verbatim at
+`src/scripts/blender/reference/`. Both were previously only in git history on commits
+`c56f780`/`a8fb5c1`, which sit on the retired pre-rewrite branches — deleting those branches
+would have made every render in this app unreproducible, so they are in the working tree now. **The camera framing in
 `renderRegionsWithBones.py` is copied verbatim from that original**, including deriving the
 region bounding box from the region's muscles only — that is what keeps new renders aligned
 with the stored polygons (verified at IoU 1.000000). Changing it silently invalidates every
