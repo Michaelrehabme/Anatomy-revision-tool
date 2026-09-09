@@ -1,12 +1,14 @@
 import { Link, useParams } from 'react-router-dom';
 import { useCohortAnalytics } from '../../hooks/useCohortAnalytics';
 
-function accuracyPct(attempts: { correct: boolean; graded?: boolean }[]): number | null {
-  // Learn cards are ungraded since CR-018 — counting them as correct would put
-  // every student who studied a deck of cards at or near 100%.
-  const graded = attempts.filter((a) => a.graded !== false);
-  if (graded.length === 0) return null;
-  return Math.round((graded.filter((a) => a.correct).length / graded.length) * 100);
+/**
+ * Learn cards are ungraded since CR-018 — counting them as correct would put
+ * every student who studied a deck of cards at or near 100%. The split is now
+ * made when the counters are written rather than here, so this divides by the
+ * graded total and never by the attempt total. See data/cohortRollups.ts.
+ */
+function accuracyPct(gradedCorrect: number, gradedTotal: number): number | null {
+  return gradedTotal > 0 ? Math.round((gradedCorrect / gradedTotal) * 100) : null;
 }
 
 /** Per-student accuracy/attempt-count summary, worst accuracy first, linking to each student's drill-down. Never shows raw answer-by-answer logs — see CR-012's privacy requirement. */
@@ -40,8 +42,14 @@ export function EducatorStudentsListScreen() {
 
   const rows = students
     .map((s) => {
-      const attempts = snapshot.attemptsByUid.get(s.uid) ?? [];
-      return { student: s, attemptCount: attempts.length, accuracyPct: accuracyPct(attempts) };
+      // A student who has joined but not yet answered anything has no rollup
+      // document at all; they belong in the table as a zero, not missing from it.
+      const stats = snapshot.statsByUid.get(s.uid);
+      return {
+        student: s,
+        attemptCount: stats?.attemptsTotal ?? 0,
+        accuracyPct: accuracyPct(stats?.gradedCorrect ?? 0, stats?.gradedTotal ?? 0),
+      };
     })
     .sort((a, b) => (a.accuracyPct ?? 101) - (b.accuracyPct ?? 101));
 

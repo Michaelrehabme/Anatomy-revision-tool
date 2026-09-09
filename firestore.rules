@@ -109,7 +109,7 @@ service cloud.firestore {
       // every student in their class, selectedAnswer included, and
       // cohortAnalytics pulled those rows into their browser to aggregate
       // client-side. Educators now read the counters under
-      // cohorts/{id}/structureStats, confusionStats and studentStats instead,
+      // cohorts/{id}/studentStats and confusionStats instead,
       // written on the student's own device. See educator/data/cohortRollups.ts.
     }
 
@@ -142,14 +142,16 @@ service cloud.firestore {
     // -------------------------------------------------------------------
     // Cohort rollups (CR-031). What an educator reads instead of student rows.
     //
-    // structureStats and confusionStats are COUNTERS — no uid, no timestamp,
-    // no document per answer — so there is nothing in them to correlate back
-    // to a person, even for someone reading the raw database. Anonymised event
-    // rows would not achieve that: in a class of forty, timing re-identifies.
+    // confusionStats is a COUNTER set — no uid, no timestamp, no document
+    // per answer — so there is nothing in it to correlate back to a person,
+    // even for someone reading the raw database. Anonymised event rows would
+    // not achieve that: in a class of forty, timing re-identifies.
     //
     // studentStats IS per-student, and that is the point: name, accuracy and
     // last-active are exactly what the join notice has always said a module
-    // leader sees.
+    // leader sees. Its structures and days maps are what the cohort-wide
+    // tables are summed from, so there is no separate per-structure
+    // collection — see educator/data/cohortRollups.ts.
     //
     // Writes come from the student's own device, so they are constrained to
     // members of that cohort. The residual risk is integrity, not privacy — a
@@ -161,21 +163,23 @@ service cloud.firestore {
       return isSignedIn() && cohortOfUser(request.auth.uid) == cohortId;
     }
 
-    match /cohorts/{cohortId}/structureStats/{structureId} {
-      allow read: if isAdmin() || ownsCohort(cohortId);
-      allow write: if isMemberOfCohort(cohortId);
-    }
-
     match /cohorts/{cohortId}/confusionStats/{pairKey} {
       allow read: if isAdmin() || ownsCohort(cohortId);
-      allow write: if isMemberOfCohort(cohortId);
+      // Admin write is for the one-off backfill (src/scripts/backfillCohortRollups.ts).
+      // Unlike the users/{uid} rules above, which withhold write from admins
+      // on purpose, these documents are DERIVED — an admin rebuilding them
+      // from the attempt log they can already read alters no student's
+      // progress, and without it a class that existed before this shipped
+      // shows an educator an empty dashboard.
+      allow write: if isMemberOfCohort(cohortId) || isAdmin();
     }
 
     match /cohorts/{cohortId}/studentStats/{uid} {
       allow read: if isAdmin() || ownsCohort(cohortId);
       // Your own row only — a student cannot write another's totals, which is
-      // what stops one member rewriting a classmate's accuracy.
-      allow write: if isMemberOfCohort(cohortId) && request.auth.uid == uid;
+      // what stops one member rewriting a classmate's accuracy. Admin again
+      // for the backfill, same reasoning as above.
+      allow write: if (isMemberOfCohort(cohortId) && request.auth.uid == uid) || isAdmin();
     }
 
     match /cohorts/{cohortId} {

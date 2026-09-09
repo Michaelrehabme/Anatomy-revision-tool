@@ -3,7 +3,7 @@ import { listStudentsInCohort } from '../data/cohortsRepository';
 import { loadCohortAnalytics, type CohortAnalyticsSnapshot } from '../data/cohortAnalytics';
 import type { CohortStudent } from '../types/cohort';
 
-/** Loads a cohort's student roster, then every attempt/session for those students, then runs the CR-005 aggregation functions over just that slice — see data/cohortAnalytics.ts. */
+/** Loads a cohort's student roster, then the cohort's rollup counters and those students' session summaries — see data/cohortAnalytics.ts. Attempt rows are deliberately never read (CR-031). */
 export function useCohortAnalytics(cohortId: string | undefined) {
   const [students, setStudents] = useState<CohortStudent[] | null>(null);
   const [snapshot, setSnapshot] = useState<CohortAnalyticsSnapshot | null>(null);
@@ -20,7 +20,7 @@ export function useCohortAnalytics(cohortId: string | undefined) {
       .then((roster) => {
         if (cancelled) return;
         setStudents(roster);
-        return loadCohortAnalytics(roster.map((s) => s.uid));
+        return loadCohortAnalytics(cohortId, roster.map((s) => s.uid));
       })
       .then((result) => {
         if (!cancelled && result) setSnapshot(result);

@@ -11,9 +11,11 @@ import { LegalLayout, legalHeading, legalProse } from './LegalLayout';
  *
  * Written to be read rather than to be survived: short sentences, the
  * educator-visibility section stated plainly, and no claim the system does not
- * keep. In particular it does NOT say educators cannot see individual answers
- * — they technically can, until CR-031 removes that access — so it says what
- * the app shows instead. See CohortMembership.tsx for the same wording.
+ * keep. The educator-visibility claim is now the strong one — a class owner
+ * cannot read individual answers, and that is enforced by firestore.rules
+ * rather than by what the UI renders (CR-031). See CohortMembership.tsx for
+ * the same wording, and the warning there about never shipping this sentence
+ * against rules that do not back it.
  *
  * NOT legal advice, and not a substitute for review before signing an
  * institutional contract.
@@ -106,10 +108,11 @@ export function PrivacyPage() {
           group finds hard, in time to reteach it.
         </p>
         <p>
-          The app does not show them a question-by-question record of your answers. It is honest to add that your answer
-          history is stored under your account and the current permissions covering a class owner extend to it, even
-          though nothing in the app presents it. Work is underway to remove that access entirely; this policy will be
-          updated when it is done.
+          They cannot see your individual answers. Not the questions you got wrong one by one, not what you picked
+          instead, not when you answered. What reaches them is counted up on your own device first — how often a
+          structure was attempted and how often it was right — so the answer-by-answer record never leaves your
+          account. This is enforced by the database’s own permission rules, not merely by what the app chooses to
+          display.
         </p>
         <p>
           Leaving a class is a single action on your account screen, takes effect immediately, and stops any further

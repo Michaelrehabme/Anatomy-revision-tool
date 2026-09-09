@@ -26,18 +26,25 @@ interface CohortMembershipProps {
  * both states so a student sees what an educator can see both before and
  * after joining.
  *
- * THE WORDING IS DELIBERATE, and weaker than it used to be. It said "never
- * your individual answers", which was a promise the system does not keep:
- * firestore.rules grants a cohort owner read on every attemptEvent of every
- * student in their class (selectedAnswer included), and cohortAnalytics
- * already pulls those records into the educator's browser to aggregate them
- * client-side. Nothing DISPLAYS them, which is why nobody sees this by
- * accident — but "the app does not show them" is the true claim, and a
- * privacy notice that overstates its protection is worse than one that does
- * not, particularly to a university asking how student data is handled.
+ * THE WORDING IS DELIBERATE, and it is a stronger claim than the system
+ * could make for most of its life. It said "never your individual answers"
+ * once before, untruthfully: firestore.rules granted a cohort owner read on
+ * every attemptEvent of every student in their class, selectedAnswer
+ * included, and cohortAnalytics pulled those records into the educator's
+ * browser to aggregate them client-side. Nothing displayed them, so nobody
+ * saw it by accident, but the access was real, and the sentence was retreated
+ * to "the app does not show them" — true, and visibly weaker.
  *
- * CR-031 is the actual fix: aggregate on write so the educator never reads
- * answer-level rows at all. Restore the stronger sentence when it lands.
+ * CR-031 made the strong sentence true. Educators read counters written on
+ * each student's own device (educator/data/cohortRollups.ts), and the
+ * attemptEvents read grant for cohort owners is gone from the rules. The
+ * promise is now enforced by the database rather than by what the UI happens
+ * to render.
+ *
+ * IT IS ONLY TRUE WHILE THOSE RULES ARE DEPLOYED. If this sentence is ever
+ * shipped against rules that still carry the cohort-owner grant on
+ * attemptEvents, it is a false privacy notice — which is worse than the weak
+ * one it replaced. Check firestore.rules before touching it.
  */
 export function CohortMembership({ uid, compact }: CohortMembershipProps) {
   const [cohort, setCohort] = useState<Cohort | null | 'loading'>('loading');
@@ -113,8 +120,7 @@ export function CohortMembership({ uid, compact }: CohortMembershipProps) {
             </button>
           </div>
           <div className="mt-2" style={noteStyle}>
-            Your educator sees your accuracy, streak and weak areas. The app does not show them a
-            question-by-question record of your answers.
+            Your educator sees your accuracy, streak and weak areas — never your individual answers.
           </div>
         </>
       ) : (
@@ -151,8 +157,8 @@ export function CohortMembership({ uid, compact }: CohortMembershipProps) {
             </div>
           )}
           <div className="mt-2" style={noteStyle}>
-            Joining a class lets your educator see your accuracy, streak and weak areas. The app does not show
-            them a question-by-question record of your answers. You can leave any time, which stops it.
+            Joining a class lets your educator see your accuracy, streak and weak areas — never your individual
+            answers. You can leave any time, which stops it.
           </div>
         </>
       )}

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { REGIONS, REGION_LABELS, type Region } from '../../../anatomy-revision/types/region';
-import type { UserAttempt } from '../../../anatomy-revision/types/attempt';
+import type { RevisionSessionSummary } from '../../../anatomy-revision/types/attempt';
 import { useCohortAnalytics } from '../../hooks/useCohortAnalytics';
 import { useEducatorSession } from '../RequireEducator';
 import { listAssignments, createAssignment } from '../../data/assignmentsRepository';
@@ -17,12 +17,12 @@ const inputStyle = {
   padding: '8px 10px',
 } as const;
 
-function AssignmentCard({ assignment, studentUids, attemptsByUid }: {
+function AssignmentCard({ assignment, studentUids, summariesByUid }: {
   assignment: Assignment;
   studentUids: string[];
-  attemptsByUid: Map<string, UserAttempt[]>;
+  summariesByUid: Map<string, RevisionSessionSummary[]>;
 }) {
-  const statuses = computeAssignmentCompletion(assignment, studentUids, attemptsByUid);
+  const statuses = computeAssignmentCompletion(assignment, studentUids, summariesByUid);
   const attemptedCount = statuses.filter((s) => s.attempted).length;
   const accuracies = statuses.filter((s) => s.accuracyPct !== null).map((s) => s.accuracyPct!);
   const meanAccuracy = accuracies.length > 0 ? Math.round(accuracies.reduce((a, b) => a + b, 0) / accuracies.length) : null;
@@ -158,7 +158,7 @@ export function EducatorAssignmentsScreen() {
               key={assignment.id}
               assignment={assignment}
               studentUids={students.map((s) => s.uid)}
-              attemptsByUid={snapshot.attemptsByUid}
+              summariesByUid={snapshot.summariesByUid}
             />
           ))}
         </div>

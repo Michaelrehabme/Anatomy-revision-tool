@@ -1,11 +1,16 @@
 import { Link, useParams } from 'react-router-dom';
 import { useCohortAnalytics } from '../../hooks/useCohortAnalytics';
-import { structureWeaknessForStudent } from '../../data/cohortAnalytics';
 import { computeStreak } from '../../../anatomy-revision/lib/streak';
 import { StatTile } from '../../../admin/components/Analytics/StatTile';
 import { REGION_LABELS } from '../../../anatomy-revision/types/region';
-import { accuracyTrend, accuracyDeltaByAttempts } from '../../../anatomy-revision/lib/accuracyTrend';
+import { ALL_STRUCTURES } from '../../../anatomy-revision/data/seed';
+import { accuracyTrendFromDayTallies, DELTA_MIN_SLICE } from '../../../anatomy-revision/lib/accuracyTrend';
 import { AccuracyTrendChart } from '../../../anatomy-revision/components/shared/AccuracyTrendChart';
+import {
+  accuracyDeltaFromDayTallies,
+  mergeDayTallies,
+  structureWeaknessForStudentStats,
+} from '../../lib/rollupAggregation';
 
 const WEAKEST_LIMIT = 8;
 
@@ -35,7 +40,7 @@ export function EducatorStudentDetailScreen() {
   if (!students || !snapshot || !uid) return null;
 
   const student = students.find((s) => s.uid === uid);
-  const attempts = snapshot.attemptsByUid.get(uid) ?? [];
+  const stats = snapshot.statsByUid.get(uid);
   const summaries = snapshot.summariesByUid.get(uid) ?? [];
 
   if (!student) {
@@ -46,14 +51,18 @@ export function EducatorStudentDetailScreen() {
     );
   }
 
-  // Learn cards are ungraded since CR-018 and belong in neither half of this ratio.
-  const graded = attempts.filter((a) => a.graded !== false);
-  const correct = graded.filter((a) => a.correct).length;
-  const accuracyPct = graded.length > 0 ? Math.round((correct / graded.length) * 100) : null;
+  // Learn cards are ungraded since CR-018 and belong in neither half of this
+  // ratio; the split is made when the counters are written, so this divides by
+  // the graded total. A student with no rollup document has simply not
+  // answered anything yet — every figure below is a zero, not an error.
+  const accuracyPct =
+    stats && stats.gradedTotal > 0 ? Math.round((stats.gradedCorrect / stats.gradedTotal) * 100) : null;
   const streak = computeStreak(summaries);
-  const weakest = structureWeaknessForStudent(attempts).slice(0, WEAKEST_LIMIT);
-  const trend = accuracyTrend(attempts, [...snapshot.attemptsByUid.values()].flat());
-  const delta = accuracyDeltaByAttempts(attempts);
+  const weakest = stats ? structureWeaknessForStudentStats(stats, ALL_STRUCTURES).slice(0, WEAKEST_LIMIT) : [];
+  const trend = stats
+    ? accuracyTrendFromDayTallies(stats.dayTallies, mergeDayTallies([...snapshot.statsByUid.values()]))
+    : [];
+  const delta = stats ? accuracyDeltaFromDayTallies(stats.dayTallies, DELTA_MIN_SLICE) : null;
   const displayName = student.displayName ?? student.email ?? student.uid;
 
   return (
@@ -66,7 +75,7 @@ export function EducatorStudentDetailScreen() {
       </h1>
 
       <div className="mt-6 flex flex-wrap gap-3">
-        <StatTile label="Total attempts" value={String(attempts.length)} />
+        <StatTile label="Total attempts" value={String(stats?.attemptsTotal ?? 0)} />
         <StatTile label="Accuracy" value={accuracyPct !== null ? `${accuracyPct}%` : '—'} />
         <StatTile label="Current streak" value={`${streak} ${streak === 1 ? 'day' : 'days'}`} />
         <StatTile label="Last active" value={student.lastActiveAt ? new Date(student.lastActiveAt).toLocaleDateString() : '—'} />
@@ -81,7 +90,7 @@ export function EducatorStudentDetailScreen() {
               {delta.deltaPts} pts
               <span style={{ color: 'var(--ink3)' }}>
                 {' '}
-                · first {delta.sliceSize} attempts {delta.firstPct}% → last {delta.sliceSize} {delta.lastPct}%
+                · first ~{delta.sliceSize} attempts {delta.firstPct}% → last ~{delta.sliceSize} {delta.lastPct}%
               </span>
             </span>
           )}

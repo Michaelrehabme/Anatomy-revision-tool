@@ -40,7 +40,13 @@ export interface AccuracyTrendPoint {
 
 const toDateKey = (iso: string): string => iso.slice(0, 10);
 
-interface DayTally {
+/**
+ * One day's worth of answers. Exported because the educator's copy of this
+ * chart is built from cohort rollup counters rather than attempt rows
+ * (CR-031) — it has day totals and nothing finer, and the windowing rules
+ * below are what must not be duplicated to serve it.
+ */
+export interface DayTally {
   total: number;
   correct: number;
 }
@@ -81,9 +87,26 @@ export function accuracyTrend(
   minAttempts: number = ACCURACY_MIN_ATTEMPTS_DEFAULT,
 ): AccuracyTrendPoint[] {
   if (studentAttempts.length === 0) return [];
+  return accuracyTrendFromDayTallies(
+    tallyByDay(studentAttempts),
+    tallyByDay(cohortAttempts),
+    windowDays,
+    minAttempts,
+  );
+}
 
-  const studentByDay = tallyByDay(studentAttempts);
-  const cohortByDay = tallyByDay(cohortAttempts);
+/**
+ * The chart itself, over day tallies. Everything above is a way of producing
+ * those from attempt rows; an educator reading rollup counters already has
+ * them and must never read the rows.
+ */
+export function accuracyTrendFromDayTallies(
+  studentByDay: Map<string, DayTally>,
+  cohortByDay: Map<string, DayTally>,
+  windowDays: number = ACCURACY_WINDOW_DAYS_DEFAULT,
+  minAttempts: number = ACCURACY_MIN_ATTEMPTS_DEFAULT,
+): AccuracyTrendPoint[] {
+  if (studentByDay.size === 0) return [];
 
   const dayKeys = [...studentByDay.keys()].sort();
   const firstDay = Date.parse(`${dayKeys[0]}T00:00:00.000Z`);
