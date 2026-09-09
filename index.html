@@ -11,11 +11,16 @@
     <link rel="manifest" href="/manifest.webmanifest" />
     <!-- Ink navy: the browser chrome and Android status bar take the brand, not the page ground. -->
     <meta name="theme-color" content="#1f2a44" />
-    <!-- SVG first for browsers that scale it themselves; the 32px PNG is the fallback. -->
+    <!-- SVG first for browsers that scale it themselves, and it is the only cut
+         that follows the tab strip into dark mode — the navy figure is drawn on
+         chrome we do not control. The PNGs are the fallback for browsers that
+         will not take an SVG here, and cannot adapt. -->
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/icons/favicon-32.png" sizes="32x32" type="image/png" />
-    <!-- iOS ignores the manifest icons and composites transparency onto black,
-         so this one is pre-flattened onto bone. See src/scripts/generateIcons.ts. -->
+    <link rel="icon" href="/icons/favicon-16.png" sizes="16x16" type="image/png" />
+    <!-- iOS ignores the manifest icons and rounds the corners itself, so this is
+         the full-bleed navy app icon with no alpha channel at all. See
+         src/scripts/generateIcons.ts. -->
     <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
     <!--
       Fonts are self-hosted from public/fonts/ rather than loaded from the
