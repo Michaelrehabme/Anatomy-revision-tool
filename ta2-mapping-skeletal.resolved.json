@@ -4,12 +4,12 @@
  "note": "Bone, landmark and joint structures that still need a real image. Hand-edited entries are preserved on regeneration; set resolution to \"manual\" when you fill one in.",
  "counts": {
   "total": 187,
-  "resolved": 151,
-  "unresolved": 36,
+  "resolved": 62,
+  "unresolved": 125,
   "byResolution": {
-   "object-name": 131,
+   "object-name": 42,
+   "unresolved": 125,
    "manual": 11,
-   "unresolved": 36,
    "collection-name": 9
   }
  },
@@ -390,10 +390,12 @@
    "name": "Sternum",
    "category": "bone",
    "region": "back-core",
-   "blenderObjects": [
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
     "Sternum.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "tarsals",
@@ -539,10 +541,12 @@
    "name": "Facet (Zygapophyseal) Joint",
    "category": "joint",
    "region": "back-core",
-   "blenderObjects": [
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
     "Thoracic joints.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "glenohumeral-joint",
@@ -572,10 +576,12 @@
    "name": "Hip Joint",
    "category": "joint",
    "region": "hip-thigh",
-   "blenderObjects": [
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
     "Hip joint.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "humeroradial-joint",
@@ -638,10 +644,12 @@
    "name": "Metatarsophalangeal Joint",
    "category": "joint",
    "region": "lower-leg-foot",
-   "blenderObjects": [
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
     "Metatarsophalangeal joints.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "midcarpal-joint",
@@ -690,10 +698,12 @@
    "name": "Radiocarpal Joint",
    "category": "joint",
    "region": "forearm-hand",
-   "blenderObjects": [
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
     "Radiocarpal joint.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "sacroiliac-joint",
@@ -756,20 +766,24 @@
    "name": "Talocrural Joint",
    "category": "joint",
    "region": "lower-leg-foot",
-   "blenderObjects": [
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
     "Ankle joint.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "tibiofemoral-joint",
    "name": "Tibiofemoral Joint",
    "category": "joint",
    "region": "hip-thigh",
-   "blenderObjects": [
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
     "Knee joint.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "transverse-tarsal-joint",
@@ -799,50 +813,60 @@
    "name": "Acetabulum",
    "category": "landmark",
    "region": "hip-thigh",
-   "blenderObjects": [
-    "Acetabulum.i"
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
+    "Acetabulum.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "acromion",
    "name": "Acromion",
    "category": "landmark",
    "region": "shoulder-arm",
-   "blenderObjects": [
-    "Acromion.i"
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
+    "Acromion.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "adductor-tubercle",
    "name": "Adductor Tubercle",
    "category": "landmark",
    "region": "hip-thigh",
-   "blenderObjects": [
-    "Adductor tubercle.i"
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
+    "Adductor tubercle.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "aiis",
    "name": "Anterior Inferior Iliac Spine (AIIS)",
    "category": "landmark",
    "region": "hip-thigh",
-   "blenderObjects": [
-    "Anterior inferior iliac spine.i"
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
+    "Anterior inferior iliac spine.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "anatomical-neck-humerus",
    "name": "Anatomical Neck of Humerus",
    "category": "landmark",
    "region": "shoulder-arm",
-   "blenderObjects": [
-    "Anatomical neck of humerus.i"
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
+    "Anatomical neck of humerus.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "anatomical-snuffbox",
@@ -865,30 +889,36 @@
    "name": "Anterior Arch of Atlas",
    "category": "landmark",
    "region": "back-core",
-   "blenderObjects": [
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
     "Anterior arch of atlas.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "anterior-sacral-foramina",
    "name": "Anterior Sacral Foramina",
    "category": "landmark",
    "region": "back-core",
-   "blenderObjects": [
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
     "Anterior sacral foramina.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "asis",
    "name": "Anterior Superior Iliac Spine (ASIS)",
    "category": "landmark",
    "region": "hip-thigh",
-   "blenderObjects": [
-    "Anterior superior iliac spine.i"
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
+    "Anterior superior iliac spine.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "auricular-surface",
@@ -919,30 +949,36 @@
    "name": "Bifid Spinous Process",
    "category": "landmark",
    "region": "back-core",
-   "blenderObjects": [
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
     "Spinous process.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "c7-spinous-process",
    "name": "C7 Spinous Process",
    "category": "landmark",
    "region": "back-core",
-   "blenderObjects": [
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
     "Spinous process.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "calcaneal-tuberosity",
    "name": "Calcaneal Tuberosity",
    "category": "landmark",
    "region": "lower-leg-foot",
-   "blenderObjects": [
-    "Calcaneal tuberosity.i"
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
+    "Calcaneal tuberosity.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "calcaneus",
@@ -979,20 +1015,24 @@
    "name": "Coracoid Process",
    "category": "landmark",
    "region": "shoulder-arm",
-   "blenderObjects": [
-    "Coracoid process.i"
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
+    "Coracoid process.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "coronoid-process-ulna",
    "name": "Coronoid Process of Ulna",
    "category": "landmark",
    "region": "forearm-hand",
-   "blenderObjects": [
-    "Coronoid process of ulna.i"
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
+    "Coronoid process of ulna.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "costal-margin",
@@ -1018,10 +1058,12 @@
    "name": "Deltoid Tuberosity",
    "category": "landmark",
    "region": "shoulder-arm",
-   "blenderObjects": [
-    "Deltoid tuberosity.i"
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
+    "Deltoid tuberosity.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "dens-odontoid-process",
@@ -1036,20 +1078,24 @@
    "name": "Femoral Head",
    "category": "landmark",
    "region": "hip-thigh",
-   "blenderObjects": [
-    "Head of femur.i"
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
+    "Head of femur.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "femoral-neck",
    "name": "Femoral Neck",
    "category": "landmark",
    "region": "hip-thigh",
-   "blenderObjects": [
-    "Neck of femur.i"
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
+    "Neck of femur.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "first-rib",
@@ -1075,30 +1121,36 @@
    "name": "Glenoid Cavity",
    "category": "landmark",
    "region": "shoulder-arm",
-   "blenderObjects": [
-    "Glenoid fossa.i"
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
+    "Glenoid fossa.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "greater-trochanter",
    "name": "Greater Trochanter",
    "category": "landmark",
    "region": "hip-thigh",
-   "blenderObjects": [
-    "Greater trochanter.i"
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
+    "Greater trochanter.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "greater-tubercle-humerus",
    "name": "Greater Tubercle of Humerus",
    "category": "landmark",
    "region": "shoulder-arm",
-   "blenderObjects": [
-    "Greater tubercle.i"
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
+    "Greater tubercle.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "hamate",
@@ -1116,10 +1168,12 @@
    "name": "Head of Fibula",
    "category": "landmark",
    "region": "lower-leg-foot",
-   "blenderObjects": [
-    "Head of fibula.i"
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
+    "Head of fibula.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "head-of-first-metacarpal",
@@ -1142,50 +1196,60 @@
    "name": "Head of Radius",
    "category": "landmark",
    "region": "forearm-hand",
-   "blenderObjects": [
-    "Head of radius.i"
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
+    "Head of radius.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "hook-of-hamate",
    "name": "Hook of Hamate",
    "category": "landmark",
    "region": "forearm-hand",
-   "blenderObjects": [
-    "Hook of hamate bone.i"
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
+    "Hook of hamate bone.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "iliac-crest",
    "name": "Iliac Crest",
    "category": "landmark",
    "region": "hip-thigh",
-   "blenderObjects": [
-    "Iliac crest.i"
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
+    "Iliac crest.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "ilium",
    "name": "Ilium",
    "category": "landmark",
    "region": "hip-thigh",
-   "blenderObjects": [
-    "Ilium.i"
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
+    "Ilium.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "inferior-angle-scapula",
    "name": "Inferior Angle of Scapula",
    "category": "landmark",
    "region": "shoulder-arm",
-   "blenderObjects": [
-    "Inferior angle of scapula.i"
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
+    "Inferior angle of scapula.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "inferior-articular-process",
@@ -1200,40 +1264,48 @@
    "name": "Inferior Costal Facet",
    "category": "landmark",
    "region": "back-core",
-   "blenderObjects": [
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
     "Inferior costal facet.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "infraspinous-fossa",
    "name": "Infraspinous Fossa",
    "category": "landmark",
    "region": "shoulder-arm",
-   "blenderObjects": [
-    "Infraspinous fossa.i"
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
+    "Infraspinous fossa.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "intercondylar-eminence-tibia",
    "name": "Intercondylar Eminence of Tibia",
    "category": "landmark",
    "region": "hip-thigh",
-   "blenderObjects": [
-    "Intercondylar eminence.i"
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
+    "Intercondylar eminence.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "intercondylar-fossa-femur",
    "name": "Intercondylar Fossa of Femur",
    "category": "landmark",
    "region": "hip-thigh",
-   "blenderObjects": [
-    "Intercondylar fossa.i"
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
+    "Intercondylar fossa.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "intermediate-cuneiform",
@@ -1251,20 +1323,24 @@
    "name": "Intertrochanteric Line",
    "category": "landmark",
    "region": "hip-thigh",
-   "blenderObjects": [
-    "Intertrochanteric line.i"
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
+    "Intertrochanteric line.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "intertubercular-sulcus",
    "name": "Intertubercular Sulcus",
    "category": "landmark",
    "region": "shoulder-arm",
-   "blenderObjects": [
-    "Intertubercular sulcus.i"
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
+    "Intertubercular sulcus.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "intervertebral-disc",
@@ -1327,30 +1403,36 @@
    "name": "Intervertebral Foramen",
    "category": "landmark",
    "region": "back-core",
-   "blenderObjects": [
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
     "Intervertebral foramen.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "ischial-tuberosity",
    "name": "Ischial Tuberosity",
    "category": "landmark",
    "region": "hip-thigh",
-   "blenderObjects": [
-    "Ischial tuberosity.i"
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
+    "Ischial tuberosity.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "ischium",
    "name": "Ischium",
    "category": "landmark",
    "region": "hip-thigh",
-   "blenderObjects": [
-    "Ischium.i"
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
+    "Ischium.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "jugular-notch",
@@ -1401,20 +1483,24 @@
    "name": "Lateral Condyle of Femur",
    "category": "landmark",
    "region": "hip-thigh",
-   "blenderObjects": [
-    "Lateral condyle of femur.i"
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
+    "Lateral condyle of femur.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "lateral-condyle-tibia",
    "name": "Lateral Condyle of Tibia",
    "category": "landmark",
    "region": "hip-thigh",
-   "blenderObjects": [
-    "Lateral condyle of tibia.i"
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
+    "Lateral condyle of tibia.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "lateral-cuneiform",
@@ -1432,20 +1518,24 @@
    "name": "Lateral Epicondyle of Femur",
    "category": "landmark",
    "region": "hip-thigh",
-   "blenderObjects": [
-    "Lateral epicondyle of femur.i"
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
+    "Lateral epicondyle of femur.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "lateral-epicondyle-humerus",
    "name": "Lateral Epicondyle of Humerus",
    "category": "landmark",
    "region": "shoulder-arm",
-   "blenderObjects": [
-    "Lateral epicondyle of humerus.i"
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
+    "Lateral epicondyle of humerus.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "lateral-malleolus",
@@ -1453,7 +1543,8 @@
    "category": "landmark",
    "region": "lower-leg-foot",
    "blenderObjects": [
-    "Lateral malleolus.i"
+    "Lateral malleolus.l",
+    "Lateral malleolus.r"
    ],
    "resolution": "object-name"
   },
@@ -1462,40 +1553,48 @@
    "name": "Lateral Mass of Atlas",
    "category": "landmark",
    "region": "back-core",
-   "blenderObjects": [
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
     "Lateral mass.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "lesser-trochanter",
    "name": "Lesser Trochanter",
    "category": "landmark",
    "region": "hip-thigh",
-   "blenderObjects": [
-    "Lesser trochanter.i"
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
+    "Lesser trochanter.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "lesser-tubercle-humerus",
    "name": "Lesser Tubercle of Humerus",
    "category": "landmark",
    "region": "shoulder-arm",
-   "blenderObjects": [
-    "Lesser tubercle.i"
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
+    "Lesser tubercle.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "linea-aspera",
    "name": "Linea Aspera",
    "category": "landmark",
    "region": "hip-thigh",
-   "blenderObjects": [
-    "Linea aspera.i"
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
+    "Linea aspera.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "lunate",
@@ -1521,20 +1620,24 @@
    "name": "Medial Condyle of Femur",
    "category": "landmark",
    "region": "hip-thigh",
-   "blenderObjects": [
-    "Medial condyle of femur.i"
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
+    "Medial condyle of femur.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "medial-condyle-tibia",
    "name": "Medial Condyle of Tibia",
    "category": "landmark",
    "region": "hip-thigh",
-   "blenderObjects": [
-    "Medial condyle of tibia.i"
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
+    "Medial condyle of tibia.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "medial-cuneiform",
@@ -1552,20 +1655,24 @@
    "name": "Medial Epicondyle of Femur",
    "category": "landmark",
    "region": "hip-thigh",
-   "blenderObjects": [
-    "Medial epicondyle of femur.i"
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
+    "Medial epicondyle of femur.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "medial-epicondyle-humerus",
    "name": "Medial Epicondyle of Humerus",
    "category": "landmark",
    "region": "shoulder-arm",
-   "blenderObjects": [
-    "Medial epicondyle of humerus.i"
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
+    "Medial epicondyle of humerus.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "medial-malleolus",
@@ -1573,7 +1680,8 @@
    "category": "landmark",
    "region": "lower-leg-foot",
    "blenderObjects": [
-    "Medial malleolus.i"
+    "Medial malleolus.l",
+    "Medial malleolus.r"
    ],
    "resolution": "object-name"
   },
@@ -1582,10 +1690,12 @@
    "name": "Median Sacral Crest",
    "category": "landmark",
    "region": "back-core",
-   "blenderObjects": [
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
     "Median sacral crest.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "navicular",
@@ -1603,40 +1713,48 @@
    "name": "Navicular Tuberosity",
    "category": "landmark",
    "region": "lower-leg-foot",
-   "blenderObjects": [
-    "Tuberosity of navicular bone.i"
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
+    "Tuberosity of navicular bone.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "neck-of-fibula",
    "name": "Neck of Fibula",
    "category": "landmark",
    "region": "lower-leg-foot",
-   "blenderObjects": [
-    "Neck of fibula.i"
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
+    "Neck of fibula.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "obturator-foramen",
    "name": "Obturator Foramen",
    "category": "landmark",
    "region": "hip-thigh",
-   "blenderObjects": [
-    "Obturator foramen.i"
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
+    "Obturator foramen.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "olecranon",
    "name": "Olecranon",
    "category": "landmark",
    "region": "forearm-hand",
-   "blenderObjects": [
-    "Olecranon.i"
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
+    "Olecranon.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "pars-interarticularis",
@@ -1670,110 +1788,132 @@
    "name": "Posterior Arch of Atlas",
    "category": "landmark",
    "region": "back-core",
-   "blenderObjects": [
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
     "Posterior arch of atlas.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "posterior-sacral-foramina",
    "name": "Posterior Sacral Foramina",
    "category": "landmark",
    "region": "back-core",
-   "blenderObjects": [
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
     "Posterior sacral foramina.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "psis",
    "name": "Posterior Superior Iliac Spine (PSIS)",
    "category": "landmark",
    "region": "hip-thigh",
-   "blenderObjects": [
-    "Posterior superior iliac spine.i"
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
+    "Posterior superior iliac spine.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "pubic-tubercle",
    "name": "Pubic Tubercle",
    "category": "landmark",
    "region": "hip-thigh",
-   "blenderObjects": [
-    "Pubic tubercle.i"
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
+    "Pubic tubercle.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "pubis",
    "name": "Pubis",
    "category": "landmark",
    "region": "hip-thigh",
-   "blenderObjects": [
-    "Pubis.i"
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
+    "Pubis.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "radial-styloid-process",
    "name": "Radial Styloid Process",
    "category": "landmark",
    "region": "forearm-hand",
-   "blenderObjects": [
-    "Radial styloid process.i"
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
+    "Radial styloid process.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "radial-tuberosity",
    "name": "Radial Tuberosity",
    "category": "landmark",
    "region": "forearm-hand",
-   "blenderObjects": [
-    "Radial tuberosity.i"
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
+    "Radial tuberosity.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "sacral-ala",
    "name": "Sacral Ala",
    "category": "landmark",
    "region": "back-core",
-   "blenderObjects": [
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
     "Ala of sacrum.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "sacral-apex",
    "name": "Sacral Apex",
    "category": "landmark",
    "region": "back-core",
-   "blenderObjects": [
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
     "Apex of sacrum.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "sacral-base",
    "name": "Sacral Base",
    "category": "landmark",
    "region": "back-core",
-   "blenderObjects": [
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
     "Base of sacrum.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "sacral-canal",
    "name": "Sacral Canal",
    "category": "landmark",
    "region": "back-core",
-   "blenderObjects": [
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
     "Sacral canal.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "sacral-cornua",
@@ -1788,10 +1928,12 @@
    "name": "Sacral Hiatus",
    "category": "landmark",
    "region": "back-core",
-   "blenderObjects": [
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
     "Sacral hiatus.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "sacral-promontory",
@@ -1817,40 +1959,48 @@
    "name": "Scaphoid Tubercle",
    "category": "landmark",
    "region": "forearm-hand",
-   "blenderObjects": [
-    "Tubercle of scaphoid bone.i"
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
+    "Tubercle of scaphoid bone.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "spine-of-scapula",
    "name": "Spine of Scapula",
    "category": "landmark",
    "region": "shoulder-arm",
-   "blenderObjects": [
-    "Spine of scapula.i"
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
+    "Spine of scapula.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "spinous-process",
    "name": "Spinous Process",
    "category": "landmark",
    "region": "back-core",
-   "blenderObjects": [
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
     "Spinous process.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "sternal-angle",
    "name": "Sternal Angle",
    "category": "landmark",
    "region": "back-core",
-   "blenderObjects": [
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
     "Sternal angle.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "sternal-body",
@@ -1867,10 +2017,12 @@
    "name": "Superior Angle of Scapula",
    "category": "landmark",
    "region": "shoulder-arm",
-   "blenderObjects": [
-    "Superior angle of scapula.i"
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
+    "Superior angle of scapula.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "superior-articular-process",
@@ -1885,50 +2037,60 @@
    "name": "Superior Articular Process (Sacrum)",
    "category": "landmark",
    "region": "back-core",
-   "blenderObjects": [
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
     "Superior articular process of sacrum.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "superior-costal-facet",
    "name": "Superior Costal Facet",
    "category": "landmark",
    "region": "back-core",
-   "blenderObjects": [
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
     "Superior costal facet.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "supraspinous-fossa",
    "name": "Supraspinous Fossa",
    "category": "landmark",
    "region": "shoulder-arm",
-   "blenderObjects": [
-    "Supraspinous fossa.i"
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
+    "Supraspinous fossa.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "surgical-neck-humerus",
    "name": "Surgical Neck of Humerus",
    "category": "landmark",
    "region": "shoulder-arm",
-   "blenderObjects": [
-    "Surgical neck of humerus.i"
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
+    "Surgical neck of humerus.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "sustentaculum-tali",
    "name": "Sustentaculum Tali",
    "category": "landmark",
    "region": "lower-leg-foot",
-   "blenderObjects": [
-    "Sustentaculum tali.i"
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
+    "Sustentaculum tali.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "talus",
@@ -1946,40 +2108,48 @@
    "name": "Tibial Crest",
    "category": "landmark",
    "region": "lower-leg-foot",
-   "blenderObjects": [
-    "Anterior border of tibia.i"
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
+    "Anterior border of tibia.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "tibial-plateau",
    "name": "Tibial Plateau",
    "category": "landmark",
    "region": "hip-thigh",
-   "blenderObjects": [
-    "Tibial plateau.i"
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
+    "Tibial plateau.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "tibial-tuberosity",
    "name": "Tibial Tuberosity",
    "category": "landmark",
    "region": "hip-thigh",
-   "blenderObjects": [
-    "Tibial tuberosity.i"
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
+    "Tibial tuberosity.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "transverse-costal-facet",
    "name": "Transverse Costal Facet",
    "category": "landmark",
    "region": "back-core",
-   "blenderObjects": [
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
     "Transverse costal facet.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "transverse-foramen",
@@ -1994,10 +2164,12 @@
    "name": "Transverse Process",
    "category": "landmark",
    "region": "back-core",
-   "blenderObjects": [
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
     "Transverse process.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "trapezium",
@@ -2037,10 +2209,12 @@
    "name": "Trochlear Notch",
    "category": "landmark",
    "region": "forearm-hand",
-   "blenderObjects": [
-    "Trochlear notch.i"
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
+    "Trochlear notch.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "twelfth-rib",
@@ -2058,30 +2232,36 @@
    "name": "Ulnar Styloid Process",
    "category": "landmark",
    "region": "forearm-hand",
-   "blenderObjects": [
-    "Ulnar styloid process.i"
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
+    "Ulnar styloid process.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "vertebral-body",
    "name": "Vertebral Body",
    "category": "landmark",
    "region": "back-core",
-   "blenderObjects": [
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
     "Vertebral body.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "vertebral-foramen",
    "name": "Vertebral Foramen",
    "category": "landmark",
    "region": "back-core",
-   "blenderObjects": [
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "anchorObjects": [
     "Vertebral foramen.j"
    ],
-   "resolution": "object-name"
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES."
   },
   {
    "id": "xiphoid-process",
@@ -2089,7 +2269,7 @@
    "category": "landmark",
    "region": "back-core",
    "blenderObjects": [
-    "Xiphoid process.j"
+    "Xiphoid process"
    ],
    "resolution": "object-name"
   }

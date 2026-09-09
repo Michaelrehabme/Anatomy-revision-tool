@@ -49,6 +49,8 @@ export interface SkeletalMappingEntry {
   blenderObjects: string[];
   /** How the entry was arrived at, so a reviewer knows what to trust. */
   resolution: 'object-name' | 'collection-name' | 'manual' | 'unresolved';
+  /** Label anchors carrying a usable position, when no geometry exists. */
+  anchorObjects?: string[];
   /** Set by hand when a guess was wrong or a group needed composing. */
   note?: string;
 }
@@ -90,17 +92,34 @@ const NOISE = new Set(['of', 'the', 'a', 'bone', 'bones', 'grouped']);
  *   .i        a muscle-insertion patch on a bone's surface
  *   .j        an articular surface
  *
- * A BONE must be the bone. Matching "Femur" to "Femur.i" highlights the
- * patches muscles attach to rather than the femur, which looks like a
- * rendering fault rather than an answer. A LANDMARK is usually the opposite:
- * "Greater tubercle" exists only as .i/.j, because a landmark IS a named
- * region of a bone's surface. Joints take .j for the same reason.
+ * Every category takes real geometry only. `.i` and `.j` look like they name
+ * the surface features we want and do not — see ANCHOR_SUFFIXES below, which
+ * is the reason most landmarks cannot be rendered as highlight panels at all.
  */
 const SUFFIX_PREFERENCE: Record<string, string[]> = {
   bone: ['l', 'r', ''],
-  landmark: ['i', 'j', 'l', 'r', ''],
-  joint: ['j', 'l', 'r', ''],
+  landmark: ['l', 'r', ''],
+  joint: ['l', 'r', ''],
 };
+
+/**
+ * Suffixes that are Z-Anatomy's LABELLING SYSTEM, not anatomy. Probing every
+ * mesh in the scene: all 344 `.i` objects and 1,221 of the 1,228 `.j` objects
+ * carry two vertices or fewer. They are anchors for the add-on's leader lines,
+ * and they cannot be rendered as a highlight because there is nothing there.
+ *
+ * This is not a gap in the mapping, it is how the model works. A bone is a
+ * mesh; a landmark on that bone is a named point, because "greater tubercle"
+ * is not separable geometry — it is a region of the humerus. `.i` anchors sit
+ * at the world origin and carry no position either, which is why mapping the
+ * acetabulum to one rendered a picture of the feet.
+ *
+ * `.j` anchors do carry a real position (the sacral promontory anchor sits at
+ * sacral height), so they can locate a marker or a hotspot on a rendered
+ * bone — but that is a different kind of image from a highlighted panel, and
+ * it is recorded as unresolved here rather than pretended otherwise.
+ */
+const ANCHOR_SUFFIXES = new Set(['i', 'j']);
 
 const suffixOf = (name: string): string => /\.([a-z]{1,2})$/.exec(name)?.[1] ?? '';
 
@@ -347,13 +366,28 @@ function main(): void {
       }
     }
 
+    // Anchors are not geometry. Dropping them here rather than at render time
+    // is what keeps the counts in this file honest: an entry either names
+    // something that can be drawn, or it is unresolved.
+    const renderable = preferByCategory(objects, structure.category).filter(
+      (o) => !ANCHOR_SUFFIXES.has(suffixOf(o)),
+    );
+    const anchorsOnly = renderable.length === 0 && objects.length > 0;
+    if (anchorsOnly) resolution = 'unresolved';
+
     mapping.push({
       id: structure.id,
       name: structure.name,
       category: structure.category,
       region: structure.region,
-      blenderObjects: preferByCategory(objects, structure.category),
+      blenderObjects: renderable,
       resolution,
+      ...(anchorsOnly
+        ? {
+            anchorObjects: objects.filter((o) => suffixOf(o) === 'j'),
+            note: 'Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES.',
+          }
+        : {}),
       ...(prior?.note ? { note: prior.note } : {}),
     });
   }

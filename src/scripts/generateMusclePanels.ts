@@ -71,7 +71,18 @@ async function main(): Promise<void> {
     const meta = await sharp(`${PANELS}/${file}`).metadata();
     if (!meta.width || !meta.height) throw new Error(`${file}: no dimensions`);
 
-    const layer = SUPERFICIAL.has(structureId) ? 'superficial-muscle' : 'deep-muscle';
+    // A bone is not a deep muscle. Since CR-026 the same panel pipeline
+    // produces bone, landmark and joint images too, and layer is what the
+    // filters key off — mislabelling them would put the femur in a list of
+    // deep muscles.
+    const layer =
+      structure.category === 'muscle'
+        ? SUPERFICIAL.has(structureId)
+          ? 'superficial-muscle'
+          : 'deep-muscle'
+        : structure.category === 'landmark'
+          ? 'landmark'
+          : 'skeletal';
     rows.push(
       `  { structureId: '${structureId}', region: '${structure.region}', subregion: '${structure.subregion}',` +
         ` layer: '${layer}', width: ${meta.width}, height: ${meta.height} },`,
