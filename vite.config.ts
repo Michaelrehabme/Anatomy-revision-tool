@@ -2,6 +2,7 @@ import { defineConfig } from 'vite';
 import { fileURLToPath } from 'node:url';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
+import { VitePWA } from 'vite-plugin-pwa';
 
 /** Forward slashes even on Windows — Rollup's alias plugin compares and rewrites ids as POSIX-style strings. */
 const demoFile = (name: string) =>
@@ -41,6 +42,67 @@ export const educatorDemoAliases = [
 ];
 
 /**
+ * Service worker config (CR-023 item 3).
+ *
+ * TWO DELIBERATE DEPARTURES from what that CR asks for.
+ *
+ * It says to precache the app shell — but NOT the 4.2MB of anatomy imagery,
+ * which is runtime-cached instead. Precaching every render would make a first
+ * visit download the whole atlas before the app is usable, on a phone, on
+ * hospital wifi, to answer one question. Images arrive as they are seen, and
+ * the explicit per-area download (CR-023 item 4) is how a student takes a
+ * region offline on purpose.
+ *
+ * It also asks for a NetworkFirst Workbox rule over Firestore. That is the
+ * wrong tool and is not implemented: Firestore does not speak plain HTTP GET,
+ * it runs a long-lived WebChannel, and putting a Workbox handler in front of
+ * it breaks realtime listeners rather than making them offline-capable.
+ * Firestore's own persistentLocalCache is the supported mechanism and is
+ * wired up in data/firebase.ts instead.
+ *
+ * registerType is 'prompt', never 'autoUpdate': a silent reload mid-session
+ * loses a student's answers.
+ */
+const pwa = (disable: boolean) =>
+  VitePWA({
+    // Kept in the plugin list even when disabled so virtual:pwa-register/react
+    // still resolves — the demo build imports the same components, it just
+    // gets no-ops instead of a service worker.
+    disable,
+    registerType: 'prompt',
+    // public/manifest.webmanifest is committed and generated alongside the
+    // icon set (src/scripts/generateIcons.ts). Letting the plugin write its
+    // own would give two manifests disagreeing about the brand.
+    manifest: false,
+    injectRegister: null,
+    workbox: {
+      // Shell and fonts only. woff2 is here because self-hosting them was
+      // half of why offline works at all — a CDN font request fails with no
+      // network and blocks first paint.
+      globPatterns: ['**/*.{js,css,html,svg,woff2}'],
+      globIgnores: ['**/anatomy/**'],
+      navigateFallback: '/index.html',
+      // The legal pages must stay reachable, but they are inside the SPA, so
+      // the fallback covers them. Firestore and Google endpoints are excluded
+      // from navigation fallback entirely.
+      navigateFallbackDenylist: [/^\/api\//, /^https:\/\//],
+      cleanupOutdatedCaches: true,
+      runtimeCaching: [
+        {
+          urlPattern: ({ url }) => url.pathname.startsWith('/anatomy/'),
+          handler: 'CacheFirst',
+          options: {
+            cacheName: 'locusmsk-anatomy-images',
+            expiration: { maxEntries: 400, maxAgeSeconds: 60 * 60 * 24 * 30 },
+            cacheableResponse: { statuses: [0, 200] },
+          },
+        },
+      ],
+    },
+    devOptions: { enabled: false },
+  });
+
+/**
  * Everything both this config and vite.config.demo.ts need. A factory rather
  * than a shared object so each config evaluation gets its own plugin
  * instances instead of two loads passing the same ones between them.
@@ -62,8 +124,15 @@ export default defineConfig(({ command, mode }) => {
   // another mode here.
   const demo = command === 'serve' && (mode === 'educator-demo' || process.env.VITE_EDUCATOR_DEMO === '1');
 
+  const base = baseConfig();
+
   return {
-    ...baseConfig(),
+    ...base,
+    // No service worker in the demo build. The demo is a public sales asset
+    // whose whole job is to show current work to someone who opens the link
+    // once; a stale cached copy served to a course leader is a worse failure
+    // than no offline support on a page nobody revises from.
+    plugins: [...base.plugins, pwa(demo)],
     resolve: demo ? { alias: educatorDemoAliases } : {},
   };
 });

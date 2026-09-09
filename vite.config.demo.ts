@@ -1,4 +1,5 @@
 import { defineConfig } from 'vite';
+import { VitePWA } from 'vite-plugin-pwa';
 import { baseConfig, educatorDemoAliases } from './vite.config';
 
 /**
@@ -17,6 +18,12 @@ import { baseConfig, educatorDemoAliases } from './vite.config';
  */
 export default defineConfig(() => ({
   ...baseConfig(),
+  // Disabled, but present: the app imports virtual:pwa-register/react, which
+  // only exists while the plugin is in the list. A demo is a link someone
+  // opens once — a stale service worker serving a course leader last week's
+  // build is a worse failure than no offline support on a page nobody revises
+  // from.
+  plugins: [...baseConfig().plugins, VitePWA({ disable: true })],
   resolve: { alias: educatorDemoAliases },
   build: {
     // Its own directory so a demo build can never be mistaken for dist/, which

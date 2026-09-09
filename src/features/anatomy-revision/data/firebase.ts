@@ -1,5 +1,14 @@
 import { initializeApp, type FirebaseApp } from 'firebase/app';
-import { getFirestore, doc, getDoc, setDoc, serverTimestamp, type Firestore } from 'firebase/firestore';
+import {
+  initializeFirestore,
+  persistentLocalCache,
+  persistentMultipleTabManager,
+  doc,
+  getDoc,
+  setDoc,
+  serverTimestamp,
+  type Firestore,
+} from 'firebase/firestore';
 import {
   getAuth,
   signInAnonymously,
@@ -52,8 +61,36 @@ function getFirebaseApp(): FirebaseApp {
   return app;
 }
 
+/**
+ * Firestore with offline persistence (CR-023 item 4) — the thing that makes a
+ * session on a train actually work.
+ *
+ * With this, a write while offline resolves from the local cache immediately
+ * and is queued to the server on reconnect, so a student answering questions
+ * with no signal sees their progress recorded rather than an error, and the
+ * attempts land when they walk back into coverage. Reads come from cache too,
+ * so nothing in the session path waits on a network round trip.
+ *
+ * initializeFirestore rather than getFirestore because the cache has to be
+ * configured at creation — there is no way to add it to an instance that
+ * already exists, which is why this replaced the previous getFirestore call
+ * rather than sitting alongside it.
+ *
+ * persistentMultipleTabManager because students leave the app open in a tab
+ * and open another; the single-tab manager makes the second tab fail to
+ * acquire the lease and silently lose persistence.
+ *
+ * NOTE this is Firestore's own mechanism, not the service worker's. Workbox
+ * cannot help here: Firestore runs a long-lived WebChannel rather than plain
+ * HTTP requests, so a caching handler in front of it breaks realtime listeners
+ * instead of making them offline-capable. See vite.config.ts.
+ */
 export function getDb(): Firestore {
-  if (!firestore) firestore = getFirestore(getFirebaseApp());
+  if (!firestore) {
+    firestore = initializeFirestore(getFirebaseApp(), {
+      localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }),
+    });
+  }
   return firestore;
 }
 
