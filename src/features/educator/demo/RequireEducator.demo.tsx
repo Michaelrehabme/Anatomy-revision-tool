@@ -28,7 +28,11 @@ export function RequireEducator({ children }: { children: ReactNode }) {
 
   return (
     <EducatorSessionContext.Provider value={session}>
+      {/* The public demo build labels every screen with DemoBanner, so this
+          corner chip would be a second label saying the same thing. It stays
+          for `npm run dev:educator-demo`, which has no banner. */}
       <div
+        hidden={import.meta.env.VITE_PUBLIC_DEMO === '1'}
         style={{
           position: 'fixed',
           bottom: 12,

@@ -47,6 +47,13 @@ const PUBLIC_DEMO = import.meta.env.VITE_PUBLIC_DEMO === '1';
 
 /** Code-split so students never download the admin bundle — see src/features/admin/AdminApp.tsx. */
 const AdminApp = PUBLIC_DEMO ? null : lazy(() => import('./features/admin/AdminApp'));
+
+/**
+ * "This is sample data" notice, public demo build only. Lazy so the ternary
+ * folding to null in a real build leaves the import() dead for Rollup to
+ * drop, the same way AdminApp above and DevRoutes below are handled.
+ */
+const DemoBanner = PUBLIC_DEMO ? lazy(() => import('./features/educator/demo/DemoBanner')) : null;
 /** Code-split so students never download the educator bundle — see src/features/educator/EducatorApp.tsx. */
 const EducatorApp = lazy(() => import('./features/educator/EducatorApp'));
 /** Dev-only hotspot authoring tool (CR-007) — route only registered in dev, see the /dev/hotspots Route below. */
@@ -295,300 +302,307 @@ function App() {
   };
 
   return (
-    <Routes>
-      <Route
-        path="/onboarding"
-        element={
-          onboarded ? (
-            <Navigate to="/" replace />
-          ) : isDesktop ? (
-            <Onboarding onDone={handleOnboardingDone} />
-          ) : (
-            <MobileOnboarding onDone={handleOnboardingDone} />
-          )
-        }
-      />
-      <Route
-        path="/"
-        element={
-          isDesktop ? (
-            <Today
-              repository={repository}
-              userId={userId}
-              content={content}
-              onStart={session.start}
-              onCustomSession={() => onNavigateSection('study')}
-              onOpenMuscle={(id) => openMuscle(id, [])}
-              onNavigate={onNavigateSection}
-            />
-          ) : (
-            <MobileToday
-              repository={repository}
-              userId={userId}
-              content={content}
-              onStart={session.start}
-              onCustomSession={() => navigate('/study')}
-              onOpenMuscle={(id) => openMuscle(id, [])}
-              onNavigateTab={mobileNavigate}
-            />
-          )
-        }
-      />
-      <Route
-        path="/study"
-        element={
-          isDesktop ? (
-            <RegionPicker
-              content={content}
-              selected={selectedAreas}
-              onChange={setSelectedAreas}
-              onContinue={() => navigate('/study/setup')}
-              onNavigate={onNavigateSection}
-            />
-          ) : (
-            <MobileRegionPicker
-              content={content}
-              selected={selectedAreas}
-              onChange={setSelectedAreas}
-              onContinue={() => navigate('/study/setup')}
-              onBack={() => mobileNavigate('today')}
-            />
-          )
-        }
-      />
-      <Route
-        path="/study/setup"
-        element={
-          isDesktop ? (
-            <RevisionSetup
-              content={content}
-              repository={repository}
-              userId={userId}
-              areas={selectedAreas}
-              onStart={session.start}
-              onBack={() => navigate('/study')}
-              onNavigate={onNavigateSection}
-            />
-          ) : (
-            <MobileRevisionSetup
-              content={content}
-              repository={repository}
-              userId={userId}
-              areas={selectedAreas}
-              onStart={session.start}
-              onBack={() => navigate('/study')}
-            />
-          )
-        }
-      />
-      <Route
-        path="/session"
-        element={
-          session.phase !== 'in-progress' ? (
-            <Navigate to="/" replace />
-          ) : isDesktop ? (
-            <StudySession session={session} content={content} onEnd={endSession} />
-          ) : (
-            <MobileStudySession session={session} content={content} onEnd={endSession} onOpenMuscle={openMuscle} />
-          )
-        }
-      />
-      <Route
-        path="/session/results"
-        element={
-          session.phase !== 'results' || !session.summary ? (
-            <Navigate to="/" replace />
-          ) : isDesktop ? (
-            <RevisionResults
-              summary={session.summary}
-              structuresById={content.structuresById}
-              streak={streak}
-              gamification={session.gamification}
-              sessionMode={session.setupParams?.mode}
-              onRestart={endSession}
-              onOpenMuscle={(id) => openMuscle(id, session.summary!.missedStructureIds)}
-              onNavigate={onNavigateSection}
-              onRetryIncorrect={async () => {
-                const params = session.setupParams ?? { types: ['oina', 'mcq'] as QuestionType[], mode: 'practice' as const };
-                // Without the OINA fields a retry of an origin-only session would come
-                // back asking all four facts, every one of them back on multiple choice.
-                const factMastery =
-                  params.types.includes('oina') && repository && userId
-                    ? await repository.listFactMastery(userId)
-                    : undefined;
-                const retryQuestions = generateRevisionSet(content.structures, content.images, {
-                  types: params.types,
-                  oinaPromptKinds: params.oinaPromptKinds,
-                  groups: params.groups,
-                  learnCardAttempts: params.learnCardAttempts,
-                  mode: 'practice',
-                  // Deliberately still a hard restriction — "retry the N missed" means
-                  // those N. Mastery only orders them, worst-known first.
-                  structureIds: session.summary!.missedStructureIds,
-                  factMastery,
-                  mastery,
-                });
-                session.start(retryQuestions, params);
-              }}
-            />
-          ) : (
-            <MobileResults
-              summary={session.summary}
-              answers={session.answers}
-              structuresById={content.structuresById}
-              gamification={session.gamification}
-              sessionMode={session.setupParams?.mode}
-              onDone={endSession}
-              onRetry={async () => {
-                // Mobile's "Another N" re-runs the same setup fresh (not missed-only) — the
-                // mockup's startSession/`this.go('session')` resets and starts over, unlike
-                // desktop's "Retry the N missed" which is deliberately missed-scoped.
-                const params = session.setupParams ?? { types: ['oina', 'mcq'] as QuestionType[], mode: 'practice' as const };
-                const factMastery =
-                  params.types.includes('oina') && repository && userId
-                    ? await repository.listFactMastery(userId)
-                    : undefined;
-                const nextQuestions = generateRevisionSet(content.structures, content.images, {
-                  ...params,
-                  count: session.summary!.totalQuestions,
-                  factMastery,
-                  mastery,
-                });
-                session.start(nextQuestions, params);
-              }}
-            />
-          )
-        }
-      />
-      <Route
-        path="/atlas"
-        element={
-          isDesktop ? (
-            <Atlas
-              content={content}
-              repository={repository}
-              userId={userId}
-              onOpenMuscle={openMuscle}
-              onDrillOina={drillOina}
-              onNavigate={onNavigateSection}
-            />
-          ) : (
-            <MobileAtlas
-              content={content}
-              repository={repository}
-              userId={userId}
-              onOpenMuscle={openMuscle}
-              onDrillOina={drillOina}
-              onBack={() => mobileNavigate('today')}
-              onNavigateTab={mobileNavigate}
-            />
-          )
-        }
-      />
-      <Route
-        path="/structure/:id"
-        element={
-          <StructureRoute
-            content={content}
-            repository={repository}
-            userId={userId}
-            isDesktop={isDesktop}
-            onNavigateSection={onNavigateSection}
-            onDrill={drillStructure}
-          />
-        }
-      />
-      <Route
-        path="/progress"
-        element={
-          isDesktop ? (
-            <Progress
-              content={content}
-              repository={repository}
-              userId={userId}
-              onStart={session.start}
-              onNavigate={onNavigateSection}
-              onOpenAchievements={() => navigate('/achievements')}
-            />
-          ) : (
-            <MobileProgress
-              content={content}
-              repository={repository}
-              userId={userId}
-              onNavigateTab={mobileNavigate}
-              onOpenAchievements={() => navigate('/achievements')}
-            />
-          )
-        }
-      />
-      <Route
-        path="/account"
-        element={
-          isDesktop ? (
-            <Account content={content} repository={repository} userId={userId} onNavigate={onNavigateSection} />
-          ) : (
-            <MobileAccount content={content} repository={repository} userId={userId} onNavigateTab={mobileNavigate} />
-          )
-        }
-      />
-      <Route
-        path="/achievements"
-        element={
-          isDesktop ? (
-            <Achievements repository={repository} userId={userId} onNavigate={onNavigateSection} />
-          ) : (
-            <MobileAchievements repository={repository} userId={userId} onBack={() => navigate('/progress')} />
-          )
-        }
-      />
-      {AdminApp && (
+    <>
+      {DemoBanner && (
+        <Suspense fallback={null}>
+          <DemoBanner />
+        </Suspense>
+      )}
+      <Routes>
         <Route
-          path="/admin/*"
+          path="/onboarding"
           element={
-            <Suspense
-              fallback={
-                <div className="flex min-h-screen items-center justify-center text-sm" style={{ color: 'var(--ink3)' }}>
-                  Loading admin…
-                </div>
-              }
-            >
-              <AdminApp />
-            </Suspense>
+            onboarded ? (
+              <Navigate to="/" replace />
+            ) : isDesktop ? (
+              <Onboarding onDone={handleOnboardingDone} />
+            ) : (
+              <MobileOnboarding onDone={handleOnboardingDone} />
+            )
           }
         />
-      )}
-      <Route
-        path="/educator/*"
-        element={
-          <Suspense
-            fallback={
-              <div className="flex min-h-screen items-center justify-center text-sm" style={{ color: 'var(--ink3)' }}>
-                Loading educator dashboard…
-              </div>
+        <Route
+          path="/"
+          element={
+            isDesktop ? (
+              <Today
+                repository={repository}
+                userId={userId}
+                content={content}
+                onStart={session.start}
+                onCustomSession={() => onNavigateSection('study')}
+                onOpenMuscle={(id) => openMuscle(id, [])}
+                onNavigate={onNavigateSection}
+              />
+            ) : (
+              <MobileToday
+                repository={repository}
+                userId={userId}
+                content={content}
+                onStart={session.start}
+                onCustomSession={() => navigate('/study')}
+                onOpenMuscle={(id) => openMuscle(id, [])}
+                onNavigateTab={mobileNavigate}
+              />
+            )
+          }
+        />
+        <Route
+          path="/study"
+          element={
+            isDesktop ? (
+              <RegionPicker
+                content={content}
+                selected={selectedAreas}
+                onChange={setSelectedAreas}
+                onContinue={() => navigate('/study/setup')}
+                onNavigate={onNavigateSection}
+              />
+            ) : (
+              <MobileRegionPicker
+                content={content}
+                selected={selectedAreas}
+                onChange={setSelectedAreas}
+                onContinue={() => navigate('/study/setup')}
+                onBack={() => mobileNavigate('today')}
+              />
+            )
+          }
+        />
+        <Route
+          path="/study/setup"
+          element={
+            isDesktop ? (
+              <RevisionSetup
+                content={content}
+                repository={repository}
+                userId={userId}
+                areas={selectedAreas}
+                onStart={session.start}
+                onBack={() => navigate('/study')}
+                onNavigate={onNavigateSection}
+              />
+            ) : (
+              <MobileRevisionSetup
+                content={content}
+                repository={repository}
+                userId={userId}
+                areas={selectedAreas}
+                onStart={session.start}
+                onBack={() => navigate('/study')}
+              />
+            )
+          }
+        />
+        <Route
+          path="/session"
+          element={
+            session.phase !== 'in-progress' ? (
+              <Navigate to="/" replace />
+            ) : isDesktop ? (
+              <StudySession session={session} content={content} onEnd={endSession} />
+            ) : (
+              <MobileStudySession session={session} content={content} onEnd={endSession} onOpenMuscle={openMuscle} />
+            )
+          }
+        />
+        <Route
+          path="/session/results"
+          element={
+            session.phase !== 'results' || !session.summary ? (
+              <Navigate to="/" replace />
+            ) : isDesktop ? (
+              <RevisionResults
+                summary={session.summary}
+                structuresById={content.structuresById}
+                streak={streak}
+                gamification={session.gamification}
+                sessionMode={session.setupParams?.mode}
+                onRestart={endSession}
+                onOpenMuscle={(id) => openMuscle(id, session.summary!.missedStructureIds)}
+                onNavigate={onNavigateSection}
+                onRetryIncorrect={async () => {
+                  const params = session.setupParams ?? { types: ['oina', 'mcq'] as QuestionType[], mode: 'practice' as const };
+                  // Without the OINA fields a retry of an origin-only session would come
+                  // back asking all four facts, every one of them back on multiple choice.
+                  const factMastery =
+                    params.types.includes('oina') && repository && userId
+                      ? await repository.listFactMastery(userId)
+                      : undefined;
+                  const retryQuestions = generateRevisionSet(content.structures, content.images, {
+                    types: params.types,
+                    oinaPromptKinds: params.oinaPromptKinds,
+                    groups: params.groups,
+                    learnCardAttempts: params.learnCardAttempts,
+                    mode: 'practice',
+                    // Deliberately still a hard restriction — "retry the N missed" means
+                    // those N. Mastery only orders them, worst-known first.
+                    structureIds: session.summary!.missedStructureIds,
+                    factMastery,
+                    mastery,
+                  });
+                  session.start(retryQuestions, params);
+                }}
+              />
+            ) : (
+              <MobileResults
+                summary={session.summary}
+                answers={session.answers}
+                structuresById={content.structuresById}
+                gamification={session.gamification}
+                sessionMode={session.setupParams?.mode}
+                onDone={endSession}
+                onRetry={async () => {
+                  // Mobile's "Another N" re-runs the same setup fresh (not missed-only) — the
+                  // mockup's startSession/`this.go('session')` resets and starts over, unlike
+                  // desktop's "Retry the N missed" which is deliberately missed-scoped.
+                  const params = session.setupParams ?? { types: ['oina', 'mcq'] as QuestionType[], mode: 'practice' as const };
+                  const factMastery =
+                    params.types.includes('oina') && repository && userId
+                      ? await repository.listFactMastery(userId)
+                      : undefined;
+                  const nextQuestions = generateRevisionSet(content.structures, content.images, {
+                    ...params,
+                    count: session.summary!.totalQuestions,
+                    factMastery,
+                    mastery,
+                  });
+                  session.start(nextQuestions, params);
+                }}
+              />
+            )
+          }
+        />
+        <Route
+          path="/atlas"
+          element={
+            isDesktop ? (
+              <Atlas
+                content={content}
+                repository={repository}
+                userId={userId}
+                onOpenMuscle={openMuscle}
+                onDrillOina={drillOina}
+                onNavigate={onNavigateSection}
+              />
+            ) : (
+              <MobileAtlas
+                content={content}
+                repository={repository}
+                userId={userId}
+                onOpenMuscle={openMuscle}
+                onDrillOina={drillOina}
+                onBack={() => mobileNavigate('today')}
+                onNavigateTab={mobileNavigate}
+              />
+            )
+          }
+        />
+        <Route
+          path="/structure/:id"
+          element={
+            <StructureRoute
+              content={content}
+              repository={repository}
+              userId={userId}
+              isDesktop={isDesktop}
+              onNavigateSection={onNavigateSection}
+              onDrill={drillStructure}
+            />
+          }
+        />
+        <Route
+          path="/progress"
+          element={
+            isDesktop ? (
+              <Progress
+                content={content}
+                repository={repository}
+                userId={userId}
+                onStart={session.start}
+                onNavigate={onNavigateSection}
+                onOpenAchievements={() => navigate('/achievements')}
+              />
+            ) : (
+              <MobileProgress
+                content={content}
+                repository={repository}
+                userId={userId}
+                onNavigateTab={mobileNavigate}
+                onOpenAchievements={() => navigate('/achievements')}
+              />
+            )
+          }
+        />
+        <Route
+          path="/account"
+          element={
+            isDesktop ? (
+              <Account content={content} repository={repository} userId={userId} onNavigate={onNavigateSection} />
+            ) : (
+              <MobileAccount content={content} repository={repository} userId={userId} onNavigateTab={mobileNavigate} />
+            )
+          }
+        />
+        <Route
+          path="/achievements"
+          element={
+            isDesktop ? (
+              <Achievements repository={repository} userId={userId} onNavigate={onNavigateSection} />
+            ) : (
+              <MobileAchievements repository={repository} userId={userId} onBack={() => navigate('/progress')} />
+            )
+          }
+        />
+        {AdminApp && (
+          <Route
+            path="/admin/*"
+            element={
+              <Suspense
+                fallback={
+                  <div className="flex min-h-screen items-center justify-center text-sm" style={{ color: 'var(--ink3)' }}>
+                    Loading admin…
+                  </div>
+                }
+              >
+                <AdminApp />
+              </Suspense>
             }
-          >
-            <EducatorApp />
-          </Suspense>
-        }
-      />
-      {import.meta.env.DEV && (
+          />
+        )}
         <Route
-          path="/dev/hotspots"
+          path="/educator/*"
           element={
             <Suspense
               fallback={
                 <div className="flex min-h-screen items-center justify-center text-sm" style={{ color: 'var(--ink3)' }}>
-                  Loading hotspot editor…
+                  Loading educator dashboard…
                 </div>
               }
             >
-              <HotspotEditorApp />
+              <EducatorApp />
             </Suspense>
           }
         />
-      )}
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+        {import.meta.env.DEV && (
+          <Route
+            path="/dev/hotspots"
+            element={
+              <Suspense
+                fallback={
+                  <div className="flex min-h-screen items-center justify-center text-sm" style={{ color: 'var(--ink3)' }}>
+                    Loading hotspot editor…
+                  </div>
+                }
+              >
+                <HotspotEditorApp />
+              </Suspense>
+            }
+          />
+        )}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </>
   );
 }
 

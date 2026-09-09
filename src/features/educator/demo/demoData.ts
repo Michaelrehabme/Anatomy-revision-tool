@@ -74,10 +74,15 @@ const LAST_NAMES = [
   'Karim', 'Ellis',
 ];
 
-/** Roster sizes differ so the cohort switcher shows two visibly different classes. */
+/**
+ * Roster sizes differ so the cohort switcher shows two visibly different
+ * classes, and both sit in the 40-120 band a real UK MSK cohort occupies.
+ * This is a sales asset before it is a review tool: a course leader looking
+ * at a class of 8 is looking at somebody else's problem.
+ */
 const COHORT_SIZES: Record<string, number> = {
-  'demo-cohort-physio-y2': 14,
-  'demo-cohort-sports-y1': 8,
+  'demo-cohort-physio-y2': 58,
+  'demo-cohort-sports-y1': 41,
 };
 
 const DAY_MS = 86_400_000;
@@ -97,6 +102,11 @@ interface DemoStudent extends CohortStudent {
 function buildStudents(cohort: Cohort, offset: number): DemoStudent[] {
   const rand = makeRandom(1000 + offset);
   const size = COHORT_SIZES[cohort.id] ?? 10;
+  // Proportional rather than the fixed 1-and-2 this used at a roster of 14:
+  // in a class of 58 a single dormant student reads as a rounding error, and
+  // "who has stopped" is the first question an educator asks the dashboard.
+  const neverStarted = Math.max(1, Math.round(size * 0.05));
+  const quietUntil = neverStarted + Math.max(2, Math.round(size * 0.12));
 
   return Array.from({ length: size }, (_, i) => {
     const n = offset + i;
@@ -104,10 +114,12 @@ function buildStudents(cohort: Cohort, offset: number): DemoStudent[] {
     // The +3*wraps term matters: with both lists 22 long, a plain stride of 7 hands
     // student 0 and student 44 the same first AND last name, which reads as a bug.
     const last = LAST_NAMES[(n * 7 + 3 + Math.floor(n / LAST_NAMES.length) * 3) % LAST_NAMES.length];
-    // One student per cohort has never opened a session, and a couple have gone quiet —
+    // Some students have never opened a session and more have gone quiet —
     // an educator's first real question is "who has stopped", so the demo has to contain some.
-    const dormant = i === 0 ? WINDOW_DAYS : i < 3 ? intBetween(rand, 9, 21) : intBetween(rand, 0, 5);
-    const attemptCount = i === 0 ? 0 : Math.round(between(rand, 45, 320) * (1 - dormant / (WINDOW_DAYS * 2)));
+    const dormant =
+      i < neverStarted ? WINDOW_DAYS : i < quietUntil ? intBetween(rand, 9, 21) : intBetween(rand, 0, 5);
+    const attemptCount =
+      i < neverStarted ? 0 : Math.round(between(rand, 45, 320) * (1 - dormant / (WINDOW_DAYS * 2)));
 
     return {
       uid: `demo-${cohort.id.slice(12)}-${String(i + 1).padStart(2, '0')}`,
@@ -123,7 +135,18 @@ function buildStudents(cohort: Cohort, offset: number): DemoStudent[] {
   });
 }
 
-const DEMO_STUDENTS: DemoStudent[] = DEMO_COHORTS.flatMap((cohort, i) => buildStudents(cohort, i * 40));
+/**
+ * Offsets accumulate rather than striding by a fixed 40. A stride shorter
+ * than a cohort walks into the next cohort's slice of the name pools: at the
+ * roster sizes above, `i * 40` handed 18 students in one class the same names
+ * as 18 in the other. Passing the running total cannot overlap by
+ * construction, whatever the sizes become.
+ */
+const DEMO_STUDENTS: DemoStudent[] = (() => {
+  const all: DemoStudent[] = [];
+  for (const cohort of DEMO_COHORTS) all.push(...buildStudents(cohort, all.length));
+  return all;
+})();
 
 export function demoStudentsInCohort(cohortId: string): CohortStudent[] {
   return DEMO_STUDENTS.filter((s) => s.cohortId === cohortId).map(({ uid, displayName, email, joinedAt, lastActiveAt }) => ({
@@ -143,20 +166,129 @@ export function demoStudentsInCohort(cohortId: string): CohortStudent[] {
 const QUIZZABLE: AnatomyStructure[] = ALL_STRUCTURES.filter((s) => s.imageIds.length > 0 || s.description.length > 0);
 
 /**
+ * The mix-ups an MSK educator actually meets in marking. A dashboard whose
+ * top confusion row is a pair nobody confuses is read as generated, and the
+ * demo exists to be believed — so these are named rather than left to the
+ * same-region fallback below, which produces plausible pairs but not
+ * recognisable ones.
+ *
+ * Applied in both directions, and deliberately also weighted harder in
+ * DIFFICULTY: a pair only reaches the confusion table by being missed, so
+ * listing one without making it hard leaves it invisible.
+ */
+const NOTORIOUS_PAIRS: ReadonlyArray<readonly [string, string]> = [
+  ['supraspinatus', 'infraspinatus'],
+  ['subscapularis', 'supraspinatus'],
+  ['teres-minor', 'teres-major'],
+  ['teres-major', 'latissimus-dorsi'],
+  ['semitendinosus', 'semimembranosus'],
+  ['biceps-femoris', 'semitendinosus'],
+  ['vastus-lateralis', 'vastus-medialis'],
+  ['vastus-intermedius', 'rectus-femoris'],
+  ['extensor-carpi-radialis-longus', 'extensor-carpi-radialis-brevis'],
+  ['extensor-carpi-ulnaris', 'flexor-carpi-ulnaris'],
+  ['flexor-carpi-radialis', 'flexor-carpi-ulnaris'],
+  ['peroneus-longus', 'peroneus-brevis'],
+  ['tibialis-anterior', 'tibialis-posterior'],
+  ['gluteus-medius', 'gluteus-minimus'],
+  ['rhomboid-major', 'rhomboid-minor'],
+  ['pronator-teres', 'pronator-quadratus'],
+
+  // Carpals — the ones that cost marks every year.
+  ['scaphoid', 'lunate'],
+  ['trapezium', 'trapezoid'],
+  ['capitate', 'hamate'],
+  ['triquetrum', 'pisiform'],
+
+  // Humerus and forearm.
+  ['greater-tubercle-humerus', 'lesser-tubercle-humerus'],
+  ['medial-epicondyle-humerus', 'lateral-epicondyle-humerus'],
+  ['anatomical-neck-humerus', 'surgical-neck-humerus'],
+  ['radial-styloid-process', 'ulnar-styloid-process'],
+  ['olecranon', 'coronoid-process-ulna'],
+
+  // Scapula.
+  ['acromion', 'coracoid-process'],
+  ['supraspinous-fossa', 'infraspinous-fossa'],
+  ['superior-angle-scapula', 'inferior-angle-scapula'],
+
+  // Pelvis, hip and knee.
+  ['asis', 'aiis'],
+  ['asis', 'psis'],
+  ['ilium', 'ischium'],
+  ['greater-trochanter', 'lesser-trochanter'],
+  ['medial-condyle-femur', 'lateral-condyle-femur'],
+  ['medial-epicondyle-femur', 'lateral-epicondyle-femur'],
+  ['medial-condyle-tibia', 'lateral-condyle-tibia'],
+  ['tibial-tuberosity', 'tibial-crest'],
+
+  // Ankle and foot.
+  ['medial-malleolus', 'lateral-malleolus'],
+  ['talus', 'calcaneus'],
+  ['navicular', 'cuboid'],
+  ['medial-cuneiform', 'intermediate-cuneiform'],
+
+  // Spine and thorax.
+  ['atlas-c1', 'axis-c2'],
+  ['pedicle', 'lamina'],
+  ['spinous-process', 'transverse-process'],
+  ['superior-articular-process', 'inferior-articular-process'],
+  ['sacrum', 'coccyx'],
+  ['manubrium', 'xiphoid-process'],
+  ['sternal-angle', 'jugular-notch'],
+];
+
+const NOTORIOUS_IDS = new Set(NOTORIOUS_PAIRS.flat());
+
+/**
  * Per-structure difficulty, stable across students so the cohort has genuine
  * shared weak spots (which is the entire point of the weakness table) rather
  * than noise that averages out to a flat 70% everywhere.
+ *
+ * Structures in NOTORIOUS_PAIRS sit above the ordinary 0-0.3 band so they
+ * reliably reach the weakness and confusion tables instead of depending on
+ * where the seeded draw happened to put them.
  */
 const DIFFICULTY = new Map<string, number>(
-  QUIZZABLE.map((s, i) => [s.id, makeRandom(9000 + i)() * 0.3]),
+  QUIZZABLE.map((s, i) => {
+    const draw = makeRandom(9000 + i)();
+    return [s.id, NOTORIOUS_IDS.has(s.id) ? 0.3 + draw * 0.1 : draw * 0.3];
+  }),
 );
 
-/** A stable "looks like this one" partner per structure — same region and category where possible, so the confusion pairs an educator sees are plausible ones. */
+/** A stable "looks like this one" partner per structure — the named pairs above first, then same region and category where possible, so every confusion pair an educator sees is at least plausible. */
 const CONFUSED_WITH = new Map<string, AnatomyStructure>();
-for (const [i, s] of QUIZZABLE.entries()) {
-  const siblings = QUIZZABLE.filter((o) => o.id !== s.id && o.region === s.region && o.category === s.category);
-  const pool = siblings.length > 0 ? siblings : QUIZZABLE.filter((o) => o.id !== s.id);
-  CONFUSED_WITH.set(s.id, pool[i % pool.length]);
+const QUIZZABLE_BY_ID = new Map(QUIZZABLE.map((s) => [s.id, s]));
+for (const [a, b] of NOTORIOUS_PAIRS) {
+  const left = QUIZZABLE_BY_ID.get(a);
+  const right = QUIZZABLE_BY_ID.get(b);
+  // Skipped rather than thrown: this is a curated list pointing at a seed that
+  // changes, and a renamed muscle should cost one good pair, not the demo.
+  if (!left || !right) continue;
+  if (!CONFUSED_WITH.has(a)) CONFUSED_WITH.set(a, right);
+  if (!CONFUSED_WITH.has(b)) CONFUSED_WITH.set(b, left);
+}
+/**
+ * Everything the curated list does not name pairs with its NEIGHBOUR in the
+ * same region and category, not an arbitrary member of it. The seed files are
+ * written in anatomical order, so the structure next to this one is usually a
+ * genuine near-miss (sacrum/coccyx, one cuneiform for the next), where
+ * indexing into the pool produced "Sacrum -> Atlas (C1)" — a pair no educator
+ * has ever had to mark, on the table the whole demo is meant to sell.
+ */
+const BY_REGION_AND_CATEGORY = new Map<string, AnatomyStructure[]>();
+for (const s of QUIZZABLE) {
+  const key = `${s.region}::${s.category}`;
+  const group = BY_REGION_AND_CATEGORY.get(key);
+  if (group) group.push(s);
+  else BY_REGION_AND_CATEGORY.set(key, [s]);
+}
+for (const group of BY_REGION_AND_CATEGORY.values()) {
+  for (const [i, s] of group.entries()) {
+    if (CONFUSED_WITH.has(s.id)) continue;
+    const partner = group.length > 1 ? group[(i + 1) % group.length] : QUIZZABLE.find((o) => o.id !== s.id);
+    if (partner) CONFUSED_WITH.set(s.id, partner);
+  }
 }
 
 const QUESTION_TYPES: QuestionType[] = ['mcq', 'mcq', 'mcq', 'flashcard', 'locate', 'fill-blank', 'identify-typed'];
