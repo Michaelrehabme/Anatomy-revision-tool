@@ -281,6 +281,57 @@ function of a commit, the wrong-checkout failure stops being possible, and
 UI (Site configuration → Build & deploy → link repository); `netlify.toml` already
 carries the build settings it needs.
 
+## Educator demo mode
+
+Two different things share the fixtures in `src/features/educator/demo/`.
+
+**Reviewing locally.** `npm run dev:educator-demo` swaps the Firebase-backed
+educator modules, the claim guards and the repository for the fixture versions,
+so `/educator` and `/admin/people` can be looked at with no Firebase project and
+no custom claim. The swap is an alias in `vite.config.ts` gated on
+`command === 'serve'`, which is the hard guarantee that `npm run build` cannot
+resolve to these modules whatever the mode or env says — they include an
+educator guard that always says yes and a role hook that always returns admin,
+and neither may ever reach a deployed bundle.
+
+**The public demo.** `npm run build:demo` produces the seeded educator
+experience as a deployable site in `dist-demo/`, for sending to course leaders.
+It builds through `vite.config.demo.ts` rather than a mode flag, precisely so
+the guarantee above stays intact in the production config: reaching the demo
+modules in a build requires naming that file on the command line, which no
+environment variable can do.
+
+That config also:
+
+- drops `/admin/*` from the bundle entirely rather than hiding it, using the
+  same build-time fold as `DevRoutes` so Rollup removes the chunk;
+- pins `VITE_PERSISTENCE=local`, so the demo cannot reach a real project even if
+  the demo site is given `VITE_FIREBASE_*` by accident;
+- mounts `DemoBanner`, the dismissible "sample data" notice and reset action.
+
+Verify a demo build the way CI would, against the output rather than the chunk
+names:
+
+```bash
+npm run build:demo
+grep -rl "initializeApp" dist-demo/    # expect no match
+grep -rl "RequireAdmin" dist-demo/     # expect no match
+```
+
+### Deploying the demo
+
+The demo site builds from this same repository, and `netlify.toml` overrides a
+site's UI build settings — so a second Netlify site pointed here would run
+`npm run build` and publish the **real** app to the demo URL. `netlify.toml`
+carries a `[context.demo]` block for this: point the demo site at a `demo`
+branch and it gets the demo command and publish directory, while every other
+site keeps the production ones.
+
+The seed data is deliberately realistic — 58- and 41-student cohorts, dormant
+students, and curated confusion pairs an MSK educator recognises — because an
+obviously fake dashboard undermines the pitch it exists to support. It is still
+entirely generated, and `DemoBanner` says so on every screen.
+
 ## Admin section
 
 `/admin/*` (Change Register, Users, Analytics) is a separate, code-split part of the

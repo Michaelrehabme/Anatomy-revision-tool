@@ -18,3 +18,19 @@
   from = "/*"
   to = "/index.html"
   status = 200
+
+# The public educator demo (CR-028) builds from THIS repository, and the block
+# above would otherwise govern it: a netlify.toml overrides a site's own UI
+# build settings, so a second site pointed at this repo would run
+# `npm run build` and publish the real app — Firebase config and all — to the
+# demo URL. That is the exact failure the demo build was designed to prevent.
+#
+# A branch context is the fix. [context.<branch>] is the most specific block
+# Netlify has and overrides [build]. Point the demo site at a `demo` branch and
+# it picks these up; every other site keeps the production settings.
+#
+# Redirects and headers are global in Netlify config and take no context, so
+# the SPA fallback above already covers both sites.
+[context.demo]
+  command = "npm run build:demo"
+  publish = "dist-demo"
