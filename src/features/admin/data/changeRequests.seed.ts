@@ -1745,4 +1745,56 @@ export const CHANGE_REQUESTS_SEED: ChangeRequest[] = [
       'Raised by Rory alongside CR-029. Note the account screen was never the gap: MyClasses has listed owned classes on both Account and ' +
       'MobileAccount since CR-012. What was missing was any class list inside the educator section itself.',
   },
+  {
+    ref: 'CR-031',
+    title: 'Educators read aggregates, not answer-level rows',
+    category: 'infrastructure',
+    priority: 'p0',
+    effort: 'l',
+    status: 'new',
+    description:
+      'firestore.rules grants a cohort owner read on every attemptEvent of every student in their class, selectedAnswer ' +
+      'included, and cohortAnalytics pulls those rows into the educator\'s browser to aggregate them client-side. Nothing in ' +
+      'the UI displays them, so nobody sees this by accident — but the access exists, and the join notice had to be weakened ' +
+      'to stop promising otherwise. Close the gap so the strong promise can come back.',
+    prompt:
+      'Stop answer-level student data reaching educator clients.\n\n' +
+      'CURRENT STATE\n' +
+      '- firestore.rules: `allow read: if ownsCohort(cohortOfUser(resource.data.userId))` on /attemptEvents/{attemptId}.\n' +
+      '- educator/data/cohortAnalytics.ts calls listAttempts({ userId }) per student and returns attemptsByUid in the\n' +
+      '  snapshot, so full UserAttempt records — selectedAnswer, correctAnswer, questionId, durationMs, timestamp — are in\n' +
+      '  the educator\'s browser. Devtools is all it takes.\n' +
+      '- The aggregation itself is clean: aggregateConfusionPairs discards userId.\n\n' +
+      'WHAT TO BUILD\n' +
+      'Aggregate on write rather than on read, so the educator never has permission to see a row.\n' +
+      '1. When a student answers, increment cohort-scoped aggregate documents rather than relying on the educator to\n' +
+      '   compute them later: per-structure attempt/correct counts, per-(correctAnswer, selectedAnswer) confusion counts,\n' +
+      '   per-day active counts, per-region accuracy. Counter documents, not rows.\n' +
+      '2. Per-student summary documents for the students list and detail screens — attempts total, accuracy, last active,\n' +
+      '   weakest structures. Everything those screens already render, and nothing they do not.\n' +
+      '3. Rewrite firestore.rules so a cohort owner reads ONLY those aggregates and summaries. The attemptEvents read grant\n' +
+      '   for cohort owners goes away entirely.\n' +
+      '4. Migrate: a one-off backfill for existing cohorts, since aggregates that start empty make a live class look\n' +
+      '   inactive on the morning this ships.\n' +
+      '5. Restore the stronger sentence in CohortMembership.tsx once (3) is live, and say so in the privacy policy.\n\n' +
+      'CONSTRAINTS\n' +
+      '- A student writing their own aggregate increment must not be able to write another student\'s, or another cohort\'s.\n' +
+      '- Offline must still work: increments queue like any other write.\n' +
+      '- The educator demo fixtures need the same shape, or the demo diverges from the product it is selling.\n' +
+      '- Cloud Functions would be the tidier home for this, but there is no functions/ project yet (firebase.json declares\n' +
+      '  only firestore rules and indexes). Client-side increments under tight rules avoid that dependency; a Function is\n' +
+      '  the better answer if CR-025 bootstraps one first.\n\n' +
+      'ACCEPTANCE\n' +
+      '- An educator client issued a direct query for a student\'s attemptEvents is refused by rules.\n' +
+      '- Every educator screen renders the same numbers it does today.',
+    dependsOn: [],
+    createdAt: '2026-09-09T11:30:00.000Z',
+    startedAt: null,
+    completedAt: null,
+    notes:
+      'Found while checking whether the join notice was true. It was not. The notice now says "the app does not show them a ' +
+      'question-by-question record", which is accurate, rather than "never your individual answers", which was not. P0 because ' +
+      'it is a promise to students and the first thing a university DP officer will probe — but it does not block a pilot the ' +
+      'way CR-025 does, since the corrected wording is honest as it stands.',
+  },
 ];

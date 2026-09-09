@@ -25,6 +25,19 @@ interface CohortMembershipProps {
  * "make leaving straightforward" requirement. The privacy line is shown in
  * both states so a student sees what an educator can see both before and
  * after joining.
+ *
+ * THE WORDING IS DELIBERATE, and weaker than it used to be. It said "never
+ * your individual answers", which was a promise the system does not keep:
+ * firestore.rules grants a cohort owner read on every attemptEvent of every
+ * student in their class (selectedAnswer included), and cohortAnalytics
+ * already pulls those records into the educator's browser to aggregate them
+ * client-side. Nothing DISPLAYS them, which is why nobody sees this by
+ * accident — but "the app does not show them" is the true claim, and a
+ * privacy notice that overstates its protection is worse than one that does
+ * not, particularly to a university asking how student data is handled.
+ *
+ * CR-031 is the actual fix: aggregate on write so the educator never reads
+ * answer-level rows at all. Restore the stronger sentence when it lands.
  */
 export function CohortMembership({ uid, compact }: CohortMembershipProps) {
   const [cohort, setCohort] = useState<Cohort | null | 'loading'>('loading');
@@ -100,7 +113,8 @@ export function CohortMembership({ uid, compact }: CohortMembershipProps) {
             </button>
           </div>
           <div className="mt-2" style={noteStyle}>
-            Your educator can see your accuracy, streak, and weak areas — never your individual answers.
+            Your educator sees your accuracy, streak and weak areas. The app does not show them a
+            question-by-question record of your answers.
           </div>
         </>
       ) : (
@@ -137,8 +151,8 @@ export function CohortMembership({ uid, compact }: CohortMembershipProps) {
             </div>
           )}
           <div className="mt-2" style={noteStyle}>
-            Joining a class lets your educator see your accuracy, streak, and weak areas — never your individual
-            answers. You can leave any time.
+            Joining a class lets your educator see your accuracy, streak and weak areas. The app does not show
+            them a question-by-question record of your answers. You can leave any time, which stops it.
           </div>
         </>
       )}
