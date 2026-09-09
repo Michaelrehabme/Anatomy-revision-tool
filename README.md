@@ -1,4 +1,4 @@
-# Anatomy Revision
+# LocusMSK
 
 A standalone musculoskeletal anatomy revision tool — flashcards, multiple choice, and image
 "locate the structure" questions — covering muscles, bones, and bony landmarks. Built to

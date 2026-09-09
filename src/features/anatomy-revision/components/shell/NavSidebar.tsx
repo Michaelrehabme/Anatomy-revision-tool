@@ -118,7 +118,7 @@ export function NavSidebar({ active, onNavigate, footer }: NavSidebarProps) {
   return (
     <>
       <div style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 25, letterSpacing: '-0.018em' }}>
-        MSK Atlas
+        LocusMSK
       </div>
       <nav className="mt-10 flex flex-col gap-0.5">
         {NAV_ITEMS.map((item) => {

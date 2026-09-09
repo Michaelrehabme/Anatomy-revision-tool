@@ -3,7 +3,7 @@
 @import "./fonts.generated.css";
 
 /*
- * Press · light — the MSK Atlas design tokens (from the Claude Design
+ * Press · light — the LocusMSK design tokens (from the Claude Design
  * handoff). Short names match the spec verbatim so BodyFigure.tsx and any
  * future dark-mode swap can reference var(--acc) etc. directly; the @theme
  * block below aliases them to Tailwind v4 color/font utilities (bg-pg,

@@ -35,7 +35,7 @@ export function EducatorMobileShell({ children }: { children: ReactNode }) {
         <div className="flex items-baseline justify-between gap-3">
           <div className="flex items-baseline gap-2">
             <span style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 19, letterSpacing: '-0.018em' }}>
-              MSK Atlas
+              LocusMSK
             </span>
             <span
               style={{

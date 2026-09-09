@@ -13,7 +13,7 @@ export function AdminSidebar() {
   return (
     <>
       <div style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 25, letterSpacing: '-0.018em' }}>
-        MSK Atlas
+        LocusMSK
       </div>
       <div
         className="mt-1"
