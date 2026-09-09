@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" fill="none" role="img" aria-label="LocusMSK">
+  <!--
+    The LocusMSK mark on its own: transparent, square, no wordmark.
+
+    Geometry lifted verbatim from lockup-primary.svg (Claude Design, logo 2A
+    "Pulse") — the same circles, torso path and round-capped limb strokes, only
+    re-centred into a square viewBox so it can be rasterised to icons without
+    the wordmark's whitespace throwing the centring off.
+
+    This is the single-ring variant, which the brand sheet specifies for 32-64px.
+    The two-ring mark-full is the correct art above 64px; drop it in here and
+    regenerate if you want it on the large icons.
+  -->
+  <g transform="translate(1.72,3.29) scale(0.9674)">
+    <circle cx="85" cy="46" r="22" stroke="#3F8F8A" stroke-width="3.5" opacity="0.45" />
+    <circle cx="60" cy="19" r="10" fill="#1F2A44" />
+    <path d="M38 36 H82 L77 74 H43 Z" fill="#1F2A44" />
+    <path d="M36 42 L26 80 M84 42 L94 80" stroke="#1F2A44" stroke-width="12" stroke-linecap="round" />
+    <path d="M50 78 L48 110 M70 78 L72 110" stroke="#1F2A44" stroke-width="13" stroke-linecap="round" />
+    <circle cx="85" cy="46" r="9" fill="#3F8F8A" stroke="#EFE9DA" stroke-width="3.5" />
+  </g>
+</svg>

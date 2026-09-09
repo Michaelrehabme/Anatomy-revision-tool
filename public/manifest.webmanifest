@@ -1,0 +1,21 @@
+{
+  "name": "LocusMSK",
+  "short_name": "LocusMSK",
+  "description": "Spaced-repetition anatomy revision for MSK students. 309 structures with verified origin, insertion, nerve supply and action.",
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#efe9da",
+  "theme_color": "#1f2a44",
+  "lang": "en-GB",
+  "categories": ["education", "medical"],
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-256.png", "sizes": "256x256", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-384.png", "sizes": "384x384", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
