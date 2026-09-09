@@ -1,0 +1,2097 @@
+{
+ "schemaVersion": 1,
+ "generator": "src/scripts/generateSkeletalMapping.ts",
+ "note": "Bone, landmark and joint structures that still need a real image. Hand-edited entries are preserved on regeneration; set resolution to \"manual\" when you fill one in.",
+ "counts": {
+  "total": 187,
+  "resolved": 151,
+  "unresolved": 36,
+  "byResolution": {
+   "object-name": 131,
+   "manual": 11,
+   "unresolved": 36,
+   "collection-name": 9
+  }
+ },
+ "mapping": [
+  {
+   "id": "atlas-c1",
+   "name": "Atlas (C1)",
+   "category": "bone",
+   "region": "back-core",
+   "blenderObjects": [
+    "Atlas (C1)"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "axis-c2",
+   "name": "Axis (C2)",
+   "category": "bone",
+   "region": "back-core",
+   "blenderObjects": [
+    "Axis (C2)"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "c7-vertebra",
+   "name": "C7 Vertebra",
+   "category": "bone",
+   "region": "back-core",
+   "blenderObjects": [
+    "Vertebra C7"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "carpals",
+   "name": "Carpals (grouped)",
+   "category": "bone",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Capitate bone.l",
+    "Capitate bone.r",
+    "Hamate bone.l",
+    "Hamate bone.r",
+    "Lunate bone.l",
+    "Lunate bone.r",
+    "Pisiform bone.l",
+    "Pisiform bone.r",
+    "Scaphoid bone.l",
+    "Scaphoid bone.r",
+    "Trapezium bone.l",
+    "Trapezium bone.r",
+    "Trapezoid bone.l",
+    "Trapezoid bone.r",
+    "Triquetrum bone.l",
+    "Triquetrum bone.r"
+   ],
+   "resolution": "manual"
+  },
+  {
+   "id": "cervical-vertebrae",
+   "name": "Cervical Vertebrae (C3–C6)",
+   "category": "bone",
+   "region": "back-core",
+   "blenderObjects": [
+    "Vertebra C3",
+    "Vertebra C4",
+    "Vertebra C5",
+    "Vertebra C6"
+   ],
+   "resolution": "manual"
+  },
+  {
+   "id": "clavicle",
+   "name": "Clavicle",
+   "category": "bone",
+   "region": "shoulder-arm",
+   "blenderObjects": [
+    "Clavicle.l",
+    "Clavicle.r"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "coccyx",
+   "name": "Coccyx",
+   "category": "bone",
+   "region": "back-core",
+   "blenderObjects": [
+    "Coccyx"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "femur",
+   "name": "Femur",
+   "category": "bone",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Femur.l",
+    "Femur.r"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "fibula",
+   "name": "Fibula",
+   "category": "bone",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Fibula.l",
+    "Fibula.r"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "humerus",
+   "name": "Humerus",
+   "category": "bone",
+   "region": "shoulder-arm",
+   "blenderObjects": [
+    "Humerus.l",
+    "Humerus.r"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "lumbar-vertebrae",
+   "name": "Lumbar Vertebrae (L1–L5)",
+   "category": "bone",
+   "region": "back-core",
+   "blenderObjects": [
+    "Vertebra L1",
+    "Vertebra L2",
+    "Vertebra L3",
+    "Vertebra L4",
+    "Vertebra L5"
+   ],
+   "resolution": "manual"
+  },
+  {
+   "id": "metacarpals",
+   "name": "Metacarpals (grouped)",
+   "category": "bone",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Fifth metacarpal bone.l",
+    "Fifth metacarpal bone.r",
+    "First metacarpal bone.l",
+    "First metacarpal bone.r",
+    "Fourth metacarpal bone.l",
+    "Fourth metacarpal bone.r",
+    "Second metacarpal bone.l",
+    "Second metacarpal bone.r",
+    "Third metacarpal bone.l",
+    "Third metacarpal bone.r"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "metatarsals",
+   "name": "Metatarsals (grouped)",
+   "category": "bone",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Fifth metatarsal bone.l",
+    "Fifth metatarsal bone.r",
+    "First metatarsal bone.l",
+    "First metatarsal bone.r",
+    "Fourth metatarsal bone.l",
+    "Fourth metatarsal bone.r",
+    "Second metatarsal bone.l",
+    "Second metatarsal bone.r",
+    "Third metatarsal bone.l",
+    "Third metatarsal bone.r"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "patella",
+   "name": "Patella",
+   "category": "bone",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Patella.l",
+    "Patella.r"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "pelvis",
+   "name": "Pelvis",
+   "category": "bone",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Hip bone.l",
+    "Hip bone.r"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "phalanges-distal-foot",
+   "name": "Distal Phalanges of the Foot (grouped)",
+   "category": "bone",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Distal phalanx of fifth finger of foot.l",
+    "Distal phalanx of fifth finger of foot.r",
+    "Distal phalanx of first finger of foot.l",
+    "Distal phalanx of first finger of foot.r",
+    "Distal phalanx of fourth finger of foot.l",
+    "Distal phalanx of fourth finger of foot.r",
+    "Distal phalanx of second finger of foot.l",
+    "Distal phalanx of second finger of foot.r",
+    "Distal phalanx of third finger of foot.l",
+    "Distal phalanx of third finger of foot.r"
+   ],
+   "resolution": "manual"
+  },
+  {
+   "id": "phalanges-distal-hand",
+   "name": "Distal Phalanges of the Hand (grouped)",
+   "category": "bone",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Distal phalanx of fifth finger of hand.l",
+    "Distal phalanx of fifth finger of hand.r",
+    "Distal phalanx of first finger of hand.l",
+    "Distal phalanx of first finger of hand.r",
+    "Distal phalanx of fourth finger of hand.l",
+    "Distal phalanx of fourth finger of hand.r",
+    "Distal phalanx of second finger of hand.l",
+    "Distal phalanx of second finger of hand.r",
+    "Distal phalanx of third finger of hand.l",
+    "Distal phalanx of third finger of hand.r"
+   ],
+   "resolution": "manual"
+  },
+  {
+   "id": "phalanges-middle-foot",
+   "name": "Middle Phalanges of the Foot (grouped)",
+   "category": "bone",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Middle phalanx of fifth finger of foot.l",
+    "Middle phalanx of fifth finger of foot.r",
+    "Middle phalanx of fourth finger of foot.l",
+    "Middle phalanx of fourth finger of foot.r",
+    "Middle phalanx of second finger of foot.l",
+    "Middle phalanx of second finger of foot.r",
+    "Middle phalanx of third finger of foot.l",
+    "Middle phalanx of third finger of foot.r"
+   ],
+   "resolution": "manual"
+  },
+  {
+   "id": "phalanges-middle-hand",
+   "name": "Middle Phalanges of the Hand (grouped)",
+   "category": "bone",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Middle phalanx of fifth finger of hand.l",
+    "Middle phalanx of fifth finger of hand.r",
+    "Middle phalanx of fourth finger of hand.l",
+    "Middle phalanx of fourth finger of hand.r",
+    "Middle phalanx of second finger of hand.l",
+    "Middle phalanx of second finger of hand.r",
+    "Middle phalanx of third finger of hand.l",
+    "Middle phalanx of third finger of hand.r"
+   ],
+   "resolution": "manual"
+  },
+  {
+   "id": "phalanges-proximal-foot",
+   "name": "Proximal Phalanges of the Foot (grouped)",
+   "category": "bone",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Proximal phalanx of fifth finger of foot.l",
+    "Proximal phalanx of fifth finger of foot.r",
+    "Proximal phalanx of first finger of foot.l",
+    "Proximal phalanx of first finger of foot.r",
+    "Proximal phalanx of fourth finger of foot.l",
+    "Proximal phalanx of fourth finger of foot.r",
+    "Proximal phalanx of second finger of foot.l",
+    "Proximal phalanx of second finger of foot.r",
+    "Proximal phalanx of third finger of foot.l",
+    "Proximal phalanx of third finger of foot.r"
+   ],
+   "resolution": "manual"
+  },
+  {
+   "id": "phalanges-proximal-hand",
+   "name": "Proximal Phalanges of the Hand (grouped)",
+   "category": "bone",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Proximal phalanx of fifth finger of hand.l",
+    "Proximal phalanx of fifth finger of hand.r",
+    "Proximal phalanx of first finger of hand.l",
+    "Proximal phalanx of first finger of hand.r",
+    "Proximal phalanx of fourth finger of hand.l",
+    "Proximal phalanx of fourth finger of hand.r",
+    "Proximal phalanx of second finger of hand.l",
+    "Proximal phalanx of second finger of hand.r",
+    "Proximal phalanx of third finger of hand.l",
+    "Proximal phalanx of third finger of hand.r"
+   ],
+   "resolution": "manual"
+  },
+  {
+   "id": "radius",
+   "name": "Radius",
+   "category": "bone",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Radius.l",
+    "Radius.r"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "ribs",
+   "name": "Ribs",
+   "category": "bone",
+   "region": "back-core",
+   "blenderObjects": [
+    "Eighth rib.l",
+    "Eighth rib.r",
+    "Eleventh rib.l",
+    "Eleventh rib.r",
+    "Fifth rib.l",
+    "Fifth rib.r",
+    "First rib.l",
+    "First rib.r",
+    "Fourth rib.l",
+    "Fourth rib.r",
+    "Ninth rib.l",
+    "Ninth rib.r",
+    "Second rib.l",
+    "Second rib.r",
+    "Seventh rib.l",
+    "Seventh rib.r",
+    "Sixth rib.l",
+    "Sixth rib.r",
+    "Tenth rib.l",
+    "Tenth rib.r",
+    "Third rib.l",
+    "Third rib.r",
+    "Twelfth rib.l",
+    "Twelfth rib.r"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "sacrum",
+   "name": "Sacrum",
+   "category": "bone",
+   "region": "back-core",
+   "blenderObjects": [
+    "Sacrum"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "scapula",
+   "name": "Scapula",
+   "category": "bone",
+   "region": "shoulder-arm",
+   "blenderObjects": [
+    "Scapula.l",
+    "Scapula.r"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "sternum",
+   "name": "Sternum",
+   "category": "bone",
+   "region": "back-core",
+   "blenderObjects": [
+    "Sternum.j"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "tarsals",
+   "name": "Tarsals (grouped)",
+   "category": "bone",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Calcaneus.l",
+    "Calcaneus.r",
+    "Cuboid bone.l",
+    "Cuboid bone.r",
+    "Intermediate cuneiform bone.l",
+    "Intermediate cuneiform bone.r",
+    "Lateral cuneiform bone.l",
+    "Lateral cuneiform bone.r",
+    "Medial cuneiform bone.l",
+    "Medial cuneiform bone.r",
+    "Navicular bone.l",
+    "Navicular bone.r",
+    "Talus.l",
+    "Talus.r"
+   ],
+   "resolution": "manual"
+  },
+  {
+   "id": "thoracic-vertebrae",
+   "name": "Thoracic Vertebrae (T1–T12)",
+   "category": "bone",
+   "region": "back-core",
+   "blenderObjects": [
+    "Vertebra T1",
+    "Vertebra T10",
+    "Vertebra T11",
+    "Vertebra T12",
+    "Vertebra T2",
+    "Vertebra T3",
+    "Vertebra T4",
+    "Vertebra T5",
+    "Vertebra T6",
+    "Vertebra T7",
+    "Vertebra T8",
+    "Vertebra T9"
+   ],
+   "resolution": "manual"
+  },
+  {
+   "id": "tibia",
+   "name": "Tibia",
+   "category": "bone",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Tibia.l",
+    "Tibia.r"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "ulna",
+   "name": "Ulna",
+   "category": "bone",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Ulna.l",
+    "Ulna.r"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "acromioclavicular-joint",
+   "name": "Acromioclavicular Joint",
+   "category": "joint",
+   "region": "shoulder-arm",
+   "blenderObjects": [
+    "Acromioclavicular ligament.l",
+    "Acromioclavicular ligament.r",
+    "Articular capsule of acromioclavicular joint.l",
+    "Articular capsule of acromioclavicular joint.r",
+    "Articular disc of acromioclavicular joint.l",
+    "Articular disc of acromioclavicular joint.r",
+    "Conoid ligament.l",
+    "Conoid ligament.r",
+    "Trapezoid ligament.l",
+    "Trapezoid ligament.r"
+   ],
+   "resolution": "collection-name"
+  },
+  {
+   "id": "atlanto-occipital-joint",
+   "name": "Atlanto-occipital Joint",
+   "category": "joint",
+   "region": "back-core",
+   "blenderObjects": [],
+   "resolution": "unresolved"
+  },
+  {
+   "id": "atlantoaxial-joint",
+   "name": "Atlantoaxial Joint",
+   "category": "joint",
+   "region": "back-core",
+   "blenderObjects": [],
+   "resolution": "unresolved"
+  },
+  {
+   "id": "carpometacarpal-joint-thumb",
+   "name": "Carpometacarpal Joint of Thumb",
+   "category": "joint",
+   "region": "forearm-hand",
+   "blenderObjects": [],
+   "resolution": "unresolved"
+  },
+  {
+   "id": "costovertebral-joint",
+   "name": "Costovertebral Joint",
+   "category": "joint",
+   "region": "back-core",
+   "blenderObjects": [
+    "Costotransverse ligament.l",
+    "Costotransverse ligament.r",
+    "Intra-articular ligament of head of rib.r",
+    "Radiate ligament of head of rib.l",
+    "Radiate ligament of head of rib.r"
+   ],
+   "resolution": "collection-name"
+  },
+  {
+   "id": "distal-radioulnar-joint",
+   "name": "Distal Radioulnar Joint",
+   "category": "joint",
+   "region": "forearm-hand",
+   "blenderObjects": [],
+   "resolution": "unresolved"
+  },
+  {
+   "id": "distal-tibiofibular-joint",
+   "name": "Distal Tibiofibular Joint",
+   "category": "joint",
+   "region": "lower-leg-foot",
+   "blenderObjects": [],
+   "resolution": "unresolved"
+  },
+  {
+   "id": "facet-joint",
+   "name": "Facet (Zygapophyseal) Joint",
+   "category": "joint",
+   "region": "back-core",
+   "blenderObjects": [
+    "Thoracic joints.j"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "glenohumeral-joint",
+   "name": "Glenohumeral Joint",
+   "category": "joint",
+   "region": "shoulder-arm",
+   "blenderObjects": [
+    "Articular capsule of glenohumeral joint.l",
+    "Articular capsule of glenohumeral joint.r",
+    "Coracohumeral ligament.l",
+    "Coracohumeral ligament.r",
+    "Glenoid labrum.l",
+    "Glenoid labrum.r",
+    "Inferior glenohumeral ligament.l",
+    "Inferior glenohumeral ligament.r",
+    "Middle glenohumeral ligament.l",
+    "Middle glenohumeral ligament.r",
+    "Superior glenohumeral ligament.l",
+    "Superior glenohumeral ligament.r",
+    "Transverse humeral ligament.l",
+    "Transverse humeral ligament.r"
+   ],
+   "resolution": "collection-name"
+  },
+  {
+   "id": "hip-joint",
+   "name": "Hip Joint",
+   "category": "joint",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Hip joint.j"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "humeroradial-joint",
+   "name": "Humeroradial Joint",
+   "category": "joint",
+   "region": "shoulder-arm",
+   "blenderObjects": [],
+   "resolution": "unresolved"
+  },
+  {
+   "id": "humeroulnar-joint",
+   "name": "Humeroulnar Joint",
+   "category": "joint",
+   "region": "shoulder-arm",
+   "blenderObjects": [],
+   "resolution": "unresolved"
+  },
+  {
+   "id": "interphalangeal-joint-hand",
+   "name": "Interphalangeal Joint of the Hand",
+   "category": "joint",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Articular capsules of distal interphalangeal joints.l",
+    "Articular capsules of distal interphalangeal joints.r",
+    "Articular capsules of proximal interphalangeal joints.l",
+    "Articular capsules of proximal interphalangeal joints.r",
+    "Collateral interphalangeal ligaments of hand.l",
+    "Collateral interphalangeal ligaments of hand.r",
+    "Palmar interphalangeal ligaments.l",
+    "Palmar interphalangeal ligaments.r"
+   ],
+   "resolution": "collection-name"
+  },
+  {
+   "id": "intervertebral-joint",
+   "name": "Intervertebral Joint",
+   "category": "joint",
+   "region": "back-core",
+   "blenderObjects": [],
+   "resolution": "unresolved"
+  },
+  {
+   "id": "metacarpophalangeal-joint",
+   "name": "Metacarpophalangeal Joint",
+   "category": "joint",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Articular capsules of metacarpophalangeal joints.l",
+    "Articular capsules of metacarpophalangeal joints.r",
+    "Collateral metacarpophalangeal ligaments.l",
+    "Collateral metacarpophalangeal ligaments.r",
+    "Deep transverse metacarpal ligament.l",
+    "Deep transverse metacarpal ligament.r"
+   ],
+   "resolution": "collection-name"
+  },
+  {
+   "id": "metatarsophalangeal-joint",
+   "name": "Metatarsophalangeal Joint",
+   "category": "joint",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Metatarsophalangeal joints.j"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "midcarpal-joint",
+   "name": "Midcarpal Joint",
+   "category": "joint",
+   "region": "forearm-hand",
+   "blenderObjects": [],
+   "resolution": "unresolved"
+  },
+  {
+   "id": "patellofemoral-joint",
+   "name": "Patellofemoral Joint",
+   "category": "joint",
+   "region": "hip-thigh",
+   "blenderObjects": [],
+   "resolution": "unresolved"
+  },
+  {
+   "id": "proximal-radioulnar-joint",
+   "name": "Proximal Radioulnar Joint",
+   "category": "joint",
+   "region": "shoulder-arm",
+   "blenderObjects": [],
+   "resolution": "unresolved"
+  },
+  {
+   "id": "proximal-tibiofibular-joint",
+   "name": "Proximal Tibiofibular Joint",
+   "category": "joint",
+   "region": "lower-leg-foot",
+   "blenderObjects": [],
+   "resolution": "unresolved"
+  },
+  {
+   "id": "pubic-symphysis",
+   "name": "Pubic Symphysis",
+   "category": "joint",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Pubic symphysis"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "radiocarpal-joint",
+   "name": "Radiocarpal Joint",
+   "category": "joint",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Radiocarpal joint.j"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "sacroiliac-joint",
+   "name": "Sacroiliac Joint",
+   "category": "joint",
+   "region": "back-core",
+   "blenderObjects": [],
+   "resolution": "unresolved"
+  },
+  {
+   "id": "sternoclavicular-joint",
+   "name": "Sternoclavicular Joint",
+   "category": "joint",
+   "region": "shoulder-arm",
+   "blenderObjects": [
+    "Anterior sternoclavicular ligament.l",
+    "Anterior sternoclavicular ligament.r",
+    "Articular capsule of sternoclavicular joint.l",
+    "Articular capsule of sternoclavicular joint.r",
+    "Articular disc of sternoclavicular joint.l",
+    "Articular disc of sternoclavicular joint.r",
+    "Costoclavicular ligament.l",
+    "Costoclavicular ligament.r",
+    "Interclavicular ligament.l",
+    "Interclavicular ligament.r",
+    "Posterior sternoclavicular ligament.l",
+    "Posterior sternoclavicular ligament.r"
+   ],
+   "resolution": "collection-name"
+  },
+  {
+   "id": "sternocostal-joint",
+   "name": "Sternocostal Joint",
+   "category": "joint",
+   "region": "back-core",
+   "blenderObjects": [],
+   "resolution": "unresolved"
+  },
+  {
+   "id": "subtalar-joint",
+   "name": "Subtalar Joint",
+   "category": "joint",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Anterior talocalcaneal ligament.l",
+    "Anterior talocalcaneal ligament.r",
+    "Lateral talocalcaneal ligament.l",
+    "Lateral talocalcaneal ligament.r",
+    "Medial talocalcaneal ligament.l",
+    "Medial talocalcaneal ligament.r",
+    "Posterior talocalcaneal ligament.l",
+    "Posterior talocalcaneal ligament.r",
+    "Talocalcaneal interosseous ligament.l",
+    "Talocalcaneal interosseous ligament.r"
+   ],
+   "resolution": "collection-name"
+  },
+  {
+   "id": "talocrural-joint",
+   "name": "Talocrural Joint",
+   "category": "joint",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Ankle joint.j"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "tibiofemoral-joint",
+   "name": "Tibiofemoral Joint",
+   "category": "joint",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Knee joint.j"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "transverse-tarsal-joint",
+   "name": "Transverse Tarsal Joint",
+   "category": "joint",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Calcaneocuboid ligament.l",
+    "Calcaneocuboid ligament.r",
+    "Calcaneonavicular ligament.l",
+    "Calcaneonavicular ligament.r",
+    "Dorsal calcaneocuboid ligament.l",
+    "Dorsal calcaneocuboid ligament.r",
+    "Long plantar ligament.l",
+    "Long plantar ligament.r",
+    "Plantar calcaneocuboid ligament.l",
+    "Plantar calcaneocuboid ligament.r",
+    "Plantar calcaneonavicular ligament.l",
+    "Plantar calcaneonavicular ligament.r",
+    "Talonavicular ligament.l",
+    "Talonavicular ligament.r"
+   ],
+   "resolution": "collection-name"
+  },
+  {
+   "id": "acetabulum",
+   "name": "Acetabulum",
+   "category": "landmark",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Acetabulum.i"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "acromion",
+   "name": "Acromion",
+   "category": "landmark",
+   "region": "shoulder-arm",
+   "blenderObjects": [
+    "Acromion.i"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "adductor-tubercle",
+   "name": "Adductor Tubercle",
+   "category": "landmark",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Adductor tubercle.i"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "aiis",
+   "name": "Anterior Inferior Iliac Spine (AIIS)",
+   "category": "landmark",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Anterior inferior iliac spine.i"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "anatomical-neck-humerus",
+   "name": "Anatomical Neck of Humerus",
+   "category": "landmark",
+   "region": "shoulder-arm",
+   "blenderObjects": [
+    "Anatomical neck of humerus.i"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "anatomical-snuffbox",
+   "name": "Anatomical Snuffbox",
+   "category": "landmark",
+   "region": "forearm-hand",
+   "blenderObjects": [],
+   "resolution": "unresolved"
+  },
+  {
+   "id": "ankle-mortise",
+   "name": "Ankle Mortise",
+   "category": "landmark",
+   "region": "lower-leg-foot",
+   "blenderObjects": [],
+   "resolution": "unresolved"
+  },
+  {
+   "id": "anterior-arch-atlas",
+   "name": "Anterior Arch of Atlas",
+   "category": "landmark",
+   "region": "back-core",
+   "blenderObjects": [
+    "Anterior arch of atlas.j"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "anterior-sacral-foramina",
+   "name": "Anterior Sacral Foramina",
+   "category": "landmark",
+   "region": "back-core",
+   "blenderObjects": [
+    "Anterior sacral foramina.j"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "asis",
+   "name": "Anterior Superior Iliac Spine (ASIS)",
+   "category": "landmark",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Anterior superior iliac spine.i"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "auricular-surface",
+   "name": "Auricular Surface",
+   "category": "landmark",
+   "region": "back-core",
+   "blenderObjects": [],
+   "resolution": "unresolved"
+  },
+  {
+   "id": "base-of-fifth-metatarsal",
+   "name": "Base of Fifth Metatarsal",
+   "category": "landmark",
+   "region": "lower-leg-foot",
+   "blenderObjects": [],
+   "resolution": "unresolved"
+  },
+  {
+   "id": "base-of-first-metacarpal",
+   "name": "Base of First Metacarpal",
+   "category": "landmark",
+   "region": "forearm-hand",
+   "blenderObjects": [],
+   "resolution": "unresolved"
+  },
+  {
+   "id": "bifid-spinous-process",
+   "name": "Bifid Spinous Process",
+   "category": "landmark",
+   "region": "back-core",
+   "blenderObjects": [
+    "Spinous process.j"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "c7-spinous-process",
+   "name": "C7 Spinous Process",
+   "category": "landmark",
+   "region": "back-core",
+   "blenderObjects": [
+    "Spinous process.j"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "calcaneal-tuberosity",
+   "name": "Calcaneal Tuberosity",
+   "category": "landmark",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Calcaneal tuberosity.i"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "calcaneus",
+   "name": "Calcaneus",
+   "category": "landmark",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Calcaneus.l",
+    "Calcaneus.r"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "capitate",
+   "name": "Capitate",
+   "category": "landmark",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Capitate bone.l",
+    "Capitate bone.r"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "coccygeal-cornua",
+   "name": "Coccygeal Cornua",
+   "category": "landmark",
+   "region": "back-core",
+   "blenderObjects": [],
+   "resolution": "unresolved"
+  },
+  {
+   "id": "coracoid-process",
+   "name": "Coracoid Process",
+   "category": "landmark",
+   "region": "shoulder-arm",
+   "blenderObjects": [
+    "Coracoid process.i"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "coronoid-process-ulna",
+   "name": "Coronoid Process of Ulna",
+   "category": "landmark",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Coronoid process of ulna.i"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "costal-margin",
+   "name": "Costal Margin",
+   "category": "landmark",
+   "region": "back-core",
+   "blenderObjects": [],
+   "resolution": "unresolved"
+  },
+  {
+   "id": "cuboid",
+   "name": "Cuboid",
+   "category": "landmark",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Cuboid bone.l",
+    "Cuboid bone.r"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "deltoid-tuberosity",
+   "name": "Deltoid Tuberosity",
+   "category": "landmark",
+   "region": "shoulder-arm",
+   "blenderObjects": [
+    "Deltoid tuberosity.i"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "dens-odontoid-process",
+   "name": "Dens (Odontoid Process)",
+   "category": "landmark",
+   "region": "back-core",
+   "blenderObjects": [],
+   "resolution": "unresolved"
+  },
+  {
+   "id": "femoral-head",
+   "name": "Femoral Head",
+   "category": "landmark",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Head of femur.i"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "femoral-neck",
+   "name": "Femoral Neck",
+   "category": "landmark",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Neck of femur.i"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "first-rib",
+   "name": "First Rib",
+   "category": "landmark",
+   "region": "back-core",
+   "blenderObjects": [
+    "First rib.l",
+    "First rib.r"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "gerdys-tubercle",
+   "name": "Gerdy's Tubercle",
+   "category": "landmark",
+   "region": "hip-thigh",
+   "blenderObjects": [],
+   "resolution": "unresolved"
+  },
+  {
+   "id": "glenoid-cavity",
+   "name": "Glenoid Cavity",
+   "category": "landmark",
+   "region": "shoulder-arm",
+   "blenderObjects": [
+    "Glenoid fossa.i"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "greater-trochanter",
+   "name": "Greater Trochanter",
+   "category": "landmark",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Greater trochanter.i"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "greater-tubercle-humerus",
+   "name": "Greater Tubercle of Humerus",
+   "category": "landmark",
+   "region": "shoulder-arm",
+   "blenderObjects": [
+    "Greater tubercle.i"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "hamate",
+   "name": "Hamate",
+   "category": "landmark",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Hamate bone.l",
+    "Hamate bone.r"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "head-of-fibula",
+   "name": "Head of Fibula",
+   "category": "landmark",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Head of fibula.i"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "head-of-first-metacarpal",
+   "name": "Head of First Metacarpal",
+   "category": "landmark",
+   "region": "forearm-hand",
+   "blenderObjects": [],
+   "resolution": "unresolved"
+  },
+  {
+   "id": "head-of-first-metatarsal",
+   "name": "Head of First Metatarsal",
+   "category": "landmark",
+   "region": "lower-leg-foot",
+   "blenderObjects": [],
+   "resolution": "unresolved"
+  },
+  {
+   "id": "head-of-radius",
+   "name": "Head of Radius",
+   "category": "landmark",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Head of radius.i"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "hook-of-hamate",
+   "name": "Hook of Hamate",
+   "category": "landmark",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Hook of hamate bone.i"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "iliac-crest",
+   "name": "Iliac Crest",
+   "category": "landmark",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Iliac crest.i"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "ilium",
+   "name": "Ilium",
+   "category": "landmark",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Ilium.i"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "inferior-angle-scapula",
+   "name": "Inferior Angle of Scapula",
+   "category": "landmark",
+   "region": "shoulder-arm",
+   "blenderObjects": [
+    "Inferior angle of scapula.i"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "inferior-articular-process",
+   "name": "Inferior Articular Process",
+   "category": "landmark",
+   "region": "back-core",
+   "blenderObjects": [],
+   "resolution": "unresolved"
+  },
+  {
+   "id": "inferior-costal-facet",
+   "name": "Inferior Costal Facet",
+   "category": "landmark",
+   "region": "back-core",
+   "blenderObjects": [
+    "Inferior costal facet.j"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "infraspinous-fossa",
+   "name": "Infraspinous Fossa",
+   "category": "landmark",
+   "region": "shoulder-arm",
+   "blenderObjects": [
+    "Infraspinous fossa.i"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "intercondylar-eminence-tibia",
+   "name": "Intercondylar Eminence of Tibia",
+   "category": "landmark",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Intercondylar eminence.i"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "intercondylar-fossa-femur",
+   "name": "Intercondylar Fossa of Femur",
+   "category": "landmark",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Intercondylar fossa.i"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "intermediate-cuneiform",
+   "name": "Intermediate Cuneiform",
+   "category": "landmark",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Intermediate cuneiform bone.l",
+    "Intermediate cuneiform bone.r"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "intertrochanteric-line",
+   "name": "Intertrochanteric Line",
+   "category": "landmark",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Intertrochanteric line.i"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "intertubercular-sulcus",
+   "name": "Intertubercular Sulcus",
+   "category": "landmark",
+   "region": "shoulder-arm",
+   "blenderObjects": [
+    "Intertubercular sulcus.i"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "intervertebral-disc",
+   "name": "Intervertebral Disc",
+   "category": "landmark",
+   "region": "back-core",
+   "blenderObjects": [
+    "Intervertebral disc C2-C3",
+    "Intervertebral disc C3-C4",
+    "Intervertebral disc C4-C5",
+    "Intervertebral disc C5-C6",
+    "Intervertebral disc C6-C7",
+    "Intervertebral disc C7-T1",
+    "Intervertebral disc L1-L2",
+    "Intervertebral disc L2-L3",
+    "Intervertebral disc L3-L4",
+    "Intervertebral disc L4-L5",
+    "Intervertebral disc L5-S1",
+    "Intervertebral disc T1-T2",
+    "Intervertebral disc T10-T11",
+    "Intervertebral disc T11-T12",
+    "Intervertebral disc T12-L1",
+    "Intervertebral disc T2-T3",
+    "Intervertebral disc T3-T4",
+    "Intervertebral disc T4-T5",
+    "Intervertebral disc T5-T6",
+    "Intervertebral disc T6-T7",
+    "Intervertebral disc T7-T8",
+    "Intervertebral disc T8-T9",
+    "Intervertebral disc T9-T10",
+    "Nucleus pulposus C2-C3",
+    "Nucleus pulposus C3-C4",
+    "Nucleus pulposus C4-C5",
+    "Nucleus pulposus C5-C6",
+    "Nucleus pulposus C6-C7",
+    "Nucleus pulposus C7-T1",
+    "Nucleus pulposus L1-L2",
+    "Nucleus pulposus L2-L3",
+    "Nucleus pulposus L3-L4",
+    "Nucleus pulposus L4-L5",
+    "Nucleus pulposus L5-S1",
+    "Nucleus pulposus T1-T2",
+    "Nucleus pulposus T10-T11",
+    "Nucleus pulposus T11-T12",
+    "Nucleus pulposus T12-L1",
+    "Nucleus pulposus T2-T3",
+    "Nucleus pulposus T3-T4",
+    "Nucleus pulposus T4-T5",
+    "Nucleus pulposus T5-T6",
+    "Nucleus pulposus T6-T7",
+    "Nucleus pulposus T7-T8",
+    "Nucleus pulposus T8-T9",
+    "Nucleus pulposus T9-T10",
+    "Sacrococcygeal symphysis"
+   ],
+   "resolution": "collection-name"
+  },
+  {
+   "id": "intervertebral-foramen",
+   "name": "Intervertebral Foramen",
+   "category": "landmark",
+   "region": "back-core",
+   "blenderObjects": [
+    "Intervertebral foramen.j"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "ischial-tuberosity",
+   "name": "Ischial Tuberosity",
+   "category": "landmark",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Ischial tuberosity.i"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "ischium",
+   "name": "Ischium",
+   "category": "landmark",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Ischium.i"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "jugular-notch",
+   "name": "Jugular Notch",
+   "category": "landmark",
+   "region": "back-core",
+   "blenderObjects": [],
+   "resolution": "unresolved"
+  },
+  {
+   "id": "l4-vertebra",
+   "name": "L4 Vertebra",
+   "category": "landmark",
+   "region": "back-core",
+   "blenderObjects": [
+    "Vertebra L4"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "l5-s1-junction",
+   "name": "L5–S1 Junction",
+   "category": "landmark",
+   "region": "back-core",
+   "blenderObjects": [],
+   "resolution": "unresolved"
+  },
+  {
+   "id": "l5-vertebra",
+   "name": "L5 Vertebra",
+   "category": "landmark",
+   "region": "back-core",
+   "blenderObjects": [
+    "Vertebra L5"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "lamina",
+   "name": "Lamina",
+   "category": "landmark",
+   "region": "back-core",
+   "blenderObjects": [],
+   "resolution": "unresolved"
+  },
+  {
+   "id": "lateral-condyle-femur",
+   "name": "Lateral Condyle of Femur",
+   "category": "landmark",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Lateral condyle of femur.i"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "lateral-condyle-tibia",
+   "name": "Lateral Condyle of Tibia",
+   "category": "landmark",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Lateral condyle of tibia.i"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "lateral-cuneiform",
+   "name": "Lateral Cuneiform",
+   "category": "landmark",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Lateral cuneiform bone.l",
+    "Lateral cuneiform bone.r"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "lateral-epicondyle-femur",
+   "name": "Lateral Epicondyle of Femur",
+   "category": "landmark",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Lateral epicondyle of femur.i"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "lateral-epicondyle-humerus",
+   "name": "Lateral Epicondyle of Humerus",
+   "category": "landmark",
+   "region": "shoulder-arm",
+   "blenderObjects": [
+    "Lateral epicondyle of humerus.i"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "lateral-malleolus",
+   "name": "Lateral Malleolus",
+   "category": "landmark",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Lateral malleolus.i"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "lateral-mass-atlas",
+   "name": "Lateral Mass of Atlas",
+   "category": "landmark",
+   "region": "back-core",
+   "blenderObjects": [
+    "Lateral mass.j"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "lesser-trochanter",
+   "name": "Lesser Trochanter",
+   "category": "landmark",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Lesser trochanter.i"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "lesser-tubercle-humerus",
+   "name": "Lesser Tubercle of Humerus",
+   "category": "landmark",
+   "region": "shoulder-arm",
+   "blenderObjects": [
+    "Lesser tubercle.i"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "linea-aspera",
+   "name": "Linea Aspera",
+   "category": "landmark",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Linea aspera.i"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "lunate",
+   "name": "Lunate",
+   "category": "landmark",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Lunate bone.l",
+    "Lunate bone.r"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "manubrium",
+   "name": "Manubrium",
+   "category": "landmark",
+   "region": "back-core",
+   "blenderObjects": [],
+   "resolution": "unresolved"
+  },
+  {
+   "id": "medial-condyle-femur",
+   "name": "Medial Condyle of Femur",
+   "category": "landmark",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Medial condyle of femur.i"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "medial-condyle-tibia",
+   "name": "Medial Condyle of Tibia",
+   "category": "landmark",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Medial condyle of tibia.i"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "medial-cuneiform",
+   "name": "Medial Cuneiform",
+   "category": "landmark",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Medial cuneiform bone.l",
+    "Medial cuneiform bone.r"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "medial-epicondyle-femur",
+   "name": "Medial Epicondyle of Femur",
+   "category": "landmark",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Medial epicondyle of femur.i"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "medial-epicondyle-humerus",
+   "name": "Medial Epicondyle of Humerus",
+   "category": "landmark",
+   "region": "shoulder-arm",
+   "blenderObjects": [
+    "Medial epicondyle of humerus.i"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "medial-malleolus",
+   "name": "Medial Malleolus",
+   "category": "landmark",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Medial malleolus.i"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "median-sacral-crest",
+   "name": "Median Sacral Crest",
+   "category": "landmark",
+   "region": "back-core",
+   "blenderObjects": [
+    "Median sacral crest.j"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "navicular",
+   "name": "Navicular",
+   "category": "landmark",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Navicular bone.l",
+    "Navicular bone.r"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "navicular-tuberosity",
+   "name": "Navicular Tuberosity",
+   "category": "landmark",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Tuberosity of navicular bone.i"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "neck-of-fibula",
+   "name": "Neck of Fibula",
+   "category": "landmark",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Neck of fibula.i"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "obturator-foramen",
+   "name": "Obturator Foramen",
+   "category": "landmark",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Obturator foramen.i"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "olecranon",
+   "name": "Olecranon",
+   "category": "landmark",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Olecranon.i"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "pars-interarticularis",
+   "name": "Pars Interarticularis",
+   "category": "landmark",
+   "region": "back-core",
+   "blenderObjects": [],
+   "resolution": "unresolved"
+  },
+  {
+   "id": "pedicle",
+   "name": "Pedicle",
+   "category": "landmark",
+   "region": "back-core",
+   "blenderObjects": [],
+   "resolution": "unresolved"
+  },
+  {
+   "id": "pisiform",
+   "name": "Pisiform",
+   "category": "landmark",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Pisiform bone.l",
+    "Pisiform bone.r"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "posterior-arch-atlas",
+   "name": "Posterior Arch of Atlas",
+   "category": "landmark",
+   "region": "back-core",
+   "blenderObjects": [
+    "Posterior arch of atlas.j"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "posterior-sacral-foramina",
+   "name": "Posterior Sacral Foramina",
+   "category": "landmark",
+   "region": "back-core",
+   "blenderObjects": [
+    "Posterior sacral foramina.j"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "psis",
+   "name": "Posterior Superior Iliac Spine (PSIS)",
+   "category": "landmark",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Posterior superior iliac spine.i"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "pubic-tubercle",
+   "name": "Pubic Tubercle",
+   "category": "landmark",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Pubic tubercle.i"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "pubis",
+   "name": "Pubis",
+   "category": "landmark",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Pubis.i"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "radial-styloid-process",
+   "name": "Radial Styloid Process",
+   "category": "landmark",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Radial styloid process.i"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "radial-tuberosity",
+   "name": "Radial Tuberosity",
+   "category": "landmark",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Radial tuberosity.i"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "sacral-ala",
+   "name": "Sacral Ala",
+   "category": "landmark",
+   "region": "back-core",
+   "blenderObjects": [
+    "Ala of sacrum.j"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "sacral-apex",
+   "name": "Sacral Apex",
+   "category": "landmark",
+   "region": "back-core",
+   "blenderObjects": [
+    "Apex of sacrum.j"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "sacral-base",
+   "name": "Sacral Base",
+   "category": "landmark",
+   "region": "back-core",
+   "blenderObjects": [
+    "Base of sacrum.j"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "sacral-canal",
+   "name": "Sacral Canal",
+   "category": "landmark",
+   "region": "back-core",
+   "blenderObjects": [
+    "Sacral canal.j"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "sacral-cornua",
+   "name": "Sacral Cornua",
+   "category": "landmark",
+   "region": "back-core",
+   "blenderObjects": [],
+   "resolution": "unresolved"
+  },
+  {
+   "id": "sacral-hiatus",
+   "name": "Sacral Hiatus",
+   "category": "landmark",
+   "region": "back-core",
+   "blenderObjects": [
+    "Sacral hiatus.j"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "sacral-promontory",
+   "name": "Sacral Promontory",
+   "category": "landmark",
+   "region": "back-core",
+   "blenderObjects": [],
+   "resolution": "unresolved"
+  },
+  {
+   "id": "scaphoid",
+   "name": "Scaphoid",
+   "category": "landmark",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Scaphoid bone.l",
+    "Scaphoid bone.r"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "scaphoid-tubercle",
+   "name": "Scaphoid Tubercle",
+   "category": "landmark",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Tubercle of scaphoid bone.i"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "spine-of-scapula",
+   "name": "Spine of Scapula",
+   "category": "landmark",
+   "region": "shoulder-arm",
+   "blenderObjects": [
+    "Spine of scapula.i"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "spinous-process",
+   "name": "Spinous Process",
+   "category": "landmark",
+   "region": "back-core",
+   "blenderObjects": [
+    "Spinous process.j"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "sternal-angle",
+   "name": "Sternal Angle",
+   "category": "landmark",
+   "region": "back-core",
+   "blenderObjects": [
+    "Sternal angle.j"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "sternal-body",
+   "name": "Body of Sternum",
+   "category": "landmark",
+   "region": "back-core",
+   "blenderObjects": [
+    "Body of sternum"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "superior-angle-scapula",
+   "name": "Superior Angle of Scapula",
+   "category": "landmark",
+   "region": "shoulder-arm",
+   "blenderObjects": [
+    "Superior angle of scapula.i"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "superior-articular-process",
+   "name": "Superior Articular Process",
+   "category": "landmark",
+   "region": "back-core",
+   "blenderObjects": [],
+   "resolution": "unresolved"
+  },
+  {
+   "id": "superior-articular-process-sacrum",
+   "name": "Superior Articular Process (Sacrum)",
+   "category": "landmark",
+   "region": "back-core",
+   "blenderObjects": [
+    "Superior articular process of sacrum.j"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "superior-costal-facet",
+   "name": "Superior Costal Facet",
+   "category": "landmark",
+   "region": "back-core",
+   "blenderObjects": [
+    "Superior costal facet.j"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "supraspinous-fossa",
+   "name": "Supraspinous Fossa",
+   "category": "landmark",
+   "region": "shoulder-arm",
+   "blenderObjects": [
+    "Supraspinous fossa.i"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "surgical-neck-humerus",
+   "name": "Surgical Neck of Humerus",
+   "category": "landmark",
+   "region": "shoulder-arm",
+   "blenderObjects": [
+    "Surgical neck of humerus.i"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "sustentaculum-tali",
+   "name": "Sustentaculum Tali",
+   "category": "landmark",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Sustentaculum tali.i"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "talus",
+   "name": "Talus",
+   "category": "landmark",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Talus.l",
+    "Talus.r"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "tibial-crest",
+   "name": "Tibial Crest",
+   "category": "landmark",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Anterior border of tibia.i"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "tibial-plateau",
+   "name": "Tibial Plateau",
+   "category": "landmark",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Tibial plateau.i"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "tibial-tuberosity",
+   "name": "Tibial Tuberosity",
+   "category": "landmark",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Tibial tuberosity.i"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "transverse-costal-facet",
+   "name": "Transverse Costal Facet",
+   "category": "landmark",
+   "region": "back-core",
+   "blenderObjects": [
+    "Transverse costal facet.j"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "transverse-foramen",
+   "name": "Transverse Foramen",
+   "category": "landmark",
+   "region": "back-core",
+   "blenderObjects": [],
+   "resolution": "unresolved"
+  },
+  {
+   "id": "transverse-process",
+   "name": "Transverse Process",
+   "category": "landmark",
+   "region": "back-core",
+   "blenderObjects": [
+    "Transverse process.j"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "trapezium",
+   "name": "Trapezium",
+   "category": "landmark",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Trapezium bone.l",
+    "Trapezium bone.r"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "trapezoid",
+   "name": "Trapezoid",
+   "category": "landmark",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Trapezoid bone.l",
+    "Trapezoid bone.r"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "triquetrum",
+   "name": "Triquetrum",
+   "category": "landmark",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Triquetrum bone.l",
+    "Triquetrum bone.r"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "trochlear-notch",
+   "name": "Trochlear Notch",
+   "category": "landmark",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Trochlear notch.i"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "twelfth-rib",
+   "name": "Twelfth Rib",
+   "category": "landmark",
+   "region": "back-core",
+   "blenderObjects": [
+    "Twelfth rib.l",
+    "Twelfth rib.r"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "ulnar-styloid-process",
+   "name": "Ulnar Styloid Process",
+   "category": "landmark",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Ulnar styloid process.i"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "vertebral-body",
+   "name": "Vertebral Body",
+   "category": "landmark",
+   "region": "back-core",
+   "blenderObjects": [
+    "Vertebral body.j"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "vertebral-foramen",
+   "name": "Vertebral Foramen",
+   "category": "landmark",
+   "region": "back-core",
+   "blenderObjects": [
+    "Vertebral foramen.j"
+   ],
+   "resolution": "object-name"
+  },
+  {
+   "id": "xiphoid-process",
+   "name": "Xiphoid Process",
+   "category": "landmark",
+   "region": "back-core",
+   "blenderObjects": [
+    "Xiphoid process.j"
+   ],
+   "resolution": "object-name"
+  }
+ ]
+}
