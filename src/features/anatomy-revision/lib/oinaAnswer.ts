@@ -1,5 +1,5 @@
 import type { PromptKind } from '../types/question';
-import { stripHeadPrefix } from './oinaValues';
+import { ATTACHMENT_SYNONYMS, stripHeadPrefix } from './oinaValues';
 
 /**
  * Typed-answer grading for OINA questions (CR-018).
@@ -206,6 +206,11 @@ export function acceptedVariantsFor(promptKind: PromptKind, raw: string): string
     // base of ...") and splitting there would produce fragments.
     for (const part of withoutParens.split(/\s+&\s+/)) {
       if (gradingTokens(part).length >= 2) add(part);
+    }
+    // Clinical names for the same site. See ATTACHMENT_SYNONYMS for why only
+    // definitional equivalences are listed there and Gerdy's tubercle is not.
+    for (const { when, accept } of ATTACHMENT_SYNONYMS) {
+      if (when.test(raw)) accept.forEach(add);
     }
   }
   if (promptKind === 'nerve') {

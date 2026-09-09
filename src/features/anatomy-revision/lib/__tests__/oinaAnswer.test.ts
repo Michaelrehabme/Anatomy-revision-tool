@@ -152,3 +152,39 @@ describe('gradeTypedSlots', () => {
     expect(ambiguous).toEqual([]);
   });
 });
+
+describe('clinical synonyms for attachment sites', () => {
+  const insertion = (input: string, raw: string) => matchesSlot(input, acceptedVariantsFor('insertion', raw));
+
+  it('accepts pes anserinus however the shared insertion was authored', () => {
+    // Sartorius, gracilis and semitendinosus share one site and the dataset
+    // spells it three ways; a student types the clinical name for all three.
+    expect(insertion('pes anserinus', 'Proximal medial surface of the tibia at the pes anserinus')).toBe(true);
+    expect(insertion('pes anserinus', 'Proximal medial surface of the tibia (pes anserinus)')).toBe(true);
+    expect(insertion('pes anserinus', 'Medial surface of tibia (pes anserinus)')).toBe(true);
+  });
+
+  it('accepts either name for the same tendon, fascia, groove or aponeurosis', () => {
+    expect(insertion('Achilles tendon', 'Calcaneus via Achilles tendon')).toBe(true);
+    expect(insertion('calcaneal tendon', 'Calcaneus via Achilles tendon')).toBe(true);
+    expect(insertion('bicipital groove', 'Lateral lip of intertubercular sulcus')).toBe(true);
+    expect(insertion('bicipital tuberosity', 'Radial tuberosity')).toBe(true);
+    expect(insertion('iliotibial tract', 'Iliotibial band (ITB)')).toBe(true);
+    expect(insertion('lacertus fibrosus', 'Bicipital aponeurosis')).toBe(true);
+    expect(matchesSlot('lumbodorsal fascia', acceptedVariantsFor('origin', 'Thoracolumbar fascia'))).toBe(true);
+  });
+
+  it('does not accept a part for the whole, or an unrelated site', () => {
+    // Gerdy's tubercle sits ON the lateral condyle; it is the right answer for
+    // tensor fasciae latae and a narrower one than extensor digitorum longus's
+    // origin asks for, so it is not a global synonym.
+    expect(matchesSlot("Gerdy's tubercle", acceptedVariantsFor('origin', 'Lateral condyle of tibia'))).toBe(false);
+    expect(insertion('pes anserinus', 'Ischial tuberosity')).toBe(false);
+  });
+
+  it('never displaces the authored phrasing', () => {
+    const variants = acceptedVariantsFor('insertion', 'Calcaneus via Achilles tendon');
+    expect(variants[0]).toBe('Calcaneus via Achilles tendon');
+    expect(insertion('calcaneus via Achilles tendon', 'Calcaneus via Achilles tendon')).toBe(true);
+  });
+});

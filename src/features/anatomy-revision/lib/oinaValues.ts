@@ -38,6 +38,63 @@ const HEAD_PREFIX = /^[A-Z][^:]{0,30}:\s*/;
  */
 const HEAD_SUFFIX = /\s*\((?=[^)]*\b(?:head|part|portion|belly)\b)[^)]*\)\s*$/i;
 
+/**
+ * Clinical names for attachment sites that the authored value does not use.
+ *
+ * A student is taught "pes anserinus" and "the Achilles", not "proximal
+ * medial surface of the tibia" and "calcaneus via calcaneal tendon". Grading
+ * is token-based, so an answer sharing no words with the authored value
+ * scores zero however well the student knows the anatomy — the wrong failure
+ * for a revision tool, because it teaches them to reproduce this dataset's
+ * phrasing rather than to know the site.
+ *
+ * ONLY DEFINITIONAL EQUIVALENCES BELONG HERE — two names for one structure,
+ * never a part for a whole. Gerdy's tubercle is deliberately absent: it is a
+ * tubercle ON the lateral condyle of the tibia, so accepting it for extensor
+ * digitorum longus's origin ("Lateral condyle of tibia") would mark a
+ * narrower site correct than the question asked for, even though it is
+ * exactly right for tensor fasciae latae. That needs a per-muscle decision,
+ * not a global synonym.
+ *
+ * `when` matches the authored value; `accept` lists additional forms that
+ * grade as correct for it. Adding a synonym never removes the authored
+ * phrasing as an answer.
+ */
+export const ATTACHMENT_SYNONYMS: { when: RegExp; accept: string[] }[] = [
+  {
+    // Sartorius, gracilis and semitendinosus share this insertion, and the
+    // dataset spells it three different ways across the three of them.
+    when: /(proximal )?medial (surface|aspect) of (the )?tibia|pes anserinus/i,
+    accept: ['pes anserinus'],
+  },
+  {
+    // Named for Achilles in every clinic and for the calcaneus in every
+    // textbook; one tendon either way.
+    when: /achilles tendon|calcaneal tendon/i,
+    accept: ['Achilles tendon', 'calcaneal tendon'],
+  },
+  {
+    when: /intertubercular (sulcus|groove)|bicipital groove/i,
+    accept: ['bicipital groove', 'intertubercular sulcus', 'intertubercular groove'],
+  },
+  {
+    when: /radial tuberosity|bicipital tuberosity/i,
+    accept: ['radial tuberosity', 'bicipital tuberosity'],
+  },
+  {
+    when: /iliotibial (band|tract)/i,
+    accept: ['iliotibial band', 'iliotibial tract'],
+  },
+  {
+    when: /bicipital aponeurosis|lacertus fibrosus/i,
+    accept: ['bicipital aponeurosis', 'lacertus fibrosus'],
+  },
+  {
+    when: /thoracolumbar fascia|lumbodorsal fascia/i,
+    accept: ['thoracolumbar fascia', 'lumbodorsal fascia'],
+  },
+];
+
 /** Strips head/part markers so a value can stand as a choice or a typed slot. */
 export function stripHeadPrefix(value: string): string {
   const stripped = value.replace(HEAD_PREFIX, '').replace(HEAD_SUFFIX, '').trim();
