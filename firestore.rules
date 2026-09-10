@@ -13,9 +13,11 @@ service cloud.firestore {
     // previous model need an admin, a script, or both.
     //
     // The privacy line that makes that safe is the student's own choice: an
-    // educator sees a student only once that student has typed the cohort's
-    // join code in, and leaving removes them again. Owning a cohort grants
-    // access to the people who opted into it — never to anyone else.
+    // educator sees a student only once that student has joined — by typing
+    // the cohort's join code, or by accepting an invitation addressed to them
+    // — and leaving removes them again. An educator can invite a whole year
+    // group at once, but inviting is an offer, not membership. Owning a cohort
+    // grants access to the people who opted into it, never to anyone else.
     //
     // ADMIN is still granted, because it is genuinely privileged (every
     // user's data, the Change Register, platform analytics). It comes from a
@@ -81,8 +83,57 @@ service cloud.firestore {
     // access to a student who has joined a cohort THEY own — the requester's
     // own uid is the only input to that check, so access to one class can
     // never be turned into access to another.
+    //
+    // MEMBERSHIP IS PROVEN, NOT ASSERTED. `cohort` on this document is what
+    // every educator-facing rule keys off: ownsCohort(cohortOfUser(uid)) grants
+    // an educator read access to a student, and isMemberOfCohort() lets that
+    // student write the class's rollup counters. Until now a student could set
+    // it to any value, because the join code was only ever checked in the
+    // client — so knowing a cohort id was enough to join a class uninvited and
+    // write into its figures.
+    //
+    // A cohort id is a randomUUID and not guessable, but it is not secret
+    // either: it sits in the educator's URL bar and inside every invitation
+    // the invitee can read. "Hard to guess" is not the property this needs.
+    //
+    // So a change to `cohort` must come with evidence — the class's join code,
+    // or an invitation addressed to this account. Clearing it never needs
+    // evidence, because leaving must always be available and immediate.
+    function joinedWithCode(cohortId) {
+      return request.resource.data.get('cohortJoinCode', '') != ''
+        && exists(/databases/$(database)/documents/cohorts/$(cohortId))
+        && get(/databases/$(database)/documents/cohorts/$(cohortId)).data.get('joinCode', '')
+             == request.resource.data.get('cohortJoinCode', '');
+    }
+
+    function joinedWithInvite(cohortId) {
+      return request.resource.data.get('cohortInviteId', '') != ''
+        && exists(/databases/$(database)/documents/invites/$(request.resource.data.get('cohortInviteId', '')))
+        && get(/databases/$(database)/documents/invites/$(request.resource.data.get('cohortInviteId', ''))).data.cohortId == cohortId
+        // Invitations store the address lowercased; a token's email is
+        // whatever the identity provider hands back, which may not be.
+        && get(/databases/$(database)/documents/invites/$(request.resource.data.get('cohortInviteId', ''))).data.email
+             == request.auth.token.get('email', '').lower();
+    }
+
+    /** The cohort being written is either absent, or backed by a code or an invitation. */
+    function cohortIsProven() {
+      return request.resource.data.get('cohort', null) == null
+        || joinedWithCode(request.resource.data.get('cohort', null))
+        || joinedWithInvite(request.resource.data.get('cohort', null));
+    }
+
     match /users/{uid} {
-      allow read, write: if isSignedIn() && request.auth.uid == uid;
+      allow read: if isSignedIn() && request.auth.uid == uid;
+      allow create: if isSignedIn() && request.auth.uid == uid && cohortIsProven();
+      // Unchanged is always allowed, so the ordinary profile write on every
+      // sign-in (displayName, lastActiveAt) never pays for a cohort lookup.
+      allow update: if isSignedIn() && request.auth.uid == uid && (
+        request.resource.data.get('cohort', null) == resource.data.get('cohort', null)
+        || cohortIsProven()
+      );
+      // Erasure — see data/accountLifecycle.ts.
+      allow delete: if isSignedIn() && request.auth.uid == uid;
       allow read: if isAdmin();
       allow read: if ownsCohort(resource.data.get('cohort', ''));
 
@@ -143,7 +194,7 @@ service cloud.firestore {
     // caller may not read fails the whole query.
     match /invites/{inviteId} {
       allow read: if isSignedIn() && (
-        request.auth.token.get('email', '') == resource.data.email
+        request.auth.token.get('email', '').lower() == resource.data.email
         || ownsCohort(resource.data.cohortId)
         || isAdmin()
       );
@@ -155,7 +206,7 @@ service cloud.firestore {
         && request.resource.data.email.size() > 0;
       // Revoked by the educator, declined or accepted by the invitee.
       allow delete: if isSignedIn() && (
-        request.auth.token.get('email', '') == resource.data.email
+        request.auth.token.get('email', '').lower() == resource.data.email
         || ownsCohort(resource.data.cohortId)
         || isAdmin()
       );

@@ -125,13 +125,29 @@ export async function listStudentsInCohort(cohortId: string): Promise<CohortStud
   });
 }
 
-/** Student-initiated: looks up the code, then sets users/{uid}.cohort. Explicit and revocable — never joined implicitly. */
+/**
+ * Student-initiated: looks up the code, then sets users/{uid}.cohort. Explicit
+ * and revocable — never joined implicitly.
+ *
+ * The code is stored alongside the membership because firestore.rules checks
+ * it: a change to `cohort` must arrive with either a matching join code or an
+ * invitation, or it is refused. Before that, this lookup was the only check
+ * and it ran entirely in the client, so anyone who knew a cohort id could join
+ * without one. Storing it is not a leak — it is the class's own code, which
+ * the student has just typed, and only they and their class owner can read
+ * this document.
+ */
 export async function joinCohortByCode(uid: string, joinCode: string): Promise<Cohort> {
   const cohort = await getCohortByJoinCode(joinCode);
   if (!cohort) throw new Error('No cohort found with that code — check it and try again.');
   await setDoc(
     doc(getDb(), 'users', uid),
-    { cohort: cohort.id, cohortJoinedAt: new Date().toISOString() },
+    {
+      cohort: cohort.id,
+      cohortJoinedAt: new Date().toISOString(),
+      cohortJoinCode: cohort.joinCode,
+      cohortInviteId: deleteField(),
+    },
     { merge: true },
   );
   return cohort;
@@ -139,7 +155,18 @@ export async function joinCohortByCode(uid: string, joinCode: string): Promise<C
 
 /** Student-initiated: clears users/{uid}.cohort. Leaving is always available and immediate. */
 export async function leaveCohort(uid: string): Promise<void> {
-  await setDoc(doc(getDb(), 'users', uid), { cohort: null, cohortJoinedAt: deleteField() }, { merge: true });
+  await setDoc(
+    doc(getDb(), 'users', uid),
+    {
+      cohort: null,
+      cohortJoinedAt: deleteField(),
+      // The evidence goes with the membership; leaving it behind would let a
+      // later write re-assert the same cohort without re-proving anything.
+      cohortJoinCode: deleteField(),
+      cohortInviteId: deleteField(),
+    },
+    { merge: true },
+  );
 }
 
 export async function getMyCohort(uid: string): Promise<Cohort | null> {

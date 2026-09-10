@@ -218,9 +218,17 @@ export async function deleteInvite(id: string): Promise<void> {
  */
 export async function acceptInvite(invite: CohortInvite, uid: string): Promise<Cohort | null> {
   const db = getDb();
+  // cohortInviteId is the evidence firestore.rules checks: it must name an
+  // invitation for this cohort addressed to this account's verified email.
+  // The invite is deleted immediately after, so the field is a spent ticket
+  // rather than a standing permission.
   await setDoc(
     doc(db, 'users', uid),
-    { cohort: invite.cohortId, cohortJoinedAt: new Date().toISOString() },
+    {
+      cohort: invite.cohortId,
+      cohortJoinedAt: new Date().toISOString(),
+      cohortInviteId: invite.id,
+    },
     { merge: true },
   );
   await deleteInvite(invite.id);
