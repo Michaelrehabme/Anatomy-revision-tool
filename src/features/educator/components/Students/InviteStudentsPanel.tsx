@@ -37,7 +37,7 @@ export function InviteStudentsPanel({ cohortId, memberEmails, onInvited }: Invit
   const [result, setResult] = useState<InviteResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState<CohortInvite[] | null>(null);
-  const [copied, setCopied] = useState(false);
+  const [copied, setCopied] = useState<'addresses' | 'message' | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -98,9 +98,11 @@ export function InviteStudentsPanel({ cohortId, memberEmails, onInvited }: Invit
    *
    * Addresses go in BCC so a year group does not see each other's emails.
    */
-  const mailtoFor = (invites: CohortInvite[]) => {
-    const subject = `Anatomy revision for ${invites[0]?.cohortName ?? 'your class'}`;
-    const body = [
+  const subjectFor = (invites: CohortInvite[]) =>
+    `Anatomy revision for ${invites[0]?.cohortName ?? 'your class'}`;
+
+  const bodyFor = (invites: CohortInvite[]) =>
+    [
       `I've set up ${invites[0]?.cohortName ?? 'our class'} on LocusMSK, a musculoskeletal anatomy revision tool.`,
       '',
       'To join:',
@@ -112,14 +114,31 @@ export function InviteStudentsPanel({ cohortId, memberEmails, onInvited }: Invit
       'never your individual answers. You can leave the class at any time.',
     ].join('\n');
 
-    return `mailto:?bcc=${encodeURIComponent(invites.map((i) => i.email).join(','))}` +
-      `&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-  };
+  /**
+   * Addressed to the educator with the students in BCC.
+   *
+   * Not an empty To: with everyone in BCC, which is the obvious construction
+   * and which several mail handlers silently refuse — a link that does
+   * nothing when clicked is worse than no link. This way the educator also
+   * keeps a copy of what was sent.
+   */
+  const mailtoFor = (invites: CohortInvite[]) =>
+    `mailto:${encodeURIComponent(user?.email ?? '')}` +
+    `?bcc=${encodeURIComponent(invites.map((i) => i.email).join(','))}` +
+    `&subject=${encodeURIComponent(subjectFor(invites))}` +
+    `&body=${encodeURIComponent(bodyFor(invites))}`;
 
-  async function copyAddresses(invites: CohortInvite[]) {
-    await navigator.clipboard?.writeText(invites.map((i) => i.email).join(', ')).catch(() => {});
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+  async function copy(text: string, which: 'addresses' | 'message') {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(which);
+      setTimeout(() => setCopied(null), 2000);
+    } catch {
+      // Clipboard access can be refused outright (insecure context, or a
+      // permission the browser declines). Saying so beats a button that
+      // appears to work and did not.
+      setError('Could not copy — select the addresses below and copy them manually.');
+    }
   }
 
   const label = { font: '500 10px/1 var(--font-mono)', letterSpacing: '.12em', textTransform: 'uppercase' as const, color: 'var(--ink3)' };
@@ -222,7 +241,8 @@ export function InviteStudentsPanel({ cohortId, memberEmails, onInvited }: Invit
           >
             <span style={{ font: '400 13px/1.4 var(--font-ui)', color: 'var(--ink2)', flex: '1 1 200px' }}>
               {pending.length} {pending.length === 1 ? 'person has' : 'people have'} not accepted yet. They will see the
-              invitation when they next open the app — emailing them is what makes that happen sooner.
+              invitation when they next open the app — emailing them is what makes that happen sooner. If "Email them"
+              does nothing, your browser has no mail app registered: use Copy message instead.
             </span>
             <a
               href={mailtoFor(pending)}
@@ -239,10 +259,23 @@ export function InviteStudentsPanel({ cohortId, memberEmails, onInvited }: Invit
             </a>
             <button
               type="button"
-              onClick={() => copyAddresses(pending)}
+              onClick={() => copy(pending.map((i) => i.email).join(', '), 'addresses')}
               style={{ font: '400 13px/1 var(--font-ui)', color: 'var(--accd)', whiteSpace: 'nowrap' }}
             >
-              {copied ? 'Copied' : 'Copy addresses'}
+              {copied === 'addresses' ? 'Copied' : 'Copy addresses'}
+            </button>
+            {/* The reliable route. "Email them" depends on a mail client being
+                registered as the mailto handler, which it often is not when
+                someone lives in Gmail or Outlook on the web — and then the
+                link does nothing at all with no explanation. */}
+            <button
+              type="button"
+              onClick={() => copy(`${subjectFor(pending)}
+
+${bodyFor(pending)}`, 'message')}
+              style={{ font: '400 13px/1 var(--font-ui)', color: 'var(--accd)', whiteSpace: 'nowrap' }}
+            >
+              {copied === 'message' ? 'Copied' : 'Copy message'}
             </button>
           </div>
           {/* Shown whether or not the composer is open: an educator wondering
