@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import { useAuth } from '../../context/AuthProvider';
+import type { CohortInvite } from '../../../educator/data/invitesRepository';
 import type { Cohort } from '../../../educator/types/cohort';
 
 interface CohortMembershipProps {
@@ -47,10 +49,62 @@ interface CohortMembershipProps {
  * one it replaced. Check firestore.rules before touching it.
  */
 export function CohortMembership({ uid, compact }: CohortMembershipProps) {
+  const { user } = useAuth();
   const [cohort, setCohort] = useState<Cohort | null | 'loading'>('loading');
   const [code, setCode] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  /*
+   * Invitations addressed to this person's email. An educator can invite a
+   * whole year group at once, but nobody is added by that — this is where the
+   * student actually consents, and it is the only place the exchange happens.
+   * Loaded regardless of whether they are already in a class, so an invitation
+   * to a second class is not silently invisible.
+   */
+  const [invites, setInvites] = useState<CohortInvite[]>([]);
+
+  useEffect(() => {
+    let cancelled = false;
+    // Via the auth context, never firebase.ts directly: the demo build aliases
+    // AuthProvider but not the SDK, so importing the latter here put the whole
+    // Firebase client into a bundle that must not contain it.
+    const email = user?.email;
+    if (!email) return;
+    import('../../../educator/data/invitesRepository').then(({ listInvitesForEmail }) =>
+      listInvitesForEmail(email)
+        .then((found) => {
+          if (!cancelled) setInvites(found);
+        })
+        // A refused or failed read must not take the class panel down with
+        // it; an invitation the student never sees is recoverable, a blank
+        // account screen is not.
+        .catch(() => {}),
+    );
+    return () => {
+      cancelled = true;
+    };
+  }, [uid, user?.email]);
+
+  const handleAccept = async (invite: CohortInvite) => {
+    setBusy(true);
+    setError(null);
+    try {
+      const { acceptInvite } = await import('../../../educator/data/invitesRepository');
+      const joined = await acceptInvite(invite, uid);
+      setCohort(joined);
+      setInvites((current) => current.filter((i) => i.id !== invite.id));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Could not join that class.');
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const handleDecline = async (invite: CohortInvite) => {
+    const { deleteInvite } = await import('../../../educator/data/invitesRepository');
+    await deleteInvite(invite.id).catch(() => {});
+    setInvites((current) => current.filter((i) => i.id !== invite.id));
+  };
 
   useEffect(() => {
     let cancelled = false;
@@ -109,6 +163,51 @@ export function CohortMembership({ uid, compact }: CohortMembershipProps) {
   return (
     <div className="mt-5 border-t pt-4" style={{ borderColor: 'var(--line)' }}>
       <div style={labelStyle}>Class</div>
+
+      {invites.map((invite) => (
+        <div
+          key={invite.id}
+          className="mt-2 mb-3 p-3"
+          style={{ border: '1.2px solid var(--acc)', background: 'var(--accs)' }}
+        >
+          <div style={{ font: `500 ${fontSize}px/1.4 var(--font-ui)`, color: 'var(--ink)' }}>
+            {invite.invitedByName ? `${invite.invitedByName} has invited you` : 'You have been invited'} to{' '}
+            {invite.cohortName || 'a class'}.
+          </div>
+          {/* The same sentence the join notice carries, shown before the
+              decision rather than after it — this is the moment consent is
+              actually given. */}
+          <div className="mt-1.5" style={noteStyle}>
+            They will see your accuracy, streak and weak areas — never your individual answers. You can leave any time,
+            which stops it.
+          </div>
+          <div className="mt-2.5 flex flex-wrap items-center gap-3">
+            <button
+              type="button"
+              onClick={() => handleAccept(invite)}
+              disabled={busy}
+              className={compact ? 'min-h-[44px]' : undefined}
+              style={{
+                font: `500 ${fontSize}px/1 var(--font-ui)`,
+                padding: '8px 13px',
+                background: 'var(--acc-fill)',
+                color: 'var(--onacc)',
+              }}
+            >
+              Join {invite.cohortName || 'class'}
+            </button>
+            <button
+              type="button"
+              onClick={() => handleDecline(invite)}
+              disabled={busy}
+              className={compact ? 'min-h-[44px]' : undefined}
+              style={{ font: `400 ${fontSize}px/1 var(--font-ui)`, color: 'var(--ink3)' }}
+            >
+              No thanks
+            </button>
+          </div>
+        </div>
+      ))}
       {cohort ? (
         <>
           <div className="mt-2 flex items-center justify-between gap-2">

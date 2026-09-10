@@ -122,6 +122,48 @@ service cloud.firestore {
       // written on the student's own device. See educator/data/cohortRollups.ts.
     }
 
+    // invites/{emailKey__cohortId} — a pending offer of membership, never
+    // membership itself.
+    //
+    // An educator with a year group should not have to chase forty people to
+    // type a code, but adding students directly would make three things false
+    // at once: this file's own claim that an educator sees a student only
+    // once that student joined, the join notice, and the privacy policy. So
+    // the educator does the bulk work and the student still consents.
+    //
+    // AN UNACCEPTED INVITE IS NOT STUDENT DATA. It holds an email address the
+    // educator already had and the name of their own class. Nothing about the
+    // student's performance is reachable until they accept, at which point
+    // users/{uid}.cohort is set by the student's own device — the same write
+    // joining by code performs.
+    //
+    // The read rule compares against the caller's verified token, so a query
+    // for somebody else's address is refused outright rather than returning
+    // nothing: Firestore evaluates this per document, and a single row the
+    // caller may not read fails the whole query.
+    match /invites/{inviteId} {
+      allow read: if isSignedIn() && (
+        request.auth.token.get('email', '') == resource.data.email
+        || ownsCohort(resource.data.cohortId)
+        || isAdmin()
+      );
+      // Only the owner of the named cohort may offer membership of it, and
+      // only for a cohort they own — checked against the request's own data
+      // so a cohort id cannot be swapped in after the fact.
+      allow create: if ownsCohort(request.resource.data.cohortId)
+        && request.resource.data.email is string
+        && request.resource.data.email.size() > 0;
+      // Revoked by the educator, declined or accepted by the invitee.
+      allow delete: if isSignedIn() && (
+        request.auth.token.get('email', '') == resource.data.email
+        || ownsCohort(resource.data.cohortId)
+        || isAdmin()
+      );
+      // An invitation that could be edited could be repointed at another
+      // cohort after the invitee had seen which class they were joining.
+      allow update: if false;
+    }
+
     // joinCodes/{CODE} — the code IS the document id, which is what makes a
     // code unique: Firestore's create fails if the document already exists,
     // so two people generating the same code is settled by the database

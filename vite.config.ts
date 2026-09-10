@@ -28,6 +28,13 @@ export const educatorDemoAliases = [
   { find: /^.*\/data\/cohortsRepository$/, replacement: demoFile('cohortsRepository.demo.ts') },
   { find: /^.*\/data\/assignmentsRepository$/, replacement: demoFile('assignmentsRepository.demo.ts') },
   { find: /^.*\/data\/cohortAnalytics$/, replacement: demoFile('cohortAnalytics.demo.ts') },
+  // Reached from CohortMembership, which is a SHARED component rather than an
+  // educator-only one — without this alias the demo build pulls the whole
+  // Firebase client in through it, defeating the persistence pin below.
+  { find: /^.*\/data\/invitesRepository$/, replacement: demoFile('invitesRepository.demo.ts') },
+  // Same problem from the account screen: accountLifecycle imports
+  // firebase/auth at the top level to delete the Auth user.
+  { find: /^.*\/data\/accountLifecycle$/, replacement: demoFile('accountLifecycle.demo.ts') },
   // Screens import the guard as both './components/RequireEducator' and '../RequireEducator'.
   { find: /^.*\/RequireEducator$/, replacement: demoFile('RequireEducator.demo.tsx') },
   // Admin-side role screens, so /admin/people is reviewable without a real grant.

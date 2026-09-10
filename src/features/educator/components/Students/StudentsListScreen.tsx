@@ -1,4 +1,5 @@
 import { Link, useParams } from 'react-router-dom';
+import { InviteStudentsPanel } from './InviteStudentsPanel';
 import { useCohortAnalytics } from '../../hooks/useCohortAnalytics';
 
 /**
@@ -34,9 +35,13 @@ export function EducatorStudentsListScreen() {
 
   if (students.length === 0) {
     return (
-      <div className="mt-10 text-sm" style={{ color: 'var(--ink3)' }}>
-        No students have joined this cohort yet — share the join code from the cohort overview.
-      </div>
+      <>
+        <div className="mt-10 text-sm" style={{ color: 'var(--ink3)' }}>
+          No students have joined this cohort yet — invite them below, or share the join code from the cohort
+          overview.
+        </div>
+        {cohortId && <InviteStudentsPanel cohortId={cohortId} memberEmails={[]} />}
+      </>
     );
   }
 
@@ -96,6 +101,13 @@ export function EducatorStudentsListScreen() {
           ))}
         </tbody>
       </table>
+
+      {cohortId && (
+        <InviteStudentsPanel
+          cohortId={cohortId}
+          memberEmails={students.map((s) => s.email).filter((e): e is string => !!e)}
+        />
+      )}
     </div>
   );
 }
