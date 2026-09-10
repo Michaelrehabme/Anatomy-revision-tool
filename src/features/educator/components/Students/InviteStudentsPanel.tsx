@@ -128,6 +128,28 @@ export function InviteStudentsPanel({ cohortId, memberEmails, onInvited }: Invit
     `&subject=${encodeURIComponent(subjectFor(invites))}` +
     `&body=${encodeURIComponent(bodyFor(invites))}`;
 
+  /**
+   * Compose links straight into webmail.
+   *
+   * mailto: hands off to whatever desktop client Windows has registered, and
+   * for anyone reading mail in a browser that means either nothing happens or
+   * they are prompted to set up an account they do not want. These open the
+   * compose window in the tab they already have signed in.
+   *
+   * Outlook is offered as the work/school host rather than outlook.live.com,
+   * because an invitation to a class should come from the address the
+   * students recognise — their institution's, not a personal one.
+   */
+  const bcc = (invites: CohortInvite[]) => encodeURIComponent(invites.map((i) => i.email).join(','));
+
+  const gmailFor = (invites: CohortInvite[]) =>
+    `https://mail.google.com/mail/?view=cm&fs=1&bcc=${bcc(invites)}` +
+    `&su=${encodeURIComponent(subjectFor(invites))}&body=${encodeURIComponent(bodyFor(invites))}`;
+
+  const outlookFor = (invites: CohortInvite[]) =>
+    `https://outlook.office.com/mail/deeplink/compose?bcc=${bcc(invites)}` +
+    `&subject=${encodeURIComponent(subjectFor(invites))}&body=${encodeURIComponent(bodyFor(invites))}`;
+
   async function copy(text: string, which: 'addresses' | 'message') {
     try {
       await navigator.clipboard.writeText(text);
@@ -241,21 +263,17 @@ export function InviteStudentsPanel({ cohortId, memberEmails, onInvited }: Invit
           >
             <span style={{ font: '400 13px/1.4 var(--font-ui)', color: 'var(--ink2)', flex: '1 1 200px' }}>
               {pending.length} {pending.length === 1 ? 'person has' : 'people have'} not accepted yet. They will see the
-              invitation when they next open the app — emailing them is what makes that happen sooner. If "Email them"
-              does nothing, your browser has no mail app registered: use Copy message instead.
+              invitation when they next open the app — emailing them is what makes that happen sooner. Outlook and Gmail open a
+              pre-filled compose in your browser; "Mail app" needs a desktop mail client installed.
             </span>
-            <a
-              href={mailtoFor(pending)}
-              style={{
-                font: '500 13px/1 var(--font-ui)',
-                padding: '9px 13px',
-                background: 'var(--acc-fill)',
-                color: 'var(--onacc)',
-                textDecoration: 'none',
-                whiteSpace: 'nowrap',
-              }}
-            >
-              Email them
+            <a href={outlookFor(pending)} target="_blank" rel="noreferrer" style={{ font: '500 13px/1 var(--font-ui)', padding: '9px 13px', background: 'var(--acc-fill)', color: 'var(--onacc)', textDecoration: 'none', whiteSpace: 'nowrap' }}>
+              Outlook
+            </a>
+            <a href={gmailFor(pending)} target="_blank" rel="noreferrer" style={{ font: '400 13px/1 var(--font-ui)', color: 'var(--accd)', whiteSpace: 'nowrap' }}>
+              Gmail
+            </a>
+            <a href={mailtoFor(pending)} style={{ font: '400 13px/1 var(--font-ui)', color: 'var(--accd)', whiteSpace: 'nowrap' }}>
+              Mail app
             </a>
             <button
               type="button"
