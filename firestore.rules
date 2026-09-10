@@ -97,12 +97,21 @@ service cloud.firestore {
 
     // Top-level, append-only event log — lives outside users/{uid} because
     // cross-user analytics needs to query across owners, which Firestore
-    // cannot do over a per-user subcollection. Each event is immutable once
-    // written: no update or delete rule is granted, ever.
+    // cannot do over a per-user subcollection.
+    //
+    // APPEND-ONLY, WITH ONE EXCEPTION. No update rule exists and none should:
+    // an answer that can be rewritten is not a record of anything. Delete is
+    // granted to the author alone, and only because the right to erasure
+    // outranks our preference for an immutable log — the privacy policy
+    // promises a student can delete their account, and an answer log that
+    // survived that would make the promise false. data/accountLifecycle.ts is
+    // the only caller.
     match /attemptEvents/{attemptId} {
       allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
       allow read: if isSignedIn() && resource.data.userId == request.auth.uid;
       allow read: if isAdmin();
+      allow delete: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow update: if false;
       // NO cohort-owner read (CR-031). This grant used to exist, and it is why
       // the join notice could not promise that an educator never sees your
       // individual answers — it let a class owner read every attemptEvent of

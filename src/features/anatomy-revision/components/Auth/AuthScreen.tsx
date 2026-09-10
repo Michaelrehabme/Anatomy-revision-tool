@@ -45,6 +45,21 @@ export function AuthScreen({ initialMode = 'sign-up', onClose }: AuthScreenProps
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [conflictMessage, setConflictMessage] = useState<string | null>(null);
+  /*
+   * AGE CONFIRMATION (CR-025 item 6). Under-16s in the UK bring the GDPR
+   * children's provisions and Google Play's Families policy with them, and
+   * this app is built for degree-level students — so the floor is declared
+   * and enforced rather than assumed. It gates Google as well as email:
+   * Google sign-in is one tap, and a gate only the slower route respects is
+   * not a gate.
+   *
+   * A self-declared checkbox, not a date of birth. Collecting a birth date to
+   * check one boolean would mean storing a new piece of personal data about
+   * every student for no further purpose, which is the opposite of data
+   * minimisation.
+   */
+  const [ageConfirmed, setAgeConfirmed] = useState(false);
+  const blockedByAge = mode === 'sign-up' && !ageConfirmed;
 
   const handleGoogle = async () => {
     setError(null);
@@ -140,11 +155,28 @@ export function AuthScreen({ initialMode = 'sign-up', onClose }: AuthScreenProps
           </div>
         ) : (
           <>
+            {mode === 'sign-up' && (
+              <label className="mb-4 flex cursor-pointer items-start gap-2.5" style={{ font: '400 13px/1.5 var(--font-ui)', color: 'var(--ink2)' }}>
+                <input
+                  type="checkbox"
+                  checked={ageConfirmed}
+                  onChange={(e) => setAgeConfirmed(e.target.checked)}
+                  className="mt-0.5 min-h-[18px] min-w-[18px]"
+                />
+                <span>
+                  I am 16 or over, and I agree to the{' '}
+                  <a href="/terms" target="_blank" rel="noreferrer" style={{ color: 'var(--accd)' }}>terms</a>{' '}
+                  and{' '}
+                  <a href="/privacy" target="_blank" rel="noreferrer" style={{ color: 'var(--accd)' }}>privacy policy</a>.
+                </span>
+              </label>
+            )}
+
             <Button
               type="button"
               variant="secondary"
               onClick={handleGoogle}
-              disabled={submitting}
+              disabled={submitting || blockedByAge}
               className="min-h-[46px] w-full"
             >
               Continue with Google
@@ -185,7 +217,7 @@ export function AuthScreen({ initialMode = 'sign-up', onClose }: AuthScreenProps
                 </div>
               )}
 
-              <Button type="submit" disabled={submitting} className="mt-1 min-h-[46px] w-full">
+              <Button type="submit" disabled={submitting || blockedByAge} className="mt-1 min-h-[46px] w-full">
                 {mode === 'sign-up' ? 'Create account' : 'Sign in'}
               </Button>
             </form>
@@ -195,6 +227,8 @@ export function AuthScreen({ initialMode = 'sign-up', onClose }: AuthScreenProps
               onClick={() => {
                 setMode(mode === 'sign-up' ? 'sign-in' : 'sign-up');
                 setError(null);
+                // Switching away and back must not carry a stale confirmation.
+                setAgeConfirmed(false);
               }}
               className="mt-5 text-sm"
               style={{ color: 'var(--ink3)' }}

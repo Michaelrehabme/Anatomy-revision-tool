@@ -1,3 +1,4 @@
+import { AccountDataControls } from '../shared/AccountDataControls';
 import { useEffect, useState } from 'react';
 import { MobileShell } from './MobileShell';
 import { CohortMembership } from '../shared/CohortMembership';
@@ -127,6 +128,8 @@ export function MobileAccount({ content, repository, userId, onNavigateTab }: Mo
                 </button>
               )}
             </div>
+
+            {!user.isAnonymous && <AccountDataControls uid={user.uid} onDeleted={() => signOut()} compact />}
           </section>
         )}
 

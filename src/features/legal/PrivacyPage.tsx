@@ -136,13 +136,21 @@ export function PrivacyPage() {
           <strong style={{ color: 'var(--ink)' }}>24 months of inactivity</strong>. That is deliberately long enough to
           cover a placement year or a repeated year without losing your history.
         </p>
-        <p>Delete your account at any time and it goes sooner — see below.</p>
+        <p>
+          Delete your account at any time from your account screen and all of it goes immediately — your answers, your
+          progress, your streaks, and the summary your class owner sees. There is no waiting period and no need to ask
+          us.
+        </p>
       </Section>
 
       <Section title="Your rights">
         <p>
-          You can ask for a copy of your data, correct it, delete it, take it elsewhere in a portable format, restrict
-          how it is used, or object to that use. Email{' '}
+          Two of these you can exercise yourself, without asking anyone: your account screen has{' '}
+          <strong style={{ color: 'var(--ink)' }}>Download my data</strong>, which gives you everything held about you
+          as a JSON file, and <strong style={{ color: 'var(--ink)' }}>Delete my account</strong>.
+        </p>
+        <p>
+          You can also ask us to correct your data, restrict how it is used, or object to that use. Email{' '}
           <a href={`mailto:${EMAIL}`} style={{ color: 'var(--accd)' }}>
             {EMAIL}
           </a>{' '}
@@ -160,7 +168,8 @@ export function PrivacyPage() {
       <Section title="Age">
         <p>
           LocusMSK is for students aged <strong style={{ color: 'var(--ink)' }}>16 or over</strong>. It is not designed
-          for children and accounts should not be created for anyone younger.
+          for children, and creating an account requires confirming you are 16 or over before you can sign up by any
+          route.
         </p>
       </Section>
 

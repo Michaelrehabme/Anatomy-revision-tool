@@ -1,3 +1,4 @@
+import { AccountDataControls } from '../shared/AccountDataControls';
 import { useEffect, useState } from 'react';
 import { AppShell } from '../shell/AppShell';
 import { NavSidebar, type NavSection } from '../shell/NavSidebar';
@@ -153,6 +154,11 @@ export function Account({ content, repository, userId, onNavigate }: AccountProp
                 </button>
               )}
             </div>
+
+            {/* Anonymous users have nothing to export and nothing to erase that
+                outlives the browser, so the controls appear once there is a
+                real account behind them. */}
+            {!user.isAnonymous && <AccountDataControls uid={user.uid} onDeleted={() => signOut()} />}
           </section>
         )}
 
