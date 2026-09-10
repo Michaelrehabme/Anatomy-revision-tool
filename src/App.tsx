@@ -1,4 +1,6 @@
 import { lazy, Suspense, useEffect, useRef, useState } from 'react';
+import { MarketingHome } from './features/site/components/MarketingHome';
+import { cachedSiteSettings, fetchSiteSettings } from './features/site/data/siteSettings';
 import { Navigate, Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useRepository } from './features/anatomy-revision/hooks/useRepository';
 import { useAuth } from './features/anatomy-revision/context/AuthProvider';
@@ -176,6 +178,32 @@ function App() {
   const location = useLocation();
 
   const [onboarded, setOnboarded] = useState(() => localStorage.getItem(ONBOARDED_KEY) === 'true');
+  /*
+   * The marketing home page, and whether an admin has switched it on.
+   *
+   * Only a visitor who has not been through onboarding ever sees it, so a
+   * returning student is never bounced to a sales page. The setting starts
+   * from the cached value for an instant first paint and is refreshed from
+   * Firestore behind it; both default to off, so an unreachable database
+   * shows the app rather than an advert.
+   */
+  const [siteSettings, setSiteSettings] = useState(cachedSiteSettings);
+  const [siteSettingsLoaded, setSiteSettingsLoaded] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetchSiteSettings()
+      .then((settings) => {
+        if (cancelled) return;
+        setSiteSettings(settings);
+      })
+      .finally(() => {
+        if (!cancelled) setSiteSettingsLoaded(true);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
   const [selectedAreas, setSelectedAreas] = useState<Set<Area>>(new Set());
   const [streak, setStreak] = useState(0);
 
@@ -251,6 +279,15 @@ function App() {
         Loading anatomy content…
       </div>
     );
+  }
+
+  // A new visitor at the root sees the marketing page when it is on. Held
+  // until the setting resolves rather than rendering onboarding and swapping
+  // it out — a flash of the wrong page is worse than a beat of nothing, and
+  // this only ever delays someone who has never used the app.
+  if (!onboarded && location.pathname === '/') {
+    if (!siteSettingsLoaded && !siteSettings.marketingHomeEnabled) return null;
+    if (siteSettings.marketingHomeEnabled) return <MarketingHome />;
   }
 
   if (!onboarded && location.pathname !== '/onboarding') {

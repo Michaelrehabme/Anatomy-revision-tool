@@ -35,6 +35,8 @@ export const educatorDemoAliases = [
   // Same problem from the account screen: accountLifecycle imports
   // firebase/auth at the top level to delete the Auth user.
   { find: /^.*\/data\/accountLifecycle$/, replacement: demoFile('accountLifecycle.demo.ts') },
+  // And from App.tsx itself, which reads the marketing-page switch on load.
+  { find: /^.*\/data\/siteSettings$/, replacement: demoFile('siteSettings.demo.ts') },
   // Screens import the guard as both './components/RequireEducator' and '../RequireEducator'.
   { find: /^.*\/RequireEducator$/, replacement: demoFile('RequireEducator.demo.tsx') },
   // Admin-side role screens, so /admin/people is reviewable without a real grant.

@@ -306,6 +306,21 @@ service cloud.firestore {
       }
     }
 
+    // settings/site — runtime switches for the public site, currently just
+    // whether the marketing home page is shown.
+    //
+    // Readable by anyone, including a visitor who has not signed in at all:
+    // the page it controls is the first thing a stranger sees, so requiring
+    // auth to decide whether to show it would defeat the purpose. It holds no
+    // personal data and nothing an attacker gains by reading.
+    //
+    // Writable only by an admin, because it decides what the front door of the
+    // product is.
+    match /settings/site {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
     // Admin-only Change Register backlog (see src/features/admin). Regular
     // users get no access at all — this is the enforcement the client-side
     // <RequireAdmin> route guard depends on; the guard alone is not security.

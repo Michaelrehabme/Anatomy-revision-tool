@@ -1,4 +1,5 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
+import { SitePage } from './components/Site/SitePage';
 import { RequireAdmin } from './components/RequireAdmin';
 import { AdminShell } from './components/shell/AdminShell';
 import { ChangeRegisterPage } from './components/ChangeRegister/ChangeRegisterPage';
@@ -26,6 +27,7 @@ export default function AdminApp() {
           <Route path="analytics" element={<AnalyticsPage />} />
           <Route path="cohorts" element={<CohortsPage />} />
           <Route path="people" element={<PeoplePage />} />
+          <Route path="site" element={<SitePage />} />
           <Route path="*" element={<Navigate to="changes" replace />} />
         </Route>
       </Routes>
