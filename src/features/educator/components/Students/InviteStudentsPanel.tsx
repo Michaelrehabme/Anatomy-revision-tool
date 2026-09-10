@@ -37,6 +37,7 @@ export function InviteStudentsPanel({ cohortId, memberEmails, onInvited }: Invit
   const [result, setResult] = useState<InviteResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState<CohortInvite[] | null>(null);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -83,6 +84,42 @@ export function InviteStudentsPanel({ cohortId, memberEmails, onInvited }: Invit
   async function handleRevoke(invite: CohortInvite) {
     await deleteInvite(invite.id).catch(() => {});
     setPending((current) => (current ?? []).filter((i) => i.id !== invite.id));
+  }
+
+  /*
+   * Telling students they have been invited.
+   *
+   * Sending mail ourselves would mean Cloud Functions, a billing account and
+   * SPF/DKIM on the domain before anything reliably reaches an inbox — and it
+   * would arrive from an address the student has never seen. Opening the
+   * educator's own mail client instead needs none of that, and the invitation
+   * comes from the university address the student already trusts, which is
+   * the thing that actually gets it opened.
+   *
+   * Addresses go in BCC so a year group does not see each other's emails.
+   */
+  const mailtoFor = (invites: CohortInvite[]) => {
+    const subject = `Anatomy revision for ${invites[0]?.cohortName ?? 'your class'}`;
+    const body = [
+      `I've set up ${invites[0]?.cohortName ?? 'our class'} on LocusMSK, a musculoskeletal anatomy revision tool.`,
+      '',
+      'To join:',
+      '1. Go to https://locusmsk.co.uk',
+      '2. Create an account with this email address',
+      '3. Open Account — the invitation will be waiting, and you can accept it there',
+      '',
+      "You'll see your own progress. I can see your accuracy, streak and which structures the group finds hardest —",
+      'never your individual answers. You can leave the class at any time.',
+    ].join('\n');
+
+    return `mailto:?bcc=${encodeURIComponent(invites.map((i) => i.email).join(','))}` +
+      `&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  };
+
+  async function copyAddresses(invites: CohortInvite[]) {
+    await navigator.clipboard?.writeText(invites.map((i) => i.email).join(', ')).catch(() => {});
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   }
 
   const label = { font: '500 10px/1 var(--font-mono)', letterSpacing: '.12em', textTransform: 'uppercase' as const, color: 'var(--ink3)' };
@@ -176,6 +213,38 @@ export function InviteStudentsPanel({ cohortId, memberEmails, onInvited }: Invit
 
       {pending && pending.length > 0 && (
         <div className="mt-4">
+          {/* mailto has a practical URL length limit and a large year group can
+              exceed it, so copying the addresses is offered alongside rather
+              than as a fallback nobody finds. */}
+          <div
+            className="mb-3 flex flex-wrap items-center gap-3 p-3"
+            style={{ background: 'var(--accs)' }}
+          >
+            <span style={{ font: '400 13px/1.4 var(--font-ui)', color: 'var(--ink2)', flex: '1 1 200px' }}>
+              {pending.length} {pending.length === 1 ? 'person has' : 'people have'} not accepted yet. They will see the
+              invitation when they next open the app — emailing them is what makes that happen sooner.
+            </span>
+            <a
+              href={mailtoFor(pending)}
+              style={{
+                font: '500 13px/1 var(--font-ui)',
+                padding: '9px 13px',
+                background: 'var(--acc-fill)',
+                color: 'var(--onacc)',
+                textDecoration: 'none',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              Email them
+            </a>
+            <button
+              type="button"
+              onClick={() => copyAddresses(pending)}
+              style={{ font: '400 13px/1 var(--font-ui)', color: 'var(--accd)', whiteSpace: 'nowrap' }}
+            >
+              {copied ? 'Copied' : 'Copy addresses'}
+            </button>
+          </div>
           {/* Shown whether or not the composer is open: an educator wondering
               why the dashboard is empty needs to see that forty invitations
               are outstanding, without having to go looking. */}

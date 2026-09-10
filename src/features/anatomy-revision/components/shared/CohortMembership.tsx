@@ -77,8 +77,17 @@ export function CohortMembership({ uid, compact }: CohortMembershipProps) {
         })
         // A refused or failed read must not take the class panel down with
         // it; an invitation the student never sees is recoverable, a blank
-        // account screen is not.
-        .catch(() => {}),
+        // account screen is not. But swallowing it silently made the first
+        // real failure impossible to diagnose — nothing appeared and nothing
+        // said why — so it reports to the console with the address it
+        // searched for, which is the field that must match the invitation.
+        .catch((err: unknown) => {
+          console.warn(
+            `[LocusMSK] Could not load class invitations for "${email}". ` +
+              'If an educator invited that exact address, this is a permissions problem.',
+            err,
+          );
+        }),
     );
     return () => {
       cancelled = true;
