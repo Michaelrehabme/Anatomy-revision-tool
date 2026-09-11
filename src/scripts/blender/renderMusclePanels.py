@@ -25,6 +25,8 @@ ap.add_argument("--mapping", required=True)
 ap.add_argument("--out", required=True)
 ap.add_argument("--muscles", required=True, help="comma-separated structure ids")
 ap.add_argument("--views", default="0,6,12")
+ap.add_argument("--elevations", default="0",
+                help="camera heights in degrees, comma-separated; negative looks up from below")
 ap.add_argument("--frames", type=int, default=24)
 ap.add_argument("--res", type=int, default=900)
 ap.add_argument("--margin", type=float, default=2.4, help="camera framing slack around the muscle")
@@ -34,6 +36,7 @@ a = ap.parse_args(argv)
 mapping = {m["id"]: m for m in json.load(open(a.mapping))["mapping"]}
 wanted = a.muscles.split(",")
 views = [int(v) for v in a.views.split(",")]
+elevations = [float(e) for e in a.elevations.split(",")]
 
 scene = bpy.data.scenes.new("PanelScene")
 bpy.context.window.scene = scene
@@ -119,19 +122,40 @@ def bbox_size(bbox_min, bbox_max):
     return max(bbox_max[0] - bbox_min[0], bbox_max[1] - bbox_min[1], bbox_max[2] - bbox_min[2])
 
 
-def frame_camera(bbox_min, bbox_max, angle_deg, margin):
+def frame_camera(bbox_min, bbox_max, angle_deg, margin, elevation_deg=0.0):
+    """Place the camera at `angle_deg` around the body and `elevation_deg` above it.
+
+    Elevation was fixed at zero until flexor-hallucis-brevis showed why that is
+    not enough. It is a plantar muscle and the worst-lit panel in the set, 0.30%
+    of its own subject visible across the three shipped views.
+
+    Measuring it properly separates two faults. The three shipped angles (0, 90,
+    180 degrees) are simply unlucky for this muscle: sampling twelve azimuths at
+    the same height finds 4.52%, already above the 3.06% median. Dropping the
+    camera to -45 degrees then reaches 9.74%. So the axis is worth having, but
+    choosing better angles on the existing one is worth having first.
+
+    The useful elevation belongs to the structure, not to the renderer:
+    supraspinatus sits in the supraspinous fossa and reads best at +30, looking
+    down. Negative elevation looks up from underneath, positive looks down.
+    """
     center = mathutils.Vector(((bbox_min[0] + bbox_max[0]) / 2,
                                (bbox_min[1] + bbox_max[1]) / 2,
                                (bbox_min[2] + bbox_max[2]) / 2))
     size = bbox_size(bbox_min, bbox_max)
     dist = size * 4 + 0.5
     theta = math.radians(angle_deg)
-    offset = mathutils.Vector((-dist * math.sin(theta), -dist * math.cos(theta), 0))
+    phi = math.radians(elevation_deg)
+    offset = mathutils.Vector((-dist * math.sin(theta) * math.cos(phi),
+                               -dist * math.cos(theta) * math.cos(phi),
+                               dist * math.sin(phi)))
     loc = center + offset
     cam.location = loc
     cam.rotation_euler = (center - loc).to_track_quat('-Z', 'Y').to_euler()
     cam_data.ortho_scale = size * margin
-    sun.rotation_euler = mathutils.Euler((0.9, 0.3, 0.6 + theta), 'XYZ')
+    # Keep the key light off the camera axis at any elevation, or a view from
+    # directly below renders flat and unreadable.
+    sun.rotation_euler = mathutils.Euler((0.9 - phi * 0.5, 0.3, 0.6 + theta), 'XYZ')
 
 
 def clear_objects():
@@ -195,16 +219,22 @@ for mid in wanted:
                 print(f"[frame] {mid}: framed on one side", flush=True)
         bpy.data.meshes.remove(side_mesh)
 
-    for frame in views:
-        frame_camera(bmin, bmax, frame * 360.0 / a.frames, a.margin)
-        clear_objects()
-        link(bone_mesh, "panel_skeleton", bone_mat)
-        link(mesh, f"panel_{mid}_hi", highlight_mat)
-        path = os.path.abspath(os.path.join(a.out, mid, f"view-{frame:02d}.png"))
-        os.makedirs(os.path.dirname(path), exist_ok=True)
-        scene.render.filepath = path
-        bpy.ops.render.render(write_still=True)
-        count += 1
+    for elev in elevations:
+        for frame in views:
+            frame_camera(bmin, bmax, frame * 360.0 / a.frames, a.margin, elev)
+            clear_objects()
+            link(bone_mesh, "panel_skeleton", bone_mat)
+            link(mesh, f"panel_{mid}_hi", highlight_mat)
+            # Elevation 0 keeps the flat <mid>/view-NN.png layout the compositor
+            # and the existing 130 panels already use; anything else gets its own
+            # subdirectory, so adding the axis cannot disturb what is shipped.
+            leaf = f"view-{frame:02d}.png"
+            parts = [a.out, mid] if elev == 0 else [a.out, mid, f"elev{elev:+03.0f}"]
+            path = os.path.abspath(os.path.join(*parts, leaf))
+            os.makedirs(os.path.dirname(path), exist_ok=True)
+            scene.render.filepath = path
+            bpy.ops.render.render(write_still=True)
+            count += 1
 
     bpy.data.meshes.remove(mesh)
     print(f"[panel] {mid} ({count} renders, {time.time() - t0:.0f}s)", flush=True)
