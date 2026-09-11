@@ -99,4 +99,12 @@ export interface RevisionSessionSummary {
   breakdownByCategory: Record<Category, { total: number; correct: number }>;
   breakdownByRegion: Partial<Record<Region, { total: number; correct: number }>>;
   missedStructureIds: string[];
+  /**
+   * Set when the session was an attempt at a class assignment, and only then —
+   * a "retry the missed" follow-up is not an attempt, since scoring four
+   * re-asked questions would pass anything. The educator's completion figures
+   * read sessions carrying their assignment's id; see
+   * educator/lib/assignmentCompletion.ts.
+   */
+  assignmentId?: string;
 }

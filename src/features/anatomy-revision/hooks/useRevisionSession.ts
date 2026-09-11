@@ -58,6 +58,8 @@ export interface RevisionSetupParams {
   mode: 'practice' | 'assessment' | 'adaptive';
   /** Exam mode only. Session auto-finishes when it elapses. Absent = untimed. */
   timerMinutes?: number;
+  /** Present when this session is an attempt at a class assignment — stamped onto the summary, and the results screen marks it against the pass mark. */
+  assignment?: { id: string; title: string; targetAccuracyPct: number };
 }
 
 /** Everything a results screen needs to show the CR-008 payoff for one finished session. */
@@ -179,6 +181,7 @@ function buildSummary(state: SessionState, userId: string): RevisionSessionSumma
     breakdownByCategory,
     breakdownByRegion,
     missedStructureIds: [...missed],
+    assignmentId: state.setupParams?.assignment?.id,
   };
 }
 

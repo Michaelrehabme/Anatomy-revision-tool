@@ -10,6 +10,7 @@ import { useTodayData, relativeDue } from '../../hooks/useTodayData';
 import { AppShell } from '../shell/AppShell';
 import { NavSidebar, type NavSection } from '../shell/NavSidebar';
 import { Button } from '../shared/Button';
+import { ClassAssignments } from '../shared/ClassAssignments';
 import type { RevisionSetupParams } from '../../hooks/useRevisionSession';
 
 // OINA is in the default mix because attachments are the thing students come back
@@ -116,6 +117,8 @@ export function Today({ repository, userId, content, onStart, onCustomSession, o
               Custom session
             </Button>
           </div>
+
+          <ClassAssignments repository={repository} userId={userId} content={content} onStart={onStart} />
 
           {!firstRun && (
             <>

@@ -505,11 +505,17 @@ function App() {
                 streak={streak}
                 gamification={session.gamification}
                 sessionMode={session.setupParams?.mode}
+                assignment={session.setupParams?.assignment}
                 onRestart={endSession}
                 onOpenMuscle={(id) => openMuscle(id, session.summary!.missedStructureIds)}
                 onNavigate={onNavigateSection}
                 onRetryIncorrect={async () => {
-                  const params = session.setupParams ?? { types: ['oina', 'mcq'] as QuestionType[], mode: 'practice' as const };
+                  // Never an assignment attempt: scored over only the questions
+                  // just missed, it would clear any pass mark.
+                  const params = {
+                    ...(session.setupParams ?? { types: ['oina', 'mcq'] as QuestionType[], mode: 'practice' as const }),
+                    assignment: undefined,
+                  };
                   // Without the OINA fields a retry of an origin-only session would come
                   // back asking all four facts, every one of them back on multiple choice.
                   const factMastery =
@@ -538,6 +544,7 @@ function App() {
                 structuresById={content.structuresById}
                 gamification={session.gamification}
                 sessionMode={session.setupParams?.mode}
+                assignment={session.setupParams?.assignment}
                 onDone={endSession}
                 onRetry={async () => {
                   // Mobile's "Another N" re-runs the same setup fresh (not missed-only) — the

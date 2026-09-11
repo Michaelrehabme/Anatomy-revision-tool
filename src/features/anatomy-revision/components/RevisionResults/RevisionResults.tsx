@@ -2,7 +2,8 @@ import type { RevisionSessionSummary } from '../../types/attempt';
 import type { AnatomyStructure } from '../../types/structure';
 import { isMuscle } from '../../types/structure';
 import { REGION_LABELS } from '../../types/region';
-import type { GamificationResult } from '../../hooks/useRevisionSession';
+import type { GamificationResult, RevisionSetupParams } from '../../hooks/useRevisionSession';
+import { AssignmentResultNote } from '../shared/AssignmentResultNote';
 import { levelProgress } from '../../lib/levels';
 import { Button } from '../shared/Button';
 import { AppShell } from '../shell/AppShell';
@@ -17,6 +18,8 @@ interface RevisionResultsProps {
   gamification: GamificationResult | null;
   /** From session.setupParams?.mode — RevisionSessionSummary itself doesn't carry mode, so App.tsx passes it separately. */
   sessionMode?: 'practice' | 'adaptive' | 'assessment';
+  /** From session.setupParams?.assignment — set when this session was an attempt at a class assignment. */
+  assignment?: RevisionSetupParams['assignment'];
   onRetryIncorrect: () => void;
   onRestart: () => void;
   onOpenMuscle: (structureId: string) => void;
@@ -37,6 +40,7 @@ export function RevisionResults({
   streak,
   gamification,
   sessionMode,
+  assignment,
   onRetryIncorrect,
   onRestart,
   onOpenMuscle,
@@ -88,6 +92,8 @@ export function RevisionResults({
             </span>
             <span style={{ fontFamily: 'var(--font-display)', fontSize: 38, color: 'var(--ink3)' }}>/ {summary.totalQuestions}</span>
           </div>
+
+          {assignment && <AssignmentResultNote assignment={assignment} summary={summary} />}
 
           {gamification && progress && (
             <div className="mt-7 rounded-[4px] p-4" style={{ background: 'var(--accs)' }}>

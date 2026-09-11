@@ -3,7 +3,8 @@ import type { AnatomyStructure, Category } from '../../anatomy-revision/types/st
 import type { QuestionType } from '../../anatomy-revision/types/question';
 import type { Region } from '../../anatomy-revision/types/region';
 import type { RevisionSessionSummary, UserAttempt } from '../../anatomy-revision/types/attempt';
-import type { Assignment, Cohort, CohortStudent } from '../types/cohort';
+import { filterStructures } from '../../anatomy-revision/lib/indexes';
+import { isScopedAssignment, type Assignment, type Cohort, type CohortStudent } from '../types/cohort';
 
 /**
  * Fixture cohort data for VITE_EDUCATOR_DEMO=1 — see README "Educator demo
@@ -304,6 +305,109 @@ interface GeneratedActivity {
   summaries: RevisionSessionSummary[];
 }
 
+interface SessionSpec {
+  sessionId: string;
+  startedAt: number;
+  size: number;
+  structures: AnatomyStructure[];
+  questionTypes: QuestionType[];
+  regionFilter?: Region[];
+  /** Added to the student's ability for every question in the session. */
+  bonus: number;
+  /** Chance the session was finished rather than abandoned — drawn after its questions, see buildSession. */
+  finishChance: number;
+  assignmentId?: string;
+}
+
+/**
+ * One session's attempts and its summary. The draw order inside is fixed —
+ * per question: structure, correctness, type, duration, gap; then the finish
+ * draw — because the seeded class only stays the same class on every reload
+ * while every caller consumes the generator in the same sequence.
+ */
+function buildSession(
+  student: DemoStudent,
+  rand: () => number,
+  exposure: Map<string, number>,
+  spec: SessionSpec,
+): { attempts: UserAttempt[]; summary: RevisionSessionSummary } {
+  const attempts: UserAttempt[] = [];
+  const questionTypes: QuestionType[] = [];
+  const breakdownByCategory = EMPTY_CATEGORY_BREAKDOWN();
+  const breakdownByRegion: RevisionSessionSummary['breakdownByRegion'] = {};
+  const missed: string[] = [];
+  let correctCount = 0;
+  let cursor = spec.startedAt;
+
+  for (let q = 0; q < spec.size; q++) {
+    const structure = pick(rand, spec.structures);
+    const difficulty = DIFFICULTY.get(structure.id) ?? 0.3;
+    const correct = rand() < Math.min(0.97, student.ability + spec.bonus - difficulty);
+    const type = pick(rand, spec.questionTypes);
+    const durationMs = Math.round(between(rand, 1800, 11_000) * (correct ? 1 : 1.4));
+    cursor += durationMs + intBetween(rand, 1500, 14_000);
+
+    const key = `${structure.id}`;
+    const attemptNumber = (exposure.get(key) ?? 0) + 1;
+    exposure.set(key, attemptNumber);
+
+    if (!questionTypes.includes(type)) questionTypes.push(type);
+    breakdownByCategory[structure.category].total += 1;
+    const regionRow = breakdownByRegion[structure.region] ?? { total: 0, correct: 0 };
+    regionRow.total += 1;
+    if (correct) {
+      correctCount += 1;
+      breakdownByCategory[structure.category].correct += 1;
+      regionRow.correct += 1;
+    } else if (!missed.includes(structure.id)) {
+      missed.push(structure.id);
+    }
+    breakdownByRegion[structure.region] = regionRow;
+
+    attempts.push({
+      id: `${spec.sessionId}-${q}`,
+      userId: student.uid,
+      sessionId: spec.sessionId,
+      questionId: `${structure.id}::${type}`,
+      questionType: type,
+      structureId: structure.id,
+      promptKind: 'identify',
+      region: structure.region,
+      category: structure.category,
+      correct,
+      attemptNumber,
+      timestamp: new Date(cursor).toISOString(),
+      durationMs,
+      // Only the typed/choice question types carry an answer string — locate and
+      // flashcard don't, and inventing one would put fake rows in confusion pairs.
+      ...(type === 'mcq' || type === 'fill-blank' || type === 'identify-typed'
+        ? {
+            correctAnswer: structure.name,
+            selectedAnswer: correct ? structure.name : (CONFUSED_WITH.get(structure.id)?.name ?? structure.name),
+          }
+        : {}),
+    });
+  }
+
+  return {
+    attempts,
+    summary: {
+      id: spec.sessionId,
+      userId: student.uid,
+      startedAt: new Date(spec.startedAt).toISOString(),
+      finishedAt: rand() < spec.finishChance ? new Date(cursor).toISOString() : undefined,
+      questionTypes,
+      regionFilter: spec.regionFilter,
+      totalQuestions: spec.size,
+      correctCount,
+      breakdownByCategory,
+      breakdownByRegion,
+      missedStructureIds: missed,
+      ...(spec.assignmentId ? { assignmentId: spec.assignmentId } : {}),
+    },
+  };
+}
+
 function generateForStudent(student: DemoStudent, seed: number): GeneratedActivity {
   const attempts: UserAttempt[] = [];
   const summaries: RevisionSessionSummary[] = [];
@@ -327,84 +431,84 @@ function generateForStudent(student: DemoStudent, seed: number): GeneratedActivi
     const daysAgo = student.lastActiveDaysAgo + Math.floor((sessionIndex - 1) * between(rand, 0.8, 3.4));
     if (daysAgo > WINDOW_DAYS) break;
 
-    const startedAt = NOW - daysAgo * DAY_MS + intBetween(rand, 8, 21) * 3_600_000;
-    const sessionId = `${student.uid}-s${sessionIndex}`;
-    const questionTypes: QuestionType[] = [];
-    const breakdownByCategory = EMPTY_CATEGORY_BREAKDOWN();
-    const breakdownByRegion: RevisionSessionSummary['breakdownByRegion'] = {};
-    const missed: string[] = [];
-    let correctCount = 0;
-    let cursor = startedAt;
-
-    for (let q = 0; q < size; q++) {
-      const structure = pick(rand, structures);
-      const difficulty = DIFFICULTY.get(structure.id) ?? 0.3;
-      // Later sessions are a bit better than early ones — a flat accuracy line over 45 days reads as fake.
-      const improvement = Math.min(0.12, sessionIndex * 0.012);
-      const correct = rand() < Math.min(0.97, student.ability + improvement - difficulty);
-      const type = pick(rand, QUESTION_TYPES);
-      const durationMs = Math.round(between(rand, 1800, 11_000) * (correct ? 1 : 1.4));
-      cursor += durationMs + intBetween(rand, 1500, 14_000);
-
-      const key = `${structure.id}`;
-      const attemptNumber = (exposure.get(key) ?? 0) + 1;
-      exposure.set(key, attemptNumber);
-
-      if (!questionTypes.includes(type)) questionTypes.push(type);
-      breakdownByCategory[structure.category].total += 1;
-      const regionRow = breakdownByRegion[structure.region] ?? { total: 0, correct: 0 };
-      regionRow.total += 1;
-      if (correct) {
-        correctCount += 1;
-        breakdownByCategory[structure.category].correct += 1;
-        regionRow.correct += 1;
-      } else if (!missed.includes(structure.id)) {
-        missed.push(structure.id);
-      }
-      breakdownByRegion[structure.region] = regionRow;
-
-      attempts.push({
-        id: `${sessionId}-${q}`,
-        userId: student.uid,
-        sessionId,
-        questionId: `${structure.id}::${type}`,
-        questionType: type,
-        structureId: structure.id,
-        promptKind: 'identify',
-        region: structure.region,
-        category: structure.category,
-        correct,
-        attemptNumber,
-        timestamp: new Date(cursor).toISOString(),
-        durationMs,
-        // Only the typed/choice question types carry an answer string — locate and
-        // flashcard don't, and inventing one would put fake rows in confusion pairs.
-        ...(type === 'mcq' || type === 'fill-blank' || type === 'identify-typed'
-          ? {
-              correctAnswer: structure.name,
-              selectedAnswer: correct ? structure.name : (CONFUSED_WITH.get(structure.id)?.name ?? structure.name),
-            }
-          : {}),
-      });
-    }
-
-    summaries.push({
-      id: sessionId,
-      userId: student.uid,
-      startedAt: new Date(startedAt).toISOString(),
-      // A tenth of sessions are abandoned, so completion rate isn't a flat 100%.
-      finishedAt: rand() < 0.9 ? new Date(cursor).toISOString() : undefined,
-      questionTypes,
+    const session = buildSession(student, rand, exposure, {
+      sessionId: `${student.uid}-s${sessionIndex}`,
+      startedAt: NOW - daysAgo * DAY_MS + intBetween(rand, 8, 21) * 3_600_000,
+      size,
+      structures,
+      questionTypes: QUESTION_TYPES,
       regionFilter: focusRegions,
-      totalQuestions: size,
-      correctCount,
-      breakdownByCategory,
-      breakdownByRegion,
-      missedStructureIds: missed,
+      // Later sessions are a bit better than early ones — a flat accuracy line over 45 days reads as fake.
+      bonus: Math.min(0.12, sessionIndex * 0.012),
+      // A tenth of sessions are abandoned, so completion rate isn't a flat 100%.
+      finishChance: 0.9,
     });
+    attempts.push(...session.attempts);
+    summaries.push(session.summary);
   }
 
+  attempts.push(...generateAssignmentAttempts(student, exposure, summaries, seed));
   return { attempts, summaries };
+}
+
+/**
+ * Attempts at the demo's scoped assignments, so their cards show a class
+ * part-way through: some passed, some below the mark and trying again, some
+ * not started — the three groups the card exists to separate. An assignment
+ * whose cards all read "0 passed" demonstrates nothing.
+ *
+ * A student can only have attempted while they were active: nothing after
+ * they went quiet, nothing before the assignment was set. Each retake is a
+ * little better than the last (they revised in between), and a student who
+ * passes stops. Its own generator, so adding this left every other session in
+ * the class exactly as it was.
+ */
+function generateAssignmentAttempts(
+  student: DemoStudent,
+  exposure: Map<string, number>,
+  summaries: RevisionSessionSummary[],
+  seed: number,
+): UserAttempt[] {
+  const rand = makeRandom(seed + 7777);
+  const attempts: UserAttempt[] = [];
+  const lastActive = NOW - student.lastActiveDaysAgo * DAY_MS;
+
+  for (const assignment of DEMO_ASSIGNMENTS) {
+    if (assignment.cohortId !== student.cohortId || !isScopedAssignment(assignment)) continue;
+    const created = Date.parse(assignment.createdAt);
+    const windowEnd = Math.min(lastActive, Date.parse(assignment.dueAt), NOW);
+    if (windowEnd <= created) continue;
+    // Past due, most active students have had a go; still open, about half have.
+    const pastDue = Date.parse(assignment.dueAt) < NOW;
+    if (rand() > (pastDue ? 0.85 : 0.55)) continue;
+
+    const structures = filterStructures(QUIZZABLE, assignment.scope);
+    if (structures.length === 0) continue;
+
+    let at = created + between(rand, 0.1, 0.5) * (windowEnd - created);
+    for (let n = 1; n <= 3 && at <= windowEnd; n++) {
+      const session = buildSession(student, rand, exposure, {
+        sessionId: `${student.uid}-${assignment.id}-a${n}`,
+        startedAt: at,
+        size: assignment.questionCount,
+        structures,
+        questionTypes: assignment.questionTypes,
+        // Students revise before sitting an assignment, so the first attempt starts
+        // a little above their everyday ability and each retake climbs. Tuned so
+        // the hip card shows a class mostly through and the rotator cuff — every
+        // muscle in it a NOTORIOUS_PAIRS member — shows one that is struggling.
+        bonus: 0.05 + (n - 1) * 0.08,
+        finishChance: 1,
+        assignmentId: assignment.id,
+      });
+      attempts.push(...session.attempts);
+      summaries.push(session.summary);
+      const pct = Math.round((session.summary.correctCount / session.summary.totalQuestions) * 100);
+      if (pct >= assignment.targetAccuracyPct || rand() > 0.6) break;
+      at += between(rand, 0.8, 3) * DAY_MS;
+    }
+  }
+  return attempts;
 }
 
 let cache: Map<string, GeneratedActivity> | null = null;
@@ -423,13 +527,24 @@ export function demoSessionSummaries(uid: string): RevisionSessionSummary[] {
   return activity().get(uid)?.summaries ?? [];
 }
 
-/** Mutable in demo mode: creating an assignment from the UI should appear in the list, then vanish on reload. */
+/**
+ * Mutable in demo mode: creating an assignment from the UI should appear in
+ * the list, then vanish on reload. Declared below the generator that reads it,
+ * which is safe only because activity() is lazy — it first runs after this
+ * module has finished evaluating.
+ *
+ * All three are scoped, each narrowed a different way: one muscle group with
+ * a higher bar (75%), two groups mixed with OINA facts, and a whole area.
+ */
 export const DEMO_ASSIGNMENTS: Assignment[] = [
   {
     id: 'demo-assignment-1',
     cohortId: 'demo-cohort-physio-y2',
-    region: 'shoulder-arm',
-    title: 'Rotator cuff + shoulder girdle — before the Thursday practical',
+    title: 'Rotator cuff — before the Thursday practical',
+    scope: { areas: ['shoulder'], category: 'muscle', groups: ['rotator-cuff'] },
+    questionTypes: ['mcq', 'identify-typed'],
+    questionCount: 10,
+    targetAccuracyPct: 75,
     dueAt: new Date(NOW + 4 * DAY_MS).toISOString(),
     createdAt: new Date(NOW - 6 * DAY_MS).toISOString(),
     createdBy: DEMO_EDUCATOR_UID,
@@ -437,8 +552,11 @@ export const DEMO_ASSIGNMENTS: Assignment[] = [
   {
     id: 'demo-assignment-2',
     cohortId: 'demo-cohort-physio-y2',
-    region: 'hip-thigh',
     title: 'Hip flexors and adductors',
+    scope: { areas: ['hip'], category: 'muscle', groups: ['hip-flexors', 'hip-adductors'] },
+    questionTypes: ['mcq', 'oina'],
+    questionCount: 20,
+    targetAccuracyPct: 70,
     dueAt: new Date(NOW - 2 * DAY_MS).toISOString(),
     createdAt: new Date(NOW - 16 * DAY_MS).toISOString(),
     createdBy: DEMO_EDUCATOR_UID,
@@ -446,8 +564,13 @@ export const DEMO_ASSIGNMENTS: Assignment[] = [
   {
     id: 'demo-assignment-3',
     cohortId: 'demo-cohort-sports-y1',
-    region: 'lower-leg-foot',
     title: 'Ankle and foot — week 3 recap',
+    // Everything in the area rather than one category: the seed has only five
+    // ankle and foot bones, which cannot fill a 20-question exam.
+    scope: { areas: ['ankle-foot'] },
+    questionTypes: ['mcq'],
+    questionCount: 20,
+    targetAccuracyPct: 70,
     dueAt: new Date(NOW + 9 * DAY_MS).toISOString(),
     createdAt: new Date(NOW - 3 * DAY_MS).toISOString(),
     createdBy: DEMO_EDUCATOR_UID,

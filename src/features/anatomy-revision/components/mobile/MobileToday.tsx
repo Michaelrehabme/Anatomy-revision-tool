@@ -9,6 +9,7 @@ import { firstRunTitle, minutesFor } from '../../lib/sessionCopy';
 import { useTodayData } from '../../hooks/useTodayData';
 import type { RevisionSetupParams } from '../../hooks/useRevisionSession';
 import { MobileShell } from './MobileShell';
+import { ClassAssignments } from '../shared/ClassAssignments';
 import type { MobileTab } from './MobileTabBar';
 
 // OINA is in the default mix because attachments are the thing students come back
@@ -108,6 +109,8 @@ export function MobileToday({ repository, userId, content, onStart, onCustomSess
         >
           Build a custom session
         </button>
+
+        <ClassAssignments repository={repository} userId={userId} content={content} onStart={onStart} compact />
 
         <div
           className="mt-9"

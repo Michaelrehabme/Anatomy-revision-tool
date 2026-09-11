@@ -1,18 +1,29 @@
 import { collection, doc, getDocs, orderBy, query, setDoc } from 'firebase/firestore';
 import { getDb } from '../../anatomy-revision/data/firebase';
 import type { Region } from '../../anatomy-revision/types/region';
-import type { Assignment } from '../types/cohort';
+import type { QuestionType } from '../../anatomy-revision/types/question';
+import type { Assignment, AssignmentScope, NewAssignment, ScopedAssignment } from '../types/cohort';
 
+/** Both generations live in one collection — a document with a scope is a scoped assignment, one without is a region assignment. */
 function toAssignment(cohortId: string, id: string, data: Record<string, unknown>): Assignment {
-  return {
+  const base = {
     id,
     cohortId,
-    region: data.region as Region,
     title: data.title as string,
     dueAt: data.dueAt as string,
     createdAt: data.createdAt as string,
     createdBy: data.createdBy as string,
   };
+  if (data.scope) {
+    return {
+      ...base,
+      scope: data.scope as AssignmentScope,
+      questionTypes: data.questionTypes as QuestionType[],
+      questionCount: data.questionCount as number,
+      targetAccuracyPct: data.targetAccuracyPct as number,
+    };
+  }
+  return { ...base, region: data.region as Region };
 }
 
 export async function listAssignments(cohortId: string): Promise<Assignment[]> {
@@ -22,22 +33,19 @@ export async function listAssignments(cohortId: string): Promise<Assignment[]> {
   return snapshot.docs.map((d) => toAssignment(cohortId, d.id, d.data()));
 }
 
-export async function createAssignment(input: {
-  cohortId: string;
-  region: Region;
-  title: string;
-  dueAt: string;
-  createdBy: string;
-}): Promise<Assignment> {
+export async function createAssignment(input: NewAssignment): Promise<ScopedAssignment> {
   const id = crypto.randomUUID();
-  const assignment: Assignment = {
+  const assignment: ScopedAssignment = {
+    ...input,
+    // Firestore rejects undefined field values, and an unset category or an
+    // empty group list both mean "no restriction" — so they are left off.
+    scope: {
+      areas: input.scope.areas,
+      ...(input.scope.category ? { category: input.scope.category } : {}),
+      ...(input.scope.groups?.length ? { groups: input.scope.groups } : {}),
+    },
     id,
-    cohortId: input.cohortId,
-    region: input.region,
-    title: input.title,
-    dueAt: input.dueAt,
     createdAt: new Date().toISOString(),
-    createdBy: input.createdBy,
   };
   await setDoc(doc(getDb(), 'cohorts', input.cohortId, 'assignments', id), assignment);
   return assignment;

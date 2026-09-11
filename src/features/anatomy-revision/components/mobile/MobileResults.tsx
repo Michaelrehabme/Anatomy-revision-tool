@@ -1,6 +1,7 @@
 import type { RevisionSessionSummary } from '../../types/attempt';
 import type { AnatomyStructure } from '../../types/structure';
-import type { AnswerRecord, GamificationResult } from '../../hooks/useRevisionSession';
+import type { AnswerRecord, GamificationResult, RevisionSetupParams } from '../../hooks/useRevisionSession';
+import { AssignmentResultNote } from '../shared/AssignmentResultNote';
 import { REGION_LABELS } from '../../types/region';
 import { levelProgress } from '../../lib/levels';
 import { AchievementToastStack } from '../shared/AchievementToast';
@@ -15,6 +16,8 @@ interface MobileResultsProps {
   gamification: GamificationResult | null;
   /** From session.setupParams?.mode — RevisionSessionSummary itself doesn't carry mode, so App.tsx passes it separately. */
   sessionMode?: 'practice' | 'adaptive' | 'assessment';
+  /** From session.setupParams?.assignment — set when this session was an attempt at a class assignment. */
+  assignment?: RevisionSetupParams['assignment'];
   onDone: () => void;
   onRetry: () => void;
 }
@@ -36,7 +39,7 @@ function resultsLine(summary: RevisionSessionSummary, structuresById: Map<string
 }
 
 /** Screen 09 (mobile). Score, then "back in the queue" — no by-region chart (not in the mobile spec). */
-export function MobileResults({ summary, answers, structuresById, gamification, sessionMode, onDone, onRetry }: MobileResultsProps) {
+export function MobileResults({ summary, answers, structuresById, gamification, sessionMode, assignment, onDone, onRetry }: MobileResultsProps) {
   const isExam = sessionMode === 'assessment';
   const progress = gamification ? levelProgress(gamification.xpTotal) : null;
   const queueRows = summary.missedStructureIds.map((id) => {
@@ -61,9 +64,13 @@ export function MobileResults({ summary, answers, structuresById, gamification, 
         </span>
         <span style={{ fontFamily: 'var(--font-display)', fontSize: 26, color: 'var(--ink3)' }}>/ {summary.totalQuestions}</span>
       </div>
-      <p className="mt-4 text-[15px] leading-relaxed" style={{ color: 'var(--ink2)' }}>
-        {resultsLine(summary, structuresById)}
-      </p>
+      {assignment ? (
+        <AssignmentResultNote assignment={assignment} summary={summary} compact />
+      ) : (
+        <p className="mt-4 text-[15px] leading-relaxed" style={{ color: 'var(--ink2)' }}>
+          {resultsLine(summary, structuresById)}
+        </p>
+      )}
 
       {gamification && progress && (
         <div className="mt-5 rounded-[4px] p-3.5" style={{ background: 'var(--accs)' }}>
