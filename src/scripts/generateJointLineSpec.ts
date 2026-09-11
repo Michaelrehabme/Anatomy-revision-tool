@@ -48,9 +48,70 @@ const Z_PREFER: Record<string, 'min' | 'max'> = {
  * band read as a broad patch over the whole articular surface rather than a
  * line along it.
  */
-const TUNING: Record<string, { band?: number; margin?: number }> = {
+/**
+ * Joints whose articulatingStructureIds are too coarse to derive a line from.
+ *
+ * carpometacarpal-joint-thumb names `carpals + metacarpals` — eight bones
+ * against five — so the band comes out along the whole carpometacarpal row and
+ * nothing distinguishes the thumb. The thumb joint is trapezium against the
+ * first metacarpal, and both exist in the model.
+ *
+ * The seed is left alone on purpose. articulatingStructureIds is content: it is
+ * what a student is told the joint forms between, and "the carpals and the
+ * metacarpals" is a fair thing to say at whole-bone level (see that field's own
+ * note in structures.joints.seed.ts). This is the renderer needing to be more
+ * specific than the teaching is, which is a mapping concern, not a content one.
+ *
+ * Each side is either a structure id the skeletal mapping resolves, or a
+ * Z-Anatomy mesh name used verbatim — the individual metacarpals are meshes in
+ * the model but are only grouped as one structure in the seed.
+ */
+const PART_OVERRIDE: Record<string, { a: string[]; b: string[] }> = {
+  'carpometacarpal-joint-thumb': {
+    a: ['trapezium'],
+    b: ['First metacarpal bone.l', 'First metacarpal bone.r'],
+  },
+  'carpometacarpal-joint-2': {
+    a: ['trapezoid'],
+    b: ['Second metacarpal bone.l', 'Second metacarpal bone.r'],
+  },
+  'carpometacarpal-joint-3': {
+    a: ['capitate'],
+    b: ['Third metacarpal bone.l', 'Third metacarpal bone.r'],
+  },
+  // Four and five share the hamate, so only the metacarpal separates them.
+  'carpometacarpal-joint-4': {
+    a: ['hamate'],
+    b: ['Fourth metacarpal bone.l', 'Fourth metacarpal bone.r'],
+  },
+  'carpometacarpal-joint-5': {
+    a: ['hamate'],
+    b: ['Fifth metacarpal bone.l', 'Fifth metacarpal bone.r'],
+  },
+};
+
+const TUNING: Record<string, { band?: number; margin?: number; frame?: number }> = {
   'glenohumeral-joint': { band: 0.005 },
   'humeroulnar-joint': { band: 0.005, margin: 6 },
+
+  // The carpometacarpal joints need a far wider frame than anything else here.
+  // The camera frames the contact region, and theirs is roughly a hundredth of
+  // the hand — at the default the render is two unrecognisable white shapes
+  // filling the frame, which is no use as a locate image: the student has to be
+  // able to see it IS a hand before picking a joint out of it.
+  // `frame` rather than `margin`: these five contact regions differ sevenfold
+  // in size, so a multiplier that frames a hand for the thumb frames two white
+  // shapes for the fifth. 0.15 world units is a hand.
+  //
+  // Their bands also need a wider tolerance. The carpals are coarsely meshed
+  // where they meet the metacarpals — the fifth found six contact vertices at
+  // the default — and a band of two faces is a handful of pixels once the
+  // camera pulls back far enough to show the hand.
+  'carpometacarpal-joint-thumb': { frame: 0.15, band: 0.03 },
+  'carpometacarpal-joint-2': { frame: 0.15, band: 0.03 },
+  'carpometacarpal-joint-3': { frame: 0.15, band: 0.04 },
+  'carpometacarpal-joint-4': { frame: 0.15, band: 0.04 },
+  'carpometacarpal-joint-5': { frame: 0.15, band: 0.05 },
 };
 
 function parseArgs(argv: string[]): Record<string, string> {
@@ -85,9 +146,15 @@ for (const joint of joints) {
     continue;
   }
 
-  const [aId, bId] = parts;
-  const aObjects = meshesFor.get(aId) ?? [];
-  const bObjects = meshesFor.get(bId) ?? [];
+  const override = PART_OVERRIDE[joint.id];
+  const [aId, bId] = override ? [override.a.join('+'), override.b.join('+')] : parts;
+
+  /** A structure id the mapping knows, or a mesh name to pass through verbatim. */
+  const resolve = (names: string[]): string[] =>
+    names.flatMap((n) => meshesFor.get(n) ?? [n]);
+
+  const aObjects = override ? resolve(override.a) : (meshesFor.get(aId) ?? []);
+  const bObjects = override ? resolve(override.b) : (meshesFor.get(bId) ?? []);
 
   const missing = [
     aObjects.length === 0 ? aId : null,

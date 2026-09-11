@@ -352,10 +352,106 @@ export const JOINT_STRUCTURES: JointStructure[] = [
     stabilizers: ['Anterior and posterior oblique ligaments', 'Intermetacarpal ligament', 'Thenar muscles'],
     aliases: ['CMC joint of thumb', 'First carpometacarpal joint', 'Trapeziometacarpal joint'],
     imageIds: [],
-    eligibility: { flashcard: true, mcq: true, locate: false },
+    eligibility: { flashcard: true, mcq: true, locate: true },
     difficulty: 'medium',
     tags: ['synovial', 'wrist'],
     clinical: 'One of the most common sites of hand osteoarthritis ("thumb base arthritis").',
+  },
+  // The four finger carpometacarpal joints. Added alongside the thumb's, which
+  // had been the only CMC joint in the set, because a single "carpometacarpal
+  // joint of thumb" left the other four unnameable and made the thumb's own
+  // hotspot impossible to draw: derived from `carpals + metacarpals` it lit the
+  // whole row. Each of these names its own carpal, which is what makes a joint
+  // line derivable — see PART_OVERRIDE in generateJointLineSpec.ts.
+  //
+  // THE FUNCTIONAL POINT IS THE 2-3 VERSUS 4-5 SPLIT, not the individual
+  // joints. The second and third are effectively immobile and form, with the
+  // distal carpal row, the fixed unit the hand is built around; the fourth and
+  // fifth are progressively mobile and let the palm cup around what it holds.
+  // Movements are listed to say exactly that, so "which movement is NOT
+  // possible here" can draw the distinction rather than blur it.
+  {
+    id: 'carpometacarpal-joint-2',
+    name: 'Second Carpometacarpal Joint',
+    category: 'joint',
+    region: 'forearm-hand',
+    subregion: 'wrist-hand',
+    description:
+      'The plane joint between the trapezoid and the base of the second metacarpal. Together with the third ' +
+      'it is essentially immobile, and that is the point: the second and third metacarpals form the fixed ' +
+      'central pillar the mobile thumb and the mobile fourth and fifth rays work against.',
+    jointType: 'plane',
+    articulatingStructureIds: ['trapezoid', 'metacarpals'],
+    movements: ['Gliding'],
+    stabilizers: ['Dorsal, palmar and interosseous carpometacarpal ligaments'],
+    aliases: ['CMC 2', 'Second CMC joint'],
+    imageIds: [],
+    eligibility: { flashcard: true, mcq: true, locate: true },
+    difficulty: 'hard',
+    tags: ['synovial', 'wrist'],
+  },
+  {
+    id: 'carpometacarpal-joint-3',
+    name: 'Third Carpometacarpal Joint',
+    category: 'joint',
+    region: 'forearm-hand',
+    subregion: 'wrist-hand',
+    description:
+      'The plane joint between the capitate and the base of the third metacarpal. The least mobile joint in ' +
+      'the hand, and the axis the fingers abduct and adduct about — spreading the fingers is measured from ' +
+      'the third ray, not the midline of the body.',
+    jointType: 'plane',
+    articulatingStructureIds: ['capitate', 'metacarpals'],
+    movements: ['Gliding'],
+    stabilizers: ['Dorsal, palmar and interosseous carpometacarpal ligaments'],
+    aliases: ['CMC 3', 'Third CMC joint'],
+    imageIds: [],
+    eligibility: { flashcard: true, mcq: true, locate: true },
+    difficulty: 'hard',
+    tags: ['synovial', 'wrist'],
+  },
+  {
+    id: 'carpometacarpal-joint-4',
+    name: 'Fourth Carpometacarpal Joint',
+    category: 'joint',
+    region: 'forearm-hand',
+    subregion: 'wrist-hand',
+    description:
+      'The plane joint between the hamate and the base of the fourth metacarpal. Unlike the second and third ' +
+      'it permits a little flexion and extension, the first of the two mobile rays that let the palm fold ' +
+      'around an object rather than meeting it flat.',
+    jointType: 'plane',
+    articulatingStructureIds: ['hamate', 'metacarpals'],
+    movements: ['Flexion', 'Extension', 'Gliding'],
+    stabilizers: ['Dorsal, palmar and interosseous carpometacarpal ligaments'],
+    aliases: ['CMC 4', 'Fourth CMC joint'],
+    imageIds: [],
+    eligibility: { flashcard: true, mcq: true, locate: true },
+    difficulty: 'hard',
+    tags: ['synovial', 'wrist'],
+  },
+  {
+    id: 'carpometacarpal-joint-5',
+    name: 'Fifth Carpometacarpal Joint',
+    category: 'joint',
+    region: 'forearm-hand',
+    subregion: 'wrist-hand',
+    description:
+      'The plane joint between the hamate and the base of the fifth metacarpal, and the most mobile of the ' +
+      'four finger joints. Its flexion and slight opposition are what bring the little finger towards the ' +
+      'thumb and deepen the hollow of the palm, the movement a grip closes with.',
+    jointType: 'plane',
+    articulatingStructureIds: ['hamate', 'metacarpals'],
+    movements: ['Flexion', 'Extension', 'Opposition', 'Gliding'],
+    stabilizers: ['Dorsal, palmar and interosseous carpometacarpal ligaments', 'Opponens digiti minimi'],
+    aliases: ['CMC 5', 'Fifth CMC joint'],
+    imageIds: [],
+    eligibility: { flashcard: true, mcq: true, locate: true },
+    difficulty: 'hard',
+    tags: ['synovial', 'wrist'],
+    clinical:
+      "Dislocation or fracture-dislocation here is the hand equivalent of a boxer's fracture pattern, and is " +
+      'easily missed on a plain AP film because the joint is oblique to the beam.',
   },
   {
     id: 'metacarpophalangeal-joint',

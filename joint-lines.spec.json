@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generated": "2026-09-11T16:00:20.294Z",
+  "generated": "2026-09-11T18:20:21.017Z",
   "joints": [
     {
       "id": "glenohumeral-joint",
@@ -151,41 +151,101 @@
       "id": "carpometacarpal-joint-thumb",
       "name": "Carpometacarpal Joint of Thumb",
       "a": {
-        "id": "carpals",
+        "id": "trapezium",
         "objects": [
-          "Capitate bone.l",
-          "Capitate bone.r",
-          "Hamate bone.l",
-          "Hamate bone.r",
-          "Lunate bone.l",
-          "Lunate bone.r",
-          "Pisiform bone.l",
-          "Pisiform bone.r",
-          "Scaphoid bone.l",
-          "Scaphoid bone.r",
           "Trapezium bone.l",
-          "Trapezium bone.r",
-          "Trapezoid bone.l",
-          "Trapezoid bone.r",
-          "Triquetrum bone.l",
-          "Triquetrum bone.r"
+          "Trapezium bone.r"
         ]
       },
       "b": {
-        "id": "metacarpals",
+        "id": "First metacarpal bone.l+First metacarpal bone.r",
         "objects": [
-          "Fifth metacarpal bone.l",
-          "Fifth metacarpal bone.r",
           "First metacarpal bone.l",
-          "First metacarpal bone.r",
-          "Fourth metacarpal bone.l",
-          "Fourth metacarpal bone.r",
+          "First metacarpal bone.r"
+        ]
+      },
+      "frame": 0.15,
+      "band": 0.03
+    },
+    {
+      "id": "carpometacarpal-joint-2",
+      "name": "Second Carpometacarpal Joint",
+      "a": {
+        "id": "trapezoid",
+        "objects": [
+          "Trapezoid bone.l",
+          "Trapezoid bone.r"
+        ]
+      },
+      "b": {
+        "id": "Second metacarpal bone.l+Second metacarpal bone.r",
+        "objects": [
           "Second metacarpal bone.l",
-          "Second metacarpal bone.r",
+          "Second metacarpal bone.r"
+        ]
+      },
+      "frame": 0.15,
+      "band": 0.03
+    },
+    {
+      "id": "carpometacarpal-joint-3",
+      "name": "Third Carpometacarpal Joint",
+      "a": {
+        "id": "capitate",
+        "objects": [
+          "Capitate bone.l",
+          "Capitate bone.r"
+        ]
+      },
+      "b": {
+        "id": "Third metacarpal bone.l+Third metacarpal bone.r",
+        "objects": [
           "Third metacarpal bone.l",
           "Third metacarpal bone.r"
         ]
-      }
+      },
+      "frame": 0.15,
+      "band": 0.04
+    },
+    {
+      "id": "carpometacarpal-joint-4",
+      "name": "Fourth Carpometacarpal Joint",
+      "a": {
+        "id": "hamate",
+        "objects": [
+          "Hamate bone.l",
+          "Hamate bone.r"
+        ]
+      },
+      "b": {
+        "id": "Fourth metacarpal bone.l+Fourth metacarpal bone.r",
+        "objects": [
+          "Fourth metacarpal bone.l",
+          "Fourth metacarpal bone.r"
+        ]
+      },
+      "frame": 0.15,
+      "band": 0.04
+    },
+    {
+      "id": "carpometacarpal-joint-5",
+      "name": "Fifth Carpometacarpal Joint",
+      "a": {
+        "id": "hamate",
+        "objects": [
+          "Hamate bone.l",
+          "Hamate bone.r"
+        ]
+      },
+      "b": {
+        "id": "Fifth metacarpal bone.l+Fifth metacarpal bone.r",
+        "objects": [
+          "Fifth metacarpal bone.l",
+          "Fifth metacarpal bone.r"
+        ]
+      },
+      "frame": 0.15,
+      "band": 0.05
     },
     {
       "id": "metacarpophalangeal-joint",

@@ -259,7 +259,7 @@ def surface_patch(meshes_and_indices, name):
     return mesh, relaxed
 
 
-def frame_camera(lo, hi, angle_deg, margin):
+def frame_camera(lo, hi, angle_deg, margin, frame_size=None):
     center = mathutils.Vector(((lo[0] + hi[0]) / 2, (lo[1] + hi[1]) / 2, (lo[2] + hi[2]) / 2))
     size = max(bbox_size(lo, hi), 1e-4)
     dist = size * 8 + 0.5
@@ -268,7 +268,12 @@ def frame_camera(lo, hi, angle_deg, margin):
     loc = center + offset
     cam.location = loc
     cam.rotation_euler = (center - loc).to_track_quat("-Z", "Y").to_euler()
-    cam_data.ortho_scale = size * margin
+    # `margin` multiplies the contact region, which breaks down where regions
+    # differ by an order of magnitude: the fifth carpometacarpal contact is a
+    # seventh the size of the thumb's, so the same multiplier frames a hand for
+    # one and two white shapes for the other. `frame_size` sets the width in
+    # world units instead, which is what "show me the whole hand" actually means.
+    cam_data.ortho_scale = frame_size if frame_size else size * margin
     sun.rotation_euler = mathutils.Euler((0.9, 0.3, 0.6 + theta), "XYZ")
 
 
@@ -333,6 +338,7 @@ for jid in wanted:
     # exactly that pairing.
     band = j.get("band", a.band)
     margin = j.get("margin", a.margin)
+    frame_size = j.get("frame")
 
     found = contact_region(mesh_a, mesh_b, band, a.cluster, j.get("zPrefer"))
     if found is None:
@@ -365,7 +371,7 @@ for jid in wanted:
         # The rest of the skeleton is held out, so a band the student cannot
         # actually see is not a band they can be asked to click.
         clear()
-        frame_camera(lo, hi, frame * 15, margin)
+        frame_camera(lo, hi, frame * 15, margin, frame_size)
         link(occluders, f"occ_{jid}", BONE_MAT, holdout=True)
         link(patch, f"mask_line_{jid}", MASK_MAT)
         render_to(os.path.join(a.out, jid, f"view-{frame:02d}", "line.png"))
