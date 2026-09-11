@@ -311,7 +311,16 @@ def render_to(path):
 # joint is), and, minus the joint's own two bones, it is the occluder that keeps
 # the mask honest.
 skel = bpy.data.collections.get("1: Skeletal system")
-skeleton_names = [o.name for o in skel.all_objects if o.type == "MESH"] if skel else []
+# Z-Anatomy titles each top-level collection with a text mesh — "Skeletal
+# system.g", "Muscular system.g", "Joints.g" — and it lives INSIDE the
+# collection it names, so baking every mesh in "1: Skeletal system" bakes its
+# title too. It sits beside the body and only enters frame on a wide shot, which
+# is why it went unnoticed: "SYSTEM" is printed at both edges of every panel
+# framed on the whole body, mirrored on the right, and has been in production
+# on brachioradialis, flexor-digitorum-profundus, interspinales, multifidus and
+# rotatores. `.g` is only ever a label, never anatomy.
+skeleton_names = ([o.name for o in skel.all_objects if o.type == "MESH" and not o.name.endswith(".g")]
+                  if skel else [])
 print(f"[bones] baking {len(skeleton_names)} meshes...", flush=True)
 skeleton_mesh = bake(skeleton_names, "joint_skeleton")
 print(f"[bones] {len(skeleton_mesh.vertices)} verts", flush=True)

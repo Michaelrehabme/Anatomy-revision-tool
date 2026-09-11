@@ -226,7 +226,15 @@ skel = bpy.data.collections.get("1: Skeletal system")
 if skel is None:
     print("[fatal] collection '1: Skeletal system' not found")
     sys.exit(1)
-all_skel = [o.name for o in skel.all_objects if o.type == "MESH"]
+# Z-Anatomy titles each top-level collection with a text mesh — "Skeletal
+# system.g", "Muscular system.g", "Joints.g" — and it lives INSIDE the
+# collection it names, so baking every mesh in "1: Skeletal system" bakes its
+# title too. It sits beside the body and only enters frame on a wide shot, which
+# is why it went unnoticed: "SYSTEM" is printed at both edges of every panel
+# framed on the whole body, mirrored on the right, and has been in production
+# on brachioradialis, flexor-digitorum-profundus, interspinales, multifidus and
+# rotatores. `.g` is only ever a label, never anatomy.
+all_skel = [o.name for o in skel.all_objects if o.type == "MESH" and not o.name.endswith(".g")]
 bone_names = [n for n in all_skel if not is_soft_cartilage(n)]
 print(f"[bones] baking {len(bone_names)} skeletal meshes "
       f"({len(all_skel) - len(bone_names)} soft cartilage excluded)...", flush=True)

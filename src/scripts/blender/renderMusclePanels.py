@@ -33,12 +33,15 @@ ap.add_argument("--frames", type=int, default=24)
 ap.add_argument("--res", type=int, default=1400)
 ap.add_argument("--margin", type=float, default=2.4, help="camera framing slack around the muscle")
 ap.add_argument("--samples", type=int, default=64)
+ap.add_argument("--one-side", default="",
+                help="comma-separated ids to frame on one side regardless of SIDE_FRAMING_RATIO")
 a = ap.parse_args(argv)
 
 mapping = {m["id"]: m for m in json.load(open(a.mapping))["mapping"]}
 wanted = a.muscles.split(",")
 views = [int(v) for v in a.views.split(",")]
 elevations = [float(e) for e in a.elevations.split(",")]
+force_one_side = set(filter(None, a.one_side.split(",")))
 
 scene = bpy.data.scenes.new("PanelScene")
 bpy.context.window.scene = scene
@@ -183,7 +186,15 @@ def link(mesh, name, material):
 
 
 skel = bpy.data.collections.get("1: Skeletal system")
-bone_names = [o.name for o in skel.all_objects if o.type == "MESH"]
+# Z-Anatomy titles each top-level collection with a text mesh — "Skeletal
+# system.g", "Muscular system.g", "Joints.g" — and it lives INSIDE the
+# collection it names, so baking every mesh in "1: Skeletal system" bakes its
+# title too. It sits beside the body and only enters frame on a wide shot, which
+# is why it went unnoticed: "SYSTEM" is printed at both edges of every panel
+# framed on the whole body, mirrored on the right, and has been in production
+# on brachioradialis, flexor-digitorum-profundus, interspinales, multifidus and
+# rotatores. `.g` is only ever a label, never anatomy.
+bone_names = [o.name for o in skel.all_objects if o.type == "MESH" and not o.name.endswith(".g")]
 print(f"[bones] baking {len(bone_names)} meshes...", flush=True)
 bone_mesh = bake_world_mesh(bone_names, "panel_bones")
 print(f"[bones] {len(bone_mesh.vertices)} verts", flush=True)
@@ -223,7 +234,14 @@ for mid in wanted:
         side_mesh = bake_world_mesh(side, f"frame_{mid}")
         if len(side_mesh.vertices) > 0:
             smin, smax = mesh_bbox(side_mesh)
-            if bbox_size(bmin, bmax) > bbox_size(smin, smax) * SIDE_FRAMING_RATIO:
+            # The ratio test misses the forearm: the two forearms hang about a
+            # forearm's length apart, so the pair measures roughly twice one
+            # side, under the 3x threshold — and framing the pair means framing
+            # the whole body. flexor-pollicis-longus came out as a full skeleton
+            # with a red line down each arm. Forcing it per muscle, rather than
+            # lowering the ratio, leaves every thigh and shoulder panel as it is.
+            if (mid in force_one_side
+                    or bbox_size(bmin, bmax) > bbox_size(smin, smax) * SIDE_FRAMING_RATIO):
                 bmin, bmax = smin, smax
                 print(f"[frame] {mid}: framed on one side", flush=True)
         bpy.data.meshes.remove(side_mesh)
