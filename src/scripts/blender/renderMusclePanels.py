@@ -28,9 +28,11 @@ ap.add_argument("--views", default="0,6,12")
 ap.add_argument("--elevations", default="0",
                 help="camera heights in degrees, comma-separated; negative looks up from below")
 ap.add_argument("--frames", type=int, default=24)
-ap.add_argument("--res", type=int, default=900)
+# 1400 matches the region plates, and gives a phone at 2x device pixel ratio
+# real headroom to zoom into rather than up-scaling immediately.
+ap.add_argument("--res", type=int, default=1400)
 ap.add_argument("--margin", type=float, default=2.4, help="camera framing slack around the muscle")
-ap.add_argument("--samples", type=int, default=32)
+ap.add_argument("--samples", type=int, default=64)
 a = ap.parse_args(argv)
 
 mapping = {m["id"]: m for m in json.load(open(a.mapping))["mapping"]}
@@ -81,9 +83,16 @@ def principled(name, colour, roughness=0.5):
     return mat
 
 
-# Blue picked to match the highlight the retired AI panels used.
-highlight_mat = principled("panel_highlight", (0.22, 0.45, 0.72, 1.0), roughness=0.45)
-bone_mat = principled("panel_bone", (0.90, 0.88, 0.82, 1.0), roughness=0.6)
+# Muscle red, the same value renderRegionsWithBones.py gives its subject
+# muscles, so a muscle looks like the same tissue whichever image it appears in.
+#
+# It replaces the blue the retired AI panels used. Blue reads as a highlight
+# rather than as anatomy, and at low saturation it sat too close to both the
+# cream bone and the near-white ground: the thinner structures — the plantar
+# intrinsics, the deep spinal series — were hard to pick out at all. Red is
+# what the tissue actually is, and it separates cleanly from bone.
+highlight_mat = principled("panel_highlight", (0.76, 0.27, 0.25, 1.0), roughness=0.45)
+bone_mat = principled("panel_bone", (0.90, 0.88, 0.83, 1.0), roughness=0.6)
 
 
 def bake_world_mesh(object_names, mesh_name):
