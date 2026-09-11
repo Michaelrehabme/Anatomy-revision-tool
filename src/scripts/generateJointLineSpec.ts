@@ -88,6 +88,75 @@ const PART_OVERRIDE: Record<string, { a: string[]; b: string[] }> = {
     a: ['hamate'],
     b: ['Fifth metacarpal bone.l', 'Fifth metacarpal bone.r'],
   },
+
+  // The femoral head seats in the acetabulum, deepened by its labrum — not
+  // against "the pelvis". The labrum is real geometry in the model, so the
+  // joint is named at the structure it actually forms against.
+  'hip-joint': {
+    a: ['femur'],
+    b: ['Acetabular labrum.l', 'Acetabular labrum.r'],
+  },
+
+  // The mortise: tibial plafond and both malleoli around the talar trochlea.
+  // The malleoli are separate meshes, so they are named rather than left to
+  // the contact search to find inside the tibia and fibula.
+  'talocrural-joint': {
+    a: ['tibia', 'fibula', 'Medial malleolus.l', 'Medial malleolus.r', 'Lateral malleolus.l', 'Lateral malleolus.r'],
+    b: ['talus'],
+  },
+
+  // Proximal row against distal row. The pisiform is left out on purpose: it
+  // is a sesamoid in flexor carpi ulnaris, sitting on the triquetrum, and
+  // takes no part in the midcarpal joint.
+  'midcarpal-joint': {
+    a: ['scaphoid', 'lunate', 'triquetrum'],
+    b: ['trapezium', 'trapezoid', 'capitate', 'hamate'],
+  },
+
+  // The occipital condyles against the superior articular facets of the atlas.
+  // The condyles exist only as a label anchor in the model, so the whole
+  // occipital bone stands in, narrowed to its facing surface by the contact
+  // search — a mitigation, not the condyle itself.
+  'atlanto-occipital-joint': {
+    a: ['atlas-c1'],
+    b: ['Occipital bone'],
+  },
+
+  // Costal cartilages of the TRUE ribs, 1-7, against the manubrium and body.
+  // Eight to ten are false ribs whose cartilages join the cartilage above, not
+  // the sternum, so "the costal cartilages" would have been wrong.
+  'sternocostal-joint': {
+    a: ['Manubrium of sternum', 'Body of sternum'],
+    b: ['first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh'].flatMap((n) => [
+      `Costal cartilage of ${n} rib.l`,
+      `Costal cartilage of ${n} rib.r`,
+    ]),
+  },
+
+  // The auricular surfaces of sacrum and ilium. The ilium's surface exists only
+  // as an anchor and the ilium is not separate from the hip bone in the model,
+  // so the hip bone stands in, narrowed by the contact search.
+  'sacroiliac-joint': {
+    a: ['sacrum'],
+    b: ['Hip bone.l', 'Hip bone.r'],
+  },
+
+  // One level, L4-L5, stands for joints that exist at every level: a locate
+  // question needs one target, and L4-L5 is the level that matters clinically.
+  //
+  // The two use the same pair of vertebrae and are told apart by what they
+  // are measured against. L4 against L5 finds the FACETS, because the bodies
+  // never meet — the disc holds them roughly a centimetre apart, several times
+  // the facet gap. L4 against the disc finds the endplate, which is the
+  // intervertebral joint.
+  'facet-joint': {
+    a: ['l4-vertebra'],
+    b: ['l5-vertebra'],
+  },
+  'intervertebral-joint': {
+    a: ['l4-vertebra'],
+    b: ['Intervertebral disc L4-L5'],
+  },
 };
 
 const TUNING: Record<string, { band?: number; margin?: number; frame?: number }> = {
@@ -112,6 +181,9 @@ const TUNING: Record<string, { band?: number; margin?: number; frame?: number }>
   'carpometacarpal-joint-3': { frame: 0.15, band: 0.04 },
   'carpometacarpal-joint-4': { frame: 0.15, band: 0.04 },
   'carpometacarpal-joint-5': { frame: 0.15, band: 0.05 },
+  // Same coarse carpal meshing, one row up: at the default the proximal and
+  // distal rows met in two faces and the band was a 289-pixel speck.
+  'midcarpal-joint': { frame: 0.15, band: 0.04 },
 };
 
 function parseArgs(argv: string[]): Record<string, string> {
@@ -140,8 +212,9 @@ for (const joint of joints) {
 
   // Pairwise only. A joint naming three or more parts (the elbow complex, the
   // carpals) has no single "the two bones", and forcing a pair would pick one
-  // arbitrarily — those need authoring, not inference.
-  if (parts.length !== 2) {
+  // arbitrarily — those need authoring, not inference. An override IS that
+  // authoring, so it is honoured before this check rather than after it.
+  if (parts.length !== 2 && !PART_OVERRIDE[joint.id]) {
     skipped.push(`${joint.id}: ${parts.length} articulating parts, need exactly 2`);
     continue;
   }

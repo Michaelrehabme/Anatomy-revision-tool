@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generated": "2026-09-11T18:20:21.017Z",
+  "generated": "2026-09-11T20:48:23.633Z",
   "joints": [
     {
       "id": "glenohumeral-joint",
@@ -148,6 +148,36 @@
       "zPrefer": "min"
     },
     {
+      "id": "midcarpal-joint",
+      "name": "Midcarpal Joint",
+      "a": {
+        "id": "scaphoid+lunate+triquetrum",
+        "objects": [
+          "Scaphoid bone.l",
+          "Scaphoid bone.r",
+          "Lunate bone.l",
+          "Lunate bone.r",
+          "Triquetrum bone.l",
+          "Triquetrum bone.r"
+        ]
+      },
+      "b": {
+        "id": "trapezium+trapezoid+capitate+hamate",
+        "objects": [
+          "Trapezium bone.l",
+          "Trapezium bone.r",
+          "Trapezoid bone.l",
+          "Trapezoid bone.r",
+          "Capitate bone.l",
+          "Capitate bone.r",
+          "Hamate bone.l",
+          "Hamate bone.r"
+        ]
+      },
+      "frame": 0.15,
+      "band": 0.04
+    },
+    {
       "id": "carpometacarpal-joint-thumb",
       "name": "Carpometacarpal Joint of Thumb",
       "a": {
@@ -282,6 +312,41 @@
       }
     },
     {
+      "id": "hip-joint",
+      "name": "Hip Joint",
+      "a": {
+        "id": "femur",
+        "objects": [
+          "Femur.l",
+          "Femur.r"
+        ]
+      },
+      "b": {
+        "id": "Acetabular labrum.l+Acetabular labrum.r",
+        "objects": [
+          "Acetabular labrum.l",
+          "Acetabular labrum.r"
+        ]
+      }
+    },
+    {
+      "id": "sacroiliac-joint",
+      "name": "Sacroiliac Joint",
+      "a": {
+        "id": "sacrum",
+        "objects": [
+          "Sacrum"
+        ]
+      },
+      "b": {
+        "id": "Hip bone.l+Hip bone.r",
+        "objects": [
+          "Hip bone.l",
+          "Hip bone.r"
+        ]
+      }
+    },
+    {
       "id": "tibiofemoral-joint",
       "name": "Tibiofemoral Joint",
       "a": {
@@ -335,6 +400,30 @@
         ]
       },
       "zPrefer": "max"
+    },
+    {
+      "id": "talocrural-joint",
+      "name": "Talocrural Joint",
+      "a": {
+        "id": "tibia+fibula+Medial malleolus.l+Medial malleolus.r+Lateral malleolus.l+Lateral malleolus.r",
+        "objects": [
+          "Tibia.l",
+          "Tibia.r",
+          "Fibula.l",
+          "Fibula.r",
+          "Medial malleolus.l",
+          "Medial malleolus.r",
+          "Lateral malleolus.l",
+          "Lateral malleolus.r"
+        ]
+      },
+      "b": {
+        "id": "talus",
+        "objects": [
+          "Talus.l",
+          "Talus.r"
+        ]
+      }
     },
     {
       "id": "subtalar-joint",
@@ -408,6 +497,54 @@
       }
     },
     {
+      "id": "intervertebral-joint",
+      "name": "Intervertebral Joint",
+      "a": {
+        "id": "l4-vertebra",
+        "objects": [
+          "Vertebra L4"
+        ]
+      },
+      "b": {
+        "id": "Intervertebral disc L4-L5",
+        "objects": [
+          "Intervertebral disc L4-L5"
+        ]
+      }
+    },
+    {
+      "id": "facet-joint",
+      "name": "Facet (Zygapophyseal) Joint",
+      "a": {
+        "id": "l4-vertebra",
+        "objects": [
+          "Vertebra L4"
+        ]
+      },
+      "b": {
+        "id": "l5-vertebra",
+        "objects": [
+          "Vertebra L5"
+        ]
+      }
+    },
+    {
+      "id": "atlanto-occipital-joint",
+      "name": "Atlanto-occipital Joint",
+      "a": {
+        "id": "atlas-c1",
+        "objects": [
+          "Atlas (C1)"
+        ]
+      },
+      "b": {
+        "id": "Occipital bone",
+        "objects": [
+          "Occipital bone"
+        ]
+      }
+    },
+    {
       "id": "atlantoaxial-joint",
       "name": "Atlantoaxial Joint",
       "a": {
@@ -470,6 +607,36 @@
           "Vertebra T7",
           "Vertebra T8",
           "Vertebra T9"
+        ]
+      }
+    },
+    {
+      "id": "sternocostal-joint",
+      "name": "Sternocostal Joint",
+      "a": {
+        "id": "Manubrium of sternum+Body of sternum",
+        "objects": [
+          "Manubrium of sternum",
+          "Body of sternum"
+        ]
+      },
+      "b": {
+        "id": "Costal cartilage of first rib.l+Costal cartilage of first rib.r+Costal cartilage of second rib.l+Costal cartilage of second rib.r+Costal cartilage of third rib.l+Costal cartilage of third rib.r+Costal cartilage of fourth rib.l+Costal cartilage of fourth rib.r+Costal cartilage of fifth rib.l+Costal cartilage of fifth rib.r+Costal cartilage of sixth rib.l+Costal cartilage of sixth rib.r+Costal cartilage of seventh rib.l+Costal cartilage of seventh rib.r",
+        "objects": [
+          "Costal cartilage of first rib.l",
+          "Costal cartilage of first rib.r",
+          "Costal cartilage of second rib.l",
+          "Costal cartilage of second rib.r",
+          "Costal cartilage of third rib.l",
+          "Costal cartilage of third rib.r",
+          "Costal cartilage of fourth rib.l",
+          "Costal cartilage of fourth rib.r",
+          "Costal cartilage of fifth rib.l",
+          "Costal cartilage of fifth rib.r",
+          "Costal cartilage of sixth rib.l",
+          "Costal cartilage of sixth rib.r",
+          "Costal cartilage of seventh rib.l",
+          "Costal cartilage of seventh rib.r"
         ]
       }
     }
