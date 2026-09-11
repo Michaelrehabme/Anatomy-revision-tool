@@ -1,4 +1,6 @@
+import { useEffect, useState } from 'react';
 import type { Confidence } from '../../types/attempt';
+import { recordHintShown, shouldShowHint } from '../../lib/firstTimeHints';
 
 const OPTIONS: { value: Confidence; label: string; hint: string }[] = [
   { value: 'hard', label: 'Hard', hint: '1 day' },
@@ -24,13 +26,28 @@ interface ConfidenceButtonsProps {
  * consistent with the "Medium" vs "Fine" label decision) rather than a live
  * per-structure computeNextReview preview, to avoid an extra fetch per
  * question just for a label.
+ *
+ * The first few times, a one-line explanation sits above the buttons. This
+ * is the one mechanic the whole scheduler depends on, and onboarding copy
+ * read before the first question does not stick — the moment to explain it
+ * is the moment it is asked.
  */
 export function ConfidenceButtons({ onRate, label = 'How confident?' }: ConfidenceButtonsProps) {
+  const [showHint] = useState(() => shouldShowHint('confidence'));
+  useEffect(() => {
+    if (showHint) recordHintShown('confidence');
+  }, [showHint]);
+
   return (
     <div>
       <div style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
         {label}
       </div>
+      {showHint && (
+        <p className="mt-2.5 text-sm leading-snug" style={{ color: 'var(--ink2)' }}>
+          This sets when you see it again. Be honest: a lucky guess marked Easy comes back in ten days.
+        </p>
+      )}
       <div className="mt-3.5 flex gap-2.5">
         {OPTIONS.map((opt) => (
           <button

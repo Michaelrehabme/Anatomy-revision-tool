@@ -23,6 +23,8 @@ interface MobileStudySessionProps {
   session: ReturnType<typeof useRevisionSession>;
   content: AnatomyContent;
   onEnd: () => void;
+  /** See StudySession — back to setup, choices intact. */
+  onBackToSetup: () => void;
   onOpenMuscle: (structureId: string, contextIds: string[]) => void;
 }
 
@@ -33,7 +35,7 @@ function formatClock(totalSeconds: number): string {
 }
 
 /** Screens 05–08 (mobile). Top bar (close + progress + counter), no persistent sidebar. */
-export function MobileStudySession({ session, content, onEnd, onOpenMuscle }: MobileStudySessionProps) {
+export function MobileStudySession({ session, content, onEnd, onBackToSetup, onOpenMuscle }: MobileStudySessionProps) {
   const question = session.currentQuestion;
   const advance = () => (session.isLastQuestion ? session.finish() : session.next());
   const openFullCard = (structureId: string) =>
@@ -62,7 +64,7 @@ export function MobileStudySession({ session, content, onEnd, onOpenMuscle }: Mo
         <p style={{ color: 'var(--ink2)' }}>No questions matched this filter — widen your selection.</p>
         <button
           type="button"
-          onClick={onEnd}
+          onClick={onBackToSetup}
           className="mt-5 rounded-[3px] border-0 px-5 py-2.5"
           style={{ background: 'var(--acc)', color: 'var(--onacc)' }}
         >

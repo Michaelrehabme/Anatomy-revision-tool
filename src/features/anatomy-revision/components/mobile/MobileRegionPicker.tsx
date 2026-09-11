@@ -5,6 +5,8 @@ import { areaOf } from '../../types/structure';
 import { BodyFigure } from '../shared/BodyFigure';
 import { MobileShell } from './MobileShell';
 
+const ALL_AREAS: ReadonlySet<Area> = new Set(AREAS);
+
 interface MobileRegionPickerProps {
   content: AnatomyContent;
   selected: Set<Area>;
@@ -51,18 +53,19 @@ export function MobileRegionPicker({ content, selected, onChange, onContinue, on
           Pick your areas
         </h2>
         <p style={{ fontSize: 13.5, lineHeight: 1.5, color: 'var(--ink3)' }}>
-          Tap the body. Everything outside your selection stays out of the pool.
+          Tap the body or the list. Everything is included until you narrow it.
         </p>
 
         <div className="mt-1 flex justify-center">
           <div style={{ width: 134 }}>
-            <BodyFigure selected={selected} onToggle={toggle} />
+            {/* Empty means "everything" — figure and list both show all seven, matching desktop. */}
+            <BodyFigure selected={selected.size === 0 ? ALL_AREAS : selected} onToggle={toggle} />
           </div>
         </div>
 
         <div className="mt-0.5 grid grid-cols-2 gap-x-3.5 gap-y-0.5">
           {AREAS.map((area) => {
-            const isSelected = selected.has(area);
+            const isSelected = selected.size === 0 || selected.has(area);
             return (
               <button
                 key={area}

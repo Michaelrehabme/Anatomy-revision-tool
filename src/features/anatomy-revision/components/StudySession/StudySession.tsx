@@ -25,6 +25,8 @@ interface StudySessionProps {
   session: ReturnType<typeof useRevisionSession>;
   content: AnatomyContent;
   onEnd: () => void;
+  /** The empty-set escape hatch: back to setup with every choice intact — not to Today, which is what onEnd does. */
+  onBackToSetup: () => void;
 }
 
 function formatClock(totalSeconds: number): string {
@@ -34,7 +36,7 @@ function formatClock(totalSeconds: number): string {
 }
 
 /** Screens 05–08: the active-question shell shared by every question format. */
-export function StudySession({ session, content, onEnd }: StudySessionProps) {
+export function StudySession({ session, content, onEnd, onBackToSetup }: StudySessionProps) {
   const question = session.currentQuestion;
   const advance = () => (session.isLastQuestion ? session.finish() : session.next());
 
@@ -88,7 +90,7 @@ export function StudySession({ session, content, onEnd }: StudySessionProps) {
           <p style={{ color: 'var(--ink2)' }}>No questions matched this filter — go back and widen your selection.</p>
           <button
             type="button"
-            onClick={onEnd}
+            onClick={onBackToSetup}
             className="mt-6 rounded-[3px] px-5 py-2.5"
             style={{ background: 'var(--acc)', color: 'var(--onacc)' }}
           >

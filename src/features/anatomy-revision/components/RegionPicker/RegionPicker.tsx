@@ -16,6 +16,8 @@ interface RegionPickerProps {
   onNavigate: (section: NavSection) => void;
 }
 
+const ALL_AREAS: ReadonlySet<Area> = new Set(AREAS);
+
 /** Ordered so the breakdown reads the same way every time, biggest category first. */
 const COUNTED_CATEGORIES: { category: Category; singular: string; plural: string }[] = [
   { category: 'muscle', singular: 'muscle', plural: 'muscles' },
@@ -89,7 +91,8 @@ export function RegionPicker({ content, selected, onChange, onContinue, onNaviga
     >
       <div className="flex items-start gap-[72px] px-16 pt-16 pb-12">
         <div className="w-[300px] flex-none">
-          <BodyFigure selected={selected} onToggle={toggle} />
+          {/* Empty means "everything", and the list ticks all seven — the figure has to agree, not sit blank beside it. */}
+          <BodyFigure selected={selected.size === 0 ? ALL_AREAS : selected} onToggle={toggle} />
         </div>
         <div className="flex-1">
           <h2
@@ -98,7 +101,7 @@ export function RegionPicker({ content, selected, onChange, onContinue, onNaviga
             Pick your areas
           </h2>
           <p className="max-w-md text-base leading-relaxed" style={{ color: 'var(--ink2)' }}>
-            Click the body or the list. Everything outside your selection stays out of the question pool.
+            Click the body or the list. Everything is included until you narrow it, and your choice is remembered for next time.
           </p>
 
           <div className="mt-9 flex flex-col">

@@ -3,7 +3,9 @@ import type { AnatomyContent } from '../../hooks/useAnatomyContent';
 import type { RevisionQuestion, QuestionType } from '../../types/question';
 import { REGION_LABELS } from '../../types/region';
 import { generateRevisionSet } from '../../lib/questionGenerators/generateSet';
-import { getLearnCardAttempts } from '../../lib/preferences';
+import { buildStarterSet, STARTER_COUNT, STARTER_TYPES } from '../../lib/questionGenerators/starterSet';
+import { getLearnCardAttempts, getPreferredAreas } from '../../lib/preferences';
+import { firstRunTitle, minutesFor } from '../../lib/sessionCopy';
 import { useTodayData, relativeDue } from '../../hooks/useTodayData';
 import { AppShell } from '../shell/AppShell';
 import { NavSidebar, type NavSection } from '../shell/NavSidebar';
@@ -26,11 +28,24 @@ interface TodayProps {
 }
 
 export function Today({ repository, userId, content, onStart, onCustomSession, onOpenMuscle, onNavigate }: TodayProps) {
-  const { loading, streak, totalMuscleCount, seenMusclePct, dueMuscles, weakest, comingDue, weekBuckets, weekMax, dayLabels } =
+  const { loading, streak, totalMuscleCount, seenMusclePct, dueMuscles, allMastery, weakest, comingDue, weekBuckets, weekMax, dayLabels } =
     useTodayData(repository, userId, content);
   const now = new Date();
+  // Nothing attempted yet: the first session is the guided starter, and the
+  // headline is an invitation rather than "0 due".
+  const firstRun = !loading && allMastery.length === 0;
+  const preferredAreas = getPreferredAreas();
+  const areas = preferredAreas.length ? preferredAreas : undefined;
 
   const handleStart = async () => {
+    if (firstRun) {
+      const starter = buildStarterSet(content.structures, content.images, { areas });
+      if (starter.length > 0) {
+        onStart(starter, { types: STARTER_TYPES, mode: 'practice', areas });
+        return;
+      }
+      // An area with no muscles falls through to an ordinary session.
+    }
     const dueStructureIds = dueMuscles.map((m) => m.structureId);
     // generateSet is repository-free (CR-009), so fact mastery is fetched here.
     const factMastery = repository && userId ? await repository.listFactMastery(userId) : undefined;
@@ -38,6 +53,7 @@ export function Today({ repository, userId, content, onStart, onCustomSession, o
     const questions = generateRevisionSet(content.structures, content.images, {
       types: DEFAULT_TYPES,
       mode: 'practice',
+      areas,
       // Prioritised, not restricted: answering a due structure reschedules it, so a
       // due-only session refills its own queue and never reaches new material.
       priorityStructureIds: dueStructureIds.length ? dueStructureIds : undefined,
@@ -45,7 +61,7 @@ export function Today({ repository, userId, content, onStart, onCustomSession, o
       factMastery,
       learnCardAttempts,
     });
-    onStart(questions, { types: DEFAULT_TYPES, mode: 'practice', learnCardAttempts });
+    onStart(questions, { types: DEFAULT_TYPES, mode: 'practice', areas, learnCardAttempts });
   };
 
   return (
@@ -73,48 +89,60 @@ export function Today({ repository, userId, content, onStart, onCustomSession, o
             {now.toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' })}
           </div>
           <h2
-            style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 76, lineHeight: 0.98, letterSpacing: '-.032em', margin: '20px 0 0' }}
+            style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: firstRun ? 64 : 76, lineHeight: 0.98, letterSpacing: '-.032em', margin: '20px 0 0' }}
           >
-            {loading ? '…' : dueMuscles.length} due
-            <br />
-            for review
+            {firstRun ? (
+              firstRunTitle(preferredAreas)
+            ) : (
+              <>
+                {loading ? '…' : dueMuscles.length} due
+                <br />
+                for review
+              </>
+            )}
           </h2>
           <p className="mt-5 text-lg leading-relaxed" style={{ color: 'var(--ink2)' }}>
-            {dueMuscles.length > 0
-              ? 'Scheduled from your recent sessions.'
-              : 'Nothing scheduled — start a custom session or drill the untouched set.'}
+            {firstRun
+              ? `${STARTER_COUNT} questions, about ${minutesFor(STARTER_COUNT)} minutes. Multiple choice and locate-on-the-image, nothing harder yet.`
+              : dueMuscles.length > 0
+                ? 'Scheduled from your recent sessions.'
+                : 'Nothing scheduled — start a custom session or drill the untouched set.'}
           </p>
           <div className="mt-9 flex gap-3.5">
             <Button onClick={handleStart} className="min-w-[180px] min-h-[56px]">
-              Start review
+              {firstRun ? 'Start your first session' : 'Start review'}
             </Button>
             <Button variant="secondary" onClick={onCustomSession} className="min-w-[150px] min-h-[56px]">
               Custom session
             </Button>
           </div>
 
-          <div
-            className="mt-14"
-            style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}
-          >
-            This week
-          </div>
-          <div className="mt-5 flex h-[110px] items-end gap-3">
-            {weekBuckets.map((count, i) => (
+          {!firstRun && (
+            <>
               <div
-                key={i}
-                className="flex-1"
-                style={{ height: `${Math.max(8, (count / weekMax) * 100)}%`, background: count > 0 ? 'var(--acc)' : 'var(--accs)' }}
-              />
-            ))}
-          </div>
-          <div className="mt-2.5 flex gap-3">
-            {dayLabels.map((d, i) => (
-              <div key={i} className="flex-1 text-center" style={{ font: '400 11px/1 var(--font-mono)', color: 'var(--ink3)' }}>
-                {d}
+                className="mt-14"
+                style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}
+              >
+                This week
               </div>
-            ))}
-          </div>
+              <div className="mt-5 flex h-[110px] items-end gap-3">
+                {weekBuckets.map((count, i) => (
+                  <div
+                    key={i}
+                    className="flex-1"
+                    style={{ height: `${Math.max(8, (count / weekMax) * 100)}%`, background: count > 0 ? 'var(--acc)' : 'var(--accs)' }}
+                  />
+                ))}
+              </div>
+              <div className="mt-2.5 flex gap-3">
+                {dayLabels.map((d, i) => (
+                  <div key={i} className="flex-1 text-center" style={{ font: '400 11px/1 var(--font-mono)', color: 'var(--ink3)' }}>
+                    {d}
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
         </div>
 
         <div className="flex-1">
@@ -124,7 +152,9 @@ export function Today({ repository, userId, content, onStart, onCustomSession, o
           <div className="mt-4 flex flex-col">
             {weakest.length === 0 && (
               <p className="py-4 text-sm" style={{ color: 'var(--ink3)' }}>
-                No attempts recorded yet — finish a session to see this fill in.
+                {firstRun
+                  ? 'Your weakest structures, what is due, and this week’s activity appear here after your first session.'
+                  : 'No attempts recorded yet — finish a session to see this fill in.'}
               </p>
             )}
             {weakest.map((m) => {

@@ -630,3 +630,11 @@ describe('OINA sessions (CR-018)', () => {
     }
   });
 });
+
+describe('generateRevisionSet with an unbuildable combination', () => {
+  /** Bones and landmarks carry no hotspots (README, "Adding hotspots"), so the setup screen must be able to see zero coming. */
+  it('yields nothing for locate questions over bones, rather than throwing', () => {
+    const result = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, { types: ['locate'], category: 'bone', mode: 'practice', seed: 1 });
+    expect(result).toEqual([]);
+  });
+});

@@ -7,6 +7,7 @@ import { HotspotImage, type HotspotAnswerResult } from './HotspotImage';
 import { ConfidenceButtons } from '../shared/ConfidenceButtons';
 import { Button } from '../shared/Button';
 import { ExamAnswerFooter } from '../shared/ExamAnswerFooter';
+import { recordHintShown, shouldShowHint } from '../../lib/firstTimeHints';
 
 interface LocateStructureSessionProps {
   question: LocateQuestion;
@@ -38,6 +39,12 @@ export function LocateStructureSession({
   const [zoomIndex, setZoomIndex] = useState(0);
   const [listMode, setListMode] = useState(false);
   const [rated, setRated] = useState(false);
+  // Nothing on screen says the image itself is the answer surface — the
+  // crosshair cursor is the only affordance. Said out loud the first couple of times.
+  const [showHint] = useState(() => shouldShowHint('locate'));
+  useEffect(() => {
+    if (showHint) recordHintShown('locate');
+  }, [showHint]);
 
   useEffect(() => {
     setResult(null);
@@ -88,6 +95,11 @@ export function LocateStructureSession({
       >
         {question.prompt}
       </h2>
+      {showHint && !listMode && (
+        <p className="mt-3 max-w-md text-center text-sm leading-snug" style={{ color: 'var(--ink2)' }}>
+          Click where the muscle sits on the image. Your first click is your answer.
+        </p>
+      )}
 
       <div className="mt-3 flex items-center gap-4" style={{ color: 'var(--ink3)' }}>
         <div className="flex gap-1">

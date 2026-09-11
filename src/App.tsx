@@ -8,7 +8,7 @@ import { useAnatomyContent, type AnatomyContent } from './features/anatomy-revis
 import { useRevisionSession } from './features/anatomy-revision/hooks/useRevisionSession';
 import { useIsDesktop } from './features/anatomy-revision/hooks/useIsDesktop';
 import { generateRevisionSet } from './features/anatomy-revision/lib/questionGenerators/generateSet';
-import { getLearnCardAttempts } from './features/anatomy-revision/lib/preferences';
+import { getLearnCardAttempts, getPreferredAreas, setPreferredAreas } from './features/anatomy-revision/lib/preferences';
 import { useMastery } from './features/anatomy-revision/hooks/useMastery';
 import { computeStreak } from './features/anatomy-revision/lib/streak';
 import type { Area } from './features/anatomy-revision/types/region';
@@ -204,7 +204,14 @@ function App() {
       cancelled = true;
     };
   }, []);
-  const [selectedAreas, setSelectedAreas] = useState<Set<Area>>(new Set());
+  // Seeded from onboarding's choice, and written back whenever the picker
+  // changes it — the areas a student said they are studying are the default
+  // scope of every session, not a per-visit setting.
+  const [selectedAreas, setSelectedAreas] = useState<Set<Area>>(() => new Set(getPreferredAreas()));
+  const chooseAreas = (next: Set<Area>) => {
+    setSelectedAreas(next);
+    setPreferredAreas([...next]);
+  };
   const [streak, setStreak] = useState(0);
 
   useEffect(() => {
@@ -294,10 +301,22 @@ function App() {
     return <Navigate to="/onboarding" replace />;
   }
 
-  const handleOnboardingDone = () => {
+  const handleOnboardingDone = (areas: Area[]) => {
+    chooseAreas(new Set(areas));
     localStorage.setItem(ONBOARDED_KEY, 'true');
     setOnboarded(true);
     navigate('/', { replace: true });
+  };
+
+  /**
+   * A session whose filter produced no questions sends the student back to
+   * the setup screen, choices intact. reset() and navigate() batch into one
+   * render, so the /session route never sees the 'setup' phase and bounces
+   * to Today first.
+   */
+  const backToSetup = () => {
+    session.reset();
+    navigate('/study/setup');
   };
 
   const onNavigateSection = (next: NavSection) => {
@@ -377,9 +396,9 @@ function App() {
             onboarded ? (
               <Navigate to="/" replace />
             ) : isDesktop ? (
-              <Onboarding onDone={handleOnboardingDone} />
+              <Onboarding content={content} initialAreas={[...selectedAreas]} onDone={handleOnboardingDone} />
             ) : (
-              <MobileOnboarding onDone={handleOnboardingDone} />
+              <MobileOnboarding content={content} initialAreas={[...selectedAreas]} onDone={handleOnboardingDone} />
             )
           }
         />
@@ -416,7 +435,7 @@ function App() {
               <RegionPicker
                 content={content}
                 selected={selectedAreas}
-                onChange={setSelectedAreas}
+                onChange={chooseAreas}
                 onContinue={() => navigate('/study/setup')}
                 onNavigate={onNavigateSection}
               />
@@ -424,7 +443,7 @@ function App() {
               <MobileRegionPicker
                 content={content}
                 selected={selectedAreas}
-                onChange={setSelectedAreas}
+                onChange={chooseAreas}
                 onContinue={() => navigate('/study/setup')}
                 onBack={() => mobileNavigate('today')}
               />
@@ -462,9 +481,15 @@ function App() {
             session.phase !== 'in-progress' ? (
               <Navigate to="/" replace />
             ) : isDesktop ? (
-              <StudySession session={session} content={content} onEnd={endSession} />
+              <StudySession session={session} content={content} onEnd={endSession} onBackToSetup={backToSetup} />
             ) : (
-              <MobileStudySession session={session} content={content} onEnd={endSession} onOpenMuscle={openMuscle} />
+              <MobileStudySession
+                session={session}
+                content={content}
+                onEnd={endSession}
+                onBackToSetup={backToSetup}
+                onOpenMuscle={openMuscle}
+              />
             )
           }
         />

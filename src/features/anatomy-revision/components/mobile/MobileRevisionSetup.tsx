@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import type { AnatomyContent } from '../../hooks/useAnatomyContent';
+import { unbuildableSessionReason } from '../../lib/setupCount';
 import type { AnatomyRepository } from '../../data/repository';
 import type { OinaPromptKind, QuestionType, RevisionQuestion } from '../../types/question';
 import { OINA_PROMPT_KINDS } from '../../types/question';
@@ -119,7 +120,26 @@ export function MobileRevisionSetup({ content, repository, userId, areas, onStar
   // See RevisionSetup: an OINA session covers every fact in scope, not a fixed count.
   const oinaMuscleCount = content.structures.filter((s) => isMuscle(s) && inPool(s)).length;
   const oinaQuestionCount = oinaMuscleCount * oinaFacts.length;
-  const canStart = types.length > 0 && poolSize > 0 && (!oinaSelected || oinaFacts.length > 0);
+  // See RevisionSetup: the real count for this combination, not the pool size.
+  const available = useMemo(
+    () =>
+      generateRevisionSet(content.structures, content.images, {
+        types,
+        areas: [...areas],
+        groups: groups.length ? groups : undefined,
+        oinaPromptKinds: oinaSelected ? oinaFacts : undefined,
+        learnCardAttempts: 0,
+        category: category === 'all' ? undefined : category,
+        mode: 'practice',
+        seed: 1,
+      }).length,
+    [content.structures, content.images, types, areas, groups, oinaSelected, oinaFacts, category],
+  );
+  // The Begin label used to say "15 questions" under an OINA panel promising
+  // hundreds; this is the number the session will actually contain.
+  const effectiveCount = oinaSelected ? available : Math.min(count, available);
+  const unbuildable = unbuildableSessionReason({ types, poolSize, available });
+  const canStart = types.length > 0 && poolSize > 0 && available > 0 && (!oinaSelected || oinaFacts.length > 0);
 
   const handleStart = async () => {
     setStarting(true);
@@ -422,8 +442,13 @@ export function MobileRevisionSetup({ content, repository, userId, areas, onStar
           className="mt-8 w-full rounded-[3px] border-0 disabled:opacity-45"
           style={{ minHeight: 54, background: 'var(--acc)', color: 'var(--onacc)', font: '500 17px/1 var(--font-ui)' }}
         >
-          {starting ? 'Starting…' : `Begin — ${count} questions`}
+          {starting ? 'Starting…' : unbuildable ? 'Nothing to ask yet' : `Begin — ${effectiveCount} questions`}
         </button>
+        {unbuildable && (
+          <p className="mt-3 text-[13px] leading-relaxed" style={{ color: 'var(--acc2d)' }}>
+            {unbuildable}
+          </p>
+        )}
       </div>
     </MobileShell>
   );

@@ -1,5 +1,11 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { DEFAULT_LEARN_CARD_ATTEMPTS, getLearnCardAttempts, setLearnCardAttempts } from '../preferences';
+import {
+  DEFAULT_LEARN_CARD_ATTEMPTS,
+  getLearnCardAttempts,
+  getPreferredAreas,
+  setLearnCardAttempts,
+  setPreferredAreas,
+} from '../preferences';
 
 const KEY = 'anatomy-revision:v1:oinaLearnCardAttempts';
 
@@ -30,5 +36,28 @@ describe('learn-card preference', () => {
     expect(getLearnCardAttempts()).toBe(0);
     setLearnCardAttempts(2.7);
     expect(getLearnCardAttempts()).toBe(2);
+  });
+});
+
+describe('preferred-areas preference', () => {
+  beforeEach(() => localStorage.clear());
+
+  it('means "every area" until something is chosen', () => {
+    expect(getPreferredAreas()).toEqual([]);
+  });
+
+  it('round-trips a choice in canonical order without duplicates', () => {
+    setPreferredAreas(['knee', 'shoulder', 'knee']);
+    expect(getPreferredAreas()).toEqual(['shoulder', 'knee']);
+  });
+
+  /** A stale or hand-edited value must not produce a session nothing can match. */
+  it('drops anything that is not a real area and survives junk', () => {
+    localStorage.setItem('anatomy-revision:v1:preferredAreas', JSON.stringify(['hip', 'forearm-hand', 42]));
+    expect(getPreferredAreas()).toEqual(['hip']);
+    for (const bad of ['', 'not json', '{}', '"hip"']) {
+      localStorage.setItem('anatomy-revision:v1:preferredAreas', bad);
+      expect(getPreferredAreas(), bad).toEqual([]);
+    }
   });
 });

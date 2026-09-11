@@ -1,3 +1,6 @@
+import type { Area } from '../types/region';
+import { AREAS } from '../types/region';
+
 /**
  * Small per-device study preferences, kept in localStorage alongside the
  * onboarding flag in App.tsx rather than in the repository. These are
@@ -56,4 +59,32 @@ export function getLearnCardAttempts(): number {
 
 export function setLearnCardAttempts(value: number): void {
   write(LEARN_CARD_ATTEMPTS_KEY, String(Math.max(0, Math.trunc(value))));
+}
+
+const PREFERRED_AREAS_KEY = `${PREFIX}preferredAreas`;
+
+/**
+ * The areas the student said they are studying, chosen during onboarding and
+ * editable from the area picker. Empty means no preference — every area. This
+ * is what "Start review" and the custom-session picker default to, so a
+ * first-year revising the shoulder is not asked about the tarsals.
+ */
+export function getPreferredAreas(): Area[] {
+  const raw = read(PREFERRED_AREAS_KEY);
+  if (raw === null) return [];
+  try {
+    const parsed: unknown = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    const valid = new Set<string>(AREAS);
+    // Keep only real areas, in canonical order, without duplicates — a stale or
+    // hand-edited value must never produce an unfilterable session.
+    return AREAS.filter((area) => parsed.includes(area) && valid.has(area));
+  } catch {
+    return [];
+  }
+}
+
+export function setPreferredAreas(areas: readonly Area[]): void {
+  const valid = new Set<string>(AREAS);
+  write(PREFERRED_AREAS_KEY, JSON.stringify(AREAS.filter((area) => areas.includes(area) && valid.has(area))));
 }

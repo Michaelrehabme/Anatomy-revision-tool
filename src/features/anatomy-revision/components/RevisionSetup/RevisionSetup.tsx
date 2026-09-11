@@ -1,5 +1,7 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import type { AnatomyContent } from '../../hooks/useAnatomyContent';
+import { minutesFor } from '../../lib/sessionCopy';
+import { unbuildableSessionReason } from '../../lib/setupCount';
 import type { OinaPromptKind, QuestionType } from '../../types/question';
 import { OINA_PROMPT_KINDS } from '../../types/question';
 import type { Category } from '../../types/structure';
@@ -128,8 +130,28 @@ export function RevisionSetup({ content, repository, userId, areas, onStart, onB
   // every muscle yields a question for all four facts.
   const oinaMuscleCount = content.structures.filter((s) => isMuscle(s) && inPool(s)).length;
   const oinaQuestionCount = oinaMuscleCount * oinaFacts.length;
-  const effectiveCount = oinaSelected ? oinaQuestionCount : count;
-  const canStart = types.length > 0 && !content.loading && poolSize > 0 && (!oinaSelected || oinaFacts.length > 0);
+  // What this combination can actually build, as opposed to the pool size:
+  // Locate over bones has dozens of structures in the pool and no questions,
+  // because bones carry no hotspots. generateRevisionSet is pure and
+  // repository-free (CR-009), so it is cheap enough to run on every change;
+  // learn cards are off so the number is questions to answer.
+  const available = useMemo(
+    () =>
+      generateRevisionSet(content.structures, content.images, {
+        types,
+        areas: [...areas],
+        groups: groups.length ? groups : undefined,
+        oinaPromptKinds: oinaSelected ? oinaFacts : undefined,
+        learnCardAttempts: 0,
+        category: category === 'all' ? undefined : category,
+        mode: 'practice',
+        seed: 1,
+      }).length,
+    [content.structures, content.images, types, areas, groups, oinaSelected, oinaFacts, category],
+  );
+  const effectiveCount = oinaSelected ? available : Math.min(count, available);
+  const unbuildable = unbuildableSessionReason({ types, poolSize, available });
+  const canStart = types.length > 0 && !content.loading && poolSize > 0 && available > 0 && (!oinaSelected || oinaFacts.length > 0);
 
   const handleStart = async () => {
     setStarting(true);
@@ -481,9 +503,16 @@ export function RevisionSetup({ content, repository, userId, areas, onStart, onB
             >
               {content.loading ? 'Loading content…' : starting ? 'Starting…' : 'Begin session'}
             </Button>
-            <p className="mt-3.5 text-center" style={{ font: '400 12.5px/1.6 var(--font-mono)', color: 'var(--ink3)' }}>
-              {effectiveCount} questions · about {Math.max(1, Math.round(effectiveCount * 0.45))} minutes
-            </p>
+            {unbuildable ? (
+              <p className="mt-3.5 text-sm leading-snug" style={{ color: 'var(--acc2d)' }}>
+                {unbuildable}
+              </p>
+            ) : (
+              <p className="mt-3.5 text-center" style={{ font: '400 12.5px/1.6 var(--font-mono)', color: 'var(--ink3)' }}>
+                {effectiveCount} questions · about {minutesFor(effectiveCount)} minutes
+                {!oinaSelected && available < count && ' · all this selection can build'}
+              </p>
+            )}
           </div>
         </div>
       </div>

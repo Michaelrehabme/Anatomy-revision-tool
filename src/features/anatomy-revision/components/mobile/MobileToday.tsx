@@ -3,7 +3,9 @@ import type { AnatomyContent } from '../../hooks/useAnatomyContent';
 import type { RevisionQuestion, QuestionType } from '../../types/question';
 import { REGION_LABELS } from '../../types/region';
 import { generateRevisionSet } from '../../lib/questionGenerators/generateSet';
-import { getLearnCardAttempts } from '../../lib/preferences';
+import { buildStarterSet, STARTER_COUNT, STARTER_TYPES } from '../../lib/questionGenerators/starterSet';
+import { getLearnCardAttempts, getPreferredAreas } from '../../lib/preferences';
+import { firstRunTitle, minutesFor } from '../../lib/sessionCopy';
 import { useTodayData } from '../../hooks/useTodayData';
 import type { RevisionSetupParams } from '../../hooks/useRevisionSession';
 import { MobileShell } from './MobileShell';
@@ -26,10 +28,21 @@ interface MobileTodayProps {
 
 /** Screen 02 (mobile). Single decision on open: due count, one primary action. */
 export function MobileToday({ repository, userId, content, onStart, onCustomSession, onOpenMuscle, onNavigateTab }: MobileTodayProps) {
-  const { loading, streak, dueMuscles, weakest, weekBuckets, weekMax, dayLabels } = useTodayData(repository, userId, content);
+  const { loading, streak, dueMuscles, allMastery, weakest, weekBuckets, weekMax, dayLabels } = useTodayData(repository, userId, content);
   const now = new Date();
+  // See Today.tsx: the guided starter until something has been attempted.
+  const firstRun = !loading && allMastery.length === 0;
+  const preferredAreas = getPreferredAreas();
+  const areas = preferredAreas.length ? preferredAreas : undefined;
 
   const handleStart = async () => {
+    if (firstRun) {
+      const starter = buildStarterSet(content.structures, content.images, { areas });
+      if (starter.length > 0) {
+        onStart(starter, { types: STARTER_TYPES, mode: 'practice', areas });
+        return;
+      }
+    }
     const dueStructureIds = dueMuscles.map((m) => m.structureId);
     // generateSet is repository-free (CR-009), so fact mastery is fetched here.
     const factMastery = repository && userId ? await repository.listFactMastery(userId) : undefined;
@@ -37,6 +50,7 @@ export function MobileToday({ repository, userId, content, onStart, onCustomSess
     const questions = generateRevisionSet(content.structures, content.images, {
       types: DEFAULT_TYPES,
       mode: 'practice',
+      areas,
       // Prioritised, not restricted: answering a due structure reschedules it, so a
       // due-only session refills its own queue and never reaches new material.
       priorityStructureIds: dueStructureIds.length ? dueStructureIds : undefined,
@@ -44,7 +58,7 @@ export function MobileToday({ repository, userId, content, onStart, onCustomSess
       factMastery,
       learnCardAttempts,
     });
-    onStart(questions, { types: DEFAULT_TYPES, mode: 'practice', learnCardAttempts });
+    onStart(questions, { types: DEFAULT_TYPES, mode: 'practice', areas, learnCardAttempts });
   };
 
   return (
@@ -58,16 +72,24 @@ export function MobileToday({ repository, userId, content, onStart, onCustomSess
         </div>
 
         <h2
-          style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 42, lineHeight: 1.02, letterSpacing: '-.022em', margin: '16px 0 0' }}
+          style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: firstRun ? 36 : 42, lineHeight: 1.02, letterSpacing: '-.022em', margin: '16px 0 0' }}
         >
-          {loading ? '…' : dueMuscles.length} due
-          <br />
-          for review
+          {firstRun ? (
+            firstRunTitle(preferredAreas)
+          ) : (
+            <>
+              {loading ? '…' : dueMuscles.length} due
+              <br />
+              for review
+            </>
+          )}
         </h2>
         <p className="mt-3 text-[15px] leading-snug" style={{ color: 'var(--ink2)' }}>
-          {dueMuscles.length > 0
-            ? 'Scheduled from your recent sessions.'
-            : 'Nothing scheduled — build a custom session instead.'}
+          {firstRun
+            ? `${STARTER_COUNT} questions, about ${minutesFor(STARTER_COUNT)} minutes. Multiple choice and locate-on-the-image, nothing harder yet.`
+            : dueMuscles.length > 0
+              ? 'Scheduled from your recent sessions.'
+              : 'Nothing scheduled — build a custom session instead.'}
         </p>
 
         <button
@@ -76,7 +98,7 @@ export function MobileToday({ repository, userId, content, onStart, onCustomSess
           className="mt-5.5 w-full rounded-[3px] border-0"
           style={{ minHeight: 54, background: 'var(--acc)', color: 'var(--onacc)', font: '500 17px/1 var(--font-ui)' }}
         >
-          Start review
+          {firstRun ? 'Start your first session' : 'Start review'}
         </button>
         <button
           type="button"
@@ -96,7 +118,7 @@ export function MobileToday({ repository, userId, content, onStart, onCustomSess
         <div className="mt-3 flex flex-col">
           {weakest.length === 0 && (
             <p className="py-3 text-sm" style={{ color: 'var(--ink3)' }}>
-              No attempts recorded yet.
+              {firstRun ? 'Fills in after your first session.' : 'No attempts recorded yet.'}
             </p>
           )}
           {weakest.slice(0, 3).map((m) => {
@@ -130,23 +152,27 @@ export function MobileToday({ repository, userId, content, onStart, onCustomSess
           })}
         </div>
 
-        <div
-          className="mt-7"
-          style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}
-        >
-          This week
-        </div>
-        <div className="mt-4 flex h-[78px] items-end gap-2.5">
-          {weekBuckets.map((count, i) => (
-            <div key={i} className="flex flex-1 flex-col items-center gap-1.5">
-              <span
-                className="w-full rounded-sm"
-                style={{ height: `${Math.max(4, (count / weekMax) * 100)}%`, background: i === 6 ? 'var(--acc)' : count === 0 ? 'var(--line)' : 'var(--fig-line)' }}
-              />
-              <span style={{ font: '400 10px/1 var(--font-mono)', color: 'var(--ink3)' }}>{dayLabels[i]}</span>
+        {!firstRun && (
+          <>
+            <div
+              className="mt-7"
+              style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}
+            >
+              This week
             </div>
-          ))}
-        </div>
+            <div className="mt-4 flex h-[78px] items-end gap-2.5">
+              {weekBuckets.map((count, i) => (
+                <div key={i} className="flex flex-1 flex-col items-center gap-1.5">
+                  <span
+                    className="w-full rounded-sm"
+                    style={{ height: `${Math.max(4, (count / weekMax) * 100)}%`, background: i === 6 ? 'var(--acc)' : count === 0 ? 'var(--line)' : 'var(--fig-line)' }}
+                  />
+                  <span style={{ font: '400 10px/1 var(--font-mono)', color: 'var(--ink3)' }}>{dayLabels[i]}</span>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
       </div>
     </MobileShell>
   );
