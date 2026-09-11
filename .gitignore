@@ -25,3 +25,7 @@ coverage
 /deploy/
 /tools/
 dist-demo
+
+# Regenerable intermediate, same as hotspots.regions.json: traced from renders
+# by jointLineHotspots.ts, then converted into the seed.
+joint-lines.hotspots.json

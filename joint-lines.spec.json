@@ -1,0 +1,414 @@
+{
+  "schemaVersion": 1,
+  "generated": "2026-09-11T11:02:34.920Z",
+  "joints": [
+    {
+      "id": "glenohumeral-joint",
+      "name": "Glenohumeral Joint",
+      "a": {
+        "id": "humerus",
+        "objects": [
+          "Humerus.l",
+          "Humerus.r"
+        ]
+      },
+      "b": {
+        "id": "scapula",
+        "objects": [
+          "Scapula.l",
+          "Scapula.r"
+        ]
+      }
+    },
+    {
+      "id": "acromioclavicular-joint",
+      "name": "Acromioclavicular Joint",
+      "a": {
+        "id": "clavicle",
+        "objects": [
+          "Clavicle.l",
+          "Clavicle.r"
+        ]
+      },
+      "b": {
+        "id": "scapula",
+        "objects": [
+          "Scapula.l",
+          "Scapula.r"
+        ]
+      }
+    },
+    {
+      "id": "humeroulnar-joint",
+      "name": "Humeroulnar Joint",
+      "a": {
+        "id": "humerus",
+        "objects": [
+          "Humerus.l",
+          "Humerus.r"
+        ]
+      },
+      "b": {
+        "id": "ulna",
+        "objects": [
+          "Ulna.l",
+          "Ulna.r"
+        ]
+      }
+    },
+    {
+      "id": "proximal-radioulnar-joint",
+      "name": "Proximal Radioulnar Joint",
+      "a": {
+        "id": "radius",
+        "objects": [
+          "Radius.l",
+          "Radius.r"
+        ]
+      },
+      "b": {
+        "id": "ulna",
+        "objects": [
+          "Ulna.l",
+          "Ulna.r"
+        ]
+      },
+      "zPrefer": "max"
+    },
+    {
+      "id": "humeroradial-joint",
+      "name": "Humeroradial Joint",
+      "a": {
+        "id": "humerus",
+        "objects": [
+          "Humerus.l",
+          "Humerus.r"
+        ]
+      },
+      "b": {
+        "id": "radius",
+        "objects": [
+          "Radius.l",
+          "Radius.r"
+        ]
+      }
+    },
+    {
+      "id": "radiocarpal-joint",
+      "name": "Radiocarpal Joint",
+      "a": {
+        "id": "radius",
+        "objects": [
+          "Radius.l",
+          "Radius.r"
+        ]
+      },
+      "b": {
+        "id": "carpals",
+        "objects": [
+          "Capitate bone.l",
+          "Capitate bone.r",
+          "Hamate bone.l",
+          "Hamate bone.r",
+          "Lunate bone.l",
+          "Lunate bone.r",
+          "Pisiform bone.l",
+          "Pisiform bone.r",
+          "Scaphoid bone.l",
+          "Scaphoid bone.r",
+          "Trapezium bone.l",
+          "Trapezium bone.r",
+          "Trapezoid bone.l",
+          "Trapezoid bone.r",
+          "Triquetrum bone.l",
+          "Triquetrum bone.r"
+        ]
+      }
+    },
+    {
+      "id": "distal-radioulnar-joint",
+      "name": "Distal Radioulnar Joint",
+      "a": {
+        "id": "radius",
+        "objects": [
+          "Radius.l",
+          "Radius.r"
+        ]
+      },
+      "b": {
+        "id": "ulna",
+        "objects": [
+          "Ulna.l",
+          "Ulna.r"
+        ]
+      },
+      "zPrefer": "min"
+    },
+    {
+      "id": "carpometacarpal-joint-thumb",
+      "name": "Carpometacarpal Joint of Thumb",
+      "a": {
+        "id": "carpals",
+        "objects": [
+          "Capitate bone.l",
+          "Capitate bone.r",
+          "Hamate bone.l",
+          "Hamate bone.r",
+          "Lunate bone.l",
+          "Lunate bone.r",
+          "Pisiform bone.l",
+          "Pisiform bone.r",
+          "Scaphoid bone.l",
+          "Scaphoid bone.r",
+          "Trapezium bone.l",
+          "Trapezium bone.r",
+          "Trapezoid bone.l",
+          "Trapezoid bone.r",
+          "Triquetrum bone.l",
+          "Triquetrum bone.r"
+        ]
+      },
+      "b": {
+        "id": "metacarpals",
+        "objects": [
+          "Fifth metacarpal bone.l",
+          "Fifth metacarpal bone.r",
+          "First metacarpal bone.l",
+          "First metacarpal bone.r",
+          "Fourth metacarpal bone.l",
+          "Fourth metacarpal bone.r",
+          "Second metacarpal bone.l",
+          "Second metacarpal bone.r",
+          "Third metacarpal bone.l",
+          "Third metacarpal bone.r"
+        ]
+      }
+    },
+    {
+      "id": "metacarpophalangeal-joint",
+      "name": "Metacarpophalangeal Joint",
+      "a": {
+        "id": "metacarpals",
+        "objects": [
+          "Fifth metacarpal bone.l",
+          "Fifth metacarpal bone.r",
+          "First metacarpal bone.l",
+          "First metacarpal bone.r",
+          "Fourth metacarpal bone.l",
+          "Fourth metacarpal bone.r",
+          "Second metacarpal bone.l",
+          "Second metacarpal bone.r",
+          "Third metacarpal bone.l",
+          "Third metacarpal bone.r"
+        ]
+      },
+      "b": {
+        "id": "phalanges-proximal-hand",
+        "objects": [
+          "Proximal phalanx of fifth finger of hand.l",
+          "Proximal phalanx of fifth finger of hand.r",
+          "Proximal phalanx of first finger of hand.l",
+          "Proximal phalanx of first finger of hand.r",
+          "Proximal phalanx of fourth finger of hand.l",
+          "Proximal phalanx of fourth finger of hand.r",
+          "Proximal phalanx of second finger of hand.l",
+          "Proximal phalanx of second finger of hand.r",
+          "Proximal phalanx of third finger of hand.l",
+          "Proximal phalanx of third finger of hand.r"
+        ]
+      }
+    },
+    {
+      "id": "tibiofemoral-joint",
+      "name": "Tibiofemoral Joint",
+      "a": {
+        "id": "femur",
+        "objects": [
+          "Femur.l",
+          "Femur.r"
+        ]
+      },
+      "b": {
+        "id": "tibia",
+        "objects": [
+          "Tibia.l",
+          "Tibia.r"
+        ]
+      }
+    },
+    {
+      "id": "patellofemoral-joint",
+      "name": "Patellofemoral Joint",
+      "a": {
+        "id": "patella",
+        "objects": [
+          "Patella.l",
+          "Patella.r"
+        ]
+      },
+      "b": {
+        "id": "femur",
+        "objects": [
+          "Femur.l",
+          "Femur.r"
+        ]
+      }
+    },
+    {
+      "id": "proximal-tibiofibular-joint",
+      "name": "Proximal Tibiofibular Joint",
+      "a": {
+        "id": "tibia",
+        "objects": [
+          "Tibia.l",
+          "Tibia.r"
+        ]
+      },
+      "b": {
+        "id": "fibula",
+        "objects": [
+          "Fibula.l",
+          "Fibula.r"
+        ]
+      },
+      "zPrefer": "max"
+    },
+    {
+      "id": "subtalar-joint",
+      "name": "Subtalar Joint",
+      "a": {
+        "id": "talus",
+        "objects": [
+          "Talus.l",
+          "Talus.r"
+        ]
+      },
+      "b": {
+        "id": "calcaneus",
+        "objects": [
+          "Calcaneus.l",
+          "Calcaneus.r"
+        ]
+      }
+    },
+    {
+      "id": "distal-tibiofibular-joint",
+      "name": "Distal Tibiofibular Joint",
+      "a": {
+        "id": "tibia",
+        "objects": [
+          "Tibia.l",
+          "Tibia.r"
+        ]
+      },
+      "b": {
+        "id": "fibula",
+        "objects": [
+          "Fibula.l",
+          "Fibula.r"
+        ]
+      },
+      "zPrefer": "min"
+    },
+    {
+      "id": "metatarsophalangeal-joint",
+      "name": "Metatarsophalangeal Joint",
+      "a": {
+        "id": "metatarsals",
+        "objects": [
+          "Fifth metatarsal bone.l",
+          "Fifth metatarsal bone.r",
+          "First metatarsal bone.l",
+          "First metatarsal bone.r",
+          "Fourth metatarsal bone.l",
+          "Fourth metatarsal bone.r",
+          "Second metatarsal bone.l",
+          "Second metatarsal bone.r",
+          "Third metatarsal bone.l",
+          "Third metatarsal bone.r"
+        ]
+      },
+      "b": {
+        "id": "phalanges-proximal-foot",
+        "objects": [
+          "Proximal phalanx of fifth finger of foot.l",
+          "Proximal phalanx of fifth finger of foot.r",
+          "Proximal phalanx of first finger of foot.l",
+          "Proximal phalanx of first finger of foot.r",
+          "Proximal phalanx of fourth finger of foot.l",
+          "Proximal phalanx of fourth finger of foot.r",
+          "Proximal phalanx of second finger of foot.l",
+          "Proximal phalanx of second finger of foot.r",
+          "Proximal phalanx of third finger of foot.l",
+          "Proximal phalanx of third finger of foot.r"
+        ]
+      }
+    },
+    {
+      "id": "atlantoaxial-joint",
+      "name": "Atlantoaxial Joint",
+      "a": {
+        "id": "atlas-c1",
+        "objects": [
+          "Atlas (C1)"
+        ]
+      },
+      "b": {
+        "id": "axis-c2",
+        "objects": [
+          "Axis (C2)"
+        ]
+      }
+    },
+    {
+      "id": "costovertebral-joint",
+      "name": "Costovertebral Joint",
+      "a": {
+        "id": "ribs",
+        "objects": [
+          "Eighth rib.l",
+          "Eighth rib.r",
+          "Eleventh rib.l",
+          "Eleventh rib.r",
+          "Fifth rib.l",
+          "Fifth rib.r",
+          "First rib.l",
+          "First rib.r",
+          "Fourth rib.l",
+          "Fourth rib.r",
+          "Ninth rib.l",
+          "Ninth rib.r",
+          "Second rib.l",
+          "Second rib.r",
+          "Seventh rib.l",
+          "Seventh rib.r",
+          "Sixth rib.l",
+          "Sixth rib.r",
+          "Tenth rib.l",
+          "Tenth rib.r",
+          "Third rib.l",
+          "Third rib.r",
+          "Twelfth rib.l",
+          "Twelfth rib.r"
+        ]
+      },
+      "b": {
+        "id": "thoracic-vertebrae",
+        "objects": [
+          "Vertebra T1",
+          "Vertebra T10",
+          "Vertebra T11",
+          "Vertebra T12",
+          "Vertebra T2",
+          "Vertebra T3",
+          "Vertebra T4",
+          "Vertebra T5",
+          "Vertebra T6",
+          "Vertebra T7",
+          "Vertebra T8",
+          "Vertebra T9"
+        ]
+      }
+    }
+  ]
+}
