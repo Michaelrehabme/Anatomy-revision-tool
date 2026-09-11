@@ -39,6 +39,20 @@ const Z_PREFER: Record<string, 'min' | 'max'> = {
   'proximal-tibiofibular-joint': 'max',
 };
 
+/**
+ * Per-joint camera and tolerance overrides, set by looking at the output.
+ *
+ * `band` is the contact tolerance AND, through the contact bounding box, what
+ * the camera frames — so tightening one without opening `margin` zooms past the
+ * point of context. Both of these needed the pairing: at the default 0.012 the
+ * band read as a broad patch over the whole articular surface rather than a
+ * line along it.
+ */
+const TUNING: Record<string, { band?: number; margin?: number }> = {
+  'glenohumeral-joint': { band: 0.005 },
+  'humeroulnar-joint': { band: 0.005, margin: 6 },
+};
+
 function parseArgs(argv: string[]): Record<string, string> {
   const out: Record<string, string> = {};
   for (let i = 0; i < argv.length; i++) {
@@ -91,6 +105,7 @@ for (const joint of joints) {
     a: { id: aId, objects: aObjects },
     b: { id: bId, objects: bObjects },
     ...(Z_PREFER[joint.id] ? { zPrefer: Z_PREFER[joint.id] } : {}),
+    ...(TUNING[joint.id] ?? {}),
   });
 }
 

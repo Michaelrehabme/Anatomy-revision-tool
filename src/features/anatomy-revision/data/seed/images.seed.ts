@@ -2,6 +2,8 @@ import type { AnatomyImageAsset } from '../../types/image';
 import { MUSCLE_PANELS } from './panels.generated';
 import type { Region, SubRegion } from '../../types/region';
 import { REGION_HOTSPOTS, REGION_PANEL_NAMES } from './hotspots.regions.generated';
+import { JOINT_PANELS } from './jointPanels.generated';
+import { JOINT_HOTSPOTS } from './hotspots.joints.generated';
 
 /**
  * Three image sets, in the order they appear below:
@@ -23,6 +25,13 @@ import { REGION_HOTSPOTS, REGION_PANEL_NAMES } from './hotspots.regions.generate
  *    These carry every hotspot in the app and are what makes locate questions
  *    work. Their hotspots and panel names come from the generated module, not
  *    from this file — see README "Adding hotspots".
+ * 4. Joint locate images, one per joint per view, in /public/anatomy/joints/.
+ *    Unlike set 2 these are NOT pre-highlighted: the skeleton is drawn plainly
+ *    and framed on the joint, because a locate question on a panel that picks
+ *    its own structure out in blue is answered by looking. The band a student
+ *    has to click is the joint LINE — the space between the two articulating
+ *    bones, derived from the bones themselves rather than from any joint
+ *    geometry, which the atlas does not have. See renderJointMasks.py.
  *
  * `width`/`height` MUST match the real PNG's pixel dimensions (verified via
  * pngjs — see git history for the one-off script) for every image that has
@@ -341,4 +350,33 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
       };
     }),
   ),
+
+  // --- Joint locate images: one per joint per view ---
+  // Rendered by renderJointMasks.py, published by publishJointPanels.ts, and
+  // traced into hotspots by jointLineHotspots.ts. Dimensions come from the
+  // generated module because they are measured from the files themselves.
+  //
+  // mode is 'single-structure' with structureId set, so linkImages associates
+  // the image with its joint. That is the same mode the muscle panels use, and
+  // the reason those carry no hotspots while these do is pre-highlighting, not
+  // the mode: these show the answer nowhere.
+  ...JOINT_PANELS.map((panel): AnatomyImageAsset => {
+    const id = `joint-${panel.structureId}-${panel.view}`;
+    return {
+      id,
+      filePath: `/anatomy/joints/${panel.structureId}-${panel.view}.webp`,
+      slideTitle: `${panel.name} — ${panel.view[0].toUpperCase()}${panel.view.slice(1)} View`,
+      mode: 'single-structure',
+      structureId: panel.structureId,
+      region: panel.region,
+      subregion: panel.subregion,
+      view: panel.view,
+      layer: 'skeletal',
+      width: panel.width,
+      height: panel.height,
+      hotspots: JOINT_HOTSPOTS[id] ?? [],
+      credit: Z_ANATOMY_CREDIT,
+      licence: Z_ANATOMY_LICENCE,
+    };
+  }),
 ];

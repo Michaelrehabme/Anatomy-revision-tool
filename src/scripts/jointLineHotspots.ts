@@ -30,6 +30,19 @@
  *   --min-px N      Discard bands smaller than this; a handful of pixels is
  *                   contact noise, not an articulation (default 120).
  *   --max-vertices N  Vertex budget per polygon (default 150).
+ *   --v2 FILE       Also write the band set in importHotspots.ts's v2 shape, so
+ *                   the seed module is produced by the same path the region
+ *                   hotspots already use rather than a second bespoke one.
+ *   --views MAP     view-NN=name pairs for the v2 image ids
+ *                   (default view-00=anterior,view-06=lateral,view-12=posterior).
+ *   --emit-ts FILE  Write the seed module directly.
+ *
+ * WHY --emit-ts RATHER THAN importHotspots.ts. That script cross-references
+ * every image id against the seed before emitting, which is the right thing for
+ * region hotspots and impossible here: images.seed.ts cannot compile until this
+ * module exists, and this module cannot be produced until images.seed.ts
+ * compiles. --v2 still writes the shape importHotspots reads, so the bands can
+ * be put through that validation once the seed knows about them.
  */
 import { writeFileSync, mkdirSync, existsSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
@@ -45,6 +58,9 @@ interface Options {
   minPx: number;
   maxVertices: number;
   only: string | null;
+  v2Path: string | null;
+  tsPath: string | null;
+  viewNames: Record<string, string>;
 }
 
 function parseArgs(argv: string[]): Options {
@@ -60,6 +76,15 @@ function parseArgs(argv: string[]): Options {
     minPx: Number(get('min-px', '120')),
     maxVertices: Number(get('max-vertices', '150')),
     only: argv.includes('--only') ? get('only', '') : null,
+    v2Path: argv.includes('--v2') ? get('v2', 'joint-lines.hotspots.v2.json') : null,
+    tsPath: argv.includes('--emit-ts')
+      ? get('emit-ts', 'src/features/anatomy-revision/data/seed/hotspots.joints.generated.ts')
+      : null,
+    viewNames: Object.fromEntries(
+      get('views', 'view-00=anterior,view-06=lateral,view-12=posterior')
+        .split(',')
+        .map((pair) => pair.split('=') as [string, string]),
+    ),
   };
 }
 
@@ -130,6 +155,12 @@ if (!existsSync(opts.masksRoot)) {
 if (opts.overlaysDir) mkdirSync(opts.overlaysDir, { recursive: true });
 
 const results: Record<string, unknown[]> = {};
+interface V2Image {
+  width: number;
+  height: number;
+  hotspots: Record<string, { polygons: number[][][]; area: number; centroid: [number, number] }>;
+}
+const v2Images: Record<string, V2Image> = {};
 let emitted = 0;
 let dropped = 0;
 
@@ -157,6 +188,19 @@ for (const jointId of jointIds) {
 
     const traced = maskToPolygons(band, line.width, line.height, { maxVertices: opts.maxVertices });
     perView.push({ view, pixels, polygons: traced.polygons });
+
+    // One image per joint per VIEW, mirroring the region hotspots: a composited
+    // multi-view strip has no single coordinate space a polygon could live in.
+    const viewName = opts.viewNames[view];
+    if (viewName) {
+      v2Images[`joint-${jointId}-${viewName}`] = {
+        width: line.width,
+        height: line.height,
+        hotspots: {
+          [jointId]: { polygons: traced.polygons, area: traced.area, centroid: traced.centroid },
+        },
+      };
+    }
     emitted++;
     console.log(`  ${jointId.padEnd(30)} ${view}  ${pixels}px  ${traced.polygons.length} polygon(s)`);
 
@@ -178,6 +222,52 @@ writeFileSync(
   ),
 );
 
+if (opts.v2Path) {
+  writeFileSync(
+    opts.v2Path,
+    JSON.stringify({ schemaVersion: 2, normalised: true, images: v2Images }, null, 2),
+  );
+}
+
+if (opts.tsPath) {
+  const lines: string[] = [
+    '/**',
+    ' * GENERATED FILE — do not edit by hand.',
+    ' *',
+    ' * Regenerate with:',
+    ' *   blender atlas/Z-Anatomy/Startup.blend --background \\',
+    ' *     --python src/scripts/blender/renderJointMasks.py -- \\',
+    ' *     --spec joint-lines.spec.json --out renders/joint-lines',
+    ' *   npx tsx src/scripts/jointLineHotspots.ts --masks renders/joint-lines --emit-ts',
+    ' *',
+    ' * Each band is the joint LINE: the space between the two articulating bones,',
+    ' * plus a few pixels every side. It is derived from the bones themselves,',
+    ' * because the atlas has no geometry for a joint space — see',
+    ' * renderJointMasks.py. The rest of the skeleton is held out while the mask',
+    ' * renders, so a band the student cannot see is not one they can be asked to',
+    ' * click; that is why some joints carry fewer views than others.',
+    ' */',
+    "import type { HotspotPolygon } from '../../types/image';",
+    '',
+    'export const JOINT_HOTSPOTS: Record<string, HotspotPolygon[]> = {',
+  ];
+  for (const id of Object.keys(v2Images).sort()) {
+    lines.push(`  '${id}': [`);
+    for (const [structureId, entry] of Object.entries(v2Images[id].hotspots)) {
+      lines.push('    {');
+      lines.push(`      structureId: '${structureId}',`);
+      lines.push(`      polygons: ${JSON.stringify(entry.polygons)},`);
+      lines.push(`      area: ${entry.area},`);
+      lines.push(`      centroid: [${entry.centroid[0]}, ${entry.centroid[1]}],`);
+      lines.push('    },');
+    }
+    lines.push('  ],');
+  }
+  lines.push('};', '');
+  writeFileSync(opts.tsPath, lines.join('\n'));
+}
+
 console.log(`\n${emitted} band(s) across ${Object.keys(results).length} joint(s) -> ${opts.outPath}`);
 if (dropped > 0) console.log(`${dropped} view(s) dropped below ${opts.minPx}px`);
 if (opts.overlaysDir) console.log(`overlays -> ${opts.overlaysDir}`);
+if (opts.tsPath) console.log(`seed module -> ${opts.tsPath}`);

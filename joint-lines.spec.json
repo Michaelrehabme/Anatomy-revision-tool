@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generated": "2026-09-11T11:02:34.920Z",
+  "generated": "2026-09-11T16:00:20.294Z",
   "joints": [
     {
       "id": "glenohumeral-joint",
@@ -18,7 +18,8 @@
           "Scapula.l",
           "Scapula.r"
         ]
-      }
+      },
+      "band": 0.005
     },
     {
       "id": "acromioclavicular-joint",
@@ -54,7 +55,9 @@
           "Ulna.l",
           "Ulna.r"
         ]
-      }
+      },
+      "band": 0.005,
+      "margin": 6
     },
     {
       "id": "proximal-radioulnar-joint",

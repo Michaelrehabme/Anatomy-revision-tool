@@ -63,7 +63,13 @@ scene.render.image_settings.color_mode = "RGBA"
 
 scene.world = bpy.data.worlds.new("JointWorld")
 scene.world.use_nodes = True
-scene.world.node_tree.nodes["Background"].inputs[1].default_value = 0.0
+# Ambient fill. Masks are emission and do not care, but the context render
+# shares this scene, and with the sun alone a view at 90 degrees puts the key
+# light behind the subject: the lateral knee came out as a black frame.
+_bg = scene.world.node_tree.nodes.get("Background")
+if _bg:
+    _bg.inputs[0].default_value = (1.0, 1.0, 1.0, 1.0)
+    _bg.inputs[1].default_value = 0.55
 
 cam_data = bpy.data.cameras.new("jointcam")
 cam_data.type = "ORTHO"
@@ -272,12 +278,16 @@ def clear():
             scene.collection.objects.unlink(ob)
 
 
-def link(mesh, name, material):
+def link(mesh, name, material, holdout=False):
     ob = bpy.data.objects.new(name, mesh)
     ob.data.materials.clear()
     ob.data.materials.append(material)
     for p in ob.data.polygons:
         p.material_index = 0
+    # Holdout punches alpha to 0 where this mesh is nearest the camera, so a
+    # joint line lying behind another bone drops out of its own mask. Same
+    # device renderRegionsWithBones.py uses to keep masks honest.
+    ob.is_holdout = holdout
     scene.collection.objects.link(ob)
     return ob
 
@@ -290,6 +300,16 @@ def render_to(path):
     scene.render.filepath = path
     bpy.ops.render.render(write_still=True)
 
+
+# The whole skeleton, baked once. It serves two purposes: it is the context a
+# locate image needs (two bones floating in space teach nothing about where the
+# joint is), and, minus the joint's own two bones, it is the occluder that keeps
+# the mask honest.
+skel = bpy.data.collections.get("1: Skeletal system")
+skeleton_names = [o.name for o in skel.all_objects if o.type == "MESH"] if skel else []
+print(f"[bones] baking {len(skeleton_names)} meshes...", flush=True)
+skeleton_mesh = bake(skeleton_names, "joint_skeleton")
+print(f"[bones] {len(skeleton_mesh.vertices)} verts", flush=True)
 
 by_id = {j["id"]: j for j in spec["joints"]}
 done = 0
@@ -307,7 +327,14 @@ for jid in wanted:
     mesh_a = bake(objs_a, f"a_{jid}")
     mesh_b = bake(objs_b, f"b_{jid}")
 
-    found = contact_region(mesh_a, mesh_b, a.band, a.cluster, j.get("zPrefer"))
+    # Per-joint overrides. --band sets the contact tolerance AND, through the
+    # contact bbox, how tightly the camera frames — so tightening a band without
+    # opening the margin zooms past the point of context. humeroulnar-joint needs
+    # exactly that pairing.
+    band = j.get("band", a.band)
+    margin = j.get("margin", a.margin)
+
+    found = contact_region(mesh_a, mesh_b, band, a.cluster, j.get("zPrefer"))
     if found is None:
         print(f"[skip] {jid}: {j['a']['id']} and {j['b']['id']} never come close enough", flush=True)
         continue
@@ -320,26 +347,38 @@ for jid in wanted:
 
     lo, hi = bbox(contact)
     note = "  (relaxed face rule — band will be wide)" if relaxed else ""
+    tuned = "" if (band == a.band and margin == a.margin) else f"  [band {band} margin {margin}]"
     print(f"[joint] {jid}: {len(contact)} contact verts, {len(patch.polygons)} faces, "
-          f"region {bbox_size(lo, hi):.4f}{note}", flush=True)
+          f"region {bbox_size(lo, hi):.4f}{tuned}{note}", flush=True)
+
+    # Everything except this joint's own two bones. The joint line lies ON those
+    # two, so they must not hold themselves out.
+    own = set(objs_a) | set(objs_b)
+    occluders = bake([n for n in skeleton_names if n not in own], f"occ_{jid}")
 
     for frame in views:
         # The joint line, rendered from the 3D contact surfaces rather than
         # recovered from flattened silhouettes. Intersecting two bone
         # silhouettes cannot tell "adjacent" from "one in front of the other",
         # so on a lateral ankle view it swallowed the whole distal fibula.
+        #
+        # The rest of the skeleton is held out, so a band the student cannot
+        # actually see is not a band they can be asked to click.
         clear()
-        frame_camera(lo, hi, frame * 15, a.margin)
+        frame_camera(lo, hi, frame * 15, margin)
+        link(occluders, f"occ_{jid}", BONE_MAT, holdout=True)
         link(patch, f"mask_line_{jid}", MASK_MAT)
         render_to(os.path.join(a.out, jid, f"view-{frame:02d}", "line.png"))
 
-        # Both bones lit normally, pixel-aligned to the mask, so the derived
-        # band can be checked against the anatomy by eye.
+        # The image a locate question actually shows: the whole skeleton framed
+        # on this joint, lit normally and NOT highlighted — highlighting the
+        # answer is what stopped the muscle panels carrying locate questions.
+        # Pixel-aligned to the mask, so the band can also be checked by eye.
         clear()
-        link(mesh_a, f"ctx_a_{jid}", BONE_MAT)
-        link(mesh_b, f"ctx_b_{jid}", BONE_MAT)
+        link(skeleton_mesh, f"ctx_{jid}", BONE_MAT)
         render_to(os.path.join(a.out, jid, f"view-{frame:02d}", "context.png"))
 
+    bpy.data.meshes.remove(occluders)
     done += 1
 
 print(f"[complete] {done} joint(s) -> {a.out}", flush=True)
