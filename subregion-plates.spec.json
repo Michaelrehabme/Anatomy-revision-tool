@@ -1,0 +1,518 @@
+{
+ "schemaVersion": 1,
+ "generated": "2026-09-12T11:33:19.135Z",
+ "plates": [
+  {
+   "key": "lower-leg-foot__ankle-foot",
+   "region": "lower-leg-foot",
+   "subregion": "ankle-foot",
+   "subjects": [
+    {
+     "id": "abductor-hallucis",
+     "name": "Abductor Hallucis",
+     "kind": "muscle",
+     "objects": [
+      "Abductor hallucis.l",
+      "Abductor hallucis.r"
+     ]
+    },
+    {
+     "id": "adductor-hallucis",
+     "name": "Adductor Hallucis",
+     "kind": "muscle",
+     "objects": [
+      "Oblique head of adductor hallucis.l",
+      "Oblique head of adductor hallucis.r",
+      "Transverse head of adductor hallucis.l",
+      "Transverse head of adductor hallucis.r"
+     ]
+    },
+    {
+     "id": "calcaneus",
+     "name": "Calcaneus",
+     "kind": "bone",
+     "objects": [
+      "Calcaneus.l",
+      "Calcaneus.r"
+     ]
+    },
+    {
+     "id": "cuboid",
+     "name": "Cuboid",
+     "kind": "bone",
+     "objects": [
+      "Cuboid bone.l",
+      "Cuboid bone.r"
+     ]
+    },
+    {
+     "id": "flexor-digiti-minimi-brevis-foot",
+     "name": "Flexor Digiti Minimi Brevis (Foot)",
+     "kind": "muscle",
+     "objects": [
+      "Flexor digiti minimi of foot.l",
+      "Flexor digiti minimi of foot.r"
+     ]
+    },
+    {
+     "id": "flexor-digitorum-brevis",
+     "name": "Flexor Digitorum Brevis",
+     "kind": "muscle",
+     "objects": [
+      "Flexor digitorum brevis.l",
+      "Flexor digitorum brevis.r"
+     ]
+    },
+    {
+     "id": "flexor-hallucis-brevis",
+     "name": "Flexor Hallucis Brevis",
+     "kind": "muscle",
+     "objects": [
+      "Lateral head of flexor hallucis brevis.l",
+      "Lateral head of flexor hallucis brevis.r",
+      "Medial head of flexor hallucis brevis.l",
+      "Medial head of flexor hallucis brevis.r"
+     ]
+    },
+    {
+     "id": "intermediate-cuneiform",
+     "name": "Intermediate Cuneiform",
+     "kind": "bone",
+     "objects": [
+      "Intermediate cuneiform bone.l",
+      "Intermediate cuneiform bone.r"
+     ]
+    },
+    {
+     "id": "lateral-cuneiform",
+     "name": "Lateral Cuneiform",
+     "kind": "bone",
+     "objects": [
+      "Lateral cuneiform bone.l",
+      "Lateral cuneiform bone.r"
+     ]
+    },
+    {
+     "id": "lateral-malleolus",
+     "name": "Lateral Malleolus",
+     "kind": "bone",
+     "objects": [
+      "Lateral malleolus.l",
+      "Lateral malleolus.r"
+     ]
+    },
+    {
+     "id": "lumbricals-foot",
+     "name": "Lumbricals (Foot)",
+     "kind": "muscle",
+     "objects": [
+      "Lumbrical muscles of foot.l",
+      "Lumbrical muscles of foot.r"
+     ]
+    },
+    {
+     "id": "medial-cuneiform",
+     "name": "Medial Cuneiform",
+     "kind": "bone",
+     "objects": [
+      "Medial cuneiform bone.l",
+      "Medial cuneiform bone.r"
+     ]
+    },
+    {
+     "id": "medial-malleolus",
+     "name": "Medial Malleolus",
+     "kind": "bone",
+     "objects": [
+      "Medial malleolus.l",
+      "Medial malleolus.r"
+     ]
+    },
+    {
+     "id": "navicular",
+     "name": "Navicular",
+     "kind": "bone",
+     "objects": [
+      "Navicular bone.l",
+      "Navicular bone.r"
+     ]
+    },
+    {
+     "id": "opponens-digiti-minimi-foot",
+     "name": "Opponens Digiti Minimi (Foot)",
+     "kind": "muscle",
+     "objects": [
+      "(Opponens digiti minimi muscle of foot).l",
+      "(Opponens digiti minimi muscle of foot).r"
+     ]
+    },
+    {
+     "id": "phalanges-middle-foot",
+     "name": "Middle Phalanges of the Foot (grouped)",
+     "kind": "bone",
+     "objects": [
+      "Middle phalanx of fifth finger of foot.l",
+      "Middle phalanx of fifth finger of foot.r",
+      "Middle phalanx of fourth finger of foot.l",
+      "Middle phalanx of fourth finger of foot.r",
+      "Middle phalanx of second finger of foot.l",
+      "Middle phalanx of second finger of foot.r",
+      "Middle phalanx of third finger of foot.l",
+      "Middle phalanx of third finger of foot.r"
+     ]
+    },
+    {
+     "id": "plantar-interossei",
+     "name": "Plantar Interossei",
+     "kind": "muscle",
+     "objects": [
+      "Plantar interossei muscles.l",
+      "Plantar interossei muscles.r"
+     ]
+    },
+    {
+     "id": "quadratus-plantae",
+     "name": "Quadratus Plantae",
+     "kind": "muscle",
+     "objects": [
+      "Quadratus plantae muscle.l",
+      "Quadratus plantae muscle.r"
+     ]
+    },
+    {
+     "id": "talus",
+     "name": "Talus",
+     "kind": "bone",
+     "objects": [
+      "Talus.l",
+      "Talus.r"
+     ]
+    }
+   ]
+  },
+  {
+   "key": "forearm-hand__wrist-hand",
+   "region": "forearm-hand",
+   "subregion": "wrist-hand",
+   "subjects": [
+    {
+     "id": "capitate",
+     "name": "Capitate",
+     "kind": "bone",
+     "objects": [
+      "Capitate bone.l",
+      "Capitate bone.r"
+     ]
+    },
+    {
+     "id": "flexor-digiti-minimi-brevis-hand",
+     "name": "Flexor Digiti Minimi Brevis (Hand)",
+     "kind": "muscle",
+     "objects": [
+      "Flexor digiti minimi of hand.l",
+      "Flexor digiti minimi of hand.r"
+     ]
+    },
+    {
+     "id": "hamate",
+     "name": "Hamate",
+     "kind": "bone",
+     "objects": [
+      "Hamate bone.l",
+      "Hamate bone.r"
+     ]
+    },
+    {
+     "id": "lunate",
+     "name": "Lunate",
+     "kind": "bone",
+     "objects": [
+      "Lunate bone.l",
+      "Lunate bone.r"
+     ]
+    },
+    {
+     "id": "opponens-digiti-minimi-hand",
+     "name": "Opponens Digiti Minimi (Hand)",
+     "kind": "muscle",
+     "objects": [
+      "Opponens digiti minimi muscle of hand.l",
+      "Opponens digiti minimi muscle of hand.r"
+     ]
+    },
+    {
+     "id": "opponens-pollicis",
+     "name": "Opponens Pollicis",
+     "kind": "muscle",
+     "objects": [
+      "Opponens pollicis muscle.l",
+      "Opponens pollicis muscle.r"
+     ]
+    },
+    {
+     "id": "palmar-interossei",
+     "name": "Palmar Interossei",
+     "kind": "muscle",
+     "objects": [
+      "Palmar interossei muscles.l",
+      "Palmar interossei muscles.r"
+     ]
+    },
+    {
+     "id": "pisiform",
+     "name": "Pisiform",
+     "kind": "bone",
+     "objects": [
+      "Pisiform bone.l",
+      "Pisiform bone.r"
+     ]
+    },
+    {
+     "id": "scaphoid",
+     "name": "Scaphoid",
+     "kind": "bone",
+     "objects": [
+      "Scaphoid bone.l",
+      "Scaphoid bone.r"
+     ]
+    },
+    {
+     "id": "trapezium",
+     "name": "Trapezium",
+     "kind": "bone",
+     "objects": [
+      "Trapezium bone.l",
+      "Trapezium bone.r"
+     ]
+    },
+    {
+     "id": "trapezoid",
+     "name": "Trapezoid",
+     "kind": "bone",
+     "objects": [
+      "Trapezoid bone.l",
+      "Trapezoid bone.r"
+     ]
+    },
+    {
+     "id": "triquetrum",
+     "name": "Triquetrum",
+     "kind": "bone",
+     "objects": [
+      "Triquetrum bone.l",
+      "Triquetrum bone.r"
+     ]
+    }
+   ]
+  },
+  {
+   "key": "back-core__spine",
+   "region": "back-core",
+   "subregion": "spine",
+   "subjects": [
+    {
+     "id": "coccyx",
+     "name": "Coccyx",
+     "kind": "bone",
+     "objects": [
+      "Coccyx"
+     ]
+    },
+    {
+     "id": "interspinales",
+     "name": "Interspinales",
+     "kind": "muscle",
+     "objects": [
+      "Interspinales colli muscles.l",
+      "Interspinales colli muscles.r",
+      "Interspinales lumborum muscles.l",
+      "Interspinales lumborum muscles.r",
+      "Interspinales thoracis muscles.l",
+      "Interspinales thoracis muscles.r"
+     ]
+    },
+    {
+     "id": "intertransversarii",
+     "name": "Intertransversarii",
+     "kind": "muscle",
+     "objects": [
+      "Dorsal parts of lateral intertransversarii lumborum muscles.l",
+      "Dorsal parts of lateral intertransversarii lumborum muscles.r",
+      "Ventral parts of lateral intertransversarii lumborum muscles.l",
+      "Ventral parts of lateral intertransversarii lumborum muscles.r"
+     ]
+    },
+    {
+     "id": "intervertebral-disc",
+     "name": "Intervertebral Disc",
+     "kind": "bone",
+     "objects": [
+      "Intervertebral disc C2-C3",
+      "Intervertebral disc C3-C4",
+      "Intervertebral disc C4-C5",
+      "Intervertebral disc C5-C6",
+      "Intervertebral disc C6-C7",
+      "Intervertebral disc C7-T1",
+      "Intervertebral disc L1-L2",
+      "Intervertebral disc L2-L3",
+      "Intervertebral disc L3-L4",
+      "Intervertebral disc L4-L5",
+      "Intervertebral disc L5-S1",
+      "Intervertebral disc T1-T2",
+      "Intervertebral disc T10-T11",
+      "Intervertebral disc T11-T12",
+      "Intervertebral disc T12-L1",
+      "Intervertebral disc T2-T3",
+      "Intervertebral disc T3-T4",
+      "Intervertebral disc T4-T5",
+      "Intervertebral disc T5-T6",
+      "Intervertebral disc T6-T7",
+      "Intervertebral disc T7-T8",
+      "Intervertebral disc T8-T9",
+      "Intervertebral disc T9-T10",
+      "Nucleus pulposus C2-C3",
+      "Nucleus pulposus C3-C4",
+      "Nucleus pulposus C4-C5",
+      "Nucleus pulposus C5-C6",
+      "Nucleus pulposus C6-C7",
+      "Nucleus pulposus C7-T1",
+      "Nucleus pulposus L1-L2",
+      "Nucleus pulposus L2-L3",
+      "Nucleus pulposus L3-L4",
+      "Nucleus pulposus L4-L5",
+      "Nucleus pulposus L5-S1",
+      "Nucleus pulposus T1-T2",
+      "Nucleus pulposus T10-T11",
+      "Nucleus pulposus T11-T12",
+      "Nucleus pulposus T12-L1",
+      "Nucleus pulposus T2-T3",
+      "Nucleus pulposus T3-T4",
+      "Nucleus pulposus T4-T5",
+      "Nucleus pulposus T5-T6",
+      "Nucleus pulposus T6-T7",
+      "Nucleus pulposus T7-T8",
+      "Nucleus pulposus T8-T9",
+      "Nucleus pulposus T9-T10",
+      "Sacrococcygeal symphysis"
+     ]
+    },
+    {
+     "id": "l4-vertebra",
+     "name": "L4 Vertebra",
+     "kind": "bone",
+     "objects": [
+      "Vertebra L4"
+     ]
+    },
+    {
+     "id": "l5-vertebra",
+     "name": "L5 Vertebra",
+     "kind": "bone",
+     "objects": [
+      "Vertebra L5"
+     ]
+    },
+    {
+     "id": "longus-capitis",
+     "name": "Longus Capitis",
+     "kind": "muscle",
+     "objects": [
+      "Longus capitis muscle.l",
+      "Longus capitis muscle.r"
+     ]
+    },
+    {
+     "id": "longus-colli",
+     "name": "Longus Colli",
+     "kind": "muscle",
+     "objects": [
+      "Longus colli muscle.l",
+      "Longus colli muscle.r"
+     ]
+    }
+   ]
+  },
+  {
+   "key": "back-core__torso",
+   "region": "back-core",
+   "subregion": "torso",
+   "subjects": [
+    {
+     "id": "first-rib",
+     "name": "First Rib",
+     "kind": "bone",
+     "objects": [
+      "First rib.l",
+      "First rib.r"
+     ]
+    },
+    {
+     "id": "sternal-body",
+     "name": "Body of Sternum",
+     "kind": "bone",
+     "objects": [
+      "Body of sternum"
+     ]
+    },
+    {
+     "id": "twelfth-rib",
+     "name": "Twelfth Rib",
+     "kind": "bone",
+     "objects": [
+      "Twelfth rib.l",
+      "Twelfth rib.r"
+     ]
+    },
+    {
+     "id": "xiphoid-process",
+     "name": "Xiphoid Process",
+     "kind": "bone",
+     "objects": [
+      "Xiphoid process"
+     ]
+    }
+   ]
+  },
+  {
+   "key": "back-core__neck",
+   "region": "back-core",
+   "subregion": "neck",
+   "subjects": [
+    {
+     "id": "atlas-c1",
+     "name": "Atlas (C1)",
+     "kind": "bone",
+     "objects": [
+      "Atlas (C1)"
+     ]
+    },
+    {
+     "id": "c7-vertebra",
+     "name": "C7 Vertebra",
+     "kind": "bone",
+     "objects": [
+      "Vertebra C7"
+     ]
+    },
+    {
+     "id": "scalene-anterior",
+     "name": "Scalene Anterior",
+     "kind": "muscle",
+     "objects": [
+      "Scalenus anterior muscle.l",
+      "Scalenus anterior muscle.r"
+     ]
+    },
+    {
+     "id": "scalene-posterior",
+     "name": "Scalene Posterior",
+     "kind": "muscle",
+     "objects": [
+      "Scalenus posterior muscle.l",
+      "Scalenus posterior muscle.r"
+     ]
+    }
+   ]
+  }
+ ]
+}

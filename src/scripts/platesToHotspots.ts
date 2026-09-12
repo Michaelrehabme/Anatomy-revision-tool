@@ -49,6 +49,12 @@ const FAMILIES: Record<string, Family> = {
     hotspotsExport: 'BONE_HOTSPOTS', platesExport: 'BONE_PLATES', plateType: 'BonePlate',
     titleSuffix: 'Skeleton', subjectWord: 'bone', renderer: 'renderBonePlates.py',
   },
+  sub: {
+    dir: 'subregions', prefix: 'sub',
+    hotspotsFile: 'hotspots.subregions.generated.ts', platesFile: 'subRegionPlates.generated.ts',
+    hotspotsExport: 'SUBREGION_HOTSPOTS', platesExport: 'SUBREGION_PLATES', plateType: 'SubRegionPlate',
+    titleSuffix: 'Close', subjectWord: 'structure', renderer: 'renderSubRegionPlates.py',
+  },
   deep: {
     dir: 'deep', prefix: 'deep',
     hotspotsFile: 'hotspots.deep.generated.ts', platesFile: 'deepPlates.generated.ts',
@@ -61,6 +67,11 @@ const VIEW_NAMES: Record<string, string> = {
   'view-00': 'anterior',
   'view-06': 'lateral',
   'view-12': 'posterior',
+  // Looking up from below. The sole of a foot is not reachable by spinning:
+  // the plantar muscles are under the foot bones from every angle on the
+  // vertical axis, so the foot plate is also rendered from underneath.
+  // 'plantar' is the anatomical name for that view and the app already has it.
+  'view-00-e-45': 'plantar',
 };
 
 /** Area derives from subregion for every structure, so a plate needs one. */
@@ -120,12 +131,17 @@ interface Hotspot {
   centroid: [number, number];
 }
 const hotspots: Record<string, Hotspot[]> = {};
-interface Plate { region: string; subregion: string; view: string; title: string; width: number; height: number }
+/** `slug` is the file's own key, and must match the image id: a sub-region
+ *  plate is filed under its subregion, every other family under its region. */
+interface Plate { slug: string; region: string; subregion: string; view: string; title: string; width: number; height: number }
 const plates: Plate[] = [];
 const dropped: string[] = [];
 
-for (const region of readdirSync(masksRoot).sort()) {
-  const regionDir = join(masksRoot, region);
+for (const dirName of readdirSync(masksRoot).sort()) {
+  // Sub-region plates are named "<region>__<subregion>" because one region has
+  // several; the other families are one plate per region and carry no suffix.
+  const [region, subOverride] = dirName.includes('__') ? dirName.split('__') : [dirName, undefined];
+  const regionDir = join(masksRoot, dirName);
   const masksDir = join(regionDir, 'masks');
   if (!existsSync(masksDir)) continue;
 
@@ -133,7 +149,7 @@ for (const region of readdirSync(masksRoot).sort()) {
     const platePath = join(regionDir, `${viewDir}.png`);
     if (!existsSync(platePath)) continue;
 
-    const imageId = `${family.prefix}-${region}-${view}`;
+    const imageId = `${family.prefix}-${subOverride ?? region}-${view}`;
     const found: Hotspot[] = [];
 
     for (const subjectId of readdirSync(masksDir).sort()) {
@@ -163,13 +179,15 @@ for (const region of readdirSync(masksRoot).sort()) {
     // Flattened onto white for the same reason the joint images are: the bone
     // is nearly white itself, and a transparent plate would composite against
     // whatever card colour sits behind it.
-    const dest = join(OUT_DIR, `${region}-${view}.webp`);
+    const slug = subOverride ?? region;
+    const dest = join(OUT_DIR, `${slug}-${view}.webp`);
     const info = await sharp(platePath).flatten({ background: '#ffffff' }).webp({ quality }).toFile(dest);
 
     hotspots[imageId] = found;
     plates.push({
+      slug,
       region,
-      subregion: SUBREGION[region] ?? 'shoulder',
+      subregion: subOverride ?? SUBREGION[region] ?? 'shoulder',
       view,
       title: REGION_TITLE[region] ?? region,
       width: info.width,
@@ -215,7 +233,7 @@ writeFileSync(OUT_HOTSPOTS, hotspotLines.join('\n'));
 const plateBody = plates
   .map(
     (p) =>
-      `  { region: '${p.region}', subregion: '${p.subregion}', view: '${p.view}', ` +
+      `  { slug: '${p.slug}', region: '${p.region}', subregion: '${p.subregion}', view: '${p.view}', ` +
       `title: ${JSON.stringify(p.title)}, width: ${p.width}, height: ${p.height} },`,
   )
   .join('\n');
@@ -234,6 +252,7 @@ import type { Region, SubRegion } from '../../types/region';
  * and a box that does not match the image normalises every click wrongly.
  */
 export interface ${family.plateType} {
+  slug: string;
   region: Region;
   subregion: SubRegion;
   view: ViewType;
@@ -249,7 +268,7 @@ ${plateBody}
 );
 
 const total = Object.values(hotspots).reduce((n, h) => n + h.length, 0);
-console.log(`\n${plates.length} plate(s), ${total} hotspot(s) -> public/anatomy/bones/`);
+console.log(`\n${plates.length} plate(s), ${total} hotspot(s) -> public/anatomy/${family.dir}/`);
 if (dropped.length > 0) {
   console.log(`\n${dropped.length} dropped as too hidden to click:`);
   for (const d of dropped) console.log(`  ${d}`);

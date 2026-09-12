@@ -10,6 +10,8 @@ import { DEEP_PLATES } from './deepPlates.generated';
 import { DEEP_HOTSPOTS } from './hotspots.deep.generated';
 import { LANDMARK_PANELS } from './landmarkPanels.generated';
 import { LANDMARK_HOTSPOTS } from './hotspots.landmarks.generated';
+import { SUBREGION_PLATES } from './subRegionPlates.generated';
+import { SUBREGION_HOTSPOTS } from './hotspots.subregions.generated';
 
 /**
  * Three image sets, in the order they appear below:
@@ -459,6 +461,33 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
       width: panel.width,
       height: panel.height,
       hotspots: LANDMARK_HOTSPOTS[id] ?? [],
+      credit: Z_ANATOMY_CREDIT,
+      licence: Z_ANATOMY_LICENCE,
+    };
+  }),
+
+  // --- Sub-region plates: drawn close enough to aim at ---
+  // The region and skeleton plates frame a whole limb, and at that scale the
+  // small structures — lumbricals, interossei, scaphoid, atlas — came out a few
+  // hundred pixels and were dropped rather than traced. Nothing is wrong with
+  // them; the camera was in the wrong place. Bones and muscles share a plate
+  // deliberately: a student looking at a hand should be asked for the scaphoid
+  // and for opponens pollicis from the same picture.
+  ...SUBREGION_PLATES.map((plate): AnatomyImageAsset => {
+    const id = `sub-${plate.slug}-${plate.view}`;
+    return {
+      id,
+      filePath: `/anatomy/subregions/${plate.slug}-${plate.view}.webp`,
+      slideTitle: `${plate.title} — Close, ${plate.view[0].toUpperCase()}${plate.view.slice(1)} View`,
+      mode: 'atlas-slide',
+      panelStructureNames: [],
+      region: plate.region,
+      subregion: plate.subregion,
+      view: plate.view,
+      layer: 'skeletal',
+      width: plate.width,
+      height: plate.height,
+      hotspots: SUBREGION_HOTSPOTS[id] ?? [],
       credit: Z_ANATOMY_CREDIT,
       licence: Z_ANATOMY_LICENCE,
     };

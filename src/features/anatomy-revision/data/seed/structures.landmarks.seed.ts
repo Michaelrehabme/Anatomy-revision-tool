@@ -111,7 +111,7 @@ export const LANDMARK_STRUCTURES: LandmarkStructure[] = [
     palpability: 'easily-palpable',
     aliases: ['Inner ankle bone'],
     imageIds: [],
-    eligibility: { flashcard: true, mcq: true, locate: false },
+    eligibility: { flashcard: true, mcq: true, locate: true },
     difficulty: 'easy',
     tags: ['ankle', 'palpable'],
     clinical: 'Reference point for ankle sprain assessment and medial malleolar fractures.',
