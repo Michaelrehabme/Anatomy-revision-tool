@@ -120,13 +120,20 @@ for (const s of SUBJECTS) {
     const m = decodePng(`${dir}/${dir2.name}/mask.png`);
     const b = binariseAlpha(m.data, m.width, m.height);
     const t = maskToPolygons(b, m.width, m.height, { minComponentPx: 60, epsilon: 1.5 });
-    const png = decodePng(`${dir}/${dir2.name}/highlight.png`);
-    const small = downscaleOntoWhite(png.data, png.width, png.height, Math.min(scaleTo, 640));
+    const frameImages: Record<string, string> = {};
+    for (const which of ['context', 'highlight'] as const) {
+      const png = decodePng(`${dir}/${dir2.name}/${which}.png`);
+      const small = downscaleOntoWhite(png.data, png.width, png.height, Math.min(scaleTo, 720));
+      frameImages[which] = 'data:image/png;base64,' + encodePng(small.rgba, small.width, small.height).toString('base64');
+    }
     rotation.push({
       angle,
       area: t.area,
       polygons: t.polygons,
-      highlight: 'data:image/png;base64,' + encodePng(small.rgba, small.width, small.height).toString('base64'),
+      // Both pictures per angle, so the locate demo can rotate the unanswered
+      // plate and the identify demo the highlighted one.
+      context: frameImages.context,
+      highlight: frameImages.highlight,
     });
   }
   rotation.sort((p, q) => p.angle - q.angle);

@@ -127,46 +127,97 @@ def flat_white():
 
 
 BONE_MAT = principled("lig_bone", (0.90, 0.88, 0.83, 1), 0.6)
-def resting_mat():
-    """Every ligament of the joint is drawn in this, so it must not look like bone.
+# The two ligament colours. Each strap gets its own material instance built
+# from these, because the fibre texture has to be aligned to that strap's own
+# long axis — see fibre_mat.
+REST_FILL, REST_LINE = (0.06, 0.24, 0.60, 1), (0.02, 0.08, 0.26, 1)
+HILITE_FILL, HILITE_LINE = (0.0, 0.70, 0.95, 1), (0.0, 0.32, 0.50, 1)
+HILITE_GLOW = ((0.0, 0.85, 1.0, 1), 0.5)
 
-    The first resting colour was a pearly off-white, on the grounds that a
-    real ligament is. On the plate it was indistinguishable from the grey the
-    bone renders as, and the user could not find the straps at all. So the
-    resting colour is an unambiguous light blue with a little glow of its own:
-    nothing like bone. A light blue was tried first and the user still read it
-    as bone-grey, so it is now a proper mid-dark blue, and the answer colour
-    moved to a bright cyan so it still stands clear of the straps. The three
-    tones read as a ladder — grey bone, dark blue straps, bright cyan target.
+
+def fibre_axes(mesh):
+    """The long, wide and thin directions of a strap, from its vertices.
+
+    A ligament is drawn with lines running along it, and "along it" is not a
+    world axis — the sacrotuberous runs diagonally, the annular ligament
+    wraps a circle. Principal components of the vertex cloud give the strap's
+    own frame: the first is its length, the second its width, the third its
+    thickness. Stripes are then laid across the width, which makes them run
+    along the length on the face a student is looking at.
     """
-    mat = principled("lig_rest", (0.06, 0.24, 0.60, 1), 0.3)
+    import numpy as np
+    pts = np.array([v.co[:] for v in mesh.vertices], dtype=float)
+    if len(pts) < 3:
+        return mathutils.Matrix.Identity(3)
+    pts -= pts.mean(axis=0)
+    _, _, vt = np.linalg.svd(pts, full_matrices=False)
+    length, width = mathutils.Vector(vt[0]), mathutils.Vector(vt[1])
+    thick = length.cross(width)
+    # Rows of the mapping: texture X across the width, Y along the length, Z
+    # through the thickness. Right-handed by construction.
+    return mathutils.Matrix((width, length, thick))
+
+
+def fibre_mat(name, fill, line, axes, glow=None):
+    """Fill colour with fine darker lines running along the strap.
+
+    The reference the user gave draws every ligament as a bundle of parallel
+    fibres, and that is what makes it read as a ligament rather than a
+    coloured patch. Blender's wave texture makes bands; a mapping node turns
+    world coordinates into the strap's own frame so the bands lie across the
+    width; a colour ramp sharpens them into lines; and a little distortion
+    keeps them from looking ruled. The scale is in metres because the model
+    is life-size, so 380 is a period of about 2.6 mm — about eight lines
+    across a strap the width of the sacrotuberous, which is what the
+    reference drawing has. Finer than that and they vanish at plate size.
+    """
+    mat = bpy.data.materials.new(name)
+    mat.use_nodes = True
+    nt = mat.node_tree
+    bsdf = nt.nodes["Principled BSDF"]
+    bsdf.inputs["Roughness"].default_value = 0.35
+
+    coord = nt.nodes.new("ShaderNodeTexCoord")
+    mapping = nt.nodes.new("ShaderNodeMapping")
+    mapping.vector_type = "POINT"
+    mapping.inputs["Rotation"].default_value = axes.to_euler()
+
+    wave = nt.nodes.new("ShaderNodeTexWave")
+    wave.wave_type = "BANDS"
+    wave.bands_direction = "X"
+    wave.wave_profile = "SIN"
+    wave.inputs["Scale"].default_value = 380.0
+    wave.inputs["Distortion"].default_value = 1.0
+    wave.inputs["Detail"].default_value = 2.0
+    wave.inputs["Detail Scale"].default_value = 2.0
+
+    ramp = nt.nodes.new("ShaderNodeValToRGB")
+    ramp.color_ramp.elements[0].position = 0.36
+    ramp.color_ramp.elements[0].color = (0, 0, 0, 1)
+    ramp.color_ramp.elements[1].position = 0.64
+    ramp.color_ramp.elements[1].color = (1, 1, 1, 1)
+
+    mix = nt.nodes.new("ShaderNodeMix")
+    mix.data_type = "RGBA"
+    mix.inputs["A"].default_value = line
+    mix.inputs["B"].default_value = fill
+
+    nt.links.new(coord.outputs["Object"], mapping.inputs["Vector"])
+    nt.links.new(mapping.outputs["Vector"], wave.inputs["Vector"])
+    nt.links.new(wave.outputs["Fac"], ramp.inputs["Fac"])
+    nt.links.new(ramp.outputs["Color"], mix.inputs["Factor"])
+    nt.links.new(mix.outputs["Result"], bsdf.inputs["Base Color"])
+
+    if glow:
+        colour, strength = glow
+        try:
+            bsdf.inputs["Emission Color"].default_value = colour
+            bsdf.inputs["Emission Strength"].default_value = strength
+        except KeyError:
+            pass
     return mat
 
 
-LIG_MAT = resting_mat()
-
-
-def highlight_mat():
-    """The answer colour, and it has to survive the lighting.
-
-    The first pass used a teal base colour and it came out of the render as a
-    pale grey-green — the white world light that keeps the bone readable
-    washes a mid-saturation colour to nothing. So the highlight is a bright
-    saturated cyan that also glows on its own, which the light cannot dilute,
-    and which is as far from the dark-blue resting straps as from the bone. Muscles own the red; a plain blue was the colour that vanished
-    into bone and background on the muscle panels; this is neither.
-    """
-    mat = principled("lig_hilite", (0.0, 0.70, 0.95, 1), 0.3)
-    bsdf = mat.node_tree.nodes["Principled BSDF"]
-    try:
-        bsdf.inputs["Emission Color"].default_value = (0.0, 0.85, 1.0, 1)
-        bsdf.inputs["Emission Strength"].default_value = 0.6
-    except KeyError:
-        pass
-    return mat
-
-
-HILITE_MAT = highlight_mat()
 MASK_MAT = flat_white()
 
 
@@ -352,6 +403,20 @@ for entry in spec["ligaments"]:
     if others:
         print("[straps] " + key + ": " + ", ".join(sorted(others)), flush=True)
 
+    # Each strap is its own object in the visible renders, because the fibre
+    # lines have to follow that strap's own length. The combined bake above is
+    # still what holds the mask out — one holdout is as good as twenty.
+    strap_parts = []
+    for n in others:
+        m = bake([n], "strap_" + key + "_" + n)
+        if m.vertices:
+            strap_parts.append((n, m, fibre_mat("rest_" + n, REST_FILL, REST_LINE, fibre_axes(m))))
+        else:
+            bpy.data.meshes.remove(m)
+    lig_axes = fibre_axes(lig_mesh)
+    LIG_MAT = fibre_mat("rest_" + key, REST_FILL, REST_LINE, lig_axes)
+    HILITE_MAT = fibre_mat("hilite_" + key, HILITE_FILL, HILITE_LINE, lig_axes, HILITE_GLOW)
+
     angles = entry.get("angles") or [entry["angle"]]
     for angle in angles:
       frame_camera(lo, hi, angle, entry.get("elevation", 0),
@@ -369,8 +434,8 @@ for entry in spec["ligaments"]:
       clear()
       link(bones, "ctx_bones_" + key, BONE_MAT)
       link(lig_mesh, "ctx_lig_" + key, LIG_MAT, outlined=True)
-      if other_mesh:
-          link(other_mesh, "ctx_others_" + key, LIG_MAT, outlined=True)
+      for n, m, mat in strap_parts:
+          link(m, "ctx_" + n, mat, outlined=True)
       if ghost_mesh:
           link(ghost_mesh, "ctx_ghost_" + key, GHOST_MAT)
       render_to(os.path.join(leaf_dir, "context.png"))
@@ -378,8 +443,8 @@ for entry in spec["ligaments"]:
       clear()
       link(bones, "hl_bones_" + key, BONE_MAT)
       link(lig_mesh, "hl_lig_" + key, HILITE_MAT, outlined=True)
-      if other_mesh:
-          link(other_mesh, "hl_others_" + key, LIG_MAT, outlined=True)
+      for n, m, mat in strap_parts:
+          link(m, "hl_" + n, mat, outlined=True)
       if ghost_mesh:
           link(ghost_mesh, "hl_ghost_" + key, GHOST_MAT)
       render_to(os.path.join(leaf_dir, "highlight.png"))
@@ -406,6 +471,8 @@ for entry in spec["ligaments"]:
         bpy.data.meshes.remove(ghost_mesh)
     if other_mesh:
         bpy.data.meshes.remove(other_mesh)
+    for _, m, _ in strap_parts:
+        bpy.data.meshes.remove(m)
 
 print("[complete] " + str(count) + " renders -> " + a.out
       + " (" + format(time.time() - t0, ".0f") + "s)", flush=True)
