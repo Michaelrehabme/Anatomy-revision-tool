@@ -1,0 +1,74 @@
+[
+ {
+  "key": "anterior-tibiofibular",
+  "name": "Anterior tibiofibular ligament",
+  "joint": "Distal tibiofibular joint",
+  "attaches": [
+   "Fibula",
+   "Tibia"
+  ],
+  "visibility": 0.95,
+  "treatment": "none needed",
+  "note": "Visible from 30° with no help at all. This is what the easy two-thirds looks like."
+ },
+ {
+  "key": "acromioclavicular",
+  "name": "Acromioclavicular ligament",
+  "joint": "Acromioclavicular joint",
+  "attaches": [
+   "Scapula",
+   "Clavicle"
+  ],
+  "visibility": 0.556,
+  "treatment": "none needed",
+  "note": "Sits on top of the joint line, readable from most angles."
+ },
+ {
+  "key": "sacrotuberous",
+  "name": "Sacrotuberous ligament",
+  "joint": "Sacro-iliac joint",
+  "attaches": [
+   "Sacrum",
+   "Hip bone"
+  ],
+  "visibility": 0.667,
+  "treatment": "none needed",
+  "note": "Large enough to be an easy target; the derived pair is sacrum and hip bone."
+ },
+ {
+  "key": "anterior-cruciate-plain",
+  "name": "Anterior cruciate ligament",
+  "joint": "Knee joint",
+  "attaches": [
+   "Tibia",
+   "Femur"
+  ],
+  "visibility": 0.5,
+  "treatment": "nothing removed",
+  "note": "Straight on, nothing removed. The femoral condyles cover it — there is no target here."
+ },
+ {
+  "key": "anterior-cruciate-ghost",
+  "name": "Anterior cruciate ligament",
+  "joint": "Knee joint",
+  "attaches": [
+   "Tibia",
+   "Femur"
+  ],
+  "visibility": 0.5,
+  "treatment": "femur ghosted, patella and fibula removed",
+  "note": "The same ligament once the femur is made translucent. This is the treatment the buried third needs."
+ },
+ {
+  "key": "anterior-talofibular",
+  "name": "Anterior talofibular ligament",
+  "joint": "Talocrural joint",
+  "attaches": [
+   "Talus",
+   "Fibula"
+  ],
+  "visibility": 0.25,
+  "treatment": "nothing removed",
+  "note": "Zero percent visible at eleven of twelve angles. The classic sprain ligament is the hardest to show."
+ }
+]

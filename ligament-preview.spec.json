@@ -1,0 +1,61 @@
+{
+ "schemaVersion": 1,
+ "note": "Five ligaments spanning the range: two plainly visible, one classic sprain target, one that is invisible without a cutaway. Angles come from checkLigamentVisibility.py; frames are sized to the joint, not the ligament.",
+ "ligaments": [
+  {
+   "key": "anterior-talofibular",
+   "objects": [
+    "Anterior talofibular ligament.l"
+   ],
+   "angle": 240,
+   "frame": 0.11
+  },
+  {
+   "key": "anterior-tibiofibular",
+   "objects": [
+    "Anterior tibiofibular ligament.l"
+   ],
+   "angle": 30,
+   "frame": 0.11
+  },
+  {
+   "key": "acromioclavicular",
+   "objects": [
+    "Acromioclavicular ligament.l"
+   ],
+   "angle": 150,
+   "frame": 0.14
+  },
+  {
+   "key": "sacrotuberous",
+   "objects": [
+    "Sacrotuberous ligament.l"
+   ],
+   "angle": 240,
+   "frame": 0.26
+  },
+  {
+   "key": "anterior-cruciate-plain",
+   "objects": [
+    "Anterior cruciate ligament.l"
+   ],
+   "angle": 0,
+   "frame": 0.15
+  },
+  {
+   "key": "anterior-cruciate-ghost",
+   "objects": [
+    "Anterior cruciate ligament.l"
+   ],
+   "angle": 0,
+   "frame": 0.15,
+   "cutaway": [
+    "Patella.l",
+    "Fibula.l"
+   ],
+   "ghost": [
+    "Femur.l"
+   ]
+  }
+ ]
+}

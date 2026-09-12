@@ -43,7 +43,7 @@ def is_anchor(name):
 # occlusion test either — a picture of a knee ligament is not going to have the
 # gastrocnemius laid over it.
 visible_world = set()
-for coll_name in ("1: Skeletal system", "2: Articular system"):
+for coll_name in ("1: Skeletal system", "3: Joints"):
     coll = bpy.data.collections.get(coll_name)
     if coll:
         for ob in coll.all_objects:
