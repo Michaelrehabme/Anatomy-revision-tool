@@ -76,6 +76,33 @@ sun = bpy.data.objects.new("ligsun", bpy.data.lights.new("ligsun", type="SUN"))
 sun.data.energy = 3.0
 scene.collection.objects.link(sun)
 
+# OUTLINES, ON THE STRAPS ONLY. A flat-shaded strap lying on a flat-shaded
+# bone has no edge where the two meet, so even in a different colour its
+# shape is hard to read — the user asked for an outline. Freestyle draws
+# silhouette lines, and restricting it to a collection means the bones stay
+# clean and only the ligaments get an edge. It is switched off for the mask
+# render, where a line would widen the hotspot.
+outline_coll = bpy.data.collections.new("lig_outlined")
+scene.collection.children.link(outline_coll)
+scene.render.use_freestyle = True
+scene.render.line_thickness_mode = "ABSOLUTE"
+scene.render.line_thickness = 2.2
+_vl = scene.view_layers[0]
+_vl.use_freestyle = True
+_fs = _vl.freestyle_settings
+_fs.use_culling = True
+for _old in list(_fs.linesets):
+    _fs.linesets.remove(_old)
+_ls = _fs.linesets.new("straps")
+_ls.select_silhouette = True
+_ls.select_border = True
+_ls.select_contour = True
+_ls.select_crease = False
+_ls.select_by_collection = True
+_ls.collection = outline_coll
+_ls.linestyle.color = (0.02, 0.05, 0.12)
+_ls.linestyle.thickness = 2.2
+
 
 def principled(name, colour, roughness=0.5):
     mat = bpy.data.materials.new(name)
@@ -107,17 +134,12 @@ def resting_mat():
     real ligament is. On the plate it was indistinguishable from the grey the
     bone renders as, and the user could not find the straps at all. So the
     resting colour is an unambiguous light blue with a little glow of its own:
-    still clearly quieter than the answer colour, which is a deep blue, but
-    nothing like bone. The three tones read as a ladder — grey bone, blue
-    straps, deep blue target.
+    nothing like bone. A light blue was tried first and the user still read it
+    as bone-grey, so it is now a proper mid-dark blue, and the answer colour
+    moved to a bright cyan so it still stands clear of the straps. The three
+    tones read as a ladder — grey bone, dark blue straps, bright cyan target.
     """
-    mat = principled("lig_rest", (0.38, 0.66, 0.88, 1), 0.25)
-    bsdf = mat.node_tree.nodes["Principled BSDF"]
-    try:
-        bsdf.inputs["Emission Color"].default_value = (0.45, 0.72, 0.95, 1)
-        bsdf.inputs["Emission Strength"].default_value = 0.22
-    except KeyError:
-        pass
+    mat = principled("lig_rest", (0.06, 0.24, 0.60, 1), 0.3)
     return mat
 
 
@@ -129,16 +151,16 @@ def highlight_mat():
 
     The first pass used a teal base colour and it came out of the render as a
     pale grey-green — the white world light that keeps the bone readable
-    washes a mid-saturation colour to nothing. So the highlight is a deep
-    saturated blue-teal AND glows a little on its own, which the light cannot
-    dilute. Muscles own the red; a plain blue was the colour that vanished
+    washes a mid-saturation colour to nothing. So the highlight is a bright
+    saturated cyan that also glows on its own, which the light cannot dilute,
+    and which is as far from the dark-blue resting straps as from the bone. Muscles own the red; a plain blue was the colour that vanished
     into bone and background on the muscle panels; this is neither.
     """
-    mat = principled("lig_hilite", (0.0, 0.22, 0.62, 1), 0.3)
+    mat = principled("lig_hilite", (0.0, 0.70, 0.95, 1), 0.3)
     bsdf = mat.node_tree.nodes["Principled BSDF"]
     try:
-        bsdf.inputs["Emission Color"].default_value = (0.0, 0.30, 0.85, 1)
-        bsdf.inputs["Emission Strength"].default_value = 0.45
+        bsdf.inputs["Emission Color"].default_value = (0.0, 0.85, 1.0, 1)
+        bsdf.inputs["Emission Strength"].default_value = 0.6
     except KeyError:
         pass
     return mat
@@ -221,26 +243,28 @@ def frame_camera(lo, hi, angle_deg, elevation_deg, margin, min_frame):
 
 
 def clear():
-    for ob in list(scene.collection.objects):
-        if ob not in (cam, sun):
-            scene.collection.objects.unlink(ob)
+    for coll in (scene.collection, outline_coll):
+        for ob in list(coll.objects):
+            if ob not in (cam, sun):
+                coll.objects.unlink(ob)
 
 
-def link(mesh, name, material, holdout=False):
+def link(mesh, name, material, holdout=False, outlined=False):
     ob = bpy.data.objects.new(name, mesh)
     ob.data.materials.clear()
     ob.data.materials.append(material)
     for p in ob.data.polygons:
         p.material_index = 0
     ob.is_holdout = holdout
-    scene.collection.objects.link(ob)
+    (outline_coll if outlined else scene.collection).objects.link(ob)
     return ob
 
 
-def render_to(path):
+def render_to(path, outlines=True):
     path = os.path.abspath(path)
     os.makedirs(os.path.dirname(path), exist_ok=True)
     scene.render.filepath = path
+    scene.render.use_freestyle = outlines
     bpy.ops.render.render(write_still=True)
 
 
@@ -344,18 +368,18 @@ for entry in spec["ligaments"]:
 
       clear()
       link(bones, "ctx_bones_" + key, BONE_MAT)
-      link(lig_mesh, "ctx_lig_" + key, LIG_MAT)
+      link(lig_mesh, "ctx_lig_" + key, LIG_MAT, outlined=True)
       if other_mesh:
-          link(other_mesh, "ctx_others_" + key, LIG_MAT)
+          link(other_mesh, "ctx_others_" + key, LIG_MAT, outlined=True)
       if ghost_mesh:
           link(ghost_mesh, "ctx_ghost_" + key, GHOST_MAT)
       render_to(os.path.join(leaf_dir, "context.png"))
 
       clear()
       link(bones, "hl_bones_" + key, BONE_MAT)
-      link(lig_mesh, "hl_lig_" + key, HILITE_MAT)
+      link(lig_mesh, "hl_lig_" + key, HILITE_MAT, outlined=True)
       if other_mesh:
-          link(other_mesh, "hl_others_" + key, LIG_MAT)
+          link(other_mesh, "hl_others_" + key, LIG_MAT, outlined=True)
       if ghost_mesh:
           link(ghost_mesh, "hl_ghost_" + key, GHOST_MAT)
       render_to(os.path.join(leaf_dir, "highlight.png"))
@@ -373,7 +397,7 @@ for entry in spec["ligaments"]:
       if other_mesh:
           link(other_mesh, "msk_others_" + key, BONE_MAT, holdout=True)
       link(lig_mesh, "msk_lig_" + key, MASK_MAT)
-      render_to(os.path.join(leaf_dir, "mask.png"))
+      render_to(os.path.join(leaf_dir, "mask.png"), outlines=False)
 
       count += 3
     bpy.data.meshes.remove(lig_mesh)
