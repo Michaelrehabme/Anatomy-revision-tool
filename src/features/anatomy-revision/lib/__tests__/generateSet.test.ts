@@ -632,9 +632,23 @@ describe('OINA sessions (CR-018)', () => {
 });
 
 describe('generateRevisionSet with an unbuildable combination', () => {
-  /** Bones and landmarks carry no hotspots (README, "Adding hotspots"), so the setup screen must be able to see zero coming. */
-  it('yields nothing for locate questions over bones, rather than throwing', () => {
-    const result = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, { types: ['locate'], category: 'bone', mode: 'practice', seed: 1 });
+  /**
+   * The setup screen must be able to see zero coming rather than throw. Bones
+   * used to be the example of a combination that could not build, because no
+   * hotspot in the app described one; they now have skeleton plates of their
+   * own, so the guarantee is tested against a structure that genuinely has no
+   * hotspot instead. The coccyx is one: it is too small on a whole-region plate
+   * to be a fair target and was dropped rather than traced.
+   */
+  it('yields nothing when nothing in the pool has a hotspot, rather than throwing', () => {
+    const withoutHotspots = ALL_STRUCTURES.filter((s) => s.id === 'coccyx');
+    const result = generateRevisionSet(withoutHotspots, ALL_IMAGES, { types: ['locate'], mode: 'practice', seed: 1 });
     expect(result).toEqual([]);
+  });
+
+  it('does build locate questions over bones, which now have skeleton plates', () => {
+    const result = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, { types: ['locate'], category: 'bone', mode: 'practice', seed: 1 });
+    expect(result.length).toBeGreaterThan(0);
+    expect(result.every((q) => q.type === 'locate')).toBe(true);
   });
 });

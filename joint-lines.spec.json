@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generated": "2026-09-11T20:48:23.633Z",
+  "generated": "2026-09-12T07:09:26.758Z",
   "joints": [
     {
       "id": "glenohumeral-joint",
@@ -36,6 +36,23 @@
         "objects": [
           "Scapula.l",
           "Scapula.r"
+        ]
+      }
+    },
+    {
+      "id": "sternoclavicular-joint",
+      "name": "Sternoclavicular Joint",
+      "a": {
+        "id": "clavicle",
+        "objects": [
+          "Clavicle.l",
+          "Clavicle.r"
+        ]
+      },
+      "b": {
+        "id": "Manubrium of sternum",
+        "objects": [
+          "Manubrium of sternum"
         ]
       }
     },
@@ -312,6 +329,40 @@
       }
     },
     {
+      "id": "interphalangeal-joint-hand",
+      "name": "Interphalangeal Joint of the Hand",
+      "a": {
+        "id": "phalanges-proximal-hand",
+        "objects": [
+          "Proximal phalanx of fifth finger of hand.l",
+          "Proximal phalanx of fifth finger of hand.r",
+          "Proximal phalanx of first finger of hand.l",
+          "Proximal phalanx of first finger of hand.r",
+          "Proximal phalanx of fourth finger of hand.l",
+          "Proximal phalanx of fourth finger of hand.r",
+          "Proximal phalanx of second finger of hand.l",
+          "Proximal phalanx of second finger of hand.r",
+          "Proximal phalanx of third finger of hand.l",
+          "Proximal phalanx of third finger of hand.r"
+        ]
+      },
+      "b": {
+        "id": "phalanges-middle-hand",
+        "objects": [
+          "Middle phalanx of fifth finger of hand.l",
+          "Middle phalanx of fifth finger of hand.r",
+          "Middle phalanx of fourth finger of hand.l",
+          "Middle phalanx of fourth finger of hand.r",
+          "Middle phalanx of second finger of hand.l",
+          "Middle phalanx of second finger of hand.r",
+          "Middle phalanx of third finger of hand.l",
+          "Middle phalanx of third finger of hand.r"
+        ]
+      },
+      "frame": 0.15,
+      "band": 0.04
+    },
+    {
       "id": "hip-joint",
       "name": "Hip Joint",
       "a": {
@@ -342,6 +393,22 @@
         "id": "Hip bone.l+Hip bone.r",
         "objects": [
           "Hip bone.l",
+          "Hip bone.r"
+        ]
+      }
+    },
+    {
+      "id": "pubic-symphysis",
+      "name": "Pubic Symphysis",
+      "a": {
+        "id": "Hip bone.l",
+        "objects": [
+          "Hip bone.l"
+        ]
+      },
+      "b": {
+        "id": "Hip bone.r",
+        "objects": [
           "Hip bone.r"
         ]
       }
@@ -461,6 +528,29 @@
         ]
       },
       "zPrefer": "min"
+    },
+    {
+      "id": "transverse-tarsal-joint",
+      "name": "Transverse Tarsal Joint",
+      "a": {
+        "id": "talus+calcaneus",
+        "objects": [
+          "Talus.l",
+          "Talus.r",
+          "Calcaneus.l",
+          "Calcaneus.r"
+        ]
+      },
+      "b": {
+        "id": "navicular+cuboid",
+        "objects": [
+          "Navicular bone.l",
+          "Navicular bone.r",
+          "Cuboid bone.l",
+          "Cuboid bone.r"
+        ]
+      },
+      "band": 0.03
     },
     {
       "id": "metatarsophalangeal-joint",

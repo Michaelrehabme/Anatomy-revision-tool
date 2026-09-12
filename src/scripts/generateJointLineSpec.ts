@@ -157,6 +157,38 @@ const PART_OVERRIDE: Record<string, { a: string[]; b: string[] }> = {
     a: ['l4-vertebra'],
     b: ['Intervertebral disc L4-L5'],
   },
+
+  // The sternal end of the clavicle against the clavicular notch of the
+  // manubrium. The seed names one part, so the pairing has to be stated here.
+  'sternoclavicular-joint': {
+    a: ['clavicle'],
+    b: ['Manubrium of sternum'],
+  },
+
+  // The two pubic bones across the symphysis. The fibrocartilaginous disc is
+  // real geometry, but the joint LINE is where the bones face each other, so
+  // this is measured between the hip bones and lands on the disc.
+  'pubic-symphysis': {
+    a: ['Hip bone.l'],
+    b: ['Hip bone.r'],
+  },
+
+  // Chopart's joint: the talus and calcaneus behind it, the navicular and
+  // cuboid in front. Naming the row on each side is what makes it one line
+  // rather than two unrelated articulations.
+  'transverse-tarsal-joint': {
+    a: ['talus', 'calcaneus'],
+    b: ['navicular', 'cuboid'],
+  },
+
+  // The PROXIMAL interphalangeal joints stand for the pair. The seed names
+  // three rows of phalanges, which is two joints — PIP and DIP — and a locate
+  // question needs one target. PIP is the one that matters clinically and the
+  // one a student is asked to find.
+  'interphalangeal-joint-hand': {
+    a: ['phalanges-proximal-hand'],
+    b: ['phalanges-middle-hand'],
+  },
 };
 
 const TUNING: Record<string, { band?: number; margin?: number; frame?: number }> = {
@@ -184,6 +216,8 @@ const TUNING: Record<string, { band?: number; margin?: number; frame?: number }>
   // Same coarse carpal meshing, one row up: at the default the proximal and
   // distal rows met in two faces and the band was a 289-pixel speck.
   'midcarpal-joint': { frame: 0.15, band: 0.04 },
+  'interphalangeal-joint-hand': { frame: 0.15, band: 0.04 },
+  'transverse-tarsal-joint': { band: 0.03 },
 };
 
 function parseArgs(argv: string[]): Record<string, string> {

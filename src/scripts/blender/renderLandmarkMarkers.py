@@ -38,6 +38,10 @@ ap.add_argument("--frame", type=float, default=0.9,
                 help="frame width as a fraction of the parent bone's largest dimension")
 ap.add_argument("--pull", type=float, default=0.5,
                 help="where the camera aims, from the bone's centre (0) to the landmark (1)")
+ap.add_argument("--zoom", type=float, default=25.0,
+                help="frame width as a multiple of the landmark's radius")
+ap.add_argument("--max-snap", type=float, default=0.5,
+                help="reject an anchor further than this fraction of the bone from it")
 a = ap.parse_args(argv)
 
 spec = json.load(open(a.spec))
@@ -193,7 +197,17 @@ for lm in spec["landmarks"]:
         continue
     _, plo, phi, pverts = min(parent_pts, key=lambda t: t[0])
     parent_size = max(phi.x - plo.x, phi.y - plo.y, phi.z - plo.z)
-    frame_size = max(parent_size * lm.get("frame", a.frame), 0.05)
+    # ZOOM SO THE LANDMARK IS WORTH AIMING AT. The target a student taps is the
+    # landmark's own size, and at whole-bone framing a 7mm spine is smaller than
+    # a fingertip on a phone. Frame so the landmark spans at least a usable
+    # share of the image, rather than inflating the target beyond its anatomy.
+    # Clamped so a tiny feature does not zoom until the bone is unrecognisable.
+    radius = lm.get("radius")
+    if radius:
+        frame_size = min(max(radius * a.zoom, parent_size * 0.35), parent_size * lm.get("frame", a.frame))
+    else:
+        frame_size = parent_size * lm.get("frame", a.frame)
+    frame_size = max(frame_size, 0.05)
 
     # SNAP TO THE BONE. A `.j` anchor is where Z-Anatomy starts a label's leader
     # line, placed near the landmark for legibility rather than on it: the
@@ -207,6 +221,16 @@ for lm in spec["landmarks"]:
     anchor, _, snap_dist = tree.find(raw_anchor)
     anchor = mathutils.Vector(anchor)
 
+    # A SNAP THAT TRAVELS TOO FAR IS THE WRONG BONE. Z-Anatomy names its anchors
+    # without a level — there is one "Spinous process.j", not one per vertebra —
+    # so an anchor found by name can belong to a different vertebra than the one
+    # being framed, and snapping would put the marker on the nearest corner of
+    # the wrong bone. Better to report it than to draw it.
+    if snap_dist > parent_size * a.max_snap:
+        print(f"[skip] {lid}: anchor is {snap_dist / parent_size:.0%} of the bone away "
+              f"from {lm['parent']} — probably a different bone", flush=True)
+        continue
+
     # AIM BETWEEN THE BONE AND THE LANDMARK. Aimed at the landmark itself, every
     # landmark lands dead centre, which answers a locate question before it is
     # asked. Aimed halfway, it falls where it naturally sits on the bone, off
@@ -214,8 +238,12 @@ for lm in spec["landmarks"]:
     bone_centre = (plo + phi) / 2
     target = bone_centre.lerp(anchor, lm.get("pull", a.pull))
 
+    # frameSize is recorded because the hotspot radius is worked out from the
+    # landmark's real size in metres, and only the renderer knows how many
+    # metres the frame covers.
     meta = {"id": lid, "anchor": list(anchor), "snapDistance": snap_dist,
-            "snapFraction": snap_dist / parent_size, "views": {}}
+            "snapFraction": snap_dist / parent_size, "parentSize": parent_size,
+            "frameSize": frame_size, "radius": lm.get("radius"), "views": {}}
     for frame in views:
         place_camera(target, frame * 15, frame_size)
         bpy.context.view_layer.update()
