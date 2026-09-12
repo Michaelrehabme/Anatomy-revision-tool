@@ -13,7 +13,7 @@ atlas draws one too.
 THREE RENDERS PER LIGAMENT, because the two question types need different
 pictures from the same camera:
 
-  context   the joint as it looks, ligament in its own pearly white — what a
+  context   the joint with every ligament of it in the resting blue — what a
             locate question shows before the student clicks
   highlight the same frame with the ligament picked out — the identify
             question's stimulus, and the locate question's answer
@@ -100,11 +100,28 @@ def flat_white():
 
 
 BONE_MAT = principled("lig_bone", (0.90, 0.88, 0.83, 1), 0.6)
-# A ligament in a dissection is pearly white with a cool cast, so the resting
-# colour says "ligament, not bone" without answering the question. It has to
-# differ from bone: every ligament of the joint is drawn in it, and the student
-# has to be able to tell the straps from the bones to pick between them.
-LIG_MAT = principled("lig_rest", (0.80, 0.86, 0.90, 1), 0.2)
+def resting_mat():
+    """Every ligament of the joint is drawn in this, so it must not look like bone.
+
+    The first resting colour was a pearly off-white, on the grounds that a
+    real ligament is. On the plate it was indistinguishable from the grey the
+    bone renders as, and the user could not find the straps at all. So the
+    resting colour is an unambiguous light blue with a little glow of its own:
+    still clearly quieter than the answer colour, which is a deep blue, but
+    nothing like bone. The three tones read as a ladder — grey bone, blue
+    straps, deep blue target.
+    """
+    mat = principled("lig_rest", (0.38, 0.66, 0.88, 1), 0.25)
+    bsdf = mat.node_tree.nodes["Principled BSDF"]
+    try:
+        bsdf.inputs["Emission Color"].default_value = (0.45, 0.72, 0.95, 1)
+        bsdf.inputs["Emission Strength"].default_value = 0.22
+    except KeyError:
+        pass
+    return mat
+
+
+LIG_MAT = resting_mat()
 
 
 def highlight_mat():
@@ -117,11 +134,11 @@ def highlight_mat():
     dilute. Muscles own the red; a plain blue was the colour that vanished
     into bone and background on the muscle panels; this is neither.
     """
-    mat = principled("lig_hilite", (0.0, 0.36, 0.50, 1), 0.3)
+    mat = principled("lig_hilite", (0.0, 0.22, 0.62, 1), 0.3)
     bsdf = mat.node_tree.nodes["Principled BSDF"]
     try:
-        bsdf.inputs["Emission Color"].default_value = (0.0, 0.55, 0.72, 1)
-        bsdf.inputs["Emission Strength"].default_value = 0.35
+        bsdf.inputs["Emission Color"].default_value = (0.0, 0.30, 0.85, 1)
+        bsdf.inputs["Emission Strength"].default_value = 0.45
     except KeyError:
         pass
     return mat
@@ -246,6 +263,25 @@ strap_objects = [
 ]
 
 
+def expand(patterns):
+    """Cutaway and ghost lists take wildcards, because "the hand" is thirty names.
+
+    The sacrotuberous plate had the arm hanging through it — humerus, radius,
+    ulna and every bone of the hand — and listing each one by name to remove
+    it is how a spec becomes unreadable. "*of hand.l" and "*metacarpal*" say
+    what was meant. Plain names still match exactly.
+    """
+    import fnmatch
+    everything = [o.name for o in bpy.data.objects if o.type == "MESH"]
+    out = set()
+    for pat in patterns:
+        if any(c in pat for c in "*?["):
+            out.update(n for n in everything if fnmatch.fnmatch(n, pat))
+        else:
+            out.add(pat)
+    return out
+
+
 def straps_in_frame(centre, size, exclude):
     """Every other strap whose bounding box overlaps the camera's cube."""
     half = size / 2
@@ -266,8 +302,8 @@ count = 0
 for entry in spec["ligaments"]:
     key = entry["key"]
     lig_names = entry["objects"]
-    drop = set(entry.get("cutaway", []))
-    ghost = set(entry.get("ghost", []))
+    drop = expand(entry.get("cutaway", []))
+    ghost = expand(entry.get("ghost", []))
 
     lig_mesh = bake(lig_names, "lig_" + key)
     if not lig_mesh.vertices:
@@ -292,49 +328,54 @@ for entry in spec["ligaments"]:
     if others:
         print("[straps] " + key + ": " + ", ".join(sorted(others)), flush=True)
 
-    frame_camera(lo, hi, entry["angle"], entry.get("elevation", 0),
-                 entry.get("margin", a.margin), entry.get("frame", a.min_frame))
+    angles = entry.get("angles") or [entry["angle"]]
+    for angle in angles:
+      frame_camera(lo, hi, angle, entry.get("elevation", 0),
+                   entry.get("margin", a.margin), entry.get("frame", a.min_frame))
+      # A single-angle entry keeps the flat layout the preview packer reads;
+      # a rotation set gets one folder per angle underneath it.
+      leaf_dir = os.path.join(a.out, key) if len(angles) == 1 else os.path.join(a.out, key, "a%03d" % angle)
 
-    span_mm = max(hi[0] - lo[0], hi[1] - lo[1], hi[2] - lo[2]) * 1000
-    note = (", cutaway " + str(len(drop)) + " bone(s)") if drop else ""
-    note += (", ghosting " + str(len(ghost)) + " bone(s)") if ghost else ""
-    print("[lig] " + key + ": " + format(span_mm, ".0f") + "mm across, angle "
-          + str(entry["angle"]) + note, flush=True)
+      span_mm = max(hi[0] - lo[0], hi[1] - lo[1], hi[2] - lo[2]) * 1000
+      note = (", cutaway " + str(len(drop)) + " bone(s)") if drop else ""
+      note += (", ghosting " + str(len(ghost)) + " bone(s)") if ghost else ""
+      print("[lig] " + key + ": " + format(span_mm, ".0f") + "mm across, angle "
+            + str(angle) + note, flush=True)
 
-    clear()
-    link(bones, "ctx_bones_" + key, BONE_MAT)
-    link(lig_mesh, "ctx_lig_" + key, LIG_MAT)
-    if other_mesh:
-        link(other_mesh, "ctx_others_" + key, LIG_MAT)
-    if ghost_mesh:
-        link(ghost_mesh, "ctx_ghost_" + key, GHOST_MAT)
-    render_to(os.path.join(a.out, key, "context.png"))
+      clear()
+      link(bones, "ctx_bones_" + key, BONE_MAT)
+      link(lig_mesh, "ctx_lig_" + key, LIG_MAT)
+      if other_mesh:
+          link(other_mesh, "ctx_others_" + key, LIG_MAT)
+      if ghost_mesh:
+          link(ghost_mesh, "ctx_ghost_" + key, GHOST_MAT)
+      render_to(os.path.join(leaf_dir, "context.png"))
 
-    clear()
-    link(bones, "hl_bones_" + key, BONE_MAT)
-    link(lig_mesh, "hl_lig_" + key, HILITE_MAT)
-    if other_mesh:
-        link(other_mesh, "hl_others_" + key, LIG_MAT)
-    if ghost_mesh:
-        link(ghost_mesh, "hl_ghost_" + key, GHOST_MAT)
-    render_to(os.path.join(a.out, key, "highlight.png"))
+      clear()
+      link(bones, "hl_bones_" + key, BONE_MAT)
+      link(lig_mesh, "hl_lig_" + key, HILITE_MAT)
+      if other_mesh:
+          link(other_mesh, "hl_others_" + key, LIG_MAT)
+      if ghost_mesh:
+          link(ghost_mesh, "hl_ghost_" + key, GHOST_MAT)
+      render_to(os.path.join(leaf_dir, "highlight.png"))
 
-    # The mask holds the bones out rather than hiding them, so a ligament that
-    # disappears behind a condyle is missing from the hotspot too — the target
-    # can only ever be the part a student can actually see and click.
-    # A GHOSTED BONE IS DELIBERATELY NOT A HOLDOUT. Only the solid bones hide
-    # the ligament, so only they cut the hotspot. A student can see the ACL
-    # through a ghosted femur, so they must be able to click it there too — if
-    # the femur held the mask out, the picture would show a target the hit test
-    # would then reject.
-    clear()
-    link(bones, "msk_bones_" + key, BONE_MAT, holdout=True)
-    if other_mesh:
-        link(other_mesh, "msk_others_" + key, BONE_MAT, holdout=True)
-    link(lig_mesh, "msk_lig_" + key, MASK_MAT)
-    render_to(os.path.join(a.out, key, "mask.png"))
+      # The mask holds the bones out rather than hiding them, so a ligament that
+      # disappears behind a condyle is missing from the hotspot too — the target
+      # can only ever be the part a student can actually see and click.
+      # A GHOSTED BONE IS DELIBERATELY NOT A HOLDOUT. Only the solid bones hide
+      # the ligament, so only they cut the hotspot. A student can see the ACL
+      # through a ghosted femur, so they must be able to click it there too — if
+      # the femur held the mask out, the picture would show a target the hit test
+      # would then reject.
+      clear()
+      link(bones, "msk_bones_" + key, BONE_MAT, holdout=True)
+      if other_mesh:
+          link(other_mesh, "msk_others_" + key, BONE_MAT, holdout=True)
+      link(lig_mesh, "msk_lig_" + key, MASK_MAT)
+      render_to(os.path.join(leaf_dir, "mask.png"))
 
-    count += 3
+      count += 3
     bpy.data.meshes.remove(lig_mesh)
     bpy.data.meshes.remove(bones)
     if ghost_mesh:

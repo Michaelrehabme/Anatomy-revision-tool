@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync, readdirSync } from 'node:fs';
 import { decodePng } from './lib/png';
 import { binariseAlpha, maskToPolygons } from './lib/maskToPolygons';
 
@@ -109,6 +109,28 @@ for (const s of SUBJECTS) {
     images[which] = 'data:image/png;base64,' + encodePng(small.rgba, small.width, small.height).toString('base64');
   }
 
+  // A rotation set, if the renderer was given a list of angles: one folder
+  // per angle under the subject. Each angle gets its own traced target, since
+  // how much of the ligament is clickable changes with the view — that is the
+  // point of measuring it per angle rather than shipping every angle blindly.
+  const rotation: any[] = [];
+  for (const dir2 of readdirSync(dir, { withFileTypes: true })) {
+    if (!dir2.isDirectory() || !/^a\d{3}$/.test(dir2.name)) continue;
+    const angle = Number(dir2.name.slice(1));
+    const m = decodePng(`${dir}/${dir2.name}/mask.png`);
+    const b = binariseAlpha(m.data, m.width, m.height);
+    const t = maskToPolygons(b, m.width, m.height, { minComponentPx: 60, epsilon: 1.5 });
+    const png = decodePng(`${dir}/${dir2.name}/highlight.png`);
+    const small = downscaleOntoWhite(png.data, png.width, png.height, Math.min(scaleTo, 640));
+    rotation.push({
+      angle,
+      area: t.area,
+      polygons: t.polygons,
+      highlight: 'data:image/png;base64,' + encodePng(small.rgba, small.width, small.height).toString('base64'),
+    });
+  }
+  rotation.sort((p, q) => p.angle - q.angle);
+
   const litPx = binary.reduce((n, v) => n + v, 0);
   out.push({
     ...s,
@@ -118,7 +140,13 @@ for (const s of SUBJECTS) {
     maskPixels: litPx,
     maskShare: litPx / (mask.width * mask.height),
     images,
+    ...(rotation.length ? { rotation } : {}),
   });
+  if (rotation.length) {
+    console.log(
+      `  rotation: ${rotation.map((r) => `${r.angle}°=${(r.area * 100).toFixed(2)}%`).join(' ')}`,
+    );
+  }
   console.log(
     `${s.key.padEnd(28)} ${traced.polygons.length} polygon(s), ` +
       `${traced.points} pts, ${(traced.area * 100).toFixed(2)}% of frame`,

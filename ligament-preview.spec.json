@@ -32,7 +32,22 @@
     "Sacrotuberous ligament.l"
    ],
    "angle": 240,
-   "frame": 0.26
+   "frame": 0.26,
+   "cutaway": [
+    "Humerus.*",
+    "Radius.*",
+    "Ulna.*",
+    "*of hand.*",
+    "*metacarpal*",
+    "Scaphoid bone.*",
+    "Lunate bone.*",
+    "Triquetrum bone.*",
+    "Pisiform bone.*",
+    "Trapezium bone.*",
+    "Trapezoid bone.*",
+    "Capitate bone.*",
+    "Hamate bone.*"
+   ]
   },
   {
    "key": "anterior-cruciate-plain",
