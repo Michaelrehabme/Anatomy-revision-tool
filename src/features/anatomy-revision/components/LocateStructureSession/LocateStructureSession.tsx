@@ -19,13 +19,12 @@ interface LocateStructureSessionProps {
   examMode?: boolean;
 }
 
-const ZOOM_LEVELS = [1, 1.5, 2];
-
 /**
- * Wraps HotspotImage with zoom controls and a keyboard/list-based fallback
- * for students who can't (or don't want to) click precisely on the image —
- * both paths funnel through the same result handling so scoring is
- * identical either way.
+ * Wraps HotspotImage with a keyboard/list-based fallback for students who
+ * can't (or don't want to) click precisely on the image — both paths funnel
+ * through the same result handling so scoring is identical either way.
+ * Zoom and rotation live in HotspotImage itself, so the mobile session has
+ * them too and the click maps through them correctly.
  */
 export function LocateStructureSession({
   question,
@@ -36,7 +35,6 @@ export function LocateStructureSession({
   examMode,
 }: LocateStructureSessionProps) {
   const [result, setResult] = useState<HotspotAnswerResult | null>(null);
-  const [zoomIndex, setZoomIndex] = useState(0);
   const [listMode, setListMode] = useState(false);
   const [rated, setRated] = useState(false);
   // Nothing on screen says the image itself is the answer surface — the
@@ -48,7 +46,6 @@ export function LocateStructureSession({
 
   useEffect(() => {
     setResult(null);
-    setZoomIndex(0);
     setListMode(false);
     setRated(false);
   }, [question.id]);
@@ -57,6 +54,10 @@ export function LocateStructureSession({
   if (!image) {
     return <p className="p-6 text-sm" style={{ color: 'var(--acc2d)' }}>Image "{question.imageId}" not found.</p>;
   }
+  // The other angles of a rotation set, if the question has them.
+  const frames = (question.frameImageIds ?? [])
+    .map((id) => imagesById.get(id))
+    .filter((f): f is AnatomyImageAsset => !!f);
 
   const submitExamAnswer = (r: HotspotAnswerResult) => {
     onAnswer({ structureId: question.targetStructureId, correct: r.correct, hitDistance: r.hitDistance });
@@ -77,8 +78,11 @@ export function LocateStructureSession({
     onAnswer({ structureId: question.targetStructureId, correct: result.correct, hitDistance: result.hitDistance, confidence });
   };
 
-  const candidateStructures = (image.hotspots ?? [])
-    .map((h) => structuresById.get(h.structureId))
+  // The list fallback offers every structure visible from any angle.
+  const candidateStructures = [
+    ...new Set([image, ...frames].flatMap((f) => (f.hotspots ?? []).map((h) => h.structureId))),
+  ]
+    .map((id) => structuresById.get(id))
     .filter((s): s is AnatomyStructure => !!s);
 
   return (
@@ -102,30 +106,21 @@ export function LocateStructureSession({
       )}
 
       <div className="mt-3 flex items-center gap-4" style={{ color: 'var(--ink3)' }}>
-        <div className="flex gap-1">
-          {ZOOM_LEVELS.map((level, i) => (
-            <button
-              key={level}
-              type="button"
-              onClick={() => setZoomIndex(i)}
-              className="rounded px-2 py-1 text-xs"
-              style={{ background: zoomIndex === i ? 'var(--ink)' : 'var(--sf)', color: zoomIndex === i ? 'var(--sf)' : 'var(--ink3)' }}
-            >
-              {level}x
-            </button>
-          ))}
-        </div>
+        <span className="text-xs">
+          {frames.length > 1 ? 'Scroll to zoom · drag to turn' : 'Scroll to zoom'}
+        </span>
         <button type="button" onClick={() => setListMode((v) => !v)} className="text-xs underline decoration-dotted">
           {listMode ? 'Switch to image click' : "Can't click precisely? Choose from a list"}
         </button>
       </div>
 
       {!listMode ? (
-        <div className="mt-2 flex min-h-0 flex-1 items-center justify-center overflow-auto">
-          <div style={{ transform: `scale(${ZOOM_LEVELS[zoomIndex]})`, transformOrigin: 'center', maxHeight: 560 }}>
+        <div className="mt-2 flex min-h-0 flex-1 items-center justify-center">
+          <div className="w-full max-w-[560px]">
             <HotspotImage
               key={question.id}
               image={image}
+              frames={frames.length > 1 ? frames : undefined}
               targetStructureId={question.targetStructureId}
               toleranceMultiplier={question.toleranceMultiplier}
               onAnswer={handleImageAnswer}

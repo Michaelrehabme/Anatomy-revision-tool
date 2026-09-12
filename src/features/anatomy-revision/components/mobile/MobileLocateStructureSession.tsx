@@ -62,6 +62,9 @@ export function MobileLocateStructureSession({
       </p>
     );
   }
+  const frames = (question.frameImageIds ?? [])
+    .map((id) => imagesById.get(id))
+    .filter((f): f is AnatomyImageAsset => !!f);
 
   const submitExamAnswer = (r: HotspotAnswerResult) => {
     onAnswer({ structureId: question.targetStructureId, correct: r.correct, hitDistance: r.hitDistance });
@@ -82,8 +85,10 @@ export function MobileLocateStructureSession({
     onAnswer({ structureId: question.targetStructureId, correct: result.correct, hitDistance: result.hitDistance, confidence });
   };
 
-  const candidateStructures = (image.hotspots ?? [])
-    .map((h) => structuresById.get(h.structureId))
+  const candidateStructures = [
+    ...new Set([image, ...frames].flatMap((f) => (f.hotspots ?? []).map((h) => h.structureId))),
+  ]
+    .map((id) => structuresById.get(id))
     .filter((s): s is AnatomyStructure => !!s);
 
   return (
@@ -122,6 +127,7 @@ export function MobileLocateStructureSession({
               <HotspotImage
                 key={question.id}
                 image={image}
+                frames={frames.length > 1 ? frames : undefined}
                 targetStructureId={question.targetStructureId}
                 toleranceMultiplier={question.toleranceMultiplier}
                 onAnswer={handleImageAnswer}

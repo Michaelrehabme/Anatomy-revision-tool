@@ -61,9 +61,19 @@ export interface MCQQuestion extends RevisionQuestionBase {
 
 export interface LocateQuestion extends RevisionQuestionBase {
   type: 'locate';
+  /** The opening picture — for a rotation set, the angle where the target shows best. */
   imageId: string;
   imageMode: ImageMode;
   targetStructureId: string;
+  /**
+   * The other angles of the same picture the student may turn to, in angle
+   * order, `imageId` included. Present only for images rendered as a rotation
+   * set (the ligament plates first). One question per structure, not one per
+   * angle: a student who turns the joint to find the ligament has answered
+   * one question, and the scheduler should count it once. Each frame carries
+   * its own hotspots, so the hit test runs against whichever angle is showing.
+   */
+  frameImageIds?: string[];
   /** Multiplies the target polygon's hit area for a slightly forgiving click radius. */
   toleranceMultiplier?: number;
   prompt: string;
