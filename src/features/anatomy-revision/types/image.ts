@@ -11,7 +11,14 @@ export type ViewType =
   | 'dorsal'
   | 'plantar'
   | 'superior'
-  | 'inferior';
+  | 'inferior'
+  // The four obliques, for rotation sets rendered every 45 degrees. The
+  // ligament plates are the first family to ship them; nothing filters on
+  // view, so an oblique is a label and a slide title, not a new code path.
+  | 'anterolateral'
+  | 'posterolateral'
+  | 'posteromedial'
+  | 'anteromedial';
 
 export type LayerType =
   | 'superficial-muscle'

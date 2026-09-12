@@ -12,6 +12,8 @@ import { LANDMARK_PANELS } from './landmarkPanels.generated';
 import { LANDMARK_HOTSPOTS } from './hotspots.landmarks.generated';
 import { SUBREGION_PLATES } from './subRegionPlates.generated';
 import { SUBREGION_HOTSPOTS } from './hotspots.subregions.generated';
+import { LIGAMENT_PLATES } from './ligamentPlates.generated';
+import { LIGAMENT_HOTSPOTS } from './hotspots.ligaments.generated';
 
 /**
  * Three image sets, in the order they appear below:
@@ -386,6 +388,53 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
       credit: Z_ANATOMY_CREDIT,
       licence: Z_ANATOMY_LICENCE,
     };
+  }),
+
+  // --- Ligament plates: one joint framed on one ligament, up to eight angles ---
+  // Two pictures per angle. The context picture shows every ligament of the
+  // joint at rest and carries hotspots for the target and every other seeded
+  // ligament in view — one picture, many hotspots, like the region plates —
+  // so it is the locate picture, and a wrong click can be named. The highlight
+  // picture picks the target out in cyan: pre-highlighted, so no hotspots and
+  // never a locate question, exactly as the muscle panels are handled. Only
+  // angles where the target traced are published. Rendered by
+  // renderLigamentPlates.py, published by publishLigamentPlates.ts.
+  ...LIGAMENT_PLATES.map((plate): AnatomyImageAsset => {
+    const id = `ligament-${plate.structureId}-a${String(plate.angle).padStart(3, '0')}-${plate.kind}`;
+    const viewLabel = `${plate.view[0].toUpperCase()}${plate.view.slice(1)}`;
+    return plate.kind === 'context'
+      ? {
+          id,
+          filePath: `/anatomy/ligaments/${plate.structureId}-a${String(plate.angle).padStart(3, '0')}-context.webp`,
+          slideTitle: `${plate.name} — ${viewLabel} View`,
+          mode: 'atlas-slide',
+          panelStructureNames: plate.panelStructureNames,
+          region: plate.region,
+          subregion: plate.subregion,
+          view: plate.view,
+          layer: 'ligament',
+          width: plate.width,
+          height: plate.height,
+          hotspots: LIGAMENT_HOTSPOTS[id] ?? [],
+          credit: Z_ANATOMY_CREDIT,
+          licence: Z_ANATOMY_LICENCE,
+        }
+      : {
+          id,
+          filePath: `/anatomy/ligaments/${plate.structureId}-a${String(plate.angle).padStart(3, '0')}-highlight.webp`,
+          slideTitle: `${plate.name} — ${viewLabel} View (highlighted)`,
+          mode: 'single-structure',
+          structureId: plate.structureId,
+          region: plate.region,
+          subregion: plate.subregion,
+          view: plate.view,
+          layer: 'ligament',
+          width: plate.width,
+          height: plate.height,
+          hotspots: [],
+          credit: Z_ANATOMY_CREDIT,
+          licence: Z_ANATOMY_LICENCE,
+        };
   }),
 
   // --- Bone plates: the skeleton by region, one image per view ---
