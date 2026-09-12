@@ -38,6 +38,14 @@ export interface HotspotPolygon {
   /** Normalized 0-1 area. Used to resolve overlapping hits: smallest wins. */
   area: number;
   centroid: [number, number];
+  /**
+   * Normalized radius of the scoring target, for hotspots that are a POINT
+   * rather than a shape — a bony landmark, whose circle is sized from its real
+   * dimensions. Its presence is what makes a hotspot scorable for accuracy:
+   * see lib/hotspot/accuracy.ts. A muscle or bone outline has none, because
+   * "how close to the middle of it" is not a question about a shape.
+   */
+  targetRadius?: number;
 }
 
 export interface AnatomyImageAsset {

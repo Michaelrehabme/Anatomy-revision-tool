@@ -122,6 +122,9 @@ for (const id of readdirSync(masksRoot).sort()) {
         polygons: [ring],
         area: Math.PI * rN * rN,
         centroid: [Number(v.u.toFixed(5)), Number(v.v.toFixed(5))],
+        // Marks this as a POINT target, and gives the accuracy scoring the
+        // radius it measures against. Everything else on an image is a shape.
+        targetRadius: Number(rN.toFixed(5)),
       },
     ];
     rows.push({

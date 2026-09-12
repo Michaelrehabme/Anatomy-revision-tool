@@ -1,5 +1,6 @@
 import { useRef, useState, type MouseEvent } from 'react';
 import type { AnatomyImageAsset } from '../../types/image';
+import { isAccuratePass, scoreAccuracy } from '../../lib/hotspot/accuracy';
 import { hitTest, type HitTestCandidate } from '../../lib/hotspot/pointInPolygon';
 import { normalizePointerEvent } from '../../lib/hotspot/normalizeCoordinates';
 import { HotspotOverlay } from './HotspotOverlay';
@@ -10,6 +11,12 @@ export interface HotspotAnswerResult {
   correct: boolean;
   point: [number, number];
   hitDistance?: number;
+  /**
+   * 10 for dead centre down to 0 outside the target, for landmarks only — a
+   * point on a bone, where how close you were IS the answer. Undefined for a
+   * muscle or bone outline, where being inside it is simply right.
+   */
+  accuracy?: number;
 }
 
 interface HotspotImageProps {
@@ -51,10 +58,22 @@ export function HotspotImage({ image, targetStructureId, toleranceMultiplier, on
       area: h.area,
     }));
     const hit = hitTest(point, candidates, toleranceMultiplier);
-    const correct = hit?.structureId === targetStructureId;
     const hitDistance = targetHotspot ? distance(point, targetHotspot.centroid) : undefined;
 
-    const result: HotspotAnswerResult = { structureId: hit?.structureId ?? null, correct, point, hitDistance };
+    // A point target is graded on accuracy, not on landing inside the circle.
+    // The circle is 2.5x the landmark's radius, so tapping its outer edge is a
+    // near miss rather than a find — scoring 7 means you were ON the landmark.
+    const accuracy = targetHotspot ? (scoreAccuracy(point, targetHotspot) ?? undefined) : undefined;
+    const correct =
+      accuracy !== undefined ? isAccuratePass(accuracy) : hit?.structureId === targetStructureId;
+
+    const result: HotspotAnswerResult = {
+      structureId: hit?.structureId ?? null,
+      correct,
+      point,
+      hitDistance,
+      accuracy,
+    };
     setAnswer(result);
     onAnswer(result);
   };
