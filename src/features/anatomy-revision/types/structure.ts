@@ -1,7 +1,7 @@
 import type { Area, Region, SubRegion } from './region';
-import { areaForSubRegion } from './region';
+import { areasForSubRegion } from './region';
 
-export type Category = 'muscle' | 'bone' | 'landmark' | 'joint';
+export type Category = 'muscle' | 'bone' | 'landmark' | 'joint' | 'ligament';
 
 /**
  * Joint classification. The first six are the standard synovial classifications
@@ -168,12 +168,13 @@ interface AnatomyStructureBase {
   region: Region;
   subregion?: SubRegion;
   /**
-   * Overrides the area derived from `subregion` (CR-017). Author this ONLY when
-   * the derived value is genuinely wrong — currently just sacroiliac-joint, which
-   * is subregion 'spine' but is examined as part of the hip/pelvis complex. Every
-   * other structure derives correctly, so leaving this unset is the norm.
+   * Overrides the areas derived from `subregion` (CR-017, CR-032). Author it only
+   * where the default is wrong: a spine structure belonging to one level (the sacrum
+   * is lumbar only; the costal facets are thoracic only), or one examined under
+   * another area entirely (sacroiliac-joint revises with the hip). Never empty —
+   * validateContent fails an empty override. Leaving it unset is the norm.
    */
-  area?: Area;
+  areas?: Area[];
   /** Functional/anatomical groups, e.g. "hip-flexors", "rotator-cuff". */
   groups?: string[];
   /** Short educational summary. Muscles mirror actionText; bones/landmarks are authored directly. */
@@ -250,26 +251,57 @@ export interface JointStructure extends AnatomyStructureBase {
   stabilizers?: string[];
 }
 
+export interface LigamentStructure extends AnatomyStructureBase {
+  category: 'ligament';
+  /**
+   * Bone (occasionally landmark) structure ids this ligament attaches to. Not
+   * FK-enforced — see scripts/validateContent.ts. Derived from mesh contact in
+   * the atlas (deriveLigamentAttachments.py) and then human-reviewed: touching
+   * is not attaching, and the acetabular labrum reports the femur it wraps. The
+   * review sheet is docs/ligament-attachments-review.md.
+   */
+  attachmentStructureIds: string[];
+  /** The joint this ligament stabilises, when the app models it. Not FK-enforced. */
+  jointId?: string;
+  /** Common abbreviation a student may type, e.g. "ACL", "ATFL". */
+  abbreviation?: string;
+}
+
 /**
  * Discriminated union on `category` so origin/insertion/nerve/actions are
- * compile-time guaranteed absent on bones/landmarks/joints, and attachments/
- * articulations are guaranteed absent on muscles/joints.
+ * compile-time guaranteed absent on bones/landmarks/joints/ligaments, and
+ * attachments/articulations are guaranteed absent on muscles/joints.
  *
  * ADD NEW STRUCTURES to src/features/anatomy-revision/data/seed/ — never here.
  */
-export type AnatomyStructure = MuscleStructure | BoneStructure | LandmarkStructure | JointStructure;
+export type AnatomyStructure =
+  | MuscleStructure
+  | BoneStructure
+  | LandmarkStructure
+  | JointStructure
+  | LigamentStructure;
 
 export const isMuscle = (s: AnatomyStructure): s is MuscleStructure => s.category === 'muscle';
 export const isBone = (s: AnatomyStructure): s is BoneStructure => s.category === 'bone';
 export const isLandmark = (s: AnatomyStructure): s is LandmarkStructure => s.category === 'landmark';
 export const isJoint = (s: AnatomyStructure): s is JointStructure => s.category === 'joint';
+export const isLigament = (s: AnatomyStructure): s is LigamentStructure => s.category === 'ligament';
 
 /**
- * The area a structure revises under — its `area` override if one is authored,
- * otherwise derived from its subregion. Undefined only for a structure with no
- * subregion at all, which validateContent treats as an error since such a
+ * Every area a structure revises under — its `areas` override if one is authored,
+ * otherwise derived from its subregion. A level-agnostic vertebral part (a pedicle,
+ * a facet joint) belongs to all three spine areas. Empty only for a structure with
+ * no subregion at all, which validateContent treats as an error since such a
  * structure would be unreachable from the area picker.
  */
-export function areaOf(s: AnatomyStructure): Area | undefined {
-  return s.area ?? areaForSubRegion(s.subregion);
+export function areasOf(s: AnatomyStructure): Area[] {
+  return s.areas ?? areasForSubRegion(s.subregion);
+}
+
+/**
+ * The area to stamp on a question when the session did not ask for one in
+ * particular — generateSet re-stamps it with the requested area when it did.
+ */
+export function primaryAreaOf(s: AnatomyStructure): Area | undefined {
+  return areasOf(s)[0];
 }

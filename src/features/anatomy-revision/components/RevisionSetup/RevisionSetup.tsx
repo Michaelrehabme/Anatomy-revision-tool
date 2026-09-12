@@ -7,7 +7,7 @@ import { OINA_PROMPT_KINDS } from '../../types/question';
 import type { Category } from '../../types/structure';
 import type { Area } from '../../types/region';
 import { AREA_LABELS } from '../../types/region';
-import { areaOf, isMuscle, MUSCLE_GROUP_LABELS } from '../../types/structure';
+import { areasOf, isMuscle, MUSCLE_GROUP_LABELS } from '../../types/structure';
 import { generateRevisionSet } from '../../lib/questionGenerators/generateSet';
 import {
   LEARN_CARD_ATTEMPT_LABELS,
@@ -44,6 +44,7 @@ const CATEGORY_OPTIONS: { value: Category | 'all'; label: string }[] = [
   { value: 'bone', label: 'Bones' },
   { value: 'landmark', label: 'Landmarks' },
   { value: 'joint', label: 'Joints' },
+  { value: 'ligament', label: 'Ligaments' },
 ];
 
 const LENGTHS = [10, 20, 40];
@@ -109,15 +110,14 @@ export function RevisionSetup({ content, repository, userId, areas, onStart, onB
   // empty one is the same dead end CR-017 removed from the area picker.
   const availableGroups = Object.keys(MUSCLE_GROUP_LABELS).filter((group) =>
     content.structures.some(
-      (s) => isMuscle(s) && (s.groups ?? []).includes(group) && (areas.size === 0 || (!!areaOf(s) && areas.has(areaOf(s)!))),
+      (s) => isMuscle(s) && (s.groups ?? []).includes(group) && (areas.size === 0 || areasOf(s).some((a) => areas.has(a))),
     ),
   );
 
   const areasArray = [...areas];
   const inPool = (s: (typeof content.structures)[number]) => {
-    const area = areaOf(s);
     return (
-      (areas.size === 0 || (!!area && areas.has(area))) &&
+      (areas.size === 0 || areasOf(s).some((a) => areas.has(a))) &&
       (category === 'all' || s.category === category) &&
       (groups.length === 0 || (s.groups ?? []).some((g) => groups.includes(g)))
     );

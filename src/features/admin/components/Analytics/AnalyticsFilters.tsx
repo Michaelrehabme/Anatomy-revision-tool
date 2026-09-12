@@ -4,7 +4,7 @@ import type { Category } from '../../../anatomy-revision/types/structure';
 import type { QuestionType } from '../../../anatomy-revision/types/question';
 import type { AnalyticsFilters as AnalyticsFiltersState } from '../../types/analytics';
 
-const CATEGORIES: Category[] = ['muscle', 'bone', 'landmark', 'joint'];
+const CATEGORIES: Category[] = ['muscle', 'bone', 'landmark', 'joint', 'ligament'];
 const CATEGORY_LABELS: Record<Category, string> = { muscle: 'Muscle', bone: 'Bone', landmark: 'Landmark', joint: 'Joint' };
 
 const QUESTION_TYPES: QuestionType[] = ['flashcard', 'mcq', 'locate', 'fill-blank', 'identify-typed', 'multi-select', 'oina'];
