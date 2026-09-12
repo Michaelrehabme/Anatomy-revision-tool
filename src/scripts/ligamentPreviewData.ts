@@ -88,25 +88,43 @@ interface Subject {
 
 const SUBJECTS: Subject[] = JSON.parse(readFileSync(args.subjects ?? 'ligament-preview.subjects.json', 'utf8'));
 
-const { encodePng } = await import('./lib/pngEncode');
+const sharp = (await import('sharp')).default;
+
+/**
+ * JPEG, because six rotation sets of striped renders as PNG is 25MB and the
+ * page cap is 16. The fibre lines are exactly what PNG compresses worst.
+ * Quality 82 keeps the outlines crisp at the sizes the page shows.
+ */
+async function toJpegUri(rgba: Buffer, width: number, height: number): Promise<string> {
+  const buf = await sharp(rgba, { raw: { width, height, channels: 4 } })
+    .flatten({ background: '#ffffff' })
+    .jpeg({ quality: 82, mozjpeg: true })
+    .toBuffer();
+  return 'data:image/jpeg;base64,' + buf.toString('base64');
+}
 
 const out: any[] = [];
 for (const s of SUBJECTS) {
   const dir = `${rendersDir}/${s.key}`;
-  if (!existsSync(`${dir}/mask.png`)) {
+  const hasFlat = existsSync(`${dir}/mask.png`);
+  const hasFrames = existsSync(dir) && readdirSync(dir).some((n) => /^a\d{3}$/.test(n));
+  if (!hasFlat && !hasFrames) {
     console.log(`skipped ${s.key}: no renders`);
     continue;
   }
 
-  const mask = decodePng(`${dir}/mask.png`);
+  // The flat render, if there is one. With a rotation set it is only a
+  // fallback; the best angle of the set becomes the subject's picture.
+  const flatMask = hasFlat ? `${dir}/mask.png` : null;
+  const mask = flatMask ? decodePng(flatMask) : { data: Buffer.alloc(4), width: 1, height: 1 };
   const binary = binariseAlpha(mask.data, mask.width, mask.height);
   const traced = maskToPolygons(binary, mask.width, mask.height, { minComponentPx: 60, epsilon: 1.5 });
 
   const images: Record<string, string> = {};
-  for (const which of ['context', 'highlight'] as const) {
+  for (const which of hasFlat ? (['context', 'highlight'] as const) : []) {
     const png = decodePng(`${dir}/${which}.png`);
     const small = downscaleOntoWhite(png.data, png.width, png.height, scaleTo);
-    images[which] = 'data:image/png;base64,' + encodePng(small.rgba, small.width, small.height).toString('base64');
+    images[which] = await toJpegUri(small.rgba, small.width, small.height);
   }
 
   // A rotation set, if the renderer was given a list of angles: one folder
@@ -116,6 +134,9 @@ for (const s of SUBJECTS) {
   const rotation: any[] = [];
   for (const dir2 of readdirSync(dir, { withFileTypes: true })) {
     if (!dir2.isDirectory() || !/^a\d{3}$/.test(dir2.name)) continue;
+    // A render still in progress has written some of the three files; skip
+    // the angle until all are there rather than fall over on the missing one.
+    if (!['context', 'highlight', 'mask'].every((f) => existsSync(`${dir}/${dir2.name}/${f}.png`))) continue;
     const angle = Number(dir2.name.slice(1));
     const m = decodePng(`${dir}/${dir2.name}/mask.png`);
     const b = binariseAlpha(m.data, m.width, m.height);
@@ -123,8 +144,8 @@ for (const s of SUBJECTS) {
     const frameImages: Record<string, string> = {};
     for (const which of ['context', 'highlight'] as const) {
       const png = decodePng(`${dir}/${dir2.name}/${which}.png`);
-      const small = downscaleOntoWhite(png.data, png.width, png.height, Math.min(scaleTo, 720));
-      frameImages[which] = 'data:image/png;base64,' + encodePng(small.rgba, small.width, small.height).toString('base64');
+      const small = downscaleOntoWhite(png.data, png.width, png.height, Math.min(scaleTo, 800));
+      frameImages[which] = await toJpegUri(small.rgba, small.width, small.height);
     }
     rotation.push({
       angle,
@@ -139,14 +160,16 @@ for (const s of SUBJECTS) {
   rotation.sort((p, q) => p.angle - q.angle);
 
   const litPx = binary.reduce((n, v) => n + v, 0);
+  const best = rotation.length ? rotation.reduce((a, b) => (b.area > a.area ? b : a)) : null;
   out.push({
     ...s,
-    polygons: traced.polygons,
+    polygons: best ? best.polygons : traced.polygons,
     centroid: traced.centroid,
-    area: traced.area,
+    area: best ? best.area : traced.area,
+    bestAngle: best ? best.angle : null,
     maskPixels: litPx,
     maskShare: litPx / (mask.width * mask.height),
-    images,
+    images: best ? { context: best.context, highlight: best.highlight } : images,
     ...(rotation.length ? { rotation } : {}),
   });
   if (rotation.length) {

@@ -7,31 +7,57 @@
    "objects": [
     "Anterior talofibular ligament.l"
    ],
-   "angle": 240,
-   "frame": 0.11
+   "frame": 0.11,
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ]
   },
   {
    "key": "anterior-tibiofibular",
    "objects": [
     "Anterior tibiofibular ligament.l"
    ],
-   "angle": 30,
-   "frame": 0.11
+   "frame": 0.11,
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ]
   },
   {
    "key": "acromioclavicular",
    "objects": [
     "Acromioclavicular ligament.l"
    ],
-   "angle": 150,
-   "frame": 0.14
+   "frame": 0.14,
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ]
   },
   {
    "key": "sacrotuberous",
    "objects": [
     "Sacrotuberous ligament.l"
    ],
-   "angle": 240,
    "frame": 0.26,
    "cutaway": [
     "Humerus.*",
@@ -47,6 +73,16 @@
     "Trapezoid bone.*",
     "Capitate bone.*",
     "Hamate bone.*"
+   ],
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
    ]
   },
   {
@@ -54,15 +90,23 @@
    "objects": [
     "Anterior cruciate ligament.l"
    ],
-   "angle": 0,
-   "frame": 0.15
+   "frame": 0.15,
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ]
   },
   {
    "key": "anterior-cruciate-ghost",
    "objects": [
     "Anterior cruciate ligament.l"
    ],
-   "angle": 0,
    "frame": 0.15,
    "cutaway": [
     "Patella.l",
@@ -70,6 +114,16 @@
    ],
    "ghost": [
     "Femur.l"
+   ],
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
    ]
   }
  ]
