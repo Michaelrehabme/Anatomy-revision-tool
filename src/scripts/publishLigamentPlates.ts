@@ -5,6 +5,7 @@ import sharp from 'sharp';
 import { ALL_STRUCTURES } from '../features/anatomy-revision/data/seed/index';
 import { isLigament } from '../features/anatomy-revision/types/structure';
 import type { ViewType } from '../features/anatomy-revision/types/image';
+import { pointInAnyPolygon } from '../features/anatomy-revision/lib/hotspot/pointInPolygon';
 import { decodePng } from './lib/png';
 import { binariseAlpha, maskToPolygons } from './lib/maskToPolygons';
 
@@ -77,14 +78,23 @@ const idByMeshName = new Map<string, string>();
   for (const m of mapping) for (const b of m.blenderObjects) idByMeshName.set(b.replace(/\.(o\d?)?[lr]$/, ''), m.id);
 }
 
+interface Hotspot { structureId: string; polygons: number[][][]; area: number; centroid: [number, number] }
+
+interface IdPass {
+  neighbours: Hotspot[];
+  /** Which structure owns a normalised point of the ID render; '' for bone or background. */
+  ownerAt: (x: number, y: number) => string;
+}
+
 function srgbToLinear(byte: number): number {
   const c = byte / 255;
   return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
 }
 
 /** The ID pass back into per-ligament outlines, keyed by seeded ligament id. */
-function traceNeighbours(dir: string): { structureId: string; polygons: number[][][]; area: number; centroid: [number, number] }[] {
-  if (!existsSync(`${dir}/ids.png`) || !existsSync(`${dir}/ids.json`)) return [];
+function traceNeighbours(dir: string, targetId: string): IdPass {
+  const none: IdPass = { neighbours: [], ownerAt: () => '' };
+  if (!existsSync(`${dir}/ids.png`) || !existsSync(`${dir}/ids.json`)) return none;
   const legend: Record<string, string> = JSON.parse(readFileSync(`${dir}/ids.json`, 'utf8'));
   const png = decodePng(`${dir}/ids.png`);
   const index = new Uint8Array(png.width * png.height);
@@ -94,13 +104,15 @@ function traceNeighbours(dir: string): { structureId: string; polygons: number[]
     const g = Math.round(srgbToLinear(png.data[i * 4 + 1]) * 15);
     index[i] = g * 16 + r;
   }
-  const out: { structureId: string; polygons: number[][][]; area: number; centroid: [number, number] }[] = [];
+  const structureByIndex = new Map<number, string>([[1, targetId]]);
+  const out: Hotspot[] = [];
   for (const [id, meshName] of Object.entries(legend)) {
     const k = Number(id);
     if (k === 1) continue;
     const structureId = idByMeshName.get(meshName.replace(/\.(o\d?)?[lr]$/, ''));
     // A strap that is not a seeded ligament is scenery: drawn, not askable.
     if (!structureId) continue;
+    structureByIndex.set(k, structureId);
     const mask = new Uint8Array(index.length);
     let n = 0;
     for (let i = 0; i < index.length; i++) if (index[i] === k) { mask[i] = 1; n++; }
@@ -109,7 +121,69 @@ function traceNeighbours(dir: string): { structureId: string; polygons: number[]
     if (!t.polygons.length || t.area < MIN_TARGET_AREA) continue;
     out.push({ structureId, polygons: t.polygons, area: t.area, centroid: t.centroid });
   }
-  return out;
+  return {
+    neighbours: out,
+    ownerAt: (x, y) => {
+      const px = Math.min(png.width - 1, Math.max(0, Math.floor(x * png.width)));
+      const py = Math.min(png.height - 1, Math.max(0, Math.floor(y * png.height)));
+      return structureByIndex.get(index[py * png.width + px]) ?? '';
+    },
+  };
+}
+
+/**
+ * Keeps the hotspots on one picture mutually exclusive, the invariant
+ * generateSet.test.ts enforces for every image: a correct tap must never be
+ * resolved to another structure.
+ *
+ * WHY IT CAN HAPPEN HERE. Every pixel of the ID pass belongs to exactly one
+ * strap, so the straps partition the picture — but the tracer keeps outer
+ * boundaries only (holes would ADD area under the app's OR-of-rings hit
+ * test). Where one strap lies wholly inside another's outline, as the
+ * ulnocapitate does within the palmar radio-ulnar at the wrist, the outer
+ * strap's polygon swallows it, and smallest-wins would hand a tap on the
+ * inner one to whichever polygon is smaller — not necessarily the one on top.
+ *
+ * The ID pass knows who really owns each pixel, so the fix is measured, not
+ * guessed: sample the picture, and while more than a hair of the covered
+ * area is claimed twice, drop a neighbour. Which neighbour is scored by how
+ * many contested pixels it is in AND how many of those it has no claim to,
+ * so a strap that swallows others goes first — but blame alone cannot pick
+ * it, because on a ligament's own plate the swallower is often the TARGET,
+ * which is never dropped (a wrong tap there would then be unnamed rather
+ * than misgraded). Counting participation guarantees the loop makes
+ * progress instead of stalling with nobody to blame.
+ */
+function makeExclusive(target: Hotspot, neighbours: Hotspot[], ownerAt: (x: number, y: number) => string): Hotspot[] {
+  const STEPS = 100;
+  const MAX_SHARE = 0.008;
+  let kept = [...neighbours];
+  for (;;) {
+    const all = [target, ...kept];
+    let covered = 0;
+    let doubled = 0;
+    // score = contested pixels this hotspot sits in, + a penalty for each one
+    // the ID pass says belongs to somebody else.
+    const score = new Map<string, number>();
+    for (let y = 0; y < STEPS; y++) {
+      for (let x = 0; x < STEPS; x++) {
+        const p: [number, number] = [(x + 0.5) / STEPS, (y + 0.5) / STEPS];
+        const hits = all.filter((h) => pointInAnyPolygon(p, h.polygons));
+        if (hits.length) covered++;
+        if (hits.length > 1) {
+          doubled++;
+          const owner = ownerAt(p[0], p[1]);
+          for (const h of hits) {
+            score.set(h.structureId, (score.get(h.structureId) ?? 0) + (h.structureId === owner ? 1 : 2));
+          }
+        }
+      }
+    }
+    if (!covered || doubled / covered <= MAX_SHARE || !kept.length) return kept;
+    const worst = [...score.entries()].filter(([id]) => id !== target.structureId).sort((a, b) => b[1] - a[1])[0];
+    if (!worst) return kept;
+    kept = kept.filter((h) => h.structureId !== worst[0]);
+  }
 }
 
 mkdirSync(OUT_DIR, { recursive: true });
@@ -120,8 +194,9 @@ interface Row {
   width: number; height: number; panelStructureNames: string[];
 }
 const rows: Row[] = [];
-const hotspots: Record<string, unknown[]> = {};
+const hotspots: Record<string, Hotspot[]> = {};
 const skipped: string[] = [];
+const dropped: string[] = [];
 let published = 0;
 
 for (const ligId of readdirSync(rendersRoot).sort()) {
@@ -148,7 +223,12 @@ for (const ligId of readdirSync(rendersRoot).sort()) {
       continue;
     }
 
-    const neighbours = traceNeighbours(dir);
+    const target: Hotspot = { structureId: ligId, polygons: traced.polygons, area: traced.area, centroid: traced.centroid };
+    const idPass = traceNeighbours(dir, ligId);
+    const neighbours = makeExclusive(target, idPass.neighbours, idPass.ownerAt);
+    if (neighbours.length < idPass.neighbours.length) {
+      dropped.push(`${ligId} ${angleDir}: ${idPass.neighbours.length - neighbours.length} neighbour hotspot(s) dropped to keep taps exclusive`);
+    }
     const names = [lig.name, ...neighbours.map((n) => byId.get(n.structureId)!.name)];
 
     for (const kind of ['context', 'highlight'] as const) {
@@ -161,10 +241,7 @@ for (const ligId of readdirSync(rendersRoot).sort()) {
       });
       published++;
     }
-    hotspots[`ligament-${ligId}-${angleDir}-context`] = [
-      { structureId: ligId, polygons: traced.polygons, area: traced.area, centroid: traced.centroid },
-      ...neighbours,
-    ];
+    hotspots[`ligament-${ligId}-${angleDir}-context`] = [target, ...neighbours];
   }
 }
 
@@ -227,7 +304,9 @@ writeFileSync(OUT_HOTSPOTS, `/**
  * ligament, traced from its own mask with the bones and every other strap
  * held out; the rest are the other seeded ligaments in view, traced from the
  * ID pass, so a click on the wrong ligament can be named. Straps that are
- * not seeded ligaments are drawn but carry no hotspot.
+ * not seeded ligaments are drawn but carry no hotspot, and a neighbour whose
+ * outline would swallow another's is dropped so that every tap resolves to
+ * the strap it landed on.
  */
 import type { HotspotPolygon } from '../../types/image';
 
@@ -244,6 +323,10 @@ console.log(`${published} image(s) -> public/anatomy/ligaments/  (${contexts.len
 console.log(`${extra} neighbour hotspot(s) across them`);
 console.log(`rows -> ${OUT_TS.replace(ROOT, '.')}\nhotspots -> ${OUT_HOTSPOTS.replace(ROOT, '.')}`);
 for (const [id, n] of [...perLig.entries()].sort()) console.log(`  ${id.padEnd(52)} ${n}/8 angles`);
+if (dropped.length) {
+  console.log(`\n${dropped.length} picture(s) had a neighbour hotspot dropped for exclusivity:`);
+  for (const d of dropped) console.log(`  ${d}`);
+}
 if (skipped.length) {
   const hidden = skipped.filter((s) => s.includes('hidden')).length;
   const incomplete = skipped.filter((s) => s.includes('incomplete')).length;
