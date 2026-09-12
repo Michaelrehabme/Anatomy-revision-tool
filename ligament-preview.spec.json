@@ -17,7 +17,8 @@
     225,
     270,
     315
-   ]
+   ],
+   "name": "Anterior talofibular ligament"
   },
   {
    "key": "anterior-tibiofibular",
@@ -34,7 +35,8 @@
     225,
     270,
     315
-   ]
+   ],
+   "name": "Anterior tibiofibular ligament"
   },
   {
    "key": "acromioclavicular",
@@ -51,7 +53,8 @@
     225,
     270,
     315
-   ]
+   ],
+   "name": "Acromioclavicular ligament"
   },
   {
    "key": "sacrotuberous",
@@ -83,7 +86,8 @@
     225,
     270,
     315
-   ]
+   ],
+   "name": "Sacrotuberous ligament"
   },
   {
    "key": "anterior-cruciate-plain",
@@ -100,7 +104,8 @@
     225,
     270,
     315
-   ]
+   ],
+   "name": "Anterior cruciate ligament"
   },
   {
    "key": "anterior-cruciate-ghost",
@@ -124,7 +129,8 @@
     225,
     270,
     315
-   ]
+   ],
+   "name": "Anterior cruciate ligament"
   }
  ]
 }

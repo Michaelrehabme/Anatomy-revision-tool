@@ -73,8 +73,28 @@ scene.collection.objects.link(cam)
 scene.camera = cam
 
 sun = bpy.data.objects.new("ligsun", bpy.data.lights.new("ligsun", type="SUN"))
-sun.data.energy = 3.0
+sun.data.energy = 2.6
+# A sun with some angular size casts soft-edged shadows, which is most of
+# what separates a rendered bone from a painted one.
+sun.data.angle = 0.35
 scene.collection.objects.link(sun)
+
+# A weaker fill from the other side, so the shadowed face of a bone is a
+# darker ivory rather than a hole. The reference illustration is lit this way.
+fill = bpy.data.objects.new("ligfill", bpy.data.lights.new("ligfill", type="SUN"))
+fill.data.energy = 0.9
+fill.data.angle = 0.6
+scene.collection.objects.link(fill)
+
+# Contact shadow where a strap meets bone, which is what makes it sit ON the
+# bone rather than float. EEVEE has renamed this between versions; set
+# whichever exists.
+for attr, val in (("use_gtao", True), ("gtao_distance", 0.02), ("use_shadows", True),
+                  ("use_fast_gi", True), ("fast_gi_distance", 0.03)):
+    try:
+        setattr(scene.eevee, attr, val)
+    except (AttributeError, TypeError):
+        pass
 
 # OUTLINES, ON THE STRAPS ONLY. A flat-shaded strap lying on a flat-shaded
 # bone has no edge where the two meet, so even in a different colour its
@@ -86,7 +106,7 @@ outline_coll = bpy.data.collections.new("lig_outlined")
 scene.collection.children.link(outline_coll)
 scene.render.use_freestyle = True
 scene.render.line_thickness_mode = "ABSOLUTE"
-scene.render.line_thickness = 2.2
+scene.render.line_thickness = 1.8
 _vl = scene.view_layers[0]
 _vl.use_freestyle = True
 _fs = _vl.freestyle_settings
@@ -100,8 +120,8 @@ _ls.select_contour = True
 _ls.select_crease = False
 _ls.select_by_collection = True
 _ls.collection = outline_coll
-_ls.linestyle.color = (0.02, 0.05, 0.12)
-_ls.linestyle.thickness = 2.2
+_ls.linestyle.color = (0.10, 0.12, 0.28)
+_ls.linestyle.thickness = 1.8
 
 
 def principled(name, colour, roughness=0.5):
@@ -126,13 +146,47 @@ def flat_white():
     return mat
 
 
-BONE_MAT = principled("lig_bone", (0.90, 0.88, 0.83, 1), 0.6)
+def bone_mat():
+    """Warm ivory with a faint grain, instead of flat grey.
+
+    The grey came from a neutral colour under a white world light and read
+    as plastic. Real bone in an illustration is a warm ivory with a slightly
+    mottled surface; a low-strength noise bump gives the light something to
+    catch without turning into texture.
+    """
+    mat = principled("lig_bone", (0.93, 0.87, 0.74, 1), 0.55)
+    nt = mat.node_tree
+    bsdf = nt.nodes["Principled BSDF"]
+    noise = nt.nodes.new("ShaderNodeTexNoise")
+    noise.inputs["Scale"].default_value = 900.0
+    noise.inputs["Detail"].default_value = 3.0
+    noise.inputs["Roughness"].default_value = 0.6
+    bump = nt.nodes.new("ShaderNodeBump")
+    bump.inputs["Strength"].default_value = 0.12
+    bump.inputs["Distance"].default_value = 0.001
+    nt.links.new(noise.outputs["Fac"], bump.inputs["Height"])
+    nt.links.new(bump.outputs["Normal"], bsdf.inputs["Normal"])
+    # A touch of colour variation so a large flat facet is not one tone.
+    ramp = nt.nodes.new("ShaderNodeValToRGB")
+    ramp.color_ramp.elements[0].color = (0.88, 0.81, 0.66, 1)
+    ramp.color_ramp.elements[1].color = (0.96, 0.92, 0.82, 1)
+    nt.links.new(noise.outputs["Fac"], ramp.inputs["Fac"])
+    nt.links.new(ramp.outputs["Color"], bsdf.inputs["Base Color"])
+    return mat
+
+
+BONE_MAT = bone_mat()
 # The two ligament colours. Each strap gets its own material instance built
 # from these, because the fibre texture has to be aligned to that strap's own
 # long axis — see fibre_mat.
-REST_FILL, REST_LINE = (0.06, 0.24, 0.60, 1), (0.02, 0.08, 0.26, 1)
-HILITE_FILL, HILITE_LINE = (0.0, 0.70, 0.95, 1), (0.0, 0.32, 0.50, 1)
-HILITE_GLOW = ((0.0, 0.85, 1.0, 1), 0.5)
+# The reference illustration draws ligaments as pale lavender-blue fibre
+# bundles with dark lines and a white sheen, on ivory bone. The pale fill
+# is readable there because of the lines, the outline and the ivory behind
+# it, not because it is dark — so this is lighter than the last pass and
+# leans on relief and lines instead.
+REST_FILL, REST_LINE = (0.56, 0.62, 0.86, 1), (0.14, 0.18, 0.42, 1)
+HILITE_FILL, HILITE_LINE = (0.0, 0.72, 0.95, 1), (0.0, 0.30, 0.48, 1)
+HILITE_GLOW = ((0.0, 0.85, 1.0, 1), 0.45)
 
 
 def fibre_axes(mesh):
@@ -175,7 +229,7 @@ def fibre_mat(name, fill, line, axes, glow=None):
     mat.use_nodes = True
     nt = mat.node_tree
     bsdf = nt.nodes["Principled BSDF"]
-    bsdf.inputs["Roughness"].default_value = 0.35
+    bsdf.inputs["Roughness"].default_value = 0.42
 
     coord = nt.nodes.new("ShaderNodeTexCoord")
     mapping = nt.nodes.new("ShaderNodeMapping")
@@ -208,6 +262,22 @@ def fibre_mat(name, fill, line, axes, glow=None):
     nt.links.new(ramp.outputs["Color"], mix.inputs["Factor"])
     nt.links.new(mix.outputs["Result"], bsdf.inputs["Base Color"])
 
+    # The same bands as relief, so the fibres catch the light as ridges and
+    # the strap stops being a flat decal. This is the single biggest step
+    # towards the painted look.
+    bump = nt.nodes.new("ShaderNodeBump")
+    bump.inputs["Strength"].default_value = 0.45
+    bump.inputs["Distance"].default_value = 0.0008
+    nt.links.new(wave.outputs["Fac"], bump.inputs["Height"])
+    nt.links.new(bump.outputs["Normal"], bsdf.inputs["Normal"])
+    # A glossy coat gives the white sheen the illustration paints along
+    # every bundle.
+    try:
+        bsdf.inputs["Coat Weight"].default_value = 0.35
+        bsdf.inputs["Coat Roughness"].default_value = 0.25
+    except KeyError:
+        pass
+
     if glow:
         colour, strength = glow
         try:
@@ -233,7 +303,7 @@ def ghost_mat():
     Ghosting is what an atlas does instead. The femur stays, keeps its shape
     and its relationship to the ligament, and the student sees through it.
     """
-    mat = principled("lig_ghost", (0.90, 0.88, 0.83, 1), 0.4)
+    mat = principled("lig_ghost", (0.93, 0.87, 0.74, 1), 0.4)
     bsdf = mat.node_tree.nodes["Principled BSDF"]
     bsdf.inputs["Alpha"].default_value = 0.22
     try:
@@ -291,6 +361,61 @@ def frame_camera(lo, hi, angle_deg, elevation_deg, margin, min_frame):
     cam.rotation_euler = (centre - cam.location).to_track_quat("-Z", "Y").to_euler()
     cam_data.ortho_scale = size
     sun.rotation_euler = mathutils.Euler((0.9 - phi * 0.5, 0.3, 0.6 + theta), "XYZ")
+    fill.rotation_euler = mathutils.Euler((1.1, -0.4, theta - 1.8), "XYZ")
+
+
+def id_colour(i):
+    """Index 1..255 as a flat colour, decodable from the PNG.
+
+    Red carries the low four bits and green the high four, each at sixteen
+    evenly spaced LINEAR levels. The Standard view transform writes them
+    through the plain sRGB curve, so the packer inverts that curve and rounds
+    to the nearest level. Anti-aliased edge pixels land between levels and
+    decode to a neighbour's index; the tracer's minimum-component filter
+    drops those specks.
+    """
+    return ((i % 16) / 15.0, (i // 16) / 15.0, 0.0, 1.0)
+
+
+def flat_emission(name, colour):
+    mat = bpy.data.materials.new(name)
+    mat.use_nodes = True
+    nt = mat.node_tree
+    nt.nodes.clear()
+    out = nt.nodes.new("ShaderNodeOutputMaterial")
+    em = nt.nodes.new("ShaderNodeEmission")
+    em.inputs[0].default_value = colour
+    em.inputs[1].default_value = 1.0
+    nt.links.new(em.outputs[0], out.inputs[0])
+    return mat
+
+
+BLACK_MAT = flat_emission("lig_id_black", (0, 0, 0, 1))
+
+
+def render_ids(path, bones_mesh, parts):
+    """One render where every strap is its own colour, so a click on the
+    wrong ligament can be named. parts: list of (index, mesh)."""
+    clear()
+    link(bones_mesh, "id_bones", BLACK_MAT)
+    for idx, m in parts:
+        link(m, "id_%d" % idx, flat_emission("lig_id_%d" % idx, id_colour(idx)))
+    saved = (scene.view_settings.view_transform, scene.view_settings.look,
+             scene.eevee.taa_render_samples, scene.render.dither_intensity, _bg.inputs[1].default_value if _bg else None)
+    scene.view_settings.view_transform = "Standard"
+    scene.view_settings.look = "None"
+    scene.eevee.taa_render_samples = 1
+    scene.render.dither_intensity = 0.0
+    if _bg:
+        _bg.inputs[1].default_value = 0.0
+    try:
+        render_to(path, outlines=False)
+    finally:
+        scene.view_settings.view_transform, scene.view_settings.look = saved[0], saved[1]
+        scene.eevee.taa_render_samples = saved[2]
+        scene.render.dither_intensity = saved[3]
+        if _bg and saved[4] is not None:
+            _bg.inputs[1].default_value = saved[4]
 
 
 def clear():
@@ -464,7 +589,14 @@ for entry in spec["ligaments"]:
       link(lig_mesh, "msk_lig_" + key, MASK_MAT)
       render_to(os.path.join(leaf_dir, "mask.png"), outlines=False)
 
-      count += 3
+      # The ID pass, with a legend the packer reads back. The target is index
+      # 1; the neighbours follow in the order they were baked.
+      parts = [(1, lig_mesh)] + [(i + 2, m) for i, (n, m, _) in enumerate(strap_parts)]
+      render_ids(os.path.join(leaf_dir, "ids.png"), bones, parts)
+      with open(os.path.join(leaf_dir, "ids.json"), "w") as f:
+          json.dump({"1": entry.get("name", key)} | {str(i + 2): n for i, (n, _, _) in enumerate(strap_parts)}, f)
+
+      count += 4
     bpy.data.meshes.remove(lig_mesh)
     bpy.data.meshes.remove(bones)
     if ghost_mesh:
