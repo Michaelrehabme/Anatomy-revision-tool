@@ -1,0 +1,6291 @@
+{
+ "schemaVersion": 1,
+ "touchMetres": 0.004,
+ "ligaments": [
+  {
+   "ligament": "Acetabular labrum.l",
+   "vertices": 176,
+   "attachments": [
+    {
+     "bone": "Femur.l",
+     "share": 0.54
+    },
+    {
+     "bone": "Hip bone.l",
+     "share": 0.42
+    }
+   ]
+  },
+  {
+   "ligament": "Acetabular labrum.r",
+   "vertices": 176,
+   "attachments": [
+    {
+     "bone": "Femur.r",
+     "share": 0.54
+    },
+    {
+     "bone": "Hip bone.r",
+     "share": 0.42
+    }
+   ]
+  },
+  {
+   "ligament": "Acromioclavicular ligament.l",
+   "vertices": 9,
+   "attachments": [
+    {
+     "bone": "Scapula.l",
+     "share": 0.333
+    },
+    {
+     "bone": "Clavicle.l",
+     "share": 0.333
+    }
+   ]
+  },
+  {
+   "ligament": "Acromioclavicular ligament.r",
+   "vertices": 9,
+   "attachments": [
+    {
+     "bone": "Scapula.r",
+     "share": 0.333
+    },
+    {
+     "bone": "Clavicle.r",
+     "share": 0.333
+    }
+   ]
+  },
+  {
+   "ligament": "Annular ligament of radius.l",
+   "vertices": 30,
+   "attachments": [
+    {
+     "bone": "Radius.l",
+     "share": 0.8
+    },
+    {
+     "bone": "Ulna.l",
+     "share": 0.2
+    }
+   ]
+  },
+  {
+   "ligament": "Annular ligament of radius.r",
+   "vertices": 30,
+   "attachments": [
+    {
+     "bone": "Radius.r",
+     "share": 0.8
+    },
+    {
+     "bone": "Ulna.r",
+     "share": 0.2
+    }
+   ]
+  },
+  {
+   "ligament": "Anterior cruciate ligament.l",
+   "vertices": 840,
+   "attachments": [
+    {
+     "bone": "Tibia.l",
+     "share": 0.281
+    },
+    {
+     "bone": "Femur.l",
+     "share": 0.198
+    }
+   ]
+  },
+  {
+   "ligament": "Anterior cruciate ligament.r",
+   "vertices": 840,
+   "attachments": [
+    {
+     "bone": "Tibia.r",
+     "share": 0.281
+    },
+    {
+     "bone": "Femur.r",
+     "share": 0.198
+    }
+   ]
+  },
+  {
+   "ligament": "Anterior ligament of fibular head.l",
+   "vertices": 10,
+   "attachments": [
+    {
+     "bone": "Fibula.l",
+     "share": 0.5
+    },
+    {
+     "bone": "Tibia.l",
+     "share": 0.4
+    }
+   ]
+  },
+  {
+   "ligament": "Anterior ligament of fibular head.r",
+   "vertices": 10,
+   "attachments": [
+    {
+     "bone": "Fibula.r",
+     "share": 0.5
+    },
+    {
+     "bone": "Tibia.r",
+     "share": 0.4
+    }
+   ]
+  },
+  {
+   "ligament": "Anterior longitudinal ligament",
+   "vertices": 337,
+   "attachments": [
+    {
+     "bone": "Vertebra C6",
+     "share": 0.053
+    },
+    {
+     "bone": "Sacrum",
+     "share": 0.053
+    },
+    {
+     "bone": "Vertebra T6",
+     "share": 0.045
+    },
+    {
+     "bone": "Vertebra C7",
+     "share": 0.042
+    },
+    {
+     "bone": "Vertebra T5",
+     "share": 0.042
+    },
+    {
+     "bone": "Axis (C2)",
+     "share": 0.036
+    }
+   ]
+  },
+  {
+   "ligament": "Anterior meniscotibial ligament (Lateral meniscus).l",
+   "vertices": 20,
+   "attachments": [
+    {
+     "bone": "Tibia.l",
+     "share": 0.9
+    }
+   ]
+  },
+  {
+   "ligament": "Anterior meniscotibial ligament (Lateral meniscus).r",
+   "vertices": 20,
+   "attachments": [
+    {
+     "bone": "Tibia.r",
+     "share": 0.9
+    }
+   ]
+  },
+  {
+   "ligament": "Anterior meniscotibial ligament (Medial meniscus).l",
+   "vertices": 10,
+   "attachments": [
+    {
+     "bone": "Femur.l",
+     "share": 0.6
+    },
+    {
+     "bone": "Tibia.l",
+     "share": 0.4
+    }
+   ]
+  },
+  {
+   "ligament": "Anterior meniscotibial ligament (Medial meniscus).r",
+   "vertices": 10,
+   "attachments": [
+    {
+     "bone": "Femur.r",
+     "share": 0.6
+    },
+    {
+     "bone": "Tibia.r",
+     "share": 0.4
+    }
+   ]
+  },
+  {
+   "ligament": "Anterior sacro-iliac ligament.l",
+   "vertices": 36,
+   "attachments": [
+    {
+     "bone": "Sacrum",
+     "share": 0.556
+    },
+    {
+     "bone": "Hip bone.l",
+     "share": 0.278
+    }
+   ]
+  },
+  {
+   "ligament": "Anterior sacro-iliac ligament.r",
+   "vertices": 36,
+   "attachments": [
+    {
+     "bone": "Sacrum",
+     "share": 0.556
+    },
+    {
+     "bone": "Hip bone.r",
+     "share": 0.278
+    }
+   ]
+  },
+  {
+   "ligament": "Anterior sternoclavicular ligament.l",
+   "vertices": 9,
+   "attachments": [
+    {
+     "bone": "Clavicle.l",
+     "share": 0.333
+    },
+    {
+     "bone": "Manubrium of sternum",
+     "share": 0.333
+    }
+   ]
+  },
+  {
+   "ligament": "Anterior sternoclavicular ligament.r",
+   "vertices": 9,
+   "attachments": [
+    {
+     "bone": "Clavicle.r",
+     "share": 0.333
+    },
+    {
+     "bone": "Manubrium of sternum",
+     "share": 0.333
+    }
+   ]
+  },
+  {
+   "ligament": "Anterior talocalcaneal ligament.l",
+   "vertices": 10,
+   "attachments": [
+    {
+     "bone": "Talus.l",
+     "share": 0.5
+    },
+    {
+     "bone": "Calcaneus.l",
+     "share": 0.4
+    }
+   ]
+  },
+  {
+   "ligament": "Anterior talocalcaneal ligament.r",
+   "vertices": 10,
+   "attachments": [
+    {
+     "bone": "Talus.r",
+     "share": 0.5
+    },
+    {
+     "bone": "Calcaneus.r",
+     "share": 0.4
+    }
+   ]
+  },
+  {
+   "ligament": "Anterior talofibular ligament.l",
+   "vertices": 4,
+   "attachments": [
+    {
+     "bone": "Talus.l",
+     "share": 0.5
+    },
+    {
+     "bone": "Fibula.l",
+     "share": 0.5
+    }
+   ]
+  },
+  {
+   "ligament": "Anterior talofibular ligament.r",
+   "vertices": 4,
+   "attachments": [
+    {
+     "bone": "Talus.r",
+     "share": 0.5
+    },
+    {
+     "bone": "Fibula.r",
+     "share": 0.5
+    }
+   ]
+  },
+  {
+   "ligament": "Anterior tibiofibular ligament.l",
+   "vertices": 20,
+   "attachments": [
+    {
+     "bone": "Fibula.l",
+     "share": 0.2
+    },
+    {
+     "bone": "Tibia.l",
+     "share": 0.15
+    }
+   ]
+  },
+  {
+   "ligament": "Anterior tibiofibular ligament.r",
+   "vertices": 20,
+   "attachments": [
+    {
+     "bone": "Fibula.r",
+     "share": 0.2
+    },
+    {
+     "bone": "Tibia.r",
+     "share": 0.15
+    }
+   ]
+  },
+  {
+   "ligament": "Arcuate popliteal ligament.l",
+   "vertices": 33,
+   "attachments": [
+    {
+     "bone": "Femur.l",
+     "share": 0.394
+    },
+    {
+     "bone": "Fibula.l",
+     "share": 0.121
+    },
+    {
+     "bone": "Tibia.l",
+     "share": 0.091
+    }
+   ]
+  },
+  {
+   "ligament": "Arcuate popliteal ligament.r",
+   "vertices": 33,
+   "attachments": [
+    {
+     "bone": "Femur.r",
+     "share": 0.394
+    },
+    {
+     "bone": "Fibula.r",
+     "share": 0.121
+    },
+    {
+     "bone": "Tibia.r",
+     "share": 0.091
+    }
+   ]
+  },
+  {
+   "ligament": "Calcaneocuboid ligament.l",
+   "vertices": 9,
+   "attachments": [
+    {
+     "bone": "Cuboid bone.l",
+     "share": 0.667
+    },
+    {
+     "bone": "Calcaneus.l",
+     "share": 0.333
+    }
+   ]
+  },
+  {
+   "ligament": "Calcaneocuboid ligament.r",
+   "vertices": 9,
+   "attachments": [
+    {
+     "bone": "Cuboid bone.r",
+     "share": 0.667
+    },
+    {
+     "bone": "Calcaneus.r",
+     "share": 0.333
+    }
+   ]
+  },
+  {
+   "ligament": "Calcaneofibular ligament.l",
+   "vertices": 4,
+   "attachments": [
+    {
+     "bone": "Calcaneus.l",
+     "share": 0.5
+    },
+    {
+     "bone": "Fibula.l",
+     "share": 0.5
+    }
+   ]
+  },
+  {
+   "ligament": "Calcaneofibular ligament.r",
+   "vertices": 4,
+   "attachments": [
+    {
+     "bone": "Calcaneus.r",
+     "share": 0.5
+    },
+    {
+     "bone": "Fibula.r",
+     "share": 0.5
+    }
+   ]
+  },
+  {
+   "ligament": "Calcaneonavicular ligament.l",
+   "vertices": 9,
+   "attachments": [
+    {
+     "bone": "Calcaneus.l",
+     "share": 0.444
+    },
+    {
+     "bone": "Navicular bone.l",
+     "share": 0.444
+    },
+    {
+     "bone": "Cuboid bone.l",
+     "share": 0.111
+    }
+   ]
+  },
+  {
+   "ligament": "Calcaneonavicular ligament.r",
+   "vertices": 9,
+   "attachments": [
+    {
+     "bone": "Calcaneus.r",
+     "share": 0.444
+    },
+    {
+     "bone": "Navicular bone.r",
+     "share": 0.444
+    },
+    {
+     "bone": "Cuboid bone.r",
+     "share": 0.111
+    }
+   ]
+  },
+  {
+   "ligament": "Capitohamate interosseous ligament.l",
+   "vertices": 4,
+   "attachments": [
+    {
+     "bone": "Capitate bone.l",
+     "share": 0.5
+    },
+    {
+     "bone": "Hamate bone.l",
+     "share": 0.5
+    }
+   ]
+  },
+  {
+   "ligament": "Capitohamate interosseous ligament.r",
+   "vertices": 4,
+   "attachments": [
+    {
+     "bone": "Capitate bone.r",
+     "share": 0.5
+    },
+    {
+     "bone": "Hamate bone.r",
+     "share": 0.5
+    }
+   ]
+  },
+  {
+   "ligament": "Collateral interphalangeal ligaments of foot.l",
+   "vertices": 238,
+   "attachments": [
+    {
+     "bone": "Middle phalanx of second finger of foot.l",
+     "share": 0.118
+    },
+    {
+     "bone": "Middle phalanx of third finger of foot.l",
+     "share": 0.109
+    },
+    {
+     "bone": "Middle phalanx of fourth finger of foot.l",
+     "share": 0.101
+    },
+    {
+     "bone": "Middle phalanx of fifth finger of foot.l",
+     "share": 0.097
+    },
+    {
+     "bone": "Proximal phalanx of fifth finger of foot.l",
+     "share": 0.088
+    },
+    {
+     "bone": "Proximal phalanx of second finger of foot.l",
+     "share": 0.067
+    }
+   ]
+  },
+  {
+   "ligament": "Collateral interphalangeal ligaments of foot.r",
+   "vertices": 238,
+   "attachments": [
+    {
+     "bone": "Middle phalanx of second finger of foot.r",
+     "share": 0.118
+    },
+    {
+     "bone": "Middle phalanx of third finger of foot.r",
+     "share": 0.109
+    },
+    {
+     "bone": "Middle phalanx of fourth finger of foot.r",
+     "share": 0.101
+    },
+    {
+     "bone": "Middle phalanx of fifth finger of foot.r",
+     "share": 0.097
+    },
+    {
+     "bone": "Proximal phalanx of fifth finger of foot.r",
+     "share": 0.088
+    },
+    {
+     "bone": "Proximal phalanx of second finger of foot.r",
+     "share": 0.067
+    }
+   ]
+  },
+  {
+   "ligament": "Collateral interphalangeal ligaments of hand.l",
+   "vertices": 188,
+   "attachments": [
+    {
+     "bone": "Middle phalanx of third finger of hand.l",
+     "share": 0.117
+    },
+    {
+     "bone": "Middle phalanx of second finger of hand.l",
+     "share": 0.112
+    },
+    {
+     "bone": "Middle phalanx of fourth finger of hand.l",
+     "share": 0.106
+    },
+    {
+     "bone": "Middle phalanx of fifth finger of hand.l",
+     "share": 0.106
+    },
+    {
+     "bone": "Proximal phalanx of first finger of hand.l",
+     "share": 0.069
+    },
+    {
+     "bone": "Proximal phalanx of third finger of hand.l",
+     "share": 0.064
+    }
+   ]
+  },
+  {
+   "ligament": "Collateral interphalangeal ligaments of hand.r",
+   "vertices": 188,
+   "attachments": [
+    {
+     "bone": "Middle phalanx of third finger of hand.r",
+     "share": 0.117
+    },
+    {
+     "bone": "Middle phalanx of second finger of hand.r",
+     "share": 0.112
+    },
+    {
+     "bone": "Middle phalanx of fourth finger of hand.r",
+     "share": 0.106
+    },
+    {
+     "bone": "Middle phalanx of fifth finger of hand.r",
+     "share": 0.106
+    },
+    {
+     "bone": "Proximal phalanx of first finger of hand.r",
+     "share": 0.069
+    },
+    {
+     "bone": "Proximal phalanx of third finger of hand.r",
+     "share": 0.064
+    }
+   ]
+  },
+  {
+   "ligament": "Collateral metacarpophalangeal ligaments.l",
+   "vertices": 100,
+   "attachments": [
+    {
+     "bone": "Second metacarpal bone.l",
+     "share": 0.12
+    },
+    {
+     "bone": "Proximal phalanx of fourth finger of hand.l",
+     "share": 0.12
+    },
+    {
+     "bone": "Proximal phalanx of third finger of hand.l",
+     "share": 0.11
+    },
+    {
+     "bone": "Proximal phalanx of first finger of hand.l",
+     "share": 0.11
+    },
+    {
+     "bone": "Proximal phalanx of fifth finger of hand.l",
+     "share": 0.1
+    },
+    {
+     "bone": "Fifth metacarpal bone.l",
+     "share": 0.1
+    }
+   ]
+  },
+  {
+   "ligament": "Collateral metacarpophalangeal ligaments.r",
+   "vertices": 100,
+   "attachments": [
+    {
+     "bone": "Second metacarpal bone.r",
+     "share": 0.12
+    },
+    {
+     "bone": "Proximal phalanx of fourth finger of hand.r",
+     "share": 0.12
+    },
+    {
+     "bone": "Proximal phalanx of third finger of hand.r",
+     "share": 0.11
+    },
+    {
+     "bone": "Proximal phalanx of first finger of hand.r",
+     "share": 0.11
+    },
+    {
+     "bone": "Proximal phalanx of fifth finger of hand.r",
+     "share": 0.1
+    },
+    {
+     "bone": "Fifth metacarpal bone.r",
+     "share": 0.1
+    }
+   ]
+  },
+  {
+   "ligament": "Collateral metatarsophalangeal ligaments.l",
+   "vertices": 140,
+   "attachments": [
+    {
+     "bone": "Proximal phalanx of fourth finger of foot.l",
+     "share": 0.129
+    },
+    {
+     "bone": "Fifth metatarsal bone.l",
+     "share": 0.114
+    },
+    {
+     "bone": "Second metatarsal bone.l",
+     "share": 0.107
+    },
+    {
+     "bone": "Third metatarsal bone.l",
+     "share": 0.1
+    },
+    {
+     "bone": "Proximal phalanx of fifth finger of foot.l",
+     "share": 0.1
+    },
+    {
+     "bone": "Proximal phalanx of first finger of foot.l",
+     "share": 0.093
+    }
+   ]
+  },
+  {
+   "ligament": "Collateral metatarsophalangeal ligaments.r",
+   "vertices": 140,
+   "attachments": [
+    {
+     "bone": "Proximal phalanx of fourth finger of foot.r",
+     "share": 0.129
+    },
+    {
+     "bone": "Fifth metatarsal bone.r",
+     "share": 0.114
+    },
+    {
+     "bone": "Second metatarsal bone.r",
+     "share": 0.107
+    },
+    {
+     "bone": "Third metatarsal bone.r",
+     "share": 0.1
+    },
+    {
+     "bone": "Proximal phalanx of fifth finger of foot.r",
+     "share": 0.1
+    },
+    {
+     "bone": "Proximal phalanx of first finger of foot.r",
+     "share": 0.093
+    }
+   ]
+  },
+  {
+   "ligament": "Conoid ligament.l",
+   "vertices": 6,
+   "attachments": [
+    {
+     "bone": "Scapula.l",
+     "share": 0.5
+    },
+    {
+     "bone": "Clavicle.l",
+     "share": 0.5
+    }
+   ]
+  },
+  {
+   "ligament": "Conoid ligament.r",
+   "vertices": 6,
+   "attachments": [
+    {
+     "bone": "Scapula.r",
+     "share": 0.5
+    },
+    {
+     "bone": "Clavicle.r",
+     "share": 0.5
+    }
+   ]
+  },
+  {
+   "ligament": "Coraco-acromial ligament.l",
+   "vertices": 4,
+   "attachments": [
+    {
+     "bone": "Scapula.l",
+     "share": 1.0
+    }
+   ]
+  },
+  {
+   "ligament": "Coraco-acromial ligament.r",
+   "vertices": 4,
+   "attachments": [
+    {
+     "bone": "Scapula.r",
+     "share": 1.0
+    }
+   ]
+  },
+  {
+   "ligament": "Coracohumeral ligament.l",
+   "vertices": 18,
+   "attachments": [
+    {
+     "bone": "Humerus.l",
+     "share": 0.333
+    },
+    {
+     "bone": "Scapula.l",
+     "share": 0.167
+    }
+   ]
+  },
+  {
+   "ligament": "Coracohumeral ligament.r",
+   "vertices": 18,
+   "attachments": [
+    {
+     "bone": "Humerus.r",
+     "share": 0.333
+    },
+    {
+     "bone": "Scapula.r",
+     "share": 0.167
+    }
+   ]
+  },
+  {
+   "ligament": "Costoclavicular ligament.l",
+   "vertices": 4,
+   "attachments": [
+    {
+     "bone": "Clavicle.l",
+     "share": 0.5
+    },
+    {
+     "bone": "Costal cartilage of first rib.l",
+     "share": 0.25
+    }
+   ]
+  },
+  {
+   "ligament": "Costoclavicular ligament.r",
+   "vertices": 4,
+   "attachments": [
+    {
+     "bone": "Clavicle.r",
+     "share": 0.5
+    },
+    {
+     "bone": "Costal cartilage of first rib.r",
+     "share": 0.25
+    },
+    {
+     "bone": "Manubrium of sternum",
+     "share": 0.25
+    }
+   ]
+  },
+  {
+   "ligament": "Costotransverse ligament.l",
+   "vertices": 110,
+   "attachments": [
+    {
+     "bone": "Second rib.l",
+     "share": 0.055
+    },
+    {
+     "bone": "Fourth rib.l",
+     "share": 0.055
+    },
+    {
+     "bone": "Fifth rib.l",
+     "share": 0.055
+    },
+    {
+     "bone": "Seventh rib.l",
+     "share": 0.055
+    },
+    {
+     "bone": "First rib.l",
+     "share": 0.045
+    },
+    {
+     "bone": "Vertebra T1",
+     "share": 0.045
+    }
+   ]
+  },
+  {
+   "ligament": "Costotransverse ligament.r",
+   "vertices": 110,
+   "attachments": [
+    {
+     "bone": "Second rib.r",
+     "share": 0.055
+    },
+    {
+     "bone": "Fourth rib.r",
+     "share": 0.055
+    },
+    {
+     "bone": "Fifth rib.r",
+     "share": 0.055
+    },
+    {
+     "bone": "Seventh rib.r",
+     "share": 0.055
+    },
+    {
+     "bone": "First rib.r",
+     "share": 0.045
+    },
+    {
+     "bone": "Vertebra T1",
+     "share": 0.045
+    }
+   ]
+  },
+  {
+   "ligament": "Cricopharyngeal ligament.l",
+   "vertices": 1540,
+   "attachments": [
+    {
+     "bone": "Thyroid cartilage",
+     "share": 0.542
+    },
+    {
+     "bone": "Cricoid cartilage",
+     "share": 0.35
+    },
+    {
+     "bone": "Arytenoid cartilage.l",
+     "share": 0.089
+    }
+   ]
+  },
+  {
+   "ligament": "Cricopharyngeal ligament.r",
+   "vertices": 1540,
+   "attachments": [
+    {
+     "bone": "Thyroid cartilage",
+     "share": 0.542
+    },
+    {
+     "bone": "Cricoid cartilage",
+     "share": 0.35
+    },
+    {
+     "bone": "Arytenoid cartilage.r",
+     "share": 0.089
+    }
+   ]
+  },
+  {
+   "ligament": "Cuneocuboid interosseous ligament.l",
+   "vertices": 12,
+   "attachments": [
+    {
+     "bone": "Lateral cuneiform bone.l",
+     "share": 0.667
+    },
+    {
+     "bone": "Cuboid bone.l",
+     "share": 0.333
+    }
+   ]
+  },
+  {
+   "ligament": "Cuneocuboid interosseous ligament.r",
+   "vertices": 12,
+   "attachments": [
+    {
+     "bone": "Lateral cuneiform bone.r",
+     "share": 0.667
+    },
+    {
+     "bone": "Cuboid bone.r",
+     "share": 0.333
+    }
+   ]
+  },
+  {
+   "ligament": "Cuneometatarsal interosseous ligaments.l",
+   "vertices": 12,
+   "attachments": [
+    {
+     "bone": "Second metatarsal bone.l",
+     "share": 0.25
+    },
+    {
+     "bone": "Lateral cuneiform bone.l",
+     "share": 0.167
+    },
+    {
+     "bone": "Third metatarsal bone.l",
+     "share": 0.167
+    },
+    {
+     "bone": "First metatarsal bone.l",
+     "share": 0.083
+    },
+    {
+     "bone": "Intermediate cuneiform bone.l",
+     "share": 0.083
+    },
+    {
+     "bone": "Medial cuneiform bone.l",
+     "share": 0.083
+    }
+   ]
+  },
+  {
+   "ligament": "Cuneometatarsal interosseous ligaments.r",
+   "vertices": 12,
+   "attachments": [
+    {
+     "bone": "Second metatarsal bone.r",
+     "share": 0.25
+    },
+    {
+     "bone": "Lateral cuneiform bone.r",
+     "share": 0.167
+    },
+    {
+     "bone": "Third metatarsal bone.r",
+     "share": 0.167
+    },
+    {
+     "bone": "First metatarsal bone.r",
+     "share": 0.083
+    },
+    {
+     "bone": "Intermediate cuneiform bone.r",
+     "share": 0.083
+    },
+    {
+     "bone": "Medial cuneiform bone.r",
+     "share": 0.083
+    }
+   ]
+  },
+  {
+   "ligament": "Deep part of tibial collateral ligament.l",
+   "vertices": 24,
+   "attachments": [
+    {
+     "bone": "Tibia.l",
+     "share": 0.292
+    },
+    {
+     "bone": "Femur.l",
+     "share": 0.25
+    }
+   ]
+  },
+  {
+   "ligament": "Deep part of tibial collateral ligament.r",
+   "vertices": 24,
+   "attachments": [
+    {
+     "bone": "Tibia.r",
+     "share": 0.292
+    },
+    {
+     "bone": "Femur.r",
+     "share": 0.25
+    }
+   ]
+  },
+  {
+   "ligament": "Deep transverse metacarpal ligament.l",
+   "vertices": 18,
+   "attachments": [
+    {
+     "bone": "Third metacarpal bone.l",
+     "share": 0.222
+    },
+    {
+     "bone": "Second metacarpal bone.l",
+     "share": 0.167
+    },
+    {
+     "bone": "Proximal phalanx of fourth finger of hand.l",
+     "share": 0.167
+    },
+    {
+     "bone": "Fourth metacarpal bone.l",
+     "share": 0.167
+    },
+    {
+     "bone": "Proximal phalanx of third finger of hand.l",
+     "share": 0.111
+    },
+    {
+     "bone": "Fifth metacarpal bone.l",
+     "share": 0.111
+    }
+   ]
+  },
+  {
+   "ligament": "Deep transverse metacarpal ligament.r",
+   "vertices": 18,
+   "attachments": [
+    {
+     "bone": "Third metacarpal bone.r",
+     "share": 0.222
+    },
+    {
+     "bone": "Second metacarpal bone.r",
+     "share": 0.167
+    },
+    {
+     "bone": "Proximal phalanx of fourth finger of hand.r",
+     "share": 0.167
+    },
+    {
+     "bone": "Fourth metacarpal bone.r",
+     "share": 0.167
+    },
+    {
+     "bone": "Proximal phalanx of third finger of hand.r",
+     "share": 0.111
+    },
+    {
+     "bone": "Fifth metacarpal bone.r",
+     "share": 0.111
+    }
+   ]
+  },
+  {
+   "ligament": "Deep transverse metatarsal ligament.l",
+   "vertices": 18,
+   "attachments": [
+    {
+     "bone": "Proximal phalanx of fourth finger of foot.l",
+     "share": 0.167
+    },
+    {
+     "bone": "Second metatarsal bone.l",
+     "share": 0.111
+    },
+    {
+     "bone": "Proximal phalanx of second finger of foot.l",
+     "share": 0.111
+    },
+    {
+     "bone": "Proximal phalanx of third finger of foot.l",
+     "share": 0.111
+    },
+    {
+     "bone": "Third metatarsal bone.l",
+     "share": 0.111
+    },
+    {
+     "bone": "Fourth metatarsal bone.l",
+     "share": 0.111
+    }
+   ]
+  },
+  {
+   "ligament": "Deep transverse metatarsal ligament.r",
+   "vertices": 18,
+   "attachments": [
+    {
+     "bone": "Proximal phalanx of fourth finger of foot.r",
+     "share": 0.167
+    },
+    {
+     "bone": "Second metatarsal bone.r",
+     "share": 0.111
+    },
+    {
+     "bone": "Proximal phalanx of second finger of foot.r",
+     "share": 0.111
+    },
+    {
+     "bone": "Proximal phalanx of third finger of foot.r",
+     "share": 0.111
+    },
+    {
+     "bone": "Third metatarsal bone.r",
+     "share": 0.111
+    },
+    {
+     "bone": "Fourth metatarsal bone.r",
+     "share": 0.111
+    }
+   ]
+  },
+  {
+   "ligament": "Descending part of iliofemoral ligament.l",
+   "vertices": 45,
+   "attachments": [
+    {
+     "bone": "Femur.l",
+     "share": 0.489
+    },
+    {
+     "bone": "Hip bone.l",
+     "share": 0.222
+    }
+   ]
+  },
+  {
+   "ligament": "Descending part of iliofemoral ligament.r",
+   "vertices": 45,
+   "attachments": [
+    {
+     "bone": "Femur.r",
+     "share": 0.489
+    },
+    {
+     "bone": "Hip bone.r",
+     "share": 0.222
+    }
+   ]
+  },
+  {
+   "ligament": "Dorsal calcaneocuboid ligament.l",
+   "vertices": 4,
+   "attachments": [
+    {
+     "bone": "Calcaneus.l",
+     "share": 0.5
+    },
+    {
+     "bone": "Cuboid bone.l",
+     "share": 0.5
+    }
+   ]
+  },
+  {
+   "ligament": "Dorsal calcaneocuboid ligament.r",
+   "vertices": 4,
+   "attachments": [
+    {
+     "bone": "Calcaneus.r",
+     "share": 0.5
+    },
+    {
+     "bone": "Cuboid bone.r",
+     "share": 0.5
+    }
+   ]
+  },
+  {
+   "ligament": "Dorsal carpometacarpal ligaments.l",
+   "vertices": 43,
+   "attachments": [
+    {
+     "bone": "Capitate bone.l",
+     "share": 0.163
+    },
+    {
+     "bone": "Third metacarpal bone.l",
+     "share": 0.14
+    },
+    {
+     "bone": "Trapezium bone.l",
+     "share": 0.14
+    },
+    {
+     "bone": "Hamate bone.l",
+     "share": 0.116
+    },
+    {
+     "bone": "Trapezoid bone.l",
+     "share": 0.116
+    },
+    {
+     "bone": "Fourth metacarpal bone.l",
+     "share": 0.093
+    }
+   ]
+  },
+  {
+   "ligament": "Dorsal carpometacarpal ligaments.r",
+   "vertices": 43,
+   "attachments": [
+    {
+     "bone": "Capitate bone.r",
+     "share": 0.163
+    },
+    {
+     "bone": "Third metacarpal bone.r",
+     "share": 0.14
+    },
+    {
+     "bone": "Trapezium bone.r",
+     "share": 0.14
+    },
+    {
+     "bone": "Hamate bone.r",
+     "share": 0.116
+    },
+    {
+     "bone": "Trapezoid bone.r",
+     "share": 0.116
+    },
+    {
+     "bone": "Fourth metacarpal bone.r",
+     "share": 0.093
+    }
+   ]
+  },
+  {
+   "ligament": "Dorsal cuboideonavicular ligament.l",
+   "vertices": 4,
+   "attachments": [
+    {
+     "bone": "Cuboid bone.l",
+     "share": 0.5
+    },
+    {
+     "bone": "Navicular bone.l",
+     "share": 0.5
+    }
+   ]
+  },
+  {
+   "ligament": "Dorsal cuboideonavicular ligament.r",
+   "vertices": 4,
+   "attachments": [
+    {
+     "bone": "Cuboid bone.r",
+     "share": 0.5
+    },
+    {
+     "bone": "Navicular bone.r",
+     "share": 0.5
+    }
+   ]
+  },
+  {
+   "ligament": "Dorsal cuneocuboid ligament.l",
+   "vertices": 4,
+   "attachments": [
+    {
+     "bone": "Cuboid bone.l",
+     "share": 0.5
+    },
+    {
+     "bone": "Lateral cuneiform bone.l",
+     "share": 0.25
+    }
+   ]
+  },
+  {
+   "ligament": "Dorsal cuneocuboid ligament.r",
+   "vertices": 4,
+   "attachments": [
+    {
+     "bone": "Cuboid bone.r",
+     "share": 0.5
+    },
+    {
+     "bone": "Lateral cuneiform bone.r",
+     "share": 0.25
+    }
+   ]
+  },
+  {
+   "ligament": "Dorsal cuneonavicular ligaments.l",
+   "vertices": 18,
+   "attachments": [
+    {
+     "bone": "Navicular bone.l",
+     "share": 0.5
+    },
+    {
+     "bone": "Medial cuneiform bone.l",
+     "share": 0.167
+    },
+    {
+     "bone": "Intermediate cuneiform bone.l",
+     "share": 0.167
+    },
+    {
+     "bone": "Lateral cuneiform bone.l",
+     "share": 0.167
+    }
+   ]
+  },
+  {
+   "ligament": "Dorsal cuneonavicular ligaments.r",
+   "vertices": 18,
+   "attachments": [
+    {
+     "bone": "Navicular bone.r",
+     "share": 0.5
+    },
+    {
+     "bone": "Medial cuneiform bone.r",
+     "share": 0.167
+    },
+    {
+     "bone": "Intermediate cuneiform bone.r",
+     "share": 0.167
+    },
+    {
+     "bone": "Lateral cuneiform bone.r",
+     "share": 0.167
+    }
+   ]
+  },
+  {
+   "ligament": "Dorsal intercarpal ligaments.l",
+   "vertices": 33,
+   "attachments": [
+    {
+     "bone": "Hamate bone.l",
+     "share": 0.485
+    },
+    {
+     "bone": "Capitate bone.l",
+     "share": 0.182
+    },
+    {
+     "bone": "Triquetrum bone.l",
+     "share": 0.121
+    },
+    {
+     "bone": "Trapezoid bone.l",
+     "share": 0.091
+    },
+    {
+     "bone": "Trapezium bone.l",
+     "share": 0.061
+    },
+    {
+     "bone": "Scaphoid bone.l",
+     "share": 0.061
+    }
+   ]
+  },
+  {
+   "ligament": "Dorsal intercarpal ligaments.r",
+   "vertices": 33,
+   "attachments": [
+    {
+     "bone": "Hamate bone.r",
+     "share": 0.485
+    },
+    {
+     "bone": "Capitate bone.r",
+     "share": 0.182
+    },
+    {
+     "bone": "Triquetrum bone.r",
+     "share": 0.121
+    },
+    {
+     "bone": "Trapezoid bone.r",
+     "share": 0.091
+    },
+    {
+     "bone": "Trapezium bone.r",
+     "share": 0.061
+    },
+    {
+     "bone": "Scaphoid bone.r",
+     "share": 0.061
+    }
+   ]
+  },
+  {
+   "ligament": "Dorsal intercuneiform ligaments.l",
+   "vertices": 8,
+   "attachments": [
+    {
+     "bone": "Intermediate cuneiform bone.l",
+     "share": 0.5
+    },
+    {
+     "bone": "Lateral cuneiform bone.l",
+     "share": 0.25
+    },
+    {
+     "bone": "Medial cuneiform bone.l",
+     "share": 0.25
+    }
+   ]
+  },
+  {
+   "ligament": "Dorsal intercuneiform ligaments.r",
+   "vertices": 8,
+   "attachments": [
+    {
+     "bone": "Intermediate cuneiform bone.r",
+     "share": 0.5
+    },
+    {
+     "bone": "Lateral cuneiform bone.r",
+     "share": 0.25
+    },
+    {
+     "bone": "Medial cuneiform bone.r",
+     "share": 0.25
+    }
+   ]
+  },
+  {
+   "ligament": "Dorsal metacarpal ligaments.l",
+   "vertices": 16,
+   "attachments": [
+    {
+     "bone": "Fourth metacarpal bone.l",
+     "share": 0.25
+    },
+    {
+     "bone": "Third metacarpal bone.l",
+     "share": 0.25
+    },
+    {
+     "bone": "Second metacarpal bone.l",
+     "share": 0.25
+    },
+    {
+     "bone": "Fifth metacarpal bone.l",
+     "share": 0.125
+    },
+    {
+     "bone": "First metacarpal bone.l",
+     "share": 0.125
+    }
+   ]
+  },
+  {
+   "ligament": "Dorsal metacarpal ligaments.r",
+   "vertices": 16,
+   "attachments": [
+    {
+     "bone": "Fourth metacarpal bone.r",
+     "share": 0.25
+    },
+    {
+     "bone": "Third metacarpal bone.r",
+     "share": 0.25
+    },
+    {
+     "bone": "Second metacarpal bone.r",
+     "share": 0.25
+    },
+    {
+     "bone": "Fifth metacarpal bone.r",
+     "share": 0.125
+    },
+    {
+     "bone": "First metacarpal bone.r",
+     "share": 0.125
+    }
+   ]
+  },
+  {
+   "ligament": "Dorsal metatarsal ligaments.l",
+   "vertices": 18,
+   "attachments": [
+    {
+     "bone": "Third metatarsal bone.l",
+     "share": 0.333
+    },
+    {
+     "bone": "Second metatarsal bone.l",
+     "share": 0.278
+    },
+    {
+     "bone": "Fifth metatarsal bone.l",
+     "share": 0.167
+    },
+    {
+     "bone": "Fourth metatarsal bone.l",
+     "share": 0.111
+    },
+    {
+     "bone": "First metatarsal bone.l",
+     "share": 0.111
+    }
+   ]
+  },
+  {
+   "ligament": "Dorsal metatarsal ligaments.r",
+   "vertices": 18,
+   "attachments": [
+    {
+     "bone": "Third metatarsal bone.r",
+     "share": 0.333
+    },
+    {
+     "bone": "Second metatarsal bone.r",
+     "share": 0.278
+    },
+    {
+     "bone": "Fifth metatarsal bone.r",
+     "share": 0.167
+    },
+    {
+     "bone": "Fourth metatarsal bone.r",
+     "share": 0.111
+    },
+    {
+     "bone": "First metatarsal bone.r",
+     "share": 0.111
+    }
+   ]
+  },
+  {
+   "ligament": "Dorsal radio-ulnar ligament.l",
+   "vertices": 4,
+   "attachments": [
+    {
+     "bone": "Radius.l",
+     "share": 0.5
+    },
+    {
+     "bone": "Ulna.l",
+     "share": 0.5
+    }
+   ]
+  },
+  {
+   "ligament": "Dorsal radio-ulnar ligament.r",
+   "vertices": 4,
+   "attachments": [
+    {
+     "bone": "Radius.r",
+     "share": 0.5
+    },
+    {
+     "bone": "Ulna.r",
+     "share": 0.5
+    }
+   ]
+  },
+  {
+   "ligament": "Dorsal radiocarpal ligament.l",
+   "vertices": 22,
+   "attachments": [
+    {
+     "bone": "Lunate bone.l",
+     "share": 0.409
+    },
+    {
+     "bone": "Scaphoid bone.l",
+     "share": 0.318
+    },
+    {
+     "bone": "Radius.l",
+     "share": 0.182
+    },
+    {
+     "bone": "Triquetrum bone.l",
+     "share": 0.091
+    }
+   ]
+  },
+  {
+   "ligament": "Dorsal radiocarpal ligament.r",
+   "vertices": 22,
+   "attachments": [
+    {
+     "bone": "Lunate bone.r",
+     "share": 0.409
+    },
+    {
+     "bone": "Scaphoid bone.r",
+     "share": 0.318
+    },
+    {
+     "bone": "Radius.r",
+     "share": 0.182
+    },
+    {
+     "bone": "Triquetrum bone.r",
+     "share": 0.091
+    }
+   ]
+  },
+  {
+   "ligament": "Dorsal scaphotriquetral ligament.l",
+   "vertices": 10,
+   "attachments": [
+    {
+     "bone": "Lunate bone.l",
+     "share": 0.6
+    },
+    {
+     "bone": "Triquetrum bone.l",
+     "share": 0.2
+    },
+    {
+     "bone": "Scaphoid bone.l",
+     "share": 0.2
+    }
+   ]
+  },
+  {
+   "ligament": "Dorsal scaphotriquetral ligament.r",
+   "vertices": 10,
+   "attachments": [
+    {
+     "bone": "Lunate bone.r",
+     "share": 0.6
+    },
+    {
+     "bone": "Triquetrum bone.r",
+     "share": 0.2
+    },
+    {
+     "bone": "Scaphoid bone.r",
+     "share": 0.2
+    }
+   ]
+  },
+  {
+   "ligament": "Dorsal tarsometatarsal ligaments.l",
+   "vertices": 39,
+   "attachments": [
+    {
+     "bone": "Lateral cuneiform bone.l",
+     "share": 0.231
+    },
+    {
+     "bone": "Second metatarsal bone.l",
+     "share": 0.154
+    },
+    {
+     "bone": "Cuboid bone.l",
+     "share": 0.154
+    },
+    {
+     "bone": "Fifth metatarsal bone.l",
+     "share": 0.128
+    },
+    {
+     "bone": "First metatarsal bone.l",
+     "share": 0.077
+    },
+    {
+     "bone": "Medial cuneiform bone.l",
+     "share": 0.077
+    }
+   ]
+  },
+  {
+   "ligament": "Dorsal tarsometatarsal ligaments.r",
+   "vertices": 39,
+   "attachments": [
+    {
+     "bone": "Lateral cuneiform bone.r",
+     "share": 0.231
+    },
+    {
+     "bone": "Second metatarsal bone.r",
+     "share": 0.154
+    },
+    {
+     "bone": "Cuboid bone.r",
+     "share": 0.154
+    },
+    {
+     "bone": "Fifth metatarsal bone.r",
+     "share": 0.128
+    },
+    {
+     "bone": "First metatarsal bone.r",
+     "share": 0.077
+    },
+    {
+     "bone": "Medial cuneiform bone.r",
+     "share": 0.077
+    }
+   ]
+  },
+  {
+   "ligament": "Dorsal ulnocarpal ligament.l",
+   "vertices": 13,
+   "attachments": [
+    {
+     "bone": "Ulna.l",
+     "share": 0.385
+    },
+    {
+     "bone": "Lunate bone.l",
+     "share": 0.308
+    },
+    {
+     "bone": "Triquetrum bone.l",
+     "share": 0.154
+    },
+    {
+     "bone": "Scaphoid bone.l",
+     "share": 0.154
+    }
+   ]
+  },
+  {
+   "ligament": "Dorsal ulnocarpal ligament.r",
+   "vertices": 13,
+   "attachments": [
+    {
+     "bone": "Ulna.r",
+     "share": 0.385
+    },
+    {
+     "bone": "Lunate bone.r",
+     "share": 0.308
+    },
+    {
+     "bone": "Triquetrum bone.r",
+     "share": 0.154
+    },
+    {
+     "bone": "Scaphoid bone.r",
+     "share": 0.154
+    }
+   ]
+  },
+  {
+   "ligament": "Epicranial aponeurosis.l",
+   "vertices": 10055,
+   "attachments": [
+    {
+     "bone": "Parietal bone.l",
+     "share": 0.263
+    },
+    {
+     "bone": "Frontal bone",
+     "share": 0.103
+    },
+    {
+     "bone": "Occipital bone",
+     "share": 0.083
+    },
+    {
+     "bone": "Parietal bone.r",
+     "share": 0.008
+    }
+   ]
+  },
+  {
+   "ligament": "Epicranial aponeurosis.r",
+   "vertices": 10055,
+   "attachments": [
+    {
+     "bone": "Parietal bone.r",
+     "share": 0.307
+    },
+    {
+     "bone": "Frontal bone",
+     "share": 0.103
+    },
+    {
+     "bone": "Occipital bone",
+     "share": 0.082
+    },
+    {
+     "bone": "Parietal bone.l",
+     "share": 0.012
+    }
+   ]
+  },
+  {
+   "ligament": "Extensor retinaculum of wrist.l",
+   "vertices": 93,
+   "attachments": [
+    {
+     "bone": "Radius.l",
+     "share": 0.097
+    },
+    {
+     "bone": "Ulna.l",
+     "share": 0.075
+    },
+    {
+     "bone": "Triquetrum bone.l",
+     "share": 0.054
+    },
+    {
+     "bone": "Hamate bone.l",
+     "share": 0.032
+    }
+   ]
+  },
+  {
+   "ligament": "Extensor retinaculum of wrist.r",
+   "vertices": 93,
+   "attachments": [
+    {
+     "bone": "Radius.r",
+     "share": 0.097
+    },
+    {
+     "bone": "Ulna.r",
+     "share": 0.075
+    },
+    {
+     "bone": "Triquetrum bone.r",
+     "share": 0.054
+    },
+    {
+     "bone": "Hamate bone.r",
+     "share": 0.032
+    }
+   ]
+  },
+  {
+   "ligament": "External intercostal membrane.l",
+   "vertices": 476,
+   "attachments": [
+    {
+     "bone": "Costal cartilage of seventh rib.l",
+     "share": 0.082
+    },
+    {
+     "bone": "Costal cartilage of fifth rib.l",
+     "share": 0.08
+    },
+    {
+     "bone": "Costal cartilage of ninth rib.l",
+     "share": 0.076
+    },
+    {
+     "bone": "Costal cartilage of eighth rib.l",
+     "share": 0.071
+    },
+    {
+     "bone": "Costal cartilage of fourth rib.l",
+     "share": 0.063
+    },
+    {
+     "bone": "Costal cartilage of sixth rib.l",
+     "share": 0.063
+    }
+   ]
+  },
+  {
+   "ligament": "External intercostal membrane.r",
+   "vertices": 476,
+   "attachments": [
+    {
+     "bone": "Costal cartilage of seventh rib.r",
+     "share": 0.082
+    },
+    {
+     "bone": "Costal cartilage of fifth rib.r",
+     "share": 0.08
+    },
+    {
+     "bone": "Costal cartilage of ninth rib.r",
+     "share": 0.076
+    },
+    {
+     "bone": "Costal cartilage of eighth rib.r",
+     "share": 0.071
+    },
+    {
+     "bone": "Costal cartilage of fourth rib.r",
+     "share": 0.063
+    },
+    {
+     "bone": "Costal cartilage of sixth rib.r",
+     "share": 0.063
+    }
+   ]
+  },
+  {
+   "ligament": "Fibular collateral ligament.l",
+   "vertices": 8,
+   "attachments": [
+    {
+     "bone": "Femur.l",
+     "share": 0.5
+    },
+    {
+     "bone": "Fibula.l",
+     "share": 0.25
+    }
+   ]
+  },
+  {
+   "ligament": "Fibular collateral ligament.r",
+   "vertices": 8,
+   "attachments": [
+    {
+     "bone": "Femur.r",
+     "share": 0.5
+    },
+    {
+     "bone": "Fibula.r",
+     "share": 0.25
+    }
+   ]
+  },
+  {
+   "ligament": "Flexor retinaculum of ankle.l",
+   "vertices": 175,
+   "attachments": [
+    {
+     "bone": "Calcaneus.l",
+     "share": 0.263
+    },
+    {
+     "bone": "Tibia.l",
+     "share": 0.046
+    }
+   ]
+  },
+  {
+   "ligament": "Flexor retinaculum of ankle.r",
+   "vertices": 175,
+   "attachments": [
+    {
+     "bone": "Calcaneus.r",
+     "share": 0.263
+    },
+    {
+     "bone": "Tibia.r",
+     "share": 0.046
+    }
+   ]
+  },
+  {
+   "ligament": "Flexor retinaculum of wrist.l",
+   "vertices": 132,
+   "attachments": [
+    {
+     "bone": "Radius.l",
+     "share": 0.152
+    },
+    {
+     "bone": "Pisiform bone.l",
+     "share": 0.076
+    },
+    {
+     "bone": "Triquetrum bone.l",
+     "share": 0.045
+    },
+    {
+     "bone": "Ulna.l",
+     "share": 0.015
+    }
+   ]
+  },
+  {
+   "ligament": "Flexor retinaculum of wrist.r",
+   "vertices": 132,
+   "attachments": [
+    {
+     "bone": "Radius.r",
+     "share": 0.152
+    },
+    {
+     "bone": "Pisiform bone.r",
+     "share": 0.076
+    },
+    {
+     "bone": "Triquetrum bone.r",
+     "share": 0.045
+    },
+    {
+     "bone": "Ulna.r",
+     "share": 0.015
+    }
+   ]
+  },
+  {
+   "ligament": "Glenoid labrum.l",
+   "vertices": 107,
+   "attachments": [
+    {
+     "bone": "Scapula.l",
+     "share": 0.673
+    },
+    {
+     "bone": "Humerus.l",
+     "share": 0.327
+    }
+   ]
+  },
+  {
+   "ligament": "Glenoid labrum.r",
+   "vertices": 107,
+   "attachments": [
+    {
+     "bone": "Scapula.r",
+     "share": 0.673
+    },
+    {
+     "bone": "Humerus.r",
+     "share": 0.327
+    }
+   ]
+  },
+  {
+   "ligament": "Iliolumbar ligament.l",
+   "vertices": 12,
+   "attachments": [
+    {
+     "bone": "Hip bone.l",
+     "share": 0.417
+    },
+    {
+     "bone": "Vertebra L4",
+     "share": 0.25
+    },
+    {
+     "bone": "Vertebra L5",
+     "share": 0.167
+    }
+   ]
+  },
+  {
+   "ligament": "Iliolumbar ligament.r",
+   "vertices": 12,
+   "attachments": [
+    {
+     "bone": "Hip bone.r",
+     "share": 0.417
+    },
+    {
+     "bone": "Vertebra L4",
+     "share": 0.25
+    },
+    {
+     "bone": "Vertebra L5",
+     "share": 0.167
+    }
+   ]
+  },
+  {
+   "ligament": "Inferior extensor retinaculum of ankle.l",
+   "vertices": 80,
+   "attachments": [
+    {
+     "bone": "Tibia.l",
+     "share": 0.15
+    },
+    {
+     "bone": "Fibula.l",
+     "share": 0.125
+    }
+   ]
+  },
+  {
+   "ligament": "Inferior extensor retinaculum of ankle.r",
+   "vertices": 80,
+   "attachments": [
+    {
+     "bone": "Tibia.r",
+     "share": 0.15
+    },
+    {
+     "bone": "Fibula.r",
+     "share": 0.125
+    }
+   ]
+  },
+  {
+   "ligament": "Inferior fibular retinaculum.l",
+   "vertices": 32,
+   "attachments": [
+    {
+     "bone": "Fifth metatarsal bone.l",
+     "share": 0.281
+    },
+    {
+     "bone": "Cuboid bone.l",
+     "share": 0.062
+    }
+   ]
+  },
+  {
+   "ligament": "Inferior fibular retinaculum.r",
+   "vertices": 32,
+   "attachments": [
+    {
+     "bone": "Fifth metatarsal bone.r",
+     "share": 0.281
+    },
+    {
+     "bone": "Cuboid bone.r",
+     "share": 0.062
+    }
+   ]
+  },
+  {
+   "ligament": "Inferior glenohumeral ligament.l",
+   "vertices": 25,
+   "attachments": [
+    {
+     "bone": "Humerus.l",
+     "share": 0.56
+    },
+    {
+     "bone": "Scapula.l",
+     "share": 0.28
+    }
+   ]
+  },
+  {
+   "ligament": "Inferior glenohumeral ligament.r",
+   "vertices": 25,
+   "attachments": [
+    {
+     "bone": "Humerus.r",
+     "share": 0.56
+    },
+    {
+     "bone": "Scapula.r",
+     "share": 0.28
+    }
+   ]
+  },
+  {
+   "ligament": "Inferior pubic ligament",
+   "vertices": 9,
+   "attachments": [
+    {
+     "bone": "Hip bone.l",
+     "share": 0.333
+    },
+    {
+     "bone": "Hip bone.r",
+     "share": 0.333
+    }
+   ]
+  },
+  {
+   "ligament": "Inferior transverse scapular ligament.l",
+   "vertices": 4,
+   "attachments": [
+    {
+     "bone": "Scapula.l",
+     "share": 1.0
+    }
+   ]
+  },
+  {
+   "ligament": "Inferior transverse scapular ligament.r",
+   "vertices": 4,
+   "attachments": [
+    {
+     "bone": "Scapula.r",
+     "share": 1.0
+    }
+   ]
+  },
+  {
+   "ligament": "Inguinal ligament.l",
+   "vertices": 530,
+   "attachments": [
+    {
+     "bone": "Hip bone.l",
+     "share": 0.406
+    }
+   ]
+  },
+  {
+   "ligament": "Inguinal ligament.r",
+   "vertices": 530,
+   "attachments": [
+    {
+     "bone": "Hip bone.r",
+     "share": 0.406
+    }
+   ]
+  },
+  {
+   "ligament": "Interclavicular ligament.l",
+   "vertices": 8,
+   "attachments": [
+    {
+     "bone": "Manubrium of sternum",
+     "share": 0.5
+    },
+    {
+     "bone": "Clavicle.l",
+     "share": 0.125
+    }
+   ]
+  },
+  {
+   "ligament": "Interclavicular ligament.r",
+   "vertices": 8,
+   "attachments": [
+    {
+     "bone": "Manubrium of sternum",
+     "share": 0.5
+    },
+    {
+     "bone": "Clavicle.r",
+     "share": 0.125
+    }
+   ]
+  },
+  {
+   "ligament": "Intercornual ligament.l",
+   "vertices": 6,
+   "attachments": [
+    {
+     "bone": "Coccyx",
+     "share": 0.5
+    },
+    {
+     "bone": "Sacrum",
+     "share": 0.5
+    }
+   ]
+  },
+  {
+   "ligament": "Intercornual ligament.r",
+   "vertices": 6,
+   "attachments": [
+    {
+     "bone": "Coccyx",
+     "share": 0.5
+    },
+    {
+     "bone": "Sacrum",
+     "share": 0.5
+    }
+   ]
+  },
+  {
+   "ligament": "Intercuneiform interosseous ligaments.l",
+   "vertices": 8,
+   "attachments": [
+    {
+     "bone": "Intermediate cuneiform bone.l",
+     "share": 0.5
+    },
+    {
+     "bone": "Medial cuneiform bone.l",
+     "share": 0.25
+    },
+    {
+     "bone": "Lateral cuneiform bone.l",
+     "share": 0.25
+    }
+   ]
+  },
+  {
+   "ligament": "Intercuneiform interosseous ligaments.r",
+   "vertices": 8,
+   "attachments": [
+    {
+     "bone": "Intermediate cuneiform bone.r",
+     "share": 0.5
+    },
+    {
+     "bone": "Medial cuneiform bone.r",
+     "share": 0.25
+    },
+    {
+     "bone": "Lateral cuneiform bone.r",
+     "share": 0.25
+    }
+   ]
+  },
+  {
+   "ligament": "Internal intercostal membrane.l",
+   "vertices": 342,
+   "attachments": [
+    {
+     "bone": "Seventh rib.l",
+     "share": 0.088
+    },
+    {
+     "bone": "Eighth rib.l",
+     "share": 0.088
+    },
+    {
+     "bone": "Ninth rib.l",
+     "share": 0.082
+    },
+    {
+     "bone": "Third rib.l",
+     "share": 0.076
+    },
+    {
+     "bone": "Sixth rib.l",
+     "share": 0.076
+    },
+    {
+     "bone": "Tenth rib.l",
+     "share": 0.076
+    }
+   ]
+  },
+  {
+   "ligament": "Internal intercostal membrane.r",
+   "vertices": 342,
+   "attachments": [
+    {
+     "bone": "Seventh rib.r",
+     "share": 0.088
+    },
+    {
+     "bone": "Eighth rib.r",
+     "share": 0.088
+    },
+    {
+     "bone": "Ninth rib.r",
+     "share": 0.082
+    },
+    {
+     "bone": "Third rib.r",
+     "share": 0.076
+    },
+    {
+     "bone": "Sixth rib.r",
+     "share": 0.076
+    },
+    {
+     "bone": "Tenth rib.r",
+     "share": 0.076
+    }
+   ]
+  },
+  {
+   "ligament": "Interosseous membrane of leg.l",
+   "vertices": 6321,
+   "attachments": [
+    {
+     "bone": "Fibula.l",
+     "share": 0.175
+    },
+    {
+     "bone": "Tibia.l",
+     "share": 0.07
+    }
+   ]
+  },
+  {
+   "ligament": "Interosseous membrane of leg.r",
+   "vertices": 6321,
+   "attachments": [
+    {
+     "bone": "Fibula.r",
+     "share": 0.175
+    },
+    {
+     "bone": "Tibia.r",
+     "share": 0.07
+    }
+   ]
+  },
+  {
+   "ligament": "Interosseous metacarpal ligaments.l",
+   "vertices": 16,
+   "attachments": [
+    {
+     "bone": "Fifth metacarpal bone.l",
+     "share": 0.25
+    },
+    {
+     "bone": "Second metacarpal bone.l",
+     "share": 0.25
+    },
+    {
+     "bone": "Fourth metacarpal bone.l",
+     "share": 0.188
+    },
+    {
+     "bone": "Third metacarpal bone.l",
+     "share": 0.125
+    },
+    {
+     "bone": "First metacarpal bone.l",
+     "share": 0.125
+    },
+    {
+     "bone": "Trapezium bone.l",
+     "share": 0.062
+    }
+   ]
+  },
+  {
+   "ligament": "Interosseous metacarpal ligaments.r",
+   "vertices": 16,
+   "attachments": [
+    {
+     "bone": "Fifth metacarpal bone.r",
+     "share": 0.25
+    },
+    {
+     "bone": "Second metacarpal bone.r",
+     "share": 0.25
+    },
+    {
+     "bone": "Fourth metacarpal bone.r",
+     "share": 0.188
+    },
+    {
+     "bone": "Third metacarpal bone.r",
+     "share": 0.125
+    },
+    {
+     "bone": "First metacarpal bone.r",
+     "share": 0.125
+    },
+    {
+     "bone": "Trapezium bone.r",
+     "share": 0.062
+    }
+   ]
+  },
+  {
+   "ligament": "Interosseous sacro-iliac ligament.l",
+   "vertices": 18,
+   "attachments": [
+    {
+     "bone": "Hip bone.l",
+     "share": 0.5
+    },
+    {
+     "bone": "Sacrum",
+     "share": 0.5
+    }
+   ]
+  },
+  {
+   "ligament": "Interosseous sacro-iliac ligament.r",
+   "vertices": 18,
+   "attachments": [
+    {
+     "bone": "Hip bone.r",
+     "share": 0.5
+    },
+    {
+     "bone": "Sacrum",
+     "share": 0.5
+    }
+   ]
+  },
+  {
+   "ligament": "Interosseous membrane of forearm.l",
+   "vertices": 1385,
+   "attachments": [
+    {
+     "bone": "Ulna.l",
+     "share": 0.252
+    },
+    {
+     "bone": "Radius.l",
+     "share": 0.214
+    }
+   ]
+  },
+  {
+   "ligament": "Interosseous membrane of forearm.r",
+   "vertices": 1385,
+   "attachments": [
+    {
+     "bone": "Ulna.r",
+     "share": 0.252
+    },
+    {
+     "bone": "Radius.r",
+     "share": 0.214
+    }
+   ]
+  },
+  {
+   "ligament": "Intersesamoid ligament.l",
+   "vertices": 15,
+   "attachments": [
+    {
+     "bone": "Sesamoid bones of foot.l",
+     "share": 1.0
+    }
+   ]
+  },
+  {
+   "ligament": "Intersesamoid ligament.r",
+   "vertices": 15,
+   "attachments": [
+    {
+     "bone": "Sesamoid bones of foot.r",
+     "share": 1.0
+    }
+   ]
+  },
+  {
+   "ligament": "Interspinous ligaments",
+   "vertices": 50,
+   "attachments": [
+    {
+     "bone": "Vertebra C7",
+     "share": 0.04
+    },
+    {
+     "bone": "Vertebra T1",
+     "share": 0.04
+    },
+    {
+     "bone": "Vertebra T3",
+     "share": 0.04
+    },
+    {
+     "bone": "Vertebra T4",
+     "share": 0.04
+    },
+    {
+     "bone": "Vertebra T5",
+     "share": 0.04
+    },
+    {
+     "bone": "Vertebra T6",
+     "share": 0.04
+    }
+   ]
+  },
+  {
+   "ligament": "Intertransverse ligaments.l",
+   "vertices": 27,
+   "attachments": [
+    {
+     "bone": "Vertebra C3",
+     "share": 0.074
+    },
+    {
+     "bone": "Vertebra C5",
+     "share": 0.037
+    },
+    {
+     "bone": "Vertebra C4",
+     "share": 0.037
+    },
+    {
+     "bone": "Axis (C2)",
+     "share": 0.037
+    },
+    {
+     "bone": "Atlas (C1)",
+     "share": 0.037
+    },
+    {
+     "bone": "Vertebra C6",
+     "share": 0.037
+    }
+   ]
+  },
+  {
+   "ligament": "Intertransverse ligaments.r",
+   "vertices": 27,
+   "attachments": [
+    {
+     "bone": "Vertebra C3",
+     "share": 0.074
+    },
+    {
+     "bone": "Vertebra C5",
+     "share": 0.037
+    },
+    {
+     "bone": "Vertebra C4",
+     "share": 0.037
+    },
+    {
+     "bone": "Axis (C2)",
+     "share": 0.037
+    },
+    {
+     "bone": "Atlas (C1)",
+     "share": 0.037
+    },
+    {
+     "bone": "Vertebra C6",
+     "share": 0.037
+    }
+   ]
+  },
+  {
+   "ligament": "Intra-articular ligament of head of rib",
+   "vertices": 36,
+   "attachments": [
+    {
+     "bone": "Seventh rib.l",
+     "share": 0.111
+    },
+    {
+     "bone": "Eighth rib.l",
+     "share": 0.111
+    },
+    {
+     "bone": "Ninth rib.l",
+     "share": 0.111
+    },
+    {
+     "bone": "Second rib.l",
+     "share": 0.083
+    },
+    {
+     "bone": "Vertebra T2",
+     "share": 0.083
+    },
+    {
+     "bone": "Fifth rib.l",
+     "share": 0.083
+    }
+   ]
+  },
+  {
+   "ligament": "Intra-articular ligament of head of rib.r",
+   "vertices": 36,
+   "attachments": [
+    {
+     "bone": "Seventh rib.r",
+     "share": 0.111
+    },
+    {
+     "bone": "Eighth rib.r",
+     "share": 0.111
+    },
+    {
+     "bone": "Ninth rib.r",
+     "share": 0.111
+    },
+    {
+     "bone": "Second rib.r",
+     "share": 0.083
+    },
+    {
+     "bone": "Vertebra T2",
+     "share": 0.083
+    },
+    {
+     "bone": "Fifth rib.r",
+     "share": 0.083
+    }
+   ]
+  },
+  {
+   "ligament": "Ischiofemoral ligament.l",
+   "vertices": 49,
+   "attachments": [
+    {
+     "bone": "Femur.l",
+     "share": 0.694
+    },
+    {
+     "bone": "Hip bone.l",
+     "share": 0.122
+    }
+   ]
+  },
+  {
+   "ligament": "Ischiofemoral ligament.r",
+   "vertices": 49,
+   "attachments": [
+    {
+     "bone": "Femur.r",
+     "share": 0.694
+    },
+    {
+     "bone": "Hip bone.r",
+     "share": 0.122
+    }
+   ]
+  },
+  {
+   "ligament": "Lateral meniscus.l",
+   "vertices": 60,
+   "attachments": [
+    {
+     "bone": "Tibia.l",
+     "share": 0.517
+    },
+    {
+     "bone": "Femur.l",
+     "share": 0.183
+    }
+   ]
+  },
+  {
+   "ligament": "Lateral meniscus.r",
+   "vertices": 60,
+   "attachments": [
+    {
+     "bone": "Tibia.r",
+     "share": 0.517
+    },
+    {
+     "bone": "Femur.r",
+     "share": 0.183
+    }
+   ]
+  },
+  {
+   "ligament": "Lateral patellar retinaculum.l",
+   "vertices": 9,
+   "attachments": [
+    {
+     "bone": "Femur.l",
+     "share": 0.556
+    },
+    {
+     "bone": "Patella.l",
+     "share": 0.444
+    }
+   ]
+  },
+  {
+   "ligament": "Lateral patellar retinaculum.r",
+   "vertices": 9,
+   "attachments": [
+    {
+     "bone": "Femur.r",
+     "share": 0.556
+    },
+    {
+     "bone": "Patella.r",
+     "share": 0.444
+    }
+   ]
+  },
+  {
+   "ligament": "Lateral talocalcaneal ligament.l",
+   "vertices": 6,
+   "attachments": [
+    {
+     "bone": "Talus.l",
+     "share": 0.5
+    }
+   ]
+  },
+  {
+   "ligament": "Lateral talocalcaneal ligament.r",
+   "vertices": 6,
+   "attachments": [
+    {
+     "bone": "Talus.r",
+     "share": 0.5
+    }
+   ]
+  },
+  {
+   "ligament": "Lateral temporomandibular ligament.l",
+   "vertices": 20,
+   "attachments": [
+    {
+     "bone": "Mandible",
+     "share": 0.5
+    },
+    {
+     "bone": "Temporal bone.r",
+     "share": 0.3
+    }
+   ]
+  },
+  {
+   "ligament": "Lateral temporomandibular ligament.r",
+   "vertices": 20,
+   "attachments": [
+    {
+     "bone": "Mandible",
+     "share": 0.5
+    },
+    {
+     "bone": "Temporal bone.l",
+     "share": 0.3
+    }
+   ]
+  },
+  {
+   "ligament": "Lateral thyrohyoid ligament.l",
+   "vertices": 458,
+   "attachments": [
+    {
+     "bone": "Vertebra C3",
+     "share": 0.245
+    }
+   ]
+  },
+  {
+   "ligament": "Lateral thyrohyoid ligament.r",
+   "vertices": 458,
+   "attachments": [
+    {
+     "bone": "Vertebra C3",
+     "share": 0.245
+    }
+   ]
+  },
+  {
+   "ligament": "Ligament of head of femur.l",
+   "vertices": 114,
+   "attachments": [
+    {
+     "bone": "Hip bone.l",
+     "share": 0.465
+    },
+    {
+     "bone": "Femur.l",
+     "share": 0.447
+    }
+   ]
+  },
+  {
+   "ligament": "Ligament of head of femur.r",
+   "vertices": 114,
+   "attachments": [
+    {
+     "bone": "Hip bone.r",
+     "share": 0.465
+    },
+    {
+     "bone": "Femur.r",
+     "share": 0.447
+    }
+   ]
+  },
+  {
+   "ligament": "Ligamenta flava",
+   "vertices": 322,
+   "attachments": [
+    {
+     "bone": "Vertebra T10",
+     "share": 0.065
+    },
+    {
+     "bone": "Vertebra T3",
+     "share": 0.05
+    },
+    {
+     "bone": "Vertebra T9",
+     "share": 0.05
+    },
+    {
+     "bone": "Vertebra T6",
+     "share": 0.043
+    },
+    {
+     "bone": "Vertebra T11",
+     "share": 0.043
+    },
+    {
+     "bone": "Vertebra T12",
+     "share": 0.043
+    }
+   ]
+  },
+  {
+   "ligament": "Long plantar ligament.l",
+   "vertices": 1741,
+   "attachments": [
+    {
+     "bone": "Calcaneus.l",
+     "share": 0.176
+    },
+    {
+     "bone": "Fifth metatarsal bone.l",
+     "share": 0.092
+    },
+    {
+     "bone": "Medial cuneiform bone.l",
+     "share": 0.087
+    },
+    {
+     "bone": "Cuboid bone.l",
+     "share": 0.048
+    },
+    {
+     "bone": "Third metatarsal bone.l",
+     "share": 0.046
+    },
+    {
+     "bone": "Fourth metatarsal bone.l",
+     "share": 0.036
+    }
+   ]
+  },
+  {
+   "ligament": "Long plantar ligament.o1l",
+   "vertices": 31,
+   "attachments": [
+    {
+     "bone": "First metatarsal bone.l",
+     "share": 1.0
+    }
+   ]
+  },
+  {
+   "ligament": "Long plantar ligament.o1r",
+   "vertices": 31,
+   "attachments": [
+    {
+     "bone": "First metatarsal bone.r",
+     "share": 1.0
+    }
+   ]
+  },
+  {
+   "ligament": "Long plantar ligament.o2l",
+   "vertices": 23,
+   "attachments": [
+    {
+     "bone": "Second metatarsal bone.l",
+     "share": 1.0
+    }
+   ]
+  },
+  {
+   "ligament": "Long plantar ligament.o2r",
+   "vertices": 23,
+   "attachments": [
+    {
+     "bone": "Second metatarsal bone.r",
+     "share": 1.0
+    }
+   ]
+  },
+  {
+   "ligament": "Long plantar ligament.o3l",
+   "vertices": 10,
+   "attachments": [
+    {
+     "bone": "Third metatarsal bone.l",
+     "share": 1.0
+    }
+   ]
+  },
+  {
+   "ligament": "Long plantar ligament.o3r",
+   "vertices": 10,
+   "attachments": [
+    {
+     "bone": "Third metatarsal bone.r",
+     "share": 1.0
+    }
+   ]
+  },
+  {
+   "ligament": "Long plantar ligament.o4l",
+   "vertices": 22,
+   "attachments": [
+    {
+     "bone": "Fourth metatarsal bone.l",
+     "share": 1.0
+    }
+   ]
+  },
+  {
+   "ligament": "Long plantar ligament.o4r",
+   "vertices": 22,
+   "attachments": [
+    {
+     "bone": "Fourth metatarsal bone.r",
+     "share": 1.0
+    }
+   ]
+  },
+  {
+   "ligament": "Long plantar ligament.ol",
+   "vertices": 42,
+   "attachments": [
+    {
+     "bone": "Calcaneus.l",
+     "share": 1.0
+    }
+   ]
+  },
+  {
+   "ligament": "Long plantar ligament.or",
+   "vertices": 42,
+   "attachments": [
+    {
+     "bone": "Calcaneus.r",
+     "share": 1.0
+    }
+   ]
+  },
+  {
+   "ligament": "Long plantar ligament.r",
+   "vertices": 1741,
+   "attachments": [
+    {
+     "bone": "Calcaneus.r",
+     "share": 0.176
+    },
+    {
+     "bone": "Fifth metatarsal bone.r",
+     "share": 0.092
+    },
+    {
+     "bone": "Medial cuneiform bone.r",
+     "share": 0.087
+    },
+    {
+     "bone": "Cuboid bone.r",
+     "share": 0.048
+    },
+    {
+     "bone": "Third metatarsal bone.r",
+     "share": 0.046
+    },
+    {
+     "bone": "Fourth metatarsal bone.r",
+     "share": 0.036
+    }
+   ]
+  },
+  {
+   "ligament": "Lunotriquetral interosseous ligament.l",
+   "vertices": 4,
+   "attachments": [
+    {
+     "bone": "Triquetrum bone.l",
+     "share": 0.5
+    },
+    {
+     "bone": "Lunate bone.l",
+     "share": 0.5
+    }
+   ]
+  },
+  {
+   "ligament": "Lunotriquetral interosseous ligament.r",
+   "vertices": 4,
+   "attachments": [
+    {
+     "bone": "Triquetrum bone.r",
+     "share": 0.5
+    },
+    {
+     "bone": "Lunate bone.r",
+     "share": 0.5
+    }
+   ]
+  },
+  {
+   "ligament": "Medial meniscus.l",
+   "vertices": 36,
+   "attachments": [
+    {
+     "bone": "Tibia.l",
+     "share": 0.444
+    },
+    {
+     "bone": "Femur.l",
+     "share": 0.306
+    }
+   ]
+  },
+  {
+   "ligament": "Medial meniscus.r",
+   "vertices": 36,
+   "attachments": [
+    {
+     "bone": "Tibia.r",
+     "share": 0.444
+    },
+    {
+     "bone": "Femur.r",
+     "share": 0.306
+    }
+   ]
+  },
+  {
+   "ligament": "Medial patellar retinaculum.l",
+   "vertices": 11,
+   "attachments": [
+    {
+     "bone": "Femur.l",
+     "share": 0.455
+    },
+    {
+     "bone": "Patella.l",
+     "share": 0.273
+    }
+   ]
+  },
+  {
+   "ligament": "Medial patellar retinaculum.r",
+   "vertices": 11,
+   "attachments": [
+    {
+     "bone": "Femur.r",
+     "share": 0.455
+    },
+    {
+     "bone": "Patella.r",
+     "share": 0.273
+    }
+   ]
+  },
+  {
+   "ligament": "Medial talocalcaneal ligament.l",
+   "vertices": 12,
+   "attachments": [
+    {
+     "bone": "Talus.l",
+     "share": 0.5
+    },
+    {
+     "bone": "Calcaneus.l",
+     "share": 0.5
+    }
+   ]
+  },
+  {
+   "ligament": "Medial talocalcaneal ligament.r",
+   "vertices": 12,
+   "attachments": [
+    {
+     "bone": "Talus.r",
+     "share": 0.5
+    },
+    {
+     "bone": "Calcaneus.r",
+     "share": 0.5
+    }
+   ]
+  },
+  {
+   "ligament": "Median cricothyroid ligament",
+   "vertices": 1068,
+   "attachments": [
+    {
+     "bone": "Thyroid cartilage",
+     "share": 0.762
+    },
+    {
+     "bone": "Cricoid cartilage",
+     "share": 0.238
+    }
+   ]
+  },
+  {
+   "ligament": "Median thyrohyoid ligament",
+   "vertices": 1388,
+   "attachments": [
+    {
+     "bone": "Thyroid cartilage",
+     "share": 0.67
+    },
+    {
+     "bone": "Hyoid bone",
+     "share": 0.292
+    }
+   ]
+  },
+  {
+   "ligament": "Meniscopatellar ligament.l",
+   "vertices": 15,
+   "attachments": [
+    {
+     "bone": "Patella.l",
+     "share": 0.6
+    },
+    {
+     "bone": "Femur.l",
+     "share": 0.2
+    },
+    {
+     "bone": "Tibia.l",
+     "share": 0.2
+    }
+   ]
+  },
+  {
+   "ligament": "Meniscopatellar ligament.r",
+   "vertices": 15,
+   "attachments": [
+    {
+     "bone": "Patella.r",
+     "share": 0.6
+    },
+    {
+     "bone": "Femur.r",
+     "share": 0.2
+    },
+    {
+     "bone": "Tibia.r",
+     "share": 0.2
+    }
+   ]
+  },
+  {
+   "ligament": "Metatarsal interosseous ligaments.l",
+   "vertices": 16,
+   "attachments": [
+    {
+     "bone": "Second metatarsal bone.l",
+     "share": 0.312
+    },
+    {
+     "bone": "Fourth metatarsal bone.l",
+     "share": 0.25
+    },
+    {
+     "bone": "Third metatarsal bone.l",
+     "share": 0.125
+    },
+    {
+     "bone": "First metatarsal bone.l",
+     "share": 0.125
+    },
+    {
+     "bone": "Fifth metatarsal bone.l",
+     "share": 0.125
+    }
+   ]
+  },
+  {
+   "ligament": "Metatarsal interosseous ligaments.r",
+   "vertices": 16,
+   "attachments": [
+    {
+     "bone": "Second metatarsal bone.r",
+     "share": 0.312
+    },
+    {
+     "bone": "Fourth metatarsal bone.r",
+     "share": 0.25
+    },
+    {
+     "bone": "Third metatarsal bone.r",
+     "share": 0.125
+    },
+    {
+     "bone": "First metatarsal bone.r",
+     "share": 0.125
+    },
+    {
+     "bone": "Fifth metatarsal bone.r",
+     "share": 0.125
+    }
+   ]
+  },
+  {
+   "ligament": "Middle glenohumeral ligament.l",
+   "vertices": 24,
+   "attachments": [
+    {
+     "bone": "Humerus.l",
+     "share": 0.458
+    },
+    {
+     "bone": "Scapula.l",
+     "share": 0.333
+    }
+   ]
+  },
+  {
+   "ligament": "Middle glenohumeral ligament.r",
+   "vertices": 24,
+   "attachments": [
+    {
+     "bone": "Humerus.r",
+     "share": 0.458
+    },
+    {
+     "bone": "Scapula.r",
+     "share": 0.333
+    }
+   ]
+  },
+  {
+   "ligament": "Node of ligamentum arteriosum",
+   "vertices": 86,
+   "attachments": []
+  },
+  {
+   "ligament": "Nuchal ligament",
+   "vertices": 49,
+   "attachments": [
+    {
+     "bone": "Occipital bone",
+     "share": 0.204
+    },
+    {
+     "bone": "Vertebra C3",
+     "share": 0.061
+    },
+    {
+     "bone": "Axis (C2)",
+     "share": 0.061
+    },
+    {
+     "bone": "Vertebra C5",
+     "share": 0.041
+    },
+    {
+     "bone": "Vertebra C4",
+     "share": 0.041
+    },
+    {
+     "bone": "Vertebra C7",
+     "share": 0.02
+    }
+   ]
+  },
+  {
+   "ligament": "Oblique popliteal ligament.l",
+   "vertices": 29,
+   "attachments": [
+    {
+     "bone": "Femur.l",
+     "share": 0.414
+    },
+    {
+     "bone": "Tibia.l",
+     "share": 0.172
+    }
+   ]
+  },
+  {
+   "ligament": "Oblique popliteal ligament.r",
+   "vertices": 29,
+   "attachments": [
+    {
+     "bone": "Femur.r",
+     "share": 0.414
+    },
+    {
+     "bone": "Tibia.r",
+     "share": 0.172
+    }
+   ]
+  },
+  {
+   "ligament": "Obturator membrane.l",
+   "vertices": 70,
+   "attachments": [
+    {
+     "bone": "Hip bone.l",
+     "share": 0.514
+    }
+   ]
+  },
+  {
+   "ligament": "Obturator membrane.r",
+   "vertices": 70,
+   "attachments": [
+    {
+     "bone": "Hip bone.r",
+     "share": 0.514
+    }
+   ]
+  },
+  {
+   "ligament": "Palmar aponeurosis.l",
+   "vertices": 749,
+   "attachments": [
+    {
+     "bone": "Distal phalanx of first finger of hand.l",
+     "share": 0.052
+    },
+    {
+     "bone": "Proximal phalanx of first finger of hand.l",
+     "share": 0.049
+    },
+    {
+     "bone": "Proximal phalanx of second finger of hand.l",
+     "share": 0.048
+    },
+    {
+     "bone": "Middle phalanx of third finger of hand.l",
+     "share": 0.041
+    },
+    {
+     "bone": "Middle phalanx of second finger of hand.l",
+     "share": 0.039
+    },
+    {
+     "bone": "Distal phalanx of second finger of hand.l",
+     "share": 0.037
+    }
+   ]
+  },
+  {
+   "ligament": "Palmar aponeurosis.r",
+   "vertices": 749,
+   "attachments": [
+    {
+     "bone": "Distal phalanx of first finger of hand.r",
+     "share": 0.052
+    },
+    {
+     "bone": "Proximal phalanx of first finger of hand.r",
+     "share": 0.049
+    },
+    {
+     "bone": "Proximal phalanx of second finger of hand.r",
+     "share": 0.048
+    },
+    {
+     "bone": "Middle phalanx of third finger of hand.r",
+     "share": 0.041
+    },
+    {
+     "bone": "Middle phalanx of second finger of hand.r",
+     "share": 0.039
+    },
+    {
+     "bone": "Distal phalanx of second finger of hand.r",
+     "share": 0.037
+    }
+   ]
+  },
+  {
+   "ligament": "Palmar capitohamate ligament.l",
+   "vertices": 4,
+   "attachments": [
+    {
+     "bone": "Capitate bone.l",
+     "share": 0.5
+    },
+    {
+     "bone": "Hamate bone.l",
+     "share": 0.5
+    }
+   ]
+  },
+  {
+   "ligament": "Palmar capitohamate ligament.r",
+   "vertices": 4,
+   "attachments": [
+    {
+     "bone": "Capitate bone.r",
+     "share": 0.5
+    },
+    {
+     "bone": "Hamate bone.r",
+     "share": 0.5
+    }
+   ]
+  },
+  {
+   "ligament": "Palmar carpometacarpal ligaments.l",
+   "vertices": 43,
+   "attachments": [
+    {
+     "bone": "First metacarpal bone.l",
+     "share": 0.186
+    },
+    {
+     "bone": "Third metacarpal bone.l",
+     "share": 0.14
+    },
+    {
+     "bone": "Second metacarpal bone.l",
+     "share": 0.14
+    },
+    {
+     "bone": "Trapezium bone.l",
+     "share": 0.116
+    },
+    {
+     "bone": "Hamate bone.l",
+     "share": 0.093
+    },
+    {
+     "bone": "Fifth metacarpal bone.l",
+     "share": 0.093
+    }
+   ]
+  },
+  {
+   "ligament": "Palmar carpometacarpal ligaments.r",
+   "vertices": 43,
+   "attachments": [
+    {
+     "bone": "First metacarpal bone.r",
+     "share": 0.186
+    },
+    {
+     "bone": "Third metacarpal bone.r",
+     "share": 0.14
+    },
+    {
+     "bone": "Second metacarpal bone.r",
+     "share": 0.14
+    },
+    {
+     "bone": "Trapezium bone.r",
+     "share": 0.116
+    },
+    {
+     "bone": "Hamate bone.r",
+     "share": 0.093
+    },
+    {
+     "bone": "Fifth metacarpal bone.r",
+     "share": 0.093
+    }
+   ]
+  },
+  {
+   "ligament": "Palmar interphalangeal ligaments.l",
+   "vertices": 81,
+   "attachments": [
+    {
+     "bone": "Middle phalanx of fourth finger of hand.l",
+     "share": 0.148
+    },
+    {
+     "bone": "Middle phalanx of second finger of hand.l",
+     "share": 0.111
+    },
+    {
+     "bone": "Middle phalanx of fifth finger of hand.l",
+     "share": 0.111
+    },
+    {
+     "bone": "Middle phalanx of third finger of hand.l",
+     "share": 0.099
+    },
+    {
+     "bone": "Distal phalanx of third finger of hand.l",
+     "share": 0.074
+    },
+    {
+     "bone": "Proximal phalanx of fifth finger of hand.l",
+     "share": 0.074
+    }
+   ]
+  },
+  {
+   "ligament": "Palmar interphalangeal ligaments.r",
+   "vertices": 81,
+   "attachments": [
+    {
+     "bone": "Middle phalanx of fourth finger of hand.r",
+     "share": 0.148
+    },
+    {
+     "bone": "Middle phalanx of second finger of hand.r",
+     "share": 0.111
+    },
+    {
+     "bone": "Middle phalanx of fifth finger of hand.r",
+     "share": 0.111
+    },
+    {
+     "bone": "Middle phalanx of third finger of hand.r",
+     "share": 0.099
+    },
+    {
+     "bone": "Distal phalanx of third finger of hand.r",
+     "share": 0.074
+    },
+    {
+     "bone": "Proximal phalanx of fifth finger of hand.r",
+     "share": 0.074
+    }
+   ]
+  },
+  {
+   "ligament": "Palmar lunotriquetral ligament.l",
+   "vertices": 4,
+   "attachments": [
+    {
+     "bone": "Triquetrum bone.l",
+     "share": 0.5
+    },
+    {
+     "bone": "Lunate bone.l",
+     "share": 0.5
+    }
+   ]
+  },
+  {
+   "ligament": "Palmar lunotriquetral ligament.r",
+   "vertices": 4,
+   "attachments": [
+    {
+     "bone": "Triquetrum bone.r",
+     "share": 0.5
+    },
+    {
+     "bone": "Lunate bone.r",
+     "share": 0.5
+    }
+   ]
+  },
+  {
+   "ligament": "Palmar metacarpal ligaments.l",
+   "vertices": 16,
+   "attachments": [
+    {
+     "bone": "Fourth metacarpal bone.l",
+     "share": 0.312
+    },
+    {
+     "bone": "Third metacarpal bone.l",
+     "share": 0.25
+    },
+    {
+     "bone": "Second metacarpal bone.l",
+     "share": 0.25
+    },
+    {
+     "bone": "First metacarpal bone.l",
+     "share": 0.125
+    },
+    {
+     "bone": "Fifth metacarpal bone.l",
+     "share": 0.062
+    }
+   ]
+  },
+  {
+   "ligament": "Palmar metacarpal ligaments.r",
+   "vertices": 16,
+   "attachments": [
+    {
+     "bone": "Fourth metacarpal bone.r",
+     "share": 0.312
+    },
+    {
+     "bone": "Third metacarpal bone.r",
+     "share": 0.25
+    },
+    {
+     "bone": "Second metacarpal bone.r",
+     "share": 0.25
+    },
+    {
+     "bone": "First metacarpal bone.r",
+     "share": 0.125
+    },
+    {
+     "bone": "Fifth metacarpal bone.r",
+     "share": 0.062
+    }
+   ]
+  },
+  {
+   "ligament": "Palmar radio-ulnar ligament.l",
+   "vertices": 8,
+   "attachments": [
+    {
+     "bone": "Ulna.l",
+     "share": 0.625
+    },
+    {
+     "bone": "Radius.l",
+     "share": 0.25
+    }
+   ]
+  },
+  {
+   "ligament": "Palmar radio-ulnar ligament.r",
+   "vertices": 8,
+   "attachments": [
+    {
+     "bone": "Ulna.r",
+     "share": 0.75
+    },
+    {
+     "bone": "Radius.r",
+     "share": 0.25
+    }
+   ]
+  },
+  {
+   "ligament": "Palmar scaphotriquetral ligament.l",
+   "vertices": 8,
+   "attachments": [
+    {
+     "bone": "Lunate bone.l",
+     "share": 0.5
+    },
+    {
+     "bone": "Scaphoid bone.l",
+     "share": 0.25
+    },
+    {
+     "bone": "Triquetrum bone.l",
+     "share": 0.25
+    }
+   ]
+  },
+  {
+   "ligament": "Palmar scaphotriquetral ligament.r",
+   "vertices": 8,
+   "attachments": [
+    {
+     "bone": "Lunate bone.r",
+     "share": 0.5
+    },
+    {
+     "bone": "Scaphoid bone.r",
+     "share": 0.25
+    },
+    {
+     "bone": "Triquetrum bone.r",
+     "share": 0.25
+    }
+   ]
+  },
+  {
+   "ligament": "Palmar trapezoideocapitate ligament.l",
+   "vertices": 4,
+   "attachments": [
+    {
+     "bone": "Trapezoid bone.l",
+     "share": 0.5
+    },
+    {
+     "bone": "Capitate bone.l",
+     "share": 0.5
+    }
+   ]
+  },
+  {
+   "ligament": "Palmar trapezoideocapitate ligament.r",
+   "vertices": 4,
+   "attachments": [
+    {
+     "bone": "Trapezoid bone.r",
+     "share": 0.5
+    },
+    {
+     "bone": "Capitate bone.r",
+     "share": 0.5
+    }
+   ]
+  },
+  {
+   "ligament": "Patellar ligament.el",
+   "vertices": 33,
+   "attachments": [
+    {
+     "bone": "Tibia.l",
+     "share": 1.0
+    }
+   ]
+  },
+  {
+   "ligament": "Patellar ligament.er",
+   "vertices": 33,
+   "attachments": [
+    {
+     "bone": "Tibia.r",
+     "share": 1.0
+    }
+   ]
+  },
+  {
+   "ligament": "Patellar ligament.ol",
+   "vertices": 35,
+   "attachments": [
+    {
+     "bone": "Patella.l",
+     "share": 1.0
+    }
+   ]
+  },
+  {
+   "ligament": "Patellar ligament.or",
+   "vertices": 35,
+   "attachments": [
+    {
+     "bone": "Patella.r",
+     "share": 1.0
+    }
+   ]
+  },
+  {
+   "ligament": "Pisohamate ligament.l",
+   "vertices": 4,
+   "attachments": [
+    {
+     "bone": "Pisiform bone.l",
+     "share": 0.5
+    },
+    {
+     "bone": "Hamate bone.l",
+     "share": 0.5
+    }
+   ]
+  },
+  {
+   "ligament": "Pisohamate ligament.r",
+   "vertices": 4,
+   "attachments": [
+    {
+     "bone": "Pisiform bone.r",
+     "share": 0.5
+    },
+    {
+     "bone": "Hamate bone.r",
+     "share": 0.5
+    }
+   ]
+  },
+  {
+   "ligament": "Pisometacarpal ligament.l",
+   "vertices": 4,
+   "attachments": [
+    {
+     "bone": "Pisiform bone.l",
+     "share": 0.5
+    },
+    {
+     "bone": "Fifth metacarpal bone.l",
+     "share": 0.5
+    }
+   ]
+  },
+  {
+   "ligament": "Pisometacarpal ligament.r",
+   "vertices": 4,
+   "attachments": [
+    {
+     "bone": "Pisiform bone.r",
+     "share": 0.5
+    },
+    {
+     "bone": "Fifth metacarpal bone.r",
+     "share": 0.5
+    }
+   ]
+  },
+  {
+   "ligament": "Pisotriquetral ligament.l",
+   "vertices": 27,
+   "attachments": [
+    {
+     "bone": "Pisiform bone.l",
+     "share": 0.556
+    },
+    {
+     "bone": "Triquetrum bone.l",
+     "share": 0.444
+    }
+   ]
+  },
+  {
+   "ligament": "Pisotriquetral ligament.r",
+   "vertices": 27,
+   "attachments": [
+    {
+     "bone": "Pisiform bone.r",
+     "share": 0.556
+    },
+    {
+     "bone": "Triquetrum bone.r",
+     "share": 0.444
+    }
+   ]
+  },
+  {
+   "ligament": "Plantar aponeurosis.l",
+   "vertices": 240,
+   "attachments": [
+    {
+     "bone": "Calcaneus.l",
+     "share": 0.062
+    },
+    {
+     "bone": "Sesamoid bones of foot.l",
+     "share": 0.017
+    },
+    {
+     "bone": "Fifth metatarsal bone.l",
+     "share": 0.008
+    }
+   ]
+  },
+  {
+   "ligament": "Plantar aponeurosis.r",
+   "vertices": 240,
+   "attachments": [
+    {
+     "bone": "Calcaneus.r",
+     "share": 0.062
+    },
+    {
+     "bone": "Sesamoid bones of foot.r",
+     "share": 0.017
+    },
+    {
+     "bone": "Fifth metatarsal bone.r",
+     "share": 0.008
+    }
+   ]
+  },
+  {
+   "ligament": "Plantar calcaneocuboid ligament.l",
+   "vertices": 12,
+   "attachments": [
+    {
+     "bone": "Calcaneus.l",
+     "share": 0.5
+    },
+    {
+     "bone": "Cuboid bone.l",
+     "share": 0.5
+    }
+   ]
+  },
+  {
+   "ligament": "Plantar calcaneocuboid ligament.r",
+   "vertices": 12,
+   "attachments": [
+    {
+     "bone": "Calcaneus.r",
+     "share": 0.5
+    },
+    {
+     "bone": "Cuboid bone.r",
+     "share": 0.5
+    }
+   ]
+  },
+  {
+   "ligament": "Plantar cuneocuboid ligament.l",
+   "vertices": 9,
+   "attachments": [
+    {
+     "bone": "Lateral cuneiform bone.l",
+     "share": 0.556
+    },
+    {
+     "bone": "Cuboid bone.l",
+     "share": 0.444
+    }
+   ]
+  },
+  {
+   "ligament": "Plantar cuneocuboid ligament.r",
+   "vertices": 9,
+   "attachments": [
+    {
+     "bone": "Lateral cuneiform bone.r",
+     "share": 0.556
+    },
+    {
+     "bone": "Cuboid bone.r",
+     "share": 0.444
+    }
+   ]
+  },
+  {
+   "ligament": "Plantar cuneonavicular ligaments.l",
+   "vertices": 16,
+   "attachments": [
+    {
+     "bone": "Navicular bone.l",
+     "share": 0.5
+    },
+    {
+     "bone": "Medial cuneiform bone.l",
+     "share": 0.188
+    },
+    {
+     "bone": "Intermediate cuneiform bone.l",
+     "share": 0.188
+    },
+    {
+     "bone": "Lateral cuneiform bone.l",
+     "share": 0.125
+    }
+   ]
+  },
+  {
+   "ligament": "Plantar cuneonavicular ligaments.r",
+   "vertices": 16,
+   "attachments": [
+    {
+     "bone": "Navicular bone.r",
+     "share": 0.5
+    },
+    {
+     "bone": "Medial cuneiform bone.r",
+     "share": 0.188
+    },
+    {
+     "bone": "Intermediate cuneiform bone.r",
+     "share": 0.188
+    },
+    {
+     "bone": "Lateral cuneiform bone.r",
+     "share": 0.125
+    }
+   ]
+  },
+  {
+   "ligament": "Plantar intercuneiform ligaments.l",
+   "vertices": 8,
+   "attachments": [
+    {
+     "bone": "Intermediate cuneiform bone.l",
+     "share": 0.5
+    },
+    {
+     "bone": "Lateral cuneiform bone.l",
+     "share": 0.25
+    },
+    {
+     "bone": "Medial cuneiform bone.l",
+     "share": 0.25
+    }
+   ]
+  },
+  {
+   "ligament": "Plantar intercuneiform ligaments.r",
+   "vertices": 8,
+   "attachments": [
+    {
+     "bone": "Intermediate cuneiform bone.r",
+     "share": 0.5
+    },
+    {
+     "bone": "Lateral cuneiform bone.r",
+     "share": 0.25
+    },
+    {
+     "bone": "Medial cuneiform bone.r",
+     "share": 0.25
+    }
+   ]
+  },
+  {
+   "ligament": "Plantar interphalangeal ligaments.l",
+   "vertices": 137,
+   "attachments": [
+    {
+     "bone": "Middle phalanx of third finger of foot.l",
+     "share": 0.131
+    },
+    {
+     "bone": "Middle phalanx of second finger of foot.l",
+     "share": 0.117
+    },
+    {
+     "bone": "Middle phalanx of fifth finger of foot.l",
+     "share": 0.102
+    },
+    {
+     "bone": "Middle phalanx of fourth finger of foot.l",
+     "share": 0.095
+    },
+    {
+     "bone": "Proximal phalanx of first finger of foot.l",
+     "share": 0.073
+    },
+    {
+     "bone": "Proximal phalanx of fifth finger of foot.l",
+     "share": 0.066
+    }
+   ]
+  },
+  {
+   "ligament": "Plantar interphalangeal ligaments.r",
+   "vertices": 137,
+   "attachments": [
+    {
+     "bone": "Middle phalanx of third finger of foot.r",
+     "share": 0.131
+    },
+    {
+     "bone": "Middle phalanx of second finger of foot.r",
+     "share": 0.117
+    },
+    {
+     "bone": "Middle phalanx of fifth finger of foot.r",
+     "share": 0.102
+    },
+    {
+     "bone": "Middle phalanx of fourth finger of foot.r",
+     "share": 0.095
+    },
+    {
+     "bone": "Proximal phalanx of first finger of foot.r",
+     "share": 0.073
+    },
+    {
+     "bone": "Proximal phalanx of fifth finger of foot.r",
+     "share": 0.066
+    }
+   ]
+  },
+  {
+   "ligament": "Plantar metatarsal ligaments.l",
+   "vertices": 16,
+   "attachments": [
+    {
+     "bone": "Fourth metatarsal bone.l",
+     "share": 0.25
+    },
+    {
+     "bone": "Third metatarsal bone.l",
+     "share": 0.25
+    },
+    {
+     "bone": "Second metatarsal bone.l",
+     "share": 0.25
+    },
+    {
+     "bone": "Fifth metatarsal bone.l",
+     "share": 0.125
+    },
+    {
+     "bone": "First metatarsal bone.l",
+     "share": 0.125
+    }
+   ]
+  },
+  {
+   "ligament": "Plantar metatarsal ligaments.r",
+   "vertices": 16,
+   "attachments": [
+    {
+     "bone": "Fourth metatarsal bone.r",
+     "share": 0.25
+    },
+    {
+     "bone": "Third metatarsal bone.r",
+     "share": 0.25
+    },
+    {
+     "bone": "Second metatarsal bone.r",
+     "share": 0.25
+    },
+    {
+     "bone": "Fifth metatarsal bone.r",
+     "share": 0.125
+    },
+    {
+     "bone": "First metatarsal bone.r",
+     "share": 0.125
+    }
+   ]
+  },
+  {
+   "ligament": "Plantar metatarsophalangeal ligaments.l",
+   "vertices": 75,
+   "attachments": [
+    {
+     "bone": "Second metatarsal bone.l",
+     "share": 0.133
+    },
+    {
+     "bone": "Fourth metatarsal bone.l",
+     "share": 0.12
+    },
+    {
+     "bone": "Third metatarsal bone.l",
+     "share": 0.12
+    },
+    {
+     "bone": "Fifth metatarsal bone.l",
+     "share": 0.107
+    },
+    {
+     "bone": "Proximal phalanx of fifth finger of foot.l",
+     "share": 0.093
+    },
+    {
+     "bone": "Proximal phalanx of fourth finger of foot.l",
+     "share": 0.08
+    }
+   ]
+  },
+  {
+   "ligament": "Plantar metatarsophalangeal ligaments.r",
+   "vertices": 75,
+   "attachments": [
+    {
+     "bone": "Second metatarsal bone.r",
+     "share": 0.133
+    },
+    {
+     "bone": "Fourth metatarsal bone.r",
+     "share": 0.12
+    },
+    {
+     "bone": "Third metatarsal bone.r",
+     "share": 0.12
+    },
+    {
+     "bone": "Fifth metatarsal bone.r",
+     "share": 0.107
+    },
+    {
+     "bone": "Proximal phalanx of fifth finger of foot.r",
+     "share": 0.093
+    },
+    {
+     "bone": "Proximal phalanx of fourth finger of foot.r",
+     "share": 0.08
+    }
+   ]
+  },
+  {
+   "ligament": "Plantar tarsometatarsal ligaments.l",
+   "vertices": 30,
+   "attachments": [
+    {
+     "bone": "Cuboid bone.l",
+     "share": 0.167
+    },
+    {
+     "bone": "Fifth metatarsal bone.l",
+     "share": 0.133
+    },
+    {
+     "bone": "Lateral cuneiform bone.l",
+     "share": 0.133
+    },
+    {
+     "bone": "Second metatarsal bone.l",
+     "share": 0.133
+    },
+    {
+     "bone": "Medial cuneiform bone.l",
+     "share": 0.133
+    },
+    {
+     "bone": "Fourth metatarsal bone.l",
+     "share": 0.1
+    }
+   ]
+  },
+  {
+   "ligament": "Plantar tarsometatarsal ligaments.r",
+   "vertices": 30,
+   "attachments": [
+    {
+     "bone": "Cuboid bone.r",
+     "share": 0.167
+    },
+    {
+     "bone": "Fifth metatarsal bone.r",
+     "share": 0.133
+    },
+    {
+     "bone": "Lateral cuneiform bone.r",
+     "share": 0.133
+    },
+    {
+     "bone": "Second metatarsal bone.r",
+     "share": 0.133
+    },
+    {
+     "bone": "Medial cuneiform bone.r",
+     "share": 0.133
+    },
+    {
+     "bone": "Fourth metatarsal bone.r",
+     "share": 0.1
+    }
+   ]
+  },
+  {
+   "ligament": "Popliteofibular ligament.l",
+   "vertices": 24,
+   "attachments": [
+    {
+     "bone": "Fibula.l",
+     "share": 0.167
+    }
+   ]
+  },
+  {
+   "ligament": "Popliteofibular ligament.r",
+   "vertices": 24,
+   "attachments": [
+    {
+     "bone": "Fibula.r",
+     "share": 0.167
+    }
+   ]
+  },
+  {
+   "ligament": "Posterior cruciate ligament.l",
+   "vertices": 396,
+   "attachments": [
+    {
+     "bone": "Tibia.l",
+     "share": 0.25
+    },
+    {
+     "bone": "Femur.l",
+     "share": 0.184
+    }
+   ]
+  },
+  {
+   "ligament": "Posterior cruciate ligament.r",
+   "vertices": 396,
+   "attachments": [
+    {
+     "bone": "Tibia.r",
+     "share": 0.25
+    },
+    {
+     "bone": "Femur.r",
+     "share": 0.184
+    }
+   ]
+  },
+  {
+   "ligament": "Posterior ligament of fibular head.l",
+   "vertices": 15,
+   "attachments": [
+    {
+     "bone": "Fibula.l",
+     "share": 0.733
+    },
+    {
+     "bone": "Tibia.l",
+     "share": 0.2
+    }
+   ]
+  },
+  {
+   "ligament": "Posterior ligament of fibular head.r",
+   "vertices": 15,
+   "attachments": [
+    {
+     "bone": "Fibula.r",
+     "share": 0.733
+    },
+    {
+     "bone": "Tibia.r",
+     "share": 0.2
+    }
+   ]
+  },
+  {
+   "ligament": "Posterior longitudinal ligament",
+   "vertices": 511,
+   "attachments": [
+    {
+     "bone": "Vertebra T6",
+     "share": 0.059
+    },
+    {
+     "bone": "Vertebra T3",
+     "share": 0.057
+    },
+    {
+     "bone": "Vertebra C3",
+     "share": 0.051
+    },
+    {
+     "bone": "Vertebra L5",
+     "share": 0.051
+    },
+    {
+     "bone": "Vertebra C4",
+     "share": 0.047
+    },
+    {
+     "bone": "Vertebra T1",
+     "share": 0.047
+    }
+   ]
+  },
+  {
+   "ligament": "Posterior sacro-iliac ligament.l",
+   "vertices": 98,
+   "attachments": [
+    {
+     "bone": "Sacrum",
+     "share": 0.51
+    },
+    {
+     "bone": "Hip bone.l",
+     "share": 0.204
+    }
+   ]
+  },
+  {
+   "ligament": "Posterior sacro-iliac ligament.r",
+   "vertices": 98,
+   "attachments": [
+    {
+     "bone": "Sacrum",
+     "share": 0.51
+    },
+    {
+     "bone": "Hip bone.r",
+     "share": 0.204
+    }
+   ]
+  },
+  {
+   "ligament": "Posterior sternoclavicular ligament.l",
+   "vertices": 12,
+   "attachments": [
+    {
+     "bone": "Clavicle.l",
+     "share": 0.25
+    },
+    {
+     "bone": "Manubrium of sternum",
+     "share": 0.25
+    }
+   ]
+  },
+  {
+   "ligament": "Posterior sternoclavicular ligament.r",
+   "vertices": 12,
+   "attachments": [
+    {
+     "bone": "Clavicle.r",
+     "share": 0.667
+    },
+    {
+     "bone": "Manubrium of sternum",
+     "share": 0.25
+    },
+    {
+     "bone": "Costal cartilage of first rib.r",
+     "share": 0.083
+    }
+   ]
+  },
+  {
+   "ligament": "Posterior talocalcaneal ligament.l",
+   "vertices": 8,
+   "attachments": [
+    {
+     "bone": "Talus.l",
+     "share": 0.375
+    },
+    {
+     "bone": "Calcaneus.l",
+     "share": 0.25
+    }
+   ]
+  },
+  {
+   "ligament": "Posterior talocalcaneal ligament.r",
+   "vertices": 8,
+   "attachments": [
+    {
+     "bone": "Talus.r",
+     "share": 0.375
+    },
+    {
+     "bone": "Calcaneus.r",
+     "share": 0.25
+    }
+   ]
+  },
+  {
+   "ligament": "Posterior talofibular ligament.l",
+   "vertices": 4,
+   "attachments": [
+    {
+     "bone": "Talus.l",
+     "share": 0.5
+    },
+    {
+     "bone": "Fibula.l",
+     "share": 0.5
+    }
+   ]
+  },
+  {
+   "ligament": "Posterior talofibular ligament.r",
+   "vertices": 4,
+   "attachments": [
+    {
+     "bone": "Talus.r",
+     "share": 0.5
+    },
+    {
+     "bone": "Fibula.r",
+     "share": 0.5
+    }
+   ]
+  },
+  {
+   "ligament": "Posterior tibiofibular ligament.l",
+   "vertices": 20,
+   "attachments": [
+    {
+     "bone": "Tibia.l",
+     "share": 0.5
+    },
+    {
+     "bone": "Fibula.l",
+     "share": 0.45
+    }
+   ]
+  },
+  {
+   "ligament": "Posterior tibiofibular ligament.r",
+   "vertices": 20,
+   "attachments": [
+    {
+     "bone": "Tibia.r",
+     "share": 0.5
+    },
+    {
+     "bone": "Fibula.r",
+     "share": 0.45
+    }
+   ]
+  },
+  {
+   "ligament": "Pterygospinous ligament.l",
+   "vertices": 4,
+   "attachments": [
+    {
+     "bone": "Sphenoid bone",
+     "share": 1.0
+    }
+   ]
+  },
+  {
+   "ligament": "Pterygospinous ligament.r",
+   "vertices": 4,
+   "attachments": [
+    {
+     "bone": "Sphenoid bone",
+     "share": 1.0
+    }
+   ]
+  },
+  {
+   "ligament": "Pubofemoral ligament.l",
+   "vertices": 30,
+   "attachments": [
+    {
+     "bone": "Hip bone.l",
+     "share": 0.1
+    },
+    {
+     "bone": "Femur.l",
+     "share": 0.067
+    }
+   ]
+  },
+  {
+   "ligament": "Pubofemoral ligament.r",
+   "vertices": 30,
+   "attachments": [
+    {
+     "bone": "Hip bone.r",
+     "share": 0.1
+    },
+    {
+     "bone": "Femur.r",
+     "share": 0.067
+    }
+   ]
+  },
+  {
+   "ligament": "Quadrangular membrane.l",
+   "vertices": 2296,
+   "attachments": [
+    {
+     "bone": "Thyroid cartilage",
+     "share": 0.483
+    },
+    {
+     "bone": "Hyoid bone",
+     "share": 0.377
+    }
+   ]
+  },
+  {
+   "ligament": "Quadrangular membrane.r",
+   "vertices": 2296,
+   "attachments": [
+    {
+     "bone": "Thyroid cartilage",
+     "share": 0.483
+    },
+    {
+     "bone": "Hyoid bone",
+     "share": 0.377
+    }
+   ]
+  },
+  {
+   "ligament": "Quadrate ligament.l",
+   "vertices": 4,
+   "attachments": [
+    {
+     "bone": "Ulna.l",
+     "share": 0.5
+    },
+    {
+     "bone": "Radius.l",
+     "share": 0.25
+    }
+   ]
+  },
+  {
+   "ligament": "Quadrate ligament.r",
+   "vertices": 4,
+   "attachments": [
+    {
+     "bone": "Ulna.r",
+     "share": 0.5
+    },
+    {
+     "bone": "Radius.r",
+     "share": 0.25
+    }
+   ]
+  },
+  {
+   "ligament": "Radial collateral ligament of wrist joint.l",
+   "vertices": 12,
+   "attachments": [
+    {
+     "bone": "Radius.l",
+     "share": 0.333
+    },
+    {
+     "bone": "Scaphoid bone.l",
+     "share": 0.333
+    },
+    {
+     "bone": "Trapezium bone.l",
+     "share": 0.333
+    }
+   ]
+  },
+  {
+   "ligament": "Radial collateral ligament of wrist joint.r",
+   "vertices": 12,
+   "attachments": [
+    {
+     "bone": "Radius.r",
+     "share": 0.333
+    },
+    {
+     "bone": "Scaphoid bone.r",
+     "share": 0.333
+    },
+    {
+     "bone": "Trapezium bone.r",
+     "share": 0.333
+    }
+   ]
+  },
+  {
+   "ligament": "Radial collateral ligament.l",
+   "vertices": 9,
+   "attachments": [
+    {
+     "bone": "Radius.l",
+     "share": 0.333
+    },
+    {
+     "bone": "Humerus.l",
+     "share": 0.333
+    }
+   ]
+  },
+  {
+   "ligament": "Radial collateral ligament.r",
+   "vertices": 9,
+   "attachments": [
+    {
+     "bone": "Radius.r",
+     "share": 0.333
+    },
+    {
+     "bone": "Humerus.r",
+     "share": 0.333
+    }
+   ]
+  },
+  {
+   "ligament": "Radiate carpal ligament.l",
+   "vertices": 33,
+   "attachments": [
+    {
+     "bone": "Capitate bone.l",
+     "share": 0.424
+    },
+    {
+     "bone": "Trapezoid bone.l",
+     "share": 0.121
+    },
+    {
+     "bone": "Lunate bone.l",
+     "share": 0.091
+    },
+    {
+     "bone": "Second metacarpal bone.l",
+     "share": 0.061
+    },
+    {
+     "bone": "Third metacarpal bone.l",
+     "share": 0.061
+    },
+    {
+     "bone": "Fourth metacarpal bone.l",
+     "share": 0.061
+    }
+   ]
+  },
+  {
+   "ligament": "Radiate carpal ligament.r",
+   "vertices": 33,
+   "attachments": [
+    {
+     "bone": "Capitate bone.r",
+     "share": 0.424
+    },
+    {
+     "bone": "Trapezoid bone.r",
+     "share": 0.121
+    },
+    {
+     "bone": "Lunate bone.r",
+     "share": 0.091
+    },
+    {
+     "bone": "Second metacarpal bone.r",
+     "share": 0.061
+    },
+    {
+     "bone": "Third metacarpal bone.r",
+     "share": 0.061
+    },
+    {
+     "bone": "Fourth metacarpal bone.r",
+     "share": 0.061
+    }
+   ]
+  },
+  {
+   "ligament": "Radioscaphocapitate ligament.l",
+   "vertices": 6,
+   "attachments": [
+    {
+     "bone": "Radius.l",
+     "share": 0.333
+    },
+    {
+     "bone": "Capitate bone.l",
+     "share": 0.333
+    },
+    {
+     "bone": "Scaphoid bone.l",
+     "share": 0.333
+    }
+   ]
+  },
+  {
+   "ligament": "Radioscaphocapitate ligament.r",
+   "vertices": 6,
+   "attachments": [
+    {
+     "bone": "Radius.r",
+     "share": 0.333
+    },
+    {
+     "bone": "Capitate bone.r",
+     "share": 0.333
+    },
+    {
+     "bone": "Scaphoid bone.r",
+     "share": 0.333
+    }
+   ]
+  },
+  {
+   "ligament": "Sacrospinous ligament.l",
+   "vertices": 19,
+   "attachments": [
+    {
+     "bone": "Sacrum",
+     "share": 0.737
+    },
+    {
+     "bone": "Hip bone.l",
+     "share": 0.263
+    }
+   ]
+  },
+  {
+   "ligament": "Sacrospinous ligament.r",
+   "vertices": 19,
+   "attachments": [
+    {
+     "bone": "Sacrum",
+     "share": 0.579
+    },
+    {
+     "bone": "Hip bone.r",
+     "share": 0.263
+    }
+   ]
+  },
+  {
+   "ligament": "Sacrotuberous ligament.l",
+   "vertices": 36,
+   "attachments": [
+    {
+     "bone": "Sacrum",
+     "share": 0.333
+    },
+    {
+     "bone": "Hip bone.l",
+     "share": 0.167
+    }
+   ]
+  },
+  {
+   "ligament": "Sacrotuberous ligament.r",
+   "vertices": 36,
+   "attachments": [
+    {
+     "bone": "Sacrum",
+     "share": 0.278
+    },
+    {
+     "bone": "Hip bone.r",
+     "share": 0.194
+    }
+   ]
+  },
+  {
+   "ligament": "Scaphocapitate ligament.l",
+   "vertices": 4,
+   "attachments": [
+    {
+     "bone": "Scaphoid bone.l",
+     "share": 0.5
+    },
+    {
+     "bone": "Capitate bone.l",
+     "share": 0.5
+    }
+   ]
+  },
+  {
+   "ligament": "Scaphocapitate ligament.r",
+   "vertices": 4,
+   "attachments": [
+    {
+     "bone": "Scaphoid bone.r",
+     "share": 0.5
+    },
+    {
+     "bone": "Capitate bone.r",
+     "share": 0.5
+    }
+   ]
+  },
+  {
+   "ligament": "Scaphotrapeziotrapezoidal ligament.l",
+   "vertices": 13,
+   "attachments": [
+    {
+     "bone": "Trapezium bone.l",
+     "share": 0.462
+    },
+    {
+     "bone": "Capitate bone.l",
+     "share": 0.231
+    },
+    {
+     "bone": "Scaphoid bone.l",
+     "share": 0.154
+    },
+    {
+     "bone": "Trapezoid bone.l",
+     "share": 0.154
+    }
+   ]
+  },
+  {
+   "ligament": "Scaphotrapeziotrapezoidal ligament.r",
+   "vertices": 13,
+   "attachments": [
+    {
+     "bone": "Trapezium bone.r",
+     "share": 0.462
+    },
+    {
+     "bone": "Capitate bone.r",
+     "share": 0.231
+    },
+    {
+     "bone": "Scaphoid bone.r",
+     "share": 0.154
+    },
+    {
+     "bone": "Trapezoid bone.r",
+     "share": 0.154
+    }
+   ]
+  },
+  {
+   "ligament": "Sphenomandibular ligament.l",
+   "vertices": 24,
+   "attachments": [
+    {
+     "bone": "Mandible",
+     "share": 0.542
+    },
+    {
+     "bone": "Sphenoid bone",
+     "share": 0.25
+    }
+   ]
+  },
+  {
+   "ligament": "Sphenomandibular ligament.r",
+   "vertices": 24,
+   "attachments": [
+    {
+     "bone": "Mandible",
+     "share": 0.542
+    },
+    {
+     "bone": "Sphenoid bone",
+     "share": 0.25
+    }
+   ]
+  },
+  {
+   "ligament": "Plantar calcaneonavicular ligament.l",
+   "vertices": 4,
+   "attachments": [
+    {
+     "bone": "Calcaneus.l",
+     "share": 0.5
+    },
+    {
+     "bone": "Navicular bone.l",
+     "share": 0.5
+    }
+   ]
+  },
+  {
+   "ligament": "Plantar calcaneonavicular ligament.r",
+   "vertices": 4,
+   "attachments": [
+    {
+     "bone": "Calcaneus.r",
+     "share": 0.5
+    },
+    {
+     "bone": "Navicular bone.r",
+     "share": 0.5
+    }
+   ]
+  },
+  {
+   "ligament": "Plantar cuboideonavicular ligament.l",
+   "vertices": 4,
+   "attachments": [
+    {
+     "bone": "Navicular bone.l",
+     "share": 0.5
+    },
+    {
+     "bone": "Cuboid bone.l",
+     "share": 0.5
+    }
+   ]
+  },
+  {
+   "ligament": "Plantar cuboideonavicular ligament.r",
+   "vertices": 4,
+   "attachments": [
+    {
+     "bone": "Navicular bone.r",
+     "share": 0.5
+    },
+    {
+     "bone": "Cuboid bone.r",
+     "share": 0.5
+    }
+   ]
+  },
+  {
+   "ligament": "Posterior meniscotibial ligament (Lateral meniscus).l",
+   "vertices": 16,
+   "attachments": [
+    {
+     "bone": "Tibia.l",
+     "share": 0.875
+    }
+   ]
+  },
+  {
+   "ligament": "Posterior meniscotibial ligament (Lateral meniscus).r",
+   "vertices": 16,
+   "attachments": [
+    {
+     "bone": "Tibia.r",
+     "share": 0.875
+    }
+   ]
+  },
+  {
+   "ligament": "Posterior meniscotibial ligament (Medial meniscus).l",
+   "vertices": 24,
+   "attachments": [
+    {
+     "bone": "Tibia.l",
+     "share": 0.75
+    }
+   ]
+  },
+  {
+   "ligament": "Posterior meniscotibial ligament (Medial meniscus).r",
+   "vertices": 24,
+   "attachments": [
+    {
+     "bone": "Tibia.r",
+     "share": 0.75
+    }
+   ]
+  },
+  {
+   "ligament": "Posterior tibiotalar ligament.l",
+   "vertices": 6,
+   "attachments": [
+    {
+     "bone": "Tibia.l",
+     "share": 0.5
+    },
+    {
+     "bone": "Talus.l",
+     "share": 0.5
+    }
+   ]
+  },
+  {
+   "ligament": "Posterior tibiotalar ligament.r",
+   "vertices": 6,
+   "attachments": [
+    {
+     "bone": "Tibia.r",
+     "share": 0.5
+    },
+    {
+     "bone": "Talus.r",
+     "share": 0.5
+    }
+   ]
+  },
+  {
+   "ligament": "Radiate ligament of head of rib.l",
+   "vertices": 300,
+   "attachments": [
+    {
+     "bone": "Vertebra T1",
+     "share": 0.057
+    },
+    {
+     "bone": "Fourth rib.l",
+     "share": 0.053
+    },
+    {
+     "bone": "Tenth rib.l",
+     "share": 0.053
+    },
+    {
+     "bone": "Third rib.l",
+     "share": 0.05
+    },
+    {
+     "bone": "Vertebra T6",
+     "share": 0.047
+    },
+    {
+     "bone": "Vertebra T5",
+     "share": 0.043
+    }
+   ]
+  },
+  {
+   "ligament": "Radiate ligament of head of rib.r",
+   "vertices": 300,
+   "attachments": [
+    {
+     "bone": "Vertebra T1",
+     "share": 0.057
+    },
+    {
+     "bone": "Fourth rib.r",
+     "share": 0.053
+    },
+    {
+     "bone": "Tenth rib.r",
+     "share": 0.053
+    },
+    {
+     "bone": "Third rib.r",
+     "share": 0.05
+    },
+    {
+     "bone": "Vertebra T6",
+     "share": 0.047
+    },
+    {
+     "bone": "Vertebra T5",
+     "share": 0.043
+    }
+   ]
+  },
+  {
+   "ligament": "Radiocapitate ligament.l",
+   "vertices": 4,
+   "attachments": [
+    {
+     "bone": "Radius.l",
+     "share": 0.5
+    },
+    {
+     "bone": "Capitate bone.l",
+     "share": 0.5
+    }
+   ]
+  },
+  {
+   "ligament": "Radiocapitate ligament.r",
+   "vertices": 4,
+   "attachments": [
+    {
+     "bone": "Radius.r",
+     "share": 0.5
+    },
+    {
+     "bone": "Capitate bone.r",
+     "share": 0.5
+    }
+   ]
+  },
+  {
+   "ligament": "Scapholunate interosseous ligament.l",
+   "vertices": 4,
+   "attachments": [
+    {
+     "bone": "Scaphoid bone.l",
+     "share": 0.5
+    },
+    {
+     "bone": "Lunate bone.l",
+     "share": 0.5
+    }
+   ]
+  },
+  {
+   "ligament": "Scapholunate interosseous ligament.r",
+   "vertices": 4,
+   "attachments": [
+    {
+     "bone": "Scaphoid bone.r",
+     "share": 0.5
+    },
+    {
+     "bone": "Lunate bone.r",
+     "share": 0.5
+    }
+   ]
+  },
+  {
+   "ligament": "Stylohyoid ligament.l",
+   "vertices": 80,
+   "attachments": [
+    {
+     "bone": "Hyoid bone",
+     "share": 0.15
+    },
+    {
+     "bone": "Temporal bone.l",
+     "share": 0.1
+    },
+    {
+     "bone": "Mandible",
+     "share": 0.05
+    }
+   ]
+  },
+  {
+   "ligament": "Stylohyoid ligament.r",
+   "vertices": 80,
+   "attachments": [
+    {
+     "bone": "Hyoid bone",
+     "share": 0.15
+    },
+    {
+     "bone": "Temporal bone.r",
+     "share": 0.1
+    },
+    {
+     "bone": "Mandible",
+     "share": 0.05
+    }
+   ]
+  },
+  {
+   "ligament": "Stylomandibular ligament.l",
+   "vertices": 12,
+   "attachments": [
+    {
+     "bone": "Mandible",
+     "share": 0.5
+    },
+    {
+     "bone": "Temporal bone.l",
+     "share": 0.417
+    }
+   ]
+  },
+  {
+   "ligament": "Stylomandibular ligament.r",
+   "vertices": 12,
+   "attachments": [
+    {
+     "bone": "Mandible",
+     "share": 0.5
+    },
+    {
+     "bone": "Temporal bone.r",
+     "share": 0.417
+    }
+   ]
+  },
+  {
+   "ligament": "Superficial part of tibial collateral ligament.l",
+   "vertices": 14,
+   "attachments": [
+    {
+     "bone": "Femur.l",
+     "share": 0.429
+    },
+    {
+     "bone": "Tibia.l",
+     "share": 0.286
+    }
+   ]
+  },
+  {
+   "ligament": "Superficial part of tibial collateral ligament.r",
+   "vertices": 14,
+   "attachments": [
+    {
+     "bone": "Femur.r",
+     "share": 0.429
+    },
+    {
+     "bone": "Tibia.r",
+     "share": 0.286
+    }
+   ]
+  },
+  {
+   "ligament": "Superficial transverse metacarpal ligament.l",
+   "vertices": 49,
+   "attachments": [
+    {
+     "bone": "Second metacarpal bone.l",
+     "share": 0.122
+    },
+    {
+     "bone": "Proximal phalanx of fifth finger of hand.l",
+     "share": 0.061
+    },
+    {
+     "bone": "Proximal phalanx of second finger of hand.l",
+     "share": 0.061
+    },
+    {
+     "bone": "Proximal phalanx of third finger of hand.l",
+     "share": 0.041
+    }
+   ]
+  },
+  {
+   "ligament": "Superficial transverse metacarpal ligament.r",
+   "vertices": 49,
+   "attachments": [
+    {
+     "bone": "Second metacarpal bone.r",
+     "share": 0.122
+    },
+    {
+     "bone": "Proximal phalanx of fifth finger of hand.r",
+     "share": 0.061
+    },
+    {
+     "bone": "Proximal phalanx of second finger of hand.r",
+     "share": 0.061
+    },
+    {
+     "bone": "Proximal phalanx of third finger of hand.r",
+     "share": 0.041
+    }
+   ]
+  },
+  {
+   "ligament": "Superficial transverse metatarsal ligament.l",
+   "vertices": 66,
+   "attachments": [
+    {
+     "bone": "Sesamoid bones of foot.l",
+     "share": 0.152
+    },
+    {
+     "bone": "Fifth metatarsal bone.l",
+     "share": 0.061
+    },
+    {
+     "bone": "Proximal phalanx of fifth finger of foot.l",
+     "share": 0.045
+    }
+   ]
+  },
+  {
+   "ligament": "Superficial transverse metatarsal ligament.r",
+   "vertices": 66,
+   "attachments": [
+    {
+     "bone": "Sesamoid bones of foot.r",
+     "share": 0.152
+    },
+    {
+     "bone": "Fifth metatarsal bone.r",
+     "share": 0.061
+    },
+    {
+     "bone": "Proximal phalanx of fifth finger of foot.r",
+     "share": 0.045
+    }
+   ]
+  },
+  {
+   "ligament": "Superior extensor retinaculum of ankle.l",
+   "vertices": 66,
+   "attachments": [
+    {
+     "bone": "Fibula.l",
+     "share": 0.121
+    },
+    {
+     "bone": "Tibia.l",
+     "share": 0.045
+    }
+   ]
+  },
+  {
+   "ligament": "Superior extensor retinaculum of ankle.r",
+   "vertices": 66,
+   "attachments": [
+    {
+     "bone": "Fibula.r",
+     "share": 0.121
+    },
+    {
+     "bone": "Tibia.r",
+     "share": 0.045
+    }
+   ]
+  },
+  {
+   "ligament": "Superior fibular retinaculum.l",
+   "vertices": 164,
+   "attachments": [
+    {
+     "bone": "Navicular bone.l",
+     "share": 0.03
+    },
+    {
+     "bone": "Calcaneus.l",
+     "share": 0.03
+    },
+    {
+     "bone": "Tibia.l",
+     "share": 0.024
+    },
+    {
+     "bone": "Medial cuneiform bone.l",
+     "share": 0.012
+    }
+   ]
+  },
+  {
+   "ligament": "Superior fibular retinaculum.r",
+   "vertices": 164,
+   "attachments": [
+    {
+     "bone": "Navicular bone.r",
+     "share": 0.03
+    },
+    {
+     "bone": "Calcaneus.r",
+     "share": 0.03
+    },
+    {
+     "bone": "Tibia.r",
+     "share": 0.024
+    },
+    {
+     "bone": "Medial cuneiform bone.r",
+     "share": 0.012
+    }
+   ]
+  },
+  {
+   "ligament": "Superior glenohumeral ligament.l",
+   "vertices": 17,
+   "attachments": [
+    {
+     "bone": "Humerus.l",
+     "share": 0.412
+    },
+    {
+     "bone": "Scapula.l",
+     "share": 0.235
+    }
+   ]
+  },
+  {
+   "ligament": "Superior glenohumeral ligament.r",
+   "vertices": 17,
+   "attachments": [
+    {
+     "bone": "Humerus.r",
+     "share": 0.412
+    },
+    {
+     "bone": "Scapula.r",
+     "share": 0.235
+    }
+   ]
+  },
+  {
+   "ligament": "Superior pubic ligament",
+   "vertices": 9,
+   "attachments": [
+    {
+     "bone": "Hip bone.l",
+     "share": 0.333
+    },
+    {
+     "bone": "Hip bone.r",
+     "share": 0.333
+    }
+   ]
+  },
+  {
+   "ligament": "Superior transverse scapular ligament.l",
+   "vertices": 4,
+   "attachments": [
+    {
+     "bone": "Scapula.l",
+     "share": 1.0
+    }
+   ]
+  },
+  {
+   "ligament": "Superior transverse scapular ligament.r",
+   "vertices": 4,
+   "attachments": [
+    {
+     "bone": "Scapula.r",
+     "share": 1.0
+    }
+   ]
+  },
+  {
+   "ligament": "Supraspinous ligament",
+   "vertices": 67,
+   "attachments": [
+    {
+     "bone": "Vertebra T2",
+     "share": 0.134
+    },
+    {
+     "bone": "Vertebra T4",
+     "share": 0.09
+    },
+    {
+     "bone": "Vertebra C7",
+     "share": 0.09
+    },
+    {
+     "bone": "Vertebra T6",
+     "share": 0.09
+    },
+    {
+     "bone": "Vertebra T5",
+     "share": 0.06
+    },
+    {
+     "bone": "Vertebra T10",
+     "share": 0.06
+    }
+   ]
+  },
+  {
+   "ligament": "Suspensory ligament of eyeball.l",
+   "vertices": 2755,
+   "attachments": [
+    {
+     "bone": "Lacrimal bone.l",
+     "share": 0.232
+    },
+    {
+     "bone": "Zygomatic bone.l",
+     "share": 0.196
+    },
+    {
+     "bone": "Sphenoid bone",
+     "share": 0.065
+    },
+    {
+     "bone": "Frontal bone",
+     "share": 0.03
+    },
+    {
+     "bone": "Anterior cells of ethmoid bone.l",
+     "share": 0.02
+    },
+    {
+     "bone": "Ethmoid bone",
+     "share": 0.01
+    }
+   ]
+  },
+  {
+   "ligament": "Suspensory ligament of eyeball.r",
+   "vertices": 2755,
+   "attachments": [
+    {
+     "bone": "Lacrimal bone.r",
+     "share": 0.232
+    },
+    {
+     "bone": "Zygomatic bone.r",
+     "share": 0.196
+    },
+    {
+     "bone": "Sphenoid bone",
+     "share": 0.065
+    },
+    {
+     "bone": "Frontal bone",
+     "share": 0.03
+    },
+    {
+     "bone": "Anterior cells of ethmoid bone.r",
+     "share": 0.02
+    },
+    {
+     "bone": "Ethmoid bone",
+     "share": 0.01
+    }
+   ]
+  },
+  {
+   "ligament": "Talocalcaneal interosseous ligament.l",
+   "vertices": 35,
+   "attachments": [
+    {
+     "bone": "Talus.l",
+     "share": 0.6
+    },
+    {
+     "bone": "Calcaneus.l",
+     "share": 0.4
+    }
+   ]
+  },
+  {
+   "ligament": "Talocalcaneal interosseous ligament.r",
+   "vertices": 35,
+   "attachments": [
+    {
+     "bone": "Talus.r",
+     "share": 0.6
+    },
+    {
+     "bone": "Calcaneus.r",
+     "share": 0.4
+    }
+   ]
+  },
+  {
+   "ligament": "Talonavicular ligament.l",
+   "vertices": 12,
+   "attachments": [
+    {
+     "bone": "Navicular bone.l",
+     "share": 0.5
+    },
+    {
+     "bone": "Talus.l",
+     "share": 0.417
+    }
+   ]
+  },
+  {
+   "ligament": "Talonavicular ligament.r",
+   "vertices": 12,
+   "attachments": [
+    {
+     "bone": "Navicular bone.r",
+     "share": 0.5
+    },
+    {
+     "bone": "Talus.r",
+     "share": 0.417
+    }
+   ]
+  },
+  {
+   "ligament": "Tibiocalcaneal ligament.l",
+   "vertices": 6,
+   "attachments": [
+    {
+     "bone": "Tibia.l",
+     "share": 0.5
+    },
+    {
+     "bone": "Calcaneus.l",
+     "share": 0.5
+    }
+   ]
+  },
+  {
+   "ligament": "Tibiocalcaneal ligament.r",
+   "vertices": 6,
+   "attachments": [
+    {
+     "bone": "Tibia.r",
+     "share": 0.5
+    },
+    {
+     "bone": "Calcaneus.r",
+     "share": 0.5
+    }
+   ]
+  },
+  {
+   "ligament": "Tibionavicular ligament.l",
+   "vertices": 21,
+   "attachments": [
+    {
+     "bone": "Talus.l",
+     "share": 0.619
+    },
+    {
+     "bone": "Tibia.l",
+     "share": 0.381
+    }
+   ]
+  },
+  {
+   "ligament": "Tibionavicular ligament.r",
+   "vertices": 21,
+   "attachments": [
+    {
+     "bone": "Talus.r",
+     "share": 0.619
+    },
+    {
+     "bone": "Tibia.r",
+     "share": 0.381
+    }
+   ]
+  },
+  {
+   "ligament": "Transverse acetabular ligament.l",
+   "vertices": 42,
+   "attachments": [
+    {
+     "bone": "Hip bone.l",
+     "share": 0.69
+    },
+    {
+     "bone": "Femur.l",
+     "share": 0.214
+    }
+   ]
+  },
+  {
+   "ligament": "Transverse acetabular ligament.r",
+   "vertices": 42,
+   "attachments": [
+    {
+     "bone": "Hip bone.r",
+     "share": 0.69
+    },
+    {
+     "bone": "Femur.r",
+     "share": 0.214
+    }
+   ]
+  },
+  {
+   "ligament": "Transverse humeral ligament.l",
+   "vertices": 12,
+   "attachments": [
+    {
+     "bone": "Humerus.l",
+     "share": 0.5
+    }
+   ]
+  },
+  {
+   "ligament": "Transverse humeral ligament.r",
+   "vertices": 12,
+   "attachments": [
+    {
+     "bone": "Humerus.r",
+     "share": 0.5
+    }
+   ]
+  },
+  {
+   "ligament": "Transverse ligament of knee.l",
+   "vertices": 31,
+   "attachments": [
+    {
+     "bone": "Tibia.l",
+     "share": 0.323
+    },
+    {
+     "bone": "Femur.l",
+     "share": 0.29
+    }
+   ]
+  },
+  {
+   "ligament": "Transverse ligament of knee.r",
+   "vertices": 31,
+   "attachments": [
+    {
+     "bone": "Tibia.r",
+     "share": 0.323
+    },
+    {
+     "bone": "Femur.r",
+     "share": 0.29
+    }
+   ]
+  },
+  {
+   "ligament": "Transverse part of iliofemoral ligament.l",
+   "vertices": 35,
+   "attachments": [
+    {
+     "bone": "Femur.l",
+     "share": 0.629
+    },
+    {
+     "bone": "Hip bone.l",
+     "share": 0.286
+    }
+   ]
+  },
+  {
+   "ligament": "Transverse part of iliofemoral ligament.r",
+   "vertices": 35,
+   "attachments": [
+    {
+     "bone": "Femur.r",
+     "share": 0.629
+    },
+    {
+     "bone": "Hip bone.r",
+     "share": 0.286
+    }
+   ]
+  },
+  {
+   "ligament": "Transverse tibiofibular ligament.l",
+   "vertices": 10,
+   "attachments": [
+    {
+     "bone": "Tibia.l",
+     "share": 0.5
+    },
+    {
+     "bone": "Fibula.l",
+     "share": 0.2
+    }
+   ]
+  },
+  {
+   "ligament": "Transverse tibiofibular ligament.r",
+   "vertices": 10,
+   "attachments": [
+    {
+     "bone": "Tibia.r",
+     "share": 0.5
+    },
+    {
+     "bone": "Fibula.r",
+     "share": 0.2
+    }
+   ]
+  },
+  {
+   "ligament": "Trapeziotrapezoidal interosseous ligament.l",
+   "vertices": 4,
+   "attachments": [
+    {
+     "bone": "Trapezoid bone.l",
+     "share": 0.75
+    },
+    {
+     "bone": "Trapezium bone.l",
+     "share": 0.25
+    }
+   ]
+  },
+  {
+   "ligament": "Trapeziotrapezoidal interosseous ligament.r",
+   "vertices": 4,
+   "attachments": [
+    {
+     "bone": "Trapezoid bone.r",
+     "share": 0.75
+    },
+    {
+     "bone": "Trapezium bone.r",
+     "share": 0.25
+    }
+   ]
+  },
+  {
+   "ligament": "Trapezoid ligament.l",
+   "vertices": 6,
+   "attachments": [
+    {
+     "bone": "Scapula.l",
+     "share": 0.5
+    },
+    {
+     "bone": "Clavicle.l",
+     "share": 0.5
+    }
+   ]
+  },
+  {
+   "ligament": "Trapezoid ligament.r",
+   "vertices": 6,
+   "attachments": [
+    {
+     "bone": "Scapula.r",
+     "share": 0.5
+    },
+    {
+     "bone": "Clavicle.r",
+     "share": 0.5
+    }
+   ]
+  },
+  {
+   "ligament": "Trapezoideocapitate interosseous ligament.l",
+   "vertices": 4,
+   "attachments": [
+    {
+     "bone": "Trapezoid bone.l",
+     "share": 1.0
+    }
+   ]
+  },
+  {
+   "ligament": "Trapezoideocapitate interosseous ligament.r",
+   "vertices": 4,
+   "attachments": [
+    {
+     "bone": "Trapezoid bone.r",
+     "share": 1.0
+    }
+   ]
+  },
+  {
+   "ligament": "Triquetrocapitate ligament.l",
+   "vertices": 6,
+   "attachments": [
+    {
+     "bone": "Triquetrum bone.l",
+     "share": 0.333
+    },
+    {
+     "bone": "Capitate bone.l",
+     "share": 0.333
+    },
+    {
+     "bone": "Hamate bone.l",
+     "share": 0.333
+    }
+   ]
+  },
+  {
+   "ligament": "Triquetrocapitate ligament.r",
+   "vertices": 6,
+   "attachments": [
+    {
+     "bone": "Triquetrum bone.r",
+     "share": 0.333
+    },
+    {
+     "bone": "Capitate bone.r",
+     "share": 0.333
+    },
+    {
+     "bone": "Hamate bone.r",
+     "share": 0.333
+    }
+   ]
+  },
+  {
+   "ligament": "Triquetrohamate ligament.l",
+   "vertices": 4,
+   "attachments": [
+    {
+     "bone": "Triquetrum bone.l",
+     "share": 0.5
+    },
+    {
+     "bone": "Hamate bone.l",
+     "share": 0.5
+    }
+   ]
+  },
+  {
+   "ligament": "Triquetrohamate ligament.r",
+   "vertices": 4,
+   "attachments": [
+    {
+     "bone": "Triquetrum bone.r",
+     "share": 0.5
+    },
+    {
+     "bone": "Hamate bone.r",
+     "share": 0.5
+    }
+   ]
+  },
+  {
+   "ligament": "Tympanic membrane.l",
+   "vertices": 788,
+   "attachments": [
+    {
+     "bone": "Temporal bone.l",
+     "share": 0.612
+    },
+    {
+     "bone": "Malleus.l",
+     "share": 0.388
+    }
+   ]
+  },
+  {
+   "ligament": "Tympanic membrane.r",
+   "vertices": 788,
+   "attachments": [
+    {
+     "bone": "Temporal bone.r",
+     "share": 0.612
+    },
+    {
+     "bone": "Malleus.r",
+     "share": 0.388
+    }
+   ]
+  },
+  {
+   "ligament": "Ulnar collateral ligament of wrist joint.l",
+   "vertices": 12,
+   "attachments": [
+    {
+     "bone": "Triquetrum bone.l",
+     "share": 0.5
+    },
+    {
+     "bone": "Ulna.l",
+     "share": 0.25
+    },
+    {
+     "bone": "Pisiform bone.l",
+     "share": 0.167
+    },
+    {
+     "bone": "Lunate bone.l",
+     "share": 0.083
+    }
+   ]
+  },
+  {
+   "ligament": "Ulnar collateral ligament of wrist joint.r",
+   "vertices": 12,
+   "attachments": [
+    {
+     "bone": "Triquetrum bone.r",
+     "share": 0.5
+    },
+    {
+     "bone": "Ulna.r",
+     "share": 0.25
+    },
+    {
+     "bone": "Pisiform bone.r",
+     "share": 0.167
+    },
+    {
+     "bone": "Lunate bone.r",
+     "share": 0.083
+    }
+   ]
+  },
+  {
+   "ligament": "Ulnar collateral ligament.l",
+   "vertices": 14,
+   "attachments": [
+    {
+     "bone": "Ulna.l",
+     "share": 0.143
+    },
+    {
+     "bone": "Radius.l",
+     "share": 0.143
+    },
+    {
+     "bone": "Humerus.l",
+     "share": 0.071
+    }
+   ]
+  },
+  {
+   "ligament": "Ulnar collateral ligament.r",
+   "vertices": 14,
+   "attachments": [
+    {
+     "bone": "Ulna.r",
+     "share": 0.143
+    },
+    {
+     "bone": "Radius.r",
+     "share": 0.143
+    },
+    {
+     "bone": "Humerus.r",
+     "share": 0.071
+    }
+   ]
+  },
+  {
+   "ligament": "Ulnocapitate ligament.l",
+   "vertices": 12,
+   "attachments": [
+    {
+     "bone": "Ulna.l",
+     "share": 0.5
+    },
+    {
+     "bone": "Lunate bone.l",
+     "share": 0.25
+    },
+    {
+     "bone": "Capitate bone.l",
+     "share": 0.083
+    }
+   ]
+  },
+  {
+   "ligament": "Ulnocapitate ligament.r",
+   "vertices": 12,
+   "attachments": [
+    {
+     "bone": "Ulna.r",
+     "share": 0.583
+    },
+    {
+     "bone": "Capitate bone.r",
+     "share": 0.167
+    },
+    {
+     "bone": "Lunate bone.r",
+     "share": 0.167
+    }
+   ]
+  },
+  {
+   "ligament": "Ulnolunate ligament.l",
+   "vertices": 10,
+   "attachments": [
+    {
+     "bone": "Ulna.l",
+     "share": 0.6
+    },
+    {
+     "bone": "Scaphoid bone.l",
+     "share": 0.2
+    },
+    {
+     "bone": "Capitate bone.l",
+     "share": 0.1
+    },
+    {
+     "bone": "Lunate bone.l",
+     "share": 0.1
+    }
+   ]
+  },
+  {
+   "ligament": "Ulnolunate ligament.r",
+   "vertices": 10,
+   "attachments": [
+    {
+     "bone": "Ulna.r",
+     "share": 0.6
+    },
+    {
+     "bone": "Scaphoid bone.r",
+     "share": 0.3
+    },
+    {
+     "bone": "Lunate bone.r",
+     "share": 0.1
+    }
+   ]
+  },
+  {
+   "ligament": "Ulnopisiform ligament",
+   "vertices": 4,
+   "attachments": [
+    {
+     "bone": "Ulna.r",
+     "share": 0.5
+    },
+    {
+     "bone": "Pisiform bone.r",
+     "share": 0.5
+    }
+   ]
+  },
+  {
+   "ligament": "Ulnopisiform ligament.l",
+   "vertices": 4,
+   "attachments": [
+    {
+     "bone": "Ulna.l",
+     "share": 0.5
+    },
+    {
+     "bone": "Pisiform bone.l",
+     "share": 0.5
+    }
+   ]
+  },
+  {
+   "ligament": "Ulnotriquetral ligament.l",
+   "vertices": 6,
+   "attachments": [
+    {
+     "bone": "Ulna.l",
+     "share": 0.5
+    },
+    {
+     "bone": "Triquetrum bone.l",
+     "share": 0.5
+    }
+   ]
+  },
+  {
+   "ligament": "Ulnotriquetral ligament.r",
+   "vertices": 6,
+   "attachments": [
+    {
+     "bone": "Ulna.r",
+     "share": 0.5
+    },
+    {
+     "bone": "Triquetrum bone.r",
+     "share": 0.5
+    }
+   ]
+  }
+ ]
+}
