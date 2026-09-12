@@ -38,9 +38,9 @@ const REGION_RECTS: { key: Region; rect: Rect }[] = [
 
 /**
  * The same silhouette split by Area instead of Region (CR-017). Areas are finer
- * than regions in the limbs, so the arm and leg bands subdivide: the old
- * shoulder-arm band splits into shoulder and elbow, and hip-thigh/lower-leg-foot
- * become hip, knee and ankle-foot. The trunk is a single band either way.
+ * than regions everywhere, so every band subdivides: the old shoulder-arm band
+ * splits into shoulder and elbow, hip-thigh/lower-leg-foot become hip, knee and
+ * ankle-foot, and the trunk band stacks into the three spine levels (CR-032).
  */
 const AREA_RECTS: { key: Area; rect: Rect }[] = [
   { key: 'shoulder', rect: [0, 0.16, 0.27, 0.15] },
@@ -49,7 +49,9 @@ const AREA_RECTS: { key: Area; rect: Rect }[] = [
   { key: 'elbow', rect: [0.73, 0.31, 0.27, 0.13] },
   { key: 'wrist-hand', rect: [0, 0.44, 0.27, 0.16] },
   { key: 'wrist-hand', rect: [0.73, 0.44, 0.27, 0.16] },
-  { key: 'back-core', rect: [0.27, 0.12, 0.46, 0.36] },
+  { key: 'cervical-spine', rect: [0.27, 0.12, 0.46, 0.07] },
+  { key: 'thoracic-spine', rect: [0.27, 0.19, 0.46, 0.16] },
+  { key: 'lumbar-spine', rect: [0.27, 0.35, 0.46, 0.13] },
   { key: 'hip', rect: [0.21, 0.48, 0.58, 0.16] },
   { key: 'knee', rect: [0.21, 0.64, 0.58, 0.12] },
   { key: 'ankle-foot', rect: [0.21, 0.76, 0.58, 0.24] },

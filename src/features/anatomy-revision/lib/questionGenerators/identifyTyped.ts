@@ -1,4 +1,4 @@
-import { areaOf } from '../../types/structure';
+import { primaryAreaOf } from '../../types/structure';
 import { structureNameVariants } from '../nameVariants';
 import type { AnatomyStructure } from '../../types/structure';
 import type { AnatomyImageAsset } from '../../types/image';
@@ -27,7 +27,7 @@ export function buildIdentifyTypedQuestions(
         structureId: structure.id,
         region: structure.region,
         subregion: structure.subregion,
-    area: areaOf(structure),
+    area: primaryAreaOf(structure),
         category: structure.category,
         difficulty: structure.difficulty,
         promptKind: 'identify',

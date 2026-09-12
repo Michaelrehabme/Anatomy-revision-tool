@@ -1,4 +1,4 @@
-import { isMuscle, areaOf } from '../../types/structure';
+import { isMuscle, primaryAreaOf } from '../../types/structure';
 import type { AnatomyStructure } from '../../types/structure';
 import type { AnatomyImageAsset } from '../../types/image';
 import type { FlashcardQuestion, OinaPromptKind, PromptKind } from '../../types/question';
@@ -16,7 +16,7 @@ function baseFields(structure: AnatomyStructure, promptKind: PromptKind) {
     structureId: structure.id,
     region: structure.region,
     subregion: structure.subregion,
-    area: areaOf(structure),
+    area: primaryAreaOf(structure),
     category: structure.category,
     difficulty: structure.difficulty,
     promptKind,

@@ -1,7 +1,7 @@
 import type { AnatomyContent } from '../../hooks/useAnatomyContent';
 import type { Area } from '../../types/region';
 import { AREAS, AREA_LABELS } from '../../types/region';
-import { areaOf } from '../../types/structure';
+import { areasOf } from '../../types/structure';
 import { BodyFigure } from '../shared/BodyFigure';
 import { MobileShell } from './MobileShell';
 
@@ -25,8 +25,8 @@ export function MobileRegionPicker({ content, selected, onChange, onContinue, on
   // Counts every category, not just muscles — matching the desktop picker (CR-017).
   const countByArea = new Map<Area, number>();
   for (const s of content.structures) {
-    const area = areaOf(s);
-    if (area) countByArea.set(area, (countByArea.get(area) ?? 0) + 1);
+    // A structure spanning several areas counts under each of them (CR-032).
+    for (const area of areasOf(s)) countByArea.set(area, (countByArea.get(area) ?? 0) + 1);
   }
 
   const toggle = (area: Area) => {
@@ -37,8 +37,7 @@ export function MobileRegionPicker({ content, selected, onChange, onContinue, on
   };
 
   const poolSize = content.structures.filter((s) => {
-    const area = areaOf(s);
-    return selected.size === 0 || (!!area && selected.has(area));
+    return selected.size === 0 || areasOf(s).some((area) => selected.has(area));
   }).length;
 
   return (

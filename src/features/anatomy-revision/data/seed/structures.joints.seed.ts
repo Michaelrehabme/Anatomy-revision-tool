@@ -524,10 +524,11 @@ export const JOINT_STRUCTURES: JointStructure[] = [
     category: 'joint',
     region: 'back-core',
     subregion: 'spine',
-    // The one structure in the dataset whose area is not the one its subregion implies:
-    // it sits in the spine subregion anatomically, but is examined and revised as part
-    // of the hip/pelvis complex. Everything else derives (see areaOf in types/structure.ts).
-    area: 'hip',
+    // The one structure examined outside the spine altogether: it sits in the spine
+    // subregion anatomically, but is revised as part of the hip/pelvis complex. Every
+    // other override in the trunk only narrows a spine structure to its own vertebral
+    // level (see areasOf in types/structure.ts).
+    areas: ['hip'],
     description:
       'The joint between the auricular surfaces of the sacrum and ilium, transferring load between the spine ' +
       'and the lower limbs. It is a synovial joint with unusually strong ligamentous reinforcement and very ' +
@@ -831,6 +832,7 @@ export const JOINT_STRUCTURES: JointStructure[] = [
     category: 'joint',
     region: 'back-core',
     subregion: 'spine',
+    areas: ['thoracic-spine'],
     description:
       'The plane synovial joint between the head of a rib and the costal facets on the bodies of the thoracic ' +
       'vertebrae. Together with the costotransverse joints it sets the axis each rib swings on during ' +

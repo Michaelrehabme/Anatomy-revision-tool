@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import type { LandmarkStructure } from '../../types/structure';
-import { buildIdentifyClue } from '../facts';
+import { buildIdentifyClue, describeStructure } from '../facts';
 import { ALL_STRUCTURES } from '../../data/seed';
 
 function landmark(overrides: Partial<LandmarkStructure> & { id: string; name: string }): LandmarkStructure {
@@ -41,5 +41,31 @@ describe('buildIdentifyClue', () => {
     for (const s of ALL_STRUCTURES) {
       expect(buildIdentifyClue(s).length, `${s.id} produced an empty identify clue`).toBeGreaterThan(0);
     }
+  });
+});
+
+/**
+ * The "Area:" line leads every fact panel, flashcard back and MCQ explanation, and
+ * it has to agree with the chip the student filtered by. Since CR-032 a structure
+ * can sit in several areas, so the line names all of them.
+ */
+describe('describeStructure area line', () => {
+  const byId = new Map(ALL_STRUCTURES.map((s) => [s.id, s]));
+  const areaLine = (id: string) => describeStructure(byId.get(id)!)[0];
+
+  it('names every spine level for a vertebral part that has none of its own', () => {
+    expect(areaLine('pedicle')).toBe('Area: Cervical Spine, Thoracic Spine, Lumbar Spine');
+  });
+
+  it('names the single level for a structure that has one', () => {
+    expect(areaLine('sacrum')).toBe('Area: Lumbar Spine');
+    expect(areaLine('atlas-c1')).toBe('Area: Cervical Spine (Neck)');
+  });
+
+  it('keeps the subregion only where it says something the area does not', () => {
+    // 'Torso' and 'Spine' add information next to the area; 'Shoulder' would just repeat it.
+    expect(areaLine('ribs')).toBe('Area: Thoracic Spine (Torso)');
+    expect(areaLine('sacroiliac-joint')).toBe('Area: Hip (Spine)');
+    expect(areaLine('deltoid')).toBe('Area: Shoulder');
   });
 });

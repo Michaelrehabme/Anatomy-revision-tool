@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { ALL_STRUCTURES } from '../../data/seed';
-import { isJoint, areaOf, EQUIVALENT_MOVEMENT_GROUPS } from '../../types/structure';
+import { isJoint, areasOf, EQUIVALENT_MOVEMENT_GROUPS } from '../../types/structure';
 import type { JointMovement } from '../../types/structure';
 import { buildIndexes } from '../indexes';
 import { buildMultiSelectQuestions } from '../questionGenerators/multiSelect';
@@ -111,7 +111,7 @@ describe('buildMultiSelectQuestions', () => {
       expect(radiocarpal).toBeDefined();
       if (!radiocarpal) return;
       const sameAreaMovements = new Set(
-        joints.filter((j) => areaOf(j) === 'wrist-hand' && j.id !== radiocarpal.id).flatMap((j) => j.movements),
+        joints.filter((j) => areasOf(j).includes('wrist-hand') && j.id !== radiocarpal.id).flatMap((j) => j.movements),
       );
       for (const q of allJointQuestions.filter((q) => q.id.endsWith('radiocarpal-joint'))) {
         expect(sameAreaMovements).toContain(q.choices[q.correctIndices[0]]);

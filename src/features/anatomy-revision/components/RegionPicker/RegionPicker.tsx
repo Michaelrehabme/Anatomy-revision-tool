@@ -2,7 +2,7 @@ import type { AnatomyContent } from '../../hooks/useAnatomyContent';
 import type { Area } from '../../types/region';
 import { AREAS, AREA_LABELS } from '../../types/region';
 import type { Category } from '../../types/structure';
-import { areaOf } from '../../types/structure';
+import { areasOf } from '../../types/structure';
 import { BodyFigure } from '../shared/BodyFigure';
 import { Button } from '../shared/Button';
 import { AppShell } from '../shell/AppShell';
@@ -38,19 +38,21 @@ const COUNTED_CATEGORIES: { category: Category; singular: string; plural: string
 export function RegionPicker({ content, selected, onChange, onContinue, onNavigate }: RegionPickerProps) {
   const byArea = new Map<Area, Map<Category, string[]>>();
   for (const s of content.structures) {
-    const area = areaOf(s);
-    if (!area) continue;
-    const names = byArea.get(area) ?? new Map<Category, string[]>();
-    names.set(s.category, [...(names.get(s.category) ?? []), s.name]);
-    byArea.set(area, names);
+    // A structure spanning several areas is counted under each of them (CR-032): a
+    // pedicle really is studied in a cervical, a thoracic and a lumbar session.
+    for (const area of areasOf(s)) {
+      const names = byArea.get(area) ?? new Map<Category, string[]>();
+      names.set(s.category, [...(names.get(s.category) ?? []), s.name]);
+      byArea.set(area, names);
+    }
   }
 
   /**
    * Counts are of study items, not of anatomical structures, because repeating bones are
-   * deliberately grouped into single entries (see structures.bones.seed.ts) — "9 bones" for
-   * Back & Core looks wrong next to 33 vertebrae until you can see that one of those entries
-   * is "Thoracic Vertebrae (T1-T12)". Hovering a count lists the entries behind it, whose
-   * names already carry their ranges, so the number and the anatomy reconcile.
+   * deliberately grouped into single entries (see structures.bones.seed.ts) — "2 bones" for
+   * Thoracic Spine looks wrong next to 12 vertebrae and 24 ribs until you can see that the
+   * entries are "Thoracic Vertebrae (T1-T12)" and "Ribs". Hovering a count lists the entries
+   * behind it, whose names already carry their ranges, so the number and the anatomy reconcile.
    */
   const namesIn = (area: Area, category: Category) => byArea.get(area)?.get(category) ?? [];
 
@@ -68,10 +70,9 @@ export function RegionPicker({ content, selected, onChange, onContinue, onNaviga
     onChange(next);
   };
 
-  const poolSize = content.structures.filter((s) => {
-    const area = areaOf(s);
-    return selected.size === 0 || (!!area && selected.has(area));
-  }).length;
+  const poolSize = content.structures.filter(
+    (s) => selected.size === 0 || areasOf(s).some((area) => selected.has(area)),
+  ).length;
 
   return (
     <AppShell

@@ -1,7 +1,7 @@
 import type { AnatomyContent } from '../../hooks/useAnatomyContent';
 import type { Area } from '../../types/region';
 import { AREAS, AREA_LABELS } from '../../types/region';
-import { areaOf } from '../../types/structure';
+import { areasOf } from '../../types/structure';
 
 interface OnboardingAreaListProps {
   content: AnatomyContent;
@@ -15,8 +15,8 @@ interface OnboardingAreaListProps {
 export function OnboardingAreaList({ content, selected, onToggle, columns = 1 }: OnboardingAreaListProps) {
   const countByArea = new Map<Area, number>();
   for (const s of content.structures) {
-    const area = areaOf(s);
-    if (area) countByArea.set(area, (countByArea.get(area) ?? 0) + 1);
+    // A structure spanning several areas counts under each of them (CR-032).
+    for (const area of areasOf(s)) countByArea.set(area, (countByArea.get(area) ?? 0) + 1);
   }
 
   return (

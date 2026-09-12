@@ -51,6 +51,27 @@ describe('preferred-areas preference', () => {
     expect(getPreferredAreas()).toEqual(['shoulder', 'knee']);
   });
 
+  /**
+   * A student who chose Back & Core before CR-032 split it must keep the whole spine.
+   * Dropping the value instead would leave an empty selection, which every filter
+   * reads as "every area" — silently widening their study from the back to the
+   * entire body without telling them.
+   */
+  it('expands a stored area that has since been split', () => {
+    localStorage.setItem('anatomy-revision:v1:preferredAreas', JSON.stringify(['back-core', 'hip']));
+    expect(getPreferredAreas()).toEqual(['hip', 'cervical-spine', 'thoracic-spine', 'lumbar-spine']);
+  });
+
+  it('rewrites the legacy value on the next save, so the expansion happens once', () => {
+    localStorage.setItem('anatomy-revision:v1:preferredAreas', JSON.stringify(['back-core']));
+    setPreferredAreas(getPreferredAreas());
+    expect(JSON.parse(localStorage.getItem('anatomy-revision:v1:preferredAreas')!)).toEqual([
+      'cervical-spine',
+      'thoracic-spine',
+      'lumbar-spine',
+    ]);
+  });
+
   /** A stale or hand-edited value must not produce a session nothing can match. */
   it('drops anything that is not a real area and survives junk', () => {
     localStorage.setItem('anatomy-revision:v1:preferredAreas', JSON.stringify(['hip', 'forearm-hand', 42]));

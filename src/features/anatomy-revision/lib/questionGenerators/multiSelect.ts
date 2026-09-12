@@ -1,7 +1,8 @@
 import {
   isMuscle,
   isJoint,
-  areaOf,
+  primaryAreaOf,
+  areasOf,
   EQUIVALENT_MOVEMENT_GROUPS,
   UNIVERSAL_ACCESSORY_MOVEMENTS,
 } from '../../types/structure';
@@ -25,7 +26,7 @@ function baseFields(structure: AnatomyStructure, promptKind: MultiSelectQuestion
     structureId: structure.id,
     region: structure.region,
     subregion: structure.subregion,
-    area: areaOf(structure),
+    area: primaryAreaOf(structure),
     category: structure.category,
     difficulty: structure.difficulty,
     promptKind,
@@ -150,7 +151,10 @@ function buildJointMovementQuestions(pool: AnatomyStructure[], rng: Rng): MultiS
       ),
     ];
     const others = joints.filter((j) => j.id !== joint.id);
-    const sameGroup = candidatesFrom(others.filter((j) => areaOf(j) === areaOf(joint)));
+    // Neighbouring joints share any area, not just their first one — a facet joint
+    // spans all three spine areas, so a costovertebral joint counts as its neighbour.
+    const jointAreas = areasOf(joint);
+    const sameGroup = candidatesFrom(others.filter((j) => areasOf(j).some((a) => jointAreas.includes(a))));
     // Groups where every other joint is a gliding-only plane joint (the hip group's
     // sacroiliac + pubic symphysis, for instance) yield nothing — fall back to the
     // whole dataset rather than dropping the question entirely.

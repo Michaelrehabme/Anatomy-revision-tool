@@ -4,6 +4,7 @@ import type { OinaPromptKind, QuestionType, RevisionQuestion } from '../../types
 import type { Area, Region, SubRegion } from '../../types/region';
 import type { FactMastery, StructureMastery } from '../../types/attempt';
 import { buildIndexes, filterStructures, type StructureIndexes } from '../indexes';
+import { areasOf } from '../../types/structure';
 import { createRng, sample, shuffle, weightedShuffle, type Rng } from '../rng';
 import { selectAdaptiveStructures, pickAdaptiveQuestionType } from '../adaptiveSelection';
 import { buildWeightMap, UNSEEN_WEIGHT } from '../scheduling';
@@ -193,6 +194,26 @@ function generateOneQuestionForStructure(
 }
 
 /**
+ * Re-labels each question with the area the session actually asked for (CR-032).
+ * A structure can belong to several areas — a pedicle revises under all three
+ * spine levels and is stamped with the first of them by default — so in a session
+ * filtered to the lumbar spine the header would otherwise contradict the chip the
+ * user picked. A no-op for an unfiltered session, where the default already holds.
+ */
+export function stampRequestedArea(
+  questions: RevisionQuestion[],
+  byId: ReadonlyMap<string, AnatomyStructure>,
+  requested: readonly Area[] | undefined,
+): RevisionQuestion[] {
+  if (!requested?.length) return questions;
+  return questions.map((q) => {
+    const structure = byId.get(q.structureId);
+    const area = structure ? areasOf(structure).find((a) => requested.includes(a)) : undefined;
+    return area && area !== q.area ? { ...q, area } : q;
+  });
+}
+
+/**
  * Filters structures by the given criteria, generates every requested
  * question type from them, and returns a shuffled (practice) or randomly
  * sampled (assessment) set — mirroring the old quiz.py's practice-vs-
@@ -247,7 +268,11 @@ export function generateRevisionSet(
         }
       }
     }
-    return withLearnCards(shuffle(adaptiveQuestions, rng), indexes, config.factMastery, config.learnCardAttempts);
+    return stampRequestedArea(
+      withLearnCards(shuffle(adaptiveQuestions, rng), indexes, config.factMastery, config.learnCardAttempts),
+      indexes.byId,
+      config.areas,
+    );
   }
 
   const generated: RevisionQuestion[] = [];
@@ -296,6 +321,10 @@ export function generateRevisionSet(
       : ordered.slice(0, count);
 
   // An exam tests rather than teaches, so it never gets a learn card (CR-018).
-  if (config.mode === 'assessment') return selected;
-  return withLearnCards(selected, indexes, config.factMastery, config.learnCardAttempts);
+  if (config.mode === 'assessment') return stampRequestedArea(selected, indexes.byId, config.areas);
+  return stampRequestedArea(
+    withLearnCards(selected, indexes, config.factMastery, config.learnCardAttempts),
+    indexes.byId,
+    config.areas,
+  );
 }

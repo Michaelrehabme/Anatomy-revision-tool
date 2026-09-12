@@ -1797,4 +1797,46 @@ export const CHANGE_REQUESTS_SEED: ChangeRequest[] = [
       'it is a promise to students and the first thing a university DP officer will probe — but it does not block a pilot the ' +
       'way CR-025 does, since the corrected wording is honest as it stands.',
   },
+  {
+    ref: 'CR-032',
+    title: 'Split Back & Core into Cervical, Thoracic and Lumbar Spine',
+    category: 'content',
+    priority: 'p1',
+    effort: 'm',
+    status: 'completed',
+    description:
+      'One "Back & Core" chip covered 85 structures from the atlas to the coccyx, which is not how the spine is revised — a ' +
+      'student working on the cervical spine had no way to ask for it. The picker now offers Cervical Spine, Thoracic Spine ' +
+      'and Lumbar Spine. The thoracic cage folds into thoracic, the abdominal wall and the sacrum into lumbar, and a ' +
+      'vertebral part with no level of its own (a pedicle, a facet joint, the erector spinae) appears under all three — so a ' +
+      'structure can now belong to several areas at once.',
+    prompt:
+      'Replace the Back & Core study filter with Cervical Spine, Thoracic Spine and Lumbar Spine.\n\n' +
+      'WHAT CHANGED\n' +
+      '- Area gained the three spine values and lost back-core. Region is untouched: it names the files under ' +
+      'public/anatomy/regions/, every persisted UserAttempt, and the admin analytics breakdown.\n' +
+      '- SubRegion is untouched too — spine/torso/neck are baked into the generated plate and panel modules — so the areas ' +
+      'derive from it: AREAS_BY_SUBREGION maps neck to cervical, torso to thoracic, and spine to all three.\n' +
+      '- A structure\'s `area` override became `areas`, and areaOf became areasOf. The seeds narrow the default where a ' +
+      'structure does have a level (sacrum and its landmarks to lumbar, the costal facets and costovertebral joint to ' +
+      'thoracic), and TRUNK_AREAS_BY_GROUP does the same for the trunk muscles, which carry no level in the source data.\n' +
+      '- Filtering matches on overlap, and the pickers count a multi-area structure under each of its areas.\n' +
+      '- A question still carries one area, since that is what the session header names, but generateSet re-stamps it with ' +
+      'the area the student actually filtered by — otherwise a pedicle in a lumbar session would be headed "Cervical Spine".\n' +
+      '- normaliseAreas expands a persisted back-core: a stored preference or a Firestore assignment scope written before ' +
+      'the split reads back as all three spine areas.\n\n' +
+      'ACCEPTANCE\n' +
+      '- validateContent reports nine areas, none empty, no structure without one.\n' +
+      '- A stored preference of ["back-core"] selects the three spine chips rather than silently meaning "every area".',
+    dependsOn: ['CR-017'],
+    createdAt: '2026-09-12T09:00:00.000Z',
+    startedAt: '2026-09-12T09:00:00.000Z',
+    completedAt: '2026-09-12T12:00:00.000Z',
+    notes:
+      'Structures per area after the split: Cervical Spine 41, Thoracic Spine 39, Lumbar Spine 45. The sacroiliac joint keeps ' +
+      'its hip override — it is a spine structure anatomically but is examined with the pelvis — and is now the only override ' +
+      'that moves a structure out of its own region rather than narrowing it to a level. The generic vertebral landmarks were ' +
+      'already modelled once each rather than per level (see structures.landmarks.spine.seed.ts), which is what made the ' +
+      'all-three default the right answer rather than a compromise.',
+  },
 ];
