@@ -1,26 +1,10 @@
 {
  "schemaVersion": 1,
- "generated": "2026-09-12T07:58:41.832Z",
+ "generated": "2026-09-12T14:31:34.636Z",
  "landmarks": [
   {
-   "id": "greater-trochanter",
-   "name": "Greater Trochanter",
-   "region": "hip-thigh",
-   "subregion": "hip",
-   "parent": "femur",
-   "parentObjects": [
-    "Femur.l",
-    "Femur.r"
-   ],
-   "anchors": [
-    "Greater trochanter.j"
-   ],
-   "radius": 0.02,
-   "sizeNote": "a broad prominence"
-  },
-  {
-   "id": "asis",
-   "name": "Anterior Superior Iliac Spine (ASIS)",
+   "id": "acetabulum",
+   "name": "Acetabulum",
    "region": "hip-thigh",
    "subregion": "hip",
    "parent": "pelvis",
@@ -29,10 +13,10 @@
     "Hip bone.r"
    ],
    "anchors": [
-    "Anterior superior iliac spine.j"
+    "Acetabulum.j"
    ],
-   "radius": 0.008,
-   "sizeNote": "a narrow feature"
+   "radius": 0.01,
+   "sizeNote": "unclassified"
   },
   {
    "id": "acromion",
@@ -51,267 +35,52 @@
    "sizeNote": "a large process or end"
   },
   {
-   "id": "olecranon",
-   "name": "Olecranon",
-   "region": "forearm-hand",
-   "subregion": "elbow",
-   "parent": "ulna",
+   "id": "adductor-tubercle",
+   "name": "Adductor Tubercle",
+   "region": "hip-thigh",
+   "subregion": "knee",
+   "parent": "femur",
    "parentObjects": [
-    "Ulna.l",
-    "Ulna.r"
+    "Femur.l",
+    "Femur.r"
    ],
    "anchors": [
-    "Olecranon.j"
-   ],
-   "radius": 0.014,
-   "sizeNote": "a large process or end"
-  },
-  {
-   "id": "vertebral-body",
-   "name": "Vertebral Body",
-   "region": "back-core",
-   "subregion": "spine",
-   "parent": "l4-vertebra",
-   "parentObjects": [
-    "Vertebra L4"
-   ],
-   "anchors": [
-    "Vertebral body.j"
-   ],
-   "radius": 0.018,
-   "sizeNote": "a broad area or edge"
-  },
-  {
-   "id": "vertebral-foramen",
-   "name": "Vertebral Foramen",
-   "region": "back-core",
-   "subregion": "spine",
-   "parent": "l4-vertebra",
-   "parentObjects": [
-    "Vertebra L4"
-   ],
-   "anchors": [
-    "Vertebral foramen.j"
-   ],
-   "radius": 0.006,
-   "sizeNote": "a small feature"
-  },
-  {
-   "id": "spinous-process",
-   "name": "Spinous Process",
-   "region": "back-core",
-   "subregion": "spine",
-   "parent": "l4-vertebra",
-   "parentObjects": [
-    "Vertebra L4"
-   ],
-   "anchors": [
-    "Spinous process.j"
+    "Adductor tubercle.j"
    ],
    "radius": 0.01,
    "sizeNote": "a discrete prominence"
   },
   {
-   "id": "transverse-process",
-   "name": "Transverse Process",
-   "region": "back-core",
-   "subregion": "spine",
-   "parent": "l4-vertebra",
+   "id": "aiis",
+   "name": "Anterior Inferior Iliac Spine (AIIS)",
+   "region": "hip-thigh",
+   "subregion": "hip",
+   "parent": "pelvis",
    "parentObjects": [
-    "Vertebra L4"
+    "Hip bone.l",
+    "Hip bone.r"
    ],
    "anchors": [
-    "Transverse process.j"
+    "Anterior inferior iliac spine.j"
    ],
-   "radius": 0.01,
-   "sizeNote": "a discrete prominence"
+   "radius": 0.008,
+   "sizeNote": "a narrow feature"
   },
   {
-   "id": "pedicle",
-   "name": "Pedicle",
-   "region": "back-core",
-   "subregion": "spine",
-   "parent": "l4-vertebra",
+   "id": "anatomical-neck-humerus",
+   "name": "Anatomical Neck of Humerus",
+   "region": "shoulder-arm",
+   "subregion": "shoulder",
+   "parent": "humerus",
    "parentObjects": [
-    "Vertebra L4"
+    "Humerus.l",
+    "Humerus.r"
    ],
    "anchors": [
-    "Pedicle of vertebral arch.j"
+    "Anatomical neck of humerus.j"
    ],
-   "radius": 0.006,
-   "sizeNote": "a small feature"
-  },
-  {
-   "id": "lamina",
-   "name": "Lamina",
-   "region": "back-core",
-   "subregion": "spine",
-   "parent": "l4-vertebra",
-   "parentObjects": [
-    "Vertebra L4"
-   ],
-   "anchors": [
-    "Lamina of vertebral arch.j"
-   ],
-   "radius": 0.006,
-   "sizeNote": "a small feature"
-  },
-  {
-   "id": "superior-articular-process",
-   "name": "Superior Articular Process",
-   "region": "back-core",
-   "subregion": "spine",
-   "parent": "l4-vertebra",
-   "parentObjects": [
-    "Vertebra L4"
-   ],
-   "anchors": [
-    "Superior articular process of vertebra.j"
-   ],
-   "radius": 0.01,
-   "sizeNote": "a discrete prominence"
-  },
-  {
-   "id": "inferior-articular-process",
-   "name": "Inferior Articular Process",
-   "region": "back-core",
-   "subregion": "spine",
-   "parent": "l4-vertebra",
-   "parentObjects": [
-    "Vertebra L4"
-   ],
-   "anchors": [
-    "Inferior articular process of vertebra.j"
-   ],
-   "radius": 0.01,
-   "sizeNote": "a discrete prominence"
-  },
-  {
-   "id": "intervertebral-foramen",
-   "name": "Intervertebral Foramen",
-   "region": "back-core",
-   "subregion": "spine",
-   "parent": "l4-vertebra",
-   "parentObjects": [
-    "Vertebra L4"
-   ],
-   "anchors": [
-    "Intervertebral foramen.j"
-   ],
-   "radius": 0.006,
-   "sizeNote": "a small feature"
-  },
-  {
-   "id": "superior-costal-facet",
-   "name": "Superior Costal Facet",
-   "region": "back-core",
-   "subregion": "spine",
-   "parent": "thoracic-vertebrae",
-   "parentObjects": [
-    "Vertebra T1",
-    "Vertebra T10",
-    "Vertebra T11",
-    "Vertebra T12",
-    "Vertebra T2",
-    "Vertebra T3",
-    "Vertebra T4",
-    "Vertebra T5",
-    "Vertebra T6",
-    "Vertebra T7",
-    "Vertebra T8",
-    "Vertebra T9"
-   ],
-   "anchors": [
-    "Superior costal facet.j"
-   ],
-   "radius": 0.006,
-   "sizeNote": "a small feature"
-  },
-  {
-   "id": "inferior-costal-facet",
-   "name": "Inferior Costal Facet",
-   "region": "back-core",
-   "subregion": "spine",
-   "parent": "thoracic-vertebrae",
-   "parentObjects": [
-    "Vertebra T1",
-    "Vertebra T10",
-    "Vertebra T11",
-    "Vertebra T12",
-    "Vertebra T2",
-    "Vertebra T3",
-    "Vertebra T4",
-    "Vertebra T5",
-    "Vertebra T6",
-    "Vertebra T7",
-    "Vertebra T8",
-    "Vertebra T9"
-   ],
-   "anchors": [
-    "Inferior costal facet.j"
-   ],
-   "radius": 0.006,
-   "sizeNote": "a small feature"
-  },
-  {
-   "id": "transverse-costal-facet",
-   "name": "Transverse Costal Facet",
-   "region": "back-core",
-   "subregion": "spine",
-   "parent": "thoracic-vertebrae",
-   "parentObjects": [
-    "Vertebra T1",
-    "Vertebra T10",
-    "Vertebra T11",
-    "Vertebra T12",
-    "Vertebra T2",
-    "Vertebra T3",
-    "Vertebra T4",
-    "Vertebra T5",
-    "Vertebra T6",
-    "Vertebra T7",
-    "Vertebra T8",
-    "Vertebra T9"
-   ],
-   "anchors": [
-    "Transverse costal facet.j"
-   ],
-   "radius": 0.006,
-   "sizeNote": "a small feature"
-  },
-  {
-   "id": "pars-interarticularis",
-   "name": "Pars Interarticularis",
-   "region": "back-core",
-   "subregion": "spine",
-   "parent": "lumbar-vertebrae",
-   "parentObjects": [
-    "Vertebra L1",
-    "Vertebra L2",
-    "Vertebra L3",
-    "Vertebra L4",
-    "Vertebra L5"
-   ],
-   "anchors": [
-    "Pars interarticularis of vertebral arch.j"
-   ],
-   "radius": 0.01,
-   "sizeNote": "unclassified"
-  },
-  {
-   "id": "dens-odontoid-process",
-   "name": "Dens (Odontoid Process)",
-   "region": "back-core",
-   "subregion": "neck",
-   "parent": "axis-c2",
-   "parentObjects": [
-    "Axis (C2)"
-   ],
-   "anchors": [
-    "Dens axis.j"
-   ],
-   "radius": 0.01,
-   "sizeNote": "a discrete prominence"
+   "radius": 0.008,
+   "sizeNote": "a narrow feature"
   },
   {
    "id": "anterior-arch-atlas",
@@ -329,34 +98,82 @@
    "sizeNote": "a broad area or edge"
   },
   {
-   "id": "posterior-arch-atlas",
-   "name": "Posterior Arch of Atlas",
+   "id": "anterior-sacral-foramina",
+   "name": "Anterior Sacral Foramina",
    "region": "back-core",
-   "subregion": "neck",
-   "parent": "atlas-c1",
+   "subregion": "spine",
+   "parent": "sacrum",
    "parentObjects": [
-    "Atlas (C1)"
+    "Sacrum"
    ],
    "anchors": [
-    "Posterior arch of atlas.j"
+    "Anterior sacral foramina.j"
+   ],
+   "radius": 0.006,
+   "sizeNote": "a small feature"
+  },
+  {
+   "id": "asis",
+   "name": "Anterior Superior Iliac Spine (ASIS)",
+   "region": "hip-thigh",
+   "subregion": "hip",
+   "parent": "pelvis",
+   "parentObjects": [
+    "Hip bone.l",
+    "Hip bone.r"
+   ],
+   "anchors": [
+    "Anterior superior iliac spine.j"
+   ],
+   "radius": 0.008,
+   "sizeNote": "a narrow feature"
+  },
+  {
+   "id": "auricular-surface",
+   "name": "Auricular Surface",
+   "region": "back-core",
+   "subregion": "spine",
+   "parent": "sacrum",
+   "parentObjects": [
+    "Sacrum"
+   ],
+   "anchors": [
+    "Auricular surface of ilium.j"
    ],
    "radius": 0.018,
    "sizeNote": "a broad area or edge"
   },
   {
-   "id": "lateral-mass-atlas",
-   "name": "Lateral Mass of Atlas",
-   "region": "back-core",
-   "subregion": "neck",
-   "parent": "atlas-c1",
+   "id": "base-of-fifth-metatarsal",
+   "name": "Base of Fifth Metatarsal",
+   "region": "lower-leg-foot",
+   "subregion": "ankle-foot",
+   "parent": "metatarsals",
    "parentObjects": [
-    "Atlas (C1)"
+    "Fifth metatarsal bone.l",
+    "Fifth metatarsal bone.r"
    ],
    "anchors": [
-    "Lateral mass.j"
+    "Base of metatarsal bone.j"
    ],
-   "radius": 0.01,
-   "sizeNote": "unclassified"
+   "radius": 0.014,
+   "sizeNote": "a large process or end"
+  },
+  {
+   "id": "base-of-first-metacarpal",
+   "name": "Base of First Metacarpal",
+   "region": "forearm-hand",
+   "subregion": "wrist-hand",
+   "parent": "metacarpals",
+   "parentObjects": [
+    "First metacarpal bone.l",
+    "First metacarpal bone.r"
+   ],
+   "anchors": [
+    "Metacarpal base.j"
+   ],
+   "radius": 0.014,
+   "sizeNote": "a large process or end"
   },
   {
    "id": "bifid-spinous-process",
@@ -365,10 +182,7 @@
    "subregion": "neck",
    "parent": "cervical-vertebrae",
    "parentObjects": [
-    "Vertebra C3",
-    "Vertebra C4",
-    "Vertebra C5",
-    "Vertebra C6"
+    "Vertebra C4"
    ],
    "anchors": [
     "Spinous process.j"
@@ -392,55 +206,67 @@
    "sizeNote": "a discrete prominence"
   },
   {
-   "id": "manubrium",
-   "name": "Manubrium",
-   "region": "back-core",
-   "subregion": "torso",
-   "parent": "sternum",
+   "id": "calcaneal-tuberosity",
+   "name": "Calcaneal Tuberosity",
+   "region": "lower-leg-foot",
+   "subregion": "ankle-foot",
+   "parent": "calcaneus",
    "parentObjects": [
-    "Manubrium of sternum",
-    "Body of sternum",
-    "Xiphoid process"
+    "Calcaneus.l",
+    "Calcaneus.r"
    ],
    "anchors": [
-    "Manubrium of sternum.j"
+    "Calcaneal tuberosity.j"
    ],
    "radius": 0.01,
-   "sizeNote": "unclassified"
+   "sizeNote": "a discrete prominence"
   },
   {
-   "id": "jugular-notch",
-   "name": "Jugular Notch",
+   "id": "coccygeal-cornua",
+   "name": "Coccygeal Cornua",
    "region": "back-core",
-   "subregion": "torso",
-   "parent": "sternum",
+   "subregion": "spine",
+   "parent": "coccyx",
    "parentObjects": [
-    "Manubrium of sternum",
-    "Body of sternum",
-    "Xiphoid process"
+    "Coccyx"
    ],
    "anchors": [
-    "Jugular notch of occipital bone.j"
+    "Coccygeal horn.j"
    ],
    "radius": 0.008,
    "sizeNote": "a narrow feature"
   },
   {
-   "id": "sternal-angle",
-   "name": "Sternal Angle",
-   "region": "back-core",
-   "subregion": "torso",
-   "parent": "sternum",
+   "id": "coracoid-process",
+   "name": "Coracoid Process",
+   "region": "shoulder-arm",
+   "subregion": "shoulder",
+   "parent": "scapula",
    "parentObjects": [
-    "Manubrium of sternum",
-    "Body of sternum",
-    "Xiphoid process"
+    "Scapula.l",
+    "Scapula.r"
    ],
    "anchors": [
-    "Sternal angle.j"
+    "Coracoid process.j"
    ],
-   "radius": 0.014,
-   "sizeNote": "a large process or end"
+   "radius": 0.01,
+   "sizeNote": "a discrete prominence"
+  },
+  {
+   "id": "coronoid-process-ulna",
+   "name": "Coronoid Process of Ulna",
+   "region": "forearm-hand",
+   "subregion": "elbow",
+   "parent": "ulna",
+   "parentObjects": [
+    "Ulna.l",
+    "Ulna.r"
+   ],
+   "anchors": [
+    "Coronoid process of ulna.j"
+   ],
+   "radius": 0.01,
+   "sizeNote": "a discrete prominence"
   },
   {
    "id": "costal-margin",
@@ -481,346 +307,6 @@
    "sizeNote": "a broad area or edge"
   },
   {
-   "id": "sacral-promontory",
-   "name": "Sacral Promontory",
-   "region": "back-core",
-   "subregion": "spine",
-   "parent": "sacrum",
-   "parentObjects": [
-    "Sacrum"
-   ],
-   "anchors": [
-    "Promontory.j"
-   ],
-   "radius": 0.01,
-   "sizeNote": "unclassified"
-  },
-  {
-   "id": "sacral-base",
-   "name": "Sacral Base",
-   "region": "back-core",
-   "subregion": "spine",
-   "parent": "sacrum",
-   "parentObjects": [
-    "Sacrum"
-   ],
-   "anchors": [
-    "Base of sacrum.j"
-   ],
-   "radius": 0.014,
-   "sizeNote": "a large process or end"
-  },
-  {
-   "id": "sacral-apex",
-   "name": "Sacral Apex",
-   "region": "back-core",
-   "subregion": "spine",
-   "parent": "sacrum",
-   "parentObjects": [
-    "Sacrum"
-   ],
-   "anchors": [
-    "Apex of sacrum.j"
-   ],
-   "radius": 0.01,
-   "sizeNote": "unclassified"
-  },
-  {
-   "id": "sacral-canal",
-   "name": "Sacral Canal",
-   "region": "back-core",
-   "subregion": "spine",
-   "parent": "sacrum",
-   "parentObjects": [
-    "Sacrum"
-   ],
-   "anchors": [
-    "Sacral canal.j"
-   ],
-   "radius": 0.006,
-   "sizeNote": "a small feature"
-  },
-  {
-   "id": "sacral-hiatus",
-   "name": "Sacral Hiatus",
-   "region": "back-core",
-   "subregion": "spine",
-   "parent": "sacrum",
-   "parentObjects": [
-    "Sacrum"
-   ],
-   "anchors": [
-    "Sacral hiatus.j"
-   ],
-   "radius": 0.008,
-   "sizeNote": "a narrow feature"
-  },
-  {
-   "id": "median-sacral-crest",
-   "name": "Median Sacral Crest",
-   "region": "back-core",
-   "subregion": "spine",
-   "parent": "sacrum",
-   "parentObjects": [
-    "Sacrum"
-   ],
-   "anchors": [
-    "Median sacral crest.j"
-   ],
-   "radius": 0.018,
-   "sizeNote": "a broad area or edge"
-  },
-  {
-   "id": "sacral-ala",
-   "name": "Sacral Ala",
-   "region": "back-core",
-   "subregion": "spine",
-   "parent": "sacrum",
-   "parentObjects": [
-    "Sacrum"
-   ],
-   "anchors": [
-    "Ala of sacrum.j"
-   ],
-   "radius": 0.018,
-   "sizeNote": "a broad area or edge"
-  },
-  {
-   "id": "anterior-sacral-foramina",
-   "name": "Anterior Sacral Foramina",
-   "region": "back-core",
-   "subregion": "spine",
-   "parent": "sacrum",
-   "parentObjects": [
-    "Sacrum"
-   ],
-   "anchors": [
-    "Anterior sacral foramina.j"
-   ],
-   "radius": 0.006,
-   "sizeNote": "a small feature"
-  },
-  {
-   "id": "posterior-sacral-foramina",
-   "name": "Posterior Sacral Foramina",
-   "region": "back-core",
-   "subregion": "spine",
-   "parent": "sacrum",
-   "parentObjects": [
-    "Sacrum"
-   ],
-   "anchors": [
-    "Posterior sacral foramina.j"
-   ],
-   "radius": 0.006,
-   "sizeNote": "a small feature"
-  },
-  {
-   "id": "auricular-surface",
-   "name": "Auricular Surface",
-   "region": "back-core",
-   "subregion": "spine",
-   "parent": "sacrum",
-   "parentObjects": [
-    "Sacrum"
-   ],
-   "anchors": [
-    "Auricular surface of ilium.j"
-   ],
-   "radius": 0.018,
-   "sizeNote": "a broad area or edge"
-  },
-  {
-   "id": "superior-articular-process-sacrum",
-   "name": "Superior Articular Process (Sacrum)",
-   "region": "back-core",
-   "subregion": "spine",
-   "parent": "sacrum",
-   "parentObjects": [
-    "Sacrum"
-   ],
-   "anchors": [
-    "Superior articular process of sacrum.j"
-   ],
-   "radius": 0.01,
-   "sizeNote": "a discrete prominence"
-  },
-  {
-   "id": "coccygeal-cornua",
-   "name": "Coccygeal Cornua",
-   "region": "back-core",
-   "subregion": "spine",
-   "parent": "coccyx",
-   "parentObjects": [
-    "Coccyx"
-   ],
-   "anchors": [
-    "Coccygeal horn.j"
-   ],
-   "radius": 0.008,
-   "sizeNote": "a narrow feature"
-  },
-  {
-   "id": "coracoid-process",
-   "name": "Coracoid Process",
-   "region": "shoulder-arm",
-   "subregion": "shoulder",
-   "parent": "scapula",
-   "parentObjects": [
-    "Scapula.l",
-    "Scapula.r"
-   ],
-   "anchors": [
-    "Coracoid process.j"
-   ],
-   "radius": 0.01,
-   "sizeNote": "a discrete prominence"
-  },
-  {
-   "id": "spine-of-scapula",
-   "name": "Spine of Scapula",
-   "region": "shoulder-arm",
-   "subregion": "shoulder",
-   "parent": "scapula",
-   "parentObjects": [
-    "Scapula.l",
-    "Scapula.r"
-   ],
-   "anchors": [
-    "Spine of scapula.j"
-   ],
-   "radius": 0.008,
-   "sizeNote": "a narrow feature"
-  },
-  {
-   "id": "glenoid-cavity",
-   "name": "Glenoid Cavity",
-   "region": "shoulder-arm",
-   "subregion": "shoulder",
-   "parent": "scapula",
-   "parentObjects": [
-    "Scapula.l",
-    "Scapula.r"
-   ],
-   "anchors": [
-    "Glenoid fossa.j"
-   ],
-   "radius": 0.01,
-   "sizeNote": "unclassified"
-  },
-  {
-   "id": "superior-angle-scapula",
-   "name": "Superior Angle of Scapula",
-   "region": "shoulder-arm",
-   "subregion": "shoulder",
-   "parent": "scapula",
-   "parentObjects": [
-    "Scapula.l",
-    "Scapula.r"
-   ],
-   "anchors": [
-    "Superior angle of scapula.j"
-   ],
-   "radius": 0.014,
-   "sizeNote": "a large process or end"
-  },
-  {
-   "id": "inferior-angle-scapula",
-   "name": "Inferior Angle of Scapula",
-   "region": "shoulder-arm",
-   "subregion": "shoulder",
-   "parent": "scapula",
-   "parentObjects": [
-    "Scapula.l",
-    "Scapula.r"
-   ],
-   "anchors": [
-    "Inferior angle of scapula.j"
-   ],
-   "radius": 0.014,
-   "sizeNote": "a large process or end"
-  },
-  {
-   "id": "supraspinous-fossa",
-   "name": "Supraspinous Fossa",
-   "region": "shoulder-arm",
-   "subregion": "shoulder",
-   "parent": "scapula",
-   "parentObjects": [
-    "Scapula.l",
-    "Scapula.r"
-   ],
-   "anchors": [
-    "Supraspinous fossa.j"
-   ],
-   "radius": 0.018,
-   "sizeNote": "a broad area or edge"
-  },
-  {
-   "id": "infraspinous-fossa",
-   "name": "Infraspinous Fossa",
-   "region": "shoulder-arm",
-   "subregion": "shoulder",
-   "parent": "scapula",
-   "parentObjects": [
-    "Scapula.l",
-    "Scapula.r"
-   ],
-   "anchors": [
-    "Infraspinous fossa.j"
-   ],
-   "radius": 0.018,
-   "sizeNote": "a broad area or edge"
-  },
-  {
-   "id": "greater-tubercle-humerus",
-   "name": "Greater Tubercle of Humerus",
-   "region": "shoulder-arm",
-   "subregion": "shoulder",
-   "parent": "humerus",
-   "parentObjects": [
-    "Humerus.l",
-    "Humerus.r"
-   ],
-   "anchors": [
-    "Greater tubercle.j"
-   ],
-   "radius": 0.01,
-   "sizeNote": "a discrete prominence"
-  },
-  {
-   "id": "lesser-tubercle-humerus",
-   "name": "Lesser Tubercle of Humerus",
-   "region": "shoulder-arm",
-   "subregion": "shoulder",
-   "parent": "humerus",
-   "parentObjects": [
-    "Humerus.l",
-    "Humerus.r"
-   ],
-   "anchors": [
-    "Lesser tubercle.j"
-   ],
-   "radius": 0.01,
-   "sizeNote": "a discrete prominence"
-  },
-  {
-   "id": "intertubercular-sulcus",
-   "name": "Intertubercular Sulcus",
-   "region": "shoulder-arm",
-   "subregion": "shoulder",
-   "parent": "humerus",
-   "parentObjects": [
-    "Humerus.l",
-    "Humerus.r"
-   ],
-   "anchors": [
-    "Intertubercular sulcus.j"
-   ],
-   "radius": 0.008,
-   "sizeNote": "a narrow feature"
-  },
-  {
    "id": "deltoid-tuberosity",
    "name": "Deltoid Tuberosity",
    "region": "shoulder-arm",
@@ -837,365 +323,16 @@
    "sizeNote": "a discrete prominence"
   },
   {
-   "id": "surgical-neck-humerus",
-   "name": "Surgical Neck of Humerus",
-   "region": "shoulder-arm",
-   "subregion": "shoulder",
-   "parent": "humerus",
+   "id": "dens-odontoid-process",
+   "name": "Dens (Odontoid Process)",
+   "region": "back-core",
+   "subregion": "neck",
+   "parent": "axis-c2",
    "parentObjects": [
-    "Humerus.l",
-    "Humerus.r"
+    "Axis (C2)"
    ],
    "anchors": [
-    "Surgical neck of humerus.j"
-   ],
-   "radius": 0.008,
-   "sizeNote": "a narrow feature"
-  },
-  {
-   "id": "anatomical-neck-humerus",
-   "name": "Anatomical Neck of Humerus",
-   "region": "shoulder-arm",
-   "subregion": "shoulder",
-   "parent": "humerus",
-   "parentObjects": [
-    "Humerus.l",
-    "Humerus.r"
-   ],
-   "anchors": [
-    "Anatomical neck of humerus.j"
-   ],
-   "radius": 0.008,
-   "sizeNote": "a narrow feature"
-  },
-  {
-   "id": "medial-epicondyle-humerus",
-   "name": "Medial Epicondyle of Humerus",
-   "region": "shoulder-arm",
-   "subregion": "elbow",
-   "parent": "humerus",
-   "parentObjects": [
-    "Humerus.l",
-    "Humerus.r"
-   ],
-   "anchors": [
-    "Medial epicondyle of humerus.j"
-   ],
-   "radius": 0.01,
-   "sizeNote": "a discrete prominence"
-  },
-  {
-   "id": "lateral-epicondyle-humerus",
-   "name": "Lateral Epicondyle of Humerus",
-   "region": "shoulder-arm",
-   "subregion": "elbow",
-   "parent": "humerus",
-   "parentObjects": [
-    "Humerus.l",
-    "Humerus.r"
-   ],
-   "anchors": [
-    "Lateral epicondyle of humerus.j"
-   ],
-   "radius": 0.01,
-   "sizeNote": "a discrete prominence"
-  },
-  {
-   "id": "coronoid-process-ulna",
-   "name": "Coronoid Process of Ulna",
-   "region": "forearm-hand",
-   "subregion": "elbow",
-   "parent": "ulna",
-   "parentObjects": [
-    "Ulna.l",
-    "Ulna.r"
-   ],
-   "anchors": [
-    "Coronoid process of ulna.j"
-   ],
-   "radius": 0.01,
-   "sizeNote": "a discrete prominence"
-  },
-  {
-   "id": "trochlear-notch",
-   "name": "Trochlear Notch",
-   "region": "forearm-hand",
-   "subregion": "elbow",
-   "parent": "ulna",
-   "parentObjects": [
-    "Ulna.l",
-    "Ulna.r"
-   ],
-   "anchors": [
-    "Trochlear notch.j"
-   ],
-   "radius": 0.008,
-   "sizeNote": "a narrow feature"
-  },
-  {
-   "id": "head-of-radius",
-   "name": "Head of Radius",
-   "region": "forearm-hand",
-   "subregion": "elbow",
-   "parent": "radius",
-   "parentObjects": [
-    "Radius.l",
-    "Radius.r"
-   ],
-   "anchors": [
-    "Head of radius.j"
-   ],
-   "radius": 0.014,
-   "sizeNote": "a large process or end"
-  },
-  {
-   "id": "radial-tuberosity",
-   "name": "Radial Tuberosity",
-   "region": "forearm-hand",
-   "subregion": "elbow",
-   "parent": "radius",
-   "parentObjects": [
-    "Radius.l",
-    "Radius.r"
-   ],
-   "anchors": [
-    "Radial tuberosity.j"
-   ],
-   "radius": 0.01,
-   "sizeNote": "a discrete prominence"
-  },
-  {
-   "id": "ulnar-styloid-process",
-   "name": "Ulnar Styloid Process",
-   "region": "forearm-hand",
-   "subregion": "wrist-hand",
-   "parent": "ulna",
-   "parentObjects": [
-    "Ulna.l",
-    "Ulna.r"
-   ],
-   "anchors": [
-    "Ulnar styloid process.j"
-   ],
-   "radius": 0.01,
-   "sizeNote": "a discrete prominence"
-  },
-  {
-   "id": "radial-styloid-process",
-   "name": "Radial Styloid Process",
-   "region": "forearm-hand",
-   "subregion": "wrist-hand",
-   "parent": "radius",
-   "parentObjects": [
-    "Radius.l",
-    "Radius.r"
-   ],
-   "anchors": [
-    "Radial styloid process.j"
-   ],
-   "radius": 0.01,
-   "sizeNote": "a discrete prominence"
-  },
-  {
-   "id": "hook-of-hamate",
-   "name": "Hook of Hamate",
-   "region": "forearm-hand",
-   "subregion": "wrist-hand",
-   "parent": "carpals",
-   "parentObjects": [
-    "Capitate bone.l",
-    "Capitate bone.r",
-    "Hamate bone.l",
-    "Hamate bone.r",
-    "Lunate bone.l",
-    "Lunate bone.r",
-    "Pisiform bone.l",
-    "Pisiform bone.r",
-    "Scaphoid bone.l",
-    "Scaphoid bone.r",
-    "Trapezium bone.l",
-    "Trapezium bone.r",
-    "Trapezoid bone.l",
-    "Trapezoid bone.r",
-    "Triquetrum bone.l",
-    "Triquetrum bone.r"
-   ],
-   "anchors": [
-    "Hook of hamate bone.j"
-   ],
-   "radius": 0.01,
-   "sizeNote": "unclassified"
-  },
-  {
-   "id": "scaphoid-tubercle",
-   "name": "Scaphoid Tubercle",
-   "region": "forearm-hand",
-   "subregion": "wrist-hand",
-   "parent": "carpals",
-   "parentObjects": [
-    "Capitate bone.l",
-    "Capitate bone.r",
-    "Hamate bone.l",
-    "Hamate bone.r",
-    "Lunate bone.l",
-    "Lunate bone.r",
-    "Pisiform bone.l",
-    "Pisiform bone.r",
-    "Scaphoid bone.l",
-    "Scaphoid bone.r",
-    "Trapezium bone.l",
-    "Trapezium bone.r",
-    "Trapezoid bone.l",
-    "Trapezoid bone.r",
-    "Triquetrum bone.l",
-    "Triquetrum bone.r"
-   ],
-   "anchors": [
-    "Tubercle of scaphoid bone.j"
-   ],
-   "radius": 0.01,
-   "sizeNote": "a discrete prominence"
-  },
-  {
-   "id": "ilium",
-   "name": "Ilium",
-   "region": "hip-thigh",
-   "subregion": "hip",
-   "parent": "pelvis",
-   "parentObjects": [
-    "Hip bone.l",
-    "Hip bone.r"
-   ],
-   "anchors": [
-    "Ilium.j"
-   ],
-   "radius": 0.01,
-   "sizeNote": "unclassified"
-  },
-  {
-   "id": "ischium",
-   "name": "Ischium",
-   "region": "hip-thigh",
-   "subregion": "hip",
-   "parent": "pelvis",
-   "parentObjects": [
-    "Hip bone.l",
-    "Hip bone.r"
-   ],
-   "anchors": [
-    "Ischium.j"
-   ],
-   "radius": 0.01,
-   "sizeNote": "unclassified"
-  },
-  {
-   "id": "pubis",
-   "name": "Pubis",
-   "region": "hip-thigh",
-   "subregion": "hip",
-   "parent": "pelvis",
-   "parentObjects": [
-    "Hip bone.l",
-    "Hip bone.r"
-   ],
-   "anchors": [
-    "Pubis.j"
-   ],
-   "radius": 0.01,
-   "sizeNote": "unclassified"
-  },
-  {
-   "id": "acetabulum",
-   "name": "Acetabulum",
-   "region": "hip-thigh",
-   "subregion": "hip",
-   "parent": "pelvis",
-   "parentObjects": [
-    "Hip bone.l",
-    "Hip bone.r"
-   ],
-   "anchors": [
-    "Acetabulum.j"
-   ],
-   "radius": 0.01,
-   "sizeNote": "unclassified"
-  },
-  {
-   "id": "iliac-crest",
-   "name": "Iliac Crest",
-   "region": "hip-thigh",
-   "subregion": "hip",
-   "parent": "pelvis",
-   "parentObjects": [
-    "Hip bone.l",
-    "Hip bone.r"
-   ],
-   "anchors": [
-    "Iliac crest.j"
-   ],
-   "radius": 0.018,
-   "sizeNote": "a broad area or edge"
-  },
-  {
-   "id": "aiis",
-   "name": "Anterior Inferior Iliac Spine (AIIS)",
-   "region": "hip-thigh",
-   "subregion": "hip",
-   "parent": "pelvis",
-   "parentObjects": [
-    "Hip bone.l",
-    "Hip bone.r"
-   ],
-   "anchors": [
-    "Anterior inferior iliac spine.j"
-   ],
-   "radius": 0.008,
-   "sizeNote": "a narrow feature"
-  },
-  {
-   "id": "psis",
-   "name": "Posterior Superior Iliac Spine (PSIS)",
-   "region": "hip-thigh",
-   "subregion": "hip",
-   "parent": "pelvis",
-   "parentObjects": [
-    "Hip bone.l",
-    "Hip bone.r"
-   ],
-   "anchors": [
-    "Posterior superior iliac spine.j"
-   ],
-   "radius": 0.008,
-   "sizeNote": "a narrow feature"
-  },
-  {
-   "id": "ischial-tuberosity",
-   "name": "Ischial Tuberosity",
-   "region": "hip-thigh",
-   "subregion": "hip",
-   "parent": "pelvis",
-   "parentObjects": [
-    "Hip bone.l",
-    "Hip bone.r"
-   ],
-   "anchors": [
-    "Ischial tuberosity.j"
-   ],
-   "radius": 0.01,
-   "sizeNote": "a discrete prominence"
-  },
-  {
-   "id": "pubic-tubercle",
-   "name": "Pubic Tubercle",
-   "region": "hip-thigh",
-   "subregion": "hip",
-   "parent": "pelvis",
-   "parentObjects": [
-    "Hip bone.l",
-    "Hip bone.r"
-   ],
-   "anchors": [
-    "Pubic tubercle.j"
+    "Dens axis.j"
    ],
    "radius": 0.01,
    "sizeNote": "a discrete prominence"
@@ -1233,8 +370,24 @@
    "sizeNote": "a narrow feature"
   },
   {
-   "id": "lesser-trochanter",
-   "name": "Lesser Trochanter",
+   "id": "glenoid-cavity",
+   "name": "Glenoid Cavity",
+   "region": "shoulder-arm",
+   "subregion": "shoulder",
+   "parent": "scapula",
+   "parentObjects": [
+    "Scapula.l",
+    "Scapula.r"
+   ],
+   "anchors": [
+    "Glenoid fossa.j"
+   ],
+   "radius": 0.01,
+   "sizeNote": "unclassified"
+  },
+  {
+   "id": "greater-trochanter",
+   "name": "Greater Trochanter",
    "region": "hip-thigh",
    "subregion": "hip",
    "parent": "femur",
@@ -1243,30 +396,110 @@
     "Femur.r"
    ],
    "anchors": [
-    "Lesser trochanter.j"
+    "Greater trochanter.j"
    ],
    "radius": 0.02,
    "sizeNote": "a broad prominence"
   },
   {
-   "id": "intertrochanteric-line",
-   "name": "Intertrochanteric Line",
-   "region": "hip-thigh",
-   "subregion": "hip",
-   "parent": "femur",
+   "id": "greater-tubercle-humerus",
+   "name": "Greater Tubercle of Humerus",
+   "region": "shoulder-arm",
+   "subregion": "shoulder",
+   "parent": "humerus",
    "parentObjects": [
-    "Femur.l",
-    "Femur.r"
+    "Humerus.l",
+    "Humerus.r"
    ],
    "anchors": [
-    "Intertrochanteric line.j"
+    "Greater tubercle.j"
    ],
-   "radius": 0.008,
-   "sizeNote": "a narrow feature"
+   "radius": 0.01,
+   "sizeNote": "a discrete prominence"
   },
   {
-   "id": "obturator-foramen",
-   "name": "Obturator Foramen",
+   "id": "head-of-fibula",
+   "name": "Head of Fibula",
+   "region": "lower-leg-foot",
+   "subregion": "knee",
+   "parent": "fibula",
+   "parentObjects": [
+    "Fibula.l",
+    "Fibula.r"
+   ],
+   "anchors": [
+    "Head of fibula.j"
+   ],
+   "radius": 0.014,
+   "sizeNote": "a large process or end"
+  },
+  {
+   "id": "head-of-first-metacarpal",
+   "name": "Head of First Metacarpal",
+   "region": "forearm-hand",
+   "subregion": "wrist-hand",
+   "parent": "metacarpals",
+   "parentObjects": [
+    "First metacarpal bone.l",
+    "First metacarpal bone.r"
+   ],
+   "anchors": [
+    "Head of metacarpal bone.j"
+   ],
+   "radius": 0.014,
+   "sizeNote": "a large process or end"
+  },
+  {
+   "id": "head-of-first-metatarsal",
+   "name": "Head of First Metatarsal",
+   "region": "lower-leg-foot",
+   "subregion": "ankle-foot",
+   "parent": "metatarsals",
+   "parentObjects": [
+    "First metatarsal bone.l",
+    "First metatarsal bone.r"
+   ],
+   "anchors": [
+    "Head of metatarsal bone.j"
+   ],
+   "radius": 0.014,
+   "sizeNote": "a large process or end"
+  },
+  {
+   "id": "head-of-radius",
+   "name": "Head of Radius",
+   "region": "forearm-hand",
+   "subregion": "elbow",
+   "parent": "radius",
+   "parentObjects": [
+    "Radius.l",
+    "Radius.r"
+   ],
+   "anchors": [
+    "Head of radius.j"
+   ],
+   "radius": 0.014,
+   "sizeNote": "a large process or end"
+  },
+  {
+   "id": "hook-of-hamate",
+   "name": "Hook of Hamate",
+   "region": "forearm-hand",
+   "subregion": "wrist-hand",
+   "parent": "hamate",
+   "parentObjects": [
+    "Hamate bone.l",
+    "Hamate bone.r"
+   ],
+   "anchors": [
+    "Hook of hamate bone.j"
+   ],
+   "radius": 0.01,
+   "sizeNote": "unclassified"
+  },
+  {
+   "id": "iliac-crest",
+   "name": "Iliac Crest",
    "region": "hip-thigh",
    "subregion": "hip",
    "parent": "pelvis",
@@ -1275,106 +508,104 @@
     "Hip bone.r"
    ],
    "anchors": [
-    "Obturator foramen.j"
+    "Iliac crest.j"
+   ],
+   "radius": 0.018,
+   "sizeNote": "a broad area or edge"
+  },
+  {
+   "id": "ilium",
+   "name": "Ilium",
+   "region": "hip-thigh",
+   "subregion": "hip",
+   "parent": "pelvis",
+   "parentObjects": [
+    "Hip bone.l",
+    "Hip bone.r"
+   ],
+   "anchors": [
+    "Ilium.j"
+   ],
+   "radius": 0.01,
+   "sizeNote": "unclassified"
+  },
+  {
+   "id": "inferior-angle-scapula",
+   "name": "Inferior Angle of Scapula",
+   "region": "shoulder-arm",
+   "subregion": "shoulder",
+   "parent": "scapula",
+   "parentObjects": [
+    "Scapula.l",
+    "Scapula.r"
+   ],
+   "anchors": [
+    "Inferior angle of scapula.j"
+   ],
+   "radius": 0.014,
+   "sizeNote": "a large process or end"
+  },
+  {
+   "id": "inferior-articular-process",
+   "name": "Inferior Articular Process",
+   "region": "back-core",
+   "subregion": "spine",
+   "parent": "l4-vertebra",
+   "parentObjects": [
+    "Vertebra L4"
+   ],
+   "anchors": [
+    "Inferior articular process of vertebra.j"
+   ],
+   "radius": 0.01,
+   "sizeNote": "a discrete prominence"
+  },
+  {
+   "id": "inferior-costal-facet",
+   "name": "Inferior Costal Facet",
+   "region": "back-core",
+   "subregion": "spine",
+   "parent": "thoracic-vertebrae",
+   "parentObjects": [
+    "Vertebra T6"
+   ],
+   "anchors": [
+    "Inferior costal facet.j"
    ],
    "radius": 0.006,
    "sizeNote": "a small feature"
   },
   {
-   "id": "medial-condyle-femur",
-   "name": "Medial Condyle of Femur",
-   "region": "hip-thigh",
-   "subregion": "knee",
-   "parent": "femur",
+   "id": "infraspinous-fossa",
+   "name": "Infraspinous Fossa",
+   "region": "shoulder-arm",
+   "subregion": "shoulder",
+   "parent": "scapula",
    "parentObjects": [
-    "Femur.l",
-    "Femur.r"
+    "Scapula.l",
+    "Scapula.r"
    ],
    "anchors": [
-    "Medial condyle of femur.j"
+    "Infraspinous fossa.j"
    ],
-   "radius": 0.014,
-   "sizeNote": "a large process or end"
+   "radius": 0.018,
+   "sizeNote": "a broad area or edge"
   },
   {
-   "id": "lateral-condyle-femur",
-   "name": "Lateral Condyle of Femur",
+   "id": "intercondylar-eminence-tibia",
+   "name": "Intercondylar Eminence of Tibia",
    "region": "hip-thigh",
    "subregion": "knee",
-   "parent": "femur",
+   "parent": "tibia",
    "parentObjects": [
-    "Femur.l",
-    "Femur.r"
+    "Tibia.l",
+    "Tibia.r"
    ],
    "anchors": [
-    "Lateral condyle of femur.j"
-   ],
-   "radius": 0.014,
-   "sizeNote": "a large process or end"
-  },
-  {
-   "id": "medial-epicondyle-femur",
-   "name": "Medial Epicondyle of Femur",
-   "region": "hip-thigh",
-   "subregion": "knee",
-   "parent": "femur",
-   "parentObjects": [
-    "Femur.l",
-    "Femur.r"
-   ],
-   "anchors": [
-    "Medial epicondyle of femur.j"
+    "Intercondylar eminence.j"
    ],
    "radius": 0.01,
    "sizeNote": "a discrete prominence"
-  },
-  {
-   "id": "lateral-epicondyle-femur",
-   "name": "Lateral Epicondyle of Femur",
-   "region": "hip-thigh",
-   "subregion": "knee",
-   "parent": "femur",
-   "parentObjects": [
-    "Femur.l",
-    "Femur.r"
-   ],
-   "anchors": [
-    "Lateral epicondyle of femur.j"
-   ],
-   "radius": 0.01,
-   "sizeNote": "a discrete prominence"
-  },
-  {
-   "id": "adductor-tubercle",
-   "name": "Adductor Tubercle",
-   "region": "hip-thigh",
-   "subregion": "knee",
-   "parent": "femur",
-   "parentObjects": [
-    "Femur.l",
-    "Femur.r"
-   ],
-   "anchors": [
-    "Adductor tubercle.j"
-   ],
-   "radius": 0.01,
-   "sizeNote": "a discrete prominence"
-  },
-  {
-   "id": "linea-aspera",
-   "name": "Linea Aspera",
-   "region": "hip-thigh",
-   "subregion": "hip",
-   "parent": "femur",
-   "parentObjects": [
-    "Femur.l",
-    "Femur.r"
-   ],
-   "anchors": [
-    "Linea aspera.j"
-   ],
-   "radius": 0.01,
-   "sizeNote": "unclassified"
   },
   {
    "id": "intercondylar-fossa-femur",
@@ -1393,17 +624,128 @@
    "sizeNote": "a broad area or edge"
   },
   {
-   "id": "medial-condyle-tibia",
-   "name": "Medial Condyle of Tibia",
+   "id": "intertrochanteric-line",
+   "name": "Intertrochanteric Line",
    "region": "hip-thigh",
-   "subregion": "knee",
-   "parent": "tibia",
+   "subregion": "hip",
+   "parent": "femur",
    "parentObjects": [
-    "Tibia.l",
-    "Tibia.r"
+    "Femur.l",
+    "Femur.r"
    ],
    "anchors": [
-    "Medial condyle of tibia.j"
+    "Intertrochanteric line.j"
+   ],
+   "radius": 0.008,
+   "sizeNote": "a narrow feature"
+  },
+  {
+   "id": "intertubercular-sulcus",
+   "name": "Intertubercular Sulcus",
+   "region": "shoulder-arm",
+   "subregion": "shoulder",
+   "parent": "humerus",
+   "parentObjects": [
+    "Humerus.l",
+    "Humerus.r"
+   ],
+   "anchors": [
+    "Intertubercular sulcus.j"
+   ],
+   "radius": 0.008,
+   "sizeNote": "a narrow feature"
+  },
+  {
+   "id": "intervertebral-foramen",
+   "name": "Intervertebral Foramen",
+   "region": "back-core",
+   "subregion": "spine",
+   "parent": "l4-vertebra",
+   "parentObjects": [
+    "Vertebra L4"
+   ],
+   "anchors": [
+    "Intervertebral foramen.j"
+   ],
+   "radius": 0.006,
+   "sizeNote": "a small feature"
+  },
+  {
+   "id": "ischial-tuberosity",
+   "name": "Ischial Tuberosity",
+   "region": "hip-thigh",
+   "subregion": "hip",
+   "parent": "pelvis",
+   "parentObjects": [
+    "Hip bone.l",
+    "Hip bone.r"
+   ],
+   "anchors": [
+    "Ischial tuberosity.j"
+   ],
+   "radius": 0.01,
+   "sizeNote": "a discrete prominence"
+  },
+  {
+   "id": "ischium",
+   "name": "Ischium",
+   "region": "hip-thigh",
+   "subregion": "hip",
+   "parent": "pelvis",
+   "parentObjects": [
+    "Hip bone.l",
+    "Hip bone.r"
+   ],
+   "anchors": [
+    "Ischium.j"
+   ],
+   "radius": 0.01,
+   "sizeNote": "unclassified"
+  },
+  {
+   "id": "jugular-notch",
+   "name": "Jugular Notch",
+   "region": "back-core",
+   "subregion": "torso",
+   "parent": "sternum",
+   "parentObjects": [
+    "Manubrium of sternum",
+    "Body of sternum",
+    "Xiphoid process"
+   ],
+   "anchors": [
+    "Jugular notch of occipital bone.j"
+   ],
+   "radius": 0.008,
+   "sizeNote": "a narrow feature"
+  },
+  {
+   "id": "lamina",
+   "name": "Lamina",
+   "region": "back-core",
+   "subregion": "spine",
+   "parent": "l4-vertebra",
+   "parentObjects": [
+    "Vertebra L4"
+   ],
+   "anchors": [
+    "Lamina of vertebral arch.j"
+   ],
+   "radius": 0.006,
+   "sizeNote": "a small feature"
+  },
+  {
+   "id": "lateral-condyle-femur",
+   "name": "Lateral Condyle of Femur",
+   "region": "hip-thigh",
+   "subregion": "knee",
+   "parent": "femur",
+   "parentObjects": [
+    "Femur.l",
+    "Femur.r"
+   ],
+   "anchors": [
+    "Lateral condyle of femur.j"
    ],
    "radius": 0.014,
    "sizeNote": "a large process or end"
@@ -1425,84 +767,211 @@
    "sizeNote": "a large process or end"
   },
   {
-   "id": "tibial-tuberosity",
-   "name": "Tibial Tuberosity",
+   "id": "lateral-epicondyle-femur",
+   "name": "Lateral Epicondyle of Femur",
    "region": "hip-thigh",
    "subregion": "knee",
-   "parent": "tibia",
+   "parent": "femur",
    "parentObjects": [
-    "Tibia.l",
-    "Tibia.r"
+    "Femur.l",
+    "Femur.r"
    ],
    "anchors": [
-    "Tibial tuberosity.j"
+    "Lateral epicondyle of femur.j"
    ],
    "radius": 0.01,
    "sizeNote": "a discrete prominence"
   },
   {
-   "id": "intercondylar-eminence-tibia",
-   "name": "Intercondylar Eminence of Tibia",
-   "region": "hip-thigh",
-   "subregion": "knee",
-   "parent": "tibia",
+   "id": "lateral-epicondyle-humerus",
+   "name": "Lateral Epicondyle of Humerus",
+   "region": "shoulder-arm",
+   "subregion": "elbow",
+   "parent": "humerus",
    "parentObjects": [
-    "Tibia.l",
-    "Tibia.r"
+    "Humerus.l",
+    "Humerus.r"
    ],
    "anchors": [
-    "Intercondylar eminence.j"
+    "Lateral epicondyle of humerus.j"
    ],
    "radius": 0.01,
    "sizeNote": "a discrete prominence"
   },
   {
-   "id": "tibial-plateau",
-   "name": "Tibial Plateau",
+   "id": "lateral-mass-atlas",
+   "name": "Lateral Mass of Atlas",
+   "region": "back-core",
+   "subregion": "neck",
+   "parent": "atlas-c1",
+   "parentObjects": [
+    "Atlas (C1)"
+   ],
+   "anchors": [
+    "Lateral mass.j"
+   ],
+   "radius": 0.01,
+   "sizeNote": "unclassified"
+  },
+  {
+   "id": "lesser-trochanter",
+   "name": "Lesser Trochanter",
+   "region": "hip-thigh",
+   "subregion": "hip",
+   "parent": "femur",
+   "parentObjects": [
+    "Femur.l",
+    "Femur.r"
+   ],
+   "anchors": [
+    "Lesser trochanter.j"
+   ],
+   "radius": 0.02,
+   "sizeNote": "a broad prominence"
+  },
+  {
+   "id": "lesser-tubercle-humerus",
+   "name": "Lesser Tubercle of Humerus",
+   "region": "shoulder-arm",
+   "subregion": "shoulder",
+   "parent": "humerus",
+   "parentObjects": [
+    "Humerus.l",
+    "Humerus.r"
+   ],
+   "anchors": [
+    "Lesser tubercle.j"
+   ],
+   "radius": 0.01,
+   "sizeNote": "a discrete prominence"
+  },
+  {
+   "id": "linea-aspera",
+   "name": "Linea Aspera",
+   "region": "hip-thigh",
+   "subregion": "hip",
+   "parent": "femur",
+   "parentObjects": [
+    "Femur.l",
+    "Femur.r"
+   ],
+   "anchors": [
+    "Linea aspera.j"
+   ],
+   "radius": 0.01,
+   "sizeNote": "unclassified"
+  },
+  {
+   "id": "manubrium",
+   "name": "Manubrium",
+   "region": "back-core",
+   "subregion": "torso",
+   "parent": "sternum",
+   "parentObjects": [
+    "Manubrium of sternum",
+    "Body of sternum",
+    "Xiphoid process"
+   ],
+   "anchors": [
+    "Manubrium of sternum.j"
+   ],
+   "radius": 0.01,
+   "sizeNote": "unclassified"
+  },
+  {
+   "id": "medial-condyle-femur",
+   "name": "Medial Condyle of Femur",
    "region": "hip-thigh",
    "subregion": "knee",
-   "parent": "tibia",
+   "parent": "femur",
    "parentObjects": [
-    "Tibia.l",
-    "Tibia.r"
+    "Femur.l",
+    "Femur.r"
    ],
    "anchors": [
-    "Tibial plateau.j"
-   ],
-   "radius": 0.018,
-   "sizeNote": "a broad area or edge"
-  },
-  {
-   "id": "tibial-crest",
-   "name": "Tibial Crest",
-   "region": "lower-leg-foot",
-   "subregion": "knee",
-   "parent": "tibia",
-   "parentObjects": [
-    "Tibia.l",
-    "Tibia.r"
-   ],
-   "anchors": [
-    "Anterior border of tibia.j"
-   ],
-   "radius": 0.018,
-   "sizeNote": "a broad area or edge"
-  },
-  {
-   "id": "head-of-fibula",
-   "name": "Head of Fibula",
-   "region": "lower-leg-foot",
-   "subregion": "knee",
-   "parent": "fibula",
-   "parentObjects": [
-    "Fibula.l",
-    "Fibula.r"
-   ],
-   "anchors": [
-    "Head of fibula.j"
+    "Medial condyle of femur.j"
    ],
    "radius": 0.014,
    "sizeNote": "a large process or end"
+  },
+  {
+   "id": "medial-condyle-tibia",
+   "name": "Medial Condyle of Tibia",
+   "region": "hip-thigh",
+   "subregion": "knee",
+   "parent": "tibia",
+   "parentObjects": [
+    "Tibia.l",
+    "Tibia.r"
+   ],
+   "anchors": [
+    "Medial condyle of tibia.j"
+   ],
+   "radius": 0.014,
+   "sizeNote": "a large process or end"
+  },
+  {
+   "id": "medial-epicondyle-femur",
+   "name": "Medial Epicondyle of Femur",
+   "region": "hip-thigh",
+   "subregion": "knee",
+   "parent": "femur",
+   "parentObjects": [
+    "Femur.l",
+    "Femur.r"
+   ],
+   "anchors": [
+    "Medial epicondyle of femur.j"
+   ],
+   "radius": 0.01,
+   "sizeNote": "a discrete prominence"
+  },
+  {
+   "id": "medial-epicondyle-humerus",
+   "name": "Medial Epicondyle of Humerus",
+   "region": "shoulder-arm",
+   "subregion": "elbow",
+   "parent": "humerus",
+   "parentObjects": [
+    "Humerus.l",
+    "Humerus.r"
+   ],
+   "anchors": [
+    "Medial epicondyle of humerus.j"
+   ],
+   "radius": 0.01,
+   "sizeNote": "a discrete prominence"
+  },
+  {
+   "id": "median-sacral-crest",
+   "name": "Median Sacral Crest",
+   "region": "back-core",
+   "subregion": "spine",
+   "parent": "sacrum",
+   "parentObjects": [
+    "Sacrum"
+   ],
+   "anchors": [
+    "Median sacral crest.j"
+   ],
+   "radius": 0.018,
+   "sizeNote": "a broad area or edge"
+  },
+  {
+   "id": "navicular-tuberosity",
+   "name": "Navicular Tuberosity",
+   "region": "lower-leg-foot",
+   "subregion": "ankle-foot",
+   "parent": "navicular",
+   "parentObjects": [
+    "Navicular bone.l",
+    "Navicular bone.r"
+   ],
+   "anchors": [
+    "Tuberosity of navicular bone.j"
+   ],
+   "radius": 0.01,
+   "sizeNote": "a discrete prominence"
   },
   {
    "id": "neck-of-fibula",
@@ -1516,6 +985,444 @@
    ],
    "anchors": [
     "Neck of fibula.j"
+   ],
+   "radius": 0.008,
+   "sizeNote": "a narrow feature"
+  },
+  {
+   "id": "obturator-foramen",
+   "name": "Obturator Foramen",
+   "region": "hip-thigh",
+   "subregion": "hip",
+   "parent": "pelvis",
+   "parentObjects": [
+    "Hip bone.l",
+    "Hip bone.r"
+   ],
+   "anchors": [
+    "Obturator foramen.j"
+   ],
+   "radius": 0.006,
+   "sizeNote": "a small feature"
+  },
+  {
+   "id": "olecranon",
+   "name": "Olecranon",
+   "region": "forearm-hand",
+   "subregion": "elbow",
+   "parent": "ulna",
+   "parentObjects": [
+    "Ulna.l",
+    "Ulna.r"
+   ],
+   "anchors": [
+    "Olecranon.j"
+   ],
+   "radius": 0.014,
+   "sizeNote": "a large process or end"
+  },
+  {
+   "id": "pars-interarticularis",
+   "name": "Pars Interarticularis",
+   "region": "back-core",
+   "subregion": "spine",
+   "parent": "lumbar-vertebrae",
+   "parentObjects": [
+    "Vertebra L1",
+    "Vertebra L2",
+    "Vertebra L3",
+    "Vertebra L4",
+    "Vertebra L5"
+   ],
+   "anchors": [
+    "Pars interarticularis of vertebral arch.j"
+   ],
+   "radius": 0.01,
+   "sizeNote": "unclassified"
+  },
+  {
+   "id": "pedicle",
+   "name": "Pedicle",
+   "region": "back-core",
+   "subregion": "spine",
+   "parent": "l4-vertebra",
+   "parentObjects": [
+    "Vertebra L4"
+   ],
+   "anchors": [
+    "Pedicle of vertebral arch.j"
+   ],
+   "radius": 0.006,
+   "sizeNote": "a small feature"
+  },
+  {
+   "id": "posterior-arch-atlas",
+   "name": "Posterior Arch of Atlas",
+   "region": "back-core",
+   "subregion": "neck",
+   "parent": "atlas-c1",
+   "parentObjects": [
+    "Atlas (C1)"
+   ],
+   "anchors": [
+    "Posterior arch of atlas.j"
+   ],
+   "radius": 0.018,
+   "sizeNote": "a broad area or edge"
+  },
+  {
+   "id": "posterior-sacral-foramina",
+   "name": "Posterior Sacral Foramina",
+   "region": "back-core",
+   "subregion": "spine",
+   "parent": "sacrum",
+   "parentObjects": [
+    "Sacrum"
+   ],
+   "anchors": [
+    "Posterior sacral foramina.j"
+   ],
+   "radius": 0.006,
+   "sizeNote": "a small feature"
+  },
+  {
+   "id": "psis",
+   "name": "Posterior Superior Iliac Spine (PSIS)",
+   "region": "hip-thigh",
+   "subregion": "hip",
+   "parent": "pelvis",
+   "parentObjects": [
+    "Hip bone.l",
+    "Hip bone.r"
+   ],
+   "anchors": [
+    "Posterior superior iliac spine.j"
+   ],
+   "radius": 0.008,
+   "sizeNote": "a narrow feature"
+  },
+  {
+   "id": "pubic-tubercle",
+   "name": "Pubic Tubercle",
+   "region": "hip-thigh",
+   "subregion": "hip",
+   "parent": "pelvis",
+   "parentObjects": [
+    "Hip bone.l",
+    "Hip bone.r"
+   ],
+   "anchors": [
+    "Pubic tubercle.j"
+   ],
+   "radius": 0.01,
+   "sizeNote": "a discrete prominence"
+  },
+  {
+   "id": "pubis",
+   "name": "Pubis",
+   "region": "hip-thigh",
+   "subregion": "hip",
+   "parent": "pelvis",
+   "parentObjects": [
+    "Hip bone.l",
+    "Hip bone.r"
+   ],
+   "anchors": [
+    "Pubis.j"
+   ],
+   "radius": 0.01,
+   "sizeNote": "unclassified"
+  },
+  {
+   "id": "radial-styloid-process",
+   "name": "Radial Styloid Process",
+   "region": "forearm-hand",
+   "subregion": "wrist-hand",
+   "parent": "radius",
+   "parentObjects": [
+    "Radius.l",
+    "Radius.r"
+   ],
+   "anchors": [
+    "Radial styloid process.j"
+   ],
+   "radius": 0.01,
+   "sizeNote": "a discrete prominence"
+  },
+  {
+   "id": "radial-tuberosity",
+   "name": "Radial Tuberosity",
+   "region": "forearm-hand",
+   "subregion": "elbow",
+   "parent": "radius",
+   "parentObjects": [
+    "Radius.l",
+    "Radius.r"
+   ],
+   "anchors": [
+    "Radial tuberosity.j"
+   ],
+   "radius": 0.01,
+   "sizeNote": "a discrete prominence"
+  },
+  {
+   "id": "sacral-ala",
+   "name": "Sacral Ala",
+   "region": "back-core",
+   "subregion": "spine",
+   "parent": "sacrum",
+   "parentObjects": [
+    "Sacrum"
+   ],
+   "anchors": [
+    "Ala of sacrum.j"
+   ],
+   "radius": 0.018,
+   "sizeNote": "a broad area or edge"
+  },
+  {
+   "id": "sacral-apex",
+   "name": "Sacral Apex",
+   "region": "back-core",
+   "subregion": "spine",
+   "parent": "sacrum",
+   "parentObjects": [
+    "Sacrum"
+   ],
+   "anchors": [
+    "Apex of sacrum.j"
+   ],
+   "radius": 0.01,
+   "sizeNote": "unclassified"
+  },
+  {
+   "id": "sacral-base",
+   "name": "Sacral Base",
+   "region": "back-core",
+   "subregion": "spine",
+   "parent": "sacrum",
+   "parentObjects": [
+    "Sacrum"
+   ],
+   "anchors": [
+    "Base of sacrum.j"
+   ],
+   "radius": 0.014,
+   "sizeNote": "a large process or end"
+  },
+  {
+   "id": "sacral-canal",
+   "name": "Sacral Canal",
+   "region": "back-core",
+   "subregion": "spine",
+   "parent": "sacrum",
+   "parentObjects": [
+    "Sacrum"
+   ],
+   "anchors": [
+    "Sacral canal.j"
+   ],
+   "radius": 0.006,
+   "sizeNote": "a small feature"
+  },
+  {
+   "id": "sacral-cornua",
+   "name": "Sacral Cornua",
+   "region": "back-core",
+   "subregion": "spine",
+   "parent": "sacrum",
+   "parentObjects": [
+    "Sacrum"
+   ],
+   "anchors": [
+    "Sacral horn.j"
+   ],
+   "radius": 0.008,
+   "sizeNote": "a narrow feature"
+  },
+  {
+   "id": "sacral-hiatus",
+   "name": "Sacral Hiatus",
+   "region": "back-core",
+   "subregion": "spine",
+   "parent": "sacrum",
+   "parentObjects": [
+    "Sacrum"
+   ],
+   "anchors": [
+    "Sacral hiatus.j"
+   ],
+   "radius": 0.008,
+   "sizeNote": "a narrow feature"
+  },
+  {
+   "id": "sacral-promontory",
+   "name": "Sacral Promontory",
+   "region": "back-core",
+   "subregion": "spine",
+   "parent": "sacrum",
+   "parentObjects": [
+    "Sacrum"
+   ],
+   "anchors": [
+    "Promontory.j"
+   ],
+   "radius": 0.01,
+   "sizeNote": "unclassified"
+  },
+  {
+   "id": "scaphoid-tubercle",
+   "name": "Scaphoid Tubercle",
+   "region": "forearm-hand",
+   "subregion": "wrist-hand",
+   "parent": "scaphoid",
+   "parentObjects": [
+    "Scaphoid bone.l",
+    "Scaphoid bone.r"
+   ],
+   "anchors": [
+    "Tubercle of scaphoid bone.j"
+   ],
+   "radius": 0.01,
+   "sizeNote": "a discrete prominence"
+  },
+  {
+   "id": "spine-of-scapula",
+   "name": "Spine of Scapula",
+   "region": "shoulder-arm",
+   "subregion": "shoulder",
+   "parent": "scapula",
+   "parentObjects": [
+    "Scapula.l",
+    "Scapula.r"
+   ],
+   "anchors": [
+    "Spine of scapula.j"
+   ],
+   "radius": 0.008,
+   "sizeNote": "a narrow feature"
+  },
+  {
+   "id": "spinous-process",
+   "name": "Spinous Process",
+   "region": "back-core",
+   "subregion": "spine",
+   "parent": "l4-vertebra",
+   "parentObjects": [
+    "Vertebra L4"
+   ],
+   "anchors": [
+    "Spinous process.j"
+   ],
+   "radius": 0.01,
+   "sizeNote": "a discrete prominence"
+  },
+  {
+   "id": "sternal-angle",
+   "name": "Sternal Angle",
+   "region": "back-core",
+   "subregion": "torso",
+   "parent": "sternum",
+   "parentObjects": [
+    "Manubrium of sternum",
+    "Body of sternum",
+    "Xiphoid process"
+   ],
+   "anchors": [
+    "Sternal angle.j"
+   ],
+   "radius": 0.014,
+   "sizeNote": "a large process or end"
+  },
+  {
+   "id": "superior-angle-scapula",
+   "name": "Superior Angle of Scapula",
+   "region": "shoulder-arm",
+   "subregion": "shoulder",
+   "parent": "scapula",
+   "parentObjects": [
+    "Scapula.l",
+    "Scapula.r"
+   ],
+   "anchors": [
+    "Superior angle of scapula.j"
+   ],
+   "radius": 0.014,
+   "sizeNote": "a large process or end"
+  },
+  {
+   "id": "superior-articular-process",
+   "name": "Superior Articular Process",
+   "region": "back-core",
+   "subregion": "spine",
+   "parent": "l4-vertebra",
+   "parentObjects": [
+    "Vertebra L4"
+   ],
+   "anchors": [
+    "Superior articular process of vertebra.j"
+   ],
+   "radius": 0.01,
+   "sizeNote": "a discrete prominence"
+  },
+  {
+   "id": "superior-articular-process-sacrum",
+   "name": "Superior Articular Process (Sacrum)",
+   "region": "back-core",
+   "subregion": "spine",
+   "parent": "sacrum",
+   "parentObjects": [
+    "Sacrum"
+   ],
+   "anchors": [
+    "Superior articular process of sacrum.j"
+   ],
+   "radius": 0.01,
+   "sizeNote": "a discrete prominence"
+  },
+  {
+   "id": "superior-costal-facet",
+   "name": "Superior Costal Facet",
+   "region": "back-core",
+   "subregion": "spine",
+   "parent": "thoracic-vertebrae",
+   "parentObjects": [
+    "Vertebra T6"
+   ],
+   "anchors": [
+    "Superior costal facet.j"
+   ],
+   "radius": 0.006,
+   "sizeNote": "a small feature"
+  },
+  {
+   "id": "supraspinous-fossa",
+   "name": "Supraspinous Fossa",
+   "region": "shoulder-arm",
+   "subregion": "shoulder",
+   "parent": "scapula",
+   "parentObjects": [
+    "Scapula.l",
+    "Scapula.r"
+   ],
+   "anchors": [
+    "Supraspinous fossa.j"
+   ],
+   "radius": 0.018,
+   "sizeNote": "a broad area or edge"
+  },
+  {
+   "id": "surgical-neck-humerus",
+   "name": "Surgical Neck of Humerus",
+   "region": "shoulder-arm",
+   "subregion": "shoulder",
+   "parent": "humerus",
+   "parentObjects": [
+    "Humerus.l",
+    "Humerus.r"
+   ],
+   "anchors": [
+    "Surgical neck of humerus.j"
    ],
    "radius": 0.008,
    "sizeNote": "a narrow feature"
@@ -1549,60 +1456,144 @@
    "sizeNote": "unclassified"
   },
   {
-   "id": "calcaneal-tuberosity",
-   "name": "Calcaneal Tuberosity",
+   "id": "tibial-crest",
+   "name": "Tibial Crest",
    "region": "lower-leg-foot",
-   "subregion": "ankle-foot",
-   "parent": "tarsals",
+   "subregion": "knee",
+   "parent": "tibia",
    "parentObjects": [
-    "Calcaneus.l",
-    "Calcaneus.r",
-    "Cuboid bone.l",
-    "Cuboid bone.r",
-    "Intermediate cuneiform bone.l",
-    "Intermediate cuneiform bone.r",
-    "Lateral cuneiform bone.l",
-    "Lateral cuneiform bone.r",
-    "Medial cuneiform bone.l",
-    "Medial cuneiform bone.r",
-    "Navicular bone.l",
-    "Navicular bone.r",
-    "Talus.l",
-    "Talus.r"
+    "Tibia.l",
+    "Tibia.r"
    ],
    "anchors": [
-    "Calcaneal tuberosity.j"
+    "Anterior border of tibia.j"
+   ],
+   "radius": 0.018,
+   "sizeNote": "a broad area or edge"
+  },
+  {
+   "id": "tibial-plateau",
+   "name": "Tibial Plateau",
+   "region": "hip-thigh",
+   "subregion": "knee",
+   "parent": "tibia",
+   "parentObjects": [
+    "Tibia.l",
+    "Tibia.r"
+   ],
+   "anchors": [
+    "Tibial plateau.j"
+   ],
+   "radius": 0.018,
+   "sizeNote": "a broad area or edge"
+  },
+  {
+   "id": "tibial-tuberosity",
+   "name": "Tibial Tuberosity",
+   "region": "hip-thigh",
+   "subregion": "knee",
+   "parent": "tibia",
+   "parentObjects": [
+    "Tibia.l",
+    "Tibia.r"
+   ],
+   "anchors": [
+    "Tibial tuberosity.j"
    ],
    "radius": 0.01,
    "sizeNote": "a discrete prominence"
   },
   {
-   "id": "navicular-tuberosity",
-   "name": "Navicular Tuberosity",
-   "region": "lower-leg-foot",
-   "subregion": "ankle-foot",
-   "parent": "tarsals",
+   "id": "transverse-costal-facet",
+   "name": "Transverse Costal Facet",
+   "region": "back-core",
+   "subregion": "spine",
+   "parent": "thoracic-vertebrae",
    "parentObjects": [
-    "Calcaneus.l",
-    "Calcaneus.r",
-    "Cuboid bone.l",
-    "Cuboid bone.r",
-    "Intermediate cuneiform bone.l",
-    "Intermediate cuneiform bone.r",
-    "Lateral cuneiform bone.l",
-    "Lateral cuneiform bone.r",
-    "Medial cuneiform bone.l",
-    "Medial cuneiform bone.r",
-    "Navicular bone.l",
-    "Navicular bone.r",
-    "Talus.l",
-    "Talus.r"
+    "Vertebra T6"
    ],
    "anchors": [
-    "Tuberosity of navicular bone.j"
+    "Transverse costal facet.j"
+   ],
+   "radius": 0.006,
+   "sizeNote": "a small feature"
+  },
+  {
+   "id": "transverse-process",
+   "name": "Transverse Process",
+   "region": "back-core",
+   "subregion": "spine",
+   "parent": "l4-vertebra",
+   "parentObjects": [
+    "Vertebra L4"
+   ],
+   "anchors": [
+    "Transverse process.j"
    ],
    "radius": 0.01,
    "sizeNote": "a discrete prominence"
+  },
+  {
+   "id": "trochlear-notch",
+   "name": "Trochlear Notch",
+   "region": "forearm-hand",
+   "subregion": "elbow",
+   "parent": "ulna",
+   "parentObjects": [
+    "Ulna.l",
+    "Ulna.r"
+   ],
+   "anchors": [
+    "Trochlear notch.j"
+   ],
+   "radius": 0.008,
+   "sizeNote": "a narrow feature"
+  },
+  {
+   "id": "ulnar-styloid-process",
+   "name": "Ulnar Styloid Process",
+   "region": "forearm-hand",
+   "subregion": "wrist-hand",
+   "parent": "ulna",
+   "parentObjects": [
+    "Ulna.l",
+    "Ulna.r"
+   ],
+   "anchors": [
+    "Ulnar styloid process.j"
+   ],
+   "radius": 0.01,
+   "sizeNote": "a discrete prominence"
+  },
+  {
+   "id": "vertebral-body",
+   "name": "Vertebral Body",
+   "region": "back-core",
+   "subregion": "spine",
+   "parent": "l4-vertebra",
+   "parentObjects": [
+    "Vertebra L4"
+   ],
+   "anchors": [
+    "Vertebral body.j"
+   ],
+   "radius": 0.018,
+   "sizeNote": "a broad area or edge"
+  },
+  {
+   "id": "vertebral-foramen",
+   "name": "Vertebral Foramen",
+   "region": "back-core",
+   "subregion": "spine",
+   "parent": "l4-vertebra",
+   "parentObjects": [
+    "Vertebra L4"
+   ],
+   "anchors": [
+    "Vertebral foramen.j"
+   ],
+   "radius": 0.006,
+   "sizeNote": "a small feature"
   }
  ]
 }

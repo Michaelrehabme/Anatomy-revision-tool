@@ -138,6 +138,7 @@ export const LANDMARK_PANELS: LandmarkPanel[] = [
   { structureId: 'sacral-apex', name: "Sacral Apex", region: 'back-core', subregion: 'spine', view: 'posterior', width: 1400, height: 1400 },
   { structureId: 'sacral-base', name: "Sacral Base", region: 'back-core', subregion: 'spine', view: 'anterior', width: 1400, height: 1400 },
   { structureId: 'sacral-canal', name: "Sacral Canal", region: 'back-core', subregion: 'spine', view: 'posterior', width: 1400, height: 1400 },
+  { structureId: 'sacral-cornua', name: "Sacral Cornua", region: 'back-core', subregion: 'spine', view: 'posterior', width: 1400, height: 1400 },
   { structureId: 'sacral-promontory', name: "Sacral Promontory", region: 'back-core', subregion: 'spine', view: 'anterior', width: 1400, height: 1400 },
   { structureId: 'spine-of-scapula', name: "Spine of Scapula", region: 'shoulder-arm', subregion: 'shoulder', view: 'lateral', width: 1400, height: 1400 },
   { structureId: 'spine-of-scapula', name: "Spine of Scapula", region: 'shoulder-arm', subregion: 'shoulder', view: 'posterior', width: 1400, height: 1400 },

@@ -888,7 +888,7 @@ export const SPINE_LANDMARK_STRUCTURES: LandmarkStructure[] = [
     palpability: 'palpable-deep',
     aliases: [],
     imageIds: [],
-    eligibility: { flashcard: true, mcq: true, locate: false },
+    eligibility: { flashcard: true, mcq: true, locate: true },
     difficulty: 'medium',
     tags: ['spine', 'pelvis', 'palpable'],
     clinical: 'Palpated as a pair of bumps to locate the sacral hiatus for caudal epidural injection.',

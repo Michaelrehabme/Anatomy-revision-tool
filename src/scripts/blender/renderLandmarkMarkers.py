@@ -263,8 +263,10 @@ for lm in spec["landmarks"]:
         # the far side of this one — the ASIS seen from behind.
         direction = (anchor - cam.location).normalized()
         hit, loc, *_ = scene.ray_cast(depsgraph, cam.location, direction)
-        region = parent_size * lm.get("region", 0.08)
-        visible = (not hit) or ((loc - anchor).length <= region)
+        # NOT "region": the spec carries an anatomical region per landmark, and
+        # reusing that key here multiplied a length by the string "back-core".
+        tolerance = parent_size * lm.get("visibleWithin", 0.08)
+        visible = (not hit) or ((loc - anchor).length <= tolerance)
         inside = 0.02 <= u <= 0.98 and 0.02 <= v <= 0.98
 
         render_to(os.path.join(a.out, lid, f"view-{frame:02d}.png"))

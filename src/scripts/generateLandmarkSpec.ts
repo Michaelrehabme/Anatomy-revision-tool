@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { ALL_STRUCTURES, ALL_IMAGES } from '../features/anatomy-revision/data/seed';
 
@@ -55,6 +55,48 @@ const ANCHOR_ALIASES: Record<string, string[]> = {
   'superior-articular-process': ['Superior articular process of vertebra.j'],
   'inferior-articular-process': ['Inferior articular process of vertebra.j'],
   'auricular-surface': ['Auricular surface of ilium.j'],
+  // Named exactly as we name them; the earlier miss was the PARENT, not the
+  // anchor — each of these hangs off a grouped bone (carpals, tarsals) whose
+  // nearest point is on some other bone of the group.
+  'hook-of-hamate': ['Hook of hamate bone.j'],
+  'scaphoid-tubercle': ['Tubercle of scaphoid bone.j'],
+  'calcaneal-tuberosity': ['Calcaneal tuberosity.j'],
+  'navicular-tuberosity': ['Tuberosity of navicular bone.j'],
+  'sacral-hiatus': ['Sacral hiatus.j'],
+  'sacral-cornua': ['Sacral horn.j'],
+  'xiphoid-process': ['Xiphoid process.j'],
+  'anterior-arch-atlas': ['Anterior arch of atlas.j'],
+  'posterior-arch-atlas': ['Posterior arch of atlas.j'],
+  'lateral-mass-atlas': ['Lateral mass.j'],
+  'superior-costal-facet': ['Superior costal facet.j'],
+  'inferior-costal-facet': ['Inferior costal facet.j'],
+  'transverse-costal-facet': ['Transverse costal facet.j'],
+  // Z-Anatomy names one anchor for a row, not one per digit. Pointed at a
+  // specific bone below, the snap guard decides whether it is close enough to
+  // be that digit's; if not it is rejected rather than drawn on the wrong one.
+  'base-of-first-metacarpal': ['Metacarpal base.j'],
+  'head-of-first-metacarpal': ['Head of metacarpal bone.j'],
+  'base-of-fifth-metatarsal': ['Base of metatarsal bone.j'],
+  'head-of-first-metatarsal': ['Head of metatarsal bone.j'],
+};
+
+/**
+ * Parents given as Z-Anatomy meshes rather than structure ids, for landmarks
+ * whose bone the seed has no separate entry for: an individual metacarpal, a
+ * single thoracic vertebra. Without these the parent is a whole grouped bone
+ * and the landmark snaps to whichever member happens to be nearest.
+ */
+const PARENT_MESH_OVERRIDE: Record<string, string[]> = {
+  'base-of-first-metacarpal': ['First metacarpal bone.l', 'First metacarpal bone.r'],
+  'head-of-first-metacarpal': ['First metacarpal bone.l', 'First metacarpal bone.r'],
+  'base-of-fifth-metatarsal': ['Fifth metatarsal bone.l', 'Fifth metatarsal bone.r'],
+  'head-of-first-metatarsal': ['First metatarsal bone.l', 'First metatarsal bone.r'],
+  // A costal facet exists on every thoracic vertebra; T6 stands for them, the
+  // way L4 stands for the lumbar features.
+  'superior-costal-facet': ['Vertebra T6'],
+  'inferior-costal-facet': ['Vertebra T6'],
+  'transverse-costal-facet': ['Vertebra T6'],
+  'bifid-spinous-process': ['Vertebra C4'],
 };
 
 /**
@@ -76,6 +118,11 @@ const PARENT_OVERRIDE: Record<string, string> = {
   'superior-articular-process': 'l4-vertebra',
   'inferior-articular-process': 'l4-vertebra',
   'intervertebral-foramen': 'l4-vertebra',
+  // These hang off a grouped bone whose nearest point is on a different member.
+  'hook-of-hamate': 'hamate',
+  'scaphoid-tubercle': 'scaphoid',
+  'calcaneal-tuberosity': 'calcaneus',
+  'navicular-tuberosity': 'navicular',
 };
 
 /**
@@ -96,6 +143,21 @@ function parseArgs(argv: string[]): Record<string, string> {
 
 const args = parseArgs(process.argv.slice(2));
 const outPath = args.out ?? 'landmark-markers.spec.json';
+
+/**
+ * Landmarks already in the spec are kept, and a re-run may only add.
+ *
+ * The filter below is "landmarks whose only image is an AI slide", which is how
+ * the set was found in the first place — but once a landmark has been rendered
+ * it has a real image and stops matching. A naive re-run would emit only the
+ * stragglers, and publishLandmarks reads this file for every landmark's name
+ * and region, so everything already published would be dropped on the next
+ * publish. Same trap the sub-region plates fell into.
+ */
+const existing = new Map<string, any>();
+if (existsSync(outPath) && args.rebuild !== 'true') {
+  for (const l of JSON.parse(readFileSync(outPath, 'utf8')).landmarks ?? []) existing.set(l.id, l);
+}
 
 const skel = JSON.parse(readFileSync(`${ROOT}/ta2-mapping-skeletal.resolved.json`, 'utf8'));
 const z = JSON.parse(readFileSync(`${ROOT}/src/scripts/data/zAnatomyObjects.json`, 'utf8'));
@@ -124,7 +186,8 @@ for (const s of ALL_STRUCTURES as any[]) {
   if (EXCLUDE.has(s.id)) continue;
 
   const parentId = PARENT_OVERRIDE[s.id] ?? s.parentBoneId;
-  const parentObjects = parentId ? (mapping.get(parentId)?.blenderObjects ?? []) : [];
+  const parentObjects =
+    PARENT_MESH_OVERRIDE[s.id] ?? (parentId ? (mapping.get(parentId)?.blenderObjects ?? []) : []);
   if (parentObjects.length === 0) {
     noParent.push(s.id);
     continue;
@@ -158,6 +221,10 @@ for (const s of ALL_STRUCTURES as any[]) {
     sizeNote: why,
   });
 }
+
+const seen = new Set(landmarks.map((l: any) => l.id));
+for (const [id, prev] of existing) if (!seen.has(id)) landmarks.push(prev);
+landmarks.sort((a: any, b: any) => a.id.localeCompare(b.id));
 
 writeFileSync(
   outPath,
