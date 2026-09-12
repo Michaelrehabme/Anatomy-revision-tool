@@ -1,4 +1,4 @@
-import { primaryAreaOf } from '../../types/structure';
+import { primaryAreaOf, isLigament } from '../../types/structure';
 import { structureNameVariants } from '../nameVariants';
 import type { AnatomyStructure } from '../../types/structure';
 import type { AnatomyImageAsset } from '../../types/image';
@@ -18,9 +18,20 @@ export function buildIdentifyTypedQuestions(
   images: AnatomyImageAsset[],
 ): TypedIdentifyQuestion[] {
   const questions: TypedIdentifyQuestion[] = [];
+  const byId = new Map(structures.map((s) => [s.id, s]));
 
   for (const structure of structures) {
     if (!structure.eligibility.mcq) continue;
+
+    // A ligament is asked for its name AND its attachments, one box each —
+    // the bones are named through the seed so "talus" and "tarsals" are
+    // graded by the same variants the rest of the app accepts.
+    const attachmentSlots = isLigament(structure)
+      ? structure.attachmentStructureIds.flatMap((id) => {
+          const bone = byId.get(id);
+          return bone ? [{ label: 'Attaches to', accepted: structureNameVariants(bone.name, bone.aliases) }] : [];
+        })
+      : [];
 
     for (const image of images.filter((img) => imageDepicts(img, structure.id))) {
       questions.push({
@@ -36,6 +47,7 @@ export function buildIdentifyTypedQuestions(
         prompt: image.mode === 'atlas-slide' ? 'Which structure is highlighted?' : 'Which structure is shown?',
         promptImageId: image.id,
         acceptedAnswers: structureNameVariants(structure.name, structure.aliases),
+        ...(attachmentSlots.length ? { attachmentSlots } : {}),
         explanation: summarizeStructure(structure),
       });
     }

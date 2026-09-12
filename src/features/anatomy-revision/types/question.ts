@@ -97,6 +97,13 @@ export interface TypedIdentifyQuestion extends RevisionQuestionBase {
   promptImageId: string;
   /** Structure name plus any aliases — any of these count as correct. */
   acceptedAnswers: string[];
+  /**
+   * One extra box per attachment, for ligaments: a two-attachment ligament
+   * gets two, graded order-independently by lib/oinaAnswer's gradeTypedSlots.
+   * The question is correct only when the name AND every attachment are.
+   * Absent for everything that is not a ligament.
+   */
+  attachmentSlots?: { label: string; accepted: string[] }[];
   explanation: string;
 }
 
