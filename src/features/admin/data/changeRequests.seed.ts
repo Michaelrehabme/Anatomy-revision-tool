@@ -1797,4 +1797,509 @@ export const CHANGE_REQUESTS_SEED: ChangeRequest[] = [
       'it is a promise to students and the first thing a university DP officer will probe — but it does not block a pilot the ' +
       'way CR-025 does, since the corrected wording is honest as it stands.',
   },
+  {
+    ref: 'CR-033',
+    title: 'Launch readiness: the ranked pre-revenue checklist',
+    category: 'infrastructure',
+    priority: 'p0',
+    effort: 'l',
+    status: 'new',
+    description:
+      'Ranked, tickable tracker for everything between the app as it stands and first revenue — the September 2026 ' +
+      're-read of the store/monetisation backlog, carried out after the imagery, ligament and PWA work closed the ' +
+      'gaps the 8 September draft was written around. Image coverage is no longer the top competitive threat (50 ' +
+      'images then, 814 now); the blockers are now an absent entitlement layer, live legal duties that are unmet, ' +
+      'and an autumn pilot window that closes within weeks. Eighteen steps, ranked by importance, each with its own ' +
+      'walkthrough.',
+    prompt:
+      'Work the LocusMSK launch-readiness checklist held on this change request.\n' +
+      '\n' +
+      'This CR is a tracker, not a single piece of work. Its checklist is the ranked list of everything\n' +
+      'standing between the app as it is today and money arriving, spanning legal, content, product and\n' +
+      'go-to-market. Each step carries its own walkthrough in the admin panel.\n' +
+      '\n' +
+      'HOW TO USE IT\n' +
+      '- Work top-down. The ranking is by importance, not by convenience, and ranks 1-5 are either\n' +
+      '  statutory duties that are already live or deadlines set by the academic calendar.\n' +
+      '- Tick a step in /admin/changes only when it is genuinely finished. The tick stores the date, which\n' +
+      '  is what makes "what actually got done in September" answerable in February.\n' +
+      '- Step definitions live in git (changeRequests.seed.ts) and are overlaid onto the Firestore document\n' +
+      '  on read, so walkthroughs can be improved without disturbing anybody\'s ticks. Never reuse or rename\n' +
+      '  a step id — it is the only thing joining a stored tick to its step.\n' +
+      '\n' +
+      'SCOPE NOTES\n' +
+      '- Ranks 10-13 are the monetisation build. They restate and extend CR-027 rather than replacing it:\n' +
+      '  open CR-027 for the full implementation prompt, and treat the checklist items as the compliance\n' +
+      '  constraints that prompt predates.\n' +
+      '- Ranks 1, 4, 5, 6, 7, 9, 12 are legal and commercial groundwork. None of them need code beyond\n' +
+      '  editing the constants at the top of the legal pages.\n' +
+      '- This CR completes when every step is ticked, not when the code lands.',
+    dependsOn: ['CR-025', 'CR-026', 'CR-027'],
+    createdAt: '2026-09-13T18:00:00.000Z',
+    startedAt: null,
+    completedAt: null,
+    notes:
+      'Supersedes nothing — CR-025/026/027 remain the implementation specs and this tracker points at them. New ' +
+      'material not in the 8 September document: the DMCC subscription regime, VAT and merchant of record, the ' +
+      'muscle dataset\'s database-right exposure, accessibility as an institutional procurement gate, and ' +
+      'incorporation. Written 13 September 2026.',
+    checklistDone: {},
+    checklist: [
+      {
+        id: 'ico-registration',
+        rank: 1,
+        label: 'Register with the ICO and replace \'pending\' in the privacy policy',
+        effort: '1 hour',
+        why:
+          'You process named students\' performance data today, in pilots. The duty is already live — it is not ' +
+          'triggered by charging — and the published policy currently admits in writing that it is unmet. Cheapest item ' +
+          'on this list and the one most likely to be checked.',
+        walkthrough:
+          '1. Run the ICO fee self-assessment (linked below) to confirm your tier.\n' +
+          '2. Answer as a small business: turnover under £632,000 and fewer than 10 staff puts you in tier 1.\n' +
+          '3. Pay £52, or £47 by direct debit. Register in the name already named in the policy.\n' +
+          '4. The registration number usually arrives the same day by email.\n' +
+          '5. Replace the \'ICO registration: pending\' line in src/features/legal/PrivacyPage.tsx with the number, and\n' +
+          '   delete the TODO comment sitting above it.\n' +
+          '6. Bump the `updated` date passed to LegalLayout on /privacy, then deploy.\n' +
+          '7. If item 7 (incorporation) is imminent, do that FIRST and register the company instead — otherwise you\n' +
+          '   pay the fee twice.',
+        links: [
+          { label: 'ICO fee self-assessment', url: 'https://ico.org.uk/for-organisations/data-protection-fee/data-protection-fee-self-assessment/' },
+          { label: 'Register and pay the fee', url: 'https://ico.org.uk/for-organisations/data-protection-fee/register/' },
+          { label: 'Guide to the fee and its tiers', url: 'https://ico.org.uk/for-organisations/data-protection-fee/data-protection-fee/' },
+        ],
+      },
+      {
+        id: 'pilot-outreach',
+        rank: 2,
+        label: 'Email 3–5 sports therapy and sport rehab course leaders offering a free cohort year',
+        effort: '2 weeks, ongoing',
+        why:
+          'The institutional licence is the business, its budget window is February, and a pilot must be running by ' +
+          'autumn to have outcome data by then. Teaching has already started. This is the only item on the list with a ' +
+          'deadline set by someone other than you.',
+        walkthrough:
+          '1. Build the list from the published accreditation registers — SST (34 universities) and BASRaT. Start with\n' +
+          '   anyone you already know; warm beats cold at this stage every time.\n' +
+          '2. Deploy the educator demo build first (npm run build:demo) so the email carries a link that works with no\n' +
+          '   account and no explanation.\n' +
+          '3. Email the MODULE LEADER who teaches MSK anatomy, not the head of school. They feel the pain and can\n' +
+          '   usually authorise a small spend or credibly champion it upward.\n' +
+          '4. The offer: a free year for one cohort. Ask for exactly two things — a join code on one lecture slide,\n' +
+          '   and fifteen minutes in week six.\n' +
+          '5. In the first reply, ask the qualifying question: does the department already subscribe to Anatomy.tv,\n' +
+          '   Complete Anatomy or TeachMeAnatomy, and do students actually use it? The answer changes the whole pitch\n' +
+          '   — see Part 2 of docs/BACKLOG-STORE-MONETISATION.md.\n' +
+          '6. Lead with the cohort weakness dashboard, never the question count. Two competitors have more questions\n' +
+          '   than you; neither tells a module leader who is struggling while there is still time to reteach it.',
+        links: [
+          { label: 'SST — all accredited programmes', url: 'https://thesst.org/our-accredited-programmes/' },
+          { label: 'SST — accredited BSc courses', url: 'https://thesst.org/accredited-bsc-courses/' },
+          { label: 'BASRaT — accredited education', url: 'https://www.basrat.org/education' },
+        ],
+      },
+      {
+        id: 'ligament-review',
+        rank: 3,
+        label: 'Clear the 32 ligament structures flagged needsReview',
+        effort: 'Half a day',
+        why:
+          'npm run validate-content warns on 32 ligaments today, including ACL, medial meniscus and the whole ' +
+          'ulnocarpal set. Pilot students will see them. Shipping anatomy your own build calls unverified is the one ' +
+          'content failure a course leader cannot forgive, and it lands in the same weeks as the pilot outreach.',
+        walkthrough:
+          '1. Run npm run validate-content and copy the 32 warned ids out of the output.\n' +
+          '2. Open docs/ligament-attachments-review.md and the published review page — the picture-per-row pack was\n' +
+          '   built for exactly this job.\n' +
+          '3. Check each attachment pair against a source you would cite in an essay: Gray\'s, Standring, or the\n' +
+          '   module\'s set text. Not another app.\n' +
+          '4. Remove needsReview from each verified entry in\n' +
+          '   src/features/anatomy-revision/data/seed/structures.ligaments.seed.ts.\n' +
+          '5. Where the RENDER is wrong rather than the text, leave the flag and add a note. An unresolved flag is a\n' +
+          '   feature; a silently cleared one is not.\n' +
+          '6. Re-run npm run validate-content until it reports zero warnings, then npm run test.',
+      },
+      {
+        id: 'dataset-permission',
+        rank: 4,
+        label: 'Cut the muscle dataset free of the lecture decks, and ask Salford who holds the rights',
+        effort: '1 hour to send, 1–2 days to re-derive',
+        why:
+          'Every PAID route runs through this; free pilots are far more defensible than charging. The dataset was ' +
+          'consolidated from a lecturer\'s own teaching PowerPoints — assembling them into one deck of your own makes ' +
+          'you the author of the container, not of the content, and slides handed to students are normally licensed for ' +
+          'personal study rather than commercial reuse. Two things follow. The short factual fields are safe: origin ' +
+          'and insertion average under five words in standard anatomical phrasing and no copyright attaches to them. ' +
+          'The 158 WRITTEN SENTENCES are the real exposure — 122 actionText, 21 clinical, 15 notes — because those ' +
+          'carry authorial choice and were taken as a set from one person\'s decks. Rights may also sit with the ' +
+          'University rather than the lecturer, since teaching materials made in the course of employment are often ' +
+          'institution-owned.',
+        walkthrough:
+          '1. Do the re-derivation FIRST, in parallel with the email. It is a day or two of work and it makes you\n' +
+          '   independent of an answer you do not control — which is worth more than the permission.\n' +
+          '2. Keep origin, insertion, nerve and action as they are, but verify each against a source you can cite\n' +
+          '   (Gray\'s, Standring, or the module\'s set text) and record that source under\n' +
+          '   src/features/anatomy-revision/data/source/. Facts are free; what you need is your own citable route to\n' +
+          '   them rather than his slide number.\n' +
+          '3. Rewrite the 158 prose strings in your own words — every actionText, clinical and notes field in\n' +
+          '   muscles.raw.json. This is the part that actually carries copyright, and rewriting it is cheap compared\n' +
+          '   with negotiating for it.\n' +
+          '4. Do NOT delete the per-muscle `source` fields naming his deck and slide numbers. They are honest and they\n' +
+          '   are your record of what came from where; replace them as each muscle is re-derived, so the file always\n' +
+          '   says truthfully where its current content came from.\n' +
+          '5. Email Vinnie Maynard in parallel. Short and straight: what the app is, that your revision deck was built\n' +
+          '   from his lecture slides, that he is credited on a public attributions page, and that you are asking\n' +
+          '   permission for commercial use. Offer the credit plus a free institutional licence for his cohort — it\n' +
+          '   turns a legal ask into a pilot conversation, and he teaches exactly your target cohort.\n' +
+          '6. Ask him explicitly WHO holds the rights. If the slides were made in the course of his employment the\n' +
+          '   answer is probably the University, and you need Salford\'s IP or commercialisation office rather than\n' +
+          '   him. Ask in the first email so you do not lose a month discovering it.\n' +
+          '7. Your student status helps only with your own work: you very likely own the deck YOU assembled. It gives\n' +
+          '   you no rights over his slide content, so do not lean on it.\n' +
+          '8. File every reply. Free pilots can run while this is open; do not take money until it is closed, by\n' +
+          '   permission or by re-derivation.',
+        links: [
+          { label: 'IPO — ownership of copyright works (employment rule)', url: 'https://www.gov.uk/guidance/ownership-of-copyright-works' },
+          { label: 'IPO — copyright guidance', url: 'https://www.gov.uk/topic/intellectual-property/copyright' },
+          { label: 'Copyright, Designs and Patents Act 1988', url: 'https://www.legislation.gov.uk/ukpga/1988/48/contents' },
+          { label: 'Copyright and Rights in Databases Regulations 1997', url: 'https://www.legislation.gov.uk/uksi/1997/3032/contents/made' },
+          { label: 'University of Salford — research and IP contacts', url: 'https://www.salford.ac.uk/research' },
+        ],
+      },
+      {
+        id: 'dpa-pack',
+        rank: 5,
+        label: 'Draft the DPA and DPIA pack universities will ask for',
+        effort: 'Half a day',
+        why:
+          'This directly unblocks item 2. A university asked to let named students generate performance data visible to ' +
+          'staff will want paperwork before anyone joins, and a three-week scramble at that moment is exactly how an ' +
+          'autumn pilot becomes a January one.',
+        walkthrough:
+          '1. Start from the ICO\'s sample data processing agreement. Do not write one from scratch.\n' +
+          '2. Fill in what the codebase already settles: sub-processors are Google Firebase (Google Ireland) and\n' +
+          '   Netlify; retention is 24 months of inactivity; deletion is self-service and immediate.\n' +
+          '3. Decide and state the controller/processor question. For a student who joins with a code you are a\n' +
+          '   controller in your own right; for a licensed cohort the university will likely argue you are its\n' +
+          '   processor. Say which you are claiming, and why.\n' +
+          '4. Write a one-page DPIA on the educator-visibility feature — the highest-risk processing you do — and\n' +
+          '   point it at firestore.rules as the control, because that is where the restriction is actually enforced.\n' +
+          '5. Keep both as markdown under docs/ so they are version-controlled and can be sent as PDF within the hour.',
+        links: [
+          { label: 'ICO — contracts between controllers and processors', url: 'https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/accountability-and-governance/contracts-and-liabilities-between-controllers-and-processors-multi/' },
+          { label: 'ICO — data protection impact assessments', url: 'https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/accountability-and-governance/data-protection-impact-assessments-dpias/' },
+        ],
+      },
+      {
+        id: 'accessibility',
+        rank: 6,
+        label: 'Publish an accessibility statement and add a keyboard route through locate questions',
+        effort: '2–3 days',
+        why:
+          'UK universities are bound by the public sector accessibility regulations and increasingly ask suppliers for ' +
+          'a conformance report at procurement, so this gates the institutional sale rather than merely being the right ' +
+          'thing to do. The whole codebase currently has one focus-visible rule and one aria-live region, and locate ' +
+          'questions have no non-pointer path at all.',
+        walkthrough:
+          '1. Start with the audit, not the fix. Tab through one full session with the mouse unplugged and write down\n' +
+          '   every place you get stuck.\n' +
+          '2. Fix the two cheapest global things first: a visible :focus-visible outline in src/index.css, and an\n' +
+          '   aria-live=\'polite\' region that announces right/wrong after each answer.\n' +
+          '3. For locate questions, add a keyboard fallback — arrow keys cycle a highlighted candidate region, Enter\n' +
+          '   commits. The hotspot polygons already exist, so this is a selection UI over them, not new anatomy.\n' +
+          '4. Write the statement at /accessibility in the same voice as /privacy: what conforms, what does not, what\n' +
+          '   you are doing about it and by when. Universities accept honest gaps. They do not accept silence.\n' +
+          '5. Put it in src/features/legal/ beside the others so it renders without sign-in, and link it from the\n' +
+          '   footer.',
+        links: [
+          { label: 'WCAG 2.2 quick reference', url: 'https://www.w3.org/WAI/WCAG22/quickref/' },
+          { label: 'Partially-compliant accessibility statement template (DfE)', url: 'https://accessibility.education.gov.uk/audits-issues-statements/accessibility-statements/partially-compliant' },
+          { label: 'Jisc — accessibility regulations for UK education', url: 'https://www.jisc.ac.uk/guides/accessibility-regulations-what-you-need-to-know' },
+        ],
+      },
+      {
+        id: 'limited-company',
+        rank: 7,
+        label: 'Incorporate, and move the published address off your home',
+        effort: 'Half a day',
+        why:
+          'A residential address is currently on a public privacy policy and will end up on every store listing and ' +
+          'invoice. A limited company is also the cleaner counterparty for a university purchase order, and puts a ' +
+          'layer between you personally and a product that gives clinical-adjacent information to students.',
+        walkthrough:
+          '1. Incorporate at Companies House — £100 online (the fee doubled in February 2026), certificate usually\n' +
+          '   back within 24 hours. Keep the trading name if you like it.\n' +
+          '2. Use a registered office / service address. Most formation agents include one for £30–50 a year, and it\n' +
+          '   is the entire point of the exercise.\n' +
+          '3. Open a business bank account. Payment providers will ask for one and will not accept a personal account\n' +
+          '   for a company.\n' +
+          '4. Update the CONTROLLER and ADDRESS constants at the top of PrivacyPage.tsx and TermsPage.tsx — they are\n' +
+          '   single constants precisely so this is a two-line change.\n' +
+          '5. Sequence this with item 1 so the ICO fee is paid once, by whichever entity ends up being the controller.',
+        links: [
+          { label: 'Register a company with Companies House', url: 'https://www.gov.uk/limited-company-formation/register-your-company' },
+          { label: 'Setting up a limited company — overview', url: 'https://www.gov.uk/limited-company-formation' },
+          { label: 'ICO registration (do this once, as the right entity)', url: 'https://ico.org.uk/for-organisations/data-protection-fee/register/' },
+        ],
+      },
+      {
+        id: 'retire-ai-images',
+        rank: 8,
+        label: 'Replace or remove the 14 AI-generated atlas slides',
+        effort: '1–2 days',
+        why:
+          'CR-026\'s acceptance criterion was zero images licensed \'All rights reserved\'; 14 remain. For an app teaching ' +
+          'attachments to people who will treat patients, AI anatomy is the content most likely to be confidently wrong ' +
+          '— and Apple\'s AI content rules bite the moment you submit.',
+        walkthrough:
+          '1. grep -n \'AI_GENERATED_CREDIT\' src/features/anatomy-revision/data/seed/images.seed.ts to list the 14.\n' +
+          '2. For each, check whether the Z-Anatomy pipeline now covers the same structures. With 814 images, most\n' +
+          '   will already have a real equivalent shipped.\n' +
+          '3. Where one exists, delete the AI entry. lib/linkImages.ts re-links imageIds automatically — never\n' +
+          '   hand-edit them.\n' +
+          '4. Where none exists, render it. The Blender pipeline under src/scripts/blender/ is working and documented.\n' +
+          '5. Where neither is practical, remove the image rather than shipping it. A structure with no image degrades\n' +
+          '   gracefully; one with a wrong image teaches something false.\n' +
+          '6. Run npm run validate-content and confirm no \'All rights reserved\' entries remain.',
+        links: [
+          { label: 'Z-Anatomy source models', url: 'https://github.com/Z-Anatomy/Models-of-human-anatomy' },
+          { label: 'Apple App Review Guidelines', url: 'https://developer.apple.com/app-store/review/guidelines/' },
+        ],
+      },
+      {
+        id: 'vat-decision',
+        rank: 9,
+        label: 'Decide VAT handling before choosing a payment provider',
+        effort: '2 hours',
+        why:
+          'It constrains the provider choice, so deciding after checkout is built means building it twice. UK ' +
+          'registration has a threshold you will not hit soon, but selling digital services to EU consumers means EU ' +
+          'VAT from the first sale, with no threshold at all.',
+        walkthrough:
+          '1. Decide whether you will sell outside the UK at launch. If not, this is simple — but write the decision\n' +
+          '   down rather than leaving it implied.\n' +
+          '2. If yes, choose between a merchant of record (Paddle, Lemon Squeezy), which becomes the seller and owns\n' +
+          '   VAT registration and remittance, and Stripe plus Stripe Tax, where you remain the seller and register\n' +
+          '   for non-union OSS yourself.\n' +
+          '3. For a one-person business at this revenue the merchant of record is almost certainly right: the extra\n' +
+          '   percentage buys away a compliance obligation you would otherwise carry personally.\n' +
+          '4. Note that iOS in-app purchases are Apple\'s problem either way — Apple is merchant of record there.\n' +
+          '5. Record the decision in docs/BACKLOG-STORE-MONETISATION.md before CR-027 starts, because it decides what\n' +
+          '   CR-027 integrates against.',
+        links: [
+          { label: 'GOV.UK — VAT rules for digital services to consumers', url: 'https://www.gov.uk/guidance/the-vat-rules-if-you-supply-digital-services-to-private-consumers' },
+          { label: 'EU VAT One Stop Shop (non-union scheme)', url: 'https://europa.eu/youreurope/business/taxation/vat/one-stop-shop/index_en.htm' },
+          { label: 'Paddle — merchant of record', url: 'https://www.paddle.com/' },
+          { label: 'Lemon Squeezy — merchant of record', url: 'https://www.lemonsqueezy.com/' },
+          { label: 'Stripe Tax', url: 'https://stripe.com/tax' },
+        ],
+      },
+      {
+        id: 'entitlement-layer',
+        rank: 10,
+        label: 'Build the entitlement layer and the permanently free area (CR-027 item 1)',
+        effort: '1–2 weeks',
+        why:
+          'You cannot take money today: there is no entitlement anywhere in src/, only the CR-027 spec. This is the ' +
+          'literal barrier to revenue and everything else about charging routes through it. The free area ships with it ' +
+          'because every competitor has a free tier and you cannot be the exception.',
+        walkthrough:
+          '1. Open CR-027 in this register and copy its prompt. It is already written and specifies the shape.\n' +
+          '2. Build the entitlement document first: { tier, source, expiresAt, seatId } on users/{uid}, one\n' +
+          '   useEntitlement() hook, and a matching firestore.rules helper.\n' +
+          '3. Gate on the entitlement, never on the payment provider. That is what lets you change pricing and add\n' +
+          '   providers later without touching feature code.\n' +
+          '4. Make the free tier one complete body area with every question type available inside it, and make which\n' +
+          '   area it is configurable rather than hardcoded.\n' +
+          '5. Enforce that entitlement writes are server-side only in firestore.rules. A client that can write its own\n' +
+          '   tier is not a paywall.\n' +
+          '6. Add the Vitest coverage the spec asks for: expiry, seat exhaustion, and precedence when a user holds\n' +
+          '   both an individual and an institutional entitlement.',
+        links: [
+          { label: 'Firestore security rules', url: 'https://firebase.google.com/docs/firestore/security/get-started' },
+          { label: 'RevenueCat documentation', url: 'https://www.revenuecat.com/docs/' },
+        ],
+      },
+      {
+        id: 'dmcc-compliant-paywall',
+        rank: 11,
+        label: 'Build the subscription flow DMCC-compliant from day one',
+        effort: '3–5 days on top of the paywall',
+        why:
+          'The new UK subscription contracts regime lands around the window you are targeting for launch. Retrofitting ' +
+          'reminder notices and a cancellation route into a live billing system costs far more than building them in, ' +
+          'and these obligations carry enforcement rather than merely embarrassment.',
+        walkthrough:
+          '1. Pre-contract information on the paywall itself: price, billing frequency, that it auto-renews, and how\n' +
+          '   to cancel — before the payment step, not in the confirmation email.\n' +
+          '2. A reminder before any free trial converts to a charge. The 7-day trial in CR-027 now carries a notice\n' +
+          '   obligation.\n' +
+          '3. Renewal reminders: on an annual plan, every six months; on a monthly plan, before the sixth payment and\n' +
+          '   every sixth payment after that.\n' +
+          '4. Cancellation must be straightforward and online — one clear route from the account screen, no\n' +
+          '   email-us-to-cancel, working up until shortly before the renewal date.\n' +
+          '5. Honour the renewal cooling-off right: 14 days after a trial converts or an annual plan auto-renews, with\n' +
+          '   a proportionate refund.\n' +
+          '6. Build the notices as scheduled Cloud Functions driven off the entitlement document, not ad-hoc emails.\n' +
+          '   They have to fire reliably and be auditable afterwards.',
+        links: [
+          { label: 'DMCC Act 2024', url: 'https://www.legislation.gov.uk/ukpga/2024/13/contents' },
+          { label: 'Implementation timing (Hogan Lovells)', url: 'https://www.hoganlovells.com/en/publications/uk-subscription-law-shakeup-new-rules-pushed-to-autumn-2026' },
+          { label: 'The obligations in outline (Cooley)', url: 'https://www.cooley.com/news/insight/2024/2024-12-09-uk-crackdown-on-subscription-traps-government-reveals-new-proposals-for-incoming-subscription-contracts-regime-under-dmcc-act' },
+        ],
+      },
+      {
+        id: 'cooling-off-waiver',
+        rank: 12,
+        label: 'Add the digital content cooling-off waiver to checkout',
+        effort: '2 hours',
+        why:
+          'Access starts the instant someone pays. Without express consent to immediate supply and an acknowledgement ' +
+          'that the 14-day cancellation right is lost, you owe a refund to anyone who asks within a fortnight, whatever ' +
+          'your terms say.',
+        walkthrough:
+          '1. Add a checkbox at checkout, unticked by default, saying access starts immediately and that the customer\n' +
+          '   accepts they lose the 14-day right to cancel once it does.\n' +
+          '2. Store the consent alongside the subscription: the timestamp AND the exact wording shown. The wording is\n' +
+          '   the evidence, so a later copy change must not rewrite history.\n' +
+          '3. Mirror it in TermsPage.tsx, in the same plain register as the rest of that file.\n' +
+          '4. Remember the carve-out: this waiver covers the initial period only. The renewal cooling-off right in\n' +
+          '   item 11 still applies afterwards.',
+        links: [
+          { label: 'Consumer Contracts Regulations 2013', url: 'https://www.legislation.gov.uk/uksi/2013/3134/contents/made' },
+          { label: 'Digital content waiver under the DMCCA (Mills & Reeve)', url: 'https://www.mills-reeve.com/publications/proposed-changes-to-the-digital-content-waiver-for-subscription-contracts-under-the-dmcca/' },
+        ],
+      },
+      {
+        id: 'small-business-program',
+        rank: 13,
+        label: 'Register for Apple\'s Small Business Program',
+        effort: '30 minutes',
+        why:
+          '15% instead of 30% on every iOS subscription below $1M annual revenue. It is a form. Missing it hands Apple ' +
+          'an extra 15% of iOS revenue for nothing.',
+        walkthrough:
+          '1. Enrol once the Apple Developer account exists. It is an application in App Store Connect, not something\n' +
+          '   that happens automatically.\n' +
+          '2. Apply BEFORE the quarter you want the rate in: the reduced commission takes effect 15 days after the\n' +
+          '   end of the fiscal month in which you are approved, not immediately.\n' +
+          '3. Do it even if the store launch is months away. There is no downside to being enrolled early.',
+        links: [
+          { label: 'App Store Small Business Program', url: 'https://developer.apple.com/app-store/small-business-program/' },
+        ],
+      },
+      {
+        id: 'outcome-instrumentation',
+        rank: 14,
+        label: 'Instrument the outcome comparison the February pitch depends on',
+        effort: '1 day now, then the term',
+        why:
+          'The most valuable sentence you can own is \'students who completed N sessions scored X% higher than those who ' +
+          'did not\'. It takes a full teaching term to earn, no competitor offers it to UK MSK course leaders, and it ' +
+          'cannot be backfilled in February. Set it up alongside the pilots or lose the year.',
+        walkthrough:
+          '1. Decide the measure NOW, before data exists: sessions completed and structures mastered per student,\n' +
+          '   across the term.\n' +
+          '2. Check what src/features/educator/data/cohortRollups.ts already records and add only what is genuinely\n' +
+          '   missing — most of this is built.\n' +
+          '3. Ask each pilot lead at the START whether they will share anonymised module marks at the end. Asking in\n' +
+          '   February is asking for a favour; asking in September is agreeing terms.\n' +
+          '4. Keep it honest — engaged students revise more, so this is an association, not causation. Say so. You\n' +
+          '   will still be the only person in the room with a number.\n' +
+          '5. Diarise the analysis for early February, before the budget conversations rather than after.',
+      },
+      {
+        id: 'social-series',
+        rank: 15,
+        label: 'Start the locate-question series on Instagram and TikTok',
+        effort: 'Ongoing, ~2 hours a week',
+        why:
+          '300 followers pulling 750–2000 views is a 2.5–6x ratio: the content already works and the follower count is ' +
+          'simply early. Posting the product itself costs nothing — there are 814 renders sitting in the repo. Ranked ' +
+          'below the institutional items because 300 followers will not produce meaningful subscription revenue; its ' +
+          'real job is putting the app in front of a course leader.',
+        walkthrough:
+          '1. One format, one name, one slot: a render, \'can you tap the X?\', a pause, then the reveal. Three to five\n' +
+          '   a week during term.\n' +
+          '2. Export straight from the app\'s own locate questions. The rotation and zoom already built is native to\n' +
+          '   vertical video.\n' +
+          '3. Post the same asset to both platforms. TikTok\'s distribution is far less follower-gated than\n' +
+          '   Instagram\'s, which is why 70 followers there is not the constraint it looks like.\n' +
+          '4. Do not sell for the first eight weeks. Build the \'this account teaches me anatomy\' habit first, then one\n' +
+          '   link in bio straight to the free area.\n' +
+          '5. Never put a sign-up wall before the first correct answer. The aha is a locate question answered right on\n' +
+          '   a real render, inside 90 seconds of arriving.\n' +
+          '6. Follow and tag what matters for item 2: SST and BASRaT student networks, university society accounts,\n' +
+          '   course leaders. One post a course leader sees beats a hundred student views.',
+      },
+      {
+        id: 'cohort-ambassadors',
+        rank: 16,
+        label: 'Recruit one student ambassador per pilot cohort',
+        effort: '1 hour per cohort',
+        why:
+          'The real distribution channel inside a cohort is the year group chat, not Instagram. Class join codes are ' +
+          'already viral by design — one student sharing a code recruits the group, and that outperforms any post you ' +
+          'will make.',
+        walkthrough:
+          '1. Ask the pilot lead to name one engaged student in the year. They will know immediately.\n' +
+          '2. Give them a free year, plainly labelled as such, and one job: put the join code in the year group chat\n' +
+          '   and answer questions about it.\n' +
+          '3. Give them something worth sharing — a results card, a streak — rather than a link to a marketing page.\n' +
+          '4. Extend it to placement. Students on placement meet students from other universities, which is how you\n' +
+          '   reach an institution you never emailed.\n' +
+          '5. Once individual subscriptions exist, add referral credit on both sides, as Kenhub does. A physio cohort\n' +
+          '   is a dense enough network for it to compound.',
+      },
+      {
+        id: 'comparison-page',
+        rank: 17,
+        label: 'Build a comparison page for competitor long-tail search',
+        effort: '1 day',
+        why:
+          'Head-on SEO against TeachMeAnatomy and Kenhub is a year spent losing to a decade of domain authority. ' +
+          'Comparison pages targeting their brand names are the exception — winnable, and they reach people who are ' +
+          'already shopping.',
+        walkthrough:
+          '1. Reuse the Part 0 positioning table from docs/BACKLOG-STORE-MONETISATION.md verbatim. It is written and\n' +
+          '   sourced; fresh marketing copy would be worse.\n' +
+          '2. Put it on the educator page of the commercial site, where the audience that cares about cohort\n' +
+          '   analytics already is.\n' +
+          '3. Be scrupulously accurate about competitors, including where they beat you. A table pretending you have\n' +
+          '   more 3D models than Complete Anatomy destroys your credibility with the one reader who matters.\n' +
+          '4. Re-check every price before publishing, and quarterly after. Part 0 records how much drifted between two\n' +
+          '   drafts written a month apart.',
+        links: [
+          { label: 'Kenhub pricing', url: 'https://www.kenhub.com/en/pricing' },
+          { label: 'TeachMeAnatomy pricing', url: 'https://teachmeanatomy.info/sign-up/' },
+          { label: 'Complete Anatomy pricing', url: 'https://store.3d4medical.com/' },
+        ],
+      },
+      {
+        id: 'claims-evidence-file',
+        rank: 18,
+        label: 'Open an evidence file for every public marketing claim',
+        effort: '2 hours, then ongoing',
+        why:
+          'Under the CAP code you must hold substantiation for objective claims BEFORE publishing them. The moment you ' +
+          'say \'students who used it scored X% higher\' you need the analysis on file, and the same applies to every ' +
+          'structure count and competitor figure you put on a page.',
+        walkthrough:
+          '1. Create docs/CLAIMS.md. One row per public claim: the claim, where it appears, the evidence, the date\n' +
+          '   last verified.\n' +
+          '2. Seed it with what you already state publicly: 345 structures, 814 images, and the competitor prices on\n' +
+          '   the comparison page.\n' +
+          '3. Wire the countable ones to npm run validate-content output so they cannot go stale silently — that\n' +
+          '   script already prints the real numbers.\n' +
+          '4. Re-verify competitor claims quarterly, before each selling window.\n' +
+          '5. Rule of thumb: if you could not show a sceptical reader where a number came from inside five minutes,\n' +
+          '   do not publish it.',
+        links: [
+          { label: 'ASA — substantiation', url: 'https://www.asa.org.uk/advice-online/substantiation.html' },
+          { label: 'The CAP Code (non-broadcast)', url: 'https://www.asa.org.uk/codes-and-rulings/advertising-codes/non-broadcast-code.html' },
+        ],
+      },
+    ],
+  },
 ];

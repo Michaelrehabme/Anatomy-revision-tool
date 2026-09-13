@@ -3,7 +3,9 @@
 Written against commit `db0f344` (8 September 2026).
 Register numbering continues from CR-022.
 
-**State:** 309 structures · 50 images · 2,391 questions · 428 tests passing · 4.2MB image payload · 36 of 50 images CC BY-SA (Z-Anatomy), 14 still AI-generated · 68 structures with no image (44 muscles, 23 joints, 1 bone).
+> **Revised 13 September 2026 — read [Part 6](#part-6--september-13-revision) first.** The State line below and Part 0's threat 1 are both out of date: imagery went from 50 images to 814 in the intervening five days, which closes the top competitive risk this document was written around. Part 6 records what changed, and adds five things no part of this file covers — the DMCC subscription regime, VAT, the muscle dataset's provenance, accessibility as a procurement gate, and incorporation.
+
+**State (8 September, superseded — see Part 6):** 309 structures · 50 images · 2,391 questions · 428 tests passing · 4.2MB image payload · 36 of 50 images CC BY-SA (Z-Anatomy), 14 still AI-generated · 68 structures with no image (44 muscles, 23 joints, 1 bone).
 
 **Part 0 verified against vendor sources on 8 September 2026.** Several figures in the first draft were wrong or had gone stale; the corrections are marked in place and the consequences are folded through Parts 1, 2 and CR-028. See "What the verification changed" at the end of Part 0.
 
@@ -932,3 +934,99 @@ ACCEPTANCE
 - A student can reach a working question within two clicks of the homepage.
 - An educator can reach the populated demo dashboard within one click.
 ```
+
+---
+
+# Part 6 — September 13 revision
+
+Written against the `feat/joint-lines-and-elevation` branch, five days after the rest of this document. Nothing above is retracted; this part records what the intervening work changed, and adds the material the 8 September draft never covered.
+
+**State, re-measured 13 September 2026:** 345 structures (33 joints) · **814 images** · 612 tests passing · 9 body areas · 14 images still AI-generated · PWA and offline shipped · payments still unbuilt.
+
+Against the header of this document — 309 structures, 50 images, 428 tests — the change in five days is mostly imagery.
+
+## What the ligament and joint work changed
+
+**Part 0, threat 1 is closed.** "Images are table stakes and you don't have them" was the top competitive risk in this file, and the argument rested on 50 images with 68 structures carrying none. There are now 814 images: 338 ligament plates, 146 landmark plates, 184 panels, 71 joint renders, plus the original regions, bones and subregion sets. Joints, which the draft flagged as having *no imagery at all*, are covered. CR-026's coverage clause is substantially met even though its AI-retirement clause is not.
+
+Three consequences follow:
+
+1. **The escalation of CR-026 to "competitive necessity" no longer applies to coverage.** What remains of CR-026 is the 14 AI-generated atlas slides, which is a quality and store-compliance item, not a competitive one. Re-prioritise accordingly.
+2. **The "market the depth, not the breadth" argument is stronger than when it was written.** 345 structures with verified attachments, ligament-level depth and clickable joint lines is a genuinely different claim from 309 structures with patchy imagery. It is still not a breadth claim — do not start making one.
+3. **The first-session "aha" is now buildable as specified.** Part 1 closes on getting a student to a correct locate answer on a real render inside 90 seconds. With imagery at this coverage and rotation/zoom shipped, that is a product decision rather than a content dependency.
+
+**CR-023 (PWA) has shipped** — `vite-plugin-pwa`, offline indicator, update prompt. The timeline in Part 3 has it in the Oct–Dec band; it landed early. TeachMeAnatomy parity on offline is met.
+
+**CR-031 has shipped in code** even though its seed entry still reads `new`: `firestore.rules` now carries no cohort-owner read on `attemptEvents`, and educators read the counters under `cohorts/{id}/studentStats`. This matters for Part 2 because the privacy policy's strong claim — that a class owner cannot see individual answers — is now backed by the rules rather than by the UI, which is exactly what a university will test.
+
+## What has not moved
+
+**Monetisation is still a document.** There is no `entitlement` anywhere in `src/`, no free-tier gate, no Stripe, no RevenueCat. `MarketingHome.tsx` already advertises £4.99/£29.99 and a free area, and none of it is enforceable. This is the literal barrier to revenue.
+
+**The proof sentence does not exist and cannot be backfilled.** Part 3 calls *"students who completed N sessions scored X% higher"* the sentence the February pitch is built on, and says it takes a teaching term to earn. Nothing since 8 September moved toward it, and the term has started.
+
+**The pilot window is closing.** Part 3 said "treat the next three weeks as the deadline" for pilot recruitment. Two of those weeks are gone, and the last five days went into content rather than outreach. The content was worth building; it was not this.
+
+## New material not covered anywhere above
+
+The 8 September document covers competitors, pricing, channel and store compliance thoroughly. It does not mention any of the following, and all five bear on monetisation.
+
+### The DMCC subscription regime
+
+The UK's new subscription contracts regime under the Digital Markets, Competition and Consumers Act 2024 is being implemented on a timetable that overlaps the launch window in Part 3. The obligations that bite are: pre-contract information before the customer commits; a reminder before any free trial converts to a charge; renewal reminders at intervals through the contract (roughly every six months on an annual plan); a straightforward online cancellation route; and a renewal cooling-off right with a proportionate refund after a trial converts or a long contract auto-renews.
+
+**This changes CR-027, which predates it.** The 7-day trial the spec recommends now carries a notice obligation, and "Stripe Checkout with a webhook" is no longer a sufficient description of the billing system — it needs scheduled notices driven off the entitlement document. Building these in is far cheaper than retrofitting them into live billing, so treat them as part of CR-027 rather than a follow-up.
+
+### VAT, and why it precedes the provider choice
+
+Not mentioned above at all. UK VAT registration has a threshold this product will not reach for a long time. Selling digital services to consumers **in the EU has no threshold** — VAT is due from the first sale, in the customer's country.
+
+The practical choice is between a merchant of record (Paddle, Lemon Squeezy), which becomes the seller of record and owns the VAT registration and remittance, and Stripe plus Stripe Tax, where you stay the seller and register for non-union OSS yourself. For a one-person business at this revenue the merchant of record is almost certainly right. Either way, **this decides what CR-027 integrates against**, so it has to be settled before that work starts, not after. Apple is merchant of record for iOS in-app purchases regardless.
+
+### The muscle dataset's provenance
+
+The most under-examined risk in this file, and the one that changed most on investigation. `CR-025`'s current-state section notes that muscle content derives from "ALL_Muscles_of_the_body.pdf" by Vinnie Maynard, Salford, and `AttributionsPage.tsx` credits it publicly — but neither treats it as a commercial-use question.
+
+**Established 13 September:** the PDF is a deck the project owner assembled as a Salford student, consolidating Maynard's own lecture PowerPoints into one revision file. His information, their container. That distinction does not do the work it first appears to: assembling someone's slides into a new deck makes you the author of the arrangement, not of the content, and lecture slides distributed to students carry an implied licence for personal study, not for commercial reuse. Student status is genuinely relevant but only to the owner's *own* work — UK universities normally leave copyright in student work with the student, which secures the deck they made and nothing inside it.
+
+The exposure is not evenly spread across the dataset, and the remedy follows the split:
+
+- **The factual fields are safe.** 186 origin and 146 insertion entries averaging 3.7 and 4.6 words, in standard anatomical phrasing — "Ischial tuberosity", "Iliac fossa of the pelvis". No copyright attaches to a fact stated in the only sensible way to state it. Keep them; verify each against a citable published source and record that source, so the dataset has its own route to the facts rather than a slide number.
+- **158 written sentences are the real risk.** 122 `actionText`, 21 `clinical`, 15 `notes` — "Powerful hip flexor; assists external rotation of the femur and stabilises the pelvis." Short, but carrying authorial choice, and taken as a set from one person's teaching materials. Substantiality is qualitative as well as quantitative. Rewriting these is a day's work and removes the sharpest edge.
+- **Database right is the weaker of the two arguments here**, not the stronger. It protects investment in obtaining, verifying or presenting a collection, and it belongs to whoever made that investment — but it cannot launder reproduction of the underlying works, which is what the prose fields are.
+
+**Who to ask is also unsettled.** Under the CDPA 1988 an employer is first owner of copyright in a literary work made by an employee in the course of employment. Teaching slides made by a lecturer for their own module are very likely to fall inside that, so the rights may sit with the University of Salford rather than with Maynard personally. Ask which in the first email rather than losing a month finding out.
+
+Free pilots make this awkward; charging makes it real. Do the re-derivation in parallel with the permission request rather than waiting on it — it is one to two days of work, and being independent of an answer you do not control is worth more than the answer.
+
+### Accessibility as an institutional procurement gate
+
+Part 2's entire business case is selling to UK universities. Those institutions are bound by the public sector accessibility regulations, and the standard practice in the sector is to require suppliers to provide a conformance report and to publish accessibility statements for third-party systems. A supplier with no statement is a procurement problem before it is an ethical one.
+
+The app as it stands has **one `focus-visible` rule and one `aria-live` region** across the whole codebase, and the locate question — the differentiating question type, the one the whole pitch leads with — has no keyboard or screen-reader path at all. The Equality Act's reasonable-adjustments duty points the same way for a student with low vision.
+
+This is not a request for a perfect score. It is a request for a visible focus ring, an answer announcement, a keyboard route through locate, and an honest statement saying what does and does not conform. Universities accept documented gaps; they do not accept silence.
+
+### Incorporation and the published address
+
+`PrivacyPage.tsx` names a sole trader and a residential address, publicly, and that address will also appear on store listings and invoices. A limited company with a service address costs £100 to incorporate (the Companies House fee doubled in February 2026) plus £30–50 a year for the address, is the cleaner counterparty for a university purchase order, and puts a layer between an individual and a product that gives clinical-adjacent information to students. Sequence it with the ICO registration so the fee is paid once.
+
+## Where this leaves the plan
+
+Part 3's timeline holds. The ordering within it changes:
+
+- **Nothing above displaces the September pilot outreach.** It remains the only item with a deadline set by someone other than you.
+- **CR-026 drops in priority.** Coverage is met; only the AI retirement remains.
+- **CR-027 grows.** It now carries the DMCC obligations and the VAT decision, neither of which it was written to include.
+- **Two new items join the P0 band** that were not in this document at all: the muscle dataset's provenance, and accessibility — the first because it gates every paid route, the second because it gates the institutional one.
+
+**The tracker for all of it is CR-033** in the Change Register, which carries these eighteen items ranked by importance, each with its own walkthrough, tickable in `/admin/changes` so progress is recorded with dates rather than remembered.
+
+## Sources for the new material
+
+Verified 13 September 2026.
+
+- [DMCC Act subscription contracts regime — implementation timing](https://www.hoganlovells.com/en/publications/uk-subscription-law-shakeup-new-rules-pushed-to-autumn-2026) · [obligations in outline](https://www.cooley.com/news/insight/2024/2024-12-09-uk-crackdown-on-subscription-traps-government-reveals-new-proposals-for-incoming-subscription-contracts-regime-under-dmcc-act) · [digital content waiver and renewal cooling-off](https://www.mills-reeve.com/publications/proposed-changes-to-the-digital-content-waiver-for-subscription-contracts-under-the-dmcca/)
+- [ICO data protection fee and tiers](https://ico.org.uk/for-organisations/data-protection-fee/data-protection-fee/) · [register](https://ico.org.uk/for-organisations/data-protection-fee/register/)
+- [Jisc — accessibility regulations for UK education](https://www.jisc.ac.uk/guides/accessibility-regulations-what-you-need-to-know) · [accessibility statements for third-party systems, a worked institutional example](https://www.dundee.ac.uk/corporate-information/accessibility-statements-third-party-systems)
+- [Consumer contracts regulations, cancellation rights in outline](https://www.which.co.uk/consumer-rights/regulation/consumer-contracts-regulations-ajWHC8m21cAk)
