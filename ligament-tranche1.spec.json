@@ -1,6 +1,6 @@
 {
  "schemaVersion": 1,
- "note": "First tranche: the 32 seeded ligaments, eight angles each, left side.",
+ "note": "First tranche: the 32 seeded ligaments, eight angles each, left side. Intracapsular knee ligaments ghost the femur and drop the patella, as the preview showed they need.",
  "ligaments": [
   {
    "key": "anterior-tibiofibular-ligament",
@@ -232,7 +232,14 @@
     225,
     270,
     315
-   ]
+   ],
+   "ghost": [
+    "Femur.l"
+   ],
+   "cutaway": [
+    "Patella.l"
+   ],
+   "frame": 0.15
   },
   {
    "key": "interosseous-membrane-of-leg",
@@ -300,7 +307,14 @@
     225,
     270,
     315
-   ]
+   ],
+   "ghost": [
+    "Femur.l"
+   ],
+   "cutaway": [
+    "Patella.l"
+   ],
+   "frame": 0.15
   },
   {
    "key": "posterior-meniscotibial-ligament-medial-meniscus",
@@ -317,7 +331,14 @@
     225,
     270,
     315
-   ]
+   ],
+   "ghost": [
+    "Femur.l"
+   ],
+   "cutaway": [
+    "Patella.l"
+   ],
+   "frame": 0.15
   },
   {
    "key": "transverse-ligament-of-knee",
@@ -334,7 +355,14 @@
     225,
     270,
     315
-   ]
+   ],
+   "ghost": [
+    "Femur.l"
+   ],
+   "cutaway": [
+    "Patella.l"
+   ],
+   "frame": 0.15
   },
   {
    "key": "acromioclavicular-ligament",

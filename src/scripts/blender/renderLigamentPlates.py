@@ -320,6 +320,12 @@ def ghost_mat():
 GHOST_MAT = ghost_mat()
 
 
+def smooth(mesh):
+    for poly in mesh.polygons:
+        poly.use_smooth = True
+    return mesh
+
+
 def bake(names, mesh_name):
     bm = bmesh.new()
     for n in names:
@@ -399,7 +405,7 @@ def render_ids(path, bones_mesh, parts):
     clear()
     link(bones_mesh, "id_bones", BLACK_MAT)
     for idx, m in parts:
-        link(m, "id_%d" % idx, flat_emission("lig_id_%d" % idx, id_colour(idx)))
+        link(m, "id_%d" % idx, flat_emission("lig_id_%d" % idx, id_colour(idx)), soften=True)
     saved = (scene.view_settings.view_transform, scene.view_settings.look,
              scene.eevee.taa_render_samples, scene.render.dither_intensity, _bg.inputs[1].default_value if _bg else None)
     scene.view_settings.view_transform = "Standard"
@@ -425,15 +431,39 @@ def clear():
                 coll.objects.unlink(ob)
 
 
-def link(mesh, name, material, holdout=False, outlined=False):
+def link(mesh, name, material, holdout=False, outlined=False, soften=False):
     ob = bpy.data.objects.new(name, mesh)
     ob.data.materials.clear()
     ob.data.materials.append(material)
     for p in ob.data.polygons:
         p.material_index = 0
     ob.is_holdout = holdout
+    if soften:
+        soften_strap(ob)
     (outline_coll if outlined else scene.collection).objects.link(ob)
     return ob
+
+
+def soften_strap(ob):
+    """Makes a Z-Anatomy ligament look like a band rather than a cut-out.
+
+    The atlas models every ligament as a thin, low-polygon sheet: a handful
+    of flat facets with hard corners, which the user read as "geometric". On
+    a strap that is not a modelling choice, it is a budget. Three modifiers
+    undo it without touching the source: smooth shading so the facets stop
+    catching the light one at a time, a little solidify so the sheet has an
+    edge to round, and two levels of subdivision so the corners of the
+    outline and the edge itself go soft. The mask render uses the same
+    object, so the hotspot is traced from the softened shape it shows.
+    """
+    for poly in ob.data.polygons:
+        poly.use_smooth = True
+    solid = ob.modifiers.new("thickness", "SOLIDIFY")
+    solid.thickness = 0.0009
+    solid.offset = 0.0
+    sub = ob.modifiers.new("soften", "SUBSURF")
+    sub.levels = 2
+    sub.render_levels = 2
 
 
 def render_to(path, outlines=True):
@@ -515,8 +545,8 @@ for entry in spec["ligaments"]:
     # separately so it can be recoloured between the three renders.
     solid_names = [n for n in skeleton_names
                    if n not in drop and n not in ghost and n not in lig_names]
-    bones = bake(solid_names, "ligbones_" + key)
-    ghost_mesh = bake([n for n in ghost if n not in lig_names], "ligghost_" + key) if ghost else None
+    bones = smooth(bake(solid_names, "ligbones_" + key))
+    ghost_mesh = smooth(bake([n for n in ghost if n not in lig_names], "ligghost_" + key)) if ghost else None
 
     centre = ((lo[0] + hi[0]) / 2, (lo[1] + hi[1]) / 2, (lo[2] + hi[2]) / 2)
     span = max(hi[0] - lo[0], hi[1] - lo[1], hi[2] - lo[2])
@@ -558,18 +588,18 @@ for entry in spec["ligaments"]:
 
       clear()
       link(bones, "ctx_bones_" + key, BONE_MAT)
-      link(lig_mesh, "ctx_lig_" + key, LIG_MAT, outlined=True)
+      link(lig_mesh, "ctx_lig_" + key, LIG_MAT, outlined=True, soften=True)
       for n, m, mat in strap_parts:
-          link(m, "ctx_" + n, mat, outlined=True)
+          link(m, "ctx_" + n, mat, outlined=True, soften=True)
       if ghost_mesh:
           link(ghost_mesh, "ctx_ghost_" + key, GHOST_MAT)
       render_to(os.path.join(leaf_dir, "context.png"))
 
       clear()
       link(bones, "hl_bones_" + key, BONE_MAT)
-      link(lig_mesh, "hl_lig_" + key, HILITE_MAT, outlined=True)
+      link(lig_mesh, "hl_lig_" + key, HILITE_MAT, outlined=True, soften=True)
       for n, m, mat in strap_parts:
-          link(m, "hl_" + n, mat, outlined=True)
+          link(m, "hl_" + n, mat, outlined=True, soften=True)
       if ghost_mesh:
           link(ghost_mesh, "hl_ghost_" + key, GHOST_MAT)
       render_to(os.path.join(leaf_dir, "highlight.png"))
@@ -585,8 +615,8 @@ for entry in spec["ligaments"]:
       clear()
       link(bones, "msk_bones_" + key, BONE_MAT, holdout=True)
       if other_mesh:
-          link(other_mesh, "msk_others_" + key, BONE_MAT, holdout=True)
-      link(lig_mesh, "msk_lig_" + key, MASK_MAT)
+          link(other_mesh, "msk_others_" + key, BONE_MAT, holdout=True, soften=True)
+      link(lig_mesh, "msk_lig_" + key, MASK_MAT, soften=True)
       render_to(os.path.join(leaf_dir, "mask.png"), outlines=False)
 
       # The ID pass, with a legend the packer reads back. The target is index

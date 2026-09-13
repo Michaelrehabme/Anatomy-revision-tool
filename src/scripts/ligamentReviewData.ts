@@ -4,6 +4,7 @@ import sharp from 'sharp';
 import { ALL_STRUCTURES } from '../features/anatomy-revision/data/seed/index';
 import { isLigament } from '../features/anatomy-revision/types/structure';
 import { LIGAMENT_PLATES } from '../features/anatomy-revision/data/seed/ligamentPlates.generated';
+import { LIGAMENT_HOTSPOTS } from '../features/anatomy-revision/data/seed/hotspots.ligaments.generated';
 
 /**
  * Packs the ligament attachment review into one file the review page inlines.
@@ -49,10 +50,14 @@ for (const p of LIGAMENT_PLATES.filter((p) => p.kind === 'highlight')) {
 }
 async function pictureFor(id: string): Promise<{ uri: string; view: string } | null> {
   const plates = platesFor.get(id) ?? [];
-  // The published angles are already only those where the target traces; the
-  // first by angle is as good a representative as any, and anterior-most
-  // reads most naturally.
-  const plate = plates.sort((a, b) => a.angle - b.angle)[0];
+  // The angle where the ligament shows LARGEST, not the first one. The
+  // first cut used the anterior-most angle and the user could not find the
+  // ulnolunate on it; the whole point of the picture is to see the strap.
+  const targetArea = (p: { angle: number }) => {
+    const hs = LIGAMENT_HOTSPOTS[`ligament-${id}-a${String(p.angle).padStart(3, '0')}-context`] ?? [];
+    return hs.find((h) => h.structureId === id)?.area ?? 0;
+  };
+  const plate = [...plates].sort((a, b) => targetArea(b) - targetArea(a))[0];
   if (plate) {
     const file = `${ROOT}/public/anatomy/ligaments/${id}-a${String(plate.angle).padStart(3, '0')}-highlight.webp`;
     if (existsSync(file)) {

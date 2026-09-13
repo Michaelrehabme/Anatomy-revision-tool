@@ -118,7 +118,8 @@
   },
   "ulnocapitate-ligament": {
    "confirmed": true,
-   "source": "User review on the review page, 13 Sept 2026"
+   "source": "User review on the review page, 13 Sept 2026",
+   "why": "CONFIRMED BY THE USER AS DERIVED, but flagged: the ulnocapitate runs from the ulna (fovea / palmar radioulnar ligament) to the capitate and passes over the lunate rather than attaching to it, so the 25% lunate contact is probably passage. The supplied wrist plate does not label it, so this rests on standard teaching. Raise before deploy."
   },
   "ulnopisiform-ligament": {
    "confirmed": true,
@@ -127,6 +128,16 @@
   "ulnotriquetral-ligament": {
    "confirmed": true,
    "source": "User review on the review page, 13 Sept 2026"
+  },
+  "ulnolunate-ligament": {
+   "attachmentStructureIds": [
+    "ulna",
+    "lunate"
+   ],
+   "description": "A palmar ulnocarpal ligament running from the ulna, by way of the palmar radioulnar ligament and the triangular fibrocartilage, to the lunate.",
+   "confirmed": true,
+   "source": "Labelled palmar wrist plate supplied 13 Sept 2026 (ulnolunate drawn from the ulnar head region to the lunate)",
+   "why": "It arises with the palmar radioulnar ligament and inserts on the lunate. The derived scaphoid and capitate contact is the strap lying against the carpus on its way; only the lunate is an attachment."
   }
  }
 }
