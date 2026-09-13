@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { ALL_STRUCTURES } from '../features/anatomy-revision/data/seed';
 import type { Region, SubRegion } from '../features/anatomy-revision/types/region';
@@ -26,9 +26,15 @@ import type { Region, SubRegion } from '../features/anatomy-revision/types/regio
  * WHAT IT ATTACHES TO comes from deriveLigamentAttachments.py — the bones the
  * mesh touches — mapped to app structure ids, preferring the specific bone
  * (talus) over the group it sits in (tarsals), per the rule that a joint is
- * named by its articular part and not the whole pelvis. Every entry is
- * `needsReview: true` until the review sheet is worked through, because
- * touching is not attaching.
+ * named by its articular part and not the whole pelvis. Every entry starts
+ * `needsReview: true`, because touching is not attaching.
+ *
+ * THE REVIEW LANDS IN ligament-attachment-corrections.json, and this script
+ * applies it. That file — not this generator and not the generated seed — is
+ * where a human decision lives, so a decision survives a re-run: an entry
+ * either replaces the derived attachments or confirms them, and either way
+ * clears needsReview. Anything absent from it stays derived and unreviewed,
+ * which is the honest default.
  */
 
 const ROOT = fileURLToPath(new URL('../..', import.meta.url));
@@ -96,6 +102,17 @@ const ABBREVIATIONS: Record<string, string> = {
   'fibular-collateral-ligament': 'LCL', 'acromioclavicular-ligament': 'AC ligament', 'ulnar-collateral-ligament': 'UCL',
 };
 
+interface Correction {
+  attachmentStructureIds?: string[];
+  description?: string;
+  confirmed?: boolean;
+  source?: string;
+  why?: string;
+}
+const CORRECTIONS: Record<string, Correction> = existsSync(`${ROOT}/ligament-attachment-corrections.json`)
+  ? read('ligament-attachment-corrections.json').corrections
+  : {};
+
 const joints = ALL_STRUCTURES.filter((s) => s.category === 'joint');
 function jointFor(colls: string[]): string | undefined {
   for (const c of colls) {
@@ -154,10 +171,16 @@ const q = (s: string) => `'${s.replace(/'/g, "\\'")}'`;
 const entries = chosen.map((l) => {
   const jointId = jointFor([...l.colls]);
   const abbr = ABBREVIATIONS[l.id];
+  const fix = CORRECTIONS[l.id];
+  const ids = fix?.attachmentStructureIds ?? l.ids;
   const bonesText = l.derived.map((d) => baseName(d.bone).toLowerCase()).slice(0, 3);
-  const description = bonesText.length >= 2
-    ? `Ligament of the ${l.subregion.replace('-', ' and ')}, running between the ${bonesText[0]} and the ${bonesText[1]}.`
-    : `Ligament of the ${l.subregion.replace('-', ' and ')}.`;
+  const description = fix?.description
+    ?? (bonesText.length >= 2
+      ? `Ligament of the ${l.subregion.replace('-', ' and ')}, running between the ${bonesText[0]} and the ${bonesText[1]}.`
+      : `Ligament of the ${l.subregion.replace('-', ' and ')}.`);
+  // A reviewed entry records WHY in `notes`, because the derived contact will
+  // keep disagreeing with it and the next person to look needs the reason.
+  const notes = fix?.why ? `${fix.why}${fix.source ? ` (${fix.source})` : ''}` : null;
   return `  {
     id: ${q(l.id)},
     name: ${q(l.name)},
@@ -166,12 +189,11 @@ const entries = chosen.map((l) => {
     subregion: ${q(l.subregion)},
     description: ${q(description)},
     aliases: [${abbr ? q(abbr) : ''}],${abbr ? `\n    abbreviation: ${q(abbr)},` : ''}
-    attachmentStructureIds: [${l.ids.map(q).join(', ')}],${jointId ? `\n    jointId: ${q(jointId)},` : ''}
+    attachmentStructureIds: [${ids.map(q).join(', ')}],${jointId ? `\n    jointId: ${q(jointId)},` : ''}
     imageIds: [],
     eligibility: { flashcard: true, mcq: true, locate: true },
     difficulty: 'medium',
-    tags: ['ligament'],
-    needsReview: true,
+    tags: ['ligament'],${notes ? `\n    notes: ${q(notes)},` : ''}${fix?.confirmed ? '' : '\n    needsReview: true,'}
   },`;
 });
 
@@ -209,7 +231,14 @@ writeFileSync(`${ROOT}/ta2-mapping-ligaments.resolved.json`, JSON.stringify({
 // ---- review sheet ----
 const rows = chosen.map((l) => {
   const derived = l.derived.map((d) => `${baseName(d.bone)} ${Math.round(d.share * 100)}%`).join(', ');
-  return `| ${l.name} | ${l.subregion} | ${derived || '—'} | ${l.ids.join(', ') || '—'} | ${l.tier} | ${Math.round(l.best * 100)}% | |`;
+  const fix = CORRECTIONS[l.id];
+  const ids = fix?.attachmentStructureIds ?? l.ids;
+  const verdict = !fix
+    ? ''
+    : fix.attachmentStructureIds
+      ? `**corrected** — ${fix.why ?? ''}`
+      : `**confirmed** — ${fix.why ?? ''}`;
+  return `| ${l.name} | ${l.subregion} | ${derived || '—'} | ${ids.join(', ') || '—'} | ${l.tier} | ${Math.round(l.best * 100)}% | ${verdict} |`;
 });
 const sheet = `# Ligament attachments — review sheet
 
@@ -222,8 +251,9 @@ passing over a bone touches it too (the acetabular labrum reports the femur it w
 what the seed currently carries. Read the doubtful tiers first — *many* and *one bone* — then the
 clean pairs.
 
-**How to review.** Put a tick or the corrected ids in the last column. Then either fix the entry in
-\`structures.ligaments.seed.ts\` and clear \`needsReview\`, or hand this sheet back and it will be applied.
+**How to review.** Decisions live in \`ligament-attachment-corrections.json\`, which the generator applies —
+never hand-edit the generated seed, or the next re-run loses the decision. The last column shows what has been
+settled so far; there is also a page for ticking through on a phone.
 
 | Ligament | Area | Derived (share of mesh in contact) | Seed ids | Tier | Visible | Confirmed / correction |
 |---|---|---|---|---|---|---|
@@ -238,6 +268,11 @@ rotation finding in the ligament preview (the survey undercounts strap-on views)
 `;
 writeFileSync(`${ROOT}/docs/ligament-attachments-review.md`, sheet);
 
+const reviewed = chosen.filter((l) => CORRECTIONS[l.id]).length;
+const corrected = chosen.filter((l) => CORRECTIONS[l.id]?.attachmentStructureIds).length;
+console.log(`reviewed: ${reviewed} of ${chosen.length} (${corrected} corrected, ${reviewed - corrected} confirmed as derived)`);
+const unknownFix = Object.keys(CORRECTIONS).filter((id) => !chosen.some((l) => l.id === id));
+if (unknownFix.length) console.log(`WARNING corrections for ids not in the tranche: ${unknownFix.join(', ')}`);
 const tiers: Record<string, number> = {};
 for (const l of chosen) tiers[l.tier] = (tiers[l.tier] ?? 0) + 1;
 console.log(`${chosen.length} ligaments in the tranche; tiers: ${JSON.stringify(tiers)}`);

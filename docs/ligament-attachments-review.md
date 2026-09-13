@@ -9,43 +9,44 @@ passing over a bone touches it too (the acetabular labrum reports the femur it w
 what the seed currently carries. Read the doubtful tiers first — *many* and *one bone* — then the
 clean pairs.
 
-**How to review.** Put a tick or the corrected ids in the last column. Then either fix the entry in
-`structures.ligaments.seed.ts` and clear `needsReview`, or hand this sheet back and it will be applied.
+**How to review.** Decisions live in `ligament-attachment-corrections.json`, which the generator applies —
+never hand-edit the generated seed, or the next re-run loses the decision. The last column shows what has been
+settled so far; there is also a page for ticking through on a phone.
 
 | Ligament | Area | Derived (share of mesh in contact) | Seed ids | Tier | Visible | Confirmed / correction |
 |---|---|---|---|---|---|---|
-| Anterior tibiofibular ligament | ankle-foot | Fibula 20%, Tibia 15% | fibula, tibia | clean pair | 95% | |
-| Deep transverse metatarsal ligament | ankle-foot | Proximal phalanx of fourth finger of foot 17%, Second metatarsal bone 11%, Proximal phalanx of second finger of foot 11%, Proximal phalanx of third finger of foot 11%, Third metatarsal bone 11%, Fourth metatarsal bone 11% | phalanges-proximal-foot, metatarsals | many | 67% | |
-| Plantar metatarsophalangeal ligaments | ankle-foot | Second metatarsal bone 13%, Fourth metatarsal bone 12%, Third metatarsal bone 12%, Fifth metatarsal bone 11%, Proximal phalanx of fifth finger of foot 9%, Proximal phalanx of fourth finger of foot 8% | metatarsals, phalanges-proximal-foot | many | 50% | |
-| Interosseous membrane of forearm | elbow | Ulna 25%, Radius 21% | ulna, radius | clean pair | 63% | |
-| Radial collateral ligament | elbow | Radius 33%, Humerus 33% | radius, humerus | clean pair | 67% | |
-| Ulnar collateral ligament | elbow | Ulna 14%, Radius 14%, Humerus 7% | ulna, radius, humerus | pair + trace | 57% | |
-| Obturator membrane | hip | Hip bone 51% | pelvis | one bone | 60% | |
-| Pubofemoral ligament | hip | Hip bone 10%, Femur 7% | pelvis, femur | clean pair | 70% | |
-| Sacrotuberous ligament | hip | Sacrum 33%, Hip bone 19% | sacrum, pelvis | clean pair | 67% | |
-| Superior pubic ligament | hip | Hip bone 33% | pelvis | one bone | 67% | |
-| Anterior cruciate ligament | knee | Tibia 28%, Femur 20% | tibia, femur | clean pair | 50% | |
-| Interosseous membrane of leg | knee | Fibula 18%, Tibia 7% | fibula, tibia | clean pair | 60% | |
-| Medial meniscus | knee | Tibia 44%, Femur 31% | tibia, femur | clean pair | 53% | |
-| Popliteofibular ligament | knee | Fibula 17% | fibula | one bone | 83% | |
-| Posterior meniscotibial ligament (Lateral meniscus) | knee | Tibia 88% | tibia | one bone | 63% | |
-| Posterior meniscotibial ligament (Medial meniscus) | knee | Tibia 75% | tibia | one bone | 54% | |
-| Transverse ligament of knee | knee | Tibia 32%, Femur 29% | tibia, femur | clean pair | 77% | |
-| Acromioclavicular ligament | shoulder | Scapula 33%, Clavicle 33% | scapula, clavicle | clean pair | 56% | |
-| Anterior sternoclavicular ligament | shoulder | Clavicle 33%, Manubrium of sternum 33% | clavicle, sternum | clean pair | 67% | |
-| Coracohumeral ligament | shoulder | Humerus 33%, Scapula 17% | humerus, scapula | clean pair | 61% | |
-| Interclavicular ligament | shoulder | Manubrium of sternum 50%, Clavicle 13% | sternum, clavicle | clean pair | 50% | |
-| Transverse humeral ligament | shoulder | Humerus 50% | humerus | one bone | 50% | |
-| Nuchal ligament | spine | Occipital bone 20%, Vertebra C3 6%, Axis (C2) 6% | cervical-vertebrae, axis-c2 | pair + trace | 70% | |
-| External intercostal membrane | torso | Costal cartilage of seventh rib 8%, Costal cartilage of fifth rib 8%, Costal cartilage of ninth rib 8%, Costal cartilage of eighth rib 7%, Costal cartilage of fourth rib 6%, Costal cartilage of sixth rib 6% | — | many | 53% | |
-| Collateral metacarpophalangeal ligaments | wrist-hand | Second metacarpal bone 12%, Proximal phalanx of fourth finger of hand 12%, Proximal phalanx of third finger of hand 11%, Proximal phalanx of first finger of hand 11%, Proximal phalanx of fifth finger of hand 10%, Fifth metacarpal bone 10% | metacarpals, phalanges-proximal-hand | many | 57% | |
-| Deep transverse metacarpal ligament | wrist-hand | Third metacarpal bone 22%, Second metacarpal bone 17%, Proximal phalanx of fourth finger of hand 17%, Fourth metacarpal bone 17%, Proximal phalanx of third finger of hand 11%, Fifth metacarpal bone 11% | metacarpals, phalanges-proximal-hand | many | 50% | |
-| Palmar interphalangeal ligaments | wrist-hand | Middle phalanx of fourth finger of hand 15%, Middle phalanx of second finger of hand 11%, Middle phalanx of fifth finger of hand 11%, Middle phalanx of third finger of hand 10%, Distal phalanx of third finger of hand 7%, Proximal phalanx of fifth finger of hand 7% | phalanges-middle-hand, phalanges-distal-hand, phalanges-proximal-hand | many | 53% | |
-| Palmar radio-ulnar ligament | wrist-hand | Ulna 75%, Radius 25% | ulna, radius | clean pair | 50% | |
-| Ulnocapitate ligament | wrist-hand | Ulna 58%, Lunate bone 25%, Capitate bone 17% | ulna, lunate, capitate | many | 58% | |
-| Ulnolunate ligament | wrist-hand | Ulna 60%, Scaphoid bone 30%, Capitate bone 10%, Lunate bone 10% | ulna, scaphoid, capitate, lunate | many | 50% | |
-| Ulnopisiform ligament | wrist-hand | Ulna 50%, Pisiform bone 50% | ulna, pisiform | clean pair | 50% | |
-| Ulnotriquetral ligament | wrist-hand | Ulna 50%, Triquetrum bone 50% | ulna, triquetrum | clean pair | 50% | |
+| Anterior tibiofibular ligament | ankle-foot | Fibula 20%, Tibia 15% | fibula, tibia | clean pair | 95% | **confirmed** —  |
+| Deep transverse metatarsal ligament | ankle-foot | Proximal phalanx of fourth finger of foot 17%, Second metatarsal bone 11%, Proximal phalanx of second finger of foot 11%, Proximal phalanx of third finger of foot 11%, Third metatarsal bone 11%, Fourth metatarsal bone 11% | metatarsals | many | 67% | **corrected** — It runs head to head between the plantar plates and never reaches a phalanx. The derived contact with the proximal phalanges is the mesh lying against their bases — the clearest case in the tranche of touching not being attaching. |
+| Plantar metatarsophalangeal ligaments | ankle-foot | Second metatarsal bone 13%, Fourth metatarsal bone 12%, Third metatarsal bone 12%, Fifth metatarsal bone 11%, Proximal phalanx of fifth finger of foot 9%, Proximal phalanx of fourth finger of foot 8% | metatarsals, phalanges-proximal-foot | many | 50% | **confirmed** — The plantar plate runs from the plantar aspect of the metatarsal head to the base of the proximal phalanx, which is what the derived pair already says. |
+| Interosseous membrane of forearm | elbow | Ulna 25%, Radius 21% | ulna, radius | clean pair | 63% | **confirmed** —  |
+| Radial collateral ligament | elbow | Radius 33%, Humerus 33% | radius, humerus | clean pair | 67% | **confirmed** —  |
+| Ulnar collateral ligament | elbow | Ulna 14%, Radius 14%, Humerus 7% | ulna, radius, humerus | pair + trace | 57% | **confirmed** — CONFIRMED BY THE USER AS DERIVED, but flagged: the elbow UCL runs medial epicondyle to coronoid process and olecranon, and standard teaching gives it no radial attachment. The radius contact is probably the mesh lying against the radial head. Raise before deploy. |
+| Obturator membrane | hip | Hip bone 51% | pelvis | one bone | 60% | **confirmed** — Spans the obturator foramen of one hip bone, so a single attachment is right. |
+| Pubofemoral ligament | hip | Hip bone 10%, Femur 7% | pelvis, femur | clean pair | 70% | **confirmed** —  |
+| Sacrotuberous ligament | hip | Sacrum 33%, Hip bone 19% | sacrum, pelvis | clean pair | 67% | **confirmed** —  |
+| Superior pubic ligament | hip | Hip bone 33% | pelvis | one bone | 67% | **confirmed** — Joins the two pubic bodies across the symphysis; both are the one pelvis structure in this app. |
+| Anterior cruciate ligament | knee | Tibia 28%, Femur 20% | tibia, femur | clean pair | 50% | **confirmed** —  |
+| Interosseous membrane of leg | knee | Fibula 18%, Tibia 7% | fibula, tibia | clean pair | 60% | **confirmed** —  |
+| Medial meniscus | knee | Tibia 44%, Femur 31% | tibia, femur | clean pair | 53% | **confirmed** —  |
+| Popliteofibular ligament | knee | Fibula 17% | fibula | one bone | 83% |  |
+| Posterior meniscotibial ligament (Lateral meniscus) | knee | Tibia 88% | tibia | one bone | 63% |  |
+| Posterior meniscotibial ligament (Medial meniscus) | knee | Tibia 75% | tibia | one bone | 54% |  |
+| Transverse ligament of knee | knee | Tibia 32%, Femur 29% | tibia, femur | clean pair | 77% | **confirmed** —  |
+| Acromioclavicular ligament | shoulder | Scapula 33%, Clavicle 33% | scapula, clavicle | clean pair | 56% | **confirmed** —  |
+| Anterior sternoclavicular ligament | shoulder | Clavicle 33%, Manubrium of sternum 33% | clavicle, sternum | clean pair | 67% | **confirmed** —  |
+| Coracohumeral ligament | shoulder | Humerus 33%, Scapula 17% | humerus, scapula | clean pair | 61% | **confirmed** —  |
+| Interclavicular ligament | shoulder | Manubrium of sternum 50%, Clavicle 13% | sternum, clavicle | clean pair | 50% | **confirmed** —  |
+| Transverse humeral ligament | shoulder | Humerus 50% | humerus | one bone | 50% | **confirmed** — Bridges the intertubercular groove between the two tubercles of the humerus, so one bone is right. |
+| Nuchal ligament | spine | Occipital bone 20%, Vertebra C3 6%, Axis (C2) 6% | cervical-vertebrae, axis-c2 | pair + trace | 70% | **confirmed** — Confirmed knowing the occipital bone is not a structure the app models, so this carries the cervical vertebrae only. |
+| External intercostal membrane | torso | Costal cartilage of seventh rib 8%, Costal cartilage of fifth rib 8%, Costal cartilage of ninth rib 8%, Costal cartilage of eighth rib 7%, Costal cartilage of fourth rib 6%, Costal cartilage of sixth rib 6% | — | many | 53% |  |
+| Collateral metacarpophalangeal ligaments | wrist-hand | Second metacarpal bone 12%, Proximal phalanx of fourth finger of hand 12%, Proximal phalanx of third finger of hand 11%, Proximal phalanx of first finger of hand 11%, Proximal phalanx of fifth finger of hand 10%, Fifth metacarpal bone 10% | metacarpals, phalanges-proximal-hand | many | 57% | **confirmed** — A collateral runs from the tubercle on the metacarpal head to the base of the proximal phalanx. Derived pair is right. |
+| Deep transverse metacarpal ligament | wrist-hand | Third metacarpal bone 22%, Second metacarpal bone 17%, Proximal phalanx of fourth finger of hand 17%, Fourth metacarpal bone 17%, Proximal phalanx of third finger of hand 11%, Fifth metacarpal bone 11% | metacarpals | many | 50% | **corrected** — The hand's band is the metatarsal band's counterpart and attaches the same way — plate to plate across the metacarpal heads, not to the phalanges. Derivation put the metacarpals top anyway (3rd 22%, 2nd 17%, 4th 17%). |
+| Palmar interphalangeal ligaments | wrist-hand | Middle phalanx of fourth finger of hand 15%, Middle phalanx of second finger of hand 11%, Middle phalanx of fifth finger of hand 11%, Middle phalanx of third finger of hand 10%, Distal phalanx of third finger of hand 7%, Proximal phalanx of fifth finger of hand 7% | phalanges-middle-hand, phalanges-distal-hand, phalanges-proximal-hand | many | 53% | **confirmed** — These are the palmar plates of the PIP and DIP joints together, so all three phalangeal rows are genuinely involved: proximal and middle at the PIP, middle and distal at the DIP. |
+| Palmar radio-ulnar ligament | wrist-hand | Ulna 75%, Radius 25% | ulna, radius | clean pair | 50% | **confirmed** —  |
+| Ulnocapitate ligament | wrist-hand | Ulna 58%, Lunate bone 25%, Capitate bone 17% | ulna, lunate, capitate | many | 58% | **confirmed** —  |
+| Ulnolunate ligament | wrist-hand | Ulna 60%, Scaphoid bone 30%, Capitate bone 10%, Lunate bone 10% | ulna, scaphoid, capitate, lunate | many | 50% |  |
+| Ulnopisiform ligament | wrist-hand | Ulna 50%, Pisiform bone 50% | ulna, pisiform | clean pair | 50% | **confirmed** —  |
+| Ulnotriquetral ligament | wrist-hand | Ulna 50%, Triquetrum bone 50% | ulna, triquetrum | clean pair | 50% | **confirmed** —  |
 
 ## Not included
 

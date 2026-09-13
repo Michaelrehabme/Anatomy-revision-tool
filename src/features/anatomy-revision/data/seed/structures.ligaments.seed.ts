@@ -29,7 +29,6 @@ export const LIGAMENT_STRUCTURES: LigamentStructure[] = [
     eligibility: { flashcard: true, mcq: true, locate: true },
     difficulty: 'medium',
     tags: ['ligament'],
-    needsReview: true,
   },
   {
     id: 'deep-transverse-metatarsal-ligament',
@@ -37,14 +36,14 @@ export const LIGAMENT_STRUCTURES: LigamentStructure[] = [
     category: 'ligament',
     region: 'lower-leg-foot',
     subregion: 'ankle-foot',
-    description: 'Ligament of the ankle and foot, running between the proximal phalanx of fourth finger of foot and the second metatarsal bone.',
+    description: 'A series of short transverse bands joining the plantar plates of adjacent metatarsophalangeal joints, binding the heads of the metatarsals together and holding the forefoot as a unit.',
     aliases: [],
-    attachmentStructureIds: ['phalanges-proximal-foot', 'metatarsals'],
+    attachmentStructureIds: ['metatarsals'],
     imageIds: [],
     eligibility: { flashcard: true, mcq: true, locate: true },
     difficulty: 'medium',
     tags: ['ligament'],
-    needsReview: true,
+    notes: 'It runs head to head between the plantar plates and never reaches a phalanx. The derived contact with the proximal phalanges is the mesh lying against their bases — the clearest case in the tranche of touching not being attaching. (Labelled dorsal foot diagram and Netter plantar/lateral foot plate, supplied 13 Sept 2026)',
   },
   {
     id: 'plantar-metatarsophalangeal-ligaments',
@@ -59,7 +58,7 @@ export const LIGAMENT_STRUCTURES: LigamentStructure[] = [
     eligibility: { flashcard: true, mcq: true, locate: true },
     difficulty: 'medium',
     tags: ['ligament'],
-    needsReview: true,
+    notes: 'The plantar plate runs from the plantar aspect of the metatarsal head to the base of the proximal phalanx, which is what the derived pair already says. (Netter lateral inset, \'Capsule and ligaments of metatarsophalangeal and interphalangeal joints\')',
   },
   {
     id: 'interosseous-membrane-of-forearm',
@@ -74,7 +73,6 @@ export const LIGAMENT_STRUCTURES: LigamentStructure[] = [
     eligibility: { flashcard: true, mcq: true, locate: true },
     difficulty: 'medium',
     tags: ['ligament'],
-    needsReview: true,
   },
   {
     id: 'radial-collateral-ligament',
@@ -90,7 +88,6 @@ export const LIGAMENT_STRUCTURES: LigamentStructure[] = [
     eligibility: { flashcard: true, mcq: true, locate: true },
     difficulty: 'medium',
     tags: ['ligament'],
-    needsReview: true,
   },
   {
     id: 'ulnar-collateral-ligament',
@@ -107,7 +104,7 @@ export const LIGAMENT_STRUCTURES: LigamentStructure[] = [
     eligibility: { flashcard: true, mcq: true, locate: true },
     difficulty: 'medium',
     tags: ['ligament'],
-    needsReview: true,
+    notes: 'CONFIRMED BY THE USER AS DERIVED, but flagged: the elbow UCL runs medial epicondyle to coronoid process and olecranon, and standard teaching gives it no radial attachment. The radius contact is probably the mesh lying against the radial head. Raise before deploy. (User review on the review page, 13 Sept 2026)',
   },
   {
     id: 'obturator-membrane',
@@ -122,7 +119,7 @@ export const LIGAMENT_STRUCTURES: LigamentStructure[] = [
     eligibility: { flashcard: true, mcq: true, locate: true },
     difficulty: 'medium',
     tags: ['ligament'],
-    needsReview: true,
+    notes: 'Spans the obturator foramen of one hip bone, so a single attachment is right. (User review on the review page, 13 Sept 2026)',
   },
   {
     id: 'pubofemoral-ligament',
@@ -137,7 +134,6 @@ export const LIGAMENT_STRUCTURES: LigamentStructure[] = [
     eligibility: { flashcard: true, mcq: true, locate: true },
     difficulty: 'medium',
     tags: ['ligament'],
-    needsReview: true,
   },
   {
     id: 'sacrotuberous-ligament',
@@ -152,7 +148,6 @@ export const LIGAMENT_STRUCTURES: LigamentStructure[] = [
     eligibility: { flashcard: true, mcq: true, locate: true },
     difficulty: 'medium',
     tags: ['ligament'],
-    needsReview: true,
   },
   {
     id: 'superior-pubic-ligament',
@@ -168,7 +163,7 @@ export const LIGAMENT_STRUCTURES: LigamentStructure[] = [
     eligibility: { flashcard: true, mcq: true, locate: true },
     difficulty: 'medium',
     tags: ['ligament'],
-    needsReview: true,
+    notes: 'Joins the two pubic bodies across the symphysis; both are the one pelvis structure in this app. (User review on the review page, 13 Sept 2026)',
   },
   {
     id: 'anterior-cruciate-ligament',
@@ -184,7 +179,6 @@ export const LIGAMENT_STRUCTURES: LigamentStructure[] = [
     eligibility: { flashcard: true, mcq: true, locate: true },
     difficulty: 'medium',
     tags: ['ligament'],
-    needsReview: true,
   },
   {
     id: 'interosseous-membrane-of-leg',
@@ -199,7 +193,6 @@ export const LIGAMENT_STRUCTURES: LigamentStructure[] = [
     eligibility: { flashcard: true, mcq: true, locate: true },
     difficulty: 'medium',
     tags: ['ligament'],
-    needsReview: true,
   },
   {
     id: 'medial-meniscus',
@@ -214,7 +207,6 @@ export const LIGAMENT_STRUCTURES: LigamentStructure[] = [
     eligibility: { flashcard: true, mcq: true, locate: true },
     difficulty: 'medium',
     tags: ['ligament'],
-    needsReview: true,
   },
   {
     id: 'popliteofibular-ligament',
@@ -274,7 +266,6 @@ export const LIGAMENT_STRUCTURES: LigamentStructure[] = [
     eligibility: { flashcard: true, mcq: true, locate: true },
     difficulty: 'medium',
     tags: ['ligament'],
-    needsReview: true,
   },
   {
     id: 'acromioclavicular-ligament',
@@ -291,7 +282,6 @@ export const LIGAMENT_STRUCTURES: LigamentStructure[] = [
     eligibility: { flashcard: true, mcq: true, locate: true },
     difficulty: 'medium',
     tags: ['ligament'],
-    needsReview: true,
   },
   {
     id: 'anterior-sternoclavicular-ligament',
@@ -307,7 +297,6 @@ export const LIGAMENT_STRUCTURES: LigamentStructure[] = [
     eligibility: { flashcard: true, mcq: true, locate: true },
     difficulty: 'medium',
     tags: ['ligament'],
-    needsReview: true,
   },
   {
     id: 'coracohumeral-ligament',
@@ -323,7 +312,6 @@ export const LIGAMENT_STRUCTURES: LigamentStructure[] = [
     eligibility: { flashcard: true, mcq: true, locate: true },
     difficulty: 'medium',
     tags: ['ligament'],
-    needsReview: true,
   },
   {
     id: 'interclavicular-ligament',
@@ -339,7 +327,6 @@ export const LIGAMENT_STRUCTURES: LigamentStructure[] = [
     eligibility: { flashcard: true, mcq: true, locate: true },
     difficulty: 'medium',
     tags: ['ligament'],
-    needsReview: true,
   },
   {
     id: 'transverse-humeral-ligament',
@@ -355,7 +342,7 @@ export const LIGAMENT_STRUCTURES: LigamentStructure[] = [
     eligibility: { flashcard: true, mcq: true, locate: true },
     difficulty: 'medium',
     tags: ['ligament'],
-    needsReview: true,
+    notes: 'Bridges the intertubercular groove between the two tubercles of the humerus, so one bone is right. (User review on the review page, 13 Sept 2026)',
   },
   {
     id: 'nuchal-ligament',
@@ -370,7 +357,7 @@ export const LIGAMENT_STRUCTURES: LigamentStructure[] = [
     eligibility: { flashcard: true, mcq: true, locate: true },
     difficulty: 'medium',
     tags: ['ligament'],
-    needsReview: true,
+    notes: 'Confirmed knowing the occipital bone is not a structure the app models, so this carries the cervical vertebrae only. (User review on the review page, 13 Sept 2026)',
   },
   {
     id: 'external-intercostal-membrane',
@@ -400,7 +387,7 @@ export const LIGAMENT_STRUCTURES: LigamentStructure[] = [
     eligibility: { flashcard: true, mcq: true, locate: true },
     difficulty: 'medium',
     tags: ['ligament'],
-    needsReview: true,
+    notes: 'A collateral runs from the tubercle on the metacarpal head to the base of the proximal phalanx. Derived pair is right. (Same lateral inset, and the collateral ligaments labelled at the MTP joints of the dorsal diagram)',
   },
   {
     id: 'deep-transverse-metacarpal-ligament',
@@ -408,14 +395,14 @@ export const LIGAMENT_STRUCTURES: LigamentStructure[] = [
     category: 'ligament',
     region: 'forearm-hand',
     subregion: 'wrist-hand',
-    description: 'Ligament of the wrist and hand, running between the third metacarpal bone and the second metacarpal bone.',
+    description: 'Short transverse bands joining the palmar plates of the second to fifth metacarpophalangeal joints, binding the metacarpal heads together. The thumb is free of it, which is part of why it opposes.',
     aliases: [],
-    attachmentStructureIds: ['metacarpals', 'phalanges-proximal-hand'],
+    attachmentStructureIds: ['metacarpals'],
     imageIds: [],
     eligibility: { flashcard: true, mcq: true, locate: true },
     difficulty: 'medium',
     tags: ['ligament'],
-    needsReview: true,
+    notes: 'The hand\'s band is the metatarsal band\'s counterpart and attaches the same way — plate to plate across the metacarpal heads, not to the phalanges. Derivation put the metacarpals top anyway (3rd 22%, 2nd 17%, 4th 17%). (By the same anatomy as the foot band above, which the supplied plates settle; standard teaching for the hand)',
   },
   {
     id: 'palmar-interphalangeal-ligaments',
@@ -430,7 +417,7 @@ export const LIGAMENT_STRUCTURES: LigamentStructure[] = [
     eligibility: { flashcard: true, mcq: true, locate: true },
     difficulty: 'medium',
     tags: ['ligament'],
-    needsReview: true,
+    notes: 'These are the palmar plates of the PIP and DIP joints together, so all three phalangeal rows are genuinely involved: proximal and middle at the PIP, middle and distal at the DIP. (Netter lateral inset, which draws the plate at the interphalangeal joint between middle and distal phalanx)',
   },
   {
     id: 'palmar-radio-ulnar-ligament',
@@ -446,7 +433,6 @@ export const LIGAMENT_STRUCTURES: LigamentStructure[] = [
     eligibility: { flashcard: true, mcq: true, locate: true },
     difficulty: 'medium',
     tags: ['ligament'],
-    needsReview: true,
   },
   {
     id: 'ulnocapitate-ligament',
@@ -461,7 +447,6 @@ export const LIGAMENT_STRUCTURES: LigamentStructure[] = [
     eligibility: { flashcard: true, mcq: true, locate: true },
     difficulty: 'medium',
     tags: ['ligament'],
-    needsReview: true,
   },
   {
     id: 'ulnolunate-ligament',
@@ -491,7 +476,6 @@ export const LIGAMENT_STRUCTURES: LigamentStructure[] = [
     eligibility: { flashcard: true, mcq: true, locate: true },
     difficulty: 'medium',
     tags: ['ligament'],
-    needsReview: true,
   },
   {
     id: 'ulnotriquetral-ligament',
@@ -506,6 +490,5 @@ export const LIGAMENT_STRUCTURES: LigamentStructure[] = [
     eligibility: { flashcard: true, mcq: true, locate: true },
     difficulty: 'medium',
     tags: ['ligament'],
-    needsReview: true,
   },
 ];
