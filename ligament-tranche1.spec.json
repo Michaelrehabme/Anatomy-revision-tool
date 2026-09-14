@@ -309,7 +309,8 @@
     315
    ],
    "ghost": [
-    "Femur.l"
+    "Femur.l",
+    "Lateral meniscus.l"
    ],
    "cutaway": [
     "Patella.l"
@@ -333,7 +334,8 @@
     315
    ],
    "ghost": [
-    "Femur.l"
+    "Femur.l",
+    "Medial meniscus.l"
    ],
    "cutaway": [
     "Patella.l"
@@ -357,7 +359,8 @@
     315
    ],
    "ghost": [
-    "Femur.l"
+    "Femur.l",
+    "Lateral meniscus.l"
    ],
    "cutaway": [
     "Patella.l"
