@@ -138,6 +138,40 @@
    "confirmed": true,
    "source": "Labelled palmar wrist plate supplied 13 Sept 2026 (ulnolunate drawn from the ulnar head region to the lunate)",
    "why": "It arises with the palmar radioulnar ligament and inserts on the lunate. The derived scaphoid and capitate contact is the strap lying against the carpus on its way; only the lunate is an attachment."
+  },
+  "popliteofibular-ligament": {
+   "attachmentStructureIds": [
+    "fibula"
+   ],
+   "description": "A deep posterolateral band running from the popliteus tendon to the styloid process of the fibular head, resisting external rotation of the tibia.",
+   "confirmed": true,
+   "source": "Review page, confirmed 13 Sept 2026",
+   "why": "Only the fibula is a bony attachment. The other end is the popliteus tendon, which the app does not model as a structure, so one bone is the complete bony answer rather than a missing second one."
+  },
+  "posterior-meniscotibial-ligament-medial-meniscus": {
+   "attachmentStructureIds": [
+    "tibia"
+   ],
+   "description": "The posterior part of the coronary ligament of the medial meniscus, anchoring the meniscal rim to the margin of the tibial plateau.",
+   "confirmed": true,
+   "source": "Review page, confirmed 13 Sept 2026",
+   "why": "Tibia is the only bony end; the other attaches to the medial meniscus, which is not a bone. The derivation reporting one bone is correct, not incomplete."
+  },
+  "external-intercostal-membrane": {
+   "attachmentStructureIds": [],
+   "description": "The aponeurotic sheet continuing the external intercostal muscle forwards between the costal cartilages.",
+   "confirmed": true,
+   "source": "Review page, confirmed 13 Sept 2026",
+   "why": "It spans costal cartilage, not bone, and the app models no cartilage structures — so an empty bony attachment list is the honest answer. It carries no attachment question, only locate and identify."
+  },
+  "posterior-meniscotibial-ligament-lateral-meniscus": {
+   "attachmentStructureIds": [
+    "tibia"
+   ],
+   "description": "The posterior part of the coronary ligament of the lateral meniscus, anchoring the meniscal rim to the margin of the tibial plateau.",
+   "confirmed": true,
+   "source": "Review page, marked corrected with no attachment change, 13 Sept 2026",
+   "why": "The reviewer marked this corrected but left the attachment field blank, which the page defines as \"the attachments are right but something else is wrong\". Tibia is right — the other end is the meniscus. What is wrong is that it can barely be seen: even with the meniscus ghosted it traces at 0.06% of frame at a single angle, the smallest target in the tranche. Flagged for a keep-or-drop decision; the attachment itself is settled."
   }
  }
 }
