@@ -172,7 +172,7 @@ function generateOneQuestionForStructure(
     case 'fill-blank':
       return buildFillBlankQuestions(pool, rng)[0] ?? null;
     case 'identify-typed':
-      return buildIdentifyTypedQuestions(pool, images)[0] ?? null;
+      return buildIdentifyTypedQuestions(pool, images, [...indexes.byId.values()])[0] ?? null;
     case 'multi-select':
       // Multi-select is inherently a "compare several structures" question, not a
       // per-structure one — it doesn't fit the adaptive escalation ladder's shape.
@@ -293,7 +293,7 @@ export function generateRevisionSet(
     generated.push(...buildFillBlankQuestions(pool, rng));
   }
   if (config.types.includes('identify-typed')) {
-    generated.push(...buildIdentifyTypedQuestions(pool, relevantImages));
+    generated.push(...buildIdentifyTypedQuestions(pool, relevantImages, structures));
   }
   if (config.types.includes('multi-select')) {
     generated.push(...buildMultiSelectQuestions(pool, indexes, rng));

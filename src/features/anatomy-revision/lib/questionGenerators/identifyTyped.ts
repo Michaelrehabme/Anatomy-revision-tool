@@ -16,9 +16,17 @@ import { imageDepicts } from './mcq';
 export function buildIdentifyTypedQuestions(
   structures: AnatomyStructure[],
   images: AnatomyImageAsset[],
+  /**
+   * The whole dataset, for naming a ligament's attachments. It must not be the
+   * filtered pool: a student who narrows a session to ligaments has a pool with
+   * no bones in it, so looking an attachment up there finds nothing and the
+   * boxes silently vanish — exactly the session where they matter most.
+   * Defaults to `structures` for callers that pass the full set anyway.
+   */
+  allStructures: AnatomyStructure[] = structures,
 ): TypedIdentifyQuestion[] {
   const questions: TypedIdentifyQuestion[] = [];
-  const byId = new Map(structures.map((s) => [s.id, s]));
+  const byId = new Map(allStructures.map((s) => [s.id, s]));
 
   for (const structure of structures) {
     if (!structure.eligibility.mcq) continue;

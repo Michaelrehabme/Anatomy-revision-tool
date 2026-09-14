@@ -192,10 +192,29 @@ function buildJointMovementQuestions(pool: AnatomyStructure[], rng: Rng): MultiS
  * otherwise — a knee pool carries the femur, but a wrist ligament's "radius"
  * may be filtered out of a hand-only pool, and the question must still read.
  */
-function buildLigamentAttachmentQuestions(pool: AnatomyStructure[], rng: Rng): MultiSelectQuestion[] {
-  const poolById = new Map(pool.map((s) => [s.id, s]));
+/**
+ * "the collateral ligaments attaches to" is the sort of thing a student
+ * notices and a generator does not. Several entries are plural groups rather
+ * than one strap, so the verb has to follow the head noun — which is not the
+ * last word either ("interosseous membrane of forearm" is singular).
+ */
+function attachVerb(name: string): string {
+  const head = name.toLowerCase();
+  return /ligaments|membranes|plates|retinacula/.test(head) ? 'attach' : 'attaches';
+}
+
+function buildLigamentAttachmentQuestions(
+  pool: AnatomyStructure[],
+  indexes: StructureIndexes,
+  rng: Rng,
+): MultiSelectQuestion[] {
+  // Names AND distractors come from the index, which is built over the whole
+  // dataset. Drawing them from the pool looked right until the app was run: a
+  // student narrowing a session to ligaments has a pool with no bones in it,
+  // so there were no distractors to offer and every attachment question
+  // vanished from the one session that is entirely about attachments.
   const nameOf = (id: string) =>
-    poolById.get(id)?.name ?? id.replace(/-/g, ' ').replace(/^[a-z]/, (c) => c.toUpperCase());
+    indexes.byId.get(id)?.name ?? id.replace(/-/g, ' ').replace(/^[a-z]/, (c) => c.toUpperCase());
   const questions: MultiSelectQuestion[] = [];
 
   for (const lig of pool.filter(isLigament)) {
@@ -207,14 +226,14 @@ function buildLigamentAttachmentQuestions(pool: AnatomyStructure[], rng: Rng): M
     // landmark rules out its parent bone and a correct bone rules out every
     // landmark on it, and only whole bones remain as wrong answers.
     const related = new Set<string>();
-    for (const s of pool) {
+    for (const s of indexes.byId.values()) {
       if (isLandmark(s) && s.parentBoneId) {
         if (correct.has(s.id)) related.add(s.parentBoneId);
         if (correct.has(s.parentBoneId)) related.add(s.id);
       }
     }
     const ligAreas = areasOf(lig);
-    const distractorPool = pool.filter(
+    const distractorPool = [...indexes.byId.values()].filter(
       (s) => isBone(s) && !correct.has(s.id) && !related.has(s.id) && areasOf(s).some((a) => ligAreas.includes(a)),
     );
     const distractors = sample(distractorPool, Math.min(MAX_DISTRACTORS, distractorPool.length), rng);
@@ -226,10 +245,10 @@ function buildLigamentAttachmentQuestions(pool: AnatomyStructure[], rng: Rng): M
     questions.push({
       ...baseFields(lig, 'attachment'),
       id: `multiselect-ligament-attachment-${lig.id}`,
-      prompt: `Select ALL the bones the ${lig.name} attaches to.`,
+      prompt: `Select ALL the bones the ${lig.name} ${attachVerb(lig.name)} to.`,
       choices,
       correctIndices: choices.reduce<number[]>((acc, c, i) => (correctSet.has(c) ? [...acc, i] : acc), []),
-      explanation: `The ${lig.name} attaches to: ${correctNames.join(', ')}.`,
+      explanation: `The ${lig.name} ${attachVerb(lig.name)} to: ${correctNames.join(', ')}.`,
     });
   }
   return questions;
@@ -244,6 +263,6 @@ export function buildMultiSelectQuestions(
     ...buildNerveQuestions(pool, indexes, rng),
     ...buildActionExclusionQuestions(pool, indexes, rng),
     ...buildJointMovementQuestions(pool, rng),
-    ...buildLigamentAttachmentQuestions(pool, rng),
+    ...buildLigamentAttachmentQuestions(pool, indexes, rng),
   ];
 }

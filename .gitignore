@@ -30,3 +30,15 @@ dist-demo
 # by jointLineHotspots.ts, then converted into the seed.
 joint-lines.hotspots.json
 joint-lines.hotspots.v2.json
+
+# Review payloads: a packer script rebuilds them from renders/ and the seed,
+# and each carries its pictures inlined as data URIs, so they are megabytes of
+# derived bytes with no source value. Untracked they also block `npm run
+# deploy`, which refuses a dirty tree.
+*.data.json
+*.data.js
+locate-target-preview.html
+
+# Python bytecode from the Blender scripts
+__pycache__/
+*.pyc
