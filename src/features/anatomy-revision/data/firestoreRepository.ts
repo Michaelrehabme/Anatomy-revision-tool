@@ -17,6 +17,7 @@ import type { UserAttempt, StructureMastery, FactMastery, RevisionSessionSummary
 import type { StructureFilter } from '../lib/indexes';
 import { filterStructures } from '../lib/indexes';
 import { ALL_STRUCTURES, ALL_IMAGES } from './seed';
+import { attachHotspots } from './seed/hotspots';
 import { rollUpAttemptDetached } from '../../educator/data/cohortRollups';
 import { getDb, getFirebaseAuth } from './firebase';
 import type { AchievementDoc } from '../lib/achievements';
@@ -73,6 +74,9 @@ export async function createFirestoreRepository(): Promise<AnatomyRepository> {
     },
 
     async listImageAssets(filter?: ImageAssetFilter) {
+      // The polygons load separately from the images they belong to, and the
+      // filter below reads them — see seed/hotspots.ts.
+      await attachHotspots();
       return ALL_IMAGES.filter(
         (img) =>
           (!filter?.region || img.region === filter.region) &&

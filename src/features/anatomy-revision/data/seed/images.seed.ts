@@ -3,17 +3,11 @@ import { MUSCLE_PANELS } from './panels.generated';
 import type { Region, SubRegion } from '../../types/region';
 import { REGION_HOTSPOTS, REGION_PANEL_NAMES } from './hotspots.regions.generated';
 import { JOINT_PANELS } from './jointPanels.generated';
-import { JOINT_HOTSPOTS } from './hotspots.joints.generated';
 import { BONE_PLATES } from './bonePlates.generated';
-import { BONE_HOTSPOTS } from './hotspots.bones.generated';
 import { DEEP_PLATES } from './deepPlates.generated';
-import { DEEP_HOTSPOTS } from './hotspots.deep.generated';
 import { LANDMARK_PANELS } from './landmarkPanels.generated';
-import { LANDMARK_HOTSPOTS } from './hotspots.landmarks.generated';
 import { SUBREGION_PLATES } from './subRegionPlates.generated';
-import { SUBREGION_HOTSPOTS } from './hotspots.subregions.generated';
 import { LIGAMENT_PLATES } from './ligamentPlates.generated';
-import { LIGAMENT_HOTSPOTS } from './hotspots.ligaments.generated';
 
 /**
  * Three image sets, in the order they appear below:
@@ -384,7 +378,7 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
       layer: 'skeletal',
       width: panel.width,
       height: panel.height,
-      hotspots: JOINT_HOTSPOTS[id] ?? [],
+      hotspots: [],  // attached by seed/hotspots.ts; see the note there
       credit: Z_ANATOMY_CREDIT,
       licence: Z_ANATOMY_LICENCE,
     };
@@ -415,7 +409,7 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
           layer: 'ligament',
           width: plate.width,
           height: plate.height,
-          hotspots: LIGAMENT_HOTSPOTS[id] ?? [],
+          hotspots: [],  // attached by seed/hotspots.ts; see the note there
           credit: Z_ANATOMY_CREDIT,
           licence: Z_ANATOMY_LICENCE,
         }
@@ -458,7 +452,7 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
       layer: 'skeletal',
       width: plate.width,
       height: plate.height,
-      hotspots: BONE_HOTSPOTS[id] ?? [],
+      hotspots: [],  // attached by seed/hotspots.ts; see the note there
       credit: Z_ANATOMY_CREDIT,
       licence: Z_ANATOMY_LICENCE,
     };
@@ -483,7 +477,7 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
       layer: 'deep-muscle',
       width: plate.width,
       height: plate.height,
-      hotspots: DEEP_HOTSPOTS[id] ?? [],
+      hotspots: [],  // attached by seed/hotspots.ts; see the note there
       credit: Z_ANATOMY_CREDIT,
       licence: Z_ANATOMY_LICENCE,
     };
@@ -509,7 +503,7 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
       layer: 'skeletal',
       width: panel.width,
       height: panel.height,
-      hotspots: LANDMARK_HOTSPOTS[id] ?? [],
+      hotspots: [],  // attached by seed/hotspots.ts; see the note there
       credit: Z_ANATOMY_CREDIT,
       licence: Z_ANATOMY_LICENCE,
     };
@@ -543,7 +537,7 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
       layer: 'skeletal',
       width: plate.width,
       height: plate.height,
-      hotspots: SUBREGION_HOTSPOTS[id] ?? [],
+      hotspots: [],  // attached by seed/hotspots.ts; see the note there
       credit: Z_ANATOMY_CREDIT,
       licence: Z_ANATOMY_LICENCE,
     };

@@ -9,6 +9,11 @@
  * real bug, not just incomplete content.
  */
 import { ALL_STRUCTURES, ALL_IMAGES } from '../features/anatomy-revision/data/seed';
+import { attachHotspots } from '../features/anatomy-revision/data/seed/hotspots';
+
+// The polygons are attached to the images separately now (seed/hotspots.ts),
+// and half the checks below are about them, so they have to be here first.
+await attachHotspots();
 import { isJoint, isMuscle, areasOf } from '../features/anatomy-revision/types/structure';
 import { AREAS, AREA_LABELS } from '../features/anatomy-revision/types/region';
 import { OINA_PROMPT_KINDS } from '../features/anatomy-revision/types/question';
