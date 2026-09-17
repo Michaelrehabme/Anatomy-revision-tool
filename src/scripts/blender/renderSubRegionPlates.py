@@ -25,6 +25,9 @@ bakes into five.
 """
 import bpy, json, sys, os, math, argparse, mathutils, bmesh, time
 
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+import boneLook  # noqa: E402
+
 argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
 ap = argparse.ArgumentParser()
 ap.add_argument("--spec", required=True)
@@ -36,6 +39,9 @@ ap.add_argument("--samples", type=int, default=48)
 ap.add_argument("--margin", type=float, default=1.35, help="camera slack around the subjects")
 ap.add_argument("--limb-margin", type=float, default=1.12,
                 help="slack for a limb plate, which is framed to its subject rather than square")
+ap.add_argument("--plates-only", action="store_true",
+                help="re-render the pictures and leave the masks alone. A mask is a flat emission, "
+                     "so lighting cannot move a hotspot — relighting is a picture change only.")
 ap.add_argument("--turntable", type=int, default=0,
                 help="render this many angles evenly around the vertical axis instead of --views, "
                      "framed so the subject fits at every one of them")
@@ -61,12 +67,7 @@ scene.render.film_transparent = True
 scene.render.image_settings.file_format = "PNG"
 scene.render.image_settings.color_mode = "RGBA"
 
-scene.world = bpy.data.worlds.new("SubWorld")
-scene.world.use_nodes = True
-_bg = scene.world.node_tree.nodes.get("Background")
-if _bg:
-    _bg.inputs[0].default_value = (1.0, 1.0, 1.0, 1.0)
-    _bg.inputs[1].default_value = 0.55
+boneLook.setup_world(scene)
 
 cam_data = bpy.data.cameras.new("subcam")
 cam_data.type = "ORTHO"
@@ -74,9 +75,22 @@ cam = bpy.data.objects.new("subcam", cam_data)
 scene.collection.objects.link(cam)
 scene.camera = cam
 
-sun = bpy.data.objects.new("subsun", bpy.data.lights.new("subsun", type="SUN"))
-sun.data.energy = 3.0
-scene.collection.objects.link(sun)
+sun, fill = boneLook.add_lights(scene)
+
+for _attr, _val in (("use_gtao", True), ("gtao_distance", 0.02), ("use_shadows", True),
+                    ("use_fast_gi", True), ("fast_gi_distance", 0.03)):
+    try:
+        setattr(scene.eevee, _attr, _val)
+    except (AttributeError, TypeError):
+        pass
+
+# OUTLINES ON THE PLATE ONLY, NEVER ON A MASK — a line drawn on a mask grows
+# every traced polygon by its own width and silently moves the locate targets.
+# Only the bones go in: two touching carpals of the same colour need an edge to
+# divide them, while a red muscle on pale bone is already divided by its colour.
+outline_coll = bpy.data.collections.new("sub_outlined")
+scene.collection.children.link(outline_coll)
+boneLook.outline_lineset(scene, outline_coll)
 
 
 def principled(name, colour, roughness=0.5):
@@ -102,7 +116,10 @@ def flat_white():
 
 
 FLESH_MAT = principled("sub_flesh", (0.76, 0.27, 0.25, 1), 0.5)
-BONE_MAT = principled("sub_bone", (0.90, 0.88, 0.83, 1), 0.6)
+# The shared bone: pale, with its hollows darkened by occlusion. Seven renderers
+# draw this skeleton and each had grown its own lighting; boneLook.py is the one
+# the landmark panels had already got right.
+BONE_MAT = boneLook.bone_material("sub_bone")
 MASK_MAT = flat_white()
 
 
@@ -257,32 +274,35 @@ def frame_camera(lo, hi, angle_deg, margin, elevation_deg=0.0, fit=False, span=N
         cam_data.sensor_fit = "AUTO"
         cam_data.ortho_scale = size * margin
 
-    # Keep the key light off the camera axis at any elevation, or a view from
-    # directly below renders flat.
-    sun.rotation_euler = mathutils.Euler((0.9 - phi * 0.5, 0.3, 0.6 + theta), "XYZ")
+    # In the CAMERA's frame, so a bone is lit the same way from every angle of a
+    # turntable rather than raked from one side and flat from the next.
+    boneLook.aim_lights(cam, sun, fill)
 
 
 def clear():
+    for ob in list(outline_coll.objects):
+        outline_coll.objects.unlink(ob)
     for ob in list(scene.collection.objects):
-        if ob not in (cam, sun):
+        if ob not in (cam, sun, fill):
             scene.collection.objects.unlink(ob)
 
 
-def link(mesh, name, material, holdout=False):
+def link(mesh, name, material, holdout=False, outline=False):
     ob = bpy.data.objects.new(name, mesh)
     ob.data.materials.clear()
     ob.data.materials.append(material)
     for p in ob.data.polygons:
         p.material_index = 0
     ob.is_holdout = holdout
-    scene.collection.objects.link(ob)
+    (outline_coll if outline else scene.collection).objects.link(ob)
     return ob
 
 
-def render_to(path):
+def render_to(path, outlines=False):
     path = os.path.abspath(path)
     os.makedirs(os.path.dirname(path), exist_ok=True)
     scene.render.filepath = path
+    scene.render.use_freestyle = outlines
     bpy.ops.render.render(write_still=True)
 
 
@@ -347,7 +367,7 @@ for plate in spec["plates"]:
 
     subjects = []
     for s in plate["subjects"]:
-        mesh = bake(restrict(s["objects"]), f"sub_{s['id']}")
+        mesh = boneLook.smooth(bake(restrict(s["objects"]), f"sub_{s['id']}"))
         if mesh.vertices:
             subjects.append((s["id"], s["kind"], mesh))
         else:
@@ -385,7 +405,7 @@ for plate in spec["plates"]:
         bones = [n for n in bones if n.endswith(suffix) or not (n.endswith(".l") or n.endswith(".r"))]
         if suffix:
             bones = [n for n in bones if not n.endswith(".r" if suffix == ".l" else ".l")]
-    backdrop = bake([n for n in bones if n not in own], f"backdrop_{key}")
+    backdrop = boneLook.smooth(bake([n for n in bones if n not in own], f"backdrop_{key}"))
 
     bone_count = sum(1 for _, k, _ in subjects if k == "bone")
     print(f"[plate] {key}: {len(subjects)} subjects ({bone_count} bone), "
@@ -423,11 +443,16 @@ for plate in spec["plates"]:
 
         # The plate: the skeleton as it is, with the subject muscles laid on it.
         clear()
-        link(backdrop, f"plate_backdrop_{key}", BONE_MAT)
+        link(backdrop, f"plate_backdrop_{key}", BONE_MAT, outline=True)
         for sid, kind, mesh in subjects:
-            link(mesh, f"plate_{sid}", BONE_MAT if kind == "bone" else FLESH_MAT)
-        render_to(os.path.join(a.out, key, f"{leaf}.png"))
+            link(mesh, f"plate_{sid}", BONE_MAT if kind == "bone" else FLESH_MAT,
+                 outline=kind == "bone")
+        render_to(os.path.join(a.out, key, f"{leaf}.png"), outlines=True)
         count += 1
+
+        if a.plates_only:
+            print(f"[plate] {key} {leaf} ({count} renders, {time.time() - t0:.0f}s)", flush=True)
+            continue
 
         # One mask each, with the backdrop and every other subject held out.
         for sid, kind, mesh in subjects:
