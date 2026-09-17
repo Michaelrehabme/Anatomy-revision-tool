@@ -2344,4 +2344,68 @@ export const CHANGE_REQUESTS_SEED: ChangeRequest[] = [
       },
     ],
   },
+  {
+    ref: 'CR-034',
+    title: 'Carry the glenoid labrum over from the old branch',
+    category: 'content',
+    priority: 'p2',
+    effort: 's',
+    status: 'new',
+    description:
+      'The only structure the four stale branches held that main does not. content/port-bone-context-images carried ' +
+      'eight in-context renders in August; seven of the eight (intervertebral disc, L4 vertebra, menisci, calcaneus, ' +
+      'cuboid, navicular, talus) are on main today with images and working locate questions. The glenoid labrum was ' +
+      'never carried over, and no structure of that name exists in the seed.',
+    prompt:
+      'Add the glenoid labrum to the seed.
+
+' +
+      'WHAT IS ALREADY DONE
+' +
+      '- The atlas objects exist and are resolved: ta2-mapping-landmarks.resolved.json maps glenoid-labrum to
+' +
+      '  ["Glenoid labrum.l", "Glenoid labrum.r"], resolution "manual", confidence 1.0. ligament-collections.json
+' +
+      '  carries the same two objects (and the acetabular labrum beside them).
+' +
+      '- Nothing downstream was built: glenoid-labrum appears in no spec, no render, no seed.
+
+' +
+      'WHICH PIPELINE IS THE REAL DECISION
+' +
+      'It is fibrocartilage, not bone, so the landmark pipeline is the wrong shape for it — a landmark marks a point
+' +
+      'or region ON a bone, and the labrum is a ring sitting proud of the glenoid rim. The ligament pipeline already
+' +
+      'draws exactly this kind of thing: a soft-tissue strap in blue over bone, eight angles, a traced hotspot per
+' +
+      'angle, neighbours named. Prefer it, and take the acetabular labrum in the same pass since the atlas offers it
+' +
+      'and the hip tranche is already framed at 300mm.
+
+' +
+      'AGAINST THAT, note what main already has: glenoid-cavity is seeded as a landmark with panels and a target
+' +
+      'core. The labrum and the cavity are the same place seen two ways, so whichever pipeline draws the labrum,
+' +
+      'check the two hotspots do not overlap on any shared plate — generateSet.test.ts enforces mutual exclusivity
+' +
+      'and will fail the build rather than ship an ambiguous tap.
+
+' +
+      'ACCEPTANCE
+' +
+      '- The glenoid labrum is askable, and a student can tell it from the glenoid cavity in the picture.
+' +
+      '- validateContent passes with no new warnings.',
+    dependsOn: [],
+    createdAt: '2026-09-17T23:30:00.000Z',
+    startedAt: null,
+    completedAt: null,
+    notes:
+      'P2 because it is one structure, and the shoulder already has 40. Raised while tidying the four branches that ' +
+      'were never merged: three of them turned out to be the old Python + msk-quiz.html project, sharing no ancestor ' +
+      'with main, and the fourth held this. All four are tagged under legacy/ and dropped locally, so this change ' +
+      'request is now the only record that the labrum was ever wanted.',
+  },
 ];
