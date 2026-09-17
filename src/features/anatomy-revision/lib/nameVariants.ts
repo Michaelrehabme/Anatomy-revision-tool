@@ -62,8 +62,21 @@ export function swapFibularPeroneal(value: string): string | null {
  * is a hand or it is a foot. Both members of a Hand/Foot pair end up accepting
  * the bare name, which costs nothing — a question grades only against the
  * structure it asked about.
+ *
+ * "OF THE HAND" AND "OF THE FOOT" GO FOR THE SAME REASON, in the phrase form
+ * as well as the bracketed one. "Distal Phalanges of the Hand (grouped)" is
+ * three pieces of bookkeeping on two words of anatomy, and a student who can
+ * see the picture has already answered the hand-or-foot half. So "distal
+ * phalanges" grades as right.
+ *
+ * WHAT STRIPPING CANNOT DO is let a wrong answer through. Peeling the
+ * qualifier off every name in the dataset collides only ever with that name's
+ * own hand/foot twin — never with a different structure — so the worst case is
+ * the one above: a question about the hand accepts the answer a student would
+ * have given for the foot, on a picture of a hand. See the collision test.
  */
-const OPTIONAL_SUFFIX = /(?:\s*\((?:grouped|hand|foot)\)|\s+muscles?)$/i;
+const OPTIONAL_SUFFIX =
+  /(?:\s*\((?:grouped|hand|foot)\)|\s+of\s+(?:the\s+)?(?:hand|foot)|\s+muscles?)$/i;
 
 /**
  * Every form of a structure's name that should grade as correct: the fibular/

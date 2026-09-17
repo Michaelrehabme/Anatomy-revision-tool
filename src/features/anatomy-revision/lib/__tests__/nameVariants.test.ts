@@ -78,3 +78,44 @@ describe('optional trailing qualifiers', () => {
     expect(accept('phalanges-distal-hand', 'proximal phalanges of the hand')).toBe(false);
   });
 });
+
+describe('"of the hand" and "of the foot" are optional too', () => {
+  const accept = (id: string, typed: string) => {
+    const s = ALL_STRUCTURES.find((x) => x.id === id)!;
+    return isAnswerMatch(typed, structureNameVariants(s.name, s.aliases));
+  };
+
+  it('accepts the bare name of a grouped phalanx entry', () => {
+    // The user's rule: a student looking at the picture has already answered
+    // the hand-or-foot half of "Distal Phalanges of the Hand (grouped)".
+    expect(accept('phalanges-distal-hand', 'distal phalanges')).toBe(true);
+    expect(accept('phalanges-middle-foot', 'middle phalanges')).toBe(true);
+    expect(accept('phalanges-proximal-hand', 'Proximal Phalanges')).toBe(true);
+  });
+
+  it('accepts the bare name when the qualifier is a phrase, not brackets', () => {
+    expect(accept('interphalangeal-joint-hand', 'interphalangeal joint')).toBe(true);
+  });
+
+  it('still refuses a different structure in the same part', () => {
+    expect(accept('phalanges-distal-hand', 'middle phalanges')).toBe(false);
+    expect(accept('phalanges-distal-hand', 'metacarpals')).toBe(false);
+  });
+
+  it('never lets one structure answer for another that is not its twin', () => {
+    // The whole safety argument for stripping the qualifier: across the entire
+    // dataset, two structures may share a stripped name ONLY when they are the
+    // same structure in the hand and in the foot.
+    const byForm = new Map<string, string[]>();
+    for (const s of ALL_STRUCTURES) {
+      for (const form of structureNameVariants(s.name, s.aliases)) {
+        const key = form.toLowerCase();
+        byForm.set(key, [...new Set([...(byForm.get(key) ?? []), s.id])]);
+      }
+    }
+    const twinned = (ids: string[]) =>
+      new Set(ids.map((id) => id.replace(/-(hand|foot)$/, ''))).size === 1;
+    const bad = [...byForm.entries()].filter(([, ids]) => ids.length > 1 && !twinned(ids));
+    expect(bad.map(([form, ids]) => `${form}: ${ids.join(', ')}`)).toEqual([]);
+  });
+});

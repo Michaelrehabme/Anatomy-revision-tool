@@ -123,6 +123,25 @@ const EXTRA_ALIASES: Record<string, string[]> = {
 };
 
 /**
+ * TA2 aliases that are pinned to the wrong entry upstream, replaced rather
+ * than added to.
+ *
+ * lumbricals-foot is pinned to TA2 2682, which is the FLEXOR DIGITI MINIMI of
+ * the foot — so the lumbricals question accepted "flexor digiti minimi" as a
+ * correct answer, for a different muscle in the same foot. It is marked
+ * verified upstream, which is why no confidence threshold caught it; its hand
+ * twin is pinned correctly to 2532. The atlas itself carries the right name
+ * ("Lumbrical muscles of foot.l/.r"), so only the alias text was ever wrong.
+ *
+ * This overrides rather than patches ta2-mapping.raw.json, which is a verbatim
+ * copy of its source — the same reason EXTRA_ALIASES lives here. The ta2id is
+ * left alone because nothing reads it; the names are what grade an answer.
+ */
+const ALIAS_OVERRIDES: Record<string, string[]> = {
+  'lumbricals-foot': ['Lumbrical muscles of foot', 'Musculi lumbricales pedis'],
+};
+
+/**
  * These 9 muscles end up with imageIds.length === 0 after linkImages() —
  * verified (CR-013) not to be a naming mismatch, since no atlas slide's
  * panelStructureNames cover them at all. Two new slides would close the gap:
@@ -135,6 +154,8 @@ const EXTRA_ALIASES: Record<string, string[]> = {
  */
 
 function buildAliases(id: string): string[] {
+  const override = ALIAS_OVERRIDES[id];
+  if (override) return [...override, ...(EXTRA_ALIASES[id] ?? [])];
   const ta2 = TA2_BY_ID.get(id);
   const ta2Aliases = ta2 ? [ta2.ta2_english, ta2.ta2_latin].filter((v): v is string => !!v) : [];
   return [...ta2Aliases, ...(EXTRA_ALIASES[id] ?? [])];
