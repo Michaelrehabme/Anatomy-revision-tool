@@ -204,7 +204,7 @@ export const UPPER_LIMB_LANDMARK_STRUCTURES: LandmarkStructure[] = [
   },
   {
     id: 'intertubercular-sulcus',
-    name: 'Intertubercular Sulcus',
+    name: 'Intertubercular Sulcus (Bicipital Groove)',
     category: 'landmark',
     region: 'shoulder-arm',
     subregion: 'shoulder',
@@ -214,7 +214,7 @@ export const UPPER_LIMB_LANDMARK_STRUCTURES: LandmarkStructure[] = [
     attachments: ['Tendon of the long head of biceps brachii runs through it', 'Latissimus dorsi and teres major insert along its margins'],
     articulations: [],
     palpability: 'not-palpable',
-    aliases: ['Bicipital Groove'],
+    aliases: ['Bicipital Groove', 'Intertubercular Sulcus', 'Intertubercular Groove'],
     imageIds: [],
     eligibility: { flashcard: true, mcq: true, locate: true },
     difficulty: 'medium',

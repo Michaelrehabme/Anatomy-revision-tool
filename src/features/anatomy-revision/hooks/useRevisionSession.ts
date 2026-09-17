@@ -1,7 +1,7 @@
 import { useCallback, useReducer, useRef } from 'react';
 import type { RevisionQuestion } from '../types/question';
 import type { Category, Difficulty } from '../types/structure';
-import { isMuscle } from '../types/structure';
+import { emptyCategoryBreakdown, isMuscle } from '../types/structure';
 import type { Area, Region, SubRegion } from '../types/region';
 import { REGIONS } from '../types/region';
 import type { Confidence, RevisionSessionSummary, UserAttempt } from '../types/attempt';
@@ -35,6 +35,8 @@ export interface AnswerRecord {
   graded?: boolean;
   confidence?: Confidence;
   hitDistance?: number;
+  /** Locate questions on a landmark: the archery score, 1-10 in, 0 outside. */
+  accuracy?: number;
   selectedAnswer?: string;
   correctAnswer?: string;
   durationMs?: number;
@@ -141,12 +143,7 @@ function reducer(state: SessionState, action: Action): SessionState {
 }
 
 function buildSummary(state: SessionState, userId: string): RevisionSessionSummary {
-  const breakdownByCategory: RevisionSessionSummary['breakdownByCategory'] = {
-    muscle: { total: 0, correct: 0 },
-    bone: { total: 0, correct: 0 },
-    landmark: { total: 0, correct: 0 },
-    joint: { total: 0, correct: 0 },
-  };
+  const breakdownByCategory = emptyCategoryBreakdown();
   const breakdownByRegion: RevisionSessionSummary['breakdownByRegion'] = {};
   const missed = new Set<string>();
 
@@ -353,6 +350,7 @@ export function useRevisionSession(repository: AnatomyRepository | null, userId:
             correct: record.correct,
             confidence: record.confidence,
             hitDistance: record.hitDistance,
+            accuracy: record.accuracy,
             selectedAnswer: record.selectedAnswer,
             correctAnswer: record.correctAnswer,
             attemptNumber,

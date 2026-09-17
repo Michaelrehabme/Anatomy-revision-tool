@@ -169,6 +169,7 @@ export function LocateStructureSession({
             const { title, detail } = locateFeedback(
               result,
               structuresById.get(question.targetStructureId)?.name ?? question.targetStructureId,
+              result.structureId ? structuresById.get(result.structureId)?.name : undefined,
             );
             return (
               <>

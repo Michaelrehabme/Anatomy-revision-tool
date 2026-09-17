@@ -101,7 +101,11 @@ export function MobileLocateStructureSession({
     .filter((s): s is AnatomyStructure => !!s);
 
   const feedback = result
-    ? locateFeedback(result, structuresById.get(question.targetStructureId)?.name ?? question.targetStructureId)
+    ? locateFeedback(
+        result,
+        structuresById.get(question.targetStructureId)?.name ?? question.targetStructureId,
+        result.structureId ? structuresById.get(result.structureId)?.name : undefined,
+      )
     : { title: '', detail: undefined as string | undefined };
 
   return (
