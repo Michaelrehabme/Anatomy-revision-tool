@@ -14,11 +14,18 @@ export function useChangeRequests() {
   const [items, setItems] = useState<ChangeRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  /** Non-null = the list is the git backlog only; Firestore state is missing. */
+  const [stateUnavailable, setStateUnavailable] = useState<string | null>(null);
 
   const reload = useCallback(async () => {
     setLoading(true);
     try {
-      setItems(await listChangeRequests());
+      const read = await listChangeRequests();
+      setItems(read.items);
+      // Not an `error`: the register renders, it just has no saved state on it.
+      // Writing from here would overwrite whatever Firestore actually holds,
+      // so the screen disables its controls rather than hiding the backlog.
+      setStateUnavailable(read.stateUnavailable ? (read.stateError ?? 'unknown error') : null);
       setError(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load change requests.');
@@ -72,5 +79,5 @@ export function useChangeRequests() {
     [items],
   );
 
-  return { items, loading, error, reload, create, setStatus, setNotes, toggleChecklistItem };
+  return { items, loading, error, stateUnavailable, reload, create, setStatus, setNotes, toggleChecklistItem };
 }

@@ -11,7 +11,7 @@ import { Button } from '../../../anatomy-revision/components/shared/Button';
 const DEFAULT_FILTERS: ChangeRequestFilterState = { status: 'all', category: 'all', priority: 'all' };
 
 export function ChangeRegisterPage() {
-  const { items, loading, error, create, setStatus, toggleChecklistItem } = useChangeRequests();
+  const { items, loading, error, stateUnavailable, create, setStatus, toggleChecklistItem } = useChangeRequests();
   const [filters, setFilters] = useState<ChangeRequestFilterState>(DEFAULT_FILTERS);
   const [selectedRef, setSelectedRef] = useState<string | null>(null);
   const [showNewForm, setShowNewForm] = useState(false);
@@ -90,6 +90,18 @@ export function ChangeRegisterPage() {
       {error && (
         <div className="mt-10 text-sm" style={{ color: 'var(--acc2d)' }}>
           {error}
+        </div>
+      )}
+      {stateUnavailable && (
+        <div
+          className="mt-8 rounded px-4 py-3 text-sm"
+          style={{ background: 'var(--acc2s)', color: 'var(--ink2)', borderLeft: '2px solid var(--acc2)' }}
+        >
+          <strong style={{ color: 'var(--ink)' }}>Showing the backlog from git only.</strong> The saved
+          status, notes and ticks could not be read, so nothing here can be changed — a tick would
+          overwrite whatever Firestore actually holds. Check you are signed in as an admin and that the
+          Firebase config is set.
+          <div className="mt-1.5" style={{ color: 'var(--ink3)' }}>{stateUnavailable}</div>
         </div>
       )}
       {!loading && !error && (

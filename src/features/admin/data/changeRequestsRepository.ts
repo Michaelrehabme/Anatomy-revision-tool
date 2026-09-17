@@ -14,17 +14,46 @@ import type { ChecklistDone } from '../lib/checklist';
  */
 const COLLECTION = 'changeRequests';
 
+export interface ChangeRegisterRead {
+  items: ChangeRequest[];
+  /**
+   * The Firestore read failed, so these are the git definitions with no stored
+   * state on them — right status for a fresh register, but any status, notes or
+   * ticks an admin has saved are missing, and writing from this view would
+   * overwrite them. The caller must say so and disable the controls.
+   */
+  stateUnavailable: boolean;
+  /** Why, for the message — the Firebase error, not something invented here. */
+  stateError?: string;
+}
+
 /**
  * DEFINITIONS come from git, STATE from Firestore — see lib/changeRequestOverlay
  * for the field-by-field split and why the register no longer depends on the
  * seed script having been run. The seed script still writes whole documents
  * (they stay self-describing for anyone reading the Firestore console); reads
  * just don't rely on it having happened.
+ *
+ * A failed read is degraded, never fatal. The backlog is version-controlled, so
+ * there is always something correct to render, and a blank screen is the worst
+ * possible answer to "is Firestore reachable?" — it looks identical to an empty
+ * register and names no cause. Offline, unconfigured, or signed in without the
+ * admin claim, you get the list plus a line saying which.
  */
-export async function listChangeRequests(): Promise<ChangeRequest[]> {
-  const snapshot = await getDocs(query(collection(getDb(), COLLECTION), orderBy('ref', 'asc')));
-  const stored = snapshot.docs.map((d) => d.data() as ChangeRequest);
-  return overlayChangeRequests(CHANGE_REQUESTS_SEED, stored);
+export async function listChangeRequests(): Promise<ChangeRegisterRead> {
+  const fromSeed = () => overlayChangeRequests(CHANGE_REQUESTS_SEED, []);
+
+  try {
+    const snapshot = await getDocs(query(collection(getDb(), COLLECTION), orderBy('ref', 'asc')));
+    const stored = snapshot.docs.map((d) => d.data() as ChangeRequest);
+    return { items: overlayChangeRequests(CHANGE_REQUESTS_SEED, stored), stateUnavailable: false };
+  } catch (error) {
+    return {
+      items: fromSeed(),
+      stateUnavailable: true,
+      stateError: error instanceof Error ? error.message : String(error),
+    };
+  }
 }
 
 export async function createChangeRequest(input: NewChangeRequestInput, now: Date = new Date()): Promise<void> {
