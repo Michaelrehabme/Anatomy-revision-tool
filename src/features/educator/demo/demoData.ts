@@ -1,5 +1,5 @@
 import { ALL_STRUCTURES } from '../../anatomy-revision/data/seed';
-import type { AnatomyStructure, Category } from '../../anatomy-revision/types/structure';
+import { emptyCategoryBreakdown, type AnatomyStructure } from '../../anatomy-revision/types/structure';
 import type { QuestionType } from '../../anatomy-revision/types/question';
 import type { Region } from '../../anatomy-revision/types/region';
 import type { RevisionSessionSummary, UserAttempt } from '../../anatomy-revision/types/attempt';
@@ -293,13 +293,6 @@ for (const group of BY_REGION_AND_CATEGORY.values()) {
 }
 
 const QUESTION_TYPES: QuestionType[] = ['mcq', 'mcq', 'mcq', 'flashcard', 'locate', 'fill-blank', 'identify-typed'];
-const EMPTY_CATEGORY_BREAKDOWN = (): Record<Category, { total: number; correct: number }> => ({
-  muscle: { total: 0, correct: 0 },
-  bone: { total: 0, correct: 0 },
-  landmark: { total: 0, correct: 0 },
-  joint: { total: 0, correct: 0 },
-});
-
 interface GeneratedActivity {
   attempts: UserAttempt[];
   summaries: RevisionSessionSummary[];
@@ -333,7 +326,7 @@ function buildSession(
 ): { attempts: UserAttempt[]; summary: RevisionSessionSummary } {
   const attempts: UserAttempt[] = [];
   const questionTypes: QuestionType[] = [];
-  const breakdownByCategory = EMPTY_CATEGORY_BREAKDOWN();
+  const breakdownByCategory = emptyCategoryBreakdown();
   const breakdownByRegion: RevisionSessionSummary['breakdownByRegion'] = {};
   const missed: string[] = [];
   let correctCount = 0;

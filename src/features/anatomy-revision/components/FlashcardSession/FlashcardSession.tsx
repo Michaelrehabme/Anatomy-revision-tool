@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import type { FlashcardQuestion } from '../../types/question';
 import type { AnatomyImageAsset } from '../../types/image';
 import { AnatomyImageFigure } from '../shared/AnatomyImageFigure';
+import { rotationFramesFor } from '../../lib/rotationFrames';
 import { Button } from '../shared/Button';
 
 interface FlashcardSessionProps {
@@ -30,6 +31,9 @@ export function FlashcardSession({ question, imagesById, onAnswer, onNext }: Fla
 
   const frontImage = question.front.imageId ? imagesById.get(question.front.imageId) : undefined;
   const backImage = question.back.imageId ? imagesById.get(question.back.imageId) : undefined;
+  // Every angle of each picture, so a flashcard can be turned as well as read.
+  const frontFrames = rotationFramesFor(frontImage, imagesById.values());
+  const backFrames = rotationFramesFor(backImage, imagesById.values());
 
   const handleReveal = () => {
     setRevealed(true);
@@ -52,7 +56,7 @@ export function FlashcardSession({ question, imagesById, onAnswer, onNext }: Fla
         {!revealed ? (
           <div className="flex h-full flex-col items-center justify-center gap-5 text-center">
             {frontImage ? (
-              <AnatomyImageFigure image={frontImage} alt="Identify this structure" />
+              <AnatomyImageFigure image={frontImage} frames={frontFrames} alt="Identify this structure" />
             ) : (
               <p style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 30 }}>{question.front.text}</p>
             )}
@@ -62,7 +66,7 @@ export function FlashcardSession({ question, imagesById, onAnswer, onNext }: Fla
           </div>
         ) : (
           <div className="space-y-4">
-            {backImage && <AnatomyImageFigure image={backImage} alt={question.structureId} />}
+            {backImage && <AnatomyImageFigure image={backImage} frames={backFrames} alt={question.structureId} />}
             {question.front.text && (
               <p className="text-lg" style={{ color: 'var(--ink3)' }}>
                 {question.front.text}

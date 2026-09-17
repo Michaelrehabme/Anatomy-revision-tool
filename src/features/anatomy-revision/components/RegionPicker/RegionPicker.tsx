@@ -24,6 +24,7 @@ const COUNTED_CATEGORIES: { category: Category; singular: string; plural: string
   { category: 'bone', singular: 'bone', plural: 'bones' },
   { category: 'landmark', singular: 'landmark', plural: 'landmarks' },
   { category: 'joint', singular: 'joint', plural: 'joints' },
+  { category: 'ligament', singular: 'ligament', plural: 'ligaments' },
 ];
 
 /**

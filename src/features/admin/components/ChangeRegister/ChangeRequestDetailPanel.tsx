@@ -10,12 +10,14 @@ import {
 } from '../../types/changeRequest';
 import { formatDate } from '../../lib/formatDate';
 import { StatusBadge } from './StatusBadge';
+import { ChangeRequestChecklist } from './ChangeRequestChecklist';
 import { Button } from '../../../anatomy-revision/components/shared/Button';
 
 interface ChangeRequestDetailPanelProps {
   item: ChangeRequest;
   onClose: () => void;
   onSetStatus: (ref: string, status: ChangeStatus) => void;
+  onToggleChecklistItem: (ref: string, itemId: string) => void;
 }
 
 const labelStyle = {
@@ -25,7 +27,12 @@ const labelStyle = {
   color: 'var(--ink3)',
 };
 
-export function ChangeRequestDetailPanel({ item, onClose, onSetStatus }: ChangeRequestDetailPanelProps) {
+export function ChangeRequestDetailPanel({
+  item,
+  onClose,
+  onSetStatus,
+  onToggleChecklistItem,
+}: ChangeRequestDetailPanelProps) {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
@@ -131,6 +138,14 @@ export function ChangeRequestDetailPanel({ item, onClose, onSetStatus }: ChangeR
             {item.description}
           </p>
         </div>
+
+        {item.checklist && item.checklist.length > 0 && (
+          <ChangeRequestChecklist
+            items={item.checklist}
+            done={item.checklistDone}
+            onToggle={(itemId) => onToggleChecklistItem(item.ref, itemId)}
+          />
+        )}
 
         <div className="mt-7 flex-1">
           <div className="flex items-center justify-between">

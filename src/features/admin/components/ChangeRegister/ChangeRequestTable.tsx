@@ -8,6 +8,7 @@ import {
   type ChangeStatus,
 } from '../../types/changeRequest';
 import { findIncompleteDependencies } from '../../lib/statusTransition';
+import { checklistProgress } from '../../lib/checklist';
 import { StatusBadge } from './StatusBadge';
 
 interface ChangeRequestTableProps {
@@ -52,6 +53,10 @@ export function ChangeRequestTable({ items, statusByRef, onOpen, onSetStatus }: 
         {items.map((item) => {
           const incompleteDeps =
             item.status !== 'inProgress' ? [] : findIncompleteDependencies(item.dependsOn, statusByRef);
+          const progress =
+            item.checklist && item.checklist.length > 0
+              ? checklistProgress(item.checklist, item.checklistDone)
+              : null;
           return (
             <tr
               key={item.ref}
@@ -67,6 +72,15 @@ export function ChangeRequestTable({ items, statusByRef, onOpen, onSetStatus }: 
                 {incompleteDeps.length > 0 && (
                   <span className="ml-2" title={`Depends on unfinished: ${incompleteDeps.join(', ')}`} style={{ color: 'var(--acc2d)' }}>
                     ⚠
+                  </span>
+                )}
+                {progress && (
+                  <span
+                    className="ml-2"
+                    title={progress.nextUp ? `Next up: ${progress.nextUp.label}` : 'Every step ticked'}
+                    style={{ font: '500 11.5px/1 var(--font-mono)', color: 'var(--ink3)' }}
+                  >
+                    {progress.completed}/{progress.total}
                   </span>
                 )}
               </td>

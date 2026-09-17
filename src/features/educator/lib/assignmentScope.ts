@@ -35,6 +35,7 @@ export const CATEGORY_LABELS: Record<Category, string> = {
   bone: 'Bones',
   landmark: 'Landmarks',
   joint: 'Joints',
+  ligament: 'Ligaments',
 };
 
 /**

@@ -24,6 +24,21 @@ import { LegalLayout, legalHeading, legalProse } from './LegalLayout';
 const CONTROLLER = 'Michael Neary, trading as Neary’s Sport Rehab';
 const ADDRESS = '24 Hithercroft Road, HP13 5LS, United Kingdom';
 const EMAIL = 'michael@rehabme.uk';
+/**
+ * The ICO registration reference, issued 14 September 2026.
+ *
+ * This paragraph used to link to https://ico.org.uk/ESDWebPages/Entry/<ref> so
+ * a reader — realistically a university's DPO — could verify the number rather
+ * than take it on trust. The link is deliberately NOT here yet: at the time of
+ * writing the ICO still reports the entry as "will be published soon", and a
+ * verification link that lands on a not-yet-published page raises the exact
+ * doubt it exists to settle.
+ *
+ * Restore the link once the entry resolves in a browser. Keep the reference in
+ * this constant when you do — the paragraph would then render it twice, and a
+ * policy stating one number while linking to another is worse than stating none.
+ */
+const ICO_REGISTRATION = 'ZC247309';
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -38,7 +53,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 
 export function PrivacyPage() {
   return (
-    <LegalLayout title="Privacy policy" updated="9 September 2026">
+    <LegalLayout title="Privacy policy" updated="14 September 2026">
       <p className="mt-4" style={legalProse}>
         LocusMSK is an anatomy revision app for musculoskeletal students. This policy explains what it collects, why,
         how long it keeps it, and what you can do about it.
@@ -53,9 +68,9 @@ export function PrivacyPage() {
           </a>
           .
         </p>
-        <p style={{ color: 'var(--acc2d)' }}>
-          {/* Replace once registered — see the ICO tier 1 fee. */}
-          ICO registration: pending. This will be updated with the registration number once issued.
+        <p>
+          Registered with the Information Commissioner&rsquo;s Office, registration number{' '}
+          <strong style={{ color: 'var(--ink)' }}>{ICO_REGISTRATION}</strong>.
         </p>
       </Section>
 

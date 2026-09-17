@@ -4,6 +4,31 @@ import { areasForSubRegion } from './region';
 export type Category = 'muscle' | 'bone' | 'landmark' | 'joint' | 'ligament';
 
 /**
+ * Every category, in the order they are offered to a user. Exists so that
+ * widening `Category` is a one-line change with a compiler error at each site
+ * that has to follow, rather than a literal to remember in a dozen files —
+ * adding 'ligament' without this list is what left the educator overview
+ * reading `.total` off an undefined bucket.
+ */
+export const CATEGORIES: Category[] = ['muscle', 'bone', 'landmark', 'joint', 'ligament'];
+
+/**
+ * A zeroed per-category tally, the shape of
+ * `RevisionSessionSummary['breakdownByCategory']`. Built from CATEGORIES
+ * rather than written out, so a new category arrives with a bucket already
+ * present everywhere a session is summarized.
+ *
+ * The shape is inlined rather than imported from types/attempt.ts, which
+ * imports this module — a summary is one consumer of the tally, not its owner.
+ */
+export function emptyCategoryBreakdown(): Record<Category, { total: number; correct: number }> {
+  return Object.fromEntries(CATEGORIES.map((c) => [c, { total: 0, correct: 0 }])) as Record<
+    Category,
+    { total: number; correct: number }
+  >;
+}
+
+/**
  * Joint classification. The first six are the standard synovial classifications
  * (distinguished by shape/range of motion) and were the whole union in CR-014's
  * shoulder-arm pilot, where every joint happened to be synovial. CR-017's wider

@@ -47,23 +47,39 @@ export function swapFibularPeroneal(value: string): string | null {
 }
 
 /**
- * Every form of a structure's name that should grade as correct.
+ * Suffixes a student should never have to type, stripped one at a time until
+ * the name stops shrinking.
  *
- * Beyond the fibular/peroneal swap this drops a trailing "muscle", because
- * the aliases are authored in the Z-Anatomy style ("Fibularis longus
- * muscle") and typed grading tolerates only a single character of
- * difference — so "fibularis longus", which is what a student actually
- * writes, failed against an alias that exists precisely to accept it.
+ * "muscle" is here because the aliases are authored in the Z-Anatomy style
+ * ("Fibularis longus muscle") and typed grading tolerates only a single
+ * character of difference — so "fibularis longus", which is what a student
+ * actually writes, failed against an alias that exists precisely to accept it.
+ *
+ * THE PARENTHESES ARE BOOKKEEPING, NOT ANATOMY. "(grouped)" says the entry
+ * covers all five distal phalanges rather than one, and "(Hand)"/"(Foot)" tell
+ * the two abductor digiti minimi apart in a list of answer choices. Neither is
+ * a thing anyone writes, and neither is in doubt while answering: the picture
+ * is a hand or it is a foot. Both members of a Hand/Foot pair end up accepting
+ * the bare name, which costs nothing — a question grades only against the
+ * structure it asked about.
+ */
+const OPTIONAL_SUFFIX = /(?:\s*\((?:grouped|hand|foot)\)|\s+muscles?)$/i;
+
+/**
+ * Every form of a structure's name that should grade as correct: the fibular/
+ * peroneal swap, plus each name with its optional suffixes peeled off.
  */
 export function structureNameVariants(name: string, aliases: readonly string[]): string[] {
   const out = new Set<string>();
 
   const add = (value: string) => {
-    const trimmed = value.trim();
-    if (!trimmed) return;
-    out.add(trimmed);
-    const bare = trimmed.replace(/\s+muscles?$/i, '').trim();
-    if (bare) out.add(bare);
+    let form = value.trim();
+    while (form) {
+      out.add(form);
+      const shorter = form.replace(OPTIONAL_SUFFIX, '').trim();
+      if (shorter === form) return;
+      form = shorter;
+    }
   };
 
   for (const value of [name, ...aliases]) {

@@ -3,8 +3,10 @@ import type { TypedIdentifyQuestion } from '../../types/question';
 import type { AnatomyImageAsset } from '../../types/image';
 import type { Confidence } from '../../types/attempt';
 import { questionLocationLabel } from '../../types/region';
-import { AttributionBadge } from '../shared/AttributionBadge';
 import { HotspotOverlay } from '../LocateStructureSession/HotspotOverlay';
+import { ImageViewer } from '../shared/ImageViewer';
+import { rotationFramesFor } from '../../lib/rotationFrames';
+import { promptHighlightHotspots } from '../../lib/promptHighlight';
 import { ConfidenceButtons } from '../shared/ConfidenceButtons';
 import { BottomSheet } from '../shared/BottomSheet';
 import { ExamAnswerFooter } from '../shared/ExamAnswerFooter';
@@ -42,7 +44,11 @@ export function MobileIdentifyTypedSession({ question, imagesById, onAnswer, onN
   }, [question.id, slots]);
 
   const promptImage = imagesById.get(question.promptImageId);
-  const highlightHotspots = promptImage?.mode === 'atlas-slide' ? (promptImage.hotspots ?? []) : [];
+  const highlightHotspots = promptHighlightHotspots(promptImage, question.structureId);
+  // Every angle of the same picture, so the student can turn it. A plate
+  // that is not part of a rotation set gives back nothing and the viewer
+  // simply shows no turn controls.
+  const promptFrames = rotationFramesFor(promptImage, imagesById.values());
   const canonical = question.acceptedAnswers[0];
   const hints = useMemo(() => [`${canonical.length} letters`, `starts with ${canonical[0]?.toUpperCase()}`], [canonical]);
 
@@ -92,21 +98,15 @@ export function MobileIdentifyTypedSession({ question, imagesById, onAnswer, onN
         </h2>
 
         {promptImage && (
-          <figure className="mt-4">
-            <div
-              className="relative overflow-hidden rounded-[3px]"
-              style={{
-                background: 'var(--sf)',
-                aspectRatio: promptImage.width && promptImage.height ? `${promptImage.width} / ${promptImage.height}` : undefined,
-              }}
-            >
-              <img src={promptImage.filePath} alt={question.prompt} className="h-full w-full object-cover" />
-              {highlightHotspots.length > 0 && (
-                <HotspotOverlay hotspots={highlightHotspots} highlightStructureId={question.structureId} />
-              )}
-            </div>
-            <AttributionBadge image={promptImage} />
-          </figure>
+          <ImageViewer
+              className="mt-4"
+              image={promptImage}
+              frames={promptFrames}
+              resetKey={question.id}
+              overlay={() => (highlightHotspots.length > 0
+                ? <HotspotOverlay hotspots={highlightHotspots} highlightStructureId={question.structureId} />
+                : null)}
+            />
         )}
 
         <input

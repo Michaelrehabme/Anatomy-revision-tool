@@ -54,11 +54,14 @@ describe('HotspotImage with a rotation set', () => {
     render(<HotspotImage image={frames[1]} frames={frames} targetStructureId="target" onAnswer={vi.fn()} />);
     const img = screen.getByRole('img') as HTMLImageElement;
     expect(img.src).toContain('/x/270.webp');
-    expect(screen.getByText(/Lateral · 2\/2/)).toBeInTheDocument();
+    // The degrees are part of the label: at 30 degrees a turntable has twelve
+    // frames and two of them share every view name, so the angle is what tells
+    // a student where they are.
+    expect(screen.getByText(/Lateral · 270° · 2\/2/)).toBeInTheDocument();
 
     fireEvent.click(screen.getByLabelText('Rotate right'));
     expect((screen.getByRole('img') as HTMLImageElement).src).toContain('/x/000.webp');
-    expect(screen.getByText(/Anterior · 1\/2/)).toBeInTheDocument();
+    expect(screen.getByText(/Anterior · 0° · 1\/2/)).toBeInTheDocument();
   });
 
   it('grades the click against the frame that is showing, and says which one', () => {

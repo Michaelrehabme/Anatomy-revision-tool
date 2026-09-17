@@ -34,6 +34,42 @@ export function polygonsArea(polygons: number[][][]): number {
   return polygons.reduce((total, ring) => total + ringArea(ring), 0);
 }
 
+/** Closed-ring perimeter: every edge, including the one back to the first vertex. */
+export function ringPerimeter(ring: number[][]): number {
+  let total = 0;
+  for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+    total += Math.hypot(ring[i][0] - ring[j][0], ring[i][1] - ring[j][1]);
+  }
+  return total;
+}
+
+/** Total outline length across every part of a multi-part structure. */
+export function polygonsPerimeter(polygons: number[][][]): number {
+  return polygons.reduce((total, ring) => total + ringPerimeter(ring), 0);
+}
+
+/**
+ * HOW WIDE THE SHAPE IS ACROSS, in the same normalized units as the polygon.
+ *
+ * A muscle's visible silhouette on a region plate is a ribbon, and for a ribbon
+ * of width w and length L the area is wL while the perimeter is close to 2L —
+ * the two long sides — so 2 * area / perimeter recovers w. It is exact in the
+ * limit of a long ribbon, which is the shape that matters here, and reports a
+ * disc's radius rather than its diameter: half of a compact shape's real width,
+ * the cautious direction for anything this is used to gate.
+ *
+ * This exists because AREA IS THE WRONG QUESTION FOR A TAP. Flexor carpi
+ * radialis on the lateral forearm plate has an eighth of the area it has on the
+ * anterior one, but the real difference is that it is a two-pixel slice of
+ * muscle showing between brachioradialis and the wrist. The depth subtraction is
+ * working correctly; what it leaves is not something anyone can point at.
+ */
+export function polygonsWidth(polygons: number[][][], area?: number): number {
+  const perimeter = polygonsPerimeter(polygons);
+  if (perimeter === 0) return 0;
+  return (2 * (area ?? polygonsArea(polygons))) / perimeter;
+}
+
 /**
  * Area-weighted centroid across all parts — NOT the mean of the vertices.
  * A vertex mean drifts towards whichever part of the outline was traced at

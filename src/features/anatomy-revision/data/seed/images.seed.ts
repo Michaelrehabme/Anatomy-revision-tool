@@ -523,10 +523,17 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
   // deliberately: a student looking at a hand should be asked for the scaphoid
   // and for opponens pollicis from the same picture.
   ...SUBREGION_PLATES.map((plate): AnatomyImageAsset => {
-    const id = `sub-${plate.slug}-${plate.view}`;
+    // A ROTATION SET IS NAMED BY ITS ANGLE, not by its view: at 30 degrees two
+    // frames share a view name, and "-aNNN-" is the marker the app groups a
+    // turntable by (lib/questionGenerators/locate.ts). A plate with no angle is
+    // a single look — the plantar view, which no amount of turning about the
+    // vertical axis will ever reach — and keeps the name it always had.
+    const turn = plate.angle === undefined ? null : String(plate.angle).padStart(3, '0');
+    const id = turn ? `sub-${plate.slug}-a${turn}-plate` : `sub-${plate.slug}-${plate.view}`;
+    const file = turn ? `${plate.slug}-a${turn}` : `${plate.slug}-${plate.view}`;
     return {
       id,
-      filePath: `/anatomy/subregions/${plate.slug}-${plate.view}.webp`,
+      filePath: `/anatomy/subregions/${file}.webp`,
       slideTitle: `${plate.title} — Close, ${plate.view[0].toUpperCase()}${plate.view.slice(1)} View`,
       mode: 'atlas-slide',
       panelStructureNames: [],

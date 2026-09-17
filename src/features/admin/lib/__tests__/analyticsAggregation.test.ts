@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+import { emptyCategoryBreakdown } from '../../../anatomy-revision/types/structure';
 import {
   aggregateStructureWeakness,
   aggregateDistractors,
@@ -326,7 +327,7 @@ describe('computeSessionMetrics', () => {
         questionTypes: ['mcq'],
         totalQuestions: 10,
         correctCount: 8,
-        breakdownByCategory: { muscle: { total: 10, correct: 8 }, bone: { total: 0, correct: 0 }, landmark: { total: 0, correct: 0 }, joint: { total: 0, correct: 0 } },
+        breakdownByCategory: { ...emptyCategoryBreakdown(), muscle: { total: 10, correct: 8 } },
         breakdownByRegion: {},
         missedStructureIds: [],
       },
@@ -338,7 +339,7 @@ describe('computeSessionMetrics', () => {
         questionTypes: ['mcq'],
         totalQuestions: 10,
         correctCount: 9,
-        breakdownByCategory: { muscle: { total: 10, correct: 9 }, bone: { total: 0, correct: 0 }, landmark: { total: 0, correct: 0 }, joint: { total: 0, correct: 0 } },
+        breakdownByCategory: { ...emptyCategoryBreakdown(), muscle: { total: 10, correct: 9 } },
         breakdownByRegion: {},
         missedStructureIds: [],
       },

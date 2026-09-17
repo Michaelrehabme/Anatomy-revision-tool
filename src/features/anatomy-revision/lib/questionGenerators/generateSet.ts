@@ -120,6 +120,42 @@ function withLearnCards(
   return out;
 }
 
+/**
+ * Deals a capped session evenly across the formats that were asked for.
+ *
+ * FORMATS DO NOT GENERATE AT THE SAME RATE, and shuffling the pool as one list
+ * silently makes the session a vote on that. A muscle yields five MCQs and one
+ * OINA card per fact, so "MCQ and OINA cards, twenty questions" came out twenty
+ * MCQs and nothing else — which is the whole reason a student would pick two
+ * formats. Locate and flashcards lose the same argument to MCQ for the same
+ * reason.
+ *
+ * Interleaving before the cap rather than allocating quotas keeps the ordering
+ * each type already earned — mastery weighting, the due queue — and lets a
+ * short type run out without shrinking the session: the round robin simply
+ * skips it, and whatever is left over goes to the formats that still have
+ * material. The slice is shuffled afterwards so the session does not literally
+ * alternate.
+ */
+function interleaveByType(
+  ordered: RevisionQuestion[],
+  types: readonly QuestionType[],
+): RevisionQuestion[] {
+  const queues = types
+    .map((type) => ordered.filter((q) => q.type === type))
+    .filter((queue) => queue.length > 0);
+  // A question whose type was not requested — a clinical MCQ arrives as 'mcq',
+  // but anything else would be dropped silently, so they go on the end.
+  const dealt = new Set(queues.flat());
+  const out: RevisionQuestion[] = [];
+  for (let i = 0; out.length < dealt.size; i++) {
+    const queue = queues[i % queues.length];
+    const next = queue.shift();
+    if (next) out.push(next);
+  }
+  return [...out, ...ordered.filter((q) => !dealt.has(q))];
+}
+
 /** Share of a session reserved for `priorityStructureIds` when enough of them exist. */
 export const REVIEW_SHARE = 0.6;
 
@@ -314,11 +350,14 @@ export function generateRevisionSet(
     : shuffle(generated, rng);
 
   const count = config.mode === 'assessment' ? (config.count ?? generated.length) : config.count;
+  // Only a CAPPED session needs balancing — an uncapped one asks everything it
+  // built, in whatever order the weighting chose.
+  const balanced = count && config.types.length > 1 ? interleaveByType(ordered, config.types) : ordered;
   const selected = !count
-    ? ordered
+    ? balanced
     : config.priorityStructureIds?.length
-      ? blendPriorityWithRest(ordered, config.priorityStructureIds, count, config.reviewShare, rng)
-      : ordered.slice(0, count);
+      ? blendPriorityWithRest(balanced, config.priorityStructureIds, count, config.reviewShare, rng)
+      : shuffle(balanced.slice(0, count), rng);
 
   // An exam tests rather than teaches, so it never gets a learn card (CR-018).
   if (config.mode === 'assessment') return stampRequestedArea(selected, indexes.byId, config.areas);

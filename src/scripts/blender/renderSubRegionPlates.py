@@ -34,6 +34,11 @@ ap.add_argument("--views", default="0,6,12")
 ap.add_argument("--res", type=int, default=1400)
 ap.add_argument("--samples", type=int, default=48)
 ap.add_argument("--margin", type=float, default=1.35, help="camera slack around the subjects")
+ap.add_argument("--limb-margin", type=float, default=1.12,
+                help="slack for a limb plate, which is framed to its subject rather than square")
+ap.add_argument("--turntable", type=int, default=0,
+                help="render this many angles evenly around the vertical axis instead of --views, "
+                     "framed so the subject fits at every one of them")
 ap.add_argument("--elevations", default="0",
                 help="camera heights in degrees; negative looks up from below. Needs = syntax "
                      "for negatives, since argparse reads a leading minus as a flag.")
@@ -133,13 +138,66 @@ def side_of(names):
     return None
 
 
-def frame_camera(lo, hi, angle_deg, margin, elevation_deg=0.0):
+# The narrowest frame allowed, as width over height.
+#
+# THIS CLAMP WIDENS A TALL FRAME, and that is a cost as well as a convenience:
+# the forearm turntable was clamped from its own 0.36 out to 0.5, 39% of extra
+# width that went straight onto the rib cage and the pelvis behind the arm,
+# and shrank every muscle on the plate by the same fraction. Extensor pollicis
+# brevis fell under the tappability floor by 3%.
+#
+# It was set at a half when a plate was a fixed picture and a 1:5 frame meant
+# the student scrolled to see the hand. The viewer pans and zooms now, so a
+# taller frame is affordable in a way it was not, and 0.4 buys back the width
+# the clamp was spending on the trunk.
+MIN_FRAME_ASPECT = 0.4
+# How far from square a subject has to be before the frame follows it. Inside
+# this band the frame stays square, so a plate whose subject is a hand or a foot
+# renders byte-identically to the ones already published and its hotspots do not
+# move. Outside it — a forearm, a leg, a spine — the empty half is real and worth
+# not rendering.
+SQUARE_BAND = (0.8, 1.25)
+
+
+def turntable_frame(mesh, centre):
+    """The one frame that fits a subject at EVERY angle around the vertical axis.
+
+    A turntable cannot refit its camera per frame. Fitting each angle to what
+    that angle happens to show makes the picture breathe — the forearm swells as
+    it turns broadside and shrinks as it goes end-on — and worse, it changes the
+    resolution under a hotspot that is stored in normalised coordinates, so the
+    same tap means different things on different frames.
+
+    Both extents are therefore measured rotation-invariantly. Height is the
+    subject's own, because turning about the vertical axis does not change it.
+    Width is the diameter of the circle the footprint sweeps out, which is the
+    widest the subject can ever present.
+    """
+    zs = [v.co.z for v in mesh.vertices]
+    radius = 0.0
+    for v in mesh.vertices:
+        dx = v.co.x - centre[0]
+        dy = v.co.y - centre[1]
+        r = math.sqrt(dx * dx + dy * dy)
+        if r > radius:
+            radius = r
+    return 2.0 * radius, (max(zs) - min(zs)) or (2.0 * radius)
+
+
+def frame_camera(lo, hi, angle_deg, margin, elevation_deg=0.0, fit=False, span=None):
     """Spinning alone never shows the sole of a foot.
 
     The plantar muscles — quadratus plantae, flexor hallucis brevis, the plantar
     interossei — are under the foot bones from every angle on the vertical axis,
     which is why they survived a close plate and still had no target. Elevation
     is the axis that reaches them, the same one renderMusclePanels.py needed.
+
+    `fit` SHAPES THE FRAME TO THE SUBJECT instead of rendering a square. A square
+    frame on a limb spends most of itself on whatever happens to stand behind it:
+    the first forearm plate put the arm down one side and the torso down the
+    other, and every muscle on it measured under three pixels for no reason but
+    the empty half. Fitting the frame is the cheapest magnification there is —
+    the camera does not move, the wasted ground is simply not rendered.
     """
     centre = mathutils.Vector(((lo[0] + hi[0]) / 2, (lo[1] + hi[1]) / 2, (lo[2] + hi[2]) / 2))
     size = max(hi[0] - lo[0], hi[1] - lo[1], hi[2] - lo[2])
@@ -150,8 +208,55 @@ def frame_camera(lo, hi, angle_deg, margin, elevation_deg=0.0):
                                -dist * math.cos(theta) * math.cos(phi),
                                dist * math.sin(phi)))
     cam.location = centre + offset
-    cam.rotation_euler = (centre - cam.location).to_track_quat("-Z", "Y").to_euler()
-    cam_data.ortho_scale = size * margin
+    track = (centre - cam.location).to_track_quat("-Z", "Y")
+    cam.rotation_euler = track.to_euler()
+
+    if span:
+        # A turntable: the frame is handed in, already measured to fit every
+        # angle, so nothing here depends on where the camera happens to be.
+        w, h = span
+        aspect = 1.0 if SQUARE_BAND[0] <= w / h <= SQUARE_BAND[1] else w / h
+        aspect = min(max(aspect, MIN_FRAME_ASPECT), 1.0 / MIN_FRAME_ASPECT)
+        if aspect >= 1.0:
+            rx, ry = a.res, max(1, round(a.res / aspect))
+        else:
+            rx, ry = max(1, round(a.res * aspect)), a.res
+        scene.render.resolution_x, scene.render.resolution_y = rx, ry
+        cam_data.sensor_fit = "HORIZONTAL"
+        cam_data.ortho_scale = (w if w / h >= aspect else h * aspect) * margin
+    elif fit:
+        # The bounding box as the CAMERA sees it, which is not the world box: the
+        # arm hangs at an angle and the view turns around it. Measured from the
+        # track quaternion rather than matrix_world, which Blender has not
+        # recomputed yet at this point in the frame.
+        right = track @ mathutils.Vector((1.0, 0.0, 0.0))
+        up = track @ mathutils.Vector((0.0, 1.0, 0.0))
+        xs, ys = [], []
+        for cx in (lo[0], hi[0]):
+            for cy in (lo[1], hi[1]):
+                for cz in (lo[2], hi[2]):
+                    v = mathutils.Vector((cx, cy, cz)) - centre
+                    xs.append(v.dot(right))
+                    ys.append(v.dot(up))
+        w = (max(xs) - min(xs)) or size
+        h = (max(ys) - min(ys)) or size
+        aspect = 1.0 if SQUARE_BAND[0] <= w / h <= SQUARE_BAND[1] else w / h
+        aspect = min(max(aspect, MIN_FRAME_ASPECT), 1.0 / MIN_FRAME_ASPECT)
+        if aspect >= 1.0:
+            rx, ry = a.res, max(1, round(a.res / aspect))
+        else:
+            rx, ry = max(1, round(a.res * aspect)), a.res
+        scene.render.resolution_x, scene.render.resolution_y = rx, ry
+        # HORIZONTAL so ortho_scale means the width whichever way the frame leans.
+        # Width is the subject's own when it is wider than the clamp allows, and
+        # the clamp's otherwise — either way the subject fits.
+        cam_data.sensor_fit = "HORIZONTAL"
+        cam_data.ortho_scale = (w if w / h >= aspect else h * aspect) * margin
+    else:
+        scene.render.resolution_x = scene.render.resolution_y = a.res
+        cam_data.sensor_fit = "AUTO"
+        cam_data.ortho_scale = size * margin
+
     # Keep the key light off the camera axis at any elevation, or a view from
     # directly below renders flat.
     sun.rotation_euler = mathutils.Euler((0.9 - phi * 0.5, 0.3, 0.6 + theta), "XYZ")
@@ -197,6 +302,43 @@ for plate in spec["plates"]:
     all_objects = [n for s in plate["subjects"] for n in s["objects"]]
     suffix = side_of(all_objects)
 
+    # AN AXIAL PLATE PICKS NO SIDE AT ALL. Dropping one is right for a hand,
+    # where framing both frames the gap between them — the whole body. It is
+    # wrong for the muscles that live on the midline, which are paired like any
+    # other and so look like a limb to side_of(). The interspinales are a blade
+    # eight millimetres wide either side of the interspinous ligament: drawn on
+    # one side only they read as half a muscle that does not reach across the
+    # gap, which is what "the interspinales are not connecting" is.
+    if plate.get("backdrop") == "full":
+        suffix = None
+
+    # A THREE-SEGMENT KEY IS A PLATE SPLIT OFF FOR SCALE, and it gets the tighter
+    # margin. Two things drove the split. Forwards: a subregion whose subjects are
+    # long — a forearm, a leg — frames wide enough to catch the body behind it,
+    # and the first forearm plate came out as an arm down one side and a torso
+    # down the other. Backwards: a subregion whose subjects are tiny — the
+    # forefoot inside a foot, one disc inside a spine — frames so far back that
+    # they are specks.
+    tight = key.count("__") == 2
+
+    # A LIMB PLATE ALSO DRAWS THAT LIMB AND NOTHING ELSE: the framed side only,
+    # and no axial skeleton. The torso is not context for a forearm; the elbow
+    # and the hand are, and they are on the same side. An axial plate has no side
+    # to pick and keeps the whole skeleton around it, which is the right backdrop
+    # there — a lumbar vertebra is placed by the vertebrae above and below it.
+    #
+    # HAVING A SIDE IS NOT THE SAME AS BEING A LIMB, which is why a plate may say
+    # so outright. Longus colli and longus capitis are paired, so they carry .l
+    # and .r and read as a limb here — but they lie on the fronts of the cervical
+    # vertebral bodies, and a backdrop with the axial skeleton dropped out of it
+    # would float them against nothing. The vertebrae are the whole point of the
+    # picture.
+    limb_only = tight and suffix is not None
+    if plate.get("backdrop") == "full":
+        limb_only = False
+    elif plate.get("backdrop") == "limb":
+        limb_only = suffix is not None
+
     def restrict(names):
         if suffix is None:
             return names
@@ -213,25 +355,71 @@ for plate in spec["plates"]:
     if not subjects:
         continue
 
-    frame_mesh = bake([n for s in plate["subjects"] for n in restrict(s["objects"])], f"frame_{key}")
+    # FRAMING ON A SUBSET, where a subject's own geometry is the wrong ruler.
+    # "Intervertebral disc" is one structure made of forty-seven meshes running
+    # from C2 to the sacrum, so a camera framed on it frames the whole spine and
+    # every disc in the picture is two pixels across. The plate names the two
+    # vertebrae to frame on instead; the disc between them then fills the shot,
+    # and the discs above and below are the same structure, so the mask tracing
+    # over the frame edge is correct rather than a leak.
+    frame_ids = set(plate.get("frameOn") or [])
+    frame_names = [n for s in plate["subjects"]
+                   if not frame_ids or s["id"] in frame_ids
+                   for n in restrict(s["objects"])]
+    if frame_ids and not frame_names:
+        print(f"[warn] {key}: frameOn matched no subject, framing on all of them", flush=True)
+        frame_names = [n for s in plate["subjects"] for n in restrict(s["objects"])]
+    frame_mesh = bake(frame_names, f"frame_{key}")
     lo, hi = mesh_bbox(frame_mesh)
 
     # The skeleton minus every bone subject here, baked once: that is the part
     # of "everything else" that does not change from subject to subject.
     own = {n for sid, kind, _ in subjects for s in plate["subjects"] if s["id"] == sid and kind == "bone" for n in restrict(s["objects"])}
-    backdrop = bake([n for n in skeleton_names if n not in own], f"backdrop_{key}")
+    # A LIMB PLATE NAMES ITS OWN BONES. Dropping the other side and the axial
+    # skeleton is not enough, because ribs and hip bones are PAIRED: they end in
+    # .l and .r like a radius does, so "keep this side" keeps the near half of
+    # the trunk. The fitted frames never reached it; a turntable frame, which has
+    # to be wide enough for the subject at its broadest angle, does.
+    bones = plate.get("bones") or skeleton_names
+    if limb_only:
+        bones = [n for n in bones if n.endswith(suffix) or not (n.endswith(".l") or n.endswith(".r"))]
+        if suffix:
+            bones = [n for n in bones if not n.endswith(".r" if suffix == ".l" else ".l")]
+    backdrop = bake([n for n in bones if n not in own], f"backdrop_{key}")
 
     bone_count = sum(1 for _, k, _ in subjects if k == "bone")
     print(f"[plate] {key}: {len(subjects)} subjects ({bone_count} bone), "
-          f"frame {max(hi[0]-lo[0], hi[1]-lo[1], hi[2]-lo[2]):.3f}", flush=True)
+          f"frame {max(hi[0]-lo[0], hi[1]-lo[1], hi[2]-lo[2]):.3f}"
+          f"{f' on {len(frame_ids)} of them' if frame_ids else ''}"
+          f"{', limb-only' if limb_only else ''}", flush=True)
+
+    # THE TURNTABLE IS THE LEVEL SET, and the elevations are the extra looks a
+    # student cannot get by walking round: nothing on the horizon shows a sole.
+    # So the angles at elevation 0 are a rotation set the app can turn through,
+    # and any other elevation stays the single named view it already was.
+    centre = ((lo[0] + hi[0]) / 2, (lo[1] + hi[1]) / 2, (lo[2] + hi[2]) / 2)
+    span = turntable_frame(frame_mesh, centre) if a.turntable else None
+    turn_angles = [round(i * 360.0 / a.turntable) for i in range(a.turntable)] if a.turntable else None
 
     for elev in elevations:
-      for frame in views:
-        frame_camera(lo, hi, frame * 15, a.margin, elev)
+      spin = turn_angles if (a.turntable and elev == 0) else [v * 15 for v in views]
+      for angle in spin:
+        # Fitting is measured, so it applies to any plate with a long subject —
+        # the spine is as long and thin as a forearm. Framing on one side is not:
+        # it is a property of the key, because the spine plate IS the axial
+        # skeleton and dropping it would leave nothing to draw.
+        use_span = span if (a.turntable and elev == 0) else None
+        frame_camera(lo, hi, angle, a.limb_margin if tight else a.margin, elev,
+                     fit=True, span=use_span)
 
-        # Elevation 0 keeps the plain view-NN name the other families use; any
-        # other height gets its own leaf so both can ship side by side.
-        leaf = f"view-{frame:02d}" if elev == 0 else f"view-{frame:02d}-e{elev:+03.0f}"
+        # Elevation 0 is the rotation set and is named by its angle, the way the
+        # ligament plates already are. Any other elevation keeps the plain
+        # view-NN name, because it is one picture rather than a set.
+        if a.turntable and elev == 0:
+            leaf = f"a{angle:03d}"
+        else:
+            frame = int(round(angle / 15))
+            leaf = f"view-{frame:02d}" if elev == 0 else f"view-{frame:02d}-e{elev:+03.0f}"
 
         # The plate: the skeleton as it is, with the subject muscles laid on it.
         clear()

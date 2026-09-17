@@ -78,6 +78,9 @@ export function MobileRevisionSetup({ content, repository, userId, areas, onStar
   const [count, setCount] = useState(15);
   const [customLength, setCustomLength] = useState('');
   const [customActive, setCustomActive] = useState(false);
+  // See RevisionSetup: OINA has a length again, and the whole sweep is one
+  // more option on the picker rather than a replacement for it.
+  const [allCards, setAllCards] = useState(false);
   const [useSrs, setUseSrs] = useState(true);
   const [mode, setMode] = useState<'practice' | 'adaptive' | 'assessment'>('practice');
   const [timerMinutes, setTimerMinutes] = useState(0);
@@ -137,7 +140,8 @@ export function MobileRevisionSetup({ content, repository, userId, areas, onStar
   );
   // The Begin label used to say "15 questions" under an OINA panel promising
   // hundreds; this is the number the session will actually contain.
-  const effectiveCount = oinaSelected ? available : Math.min(count, available);
+  const sessionCount = allCards && oinaSelected ? undefined : count;
+  const effectiveCount = sessionCount === undefined ? available : Math.min(count, available);
   const unbuildable = unbuildableSessionReason({ types, poolSize, available });
   const canStart = types.length > 0 && poolSize > 0 && available > 0 && (!oinaSelected || oinaFacts.length > 0);
 
@@ -174,7 +178,7 @@ export function MobileRevisionSetup({ content, repository, userId, areas, onStar
       mode,
       // Undefined caps nothing: practice mode then emits every eligible question,
       // which is what an OINA session is for (CR-018).
-      count: oinaSelected ? undefined : count,
+      count: sessionCount,
       // Prioritised, not restricted — see the toggle's own copy. A hard due-only
       // filter refills its own queue, since answering a due structure reschedules it.
       priorityStructureIds: dueStructureIds,
@@ -312,57 +316,69 @@ export function MobileRevisionSetup({ content, repository, userId, areas, onStar
         >
           Length
         </div>
-        {oinaSelected ? (
-          <div className="mt-3.5 rounded-[3px] px-4 py-3.5" style={{ border: '1.2px solid var(--line)', background: 'var(--sf)' }}>
-            <div style={{ fontFamily: 'var(--font-display)', fontSize: 17, color: 'var(--ink)' }}>Every card in scope</div>
-            <p className="mt-1 text-[13px] leading-relaxed" style={{ color: 'var(--ink3)' }}>
-              {oinaQuestionCount} questions — {oinaFacts.length} fact{oinaFacts.length === 1 ? '' : 's'} for each of{' '}
-              {oinaMuscleCount} muscle{oinaMuscleCount === 1 ? '' : 's'}.
+        <div className="mt-3.5 flex gap-2.5">
+          {LENGTHS.map((n) => {
+            const on = !allCards && !customActive && count === n;
+            return (
+              <button
+                key={n}
+                type="button"
+                onClick={() => {
+                  setCount(n);
+                  setCustomActive(false);
+                  setAllCards(false);
+                }}
+                className="flex-1 rounded-[3px]"
+                style={{ fontFamily: 'var(--font-display)', fontSize: 18, minHeight: 52, ...chipStyle(on) }}
+              >
+                {n}
+              </button>
+            );
+          })}
+          <input
+            type="number"
+            min={1}
+            inputMode="numeric"
+            placeholder="Custom"
+            value={customLength}
+            onFocus={() => {
+              setCustomActive(true);
+              setAllCards(false);
+            }}
+            onChange={(e) => {
+              const raw = e.target.value;
+              setCustomLength(raw);
+              setCustomActive(true);
+              setAllCards(false);
+              const n = parseInt(raw, 10);
+              if (!Number.isNaN(n) && n > 0) setCount(n);
+            }}
+            aria-label="Custom session length"
+            className="w-0 flex-1 rounded-[3px] text-center"
+            style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 18,
+              minHeight: 52,
+              ...chipStyle(!allCards && customActive),
+            }}
+          />
+        </div>
+
+        {oinaSelected && (
+          <>
+            <button
+              type="button"
+              onClick={() => setAllCards(true)}
+              className="mt-2.5 w-full rounded-[3px]"
+              style={{ fontFamily: 'var(--font-display)', fontSize: 18, minHeight: 52, ...chipStyle(allCards) }}
+            >
+              All {oinaQuestionCount} cards
+            </button>
+            <p className="mt-3 text-[13px] leading-relaxed" style={{ color: 'var(--ink3)' }}>
+              {oinaFacts.length} fact{oinaFacts.length === 1 ? '' : 's'} for each of {oinaMuscleCount}{' '}
+              muscle{oinaMuscleCount === 1 ? '' : 's'}. A shorter session draws at random from those.
             </p>
-          </div>
-        ) : (
-          <div className="mt-3.5 flex gap-2.5">
-            {LENGTHS.map((n) => {
-              const on = !customActive && count === n;
-              return (
-                <button
-                  key={n}
-                  type="button"
-                  onClick={() => {
-                    setCount(n);
-                    setCustomActive(false);
-                  }}
-                  className="flex-1 rounded-[3px]"
-                  style={{ fontFamily: 'var(--font-display)', fontSize: 18, minHeight: 52, ...chipStyle(on) }}
-                >
-                  {n}
-                </button>
-              );
-            })}
-            <input
-              type="number"
-              min={1}
-              inputMode="numeric"
-              placeholder="Custom"
-              value={customLength}
-              onFocus={() => setCustomActive(true)}
-              onChange={(e) => {
-                const raw = e.target.value;
-                setCustomLength(raw);
-                setCustomActive(true);
-                const n = parseInt(raw, 10);
-                if (!Number.isNaN(n) && n > 0) setCount(n);
-              }}
-              aria-label="Custom session length"
-              className="w-0 flex-1 rounded-[3px] text-center"
-              style={{
-                fontFamily: 'var(--font-display)',
-                fontSize: 18,
-                minHeight: 52,
-                ...chipStyle(customActive),
-              }}
-            />
-          </div>
+          </>
         )}
 
         <div

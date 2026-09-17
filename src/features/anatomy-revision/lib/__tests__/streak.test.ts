@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { computeStreak } from '../streak';
 import type { RevisionSessionSummary } from '../../types/attempt';
+import { emptyCategoryBreakdown } from '../../types/structure';
 
 function summaryOn(isoDate: string): RevisionSessionSummary {
   return {
@@ -10,12 +11,7 @@ function summaryOn(isoDate: string): RevisionSessionSummary {
     questionTypes: ['mcq'],
     totalQuestions: 10,
     correctCount: 8,
-    breakdownByCategory: {
-      muscle: { total: 10, correct: 8 },
-      bone: { total: 0, correct: 0 },
-      landmark: { total: 0, correct: 0 },
-      joint: { total: 0, correct: 0 },
-    },
+    breakdownByCategory: { ...emptyCategoryBreakdown(), muscle: { total: 10, correct: 8 } },
     breakdownByRegion: {},
     missedStructureIds: [],
   };

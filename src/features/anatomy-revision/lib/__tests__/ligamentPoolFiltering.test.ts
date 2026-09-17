@@ -43,7 +43,8 @@ describe('a ligaments-only session', () => {
     expect(attachment.length).toBeGreaterThan(0);
     for (const q of attachment) {
       // Two correct answers minimum means the wrong ones are real alternatives.
-      expect(q.choices.length).toBeGreaterThanOrEqual(q.correctIndices.length + 2);
+      const multi = q as { choices: string[]; correctIndices: number[] };
+      expect(multi.choices.length).toBeGreaterThanOrEqual(multi.correctIndices.length + 2);
     }
   });
 

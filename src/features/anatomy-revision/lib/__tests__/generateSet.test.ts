@@ -634,15 +634,19 @@ describe('OINA sessions (CR-018)', () => {
 
 describe('generateRevisionSet with an unbuildable combination', () => {
   /**
-   * The setup screen must be able to see zero coming rather than throw. Bones
-   * used to be the example of a combination that could not build, because no
-   * hotspot in the app described one; they now have skeleton plates of their
-   * own, so the guarantee is tested against a structure that genuinely has no
-   * hotspot instead. The coccyx is one: it is too small on a whole-region plate
-   * to be a fair target and was dropped rather than traced.
+   * The setup screen must be able to see zero coming rather than throw.
+   *
+   * THE EXAMPLE IS FOUND, NOT NAMED, because naming one keeps going stale. Bones
+   * were the original example until they got skeleton plates. The coccyx was the
+   * example after that, until a sacrum plate drew it at sacrum scale instead of
+   * whole-column scale. Whichever structure has no hotspot today is the one this
+   * asks about, and the first assertion fails loudly on the day none is left —
+   * which is a good day, and a deliberate edit rather than a silent pass.
    */
   it('yields nothing when nothing in the pool has a hotspot, rather than throwing', () => {
-    const withoutHotspots = ALL_STRUCTURES.filter((s) => s.id === 'coccyx');
+    const drawn = new Set(ALL_IMAGES.flatMap((i) => (i.hotspots ?? []).map((h) => h.structureId)));
+    const withoutHotspots = ALL_STRUCTURES.filter((s) => !drawn.has(s.id));
+    expect(withoutHotspots.length).toBeGreaterThan(0);
     const result = generateRevisionSet(withoutHotspots, ALL_IMAGES, { types: ['locate'], mode: 'practice', seed: 1 });
     expect(result).toEqual([]);
   });
@@ -726,5 +730,53 @@ describe('question area follows the area the session asked for', () => {
     });
     const pedicle = questions.find((q) => q.structureId === 'pedicle');
     expect(pedicle?.area).toBe('cervical-spine');
+  });
+});
+
+describe('mixing question formats', () => {
+  const base = {
+    areas: [] as never[],
+    learnCardAttempts: 0,
+    mode: 'practice' as const,
+    seed: 7,
+  };
+
+  it('gives every requested format a share of a capped session', () => {
+    // MCQ generates several questions per structure and OINA one per fact, so a
+    // plain shuffle of the pool handed all twenty questions to MCQ — which is
+    // the one thing a student who picked two formats did not ask for.
+    const set = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+      ...base,
+      types: ['mcq', 'oina'],
+      oinaPromptKinds: ['origin'],
+      count: 20,
+    });
+    expect(set).toHaveLength(20);
+    expect(set.filter((q) => q.type === 'oina').length).toBeGreaterThan(5);
+    expect(set.filter((q) => q.type === 'mcq').length).toBeGreaterThan(5);
+  });
+
+  it('lets a short format run out without shrinking the session', () => {
+    // One fact of one small group is a handful of cards; the rest of the
+    // session has to come from somewhere rather than simply be missing.
+    const set = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+      ...base,
+      types: ['mcq', 'oina'],
+      groups: ['hamstrings'],
+      oinaPromptKinds: ['origin'],
+      count: 20,
+    });
+    expect(set).toHaveLength(20);
+    expect(set.filter((q) => q.type === 'oina').length).toBeGreaterThan(0);
+  });
+
+  it('asks everything it built when no length is set', () => {
+    const set = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+      ...base,
+      types: ['oina'],
+      oinaPromptKinds: ['origin', 'insertion'],
+    });
+    expect(set.length).toBeGreaterThan(200);
+    expect(set.every((q) => q.type === 'oina')).toBe(true);
   });
 });

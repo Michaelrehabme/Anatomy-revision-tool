@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import type { RevisionSessionSummary } from '../../../anatomy-revision/types/attempt';
+import { emptyCategoryBreakdown } from '../../../anatomy-revision/types/structure';
 import type { RegionAssignment, ScopedAssignment } from '../../types/cohort';
 import { computeAssignmentCompletion, sessionScorePct } from '../assignmentCompletion';
 
@@ -32,12 +33,7 @@ function session(
     questionTypes: ['mcq'],
     totalQuestions: 0,
     correctCount: 0,
-    breakdownByCategory: {
-      muscle: { total: 0, correct: 0 },
-      bone: { total: 0, correct: 0 },
-      landmark: { total: 0, correct: 0 },
-      joint: { total: 0, correct: 0 },
-    },
+    breakdownByCategory: emptyCategoryBreakdown(),
     breakdownByRegion,
     missedStructureIds: [],
   };

@@ -2,6 +2,54 @@ import { primaryAreaOf } from '../../types/structure';
 import type { AnatomyStructure } from '../../types/structure';
 import type { AnatomyImageAsset } from '../../types/image';
 import type { LocateQuestion } from '../../types/question';
+import type { HotspotPolygon } from '../../types/image';
+import { polygonsWidth } from '../hotspot/polygonGeometry';
+
+/**
+ * How wide a traced target has to be before it is fair to ask someone to tap
+ * it, in normalized image units — about 3 CSS pixels across on a phone, or 11
+ * once TAP_SLACK is added either side. The floor is about being ABLE TO SEE the
+ * target, which is why it is needed at all when the slack would happily grade a
+ * thinner one: a two-pixel thread of muscle can be hit but it cannot be aimed
+ * at, and flexor carpi radialis on the lateral forearm plate is exactly that.
+ *
+ * A HOTSPOT CAN BE CORRECT AND STILL BE UNANSWERABLE. The region plates are
+ * depth-subtracted so each muscle claims only what is actually visible, and on
+ * the lateral forearm that leaves flexor carpi radialis as a sliver a couple of
+ * pixels wide between brachioradialis and the wrist. "Tap flexor carpi
+ * radialis" over that picture is not a question about anatomy; it is a question
+ * about pixel precision, and it marks a student wrong for pointing at the right
+ * muscle. The same plate asks it perfectly well from the anterior view, so this
+ * drops the angle rather than the structure wherever another angle exists.
+ *
+ * 50 of 687 locate questions fall below this, and 26 structures lose locate
+ * altogether — extensor digitorum, flexor digitorum superficialis, the deep
+ * thumb muscles — because no angle in the set shows more than a thread of them.
+ * They keep their MCQ and identify questions, and the way to win locate back is
+ * a closer camera, not a looser rule: that is what the sub-region plates are
+ * for (see images.seed.ts). Scored point/line targets are exempt — they carry
+ * their own fingertip floor (MIN_ZONE_PX in publishLandmarks.ts) and a
+ * near-miss halo besides.
+ */
+export const MIN_TAPPABLE_WIDTH = 0.0075;
+
+/** True when this hotspot is wide enough across to aim at. */
+export function isTappableTarget(hotspot: HotspotPolygon): boolean {
+  if (hotspot.targetRadius) return true;
+  return polygonsWidth(hotspot.polygons, hotspot.area) >= MIN_TAPPABLE_WIDTH;
+}
+
+/**
+ * True when this picture shows the structure at a size worth asking about.
+ *
+ * A picture can carry MORE THAN ONE HOTSPOT for the same structure — 55 of them
+ * do, mostly ligaments split around whatever crosses them — and any one part
+ * being big enough makes the question fair, so this asks about the picture and
+ * the structure rather than about a single traced piece.
+ */
+export function isTappableIn(image: AnatomyImageAsset, structureId: string): boolean {
+  return (image.hotspots ?? []).some((h) => h.structureId === structureId && isTappableTarget(h));
+}
 
 export interface LocateGenOptions {
   toleranceMultiplier?: number;
@@ -46,14 +94,22 @@ export function buildLocateQuestions(
     const key = setKey(image.id);
     const frames = key ? [...sets.get(key)!].sort((a, b) => angleOf(a.id) - angleOf(b.id)) : null;
 
+    const seen = new Set<string>();
     for (const hotspot of image.hotspots) {
       const structure = structureById.get(hotspot.structureId);
       if (!structure || !structure.eligibility.locate) continue;
+      // One question per structure per picture, not one per traced piece.
+      if (seen.has(structure.id)) continue;
+      seen.add(structure.id);
+      if (!isTappableIn(image, structure.id)) continue;
 
       let opening = image;
       let frameIds: string[] | undefined;
       if (frames) {
-        const withTarget = frames.filter((f) => f.hotspots?.some((h) => h.structureId === structure.id));
+        // A frame the target is a sliver in is not an angle to turn to: the tap
+        // is graded against whichever frame is showing, so an unfair frame is an
+        // unfair question however the student got there.
+        const withTarget = frames.filter((f) => isTappableIn(f, structure.id));
         const questionKey = `${key}|${structure.id}`;
         if (emitted.has(questionKey)) continue;
         emitted.add(questionKey);

@@ -80,6 +80,12 @@ export function RevisionSetup({ content, repository, userId, areas, onStart, onB
   const [count, setCount] = useState(20);
   const [customLength, setCustomLength] = useState('');
   const [customActive, setCustomActive] = useState(false);
+  // OINA sessions used to be length-less: every fact of every muscle in scope,
+  // with the length picker replaced by a note saying so. That made OINA
+  // un-mixable — pairing it with MCQs meant accepting however many hundred
+  // cards the scope happened to hold — so the picker is back and the whole
+  // sweep is one more option on it.
+  const [allCards, setAllCards] = useState(false);
   const [useSrs, setUseSrs] = useState(true);
   const [oinaFacts, setOinaFacts] = useState<OinaPromptKind[]>([...OINA_PROMPT_KINDS]);
   const [groups, setGroups] = useState<string[]>([]);
@@ -149,7 +155,10 @@ export function RevisionSetup({ content, repository, userId, areas, onStart, onB
       }).length,
     [content.structures, content.images, types, areas, groups, oinaSelected, oinaFacts, category],
   );
-  const effectiveCount = oinaSelected ? available : Math.min(count, available);
+  // Undefined caps nothing; generateRevisionSet then emits every eligible
+  // question. Only reachable from the All chip, which only OINA sessions show.
+  const sessionCount = allCards && oinaSelected ? undefined : count;
+  const effectiveCount = sessionCount === undefined ? available : Math.min(count, available);
   const unbuildable = unbuildableSessionReason({ types, poolSize, available });
   const canStart = types.length > 0 && !content.loading && poolSize > 0 && available > 0 && (!oinaSelected || oinaFacts.length > 0);
 
@@ -191,7 +200,7 @@ export function RevisionSetup({ content, repository, userId, areas, onStart, onB
       mode,
       // Undefined caps nothing: practice mode then emits every eligible question,
       // which is what an OINA session is for (CR-018).
-      count: oinaSelected ? undefined : count,
+      count: sessionCount,
       // Prioritised, not restricted — see the toggle's own copy. A hard due-only
       // filter refills its own queue, since answering a due structure reschedules it.
       priorityStructureIds: dueStructureIds,
@@ -358,18 +367,6 @@ export function RevisionSetup({ content, repository, userId, areas, onStart, onB
             <div style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
               Length
             </div>
-            {oinaSelected ? (
-              <div className="mt-4 rounded-[3px] px-5 py-4" style={{ border: '1.2px solid var(--line)', background: 'var(--sf)' }}>
-                <div style={{ fontFamily: 'var(--font-display)', fontSize: 20, color: 'var(--ink)' }}>
-                  Every card in scope
-                </div>
-                <p className="mt-1.5 text-sm" style={{ color: 'var(--ink3)' }}>
-                  {oinaQuestionCount} questions — {oinaFacts.length} fact{oinaFacts.length === 1 ? '' : 's'} for each of{' '}
-                  {oinaMuscleCount} muscle{oinaMuscleCount === 1 ? '' : 's'}.
-                  {groups.length === 0 && ' Narrow it with a muscle group below.'}
-                </p>
-              </div>
-            ) : (
             <div className="mt-4 flex gap-2.5">
               {LENGTHS.map((n) => (
                 <button
@@ -378,15 +375,16 @@ export function RevisionSetup({ content, repository, userId, areas, onStart, onB
                   onClick={() => {
                     setCount(n);
                     setCustomActive(false);
+                    setAllCards(false);
                   }}
-                  aria-pressed={!customActive && count === n}
+                  aria-pressed={!allCards && !customActive && count === n}
                   className="inline-flex min-h-[56px] flex-1 items-center justify-center whitespace-nowrap rounded-[3px]"
                   style={{
                     fontFamily: 'var(--font-display)',
                     fontSize: 20,
-                    border: !customActive && count === n ? '1.4px solid var(--acc)' : '1.2px solid var(--line)',
-                    background: !customActive && count === n ? 'var(--accs)' : 'transparent',
-                    color: !customActive && count === n ? 'var(--accd)' : 'var(--ink2)',
+                    border: !allCards && !customActive && count === n ? '1.4px solid var(--acc)' : '1.2px solid var(--line)',
+                    background: !allCards && !customActive && count === n ? 'var(--accs)' : 'transparent',
+                    color: !allCards && !customActive && count === n ? 'var(--accd)' : 'var(--ink2)',
                   }}
                 >
                   {n}
@@ -398,26 +396,55 @@ export function RevisionSetup({ content, repository, userId, areas, onStart, onB
                 inputMode="numeric"
                 placeholder="Custom"
                 value={customLength}
-                onFocus={() => setCustomActive(true)}
+                onFocus={() => {
+                  setCustomActive(true);
+                  setAllCards(false);
+                }}
                 onChange={(e) => {
                   const raw = e.target.value;
                   setCustomLength(raw);
                   setCustomActive(true);
+                  setAllCards(false);
                   const n = parseInt(raw, 10);
                   if (!Number.isNaN(n) && n > 0) setCount(n);
                 }}
-                aria-pressed={customActive}
+                aria-pressed={!allCards && customActive}
                 aria-label="Custom session length"
                 className="inline-flex min-h-[56px] w-0 flex-1 items-center justify-center whitespace-nowrap rounded-[3px] text-center"
                 style={{
                   fontFamily: 'var(--font-display)',
                   fontSize: 20,
-                  border: customActive ? '1.4px solid var(--acc)' : '1.2px solid var(--line)',
-                  background: customActive ? 'var(--accs)' : 'transparent',
-                  color: customActive ? 'var(--accd)' : 'var(--ink2)',
+                  border: !allCards && customActive ? '1.4px solid var(--acc)' : '1.2px solid var(--line)',
+                  background: !allCards && customActive ? 'var(--accs)' : 'transparent',
+                  color: !allCards && customActive ? 'var(--accd)' : 'var(--ink2)',
                 }}
               />
             </div>
+
+            {oinaSelected && (
+              <>
+                <button
+                  type="button"
+                  onClick={() => setAllCards(true)}
+                  aria-pressed={allCards}
+                  className="mt-2.5 inline-flex min-h-[56px] w-full items-center justify-center whitespace-nowrap rounded-[3px] px-4"
+                  style={{
+                    fontFamily: 'var(--font-display)',
+                    fontSize: 20,
+                    border: allCards ? '1.4px solid var(--acc)' : '1.2px solid var(--line)',
+                    background: allCards ? 'var(--accs)' : 'transparent',
+                    color: allCards ? 'var(--accd)' : 'var(--ink2)',
+                  }}
+                >
+                  All {oinaQuestionCount} cards
+                </button>
+                <p className="mt-3.5 text-sm leading-snug" style={{ color: 'var(--ink3)' }}>
+                  {oinaFacts.length} fact{oinaFacts.length === 1 ? '' : 's'} for each of {oinaMuscleCount}{' '}
+                  muscle{oinaMuscleCount === 1 ? '' : 's'}. A shorter session draws at random from those,
+                  so it mixes with the other formats instead of swamping them.
+                  {groups.length === 0 && ' Narrow the pool with a muscle group below.'}
+                </p>
+              </>
             )}
 
             <label className="mt-12 flex cursor-pointer items-start gap-4">
@@ -510,7 +537,7 @@ export function RevisionSetup({ content, repository, userId, areas, onStart, onB
             ) : (
               <p className="mt-3.5 text-center" style={{ font: '400 12.5px/1.6 var(--font-mono)', color: 'var(--ink3)' }}>
                 {effectiveCount} questions · about {minutesFor(effectiveCount)} minutes
-                {!oinaSelected && available < count && ' · all this selection can build'}
+                {sessionCount !== undefined && available < count && ' · all this selection can build'}
               </p>
             )}
           </div>

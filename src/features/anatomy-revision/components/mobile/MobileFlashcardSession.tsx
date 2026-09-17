@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import type { FlashcardQuestion } from '../../types/question';
 import type { AnatomyImageAsset } from '../../types/image';
 import { AnatomyImageFigure } from '../shared/AnatomyImageFigure';
+import { rotationFramesFor } from '../../lib/rotationFrames';
 
 interface MobileFlashcardSessionProps {
   question: FlashcardQuestion;
@@ -23,6 +24,9 @@ export function MobileFlashcardSession({ question, imagesById, onAnswer, onNext 
 
   const frontImage = question.front.imageId ? imagesById.get(question.front.imageId) : undefined;
   const backImage = question.back.imageId ? imagesById.get(question.back.imageId) : undefined;
+  // Every angle of each picture, so a flashcard can be turned as well as read.
+  const frontFrames = rotationFramesFor(frontImage, imagesById.values());
+  const backFrames = rotationFramesFor(backImage, imagesById.values());
 
   const handleReveal = () => {
     setRevealed(true);
@@ -39,7 +43,7 @@ export function MobileFlashcardSession({ question, imagesById, onAnswer, onNext 
         {!revealed ? (
           <div className="flex h-full flex-col items-center justify-center gap-4 text-center">
             {frontImage ? (
-              <AnatomyImageFigure image={frontImage} alt="Identify this structure" />
+              <AnatomyImageFigure image={frontImage} frames={frontFrames} alt="Identify this structure" />
             ) : (
               <p style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 24 }}>{question.front.text}</p>
             )}
@@ -54,7 +58,7 @@ export function MobileFlashcardSession({ question, imagesById, onAnswer, onNext 
           </div>
         ) : (
           <div className="flex flex-col gap-3.5">
-            {backImage && <AnatomyImageFigure image={backImage} alt={question.structureId} />}
+            {backImage && <AnatomyImageFigure image={backImage} frames={backFrames} alt={question.structureId} />}
             {question.front.text && (
               <p className="text-sm" style={{ color: 'var(--ink3)' }}>
                 {question.front.text}
