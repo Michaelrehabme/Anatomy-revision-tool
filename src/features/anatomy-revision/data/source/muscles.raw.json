@@ -39,7 +39,7 @@
         "hip-external-rotation"
       ],
       "actionText": "Powerful hip flexor; assists external rotation of the femur and stabilises the pelvis.",
-      "clinical": "Tightness can cause lower back and hip discomfort, and hip flexor strain from running and walking.",
+      "clinical": null,
       "notes": null,
       "images": {
         "isolated": null,
@@ -88,7 +88,7 @@
         "hip-external-rotation"
       ],
       "actionText": "Most powerful hip flexor; assists external rotation of the femur and pelvic stabilisation.",
-      "clinical": "Tightness can cause lower back and hip discomfort, and hip flexor strain.",
+      "clinical": null,
       "notes": null,
       "images": {
         "isolated": null,
@@ -139,7 +139,7 @@
         "knee-extension"
       ],
       "actionText": "The only quadriceps muscle crossing the hip joint: flexes the hip and extends the knee.",
-      "clinical": "Weakness or tightness leads to limited hip extension or patellar tracking issues, common in runners and cyclists.",
+      "clinical": null,
       "notes": null,
       "images": {
         "isolated": null,
@@ -190,7 +190,7 @@
         "knee-flexion"
       ],
       "actionText": "Hip flexion, abduction and external rotation plus knee flexion — crossing the legs, kicking.",
-      "clinical": "Tightness can cause anterior hip pain or inner thigh discomfort.",
+      "clinical": null,
       "notes": "Longest muscle in the body; the 'tailor's muscle'.",
       "images": {
         "isolated": null,
@@ -243,7 +243,7 @@
         "hip-abduction"
       ],
       "actionText": "Hip extension (running, squatting), external rotation and abduction of the thigh.",
-      "clinical": "Weakness leads to posterior pelvic tilt and low back pain — 'gluteal amnesia' in prolonged sitters.",
+      "clinical": null,
       "notes": "Largest muscle in the body.",
       "images": {
         "isolated": null,
@@ -295,7 +295,7 @@
         "knee-internal-rotation"
       ],
       "actionText": "Knee flexion, hip extension and internal rotation of the tibia when the knee is flexed.",
-      "clinical": "Hamstring strains are among the most common athletic injuries; eccentric strengthening is central to rehab.",
+      "clinical": null,
       "notes": null,
       "images": {
         "isolated": null,
@@ -347,7 +347,7 @@
         "knee-internal-rotation"
       ],
       "actionText": "Knee flexion, hip extension and internal rotation of the tibia when the knee is flexed.",
-      "clinical": "Works with semitendinosus to stabilise the knee and decelerate knee extension during running.",
+      "clinical": null,
       "notes": null,
       "images": {
         "isolated": null,
@@ -408,7 +408,7 @@
         "knee-external-rotation"
       ],
       "actionText": "Knee flexion, hip extension and external rotation of the knee when flexed.",
-      "clinical": "Long head is key in hip extension during sprinting; common site of hamstring tear.",
+      "clinical": null,
       "notes": null,
       "images": {
         "isolated": null,
@@ -458,7 +458,7 @@
         "pelvic-stabilisation"
       ],
       "actionText": "Hip abduction and stabilisation of the pelvis during single-leg stance; the anterior fibres assist internal rotation of the thigh.",
-      "clinical": "Weakness is associated with Trendelenburg gait — pelvis drops toward the non-weight-bearing leg.",
+      "clinical": null,
       "notes": null,
       "images": {
         "isolated": null,
@@ -508,7 +508,7 @@
         "pelvic-stabilisation"
       ],
       "actionText": "Works with gluteus medius for hip abduction and internal rotation of the thigh.",
-      "clinical": "Weakness leads to pelvic drop and hip instability.",
+      "clinical": null,
       "notes": null,
       "images": {
         "isolated": null,
@@ -609,7 +609,7 @@
         "hip-extension"
       ],
       "actionText": "Hip adduction; the hamstring portion also contributes to hip extension.",
-      "clinical": "Groin strains are common in athletes performing quick side-to-side movements.",
+      "clinical": null,
       "notes": null,
       "images": {
         "isolated": null,
@@ -853,7 +853,7 @@
         "hip-stabilisation"
       ],
       "actionText": "External rotation and stabilisation of the hip joint.",
-      "clinical": "Piriformis syndrome — the muscle irritates the sciatic nerve, causing posterior leg pain.",
+      "clinical": null,
       "notes": null,
       "images": {
         "isolated": null,
@@ -1139,7 +1139,7 @@
         "knee-extension"
       ],
       "actionText": "Knee extension; key to patellar tracking and knee stability.",
-      "clinical": "Weakness contributes to poor patellar tracking and patellofemoral pain syndrome.",
+      "clinical": null,
       "notes": null,
       "images": {
         "isolated": null,
@@ -3444,7 +3444,7 @@
         "foot-inversion"
       ],
       "actionText": "Dorsiflexion and inversion of the foot; controls foot drop during walking.",
-      "clinical": "Implicated in medial tibial stress syndrome and anterior compartment syndrome.",
+      "clinical": null,
       "notes": null,
       "images": {
         "isolated": null,
@@ -3638,7 +3638,7 @@
         "ankle-plantarflexion"
       ],
       "actionText": "Eversion and plantarflexion; supports the arches of the foot.",
-      "clinical": "Peroneal strengthening helps prevent inversion ankle sprains; site of peroneal tendinopathy.",
+      "clinical": null,
       "notes": null,
       "images": {
         "isolated": null,
@@ -3686,7 +3686,7 @@
         "ankle-plantarflexion"
       ],
       "actionText": "Eversion and weak plantarflexion.",
-      "clinical": "Peroneal tendinopathy behind the lateral malleolus; pain on resisted eversion.",
+      "clinical": null,
       "notes": null,
       "images": {
         "isolated": null,
@@ -3734,7 +3734,7 @@
         "knee-flexion"
       ],
       "actionText": "Plantarflexion (especially with the knee extended) and knee flexion.",
-      "clinical": "Achilles tendinopathy and rupture; tightness contributes to plantar fasciitis.",
+      "clinical": null,
       "notes": null,
       "images": {
         "isolated": null,
@@ -3781,7 +3781,7 @@
         "ankle-plantarflexion"
       ],
       "actionText": "Plantarflexion, independent of knee position.",
-      "clinical": "Involved in medial tibial stress syndrome and Achilles tendinopathy.",
+      "clinical": null,
       "notes": null,
       "images": {
         "isolated": null,
@@ -3880,7 +3880,7 @@
         "ankle-plantarflexion"
       ],
       "actionText": "Inversion and plantarflexion; supports the medial longitudinal arch.",
-      "clinical": "Key muscle in medial tibial stress syndrome.",
+      "clinical": null,
       "notes": null,
       "images": {
         "isolated": null,
@@ -4713,7 +4713,7 @@
         "radial-deviation"
       ],
       "actionText": "Wrist flexion and radial deviation.",
-      "clinical": "Common flexor origin at the medial epicondyle — golfer's elbow.",
+      "clinical": null,
       "notes": null,
       "images": {
         "isolated": null,
@@ -5151,7 +5151,7 @@
         "radial-deviation"
       ],
       "actionText": "Wrist extension and radial deviation.",
-      "clinical": "Common extensor origin at the lateral epicondyle — tennis elbow.",
+      "clinical": null,
       "notes": null,
       "images": {
         "isolated": null,

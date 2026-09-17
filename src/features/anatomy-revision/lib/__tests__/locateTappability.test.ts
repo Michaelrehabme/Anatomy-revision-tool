@@ -40,8 +40,15 @@ describe('buildLocateQuestions', () => {
 
   it('still builds a locate question for most of the dataset', () => {
     const q = buildLocateQuestions(ALL_STRUCTURES, ALL_IMAGES);
-    expect(q.length).toBeGreaterThan(600);
+    // HOW MANY STRUCTURES, not how many questions. The raw count was a fair
+    // guard while a question meant a picture, but a ligament plate draws its
+    // neighbours, so each ligament was asked once per plate it turned up on —
+    // 181 questions over 30 ligaments, 151 of them the same fact on someone
+    // else's picture. Collapsing those to one apiece took the total from 737
+    // to 586 while losing no structure, which is exactly the shape a count
+    // threshold cannot tell apart from a real loss of coverage.
     expect(new Set(q.map((x) => x.targetStructureId)).size).toBeGreaterThan(280);
+    expect(q.length).toBeGreaterThan(500);
   });
 });
 

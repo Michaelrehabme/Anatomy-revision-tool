@@ -89,6 +89,58 @@ export function buildLocateQuestions(
   const angleOf = (id: string) => Number(/-a(\d{3})-/.exec(id)?.[1] ?? 0);
   const emitted = new Set<string>();
 
+  /**
+   * ASK A STRUCTURE ON THE PICTURE THAT WAS FRAMED FOR IT.
+   *
+   * A ligament plate draws every strap in the frame, not just its subject, so
+   * each one is tappable on its neighbours' plates too — and, before this,
+   * every one of those became its own question. The anterior tibiofibular
+   * ligament had four, and the opening picture went to whichever traced
+   * largest: the plantar metatarsophalangeal plate, by 0.0001 of a percentage
+   * point. That plate is framed on the forefoot, so the ankle sat at its edge.
+   * Others were worse than off-centre — the leg's interosseous membrane opened
+   * on a KNEE plate, the intercostal membrane on an ELBOW one.
+   *
+   * Largest-area is the right tie-break BETWEEN ANGLES of one set and the
+   * wrong one between sets, because it compares a picture composed for this
+   * structure against one composed for something else. Only the first is a
+   * question about where the structure is; the rest are questions about
+   * spotting it in someone else's picture, and there were 151 of them.
+   *
+   * A set names its subject in panelStructureNames[0] (see
+   * ligamentPlates.generated.ts). Sets with no subject — the sub-region
+   * turntables, framed on a region rather than a structure — declare an empty
+   * list and are left exactly as they were.
+   */
+  const subjectBySet = new Map<string, string | undefined>();
+  for (const [key, frames] of sets) {
+    const named = frames.find((f) => f.panelStructureNames?.length);
+    subjectBySet.set(key, named?.panelStructureNames?.[0]?.toLowerCase());
+  }
+  const ownSetCache = new Map<string, boolean>();
+  /**
+   * Whether this structure has a set of its own that can actually carry the
+   * question. Tappability matters, not just ownership: a ligament too slight
+   * to aim at on its own plate keeps the neighbours' plates rather than losing
+   * locate altogether — the same trade the angle filter makes below.
+   */
+  const hasUsableOwnSet = (structure: AnatomyStructure): boolean => {
+    const cached = ownSetCache.get(structure.id);
+    if (cached !== undefined) return cached;
+    const names = new Set([structure.name, ...structure.aliases].map((n) => n.toLowerCase()));
+    let usable = false;
+    for (const [key, frames] of sets) {
+      const subject = subjectBySet.get(key);
+      if (subject === undefined || !names.has(subject)) continue;
+      if (frames.some((f) => isTappableIn(f, structure.id))) {
+        usable = true;
+        break;
+      }
+    }
+    ownSetCache.set(structure.id, usable);
+    return usable;
+  };
+
   for (const image of images) {
     if (!image.hotspots?.length) continue;
     const key = setKey(image.id);
@@ -106,6 +158,13 @@ export function buildLocateQuestions(
       let opening = image;
       let frameIds: string[] | undefined;
       if (frames) {
+        // Someone else's plate, and this structure has one of its own: skip it.
+        const subject = subjectBySet.get(key!);
+        const isOwnSet =
+          subject !== undefined &&
+          [structure.name, ...structure.aliases].some((n) => n.toLowerCase() === subject);
+        if (subject !== undefined && !isOwnSet && hasUsableOwnSet(structure)) continue;
+
         // A frame the target is a sliver in is not an angle to turn to: the tap
         // is graded against whichever frame is showing, so an unfair frame is an
         // unfair question however the student got there.
