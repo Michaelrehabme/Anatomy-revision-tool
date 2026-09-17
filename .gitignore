@@ -42,3 +42,5 @@ locate-target-preview.html
 # Python bytecode from the Blender scripts
 __pycache__/
 *.pyc
+landmark-region-preview.html
+landmark-region-probe.json
