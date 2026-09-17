@@ -22,6 +22,9 @@ question, since the named bone would be the one in the middle.
 """
 import bpy, json, sys, os, math, argparse, mathutils, bmesh, time
 
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+import boneLook  # noqa: E402
+
 argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
 ap = argparse.ArgumentParser()
 ap.add_argument("--mapping", required=True)
@@ -50,12 +53,7 @@ scene.render.film_transparent = True
 scene.render.image_settings.file_format = "PNG"
 scene.render.image_settings.color_mode = "RGBA"
 
-scene.world = bpy.data.worlds.new("BoneWorld")
-scene.world.use_nodes = True
-_bg = scene.world.node_tree.nodes.get("Background")
-if _bg:
-    _bg.inputs[0].default_value = (1.0, 1.0, 1.0, 1.0)
-    _bg.inputs[1].default_value = 0.55
+boneLook.setup_world(scene)
 
 cam_data = bpy.data.cameras.new("bonecam")
 cam_data.type = "ORTHO"
@@ -63,19 +61,7 @@ cam = bpy.data.objects.new("bonecam", cam_data)
 scene.collection.objects.link(cam)
 scene.camera = cam
 
-sun = bpy.data.objects.new("bonesun", bpy.data.lights.new("bonesun", type="SUN"))
-sun.data.energy = 2.6
-# Angular size gives soft-edged shadows, which is most of what separates a
-# rendered bone from a painted one.
-sun.data.angle = 0.35
-scene.collection.objects.link(sun)
-
-# A weaker fill from the other side, so a bone's shadowed face is a darker
-# ivory rather than a hole.
-fill = bpy.data.objects.new("bonefill", bpy.data.lights.new("bonefill", type="SUN"))
-fill.data.energy = 0.9
-fill.data.angle = 0.6
-scene.collection.objects.link(fill)
+sun, fill = boneLook.add_lights(scene)
 
 for _attr, _val in (("use_gtao", True), ("gtao_distance", 0.02), ("use_shadows", True),
                     ("use_fast_gi", True), ("fast_gi_distance", 0.03)):
@@ -91,23 +77,7 @@ for _attr, _val in (("use_gtao", True), ("gtao_distance", 0.02), ("use_shadows",
 # it. Same reason the lineset is switched off in render_to by default.
 outline_coll = bpy.data.collections.new("bone_outlined")
 scene.collection.children.link(outline_coll)
-scene.render.line_thickness_mode = "ABSOLUTE"
-scene.render.line_thickness = 1.1
-_vl = scene.view_layers[0]
-_vl.use_freestyle = True
-_fs = _vl.freestyle_settings
-_fs.use_culling = True
-for _old in list(_fs.linesets):
-    _fs.linesets.remove(_old)
-_ls = _fs.linesets.new("bones")
-_ls.select_silhouette = True
-_ls.select_border = True
-_ls.select_contour = True
-_ls.select_crease = True
-_ls.select_by_collection = True
-_ls.collection = outline_coll
-_ls.linestyle.color = (0.42, 0.36, 0.28)
-_ls.linestyle.thickness = 1.1
+boneLook.outline_lineset(scene, outline_coll)
 
 
 def principled(name, colour, roughness=0.5):
@@ -133,34 +103,7 @@ def flat_white():
     return mat
 
 
-def bone_material():
-    """Warm ivory with a faint grain, instead of flat grey.
-
-    A neutral colour under a white world light reads as plastic, and two
-    touching bones of it read as one lump. The grain gives the light
-    something to catch; the outline pass does the separating.
-    """
-    mat = principled("bone_plate", (0.93, 0.87, 0.74, 1), 0.55)
-    nt = mat.node_tree
-    bsdf = nt.nodes["Principled BSDF"]
-    noise = nt.nodes.new("ShaderNodeTexNoise")
-    noise.inputs["Scale"].default_value = 900.0
-    noise.inputs["Detail"].default_value = 3.0
-    noise.inputs["Roughness"].default_value = 0.6
-    bump = nt.nodes.new("ShaderNodeBump")
-    bump.inputs["Strength"].default_value = 0.12
-    bump.inputs["Distance"].default_value = 0.001
-    nt.links.new(noise.outputs["Fac"], bump.inputs["Height"])
-    nt.links.new(bump.outputs["Normal"], bsdf.inputs["Normal"])
-    ramp = nt.nodes.new("ShaderNodeValToRGB")
-    ramp.color_ramp.elements[0].color = (0.88, 0.81, 0.66, 1)
-    ramp.color_ramp.elements[1].color = (0.96, 0.92, 0.82, 1)
-    nt.links.new(noise.outputs["Fac"], ramp.inputs["Fac"])
-    nt.links.new(ramp.outputs["Color"], bsdf.inputs["Base Color"])
-    return mat
-
-
-BONE_MAT = bone_material()
+BONE_MAT = boneLook.bone_material("bone_plate")
 MASK_MAT = flat_white()
 
 
@@ -182,15 +125,6 @@ def bake(names, mesh_name):
     return mesh
 
 
-def smooth(mesh):
-    """Smooth shading changes how a surface catches light, not where its
-    edge is — so it is safe on the mask meshes too, and the silhouette a
-    hotspot is traced from is identical either way."""
-    for poly in mesh.polygons:
-        poly.use_smooth = True
-    return mesh
-
-
 def mesh_bbox(mesh):
     xs = [v.co.x for v in mesh.vertices]
     ys = [v.co.y for v in mesh.vertices]
@@ -207,8 +141,9 @@ def frame_camera(lo, hi, angle_deg, margin):
     cam.location = centre + offset
     cam.rotation_euler = (centre - cam.location).to_track_quat("-Z", "Y").to_euler()
     cam_data.ortho_scale = size * margin
-    sun.rotation_euler = mathutils.Euler((0.9, 0.3, 0.6 + theta), "XYZ")
-    fill.rotation_euler = mathutils.Euler((1.1, -0.4, theta - 1.8), "XYZ")
+    # In the camera's frame, so the same bone is lit the same way from every
+    # view rather than raked from one side and flat from the next.
+    boneLook.aim_lights(cam, sun, fill)
 
 
 def clear():
@@ -242,7 +177,7 @@ def render_to(path, outlines=False):
 skel = bpy.data.collections.get("1: Skeletal system")
 skeleton_names = [o.name for o in skel.all_objects if o.type == "MESH" and not o.name.endswith(".g")]
 print(f"[bones] baking {len(skeleton_names)} meshes...", flush=True)
-skeleton_mesh = smooth(bake(skeleton_names, "bone_skeleton"))
+skeleton_mesh = boneLook.smooth(bake(skeleton_names, "bone_skeleton"))
 
 t0 = time.time()
 count = 0
@@ -265,7 +200,7 @@ for region in regions:
         own = set(m["blenderObjects"])
         occluders[m["id"]] = bake([n for n in skeleton_names if n not in own], f"occ_{m['id']}")
 
-    region_mesh = smooth(bake([n for m in entries for n in m["blenderObjects"]], f"region_{region}"))
+    region_mesh = boneLook.smooth(bake([n for m in entries for n in m["blenderObjects"]], f"region_{region}"))
     lo, hi = mesh_bbox(region_mesh)
     print(f"[region] {region}: {len(baked)} bones", flush=True)
 
