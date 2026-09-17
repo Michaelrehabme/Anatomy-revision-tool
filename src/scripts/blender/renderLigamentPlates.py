@@ -104,6 +104,8 @@ for attr, val in (("use_gtao", True), ("gtao_distance", 0.02), ("use_shadows", T
 # render, where a line would widen the hotspot.
 outline_coll = bpy.data.collections.new("lig_outlined")
 scene.collection.children.link(outline_coll)
+bone_coll = bpy.data.collections.new("lig_bones")
+scene.collection.children.link(bone_coll)
 scene.render.use_freestyle = True
 scene.render.line_thickness_mode = "ABSOLUTE"
 scene.render.line_thickness = 1.8
@@ -122,6 +124,26 @@ _ls.select_by_collection = True
 _ls.collection = outline_coll
 _ls.linestyle.color = (0.10, 0.12, 0.28)
 _ls.linestyle.thickness = 1.8
+
+# A SECOND LINESET, FOR THE BONES. Flat ivory carpals sitting against flat
+# ivory carpals read as one lump — the user could not tell one from the next,
+# and on a wrist plate that is most of the picture. Shading alone cannot fix
+# it, because the boundary between two touching bones of the same colour is
+# not a shading event; it is an edge. Freestyle knows where those edges are.
+#
+# Deliberately quieter than the straps: thinner, and a warm grey rather than
+# the straps' near-black, so the bones gain definition without competing with
+# the ligaments that are the actual subject. `select_border` is what draws the
+# seam where one bone overlaps another.
+_bl = _fs.linesets.new("bones")
+_bl.select_silhouette = True
+_bl.select_border = True
+_bl.select_contour = True
+_bl.select_crease = True
+_bl.select_by_collection = True
+_bl.collection = bone_coll
+_bl.linestyle.color = (0.42, 0.36, 0.28)
+_bl.linestyle.thickness = 1.1
 
 
 def principled(name, colour, roughness=0.5):
@@ -425,13 +447,13 @@ def render_ids(path, bones_mesh, parts):
 
 
 def clear():
-    for coll in (scene.collection, outline_coll):
+    for coll in (scene.collection, outline_coll, bone_coll):
         for ob in list(coll.objects):
             if ob not in (cam, sun):
                 coll.objects.unlink(ob)
 
 
-def link(mesh, name, material, holdout=False, outlined=False, soften=False):
+def link(mesh, name, material, holdout=False, outlined=False, soften=False, boned=False):
     ob = bpy.data.objects.new(name, mesh)
     ob.data.materials.clear()
     ob.data.materials.append(material)
@@ -440,7 +462,7 @@ def link(mesh, name, material, holdout=False, outlined=False, soften=False):
     ob.is_holdout = holdout
     if soften:
         soften_strap(ob)
-    (outline_coll if outlined else scene.collection).objects.link(ob)
+    (outline_coll if outlined else bone_coll if boned else scene.collection).objects.link(ob)
     return ob
 
 
@@ -534,6 +556,14 @@ for entry in spec["ligaments"]:
     lig_names = entry["objects"]
     drop = expand(entry.get("cutaway", []))
     ghost = expand(entry.get("ghost", []))
+    # KEEP IS THE INVERSE OF CUTAWAY, and it exists because the frames got
+    # wider. Framing a wrist tightly enough to hide the rest of the body was
+    # the thing that made it unreadable — the user could not tell which side
+    # of the wrist they were looking at. Framed wide enough to orient, the arm
+    # hangs beside the hip and the femur walks into shot. Naming the twenty
+    # bones of a hand to keep is shorter and far more stable than naming the
+    # two hundred to drop.
+    keep = expand(entry.get("keep", [])) if entry.get("keep") else None
 
     lig_mesh = bake(lig_names, "lig_" + key)
     if not lig_mesh.vertices:
@@ -544,7 +574,8 @@ for entry in spec["ligaments"]:
     # The bones, minus anything the spec cuts away. The ligament itself is baked
     # separately so it can be recoloured between the three renders.
     solid_names = [n for n in skeleton_names
-                   if n not in drop and n not in ghost and n not in lig_names]
+                   if n not in drop and n not in ghost and n not in lig_names
+                   and (keep is None or n in keep)]
     bones = smooth(bake(solid_names, "ligbones_" + key))
     ghost_mesh = smooth(bake([n for n in ghost if n not in lig_names], "ligghost_" + key)) if ghost else None
 
@@ -582,12 +613,13 @@ for entry in spec["ligaments"]:
 
       span_mm = max(hi[0] - lo[0], hi[1] - lo[1], hi[2] - lo[2]) * 1000
       note = (", cutaway " + str(len(drop)) + " bone(s)") if drop else ""
+      note += (", keeping " + str(len(solid_names)) + " bone(s)") if keep is not None else ""
       note += (", ghosting " + str(len(ghost)) + " bone(s)") if ghost else ""
       print("[lig] " + key + ": " + format(span_mm, ".0f") + "mm across, angle "
             + str(angle) + note, flush=True)
 
       clear()
-      link(bones, "ctx_bones_" + key, BONE_MAT)
+      link(bones, "ctx_bones_" + key, BONE_MAT, boned=True)
       link(lig_mesh, "ctx_lig_" + key, LIG_MAT, outlined=True, soften=True)
       for n, m, mat in strap_parts:
           link(m, "ctx_" + n, mat, outlined=True, soften=True)
@@ -596,7 +628,7 @@ for entry in spec["ligaments"]:
       render_to(os.path.join(leaf_dir, "context.png"))
 
       clear()
-      link(bones, "hl_bones_" + key, BONE_MAT)
+      link(bones, "hl_bones_" + key, BONE_MAT, boned=True)
       link(lig_mesh, "hl_lig_" + key, HILITE_MAT, outlined=True, soften=True)
       for n, m, mat in strap_parts:
           link(m, "hl_" + n, mat, outlined=True, soften=True)

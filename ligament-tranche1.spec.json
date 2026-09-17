@@ -1,6 +1,6 @@
 {
  "schemaVersion": 1,
- "note": "First tranche: the 32 seeded ligaments, eight angles each, left side. Intracapsular knee ligaments ghost the femur and drop the patella, as the preview showed they need.",
+ "note": "First tranche: the 32 seeded ligaments, eight angles each, left side. Frames are the size of the REGION rather than the joint, so a student can tell where they are before zooming in; `keep` names the bones worth showing at that size. Set by src/scripts/ligamentFraming.ts.",
  "ligaments": [
   {
    "key": "anterior-tibiofibular-ligament",
@@ -17,6 +17,21 @@
     225,
     270,
     315
+   ],
+   "frame": 0.24,
+   "keep": [
+    "Tibia.*",
+    "Fibula.*",
+    "Talus.*",
+    "Calcaneus.*",
+    "Navicular bone.*",
+    "Cuboid bone.*",
+    "Medial cuneiform bone.*",
+    "Intermediate cuneiform bone.*",
+    "Lateral cuneiform bone.*",
+    "*metatarsal bone*",
+    "*finger of foot*",
+    "Sesamoid bones of foot.*"
    ]
   },
   {
@@ -34,6 +49,21 @@
     225,
     270,
     315
+   ],
+   "frame": 0.24,
+   "keep": [
+    "Tibia.*",
+    "Fibula.*",
+    "Talus.*",
+    "Calcaneus.*",
+    "Navicular bone.*",
+    "Cuboid bone.*",
+    "Medial cuneiform bone.*",
+    "Intermediate cuneiform bone.*",
+    "Lateral cuneiform bone.*",
+    "*metatarsal bone*",
+    "*finger of foot*",
+    "Sesamoid bones of foot.*"
    ]
   },
   {
@@ -51,6 +81,21 @@
     225,
     270,
     315
+   ],
+   "frame": 0.24,
+   "keep": [
+    "Tibia.*",
+    "Fibula.*",
+    "Talus.*",
+    "Calcaneus.*",
+    "Navicular bone.*",
+    "Cuboid bone.*",
+    "Medial cuneiform bone.*",
+    "Intermediate cuneiform bone.*",
+    "Lateral cuneiform bone.*",
+    "*metatarsal bone*",
+    "*finger of foot*",
+    "Sesamoid bones of foot.*"
    ]
   },
   {
@@ -68,6 +113,13 @@
     225,
     270,
     315
+   ],
+   "frame": 0.2,
+   "keep": [
+    "Humerus.*",
+    "Radius.*",
+    "Ulna.*",
+    "Scapula.*"
    ]
   },
   {
@@ -85,6 +137,13 @@
     225,
     270,
     315
+   ],
+   "frame": 0.2,
+   "keep": [
+    "Humerus.*",
+    "Radius.*",
+    "Ulna.*",
+    "Scapula.*"
    ]
   },
   {
@@ -102,6 +161,13 @@
     225,
     270,
     315
+   ],
+   "frame": 0.2,
+   "keep": [
+    "Humerus.*",
+    "Radius.*",
+    "Ulna.*",
+    "Scapula.*"
    ]
   },
   {
@@ -134,7 +200,8 @@
     "Trapezoid bone.*",
     "Capitate bone.*",
     "Hamate bone.*"
-   ]
+   ],
+   "frame": 0.3
   },
   {
    "key": "pubofemoral-ligament",
@@ -151,7 +218,8 @@
     225,
     270,
     315
-   ]
+   ],
+   "frame": 0.3
   },
   {
    "key": "sacrotuberous-ligament",
@@ -183,7 +251,8 @@
     "Trapezoid bone.*",
     "Capitate bone.*",
     "Hamate bone.*"
-   ]
+   ],
+   "frame": 0.3
   },
   {
    "key": "superior-pubic-ligament",
@@ -215,7 +284,8 @@
     "Trapezoid bone.*",
     "Capitate bone.*",
     "Hamate bone.*"
-   ]
+   ],
+   "frame": 0.3
   },
   {
    "key": "anterior-cruciate-ligament",
@@ -239,7 +309,13 @@
    "cutaway": [
     "Patella.l"
    ],
-   "frame": 0.15
+   "frame": 0.2,
+   "keep": [
+    "Femur.*",
+    "Tibia.*",
+    "Fibula.*",
+    "Patella.*"
+   ]
   },
   {
    "key": "interosseous-membrane-of-leg",
@@ -256,6 +332,13 @@
     225,
     270,
     315
+   ],
+   "frame": 0.2,
+   "keep": [
+    "Femur.*",
+    "Tibia.*",
+    "Fibula.*",
+    "Patella.*"
    ]
   },
   {
@@ -273,6 +356,13 @@
     225,
     270,
     315
+   ],
+   "frame": 0.2,
+   "keep": [
+    "Femur.*",
+    "Tibia.*",
+    "Fibula.*",
+    "Patella.*"
    ]
   },
   {
@@ -290,6 +380,13 @@
     225,
     270,
     315
+   ],
+   "frame": 0.2,
+   "keep": [
+    "Femur.*",
+    "Tibia.*",
+    "Fibula.*",
+    "Patella.*"
    ]
   },
   {
@@ -315,7 +412,13 @@
    "cutaway": [
     "Patella.l"
    ],
-   "frame": 0.15
+   "frame": 0.2,
+   "keep": [
+    "Femur.*",
+    "Tibia.*",
+    "Fibula.*",
+    "Patella.*"
+   ]
   },
   {
    "key": "posterior-meniscotibial-ligament-medial-meniscus",
@@ -340,7 +443,13 @@
    "cutaway": [
     "Patella.l"
    ],
-   "frame": 0.15
+   "frame": 0.2,
+   "keep": [
+    "Femur.*",
+    "Tibia.*",
+    "Fibula.*",
+    "Patella.*"
+   ]
   },
   {
    "key": "transverse-ligament-of-knee",
@@ -365,7 +474,13 @@
    "cutaway": [
     "Patella.l"
    ],
-   "frame": 0.15
+   "frame": 0.2,
+   "keep": [
+    "Femur.*",
+    "Tibia.*",
+    "Fibula.*",
+    "Patella.*"
+   ]
   },
   {
    "key": "acromioclavicular-ligament",
@@ -382,6 +497,16 @@
     225,
     270,
     315
+   ],
+   "frame": 0.24,
+   "keep": [
+    "Scapula.*",
+    "Clavicle.*",
+    "Humerus.*",
+    "Sternum*",
+    "Manubrium*",
+    "*rib*",
+    "Vertebra T*"
    ]
   },
   {
@@ -399,6 +524,16 @@
     225,
     270,
     315
+   ],
+   "frame": 0.24,
+   "keep": [
+    "Scapula.*",
+    "Clavicle.*",
+    "Humerus.*",
+    "Sternum*",
+    "Manubrium*",
+    "*rib*",
+    "Vertebra T*"
    ]
   },
   {
@@ -416,6 +551,16 @@
     225,
     270,
     315
+   ],
+   "frame": 0.24,
+   "keep": [
+    "Scapula.*",
+    "Clavicle.*",
+    "Humerus.*",
+    "Sternum*",
+    "Manubrium*",
+    "*rib*",
+    "Vertebra T*"
    ]
   },
   {
@@ -433,6 +578,16 @@
     225,
     270,
     315
+   ],
+   "frame": 0.24,
+   "keep": [
+    "Scapula.*",
+    "Clavicle.*",
+    "Humerus.*",
+    "Sternum*",
+    "Manubrium*",
+    "*rib*",
+    "Vertebra T*"
    ]
   },
   {
@@ -450,6 +605,16 @@
     225,
     270,
     315
+   ],
+   "frame": 0.24,
+   "keep": [
+    "Scapula.*",
+    "Clavicle.*",
+    "Humerus.*",
+    "Sternum*",
+    "Manubrium*",
+    "*rib*",
+    "Vertebra T*"
    ]
   },
   {
@@ -467,7 +632,8 @@
     225,
     270,
     315
-   ]
+   ],
+   "frame": 0.26
   },
   {
    "key": "external-intercostal-membrane",
@@ -484,7 +650,8 @@
     225,
     270,
     315
-   ]
+   ],
+   "frame": 0.3
   },
   {
    "key": "collateral-metacarpophalangeal-ligaments",
@@ -501,6 +668,23 @@
     225,
     270,
     315
+   ],
+   "frame": 0.2,
+   "keep": [
+    "Radius.*",
+    "Ulna.*",
+    "Humerus.*",
+    "Scaphoid bone.*",
+    "Lunate bone.*",
+    "Triquetrum bone.*",
+    "Pisiform bone.*",
+    "Trapezium bone.*",
+    "Trapezoid bone.*",
+    "Capitate bone.*",
+    "Hamate bone.*",
+    "*metacarpal bone*",
+    "*finger of hand*",
+    "Sesamoid bones of hand.*"
    ]
   },
   {
@@ -518,6 +702,23 @@
     225,
     270,
     315
+   ],
+   "frame": 0.2,
+   "keep": [
+    "Radius.*",
+    "Ulna.*",
+    "Humerus.*",
+    "Scaphoid bone.*",
+    "Lunate bone.*",
+    "Triquetrum bone.*",
+    "Pisiform bone.*",
+    "Trapezium bone.*",
+    "Trapezoid bone.*",
+    "Capitate bone.*",
+    "Hamate bone.*",
+    "*metacarpal bone*",
+    "*finger of hand*",
+    "Sesamoid bones of hand.*"
    ]
   },
   {
@@ -535,6 +736,23 @@
     225,
     270,
     315
+   ],
+   "frame": 0.2,
+   "keep": [
+    "Radius.*",
+    "Ulna.*",
+    "Humerus.*",
+    "Scaphoid bone.*",
+    "Lunate bone.*",
+    "Triquetrum bone.*",
+    "Pisiform bone.*",
+    "Trapezium bone.*",
+    "Trapezoid bone.*",
+    "Capitate bone.*",
+    "Hamate bone.*",
+    "*metacarpal bone*",
+    "*finger of hand*",
+    "Sesamoid bones of hand.*"
    ]
   },
   {
@@ -552,6 +770,23 @@
     225,
     270,
     315
+   ],
+   "frame": 0.2,
+   "keep": [
+    "Radius.*",
+    "Ulna.*",
+    "Humerus.*",
+    "Scaphoid bone.*",
+    "Lunate bone.*",
+    "Triquetrum bone.*",
+    "Pisiform bone.*",
+    "Trapezium bone.*",
+    "Trapezoid bone.*",
+    "Capitate bone.*",
+    "Hamate bone.*",
+    "*metacarpal bone*",
+    "*finger of hand*",
+    "Sesamoid bones of hand.*"
    ]
   },
   {
@@ -569,6 +804,23 @@
     225,
     270,
     315
+   ],
+   "frame": 0.2,
+   "keep": [
+    "Radius.*",
+    "Ulna.*",
+    "Humerus.*",
+    "Scaphoid bone.*",
+    "Lunate bone.*",
+    "Triquetrum bone.*",
+    "Pisiform bone.*",
+    "Trapezium bone.*",
+    "Trapezoid bone.*",
+    "Capitate bone.*",
+    "Hamate bone.*",
+    "*metacarpal bone*",
+    "*finger of hand*",
+    "Sesamoid bones of hand.*"
    ]
   },
   {
@@ -586,6 +838,23 @@
     225,
     270,
     315
+   ],
+   "frame": 0.2,
+   "keep": [
+    "Radius.*",
+    "Ulna.*",
+    "Humerus.*",
+    "Scaphoid bone.*",
+    "Lunate bone.*",
+    "Triquetrum bone.*",
+    "Pisiform bone.*",
+    "Trapezium bone.*",
+    "Trapezoid bone.*",
+    "Capitate bone.*",
+    "Hamate bone.*",
+    "*metacarpal bone*",
+    "*finger of hand*",
+    "Sesamoid bones of hand.*"
    ]
   },
   {
@@ -603,6 +872,23 @@
     225,
     270,
     315
+   ],
+   "frame": 0.2,
+   "keep": [
+    "Radius.*",
+    "Ulna.*",
+    "Humerus.*",
+    "Scaphoid bone.*",
+    "Lunate bone.*",
+    "Triquetrum bone.*",
+    "Pisiform bone.*",
+    "Trapezium bone.*",
+    "Trapezoid bone.*",
+    "Capitate bone.*",
+    "Hamate bone.*",
+    "*metacarpal bone*",
+    "*finger of hand*",
+    "Sesamoid bones of hand.*"
    ]
   },
   {
@@ -620,6 +906,23 @@
     225,
     270,
     315
+   ],
+   "frame": 0.2,
+   "keep": [
+    "Radius.*",
+    "Ulna.*",
+    "Humerus.*",
+    "Scaphoid bone.*",
+    "Lunate bone.*",
+    "Triquetrum bone.*",
+    "Pisiform bone.*",
+    "Trapezium bone.*",
+    "Trapezoid bone.*",
+    "Capitate bone.*",
+    "Hamate bone.*",
+    "*metacarpal bone*",
+    "*finger of hand*",
+    "Sesamoid bones of hand.*"
    ]
   }
  ]
