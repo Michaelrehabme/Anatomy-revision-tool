@@ -43,8 +43,20 @@ const OUT_DIR = `${ROOT}/public/anatomy/ligaments`;
 const OUT_TS = `${ROOT}/src/features/anatomy-revision/data/seed/ligamentPlates.generated.ts`;
 const OUT_HOTSPOTS = `${ROOT}/src/features/anatomy-revision/data/seed/hotspots.ligaments.generated.ts`;
 
-/** Below this share of the frame a traced target is a few pixels, not a question. */
-const MIN_TARGET_AREA = 0.0004;
+/**
+ * Below this share of the frame a traced target is a few pixels, not a
+ * question. Tunable, because the right value moved when the plates were
+ * reframed: a target is now a smaller share of a much wider picture, and the
+ * locate screen gained zoom, so a share that was untappable at 1x is
+ * comfortable at 3x. The floor that still matters is TRACEABILITY — at
+ * 1600px, 0.02% of the frame is about 500 pixels, which is enough of a blob
+ * to trace an honest outline from.
+ */
+const MIN_TARGET_AREA = Number(
+  process.argv.includes('--min-area')
+    ? process.argv[process.argv.indexOf('--min-area') + 1]
+    : 0.0002,
+);
 
 const VIEW_FOR_ANGLE: Record<number, ViewType> = {
   0: 'anterior', 45: 'anteromedial', 90: 'medial', 135: 'posteromedial',
