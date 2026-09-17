@@ -211,11 +211,30 @@ because they are the same structure and carry the same answer.
 ```bash
 tools/blender-5.2.0-windows-x64/blender.exe atlas/Z-Anatomy/Startup.blend --background \
   --python src/scripts/blender/renderSubRegionPlates.py -- \
-  --spec subregion-plates.spec.json --out renders/subregions \
-  --only lower-leg-foot__ankle-foot__forefoot --views 0,6,12 --elevations=0,-45
+  --spec subregion-plates.spec.json --out renders/subregions --turntable 12 \
+  --margin 1.5 --limb-margin 1.5 --views 0 --elevations=0,-45 \
+  --only lower-leg-foot__ankle-foot__forefoot
 
 npx tsx src/scripts/platesToHotspots.ts --family sub
 ```
+
+`--turntable 12` renders twelve angles at elevation 0 and names each leaf `aNNN`, which is the
+convention the app groups a rotation set by: `lib/rotationFrames.ts` reads the `-aNNN-` segment out of
+an image id, the locate generator makes one question per set rather than one per frame, and
+`shared/ImageViewer.tsx` draws the turn controls when it is handed more than one frame. **Rendering
+the angles and naming them is the whole of making a family turnable** — no app change is needed.
+
+**A turntable cannot refit its camera per frame.** The picture would breathe as it turned, and a
+hotspot stored in normalised coordinates would stop meaning the same thing from one frame to the next.
+`turntable_frame()` therefore measures both extents rotation-invariantly: the subject's own height,
+which turning about the vertical axis does not change, and the diameter of the circle its footprint
+sweeps, which is the widest it can ever present.
+
+**`--plates-only` re-renders the pictures and leaves the masks alone.** A mask is a flat emission, so
+thresholding it cannot see the lighting: relighting or restyling a plate is a picture change and
+*cannot* move a hotspot. Use it whenever the look changes rather than the geometry — the pass that
+brought these plates to `boneLook.py` was 171 renders and twenty minutes instead of 1,391 and three
+hours, and the hotspots came back byte-identical because they were traced from the same mask files.
 
 Pass negative elevations as `--elevations=-45`, with the equals sign: `argparse` reads a leading
 minus as another flag. Elevation is the axis that reaches a sole — the plantar muscles are under the
