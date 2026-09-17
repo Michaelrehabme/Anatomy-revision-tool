@@ -1,0 +1,929 @@
+{
+ "schemaVersion": 1,
+ "note": "First tranche: the 32 seeded ligaments, eight angles each, left side. Frames are the size of the REGION rather than the joint, so a student can tell where they are before zooming in; `keep` names the bones worth showing at that size. Set by src/scripts/ligamentFraming.ts.",
+ "ligaments": [
+  {
+   "key": "anterior-tibiofibular-ligament",
+   "name": "Anterior tibiofibular ligament",
+   "objects": [
+    "Anterior tibiofibular ligament.l"
+   ],
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ],
+   "frame": 0.24,
+   "keep": [
+    "Tibia.*",
+    "Fibula.*",
+    "Talus.*",
+    "Calcaneus.*",
+    "Navicular bone.*",
+    "Cuboid bone.*",
+    "Medial cuneiform bone.*",
+    "Intermediate cuneiform bone.*",
+    "Lateral cuneiform bone.*",
+    "*metatarsal bone*",
+    "*finger of foot*",
+    "Sesamoid bones of foot.*"
+   ]
+  },
+  {
+   "key": "deep-transverse-metatarsal-ligament",
+   "name": "Deep transverse metatarsal ligament",
+   "objects": [
+    "Deep transverse metatarsal ligament.l"
+   ],
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ],
+   "frame": 0.24,
+   "keep": [
+    "Tibia.*",
+    "Fibula.*",
+    "Talus.*",
+    "Calcaneus.*",
+    "Navicular bone.*",
+    "Cuboid bone.*",
+    "Medial cuneiform bone.*",
+    "Intermediate cuneiform bone.*",
+    "Lateral cuneiform bone.*",
+    "*metatarsal bone*",
+    "*finger of foot*",
+    "Sesamoid bones of foot.*"
+   ]
+  },
+  {
+   "key": "plantar-metatarsophalangeal-ligaments",
+   "name": "Plantar metatarsophalangeal ligaments",
+   "objects": [
+    "Plantar metatarsophalangeal ligaments.l"
+   ],
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ],
+   "frame": 0.24,
+   "keep": [
+    "Tibia.*",
+    "Fibula.*",
+    "Talus.*",
+    "Calcaneus.*",
+    "Navicular bone.*",
+    "Cuboid bone.*",
+    "Medial cuneiform bone.*",
+    "Intermediate cuneiform bone.*",
+    "Lateral cuneiform bone.*",
+    "*metatarsal bone*",
+    "*finger of foot*",
+    "Sesamoid bones of foot.*"
+   ]
+  },
+  {
+   "key": "interosseous-membrane-of-forearm",
+   "name": "Interosseous membrane of forearm",
+   "objects": [
+    "Interosseous membrane of forearm.l"
+   ],
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ],
+   "frame": 0.2,
+   "keep": [
+    "Humerus.*",
+    "Radius.*",
+    "Ulna.*",
+    "Scapula.*"
+   ]
+  },
+  {
+   "key": "radial-collateral-ligament",
+   "name": "Radial collateral ligament",
+   "objects": [
+    "Radial collateral ligament.l"
+   ],
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ],
+   "frame": 0.2,
+   "keep": [
+    "Humerus.*",
+    "Radius.*",
+    "Ulna.*",
+    "Scapula.*"
+   ]
+  },
+  {
+   "key": "ulnar-collateral-ligament",
+   "name": "Ulnar collateral ligament",
+   "objects": [
+    "Ulnar collateral ligament.l"
+   ],
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ],
+   "frame": 0.2,
+   "keep": [
+    "Humerus.*",
+    "Radius.*",
+    "Ulna.*",
+    "Scapula.*"
+   ]
+  },
+  {
+   "key": "obturator-membrane",
+   "name": "Obturator membrane",
+   "objects": [
+    "Obturator membrane.l"
+   ],
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ],
+   "cutaway": [
+    "Humerus.*",
+    "Radius.*",
+    "Ulna.*",
+    "*of hand.*",
+    "*metacarpal*",
+    "Scaphoid bone.*",
+    "Lunate bone.*",
+    "Triquetrum bone.*",
+    "Pisiform bone.*",
+    "Trapezium bone.*",
+    "Trapezoid bone.*",
+    "Capitate bone.*",
+    "Hamate bone.*"
+   ],
+   "frame": 0.3
+  },
+  {
+   "key": "pubofemoral-ligament",
+   "name": "Pubofemoral ligament",
+   "objects": [
+    "Pubofemoral ligament.l"
+   ],
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ],
+   "frame": 0.3
+  },
+  {
+   "key": "sacrotuberous-ligament",
+   "name": "Sacrotuberous ligament",
+   "objects": [
+    "Sacrotuberous ligament.l"
+   ],
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ],
+   "cutaway": [
+    "Humerus.*",
+    "Radius.*",
+    "Ulna.*",
+    "*of hand.*",
+    "*metacarpal*",
+    "Scaphoid bone.*",
+    "Lunate bone.*",
+    "Triquetrum bone.*",
+    "Pisiform bone.*",
+    "Trapezium bone.*",
+    "Trapezoid bone.*",
+    "Capitate bone.*",
+    "Hamate bone.*"
+   ],
+   "frame": 0.3
+  },
+  {
+   "key": "superior-pubic-ligament",
+   "name": "Superior pubic ligament",
+   "objects": [
+    "Superior pubic ligament"
+   ],
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ],
+   "cutaway": [
+    "Humerus.*",
+    "Radius.*",
+    "Ulna.*",
+    "*of hand.*",
+    "*metacarpal*",
+    "Scaphoid bone.*",
+    "Lunate bone.*",
+    "Triquetrum bone.*",
+    "Pisiform bone.*",
+    "Trapezium bone.*",
+    "Trapezoid bone.*",
+    "Capitate bone.*",
+    "Hamate bone.*"
+   ],
+   "frame": 0.3
+  },
+  {
+   "key": "anterior-cruciate-ligament",
+   "name": "Anterior cruciate ligament",
+   "objects": [
+    "Anterior cruciate ligament.l"
+   ],
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ],
+   "ghost": [
+    "Femur.l"
+   ],
+   "cutaway": [
+    "Patella.l"
+   ],
+   "frame": 0.2,
+   "keep": [
+    "Femur.*",
+    "Tibia.*",
+    "Fibula.*",
+    "Patella.*"
+   ]
+  },
+  {
+   "key": "interosseous-membrane-of-leg",
+   "name": "Interosseous membrane of leg",
+   "objects": [
+    "Interosseous membrane of leg.l"
+   ],
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ],
+   "frame": 0.2,
+   "keep": [
+    "Femur.*",
+    "Tibia.*",
+    "Fibula.*",
+    "Patella.*"
+   ]
+  },
+  {
+   "key": "medial-meniscus",
+   "name": "Medial meniscus",
+   "objects": [
+    "Medial meniscus.l"
+   ],
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ],
+   "frame": 0.2,
+   "keep": [
+    "Femur.*",
+    "Tibia.*",
+    "Fibula.*",
+    "Patella.*"
+   ]
+  },
+  {
+   "key": "popliteofibular-ligament",
+   "name": "Popliteofibular ligament",
+   "objects": [
+    "Popliteofibular ligament.l"
+   ],
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ],
+   "frame": 0.2,
+   "keep": [
+    "Femur.*",
+    "Tibia.*",
+    "Fibula.*",
+    "Patella.*"
+   ]
+  },
+  {
+   "key": "posterior-meniscotibial-ligament-lateral-meniscus",
+   "name": "Posterior meniscotibial ligament (Lateral meniscus)",
+   "objects": [
+    "Posterior meniscotibial ligament (Lateral meniscus).l"
+   ],
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ],
+   "ghost": [
+    "Femur.l",
+    "Lateral meniscus.l"
+   ],
+   "cutaway": [
+    "Patella.l"
+   ],
+   "frame": 0.2,
+   "keep": [
+    "Femur.*",
+    "Tibia.*",
+    "Fibula.*",
+    "Patella.*"
+   ]
+  },
+  {
+   "key": "posterior-meniscotibial-ligament-medial-meniscus",
+   "name": "Posterior meniscotibial ligament (Medial meniscus)",
+   "objects": [
+    "Posterior meniscotibial ligament (Medial meniscus).l"
+   ],
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ],
+   "ghost": [
+    "Femur.l",
+    "Medial meniscus.l"
+   ],
+   "cutaway": [
+    "Patella.l"
+   ],
+   "frame": 0.2,
+   "keep": [
+    "Femur.*",
+    "Tibia.*",
+    "Fibula.*",
+    "Patella.*"
+   ]
+  },
+  {
+   "key": "transverse-ligament-of-knee",
+   "name": "Transverse ligament of knee",
+   "objects": [
+    "Transverse ligament of knee.l"
+   ],
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ],
+   "ghost": [
+    "Femur.l",
+    "Lateral meniscus.l"
+   ],
+   "cutaway": [
+    "Patella.l"
+   ],
+   "frame": 0.2,
+   "keep": [
+    "Femur.*",
+    "Tibia.*",
+    "Fibula.*",
+    "Patella.*"
+   ]
+  },
+  {
+   "key": "acromioclavicular-ligament",
+   "name": "Acromioclavicular ligament",
+   "objects": [
+    "Acromioclavicular ligament.l"
+   ],
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ],
+   "frame": 0.24,
+   "keep": [
+    "Scapula.*",
+    "Clavicle.*",
+    "Humerus.*",
+    "Sternum*",
+    "Manubrium*",
+    "*rib*",
+    "Vertebra T*"
+   ]
+  },
+  {
+   "key": "anterior-sternoclavicular-ligament",
+   "name": "Anterior sternoclavicular ligament",
+   "objects": [
+    "Anterior sternoclavicular ligament.l"
+   ],
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ],
+   "frame": 0.24,
+   "keep": [
+    "Scapula.*",
+    "Clavicle.*",
+    "Humerus.*",
+    "Sternum*",
+    "Manubrium*",
+    "*rib*",
+    "Vertebra T*"
+   ]
+  },
+  {
+   "key": "coracohumeral-ligament",
+   "name": "Coracohumeral ligament",
+   "objects": [
+    "Coracohumeral ligament.l"
+   ],
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ],
+   "frame": 0.24,
+   "keep": [
+    "Scapula.*",
+    "Clavicle.*",
+    "Humerus.*",
+    "Sternum*",
+    "Manubrium*",
+    "*rib*",
+    "Vertebra T*"
+   ]
+  },
+  {
+   "key": "interclavicular-ligament",
+   "name": "Interclavicular ligament",
+   "objects": [
+    "Interclavicular ligament.l"
+   ],
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ],
+   "frame": 0.24,
+   "keep": [
+    "Scapula.*",
+    "Clavicle.*",
+    "Humerus.*",
+    "Sternum*",
+    "Manubrium*",
+    "*rib*",
+    "Vertebra T*"
+   ]
+  },
+  {
+   "key": "transverse-humeral-ligament",
+   "name": "Transverse humeral ligament",
+   "objects": [
+    "Transverse humeral ligament.l"
+   ],
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ],
+   "frame": 0.24,
+   "keep": [
+    "Scapula.*",
+    "Clavicle.*",
+    "Humerus.*",
+    "Sternum*",
+    "Manubrium*",
+    "*rib*",
+    "Vertebra T*"
+   ]
+  },
+  {
+   "key": "nuchal-ligament",
+   "name": "Nuchal ligament",
+   "objects": [
+    "Nuchal ligament"
+   ],
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ],
+   "frame": 0.26
+  },
+  {
+   "key": "external-intercostal-membrane",
+   "name": "External intercostal membrane",
+   "objects": [
+    "External intercostal membrane.l"
+   ],
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ],
+   "frame": 0.3
+  },
+  {
+   "key": "collateral-metacarpophalangeal-ligaments",
+   "name": "Collateral metacarpophalangeal ligaments",
+   "objects": [
+    "Collateral metacarpophalangeal ligaments.l"
+   ],
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ],
+   "frame": 0.2,
+   "keep": [
+    "Radius.*",
+    "Ulna.*",
+    "Humerus.*",
+    "Scaphoid bone.*",
+    "Lunate bone.*",
+    "Triquetrum bone.*",
+    "Pisiform bone.*",
+    "Trapezium bone.*",
+    "Trapezoid bone.*",
+    "Capitate bone.*",
+    "Hamate bone.*",
+    "*metacarpal bone*",
+    "*finger of hand*",
+    "Sesamoid bones of hand.*"
+   ]
+  },
+  {
+   "key": "deep-transverse-metacarpal-ligament",
+   "name": "Deep transverse metacarpal ligament",
+   "objects": [
+    "Deep transverse metacarpal ligament.l"
+   ],
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ],
+   "frame": 0.2,
+   "keep": [
+    "Radius.*",
+    "Ulna.*",
+    "Humerus.*",
+    "Scaphoid bone.*",
+    "Lunate bone.*",
+    "Triquetrum bone.*",
+    "Pisiform bone.*",
+    "Trapezium bone.*",
+    "Trapezoid bone.*",
+    "Capitate bone.*",
+    "Hamate bone.*",
+    "*metacarpal bone*",
+    "*finger of hand*",
+    "Sesamoid bones of hand.*"
+   ]
+  },
+  {
+   "key": "palmar-interphalangeal-ligaments",
+   "name": "Palmar interphalangeal ligaments",
+   "objects": [
+    "Palmar interphalangeal ligaments.l"
+   ],
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ],
+   "frame": 0.2,
+   "keep": [
+    "Radius.*",
+    "Ulna.*",
+    "Humerus.*",
+    "Scaphoid bone.*",
+    "Lunate bone.*",
+    "Triquetrum bone.*",
+    "Pisiform bone.*",
+    "Trapezium bone.*",
+    "Trapezoid bone.*",
+    "Capitate bone.*",
+    "Hamate bone.*",
+    "*metacarpal bone*",
+    "*finger of hand*",
+    "Sesamoid bones of hand.*"
+   ]
+  },
+  {
+   "key": "palmar-radio-ulnar-ligament",
+   "name": "Palmar radio-ulnar ligament",
+   "objects": [
+    "Palmar radio-ulnar ligament.l"
+   ],
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ],
+   "frame": 0.2,
+   "keep": [
+    "Radius.*",
+    "Ulna.*",
+    "Humerus.*",
+    "Scaphoid bone.*",
+    "Lunate bone.*",
+    "Triquetrum bone.*",
+    "Pisiform bone.*",
+    "Trapezium bone.*",
+    "Trapezoid bone.*",
+    "Capitate bone.*",
+    "Hamate bone.*",
+    "*metacarpal bone*",
+    "*finger of hand*",
+    "Sesamoid bones of hand.*"
+   ]
+  },
+  {
+   "key": "ulnocapitate-ligament",
+   "name": "Ulnocapitate ligament",
+   "objects": [
+    "Ulnocapitate ligament.l"
+   ],
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ],
+   "frame": 0.2,
+   "keep": [
+    "Radius.*",
+    "Ulna.*",
+    "Humerus.*",
+    "Scaphoid bone.*",
+    "Lunate bone.*",
+    "Triquetrum bone.*",
+    "Pisiform bone.*",
+    "Trapezium bone.*",
+    "Trapezoid bone.*",
+    "Capitate bone.*",
+    "Hamate bone.*",
+    "*metacarpal bone*",
+    "*finger of hand*",
+    "Sesamoid bones of hand.*"
+   ]
+  },
+  {
+   "key": "ulnolunate-ligament",
+   "name": "Ulnolunate ligament",
+   "objects": [
+    "Ulnolunate ligament.l"
+   ],
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ],
+   "frame": 0.2,
+   "keep": [
+    "Radius.*",
+    "Ulna.*",
+    "Humerus.*",
+    "Scaphoid bone.*",
+    "Lunate bone.*",
+    "Triquetrum bone.*",
+    "Pisiform bone.*",
+    "Trapezium bone.*",
+    "Trapezoid bone.*",
+    "Capitate bone.*",
+    "Hamate bone.*",
+    "*metacarpal bone*",
+    "*finger of hand*",
+    "Sesamoid bones of hand.*"
+   ]
+  },
+  {
+   "key": "ulnopisiform-ligament",
+   "name": "Ulnopisiform ligament",
+   "objects": [
+    "Ulnopisiform ligament.l"
+   ],
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ],
+   "frame": 0.2,
+   "keep": [
+    "Radius.*",
+    "Ulna.*",
+    "Humerus.*",
+    "Scaphoid bone.*",
+    "Lunate bone.*",
+    "Triquetrum bone.*",
+    "Pisiform bone.*",
+    "Trapezium bone.*",
+    "Trapezoid bone.*",
+    "Capitate bone.*",
+    "Hamate bone.*",
+    "*metacarpal bone*",
+    "*finger of hand*",
+    "Sesamoid bones of hand.*"
+   ]
+  },
+  {
+   "key": "ulnotriquetral-ligament",
+   "name": "Ulnotriquetral ligament",
+   "objects": [
+    "Ulnotriquetral ligament.l"
+   ],
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ],
+   "frame": 0.2,
+   "keep": [
+    "Radius.*",
+    "Ulna.*",
+    "Humerus.*",
+    "Scaphoid bone.*",
+    "Lunate bone.*",
+    "Triquetrum bone.*",
+    "Pisiform bone.*",
+    "Trapezium bone.*",
+    "Trapezoid bone.*",
+    "Capitate bone.*",
+    "Hamate bone.*",
+    "*metacarpal bone*",
+    "*finger of hand*",
+    "Sesamoid bones of hand.*"
+   ]
+  }
+ ]
+}

@@ -8,12 +8,13 @@ import { ConfidenceButtons } from '../shared/ConfidenceButtons';
 import { BottomSheet } from '../shared/BottomSheet';
 import { ExamAnswerFooter } from '../shared/ExamAnswerFooter';
 import { recordHintShown, shouldShowHint } from '../../lib/firstTimeHints';
+import { locateFeedback } from '../LocateStructureSession/locateFeedback';
 
 interface MobileLocateStructureSessionProps {
   question: LocateQuestion;
   imagesById: Map<string, AnatomyImageAsset>;
   structuresById: Map<string, AnatomyStructure>;
-  onAnswer: (params: { structureId: string; correct: boolean; hitDistance?: number; confidence?: Confidence }) => void;
+  onAnswer: (params: { structureId: string; correct: boolean; hitDistance?: number; accuracy?: number; confidence?: Confidence }) => void;
   onNext: () => void;
   onFullCard: () => void;
   /** No color reveal, no self-rating — answer submits and advances silently. See CR-009. */
@@ -62,9 +63,12 @@ export function MobileLocateStructureSession({
       </p>
     );
   }
+  const frames = (question.frameImageIds ?? [])
+    .map((id) => imagesById.get(id))
+    .filter((f): f is AnatomyImageAsset => !!f);
 
   const submitExamAnswer = (r: HotspotAnswerResult) => {
-    onAnswer({ structureId: question.targetStructureId, correct: r.correct, hitDistance: r.hitDistance });
+    onAnswer({ structureId: question.targetStructureId, correct: r.correct, hitDistance: r.hitDistance, accuracy: r.accuracy });
   };
   const handleImageAnswer = (r: HotspotAnswerResult) => {
     setResult(r);
@@ -72,19 +76,37 @@ export function MobileLocateStructureSession({
   };
   const handleListAnswer = (structureId: string) => {
     if (result) return;
-    const r: HotspotAnswerResult = { structureId, correct: structureId === question.targetStructureId, point: [0, 0] as [number, number] };
+    // The list fallback names a structure rather than pointing at one, so
+    // there is no tap and no frame of its own — the question's own image is
+    // the honest answer for `imageId`, and [0, 0] the conventional no-point.
+    const r: HotspotAnswerResult = {
+      structureId,
+      correct: structureId === question.targetStructureId,
+      point: [0, 0] as [number, number],
+      imageId: question.imageId,
+    };
     setResult(r);
     if (examMode) submitExamAnswer(r);
   };
   const handleRate = (confidence: Confidence) => {
     if (!result) return;
     setRated(true);
-    onAnswer({ structureId: question.targetStructureId, correct: result.correct, hitDistance: result.hitDistance, confidence });
+    onAnswer({ structureId: question.targetStructureId, correct: result.correct, hitDistance: result.hitDistance, accuracy: result.accuracy, confidence });
   };
 
-  const candidateStructures = (image.hotspots ?? [])
-    .map((h) => structuresById.get(h.structureId))
+  const candidateStructures = [
+    ...new Set([image, ...frames].flatMap((f) => (f.hotspots ?? []).map((h) => h.structureId))),
+  ]
+    .map((id) => structuresById.get(id))
     .filter((s): s is AnatomyStructure => !!s);
+
+  const feedback = result
+    ? locateFeedback(
+        result,
+        structuresById.get(question.targetStructureId)?.name ?? question.targetStructureId,
+        result.structureId ? structuresById.get(result.structureId)?.name : undefined,
+      )
+    : { title: '', detail: undefined as string | undefined };
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
@@ -103,7 +125,7 @@ export function MobileLocateStructureSession({
         </h2>
         {showHint && !listMode && (
           <p className="mt-2.5 text-sm leading-snug" style={{ color: 'var(--ink2)' }}>
-            Tap where the muscle sits on the image. Your first tap is your answer.
+            Tap where it sits on the image. Your first tap is your answer.
           </p>
         )}
 
@@ -122,6 +144,7 @@ export function MobileLocateStructureSession({
               <HotspotImage
                 key={question.id}
                 image={image}
+                frames={frames.length > 1 ? frames : undefined}
                 targetStructureId={question.targetStructureId}
                 toleranceMultiplier={question.toleranceMultiplier}
                 onAnswer={handleImageAnswer}
@@ -159,12 +182,8 @@ export function MobileLocateStructureSession({
       {result && !examMode && (
         <BottomSheet
           correct={result.correct}
-          title={result.correct ? 'Correct' : 'Not quite'}
-          body={
-            result.correct
-              ? 'Nice.'
-              : `That was ${structuresById.get(question.targetStructureId)?.name ?? question.targetStructureId}.`
-          }
+          title={feedback.title}
+          body={feedback.detail ?? ''}
           onFullCard={onFullCard}
         >
           {rated ? (

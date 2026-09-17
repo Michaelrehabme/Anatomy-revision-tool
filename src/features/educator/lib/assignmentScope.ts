@@ -1,6 +1,6 @@
 import type { RevisionSetConfig } from '../../anatomy-revision/lib/questionGenerators/generateSet';
 import type { QuestionType } from '../../anatomy-revision/types/question';
-import { AREA_LABELS } from '../../anatomy-revision/types/region';
+import { AREA_LABELS, normaliseAreas } from '../../anatomy-revision/types/region';
 import { MUSCLE_GROUP_LABELS, type Category } from '../../anatomy-revision/types/structure';
 import type { AssignmentScope, ScopedAssignment } from '../types/cohort';
 
@@ -35,6 +35,7 @@ export const CATEGORY_LABELS: Record<Category, string> = {
   bone: 'Bones',
   landmark: 'Landmarks',
   joint: 'Joints',
+  ligament: 'Ligaments',
 };
 
 /**
@@ -46,7 +47,10 @@ export const CATEGORY_LABELS: Record<Category, string> = {
 export function assignmentSetConfig(assignment: ScopedAssignment): RevisionSetConfig {
   return {
     types: assignment.questionTypes,
-    areas: assignment.scope.areas,
+    // Normalised here as well as on the Firestore read, so an assignment built in
+    // memory (the demo cohort, a test fixture) with a since-split area still scopes
+    // correctly — normaliseAreas is pure and idempotent.
+    areas: normaliseAreas(assignment.scope.areas),
     category: assignment.scope.category,
     groups: assignment.scope.groups?.length ? assignment.scope.groups : undefined,
     mode: 'assessment',
@@ -61,7 +65,7 @@ export function assignmentSetConfig(assignment: ScopedAssignment): RevisionSetCo
  * muscles carry groups) so naming both would read "Muscles · Hip flexors".
  */
 export function describeAssignmentScope(scope: AssignmentScope): string {
-  const areas = scope.areas.map((a) => AREA_LABELS[a]).join(', ');
+  const areas = normaliseAreas(scope.areas).map((a) => AREA_LABELS[a]).join(', ');
   if (scope.groups?.length) {
     return `${scope.groups.map((g) => MUSCLE_GROUP_LABELS[g] ?? g).join(', ')} · ${areas}`;
   }

@@ -5,6 +5,7 @@ import type { Area } from '../../types/region';
 import { buildIndexes, filterStructures } from '../indexes';
 import { createRng, shuffle } from '../rng';
 import { buildMcqQuestions } from './mcq';
+import { stampRequestedArea } from './generateSet';
 import { buildLocateQuestions } from './locate';
 
 /**
@@ -79,7 +80,7 @@ export function buildStarterSet(
     if (i < chosenMcq.length) out.push(chosenMcq[i]);
     if (i < chosenLocate.length) out.push(chosenLocate[i]);
   }
-  return out.slice(0, count);
+  return stampRequestedArea(out.slice(0, count), indexes.byId, config.areas);
 }
 
 function onePerStructure<Q extends MCQQuestion | LocateQuestion>(questions: Q[]): Q[] {

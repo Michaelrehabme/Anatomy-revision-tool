@@ -1,7 +1,11 @@
 import {
   isMuscle,
   isJoint,
-  areaOf,
+  isLigament,
+  isBone,
+  isLandmark,
+  primaryAreaOf,
+  areasOf,
   EQUIVALENT_MOVEMENT_GROUPS,
   UNIVERSAL_ACCESSORY_MOVEMENTS,
 } from '../../types/structure';
@@ -25,7 +29,7 @@ function baseFields(structure: AnatomyStructure, promptKind: MultiSelectQuestion
     structureId: structure.id,
     region: structure.region,
     subregion: structure.subregion,
-    area: areaOf(structure),
+    area: primaryAreaOf(structure),
     category: structure.category,
     difficulty: structure.difficulty,
     promptKind,
@@ -150,7 +154,10 @@ function buildJointMovementQuestions(pool: AnatomyStructure[], rng: Rng): MultiS
       ),
     ];
     const others = joints.filter((j) => j.id !== joint.id);
-    const sameGroup = candidatesFrom(others.filter((j) => areaOf(j) === areaOf(joint)));
+    // Neighbouring joints share any area, not just their first one — a facet joint
+    // spans all three spine areas, so a costovertebral joint counts as its neighbour.
+    const jointAreas = areasOf(joint);
+    const sameGroup = candidatesFrom(others.filter((j) => areasOf(j).some((a) => jointAreas.includes(a))));
     // Groups where every other joint is a gliding-only plane joint (the hip group's
     // sacroiliac + pubic symphysis, for instance) yield nothing — fall back to the
     // whole dataset rather than dropping the question entirely.
@@ -174,6 +181,79 @@ function buildJointMovementQuestions(pool: AnatomyStructure[], rng: Rng): MultiS
   return questions;
 }
 
+/**
+ * "Select all the bones the anterior cruciate ligament attaches to" — the
+ * recognition phase of a ligament's attachments. The correct set is the
+ * ligament's attachmentStructureIds; the distractors are other bones of the
+ * same area, so the wrong answers are the neighbours a student would
+ * actually confuse (fibula for the ACL), not the scapula.
+ *
+ * Attachments are named through the pool where possible and from the id
+ * otherwise — a knee pool carries the femur, but a wrist ligament's "radius"
+ * may be filtered out of a hand-only pool, and the question must still read.
+ */
+/**
+ * "the collateral ligaments attaches to" is the sort of thing a student
+ * notices and a generator does not. Several entries are plural groups rather
+ * than one strap, so the verb has to follow the head noun — which is not the
+ * last word either ("interosseous membrane of forearm" is singular).
+ */
+function attachVerb(name: string): string {
+  const head = name.toLowerCase();
+  return /ligaments|membranes|plates|retinacula/.test(head) ? 'attach' : 'attaches';
+}
+
+function buildLigamentAttachmentQuestions(
+  pool: AnatomyStructure[],
+  indexes: StructureIndexes,
+  rng: Rng,
+): MultiSelectQuestion[] {
+  // Names AND distractors come from the index, which is built over the whole
+  // dataset. Drawing them from the pool looked right until the app was run: a
+  // student narrowing a session to ligaments has a pool with no bones in it,
+  // so there were no distractors to offer and every attachment question
+  // vanished from the one session that is entirely about attachments.
+  const nameOf = (id: string) =>
+    indexes.byId.get(id)?.name ?? id.replace(/-/g, ' ').replace(/^[a-z]/, (c) => c.toUpperCase());
+  const questions: MultiSelectQuestion[] = [];
+
+  for (const lig of pool.filter(isLigament)) {
+    if (!lig.attachmentStructureIds.length) continue;
+    const correct = new Set(lig.attachmentStructureIds);
+    // A distractor must not be a different name for a correct answer. The
+    // ATFL attaches to the fibula; offering "lateral malleolus" beside it
+    // punishes the student who knows more precisely where. So a correct
+    // landmark rules out its parent bone and a correct bone rules out every
+    // landmark on it, and only whole bones remain as wrong answers.
+    const related = new Set<string>();
+    for (const s of indexes.byId.values()) {
+      if (isLandmark(s) && s.parentBoneId) {
+        if (correct.has(s.id)) related.add(s.parentBoneId);
+        if (correct.has(s.parentBoneId)) related.add(s.id);
+      }
+    }
+    const ligAreas = areasOf(lig);
+    const distractorPool = [...indexes.byId.values()].filter(
+      (s) => isBone(s) && !correct.has(s.id) && !related.has(s.id) && areasOf(s).some((a) => ligAreas.includes(a)),
+    );
+    const distractors = sample(distractorPool, Math.min(MAX_DISTRACTORS, distractorPool.length), rng);
+    if (distractors.length < 2) continue;
+
+    const correctNames = lig.attachmentStructureIds.map(nameOf);
+    const choices = shuffle([...correctNames, ...distractors.map((s) => s.name)], rng);
+    const correctSet = new Set(correctNames);
+    questions.push({
+      ...baseFields(lig, 'attachment'),
+      id: `multiselect-ligament-attachment-${lig.id}`,
+      prompt: `Select ALL the bones the ${lig.name} ${attachVerb(lig.name)} to.`,
+      choices,
+      correctIndices: choices.reduce<number[]>((acc, c, i) => (correctSet.has(c) ? [...acc, i] : acc), []),
+      explanation: `The ${lig.name} ${attachVerb(lig.name)} to: ${correctNames.join(', ')}.`,
+    });
+  }
+  return questions;
+}
+
 export function buildMultiSelectQuestions(
   pool: AnatomyStructure[],
   indexes: StructureIndexes,
@@ -183,5 +263,6 @@ export function buildMultiSelectQuestions(
     ...buildNerveQuestions(pool, indexes, rng),
     ...buildActionExclusionQuestions(pool, indexes, rng),
     ...buildJointMovementQuestions(pool, rng),
+    ...buildLigamentAttachmentQuestions(pool, indexes, rng),
   ];
 }

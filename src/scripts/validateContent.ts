@@ -9,7 +9,12 @@
  * real bug, not just incomplete content.
  */
 import { ALL_STRUCTURES, ALL_IMAGES } from '../features/anatomy-revision/data/seed';
-import { isJoint, isMuscle, areaOf } from '../features/anatomy-revision/types/structure';
+import { attachHotspots } from '../features/anatomy-revision/data/seed/hotspots';
+
+// The polygons are attached to the images separately now (seed/hotspots.ts),
+// and half the checks below are about them, so they have to be here first.
+await attachHotspots();
+import { isJoint, isMuscle, areasOf } from '../features/anatomy-revision/types/structure';
 import { AREAS, AREA_LABELS } from '../features/anatomy-revision/types/region';
 import { OINA_PROMPT_KINDS } from '../features/anatomy-revision/types/question';
 import { correctValuesFor } from '../features/anatomy-revision/lib/questionGenerators/oina';
@@ -174,15 +179,18 @@ function main(): void {
   // selects it and gets a zero-question session.
   const joints = ALL_STRUCTURES.filter(isJoint);
   for (const s of ALL_STRUCTURES) {
-    if (!areaOf(s)) {
+    if (areasOf(s).length === 0) {
       fail(
-        `Structure "${s.id}" resolves to no area (needs a subregion, or an explicit area ` +
+        `Structure "${s.id}" resolves to no area (needs a subregion, or an explicit areas ` +
           'override) — it would be unreachable from the area picker',
       );
     }
+    if (s.areas && s.areas.length === 0) {
+      fail(`Structure "${s.id}" has an empty areas override — omit it to derive from the subregion instead`);
+    }
   }
   for (const area of AREAS) {
-    const inArea = ALL_STRUCTURES.filter((s) => areaOf(s) === area);
+    const inArea = ALL_STRUCTURES.filter((s) => areasOf(s).includes(area));
     if (inArea.length === 0) {
       fail(`Area "${AREA_LABELS[area]}" has no structures — it is offered in the area picker and would yield an empty session`);
     } else if (!inArea.some(isJoint)) {
@@ -194,7 +202,7 @@ function main(): void {
 
   console.log(
     `\nStructures per area: ` +
-      AREAS.map((a) => `${AREA_LABELS[a]} ${ALL_STRUCTURES.filter((s) => areaOf(s) === a).length}`).join(', '),
+      AREAS.map((a) => `${AREA_LABELS[a]} ${ALL_STRUCTURES.filter((s) => areasOf(s).includes(a)).length}`).join(', '),
   );
   console.log(
     `Checked ${ALL_STRUCTURES.length} structures (${joints.length} joints) across ${AREAS.length} areas ` +

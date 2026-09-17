@@ -35,6 +35,19 @@ ap.add_argument("--margin", type=float, default=2.4, help="camera framing slack 
 ap.add_argument("--samples", type=int, default=64)
 ap.add_argument("--one-side", default="",
                 help="comma-separated ids to frame on one side regardless of SIDE_FRAMING_RATIO")
+ap.add_argument("--frame-on", default="",
+                help="comma-separated Blender object names to frame every render on, instead of each "
+                     "subject's own bbox — for a hand or a foot, where the SUBJECT is not the thing "
+                     "that has to be recognisable")
+ap.add_argument("--backdrop", default="",
+                help="comma-separated Blender object names to draw the subject on, instead of the whole "
+                     "skeleton. A frame wide enough to hold a forearm also holds the femur beside it, "
+                     "and the composite trims to whatever is opaque, so the far bone survives into the "
+                     "panel. Naming the backdrop is the only way to be sure what is in the picture.")
+ap.add_argument("--highlight", default="0.76,0.27,0.25",
+                help="RGB of the highlighted structure, 0-1. Muscle red by default; the bone panels "
+                     "shipped are highlight blue (0.22,0.45,0.72) and stay that way until they are "
+                     "all re-rendered together")
 a = ap.parse_args(argv)
 
 mapping = {m["id"]: m for m in json.load(open(a.mapping))["mapping"]}
@@ -42,6 +55,14 @@ wanted = a.muscles.split(",")
 views = [int(v) for v in a.views.split(",")]
 elevations = [float(e) for e in a.elevations.split(",")]
 force_one_side = set(filter(None, a.one_side.split(",")))
+frame_on = [n for n in a.frame_on.split(",") if n]
+backdrop_only = [n for n in a.backdrop.split(",") if n]
+# Which side --frame-on names, when it names one. A pure string question, so
+# it is settled here rather than beside the bbox that also needs it — the
+# skeleton is baked before that, and it needs the answer first.
+_one_side = [n for n in frame_on if n.endswith(".l")] or [n for n in frame_on if n.endswith(".r")]
+framed_side = _one_side[0][-2:] if _one_side and len(_one_side) < len(frame_on) else None
+highlight_rgb = tuple(float(v) for v in a.highlight.split(",")) + (1.0,)
 
 scene = bpy.data.scenes.new("PanelScene")
 bpy.context.window.scene = scene
@@ -94,7 +115,7 @@ def principled(name, colour, roughness=0.5):
 # cream bone and the near-white ground: the thinner structures — the plantar
 # intrinsics, the deep spinal series — were hard to pick out at all. Red is
 # what the tissue actually is, and it separates cleanly from bone.
-highlight_mat = principled("panel_highlight", (0.76, 0.27, 0.25, 1.0), roughness=0.45)
+highlight_mat = principled("panel_highlight", highlight_rgb, roughness=0.45)
 bone_mat = principled("panel_bone", (0.90, 0.88, 0.83, 1.0), roughness=0.6)
 
 
@@ -195,9 +216,55 @@ skel = bpy.data.collections.get("1: Skeletal system")
 # on brachioradialis, flexor-digitorum-profundus, interspinales, multifidus and
 # rotatores. `.g` is only ever a label, never anatomy.
 bone_names = [o.name for o in skel.all_objects if o.type == "MESH" and not o.name.endswith(".g")]
+# THE FAR LIMB IS NOT CONTEXT. A plantar view of one foot is taken from far
+# enough below the body that the other foot walks into the edge of frame, and
+# the trim that crops the finished panel then keeps it: the subject ends up
+# off-centre next to half a stranger. A panel framed on one side shows that
+# side. The axial skeleton carries no suffix and is unaffected.
+if framed_side:
+    other = ".r" if framed_side == ".l" else ".l"
+    bone_names = [n for n in bone_names if not n.endswith(other)]
+# An explicit backdrop wins outright. Dropping the far side is enough for a
+# hand, whose frame is barely wider than it is; a forearm needs a frame deep
+# enough to reach the elbow, and at that size the near femur stands beside the
+# hand and the trim keeps it. Saying which bones may appear settles it.
+if backdrop_only:
+    bone_names = backdrop_only
 print(f"[bones] baking {len(bone_names)} meshes...", flush=True)
 bone_mesh = bake_world_mesh(bone_names, "panel_bones")
 print(f"[bones] {len(bone_mesh.vertices)} verts", flush=True)
+
+# FRAME ON THE HAND, NOT ON THE MUSCLE INSIDE IT.
+#
+# Every panel frames its own subject, which is right for a deltoid and wrong
+# for opponens digiti minimi: the shot comes out as three strips of bone with
+# a red thread in them, and nothing in it says whether you are looking at the
+# palm or the back of the hand. The answer to "which structure is shown" is
+# unanswerable if you cannot tell which side of the hand you are on, and the
+# fix is not a better angle, it is a wider one — the whole hand in shot, from
+# a side that is named.
+#
+# Computed once: it is the same box for every subject in the run, which is the
+# point of it.
+shared_box = None
+if frame_on:
+    frame_mesh = bake_world_mesh(frame_on, "panel_frame_on")
+    if len(frame_mesh.vertices) == 0:
+        print(f"[error] --frame-on matched no geometry", flush=True)
+        sys.exit(1)
+    # One side, always. The two hands hang the width of the body apart, so their
+    # union frames the torso between them — the very failure this exists to fix.
+    one = _one_side
+    if framed_side:
+        side_mesh = bake_world_mesh(one, "panel_frame_on_side")
+        if len(side_mesh.vertices) > 0:
+            bpy.data.meshes.remove(frame_mesh)
+            frame_mesh = side_mesh
+        else:
+            bpy.data.meshes.remove(side_mesh)
+    shared_box = mesh_bbox(frame_mesh)
+    bpy.data.meshes.remove(frame_mesh)
+    print(f"[frame] framing every render on {len(frame_on)} objects", flush=True)
 
 t0 = time.time()
 count = 0
@@ -208,12 +275,17 @@ for mid in wanted:
         continue
 
     objects = entry["blenderObjects"]
+    # Highlight only the side that is in shot. The two feet sit close enough
+    # that a plantar view framed on one has the other at the edge of frame, and
+    # a red sliver of a muscle that is not the subject is worse than no sliver.
+    if framed_side:
+        objects = [o for o in objects if o.endswith(framed_side)] or objects
     mesh = bake_world_mesh(objects, f"panel_{mid}")
     if len(mesh.vertices) == 0:
         print(f"[warn] {mid}: empty bake, skipping", flush=True)
         continue
 
-    bmin, bmax = mesh_bbox(mesh)
+    bmin, bmax = shared_box if shared_box else mesh_bbox(mesh)
 
     # FRAME ONE SIDE WHEN THE PAIR IS WHAT IS WIDE, NOT THE MUSCLE.
     #
@@ -230,7 +302,7 @@ for mid in wanted:
     # threshold is deliberately loose so muscles that genuinely read better
     # as a symmetric pair keep their existing framing.
     side = [o for o in objects if o.endswith(".l")] or [o for o in objects if o.endswith(".r")]
-    if side and len(side) < len(objects):
+    if shared_box is None and side and len(side) < len(objects):
         side_mesh = bake_world_mesh(side, f"frame_{mid}")
         if len(side_mesh.vertices) > 0:
             smin, smax = mesh_bbox(side_mesh)

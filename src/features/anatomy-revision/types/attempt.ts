@@ -17,8 +17,17 @@ export interface UserAttempt {
   correct: boolean;
   /** Flashcard self-rating. */
   confidence?: Confidence;
-  /** Locate questions: normalized click-to-centroid distance, for analytics. */
+  /** Locate questions: normalized distance from the tap to the target, for analytics. */
   hitDistance?: number;
+  /**
+   * Locate questions on a landmark: the archery score, 1-10 in, 0 outside.
+   *
+   * Comparable across questions in a way `hitDistance` is not — that is a
+   * fraction of an image, so the same number means a different distance on the
+   * femur than on the atlas, and a different one again at a different crop.
+   * This is normalized to the landmark's own size by construction.
+   */
+  accuracy?: number;
   /**
    * The literal choice text (MCQ) or typed string (fill-blank, identify-typed)
    * the student submitted. Never an index — choices are shuffled per session,

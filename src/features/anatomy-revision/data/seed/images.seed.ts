@@ -3,7 +3,11 @@ import { MUSCLE_PANELS } from './panels.generated';
 import type { Region, SubRegion } from '../../types/region';
 import { REGION_HOTSPOTS, REGION_PANEL_NAMES } from './hotspots.regions.generated';
 import { JOINT_PANELS } from './jointPanels.generated';
-import { JOINT_HOTSPOTS } from './hotspots.joints.generated';
+import { BONE_PLATES } from './bonePlates.generated';
+import { DEEP_PLATES } from './deepPlates.generated';
+import { LANDMARK_PANELS } from './landmarkPanels.generated';
+import { SUBREGION_PLATES } from './subRegionPlates.generated';
+import { LIGAMENT_PLATES } from './ligamentPlates.generated';
 
 /**
  * Three image sets, in the order they appear below:
@@ -374,7 +378,166 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
       layer: 'skeletal',
       width: panel.width,
       height: panel.height,
-      hotspots: JOINT_HOTSPOTS[id] ?? [],
+      hotspots: [],  // attached by seed/hotspots.ts; see the note there
+      credit: Z_ANATOMY_CREDIT,
+      licence: Z_ANATOMY_LICENCE,
+    };
+  }),
+
+  // --- Ligament plates: one joint framed on one ligament, up to eight angles ---
+  // Two pictures per angle. The context picture shows every ligament of the
+  // joint at rest and carries hotspots for the target and every other seeded
+  // ligament in view — one picture, many hotspots, like the region plates —
+  // so it is the locate picture, and a wrong click can be named. The highlight
+  // picture picks the target out in cyan: pre-highlighted, so no hotspots and
+  // never a locate question, exactly as the muscle panels are handled. Only
+  // angles where the target traced are published. Rendered by
+  // renderLigamentPlates.py, published by publishLigamentPlates.ts.
+  ...LIGAMENT_PLATES.map((plate): AnatomyImageAsset => {
+    const id = `ligament-${plate.structureId}-a${String(plate.angle).padStart(3, '0')}-${plate.kind}`;
+    const viewLabel = `${plate.view[0].toUpperCase()}${plate.view.slice(1)}`;
+    return plate.kind === 'context'
+      ? {
+          id,
+          filePath: `/anatomy/ligaments/${plate.structureId}-a${String(plate.angle).padStart(3, '0')}-context.webp`,
+          slideTitle: `${plate.name} — ${viewLabel} View`,
+          mode: 'atlas-slide',
+          panelStructureNames: plate.panelStructureNames,
+          region: plate.region,
+          subregion: plate.subregion,
+          view: plate.view,
+          layer: 'ligament',
+          width: plate.width,
+          height: plate.height,
+          hotspots: [],  // attached by seed/hotspots.ts; see the note there
+          credit: Z_ANATOMY_CREDIT,
+          licence: Z_ANATOMY_LICENCE,
+        }
+      : {
+          id,
+          filePath: `/anatomy/ligaments/${plate.structureId}-a${String(plate.angle).padStart(3, '0')}-highlight.webp`,
+          slideTitle: `${plate.name} — ${viewLabel} View (highlighted)`,
+          mode: 'single-structure',
+          structureId: plate.structureId,
+          region: plate.region,
+          subregion: plate.subregion,
+          view: plate.view,
+          layer: 'ligament',
+          width: plate.width,
+          height: plate.height,
+          hotspots: [],
+          credit: Z_ANATOMY_CREDIT,
+          licence: Z_ANATOMY_LICENCE,
+        };
+  }),
+
+  // --- Bone plates: the skeleton by region, one image per view ---
+  // Bones were the only category already eligible for locate questions with no
+  // hotspot anywhere to answer one: every hotspot the app had described a
+  // muscle. These are the region idea applied to the skeleton — the plate shows
+  // the bones plainly and each bone's silhouette is traced from a mask rendered
+  // with the others held out, so a bone behind another claims only what can be
+  // seen. Rendered by renderBonePlates.py, traced by bonePlateHotspots.ts.
+  ...BONE_PLATES.map((plate): AnatomyImageAsset => {
+    const id = `bone-${plate.region}-${plate.view}`;
+    return {
+      id,
+      filePath: `/anatomy/bones/${plate.region}-${plate.view}.webp`,
+      slideTitle: `${plate.title} — Skeleton, ${plate.view[0].toUpperCase()}${plate.view.slice(1)} View`,
+      mode: 'atlas-slide',
+      panelStructureNames: [],
+      region: plate.region,
+      subregion: plate.subregion,
+      view: plate.view,
+      layer: 'skeletal',
+      width: plate.width,
+      height: plate.height,
+      hotspots: [],  // attached by seed/hotspots.ts; see the note there
+      credit: Z_ANATOMY_CREDIT,
+      licence: Z_ANATOMY_LICENCE,
+    };
+  }),
+
+  // --- Deep-muscle plates: the layer under the region plates ---
+  // 48 muscles sit behind something on the region plates, so the depth
+  // subtraction removed them and they never carried a hotspot. These draw only
+  // those muscles on the skeleton: nothing is in front of them because nothing
+  // in front of them is rendered. Rendered by renderDeepPlates.py.
+  ...DEEP_PLATES.map((plate): AnatomyImageAsset => {
+    const id = `deep-${plate.region}-${plate.view}`;
+    return {
+      id,
+      filePath: `/anatomy/deep/${plate.region}-${plate.view}.webp`,
+      slideTitle: `${plate.title} — Deep Layer, ${plate.view[0].toUpperCase()}${plate.view.slice(1)} View`,
+      mode: 'atlas-slide',
+      panelStructureNames: [],
+      region: plate.region,
+      subregion: plate.subregion,
+      view: plate.view,
+      layer: 'deep-muscle',
+      width: plate.width,
+      height: plate.height,
+      hotspots: [],  // attached by seed/hotspots.ts; see the note there
+      credit: Z_ANATOMY_CREDIT,
+      licence: Z_ANATOMY_LICENCE,
+    };
+  }),
+
+  // --- Landmarks: a point on its bone ---
+  // A landmark is not separable geometry, so it cannot be highlighted and had
+  // only an AI-generated slide. Z-Anatomy marks each with a positioned anchor,
+  // which is snapped to the bone and framed; the hotspot is a CIRCLE sized from
+  // the landmark's real dimensions rather than a traced outline. Only views
+  // where it is on the near side of the bone are published at all.
+  ...LANDMARK_PANELS.map((panel): AnatomyImageAsset => {
+    const id = `landmark-${panel.structureId}-${panel.view}`;
+    return {
+      id,
+      filePath: `/anatomy/landmarks/${panel.structureId}-${panel.view}.webp`,
+      slideTitle: `${panel.name} — ${panel.view[0].toUpperCase()}${panel.view.slice(1)} View`,
+      mode: 'single-structure',
+      structureId: panel.structureId,
+      region: panel.region,
+      subregion: panel.subregion,
+      view: panel.view,
+      layer: 'skeletal',
+      width: panel.width,
+      height: panel.height,
+      hotspots: [],  // attached by seed/hotspots.ts; see the note there
+      credit: Z_ANATOMY_CREDIT,
+      licence: Z_ANATOMY_LICENCE,
+    };
+  }),
+
+  // --- Sub-region plates: drawn close enough to aim at ---
+  // The region and skeleton plates frame a whole limb, and at that scale the
+  // small structures — lumbricals, interossei, scaphoid, atlas — came out a few
+  // hundred pixels and were dropped rather than traced. Nothing is wrong with
+  // them; the camera was in the wrong place. Bones and muscles share a plate
+  // deliberately: a student looking at a hand should be asked for the scaphoid
+  // and for opponens pollicis from the same picture.
+  ...SUBREGION_PLATES.map((plate): AnatomyImageAsset => {
+    // A ROTATION SET IS NAMED BY ITS ANGLE, not by its view: at 30 degrees two
+    // frames share a view name, and "-aNNN-" is the marker the app groups a
+    // turntable by (lib/questionGenerators/locate.ts). A plate with no angle is
+    // a single look — the plantar view, which no amount of turning about the
+    // vertical axis will ever reach — and keeps the name it always had.
+    const turn = plate.angle === undefined ? null : String(plate.angle).padStart(3, '0');
+    const id = turn ? `sub-${plate.slug}-a${turn}-plate` : `sub-${plate.slug}-${plate.view}`;
+    const file = turn ? `${plate.slug}-a${turn}` : `${plate.slug}-${plate.view}`;
+    return {
+      id,
+      filePath: `/anatomy/subregions/${file}.webp`,
+      slideTitle: `${plate.title} — Close, ${plate.view[0].toUpperCase()}${plate.view.slice(1)} View`,
+      mode: 'atlas-slide',
+      panelStructureNames: [],
+      region: plate.region,
+      subregion: plate.subregion,
+      view: plate.view,
+      layer: 'skeletal',
+      width: plate.width,
+      height: plate.height,
+      hotspots: [],  // attached by seed/hotspots.ts; see the note there
       credit: Z_ANATOMY_CREDIT,
       licence: Z_ANATOMY_LICENCE,
     };

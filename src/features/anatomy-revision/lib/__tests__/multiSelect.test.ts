@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { ALL_STRUCTURES } from '../../data/seed';
-import { isJoint, areaOf, EQUIVALENT_MOVEMENT_GROUPS } from '../../types/structure';
+import { isJoint, areasOf, EQUIVALENT_MOVEMENT_GROUPS, isLigament } from '../../types/structure';
 import type { JointMovement } from '../../types/structure';
 import { buildIndexes } from '../indexes';
 import { buildMultiSelectQuestions } from '../questionGenerators/multiSelect';
@@ -22,13 +22,40 @@ describe('buildMultiSelectQuestions', () => {
 
   it('every question has at least 2 correct indices for nerve-based questions, or exactly 1 for exclusion questions', () => {
     const result = buildMultiSelectQuestions(ALL_STRUCTURES, indexes, createRng(3));
+    const ligamentById = new Map(ALL_STRUCTURES.filter(isLigament).map((l) => [l.id, l]));
     for (const q of result) {
       expect(q.correctIndices.length).toBeGreaterThan(0);
       if (q.id.startsWith('multiselect-nerve-')) {
         expect(q.correctIndices.length).toBeGreaterThanOrEqual(2);
+      } else if (q.id.startsWith('multiselect-ligament-attachment-')) {
+        // One correct choice per attachment: a ligament with two bones has two.
+        expect(q.correctIndices.length).toBe(ligamentById.get(q.structureId)!.attachmentStructureIds.length);
       } else {
         expect(q.correctIndices.length).toBe(1);
       }
+    }
+  });
+
+  it('ligament attachment questions never offer a correct answer under another name', () => {
+    const result = buildMultiSelectQuestions(ALL_STRUCTURES, indexes, createRng(3))
+      .filter((q) => q.id.startsWith('multiselect-ligament-attachment-'));
+    expect(result.length).toBeGreaterThan(0);
+    const byName = new Map(ALL_STRUCTURES.map((s) => [s.name, s]));
+    for (const q of result) {
+      const lig = ALL_STRUCTURES.find((s) => s.id === q.structureId);
+      if (!lig || !isLigament(lig)) throw new Error(`${q.structureId} is not a ligament`);
+      const correct = new Set(lig.attachmentStructureIds);
+      q.choices.forEach((name, i) => {
+        if (q.correctIndices.includes(i)) return;
+        const s = byName.get(name);
+        // Every wrong answer is a whole bone that is neither an attachment nor
+        // the parent of one: "lateral malleolus" must not sit beside "fibula".
+        expect(s?.category).toBe('bone');
+        expect(correct.has(s!.id)).toBe(false);
+        for (const l of ALL_STRUCTURES) {
+          if (l.category === 'landmark' && l.parentBoneId === s!.id) expect(correct.has(l.id)).toBe(false);
+        }
+      });
     }
   });
 
@@ -111,7 +138,7 @@ describe('buildMultiSelectQuestions', () => {
       expect(radiocarpal).toBeDefined();
       if (!radiocarpal) return;
       const sameAreaMovements = new Set(
-        joints.filter((j) => areaOf(j) === 'wrist-hand' && j.id !== radiocarpal.id).flatMap((j) => j.movements),
+        joints.filter((j) => areasOf(j).includes('wrist-hand') && j.id !== radiocarpal.id).flatMap((j) => j.movements),
       );
       for (const q of allJointQuestions.filter((q) => q.id.endsWith('radiocarpal-joint'))) {
         expect(sameAreaMovements).toContain(q.choices[q.correctIndices[0]]);

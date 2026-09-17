@@ -3,12 +3,15 @@ import type { TypedIdentifyQuestion } from '../../types/question';
 import type { AnatomyImageAsset } from '../../types/image';
 import type { Confidence } from '../../types/attempt';
 import { questionLocationLabel } from '../../types/region';
-import { AttributionBadge } from '../shared/AttributionBadge';
 import { HotspotOverlay } from '../LocateStructureSession/HotspotOverlay';
+import { ImageViewer } from '../shared/ImageViewer';
+import { rotationFramesFor } from '../../lib/rotationFrames';
+import { promptHighlightHotspots } from '../../lib/promptHighlight';
 import { ConfidenceButtons } from '../shared/ConfidenceButtons';
 import { BottomSheet } from '../shared/BottomSheet';
 import { ExamAnswerFooter } from '../shared/ExamAnswerFooter';
 import { isAnswerMatch } from '../../lib/answerMatching';
+import { gradeTypedSlots } from '../../lib/oinaAnswer';
 
 interface MobileIdentifyTypedSessionProps {
   question: TypedIdentifyQuestion;
@@ -28,26 +31,40 @@ interface MobileIdentifyTypedSessionProps {
 
 export function MobileIdentifyTypedSession({ question, imagesById, onAnswer, onNext, onFullCard, examMode }: MobileIdentifyTypedSessionProps) {
   const [attempt, setAttempt] = useState('');
-  const [submitted, setSubmitted] = useState<{ correct: boolean } | null>(null);
+  const slots = useMemo(() => question.attachmentSlots ?? [], [question.attachmentSlots]);
+  const [slotInputs, setSlotInputs] = useState<string[]>(() => slots.map(() => ''));
+  const [submitted, setSubmitted] = useState<{ correct: boolean; slotCorrect: boolean[] } | null>(null);
   const [rated, setRated] = useState(false);
 
   useEffect(() => {
     setAttempt('');
+    setSlotInputs(slots.map(() => ''));
     setSubmitted(null);
     setRated(false);
-  }, [question.id]);
+  }, [question.id, slots]);
 
   const promptImage = imagesById.get(question.promptImageId);
-  const highlightHotspots = promptImage?.mode === 'atlas-slide' ? (promptImage.hotspots ?? []) : [];
+  const highlightHotspots = promptHighlightHotspots(promptImage, question.structureId);
+  // Every angle of the same picture, so the student can turn it. A plate
+  // that is not part of a rotation set gives back nothing and the viewer
+  // simply shows no turn controls.
+  const promptFrames = rotationFramesFor(promptImage, imagesById.values());
   const canonical = question.acceptedAnswers[0];
   const hints = useMemo(() => [`${canonical.length} letters`, `starts with ${canonical[0]?.toUpperCase()}`], [canonical]);
 
+  const correctAnswer = slots.length
+    ? `${canonical} — attaches to ${slots.map((sl) => sl.accepted[0]).join(', ')}`
+    : canonical;
+  const selectedAnswer = () => (slots.length ? [attempt, ...slotInputs].join(' / ') : attempt);
+
   const handleSubmit = () => {
     if (submitted || !attempt.trim()) return;
-    const correct = isAnswerMatch(attempt, question.acceptedAnswers);
-    setSubmitted({ correct });
+    const nameCorrect = isAnswerMatch(attempt, question.acceptedAnswers);
+    const graded = gradeTypedSlots(slotInputs, slots);
+    const correct = nameCorrect && graded.allCorrect;
+    setSubmitted({ correct, slotCorrect: graded.slotCorrect });
     if (examMode) {
-      onAnswer({ structureId: question.structureId, correct, selectedAnswer: attempt, correctAnswer: canonical });
+      onAnswer({ structureId: question.structureId, correct, selectedAnswer: selectedAnswer(), correctAnswer });
     }
   };
   const handleRate = (confidence: Confidence) => {
@@ -57,8 +74,8 @@ export function MobileIdentifyTypedSession({ question, imagesById, onAnswer, onN
       structureId: question.structureId,
       correct: submitted.correct,
       confidence,
-      selectedAnswer: attempt,
-      correctAnswer: canonical,
+      selectedAnswer: selectedAnswer(),
+      correctAnswer,
     });
   };
 
@@ -81,21 +98,15 @@ export function MobileIdentifyTypedSession({ question, imagesById, onAnswer, onN
         </h2>
 
         {promptImage && (
-          <figure className="mt-4">
-            <div
-              className="relative overflow-hidden rounded-[3px]"
-              style={{
-                background: 'var(--sf)',
-                aspectRatio: promptImage.width && promptImage.height ? `${promptImage.width} / ${promptImage.height}` : undefined,
-              }}
-            >
-              <img src={promptImage.filePath} alt={question.prompt} className="h-full w-full object-cover" />
-              {highlightHotspots.length > 0 && (
-                <HotspotOverlay hotspots={highlightHotspots} highlightStructureId={question.structureId} />
-              )}
-            </div>
-            <AttributionBadge image={promptImage} />
-          </figure>
+          <ImageViewer
+              className="mt-4"
+              image={promptImage}
+              frames={promptFrames}
+              resetKey={question.id}
+              overlay={() => (highlightHotspots.length > 0
+                ? <HotspotOverlay hotspots={highlightHotspots} highlightStructureId={question.structureId} />
+                : null)}
+            />
         )}
 
         <input
@@ -118,6 +129,30 @@ export function MobileIdentifyTypedSession({ question, imagesById, onAnswer, onN
             boxSizing: 'border-box',
           }}
         />
+
+        {slots.map((slot, i) => (
+          <input
+            key={i}
+            type="text"
+            value={slotInputs[i] ?? ''}
+            onChange={(e) => setSlotInputs((prev) => prev.map((v, j) => (j === i ? e.target.value : v)))}
+            disabled={!!submitted}
+            placeholder={`${slot.label} (${i + 1} of ${slots.length})`}
+            aria-label={`${slot.label} ${i + 1}`}
+            onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
+            className="mt-3 w-full disabled:opacity-70"
+            style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 19,
+              padding: '10px 2px',
+              border: 0,
+              borderBottom: `1.6px solid ${submitted && !examMode ? (submitted.slotCorrect[i] ? 'var(--acc)' : 'var(--acc2)') : 'var(--fig-line)'}`,
+              background: 'none',
+              color: 'var(--ink)',
+              boxSizing: 'border-box',
+            }}
+          />
+        ))}
 
         {!submitted && (
           <div className="mt-4 flex flex-wrap gap-2">
@@ -154,7 +189,7 @@ export function MobileIdentifyTypedSession({ question, imagesById, onAnswer, onN
           title={submitted.correct ? 'Correct' : 'Not quite'}
           body={
             <>
-              <strong className="font-semibold">{canonical}.</strong> {question.explanation}
+              <strong className="font-semibold">{correctAnswer}.</strong> {question.explanation}
             </>
           }
           onFullCard={onFullCard}

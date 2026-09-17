@@ -4,6 +4,7 @@ import type { HotspotPolygon } from '../anatomy-revision/types/image';
 import { ImagePicker } from './components/ImagePicker';
 import { CanvasEditor } from './components/CanvasEditor';
 import { loadDrafts, saveDrafts, type DraftsByImageId } from './lib/draftStore';
+import { useHotspotsReady } from '../anatomy-revision/hooks/useHotspotsReady';
 import { buildHotspotsFile } from './lib/exportHotspots';
 
 const structuresById = new Map(ALL_STRUCTURES.map((s) => [s.id, s]));
@@ -16,7 +17,7 @@ const structuresById = new Map(ALL_STRUCTURES.map((s) => [s.id, s]));
  * scripts/importHotspots.ts, matching how the Blender pipeline output was
  * always meant to be ingested).
  */
-export default function HotspotEditorApp() {
+function HotspotEditor() {
   const [drafts, setDrafts] = useState<DraftsByImageId>({});
   const [selectedImageId, setSelectedImageId] = useState<string | null>(null);
   const [copyStatus, setCopyStatus] = useState<'idle' | 'copied'>('idle');
@@ -90,4 +91,15 @@ export default function HotspotEditorApp() {
       </div>
     </div>
   );
+}
+
+/**
+ * The polygons arrive separately from the images (seed/hotspots.ts), and this
+ * tool reads them straight off the seed, so it waits for them rather than
+ * opening on pictures with nothing drawn on them.
+ */
+export default function HotspotEditorApp() {
+  const ready = useHotspotsReady();
+  if (!ready) return <p className="p-6 text-sm text-ink3">Loading hotspot data...</p>;
+  return <HotspotEditor />;
 }

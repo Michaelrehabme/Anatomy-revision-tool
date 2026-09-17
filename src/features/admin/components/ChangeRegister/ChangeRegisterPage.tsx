@@ -11,7 +11,7 @@ import { Button } from '../../../anatomy-revision/components/shared/Button';
 const DEFAULT_FILTERS: ChangeRequestFilterState = { status: 'all', category: 'all', priority: 'all' };
 
 export function ChangeRegisterPage() {
-  const { items, loading, error, create, setStatus } = useChangeRequests();
+  const { items, loading, error, create, setStatus, toggleChecklistItem } = useChangeRequests();
   const [filters, setFilters] = useState<ChangeRequestFilterState>(DEFAULT_FILTERS);
   const [selectedRef, setSelectedRef] = useState<string | null>(null);
   const [showNewForm, setShowNewForm] = useState(false);
@@ -102,7 +102,12 @@ export function ChangeRegisterPage() {
       )}
 
       {selected && (
-        <ChangeRequestDetailPanel item={selected} onClose={() => setSelectedRef(null)} onSetStatus={handleSetStatus} />
+        <ChangeRequestDetailPanel
+          item={selected}
+          onClose={() => setSelectedRef(null)}
+          onSetStatus={handleSetStatus}
+          onToggleChecklistItem={toggleChecklistItem}
+        />
       )}
 
       {showNewForm && (

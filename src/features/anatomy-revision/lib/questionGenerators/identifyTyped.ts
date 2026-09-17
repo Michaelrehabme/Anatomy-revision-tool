@@ -1,4 +1,4 @@
-import { areaOf } from '../../types/structure';
+import { primaryAreaOf, isLigament } from '../../types/structure';
 import { structureNameVariants } from '../nameVariants';
 import type { AnatomyStructure } from '../../types/structure';
 import type { AnatomyImageAsset } from '../../types/image';
@@ -16,18 +16,37 @@ import { imageDepicts } from './mcq';
 export function buildIdentifyTypedQuestions(
   structures: AnatomyStructure[],
   images: AnatomyImageAsset[],
+  /**
+   * The whole dataset, for naming a ligament's attachments. It must not be the
+   * filtered pool: a student who narrows a session to ligaments has a pool with
+   * no bones in it, so looking an attachment up there finds nothing and the
+   * boxes silently vanish — exactly the session where they matter most.
+   * Defaults to `structures` for callers that pass the full set anyway.
+   */
+  allStructures: AnatomyStructure[] = structures,
 ): TypedIdentifyQuestion[] {
   const questions: TypedIdentifyQuestion[] = [];
+  const byId = new Map(allStructures.map((s) => [s.id, s]));
 
   for (const structure of structures) {
     if (!structure.eligibility.mcq) continue;
+
+    // A ligament is asked for its name AND its attachments, one box each —
+    // the bones are named through the seed so "talus" and "tarsals" are
+    // graded by the same variants the rest of the app accepts.
+    const attachmentSlots = isLigament(structure)
+      ? structure.attachmentStructureIds.flatMap((id) => {
+          const bone = byId.get(id);
+          return bone ? [{ label: 'Attaches to', accepted: structureNameVariants(bone.name, bone.aliases) }] : [];
+        })
+      : [];
 
     for (const image of images.filter((img) => imageDepicts(img, structure.id))) {
       questions.push({
         structureId: structure.id,
         region: structure.region,
         subregion: structure.subregion,
-    area: areaOf(structure),
+    area: primaryAreaOf(structure),
         category: structure.category,
         difficulty: structure.difficulty,
         promptKind: 'identify',
@@ -36,6 +55,7 @@ export function buildIdentifyTypedQuestions(
         prompt: image.mode === 'atlas-slide' ? 'Which structure is highlighted?' : 'Which structure is shown?',
         promptImageId: image.id,
         acceptedAnswers: structureNameVariants(structure.name, structure.aliases),
+        ...(attachmentSlots.length ? { attachmentSlots } : {}),
         explanation: summarizeStructure(structure),
       });
     }

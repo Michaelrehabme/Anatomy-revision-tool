@@ -1,4 +1,4 @@
-import { isMuscle, isBone, isLandmark, isJoint, areaOf, JOINT_TYPE_LABELS } from '../types/structure';
+import { isMuscle, isBone, isLandmark, isJoint, isLigament, areasOf, JOINT_TYPE_LABELS } from '../types/structure';
 import type { AnatomyStructure } from '../types/structure';
 import { REGION_LABELS, SUBREGION_LABELS, AREA_LABELS } from '../types/region';
 import type { OinaPromptKind } from '../types/question';
@@ -9,14 +9,18 @@ import type { OinaPromptKind } from '../types/question';
  * AnatomyStructure into readable prose lines.
  */
 export function describeStructure(s: AnatomyStructure): string[] {
-  // Leads with the area, since that is what the user filtered by (CR-017). The
-  // finer subregion is kept in brackets where it adds something the area does not —
-  // "Back & Core (Cervical)" is worth more than "Back & Core" alone — but it is
-  // dropped where the two would just repeat each other ("Shoulder (Shoulder)").
-  const area = areaOf(s);
-  const areaLabel = area ? AREA_LABELS[area] : REGION_LABELS[s.region];
+  // Leads with the area, since that is what the user filtered by (CR-017). A
+  // structure can sit in several — a pedicle revises under all three spine levels —
+  // so they are all named. The finer subregion is kept in brackets where it adds
+  // something the areas do not ("Hip (Spine)" for the sacroiliac joint), and dropped
+  // where they would just repeat each other ("Shoulder (Shoulder)", or "Lumbar Spine
+  // (Spine)", whose area label already contains the word).
+  const areas = areasOf(s);
+  const areaLabel = areas.length ? areas.map((a) => AREA_LABELS[a]).join(', ') : REGION_LABELS[s.region];
   const sub = s.subregion ? SUBREGION_LABELS[s.subregion] : undefined;
-  const lines: string[] = [`Area: ${areaLabel}${sub && sub !== areaLabel ? ` (${sub})` : ''}`];
+  const subAddsInfo =
+    !!sub && !areas.some((a) => AREA_LABELS[a].toLowerCase().includes(sub.toLowerCase()));
+  const lines: string[] = [`Area: ${areaLabel}${subAddsInfo ? ` (${sub})` : ''}`];
 
   if (isMuscle(s)) {
     lines.push(`Origin: ${s.origin.join('; ')}`);
@@ -33,6 +37,11 @@ export function describeStructure(s: AnatomyStructure): string[] {
   } else if (isLandmark(s)) {
     if (s.attachments.length) lines.push(`Attachments: ${s.attachments.join('; ')}`);
     if (s.articulations?.length) lines.push(`Articulations: ${s.articulations.join('; ')}`);
+  } else if (isLigament(s)) {
+    if (s.attachmentStructureIds.length) {
+      lines.push(`Attaches to: ${s.attachmentStructureIds.map((id) => id.replace(/-/g, ' ')).join('; ')}`);
+    }
+    if (s.jointId) lines.push(`Stabilises: ${s.jointId.replace(/-/g, ' ')}`);
   } else if (isJoint(s)) {
     lines.push(`Type: ${JOINT_TYPE_LABELS[s.jointType]}`);
     lines.push(`Movements: ${s.movements.join('; ')}`);
@@ -86,6 +95,12 @@ export function describeFact(s: AnatomyStructure, promptKind: OinaPromptKind): s
 export function buildIdentifyClue(s: AnatomyStructure): string {
   if (isMuscle(s)) return `${s.origin.join('; ')} — ${s.actionText}`;
   if (isJoint(s)) return `${JOINT_TYPE_LABELS[s.jointType]} — ${s.movements.join('; ')}`;
+  if (isLigament(s)) {
+    // Its attachments, by id rather than name: facts.ts has no structure
+    // lookup, and "attaches to: talus; fibula" reads fine from the ids.
+    if (s.attachmentStructureIds.length) return `attaches to: ${s.attachmentStructureIds.map((id) => id.replace(/-/g, ' ')).join('; ')}`;
+    return s.description;
+  }
   if (s.attachments.length) return s.attachments.join('; ');
   if (s.articulations?.length) return s.articulations.join('; ');
   return s.description;

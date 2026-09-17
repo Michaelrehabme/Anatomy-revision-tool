@@ -338,6 +338,15 @@ for jid in wanted:
     objs_a = restrict(j["a"]["objects"], suffix)
     objs_b = restrict(j["b"]["objects"], suffix)
 
+    # A MIDLINE JOINT IS THE TWO SIDES. Restricting to one side keeps the camera
+    # from framing across the body, but the pubic symphysis is the left hip bone
+    # against the right one: filtering to ".l" emptied the other half and the
+    # joint was reported as never touching. If a side has nothing left, the pair
+    # spans the midline and the restriction is the wrong tool.
+    if not objs_a or not objs_b:
+        objs_a, objs_b = j["a"]["objects"], j["b"]["objects"]
+        print(f"[frame] {jid}: spans the midline, both sides kept", flush=True)
+
     mesh_a = bake(objs_a, f"a_{jid}")
     mesh_b = bake(objs_b, f"b_{jid}")
 

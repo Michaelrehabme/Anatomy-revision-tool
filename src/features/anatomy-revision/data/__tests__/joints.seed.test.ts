@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { ALL_STRUCTURES } from '../seed';
-import { isJoint, isLandmark, areaOf } from '../../types/structure';
+import { isJoint, isLandmark, areasOf } from '../../types/structure';
 import { AREAS, AREA_LABELS } from '../../types/region';
 
 /**
@@ -15,7 +15,7 @@ describe('joint seed data', () => {
     // An empty area is a dead end in the picker: the user selects it and the session
     // generates zero questions.
     for (const area of AREAS) {
-      const count = joints.filter((j) => areaOf(j) === area).length;
+      const count = joints.filter((j) => areasOf(j).includes(area)).length;
       expect(count, `no joints in ${AREA_LABELS[area]}`).toBeGreaterThan(0);
     }
   });

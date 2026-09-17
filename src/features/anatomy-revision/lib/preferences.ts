@@ -1,5 +1,5 @@
 import type { Area } from '../types/region';
-import { AREAS } from '../types/region';
+import { normaliseAreas } from '../types/region';
 
 /**
  * Small per-device study preferences, kept in localStorage alongside the
@@ -73,18 +73,16 @@ export function getPreferredAreas(): Area[] {
   const raw = read(PREFERRED_AREAS_KEY);
   if (raw === null) return [];
   try {
-    const parsed: unknown = JSON.parse(raw);
-    if (!Array.isArray(parsed)) return [];
-    const valid = new Set<string>(AREAS);
-    // Keep only real areas, in canonical order, without duplicates — a stale or
-    // hand-edited value must never produce an unfilterable session.
-    return AREAS.filter((area) => parsed.includes(area) && valid.has(area));
+    // normaliseAreas keeps only real areas, in canonical order, without duplicates —
+    // a stale or hand-edited value must never produce an unfilterable session — and
+    // expands one that has since been split, so a student who chose Back & Core before
+    // CR-032 keeps the whole spine rather than silently getting every area.
+    return normaliseAreas(JSON.parse(raw));
   } catch {
     return [];
   }
 }
 
 export function setPreferredAreas(areas: readonly Area[]): void {
-  const valid = new Set<string>(AREAS);
-  write(PREFERRED_AREAS_KEY, JSON.stringify(AREAS.filter((area) => areas.includes(area) && valid.has(area))));
+  write(PREFERRED_AREAS_KEY, JSON.stringify(normaliseAreas([...areas])));
 }

@@ -173,6 +173,133 @@ npx tsx src/scripts/renderHotspotOverlay.ts \
   --renders <dir of region PNGs> --hotspots hotspots.regions.json --out overlays
 ```
 
+### Sub-region plates
+
+`subregion-plates.spec.json` lists the plates drawn closer than a region plate, and
+`src/scripts/generateSubRegionSpec.ts` writes it. Its subjects are **measured, not listed**: they
+start as the structures with no locate question that do have geometry, grouped by their own
+subregion. Two tables in that script override the grouping where the taxonomy gets framing wrong.
+
+`PLATE_OVERRIDE` moves a structure to a differently scaled plate, and a plate key gains a third
+segment when it does — `forearm-hand__wrist-hand__forearm`. A plate's camera is set by the largest
+subject on it, so the split runs in both directions. **Too long for its subregion:** extensor
+digitorum on the hand plate would turn it back into a forearm plate. **Too short:** a foot plate is
+framed heel to toe, so the middle phalanx of a toe is a third of a toe of a tenth of the frame, and
+the plantar interossei are drawn at metatarsal scale on a camera set for a calcaneus. Hence
+`__forearm`, `__leg` and `__forefoot`.
+
+`PLATE_BACKDROP` overrides how much skeleton stands behind a plate. The renderer infers it — a plate
+split off for scale whose subjects carry a `.l`/`.r` side is a limb, and a limb plate drops the other
+side and the axial skeleton with it. That is right for a forearm and wrong for the cervical plate,
+whose subjects are longus colli and longus capitis: they are paired, so they read as a limb, but they
+lie against the vertebral bodies and the vertebrae are the picture, not clutter behind it.
+
+**A deep plate is not a different renderer.** These plates draw their *subjects* in flesh over bare
+skeleton and nothing else, so a plate that leaves the superficial layer off its subject list is a
+plate with the superficial layer absent. That is all `__forearm-deep`, `__hand-deep` and `__foot-deep`
+are. Quadratus plantae measured five pixels or none on every view of the foot plate because flexor
+digitorum brevis lies over the whole sole; on a plate whose subjects are layers two and three it is
+the clearest thing in shot.
+
+`PLATE_FRAME_ON` names which of a plate's subjects the camera frames on, for the case where the
+subjects' own geometry is the wrong ruler. "Intervertebral disc" is one structure made of 47 meshes
+running C2 to the sacrum, so *any* camera framed on it frames the whole column and every disc in
+shot is two pixels across. The `__lumbar` plate frames on L4 and L5 instead; the L4–L5 disc then
+fills the picture, and the discs above and below staying in shot is correct rather than a leak,
+because they are the same structure and carry the same answer.
+
+```bash
+tools/blender-5.2.0-windows-x64/blender.exe atlas/Z-Anatomy/Startup.blend --background \
+  --python src/scripts/blender/renderSubRegionPlates.py -- \
+  --spec subregion-plates.spec.json --out renders/subregions --turntable 12 \
+  --margin 1.5 --limb-margin 1.5 --views 0 --elevations=0,-45 \
+  --only lower-leg-foot__ankle-foot__forefoot
+
+npx tsx src/scripts/platesToHotspots.ts --family sub
+```
+
+`--turntable 12` renders twelve angles at elevation 0 and names each leaf `aNNN`, which is the
+convention the app groups a rotation set by: `lib/rotationFrames.ts` reads the `-aNNN-` segment out of
+an image id, the locate generator makes one question per set rather than one per frame, and
+`shared/ImageViewer.tsx` draws the turn controls when it is handed more than one frame. **Rendering
+the angles and naming them is the whole of making a family turnable** — no app change is needed.
+
+**A turntable cannot refit its camera per frame.** The picture would breathe as it turned, and a
+hotspot stored in normalised coordinates would stop meaning the same thing from one frame to the next.
+`turntable_frame()` therefore measures both extents rotation-invariantly: the subject's own height,
+which turning about the vertical axis does not change, and the diameter of the circle its footprint
+sweeps, which is the widest it can ever present.
+
+**`--plates-only` re-renders the pictures and leaves the masks alone.** A mask is a flat emission, so
+thresholding it cannot see the lighting: relighting or restyling a plate is a picture change and
+*cannot* move a hotspot. Use it whenever the look changes rather than the geometry — the pass that
+brought these plates to `boneLook.py` was 171 renders and twenty minutes instead of 1,391 and three
+hours, and the hotspots came back byte-identical because they were traced from the same mask files.
+
+Pass negative elevations as `--elevations=-45`, with the equals sign: `argparse` reads a leading
+minus as another flag. Elevation is the axis that reaches a sole — the plantar muscles are under the
+foot bones from *every* angle on the horizon — and `view-00-e-45` is published as the `plantar` view.
+
+`platesToHotspots.ts` will not shrink a published plate: re-run it over `renders/subregions` with
+every plate's masks still on disk, because it rewrites the whole generated module from what it finds.
+
+Two gates decide what ships, and both print what they drop:
+
+- `--min-px` (2500): a subject showing less than this on a view is a sliver behind something else.
+- `--max-claim-share` (0.005): how much of the picture a subject's outline wrongly claims, as a share
+  of everything claimed on that view. The containment test below catches a subject that swallows
+  another whole; this catches one that swallows part of several, which is the same fault and was still
+  costing 2% of a frame. `generateSet.test.ts` asserts the invariant at 1% per image, so this sits
+  below it with room, and dropping a subject from a view is cheap now a turntable has twelve of them.
+- `--max-hole-share` (0.5): a subject whose traced outline **closes over** another subject. Masks are
+  traced as outer boundaries only — the app ORs a structure's rings with no even-odd rule, so an
+  emitted hole would add its area instead of subtracting it. The cost is that a subject drawn inside
+  another's silhouette falls inside its polygon too: on the forefoot from the side, the plantar
+  interossei are four slots through the middle of the metatarsals, and the metatarsal ring closed
+  over all four. The larger subject loses that view — its outline is the one claiming ground it does
+  not cover, and it has other views to be asked from.
+
+### Landmarks inside a bone
+
+`landmark-regions.rules.json` carries `_isolate`, a list of landmarks drawn with their parent bone
+alone where the *parent* does not otherwise want isolating. One landmark needs it. The sacral canal
+opens upward at the sacral base and L5 sits on that base, so with the skeleton in the scene nothing
+of it is visible from any angle — which is what every view of it measured. Two other treatments were
+tried and recorded in the rule: a ridge swept across the top of the bone selected nothing on this
+mesh, and treating it as a hole and keeping the enclosed background traced to nothing, correctly,
+because the canal curves forward as it descends and no projection has a line of sight through it.
+
+### Hand and foot panels
+
+The single-structure panels under `public/anatomy/panels/` frame each structure's own bounding
+box from three angles. That is right for a deltoid and wrong for anything inside a hand or a
+foot: the shot comes out as strips of metacarpal with a red thread between them, the middle
+view is edge-on with the pelvis behind it, and nothing in the picture says which face of the
+hand you are looking at — so "which structure is shown?" becomes a coin toss between the
+palmar and dorsal answers.
+
+52 structures are re-rendered differently: the whole hand or foot in shot, two views, each one
+captioned with the face it shows.
+
+```bash
+npx tsx src/scripts/renderHandFootPanels.ts          # ~10 min, 104 renders
+npx tsx src/scripts/generateMusclePanels.ts          # the new dimensions must ship with them
+```
+
+The script drives `renderMusclePanels.py` four times (hand/foot x muscle/skeletal), composites
+with captions, and writes the `.webp` straight into `public/anatomy/panels/`. `--only <ids>`
+and `--res`/`--samples` make a cheap preview run. The two flags it leans on are new and
+available to any panel render: `--frame-on` takes Blender object names to frame every shot on
+instead of the subject's own box, and `--highlight` sets the subject's colour (muscle red by
+default; the bone panels ship highlight blue).
+
+**The angles were measured, not assumed.** Z-Anatomy stands in anatomical position, so a hand's
+two faces are azimuth 0 and 180 at eye level — checked by rendering opponens pollicis against
+the dorsal interossei and seeing which view buried which. A foot hides both faces from every
+angle on the horizon; only elevation reaches them, at plus and minus 55 degrees. Below 45 the
+sole is too oblique to read; past about 65 the camera is far enough under or over the body to
+bring the pelvis into frame behind the foot.
+
 A wrong occlusion order fails *silently* — a polygon over the wrong muscle still grades
 consistently against itself, so no test catches it. Looking at the picture is the only check.
 
@@ -399,7 +526,8 @@ completed change request's history is worth preserving in git, update the seed f
 
 ```
 public/anatomy/atlas/                  # 14 bone/landmark atlas slides (webp)
-public/anatomy/panels/                 # 21 muscle-on-skeleton panels, 3 views each (webp)
+public/anatomy/panels/                 # single-structure panels: 3 views each, or a captioned
+                                        # palmar/dorsal pair for the hand and foot (webp)
 public/anatomy/regions/                # 15 Z-Anatomy renders, skeleton included — the only images with hotspots
 
 src/
@@ -445,6 +573,7 @@ src/
     importHotspots.ts                  # validates hotspots.json, --emit-ts regenerates the seed module
     masksToHotspots.ts                 # Blender masks -> depth-subtracted polygons
     renderHotspotOverlay.ts            # draws polygons back onto a render, to check by eye
+    renderHandFootPanels.ts            # re-renders the 48 hand/foot panels as captioned palmar/dorsal pairs
     data/occlusionOrder.ts             # superficial->deep layering per render (hand-authored)
     lib/png.ts                         # dependency-free PNG decoder
     lib/pngEncode.ts                   # and the writer half, for the overlays

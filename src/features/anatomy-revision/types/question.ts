@@ -61,9 +61,19 @@ export interface MCQQuestion extends RevisionQuestionBase {
 
 export interface LocateQuestion extends RevisionQuestionBase {
   type: 'locate';
+  /** The opening picture — for a rotation set, the angle where the target shows best. */
   imageId: string;
   imageMode: ImageMode;
   targetStructureId: string;
+  /**
+   * The other angles of the same picture the student may turn to, in angle
+   * order, `imageId` included. Present only for images rendered as a rotation
+   * set (the ligament plates first). One question per structure, not one per
+   * angle: a student who turns the joint to find the ligament has answered
+   * one question, and the scheduler should count it once. Each frame carries
+   * its own hotspots, so the hit test runs against whichever angle is showing.
+   */
+  frameImageIds?: string[];
   /** Multiplies the target polygon's hit area for a slightly forgiving click radius. */
   toleranceMultiplier?: number;
   prompt: string;
@@ -87,6 +97,13 @@ export interface TypedIdentifyQuestion extends RevisionQuestionBase {
   promptImageId: string;
   /** Structure name plus any aliases — any of these count as correct. */
   acceptedAnswers: string[];
+  /**
+   * One extra box per attachment, for ligaments: a two-attachment ligament
+   * gets two, graded order-independently by lib/oinaAnswer's gradeTypedSlots.
+   * The question is correct only when the name AND every attachment are.
+   * Absent for everything that is not a ligament.
+   */
+  attachmentSlots?: { label: string; accepted: string[] }[];
   explanation: string;
 }
 

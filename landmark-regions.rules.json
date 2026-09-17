@@ -1,0 +1,1200 @@
+{
+ "_readme": [
+  "How each landmark's region is grown on its parent bone. See",
+  "src/scripts/blender/landmarkRegions.py for what the four kinds mean.",
+  "",
+  "World frame, measured from the atlas: +Z is up, +Y is POSTERIOR (the ASIS",
+  "anchor sits at y=-0.074 and the PSIS at y=+0.097), +X is toward the",
+  "subject's left. Distances are metres, and the model is life-size.",
+  "",
+  "`range` is a fraction along the bin axis from its minimum to its maximum,",
+  "NOT from proximal to distal — the femur's own long axis points downward,",
+  "so 0 is the top of the femur but 0 is the BOTTOM of the tibia. The probe",
+  "in probeLandmarkRegions.py prints where each anchor falls, which is how",
+  "these ranges were set rather than guessed."
+ ],
+ "_views": {
+  "sustentaculum-tali": [
+   18,
+   6,
+   "top"
+  ],
+  "intertrochanteric-line": [
+   0
+  ],
+  "_why": "Angle indices x15 degrees: 0 anterior, 6 lateral, 12 posterior, 18 medial. The sustentaculum tali is a medial shelf the posterior view never shows; the intertrochanteric line is invisible from the side (the reviewer's note). The dens cannot be read from the side alone, so C2 is also shown from the front and the back; the vertebral foramen is only a hole from above; the intervertebral foramen is only a gap from the side. the sacral canal is the vertebral canal continuing into the sacrum, so like the vertebral foramen it is only an opening from above. 'top' is the superior view. SECOND PASS (reviewer's notes): an anterior structure loses its posterior view and vice versa (sacral foramina, manubrium); the first metatarsal is a medial bone so its side view is the medial one; the scapular fossae and the intercondylar fossa are only seen from behind; the pedicle is hidden by the transverse process from the side; the lamina is not a side-view structure. THIRD PASS: auricular surface and sacral cornua lose the anterior view ('adds nothing'); the sacral canal loses the posterior ('barely visible'); the sustentaculum tali is shown on the whole foot, from above too if it can be seen.",
+  "dens-odontoid-process": [
+   0,
+   12,
+   6
+  ],
+  "vertebral-foramen": [
+   "top"
+  ],
+  "intervertebral-foramen": [
+   6
+  ],
+  "lamina": [
+   "top",
+   12
+  ],
+  "pars-interarticularis": [
+   "top",
+   12,
+   6
+  ],
+  "sacral-canal": [
+   "top"
+  ],
+  "sacral-ala": [
+   0,
+   "top"
+  ],
+  "anterior-sacral-foramina": [
+   0,
+   6
+  ],
+  "posterior-sacral-foramina": [
+   12,
+   6
+  ],
+  "manubrium": [
+   0,
+   6
+  ],
+  "head-of-first-metatarsal": [
+   0,
+   18
+  ],
+  "supraspinous-fossa": [
+   12
+  ],
+  "infraspinous-fossa": [
+   12
+  ],
+  "intercondylar-fossa-femur": [
+   12
+  ],
+  "pedicle": [
+   "top"
+  ],
+  "sacral-base": [
+   0,
+   "top"
+  ],
+  "superior-articular-process-sacrum": [
+   12,
+   "top",
+   6
+  ],
+  "sacral-hiatus": [
+   12
+  ],
+  "auricular-surface": [
+   6,
+   12
+  ],
+  "sacral-cornua": [
+   6,
+   12
+  ]
+ },
+ "linea-aspera": {
+  "kind": "ridge",
+  "extreme": [
+   0,
+   1,
+   0
+  ],
+  "range": [
+   0.18,
+   0.84
+  ],
+  "bins": 40,
+  "width": 0.0075,
+  "facing": [
+   0,
+   1,
+   0
+  ],
+  "_why": "The most posterior line down the back of the femur IS the linea aspera. Bins run along the femur's own axis; the anchor (which snaps to within 6mm of the shaft's centre-line) is not used to place it."
+ },
+ "tibial-crest": {
+  "emit": "capsule",
+  "kind": "ridge",
+  "extreme": [
+   0,
+   -1,
+   0
+  ],
+  "range": [
+   0.15,
+   0.86
+  ],
+  "bins": 40,
+  "width": 0.008,
+  "facing": [
+   0,
+   -1,
+   0
+  ],
+  "_why": "The anterior border of the tibia — the shin edge — is the most anterior line down the bone. The tibia's long axis points up, so the range runs from above the ankle to below the tuberosity. SECOND PASS: 'thinner — this still takes up the whole tibia, and the line isn't smooth enough'. The fingertip floor is lowered for this one line (28 -> 13px: at whole-tibia framing 28px is 9mm each side), and the vertex-to-vertex zigzag is smoothed.",
+  "axisHalfWidth": 0.003,
+  "minZonePx": 13,
+  "smoothAxis": 5
+ },
+ "median-sacral-crest": {
+  "kind": "ridge",
+  "extreme": [
+   0,
+   1,
+   0
+  ],
+  "range": [
+   0.25,
+   0.95
+  ],
+  "bins": 32,
+  "width": 0.007,
+  "facing": [
+   0,
+   1,
+   0
+  ],
+  "nearPlane": {
+   "normal": [
+    1,
+    0,
+    0
+   ],
+   "within": 0.009
+  },
+  "_why": "The fused spinous processes down the midline. The sacrum is wide, so without the midline constraint the most-posterior vertex per slice wanders out onto the lateral crests."
+ },
+ "iliac-crest": {
+  "kind": "ridge",
+  "binAxis": [
+   0,
+   1,
+   0
+  ],
+  "extreme": [
+   0,
+   0,
+   1
+  ],
+  "range": [
+   0.02,
+   0.98
+  ],
+  "bins": 40,
+  "width": 0.011,
+  "facing": [
+   0,
+   0,
+   1
+  ],
+  "facingMin": -0.25,
+  "_why": "The crest is the highest edge of the ilium, so the bins run front-to-back (ASIS round to PSIS) and each takes its topmost vertex. facingMin is below zero so the rim's outer and inner lips are kept, not just the faces pointing straight up."
+ },
+ "intertrochanteric-line": {
+  "emit": "capsule",
+  "kind": "span",
+  "from": {
+   "world": [
+    -131,
+    -4,
+    856
+   ]
+  },
+  "to": {
+   "world": [
+    -89,
+    6,
+    790
+   ]
+  },
+  "samples": 13,
+  "width": 0.006,
+  "axisHalfWidth": 0.004,
+  "facing": [
+   0,
+   -1,
+   0
+  ],
+  "facingMin": -0.2,
+  "smoothAxis": 3,
+  "close": 2,
+  "_why": "SECOND PASS. The reviewer, twice: a STRAIGHT line, from the greater trochanter obliquely down to below the lesser trochanter (the green line on their anterior plate). The ridge-finder followed the most anterior vertex in each slice and zigzagged. Now a straight chord between two placed ends — anteromedial corner of the greater trochanter to the front of the shaft level with the lesser trochanter — each sample pulled onto the ANTERIOR surface, so from the front it is straight. End points placed from the femur's box and the trochanter anchors (GT -166/843, LT -73/787), not probed: check the ends."
+ },
+ "intertubercular-sulcus": {
+  "kind": "trail",
+  "from": {
+   "snap": "Greater tubercle.j"
+  },
+  "midpointWith": {
+   "snap": "Lesser tubercle.j"
+  },
+  "offset": 0.0,
+  "length": 0.04,
+  "samples": 13,
+  "width": 0.005,
+  "facing": [
+   0,
+   -1,
+   0
+  ],
+  "_why": "The bicipital groove starts between the two tubercles and runs distally. Only one end is named, so it trails down the humerus's own axis from the midpoint of the tubercle pair — started 8mm below them, because the tubercles' own anchors sit above the tubercles and an untrimmed trail climbs onto the humeral head. Offset removed: the reviewer found it sat too low."
+ },
+ "femoral-neck": {
+  "kind": "span",
+  "from": {
+   "centroidNear": "Head of femur.j",
+   "radius": 0.03
+  },
+  "to": {
+   "midpoint": [
+    {
+     "snap": "Intertrochanteric line.j"
+    },
+    {
+     "snap": "Intertrochanteric crest.j"
+    }
+   ]
+  },
+  "snap": false,
+  "outward": true,
+  "keepLargest": false,
+  "trim": [
+   0.32,
+   1.0
+  ],
+  "samples": 13,
+  "width": 0.022,
+  "close": 3,
+  "smoothNormals": 5,
+  "_why": "The neck is the waist BETWEEN the head and the trochanters, so it is spanned rather than grown from its own anchor. Both ends are computed from the bone, not from the labels: the head's anchor floats outside the head, so a chord drawn to it runs above the neck and marks its top rim instead of the collar. The chord is not snapped — a collar has no one side to snap to. It stops at 0.78 rather than at the trochanteric midpoint, because a collar reaching into the trochanteric mass picks up more of the posterior trochanter than of the neck, and the largest-island pass then keeps THAT and discards the neck; keepLargest is off for the same reason, since a collar is legitimately one ring that erosion can split."
+ },
+ "femoral-head": {
+  "kind": "sphere",
+  "from": "Head of femur.j",
+  "fitRadius": 0.03,
+  "grow": 1.06,
+  "_why": "A head is a ball, so it is fitted rather than guessed. The reviewer's rule: every 'head of' is a region, because a head covers far more bone than the prominences around it."
+ },
+ "head-of-fibula": {
+  "kind": "sphere",
+  "from": "Head of fibula.j",
+  "fitRadius": 0.018,
+  "grow": 1.1
+ },
+ "head-of-radius": {
+  "kind": "cap",
+  "direction": "towardAnchor",
+  "from": "Head of radius.j",
+  "depth": 0.012,
+  "close": 2,
+  "smoothNormals": 3,
+  "_why": "SECOND PASS. Flagged again without a note; the sphere fit had left an irregular patch on top of the head. The head of the radius is a short drum, not a ball, so it is the proximal 12mm of the bone along its own axis — the same construction as the metatarsal head."
+ },
+ "head-of-first-metacarpal": {
+  "kind": "cap",
+  "direction": "towardAnchor",
+  "from": "Head of metacarpal bone.j",
+  "depth": 0.017,
+  "close": 3,
+  "smoothNormals": 4,
+  "_why": "\"We need this to cover the whole head\": the distal end of the bone, taken along the bone's own axis toward the anchor. A sphere fit gave a collar round the neck — a head this small is not sphere enough to fit."
+ },
+ "head-of-first-metatarsal": {
+  "kind": "cap",
+  "direction": "towardAnchor",
+  "from": "Head of metatarsal bone.j",
+  "depth": 0.02,
+  "close": 3,
+  "smoothNormals": 4,
+  "_why": "\"We need this to cover the whole head\": the distal end of the bone, taken along the bone's own axis toward the anchor. A sphere fit gave a collar round the neck — a head this small is not sphere enough to fit."
+ },
+ "greater-trochanter": {
+  "kind": "ball",
+  "from": "Greater trochanter.j",
+  "width": 0.024,
+  "outward": true,
+  "facing": [
+   -1,
+   0,
+   0
+  ],
+  "facingMin": -0.55,
+  "close": 3,
+  "smoothNormals": 5,
+  "_why": "The lateral prominence at the top of the femur, per the reviewer's anterior/posterior plate. Grown outward from the anchor and kept to the lateral aspect so it does not wrap into the trochanteric fossa."
+ },
+ "lesser-trochanter": {
+  "kind": "ball",
+  "from": "Lesser trochanter.j",
+  "width": 0.017,
+  "outward": true,
+  "close": 3,
+  "smoothNormals": 5
+ },
+ "greater-tubercle-humerus": {
+  "kind": "ball",
+  "from": {
+   "offset": [
+    0,
+    0,
+    -0.006
+   ],
+   "of": {
+    "snap": "Greater tubercle.j"
+   }
+  },
+  "width": 0.021,
+  "outward": true,
+  "facing": [
+   -1,
+   0,
+   0
+  ],
+  "facingMin": -0.55,
+  "close": 3,
+  "smoothNormals": 5,
+  "_why": "The green patch on the reviewer's labelled humerus: the lateral shoulder of the proximal humerus, lateral to the intertubercular sulcus. SECOND PASS (passed, with a note): 'can come more distally' — seed dropped 6mm and the patch widened 16 -> 21mm."
+ },
+ "lesser-tubercle-humerus": {
+  "kind": "ball",
+  "from": "Lesser tubercle.j",
+  "width": 0.011,
+  "outward": true,
+  "facing": [
+   0,
+   -1,
+   0
+  ],
+  "facingMin": 0.1,
+  "close": 3,
+  "smoothNormals": 5,
+  "_why": "The red patch on the reviewer's labelled humerus: a tall oval on the ANTERIOR face, medial to the groove. Narrowed and held to anterior-facing surface after the first shape was wrong."
+ },
+ "anatomical-neck-humerus": {
+  "emit": "capsule",
+  "kind": "rim",
+  "of": {
+   "kind": "cap",
+   "direction": "towardAnchor",
+   "from": "Head of humerus.j",
+   "depth": 0.033
+  },
+  "width": 3,
+  "keepLargest": true,
+  "close": 3,
+  "open": 0,
+  "axisHalfWidth": 0.004,
+  "_why": "THIRD PASS. The reviewer, three times now: a HORIZONTAL line below the humeral head. Their word is final over my reading of their plate (where I followed the oblique edge of the articular surface). Built exactly as the surgical neck they passed — the rim of an end-cap of the bone — but 33mm from the top instead of 48: MEASURED, the articular head's lowest point is 41mm from the top and the surgical neck line is at 48, so this sits just under the bulge of the head and 15mm above the surgical neck."
+ },
+ "acetabulum": {
+  "emit": "capsule",
+  "kind": "cap",
+  "direction": [
+   0,
+   0,
+   1
+  ],
+  "depth": 1,
+  "axisHalfWidth": 0.004,
+  "edgeWith": {
+   "bone": "Femur",
+   "rule": "femoral-head"
+  },
+  "_why": "SECOND PASS. The reviewer: with the femur in the socket the acetabulum 'is only visible as a curved line — the line in which we stop seeing the femoral head'. That line belongs to neither mesh; it is where one passes behind the other FROM THIS CAMERA. So it is found in the picture: the hip bone is masked, the femoral head (its own region rule) is masked through the same camera, and the line is where the head's visible pixels meet the hip bone's. A first attempt took the rim of the socket region as a 3-D loop and kept its visible arc; the loop floated off the joint and the arc came out short."
+ },
+ "glenoid-cavity": {
+  "kind": "ball",
+  "from": "Glenoid fossa.j",
+  "width": 0.017,
+  "outward": true,
+  "close": 3,
+  "smoothNormals": 5,
+  "_why": "The shallow socket at the lateral angle of the scapula."
+ },
+ "ischial-tuberosity": {
+  "kind": "span",
+  "from": {
+   "snap": "Ischial tuberosity.j"
+  },
+  "to": {
+   "offset": [
+    0.03,
+    -0.022,
+    0.006
+   ],
+   "of": {
+    "snap": "Ischial tuberosity.j"
+   }
+  },
+  "samples": 7,
+  "width": 0.03,
+  "close": 3,
+  "smoothNormals": 5,
+  "_why": "THIRD PASS. The reviewer marked in red where the 10/10 zone should reach: further MEDIALLY along the bottom of the ischium, toward the ramus, in both the anterior and posterior views. A ball cannot be stretched one way, so it is now a band 30mm wide from the tuberosity's anchor to a point 30mm medial, 22mm forward and 6mm up of it — along the ramus. The end point is read off their marked-up screenshot, not measured."
+ },
+ "auricular-surface": {
+  "kind": "ridge",
+  "binAxis": [
+   0,
+   0,
+   1
+  ],
+  "extreme": [
+   1,
+   0,
+   0
+  ],
+  "range": [
+   0.34,
+   0.97
+  ],
+  "bins": 26,
+  "width": 0.027,
+  "facing": [
+   1,
+   0,
+   0
+  ],
+  "facingMin": 0.5,
+  "mirrorX": true,
+  "keepLargest": false,
+  "close": 3,
+  "smoothNormals": 5,
+  "_why": "The sacroiliac joint face: an EAR-SHAPED STRIP down the lateral border of the upper sacrum, one each side — not the round patch a ball gave. Taken as the most lateral line swept down the sacrum over the S1-S3 height, then mirrored, because the reviewer's posterior plate marks both wings. NOTE the spec files this landmark under the sacrum while its anchor is named for the ilium; this is the sacral face. SECOND PASS: with the sacrum drawn alone the ilium no longer hides the spill, and the strip ran onto the back of the bone round the foramina. Only faces looking at least 30 degrees outward are kept now (facingMin 0.05 -> 0.5)."
+ },
+ "coccygeal-cornua": {
+  "kind": "ball",
+  "from": "Coccygeal horn.j",
+  "width": 0.0045,
+  "mirrorX": true,
+  "keepLargest": false,
+  "outward": true,
+  "close": 2,
+  "smoothNormals": 3,
+  "_why": "There are TWO cornua and the atlas names one anchor, so the selection is mirrored across the midline to mark both — the reviewer asked for a hit box each side. Halved after the reviewer found the first pair far too large; a cornu is a few millimetres of horn."
+ },
+ "lateral-epicondyle-femur": {
+  "kind": "ball",
+  "from": "Lateral epicondyle of femur.j",
+  "width": 0.016,
+  "outward": true,
+  "close": 3,
+  "smoothNormals": 5,
+  "_why": "The bony prominence on the LATERAL side of the distal femur, outside the condyle's articular surface — the ochre outline on the reviewer's labelled distal femur."
+ },
+ "medial-epicondyle-femur": {
+  "kind": "ball",
+  "from": "Medial epicondyle of femur.j",
+  "width": 0.016,
+  "outward": true,
+  "close": 3,
+  "smoothNormals": 5,
+  "_why": "Its opposite number, the cyan outline on the same plate."
+ },
+ "lateral-condyle-femur": {
+  "kind": "ball",
+  "from": "Lateral condyle of femur.j",
+  "width": 0.03,
+  "outward": true,
+  "close": 3,
+  "smoothNormals": 5,
+  "_why": "The whole articular mass, which is much larger than the epicondyle sitting on it — the orange outline on the reviewer's plate wraps the entire condyle."
+ },
+ "medial-condyle-femur": {
+  "kind": "box",
+  "lo": [
+   0.673,
+   0.0,
+   0.0
+  ],
+  "hi": [
+   1.0,
+   1.0,
+   0.1
+  ],
+  "keepLargest": true,
+  "close": 2,
+  "smoothNormals": 3,
+  "_why": "SECOND PASS. 'Still too small — posterior view is the priority.' The reviewer's 3D4Medical plate colours the whole medial condylar mass. MEASURED (probe7.py, right femur): behind, the medial condyle runs x -68 to -32mm with the notch bottoming at x -76. Taken as that medial block for the distal 45mm of the bone."
+ },
+ "intercondylar-fossa-femur": {
+  "kind": "box",
+  "lo": [
+   0.519,
+   0.43,
+   0.005
+  ],
+  "hi": [
+   0.708,
+   0.905,
+   0.093
+  ],
+  "facing": [
+   0,
+   1,
+   0
+  ],
+  "facingMin": -0.4,
+  "keepLargest": true,
+  "close": 2,
+  "smoothNormals": 3,
+  "_why": "THIRD PASS. 'Still isn't taking up the full notch and seems biased towards the lateral side.' A ball is round and the notch is a slot. Now a block from the MEASURED profile (probe7.py, right femur): the back of the bone falls below 52mm between x -88 and x -66 (condyle crests at -100 and -52, floor at -76), so the block spans that, for the distal 42mm, keeping only the recessed faces (y under 52mm) — floor and both walls, symmetric about the floor."
+ },
+ "vertebral-body": {
+  "kind": "cap",
+  "direction": [
+   0,
+   -1,
+   0
+  ],
+  "depth": 0.032,
+  "_why": "The body is the drum in front of the pedicles. L4's anteroposterior span is 84mm and the body is roughly the front 32mm of it."
+ },
+ "tibial-plateau": {
+  "kind": "cap",
+  "direction": [
+   0,
+   0,
+   1
+  ],
+  "depth": 0.016,
+  "facing": [
+   0,
+   0,
+   1
+  ],
+  "facingMin": 0.15,
+  "_why": "The articular top of the tibia. The facing constraint keeps the plateau surface itself rather than the sides of the condyles below it."
+ },
+ "trochlear-notch": {
+  "kind": "ball",
+  "from": "Trochlear notch.j",
+  "width": 0.014,
+  "close": 3,
+  "smoothNormals": 5,
+  "_why": "The semilunar concavity at the top of the ulna that the humerus sits in. No outward test: a notch is concave, its surface faces inward by definition."
+ },
+ "transverse-process": {
+  "kind": "cap",
+  "direction": [
+   1,
+   0,
+   0
+  ],
+  "depth": 0.018,
+  "keepIf": [
+   {
+    "axis": [
+     0,
+     1,
+     0
+    ],
+    "min": 0.0,
+    "max": 0.01
+   },
+   {
+    "axis": [
+     0,
+     0,
+     1
+    ],
+    "max": 0.0145
+   }
+  ],
+  "mirrorX": true,
+  "keepLargest": false,
+  "close": 2,
+  "smoothNormals": 4,
+  "_why": "The two lateral projections, per the reviewer's red-marked superior and lateral plates: the outermost 18mm on one side, mirrored to mark the other. Bounded by MEASURED numbers on L4 (probeTP.py): the process tip sits 11.7mm above the bone's centre and 0-6mm behind it; the body's lateral edge is lower and the superior articular process is higher (z to 16mm) and further back (y to 14mm). A 7mm height cap guessed earlier cut the process itself off."
+ },
+ "infraspinous-fossa": {
+  "kind": "box",
+  "lo": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "hi": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "facing": [
+   0,
+   1,
+   -0.15
+  ],
+  "facingMin": 0.5,
+  "keepLargest": true,
+  "close": 3,
+  "smoothNormals": 5,
+  "_why": "THIRD PASS. 'Doesn't cover the whole fossa — the bottom and the right angle are missing — and it comes up into the supraspinous fossa.' A ball round an anchor can do neither: it is round and the fossa is a triangle. Now EVERY backward-facing face of the scapula below the root of the spine (the lower 78% of the bone's height), which reaches the inferior angle and the lateral border by construction; the facing test is tilted slightly downward so the up-and-back-facing supraspinous surface is refused. The top edge follows the SPINE, which is not level: it rises about 30mm from its root on the medial border to the acromion, so the cut is the tilted plane z + 0.3x = 1350mm (the spine's own anchor sits at 1361 on that measure; the cut is a spine's thickness below it), not a horizontal one.",
+  "keepIf": [
+   {
+    "axis": [
+     0.3,
+     0,
+     1
+    ],
+    "world": true,
+    "max": 1.2931
+   }
+  ]
+ },
+ "supraspinous-fossa": {
+  "kind": "ball",
+  "from": "Supraspinous fossa.j",
+  "width": 0.043,
+  "facing": [
+   0,
+   0.55,
+   0.83
+  ],
+  "facingMin": 0.3,
+  "close": 3,
+  "smoothNormals": 5,
+  "_why": "The smaller posterior surface ABOVE the spine, the pink fill on the same plate. SECOND PASS: posterior view only, and widened 26 -> 43mm so it fills the fossa from the medial border to the root of the acromion, as on the reviewer's plate. The fossa faces up-and-back while the infraspinous surface below the spine faces straight back, so the facing test is tilted upward to stop the wider patch spilling over the spine."
+ },
+ "ilium": {
+  "kind": "cap",
+  "direction": [
+   0,
+   0,
+   1
+  ],
+  "depth": 0.105,
+  "close": 3,
+  "smoothNormals": 4,
+  "_why": "The blade of the hip bone above the acetabulum: the pink region on the reviewer's pelvic-girdle plate. Taken as the top ~105mm of the bone."
+ },
+ "ischium": {
+  "kind": "cap",
+  "direction": [
+   0,
+   0.6,
+   -0.8
+  ],
+  "depth": 0.055,
+  "close": 3,
+  "smoothNormals": 4,
+  "_why": "The posteroinferior part of the hip bone, orange on the same plate. Taken as the slab furthest down-and-back, which separates it from the pubis in front."
+ },
+ "obturator-foramen": {
+  "kind": "cap",
+  "direction": [
+   0,
+   0,
+   1
+  ],
+  "depth": 1.0,
+  "hole": true,
+  "close": 1,
+  "smoothNormals": 2,
+  "_why": "A HOLE, which the reviewer wants tappable as a region. The mask is the whole hip bone; the publisher keeps only the background ENCLOSED inside that silhouette — the gap itself — and grows it into the hitbox. A ball on the rim only ever marked one side of the hole."
+ },
+ "pubis": {
+  "kind": "box",
+  "lo": [
+   0.0,
+   0.0,
+   0.082
+  ],
+  "hi": [
+   0.433,
+   0.46,
+   0.41
+  ],
+  "keepLargest": true,
+  "close": 3,
+  "smoothNormals": 4,
+  "_why": "SECOND PASS. The reviewer: the anterior view ran too far lateral along the lower ramus, and from behind almost nothing showed. Both came from the old rule — a slab cut diagonally through the hip bone, keeping only forward-facing faces. Now a block in the hip bone's own box, per their two plates: from the symphysis out to where the superior ramus meets the acetabulum (x to -60mm), the front 66mm of the bone, from the inferior ramus (z 815) up to the pectineal line (z 885). No facing test, so the back of the pubis shows from behind. Placed by proportion from the plates, not probed. The pubis anchor sits at x=+10mm, so the parent is the LEFT hip bone and medial is the LOW-x end of its box (the first attempt used the right bone's fractions and selected the root of the superior ramus by the acetabulum instead)."
+ },
+ "sacral-apex": {
+  "kind": "cap",
+  "direction": [
+   0,
+   0,
+   -1
+  ],
+  "depth": 0.012,
+  "close": 2,
+  "smoothNormals": 4,
+  "_why": "\"The sacral apex is the bottom of the sacrum\" — so it is the lowest 12mm of the bone, not wherever its anchor happened to snap."
+ },
+ "sacral-canal": {
+  "kind": "plug",
+  "radius": 0.006,
+  "at": [
+   [
+    -7,
+    50,
+    955
+   ],
+   [
+    0,
+    50,
+    955
+   ],
+   [
+    7,
+    50,
+    955
+   ]
+  ],
+  "_why": "SECOND PASS. The reviewer: 'we only should have a hitbox for what can be seen (the entrance to the canal)'. MEASURED (probeHoles2.py, rays cast straight down): the entrance is a slot x +-10.5mm, y 47.6-51.6mm, rim at z 951; from behind it shows at z 959-963. Three balls fill the slot and the bone round it hides everything but what shows through — the same construction as the sacral foramina."
+ },
+ "surgical-neck-humerus": {
+  "emit": "capsule",
+  "kind": "rim",
+  "of": {
+   "kind": "cap",
+   "direction": "towardAnchor",
+   "from": "Head of humerus.j",
+   "depth": 0.048
+  },
+  "width": 3,
+  "keepLargest": true,
+  "close": 3,
+  "open": 0,
+  "_why": "A LINE, per the reviewer: the narrowing below the tubercles. Defined as the boundary of the top 48mm of the humerus (head plus tubercles), which is a ring around the bone at exactly that level — the same construction as the anatomical neck, one step further down. axisHalfWidth is the line's real half-width in metres; `width` on a rim is a face-dilation count and must not be read as one.",
+  "axisHalfWidth": 0.004
+ },
+ "manubrium": {
+  "kind": "cap",
+  "direction": [
+   0,
+   0,
+   1
+  ],
+  "depth": 1.0,
+  "close": 2,
+  "smoothNormals": 3,
+  "_why": "The landmark IS the bone — the top piece of the sternum, the reviewer's words — so the region is the whole mesh (a cap deeper than the bone is tall). Its parent is pinned to the manubrium mesh in the spec, because the nearest-centre rule could pick the body of the sternum and mark the wrong piece, which is what 'too low' looked like."
+ },
+ "radial-tuberosity": {
+  "kind": "ball",
+  "from": {
+   "offset": [
+    0.012,
+    0.0,
+    0.0
+   ],
+   "of": {
+    "snap": "Radial tuberosity.j"
+   }
+  },
+  "width": 0.011,
+  "facing": [
+   0.6,
+   -0.8,
+   0.0
+  ],
+  "facingMin": -0.2,
+  "close": 3,
+  "smoothNormals": 5,
+  "_why": "The reviewer: 'the anterior view needs shifting to the right'. Probed (probeAnchors2.py): the anchor snaps to x=-0.2431 on a slice spanning -0.2462..-0.2307 — the lateral side — while the tuberosity is anteromedial, at the medial edge 12mm away. The 12mm is the measured offset; the ball then snaps back onto the surface."
+ },
+ "_twins": {
+  "ids": [
+   "anterior-arch-atlas",
+   "posterior-arch-atlas",
+   "lateral-mass-atlas",
+   "pedicle",
+   "lamina",
+   "superior-articular-process",
+   "inferior-articular-process",
+   "pars-interarticularis",
+   "superior-costal-facet",
+   "inferior-costal-facet",
+   "transverse-costal-facet",
+   "sacral-cornua",
+   "psis",
+   "pubic-tubercle",
+   "adductor-tubercle",
+   "medial-epicondyle-femur",
+   "medial-condyle-tibia",
+   "tibial-plateau",
+   "obturator-foramen",
+   "pubis",
+   "linea-aspera",
+   "tibial-crest"
+  ],
+  "_why": "The reviewer's rule: a symmetrical structure always gets a target each side. The midline-bone entries are the paired parts of a vertebra or the sacrum; the rest are the landmarks whose opposite number was MEASURED to fall inside a published anterior or posterior frame (2*|x| / frame, from the render metadata). A landmark on a limb whose other limb is out of shot needs no twin. Midline landmarks (spinous process, dens, promontory, apex) are deliberately absent. The sacral foramina are plugged on both sides by their own rule, so they need no twin."
+ },
+ "_topFlip": {
+  "parents": [
+   "atlas-c1"
+  ],
+  "_why": "The reviewer asked for the atlas's superior view turned half a turn: anterior arch at the top, as in all three of their atlas plates."
+ },
+ "_isolateWith": {
+  "intervertebral-foramen": [
+   "Vertebra L5",
+   "Intervertebral disc L4-L5"
+  ],
+  "_why": "An intervertebral foramen is the gap BETWEEN two vertebrae (the reviewer's note) and cannot be shown on one. 'parent:sacrum' applies to every landmark on the sacrum: the coccyx is drawn with it, as on the reviewer's sacrum plates, so the apex has something below it.",
+  "parent:sacrum": [
+   "Coccyx"
+  ],
+  "sustentaculum-tali": [
+   "Calcaneus.{side}",
+   "Talus.{side}",
+   "Navicular bone.{side}",
+   "Cuboid bone.{side}",
+   "Medial cuneiform bone.{side}",
+   "Intermediate cuneiform bone.{side}",
+   "Lateral cuneiform bone.{side}",
+   "Sesamoid bones of foot.{side}",
+   "First metatarsal bone.{side}",
+   "Proximal phalanx of first finger of foot.{side}",
+   "Distal phalanx of first finger of foot.{side}",
+   "Second metatarsal bone.{side}",
+   "Proximal phalanx of second finger of foot.{side}",
+   "Distal phalanx of second finger of foot.{side}",
+   "Middle phalanx of second finger of foot.{side}",
+   "Third metatarsal bone.{side}",
+   "Proximal phalanx of third finger of foot.{side}",
+   "Distal phalanx of third finger of foot.{side}",
+   "Middle phalanx of third finger of foot.{side}",
+   "Fourth metatarsal bone.{side}",
+   "Proximal phalanx of fourth finger of foot.{side}",
+   "Distal phalanx of fourth finger of foot.{side}",
+   "Middle phalanx of fourth finger of foot.{side}",
+   "Fifth metatarsal bone.{side}",
+   "Proximal phalanx of fifth finger of foot.{side}",
+   "Distal phalanx of fifth finger of foot.{side}",
+   "Middle phalanx of fifth finger of foot.{side}"
+  ]
+ },
+ "anterior-arch-atlas": {
+  "emit": "capsule",
+  "kind": "span",
+  "from": {
+   "bbox": [
+    0.5,
+    0.0,
+    0.5
+   ]
+  },
+  "to": {
+   "bbox": [
+    0.61,
+    0.163,
+    0.5
+   ]
+  },
+  "samples": 7,
+  "width": 0.004,
+  "axisHalfWidth": 0.003,
+  "mirrorX": true,
+  "keepLargest": false,
+  "_why": "Two lines meeting in the middle of the arch, one per side — the reviewer's suggestion, and much smaller than the 18mm disc it replaces. MEASURED on the atlas (probeAtlas.py): the ring's centre is 21.4mm behind the front of the bone; the anterior arch is the thin run within about 25 degrees of straight ahead (ring thickness 18-24mm there), and beyond it the lateral mass begins (the ring thickens to 13-35mm and rises 5mm). The end point is that junction at mid-height, as fractions of the bone's box because the atlas's tubercle anchors float 20mm below the bone."
+ },
+ "posterior-arch-atlas": {
+  "emit": "capsule",
+  "kind": "span",
+  "from": {
+   "bbox": [
+    0.5,
+    1.0,
+    0.5
+   ]
+  },
+  "to": {
+   "bbox": [
+    0.719,
+    0.637,
+    0.5
+   ]
+  },
+  "samples": 11,
+  "width": 0.004,
+  "axisHalfWidth": 0.003,
+  "mirrorX": true,
+  "keepLargest": false,
+  "_why": "The reviewer: a region or line, not a point, traced on their plate from lateral mass round to lateral mass. Same construction as the anterior arch. MEASURED: the posterior arch is the thin ring (15.6-24.5mm from the centre, 9mm tall) from about 20 degrees behind the transverse process round to the midline; the far end point is where it meets the lateral mass."
+ },
+ "lateral-mass-atlas": {
+  "kind": "ball",
+  "from": {
+   "bbox": [
+    0.731,
+    0.265,
+    1.0
+   ]
+  },
+  "width": 0.012,
+  "mirrorX": true,
+  "keepLargest": false,
+  "close": 2,
+  "smoothNormals": 3,
+  "_why": "Both lateral masses, boxed on the reviewer's plate: the thick block each side between the two arches, carrying the superior articular facet. MEASURED: they occupy roughly 195-235 and 305-345 degrees round the ring, 13-35mm from its centre, and are the tallest part of the bone (to 1552.8mm against the arches' 1544). The seed is the middle of that block on the top surface."
+ },
+ "vertebral-foramen": {
+  "kind": "cap",
+  "direction": [
+   0,
+   0,
+   1
+  ],
+  "depth": 1,
+  "hole": true,
+  "_why": "The reviewer: the gap in the middle of the vertebra, so a region. The same hole construction as the obturator foramen — mask the whole vertebra, keep the background it encloses — and only from above, the one view where it is a hole."
+ },
+ "intervertebral-foramen": {
+  "kind": "cap",
+  "direction": [
+   0,
+   0,
+   1
+  ],
+  "depth": 1,
+  "hole": true,
+  "_why": "The gap between two vertebrae through which the spinal nerve leaves. L4 is shown with L5 and the disc between them, from the side only, and the target is the background enclosed by that group."
+ },
+ "dens-odontoid-process": {
+  "kind": "cap",
+  "direction": [
+   0,
+   0,
+   1
+  ],
+  "depth": 0.013,
+  "close": 2,
+  "smoothNormals": 3,
+  "_why": "The peg standing on the body of C2. MEASURED (probeC2.py): above 30mm from the bottom of the bone the axis narrows from 26mm across to 9mm — that top 13mm is the dens."
+ },
+ "pedicle": {
+  "kind": "box",
+  "lo": [
+   0.641,
+   0.428,
+   0.452
+  ],
+  "hi": [
+   0.759,
+   0.582,
+   0.93
+  ],
+  "mirrorX": true,
+  "keepLargest": false,
+  "close": 2,
+  "smoothNormals": 2,
+  "_why": "The atlas's pedicle anchor snaps to the TIP OF THE TRANSVERSE PROCESS, 25mm from any pedicle, so the point target was simply on the wrong structure. MEASURED on L4 (probeHoles.py): the vertebral foramen spans x +-12.5mm and y 19.9-37.9mm, and the intervertebral foramen below the pedicle tops out at z 1013.6 between y 19.9 and 30.9. The pedicle is therefore the bridge lateral to the foramen's front half: x 12.5-23mm, y 18-31mm, from z 1013 up. Both sides."
+ },
+ "lamina": {
+  "kind": "box",
+  "lo": [
+   0.528,
+   0.654,
+   0.38
+  ],
+  "hi": [
+   0.68,
+   0.808,
+   0.88
+  ],
+  "mirrorX": true,
+  "keepLargest": false,
+  "close": 2,
+  "smoothNormals": 2,
+  "_why": "The atlas's lamina anchor snaps onto the spinous process. MEASURED on L4: the foramen's back wall is at y 37.9mm and the facet-joint recesses sit at x 17-21mm, so the lamina is the plate behind the foramen between the midline spinous process (|x| < 2.5mm) and the articular pillar: x 2.5-16mm, y 37-50mm. Both sides, and shown from behind as well, as the reviewer asked. SECOND PASS (flagged without a note): from the side the block ran down onto the inferior articular process, so its floor is raised to 38% of the bone's height and the side view is dropped."
+ },
+ "posterior-sacral-foramina": {
+  "kind": "plug",
+  "mirrorX": true,
+  "radius": 0.006,
+  "at": [
+   [
+    24.6,
+    58.8,
+    942.8,
+    3.4
+   ],
+   [
+    16.9,
+    69.7,
+    928.0,
+    3.9
+   ],
+   [
+    16.5,
+    74.3,
+    907.8,
+    6.0
+   ],
+   [
+    15.8,
+    82.0,
+    887.7,
+    2.2
+   ]
+  ],
+  "_why": "The reviewer: highlight the GAPS, with the 10/10 zone the size of the gap. Four pairs, MEASURED by probeHoles.py from behind (x, rim depth y, z in mm): 24.6/59.8/942.8, 16.9/70.7/928.0, 16.5/80.3/907.8, 15.8/83.0/887.7. Each ball is centred 6mm below its rim so its top is level with the opening. THIRD PASS: 'can we have another of the foramina in the lateral view'. Only the third pair is a see-through window from the side (probeHoles3.py); the others are blind recesses and their balls, sunk 6mm, were hidden by the lip. Those three are now each THE SIZE OF THEIR OWN HOLE (3.4, 3.9, 2.2mm, from the probed areas) and level with the rim, so they show from the side without spreading over the bone from behind.",
+  "minComponentPx": 90
+ },
+ "anterior-sacral-foramina": {
+  "kind": "plug",
+  "mirrorX": true,
+  "radius": 0.006,
+  "at": [
+   [
+    21.9,
+    40.0,
+    933.0
+   ],
+   [
+    16.6,
+    77.8,
+    907.9
+   ],
+   [
+    15.7,
+    80.6,
+    887.8
+   ]
+  ],
+  "_why": "As the posterior foramina, measured from the front: 21.9/34.0/933.0, 16.6/71.8/907.9, 15.7/74.6/887.8 (x, rim depth y, z in mm), each ball 6mm behind its rim. The probe found three pairs deep enough to call; the first sacral pair opens obliquely in this model and is not a clean hole from straight ahead."
+ },
+ "pars-interarticularis": {
+  "kind": "box",
+  "lo": [
+   0.64,
+   0.59,
+   0.32
+  ],
+  "hi": [
+   0.76,
+   0.76,
+   0.85
+  ],
+  "mirrorX": true,
+  "keepLargest": false,
+  "close": 2,
+  "smoothNormals": 2,
+  "_why": "The atlas's anchor snaps to the transverse process tips. The pars is the isthmus of the arch BETWEEN the superior and inferior articular processes, lateral to the lamina. Placed from the L4 measurements (facet recesses at x 17-21mm, y 36-44mm; lamina medial to x 16mm): x 14-22mm, y 33-45mm, the middle third of the arch's height. AN ESTIMATE from neighbouring measurements rather than a direct one — flagged for the reviewer's eye. SECOND PASS: 'superior view is too small' — widened 2mm each way and carried up to 85% of the bone's height so more of it shows from above, per the reviewer's red box."
+ },
+ "lateral-condyle-tibia": {
+  "kind": "box",
+  "lo": [
+   0.0,
+   0.0,
+   0.905
+  ],
+  "hi": [
+   0.47,
+   1.0,
+   0.985
+  ],
+  "keepLargest": true,
+  "close": 2,
+  "smoothNormals": 3,
+  "_why": "The reviewer: the point sat too close to the head of the fibula, front and back. The atlas anchor snaps to the posterolateral corner, which is exactly where the fibula articulates. The condyle is the LATERAL HALF OF THE EXPANDED HEAD, so it is taken as that: the top 35mm of the tibia below the plateau rim, lateral of the midline of the head. The frame is the RIGHT tibia's box (the landmark's anchor is on the right leg, x<0, so lateral is the low-x half); the head is the widest part of the bone, so its midline is the box's. An estimate from proportions, not a probe — flagged for the reviewer's eye."
+ },
+ "sacral-ala": {
+  "kind": "box",
+  "lo": [
+   0.679,
+   0.0,
+   0.73
+  ],
+  "hi": [
+   0.97,
+   0.33,
+   1.0
+  ],
+  "facing": [
+   0,
+   -0.6,
+   0.8
+  ],
+  "facingMin": 0.0,
+  "mirrorX": true,
+  "keepLargest": false,
+  "close": 2,
+  "smoothNormals": 4,
+  "_why": "The wing of the sacrum either side of the S1 body. As a point it carried an 18mm radius whose halo was a third of the picture, and once both sides had to fit it fitted neither. Taken as the top quarter of the bone lateral to the S1 body (|x| 22-58mm of a 61mm half-width), keeping the faces that look up and forward so the articular processes behind are left out. Placed by proportion, not probed — flagged for the reviewer's eye. Both sides. SECOND PASS: stopped at y 34mm, in front of the superior articular processes, which the block had been climbing."
+ },
+ "acromion": {
+  "kind": "ball",
+  "from": {
+   "snap": "Acromion.j"
+  },
+  "width": 0.024,
+  "close": 3,
+  "smoothNormals": 4,
+  "_why": "SECOND PASS. The reviewer's three plates all colour the acromion as the whole flat process at the lateral end of the scapular spine, not a point at the AC joint. 24mm round the anchor, both faces of the plate (no same-face test), so it shows from above, behind and the side."
+ },
+ "sacral-base": {
+  "kind": "box",
+  "lo": [
+   0.289,
+   0.0,
+   0.73
+  ],
+  "hi": [
+   0.711,
+   0.36,
+   1.0
+  ],
+  "facing": [
+   0,
+   0,
+   1
+  ],
+  "facingMin": 0.55,
+  "close": 2,
+  "smoothNormals": 3,
+  "_why": "SECOND PASS. The reviewer: a region, per their plate — the oval top of the S1 body. MEASURED (probe7.py): the upward-facing faces at the top centre of the sacrum have a mean normal of (0, -0.1, 1) and span x +-24mm; the superior articular processes rise behind y 37mm, so the block stops at y 36mm."
+ },
+ "superior-articular-process-sacrum": {
+  "kind": "ball",
+  "from": {
+   "world": [
+    25,
+    40,
+    978
+   ]
+  },
+  "width": 0.009,
+  "mirrorX": true,
+  "keepLargest": false,
+  "close": 2,
+  "smoothNormals": 3,
+  "_why": "SECOND PASS. 'You can't actually see the structure.' MEASURED (probe7.py): the two highest points of the sacrum are at (+-25, 40, 981) — the tips of the superior articular processes. 9mm round each, both sides, on the sacrum drawn alone."
+ },
+ "sacral-hiatus": {
+  "kind": "ball",
+  "from": {
+   "world": [
+    0,
+    88,
+    880
+   ]
+  },
+  "snap": false,
+  "width": 0.009,
+  "facing": [
+   0,
+   1,
+   0
+  ],
+  "facingMin": -0.2,
+  "close": 2,
+  "smoothNormals": 3,
+  "_why": "The atlas's hiatus anchor snaps to the TOP of the sacrum — the entrance of the canal, the opposite end. It only became visible once the sacrum was drawn alone. The hiatus is the opening at the BOTTOM of the canal between the two cornua; the cornua anchor snaps to (10.1, 90.3, 874.6), so the hiatus is on the midline between the pair, just above their tips. Not flagged by the reviewer (it was never published before) — flagged here for their eye."
+ },
+ "_isolate": {
+  "ids": [
+   "sustentaculum-tali"
+  ],
+  "_why": "THIRD PASS. The reviewer asked for a whole-foot view. The foot is drawn alone (see _isolateWith) so nothing above it blocks a superior view."
+ }
+}

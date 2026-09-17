@@ -1,22 +1,22 @@
 import type { AnatomyImageAsset } from '../../types/image';
-import { AttributionBadge } from './AttributionBadge';
+import { ImageViewer } from './ImageViewer';
 
 /**
- * Non-interactive image display for flashcards/MCQ prompts. Sized via
- * aspect-ratio from the asset's natural width/height when known, matching
- * HotspotImage's box-sizing approach for visual consistency even though
- * this component never needs to hit-test clicks itself.
+ * A prompt picture the student can turn and zoom but not answer on.
+ *
+ * It used to be a flat <img>, deliberately — "non-interactive image display for
+ * flashcards/MCQ prompts". That was the wrong distinction. Not being able to
+ * ANSWER on a picture is not a reason not to be able to LOOK at it properly,
+ * and a flashcard showing a plate from one fixed angle is asking the student to
+ * recognise a structure from whichever side the renderer happened to pick.
+ *
+ * `frames` is what makes it turnable; without it the viewer draws no turn
+ * controls and this is the flat picture it always was.
  */
-export function AnatomyImageFigure({ image, alt }: { image: AnatomyImageAsset; alt: string }) {
-  return (
-    <figure>
-      <div
-        className="w-full overflow-hidden rounded-lg border border-line bg-sf"
-        style={image.width && image.height ? { aspectRatio: `${image.width} / ${image.height}` } : undefined}
-      >
-        <img src={image.filePath} alt={alt} className="h-full w-full object-cover" />
-      </div>
-      <AttributionBadge image={image} />
-    </figure>
-  );
+export function AnatomyImageFigure({ image, alt, frames }: {
+  image: AnatomyImageAsset;
+  alt: string;
+  frames?: AnatomyImageAsset[];
+}) {
+  return <ImageViewer image={image} frames={frames} resetKey={`${image.id}|${alt}`} />;
 }

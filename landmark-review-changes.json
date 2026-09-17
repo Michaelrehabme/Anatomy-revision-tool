@@ -1,0 +1,433 @@
+{
+ "_readme": "What was changed for each structure the reviewer flagged in the first pass, shown on the review page beside their own note. 'status' is changed (done, please re-check), partial (something done, something not) or open (nothing specific was changed — usually because no note said what was wrong).",
+ "_all": "Every picture was re-rendered: a key light over the viewer's left shoulder with a dim fill (instead of even light from all sides), darkened hollows, smooth shading, and an inked line wherever one bone passes in front of another. The model itself is unchanged, so detail the atlas mesh does not have — the atlas vertebra is only ~1,100 vertices — still is not there.",
+ "acetabulum": {
+  "status": "changed",
+  "text": "Now a traced region covering the whole socket (38 mm), not a point and not the small patch the first attempt gave."
+ },
+ "acromion": {
+  "status": "open",
+  "text": "Still a point. You asked for a comparison with a photo; I do not have that photo in this chat, so nothing was changed. Re-attach it, or say whether the point is in the wrong place or should be a region."
+ },
+ "adductor-tubercle": {
+  "status": "changed",
+  "text": "Moved 8 mm up and 4 mm lateral from the atlas anchor (measured: the anchor sat at the medial-most edge 15 mm above the epicondyle), and made a small region rather than a point. The other knee's tubercle is now a valid answer too when it is in shot."
+ },
+ "aiis": {
+  "status": "open",
+  "text": "Flagged with no note, so nothing specific was changed — it is still a point on the atlas's own AIIS anchor. Tell me what is wrong (position, size, or should it be a region?)."
+ },
+ "anatomical-neck-humerus": {
+  "status": "changed",
+  "text": "Now a line (capsule) round the edge of the articular head, scored by distance from the line."
+ },
+ "anterior-arch-atlas": {
+  "status": "changed",
+  "text": "Replaced the 18 mm disc with two thin lines (3 mm half-width), one per side, meeting in the middle of the arch — your suggestion. The arch's ends were measured on the mesh (where the ring thickens into the lateral mass). Superior view turned 180° so anterior is at the top, as on your plates."
+ },
+ "anterior-sacral-foramina": {
+  "status": "changed",
+  "text": "Now the gaps themselves: three pairs of foramina, both sides, located by casting rays at the sacrum. 10/10 is the hole; the grown margin round it scores 7. The first sacral pair opens obliquely in this model and did not register as a clean hole from straight ahead."
+ },
+ "asis": {
+  "status": "open",
+  "text": "Flagged with no note, so nothing specific was changed — still a point on the atlas's ASIS anchor. Tell me what is wrong with it."
+ },
+ "auricular-surface": {
+  "status": "changed",
+  "text": "Now an ear-shaped traced strip down the side of the sacrum, both sides. Anterior and posterior views; from the side it is hidden behind the ilium."
+ },
+ "coccygeal-cornua": {
+  "status": "changed",
+  "text": "Two small regions, one each side, halved in size after your 'too large' note."
+ },
+ "dens-odontoid-process": {
+  "status": "changed",
+  "text": "C2 on its own from the front, the back and the side, with the dens traced as a region (the top 13 mm of the bone, where it narrows from 26 mm to 9 mm across — measured)."
+ },
+ "femoral-head": {
+  "status": "changed",
+  "text": "Traced region over the whole articular sphere (every 'head of' is a region, per your rule)."
+ },
+ "glenoid-cavity": {
+  "status": "partial",
+  "text": "Traced region over the socket. You suggested a LINE for the anterior view; that was not done — from the front it is still the sliver of the region that is visible."
+ },
+ "greater-trochanter": {
+  "status": "changed",
+  "text": "Traced region over the whole prominence, all three views."
+ },
+ "greater-tubercle-humerus": {
+  "status": "changed",
+  "text": "Traced region, all three views."
+ },
+ "head-of-fibula": {
+  "status": "changed",
+  "text": "Traced region over the whole head."
+ },
+ "head-of-first-metatarsal": {
+  "status": "changed",
+  "text": "Traced region over the whole distal end of the bone (a sphere fit gave a collar round the neck, so it is the end cap along the bone's own axis)."
+ },
+ "head-of-radius": {
+  "status": "changed",
+  "text": "Traced region over the whole head."
+ },
+ "iliac-crest": {
+  "status": "changed",
+  "text": "Arm and hand removed from the lateral view (and from every lateral view of a non-arm landmark)."
+ },
+ "ilium": {
+  "status": "changed",
+  "text": "Traced region: the blade of the hip bone above the acetabulum, as on your pelvic-girdle plate."
+ },
+ "infraspinous-fossa": {
+  "status": "changed",
+  "text": "Traced region over the fossa."
+ },
+ "intercondylar-fossa-femur": {
+  "status": "changed",
+  "text": "Re-centred on the midpoint between the two condyles instead of the atlas's off-centre anchor; traced region."
+ },
+ "intertrochanteric-line": {
+  "status": "changed",
+  "text": "A line (capsule) along the most anterior ridge between the trochanters; anterior view only."
+ },
+ "intertubercular-sulcus": {
+  "status": "changed",
+  "text": "Traced strip starting between the tubercles and running down the shaft (the old point was too low). The question now reads 'Intertubercular Sulcus (Bicipital Groove)', and either name — or 'intertubercular groove' — is accepted as a typed answer."
+ },
+ "intervertebral-foramen": {
+  "status": "changed",
+  "text": "Now L4 with L5 and the disc between them, from the side only. The target is the gap they enclose (11 × 17 mm on this model), traced from the picture; superior view dropped."
+ },
+ "ischial-tuberosity": {
+  "status": "changed",
+  "text": "Traced region ~40 mm across over the whole rough mass, per your posterior plate."
+ },
+ "ischium": {
+  "status": "changed",
+  "text": "Traced region: the posteroinferior part of the hip bone, per your plate."
+ },
+ "lamina": {
+  "status": "changed",
+  "text": "The atlas's anchor was on the SPINOUS PROCESS. Replaced with a measured region: the plate behind the vertebral foramen (back wall at y 38 mm) between the spinous process and the articular pillar — both sides. Posterior view added to superior and lateral."
+ },
+ "lateral-condyle-femur": {
+  "status": "changed",
+  "text": "Traced region over the whole condyle, per the orange outline on your plate."
+ },
+ "lateral-condyle-tibia": {
+  "status": "changed",
+  "text": "Now a traced region over the lateral half of the tibial head (top 35 mm, below the plateau rim) instead of a point. The old point snapped to the posterolateral corner — exactly where the fibula sits, which is what you saw. Placed by proportion rather than measured, so look at it critically."
+ },
+ "lateral-epicondyle-femur": {
+  "status": "changed",
+  "text": "Traced region on the lateral prominence, outside the articular surface; frame widened so the knee can be identified."
+ },
+ "lateral-mass-atlas": {
+  "status": "changed",
+  "text": "Both lateral masses as traced regions (measured: the thick blocks between the arches, 13–35 mm from the ring's centre, the tallest part of the bone). Superior view is now anterior-up."
+ },
+ "manubrium": {
+  "status": "changed",
+  "text": "The whole manubrium is the target, pinned to the manubrium mesh (the old one could pick the body of the sternum — that was 'too low'), and the frame is wider."
+ },
+ "medial-condyle-femur": {
+  "status": "changed",
+  "text": "Traced region over the whole condyle, per the red outline on your plate — much larger than before."
+ },
+ "obturator-foramen": {
+  "status": "changed",
+  "text": "The gap itself is the target (the background enclosed by the hip bone), and now on BOTH sides."
+ },
+ "pars-interarticularis": {
+  "status": "changed",
+  "text": "The atlas's anchor was on the transverse-process tips. Replaced with a region on the isthmus between the superior and inferior articular processes, both sides, with a posterior view. This one is placed from neighbouring measurements rather than measured directly — please look at it critically."
+ },
+ "pedicle": {
+  "status": "changed",
+  "text": "The atlas's anchor was on the TIP OF THE TRANSVERSE PROCESS. Replaced with a measured region: the bridge between body and arch beside the front half of the vertebral foramen — both sides."
+ },
+ "posterior-arch-atlas": {
+  "status": "changed",
+  "text": "Two thin lines from each lateral mass round to the midline, per your plate. Superior view is anterior-up."
+ },
+ "posterior-sacral-foramina": {
+  "status": "changed",
+  "text": "The four pairs of gaps themselves, both sides, located by casting rays at the sacrum. 10/10 is exactly the hole; the margin round it scores 7."
+ },
+ "pubis": {
+  "status": "changed",
+  "text": "Traced region over the whole pubis, and both sides are now marked."
+ },
+ "radial-tuberosity": {
+  "status": "changed",
+  "text": "Moved 12 mm medially (measured: the anchor snapped to the lateral side of the shaft; the tuberosity is anteromedial) and traced as a small region."
+ },
+ "sacral-apex": {
+  "status": "changed",
+  "text": "Now the lowest 12 mm of the sacrum."
+ },
+ "sacral-base": {
+  "status": "open",
+  "text": "Flagged with no note, so nothing specific was changed. It is still a point, and its anchor sits 14 mm off the midline. I would make it the top surface of S1 as a region — say if that is what you meant."
+ },
+ "sacral-canal": {
+  "status": "open",
+  "text": "Not fixed, and currently NOT PUBLISHED. The atlas's anchor is inside the tunnel, so nothing built on it can be seen from any camera. It needs a hand-placed line down the back of the sacrum if you want it as 'where the canal runs'."
+ },
+ "sacral-cornua": {
+  "status": "partial",
+  "text": "Still points, but now two of them — one each side. No note was left, so if something else was wrong, tell me."
+ },
+ "superior-articular-process-sacrum": {
+  "status": "partial",
+  "text": "Still points, but now one each side. No note was left, so if something else was wrong, tell me."
+ },
+ "supraspinous-fossa": {
+  "status": "changed",
+  "text": "Traced region over the fossa."
+ },
+ "surgical-neck-humerus": {
+  "status": "changed",
+  "text": "A line (capsule) round the shaft just below the tubercles."
+ },
+ "sustentaculum-tali": {
+  "status": "changed",
+  "text": "Medial and lateral views instead of posterior; the medial view has the other leg removed so the shelf is not hidden behind the opposite foot."
+ },
+ "tibial-crest": {
+  "status": "changed",
+  "text": "10/10 zone thinned to the ridge itself; the wider capsule round it is the near-miss zone. The other shin is now a valid answer when it is in shot."
+ },
+ "transverse-process": {
+  "status": "changed",
+  "text": "Traced region on both processes (measured on L4), superior and lateral views."
+ },
+ "trochlear-notch": {
+  "status": "changed",
+  "text": "Traced region over the concavity of the notch."
+ },
+ "vertebral-foramen": {
+  "status": "changed",
+  "text": "The gap itself, from above only: the background enclosed by the vertebra (25 × 18 mm on L4)."
+ },
+ "sacral-ala": {
+  "status": "changed",
+  "text": "Not one you flagged, but it changed: the 18 mm disc is now a traced region on both wings of the sacrum (the top quarter of the bone lateral to the S1 body). Placed by proportion, so look at it critically."
+ },
+ "_round3": "This round: the sacrum is drawn on its own (with the coccyx) for every sacral landmark, from the front, side and back, or from above where that is the view that shows the thing. Lines that loop round a socket or a head now show only the arc you can actually see. Views that made no sense for a structure have been removed.",
+ "round3": {
+  "acetabulum": {
+   "status": "changed",
+   "text": "Now a curved LINE: the rim of the socket, and only the arc of it the camera can see round the femoral head — 'the line in which we stop seeing the femoral head'. Scored by distance from the line."
+  },
+  "acromion": {
+   "status": "changed",
+   "text": "Now a region over the whole flat process at the end of the scapular spine, as on your three plates, instead of a point at the AC joint."
+  },
+  "adductor-tubercle": {
+   "status": "changed",
+   "text": "Unchanged in the app (still the small region you said was right). For comparison, each view now also appears a second time 'as a point' with the archery rings, on the same picture — tap both and tell me which you want."
+  },
+  "aiis": {
+   "status": "open",
+   "text": "Compared with your plate (Royal Children's): the point sits on the anterior border of the ilium just above the acetabular rim, where your plate's AIIS mark is, so I have NOT moved it. If what you want is the red smudge — a small region rather than a point — say so and I will trace it."
+  },
+  "asis": {
+   "status": "open",
+   "text": "Compared with your plate: the point is at the anterior end of the iliac crest, which matches. NOT changed. As with the AIIS, say if you want it as a small region like the plate's red mark."
+  },
+  "anatomical-neck-humerus": {
+   "status": "changed",
+   "text": "The old line was a horizontal ring through the MIDDLE of the head — the sphere fit had swallowed the tubercles. Refitted to the articular head only (measured: centre 20 mm in from the medial surface, radius 20 mm). The line is now the edge of that head, as the magenta line on your plate: from the front it runs obliquely from the top of the bone, beside the greater tubercle, down to the medial side below the head. Only the visible arc is kept. You wrote 'horizontal'; your plate shows it oblique, and I followed the plate — say if you want it flattened."
+  },
+  "anterior-sacral-foramina": {
+   "status": "changed",
+   "text": "Posterior view removed. Sacrum now drawn on its own."
+  },
+  "auricular-surface": {
+   "status": "changed",
+   "text": "Sacrum drawn on its own, so the ear-shaped surface is finally visible from the SIDE (the ilium used to cover it), as on your plate."
+  },
+  "greater-tubercle-humerus": {
+   "status": "changed",
+   "text": "You passed it with a note: carried 6 mm more distally and widened (16 to 21 mm), all views."
+  },
+  "head-of-first-metatarsal": {
+   "status": "changed",
+   "text": "Lateral view replaced by a MEDIAL view (other leg removed). Anterior kept."
+  },
+  "head-of-radius": {
+   "status": "changed",
+   "text": "No note was left, so this is my reading: the old patch was an irregular scrap on top of the head. It is now the whole drum — the proximal 12 mm of the radius, all the way round. Tell me if something else was wrong."
+  },
+  "infraspinous-fossa": {
+   "status": "changed",
+   "text": "No note was left; treated like the supraspinous fossa: posterior view only, and widened (45 to 60 mm) toward the inferior angle and lateral border so it fills the fossa as on your plate."
+  },
+  "intercondylar-fossa-femur": {
+   "status": "changed",
+   "text": "Re-placed from a measurement: the back of the distal femur peaks over each condyle and drops 28 mm between them at one spot — that is the bottom of the notch, and the region is now centred there, taking the floor and both walls."
+  },
+  "intertrochanteric-line": {
+   "status": "changed",
+   "text": "Now a straight line from the anteromedial corner of the greater trochanter obliquely down to the front of the shaft level with the lesser trochanter, as the green line on your plate. The zigzag is gone. The two end points were placed by eye from the anchors, so check them."
+  },
+  "ischial-tuberosity": {
+   "status": "changed",
+   "text": "Carried round the inferior border of the ischium and widened 4 mm."
+  },
+  "lamina": {
+   "status": "changed",
+   "text": "No note was left. My reading: from the side the block ran down onto the inferior articular process. Its floor is raised and the lateral view is dropped — superior and posterior only. Tell me if it was something else."
+  },
+  "manubrium": {
+   "status": "changed",
+   "text": "Posterior view removed."
+  },
+  "medial-condyle-femur": {
+   "status": "changed",
+   "text": "Now the whole medial condylar block for the distal 45 mm of the femur, per your 3D4Medical plate (measured: x -68 to -32 mm behind, with the notch at -76)."
+  },
+  "pars-interarticularis": {
+   "status": "changed",
+   "text": "Widened and carried higher so more of it shows from above, per the red box on your plate."
+  },
+  "pedicle": {
+   "status": "changed",
+   "text": "Superior view matches your plate (the junction of body and arch, either side of the foramen). The LATERAL view is removed: on this model the transverse process stands in front of the pedicle from the side, so only slivers showed. Your plate's side view has the process cut away; I cannot do that without editing the bone."
+  },
+  "posterior-sacral-foramina": {
+   "status": "changed",
+   "text": "Anterior view removed. Sacrum now drawn on its own."
+  },
+  "pubis": {
+   "status": "changed",
+   "text": "Rebuilt as a block per your two plates: symphysis out to the acetabulum along the superior ramus, and down the inferior ramus only as far as mid-ramus — no longer running lateral along the lower ramus. No 'front-facing only' test any more, so the whole back of the pubis shows from behind. Placed by proportion from the plates."
+  },
+  "sacral-base": {
+   "status": "changed",
+   "text": "Now a region — the oval top of the S1 body, per your plate (measured: the upward-facing surface, +-24 mm, in front of the articular processes). Sacrum drawn on its own, from the front and from above."
+  },
+  "sacral-canal": {
+   "status": "changed",
+   "text": "Only what can be seen: the entrance. Measured as a slot 21 mm wide at the top of the sacrum; the target is exactly what shows through it, from above and from behind."
+  },
+  "superior-articular-process-sacrum": {
+   "status": "changed",
+   "text": "Sacrum drawn on its own and zoomed out. Now a region on each process (measured: the two highest points of the bone), from behind, above and the side."
+  },
+  "supraspinous-fossa": {
+   "status": "changed",
+   "text": "Posterior view only, and widened (26 to 43 mm) to fill the fossa from the medial border to the root of the acromion, as on your plate."
+  },
+  "sustentaculum-tali": {
+   "status": "changed",
+   "text": "Zoomed out from 150 to 240 mm."
+  },
+  "tibial-crest": {
+   "status": "changed",
+   "text": "Thinner again: the 10/10 band is now 3 mm either side of the crest (the fingertip floor was lowered for this one line — on a phone it will be a narrow target), and the line is smoothed."
+  },
+  "sacral-hiatus": {
+   "status": "changed",
+   "text": "NEW to the page: it could not be seen until the sacrum was drawn alone — and then it turned out the atlas's anchor was at the TOP of the sacrum (the canal's entrance). Re-placed on the midline between the two cornua, where the canal opens at the bottom, from behind only. Please check it."
+  },
+  "sacral-ala": {
+   "status": "changed",
+   "text": "Sacrum drawn alone, from the front and above; the region now stops in front of the articular processes instead of climbing them."
+  },
+  "sacral-apex": {
+   "status": "changed",
+   "text": "Sacrum drawn on its own; otherwise as you passed it."
+  },
+  "sacral-cornua": {
+   "status": "changed",
+   "text": "Sacrum drawn on its own; otherwise as you passed it."
+  },
+  "median-sacral-crest": {
+   "status": "changed",
+   "text": "Sacrum drawn on its own; otherwise as you passed it."
+  },
+  "sacral-promontory": {
+   "status": "changed",
+   "text": "Sacrum drawn on its own; otherwise as you passed it."
+  }
+ },
+ "_round4": "A bug you caught: the atlas names toes 'fingers of foot', so the rule that takes the arm out of side views was taking the toes out too. Fixed, and every foot picture re-rendered.",
+ "round4": {
+  "adductor-tubercle": {
+   "status": "changed",
+   "text": "Back to a point, as you prefer, with its centre moved to the middle of the region you approved (the atlas anchor corrected 8 mm up and 4 mm lateral). The 'as a point' comparison rows are gone."
+  },
+  "anatomical-neck-humerus": {
+   "status": "changed",
+   "text": "Horizontal now. Built exactly like the surgical neck you passed, but higher: 33 mm from the top of the humerus, just under the bulge of the head and 15 mm above the surgical-neck line."
+  },
+  "auricular-surface": {
+   "status": "changed",
+   "text": "Anterior view removed; lateral and posterior remain."
+  },
+  "head-of-first-metatarsal": {
+   "status": "changed",
+   "text": "The toes are back. It was a bug: the atlas calls toes 'fingers of foot', and my arm-removal rule matched 'finger'. Affected every side view of a foot."
+  },
+  "infraspinous-fossa": {
+   "status": "changed",
+   "text": "Rebuilt: every backward-facing face of the scapula below the spine, so it reaches the inferior angle and the lateral border. The top edge follows the spine's own slope (it rises about 30 mm toward the acromion) instead of a level cut, and the facing test refuses the supraspinous surface."
+  },
+  "intercondylar-fossa-femur": {
+   "status": "changed",
+   "text": "Now a slot, not a ball: from the measured profile the notch runs x -88 to -66 mm with its floor at -76, so the block spans that symmetrically — floor and both walls — for the distal 42 mm. Picture zoomed out to 220 mm."
+  },
+  "ischial-tuberosity": {
+   "status": "changed",
+   "text": "Extended medially along the bottom of the ischium toward the ramus, to about where you drew the red marks (a 30 mm-wide band running 30 mm medially from the tuberosity). The end point is read off your screenshot, so say if it should go further."
+  },
+  "posterior-sacral-foramina": {
+   "status": "changed",
+   "text": "Only the third pair is a true see-through window from the side; the others are blind recesses whose markers were hidden by the lip. Those markers are now the size of their own hole and level with the rim, so they show from the side. The posterior view is nearly unchanged."
+  },
+  "sacral-canal": {
+   "status": "changed",
+   "text": "Posterior view removed; superior only."
+  },
+  "sacral-cornua": {
+   "status": "changed",
+   "text": "Anterior view removed."
+  },
+  "sustentaculum-tali": {
+   "status": "changed",
+   "text": "Whole foot, drawn on its own: medial, lateral, and superior. Any view where the shelf is hidden behind another bone is dropped automatically — from above it lies under the talus, so that one may not appear."
+  }
+ },
+ "_round5": "Every structure is now unflagged. This round only picks up the four you passed with a note — three about framing, one about the arm — so they can be closed too.",
+ "round5": {
+  "head-of-first-metatarsal": {
+   "status": "changed",
+   "text": "Medial view widened from 150 to 280 mm, so the whole foot is in shot including the heel. The anterior view is framed the same way and so is wider than the one you approved — say if you preferred it closer."
+  },
+  "lesser-trochanter": {
+   "status": "changed",
+   "text": "'Too zoomed in — it's supposed to be challenging.' Picture widened from 150 to 250 mm: the proximal femur and the hip joint are now in shot, so the trochanter has to be found rather than pointed at."
+  },
+  "lesser-tubercle-humerus": {
+   "status": "changed",
+   "text": "'Too zoomed in — we want to challenge students.' Picture widened from 150 to 240 mm, showing the shoulder joint and the upper shaft."
+  },
+  "femoral-neck": {
+   "status": "changed",
+   "text": "You passed it asking for the arm and hand to go, and for the full region. The arm is now off every lateral view, so that part is done. The traced region already runs from under the head to the intertrochanteric line — look again and tell me if it should reach further onto the head or the trochanters, because I have not changed its shape."
+  },
+  "pubic-tubercle": {
+   "status": "changed",
+   "text": "You asked for the hand to be removed from the lateral view; it now is, along with the whole arm."
+  },
+  "greater-tubercle-humerus": {
+   "status": "changed",
+   "text": "Closed earlier: you asked for it to come more distally, which was done in round three and you passed it."
+  }
+ }
+}

@@ -116,8 +116,56 @@ const pwa = (disable: boolean) =>
  * than a shared object so each config evaluation gets its own plugin
  * instances instead of two loads passing the same ones between them.
  */
+/**
+ * Directories the dev server must NOT watch.
+ *
+ * None of these are imported by the app, and together they are over fifty
+ * thousand files: `tools/` alone is a whole Blender installation (44,013),
+ * and `renders/` holds every frame the ligament and landmark pipelines have
+ * ever written (8,387). Watching them is not merely wasteful — a render or a
+ * script writing into any of them changes a file Vite cannot hot-update, so
+ * it FULL-RELOADS the browser. That wipes an in-progress revision session:
+ * useRevisionSession's state goes back to `setup`, and /session then bounces
+ * the student to the home page. Reported as "it keeps refreshing" and "it
+ * kicks me out when I start a session" — both the same cause.
+ *
+ * public/anatomy is deliberately absent: those files ARE served to the app,
+ * and they only change when a publish script runs, which is a moment a reload
+ * is actually wanted.
+ */
+const UNWATCHED = [
+  '**/tools/**',
+  '**/renders/**',
+  '**/atlas/**',
+  '**/__pycache__/**',
+  '**/*.py',
+  '**/*.blend',
+  '**/*.blend1',
+  '**/docs/**',
+  // The pipeline's data files, all at the repo root. Only src/scripts reads
+  // them — the app imports generated .ts seeds instead — but they are
+  // rewritten constantly while a render or a publish is running, and each
+  // rewrite was reloading the browser mid-session.
+  '**/*.spec.json',
+  '**/*.rules.json',
+  '**/*.resolved.json',
+  '**/*.hotspots.json',
+  '**/*.hotspots.v2.json',
+  '**/*.data.json',
+  '**/joint-*.json',
+  '**/landmark-*.json',
+  '**/ligament-*.json',
+  '**/locate-*.json',
+  '**/subregion-*.json',
+  '**/deep-muscles.*.json',
+  '**/ta2-*.json',
+];
+
 export const baseConfig = () => ({
   plugins: [react(), tailwindcss()],
+  server: {
+    watch: { ignored: UNWATCHED },
+  },
   test: {
     environment: 'jsdom',
     globals: true,

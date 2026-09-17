@@ -1,4 +1,4 @@
-import { isMuscle, isBone, isJoint, areaOf, JOINT_TYPE_LABELS } from '../../types/structure';
+import { isMuscle, isBone, isJoint, primaryAreaOf, JOINT_TYPE_LABELS } from '../../types/structure';
 import type { AnatomyStructure } from '../../types/structure';
 import type { AnatomyImageAsset } from '../../types/image';
 import type { MCQQuestion, PromptKind } from '../../types/question';
@@ -57,7 +57,7 @@ function baseFields(structure: AnatomyStructure, promptKind: PromptKind) {
     structureId: structure.id,
     region: structure.region,
     subregion: structure.subregion,
-    area: areaOf(structure),
+    area: primaryAreaOf(structure),
     category: structure.category,
     difficulty: structure.difficulty,
     promptKind,

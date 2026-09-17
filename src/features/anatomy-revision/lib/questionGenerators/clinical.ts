@@ -1,4 +1,4 @@
-import { areaOf } from '../../types/structure';
+import { primaryAreaOf } from '../../types/structure';
 import type { AnatomyStructure } from '../../types/structure';
 import type { MCQQuestion, PromptKind } from '../../types/question';
 import { shuffle, sample, type Rng } from '../rng';
@@ -10,7 +10,7 @@ function baseFields(structure: AnatomyStructure, promptKind: PromptKind) {
     structureId: structure.id,
     region: structure.region,
     subregion: structure.subregion,
-    area: areaOf(structure),
+    area: primaryAreaOf(structure),
     category: structure.category,
     difficulty: structure.difficulty,
     promptKind,

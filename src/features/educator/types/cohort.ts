@@ -51,7 +51,11 @@ export interface RegionAssignment extends AssignmentBase {
 
 /** What a scoped assignment asks about. Matched exactly as the student study screen matches it (filterStructures). */
 export interface AssignmentScope {
-  /** At least one. OR-matched. */
+  /**
+   * At least one. OR-matched against each structure's areas, so a structure spanning
+   * several (a pedicle) is in scope for any of them. Normalised on read from Firestore
+   * (`normaliseAreas`), so a document written before an area was split still resolves.
+   */
   areas: Area[];
   /** Absent = every category. */
   category?: Category;

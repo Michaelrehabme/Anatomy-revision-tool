@@ -4,6 +4,7 @@ import type { OinaPromptKind, QuestionType, RevisionQuestion } from '../../types
 import type { Area, Region, SubRegion } from '../../types/region';
 import type { FactMastery, StructureMastery } from '../../types/attempt';
 import { buildIndexes, filterStructures, type StructureIndexes } from '../indexes';
+import { areasOf } from '../../types/structure';
 import { createRng, sample, shuffle, weightedShuffle, type Rng } from '../rng';
 import { selectAdaptiveStructures, pickAdaptiveQuestionType } from '../adaptiveSelection';
 import { buildWeightMap, UNSEEN_WEIGHT } from '../scheduling';
@@ -119,6 +120,42 @@ function withLearnCards(
   return out;
 }
 
+/**
+ * Deals a capped session evenly across the formats that were asked for.
+ *
+ * FORMATS DO NOT GENERATE AT THE SAME RATE, and shuffling the pool as one list
+ * silently makes the session a vote on that. A muscle yields five MCQs and one
+ * OINA card per fact, so "MCQ and OINA cards, twenty questions" came out twenty
+ * MCQs and nothing else — which is the whole reason a student would pick two
+ * formats. Locate and flashcards lose the same argument to MCQ for the same
+ * reason.
+ *
+ * Interleaving before the cap rather than allocating quotas keeps the ordering
+ * each type already earned — mastery weighting, the due queue — and lets a
+ * short type run out without shrinking the session: the round robin simply
+ * skips it, and whatever is left over goes to the formats that still have
+ * material. The slice is shuffled afterwards so the session does not literally
+ * alternate.
+ */
+function interleaveByType(
+  ordered: RevisionQuestion[],
+  types: readonly QuestionType[],
+): RevisionQuestion[] {
+  const queues = types
+    .map((type) => ordered.filter((q) => q.type === type))
+    .filter((queue) => queue.length > 0);
+  // A question whose type was not requested — a clinical MCQ arrives as 'mcq',
+  // but anything else would be dropped silently, so they go on the end.
+  const dealt = new Set(queues.flat());
+  const out: RevisionQuestion[] = [];
+  for (let i = 0; out.length < dealt.size; i++) {
+    const queue = queues[i % queues.length];
+    const next = queue.shift();
+    if (next) out.push(next);
+  }
+  return [...out, ...ordered.filter((q) => !dealt.has(q))];
+}
+
 /** Share of a session reserved for `priorityStructureIds` when enough of them exist. */
 export const REVIEW_SHARE = 0.6;
 
@@ -171,7 +208,7 @@ function generateOneQuestionForStructure(
     case 'fill-blank':
       return buildFillBlankQuestions(pool, rng)[0] ?? null;
     case 'identify-typed':
-      return buildIdentifyTypedQuestions(pool, images)[0] ?? null;
+      return buildIdentifyTypedQuestions(pool, images, [...indexes.byId.values()])[0] ?? null;
     case 'multi-select':
       // Multi-select is inherently a "compare several structures" question, not a
       // per-structure one — it doesn't fit the adaptive escalation ladder's shape.
@@ -190,6 +227,26 @@ function generateOneQuestionForStructure(
       return sample(questions, 1, rng)[0] ?? null;
     }
   }
+}
+
+/**
+ * Re-labels each question with the area the session actually asked for (CR-032).
+ * A structure can belong to several areas — a pedicle revises under all three
+ * spine levels and is stamped with the first of them by default — so in a session
+ * filtered to the lumbar spine the header would otherwise contradict the chip the
+ * user picked. A no-op for an unfiltered session, where the default already holds.
+ */
+export function stampRequestedArea(
+  questions: RevisionQuestion[],
+  byId: ReadonlyMap<string, AnatomyStructure>,
+  requested: readonly Area[] | undefined,
+): RevisionQuestion[] {
+  if (!requested?.length) return questions;
+  return questions.map((q) => {
+    const structure = byId.get(q.structureId);
+    const area = structure ? areasOf(structure).find((a) => requested.includes(a)) : undefined;
+    return area && area !== q.area ? { ...q, area } : q;
+  });
 }
 
 /**
@@ -247,7 +304,11 @@ export function generateRevisionSet(
         }
       }
     }
-    return withLearnCards(shuffle(adaptiveQuestions, rng), indexes, config.factMastery, config.learnCardAttempts);
+    return stampRequestedArea(
+      withLearnCards(shuffle(adaptiveQuestions, rng), indexes, config.factMastery, config.learnCardAttempts),
+      indexes.byId,
+      config.areas,
+    );
   }
 
   const generated: RevisionQuestion[] = [];
@@ -268,7 +329,7 @@ export function generateRevisionSet(
     generated.push(...buildFillBlankQuestions(pool, rng));
   }
   if (config.types.includes('identify-typed')) {
-    generated.push(...buildIdentifyTypedQuestions(pool, relevantImages));
+    generated.push(...buildIdentifyTypedQuestions(pool, relevantImages, structures));
   }
   if (config.types.includes('multi-select')) {
     generated.push(...buildMultiSelectQuestions(pool, indexes, rng));
@@ -289,13 +350,20 @@ export function generateRevisionSet(
     : shuffle(generated, rng);
 
   const count = config.mode === 'assessment' ? (config.count ?? generated.length) : config.count;
+  // Only a CAPPED session needs balancing — an uncapped one asks everything it
+  // built, in whatever order the weighting chose.
+  const balanced = count && config.types.length > 1 ? interleaveByType(ordered, config.types) : ordered;
   const selected = !count
-    ? ordered
+    ? balanced
     : config.priorityStructureIds?.length
-      ? blendPriorityWithRest(ordered, config.priorityStructureIds, count, config.reviewShare, rng)
-      : ordered.slice(0, count);
+      ? blendPriorityWithRest(balanced, config.priorityStructureIds, count, config.reviewShare, rng)
+      : shuffle(balanced.slice(0, count), rng);
 
   // An exam tests rather than teaches, so it never gets a learn card (CR-018).
-  if (config.mode === 'assessment') return selected;
-  return withLearnCards(selected, indexes, config.factMastery, config.learnCardAttempts);
+  if (config.mode === 'assessment') return stampRequestedArea(selected, indexes.byId, config.areas);
+  return stampRequestedArea(
+    withLearnCards(selected, indexes, config.factMastery, config.learnCardAttempts),
+    indexes.byId,
+    config.areas,
+  );
 }

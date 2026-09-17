@@ -1,4 +1,4 @@
-import { isBone, isLandmark, areaOf } from '../../types/structure';
+import { isBone, isLandmark, primaryAreaOf } from '../../types/structure';
 import type { AnatomyStructure } from '../../types/structure';
 import type { FillBlankQuestion, PromptKind } from '../../types/question';
 import { parseBlank } from './blankParser';
@@ -9,7 +9,7 @@ function baseFields(structure: AnatomyStructure, promptKind: PromptKind) {
     structureId: structure.id,
     region: structure.region,
     subregion: structure.subregion,
-    area: areaOf(structure),
+    area: primaryAreaOf(structure),
     category: structure.category,
     difficulty: structure.difficulty,
     promptKind,

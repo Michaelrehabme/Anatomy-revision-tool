@@ -4,7 +4,7 @@ import { generateRevisionSet } from '../../../anatomy-revision/lib/questionGener
 import { filterStructures } from '../../../anatomy-revision/lib/indexes';
 import { unbuildableSessionReason } from '../../../anatomy-revision/lib/setupCount';
 import { AREAS, AREA_LABELS, type Area } from '../../../anatomy-revision/types/region';
-import { areaOf, isMuscle, MUSCLE_GROUP_LABELS, type Category } from '../../../anatomy-revision/types/structure';
+import { areasOf, isMuscle, MUSCLE_GROUP_LABELS, type Category } from '../../../anatomy-revision/types/structure';
 import type { QuestionType } from '../../../anatomy-revision/types/question';
 import {
   ASSIGNMENT_QUESTION_COUNTS,
@@ -87,8 +87,7 @@ export function CreateAssignmentForm({
     () =>
       Object.keys(MUSCLE_GROUP_LABELS).filter((group) =>
         ALL_STRUCTURES.some((s) => {
-          const area = areaOf(s);
-          return isMuscle(s) && (s.groups ?? []).includes(group) && !!area && areas.includes(area);
+          return isMuscle(s) && (s.groups ?? []).includes(group) && areasOf(s).some((a) => areas.includes(a));
         }),
       ),
     [areas],

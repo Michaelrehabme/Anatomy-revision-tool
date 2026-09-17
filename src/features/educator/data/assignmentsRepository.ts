@@ -1,6 +1,7 @@
 import { collection, doc, getDocs, orderBy, query, setDoc } from 'firebase/firestore';
 import { getDb } from '../../anatomy-revision/data/firebase';
 import type { Region } from '../../anatomy-revision/types/region';
+import { normaliseAreas } from '../../anatomy-revision/types/region';
 import type { QuestionType } from '../../anatomy-revision/types/question';
 import type { Assignment, AssignmentScope, NewAssignment, ScopedAssignment } from '../types/cohort';
 
@@ -15,9 +16,13 @@ function toAssignment(cohortId: string, id: string, data: Record<string, unknown
     createdBy: data.createdBy as string,
   };
   if (data.scope) {
+    const scope = data.scope as AssignmentScope;
     return {
       ...base,
-      scope: data.scope as AssignmentScope,
+      // Areas are normalised on the way out of Firestore: a document written before an
+      // area was split still names the old value (CR-032), and an unknown area would
+      // render a blank chip and match no structure.
+      scope: { ...scope, areas: normaliseAreas(scope.areas) },
       questionTypes: data.questionTypes as QuestionType[],
       questionCount: data.questionCount as number,
       targetAccuracyPct: data.targetAccuracyPct as number,

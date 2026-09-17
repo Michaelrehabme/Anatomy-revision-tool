@@ -1,0 +1,136 @@
+{
+ "schemaVersion": 1,
+ "note": "Five ligaments spanning the range: two plainly visible, one classic sprain target, one that is invisible without a cutaway. Angles come from checkLigamentVisibility.py; frames are sized to the joint, not the ligament.",
+ "ligaments": [
+  {
+   "key": "anterior-talofibular",
+   "objects": [
+    "Anterior talofibular ligament.l"
+   ],
+   "frame": 0.11,
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ],
+   "name": "Anterior talofibular ligament"
+  },
+  {
+   "key": "anterior-tibiofibular",
+   "objects": [
+    "Anterior tibiofibular ligament.l"
+   ],
+   "frame": 0.11,
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ],
+   "name": "Anterior tibiofibular ligament"
+  },
+  {
+   "key": "acromioclavicular",
+   "objects": [
+    "Acromioclavicular ligament.l"
+   ],
+   "frame": 0.14,
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ],
+   "name": "Acromioclavicular ligament"
+  },
+  {
+   "key": "sacrotuberous",
+   "objects": [
+    "Sacrotuberous ligament.l"
+   ],
+   "frame": 0.26,
+   "cutaway": [
+    "Humerus.*",
+    "Radius.*",
+    "Ulna.*",
+    "*of hand.*",
+    "*metacarpal*",
+    "Scaphoid bone.*",
+    "Lunate bone.*",
+    "Triquetrum bone.*",
+    "Pisiform bone.*",
+    "Trapezium bone.*",
+    "Trapezoid bone.*",
+    "Capitate bone.*",
+    "Hamate bone.*"
+   ],
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ],
+   "name": "Sacrotuberous ligament"
+  },
+  {
+   "key": "anterior-cruciate-plain",
+   "objects": [
+    "Anterior cruciate ligament.l"
+   ],
+   "frame": 0.15,
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ],
+   "name": "Anterior cruciate ligament"
+  },
+  {
+   "key": "anterior-cruciate-ghost",
+   "objects": [
+    "Anterior cruciate ligament.l"
+   ],
+   "frame": 0.15,
+   "cutaway": [
+    "Patella.l",
+    "Fibula.l"
+   ],
+   "ghost": [
+    "Femur.l"
+   ],
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ],
+   "name": "Anterior cruciate ligament"
+  }
+ ]
+}

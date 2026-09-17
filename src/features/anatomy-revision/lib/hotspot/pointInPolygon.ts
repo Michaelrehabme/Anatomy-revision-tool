@@ -1,3 +1,5 @@
+import { pointSegmentDistance } from './accuracy';
+
 /**
  * Ray-casting point-in-polygon test, ported from the working TS snippet in
  * Downloads/README.md (the masks_to_svg.py pipeline's own documented
@@ -18,6 +20,48 @@ export function pointInPolygon(point: [number, number], polygon: number[][]): bo
 /** True if the point falls inside any part of a (possibly multi-part) structure polygon. */
 export function pointInAnyPolygon(point: [number, number], polygons: number[][][]): boolean {
   return polygons.some((poly) => pointInPolygon(point, poly));
+}
+
+/** Shortest distance from a point to a polygon outline, in normalized units. */
+export function distanceToOutline(point: [number, number], polygons: number[][][]): number {
+  let nearest = Infinity;
+  for (const ring of polygons) {
+    for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+      const d = pointSegmentDistance(point, ring[j], ring[i]);
+      if (d < nearest) nearest = d;
+    }
+  }
+  return nearest;
+}
+
+/**
+ * How far outside its own outline a tap may land and still count as finding
+ * the target, in normalized image units — about 4 CSS pixels of an image the
+ * width of a phone, and it scales with zoom because the units do.
+ *
+ * THE OUTLINE IS THE MUSCLE'S EDGE, NOT THE ANSWER'S EDGE. A student aiming at
+ * a narrow strip of muscle points at the middle of what they can see and lands
+ * a pixel or two outside a traced boundary that is itself only accurate to
+ * about that much. Without slack the app calls that wrong and then reveals the
+ * target directly under their finger, which teaches nothing except that the
+ * app is fussy.
+ */
+export const TAP_SLACK = 0.01;
+
+/**
+ * Whether a tap found the structure it was asked for.
+ *
+ * Only the TARGET gets the slack. Widening every candidate instead would let a
+ * thin hotspot beside the one you meant steal the tap under the smallest-wins
+ * rule, which is the same unfairness pointing the other way. Naming what was
+ * tapped stays with hitTest and stays strict.
+ */
+export function isOnTarget(
+  point: [number, number],
+  polygons: number[][][],
+  slack = TAP_SLACK,
+): boolean {
+  return pointInAnyPolygon(point, polygons) || distanceToOutline(point, polygons) <= slack;
 }
 
 export interface HitTestCandidate {

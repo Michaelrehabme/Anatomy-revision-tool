@@ -1,5 +1,5 @@
 import type { AnatomyStructure } from '../types/structure';
-import { isMuscle, areaOf } from '../types/structure';
+import { isMuscle, areasOf } from '../types/structure';
 import type { Category, Difficulty } from '../types/structure';
 import type { Area, Region, SubRegion } from '../types/region';
 
@@ -51,7 +51,11 @@ export interface StructureFilter {
   /** OR-matched against s.region; takes precedence over `region` when non-empty. Empty/undefined = no region filter. */
   regions?: Region[];
   subregion?: SubRegion;
-  /** OR-matched against the structure's area (CR-017). Empty/undefined = no area filter. */
+  /**
+   * OR-matched against the structure's areas (CR-017). A structure spanning several
+   * areas (a pedicle is cervical, thoracic and lumbar — CR-032) matches any of them.
+   * Empty/undefined = no area filter.
+   */
   areas?: Area[];
   /**
    * OR-matched against the structure's `groups` (CR-018) — the axis OINA
@@ -72,8 +76,7 @@ export function filterStructures(
     filter.regions?.length ? filter.regions.includes(region) : !filter.region || region === filter.region;
   const areaMatch = (s: AnatomyStructure) => {
     if (!filter.areas?.length) return true;
-    const area = areaOf(s);
-    return !!area && filter.areas.includes(area);
+    return areasOf(s).some((area) => filter.areas!.includes(area));
   };
   const groupMatch = (s: AnatomyStructure) =>
     !filter.groups?.length || (s.groups ?? []).some((g) => filter.groups!.includes(g));

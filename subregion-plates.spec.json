@@ -1,0 +1,1710 @@
+{
+ "schemaVersion": 1,
+ "generated": "2026-09-17T18:10:03.689Z",
+ "plates": [
+  {
+   "key": "lower-leg-foot__ankle-foot",
+   "region": "lower-leg-foot",
+   "subregion": "ankle-foot",
+   "subjects": [
+    {
+     "id": "abductor-hallucis",
+     "name": "Abductor Hallucis",
+     "kind": "muscle",
+     "objects": [
+      "Abductor hallucis.l",
+      "Abductor hallucis.r"
+     ]
+    },
+    {
+     "id": "adductor-hallucis",
+     "name": "Adductor Hallucis",
+     "kind": "muscle",
+     "objects": [
+      "Oblique head of adductor hallucis.l",
+      "Oblique head of adductor hallucis.r",
+      "Transverse head of adductor hallucis.l",
+      "Transverse head of adductor hallucis.r"
+     ]
+    },
+    {
+     "id": "calcaneus",
+     "name": "Calcaneus",
+     "kind": "bone",
+     "objects": [
+      "Calcaneus.l",
+      "Calcaneus.r"
+     ]
+    },
+    {
+     "id": "cuboid",
+     "name": "Cuboid",
+     "kind": "bone",
+     "objects": [
+      "Cuboid bone.l",
+      "Cuboid bone.r"
+     ]
+    },
+    {
+     "id": "dorsal-interossei-foot",
+     "name": "Dorsal Interossei (Foot)",
+     "kind": "muscle",
+     "objects": [
+      "Dorsal interossei muscles of foot.l",
+      "Dorsal interossei muscles of foot.r"
+     ]
+    },
+    {
+     "id": "extensor-digitorum-brevis",
+     "name": "Extensor Digitorum Brevis",
+     "kind": "muscle",
+     "objects": [
+      "Extensor digitorum brevis.l",
+      "Extensor digitorum brevis.r"
+     ]
+    },
+    {
+     "id": "extensor-hallucis-brevis",
+     "name": "Extensor Hallucis Brevis",
+     "kind": "muscle",
+     "objects": [
+      "Extensor hallucis brevis.l",
+      "Extensor hallucis brevis.r"
+     ]
+    },
+    {
+     "id": "flexor-digiti-minimi-brevis-foot",
+     "name": "Flexor Digiti Minimi Brevis (Foot)",
+     "kind": "muscle",
+     "objects": [
+      "Flexor digiti minimi of foot.l",
+      "Flexor digiti minimi of foot.r"
+     ]
+    },
+    {
+     "id": "flexor-digitorum-brevis",
+     "name": "Flexor Digitorum Brevis",
+     "kind": "muscle",
+     "objects": [
+      "Flexor digitorum brevis.l",
+      "Flexor digitorum brevis.r"
+     ]
+    },
+    {
+     "id": "flexor-hallucis-brevis",
+     "name": "Flexor Hallucis Brevis",
+     "kind": "muscle",
+     "objects": [
+      "Lateral head of flexor hallucis brevis.l",
+      "Lateral head of flexor hallucis brevis.r",
+      "Medial head of flexor hallucis brevis.l",
+      "Medial head of flexor hallucis brevis.r"
+     ]
+    },
+    {
+     "id": "intermediate-cuneiform",
+     "name": "Intermediate Cuneiform",
+     "kind": "bone",
+     "objects": [
+      "Intermediate cuneiform bone.l",
+      "Intermediate cuneiform bone.r"
+     ]
+    },
+    {
+     "id": "lateral-cuneiform",
+     "name": "Lateral Cuneiform",
+     "kind": "bone",
+     "objects": [
+      "Lateral cuneiform bone.l",
+      "Lateral cuneiform bone.r"
+     ]
+    },
+    {
+     "id": "lateral-malleolus",
+     "name": "Lateral Malleolus",
+     "kind": "bone",
+     "objects": [
+      "Lateral malleolus.l",
+      "Lateral malleolus.r"
+     ]
+    },
+    {
+     "id": "lumbricals-foot",
+     "name": "Lumbricals (Foot)",
+     "kind": "muscle",
+     "objects": [
+      "Lumbrical muscles of foot.l",
+      "Lumbrical muscles of foot.r"
+     ]
+    },
+    {
+     "id": "medial-cuneiform",
+     "name": "Medial Cuneiform",
+     "kind": "bone",
+     "objects": [
+      "Medial cuneiform bone.l",
+      "Medial cuneiform bone.r"
+     ]
+    },
+    {
+     "id": "medial-malleolus",
+     "name": "Medial Malleolus",
+     "kind": "bone",
+     "objects": [
+      "Medial malleolus.l",
+      "Medial malleolus.r"
+     ]
+    },
+    {
+     "id": "navicular",
+     "name": "Navicular",
+     "kind": "bone",
+     "objects": [
+      "Navicular bone.l",
+      "Navicular bone.r"
+     ]
+    },
+    {
+     "id": "opponens-digiti-minimi-foot",
+     "name": "Opponens Digiti Minimi (Foot)",
+     "kind": "muscle",
+     "objects": [
+      "(Opponens digiti minimi muscle of foot).l",
+      "(Opponens digiti minimi muscle of foot).r"
+     ]
+    },
+    {
+     "id": "phalanges-middle-foot",
+     "name": "Middle Phalanges of the Foot (grouped)",
+     "kind": "bone",
+     "objects": [
+      "Middle phalanx of fifth finger of foot.l",
+      "Middle phalanx of fifth finger of foot.r",
+      "Middle phalanx of fourth finger of foot.l",
+      "Middle phalanx of fourth finger of foot.r",
+      "Middle phalanx of second finger of foot.l",
+      "Middle phalanx of second finger of foot.r",
+      "Middle phalanx of third finger of foot.l",
+      "Middle phalanx of third finger of foot.r"
+     ]
+    },
+    {
+     "id": "plantar-interossei",
+     "name": "Plantar Interossei",
+     "kind": "muscle",
+     "objects": [
+      "Plantar interossei muscles.l",
+      "Plantar interossei muscles.r"
+     ]
+    },
+    {
+     "id": "quadratus-plantae",
+     "name": "Quadratus Plantae",
+     "kind": "muscle",
+     "objects": [
+      "Quadratus plantae muscle.l",
+      "Quadratus plantae muscle.r"
+     ]
+    },
+    {
+     "id": "talus",
+     "name": "Talus",
+     "kind": "bone",
+     "objects": [
+      "Talus.l",
+      "Talus.r"
+     ]
+    }
+   ],
+   "bones": [
+    "Femur.l",
+    "Femur.r",
+    "Patella.l",
+    "Patella.r",
+    "Tibia.l",
+    "Tibia.r",
+    "Fibula.l",
+    "Fibula.r",
+    "Calcaneus.l",
+    "Calcaneus.r",
+    "Cuboid bone.l",
+    "Cuboid bone.r",
+    "Intermediate cuneiform bone.l",
+    "Intermediate cuneiform bone.r",
+    "Lateral cuneiform bone.l",
+    "Lateral cuneiform bone.r",
+    "Medial cuneiform bone.l",
+    "Medial cuneiform bone.r",
+    "Navicular bone.l",
+    "Navicular bone.r",
+    "Talus.l",
+    "Talus.r",
+    "Talus.l",
+    "Talus.r",
+    "Calcaneus.l",
+    "Calcaneus.r",
+    "Navicular bone.l",
+    "Navicular bone.r",
+    "Cuboid bone.l",
+    "Cuboid bone.r",
+    "Medial cuneiform bone.l",
+    "Medial cuneiform bone.r",
+    "Intermediate cuneiform bone.l",
+    "Intermediate cuneiform bone.r",
+    "Lateral cuneiform bone.l",
+    "Lateral cuneiform bone.r",
+    "Fifth metatarsal bone.l",
+    "Fifth metatarsal bone.r",
+    "First metatarsal bone.l",
+    "First metatarsal bone.r",
+    "Fourth metatarsal bone.l",
+    "Fourth metatarsal bone.r",
+    "Second metatarsal bone.l",
+    "Second metatarsal bone.r",
+    "Third metatarsal bone.l",
+    "Third metatarsal bone.r",
+    "Proximal phalanx of fifth finger of foot.l",
+    "Proximal phalanx of fifth finger of foot.r",
+    "Proximal phalanx of first finger of foot.l",
+    "Proximal phalanx of first finger of foot.r",
+    "Proximal phalanx of fourth finger of foot.l",
+    "Proximal phalanx of fourth finger of foot.r",
+    "Proximal phalanx of second finger of foot.l",
+    "Proximal phalanx of second finger of foot.r",
+    "Proximal phalanx of third finger of foot.l",
+    "Proximal phalanx of third finger of foot.r",
+    "Middle phalanx of fifth finger of foot.l",
+    "Middle phalanx of fifth finger of foot.r",
+    "Middle phalanx of fourth finger of foot.l",
+    "Middle phalanx of fourth finger of foot.r",
+    "Middle phalanx of second finger of foot.l",
+    "Middle phalanx of second finger of foot.r",
+    "Middle phalanx of third finger of foot.l",
+    "Middle phalanx of third finger of foot.r",
+    "Distal phalanx of fifth finger of foot.l",
+    "Distal phalanx of fifth finger of foot.r",
+    "Distal phalanx of first finger of foot.l",
+    "Distal phalanx of first finger of foot.r",
+    "Distal phalanx of fourth finger of foot.l",
+    "Distal phalanx of fourth finger of foot.r",
+    "Distal phalanx of second finger of foot.l",
+    "Distal phalanx of second finger of foot.r",
+    "Distal phalanx of third finger of foot.l",
+    "Distal phalanx of third finger of foot.r"
+   ]
+  },
+  {
+   "key": "forearm-hand__wrist-hand",
+   "region": "forearm-hand",
+   "subregion": "wrist-hand",
+   "subjects": [
+    {
+     "id": "capitate",
+     "name": "Capitate",
+     "kind": "bone",
+     "objects": [
+      "Capitate bone.l",
+      "Capitate bone.r"
+     ]
+    },
+    {
+     "id": "dorsal-interossei-hand",
+     "name": "Dorsal Interossei (Hand)",
+     "kind": "muscle",
+     "objects": [
+      "Dorsal interossei muscles of hand.l",
+      "Dorsal interossei muscles of hand.r"
+     ]
+    },
+    {
+     "id": "flexor-digiti-minimi-brevis-hand",
+     "name": "Flexor Digiti Minimi Brevis (Hand)",
+     "kind": "muscle",
+     "objects": [
+      "Flexor digiti minimi of hand.l",
+      "Flexor digiti minimi of hand.r"
+     ]
+    },
+    {
+     "id": "flexor-pollicis-brevis",
+     "name": "Flexor Pollicis Brevis",
+     "kind": "muscle",
+     "objects": [
+      "Deep head of flexor pollicis brevis.l",
+      "Deep head of flexor pollicis brevis.r",
+      "Superficial head of flexor pollicis brevis.l",
+      "Superficial head of flexor pollicis brevis.r"
+     ]
+    },
+    {
+     "id": "hamate",
+     "name": "Hamate",
+     "kind": "bone",
+     "objects": [
+      "Hamate bone.l",
+      "Hamate bone.r"
+     ]
+    },
+    {
+     "id": "lumbricals-hand",
+     "name": "Lumbricals (Hand)",
+     "kind": "muscle",
+     "objects": [
+      "Lumbrical muscles of hand.l",
+      "Lumbrical muscles of hand.r"
+     ]
+    },
+    {
+     "id": "lunate",
+     "name": "Lunate",
+     "kind": "bone",
+     "objects": [
+      "Lunate bone.l",
+      "Lunate bone.r"
+     ]
+    },
+    {
+     "id": "opponens-digiti-minimi-hand",
+     "name": "Opponens Digiti Minimi (Hand)",
+     "kind": "muscle",
+     "objects": [
+      "Opponens digiti minimi muscle of hand.l",
+      "Opponens digiti minimi muscle of hand.r"
+     ]
+    },
+    {
+     "id": "opponens-pollicis",
+     "name": "Opponens Pollicis",
+     "kind": "muscle",
+     "objects": [
+      "Opponens pollicis muscle.l",
+      "Opponens pollicis muscle.r"
+     ]
+    },
+    {
+     "id": "palmar-interossei",
+     "name": "Palmar Interossei",
+     "kind": "muscle",
+     "objects": [
+      "Palmar interossei muscles.l",
+      "Palmar interossei muscles.r"
+     ]
+    },
+    {
+     "id": "phalanges-distal-hand",
+     "name": "Distal Phalanges of the Hand (grouped)",
+     "kind": "bone",
+     "objects": [
+      "Distal phalanx of fifth finger of hand.l",
+      "Distal phalanx of fifth finger of hand.r",
+      "Distal phalanx of first finger of hand.l",
+      "Distal phalanx of first finger of hand.r",
+      "Distal phalanx of fourth finger of hand.l",
+      "Distal phalanx of fourth finger of hand.r",
+      "Distal phalanx of second finger of hand.l",
+      "Distal phalanx of second finger of hand.r",
+      "Distal phalanx of third finger of hand.l",
+      "Distal phalanx of third finger of hand.r"
+     ]
+    },
+    {
+     "id": "phalanges-middle-hand",
+     "name": "Middle Phalanges of the Hand (grouped)",
+     "kind": "bone",
+     "objects": [
+      "Middle phalanx of fifth finger of hand.l",
+      "Middle phalanx of fifth finger of hand.r",
+      "Middle phalanx of fourth finger of hand.l",
+      "Middle phalanx of fourth finger of hand.r",
+      "Middle phalanx of second finger of hand.l",
+      "Middle phalanx of second finger of hand.r",
+      "Middle phalanx of third finger of hand.l",
+      "Middle phalanx of third finger of hand.r"
+     ]
+    },
+    {
+     "id": "pisiform",
+     "name": "Pisiform",
+     "kind": "bone",
+     "objects": [
+      "Pisiform bone.l",
+      "Pisiform bone.r"
+     ]
+    },
+    {
+     "id": "scaphoid",
+     "name": "Scaphoid",
+     "kind": "bone",
+     "objects": [
+      "Scaphoid bone.l",
+      "Scaphoid bone.r"
+     ]
+    },
+    {
+     "id": "trapezium",
+     "name": "Trapezium",
+     "kind": "bone",
+     "objects": [
+      "Trapezium bone.l",
+      "Trapezium bone.r"
+     ]
+    },
+    {
+     "id": "trapezoid",
+     "name": "Trapezoid",
+     "kind": "bone",
+     "objects": [
+      "Trapezoid bone.l",
+      "Trapezoid bone.r"
+     ]
+    },
+    {
+     "id": "triquetrum",
+     "name": "Triquetrum",
+     "kind": "bone",
+     "objects": [
+      "Triquetrum bone.l",
+      "Triquetrum bone.r"
+     ]
+    }
+   ],
+   "bones": [
+    "Humerus.l",
+    "Humerus.r",
+    "Radius.l",
+    "Radius.r",
+    "Ulna.l",
+    "Ulna.r",
+    "Capitate bone.l",
+    "Capitate bone.r",
+    "Hamate bone.l",
+    "Hamate bone.r",
+    "Lunate bone.l",
+    "Lunate bone.r",
+    "Pisiform bone.l",
+    "Pisiform bone.r",
+    "Scaphoid bone.l",
+    "Scaphoid bone.r",
+    "Trapezium bone.l",
+    "Trapezium bone.r",
+    "Trapezoid bone.l",
+    "Trapezoid bone.r",
+    "Triquetrum bone.l",
+    "Triquetrum bone.r",
+    "Fifth metacarpal bone.l",
+    "Fifth metacarpal bone.r",
+    "First metacarpal bone.l",
+    "First metacarpal bone.r",
+    "Fourth metacarpal bone.l",
+    "Fourth metacarpal bone.r",
+    "Second metacarpal bone.l",
+    "Second metacarpal bone.r",
+    "Third metacarpal bone.l",
+    "Third metacarpal bone.r",
+    "Proximal phalanx of fifth finger of hand.l",
+    "Proximal phalanx of fifth finger of hand.r",
+    "Proximal phalanx of first finger of hand.l",
+    "Proximal phalanx of first finger of hand.r",
+    "Proximal phalanx of fourth finger of hand.l",
+    "Proximal phalanx of fourth finger of hand.r",
+    "Proximal phalanx of second finger of hand.l",
+    "Proximal phalanx of second finger of hand.r",
+    "Proximal phalanx of third finger of hand.l",
+    "Proximal phalanx of third finger of hand.r",
+    "Middle phalanx of fifth finger of hand.l",
+    "Middle phalanx of fifth finger of hand.r",
+    "Middle phalanx of fourth finger of hand.l",
+    "Middle phalanx of fourth finger of hand.r",
+    "Middle phalanx of second finger of hand.l",
+    "Middle phalanx of second finger of hand.r",
+    "Middle phalanx of third finger of hand.l",
+    "Middle phalanx of third finger of hand.r",
+    "Distal phalanx of fifth finger of hand.l",
+    "Distal phalanx of fifth finger of hand.r",
+    "Distal phalanx of first finger of hand.l",
+    "Distal phalanx of first finger of hand.r",
+    "Distal phalanx of fourth finger of hand.l",
+    "Distal phalanx of fourth finger of hand.r",
+    "Distal phalanx of second finger of hand.l",
+    "Distal phalanx of second finger of hand.r",
+    "Distal phalanx of third finger of hand.l",
+    "Distal phalanx of third finger of hand.r"
+   ]
+  },
+  {
+   "key": "forearm-hand__wrist-hand__forearm",
+   "region": "forearm-hand",
+   "subregion": "wrist-hand",
+   "subjects": [
+    {
+     "id": "abductor-pollicis-longus",
+     "name": "Abductor Pollicis Longus",
+     "kind": "muscle",
+     "objects": [
+      "Abductor pollicis longus.l",
+      "Abductor pollicis longus.r"
+     ]
+    },
+    {
+     "id": "extensor-carpi-radialis-brevis",
+     "name": "Extensor Carpi Radialis Brevis",
+     "kind": "muscle",
+     "objects": [
+      "Extensor carpi radialis brevis.l",
+      "Extensor carpi radialis brevis.r"
+     ]
+    },
+    {
+     "id": "extensor-digiti-minimi",
+     "name": "Extensor Digiti Minimi",
+     "kind": "muscle",
+     "objects": [
+      "Extensor digiti minimi.l",
+      "Extensor digiti minimi.r"
+     ]
+    },
+    {
+     "id": "extensor-digitorum",
+     "name": "Extensor Digitorum",
+     "kind": "muscle",
+     "objects": [
+      "Extensor digitorum.l",
+      "Extensor digitorum.r"
+     ]
+    },
+    {
+     "id": "extensor-indicis",
+     "name": "Extensor Indicis",
+     "kind": "muscle",
+     "objects": [
+      "Extensor indicis.l",
+      "Extensor indicis.r"
+     ]
+    },
+    {
+     "id": "extensor-pollicis-brevis",
+     "name": "Extensor Pollicis Brevis",
+     "kind": "muscle",
+     "objects": [
+      "Extensor pollicis brevis.l",
+      "Extensor pollicis brevis.r"
+     ]
+    },
+    {
+     "id": "extensor-pollicis-longus",
+     "name": "Extensor Pollicis Longus",
+     "kind": "muscle",
+     "objects": [
+      "Extensor pollicis longus.l",
+      "Extensor pollicis longus.r"
+     ]
+    },
+    {
+     "id": "flexor-digitorum-superficialis",
+     "name": "Flexor Digitorum Superficialis",
+     "kind": "muscle",
+     "objects": [
+      "Humero-ulnar head of flexor digitorum superficialis.l",
+      "Humero-ulnar head of flexor digitorum superficialis.r",
+      "Radial head of flexor digitorum superficialis.l",
+      "Radial head of flexor digitorum superficialis.r"
+     ]
+    },
+    {
+     "id": "flexor-pollicis-longus",
+     "name": "Flexor Pollicis Longus",
+     "kind": "muscle",
+     "objects": [
+      "Flexor pollicis longus.l",
+      "Flexor pollicis longus.r"
+     ]
+    },
+    {
+     "id": "pronator-quadratus",
+     "name": "Pronator Quadratus",
+     "kind": "muscle",
+     "objects": [
+      "Pronator quadratus.l",
+      "Pronator quadratus.r"
+     ]
+    }
+   ],
+   "bones": [
+    "Humerus.l",
+    "Humerus.r",
+    "Radius.l",
+    "Radius.r",
+    "Ulna.l",
+    "Ulna.r",
+    "Capitate bone.l",
+    "Capitate bone.r",
+    "Hamate bone.l",
+    "Hamate bone.r",
+    "Lunate bone.l",
+    "Lunate bone.r",
+    "Pisiform bone.l",
+    "Pisiform bone.r",
+    "Scaphoid bone.l",
+    "Scaphoid bone.r",
+    "Trapezium bone.l",
+    "Trapezium bone.r",
+    "Trapezoid bone.l",
+    "Trapezoid bone.r",
+    "Triquetrum bone.l",
+    "Triquetrum bone.r",
+    "Fifth metacarpal bone.l",
+    "Fifth metacarpal bone.r",
+    "First metacarpal bone.l",
+    "First metacarpal bone.r",
+    "Fourth metacarpal bone.l",
+    "Fourth metacarpal bone.r",
+    "Second metacarpal bone.l",
+    "Second metacarpal bone.r",
+    "Third metacarpal bone.l",
+    "Third metacarpal bone.r",
+    "Proximal phalanx of fifth finger of hand.l",
+    "Proximal phalanx of fifth finger of hand.r",
+    "Proximal phalanx of first finger of hand.l",
+    "Proximal phalanx of first finger of hand.r",
+    "Proximal phalanx of fourth finger of hand.l",
+    "Proximal phalanx of fourth finger of hand.r",
+    "Proximal phalanx of second finger of hand.l",
+    "Proximal phalanx of second finger of hand.r",
+    "Proximal phalanx of third finger of hand.l",
+    "Proximal phalanx of third finger of hand.r",
+    "Middle phalanx of fifth finger of hand.l",
+    "Middle phalanx of fifth finger of hand.r",
+    "Middle phalanx of fourth finger of hand.l",
+    "Middle phalanx of fourth finger of hand.r",
+    "Middle phalanx of second finger of hand.l",
+    "Middle phalanx of second finger of hand.r",
+    "Middle phalanx of third finger of hand.l",
+    "Middle phalanx of third finger of hand.r",
+    "Distal phalanx of fifth finger of hand.l",
+    "Distal phalanx of fifth finger of hand.r",
+    "Distal phalanx of first finger of hand.l",
+    "Distal phalanx of first finger of hand.r",
+    "Distal phalanx of fourth finger of hand.l",
+    "Distal phalanx of fourth finger of hand.r",
+    "Distal phalanx of second finger of hand.l",
+    "Distal phalanx of second finger of hand.r",
+    "Distal phalanx of third finger of hand.l",
+    "Distal phalanx of third finger of hand.r"
+   ]
+  },
+  {
+   "key": "back-core__spine",
+   "region": "back-core",
+   "subregion": "spine",
+   "subjects": [
+    {
+     "id": "coccyx",
+     "name": "Coccyx",
+     "kind": "bone",
+     "objects": [
+      "Coccyx"
+     ]
+    },
+    {
+     "id": "interspinales",
+     "name": "Interspinales",
+     "kind": "muscle",
+     "objects": [
+      "Interspinales colli muscles.l",
+      "Interspinales colli muscles.r",
+      "Interspinales lumborum muscles.l",
+      "Interspinales lumborum muscles.r",
+      "Interspinales thoracis muscles.l",
+      "Interspinales thoracis muscles.r"
+     ]
+    },
+    {
+     "id": "intertransversarii",
+     "name": "Intertransversarii",
+     "kind": "muscle",
+     "objects": [
+      "Dorsal parts of lateral intertransversarii lumborum muscles.l",
+      "Dorsal parts of lateral intertransversarii lumborum muscles.r",
+      "Ventral parts of lateral intertransversarii lumborum muscles.l",
+      "Ventral parts of lateral intertransversarii lumborum muscles.r"
+     ]
+    },
+    {
+     "id": "intervertebral-disc",
+     "name": "Intervertebral Disc",
+     "kind": "bone",
+     "objects": [
+      "Intervertebral disc C2-C3",
+      "Intervertebral disc C3-C4",
+      "Intervertebral disc C4-C5",
+      "Intervertebral disc C5-C6",
+      "Intervertebral disc C6-C7",
+      "Intervertebral disc C7-T1",
+      "Intervertebral disc L1-L2",
+      "Intervertebral disc L2-L3",
+      "Intervertebral disc L3-L4",
+      "Intervertebral disc L4-L5",
+      "Intervertebral disc L5-S1",
+      "Intervertebral disc T1-T2",
+      "Intervertebral disc T10-T11",
+      "Intervertebral disc T11-T12",
+      "Intervertebral disc T12-L1",
+      "Intervertebral disc T2-T3",
+      "Intervertebral disc T3-T4",
+      "Intervertebral disc T4-T5",
+      "Intervertebral disc T5-T6",
+      "Intervertebral disc T6-T7",
+      "Intervertebral disc T7-T8",
+      "Intervertebral disc T8-T9",
+      "Intervertebral disc T9-T10",
+      "Nucleus pulposus C2-C3",
+      "Nucleus pulposus C3-C4",
+      "Nucleus pulposus C4-C5",
+      "Nucleus pulposus C5-C6",
+      "Nucleus pulposus C6-C7",
+      "Nucleus pulposus C7-T1",
+      "Nucleus pulposus L1-L2",
+      "Nucleus pulposus L2-L3",
+      "Nucleus pulposus L3-L4",
+      "Nucleus pulposus L4-L5",
+      "Nucleus pulposus L5-S1",
+      "Nucleus pulposus T1-T2",
+      "Nucleus pulposus T10-T11",
+      "Nucleus pulposus T11-T12",
+      "Nucleus pulposus T12-L1",
+      "Nucleus pulposus T2-T3",
+      "Nucleus pulposus T3-T4",
+      "Nucleus pulposus T4-T5",
+      "Nucleus pulposus T5-T6",
+      "Nucleus pulposus T6-T7",
+      "Nucleus pulposus T7-T8",
+      "Nucleus pulposus T8-T9",
+      "Nucleus pulposus T9-T10",
+      "Sacrococcygeal symphysis"
+     ]
+    },
+    {
+     "id": "l4-vertebra",
+     "name": "L4 Vertebra",
+     "kind": "bone",
+     "objects": [
+      "Vertebra L4"
+     ]
+    },
+    {
+     "id": "l5-vertebra",
+     "name": "L5 Vertebra",
+     "kind": "bone",
+     "objects": [
+      "Vertebra L5"
+     ]
+    },
+    {
+     "id": "longus-capitis",
+     "name": "Longus Capitis",
+     "kind": "muscle",
+     "objects": [
+      "Longus capitis muscle.l",
+      "Longus capitis muscle.r"
+     ]
+    },
+    {
+     "id": "longus-colli",
+     "name": "Longus Colli",
+     "kind": "muscle",
+     "objects": [
+      "Longus colli muscle.l",
+      "Longus colli muscle.r"
+     ]
+    },
+    {
+     "id": "multifidus",
+     "name": "Multifidus",
+     "kind": "muscle",
+     "objects": [
+      "Multifidus colli muscle.l",
+      "Multifidus colli muscle.r",
+      "Multifidus lumborum muscle.l",
+      "Multifidus lumborum muscle.r",
+      "Multifidus thoracis muscle.l",
+      "Multifidus thoracis muscle.r"
+     ]
+    }
+   ],
+   "backdrop": "full"
+  },
+  {
+   "key": "lower-leg-foot__ankle-foot__forefoot",
+   "region": "lower-leg-foot",
+   "subregion": "ankle-foot",
+   "subjects": [
+    {
+     "id": "dorsal-interossei-foot",
+     "name": "Dorsal Interossei (Foot)",
+     "kind": "muscle",
+     "objects": [
+      "Dorsal interossei muscles of foot.l",
+      "Dorsal interossei muscles of foot.r"
+     ]
+    },
+    {
+     "id": "metatarsals",
+     "name": "Metatarsals (grouped)",
+     "kind": "bone",
+     "objects": [
+      "Fifth metatarsal bone.l",
+      "Fifth metatarsal bone.r",
+      "First metatarsal bone.l",
+      "First metatarsal bone.r",
+      "Fourth metatarsal bone.l",
+      "Fourth metatarsal bone.r",
+      "Second metatarsal bone.l",
+      "Second metatarsal bone.r",
+      "Third metatarsal bone.l",
+      "Third metatarsal bone.r"
+     ]
+    },
+    {
+     "id": "phalanges-distal-foot",
+     "name": "Distal Phalanges of the Foot (grouped)",
+     "kind": "bone",
+     "objects": [
+      "Distal phalanx of fifth finger of foot.l",
+      "Distal phalanx of fifth finger of foot.r",
+      "Distal phalanx of first finger of foot.l",
+      "Distal phalanx of first finger of foot.r",
+      "Distal phalanx of fourth finger of foot.l",
+      "Distal phalanx of fourth finger of foot.r",
+      "Distal phalanx of second finger of foot.l",
+      "Distal phalanx of second finger of foot.r",
+      "Distal phalanx of third finger of foot.l",
+      "Distal phalanx of third finger of foot.r"
+     ]
+    },
+    {
+     "id": "phalanges-middle-foot",
+     "name": "Middle Phalanges of the Foot (grouped)",
+     "kind": "bone",
+     "objects": [
+      "Middle phalanx of fifth finger of foot.l",
+      "Middle phalanx of fifth finger of foot.r",
+      "Middle phalanx of fourth finger of foot.l",
+      "Middle phalanx of fourth finger of foot.r",
+      "Middle phalanx of second finger of foot.l",
+      "Middle phalanx of second finger of foot.r",
+      "Middle phalanx of third finger of foot.l",
+      "Middle phalanx of third finger of foot.r"
+     ]
+    },
+    {
+     "id": "phalanges-proximal-foot",
+     "name": "Proximal Phalanges of the Foot (grouped)",
+     "kind": "bone",
+     "objects": [
+      "Proximal phalanx of fifth finger of foot.l",
+      "Proximal phalanx of fifth finger of foot.r",
+      "Proximal phalanx of first finger of foot.l",
+      "Proximal phalanx of first finger of foot.r",
+      "Proximal phalanx of fourth finger of foot.l",
+      "Proximal phalanx of fourth finger of foot.r",
+      "Proximal phalanx of second finger of foot.l",
+      "Proximal phalanx of second finger of foot.r",
+      "Proximal phalanx of third finger of foot.l",
+      "Proximal phalanx of third finger of foot.r"
+     ]
+    },
+    {
+     "id": "plantar-interossei",
+     "name": "Plantar Interossei",
+     "kind": "muscle",
+     "objects": [
+      "Plantar interossei muscles.l",
+      "Plantar interossei muscles.r"
+     ]
+    }
+   ],
+   "bones": [
+    "Femur.l",
+    "Femur.r",
+    "Patella.l",
+    "Patella.r",
+    "Tibia.l",
+    "Tibia.r",
+    "Fibula.l",
+    "Fibula.r",
+    "Calcaneus.l",
+    "Calcaneus.r",
+    "Cuboid bone.l",
+    "Cuboid bone.r",
+    "Intermediate cuneiform bone.l",
+    "Intermediate cuneiform bone.r",
+    "Lateral cuneiform bone.l",
+    "Lateral cuneiform bone.r",
+    "Medial cuneiform bone.l",
+    "Medial cuneiform bone.r",
+    "Navicular bone.l",
+    "Navicular bone.r",
+    "Talus.l",
+    "Talus.r",
+    "Talus.l",
+    "Talus.r",
+    "Calcaneus.l",
+    "Calcaneus.r",
+    "Navicular bone.l",
+    "Navicular bone.r",
+    "Cuboid bone.l",
+    "Cuboid bone.r",
+    "Medial cuneiform bone.l",
+    "Medial cuneiform bone.r",
+    "Intermediate cuneiform bone.l",
+    "Intermediate cuneiform bone.r",
+    "Lateral cuneiform bone.l",
+    "Lateral cuneiform bone.r",
+    "Fifth metatarsal bone.l",
+    "Fifth metatarsal bone.r",
+    "First metatarsal bone.l",
+    "First metatarsal bone.r",
+    "Fourth metatarsal bone.l",
+    "Fourth metatarsal bone.r",
+    "Second metatarsal bone.l",
+    "Second metatarsal bone.r",
+    "Third metatarsal bone.l",
+    "Third metatarsal bone.r",
+    "Proximal phalanx of fifth finger of foot.l",
+    "Proximal phalanx of fifth finger of foot.r",
+    "Proximal phalanx of first finger of foot.l",
+    "Proximal phalanx of first finger of foot.r",
+    "Proximal phalanx of fourth finger of foot.l",
+    "Proximal phalanx of fourth finger of foot.r",
+    "Proximal phalanx of second finger of foot.l",
+    "Proximal phalanx of second finger of foot.r",
+    "Proximal phalanx of third finger of foot.l",
+    "Proximal phalanx of third finger of foot.r",
+    "Middle phalanx of fifth finger of foot.l",
+    "Middle phalanx of fifth finger of foot.r",
+    "Middle phalanx of fourth finger of foot.l",
+    "Middle phalanx of fourth finger of foot.r",
+    "Middle phalanx of second finger of foot.l",
+    "Middle phalanx of second finger of foot.r",
+    "Middle phalanx of third finger of foot.l",
+    "Middle phalanx of third finger of foot.r",
+    "Distal phalanx of fifth finger of foot.l",
+    "Distal phalanx of fifth finger of foot.r",
+    "Distal phalanx of first finger of foot.l",
+    "Distal phalanx of first finger of foot.r",
+    "Distal phalanx of fourth finger of foot.l",
+    "Distal phalanx of fourth finger of foot.r",
+    "Distal phalanx of second finger of foot.l",
+    "Distal phalanx of second finger of foot.r",
+    "Distal phalanx of third finger of foot.l",
+    "Distal phalanx of third finger of foot.r"
+   ]
+  },
+  {
+   "key": "back-core__torso",
+   "region": "back-core",
+   "subregion": "torso",
+   "subjects": [
+    {
+     "id": "first-rib",
+     "name": "First Rib",
+     "kind": "bone",
+     "objects": [
+      "First rib.l",
+      "First rib.r"
+     ]
+    },
+    {
+     "id": "internal-intercostals",
+     "name": "Internal Intercostals",
+     "kind": "muscle",
+     "objects": [
+      "Internal intercostal muscles.l",
+      "Internal intercostal muscles.r"
+     ]
+    },
+    {
+     "id": "sternal-body",
+     "name": "Body of Sternum",
+     "kind": "bone",
+     "objects": [
+      "Body of sternum"
+     ]
+    },
+    {
+     "id": "twelfth-rib",
+     "name": "Twelfth Rib",
+     "kind": "bone",
+     "objects": [
+      "Twelfth rib.l",
+      "Twelfth rib.r"
+     ]
+    },
+    {
+     "id": "xiphoid-process",
+     "name": "Xiphoid Process",
+     "kind": "bone",
+     "objects": [
+      "Xiphoid process"
+     ]
+    }
+   ],
+   "backdrop": "full"
+  },
+  {
+   "key": "back-core__spine__cervical",
+   "region": "back-core",
+   "subregion": "spine",
+   "subjects": [
+    {
+     "id": "atlas-c1",
+     "name": "Atlas (C1)",
+     "kind": "bone",
+     "objects": [
+      "Atlas (C1)"
+     ]
+    },
+    {
+     "id": "c7-vertebra",
+     "name": "C7 Vertebra",
+     "kind": "bone",
+     "objects": [
+      "Vertebra C7"
+     ]
+    },
+    {
+     "id": "cervical-vertebrae",
+     "name": "Cervical Vertebrae (C3–C6)",
+     "kind": "bone",
+     "objects": [
+      "Vertebra C3",
+      "Vertebra C4",
+      "Vertebra C5",
+      "Vertebra C6"
+     ]
+    },
+    {
+     "id": "longus-capitis",
+     "name": "Longus Capitis",
+     "kind": "muscle",
+     "objects": [
+      "Longus capitis muscle.l",
+      "Longus capitis muscle.r"
+     ]
+    },
+    {
+     "id": "longus-colli",
+     "name": "Longus Colli",
+     "kind": "muscle",
+     "objects": [
+      "Longus colli muscle.l",
+      "Longus colli muscle.r"
+     ]
+    }
+   ],
+   "backdrop": "full"
+  },
+  {
+   "key": "forearm-hand__wrist-hand__hand-deep",
+   "region": "forearm-hand",
+   "subregion": "wrist-hand",
+   "subjects": [
+    {
+     "id": "flexor-digiti-minimi-brevis-hand",
+     "name": "Flexor Digiti Minimi Brevis (Hand)",
+     "kind": "muscle",
+     "objects": [
+      "Flexor digiti minimi of hand.l",
+      "Flexor digiti minimi of hand.r"
+     ]
+    },
+    {
+     "id": "lumbricals-hand",
+     "name": "Lumbricals (Hand)",
+     "kind": "muscle",
+     "objects": [
+      "Lumbrical muscles of hand.l",
+      "Lumbrical muscles of hand.r"
+     ]
+    },
+    {
+     "id": "opponens-digiti-minimi-hand",
+     "name": "Opponens Digiti Minimi (Hand)",
+     "kind": "muscle",
+     "objects": [
+      "Opponens digiti minimi muscle of hand.l",
+      "Opponens digiti minimi muscle of hand.r"
+     ]
+    },
+    {
+     "id": "opponens-pollicis",
+     "name": "Opponens Pollicis",
+     "kind": "muscle",
+     "objects": [
+      "Opponens pollicis muscle.l",
+      "Opponens pollicis muscle.r"
+     ]
+    },
+    {
+     "id": "palmar-interossei",
+     "name": "Palmar Interossei",
+     "kind": "muscle",
+     "objects": [
+      "Palmar interossei muscles.l",
+      "Palmar interossei muscles.r"
+     ]
+    }
+   ],
+   "bones": [
+    "Humerus.l",
+    "Humerus.r",
+    "Radius.l",
+    "Radius.r",
+    "Ulna.l",
+    "Ulna.r",
+    "Capitate bone.l",
+    "Capitate bone.r",
+    "Hamate bone.l",
+    "Hamate bone.r",
+    "Lunate bone.l",
+    "Lunate bone.r",
+    "Pisiform bone.l",
+    "Pisiform bone.r",
+    "Scaphoid bone.l",
+    "Scaphoid bone.r",
+    "Trapezium bone.l",
+    "Trapezium bone.r",
+    "Trapezoid bone.l",
+    "Trapezoid bone.r",
+    "Triquetrum bone.l",
+    "Triquetrum bone.r",
+    "Fifth metacarpal bone.l",
+    "Fifth metacarpal bone.r",
+    "First metacarpal bone.l",
+    "First metacarpal bone.r",
+    "Fourth metacarpal bone.l",
+    "Fourth metacarpal bone.r",
+    "Second metacarpal bone.l",
+    "Second metacarpal bone.r",
+    "Third metacarpal bone.l",
+    "Third metacarpal bone.r",
+    "Proximal phalanx of fifth finger of hand.l",
+    "Proximal phalanx of fifth finger of hand.r",
+    "Proximal phalanx of first finger of hand.l",
+    "Proximal phalanx of first finger of hand.r",
+    "Proximal phalanx of fourth finger of hand.l",
+    "Proximal phalanx of fourth finger of hand.r",
+    "Proximal phalanx of second finger of hand.l",
+    "Proximal phalanx of second finger of hand.r",
+    "Proximal phalanx of third finger of hand.l",
+    "Proximal phalanx of third finger of hand.r",
+    "Middle phalanx of fifth finger of hand.l",
+    "Middle phalanx of fifth finger of hand.r",
+    "Middle phalanx of fourth finger of hand.l",
+    "Middle phalanx of fourth finger of hand.r",
+    "Middle phalanx of second finger of hand.l",
+    "Middle phalanx of second finger of hand.r",
+    "Middle phalanx of third finger of hand.l",
+    "Middle phalanx of third finger of hand.r",
+    "Distal phalanx of fifth finger of hand.l",
+    "Distal phalanx of fifth finger of hand.r",
+    "Distal phalanx of first finger of hand.l",
+    "Distal phalanx of first finger of hand.r",
+    "Distal phalanx of fourth finger of hand.l",
+    "Distal phalanx of fourth finger of hand.r",
+    "Distal phalanx of second finger of hand.l",
+    "Distal phalanx of second finger of hand.r",
+    "Distal phalanx of third finger of hand.l",
+    "Distal phalanx of third finger of hand.r"
+   ]
+  },
+  {
+   "key": "back-core__spine__lumbar",
+   "region": "back-core",
+   "subregion": "spine",
+   "subjects": [
+    {
+     "id": "interspinales",
+     "name": "Interspinales",
+     "kind": "muscle",
+     "objects": [
+      "Interspinales colli muscles.l",
+      "Interspinales colli muscles.r",
+      "Interspinales lumborum muscles.l",
+      "Interspinales lumborum muscles.r",
+      "Interspinales thoracis muscles.l",
+      "Interspinales thoracis muscles.r"
+     ]
+    },
+    {
+     "id": "intervertebral-disc",
+     "name": "Intervertebral Disc",
+     "kind": "bone",
+     "objects": [
+      "Intervertebral disc C2-C3",
+      "Intervertebral disc C3-C4",
+      "Intervertebral disc C4-C5",
+      "Intervertebral disc C5-C6",
+      "Intervertebral disc C6-C7",
+      "Intervertebral disc C7-T1",
+      "Intervertebral disc L1-L2",
+      "Intervertebral disc L2-L3",
+      "Intervertebral disc L3-L4",
+      "Intervertebral disc L4-L5",
+      "Intervertebral disc L5-S1",
+      "Intervertebral disc T1-T2",
+      "Intervertebral disc T10-T11",
+      "Intervertebral disc T11-T12",
+      "Intervertebral disc T12-L1",
+      "Intervertebral disc T2-T3",
+      "Intervertebral disc T3-T4",
+      "Intervertebral disc T4-T5",
+      "Intervertebral disc T5-T6",
+      "Intervertebral disc T6-T7",
+      "Intervertebral disc T7-T8",
+      "Intervertebral disc T8-T9",
+      "Intervertebral disc T9-T10",
+      "Nucleus pulposus C2-C3",
+      "Nucleus pulposus C3-C4",
+      "Nucleus pulposus C4-C5",
+      "Nucleus pulposus C5-C6",
+      "Nucleus pulposus C6-C7",
+      "Nucleus pulposus C7-T1",
+      "Nucleus pulposus L1-L2",
+      "Nucleus pulposus L2-L3",
+      "Nucleus pulposus L3-L4",
+      "Nucleus pulposus L4-L5",
+      "Nucleus pulposus L5-S1",
+      "Nucleus pulposus T1-T2",
+      "Nucleus pulposus T10-T11",
+      "Nucleus pulposus T11-T12",
+      "Nucleus pulposus T12-L1",
+      "Nucleus pulposus T2-T3",
+      "Nucleus pulposus T3-T4",
+      "Nucleus pulposus T4-T5",
+      "Nucleus pulposus T5-T6",
+      "Nucleus pulposus T6-T7",
+      "Nucleus pulposus T7-T8",
+      "Nucleus pulposus T8-T9",
+      "Nucleus pulposus T9-T10",
+      "Sacrococcygeal symphysis"
+     ]
+    },
+    {
+     "id": "l4-vertebra",
+     "name": "L4 Vertebra",
+     "kind": "bone",
+     "objects": [
+      "Vertebra L4"
+     ]
+    },
+    {
+     "id": "l5-vertebra",
+     "name": "L5 Vertebra",
+     "kind": "bone",
+     "objects": [
+      "Vertebra L5"
+     ]
+    }
+   ],
+   "frameOn": [
+    "l4-vertebra",
+    "l5-vertebra"
+   ],
+   "backdrop": "full"
+  },
+  {
+   "key": "lower-leg-foot__ankle-foot__foot-deep",
+   "region": "lower-leg-foot",
+   "subregion": "ankle-foot",
+   "subjects": [
+    {
+     "id": "adductor-hallucis",
+     "name": "Adductor Hallucis",
+     "kind": "muscle",
+     "objects": [
+      "Oblique head of adductor hallucis.l",
+      "Oblique head of adductor hallucis.r",
+      "Transverse head of adductor hallucis.l",
+      "Transverse head of adductor hallucis.r"
+     ]
+    },
+    {
+     "id": "lumbricals-foot",
+     "name": "Lumbricals (Foot)",
+     "kind": "muscle",
+     "objects": [
+      "Lumbrical muscles of foot.l",
+      "Lumbrical muscles of foot.r"
+     ]
+    },
+    {
+     "id": "opponens-digiti-minimi-foot",
+     "name": "Opponens Digiti Minimi (Foot)",
+     "kind": "muscle",
+     "objects": [
+      "(Opponens digiti minimi muscle of foot).l",
+      "(Opponens digiti minimi muscle of foot).r"
+     ]
+    },
+    {
+     "id": "quadratus-plantae",
+     "name": "Quadratus Plantae",
+     "kind": "muscle",
+     "objects": [
+      "Quadratus plantae muscle.l",
+      "Quadratus plantae muscle.r"
+     ]
+    }
+   ],
+   "bones": [
+    "Femur.l",
+    "Femur.r",
+    "Patella.l",
+    "Patella.r",
+    "Tibia.l",
+    "Tibia.r",
+    "Fibula.l",
+    "Fibula.r",
+    "Calcaneus.l",
+    "Calcaneus.r",
+    "Cuboid bone.l",
+    "Cuboid bone.r",
+    "Intermediate cuneiform bone.l",
+    "Intermediate cuneiform bone.r",
+    "Lateral cuneiform bone.l",
+    "Lateral cuneiform bone.r",
+    "Medial cuneiform bone.l",
+    "Medial cuneiform bone.r",
+    "Navicular bone.l",
+    "Navicular bone.r",
+    "Talus.l",
+    "Talus.r",
+    "Talus.l",
+    "Talus.r",
+    "Calcaneus.l",
+    "Calcaneus.r",
+    "Navicular bone.l",
+    "Navicular bone.r",
+    "Cuboid bone.l",
+    "Cuboid bone.r",
+    "Medial cuneiform bone.l",
+    "Medial cuneiform bone.r",
+    "Intermediate cuneiform bone.l",
+    "Intermediate cuneiform bone.r",
+    "Lateral cuneiform bone.l",
+    "Lateral cuneiform bone.r",
+    "Fifth metatarsal bone.l",
+    "Fifth metatarsal bone.r",
+    "First metatarsal bone.l",
+    "First metatarsal bone.r",
+    "Fourth metatarsal bone.l",
+    "Fourth metatarsal bone.r",
+    "Second metatarsal bone.l",
+    "Second metatarsal bone.r",
+    "Third metatarsal bone.l",
+    "Third metatarsal bone.r",
+    "Proximal phalanx of fifth finger of foot.l",
+    "Proximal phalanx of fifth finger of foot.r",
+    "Proximal phalanx of first finger of foot.l",
+    "Proximal phalanx of first finger of foot.r",
+    "Proximal phalanx of fourth finger of foot.l",
+    "Proximal phalanx of fourth finger of foot.r",
+    "Proximal phalanx of second finger of foot.l",
+    "Proximal phalanx of second finger of foot.r",
+    "Proximal phalanx of third finger of foot.l",
+    "Proximal phalanx of third finger of foot.r",
+    "Middle phalanx of fifth finger of foot.l",
+    "Middle phalanx of fifth finger of foot.r",
+    "Middle phalanx of fourth finger of foot.l",
+    "Middle phalanx of fourth finger of foot.r",
+    "Middle phalanx of second finger of foot.l",
+    "Middle phalanx of second finger of foot.r",
+    "Middle phalanx of third finger of foot.l",
+    "Middle phalanx of third finger of foot.r",
+    "Distal phalanx of fifth finger of foot.l",
+    "Distal phalanx of fifth finger of foot.r",
+    "Distal phalanx of first finger of foot.l",
+    "Distal phalanx of first finger of foot.r",
+    "Distal phalanx of fourth finger of foot.l",
+    "Distal phalanx of fourth finger of foot.r",
+    "Distal phalanx of second finger of foot.l",
+    "Distal phalanx of second finger of foot.r",
+    "Distal phalanx of third finger of foot.l",
+    "Distal phalanx of third finger of foot.r"
+   ]
+  },
+  {
+   "key": "back-core__neck",
+   "region": "back-core",
+   "subregion": "neck",
+   "subjects": [
+    {
+     "id": "atlas-c1",
+     "name": "Atlas (C1)",
+     "kind": "bone",
+     "objects": [
+      "Atlas (C1)"
+     ]
+    },
+    {
+     "id": "c7-vertebra",
+     "name": "C7 Vertebra",
+     "kind": "bone",
+     "objects": [
+      "Vertebra C7"
+     ]
+    },
+    {
+     "id": "scalene-anterior",
+     "name": "Scalene Anterior",
+     "kind": "muscle",
+     "objects": [
+      "Scalenus anterior muscle.l",
+      "Scalenus anterior muscle.r"
+     ]
+    },
+    {
+     "id": "scalene-posterior",
+     "name": "Scalene Posterior",
+     "kind": "muscle",
+     "objects": [
+      "Scalenus posterior muscle.l",
+      "Scalenus posterior muscle.r"
+     ]
+    }
+   ],
+   "backdrop": "full"
+  },
+  {
+   "key": "lower-leg-foot__ankle-foot__leg",
+   "region": "lower-leg-foot",
+   "subregion": "ankle-foot",
+   "subjects": [
+    {
+     "id": "extensor-hallucis-longus",
+     "name": "Extensor Hallucis Longus",
+     "kind": "muscle",
+     "objects": [
+      "Extensor hallucis longus.l",
+      "Extensor hallucis longus.r"
+     ]
+    },
+    {
+     "id": "flexor-digitorum-longus",
+     "name": "Flexor Digitorum Longus",
+     "kind": "muscle",
+     "objects": [
+      "Flexor digitorum longus.l",
+      "Flexor digitorum longus.r"
+     ]
+    },
+    {
+     "id": "peroneus-tertius",
+     "name": "Peroneus Tertius",
+     "kind": "muscle",
+     "objects": [
+      "Fibularis tertius muscle.l",
+      "Fibularis tertius muscle.r"
+     ]
+    }
+   ],
+   "bones": [
+    "Femur.l",
+    "Femur.r",
+    "Patella.l",
+    "Patella.r",
+    "Tibia.l",
+    "Tibia.r",
+    "Fibula.l",
+    "Fibula.r",
+    "Calcaneus.l",
+    "Calcaneus.r",
+    "Cuboid bone.l",
+    "Cuboid bone.r",
+    "Intermediate cuneiform bone.l",
+    "Intermediate cuneiform bone.r",
+    "Lateral cuneiform bone.l",
+    "Lateral cuneiform bone.r",
+    "Medial cuneiform bone.l",
+    "Medial cuneiform bone.r",
+    "Navicular bone.l",
+    "Navicular bone.r",
+    "Talus.l",
+    "Talus.r",
+    "Talus.l",
+    "Talus.r",
+    "Calcaneus.l",
+    "Calcaneus.r",
+    "Navicular bone.l",
+    "Navicular bone.r",
+    "Cuboid bone.l",
+    "Cuboid bone.r",
+    "Medial cuneiform bone.l",
+    "Medial cuneiform bone.r",
+    "Intermediate cuneiform bone.l",
+    "Intermediate cuneiform bone.r",
+    "Lateral cuneiform bone.l",
+    "Lateral cuneiform bone.r",
+    "Fifth metatarsal bone.l",
+    "Fifth metatarsal bone.r",
+    "First metatarsal bone.l",
+    "First metatarsal bone.r",
+    "Fourth metatarsal bone.l",
+    "Fourth metatarsal bone.r",
+    "Second metatarsal bone.l",
+    "Second metatarsal bone.r",
+    "Third metatarsal bone.l",
+    "Third metatarsal bone.r",
+    "Proximal phalanx of fifth finger of foot.l",
+    "Proximal phalanx of fifth finger of foot.r",
+    "Proximal phalanx of first finger of foot.l",
+    "Proximal phalanx of first finger of foot.r",
+    "Proximal phalanx of fourth finger of foot.l",
+    "Proximal phalanx of fourth finger of foot.r",
+    "Proximal phalanx of second finger of foot.l",
+    "Proximal phalanx of second finger of foot.r",
+    "Proximal phalanx of third finger of foot.l",
+    "Proximal phalanx of third finger of foot.r",
+    "Middle phalanx of fifth finger of foot.l",
+    "Middle phalanx of fifth finger of foot.r",
+    "Middle phalanx of fourth finger of foot.l",
+    "Middle phalanx of fourth finger of foot.r",
+    "Middle phalanx of second finger of foot.l",
+    "Middle phalanx of second finger of foot.r",
+    "Middle phalanx of third finger of foot.l",
+    "Middle phalanx of third finger of foot.r",
+    "Distal phalanx of fifth finger of foot.l",
+    "Distal phalanx of fifth finger of foot.r",
+    "Distal phalanx of first finger of foot.l",
+    "Distal phalanx of first finger of foot.r",
+    "Distal phalanx of fourth finger of foot.l",
+    "Distal phalanx of fourth finger of foot.r",
+    "Distal phalanx of second finger of foot.l",
+    "Distal phalanx of second finger of foot.r",
+    "Distal phalanx of third finger of foot.l",
+    "Distal phalanx of third finger of foot.r"
+   ]
+  },
+  {
+   "key": "forearm-hand__wrist-hand__forearm-deep",
+   "region": "forearm-hand",
+   "subregion": "wrist-hand",
+   "subjects": [
+    {
+     "id": "extensor-indicis",
+     "name": "Extensor Indicis",
+     "kind": "muscle",
+     "objects": [
+      "Extensor indicis.l",
+      "Extensor indicis.r"
+     ]
+    },
+    {
+     "id": "flexor-digitorum-profundus",
+     "name": "Flexor Digitorum Profundus",
+     "kind": "muscle",
+     "objects": [
+      "Flexor digitorum profundus.l",
+      "Flexor digitorum profundus.r"
+     ]
+    },
+    {
+     "id": "supinator",
+     "name": "Supinator",
+     "kind": "muscle",
+     "objects": [
+      "Supinator.l",
+      "Supinator.r"
+     ]
+    }
+   ],
+   "bones": [
+    "Humerus.l",
+    "Humerus.r",
+    "Radius.l",
+    "Radius.r",
+    "Ulna.l",
+    "Ulna.r",
+    "Capitate bone.l",
+    "Capitate bone.r",
+    "Hamate bone.l",
+    "Hamate bone.r",
+    "Lunate bone.l",
+    "Lunate bone.r",
+    "Pisiform bone.l",
+    "Pisiform bone.r",
+    "Scaphoid bone.l",
+    "Scaphoid bone.r",
+    "Trapezium bone.l",
+    "Trapezium bone.r",
+    "Trapezoid bone.l",
+    "Trapezoid bone.r",
+    "Triquetrum bone.l",
+    "Triquetrum bone.r",
+    "Fifth metacarpal bone.l",
+    "Fifth metacarpal bone.r",
+    "First metacarpal bone.l",
+    "First metacarpal bone.r",
+    "Fourth metacarpal bone.l",
+    "Fourth metacarpal bone.r",
+    "Second metacarpal bone.l",
+    "Second metacarpal bone.r",
+    "Third metacarpal bone.l",
+    "Third metacarpal bone.r",
+    "Proximal phalanx of fifth finger of hand.l",
+    "Proximal phalanx of fifth finger of hand.r",
+    "Proximal phalanx of first finger of hand.l",
+    "Proximal phalanx of first finger of hand.r",
+    "Proximal phalanx of fourth finger of hand.l",
+    "Proximal phalanx of fourth finger of hand.r",
+    "Proximal phalanx of second finger of hand.l",
+    "Proximal phalanx of second finger of hand.r",
+    "Proximal phalanx of third finger of hand.l",
+    "Proximal phalanx of third finger of hand.r",
+    "Middle phalanx of fifth finger of hand.l",
+    "Middle phalanx of fifth finger of hand.r",
+    "Middle phalanx of fourth finger of hand.l",
+    "Middle phalanx of fourth finger of hand.r",
+    "Middle phalanx of second finger of hand.l",
+    "Middle phalanx of second finger of hand.r",
+    "Middle phalanx of third finger of hand.l",
+    "Middle phalanx of third finger of hand.r",
+    "Distal phalanx of fifth finger of hand.l",
+    "Distal phalanx of fifth finger of hand.r",
+    "Distal phalanx of first finger of hand.l",
+    "Distal phalanx of first finger of hand.r",
+    "Distal phalanx of fourth finger of hand.l",
+    "Distal phalanx of fourth finger of hand.r",
+    "Distal phalanx of second finger of hand.l",
+    "Distal phalanx of second finger of hand.r",
+    "Distal phalanx of third finger of hand.l",
+    "Distal phalanx of third finger of hand.r"
+   ]
+  },
+  {
+   "key": "back-core__spine__sacrum",
+   "region": "back-core",
+   "subregion": "spine",
+   "subjects": [
+    {
+     "id": "coccyx",
+     "name": "Coccyx",
+     "kind": "bone",
+     "objects": [
+      "Coccyx"
+     ]
+    },
+    {
+     "id": "sacrum",
+     "name": "Sacrum",
+     "kind": "bone",
+     "objects": [
+      "Sacrum"
+     ]
+    }
+   ],
+   "backdrop": "full"
+  }
+ ]
+}

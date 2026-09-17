@@ -4,8 +4,10 @@ import {
   createChangeRequest,
   updateChangeRequestStatus,
   updateChangeRequestNotes,
+  updateChangeRequestChecklist,
 } from '../data/changeRequestsRepository';
 import { applyStatusTransition } from '../lib/statusTransition';
+import { toggleChecklistItem as toggleTick } from '../lib/checklist';
 import type { ChangeRequest, ChangeStatus, NewChangeRequestInput } from '../types/changeRequest';
 
 export function useChangeRequests() {
@@ -54,5 +56,21 @@ export function useChangeRequests() {
     await updateChangeRequestNotes(ref, notes);
   }, []);
 
-  return { items, loading, error, reload, create, setStatus, setNotes };
+  /**
+   * Optimistic like setStatus: the tick lands instantly and the write follows.
+   * Reads the current record off `items` rather than off the caller, so two
+   * quick ticks on different steps can't race each other into overwriting.
+   */
+  const toggleChecklistItem = useCallback(
+    async (ref: string, itemId: string) => {
+      const target = items.find((i) => i.ref === ref);
+      if (!target) return;
+      const next = toggleTick(target.checklistDone, itemId);
+      setItems((prev) => prev.map((i) => (i.ref === ref ? { ...i, checklistDone: next } : i)));
+      await updateChangeRequestChecklist(ref, next);
+    },
+    [items],
+  );
+
+  return { items, loading, error, reload, create, setStatus, setNotes, toggleChecklistItem };
 }

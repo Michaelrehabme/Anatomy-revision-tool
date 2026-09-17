@@ -418,6 +418,7 @@ export const BONE_STRUCTURES: BoneStructure[] = [
     category: 'bone',
     region: 'back-core',
     subregion: 'spine',
+    areas: ['thoracic-spine'],
     groups: ['grouped-bone', 'vertebra'],
     description:
       'The 12 vertebrae of the mid-back, distinguished by costal facets that articulate with the ribs and long, downward-sloping spinous processes.',
@@ -444,6 +445,7 @@ export const BONE_STRUCTURES: BoneStructure[] = [
     category: 'bone',
     region: 'back-core',
     subregion: 'spine',
+    areas: ['lumbar-spine'],
     groups: ['grouped-bone', 'vertebra'],
     description:
       'The 5 largest, most robust vertebrae, in the lower back, built for weight-bearing with thick vertebral bodies and no costal facets or transverse foramina.',
@@ -471,6 +473,7 @@ export const BONE_STRUCTURES: BoneStructure[] = [
     category: 'bone',
     region: 'back-core',
     subregion: 'spine',
+    areas: ['lumbar-spine'],
     groups: ['grouped-bone', 'vertebra'],
     description:
       'A triangular bone formed by the fusion of 5 sacral vertebrae, wedged between the two hip bones to form the posterior wall of the pelvis.',
@@ -499,6 +502,7 @@ export const BONE_STRUCTURES: BoneStructure[] = [
     category: 'bone',
     region: 'back-core',
     subregion: 'spine',
+    areas: ['lumbar-spine'],
     groups: ['grouped-bone', 'vertebra'],
     description:
       'The tailbone — a small triangular bone formed by 3–5 fused rudimentary vertebrae at the base of the spine.',

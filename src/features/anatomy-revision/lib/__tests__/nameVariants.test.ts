@@ -48,3 +48,33 @@ describe('structureNameVariants', () => {
     expect(isAnswerMatch('peroneus longus', brevis)).toBe(false);
   });
 });
+
+describe('optional trailing qualifiers', () => {
+  const accept = (id: string, typed: string) => {
+    const s = ALL_STRUCTURES.find((x) => x.id === id)!;
+    return isAnswerMatch(typed, structureNameVariants(s.name, s.aliases));
+  };
+
+  it('does not make a student type "(grouped)"', () => {
+    expect(accept('phalanges-distal-hand', 'Distal phalanges of the hand')).toBe(true);
+    expect(accept('carpals', 'carpals')).toBe(true);
+    expect(accept('metatarsals', 'metatarsals')).toBe(true);
+  });
+
+  it('does not make a student type "(Hand)" or "(Foot)"', () => {
+    expect(accept('abductor-digiti-minimi-hand', 'Abductor digiti minimi')).toBe(true);
+    expect(accept('abductor-digiti-minimi-foot', 'abductor digiti minimi')).toBe(true);
+    expect(accept('dorsal-interossei-hand', 'Dorsal interossei')).toBe(true);
+    expect(accept('lumbricals-hand', 'lumbricals')).toBe(true);
+  });
+
+  it('still accepts the full authored name', () => {
+    expect(accept('phalanges-distal-hand', 'Distal Phalanges of the Hand (grouped)')).toBe(true);
+    expect(accept('abductor-digiti-minimi-hand', 'Abductor Digiti Minimi (Hand)')).toBe(true);
+  });
+
+  it('strips a qualifier without opening the name up to a different structure', () => {
+    expect(accept('abductor-digiti-minimi-hand', 'flexor digiti minimi')).toBe(false);
+    expect(accept('phalanges-distal-hand', 'proximal phalanges of the hand')).toBe(false);
+  });
+});

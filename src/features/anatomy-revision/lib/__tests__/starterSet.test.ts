@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { ALL_STRUCTURES, ALL_IMAGES } from '../../data/seed';
 import { buildStarterSet, STARTER_COUNT, STARTER_TYPES } from '../questionGenerators/starterSet';
-import { areaOf, isMuscle } from '../../types/structure';
+import { areasOf, isMuscle } from '../../types/structure';
 import { isLocateQuestion, isMcqQuestion } from '../../types/question';
 
 const byId = new Map(ALL_STRUCTURES.map((s) => [s.id, s]));
@@ -15,7 +15,7 @@ describe('buildStarterSet', () => {
       expect(STARTER_TYPES).toContain(q.type);
       const structure = byId.get(q.structureId)!;
       expect(isMuscle(structure)).toBe(true);
-      expect(areaOf(structure)).toBe('shoulder');
+      expect(areasOf(structure)).toContain('shoulder');
     }
   });
 
@@ -40,7 +40,7 @@ describe('buildStarterSet', () => {
         (img.hotspots ?? [])
           .filter((h) => {
             const s = byId.get(h.structureId);
-            return !!s && isMuscle(s) && areaOf(s) === 'knee' && s.eligibility.locate;
+            return !!s && isMuscle(s) && areasOf(s).includes('knee') && s.eligibility.locate;
           })
           .map((h) => h.area),
       ),

@@ -1,0 +1,177 @@
+{
+ "schemaVersion": 1,
+ "note": "Human review of the derived ligament attachments, applied by src/scripts/generateLigamentSeed.ts. Derivation measures which bones a ligament mesh TOUCHES; this file records where touching is not attaching, and where a human has confirmed that it is. An entry with `confirmed: true` and no `attachmentStructureIds` keeps the derived set and only clears needsReview. Regenerating the seed re-applies this file, so a correction is never lost to a re-run. Entries sourced to the review page are the user's own ticks, read back from the artifact database.",
+ "corrections": {
+  "deep-transverse-metatarsal-ligament": {
+   "attachmentStructureIds": [
+    "metatarsals"
+   ],
+   "description": "A series of short transverse bands joining the plantar plates of adjacent metatarsophalangeal joints, binding the heads of the metatarsals together and holding the forefoot as a unit.",
+   "confirmed": true,
+   "source": "Labelled dorsal foot diagram and Netter plantar/lateral foot plate, supplied 13 Sept 2026",
+   "why": "It runs head to head between the plantar plates and never reaches a phalanx. The derived contact with the proximal phalanges is the mesh lying against their bases — the clearest case in the tranche of touching not being attaching."
+  },
+  "deep-transverse-metacarpal-ligament": {
+   "attachmentStructureIds": [
+    "metacarpals"
+   ],
+   "description": "Short transverse bands joining the palmar plates of the second to fifth metacarpophalangeal joints, binding the metacarpal heads together. The thumb is free of it, which is part of why it opposes.",
+   "confirmed": true,
+   "source": "By the same anatomy as the foot band above, which the supplied plates settle; standard teaching for the hand",
+   "why": "The hand's band is the metatarsal band's counterpart and attaches the same way — plate to plate across the metacarpal heads, not to the phalanges. Derivation put the metacarpals top anyway (3rd 22%, 2nd 17%, 4th 17%)."
+  },
+  "plantar-metatarsophalangeal-ligaments": {
+   "confirmed": true,
+   "source": "Netter lateral inset, 'Capsule and ligaments of metatarsophalangeal and interphalangeal joints'",
+   "why": "The plantar plate runs from the plantar aspect of the metatarsal head to the base of the proximal phalanx, which is what the derived pair already says."
+  },
+  "collateral-metacarpophalangeal-ligaments": {
+   "confirmed": true,
+   "source": "Same lateral inset, and the collateral ligaments labelled at the MTP joints of the dorsal diagram",
+   "why": "A collateral runs from the tubercle on the metacarpal head to the base of the proximal phalanx. Derived pair is right."
+  },
+  "palmar-interphalangeal-ligaments": {
+   "confirmed": true,
+   "source": "Netter lateral inset, which draws the plate at the interphalangeal joint between middle and distal phalanx",
+   "why": "These are the palmar plates of the PIP and DIP joints together, so all three phalangeal rows are genuinely involved: proximal and middle at the PIP, middle and distal at the DIP."
+  },
+  "acromioclavicular-ligament": {
+   "confirmed": true,
+   "source": "User review on the review page, 13 Sept 2026"
+  },
+  "anterior-cruciate-ligament": {
+   "confirmed": true,
+   "source": "User review on the review page, 13 Sept 2026"
+  },
+  "anterior-sternoclavicular-ligament": {
+   "confirmed": true,
+   "source": "User review on the review page, 13 Sept 2026"
+  },
+  "anterior-tibiofibular-ligament": {
+   "confirmed": true,
+   "source": "User review on the review page, 13 Sept 2026"
+  },
+  "coracohumeral-ligament": {
+   "confirmed": true,
+   "source": "User review on the review page, 13 Sept 2026"
+  },
+  "interclavicular-ligament": {
+   "confirmed": true,
+   "source": "User review on the review page, 13 Sept 2026"
+  },
+  "interosseous-membrane-of-forearm": {
+   "confirmed": true,
+   "source": "User review on the review page, 13 Sept 2026"
+  },
+  "interosseous-membrane-of-leg": {
+   "confirmed": true,
+   "source": "User review on the review page, 13 Sept 2026"
+  },
+  "medial-meniscus": {
+   "confirmed": true,
+   "source": "User review on the review page, 13 Sept 2026"
+  },
+  "nuchal-ligament": {
+   "confirmed": true,
+   "source": "User review on the review page, 13 Sept 2026",
+   "why": "Confirmed knowing the occipital bone is not a structure the app models, so this carries the cervical vertebrae only."
+  },
+  "obturator-membrane": {
+   "confirmed": true,
+   "source": "User review on the review page, 13 Sept 2026",
+   "why": "Spans the obturator foramen of one hip bone, so a single attachment is right."
+  },
+  "palmar-radio-ulnar-ligament": {
+   "confirmed": true,
+   "source": "User review on the review page, 13 Sept 2026"
+  },
+  "pubofemoral-ligament": {
+   "confirmed": true,
+   "source": "User review on the review page, 13 Sept 2026"
+  },
+  "radial-collateral-ligament": {
+   "confirmed": true,
+   "source": "User review on the review page, 13 Sept 2026"
+  },
+  "sacrotuberous-ligament": {
+   "confirmed": true,
+   "source": "User review on the review page, 13 Sept 2026"
+  },
+  "superior-pubic-ligament": {
+   "confirmed": true,
+   "source": "User review on the review page, 13 Sept 2026",
+   "why": "Joins the two pubic bodies across the symphysis; both are the one pelvis structure in this app."
+  },
+  "transverse-humeral-ligament": {
+   "confirmed": true,
+   "source": "User review on the review page, 13 Sept 2026",
+   "why": "Bridges the intertubercular groove between the two tubercles of the humerus, so one bone is right."
+  },
+  "transverse-ligament-of-knee": {
+   "confirmed": true,
+   "source": "User review on the review page, 13 Sept 2026"
+  },
+  "ulnar-collateral-ligament": {
+   "confirmed": true,
+   "source": "User review on the review page, 13 Sept 2026",
+   "why": "CONFIRMED BY THE USER AS DERIVED, but flagged: the elbow UCL runs medial epicondyle to coronoid process and olecranon, and standard teaching gives it no radial attachment. The radius contact is probably the mesh lying against the radial head. Raise before deploy."
+  },
+  "ulnocapitate-ligament": {
+   "confirmed": true,
+   "source": "User review on the review page, 13 Sept 2026",
+   "why": "CONFIRMED BY THE USER AS DERIVED, but flagged: the ulnocapitate runs from the ulna (fovea / palmar radioulnar ligament) to the capitate and passes over the lunate rather than attaching to it, so the 25% lunate contact is probably passage. The supplied wrist plate does not label it, so this rests on standard teaching. Raise before deploy."
+  },
+  "ulnopisiform-ligament": {
+   "confirmed": true,
+   "source": "User review on the review page, 13 Sept 2026"
+  },
+  "ulnotriquetral-ligament": {
+   "confirmed": true,
+   "source": "User review on the review page, 13 Sept 2026"
+  },
+  "ulnolunate-ligament": {
+   "attachmentStructureIds": [
+    "ulna",
+    "lunate"
+   ],
+   "description": "A palmar ulnocarpal ligament running from the ulna, by way of the palmar radioulnar ligament and the triangular fibrocartilage, to the lunate.",
+   "confirmed": true,
+   "source": "Labelled palmar wrist plate supplied 13 Sept 2026 (ulnolunate drawn from the ulnar head region to the lunate)",
+   "why": "It arises with the palmar radioulnar ligament and inserts on the lunate. The derived scaphoid and capitate contact is the strap lying against the carpus on its way; only the lunate is an attachment."
+  },
+  "popliteofibular-ligament": {
+   "attachmentStructureIds": [
+    "fibula"
+   ],
+   "description": "A deep posterolateral band running from the popliteus tendon to the styloid process of the fibular head, resisting external rotation of the tibia.",
+   "confirmed": true,
+   "source": "Review page, confirmed 13 Sept 2026",
+   "why": "Only the fibula is a bony attachment. The other end is the popliteus tendon, which the app does not model as a structure, so one bone is the complete bony answer rather than a missing second one."
+  },
+  "posterior-meniscotibial-ligament-medial-meniscus": {
+   "attachmentStructureIds": [
+    "tibia"
+   ],
+   "description": "The posterior part of the coronary ligament of the medial meniscus, anchoring the meniscal rim to the margin of the tibial plateau.",
+   "confirmed": true,
+   "source": "Review page, confirmed 13 Sept 2026",
+   "why": "Tibia is the only bony end; the other attaches to the medial meniscus, which is not a bone. The derivation reporting one bone is correct, not incomplete."
+  },
+  "external-intercostal-membrane": {
+   "attachmentStructureIds": [],
+   "description": "The aponeurotic sheet continuing the external intercostal muscle forwards between the costal cartilages.",
+   "confirmed": true,
+   "source": "Review page, confirmed 13 Sept 2026",
+   "why": "It spans costal cartilage, not bone, and the app models no cartilage structures — so an empty bony attachment list is the honest answer. It carries no attachment question, only locate and identify."
+  },
+  "posterior-meniscotibial-ligament-lateral-meniscus": {
+   "attachmentStructureIds": [
+    "tibia"
+   ],
+   "description": "The posterior part of the coronary ligament of the lateral meniscus, anchoring the meniscal rim to the margin of the tibial plateau.",
+   "confirmed": true,
+   "source": "Review page, marked corrected with no attachment change, 13 Sept 2026",
+   "why": "The reviewer marked this corrected but left the attachment field blank, which the page defines as \"the attachments are right but something else is wrong\". Tibia is right — the other end is the meniscus. What is wrong is that it can barely be seen: even with the meniscus ghosted it traces at 0.06% of frame at a single angle, the smallest target in the tranche. Flagged for a keep-or-drop decision; the attachment itself is settled."
+  }
+ }
+}

@@ -153,7 +153,7 @@ export const JOINT_STRUCTURES: JointStructure[] = [
     stabilizers: ['Sternoclavicular ligaments', 'Costoclavicular ligament', 'Interclavicular ligament', 'Articular disc'],
     aliases: ['SC joint'],
     imageIds: [],
-    eligibility: { flashcard: true, mcq: true, locate: false },
+    eligibility: { flashcard: true, mcq: true, locate: true },
     difficulty: 'medium',
     tags: ['synovial', 'shoulder'],
     palpationNotes: 'Readily palpable at the medial end of the clavicle, immediately lateral to the sternal notch.',
@@ -332,7 +332,7 @@ export const JOINT_STRUCTURES: JointStructure[] = [
     stabilizers: ['Interosseous, palmar and dorsal intercarpal ligaments', 'Scapholunate and lunotriquetral ligaments'],
     aliases: [],
     imageIds: [],
-    eligibility: { flashcard: true, mcq: true, locate: false },
+    eligibility: { flashcard: true, mcq: true, locate: true },
     difficulty: 'hard',
     tags: ['synovial', 'wrist'],
   },
@@ -490,7 +490,7 @@ export const JOINT_STRUCTURES: JointStructure[] = [
     stabilizers: ['Collateral ligaments', 'Palmar plate'],
     aliases: ['IP joint', 'PIP joint', 'DIP joint'],
     imageIds: [],
-    eligibility: { flashcard: true, mcq: true, locate: false },
+    eligibility: { flashcard: true, mcq: true, locate: true },
     difficulty: 'easy',
     tags: ['synovial', 'wrist'],
   },
@@ -514,7 +514,7 @@ export const JOINT_STRUCTURES: JointStructure[] = [
     stabilizers: ['Iliofemoral, pubofemoral and ischiofemoral ligaments', 'Acetabular labrum', 'Ligamentum teres', 'Deep gluteal and short external rotator muscles'],
     aliases: ['Acetabulofemoral joint', 'Coxofemoral joint'],
     imageIds: [],
-    eligibility: { flashcard: true, mcq: true, locate: false },
+    eligibility: { flashcard: true, mcq: true, locate: true },
     difficulty: 'easy',
     tags: ['synovial', 'hip'],
   },
@@ -524,10 +524,11 @@ export const JOINT_STRUCTURES: JointStructure[] = [
     category: 'joint',
     region: 'back-core',
     subregion: 'spine',
-    // The one structure in the dataset whose area is not the one its subregion implies:
-    // it sits in the spine subregion anatomically, but is examined and revised as part
-    // of the hip/pelvis complex. Everything else derives (see areaOf in types/structure.ts).
-    area: 'hip',
+    // The one structure examined outside the spine altogether: it sits in the spine
+    // subregion anatomically, but is revised as part of the hip/pelvis complex. Every
+    // other override in the trunk only narrows a spine structure to its own vertebral
+    // level (see areasOf in types/structure.ts).
+    areas: ['hip'],
     description:
       'The joint between the auricular surfaces of the sacrum and ilium, transferring load between the spine ' +
       'and the lower limbs. It is a synovial joint with unusually strong ligamentous reinforcement and very ' +
@@ -539,7 +540,7 @@ export const JOINT_STRUCTURES: JointStructure[] = [
     stabilizers: ['Anterior and posterior sacroiliac ligaments', 'Sacrotuberous ligament', 'Sacrospinous ligament'],
     aliases: ['SI joint', 'Sacroiliac joint region', 'Sacroiliac Articular Surface'],
     imageIds: [],
-    eligibility: { flashcard: true, mcq: true, locate: false },
+    eligibility: { flashcard: true, mcq: true, locate: true },
     difficulty: 'medium',
     tags: ['synovial', 'pelvis', 'spine'],
     clinical: 'A common source of low back/buttock pain (SI joint dysfunction), often assessed with provocation tests (e.g. FABER, thigh thrust).',
@@ -560,7 +561,7 @@ export const JOINT_STRUCTURES: JointStructure[] = [
     stabilizers: ['Superior pubic ligament', 'Inferior (arcuate) pubic ligament', 'Interpubic fibrocartilaginous disc'],
     aliases: ['Symphysis pubis'],
     imageIds: [],
-    eligibility: { flashcard: true, mcq: true, locate: false },
+    eligibility: { flashcard: true, mcq: true, locate: true },
     difficulty: 'medium',
     tags: ['cartilaginous', 'pelvis'],
     clinical: 'Pelvic girdle pain in pregnancy (symphysis pubis dysfunction) and osteitis pubis in kicking/pivoting athletes both centre on this joint.',
@@ -651,7 +652,7 @@ export const JOINT_STRUCTURES: JointStructure[] = [
     stabilizers: ['Deltoid (medial) ligament', 'Lateral ligament complex (anterior talofibular, calcaneofibular, posterior talofibular)', 'Bony congruence of the mortise'],
     aliases: ['Ankle joint', 'Mortise joint'],
     imageIds: [],
-    eligibility: { flashcard: true, mcq: true, locate: false },
+    eligibility: { flashcard: true, mcq: true, locate: true },
     difficulty: 'easy',
     tags: ['synovial', 'ankle'],
   },
@@ -712,7 +713,7 @@ export const JOINT_STRUCTURES: JointStructure[] = [
     stabilizers: ['Spring (plantar calcaneonavicular) ligament', 'Bifurcate ligament', 'Long and short plantar ligaments'],
     aliases: ['Midtarsal joint', 'Chopart joint'],
     imageIds: [],
-    eligibility: { flashcard: true, mcq: true, locate: false },
+    eligibility: { flashcard: true, mcq: true, locate: true },
     difficulty: 'hard',
     tags: ['synovial', 'foot'],
   },
@@ -758,7 +759,7 @@ export const JOINT_STRUCTURES: JointStructure[] = [
     stabilizers: ['Anterior longitudinal ligament', 'Posterior longitudinal ligament', 'Anulus fibrosus of the intervertebral disc'],
     aliases: ['Interbody joint', 'Intervertebral disc joint'],
     imageIds: [],
-    eligibility: { flashcard: true, mcq: true, locate: false },
+    eligibility: { flashcard: true, mcq: true, locate: true },
     difficulty: 'medium',
     tags: ['cartilaginous', 'spine'],
     clinical: 'Disc herniation here compresses the nerve root exiting nearby — the anatomical basis of sciatica and cervical radiculopathy.',
@@ -779,7 +780,7 @@ export const JOINT_STRUCTURES: JointStructure[] = [
     stabilizers: ['Facet joint capsule', 'Ligamentum flavum'],
     aliases: ['Zygapophyseal Joint', 'Lumbar Facet Joint', 'Thoracic Zygapophyseal (Facet) Joint', 'Apophyseal joint'],
     imageIds: [],
-    eligibility: { flashcard: true, mcq: true, locate: false },
+    eligibility: { flashcard: true, mcq: true, locate: true },
     difficulty: 'medium',
     tags: ['synovial', 'spine'],
     clinical: 'A common source of mechanical back/neck pain (facet joint syndrome) and target for diagnostic/therapeutic medial branch blocks.',
@@ -800,7 +801,7 @@ export const JOINT_STRUCTURES: JointStructure[] = [
     stabilizers: ['Anterior and posterior atlanto-occipital membranes', 'Alar ligaments', 'Joint capsules'],
     aliases: ['AO joint', 'C0-C1 joint'],
     imageIds: [],
-    eligibility: { flashcard: true, mcq: true, locate: false },
+    eligibility: { flashcard: true, mcq: true, locate: true },
     difficulty: 'hard',
     tags: ['synovial', 'neck'],
   },
@@ -831,6 +832,7 @@ export const JOINT_STRUCTURES: JointStructure[] = [
     category: 'joint',
     region: 'back-core',
     subregion: 'spine',
+    areas: ['thoracic-spine'],
     description:
       'The plane synovial joint between the head of a rib and the costal facets on the bodies of the thoracic ' +
       'vertebrae. Together with the costotransverse joints it sets the axis each rib swings on during ' +
@@ -861,7 +863,7 @@ export const JOINT_STRUCTURES: JointStructure[] = [
     stabilizers: ['Radiate sternocostal ligaments', 'Costal cartilages', 'Intra-articular sternocostal ligament'],
     aliases: ['Sternochondral joint'],
     imageIds: [],
-    eligibility: { flashcard: true, mcq: true, locate: false },
+    eligibility: { flashcard: true, mcq: true, locate: true },
     difficulty: 'hard',
     tags: ['synovial', 'thorax'],
     clinical: 'Costochondritis (Tietze syndrome when swollen) causes reproducible anterior chest wall pain on palpation here — a common benign mimic of cardiac chest pain.',

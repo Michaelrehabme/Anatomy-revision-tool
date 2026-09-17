@@ -1,0 +1,2107 @@
+{
+ "Acetabular labrum.l": [
+  "3: Joints",
+  "Hip joint",
+  "Left lower limb"
+ ],
+ "Acetabular labrum.r": [
+  "3: Joints",
+  "Hip joint",
+  "Right lower limb"
+ ],
+ "Acromioclavicular ligament.l": [
+  "3: Joints",
+  "Acromioclavicular joint",
+  "Left upper limb"
+ ],
+ "Acromioclavicular ligament.r": [
+  "3: Joints",
+  "Acromioclavicular joint",
+  "Right upper limb"
+ ],
+ "Annular ligament of radius.l": [
+  "3: Joints",
+  "Elbow joint",
+  "Left upper limb"
+ ],
+ "Annular ligament of radius.r": [
+  "3: Joints",
+  "Elbow joint",
+  "Right upper limb"
+ ],
+ "Anterior cruciate ligament.l": [
+  "3: Joints",
+  "Knee joint",
+  "Left lower limb"
+ ],
+ "Anterior cruciate ligament.r": [
+  "3: Joints",
+  "Knee joint",
+  "Right lower limb"
+ ],
+ "Anterior ligament of fibular head.l": [
+  "3: Joints",
+  "Left lower limb",
+  "Superior tibiofibular joint"
+ ],
+ "Anterior ligament of fibular head.r": [
+  "3: Joints",
+  "Right lower limb",
+  "Superior tibiofibular joint"
+ ],
+ "Anterior longitudinal ligament": [
+  "3: Joints",
+  "Abdomen",
+  "Back",
+  "Fibrous joints of vertebral column",
+  "Neck",
+  "Thorax",
+  "Trunk",
+  "Vertebral column"
+ ],
+ "Anterior meniscotibial ligament (Lateral meniscus).l": [
+  "3: Joints",
+  "Lateral meniscus",
+  "Left lower limb"
+ ],
+ "Anterior meniscotibial ligament (Lateral meniscus).r": [
+  "3: Joints",
+  "Lateral meniscus",
+  "Right lower limb"
+ ],
+ "Anterior meniscotibial ligament (Medial meniscus).l": [
+  "3: Joints",
+  "Left lower limb",
+  "Medial meniscus"
+ ],
+ "Anterior meniscotibial ligament (Medial meniscus).r": [
+  "3: Joints",
+  "Medial meniscus",
+  "Right lower limb"
+ ],
+ "Anterior sacro-iliac ligament.l": [
+  "3: Joints",
+  "Abdomen",
+  "Left lower limb",
+  "Sacro-iliac joint",
+  "Trunk"
+ ],
+ "Anterior sacro-iliac ligament.r": [
+  "3: Joints",
+  "Abdomen",
+  "Right lower limb",
+  "Sacro-iliac joint",
+  "Trunk"
+ ],
+ "Anterior sternoclavicular ligament.l": [
+  "3: Joints",
+  "Left upper limb",
+  "Sternoclavicular joint",
+  "Trunk"
+ ],
+ "Anterior sternoclavicular ligament.r": [
+  "3: Joints",
+  "Right upper limb",
+  "Sternoclavicular joint",
+  "Trunk"
+ ],
+ "Anterior talocalcaneal ligament.l": [
+  "3: Joints",
+  "Left foot",
+  "Left lower limb",
+  "Subtalar joint"
+ ],
+ "Anterior talocalcaneal ligament.r": [
+  "3: Joints",
+  "Right foot",
+  "Right lower limb",
+  "Subtalar joint"
+ ],
+ "Anterior talofibular ligament.l": [
+  "3: Joints",
+  "Lateral collateral ligament",
+  "Left foot",
+  "Left lower limb"
+ ],
+ "Anterior talofibular ligament.r": [
+  "3: Joints",
+  "Lateral collateral ligament",
+  "Right foot",
+  "Right lower limb"
+ ],
+ "Anterior tibiofibular ligament.l": [
+  "3: Joints",
+  "Left foot",
+  "Left lower limb",
+  "Tibiofibular syndesmosis"
+ ],
+ "Anterior tibiofibular ligament.r": [
+  "3: Joints",
+  "Right foot",
+  "Right lower limb",
+  "Tibiofibular syndesmosis"
+ ],
+ "Arcuate popliteal ligament.l": [
+  "3: Joints",
+  "Knee joint",
+  "Left lower limb"
+ ],
+ "Arcuate popliteal ligament.r": [
+  "3: Joints",
+  "Knee joint",
+  "Right lower limb"
+ ],
+ "Calcaneocuboid ligament.l": [
+  "3: Joints",
+  "Bifurcate ligament",
+  "Left foot",
+  "Left lower limb"
+ ],
+ "Calcaneocuboid ligament.r": [
+  "3: Joints",
+  "Bifurcate ligament",
+  "Right foot",
+  "Right lower limb"
+ ],
+ "Calcaneofibular ligament.l": [
+  "3: Joints",
+  "Lateral collateral ligament",
+  "Left foot",
+  "Left lower limb"
+ ],
+ "Calcaneofibular ligament.r": [
+  "3: Joints",
+  "Lateral collateral ligament",
+  "Right foot",
+  "Right lower limb"
+ ],
+ "Calcaneonavicular ligament.l": [
+  "3: Joints",
+  "Bifurcate ligament",
+  "Left foot",
+  "Left lower limb"
+ ],
+ "Calcaneonavicular ligament.r": [
+  "3: Joints",
+  "Bifurcate ligament",
+  "Right foot",
+  "Right lower limb"
+ ],
+ "Capitohamate interosseous ligament.l": [
+  "3: Joints",
+  "Interosseus intercarpal ligaments",
+  "Left hand",
+  "Left upper limb"
+ ],
+ "Capitohamate interosseous ligament.r": [
+  "3: Joints",
+  "Interosseus intercarpal ligaments",
+  "Right hand",
+  "Right upper limb"
+ ],
+ "Collateral interphalangeal ligaments of foot.l": [
+  "3: Joints",
+  "Interphalangeal joints of foot",
+  "Left foot",
+  "Left lower limb"
+ ],
+ "Collateral interphalangeal ligaments of foot.r": [
+  "3: Joints",
+  "Interphalangeal joints of foot",
+  "Right foot",
+  "Right lower limb"
+ ],
+ "Collateral interphalangeal ligaments of hand.l": [
+  "3: Joints",
+  "Interphalangeal joints of hand",
+  "Left hand",
+  "Left upper limb"
+ ],
+ "Collateral interphalangeal ligaments of hand.r": [
+  "3: Joints",
+  "Interphalangeal joints of hand",
+  "Right hand",
+  "Right upper limb"
+ ],
+ "Collateral metacarpophalangeal ligaments.l": [
+  "3: Joints",
+  "Left hand",
+  "Left upper limb",
+  "Metacarpophalangeal joints"
+ ],
+ "Collateral metacarpophalangeal ligaments.r": [
+  "3: Joints",
+  "Metacarpophalangeal joints",
+  "Right hand",
+  "Right upper limb"
+ ],
+ "Collateral metatarsophalangeal ligaments.l": [
+  "3: Joints",
+  "Left foot",
+  "Left lower limb",
+  "Metatarsophalangeal joints"
+ ],
+ "Collateral metatarsophalangeal ligaments.r": [
+  "3: Joints",
+  "Metatarsophalangeal joints",
+  "Right foot",
+  "Right lower limb"
+ ],
+ "Conoid ligament.l": [
+  "3: Joints",
+  "Coracoclavicular ligament",
+  "Left upper limb"
+ ],
+ "Conoid ligament.r": [
+  "3: Joints",
+  "Coracoclavicular ligament",
+  "Right upper limb"
+ ],
+ "Coraco-acromial ligament.l": [
+  "3: Joints",
+  "Fibrous joints of pectoral girdle",
+  "Left upper limb"
+ ],
+ "Coraco-acromial ligament.r": [
+  "3: Joints",
+  "Fibrous joints of pectoral girdle",
+  "Right upper limb"
+ ],
+ "Coracohumeral ligament.l": [
+  "3: Joints",
+  "Glenohumeral joint",
+  "Left upper limb"
+ ],
+ "Coracohumeral ligament.r": [
+  "3: Joints",
+  "Glenohumeral joint",
+  "Right upper limb"
+ ],
+ "Costoclavicular ligament.l": [
+  "3: Joints",
+  "Left upper limb",
+  "Sternoclavicular joint",
+  "Trunk"
+ ],
+ "Costoclavicular ligament.r": [
+  "3: Joints",
+  "Right upper limb",
+  "Sternoclavicular joint",
+  "Trunk"
+ ],
+ "Costotransverse ligament.l": [
+  "3: Joints",
+  "Costotransverse joint",
+  "Thorax",
+  "Trunk"
+ ],
+ "Costotransverse ligament.r": [
+  "3: Joints",
+  "Costotransverse joint",
+  "Thorax",
+  "Trunk"
+ ],
+ "Cricopharyngeal ligament.l": [
+  "3: Joints",
+  "Crico-arythenoid joint",
+  "Neck",
+  "Trunk"
+ ],
+ "Cricopharyngeal ligament.r": [
+  "3: Joints",
+  "Crico-arythenoid joint",
+  "Neck",
+  "Trunk"
+ ],
+ "Cuneocuboid interosseous ligament.l": [
+  "3: Joints",
+  "Cuneocuboid joint",
+  "Left foot",
+  "Left lower limb"
+ ],
+ "Cuneocuboid interosseous ligament.r": [
+  "3: Joints",
+  "Cuneocuboid joint",
+  "Right foot",
+  "Right lower limb"
+ ],
+ "Cuneometatarsal interosseous ligaments.l": [
+  "3: Joints",
+  "Left foot",
+  "Left lower limb",
+  "Tarsometatarsal joints"
+ ],
+ "Cuneometatarsal interosseous ligaments.r": [
+  "3: Joints",
+  "Right foot",
+  "Right lower limb",
+  "Tarsometatarsal joints"
+ ],
+ "Deep part of tibial collateral ligament.l": [
+  "3: Joints",
+  "Left lower limb",
+  "Tibial collateral ligament"
+ ],
+ "Deep part of tibial collateral ligament.r": [
+  "3: Joints",
+  "Right lower limb",
+  "Tibial collateral ligament"
+ ],
+ "Deep transverse metacarpal ligament.l": [
+  "3: Joints",
+  "Left hand",
+  "Left upper limb",
+  "Metacarpophalangeal joints"
+ ],
+ "Deep transverse metacarpal ligament.r": [
+  "3: Joints",
+  "Metacarpophalangeal joints",
+  "Right hand",
+  "Right upper limb"
+ ],
+ "Deep transverse metatarsal ligament.l": [
+  "3: Joints",
+  "Left foot",
+  "Left lower limb",
+  "Metatarsophalangeal joints"
+ ],
+ "Deep transverse metatarsal ligament.r": [
+  "3: Joints",
+  "Metatarsophalangeal joints",
+  "Right foot",
+  "Right lower limb"
+ ],
+ "Descending part of iliofemoral ligament.l": [
+  "3: Joints",
+  "Iliofemoral ligament",
+  "Left lower limb"
+ ],
+ "Descending part of iliofemoral ligament.r": [
+  "3: Joints",
+  "Iliofemoral ligament",
+  "Right lower limb"
+ ],
+ "Dorsal calcaneocuboid ligament.l": [
+  "3: Joints",
+  "Calcaneocuboid joint",
+  "Left foot",
+  "Left lower limb"
+ ],
+ "Dorsal calcaneocuboid ligament.r": [
+  "3: Joints",
+  "Calcaneocuboid joint",
+  "Right foot",
+  "Right lower limb"
+ ],
+ "Dorsal carpometacarpal ligaments.l": [
+  "3: Joints",
+  "Carpometacarpal joints",
+  "Left hand",
+  "Left upper limb"
+ ],
+ "Dorsal carpometacarpal ligaments.r": [
+  "3: Joints",
+  "Carpometacarpal joints",
+  "Right hand",
+  "Right upper limb"
+ ],
+ "Dorsal cuboideonavicular ligament.l": [
+  "3: Joints",
+  "Cuboidonavicular joint",
+  "Left foot",
+  "Left lower limb"
+ ],
+ "Dorsal cuboideonavicular ligament.r": [
+  "3: Joints",
+  "Cuboidonavicular joint",
+  "Right foot",
+  "Right lower limb"
+ ],
+ "Dorsal cuneocuboid ligament.l": [
+  "3: Joints",
+  "Cuneocuboid joint",
+  "Left foot",
+  "Left lower limb"
+ ],
+ "Dorsal cuneocuboid ligament.r": [
+  "3: Joints",
+  "Cuneocuboid joint",
+  "Right foot",
+  "Right lower limb"
+ ],
+ "Dorsal cuneonavicular ligaments.l": [
+  "3: Joints",
+  "Cuneonavicular joint",
+  "Left foot",
+  "Left lower limb"
+ ],
+ "Dorsal cuneonavicular ligaments.r": [
+  "3: Joints",
+  "Cuneonavicular joint",
+  "Right foot",
+  "Right lower limb"
+ ],
+ "Dorsal intercarpal ligaments.l": [
+  "3: Joints",
+  "Dorsal intercarpal ligaments",
+  "Left hand",
+  "Left upper limb"
+ ],
+ "Dorsal intercarpal ligaments.r": [
+  "3: Joints",
+  "Dorsal intercarpal ligaments",
+  "Right hand",
+  "Right upper limb"
+ ],
+ "Dorsal intercuneiform ligaments.l": [
+  "3: Joints",
+  "Intercuneiform joints",
+  "Left foot",
+  "Left lower limb"
+ ],
+ "Dorsal intercuneiform ligaments.r": [
+  "3: Joints",
+  "Intercuneiform joints",
+  "Right foot",
+  "Right lower limb"
+ ],
+ "Dorsal metacarpal ligaments.l": [
+  "3: Joints",
+  "Intermetacarpal joints",
+  "Left hand",
+  "Left upper limb"
+ ],
+ "Dorsal metacarpal ligaments.r": [
+  "3: Joints",
+  "Intermetacarpal joints",
+  "Right hand",
+  "Right upper limb"
+ ],
+ "Dorsal metatarsal ligaments.l": [
+  "3: Joints",
+  "Intermetatarsal joints",
+  "Left foot",
+  "Left lower limb"
+ ],
+ "Dorsal metatarsal ligaments.r": [
+  "3: Joints",
+  "Intermetatarsal joints",
+  "Right foot",
+  "Right lower limb"
+ ],
+ "Dorsal radio-ulnar ligament.l": [
+  "3: Joints",
+  "Distal radio-ulnar joint",
+  "Left upper limb"
+ ],
+ "Dorsal radio-ulnar ligament.r": [
+  "3: Joints",
+  "Distal radio-ulnar joint",
+  "Right upper limb"
+ ],
+ "Dorsal radiocarpal ligament.l": [
+  "3: Joints",
+  "Joints of hand",
+  "Left hand",
+  "Left upper limb",
+  "Radiocarpal joint"
+ ],
+ "Dorsal radiocarpal ligament.r": [
+  "3: Joints",
+  "Joints of hand",
+  "Radiocarpal joint",
+  "Right hand",
+  "Right upper limb"
+ ],
+ "Dorsal scaphotriquetral ligament.l": [
+  "3: Joints",
+  "Dorsal intercarpal ligaments",
+  "Left hand",
+  "Left upper limb"
+ ],
+ "Dorsal scaphotriquetral ligament.r": [
+  "3: Joints",
+  "Dorsal intercarpal ligaments",
+  "Right hand",
+  "Right upper limb"
+ ],
+ "Dorsal tarsometatarsal ligaments.l": [
+  "3: Joints",
+  "Left foot",
+  "Left lower limb",
+  "Tarsometatarsal joints"
+ ],
+ "Dorsal tarsometatarsal ligaments.r": [
+  "3: Joints",
+  "Right foot",
+  "Right lower limb",
+  "Tarsometatarsal joints"
+ ],
+ "Dorsal ulnocarpal ligament.l": [
+  "3: Joints",
+  "Joints of hand",
+  "Left hand",
+  "Left upper limb",
+  "Radiocarpal joint"
+ ],
+ "Dorsal ulnocarpal ligament.r": [
+  "3: Joints",
+  "Joints of hand",
+  "Radiocarpal joint",
+  "Right hand",
+  "Right upper limb"
+ ],
+ "Epicranial aponeurosis.l": [
+  "4: Muscular system",
+  "Facial nerve (VII)",
+  "Head",
+  "Muscles",
+  "Muscles of head",
+  "Superficial muscles"
+ ],
+ "Epicranial aponeurosis.r": [
+  "4: Muscular system",
+  "Facial nerve (VII)",
+  "Head",
+  "Muscles",
+  "Muscles of head",
+  "Superficial muscles"
+ ],
+ "Extensor retinaculum of wrist.l": [
+  "4: Muscular system",
+  "Fascia of upper limb",
+  "Left upper limb",
+  "Muscles"
+ ],
+ "Extensor retinaculum of wrist.r": [
+  "4: Muscular system",
+  "Fascia of upper limb",
+  "Muscles",
+  "Right upper limb"
+ ],
+ "External intercostal membrane.l": [
+  "3: Joints",
+  "Fibrous joints of thorax",
+  "Thorax",
+  "Trunk"
+ ],
+ "External intercostal membrane.r": [
+  "3: Joints",
+  "Fibrous joints of thorax",
+  "Thorax",
+  "Trunk"
+ ],
+ "Fibular collateral ligament.l": [
+  "3: Joints",
+  "Knee joint",
+  "Left lower limb"
+ ],
+ "Fibular collateral ligament.r": [
+  "3: Joints",
+  "Knee joint",
+  "Right lower limb"
+ ],
+ "Flexor retinaculum of ankle.l": [
+  "4: Muscular system",
+  "Left lower limb",
+  "Muscles",
+  "Muscles of lower limb"
+ ],
+ "Flexor retinaculum of ankle.r": [
+  "4: Muscular system",
+  "Muscles",
+  "Muscles of lower limb",
+  "Right lower limb"
+ ],
+ "Flexor retinaculum of wrist.l": [
+  "4: Muscular system",
+  "Fascia of upper limb",
+  "Left upper limb",
+  "Muscles"
+ ],
+ "Flexor retinaculum of wrist.r": [
+  "4: Muscular system",
+  "Fascia of upper limb",
+  "Muscles",
+  "Right upper limb"
+ ],
+ "Glenoid labrum.l": [
+  "3: Joints",
+  "Glenohumeral joint",
+  "Left upper limb"
+ ],
+ "Glenoid labrum.r": [
+  "3: Joints",
+  "Glenohumeral joint",
+  "Right upper limb"
+ ],
+ "Iliolumbar ligament.l": [
+  "3: Joints",
+  "Abdomen",
+  "Fibrous joints of pelvic girdle",
+  "Left lower limb",
+  "Trunk"
+ ],
+ "Iliolumbar ligament.r": [
+  "3: Joints",
+  "Abdomen",
+  "Fibrous joints of pelvic girdle",
+  "Right lower limb",
+  "Trunk"
+ ],
+ "Inferior extensor retinaculum of ankle.l": [
+  "4: Muscular system",
+  "Left lower limb",
+  "Muscles",
+  "Muscles of lower limb"
+ ],
+ "Inferior extensor retinaculum of ankle.r": [
+  "4: Muscular system",
+  "Muscles",
+  "Muscles of lower limb",
+  "Right lower limb"
+ ],
+ "Inferior fibular retinaculum.l": [
+  "4: Muscular system",
+  "Left lower limb",
+  "Muscles",
+  "Muscles of lower limb"
+ ],
+ "Inferior fibular retinaculum.r": [
+  "4: Muscular system",
+  "Muscles",
+  "Muscles of lower limb",
+  "Right lower limb"
+ ],
+ "Inferior glenohumeral ligament.l": [
+  "3: Joints",
+  "Glenohumeral ligaments",
+  "Left upper limb"
+ ],
+ "Inferior glenohumeral ligament.r": [
+  "3: Joints",
+  "Glenohumeral ligaments",
+  "Right upper limb"
+ ],
+ "Inferior pubic ligament": [
+  "3: Joints",
+  "Abdomen",
+  "Pubic symphysis"
+ ],
+ "Inferior transverse scapular ligament.l": [
+  "3: Joints",
+  "Fibrous joints of pectoral girdle",
+  "Left upper limb"
+ ],
+ "Inferior transverse scapular ligament.r": [
+  "3: Joints",
+  "Fibrous joints of pectoral girdle",
+  "Right upper limb"
+ ],
+ "Inguinal ligament.l": [
+  "4: Muscular system",
+  "Abdominal part of muscular system",
+  "Muscles",
+  "Muscles of abdomen",
+  "Trunk"
+ ],
+ "Inguinal ligament.r": [
+  "4: Muscular system",
+  "Abdominal part of muscular system",
+  "Muscles",
+  "Muscles of abdomen",
+  "Trunk"
+ ],
+ "Interclavicular ligament.l": [
+  "3: Joints",
+  "Left upper limb",
+  "Sternoclavicular joint",
+  "Trunk"
+ ],
+ "Interclavicular ligament.r": [
+  "3: Joints",
+  "Right upper limb",
+  "Sternoclavicular joint",
+  "Trunk"
+ ],
+ "Intercornual ligament.l": [
+  "3: Joints",
+  "Abdomen",
+  "Fibrous joints of vertebral column",
+  "Trunk"
+ ],
+ "Intercornual ligament.r": [
+  "3: Joints",
+  "Abdomen",
+  "Fibrous joints of vertebral column",
+  "Trunk"
+ ],
+ "Intercuneiform interosseous ligaments.l": [
+  "3: Joints",
+  "Intercuneiform joints",
+  "Left foot",
+  "Left lower limb"
+ ],
+ "Intercuneiform interosseous ligaments.r": [
+  "3: Joints",
+  "Intercuneiform joints",
+  "Right foot",
+  "Right lower limb"
+ ],
+ "Internal intercostal membrane.l": [
+  "3: Joints",
+  "Fibrous joints of thorax",
+  "Thorax",
+  "Trunk"
+ ],
+ "Internal intercostal membrane.r": [
+  "3: Joints",
+  "Fibrous joints of thorax",
+  "Thorax",
+  "Trunk"
+ ],
+ "Interosseous membrane of leg.l": [
+  "3: Joints",
+  "Fibrous joints of free lower limb",
+  "Left lower limb"
+ ],
+ "Interosseous membrane of leg.r": [
+  "3: Joints",
+  "Fibrous joints of free lower limb",
+  "Right lower limb"
+ ],
+ "Interosseous metacarpal ligaments.l": [
+  "3: Joints",
+  "Intermetacarpal joints",
+  "Left hand",
+  "Left upper limb"
+ ],
+ "Interosseous metacarpal ligaments.r": [
+  "3: Joints",
+  "Intermetacarpal joints",
+  "Right hand",
+  "Right upper limb"
+ ],
+ "Interosseous sacro-iliac ligament.l": [
+  "3: Joints",
+  "Abdomen",
+  "Left lower limb",
+  "Sacro-iliac joint",
+  "Trunk"
+ ],
+ "Interosseous sacro-iliac ligament.r": [
+  "3: Joints",
+  "Abdomen",
+  "Right lower limb",
+  "Sacro-iliac joint",
+  "Trunk"
+ ],
+ "Interosseous membrane of forearm.l": [
+  "3: Joints",
+  "Left upper limb"
+ ],
+ "Interosseous membrane of forearm.r": [
+  "3: Joints",
+  "Right upper limb"
+ ],
+ "Intersesamoid ligament.l": [
+  "3: Joints",
+  "Intermetatarsal joints",
+  "Left foot",
+  "Left lower limb"
+ ],
+ "Intersesamoid ligament.r": [
+  "3: Joints",
+  "Intermetatarsal joints",
+  "Right foot",
+  "Right lower limb"
+ ],
+ "Interspinous ligaments": [
+  "3: Joints",
+  "Abdomen",
+  "Back",
+  "Fibrous joints of vertebral column",
+  "Neck",
+  "Thorax",
+  "Trunk",
+  "Vertebral column"
+ ],
+ "Intertransverse ligaments.l": [
+  "3: Joints",
+  "Abdomen",
+  "Back",
+  "Fibrous joints of vertebral column",
+  "Neck",
+  "Thorax",
+  "Trunk",
+  "Vertebral column"
+ ],
+ "Intertransverse ligaments.r": [
+  "3: Joints",
+  "Abdomen",
+  "Back",
+  "Fibrous joints of vertebral column",
+  "Neck",
+  "Thorax",
+  "Trunk",
+  "Vertebral column"
+ ],
+ "Intra-articular ligament of head of rib": [
+  "3: Joints",
+  "Joint of head of rib",
+  "Thorax",
+  "Trunk",
+  "Vertebral column"
+ ],
+ "Intra-articular ligament of head of rib.r": [
+  "3: Joints",
+  "Joint of head of rib",
+  "Thorax",
+  "Trunk",
+  "Vertebral column"
+ ],
+ "Ischiofemoral ligament.l": [
+  "3: Joints",
+  "Hip joint",
+  "Left lower limb"
+ ],
+ "Ischiofemoral ligament.r": [
+  "3: Joints",
+  "Hip joint",
+  "Right lower limb"
+ ],
+ "Lateral meniscus.l": [
+  "3: Joints",
+  "Knee joint",
+  "Left lower limb"
+ ],
+ "Lateral meniscus.r": [
+  "3: Joints",
+  "Knee joint",
+  "Right lower limb"
+ ],
+ "Lateral patellar retinaculum.l": [
+  "4: Muscular system",
+  "Anterior compartment of thigh",
+  "Left lower limb",
+  "Muscles",
+  "Muscles of lower limb"
+ ],
+ "Lateral patellar retinaculum.r": [
+  "4: Muscular system",
+  "Anterior compartment of thigh",
+  "Muscles",
+  "Muscles of lower limb",
+  "Right lower limb"
+ ],
+ "Lateral talocalcaneal ligament.l": [
+  "3: Joints",
+  "Left foot",
+  "Left lower limb",
+  "Subtalar joint"
+ ],
+ "Lateral talocalcaneal ligament.r": [
+  "3: Joints",
+  "Right foot",
+  "Right lower limb",
+  "Subtalar joint"
+ ],
+ "Lateral temporomandibular ligament.l": [
+  "3: Joints",
+  "Head",
+  "Temporomandibular joint"
+ ],
+ "Lateral temporomandibular ligament.r": [
+  "3: Joints",
+  "Head",
+  "Temporomandibular joint"
+ ],
+ "Lateral thyrohyoid ligament.l": [
+  "3: Joints",
+  "Neck",
+  "Thyrohyoid membrane",
+  "Trunk"
+ ],
+ "Lateral thyrohyoid ligament.r": [
+  "3: Joints",
+  "Neck",
+  "Thyrohyoid membrane",
+  "Trunk"
+ ],
+ "Ligament of head of femur.l": [
+  "3: Joints",
+  "Hip joint",
+  "Left lower limb"
+ ],
+ "Ligament of head of femur.r": [
+  "3: Joints",
+  "Hip joint",
+  "Right lower limb"
+ ],
+ "Ligamenta flava": [
+  "3: Joints",
+  "Abdomen",
+  "Back",
+  "Fibrous joints of vertebral column",
+  "Neck",
+  "Thorax",
+  "Trunk",
+  "Vertebral column"
+ ],
+ "Long plantar ligament.l": [
+  "3: Joints",
+  "Left foot",
+  "Left lower limb",
+  "Transverse tarsal joint"
+ ],
+ "Long plantar ligament.o1l": [
+  "2: Muscular insertions"
+ ],
+ "Long plantar ligament.o1r": [
+  "2: Muscular insertions"
+ ],
+ "Long plantar ligament.o2l": [
+  "2: Muscular insertions"
+ ],
+ "Long plantar ligament.o2r": [
+  "2: Muscular insertions"
+ ],
+ "Long plantar ligament.o3l": [
+  "2: Muscular insertions"
+ ],
+ "Long plantar ligament.o3r": [
+  "2: Muscular insertions"
+ ],
+ "Long plantar ligament.o4l": [
+  "2: Muscular insertions"
+ ],
+ "Long plantar ligament.o4r": [
+  "2: Muscular insertions"
+ ],
+ "Long plantar ligament.ol": [
+  "2: Muscular insertions"
+ ],
+ "Long plantar ligament.or": [
+  "2: Muscular insertions"
+ ],
+ "Long plantar ligament.r": [
+  "3: Joints",
+  "Right foot",
+  "Right lower limb",
+  "Transverse tarsal joint"
+ ],
+ "Lunotriquetral interosseous ligament.l": [
+  "3: Joints",
+  "Interosseus intercarpal ligaments",
+  "Left hand",
+  "Left upper limb"
+ ],
+ "Lunotriquetral interosseous ligament.r": [
+  "3: Joints",
+  "Interosseus intercarpal ligaments",
+  "Right hand",
+  "Right upper limb"
+ ],
+ "Medial meniscus.l": [
+  "3: Joints",
+  "Lateral meniscus",
+  "Left lower limb"
+ ],
+ "Medial meniscus.r": [
+  "3: Joints",
+  "Lateral meniscus",
+  "Right lower limb"
+ ],
+ "Medial patellar retinaculum.l": [
+  "4: Muscular system",
+  "Anterior compartment of thigh",
+  "Left lower limb",
+  "Muscles",
+  "Muscles of lower limb"
+ ],
+ "Medial patellar retinaculum.r": [
+  "4: Muscular system",
+  "Anterior compartment of thigh",
+  "Muscles",
+  "Muscles of lower limb",
+  "Right lower limb"
+ ],
+ "Medial talocalcaneal ligament.l": [
+  "3: Joints",
+  "Left foot",
+  "Left lower limb",
+  "Subtalar joint"
+ ],
+ "Medial talocalcaneal ligament.r": [
+  "3: Joints",
+  "Right foot",
+  "Right lower limb",
+  "Subtalar joint"
+ ],
+ "Median cricothyroid ligament": [
+  "3: Joints",
+  "Fibrous joints of larynx",
+  "Neck",
+  "Trunk"
+ ],
+ "Median thyrohyoid ligament": [
+  "3: Joints",
+  "Neck",
+  "Thyrohyoid membrane",
+  "Trunk"
+ ],
+ "Meniscopatellar ligament.l": [
+  "3: Joints",
+  "Knee joint",
+  "Left lower limb"
+ ],
+ "Meniscopatellar ligament.r": [
+  "3: Joints",
+  "Knee joint",
+  "Right lower limb"
+ ],
+ "Metatarsal interosseous ligaments.l": [
+  "3: Joints",
+  "Intermetatarsal joints",
+  "Left foot",
+  "Left lower limb"
+ ],
+ "Metatarsal interosseous ligaments.r": [
+  "3: Joints",
+  "Intermetatarsal joints",
+  "Right foot",
+  "Right lower limb"
+ ],
+ "Middle glenohumeral ligament.l": [
+  "3: Joints",
+  "Glenohumeral ligaments",
+  "Left upper limb"
+ ],
+ "Middle glenohumeral ligament.r": [
+  "3: Joints",
+  "Glenohumeral ligaments",
+  "Right upper limb"
+ ],
+ "Node of ligamentum arteriosum": [
+  "6: Lymphoid organs"
+ ],
+ "Nuchal ligament": [
+  "3: Joints",
+  "Fibrous joints of vertebral column",
+  "Neck",
+  "Trunk",
+  "Vertebral column"
+ ],
+ "Oblique popliteal ligament.l": [
+  "3: Joints",
+  "Knee joint",
+  "Left lower limb"
+ ],
+ "Oblique popliteal ligament.r": [
+  "3: Joints",
+  "Knee joint",
+  "Right lower limb"
+ ],
+ "Obturator membrane.l": [
+  "3: Joints",
+  "Left lower limb",
+  "Obturator membrane"
+ ],
+ "Obturator membrane.r": [
+  "3: Joints",
+  "Abdomen",
+  "Obturator membrane",
+  "Right lower limb"
+ ],
+ "Palmar aponeurosis.l": [
+  "4: Muscular system",
+  "Fascia",
+  "Left upper limb"
+ ],
+ "Palmar aponeurosis.r": [
+  "4: Muscular system",
+  "Fascia",
+  "Right upper limb"
+ ],
+ "Palmar capitohamate ligament.l": [
+  "3: Joints",
+  "Left hand",
+  "Left upper limb",
+  "Palmar intercarpal ligaments"
+ ],
+ "Palmar capitohamate ligament.r": [
+  "3: Joints",
+  "Palmar intercarpal ligaments",
+  "Right hand",
+  "Right upper limb"
+ ],
+ "Palmar carpometacarpal ligaments.l": [
+  "3: Joints",
+  "Carpometacarpal joints",
+  "Left hand",
+  "Left upper limb"
+ ],
+ "Palmar carpometacarpal ligaments.r": [
+  "3: Joints",
+  "Carpometacarpal joints",
+  "Right hand",
+  "Right upper limb"
+ ],
+ "Palmar interphalangeal ligaments.l": [
+  "3: Joints",
+  "Interphalangeal joints of hand",
+  "Left hand",
+  "Left upper limb"
+ ],
+ "Palmar interphalangeal ligaments.r": [
+  "3: Joints",
+  "Interphalangeal joints of hand",
+  "Right hand",
+  "Right upper limb"
+ ],
+ "Palmar lunotriquetral ligament.l": [
+  "3: Joints",
+  "Left hand",
+  "Left upper limb",
+  "Palmar intercarpal ligaments"
+ ],
+ "Palmar lunotriquetral ligament.r": [
+  "3: Joints",
+  "Palmar intercarpal ligaments",
+  "Right hand",
+  "Right upper limb"
+ ],
+ "Palmar metacarpal ligaments.l": [
+  "3: Joints",
+  "Intermetacarpal joints",
+  "Left hand",
+  "Left upper limb"
+ ],
+ "Palmar metacarpal ligaments.r": [
+  "3: Joints",
+  "Intermetacarpal joints",
+  "Right hand",
+  "Right upper limb"
+ ],
+ "Palmar radio-ulnar ligament.l": [
+  "3: Joints",
+  "Distal radio-ulnar joint",
+  "Left upper limb"
+ ],
+ "Palmar radio-ulnar ligament.r": [
+  "3: Joints",
+  "Distal radio-ulnar joint",
+  "Right upper limb"
+ ],
+ "Palmar scaphotriquetral ligament.l": [
+  "3: Joints",
+  "Left hand",
+  "Left upper limb",
+  "Palmar intercarpal ligaments"
+ ],
+ "Palmar scaphotriquetral ligament.r": [
+  "3: Joints",
+  "Palmar intercarpal ligaments",
+  "Right hand",
+  "Right upper limb"
+ ],
+ "Palmar trapezoideocapitate ligament.l": [
+  "3: Joints",
+  "Left hand",
+  "Left upper limb",
+  "Palmar intercarpal ligaments"
+ ],
+ "Palmar trapezoideocapitate ligament.r": [
+  "3: Joints",
+  "Palmar intercarpal ligaments",
+  "Right hand",
+  "Right upper limb"
+ ],
+ "Patellar ligament.el": [
+  "2: Muscular insertions"
+ ],
+ "Patellar ligament.er": [
+  "2: Muscular insertions"
+ ],
+ "Patellar ligament.ol": [
+  "2: Muscular insertions"
+ ],
+ "Patellar ligament.or": [
+  "2: Muscular insertions"
+ ],
+ "Pisohamate ligament.l": [
+  "3: Joints",
+  "Left hand",
+  "Left upper limb",
+  "Pisiform joint"
+ ],
+ "Pisohamate ligament.r": [
+  "3: Joints",
+  "Pisiform joint",
+  "Right hand",
+  "Right upper limb"
+ ],
+ "Pisometacarpal ligament.l": [
+  "3: Joints",
+  "Left hand",
+  "Left upper limb",
+  "Pisiform joint"
+ ],
+ "Pisometacarpal ligament.r": [
+  "3: Joints",
+  "Pisiform joint",
+  "Right hand",
+  "Right upper limb"
+ ],
+ "Pisotriquetral ligament.l": [
+  "3: Joints",
+  "Left hand",
+  "Left upper limb",
+  "Palmar intercarpal ligaments"
+ ],
+ "Pisotriquetral ligament.r": [
+  "3: Joints",
+  "Palmar intercarpal ligaments",
+  "Right hand",
+  "Right upper limb"
+ ],
+ "Plantar aponeurosis.l": [
+  "4: Muscular system",
+  "Left lower limb",
+  "Muscles",
+  "Muscles of lower limb",
+  "Superficial muscles"
+ ],
+ "Plantar aponeurosis.r": [
+  "4: Muscular system",
+  "Muscles",
+  "Muscles of lower limb",
+  "Right lower limb",
+  "Superficial muscles"
+ ],
+ "Plantar calcaneocuboid ligament.l": [
+  "3: Joints",
+  "Calcaneocuboid joint",
+  "Left foot",
+  "Left lower limb"
+ ],
+ "Plantar calcaneocuboid ligament.r": [
+  "3: Joints",
+  "Calcaneocuboid joint",
+  "Right foot",
+  "Right lower limb"
+ ],
+ "Plantar cuneocuboid ligament.l": [
+  "3: Joints",
+  "Cuneocuboid joint",
+  "Left foot",
+  "Left lower limb"
+ ],
+ "Plantar cuneocuboid ligament.r": [
+  "3: Joints",
+  "Cuneocuboid joint",
+  "Right foot",
+  "Right lower limb"
+ ],
+ "Plantar cuneonavicular ligaments.l": [
+  "3: Joints",
+  "Cuneonavicular joint",
+  "Left foot",
+  "Left lower limb"
+ ],
+ "Plantar cuneonavicular ligaments.r": [
+  "3: Joints",
+  "Cuneonavicular joint",
+  "Right foot",
+  "Right lower limb"
+ ],
+ "Plantar intercuneiform ligaments.l": [
+  "3: Joints",
+  "Intercuneiform joints",
+  "Left foot",
+  "Left lower limb"
+ ],
+ "Plantar intercuneiform ligaments.r": [
+  "3: Joints",
+  "Intercuneiform joints",
+  "Right foot",
+  "Right lower limb"
+ ],
+ "Plantar interphalangeal ligaments.l": [
+  "3: Joints",
+  "Interphalangeal joints of foot",
+  "Left foot",
+  "Left lower limb"
+ ],
+ "Plantar interphalangeal ligaments.r": [
+  "3: Joints",
+  "Interphalangeal joints of foot",
+  "Right foot",
+  "Right lower limb"
+ ],
+ "Plantar metatarsal ligaments.l": [
+  "3: Joints",
+  "Intermetatarsal joints",
+  "Left foot",
+  "Left lower limb"
+ ],
+ "Plantar metatarsal ligaments.r": [
+  "3: Joints",
+  "Intermetatarsal joints",
+  "Right foot",
+  "Right lower limb"
+ ],
+ "Plantar metatarsophalangeal ligaments.l": [
+  "3: Joints",
+  "Left foot",
+  "Left lower limb",
+  "Metatarsophalangeal joints"
+ ],
+ "Plantar metatarsophalangeal ligaments.r": [
+  "3: Joints",
+  "Metatarsophalangeal joints",
+  "Right foot",
+  "Right lower limb"
+ ],
+ "Plantar tarsometatarsal ligaments.l": [
+  "3: Joints",
+  "Left foot",
+  "Left lower limb",
+  "Tarsometatarsal joints"
+ ],
+ "Plantar tarsometatarsal ligaments.r": [
+  "3: Joints",
+  "Right foot",
+  "Right lower limb",
+  "Tarsometatarsal joints"
+ ],
+ "Popliteofibular ligament.l": [
+  "3: Joints",
+  "Knee joint",
+  "Left lower limb"
+ ],
+ "Popliteofibular ligament.r": [
+  "3: Joints",
+  "Knee joint",
+  "Right lower limb"
+ ],
+ "Posterior cruciate ligament.l": [
+  "3: Joints",
+  "Knee joint",
+  "Left lower limb"
+ ],
+ "Posterior cruciate ligament.r": [
+  "3: Joints",
+  "Knee joint",
+  "Right lower limb"
+ ],
+ "Posterior ligament of fibular head.l": [
+  "3: Joints",
+  "Left lower limb",
+  "Superior tibiofibular joint"
+ ],
+ "Posterior ligament of fibular head.r": [
+  "3: Joints",
+  "Right lower limb",
+  "Superior tibiofibular joint"
+ ],
+ "Posterior longitudinal ligament": [
+  "3: Joints",
+  "Abdomen",
+  "Back",
+  "Fibrous joints of vertebral column",
+  "Neck",
+  "Thorax",
+  "Trunk",
+  "Vertebral column"
+ ],
+ "Posterior sacro-iliac ligament.l": [
+  "3: Joints",
+  "Abdomen",
+  "Left lower limb",
+  "Sacro-iliac joint",
+  "Trunk"
+ ],
+ "Posterior sacro-iliac ligament.r": [
+  "3: Joints",
+  "Abdomen",
+  "Right lower limb",
+  "Sacro-iliac joint",
+  "Trunk"
+ ],
+ "Posterior sternoclavicular ligament.l": [
+  "3: Joints",
+  "Left upper limb",
+  "Sternoclavicular joint",
+  "Trunk"
+ ],
+ "Posterior sternoclavicular ligament.r": [
+  "3: Joints",
+  "Right upper limb",
+  "Sternoclavicular joint",
+  "Trunk"
+ ],
+ "Posterior talocalcaneal ligament.l": [
+  "3: Joints",
+  "Left foot",
+  "Left lower limb",
+  "Subtalar joint"
+ ],
+ "Posterior talocalcaneal ligament.r": [
+  "3: Joints",
+  "Right foot",
+  "Right lower limb",
+  "Subtalar joint"
+ ],
+ "Posterior talofibular ligament.l": [
+  "3: Joints",
+  "Lateral collateral ligament",
+  "Left foot",
+  "Left lower limb"
+ ],
+ "Posterior talofibular ligament.r": [
+  "3: Joints",
+  "Lateral collateral ligament",
+  "Right foot",
+  "Right lower limb"
+ ],
+ "Posterior tibiofibular ligament.l": [
+  "3: Joints",
+  "Left foot",
+  "Left lower limb",
+  "Tibiofibular syndesmosis"
+ ],
+ "Posterior tibiofibular ligament.r": [
+  "3: Joints",
+  "Right foot",
+  "Right lower limb",
+  "Tibiofibular syndesmosis"
+ ],
+ "Pterygospinous ligament.l": [
+  "3: Joints",
+  "Cranial syndesmosis",
+  "Head"
+ ],
+ "Pterygospinous ligament.r": [
+  "3: Joints",
+  "Cranial syndesmosis",
+  "Head"
+ ],
+ "Pubofemoral ligament.l": [
+  "3: Joints",
+  "Hip joint",
+  "Left lower limb"
+ ],
+ "Pubofemoral ligament.r": [
+  "3: Joints",
+  "Hip joint",
+  "Right lower limb"
+ ],
+ "Quadrangular membrane.l": [
+  "3: Joints",
+  "Neck",
+  "Quadrangular membrane",
+  "Trunk"
+ ],
+ "Quadrangular membrane.r": [
+  "3: Joints",
+  "Neck",
+  "Quadrangular membrane",
+  "Trunk"
+ ],
+ "Quadrate ligament.l": [
+  "3: Joints",
+  "Elbow joint",
+  "Left upper limb"
+ ],
+ "Quadrate ligament.r": [
+  "3: Joints",
+  "Elbow joint",
+  "Right upper limb"
+ ],
+ "Radial collateral ligament of wrist joint.l": [
+  "3: Joints",
+  "Joints of hand",
+  "Left hand",
+  "Left upper limb",
+  "Radiocarpal joint"
+ ],
+ "Radial collateral ligament of wrist joint.r": [
+  "3: Joints",
+  "Joints of hand",
+  "Radiocarpal joint",
+  "Right hand",
+  "Right upper limb"
+ ],
+ "Radial collateral ligament.l": [
+  "3: Joints",
+  "Elbow joint",
+  "Left upper limb"
+ ],
+ "Radial collateral ligament.r": [
+  "3: Joints",
+  "Elbow joint",
+  "Right upper limb"
+ ],
+ "Radiate carpal ligament.l": [
+  "3: Joints",
+  "Intercarpal joints",
+  "Joints of hand",
+  "Left hand",
+  "Left upper limb"
+ ],
+ "Radiate carpal ligament.r": [
+  "3: Joints",
+  "Intercarpal joints",
+  "Joints of hand",
+  "Right hand",
+  "Right upper limb"
+ ],
+ "Radioscaphocapitate ligament.l": [
+  "3: Joints",
+  "Joints of hand",
+  "Left hand",
+  "Left upper limb",
+  "Palmar radiocarpal ligament"
+ ],
+ "Radioscaphocapitate ligament.r": [
+  "3: Joints",
+  "Joints of hand",
+  "Palmar radiocarpal ligament",
+  "Right hand",
+  "Right upper limb"
+ ],
+ "Sacrospinous ligament.l": [
+  "3: Joints",
+  "Abdomen",
+  "Fibrous joints of pelvic girdle",
+  "Left lower limb"
+ ],
+ "Sacrospinous ligament.r": [
+  "3: Joints",
+  "Abdomen",
+  "Fibrous joints of pelvic girdle",
+  "Right lower limb"
+ ],
+ "Sacrotuberous ligament.l": [
+  "3: Joints",
+  "Abdomen",
+  "Left lower limb",
+  "Sacrotuberous ligament"
+ ],
+ "Sacrotuberous ligament.r": [
+  "3: Joints",
+  "Abdomen",
+  "Right lower limb",
+  "Sacrotuberous ligament"
+ ],
+ "Scaphocapitate ligament.l": [
+  "3: Joints",
+  "Left hand",
+  "Left upper limb",
+  "Palmar intercarpal ligaments"
+ ],
+ "Scaphocapitate ligament.r": [
+  "3: Joints",
+  "Palmar intercarpal ligaments",
+  "Right hand",
+  "Right upper limb"
+ ],
+ "Scaphotrapeziotrapezoidal ligament.l": [
+  "3: Joints",
+  "Left hand",
+  "Left upper limb",
+  "Palmar intercarpal ligaments"
+ ],
+ "Scaphotrapeziotrapezoidal ligament.r": [
+  "3: Joints",
+  "Palmar intercarpal ligaments",
+  "Right hand",
+  "Right upper limb"
+ ],
+ "Sphenomandibular ligament.l": [
+  "3: Joints",
+  "Cranial syndesmosis",
+  "Head"
+ ],
+ "Sphenomandibular ligament.r": [
+  "3: Joints",
+  "Cranial syndesmosis",
+  "Head"
+ ],
+ "Plantar calcaneonavicular ligament.l": [
+  "3: Joints",
+  "Left foot",
+  "Left lower limb",
+  "Talocalcaneonavicular joint"
+ ],
+ "Plantar calcaneonavicular ligament.r": [
+  "3: Joints",
+  "Right foot",
+  "Right lower limb",
+  "Talocalcaneonavicular joint"
+ ],
+ "Plantar cuboideonavicular ligament.l": [
+  "3: Joints",
+  "Cuboidonavicular joint",
+  "Left foot",
+  "Left lower limb"
+ ],
+ "Plantar cuboideonavicular ligament.r": [
+  "3: Joints",
+  "Cuboidonavicular joint",
+  "Right foot",
+  "Right lower limb"
+ ],
+ "Posterior meniscotibial ligament (Lateral meniscus).l": [
+  "3: Joints",
+  "Lateral meniscus",
+  "Left lower limb"
+ ],
+ "Posterior meniscotibial ligament (Lateral meniscus).r": [
+  "3: Joints",
+  "Lateral meniscus",
+  "Right lower limb"
+ ],
+ "Posterior meniscotibial ligament (Medial meniscus).l": [
+  "3: Joints",
+  "Left lower limb",
+  "Medial meniscus"
+ ],
+ "Posterior meniscotibial ligament (Medial meniscus).r": [
+  "3: Joints",
+  "Medial meniscus",
+  "Right lower limb"
+ ],
+ "Posterior tibiotalar ligament.l": [
+  "3: Joints",
+  "Left foot",
+  "Left lower limb",
+  "Medial collateral ligament"
+ ],
+ "Posterior tibiotalar ligament.r": [
+  "3: Joints",
+  "Medial collateral ligament",
+  "Right foot",
+  "Right lower limb"
+ ],
+ "Radiate ligament of head of rib.l": [
+  "3: Joints",
+  "Joint of head of rib",
+  "Thorax",
+  "Trunk",
+  "Vertebral column"
+ ],
+ "Radiate ligament of head of rib.r": [
+  "3: Joints",
+  "Joint of head of rib",
+  "Thorax",
+  "Trunk",
+  "Vertebral column"
+ ],
+ "Radiocapitate ligament.l": [
+  "3: Joints",
+  "Joints of hand",
+  "Left hand",
+  "Left upper limb",
+  "Palmar radiocarpal ligament"
+ ],
+ "Radiocapitate ligament.r": [
+  "3: Joints",
+  "Joints of hand",
+  "Palmar radiocarpal ligament",
+  "Right hand",
+  "Right upper limb"
+ ],
+ "Scapholunate interosseous ligament.l": [
+  "3: Joints",
+  "Interosseus intercarpal ligaments",
+  "Left hand",
+  "Left upper limb"
+ ],
+ "Scapholunate interosseous ligament.r": [
+  "3: Joints",
+  "Interosseus intercarpal ligaments",
+  "Right hand",
+  "Right upper limb"
+ ],
+ "Stylohyoid ligament.l": [
+  "3: Joints",
+  "Cranial syndesmosis",
+  "Head"
+ ],
+ "Stylohyoid ligament.r": [
+  "3: Joints",
+  "Cranial syndesmosis",
+  "Head"
+ ],
+ "Stylomandibular ligament.l": [
+  "3: Joints",
+  "Cranial syndesmosis",
+  "Head"
+ ],
+ "Stylomandibular ligament.r": [
+  "3: Joints",
+  "Cranial syndesmosis",
+  "Head"
+ ],
+ "Superficial part of tibial collateral ligament.l": [
+  "3: Joints",
+  "Knee joint",
+  "Left lower limb",
+  "Tibial collateral ligament"
+ ],
+ "Superficial part of tibial collateral ligament.r": [
+  "3: Joints",
+  "Knee joint",
+  "Right lower limb",
+  "Tibial collateral ligament"
+ ],
+ "Superficial transverse metacarpal ligament.l": [
+  "4: Muscular system",
+  "Fascia of upper limb",
+  "Left upper limb",
+  "Muscles"
+ ],
+ "Superficial transverse metacarpal ligament.r": [
+  "4: Muscular system",
+  "Fascia of upper limb",
+  "Muscles",
+  "Right upper limb"
+ ],
+ "Superficial transverse metatarsal ligament.l": [
+  "4: Muscular system",
+  "Left lower limb",
+  "Muscles",
+  "Muscles of lower limb",
+  "Superficial muscles"
+ ],
+ "Superficial transverse metatarsal ligament.r": [
+  "4: Muscular system",
+  "Muscles",
+  "Muscles of lower limb",
+  "Right lower limb",
+  "Superficial muscles"
+ ],
+ "Superior extensor retinaculum of ankle.l": [
+  "4: Muscular system",
+  "Left lower limb",
+  "Muscles",
+  "Muscles of lower limb"
+ ],
+ "Superior extensor retinaculum of ankle.r": [
+  "4: Muscular system",
+  "Muscles",
+  "Muscles of lower limb",
+  "Right lower limb"
+ ],
+ "Superior fibular retinaculum.l": [
+  "4: Muscular system",
+  "Left lower limb",
+  "Muscles",
+  "Muscles of lower limb"
+ ],
+ "Superior fibular retinaculum.r": [
+  "4: Muscular system",
+  "Muscles",
+  "Muscles of lower limb",
+  "Right lower limb"
+ ],
+ "Superior glenohumeral ligament.l": [
+  "3: Joints",
+  "Glenohumeral ligaments",
+  "Left upper limb"
+ ],
+ "Superior glenohumeral ligament.r": [
+  "3: Joints",
+  "Glenohumeral ligaments",
+  "Right upper limb"
+ ],
+ "Superior pubic ligament": [
+  "3: Joints",
+  "Abdomen",
+  "Pubic symphysis"
+ ],
+ "Superior transverse scapular ligament.l": [
+  "3: Joints",
+  "Fibrous joints of pectoral girdle",
+  "Left upper limb"
+ ],
+ "Superior transverse scapular ligament.r": [
+  "3: Joints",
+  "Fibrous joints of pectoral girdle",
+  "Right upper limb"
+ ],
+ "Supraspinous ligament": [
+  "3: Joints",
+  "Abdomen",
+  "Back",
+  "Fibrous joints of vertebral column",
+  "Thorax",
+  "Trunk"
+ ],
+ "Suspensory ligament of eyeball.l": [
+  "7: Nervous system & Sense organs",
+  "Accessory visual structures",
+  "Eye*",
+  "Head",
+  "Sense organs"
+ ],
+ "Suspensory ligament of eyeball.r": [
+  "7: Nervous system & Sense organs",
+  "Accessory visual structures",
+  "Eye*",
+  "Head",
+  "Sense organs"
+ ],
+ "Talocalcaneal interosseous ligament.l": [
+  "3: Joints",
+  "Left foot",
+  "Left lower limb",
+  "Subtalar joint"
+ ],
+ "Talocalcaneal interosseous ligament.r": [
+  "3: Joints",
+  "Right foot",
+  "Right lower limb",
+  "Subtalar joint"
+ ],
+ "Talonavicular ligament.l": [
+  "3: Joints",
+  "Left foot",
+  "Left lower limb",
+  "Talocalcaneonavicular joint"
+ ],
+ "Talonavicular ligament.r": [
+  "3: Joints",
+  "Right foot",
+  "Right lower limb",
+  "Talocalcaneonavicular joint"
+ ],
+ "Tibiocalcaneal ligament.l": [
+  "3: Joints",
+  "Left foot",
+  "Left lower limb",
+  "Medial collateral ligament"
+ ],
+ "Tibiocalcaneal ligament.r": [
+  "3: Joints",
+  "Medial collateral ligament",
+  "Right foot",
+  "Right lower limb"
+ ],
+ "Tibionavicular ligament.l": [
+  "3: Joints",
+  "Left foot",
+  "Left lower limb",
+  "Medial collateral ligament"
+ ],
+ "Tibionavicular ligament.r": [
+  "3: Joints",
+  "Medial collateral ligament",
+  "Right foot",
+  "Right lower limb"
+ ],
+ "Transverse acetabular ligament.l": [
+  "3: Joints",
+  "Hip joint",
+  "Left lower limb"
+ ],
+ "Transverse acetabular ligament.r": [
+  "3: Joints",
+  "Hip joint",
+  "Right lower limb"
+ ],
+ "Transverse humeral ligament.l": [
+  "3: Joints",
+  "Glenohumeral joint",
+  "Left upper limb"
+ ],
+ "Transverse humeral ligament.r": [
+  "3: Joints",
+  "Glenohumeral joint",
+  "Right upper limb"
+ ],
+ "Transverse ligament of knee.l": [
+  "3: Joints",
+  "Knee joint",
+  "Left lower limb"
+ ],
+ "Transverse ligament of knee.r": [
+  "3: Joints",
+  "Knee joint",
+  "Right lower limb"
+ ],
+ "Transverse part of iliofemoral ligament.l": [
+  "3: Joints",
+  "Iliofemoral ligament",
+  "Left lower limb"
+ ],
+ "Transverse part of iliofemoral ligament.r": [
+  "3: Joints",
+  "Iliofemoral ligament",
+  "Right lower limb"
+ ],
+ "Transverse tibiofibular ligament.l": [
+  "3: Joints",
+  "Left foot",
+  "Left lower limb",
+  "Tibiofibular syndesmosis"
+ ],
+ "Transverse tibiofibular ligament.r": [
+  "3: Joints",
+  "Right foot",
+  "Right lower limb",
+  "Tibiofibular syndesmosis"
+ ],
+ "Trapeziotrapezoidal interosseous ligament.l": [
+  "3: Joints",
+  "Interosseus intercarpal ligaments",
+  "Left hand",
+  "Left upper limb"
+ ],
+ "Trapeziotrapezoidal interosseous ligament.r": [
+  "3: Joints",
+  "Interosseus intercarpal ligaments",
+  "Right hand",
+  "Right upper limb"
+ ],
+ "Trapezoid ligament.l": [
+  "3: Joints",
+  "Coracoclavicular ligament",
+  "Left upper limb"
+ ],
+ "Trapezoid ligament.r": [
+  "3: Joints",
+  "Coracoclavicular ligament",
+  "Right upper limb"
+ ],
+ "Trapezoideocapitate interosseous ligament.l": [
+  "3: Joints",
+  "Interosseus intercarpal ligaments",
+  "Left hand",
+  "Left upper limb"
+ ],
+ "Trapezoideocapitate interosseous ligament.r": [
+  "3: Joints",
+  "Interosseus intercarpal ligaments",
+  "Right hand",
+  "Right upper limb"
+ ],
+ "Triquetrocapitate ligament.l": [
+  "3: Joints",
+  "Left hand",
+  "Left upper limb",
+  "Palmar intercarpal ligaments"
+ ],
+ "Triquetrocapitate ligament.r": [
+  "3: Joints",
+  "Palmar intercarpal ligaments",
+  "Right hand",
+  "Right upper limb"
+ ],
+ "Triquetrohamate ligament.l": [
+  "3: Joints",
+  "Left hand",
+  "Left upper limb",
+  "Palmar intercarpal ligaments"
+ ],
+ "Triquetrohamate ligament.r": [
+  "3: Joints",
+  "Palmar intercarpal ligaments",
+  "Right hand",
+  "Right upper limb"
+ ],
+ "Tympanic membrane.l": [
+  "7: Nervous system & Sense organs",
+  "Head",
+  "Sense organs",
+  "Tympanic membrane"
+ ],
+ "Tympanic membrane.r": [
+  "7: Nervous system & Sense organs",
+  "Head",
+  "Sense organs",
+  "Tympanic membrane"
+ ],
+ "Ulnar collateral ligament of wrist joint.l": [
+  "3: Joints",
+  "Joints of hand",
+  "Left hand",
+  "Left upper limb",
+  "Radiocarpal joint"
+ ],
+ "Ulnar collateral ligament of wrist joint.r": [
+  "3: Joints",
+  "Joints of hand",
+  "Radiocarpal joint",
+  "Right hand",
+  "Right upper limb"
+ ],
+ "Ulnar collateral ligament.l": [
+  "3: Joints",
+  "Elbow joint",
+  "Left upper limb"
+ ],
+ "Ulnar collateral ligament.r": [
+  "3: Joints",
+  "Elbow joint",
+  "Right upper limb"
+ ],
+ "Ulnocapitate ligament.l": [
+  "3: Joints",
+  "Joints of hand",
+  "Left hand",
+  "Left upper limb",
+  "Palmar ulnocarpal ligament"
+ ],
+ "Ulnocapitate ligament.r": [
+  "3: Joints",
+  "Joints of hand",
+  "Palmar ulnocarpal ligament",
+  "Right hand",
+  "Right upper limb"
+ ],
+ "Ulnolunate ligament.l": [
+  "3: Joints",
+  "Joints of hand",
+  "Left hand",
+  "Left upper limb",
+  "Palmar ulnocarpal ligament"
+ ],
+ "Ulnolunate ligament.r": [
+  "3: Joints",
+  "Joints of hand",
+  "Palmar ulnocarpal ligament",
+  "Right hand",
+  "Right upper limb"
+ ],
+ "Ulnopisiform ligament": [
+  "3: Joints",
+  "Joints of hand",
+  "Palmar ulnocarpal ligament",
+  "Right hand",
+  "Right upper limb"
+ ],
+ "Ulnopisiform ligament.l": [
+  "3: Joints",
+  "Joints of hand",
+  "Left hand",
+  "Left upper limb",
+  "Palmar ulnocarpal ligament"
+ ],
+ "Ulnotriquetral ligament.l": [
+  "3: Joints",
+  "Joints of hand",
+  "Left hand",
+  "Left upper limb",
+  "Palmar ulnocarpal ligament"
+ ],
+ "Ulnotriquetral ligament.r": [
+  "3: Joints",
+  "Joints of hand",
+  "Palmar ulnocarpal ligament",
+  "Right hand",
+  "Right upper limb"
+ ]
+}

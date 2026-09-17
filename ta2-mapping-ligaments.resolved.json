@@ -1,0 +1,325 @@
+{
+ "schemaVersion": 1,
+ "generator": "src/scripts/generateLigamentSeed.ts",
+ "note": "Ligament id -> Z-Anatomy mesh names (both sides, all parts). Feeds renderLigamentPlates.py.",
+ "mapping": [
+  {
+   "id": "anterior-tibiofibular-ligament",
+   "name": "Anterior tibiofibular ligament",
+   "category": "ligament",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Anterior tibiofibular ligament.l",
+    "Anterior tibiofibular ligament.r"
+   ]
+  },
+  {
+   "id": "deep-transverse-metatarsal-ligament",
+   "name": "Deep transverse metatarsal ligament",
+   "category": "ligament",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Deep transverse metatarsal ligament.l",
+    "Deep transverse metatarsal ligament.r"
+   ]
+  },
+  {
+   "id": "plantar-metatarsophalangeal-ligaments",
+   "name": "Plantar metatarsophalangeal ligaments",
+   "category": "ligament",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Plantar metatarsophalangeal ligaments.l",
+    "Plantar metatarsophalangeal ligaments.r"
+   ]
+  },
+  {
+   "id": "interosseous-membrane-of-forearm",
+   "name": "Interosseous membrane of forearm",
+   "category": "ligament",
+   "region": "shoulder-arm",
+   "blenderObjects": [
+    "Interosseous membrane of forearm.l",
+    "Interosseous membrane of forearm.r"
+   ]
+  },
+  {
+   "id": "radial-collateral-ligament",
+   "name": "Radial collateral ligament",
+   "category": "ligament",
+   "region": "shoulder-arm",
+   "blenderObjects": [
+    "Radial collateral ligament.l",
+    "Radial collateral ligament.r"
+   ]
+  },
+  {
+   "id": "ulnar-collateral-ligament",
+   "name": "Ulnar collateral ligament",
+   "category": "ligament",
+   "region": "shoulder-arm",
+   "blenderObjects": [
+    "Ulnar collateral ligament.l",
+    "Ulnar collateral ligament.r"
+   ]
+  },
+  {
+   "id": "obturator-membrane",
+   "name": "Obturator membrane",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Obturator membrane.l",
+    "Obturator membrane.r"
+   ]
+  },
+  {
+   "id": "pubofemoral-ligament",
+   "name": "Pubofemoral ligament",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Pubofemoral ligament.l",
+    "Pubofemoral ligament.r"
+   ]
+  },
+  {
+   "id": "sacrotuberous-ligament",
+   "name": "Sacrotuberous ligament",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Sacrotuberous ligament.l",
+    "Sacrotuberous ligament.r"
+   ]
+  },
+  {
+   "id": "superior-pubic-ligament",
+   "name": "Superior pubic ligament",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Superior pubic ligament"
+   ]
+  },
+  {
+   "id": "anterior-cruciate-ligament",
+   "name": "Anterior cruciate ligament",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Anterior cruciate ligament.l",
+    "Anterior cruciate ligament.r"
+   ]
+  },
+  {
+   "id": "interosseous-membrane-of-leg",
+   "name": "Interosseous membrane of leg",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Interosseous membrane of leg.l",
+    "Interosseous membrane of leg.r"
+   ]
+  },
+  {
+   "id": "medial-meniscus",
+   "name": "Medial meniscus",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Medial meniscus.l",
+    "Medial meniscus.r"
+   ]
+  },
+  {
+   "id": "popliteofibular-ligament",
+   "name": "Popliteofibular ligament",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Popliteofibular ligament.l",
+    "Popliteofibular ligament.r"
+   ]
+  },
+  {
+   "id": "posterior-meniscotibial-ligament-lateral-meniscus",
+   "name": "Posterior meniscotibial ligament (Lateral meniscus)",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Posterior meniscotibial ligament (Lateral meniscus).l",
+    "Posterior meniscotibial ligament (Lateral meniscus).r"
+   ]
+  },
+  {
+   "id": "posterior-meniscotibial-ligament-medial-meniscus",
+   "name": "Posterior meniscotibial ligament (Medial meniscus)",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Posterior meniscotibial ligament (Medial meniscus).l",
+    "Posterior meniscotibial ligament (Medial meniscus).r"
+   ]
+  },
+  {
+   "id": "transverse-ligament-of-knee",
+   "name": "Transverse ligament of knee",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Transverse ligament of knee.l",
+    "Transverse ligament of knee.r"
+   ]
+  },
+  {
+   "id": "acromioclavicular-ligament",
+   "name": "Acromioclavicular ligament",
+   "category": "ligament",
+   "region": "shoulder-arm",
+   "blenderObjects": [
+    "Acromioclavicular ligament.l",
+    "Acromioclavicular ligament.r"
+   ]
+  },
+  {
+   "id": "anterior-sternoclavicular-ligament",
+   "name": "Anterior sternoclavicular ligament",
+   "category": "ligament",
+   "region": "shoulder-arm",
+   "blenderObjects": [
+    "Anterior sternoclavicular ligament.l",
+    "Anterior sternoclavicular ligament.r"
+   ]
+  },
+  {
+   "id": "coracohumeral-ligament",
+   "name": "Coracohumeral ligament",
+   "category": "ligament",
+   "region": "shoulder-arm",
+   "blenderObjects": [
+    "Coracohumeral ligament.l",
+    "Coracohumeral ligament.r"
+   ]
+  },
+  {
+   "id": "interclavicular-ligament",
+   "name": "Interclavicular ligament",
+   "category": "ligament",
+   "region": "shoulder-arm",
+   "blenderObjects": [
+    "Interclavicular ligament.l",
+    "Interclavicular ligament.r"
+   ]
+  },
+  {
+   "id": "transverse-humeral-ligament",
+   "name": "Transverse humeral ligament",
+   "category": "ligament",
+   "region": "shoulder-arm",
+   "blenderObjects": [
+    "Transverse humeral ligament.l",
+    "Transverse humeral ligament.r"
+   ]
+  },
+  {
+   "id": "nuchal-ligament",
+   "name": "Nuchal ligament",
+   "category": "ligament",
+   "region": "back-core",
+   "blenderObjects": [
+    "Nuchal ligament"
+   ]
+  },
+  {
+   "id": "external-intercostal-membrane",
+   "name": "External intercostal membrane",
+   "category": "ligament",
+   "region": "back-core",
+   "blenderObjects": [
+    "External intercostal membrane.l",
+    "External intercostal membrane.r"
+   ]
+  },
+  {
+   "id": "collateral-metacarpophalangeal-ligaments",
+   "name": "Collateral metacarpophalangeal ligaments",
+   "category": "ligament",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Collateral metacarpophalangeal ligaments.l",
+    "Collateral metacarpophalangeal ligaments.r"
+   ]
+  },
+  {
+   "id": "deep-transverse-metacarpal-ligament",
+   "name": "Deep transverse metacarpal ligament",
+   "category": "ligament",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Deep transverse metacarpal ligament.l",
+    "Deep transverse metacarpal ligament.r"
+   ]
+  },
+  {
+   "id": "palmar-interphalangeal-ligaments",
+   "name": "Palmar interphalangeal ligaments",
+   "category": "ligament",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Palmar interphalangeal ligaments.l",
+    "Palmar interphalangeal ligaments.r"
+   ]
+  },
+  {
+   "id": "palmar-radio-ulnar-ligament",
+   "name": "Palmar radio-ulnar ligament",
+   "category": "ligament",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Palmar radio-ulnar ligament.l",
+    "Palmar radio-ulnar ligament.r"
+   ]
+  },
+  {
+   "id": "ulnocapitate-ligament",
+   "name": "Ulnocapitate ligament",
+   "category": "ligament",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Ulnocapitate ligament.l",
+    "Ulnocapitate ligament.r"
+   ]
+  },
+  {
+   "id": "ulnolunate-ligament",
+   "name": "Ulnolunate ligament",
+   "category": "ligament",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Ulnolunate ligament.l",
+    "Ulnolunate ligament.r"
+   ]
+  },
+  {
+   "id": "ulnopisiform-ligament",
+   "name": "Ulnopisiform ligament",
+   "category": "ligament",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Ulnopisiform ligament",
+    "Ulnopisiform ligament.l"
+   ]
+  },
+  {
+   "id": "ulnotriquetral-ligament",
+   "name": "Ulnotriquetral ligament",
+   "category": "ligament",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Ulnotriquetral ligament.l",
+    "Ulnotriquetral ligament.r"
+   ]
+  }
+ ]
+}

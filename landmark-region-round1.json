@@ -1,0 +1,114 @@
+{
+  "_readme": [
+    "What happened in the first round of review, carried onto the page so each",
+    "region can be judged against the objection it drew rather than from scratch.",
+    "`verdict` and `note` are the reviewer's, verbatim. `changed` is mine."
+  ],
+
+  "femoral-head": {
+    "verdict": "bad", "note": "Region not a point — reference photo attached.",
+    "changed": "New, and it follows your standing rule that every 'head of' is a region. A head is the one landmark whose shape is known in advance, so it is FITTED rather than guessed: a least-squares sphere through the surface around the anchor returns a 23mm radius, which is a femoral head, and everything on that sphere is the region."
+  },
+  "head-of-fibula": {
+    "verdict": "bad", "note": "Region not a point.",
+    "changed": "Same fitted-sphere rule as the femoral head, per your standing instruction."
+  },
+  "head-of-radius": {
+    "verdict": "bad", "note": "Region not a point. New reference image supplied.",
+    "changed": "Same fitted-sphere rule, and now shown against the humerus and ulna so the elbow is recognisable. Compared against your labelled radius: the disc at the top, stopping above the radial neck."
+  },
+  "head-of-first-metacarpal": {
+    "verdict": null, "note": "Not reviewed — covered by your 'all heads are regions' rule.",
+    "changed": "Converted on your standing instruction rather than a specific review."
+  },
+  "head-of-first-metatarsal": {
+    "verdict": null, "note": "Not reviewed — covered by your 'all heads are regions' rule.",
+    "changed": "Converted on your standing instruction rather than a specific review."
+  },
+  "greater-trochanter": {
+    "verdict": "bad", "note": "Region not a point — anterior and posterior images attached; couldn't find a lateral view.",
+    "changed": "Grown from the anchor and held to the lateral aspect, matching the pink on your two-view plate. It first came out as a ring with a hole through the middle: the 'keep outward-facing surface' test measures away-from-the-seed, and for a patch grown around a point ON the surface that direction is noise at exactly the middle of the patch. It now asks whether a face is on the same side of the bone as the seed."
+  },
+  "lesser-trochanter": {
+    "verdict": null, "note": "Not reviewed — visible in the pelvis plates you attached.",
+    "changed": "Made a region for the same reason as the greater trochanter. Say if you would rather it stayed a point."
+  },
+  "greater-tubercle-humerus": {
+    "verdict": "bad", "note": "Region not a point — anterior and posterior views highlighted.",
+    "changed": "The green patch on your labelled humerus: the lateral shoulder of the proximal humerus, lateral to the intertubercular sulcus."
+  },
+  "lesser-tubercle-humerus": {
+    "verdict": null, "note": "Not reviewed — it is the red patch on the humerus plate you attached.",
+    "changed": "Made a region to match its neighbour on the same plate."
+  },
+  "anatomical-neck-humerus": {
+    "verdict": "bad", "note": "Anatomical neck of the humerus is a line, not a point. Image attached for this and some other bony landmarks of that region.",
+    "changed": "STILL THE WEAKEST — look hard at it. It is the BOUNDARY of the fitted head rather than a band at a fixed radius, because the neck is exactly where the articular surface stops. Narrowed since the last round using your TeachMeSeries plate, where it is a thin yellow collar. The posterior view reads as that collar; the anterior is patchier, because from the front the tubercles hide most of the margin. If it is not good enough, say so and I will leave it a point rather than ship a broken outline."
+  },
+  "acetabulum": {
+    "verdict": "bad", "note": "Region not a point.",
+    "changed": "The hip socket, grown on the lateral face of the hip bone."
+  },
+  "glenoid-cavity": {
+    "verdict": "bad", "note": "Line/region not a point — in an anterior view I think a line makes most sense.",
+    "changed": "Made a region (the socket itself). You suggested a line for the anterior view — I have not done that, because the two views would then grade differently for the same structure. Tell me if you would rather have the line and I will add an axis for it."
+  },
+  "ischial-tuberosity": {
+    "verdict": null, "note": "Not reviewed — labelled on two of the pelvis plates you attached.",
+    "changed": "Made a region: it is a broad weight-bearing surface, not a point."
+  },
+  "auricular-surface": {
+    "verdict": "bad", "note": "Not a point.",
+    "changed": "REDONE — you said all three were wrong, and they were: a ball gave a small round patch high on the ala. Your posterior plate shows a tall ear-shaped strip down the lateral border of the upper sacrum, one each side, so it is now the lateral face swept over the S1-S3 height and mirrored across the midline. WATCH FOR OCCLUSION: on the real skeleton the ilium covers most of the sacral auricular surface, which is why it is barely visible here — it may end up publishing very few views. NOTE also that the spec files this landmark under the SACRUM while its anchor is named for the ilium; this is the sacral face. Say if you meant the iliac one."
+  },
+  "coccygeal-cornua": {
+    "verdict": "bad", "note": "2 Coccygeal Cornua so should have 2 hit boxes, one each side.",
+    "changed": "The atlas names a single anchor, so the selection is now mirrored across the midline to mark both horns. Grading ORs the parts, so either horn counts as correct."
+  },
+
+  "femoral-neck": {
+    "verdict": "bad",
+    "note": "Posterior view looks good; the anterior view, the close-up and the lateral view appear incomplete, and the hitboxes look blotchy rather than clean.",
+    "changed": "Widened to the full collar your Kenhub plate shows, from the head's margin down to the intertrochanteric line. The blotchiness was the \"keep outward-facing faces\" test reading each triangle's own normal: on bumpy bone a scatter of triangles tilt past the threshold and drop out, punching holes through the middle and nibbling the edge. It now averages each normal with its neighbours' first, so the test asks which way the SURFACE faces."
+  },
+  "iliac-crest": {
+    "verdict": "bad",
+    "note": "Can we make a clean line that follows the shape of the iliac crest rather than a jagged geometric one?",
+    "changed": "This was the important one. Every boundary was a sawtooth because whole triangles were being selected from a 1,894-vertex bone. Each triangle is now cut twice before selecting — 16x the grain — and the edge is closed and de-speckled afterwards."
+  },
+  "intertrochanteric-line": {
+    "verdict": "bad",
+    "note": "The lateral and posterior views appear incomplete; the anterior view and close-up are blotchy and not clean lines.",
+    "changed": "Rebuilt as a RIDGE rather than a band. Running a 11mm band along the chord between the trochanter anchors gave a broad blob, because the feature crosses that straight line obliquely. It is now \"the most anterior line, confined to within 24mm of that chord\" — the same kind of rule that made the linea aspera the cleanest of the nine. Posterior publishes nothing because the feature genuinely is not visible from behind, exactly as your two-view plate shows."
+  },
+  "intertubercular-sulcus": {
+    "verdict": "bad",
+    "note": "",
+    "changed": "Was climbing onto the humeral head and running too far down. It now starts 8mm below the tubercle anchors — which sit above the tubercles themselves — and is shorter and narrower, matching the short orange bar in your photo."
+  },
+  "linea-aspera": {
+    "verdict": "bad",
+    "note": "",
+    "changed": "Narrowed from 9mm to 7.5mm and extended top and bottom to run from below the trochanters to above the condyles, per your photo. On the finer mesh it now reads as one continuous ridge rather than a blotchy band."
+  },
+  "median-sacral-crest": {
+    "verdict": "bad",
+    "note": "",
+    "changed": "Was patchy and wandered off the midline. More slices on a far finer mesh, and the run now stops above the sacral hiatus as your photo shows rather than continuing to the apex."
+  },
+  "tibial-crest": {
+    "verdict": "bad",
+    "note": "Anterior & posterior view attched in claude code",
+    "changed": "Was splitting into two strands. More slices plus the hole-closing pass make it one line, and it now runs from below the tuberosity to the lower third, following the curve in your photo."
+  },
+  "tibial-plateau": {
+    "verdict": "ok",
+    "note": "",
+    "changed": "Accepted last round. Unchanged except for the finer mesh, which cleans up its edge."
+  },
+  "vertebral-body": {
+    "verdict": "ok",
+    "note": "",
+    "changed": "Accepted last round. Unchanged except for the finer mesh."
+  }
+}

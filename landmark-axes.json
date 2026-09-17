@@ -1,0 +1,32 @@
+{
+  "_readme": [
+    "Hand-drawn spines for landmarks that are a LINE rather than a point or a",
+    "traced region. Normalised image coordinates, per published view, in the",
+    "same space as the hotspot polygons.",
+    "",
+    "These are authored, not derived, and they have to be: a landmark's `.j`",
+    "anchor carries two vertices or fewer (generateSkeletalMapping.ts), so",
+    "nothing in the atlas knows the spine of the scapula is a ridge a hand long",
+    "rather than a dot. These were dragged onto the rendered plates by hand in",
+    "the Landmark Target Review page and read back from it.",
+    "",
+    "BECAUSE THEY ARE 2D, THEY ARE TIED TO THE FRAMING they were drawn on. If a",
+    "landmark's camera or frame size changes, its axis has to be re-drawn — a",
+    "point landmark's framing is derived from its radius and its parent bone, so",
+    "changing either invalidates these."
+  ],
+
+  "spine-of-scapula": {
+    "lateral": [
+      [0.32689, 0.37295],
+      [0.53891, 0.21519],
+      [0.80924, 0.14086]
+    ],
+    "posterior": [
+      [0.18024, 0.39999],
+      [0.38343, 0.38648],
+      [0.58838, 0.28175],
+      [0.73150, 0.23783]
+    ]
+  }
+}

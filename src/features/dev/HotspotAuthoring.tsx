@@ -7,6 +7,7 @@ import {
   polygonsCentroid,
 } from '../anatomy-revision/lib/hotspot/polygonGeometry';
 import { HotspotOverlay } from '../anatomy-revision/components/LocateStructureSession/HotspotOverlay';
+import { useHotspotsReady } from '../anatomy-revision/hooks/useHotspotsReady';
 
 /** Distance in normalized units within which a click grabs an existing vertex. */
 const GRAB_RADIUS = 0.012;
@@ -17,7 +18,7 @@ interface Draft {
   polygons: number[][][];
 }
 
-export function HotspotAuthoring() {
+function HotspotAuthoringTool() {
   const [imageId, setImageId] = useState(ALL_IMAGES[0].id);
   const image = ALL_IMAGES.find((img) => img.id === imageId)!;
 
@@ -270,4 +271,15 @@ function buildExport(
     null,
     2,
   );
+}
+
+/**
+ * The polygons arrive separately from the images (seed/hotspots.ts), and this
+ * tool reads them straight off the seed, so it waits for them rather than
+ * opening on pictures with nothing drawn on them.
+ */
+export function HotspotAuthoring() {
+  const ready = useHotspotsReady();
+  if (!ready) return <p className="p-6 text-sm text-ink3">Loading hotspot data...</p>;
+  return <HotspotAuthoringTool />;
 }

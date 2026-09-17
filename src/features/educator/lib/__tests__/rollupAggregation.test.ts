@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import type { AnatomyStructure } from '../../../anatomy-revision/types/structure';
+import { emptyCategoryBreakdown, type AnatomyStructure } from '../../../anatomy-revision/types/structure';
 import type { RevisionSessionSummary, UserAttempt } from '../../../anatomy-revision/types/attempt';
 import type { DayTally } from '../../../anatomy-revision/lib/accuracyTrend';
 import {
@@ -233,12 +233,7 @@ describe('sessionMetricsFromSummaries', () => {
       questionTypes: [],
       totalQuestions: 0,
       correctCount: 0,
-      breakdownByCategory: {
-        muscle: { total: 0, correct: 0 },
-        bone: { total: 0, correct: 0 },
-        landmark: { total: 0, correct: 0 },
-        joint: { total: 0, correct: 0 },
-      },
+      breakdownByCategory: emptyCategoryBreakdown(),
     breakdownByRegion: {},
     missedStructureIds: [],
   });

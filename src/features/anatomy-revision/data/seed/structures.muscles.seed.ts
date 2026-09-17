@@ -1,7 +1,7 @@
 import musclesRaw from '../source/muscles.raw.json';
 import ta2Raw from '../source/ta2-mapping.raw.json';
 import type { MuscleStructure, NerveRef } from '../../types/structure';
-import type { Region, SubRegion } from '../../types/region';
+import type { Area, Region, SubRegion } from '../../types/region';
 
 /**
  * All 122 muscles, generated from Downloads/muscles.json + ta2-mapping.json
@@ -77,6 +77,30 @@ function inferSubregion(region: string, groups: string[]): SubRegion | undefined
     default:
       return undefined;
   }
+}
+
+/**
+ * Which spine area(s) each trunk muscle group revises under (CR-032). The muscle
+ * source data carries no vertebral level and inferSubregion above only knows
+ * neck/torso/spine, so this map is the whole statement of trunk-muscle policy in one
+ * place. Groups that run the length of the column (erector-spinae, transversospinales,
+ * segmental) are deliberately absent: they fall through to the 'spine' default in
+ * AREAS_BY_SUBREGION, which is all three spine areas — an erector spinae question
+ * belongs in a cervical, thoracic and lumbar session alike.
+ */
+const TRUNK_AREAS_BY_GROUP: Record<string, Area[]> = {
+  neck: ['cervical-spine'], // sternocleidomastoid, scalenes — same as subregion 'neck' would derive
+  'vertebral-column': ['cervical-spine'], // splenius capitis / cervicis
+  'vertebral-column-flexors': ['cervical-spine'], // longus colli / capitis
+  breathing: ['thoracic-spine'], // diaphragm, intercostals
+  core: ['lumbar-spine'], // rectus abdominis, obliques, transversus abdominis, quadratus lumborum
+};
+
+/** Explicit areas for a trunk muscle, or undefined to derive from subregion like everything else. */
+function trunkAreas(region: string, groups: string[]): Area[] | undefined {
+  if (region !== 'back-core') return undefined;
+  const group = groups.find((g) => TRUNK_AREAS_BY_GROUP[g]);
+  return group ? TRUNK_AREAS_BY_GROUP[group] : undefined;
 }
 
 /**
@@ -449,6 +473,7 @@ export const MUSCLE_STRUCTURES: MuscleStructure[] = RAW_MUSCLES.map((m): MuscleS
     latin: m.latin,
     region,
     subregion: inferSubregion(m.region, m.groups),
+    areas: trunkAreas(m.region, m.groups),
     groups: m.groups,
     partOf: m.partOf,
     origin: m.origin,
