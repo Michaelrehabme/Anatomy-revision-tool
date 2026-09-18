@@ -2139,6 +2139,25 @@ export const CHANGE_REQUESTS_SEED: ChangeRequest[] = [
           'registration has a threshold you will not hit soon, but selling digital services to EU consumers means EU ' +
           'VAT from the first sale, with no threshold at all.',
         walkthrough:
+          'DECIDED 18 September 2026: PADDLE, a merchant of record.\n' +
+          '\n' +
+          'Stripe Tax calculates tax but does not become the seller, so the EU obligation - which has no\n' +
+          'threshold and starts at the first sale - would stay with a sole trader personally.\n' +
+          '\n' +
+          'Paddle over Lemon Squeezy on two grounds. The first revenue on this roadmap is institutional,\n' +
+          'not a student card subscription: invoices, purchase orders and VAT-registered buyers, which\n' +
+          'Paddle handles and Lemon Squeezy, built around consumer checkout, does not. And Lemon Squeezy\n' +
+          'is a Stripe subsidiary, so the thing sitting between this business and every pound it earns\n' +
+          'would have a roadmap owned by a company with competing payments products.\n' +
+          '\n' +
+          'TWO ROUTES, NOT ONE. Apple is merchant of record for iOS in-app purchases, so a store launch\n' +
+          'adds a second source of entitlement rather than replacing the first. The entitlement layer\n' +
+          'must treat HOW someone paid as separate from WHAT they are entitled to.\n' +
+          '\n' +
+          'BLOCKED ON ITEM 12. Paddle reviews the site before approving an account and expects a refund\n' +
+          'and cancellation policy beside the terms and privacy pages. There is not one. Publish it first\n' +
+          'or the application stalls - item 12 gates this step rather than following it.\n' +
+          '\n' +
           '1. Decide whether you will sell outside the UK at launch. If not, this is simple — but write the decision\n' +
           '   down rather than leaving it implied.\n' +
           '2. If yes, choose between a merchant of record (Paddle, Lemon Squeezy), which becomes the seller and owns\n' +

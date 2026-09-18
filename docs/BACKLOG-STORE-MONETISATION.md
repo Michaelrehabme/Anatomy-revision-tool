@@ -983,6 +983,14 @@ Not mentioned above at all. UK VAT registration has a threshold this product wil
 
 The practical choice is between a merchant of record (Paddle, Lemon Squeezy), which becomes the seller of record and owns the VAT registration and remittance, and Stripe plus Stripe Tax, where you stay the seller and register for non-union OSS yourself. For a one-person business at this revenue the merchant of record is almost certainly right. Either way, **this decides what CR-027 integrates against**, so it has to be settled before that work starts, not after. Apple is merchant of record for iOS in-app purchases regardless.
 
+**DECIDED 18 September 2026: Paddle.** A merchant of record rather than Stripe plus Stripe Tax, because Stripe Tax calculates the tax but does not become the seller — the obligation would stay with a sole trader personally, for the sake of a handful of EU subscriptions. Paddle rather than Lemon Squeezy for two reasons. The first revenue on this roadmap is institutional, not a student card subscription, which means invoices and VAT-registered buyers, and Paddle handles B2B invoicing where Lemon Squeezy is built around consumer checkout. The second is independence: Lemon Squeezy is a Stripe subsidiary, so its roadmap belongs to a company with competing payments products, and the thing sitting between this business and every pound it earns is worth keeping at arm's length.
+
+**Two payment routes, not one.** Apple mandates in-app purchase for digital subscriptions consumed in an iOS app and is merchant of record there, so a store launch adds a second source of entitlement rather than replacing the first. CR-027's entitlement layer must therefore treat *how someone paid* as a separate concern from *what they are entitled to*. Designing it any other way means rebuilding it the day the app ships to the App Store.
+
+**The decision is deliberately reversible.** A one-person business should not be welded to a payments company: the entitlement layer stores a provider name and an external subscription id, and nothing above it knows which provider issued them.
+
+**A dependency worth knowing before you apply.** Paddle reviews the website before approving an account, and expects to find pricing, terms, a privacy policy, contact details and a **refund and cancellation policy**. The first four exist; the fifth does not, and is separately required by the Consumer Contracts Regulations 2013 — which is CR-033 item 12. That item is not merely adjacent to this one, it gates it: the Paddle application cannot complete until the policy is published.
+
 ### The muscle dataset's provenance
 
 The most under-examined risk in this file, and the one that changed most on investigation. `CR-025`'s current-state section notes that muscle content derives from "ALL_Muscles_of_the_body.pdf" by Vinnie Maynard, Salford, and `AttributionsPage.tsx` credits it publicly — but neither treats it as a commercial-use question.
