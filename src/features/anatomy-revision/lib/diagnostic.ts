@@ -324,3 +324,76 @@ export function summariseDiagnostics(results: DiagnosticResult[]): DiagnosticSum
     reportable: gains.length >= MIN_PAIRED,
   };
 }
+
+/**
+ * Turns a spec into the actual questions, deterministically.
+ *
+ * Generated over the WHOLE dataset and then filtered, never over the fifteen
+ * structures alone: multiple-choice distractors are drawn from the pool the
+ * generator is given, and a pool of fifteen produces questions with one
+ * plausible answer and three absurd ones. That was not hypothetical — the
+ * first export of this for the preview produced a question with a single
+ * choice.
+ *
+ * Prompt kinds are spread rather than taken first-come, because the generator
+ * offers them in a stable order and the result was otherwise "what nerve
+ * innervates X" fifteen times.
+ *
+ * `replayIds` re-asks exactly what a baseline asked. Passing it makes the
+ * function a lookup rather than a selection, which is what a follow-up needs.
+ */
+export function buildDiagnosticQuestions<
+  Q extends { id: string; structureId: string; promptKind: string; choices?: string[] },
+>(
+  spec: DiagnosticSpec,
+  allQuestions: Q[],
+  replayIds?: string[],
+): Q[] {
+  if (replayIds && replayIds.length > 0) {
+    const byId = new Map(allQuestions.map((q) => [q.id, q]));
+    return replayIds.map((id) => byId.get(id)).filter((q): q is Q => !!q);
+  }
+
+  const wanted = new Set(spec.items.map((i) => i.structureId));
+  const byStructure = new Map<string, Q[]>();
+  for (const q of allQuestions) {
+    if (!wanted.has(q.structureId)) continue;
+    // Four choices or it is not a fair multiple-choice question.
+    if ((q.choices?.length ?? 0) < 4) continue;
+    const list = byStructure.get(q.structureId);
+    if (list) list.push(q);
+    else byStructure.set(q.structureId, [q]);
+  }
+
+  const usedKind = new Map<string, number>();
+  const picked: Q[] = [];
+  for (const item of spec.items) {
+    const options = byStructure.get(item.structureId);
+    if (!options || options.length === 0) continue;
+    // Least-used prompt kind first; ties break on id so this cannot depend on
+    // the order the generator happened to emit.
+    const best = [...options].sort(
+      (a, b) =>
+        (usedKind.get(a.promptKind) ?? 0) - (usedKind.get(b.promptKind) ?? 0) ||
+        a.id.localeCompare(b.id),
+    )[0];
+    usedKind.set(best.promptKind, (usedKind.get(best.promptKind) ?? 0) + 1);
+    picked.push(best);
+  }
+  return picked;
+}
+
+/**
+ * The display order for one sitting: shuffled, and deliberately NOT derived
+ * from the cohort. See rule 3 — fixing the items is what makes two scores
+ * comparable, while a fixed order would only help a student remember where a
+ * question was.
+ */
+export function shuffleForSitting<T>(items: T[], random: () => number = Math.random): T[] {
+  const out = [...items];
+  for (let i = out.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(random() * (i + 1));
+    [out[i], out[j]] = [out[j], out[i]];
+  }
+  return out;
+}

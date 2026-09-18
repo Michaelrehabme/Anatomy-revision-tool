@@ -11,6 +11,7 @@ import {
   type DiagnosticResult,
 } from '../diagnostic';
 import { ALL_STRUCTURES } from '../../data/seed';
+import { buildDiagnosticQuestions, shuffleForSitting } from '../diagnostic';
 
 /**
  * Two properties carry the whole design: the same cohort must get the same
@@ -185,5 +186,64 @@ describe('summariseDiagnostics', () => {
     expect(out.paired).toBe(0);
     expect(out.meanGainPoints).toBeNull();
     expect(out.reportable).toBe(false);
+  });
+});
+
+describe('buildDiagnosticQuestions', () => {
+  const spec = { cohortId: 'c1', version: DIAGNOSTIC_VERSION, items: [
+    { structureId: 's1', area: 'shoulder' as const, category: 'muscle' as const },
+    { structureId: 's2', area: 'hip' as const, category: 'muscle' as const },
+  ] };
+
+  const pool = [
+    { id: 'q1a', structureId: 's1', promptKind: 'nerve', choices: ['a', 'b', 'c', 'd'] },
+    { id: 'q1b', structureId: 's1', promptKind: 'identify', choices: ['a', 'b', 'c', 'd'] },
+    { id: 'q2a', structureId: 's2', promptKind: 'nerve', choices: ['a', 'b', 'c', 'd'] },
+    { id: 'q2b', structureId: 's2', promptKind: 'origin', choices: ['a', 'b', 'c', 'd'] },
+    { id: 'qX', structureId: 'not-wanted', promptKind: 'nerve', choices: ['a', 'b', 'c', 'd'] },
+  ];
+
+  it('picks one question per item and ignores the rest of the dataset', () => {
+    const out = buildDiagnosticQuestions(spec, pool);
+    expect(out).toHaveLength(2);
+    expect(out.map((q) => q.structureId)).toEqual(['s1', 's2']);
+  });
+
+  it('spreads prompt kinds rather than asking the same thing every time', () => {
+    const kinds = buildDiagnosticQuestions(spec, pool).map((q) => q.promptKind);
+    expect(new Set(kinds).size).toBe(2);
+  });
+
+  it('drops a question with too few choices to be fair', () => {
+    const thin = [{ id: 'q1c', structureId: 's1', promptKind: 'nerve', choices: ['only'] }];
+    expect(buildDiagnosticQuestions(spec, thin)).toEqual([]);
+  });
+
+  it('is deterministic', () => {
+    expect(buildDiagnosticQuestions(spec, pool).map((q) => q.id))
+      .toEqual(buildDiagnosticQuestions(spec, pool).map((q) => q.id));
+  });
+
+  it('replays exactly what a baseline asked, in that order', () => {
+    const out = buildDiagnosticQuestions(spec, pool, ['q2b', 'q1a']);
+    expect(out.map((q) => q.id)).toEqual(['q2b', 'q1a']);
+  });
+
+  it('skips a replayed question the dataset no longer has, rather than throwing', () => {
+    const out = buildDiagnosticQuestions(spec, pool, ['q1a', 'gone']);
+    expect(out.map((q) => q.id)).toEqual(['q1a']);
+  });
+});
+
+describe('shuffleForSitting', () => {
+  it('keeps every item', () => {
+    const out = shuffleForSitting([1, 2, 3, 4, 5], () => 0.5);
+    expect([...out].sort()).toEqual([1, 2, 3, 4, 5]);
+  });
+
+  it('does not mutate its input', () => {
+    const input = [1, 2, 3];
+    shuffleForSitting(input, () => 0.9);
+    expect(input).toEqual([1, 2, 3]);
   });
 });

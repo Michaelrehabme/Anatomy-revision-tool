@@ -12,3 +12,13 @@ import { attachHotspots } from '../features/anatomy-revision/data/seed/hotspots'
  * the assertion that matters — that the shipped polygons are sane — honest.
  */
 await attachHotspots();
+
+/**
+ * jsdom has no layout, so window.scrollTo is unimplemented and every component
+ * that scrolls to the top on a step change logs a red "Not implemented" error
+ * through the virtual console. It is noise, not a failure, and noise in a test
+ * run is how a real failure goes unread. Stubbed rather than avoided in the
+ * components, because scrolling to the top of a new screen is correct
+ * behaviour that should not be bent around the test environment.
+ */
+window.scrollTo = () => {};
