@@ -15,6 +15,7 @@
     "validate-content": "tsx src/scripts/validateContent.ts",
     "admin:set-claim": "tsx scripts/setAdmin.ts",
     "admin:seed-changes": "tsx scripts/seedChangeRequests.ts",
+    "admin:delete-dormant": "tsx scripts/deleteDormantAccounts.ts",
     "deploy:check": "node scripts/deployCheck.mjs",
     "deploy": "npm run deploy:check && npm run build && netlify deploy --prod --dir=dist",
     "deploy:rules": "firebase deploy --only firestore:rules"

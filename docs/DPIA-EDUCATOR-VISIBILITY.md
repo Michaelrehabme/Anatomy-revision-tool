@@ -74,8 +74,8 @@ Planned: the first pilot's module leader and their institution's information gov
 |---|---|---|
 | A student's difficulty with a topic is visible to the person marking them | Certain — it is the feature | Low; this is ordinary teaching information |
 | A student feels monitored and stops using the tool honestly | Possible | Moderate; corrupts the data and the learning |
-| An educator sees more than the student was told | Low after §7 R1 | High; it would make the privacy policy false |
-| Data persists after a student expects it gone | Moderate — see §7 R2 | Moderate |
+| An educator sees more than the student was told | Low after R1 below | High; it would make the privacy policy false |
+| Data persists after a student expects it gone | Low after R2 below | Moderate |
 
 The second row matters more than it looks. A student who believes every wrong answer is watched will stop guessing, and guessing is how spaced repetition works. Restricting what the educator sees is therefore not only a privacy control; it protects the integrity of the thing being measured.
 
@@ -110,15 +110,17 @@ The published privacy policy says *"not the questions you got wrong one by one, 
 
 **Residual risk:** low. Worth noting that only writing this assessment surfaced it, which is an argument for the assessment.
 
-### R2 — The stated retention period is not enforced — **OPEN**
+### R2 — The stated retention period was not enforced — **CLOSED 18 September 2026**
 
-The privacy policy commits to deleting account and revision data after **24 months of inactivity**. No scheduled job does this. Deletion on request is implemented and complete; automatic expiry is not.
+The privacy policy has always committed to deleting account and revision data after **24 months of inactivity**, and until today nothing did it. Deletion on request was implemented and complete; automatic expiry did not exist. Nobody had been affected — the product is not old enough for any account to have been dormant that long — so this was a gap found before it could bite rather than a live breach. We found it ourselves, while writing this assessment.
 
-Nobody has yet been affected — the product is not old enough for any account to have been dormant for 24 months — so this is a gap to close before it can bite rather than a live breach. It is still a commitment made in a published policy and not kept in code, which is exactly the kind of thing a DPO should find, and we would rather find it ourselves.
+**What was done.** `scripts/deleteDormantAccounts.ts` removes every account whose last recorded activity predates the cutoff, and removes exactly what a student's own "delete my account" removes: the educator-visible summary first, then every answer event, every subcollection under the user, the profile document, any role record, and finally the authentication record. It is a dry run unless given `--apply`, because it is the only script here that destroys student data.
 
-**Action:** implement scheduled deletion of accounts dormant for 24 months, or amend the policy if a different period is the right one. **Owner:** Michael Neary. **Before:** the first pilot cohort completes its first term.
+**Why a script and not a scheduled function.** A timed Cloud Function would be tidier and needs the Blaze plan and a billing account. Deletion that runs a few days late is not a breach; a billing commitment before the first paying user is a real cost. It is run monthly by the operator, and moves to a Function when there is revenue.
 
-**Interim position:** dormant data is deleted on request, immediately, by the student.
+**The period now exists in one place.** `src/features/anatomy-revision/data/retention.ts` holds the number; the privacy policy renders it and the script imports it. The failure being closed here was precisely that a published promise and the codebase had no connection, so the fix is not only the script but the fact that changing the period can no longer leave a stale promise behind.
+
+**Residual risk:** low, and now dependent on the operator running a monthly script rather than on nothing at all.
 
 ### R3 — Counters are written by the student's own device — **ACCEPTED**
 
@@ -147,7 +149,7 @@ Consent given once in week one governs a whole term. The account screen shows th
 | Residual risk after controls | **Low** |
 | Proportionate to the purpose | Yes |
 | ICO prior consultation required | No — no high residual risk remains |
-| Approved to proceed to pilot | Yes, subject to R2 being closed within the term |
+| Approved to proceed to pilot | Yes — both findings from this assessment are closed |
 
 **Signed:** _______________________  Michael Neary, Neary's Sport Rehab.  Date: ____________
 

@@ -106,12 +106,14 @@ We will give notice of any change of sub-processor.
 | | |
 |---|---|
 | While active | Account and revision data is kept while the account is in use |
-| Inactivity | **Stated policy: deleted after 24 months of inactivity.** See the honest note below |
+| Inactivity | Deleted after **24 months of inactivity**, enforced monthly |
 | On request | Immediate, self-service, complete |
 
 **Self-service deletion works and is thorough.** "Delete my account" on the account screen removes the user profile, every subcollection under it, every answer event, the class summary an educator sees, and any role record — see `src/features/anatomy-revision/data/accountLifecycle.ts`. There is no waiting period and no need to ask us.
 
-**An honest gap.** The 24-month inactivity rule is **stated in the published privacy policy but is not yet automatically enforced** — no scheduled job deletes dormant accounts today. We identified this while preparing this pack rather than waiting to be asked. It is recorded as an open risk with an owner and a date in `DPIA-EDUCATOR-VISIBILITY.md` §7. Until it is implemented, dormant data is deleted on request rather than automatically, and no pilot will run past that date without it.
+**How inactivity deletion is enforced.** `scripts/deleteDormantAccounts.ts`, run monthly, removes every account whose last recorded activity predates the cutoff — taking exactly what a student's own deletion takes. The retention period lives in one module that both the privacy policy and the script read, so the published promise and the code that keeps it cannot drift apart.
+
+This was a genuine gap until 18 September 2026: the policy made the commitment and nothing implemented it. We found it while preparing this pack, recorded it as risk R2 in the DPIA, and closed it the same day. It is described here rather than quietly fixed because a supplier who only tells you about the problems you could have found yourself is not worth much.
 
 ---
 

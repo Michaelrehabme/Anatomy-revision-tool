@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { LegalLayout, legalHeading, legalProse } from './LegalLayout';
+import { INACTIVITY_LABEL } from '../anatomy-revision/data/retention';
 
 /**
  * /privacy — CR-025 item 1.
@@ -148,7 +149,7 @@ export function PrivacyPage() {
       <Section title="How long it is kept">
         <p>
           Account and revision data is kept while your account is active, and deleted after{' '}
-          <strong style={{ color: 'var(--ink)' }}>24 months of inactivity</strong>. That is deliberately long enough to
+          <strong style={{ color: 'var(--ink)' }}>{INACTIVITY_LABEL}</strong>. That is deliberately long enough to
           cover a placement year or a repeated year without losing your history.
         </p>
         <p>
