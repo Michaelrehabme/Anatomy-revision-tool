@@ -52,6 +52,7 @@ const USER_SUBCOLLECTIONS = [
   'achievements',
   'gamification',
   'questionExposure',
+  'diagnostics',
 ] as const;
 
 /** Firestore caps a batch at 500 writes; leave room rather than sail close. */

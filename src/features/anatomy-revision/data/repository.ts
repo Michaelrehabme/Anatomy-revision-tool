@@ -3,6 +3,7 @@ import type { AnatomyImageAsset } from '../types/image';
 import type { UserAttempt, StructureMastery, FactMastery, RevisionSessionSummary } from '../types/attempt';
 import type { StructureFilter } from '../lib/indexes';
 import type { AchievementDoc } from '../lib/achievements';
+import type { DiagnosticResult } from '../lib/diagnostic';
 import { type StreakFreezeState, INITIAL_STREAK_FREEZE_STATE } from '../lib/streakFreeze';
 import type { QuestionType } from '../types/question';
 
@@ -90,6 +91,22 @@ export interface AnatomyRepository {
 
   saveSessionSummary(summary: RevisionSessionSummary): Promise<void>;
   listSessionSummaries(userId: string, limit?: number): Promise<RevisionSessionSummary[]>;
+
+  /**
+   * Baseline and follow-up sittings (lib/diagnostic.ts).
+   *
+   * Stored under the STUDENT, not the cohort, and that placement is the
+   * feature. The sitting tells a student their course leader never sees this
+   * score, only whether the class as a whole moved, and firestore.rules is
+   * what keeps that: a cohort owner has no read on a student's subcollections.
+   * An admin does, which is how the February comparison is computed.
+   *
+   * One document per sitting rather than one per phase, so a retake never
+   * overwrites the first baseline -- pairDiagnostics measures from the
+   * earliest, and it can only do that if the earliest still exists.
+   */
+  saveDiagnosticResult(result: DiagnosticResult): Promise<void>;
+  listDiagnosticResults(userId: string): Promise<DiagnosticResult[]>;
 
   /** Never null — an unset profile reads back as INITIAL_GAMIFICATION_PROFILE. */
   getGamificationProfile(userId: string): Promise<GamificationProfile>;

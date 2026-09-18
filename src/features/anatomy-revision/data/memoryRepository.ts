@@ -1,4 +1,5 @@
 import type { AnatomyRepository, AttemptFilter, ImageAssetFilter, GamificationProfile } from './repository';
+import type { DiagnosticResult } from '../lib/diagnostic';
 import { INITIAL_GAMIFICATION_PROFILE } from './repository';
 import type { UserAttempt, StructureMastery, FactMastery, RevisionSessionSummary } from '../types/attempt';
 import type { StructureFilter } from '../lib/indexes';
@@ -18,6 +19,7 @@ export function createMemoryRepository(): AnatomyRepository {
   const masteryByKey = new Map<string, StructureMastery>();
   const factMasteryByKey = new Map<string, FactMastery>();
   const sessions: RevisionSessionSummary[] = [];
+  const diagnostics: DiagnosticResult[] = [];
   const gamificationByUser = new Map<string, GamificationProfile>();
   const achievementsByUser = new Map<string, Map<string, AchievementDoc>>();
 
@@ -100,6 +102,16 @@ export function createMemoryRepository(): AnatomyRepository {
 
     async upsertFactMastery(fact: FactMastery) {
       factMasteryByKey.set(factKey(fact.userId, fact.structureId, fact.promptKind), fact);
+    },
+
+    async saveDiagnosticResult(result: DiagnosticResult) {
+      diagnostics.push(result);
+    },
+
+    async listDiagnosticResults(userId: string) {
+      return diagnostics
+        .filter((r) => r.userId === userId)
+        .sort((a, b) => a.takenAt.localeCompare(b.takenAt));
     },
 
     async saveSessionSummary(summary: RevisionSessionSummary) {

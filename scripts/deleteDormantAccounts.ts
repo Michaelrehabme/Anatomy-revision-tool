@@ -40,6 +40,7 @@ const USER_SUBCOLLECTIONS = [
   'achievements',
   'gamification',
   'questionExposure',
+  'diagnostics',
 ];
 
 const APPLY = process.argv.includes('--apply');

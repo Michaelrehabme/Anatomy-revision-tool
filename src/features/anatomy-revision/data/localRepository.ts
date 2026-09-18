@@ -1,4 +1,5 @@
 import type { AnatomyRepository, AttemptFilter, ImageAssetFilter, GamificationProfile } from './repository';
+import type { DiagnosticResult } from '../lib/diagnostic';
 import { INITIAL_GAMIFICATION_PROFILE } from './repository';
 import type { UserAttempt, StructureMastery, FactMastery, RevisionSessionSummary } from '../types/attempt';
 import type { StructureFilter } from '../lib/indexes';
@@ -16,6 +17,7 @@ const EXPOSURE_KEY = `${STORAGE_PREFIX}questionExposure`;
 const MASTERY_KEY = `${STORAGE_PREFIX}mastery`;
 const FACT_MASTERY_KEY = `${STORAGE_PREFIX}factMastery`;
 const SESSIONS_KEY = `${STORAGE_PREFIX}sessions`;
+const DIAGNOSTICS_KEY = `${STORAGE_PREFIX}diagnostics`;
 const GAMIFICATION_KEY = `${STORAGE_PREFIX}gamification`;
 const ACHIEVEMENTS_KEY = `${STORAGE_PREFIX}achievements`;
 
@@ -138,6 +140,18 @@ export function createLocalRepository(): AnatomyRepository {
       const all = readJson<Record<string, FactMastery>>(FACT_MASTERY_KEY, {});
       all[factKey(fact.userId, fact.structureId, fact.promptKind)] = fact;
       writeJson(FACT_MASTERY_KEY, all);
+    },
+
+    async saveDiagnosticResult(result: DiagnosticResult) {
+      const all = readJson<DiagnosticResult[]>(DIAGNOSTICS_KEY, []);
+      all.push(result);
+      writeJson(DIAGNOSTICS_KEY, all);
+    },
+
+    async listDiagnosticResults(userId: string) {
+      return readJson<DiagnosticResult[]>(DIAGNOSTICS_KEY, [])
+        .filter((r) => r.userId === userId)
+        .sort((a, b) => a.takenAt.localeCompare(b.takenAt));
     },
 
     async saveSessionSummary(summary: RevisionSessionSummary) {

@@ -19,6 +19,7 @@ import { filterStructures } from '../lib/indexes';
 import { ALL_STRUCTURES, ALL_IMAGES } from './seed';
 import { attachHotspots } from './seed/hotspots';
 import { rollUpAttemptDetached } from '../../educator/data/cohortRollups';
+import type { DiagnosticResult } from '../lib/diagnostic';
 import { getDb, getFirebaseAuth } from './firebase';
 import type { AchievementDoc } from '../lib/achievements';
 import { factMasteryKey } from '../lib/factMastery';
@@ -199,6 +200,20 @@ export async function createFirestoreRepository(): Promise<AnatomyRepository> {
         doc(db, 'users', fact.userId, 'factMastery', factMasteryKey(fact.structureId, fact.promptKind)),
         omitUndefined(fact),
       );
+    },
+
+    async saveDiagnosticResult(result: DiagnosticResult) {
+      // Keyed by phase and timestamp: sortable, unique per sitting, and
+      // readable in the console without a lookup.
+      const id = `${result.phase}-${result.takenAt}`;
+      await setDoc(doc(db, 'users', result.userId, 'diagnostics', id), omitUndefined(result));
+    },
+
+    async listDiagnosticResults(userId: string) {
+      const snapshot = await getDocs(
+        query(collection(db, 'users', userId, 'diagnostics'), orderBy('takenAt', 'asc')),
+      );
+      return snapshot.docs.map((d) => d.data() as DiagnosticResult);
     },
 
     async saveSessionSummary(summary: RevisionSessionSummary) {
