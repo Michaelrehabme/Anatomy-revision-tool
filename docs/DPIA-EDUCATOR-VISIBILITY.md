@@ -149,6 +149,10 @@ Consent given once in week one governs a whole term. The account screen shows th
 | ICO prior consultation required | No — no high residual risk remains |
 | Approved to proceed to pilot | Yes, subject to R2 being closed within the term |
 
-**Signed:** Michael Neary, 18 September 2026.
+**Signed:** _______________________  Michael Neary, Neary's Sport Rehab.  Date: ____________
+
+> Unsigned pending the assessment owner's own review. A DPIA signature is an accountability
+> statement under Article 35, not a formality, and it is not one anybody can give on another
+> person's behalf.
 
 **Next review:** end of the first pilot term, on any change to educator-visible data, or on any change to `firestore.rules` affecting who may read a student's record.

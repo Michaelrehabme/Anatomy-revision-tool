@@ -141,15 +141,20 @@ Rectification, restriction and objection are handled by email to michael@rehabme
 **Organisational.**
 
 - Single operator; access to production is limited to that one account.
-- Service account credentials are held outside the repository.
-- Changes are version-controlled and reviewed, with a test suite (732 tests) run before release.
+- No credential, key or secret is held in the repository, and none is present in its history.
+- Changes are version-controlled. A test suite of 732 tests and a content validator cover the
+  application, and are run before release **by the operator** — we have no continuous integration
+  server, so this is a working practice rather than an automated gate, and we would rather say so
+  than let the figure imply otherwise.
 - Deployment refuses to publish a working tree that does not correspond to a commit on the shared remote.
 
 ---
 
 ## 9. Breach notification
 
-Any personal data breach will be reported to the ICO within 72 hours of becoming aware of it where the threshold is met, and to affected institutions **without undue delay and in any case within 48 hours**, with what is known at the time rather than waiting for a complete picture.
+Any personal data breach will be reported to the ICO within 72 hours of becoming aware of it where the threshold is met, and to affected institutions **without undue delay**, with what is known at the time rather than waiting for a complete picture.
+
+We have not committed to a fixed number of hours for notifying institutions, because we would rather meet a duty we can keep at any hour of any week than quote a figure that sounds better. If your own policy requires a specific period, say so and we will agree one in the data sharing agreement.
 
 ---
 
