@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '../../context/AuthProvider';
+import { useNavigate } from 'react-router-dom';
+import { DiagnosticPrompt } from '../Diagnostic/DiagnosticPrompt';
 import type { CohortInvite } from '../../../educator/data/invitesRepository';
 import type { Cohort } from '../../../educator/types/cohort';
 
@@ -50,6 +52,7 @@ interface CohortMembershipProps {
  */
 export function CohortMembership({ uid, compact }: CohortMembershipProps) {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [cohort, setCohort] = useState<Cohort | null | 'loading'>('loading');
   const [code, setCode] = useState('');
   const [busy, setBusy] = useState(false);
@@ -230,6 +233,19 @@ export function CohortMembership({ uid, compact }: CohortMembershipProps) {
           <div className="mt-2" style={noteStyle}>
             Your educator sees your accuracy, streak and weak areas — never your individual answers.
           </div>
+          {/* Renders nothing unless a sitting is actually due; see DiagnosticPrompt. */}
+          <DiagnosticPrompt
+            uid={uid}
+            cohortId={cohort.id}
+            // The Cohort a student reads does not carry their own join date —
+            // that lives on the educator-side roster. nextDiagnosticPhase treats
+            // unknown as "offer it" rather than "joined long ago", which is the
+            // right default: a missing timestamp is a gap in our records, not
+            // evidence the student has been revising for months.
+            joinedAt={null}
+            compact={compact}
+            onStart={(phase) => navigate(`/diagnostic?phase=${phase}`)}
+          />
         </>
       ) : (
         <>

@@ -24,6 +24,7 @@ import { MuscleCard } from './features/anatomy-revision/components/MuscleCard/Mu
 import { Atlas } from './features/anatomy-revision/components/Atlas/Atlas';
 import { MobileAtlas } from './features/anatomy-revision/components/mobile/MobileAtlas';
 import { Progress } from './features/anatomy-revision/components/Progress/Progress';
+import { DiagnosticRoute } from './features/anatomy-revision/components/Diagnostic/DiagnosticRoute';
 import { Achievements } from './features/anatomy-revision/components/Achievements/Achievements';
 import { MobileAchievements } from './features/anatomy-revision/components/mobile/MobileAchievements';
 import type { NavSection } from './features/anatomy-revision/components/shell/NavSidebar';
@@ -636,6 +637,17 @@ function App() {
             ) : (
               <MobileAccount content={content} repository={repository} userId={userId} onNavigateTab={mobileNavigate} />
             )
+          }
+        />
+        <Route
+          path="/diagnostic"
+          element={
+            <DiagnosticRoute
+              repository={repository}
+              userId={userId}
+              structures={content.structures}
+              images={content.images}
+            />
           }
         />
         <Route
