@@ -20,6 +20,10 @@ import type { LandmarkStructure } from '../../types/structure';
  * from the original build — not duplicated here.
  *
  * ADD MORE UPPER-LIMB LANDMARKS HERE.
+ *
+ * Those source slides no longer ship: they were AI-generated and were removed
+ * on 18 September 2026 (see images.seed.ts). The structures below stay — the
+ * slides were where the LIST came from, not where the anatomy came from.
  */
 export const UPPER_LIMB_LANDMARK_STRUCTURES: LandmarkStructure[] = [
   {
