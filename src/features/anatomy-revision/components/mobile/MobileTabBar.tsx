@@ -25,7 +25,7 @@ interface MobileTabBarProps {
  * class and anyone creates one.
  *
  * A fifth tab appears for an admin, and ONLY for an admin — see
- * roles/useAdminEntry, which also explains why being admin is not sufficient.
+ * hooks/useAdminEntry, which also explains why being admin is not sufficient.
  * It is a Link, not a tab: /admin is a separate route tree, not a section this
  * bar can activate, so it never takes the active underline. Five tabs is tight
  * on a narrow phone, but this one is on one person's own device, and the
