@@ -3,6 +3,7 @@ import {
   FREE_ENTITLEMENT,
   FREE_AREAS,
   hasExpired,
+  hasStarted,
   effectiveTier,
   resolveEntitlement,
   canAccessArea,
@@ -62,6 +63,29 @@ describe('effectiveTier', () => {
     const lapsed = ent({ expiresAt: '2026-01-01T00:00:00.000Z' });
     expect(lapsed.tier).toBe('individual');
     expect(effectiveTier(lapsed, NOW)).toBe('free');
+  });
+});
+
+describe('a delayed start', () => {
+  // The student who kept their 14-day cancellation right. /refunds promises
+  // their access begins after the 14 days, so until then they are free tier.
+  it('is free before the start date', () => {
+    expect(effectiveTier(ent({ startsAt: '2026-10-20T12:00:00.000Z' }), NOW)).toBe('free');
+  });
+
+  it('is the paid tier once the start date has passed', () => {
+    expect(effectiveTier(ent({ startsAt: '2026-10-10T12:00:00.000Z' }), NOW)).toBe('individual');
+  });
+
+  it('treats no start date, or an unreadable one, as already started', () => {
+    expect(hasStarted(ent(), NOW)).toBe(true);
+    expect(hasStarted(ent({ startsAt: 'soon' }), NOW)).toBe(true);
+  });
+
+  it('is never chosen over an entitlement that is live now', () => {
+    const pending = ent({ tier: 'institutional', source: 'licence', startsAt: '2026-11-01T00:00:00.000Z' });
+    const live = ent();
+    expect(resolveEntitlement([pending, live], NOW)).toEqual(live);
   });
 });
 

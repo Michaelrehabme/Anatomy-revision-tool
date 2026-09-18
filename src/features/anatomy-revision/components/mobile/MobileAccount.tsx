@@ -2,6 +2,7 @@ import { AccountDataControls } from '../shared/AccountDataControls';
 import { useEffect, useState } from 'react';
 import { MobileShell } from './MobileShell';
 import { CohortMembership } from '../shared/CohortMembership';
+import { SubscriptionSummary } from '../shared/SubscriptionSummary';
 import { AccuracyTrendChart } from '../shared/AccuracyTrendChart';
 import { MyClasses } from '../Account/MyClasses';
 import { AuthScreen } from '../Auth/AuthScreen';
@@ -112,6 +113,11 @@ export function MobileAccount({ content, repository, userId, onNavigateTab }: Mo
         {AUTH_ENABLED && user && (
           <section className="mt-9">
             <h3 style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 20, letterSpacing: '-.01em', margin: 0 }}>
+              Subscription
+            </h3>
+            <SubscriptionSummary uid={user.uid} />
+
+            <h3 className="mt-9" style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 20, letterSpacing: '-.01em', margin: 0 }}>
               Classes
             </h3>
             <CohortMembership uid={user.uid} compact />

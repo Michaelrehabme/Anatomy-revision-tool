@@ -57,6 +57,11 @@ const AdminApp = PUBLIC_DEMO ? null : lazy(() => import('./features/admin/AdminA
  * drop, the same way AdminApp above and DevRoutes below are handled.
  */
 const DemoBanner = PUBLIC_DEMO ? lazy(() => import('./features/educator/demo/DemoBanner')) : null;
+/**
+ * Pricing and checkout (CR-033 item 11). Lazy because it pulls Paddle.js, and
+ * null in the public demo, which must never be able to take a payment.
+ */
+const PricingPage = PUBLIC_DEMO ? null : lazy(() => import('./features/billing/PricingPage'));
 /** Code-split so students never download the educator bundle — see src/features/educator/EducatorApp.tsx. */
 const EducatorApp = lazy(() => import('./features/educator/EducatorApp'));
 /**
@@ -639,6 +644,16 @@ function App() {
             )
           }
         />
+        {PricingPage && (
+          <Route
+            path="/pricing"
+            element={
+              <Suspense fallback={null}>
+                <PricingPage />
+              </Suspense>
+            }
+          />
+        )}
         <Route
           path="/diagnostic"
           element={

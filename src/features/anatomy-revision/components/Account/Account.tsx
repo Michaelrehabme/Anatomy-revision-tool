@@ -4,6 +4,7 @@ import { AppShell } from '../shell/AppShell';
 import { NavSidebar, type NavSection } from '../shell/NavSidebar';
 import { AuthScreen } from '../Auth/AuthScreen';
 import { CohortMembership } from '../shared/CohortMembership';
+import { SubscriptionSummary } from '../shared/SubscriptionSummary';
 import { AccuracyTrendChart } from '../shared/AccuracyTrendChart';
 import { MyClasses } from './MyClasses';
 import { useAuth, AUTH_ENABLED } from '../../context/AuthProvider';
@@ -134,7 +135,10 @@ export function Account({ content, repository, userId, onNavigate }: AccountProp
 
         {AUTH_ENABLED && user && (
           <section className="mt-12" style={{ maxWidth: 620 }}>
-            <h3 style={heading}>Classes</h3>
+            <h3 style={heading}>Subscription</h3>
+            <SubscriptionSummary uid={user.uid} />
+
+            <h3 className="mt-10" style={heading}>Classes</h3>
             <CohortMembership uid={user.uid} />
             <MyClasses uid={user.uid} />
 

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import type { Area } from '../types/region';
 import {
   FREE_ENTITLEMENT,
@@ -32,11 +32,18 @@ export interface UseEntitlement {
   loading: boolean;
   canAccess: (area: Area) => boolean;
   locked: (allAreas: readonly Area[]) => Area[];
+  /**
+   * Read again. For the pricing page after checkout: the webhook writes the
+   * entitlement a few seconds after Paddle takes the payment, so the first read
+   * usually finds nothing yet.
+   */
+  refresh: () => void;
 }
 
 export function useEntitlement(uid: string | null): UseEntitlement {
   const [entitlement, setEntitlement] = useState<Entitlement>(FREE_ENTITLEMENT);
   const [loading, setLoading] = useState(true);
+  const [readCount, setReadCount] = useState(0);
 
   useEffect(() => {
     if (!uid) {
@@ -63,7 +70,9 @@ export function useEntitlement(uid: string | null): UseEntitlement {
       });
 
     return () => { cancelled = true; };
-  }, [uid]);
+  }, [uid, readCount]);
+
+  const refresh = useCallback(() => setReadCount((n) => n + 1), []);
 
   return {
     entitlement,
@@ -71,5 +80,6 @@ export function useEntitlement(uid: string | null): UseEntitlement {
     loading,
     canAccess: (area) => canAccessArea(area, entitlement),
     locked: (allAreas) => lockedAreas(allAreas, entitlement),
+    refresh,
   };
 }

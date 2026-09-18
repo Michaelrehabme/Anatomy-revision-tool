@@ -13,6 +13,11 @@ interface ImportMetaEnv {
   readonly VITE_FIREBASE_STORAGE_BUCKET?: string;
   readonly VITE_FIREBASE_MESSAGING_SENDER_ID?: string;
   readonly VITE_FIREBASE_APP_ID?: string;
+  /** Paddle checkout — see .env.example. Anything but 'production' is treated as sandbox. */
+  readonly VITE_PADDLE_ENV?: string;
+  readonly VITE_PADDLE_CLIENT_TOKEN?: string;
+  readonly VITE_PADDLE_PRICE_MONTHLY?: string;
+  readonly VITE_PADDLE_PRICE_ANNUAL?: string;
 }
 
 interface ImportMeta {

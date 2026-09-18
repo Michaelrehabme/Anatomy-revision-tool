@@ -12,6 +12,12 @@
   command = "npm run build"
   publish = "dist"
 
+# Server-side code: the Paddle webhook, and only that. Secrets live in the
+# Netlify dashboard as environment variables and are never committed.
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
 # SPA fallback. dist/_redirects (from public/) says the same thing; this is
 # here so the rule survives a build that loses the public/ copy.
 [[redirects]]

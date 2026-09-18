@@ -40,6 +40,17 @@ export interface Entitlement {
   source: EntitlementSource | null;
   /** ISO, or null for an entitlement that does not expire. */
   expiresAt: string | null;
+  /**
+   * ISO, when access begins; absent means it already has.
+   *
+   * Exists for exactly one promise. /refunds tells a student that if they keep
+   * their 14-day cancellation right instead of waiving it, their access starts
+   * 14 days later. Without a start date there was no way to keep that promise:
+   * an entitlement could only say when access ENDED, so a paid subscription
+   * was either live immediately or not at all. A published commitment the
+   * data model cannot express is a commitment waiting to be broken.
+   */
+  startsAt?: string;
   /** Institutional only: which seat of the licence this consumes. */
   seatId?: string;
   /** The provider's own id, for reconciling a support question against their dashboard. */
@@ -79,6 +90,16 @@ export function hasExpired(entitlement: Entitlement, now: Date = new Date()): bo
   return at <= now.getTime();
 }
 
+/** Whether access has begun. An entitlement with no start date began when it was granted. */
+export function hasStarted(entitlement: Entitlement, now: Date = new Date()): boolean {
+  if (!entitlement.startsAt) return true;
+  const at = Date.parse(entitlement.startsAt);
+  // Unparseable reads as started, for the same reason an unparseable expiry
+  // reads as live: a malformed date must not lock out somebody who paid.
+  if (Number.isNaN(at)) return true;
+  return at <= now.getTime();
+}
+
 /**
  * The tier actually in force, which is `free` once an entitlement has lapsed.
  *
@@ -88,6 +109,7 @@ export function hasExpired(entitlement: Entitlement, now: Date = new Date()): bo
  */
 export function effectiveTier(entitlement: Entitlement | null | undefined, now: Date = new Date()): EntitlementTier {
   if (!entitlement) return 'free';
+  if (!hasStarted(entitlement, now)) return 'free';
   return hasExpired(entitlement, now) ? 'free' : entitlement.tier;
 }
 
@@ -107,7 +129,7 @@ export function resolveEntitlement(
   candidates: readonly Entitlement[],
   now: Date = new Date(),
 ): Entitlement {
-  const active = candidates.filter((e) => !hasExpired(e, now) && e.tier !== 'free');
+  const active = candidates.filter((e) => hasStarted(e, now) && !hasExpired(e, now) && e.tier !== 'free');
   if (active.length === 0) return FREE_ENTITLEMENT;
 
   return [...active].sort((a, b) => {

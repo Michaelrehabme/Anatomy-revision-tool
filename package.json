@@ -21,6 +21,7 @@
     "deploy:rules": "firebase deploy --only firestore:rules"
   },
   "dependencies": {
+    "@paddle/paddle-js": "1.6.5",
     "firebase": "^11.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
