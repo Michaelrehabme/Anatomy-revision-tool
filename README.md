@@ -398,6 +398,20 @@ Two things guard against a repeat:
   identity, not correctness: whether what you are about to publish is a commit
   other people can see.
 
+**`npm run deploy` does not deploy firestore.rules.** It publishes the site to
+Netlify and nothing else. The rules are the security boundary — they are what
+makes the privacy policy's claim about what an educator can see true rather
+than aspirational — and they live in a different system:
+
+```
+npm run deploy:rules      # firebase deploy --only firestore:rules
+```
+
+A rules change that is committed but not deployed is worse than one never made,
+because the repository then describes a control that is not in force. If you
+change `firestore.rules`, deploy them in the same sitting, and check the
+Firebase console shows the new version.
+
 ```bash
 npm run deploy          # check, build, publish
 npm run deploy:check    # just the check

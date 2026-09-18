@@ -85,9 +85,10 @@ service cloud.firestore {
     // never be turned into access to another.
     //
     // MEMBERSHIP IS PROVEN, NOT ASSERTED. `cohort` on this document is what
-    // every educator-facing rule keys off: ownsCohort(cohortOfUser(uid)) grants
-    // an educator read access to a student, and isMemberOfCohort() lets that
-    // student write the class's rollup counters. Until now a student could set
+    // every educator-facing rule keys off: ownsCohort() on this document grants
+    // an educator read of a student's PROFILE (name, class, last active), and
+    // isMemberOfCohort() lets that student write the class's rollup counters.
+    // It no longer reaches the subcollections below — see the note there. Until now a student could set
     // it to any value, because the join code was only ever checked in the
     // client — so knowing a cohort id was enough to join a class uninvited and
     // write into its figures.
@@ -137,12 +138,28 @@ service cloud.firestore {
       allow read: if isAdmin();
       allow read: if ownsCohort(resource.data.get('cohort', ''));
 
-      // The nested match can't read the parent's `cohort` from `resource`
-      // (that's the subdocument), hence the explicit lookup.
+      // Subcollections: mastery, questionExposure, sessions.
+      //
+      // NO COHORT-OWNER READ. There was one, and it was the other half of the
+      // grant CR-031 removed from attemptEvents — missed at the time because
+      // the obvious leak was the answer log. It let a class owner read every
+      // session summary of every student in their class, and a session summary
+      // carries missedStructureIds, startedAt and finishedAt: what you got
+      // wrong and when you were working, per session.
+      //
+      // The privacy policy tells students "not the questions you got wrong one
+      // by one, not when you answered", and says in terms that this is enforced
+      // by these rules rather than by what the UI renders. That was not true
+      // while this grant existed, and a promise about rules has to be kept by
+      // the rules.
+      //
+      // Nothing was using it: every educator read is against the users/{uid}
+      // DOCUMENT above (displayName, cohort, lastActiveAt), and the dashboard's
+      // figures come from cohorts/{id}/studentStats, aggregated on the
+      // student's own device. See educator/data/cohortRollups.ts.
       match /{document=**} {
         allow read, write: if isSignedIn() && request.auth.uid == uid;
         allow read: if isAdmin();
-        allow read: if ownsCohort(cohortOfUser(uid));
       }
     }
 
