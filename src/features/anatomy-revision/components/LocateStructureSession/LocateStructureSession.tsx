@@ -119,14 +119,36 @@ export function LocateStructureSession({
         <span className="text-xs">
           {frames.length > 1 ? 'Scroll to zoom · drag to turn' : 'Scroll to zoom'}
         </span>
-        <button type="button" onClick={() => setListMode((v) => !v)} className="text-xs underline decoration-dotted">
-          {listMode ? 'Switch to image click' : "Can't click precisely? Choose from a list"}
+        {/*
+          * This toggle is the ONLY way to answer a locate question without a
+          * pointer, which makes it an accessibility route and not merely a
+          * convenience. It used to be labelled "Can't click precisely?", which
+          * describes a shaky hand rather than a keyboard, and left somebody
+          * tabbing through with no indication that an answer was reachable at
+          * all. The visible label now names both, and the accessible name
+          * names the one that matters.
+          */}
+        <button
+          type="button"
+          onClick={() => setListMode((v) => !v)}
+          aria-label={listMode ? 'Answer by clicking the image instead' : 'Answer from a list of names instead of clicking the image'}
+          className="text-xs underline decoration-dotted"
+        >
+          {listMode ? 'Switch to image click' : 'Answer from a list instead'}
         </button>
       </div>
 
       {!listMode ? (
         <div className="mt-2 flex min-h-0 flex-1 items-center justify-center">
           <div className="w-full max-w-[560px]">
+            {/* A pointer target carries nothing for a screen reader. Rather
+                than describe an image somebody cannot act on, say plainly
+                that there is another way to answer this question. */}
+            <p className="sr-only">
+              This question is answered by clicking the anatomical image. If you are not using a
+              pointer, use the &ldquo;Answer from a list instead&rdquo; button above to choose the
+              structure by name.
+            </p>
             <HotspotImage
               key={question.id}
               image={image}
@@ -139,7 +161,11 @@ export function LocateStructureSession({
           </div>
         </div>
       ) : (
-        <div className="mt-6 grid max-w-2xl grid-cols-3 gap-2.5">
+        <div
+          role="group"
+          aria-label={`Structures visible on this image — choose ${question.prompt}`}
+          className="mt-6 grid max-w-2xl grid-cols-3 gap-2.5"
+        >
           {candidateStructures.map((s) => {
             const isTarget = s.id === question.targetStructureId;
             const isSelected = result?.structureId === s.id;

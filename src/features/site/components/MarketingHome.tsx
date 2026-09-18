@@ -526,6 +526,7 @@ export function MarketingHome() {
             <a href="#institutions" style={{ color: 'var(--ink2)', textDecoration: 'none' }}>Institutions</a>
             <Link to="/privacy" style={{ color: 'var(--ink2)', textDecoration: 'none' }}>Privacy</Link>
             <Link to="/terms" style={{ color: 'var(--ink2)', textDecoration: 'none' }}>Terms</Link>
+            <Link to="/accessibility" style={{ color: 'var(--ink2)', textDecoration: 'none' }}>Accessibility</Link>
             <Link to="/attributions" style={{ color: 'var(--ink2)', textDecoration: 'none' }}>Attributions</Link>
           </nav>
           <div style={{ font: '400 12px/1 var(--font-mono)', color: 'var(--ink3)' }}>© 2026 LocusMSK</div>

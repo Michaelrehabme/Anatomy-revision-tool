@@ -1,4 +1,5 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
+import { AccessibilityPage } from './AccessibilityPage';
 import { AttributionsPage } from './AttributionsPage';
 import { PrivacyPage } from './PrivacyPage';
 import { TermsPage } from './TermsPage';
@@ -19,6 +20,7 @@ export default function LegalRoutes() {
       <Route path="/privacy" element={<PrivacyPage />} />
       <Route path="/terms" element={<TermsPage />} />
       <Route path="/attributions" element={<AttributionsPage />} />
+      <Route path="/accessibility" element={<AccessibilityPage />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

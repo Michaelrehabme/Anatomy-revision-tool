@@ -20,6 +20,7 @@ import { OinaSession } from '../OinaSession/OinaSession';
 import { AppShell } from '../shell/AppShell';
 import { SessionSidebar } from '../shell/SessionSidebar';
 import { PersistErrorBanner } from '../shared/PersistErrorBanner';
+import { AnswerAnnouncer } from '../shared/AnswerAnnouncer';
 
 interface StudySessionProps {
   session: ReturnType<typeof useRevisionSession>;
@@ -101,6 +102,14 @@ export function StudySession({ session, content, onEnd, onBackToSetup }: StudySe
     );
   }
 
+  /*
+   * The last graded answer, for the live region below. Flashcards are excluded
+   * because there is nothing to be right or wrong about, and announcing a
+   * verdict on one would be inventing a result.
+   */
+  const lastGraded = [...session.answers].reverse().find((a) => a.graded !== false);
+  const gradedAnswerCount = session.answers.filter((a) => a.graded !== false).length;
+
   return (
     <AppShell
       sidebar={
@@ -121,6 +130,18 @@ export function StudySession({ session, content, onEnd, onBackToSetup }: StudySe
       }
     >
       <div className="flex min-h-screen flex-col">
+        {/* Announced to screen readers only; mirrors exactly what the visible
+            UI reveals, which in assessment mode is nothing. */}
+        <AnswerAnnouncer
+          answeredCount={gradedAnswerCount}
+          correct={lastGraded?.correct ?? false}
+          reveal={!examMode}
+          detail={
+            lastGraded && !lastGraded.correct && lastGraded.correctAnswer
+              ? `The answer was ${lastGraded.correctAnswer}.`
+              : undefined
+          }
+        />
         {session.persistError && (
           <PersistErrorBanner
             message={session.persistError}
