@@ -27,12 +27,16 @@ function attempt(over: Partial<UserAttempt> & { userId: string }): UserAttempt {
     questionType: 'mcq',
     structureId: 'biceps-brachii',
     promptKind: 'action',
-    region: 'upper-limb',
+    region: 'shoulder-arm',
     category: 'muscle',
     correct: true,
     timestamp: '2026-10-01T09:00:00.000Z',
     ...over,
-  } as UserAttempt;
+    // Spreading a Partial widens this back to possibly-undefined, and the
+    // real type requires it. Stated after the spread so a caller can still
+    // set it deliberately.
+    attemptNumber: over.attemptNumber ?? 1,
+  };
 }
 
 /**

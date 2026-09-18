@@ -18,7 +18,7 @@ function q(n: number): MCQQuestion {
     structureId: `s-${n}`,
     questionType: 'mcq',
     promptKind: 'identify',
-    region: 'upper-limb',
+    region: 'shoulder-arm',
     category: 'muscle',
     difficulty: 'medium',
     area: 'shoulder',
