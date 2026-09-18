@@ -11,6 +11,16 @@ import type { Area, Region, SubRegion } from '../../types/region';
  * are ever regenerated. See README "Adding a new structure" for the
  * update workflow.
  *
+ * PROSE PROVENANCE. `actionText` is NOT from the source deck. Those 122
+ * sentences were re-derived on 18 September 2026 by scripts/deriveActionText.mjs
+ * from each muscle's own `actions` tags and attachments, and the 21 `clinical`
+ * sentences were removed outright, because the deck is a lecturer's teaching
+ * material and short written descriptions carry authorial choice in a way that
+ * "Iliac fossa of the pelvis" does not. `notes` is the project owner's own
+ * editorial metadata and stayed. Re-run the script rather than hand-editing a
+ * sentence: it is what makes the derivation checkable. See the muscle dataset
+ * section of docs/BACKLOG-STORE-MONETISATION.md.
+ *
  * Fields with no equivalent in the source data (imageIds, eligibility,
  * difficulty, tags) are derived below rather than hand-maintained:
  * - imageIds: left empty here, populated by lib/linkImages.ts in index.ts

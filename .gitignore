@@ -44,3 +44,6 @@ __pycache__/
 *.pyc
 landmark-region-preview.html
 landmark-region-probe.json
+
+# Review output from scripts/deriveActionText.mjs
+scripts/deriveActionText.report.json

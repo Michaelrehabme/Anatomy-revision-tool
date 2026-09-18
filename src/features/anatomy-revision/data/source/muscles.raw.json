@@ -38,7 +38,7 @@
         "hip-flexion",
         "hip-external-rotation"
       ],
-      "actionText": "Powerful hip flexor; assists external rotation of the femur and stabilises the pelvis.",
+      "actionText": "Flexes and externally rotates the hip; arises from the iliac fossa of the pelvis.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -87,7 +87,7 @@
         "hip-flexion",
         "hip-external-rotation"
       ],
-      "actionText": "Most powerful hip flexor; assists external rotation of the femur and pelvic stabilisation.",
+      "actionText": "Flexes and externally rotates the hip; arises from the transverse processes of T12 and all lumbar vertebrae (L1–L5).",
       "clinical": null,
       "notes": null,
       "images": {
@@ -138,7 +138,7 @@
         "hip-flexion",
         "knee-extension"
       ],
-      "actionText": "The only quadriceps muscle crossing the hip joint: flexes the hip and extends the knee.",
+      "actionText": "Flexes the hip and extends the knee.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -189,7 +189,7 @@
         "hip-external-rotation",
         "knee-flexion"
       ],
-      "actionText": "Hip flexion, abduction and external rotation plus knee flexion — crossing the legs, kicking.",
+      "actionText": "Flexes, abducts and externally rotates the hip; flexes the knee.",
       "clinical": null,
       "notes": "Longest muscle in the body; the 'tailor's muscle'.",
       "images": {
@@ -242,7 +242,7 @@
         "hip-external-rotation",
         "hip-abduction"
       ],
-      "actionText": "Hip extension (running, squatting), external rotation and abduction of the thigh.",
+      "actionText": "Extends, externally rotates and abducts the hip.",
       "clinical": null,
       "notes": "Largest muscle in the body.",
       "images": {
@@ -294,7 +294,7 @@
         "knee-flexion",
         "knee-internal-rotation"
       ],
-      "actionText": "Knee flexion, hip extension and internal rotation of the tibia when the knee is flexed.",
+      "actionText": "Extends the hip; flexes and internally rotates the knee; inserts on the proximal medial surface of the tibia (pes anserinus).",
       "clinical": null,
       "notes": null,
       "images": {
@@ -346,7 +346,7 @@
         "knee-flexion",
         "knee-internal-rotation"
       ],
-      "actionText": "Knee flexion, hip extension and internal rotation of the tibia when the knee is flexed.",
+      "actionText": "Extends the hip; flexes and internally rotates the knee; inserts on the medial condyle of the tibia.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -407,7 +407,7 @@
         "knee-flexion",
         "knee-external-rotation"
       ],
-      "actionText": "Knee flexion, hip extension and external rotation of the knee when flexed.",
+      "actionText": "Extends the hip; flexes and externally rotates the knee.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -457,7 +457,7 @@
         "hip-internal-rotation",
         "pelvic-stabilisation"
       ],
-      "actionText": "Hip abduction and stabilisation of the pelvis during single-leg stance; the anterior fibres assist internal rotation of the thigh.",
+      "actionText": "Abducts and internally rotates the hip; stabilises the pelvis; arises from the outer surface of the ilium (between the anterior and posterior gluteal lines).",
       "clinical": null,
       "notes": null,
       "images": {
@@ -507,7 +507,7 @@
         "hip-internal-rotation",
         "pelvic-stabilisation"
       ],
-      "actionText": "Works with gluteus medius for hip abduction and internal rotation of the thigh.",
+      "actionText": "Abducts and internally rotates the hip; stabilises the pelvis; arises from the outer surface of the ilium, just below the gluteus medius.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -558,7 +558,7 @@
         "hip-internal-rotation",
         "hip-flexion"
       ],
-      "actionText": "Abducts, medially rotates and flexes the thigh; tenses the fascia lata to stabilise the knee in standing and walking.",
+      "actionText": "Abducts, internally rotates and flexes the hip.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -608,7 +608,7 @@
         "hip-adduction",
         "hip-extension"
       ],
-      "actionText": "Hip adduction; the hamstring portion also contributes to hip extension.",
+      "actionText": "Adducts and extends the hip.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -656,7 +656,7 @@
         "hip-adduction",
         "hip-flexion"
       ],
-      "actionText": "Hip adduction; assists hip flexion.",
+      "actionText": "Adducts and flexes the hip; arises from the pubis near the symphysis.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -704,7 +704,7 @@
         "hip-adduction",
         "hip-flexion"
       ],
-      "actionText": "Hip adduction; assists hip flexion.",
+      "actionText": "Adducts and flexes the hip; arises from the body of the pubis.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -757,7 +757,7 @@
         "hip-flexion",
         "hip-internal-rotation"
       ],
-      "actionText": "Adducts and flexes the thigh; assists medial rotation.",
+      "actionText": "Adducts, flexes and internally rotates the hip.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -805,7 +805,7 @@
         "knee-flexion",
         "knee-internal-rotation"
       ],
-      "actionText": "Adducts the thigh; flexes and medially rotates the leg at the knee.",
+      "actionText": "Adducts the hip; flexes and internally rotates the knee.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -852,7 +852,7 @@
         "hip-external-rotation",
         "hip-stabilisation"
       ],
-      "actionText": "External rotation and stabilisation of the hip joint.",
+      "actionText": "Externally rotates and stabilises the hip; arises from the sacrum.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -900,7 +900,7 @@
         "hip-external-rotation",
         "hip-stabilisation"
       ],
-      "actionText": "External rotation and stabilisation of the hip joint.",
+      "actionText": "Externally rotates and stabilises the hip; arises from the superior: ischial spine.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -947,7 +947,7 @@
         "hip-external-rotation",
         "hip-stabilisation"
       ],
-      "actionText": "External rotation and stabilisation of the hip joint.",
+      "actionText": "Externally rotates and stabilises the hip; arises from the obturator membrane.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -993,7 +993,7 @@
       "actions": [
         "hip-external-rotation"
       ],
-      "actionText": "Lateral rotation of the hip.",
+      "actionText": "Externally rotates the hip.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -1041,7 +1041,7 @@
         "hip-external-rotation",
         "hip-stabilisation"
       ],
-      "actionText": "External rotation and stabilisation of the hip joint.",
+      "actionText": "Externally rotates and stabilises the hip; arises from the ischial tuberosity.",
       "clinical": null,
       "notes": "Spelled 'Quadrarus femoris' on the source slide.",
       "images": {
@@ -1090,7 +1090,7 @@
       "actions": [
         "knee-extension"
       ],
-      "actionText": "Knee extension; helps stabilise the patella. Largest of the quadriceps.",
+      "actionText": "Extends the knee; arises from the greater trochanter of the femur.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -1138,7 +1138,7 @@
       "actions": [
         "knee-extension"
       ],
-      "actionText": "Knee extension; key to patellar tracking and knee stability.",
+      "actionText": "Extends the knee; arises from the medial side of the femur.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -1186,7 +1186,7 @@
       "actions": [
         "knee-extension"
       ],
-      "actionText": "Knee extension, working in synergy with the other quadriceps.",
+      "actionText": "Extends the knee; arises from the anterior and lateral surfaces of the femur.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -1236,7 +1236,7 @@
         "knee-flexion",
         "knee-internal-rotation"
       ],
-      "actionText": "Unlocks the knee by laterally rotating the femur on the fixed tibia; assists knee flexion; stabilises the lateral meniscus.",
+      "actionText": "Flexes and internally rotates the knee.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -1283,7 +1283,7 @@
         "shoulder-abduction",
         "glenohumeral-stabilisation"
       ],
-      "actionText": "Abducts the shoulder (first 15°) and stabilises the humeral head.",
+      "actionText": "Abducts the shoulder and stabilises the glenohumeral joint.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -1331,7 +1331,7 @@
         "shoulder-external-rotation",
         "glenohumeral-stabilisation"
       ],
-      "actionText": "External rotation of the shoulder; stabilises the humeral head.",
+      "actionText": "Externally rotates the shoulder and stabilises the glenohumeral joint; arises from the infraspinous fossa of scapula.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -1379,7 +1379,7 @@
         "shoulder-external-rotation",
         "glenohumeral-stabilisation"
       ],
-      "actionText": "External rotation of the shoulder; stabilises the humeral head.",
+      "actionText": "Externally rotates the shoulder and stabilises the glenohumeral joint; arises from the lateral border of scapula.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -1429,7 +1429,7 @@
         "shoulder-adduction",
         "glenohumeral-stabilisation"
       ],
-      "actionText": "Internal rotation of the shoulder; stabilises the humeral head.",
+      "actionText": "Internally rotates and adducts the shoulder; stabilises the glenohumeral joint.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -1482,7 +1482,7 @@
         "shoulder-internal-rotation",
         "shoulder-external-rotation"
       ],
-      "actionText": "Anterior fibres: flexion & medial rotation; middle: abduction; posterior: extension & lateral rotation.",
+      "actionText": "Abducts the shoulder; the anterior fibres also flex and internally rotate it, the posterior fibres extend and externally rotate it.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -1541,7 +1541,7 @@
         "scapular-depression",
         "scapular-upward-rotation"
       ],
-      "actionText": "Upper: elevates scapula; middle: retracts scapula; lower: depresses scapula; upper & lower together rotate the glenoid superiorly.",
+      "actionText": "Upper fibres elevate the scapula, middle fibres retract it and lower fibres depress it; upper and lower acting together rotate it upwards.",
       "clinical": null,
       "notes": "Spelled 'Trapezuis' on the source slide.",
       "images": {
@@ -1597,7 +1597,7 @@
         "scapular-downward-rotation",
         "scapular-retraction"
       ],
-      "actionText": "Elevates the scapula and tilts the glenoid inferiorly.",
+      "actionText": "Elevates, downwardly rotates and retracts the scapula.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -1645,7 +1645,7 @@
         "scapular-retraction",
         "scapular-downward-rotation"
       ],
-      "actionText": "Retracts the scapula and rotates the glenoid inferiorly.",
+      "actionText": "Retracts and downwardly rotates the scapula; inserts on the medial border of scapula (at level of the spine).",
       "clinical": null,
       "notes": null,
       "images": {
@@ -1692,7 +1692,7 @@
         "scapular-retraction",
         "scapular-downward-rotation"
       ],
-      "actionText": "Retracts the scapula and rotates the glenoid inferiorly.",
+      "actionText": "Retracts and downwardly rotates the scapula; inserts on the medial border of scapula, below the spine.",
       "clinical": null,
       "notes": "Named in the scapular movement tables but has no dedicated slide — origin/insertion filled from standard anatomy; verified against standard reference (CR-013): T2-T5 spinous process origin, medial scapular border insertion below the spine, dorsal scapular nerve C5, retraction/downward rotation actions all confirmed correct.",
       "images": {
@@ -1742,7 +1742,7 @@
         "scapular-protraction",
         "scapular-upward-rotation"
       ],
-      "actionText": "Protracts the scapula, rotates the glenoid superiorly and stabilises the scapula against the thorax.",
+      "actionText": "Protracts and upwardly rotates the scapula.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -1795,7 +1795,7 @@
         "shoulder-flexion",
         "shoulder-extension"
       ],
-      "actionText": "Adduction and medial rotation; clavicular head flexes; sternocostal head extends from a flexed position.",
+      "actionText": "Adducts and internally rotates the shoulder; the clavicular head flexes it and the sternocostal head extends it from a flexed position.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -1845,7 +1845,7 @@
         "scapular-depression",
         "scapular-downward-rotation"
       ],
-      "actionText": "Stabilises the scapula; protraction and downward rotation. Assists rib elevation when the scapula is fixed.",
+      "actionText": "Protracts, depresses and downwardly rotates the scapula.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -1898,7 +1898,7 @@
         "forearm-supination",
         "shoulder-flexion"
       ],
-      "actionText": "Elbow flexion, forearm supination and weak shoulder flexion.",
+      "actionText": "Flexes the elbow, supinates the forearm and flexes the shoulder.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -1946,7 +1946,7 @@
       "actions": [
         "elbow-flexion"
       ],
-      "actionText": "Primary elbow flexor.",
+      "actionText": "Flexes the elbow; inserts on the coronoid process & ulnar tuberosity.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -1995,7 +1995,7 @@
         "shoulder-flexion",
         "shoulder-adduction"
       ],
-      "actionText": "Shoulder flexion and adduction; resists downward dislocation of the humerus.",
+      "actionText": "Flexes and adducts the shoulder.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -2048,7 +2048,7 @@
         "shoulder-extension",
         "shoulder-adduction"
       ],
-      "actionText": "Elbow extension; the long head assists shoulder extension and adduction.",
+      "actionText": "Extends the elbow; extends and adducts the shoulder.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -2095,7 +2095,7 @@
       "actions": [
         "elbow-extension"
       ],
-      "actionText": "Assists elbow extension and stabilises the elbow joint.",
+      "actionText": "Extends the elbow.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -2143,7 +2143,7 @@
         "shoulder-internal-rotation",
         "shoulder-extension"
       ],
-      "actionText": "Shoulder adduction, internal rotation and extension.",
+      "actionText": "Adducts, internally rotates and extends the shoulder; inserts on the medial lip of intertubercular sulcus of humerus.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -2195,7 +2195,7 @@
         "shoulder-adduction",
         "shoulder-internal-rotation"
       ],
-      "actionText": "Shoulder extension, adduction and internal rotation.",
+      "actionText": "Extends, adducts and internally rotates the shoulder; inserts on the floor of intertubercular sulcus of humerus.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -2246,7 +2246,7 @@
         "inspiration",
         "core-stabilisation"
       ],
-      "actionText": "Primary muscle of inspiration; flattens to expand the thoracic cavity.",
+      "actionText": "Drives inspiration and stabilises the core.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -2301,7 +2301,7 @@
       "actions": [
         "inspiration"
       ],
-      "actionText": "Elevate the ribs during inspiration; increase thoracic volume.",
+      "actionText": "Drives inspiration.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -2356,7 +2356,7 @@
       "actions": [
         "expiration"
       ],
-      "actionText": "Depress the ribs during forced expiration.",
+      "actionText": "Drives expiration.",
       "clinical": null,
       "notes": "Slide table was truncated in extraction — verified against standard reference (CR-013): origin/insertion were reversed (had rib-below to rib-above) relative to the standard convention used consistently for external-intercostals in this dataset; corrected to inferior border of rib above -> superior border of rib below. Nerve roots and expiration action confirmed correct.",
       "images": {
@@ -2411,7 +2411,7 @@
         "neck-lateral-flexion",
         "accessory-inspiration"
       ],
-      "actionText": "Unilateral: rotates head to the opposite side and tilts to the same side. Bilateral: flexes the neck. Elevates the sternum in forced breathing.",
+      "actionText": "Flexes, rotates and laterally flexes the neck; assists inspiration.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -2460,7 +2460,7 @@
         "neck-lateral-flexion",
         "accessory-inspiration"
       ],
-      "actionText": "Elevates the 1st rib; lateral flexion of the neck.",
+      "actionText": "Laterally flexes the neck and assists inspiration; arises from the transverse processes C3–C6.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -2505,7 +2505,7 @@
         "neck-lateral-flexion",
         "accessory-inspiration"
       ],
-      "actionText": "Elevates the 1st rib; lateral flexion of the neck.",
+      "actionText": "Laterally flexes the neck and assists inspiration; arises from the transverse processes C2–C7.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -2549,7 +2549,7 @@
         "neck-lateral-flexion",
         "accessory-inspiration"
       ],
-      "actionText": "Elevates the 2nd rib; lateral flexion of the neck.",
+      "actionText": "Laterally flexes the neck and assists inspiration; arises from the transverse processes C4–C6.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -2596,7 +2596,7 @@
         "neck-rotation",
         "neck-lateral-flexion"
       ],
-      "actionText": "Extends, rotates and laterally flexes the head.",
+      "actionText": "Extends, rotates and laterally flexes the neck; inserts on the mastoid process.",
       "clinical": null,
       "notes": "Spelled 'Splenius Capitus' on the source slide.",
       "images": {
@@ -2642,7 +2642,7 @@
         "neck-rotation",
         "neck-lateral-flexion"
       ],
-      "actionText": "Extends, rotates and laterally flexes the neck.",
+      "actionText": "Extends, rotates and laterally flexes the neck; inserts on the transverse processes C1–C3.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -2690,7 +2690,7 @@
         "spinal-extension",
         "trunk-lateral-flexion"
       ],
-      "actionText": "Extends and laterally flexes the vertebral column. Most lateral of the erector spinae.",
+      "actionText": "Extends the spine and laterally flexes the trunk; inserts on the angles of ribs.",
       "clinical": null,
       "notes": "Sub-muscles: lumborum, thoracis, cervicis.",
       "images": {
@@ -2739,7 +2739,7 @@
         "spinal-extension",
         "trunk-lateral-flexion"
       ],
-      "actionText": "Extends and laterally flexes the vertebral column and head. Longest of the erector spinae.",
+      "actionText": "Extends the spine and laterally flexes the trunk; inserts on the ribs.",
       "clinical": null,
       "notes": "Sub-muscles: thoracis, cervicis, capitis.",
       "images": {
@@ -2783,7 +2783,7 @@
       "actions": [
         "spinal-extension"
       ],
-      "actionText": "Extends the vertebral column. Smallest and most medial of the erector spinae.",
+      "actionText": "Extends the spine; inserts on the spinous processes of upper thoracic & cervical vertebrae.",
       "clinical": null,
       "notes": "Sub-muscles: thoracis, cervicis, capitis.",
       "images": {
@@ -2828,7 +2828,7 @@
         "spinal-extension",
         "trunk-rotation"
       ],
-      "actionText": "Extends the vertebral column and head; rotates contralaterally.",
+      "actionText": "Extends the spine and rotates the trunk.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -2875,7 +2875,7 @@
         "spinal-extension",
         "trunk-rotation"
       ],
-      "actionText": "Stabilises the vertebrae; extends and rotates the spine.",
+      "actionText": "Stabilises and extends the spine; rotates the trunk.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -2920,7 +2920,7 @@
         "spinal-stabilisation",
         "trunk-rotation"
       ],
-      "actionText": "Stabilises and rotates the vertebrae.",
+      "actionText": "Stabilises the spine and rotates the trunk.",
       "clinical": null,
       "notes": "Sub-muscles: rotatores breves, rotatores longi.",
       "images": {
@@ -2964,7 +2964,7 @@
       "actions": [
         "spinal-extension"
       ],
-      "actionText": "Extends the vertebral column.",
+      "actionText": "Extends the spine; inserts on the adjacent spinous processes.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -3008,7 +3008,7 @@
       "actions": [
         "trunk-lateral-flexion"
       ],
-      "actionText": "Lateral flexion of the vertebral column.",
+      "actionText": "Laterally flexes the trunk.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -3055,7 +3055,7 @@
         "neck-flexion",
         "neck-rotation"
       ],
-      "actionText": "Flexes and slightly rotates the neck.",
+      "actionText": "Flexes and rotates the neck.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -3099,7 +3099,7 @@
       "actions": [
         "neck-flexion"
       ],
-      "actionText": "Flexes the head and neck.",
+      "actionText": "Flexes the neck.",
       "clinical": null,
       "notes": "Spelled 'Longus Capitus' on the source slide.",
       "images": {
@@ -3151,7 +3151,7 @@
         "trunk-flexion",
         "core-stabilisation"
       ],
-      "actionText": "Flexes the vertebral column and stabilises the pelvis.",
+      "actionText": "Flexes the trunk and stabilises the core.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -3211,7 +3211,7 @@
         "trunk-lateral-flexion",
         "core-stabilisation"
       ],
-      "actionText": "Compresses the abdomen, rotates the trunk contralaterally, lateral flexion.",
+      "actionText": "Rotates and laterally flexes the trunk; stabilises the core; inserts on the linea alba.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -3278,7 +3278,7 @@
         "trunk-lateral-flexion",
         "core-stabilisation"
       ],
-      "actionText": "Compresses the abdomen, rotates the trunk ipsilaterally, lateral flexion.",
+      "actionText": "Rotates and laterally flexes the trunk; stabilises the core; inserts on the ribs 10–12.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -3343,7 +3343,7 @@
       "actions": [
         "core-stabilisation"
       ],
-      "actionText": "Compresses the abdomen and stabilises the trunk.",
+      "actionText": "Stabilises the core.",
       "clinical": null,
       "notes": "Written 'Transverse abdominis' on the source slide.",
       "images": {
@@ -3395,7 +3395,7 @@
         "trunk-lateral-flexion",
         "core-stabilisation"
       ],
-      "actionText": "Lateral flexion of the trunk; stabilises the 12th rib.",
+      "actionText": "Laterally flexes the trunk and stabilises the core.",
       "clinical": null,
       "notes": "The 'hip-hiker'; deep to erector spinae, between the 12th rib and pelvis.",
       "images": {
@@ -3443,7 +3443,7 @@
         "ankle-dorsiflexion",
         "foot-inversion"
       ],
-      "actionText": "Dorsiflexion and inversion of the foot; controls foot drop during walking.",
+      "actionText": "Dorsiflexes the ankle and inverts the foot.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -3491,7 +3491,7 @@
         "toe-extension",
         "ankle-dorsiflexion"
       ],
-      "actionText": "Extends the big toe and dorsiflexes the foot.",
+      "actionText": "Extends the toes and dorsiflexes the ankle; inserts on the base of distal phalanx of big toe.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -3540,7 +3540,7 @@
         "toe-extension",
         "ankle-dorsiflexion"
       ],
-      "actionText": "Extends toes 2–5 and dorsiflexes the foot.",
+      "actionText": "Extends the toes and dorsiflexes the ankle; inserts on the distal phalanges of toes 2–5.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -3588,7 +3588,7 @@
         "ankle-dorsiflexion",
         "foot-eversion"
       ],
-      "actionText": "Dorsiflexion and eversion of the foot.",
+      "actionText": "Dorsiflexes the ankle and everts the foot.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -3637,7 +3637,7 @@
         "foot-eversion",
         "ankle-plantarflexion"
       ],
-      "actionText": "Eversion and plantarflexion; supports the arches of the foot.",
+      "actionText": "Everts the foot and plantarflexes the ankle; inserts on the medial cuneiform.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -3685,7 +3685,7 @@
         "foot-eversion",
         "ankle-plantarflexion"
       ],
-      "actionText": "Eversion and weak plantarflexion.",
+      "actionText": "Everts the foot and plantarflexes the ankle; inserts on the tuberosity of 5th metatarsal.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -3733,7 +3733,7 @@
         "ankle-plantarflexion",
         "knee-flexion"
       ],
-      "actionText": "Plantarflexion (especially with the knee extended) and knee flexion.",
+      "actionText": "Plantarflexes the ankle and flexes the knee; arises from the medial & lateral femoral condyles.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -3780,7 +3780,7 @@
       "actions": [
         "ankle-plantarflexion"
       ],
-      "actionText": "Plantarflexion, independent of knee position.",
+      "actionText": "Plantarflexes the ankle.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -3828,7 +3828,7 @@
         "ankle-plantarflexion",
         "knee-flexion"
       ],
-      "actionText": "Weak plantarflexion and knee flexion.",
+      "actionText": "Plantarflexes the ankle and flexes the knee; arises from the lateral supracondylar ridge of femur.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -3879,7 +3879,7 @@
         "foot-inversion",
         "ankle-plantarflexion"
       ],
-      "actionText": "Inversion and plantarflexion; supports the medial longitudinal arch.",
+      "actionText": "Inverts the foot and plantarflexes the ankle.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -3927,7 +3927,7 @@
         "toe-flexion",
         "ankle-plantarflexion"
       ],
-      "actionText": "Flexes toes 2–5 and assists plantarflexion.",
+      "actionText": "Flexes the toes and plantarflexes the ankle; inserts on the distal phalanges of toes 2–5.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -3975,7 +3975,7 @@
         "toe-flexion",
         "ankle-plantarflexion"
       ],
-      "actionText": "Flexes the big toe and assists plantarflexion.",
+      "actionText": "Flexes the toes and plantarflexes the ankle; inserts on the distal phalanx of big toe.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -4023,7 +4023,7 @@
       "actions": [
         "toe-extension"
       ],
-      "actionText": "Extends digits 2–4.",
+      "actionText": "Extends the toes; inserts on the digits 2–4.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -4070,7 +4070,7 @@
       "actions": [
         "toe-extension"
       ],
-      "actionText": "Extends digit 1.",
+      "actionText": "Extends the toes; inserts on the proximal phalanx of digit 1.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -4118,7 +4118,7 @@
       "actions": [
         "toe-flexion"
       ],
-      "actionText": "Flexes toes 2–5 at the proximal interphalangeal joints.",
+      "actionText": "Flexes the toes; inserts on the middle phalanges of toes 2–5.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -4169,7 +4169,7 @@
         "toe-abduction",
         "toe-flexion"
       ],
-      "actionText": "Abducts and flexes the big toe; supports the medial arch.",
+      "actionText": "Abducts and flexes the toes; inserts on the medial side of base of proximal phalanx of big toe.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -4219,7 +4219,7 @@
         "toe-abduction",
         "toe-flexion"
       ],
-      "actionText": "Abducts and flexes the 5th toe.",
+      "actionText": "Abducts and flexes the toes; inserts on the lateral side of base of proximal phalanx of 5th toe.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -4267,7 +4267,7 @@
       "actions": [
         "toe-flexion"
       ],
-      "actionText": "Assists flexor digitorum longus in flexing toes 2–5.",
+      "actionText": "Flexes the toes; inserts on the posterolateral margin of tendon of flexor digitorum longus.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -4323,7 +4323,7 @@
         "toe-flexion",
         "toe-extension"
       ],
-      "actionText": "Flex the metatarsophalangeal joints and extend the interphalangeal joints of toes 2–5.",
+      "actionText": "Flexes the metatarsophalangeal joints of toes 2–5 while extending their interphalangeal joints.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -4371,7 +4371,7 @@
       "actions": [
         "toe-flexion"
       ],
-      "actionText": "Flexes the big toe at the metatarsophalangeal joint.",
+      "actionText": "Flexes the toes; inserts on the medial and lateral sides of the base of the proximal phalanx of the big toe.",
       "clinical": null,
       "notes": "The two sesamoid bones of the foot sit within its tendons.",
       "images": {
@@ -4420,7 +4420,7 @@
       "actions": [
         "toe-adduction"
       ],
-      "actionText": "Adducts the big toe; maintains the transverse arch.",
+      "actionText": "Adducts the toes.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -4468,7 +4468,7 @@
       "actions": [
         "toe-flexion"
       ],
-      "actionText": "Flexes the 5th toe at the metatarsophalangeal joint.",
+      "actionText": "Flexes the toes; inserts on the base of proximal phalanx of 5th toe.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -4516,7 +4516,7 @@
       "actions": [
         "toe-flexion"
       ],
-      "actionText": "Flexes the 5th toe; draws the metatarsal medially and downward.",
+      "actionText": "Flexes the toes; inserts on the lateral part of 5th metatarsal.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -4565,7 +4565,7 @@
         "toe-flexion",
         "toe-extension"
       ],
-      "actionText": "Abduct toes 2–4 from the second toe axis; flex MTP joints and extend IP joints.",
+      "actionText": "Abducts the toes, flexing the metatarsophalangeal joints while extending the interphalangeal joints.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -4615,7 +4615,7 @@
         "toe-flexion",
         "toe-extension"
       ],
-      "actionText": "Adduct toes 3–5 toward the second toe; flex MTP joints and extend IP joints.",
+      "actionText": "Adducts the toes, flexing the metatarsophalangeal joints while extending the interphalangeal joints.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -4664,7 +4664,7 @@
         "forearm-pronation",
         "elbow-flexion"
       ],
-      "actionText": "Pronation of the forearm and weak elbow flexion.",
+      "actionText": "Pronates the forearm and flexes the elbow.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -4712,7 +4712,7 @@
         "wrist-flexion",
         "radial-deviation"
       ],
-      "actionText": "Wrist flexion and radial deviation.",
+      "actionText": "Flexes and radially deviates the wrist.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -4759,7 +4759,7 @@
       "actions": [
         "wrist-flexion"
       ],
-      "actionText": "Tenses the palmar fascia and assists wrist flexion.",
+      "actionText": "Flexes the wrist.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -4809,7 +4809,7 @@
         "wrist-flexion",
         "ulnar-deviation"
       ],
-      "actionText": "Wrist flexion and ulnar deviation.",
+      "actionText": "Flexes and ulnarly deviates the wrist.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -4859,7 +4859,7 @@
         "finger-flexion",
         "wrist-flexion"
       ],
-      "actionText": "Flexes the PIP joints of digits 2–5 and assists wrist flexion.",
+      "actionText": "Flexes the fingers and flexes the wrist; inserts on the middle phalanges of digits 2–5.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -4914,7 +4914,7 @@
         "finger-flexion",
         "wrist-flexion"
       ],
-      "actionText": "Flexes the DIP joints of digits 2–5 and assists wrist flexion.",
+      "actionText": "Flexes the fingers and flexes the wrist; inserts on the distal phalanges of digits 2–5.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -4961,7 +4961,7 @@
       "actions": [
         "thumb-flexion"
       ],
-      "actionText": "Flexes the thumb at the IP joint.",
+      "actionText": "Flexes the thumb; inserts on the distal phalanx of the thumb.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -5007,7 +5007,7 @@
       "actions": [
         "forearm-pronation"
       ],
-      "actionText": "Pronation of the forearm.",
+      "actionText": "Pronates the forearm.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -5054,7 +5054,7 @@
       "actions": [
         "elbow-flexion"
       ],
-      "actionText": "Flexes the forearm in a semi-pronated position (the handshake grip).",
+      "actionText": "Flexes the elbow; inserts on the styloid process of radius.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -5102,7 +5102,7 @@
         "wrist-extension",
         "radial-deviation"
       ],
-      "actionText": "Wrist extension and radial deviation.",
+      "actionText": "Extends and radially deviates the wrist; inserts on the base of 2nd metacarpal.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -5150,7 +5150,7 @@
         "wrist-extension",
         "radial-deviation"
       ],
-      "actionText": "Wrist extension and radial deviation.",
+      "actionText": "Extends and radially deviates the wrist; inserts on the base of 3rd metacarpal.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -5196,7 +5196,7 @@
       "actions": [
         "finger-extension"
       ],
-      "actionText": "Extends the MCP and IP joints of digits 2–5.",
+      "actionText": "Extends the fingers; inserts on the extensor expansions of digits 2–5.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -5242,7 +5242,7 @@
       "actions": [
         "finger-extension"
       ],
-      "actionText": "Extends the MCP and IP joints of digit 5.",
+      "actionText": "Extends the fingers; inserts on the extensor expansion of digit 5.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -5290,7 +5290,7 @@
         "wrist-extension",
         "ulnar-deviation"
       ],
-      "actionText": "Wrist extension and ulnar deviation.",
+      "actionText": "Extends and ulnarly deviates the wrist.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -5338,7 +5338,7 @@
       "actions": [
         "forearm-supination"
       ],
-      "actionText": "Supination of the forearm.",
+      "actionText": "Supinates the forearm.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -5386,7 +5386,7 @@
         "thumb-abduction",
         "thumb-extension"
       ],
-      "actionText": "Abducts and extends the thumb at the CMC joint.",
+      "actionText": "Abducts and extends the thumb.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -5433,7 +5433,7 @@
       "actions": [
         "thumb-extension"
       ],
-      "actionText": "Extends the thumb at the MCP joint.",
+      "actionText": "Extends the thumb; inserts on the base of proximal phalanx of thumb.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -5480,7 +5480,7 @@
       "actions": [
         "thumb-extension"
       ],
-      "actionText": "Extends the thumb at the IP joint.",
+      "actionText": "Extends the thumb; inserts on the base of distal phalanx of thumb.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -5527,7 +5527,7 @@
       "actions": [
         "finger-extension"
       ],
-      "actionText": "Extends the MCP and IP joints of digit 2.",
+      "actionText": "Extends the fingers; inserts on the extensor expansion of digit 2.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -5576,7 +5576,7 @@
       "actions": [
         "thumb-abduction"
       ],
-      "actionText": "Abducts the thumb at the MCP joint.",
+      "actionText": "Abducts the thumb.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -5625,7 +5625,7 @@
       "actions": [
         "thumb-flexion"
       ],
-      "actionText": "Flexes the thumb at the MCP joint.",
+      "actionText": "Flexes the thumb; inserts on the base of proximal phalanx of thumb.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -5770,7 +5770,7 @@
       "actions": [
         "finger-abduction"
       ],
-      "actionText": "Abducts digit 5.",
+      "actionText": "Abducts the fingers; inserts on the proximal phalanx of digit 5.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -5818,7 +5818,7 @@
       "actions": [
         "finger-flexion"
       ],
-      "actionText": "Flexes digit 5 at the MCP joint.",
+      "actionText": "Flexes the fingers.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -5866,7 +5866,7 @@
       "actions": [
         "finger-opposition"
       ],
-      "actionText": "Opposes digit 5.",
+      "actionText": "Opposes the little finger.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -5921,7 +5921,7 @@
         "finger-flexion",
         "finger-extension"
       ],
-      "actionText": "Flex the MCP joints and extend the IP joints.",
+      "actionText": "Flexes the metacarpophalangeal joints of digits 2–5 while extending their interphalangeal joints.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -5968,7 +5968,7 @@
       "actions": [
         "finger-abduction"
       ],
-      "actionText": "Abduct the digits — DAB: Dorsal ABduct.",
+      "actionText": "Abducts the fingers; inserts on the extensor expansions of digits 2–4.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -6015,7 +6015,7 @@
       "actions": [
         "finger-adduction"
       ],
-      "actionText": "Adduct the digits — PAD: Palmar ADduct.",
+      "actionText": "Adducts the fingers.",
       "clinical": null,
       "notes": null,
       "images": {
