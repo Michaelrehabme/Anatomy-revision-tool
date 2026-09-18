@@ -1,0 +1,141 @@
+import { describe, expect, it } from 'vitest';
+import {
+  buildDiagnostic,
+  pairDiagnostics,
+  summariseDiagnostics,
+  scoreDiagnostic,
+  DIAGNOSTIC_SIZE,
+  DIAGNOSTIC_VERSION,
+  MIN_PAIRED,
+  type DiagnosticResult,
+} from '../diagnostic';
+import { ALL_STRUCTURES } from '../../data/seed';
+
+/**
+ * Two properties carry the whole design: the same cohort must get the same
+ * twenty items months apart, and an unpaired sitting must never reach a mean.
+ * Everything else is arithmetic.
+ */
+
+function result(over: Partial<DiagnosticResult> & { userId: string; phase: 'baseline' | 'followUp' }): DiagnosticResult {
+  return {
+    cohortId: 'c1',
+    version: DIAGNOSTIC_VERSION,
+    correct: 10,
+    total: 20,
+    takenAt: '2026-10-01T09:00:00.000Z',
+    ...over,
+  };
+}
+
+describe('buildDiagnostic', () => {
+  it('draws the same items for a cohort every time it is asked', () => {
+    const a = buildDiagnostic(ALL_STRUCTURES, 'cohort-abc');
+    const b = buildDiagnostic(ALL_STRUCTURES, 'cohort-abc');
+    // This is the property a follow-up months later depends on.
+    expect(a.items.map((i) => i.structureId)).toEqual(b.items.map((i) => i.structureId));
+  });
+
+  it('draws a different set for a different cohort', () => {
+    const a = buildDiagnostic(ALL_STRUCTURES, 'cohort-abc');
+    const b = buildDiagnostic(ALL_STRUCTURES, 'cohort-xyz');
+    expect(a.items.map((i) => i.structureId)).not.toEqual(b.items.map((i) => i.structureId));
+  });
+
+  it('asks for twenty distinct structures', () => {
+    const spec = buildDiagnostic(ALL_STRUCTURES, 'cohort-abc');
+    expect(spec.items).toHaveLength(DIAGNOSTIC_SIZE);
+    expect(new Set(spec.items.map((i) => i.structureId)).size).toBe(DIAGNOSTIC_SIZE);
+  });
+
+  it('spreads across areas rather than measuring one region by luck', () => {
+    const spec = buildDiagnostic(ALL_STRUCTURES, 'cohort-abc');
+    // Nine areas exist; twenty items round-robin should touch most of them.
+    expect(new Set(spec.items.map((i) => i.area)).size).toBeGreaterThanOrEqual(7);
+  });
+
+  it('stamps the version, because a follow-up under different rules is not a follow-up', () => {
+    expect(buildDiagnostic(ALL_STRUCTURES, 'c1').version).toBe(DIAGNOSTIC_VERSION);
+  });
+});
+
+describe('scoreDiagnostic', () => {
+  it('counts correct answers', () => {
+    expect(scoreDiagnostic([true, false, true])).toEqual({ correct: 2, total: 3 });
+  });
+});
+
+describe('pairDiagnostics', () => {
+  it('pairs a student\'s baseline with their follow-up and reports points, not a ratio', () => {
+    const [gain] = pairDiagnostics([
+      result({ userId: 'u1', phase: 'baseline', correct: 8, total: 20, takenAt: '2026-10-01T09:00:00.000Z' }),
+      result({ userId: 'u1', phase: 'followUp', correct: 14, total: 20, takenAt: '2026-12-10T09:00:00.000Z' }),
+    ]);
+    expect(gain.baselinePct).toBe(40);
+    expect(gain.followUpPct).toBe(70);
+    // 40 to 70 is thirty POINTS, not a 75% improvement.
+    expect(gain.gainPoints).toBe(30);
+    expect(gain.daysBetween).toBe(70);
+  });
+
+  it('drops a student who only ever took one of the two', () => {
+    const gains = pairDiagnostics([
+      result({ userId: 'only-before', phase: 'baseline' }),
+      result({ userId: 'only-after', phase: 'followUp', correct: 19 }),
+    ]);
+    // Counting either would bias the mean by exactly who dropped out.
+    expect(gains).toEqual([]);
+  });
+
+  it('refuses to pair sittings built under different rules', () => {
+    const gains = pairDiagnostics([
+      result({ userId: 'u1', phase: 'baseline', version: 1 }),
+      result({ userId: 'u1', phase: 'followUp', version: 2, correct: 18 }),
+    ]);
+    expect(gains).toEqual([]);
+  });
+
+  it('measures from the first baseline when a student sat it twice', () => {
+    const [gain] = pairDiagnostics([
+      result({ userId: 'u1', phase: 'baseline', correct: 4, takenAt: '2026-10-01T09:00:00.000Z' }),
+      result({ userId: 'u1', phase: 'baseline', correct: 12, takenAt: '2026-11-01T09:00:00.000Z' }),
+      result({ userId: 'u1', phase: 'followUp', correct: 16, takenAt: '2026-12-01T09:00:00.000Z' }),
+    ]);
+    expect(gain.baselinePct).toBe(20);
+  });
+});
+
+describe('summariseDiagnostics', () => {
+  function cohort(n: number, before: number, after: number): DiagnosticResult[] {
+    const rows: DiagnosticResult[] = [];
+    for (let i = 0; i < n; i++) {
+      rows.push(result({ userId: `u${i}`, phase: 'baseline', correct: before, takenAt: '2026-10-01T09:00:00.000Z' }));
+      rows.push(result({ userId: `u${i}`, phase: 'followUp', correct: after, takenAt: '2026-12-01T09:00:00.000Z' }));
+    }
+    return rows;
+  }
+
+  it('reports the mean movement across a whole class', () => {
+    const out = summariseDiagnostics(cohort(12, 8, 14));
+    expect(out.paired).toBe(12);
+    expect(out.meanBaselinePct).toBe(40);
+    expect(out.meanFollowUpPct).toBe(70);
+    expect(out.meanGainPoints).toBe(30);
+    expect(out.improvedPct).toBe(100);
+    expect(out.reportable).toBe(true);
+  });
+
+  it('will not call a handful of students reportable', () => {
+    const out = summariseDiagnostics(cohort(MIN_PAIRED - 1, 8, 14));
+    expect(out.reportable).toBe(false);
+    // The figures are still there for anyone who wants them; the endorsement is not.
+    expect(out.meanGainPoints).toBe(30);
+  });
+
+  it('survives a cohort where nobody sat the follow-up', () => {
+    const out = summariseDiagnostics(cohort(10, 8, 14).filter((r) => r.phase === 'baseline'));
+    expect(out.paired).toBe(0);
+    expect(out.meanGainPoints).toBeNull();
+    expect(out.reportable).toBe(false);
+  });
+});
