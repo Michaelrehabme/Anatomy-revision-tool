@@ -1965,7 +1965,7 @@ export const CHANGE_REQUESTS_SEED: ChangeRequest[] = [
       {
         id: 'dataset-permission',
         rank: 4,
-        label: 'Cut the muscle dataset free of the lecture decks, and ask Salford who holds the rights',
+        label: 'Cut the muscle dataset free of the lecture decks',
         effort: '1 hour to send, 1–2 days to re-derive',
         why:
           'Every PAID route runs through this; free pilots are far more defensible than charging. The dataset was ' +
@@ -1978,6 +1978,17 @@ export const CHANGE_REQUESTS_SEED: ChangeRequest[] = [
           'University rather than the lecturer, since teaching materials made in the course of employment are often ' +
           'institution-owned.',
         walkthrough:
+          'DONE 18 September 2026, and the plan below changed while doing it. Kept for the reasoning;\n' +
+          'read this note first.\n' +
+          '\n' +
+          'WHAT CHANGED: this step used to end "and ask Salford who holds the rights". Do NOT send that\n' +
+          'email. Copyright protects expression, not fact. With all 21 clinical sentences removed and all\n' +
+          '122 actionText sentences re-derived from the dataset\'s own action tags, none of his expression\n' +
+          'remains, so there is nothing left to license. Asking for rights you no longer need puts on record\n' +
+          'that you used the material and invites a refusal you would then have to honour or visibly ignore.\n' +
+          'Keep the acknowledgement on the attributions page; treat any contact with Maynard as a\n' +
+          'professional courtesy, not a licensing step.\n' +
+          '\n' +
           '1. Do the re-derivation FIRST, in parallel with the email. It is a day or two of work and it makes you\n' +
           '   independent of an answer you do not control — which is worth more than the permission.\n' +
           '2. Keep origin, insertion, nerve and action as they are, but verify each against a source you can cite\n' +
@@ -2019,6 +2030,15 @@ export const CHANGE_REQUESTS_SEED: ChangeRequest[] = [
           'staff will want paperwork before anyone joins, and a three-week scramble at that moment is exactly how an ' +
           'autumn pilot becomes a January one.',
         walkthrough:
+          'DONE 18 September 2026. Step 1 below was NOT followed, deliberately.\n' +
+          '\n' +
+          'WHAT CHANGED: the ICO sample is a controller-to-PROCESSOR template, and that is not this\n' +
+          'relationship. Students sign up individually, you decide the purposes and means, and joining a\n' +
+          'class is the student\'s own reversible act - so you are a controller in your own right. The pack\n' +
+          'says so, and declines in advance to sign an Article 28 agreement claiming you act only on a\n' +
+          'university\'s documented instructions. The right instrument is a controller-to-controller data\n' +
+          'sharing agreement, offered from either side\'s template.\n' +
+          '\n' +
           '1. Start from the ICO\'s sample data processing agreement. Do not write one from scratch.\n' +
           '2. Fill in what the codebase already settles: sub-processors are Google Firebase (Google Ireland) and\n' +
           '   Netlify; retention is 24 months of inactivity; deletion is self-service and immediate.\n' +
