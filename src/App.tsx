@@ -70,7 +70,7 @@ const LegalRoutes = lazy(() => import('./features/legal/LegalRoutes'));
  * UK GDPR require these reachable by someone with no account who has not been
  * through onboarding. /privacy and /terms join this list under CR-025.
  */
-const LEGAL_PATHS = ['/privacy', '/terms', '/attributions', '/accessibility'];
+const LEGAL_PATHS = ['/privacy', '/terms', '/attributions', '/accessibility', '/refunds'];
 
 /** Dev-only hotspot authoring tool (CR-007) — route only registered in dev, see the /dev/hotspots Route below. */
 const HotspotEditorApp = lazy(() => import('./features/hotspotEditor/HotspotEditorApp'));
