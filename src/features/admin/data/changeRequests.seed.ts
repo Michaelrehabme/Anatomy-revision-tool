@@ -2386,4 +2386,56 @@ export const CHANGE_REQUESTS_SEED: ChangeRequest[] = [
       'with main, and the fourth held this. All four are tagged under legacy/ and dropped locally, so this change ' +
       'request is now the only record that the labrum was ever wanted.',
   },
+  {
+    ref: 'CR-035',
+    title: 'Finish fill-the-blank, or retire it',
+    category: 'content',
+    priority: 'p1',
+    effort: 'm',
+    status: 'new',
+    description:
+      'fill-blank is a generated question type that no picker offers, and the reason turns out to be that it is not ' +
+      'finished. It produces 294 questions of which 285 never name the structure they are about, because the generator ' +
+      'blanks a word out of an attachment record rather than writing a question around it. Its session screen is ' +
+      'unfinished to match.',
+    prompt:
+      'Decide whether fill-the-blank ships, then make it true either way.\n' +
+      '\n' +
+      'WHAT IS WRONG WITH THE QUESTIONS\n' +
+      'Run the generator and read them. Three real examples, with the blank shown as ______:\n' +
+      '  Scapula          "______ origin - supraglenoid tubercle"\n' +
+      '  Medial Malleolus "______ origin"\n' +
+      '  Talus            "Ankle joint with the ______"\n' +
+      'None of these is answerable. The stem is a row from the attachment data with a word removed, so the thing being ' +
+      'asked about is exactly the thing that was removed. 285 of 294 never mention their own structure; the 9 that do ' +
+      'are accidents of phrasing.\n' +
+      '\n' +
+      'WHAT IS WRONG WITH THE SCREEN\n' +
+      'FillBlankSession renders top-left with no header, no centred column, no confidence buttons - none of the shell ' +
+      'every other session has. It has never been reachable, so nobody has ever looked at it.\n' +
+      '\n' +
+      'THE FIX, IF IT SHIPS\n' +
+      'A stem has to name its subject: "Biceps brachii originates from the ______ of the scapula" rather than ' +
+      '"______ origin". That means writing sentences round the attachment data rather than punching holes in it, which ' +
+      'is closer to how the OINA cards were built - look there first, because if fill-the-blank ends up asking the same ' +
+      'four facts in the same words, it is a second skin on OINA rather than a format of its own, and the honest answer ' +
+      'is to delete it.\n' +
+      '\n' +
+      'THE FIX, IF IT DOES NOT\n' +
+      'Delete fillBlank.ts, blankParser.ts, FillBlankSession and the fill-blank branch of generateSet, and drop the ' +
+      'member from QuestionType. Leaving a type that cannot be chosen is how this went unnoticed for months.\n' +
+      '\n' +
+      'ACCEPTANCE\n' +
+      '- Either every fill-blank question names the structure it asks about and the session looks like the others, or ' +
+      'the type is gone from the codebase.\n' +
+      '- QUESTION_FORMATS in lib/questionFormats.ts offers every remaining QuestionType, and its test says so.',
+    dependsOn: [],
+    createdAt: '2026-09-18T10:40:00.000Z',
+    startedAt: null,
+    completedAt: null,
+    notes:
+      'Found while adding a missing format to the pickers. The count looked healthy - 294 questions over 134 ' +
+      'structures - and it was only on running one that the stems turned out to be unanswerable. P1 rather than P2 ' +
+      'because the decision is cheap and the code is load-bearing in generateSet either way.',
+  },
 ];

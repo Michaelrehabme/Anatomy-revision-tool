@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import type { MultiSelectQuestion } from '../../types/question';
 import type { Confidence } from '../../types/attempt';
-import { REGION_LABELS } from '../../types/region';
 import { scoreMultiSelect } from '../../lib/multiSelectScoring';
 import { ConfidenceButtons } from '../shared/ConfidenceButtons';
 import { Button } from '../shared/Button';
 import { ExamAnswerFooter } from '../shared/ExamAnswerFooter';
+import { questionHeaderLabel } from '../../lib/questionFormats';
 
 interface MultiSelectSessionProps {
   question: MultiSelectQuestion;
@@ -70,7 +70,7 @@ export function MultiSelectSession({ question, onAnswer, onNext, examMode }: Mul
             className="text-center"
             style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--acc)' }}
           >
-            Select all that apply · {REGION_LABELS[question.region]}
+            {questionHeaderLabel(question)}
           </div>
           <h2
             className="mx-auto mt-6 text-center"

@@ -47,6 +47,12 @@ export function buildIndexes(structures: AnatomyStructure[]): StructureIndexes {
 
 export interface StructureFilter {
   category?: Category;
+  /**
+   * OR-matched against s.category; takes precedence over `category` when
+   * non-empty. Empty/undefined = no category filter. Bones and landmarks are
+   * the pair this exists for — the same picture, revised together.
+   */
+  categories?: Category[];
   region?: Region;
   /** OR-matched against s.region; takes precedence over `region` when non-empty. Empty/undefined = no region filter. */
   regions?: Region[];
@@ -80,9 +86,11 @@ export function filterStructures(
   };
   const groupMatch = (s: AnatomyStructure) =>
     !filter.groups?.length || (s.groups ?? []).some((g) => filter.groups!.includes(g));
+  const categoryMatch = (category: Category) =>
+    filter.categories?.length ? filter.categories.includes(category) : !filter.category || category === filter.category;
   return structures.filter(
     (s) =>
-      (!filter.category || s.category === filter.category) &&
+      categoryMatch(s.category) &&
       regionMatch(s.region) &&
       (!filter.subregion || s.subregion === filter.subregion) &&
       areaMatch(s) &&

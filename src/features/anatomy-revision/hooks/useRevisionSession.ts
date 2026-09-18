@@ -55,6 +55,8 @@ export interface RevisionSetupParams {
   /** OINA only (CR-018) — how many attempts get a teaching card first; 0 for none. */
   learnCardAttempts?: number;
   category?: Category;
+  /** The categories the session was scoped to. Empty/absent = every category. */
+  categories?: Category[];
   difficulty?: Difficulty;
   /** practice/adaptive = study session (immediate feedback); assessment = exam session (no feedback until the end). See CR-009. */
   mode: 'practice' | 'assessment' | 'adaptive';

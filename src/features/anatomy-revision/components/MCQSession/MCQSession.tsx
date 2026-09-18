@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import type { MCQQuestion } from '../../types/question';
 import type { AnatomyImageAsset } from '../../types/image';
 import type { Confidence } from '../../types/attempt';
-import { questionLocationLabel } from '../../types/region';
 import { HotspotOverlay } from '../LocateStructureSession/HotspotOverlay';
 import { ImageViewer } from '../shared/ImageViewer';
 import { rotationFramesFor } from '../../lib/rotationFrames';
@@ -10,6 +9,7 @@ import { promptHighlightHotspots } from '../../lib/promptHighlight';
 import { ConfidenceButtons } from '../shared/ConfidenceButtons';
 import { Button } from '../shared/Button';
 import { ExamAnswerFooter } from '../shared/ExamAnswerFooter';
+import { questionHeaderLabel } from '../../lib/questionFormats';
 
 interface MCQSessionProps {
   question: MCQQuestion;
@@ -85,7 +85,7 @@ export function MCQSession({ question, imagesById, onAnswer, onNext, examMode }:
             className="text-center"
             style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--acc)' }}
           >
-            {question.promptKind[0].toUpperCase() + question.promptKind.slice(1)} · {questionLocationLabel(question)}
+            {questionHeaderLabel(question)}
           </div>
           <h2
             className="mx-auto mt-6 text-center"

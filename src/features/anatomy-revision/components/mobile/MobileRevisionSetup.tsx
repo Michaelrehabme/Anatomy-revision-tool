@@ -17,15 +17,25 @@ import {
 } from '../../lib/preferences';
 import type { RevisionSetupParams } from '../../hooks/useRevisionSession';
 import { MobileShell } from './MobileShell';
+import { QUESTION_FORMATS } from '../../lib/questionFormats';
 
-const FORMAT_OPTIONS: { value: QuestionType; label: string }[] = [
-  { value: 'flashcard', label: 'flashcard' },
-  { value: 'mcq', label: 'multiple-choice' },
-  { value: 'identify-typed', label: 'type-answer' },
-  { value: 'multi-select', label: 'select-all' },
-  { value: 'locate', label: 'locate' },
-  { value: 'oina', label: 'OINA cards' },
-];
+/**
+ * Phone labels are lower-case and hyphenated, which is this screen's house
+ * style rather than the desktop's. Keyed by QuestionType so a new format
+ * cannot reach the phone unlabelled the way fill-blank reached neither picker.
+ */
+const MOBILE_FORMAT_LABELS: Record<QuestionType, string> = {
+  flashcard: 'flashcard',
+  mcq: 'multiple-choice',
+  'identify-typed': 'type-answer',
+  'multi-select': 'select-all',
+  // Labelled but not offered — QUESTION_FORMATS leaves it out. See CR-035.
+  'fill-blank': 'fill-the-blank',
+  locate: 'locate',
+  oina: 'OINA cards',
+};
+const FORMAT_OPTIONS = QUESTION_FORMATS.map((o) => ({ value: o.value, label: MOBILE_FORMAT_LABELS[o.value] }));
+const ALL_QUESTION_TYPES = FORMAT_OPTIONS.map((o) => o.value);
 
 const OINA_FACT_LABELS: Record<OinaPromptKind, string> = {
   origin: 'origin',
@@ -37,8 +47,7 @@ const OINA_FACT_LABELS: Record<OinaPromptKind, string> = {
 // Mirrors the desktop picker. Mobile was hardcoded to muscles before CR-017, which put
 // 187 of the 309 structures — every bone, bony landmark and joint — out of reach on a
 // phone, and left the area picker promising counts the session would not honour.
-const CATEGORY_OPTIONS: { value: Category | 'all'; label: string }[] = [
-  { value: 'all', label: 'all' },
+const CATEGORY_OPTIONS: { value: Category; label: string }[] = [
   { value: 'muscle', label: 'muscles' },
   { value: 'bone', label: 'bones' },
   { value: 'landmark', label: 'landmarks' },
@@ -74,7 +83,8 @@ function chipStyle(selected: boolean) {
 /** Screen 04 (mobile). No tab bar (not in the mockup's showTabs list) — a step within the Study flow. */
 export function MobileRevisionSetup({ content, repository, userId, areas, onStart, onBack }: MobileRevisionSetupProps) {
   const [types, setTypes] = useState<QuestionType[]>(['mcq', 'identify-typed']);
-  const [category, setCategory] = useState<Category | 'all'>('all');
+  // Empty means every category, as on the area picker.
+  const [categories, setCategories] = useState<Category[]>([]);
   const [count, setCount] = useState(15);
   const [customLength, setCustomLength] = useState('');
   const [customActive, setCustomActive] = useState(false);
@@ -97,6 +107,11 @@ export function MobileRevisionSetup({ content, repository, userId, areas, onStar
   const toggleType = (type: QuestionType) => {
     setTypes((prev) => (prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]));
   };
+  const allTypes = types.length === ALL_QUESTION_TYPES.length;
+  const chooseAllTypes = () => setTypes(allTypes ? types : [...ALL_QUESTION_TYPES]);
+  const toggleCategory = (category: Category) => {
+    setCategories((prev) => (prev.includes(category) ? prev.filter((c) => c !== category) : [...prev, category]));
+  };
 
   const oinaSelected = types.includes('oina');
   const toggleFact = (fact: OinaPromptKind) => {
@@ -115,7 +130,7 @@ export function MobileRevisionSetup({ content, repository, userId, areas, onStar
   const inPool = (s: (typeof content.structures)[number]) => {
     return (
       (areas.size === 0 || areasOf(s).some((a) => areas.has(a))) &&
-      (category === 'all' || s.category === category) &&
+      (categories.length === 0 || categories.includes(s.category)) &&
       (groups.length === 0 || (s.groups ?? []).some((g) => groups.includes(g)))
     );
   };
@@ -132,11 +147,11 @@ export function MobileRevisionSetup({ content, repository, userId, areas, onStar
         groups: groups.length ? groups : undefined,
         oinaPromptKinds: oinaSelected ? oinaFacts : undefined,
         learnCardAttempts: 0,
-        category: category === 'all' ? undefined : category,
+        categories: categories.length ? categories : undefined,
         mode: 'practice',
         seed: 1,
       }).length,
-    [content.structures, content.images, types, areas, groups, oinaSelected, oinaFacts, category],
+    [content.structures, content.images, types, areas, groups, oinaSelected, oinaFacts, categories],
   );
   // The Begin label used to say "15 questions" under an OINA panel promising
   // hundreds; this is the number the session will actually contain.
@@ -164,7 +179,7 @@ export function MobileRevisionSetup({ content, repository, userId, areas, onStar
       groups: groups.length ? groups : undefined,
       oinaPromptKinds: oinaSelected ? oinaFacts : undefined,
       learnCardAttempts: oinaSelected ? learnCards : undefined,
-      category: category === 'all' ? undefined : category,
+      categories: categories.length ? categories : undefined,
       mode,
       timerMinutes: mode === 'assessment' && timerMinutes > 0 ? timerMinutes : undefined,
     };
@@ -174,7 +189,7 @@ export function MobileRevisionSetup({ content, repository, userId, areas, onStar
       groups: params.groups,
       oinaPromptKinds: params.oinaPromptKinds,
       learnCardAttempts: params.learnCardAttempts,
-      category: category === 'all' ? undefined : category,
+      categories: categories.length ? categories : undefined,
       mode,
       // Undefined caps nothing: practice mode then emits every eligible question,
       // which is what an OINA session is for (CR-018).
@@ -188,7 +203,7 @@ export function MobileRevisionSetup({ content, repository, userId, areas, onStar
     onStart(questions, params);
   };
 
-  const noun = category === 'all' ? 'structures' : category === 'muscle' ? 'muscles' : `${category}s`;
+  const noun = categories.length === 1 ? CATEGORY_OPTIONS.find((o) => o.value === categories[0])!.label : 'structures';
   const summary = `${areasArray.length ? areasArray.map((a) => AREA_LABELS[a]).join(', ') : 'All areas'} · ${poolSize} ${noun} in the pool.`;
 
   return (
@@ -210,11 +225,21 @@ export function MobileRevisionSetup({ content, repository, userId, areas, onStar
           Question formats
         </div>
         <div className="mt-3.5 flex flex-wrap gap-2.5">
+          <button
+            type="button"
+            onClick={chooseAllTypes}
+            aria-pressed={allTypes}
+            className="inline-flex min-h-[44px] items-center justify-center rounded-full px-4.5"
+            style={{ fontFamily: 'var(--font-display)', fontSize: 15.5, ...chipStyle(allTypes) }}
+          >
+            all formats
+          </button>
           {FORMAT_OPTIONS.map((opt) => (
             <button
               key={opt.value}
               type="button"
               onClick={() => toggleType(opt.value)}
+              aria-pressed={types.includes(opt.value)}
               className="inline-flex min-h-[44px] items-center justify-center rounded-full px-4.5"
               style={{ fontFamily: 'var(--font-display)', fontSize: 15.5, ...chipStyle(types.includes(opt.value)) }}
             >
@@ -297,14 +322,23 @@ export function MobileRevisionSetup({ content, repository, userId, areas, onStar
           Category
         </div>
         <div className="mt-3.5 flex flex-wrap gap-2.5">
+          <button
+            type="button"
+            onClick={() => setCategories([])}
+            aria-pressed={categories.length === 0}
+            className="inline-flex min-h-[44px] items-center justify-center rounded-full px-4.5"
+            style={{ fontFamily: 'var(--font-display)', fontSize: 15.5, ...chipStyle(categories.length === 0) }}
+          >
+            all
+          </button>
           {CATEGORY_OPTIONS.map((opt) => (
             <button
               key={opt.value}
               type="button"
-              onClick={() => setCategory(opt.value)}
-              aria-pressed={category === opt.value}
+              onClick={() => toggleCategory(opt.value)}
+              aria-pressed={categories.includes(opt.value)}
               className="inline-flex min-h-[44px] items-center justify-center rounded-full px-4.5"
-              style={{ fontFamily: 'var(--font-display)', fontSize: 15.5, ...chipStyle(category === opt.value) }}
+              style={{ fontFamily: 'var(--font-display)', fontSize: 15.5, ...chipStyle(categories.includes(opt.value)) }}
             >
               {opt.label}
             </button>

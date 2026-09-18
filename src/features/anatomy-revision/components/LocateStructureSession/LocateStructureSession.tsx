@@ -9,6 +9,7 @@ import { Button } from '../shared/Button';
 import { ExamAnswerFooter } from '../shared/ExamAnswerFooter';
 import { recordHintShown, shouldShowHint } from '../../lib/firstTimeHints';
 import { locateFeedback } from './locateFeedback';
+import { questionHeaderLabel } from '../../lib/questionFormats';
 
 interface LocateStructureSessionProps {
   question: LocateQuestion;
@@ -100,7 +101,7 @@ export function LocateStructureSession({
         className="text-center"
         style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--acc)' }}
       >
-        Locate
+        {questionHeaderLabel(question)}
       </div>
       <h2
         className="mt-5 text-center"

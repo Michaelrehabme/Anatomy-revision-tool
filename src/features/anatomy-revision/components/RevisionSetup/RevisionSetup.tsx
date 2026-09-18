@@ -9,6 +9,7 @@ import type { Area } from '../../types/region';
 import { AREA_LABELS } from '../../types/region';
 import { areasOf, isMuscle, MUSCLE_GROUP_LABELS } from '../../types/structure';
 import { generateRevisionSet } from '../../lib/questionGenerators/generateSet';
+import { QUESTION_FORMATS } from '../../lib/questionFormats';
 import {
   LEARN_CARD_ATTEMPT_LABELS,
   LEARN_CARD_ATTEMPT_OPTIONS,
@@ -22,14 +23,8 @@ import { Button } from '../shared/Button';
 import { AppShell } from '../shell/AppShell';
 import { NavSidebar, type NavSection } from '../shell/NavSidebar';
 
-const QUESTION_TYPE_OPTIONS: { value: QuestionType; label: string }[] = [
-  { value: 'mcq', label: 'Multiple choice' },
-  { value: 'identify-typed', label: 'Type answer' },
-  { value: 'flashcard', label: 'Flashcard' },
-  { value: 'multi-select', label: 'Select all' },
-  { value: 'locate', label: 'Locate' },
-  { value: 'oina', label: 'OINA Cards' },
-];
+const QUESTION_TYPE_OPTIONS = QUESTION_FORMATS;
+const ALL_QUESTION_TYPES = QUESTION_FORMATS.map((o) => o.value);
 
 const OINA_FACT_LABELS: Record<OinaPromptKind, string> = {
   origin: 'Origin',
@@ -38,14 +33,21 @@ const OINA_FACT_LABELS: Record<OinaPromptKind, string> = {
   action: 'Action',
 };
 
-const CATEGORY_OPTIONS: { value: Category | 'all'; label: string }[] = [
-  { value: 'all', label: 'All categories' },
-  { value: 'muscle', label: 'Muscles' },
-  { value: 'bone', label: 'Bones' },
-  { value: 'landmark', label: 'Landmarks' },
-  { value: 'joint', label: 'Joints' },
-  { value: 'ligament', label: 'Ligaments' },
+/**
+ * Categories are multi-select, and an empty set means every one of them — the
+ * same convention the area picker uses, so "narrow it or leave it alone" works
+ * the same way on both screens. Bones AND landmarks together is the obvious
+ * case the old single-select could not express: they are the same picture and
+ * are revised in one sitting.
+ */
+const CATEGORY_OPTIONS: { value: Category; label: string; plural: string }[] = [
+  { value: 'muscle', label: 'Muscles', plural: 'muscles' },
+  { value: 'bone', label: 'Bones', plural: 'bones' },
+  { value: 'landmark', label: 'Landmarks', plural: 'landmarks' },
+  { value: 'joint', label: 'Joints', plural: 'joints' },
+  { value: 'ligament', label: 'Ligaments', plural: 'ligaments' },
 ];
+const ALL_CATEGORIES = CATEGORY_OPTIONS.map((o) => o.value);
 
 const LENGTHS = [10, 20, 40];
 
@@ -75,7 +77,8 @@ const TIMER_OPTIONS = [0, 10, 20, 30];
 
 export function RevisionSetup({ content, repository, userId, areas, onStart, onBack, onNavigate }: RevisionSetupProps) {
   const [types, setTypes] = useState<QuestionType[]>(['mcq']);
-  const [category, setCategory] = useState<Category | 'all'>('all');
+  // Empty means every category, as on the area picker.
+  const [categories, setCategories] = useState<Category[]>([]);
   const [mode, setMode] = useState<'practice' | 'assessment' | 'adaptive'>('practice');
   const [count, setCount] = useState(20);
   const [customLength, setCustomLength] = useState('');
@@ -103,6 +106,15 @@ export function RevisionSetup({ content, repository, userId, areas, onStart, onB
   const toggleType = (type: QuestionType) => {
     setTypes((prev) => (prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]));
   };
+  const allTypes = types.length === ALL_QUESTION_TYPES.length;
+  const toggleCategory = (category: Category) => {
+    setCategories((prev) => (prev.includes(category) ? prev.filter((c) => c !== category) : [...prev, category]));
+  };
+  // The pool needs at least one format, so the all-formats chip turns
+  // everything on and the click that would clear it is ignored rather than
+  // leaving a session that cannot be built.
+  const chooseAllTypes = () => setTypes(allTypes ? types : [...ALL_QUESTION_TYPES]);
+  const categoriesSelected = categories.length ? categories : ALL_CATEGORIES;
 
   const oinaSelected = types.includes('oina');
   const toggleFact = (fact: OinaPromptKind) => {
@@ -124,7 +136,7 @@ export function RevisionSetup({ content, repository, userId, areas, onStart, onB
   const inPool = (s: (typeof content.structures)[number]) => {
     return (
       (areas.size === 0 || areasOf(s).some((a) => areas.has(a))) &&
-      (category === 'all' || s.category === category) &&
+      (categories.length === 0 || categories.includes(s.category)) &&
       (groups.length === 0 || (s.groups ?? []).some((g) => groups.includes(g)))
     );
   };
@@ -149,11 +161,11 @@ export function RevisionSetup({ content, repository, userId, areas, onStart, onB
         groups: groups.length ? groups : undefined,
         oinaPromptKinds: oinaSelected ? oinaFacts : undefined,
         learnCardAttempts: 0,
-        category: category === 'all' ? undefined : category,
+        categories: categories.length ? categories : undefined,
         mode: 'practice',
         seed: 1,
       }).length,
-    [content.structures, content.images, types, areas, groups, oinaSelected, oinaFacts, category],
+    [content.structures, content.images, types, areas, groups, oinaSelected, oinaFacts, categories],
   );
   // Undefined caps nothing; generateRevisionSet then emits every eligible
   // question. Only reachable from the All chip, which only OINA sessions show.
@@ -186,7 +198,7 @@ export function RevisionSetup({ content, repository, userId, areas, onStart, onB
       groups: groups.length ? groups : undefined,
       oinaPromptKinds: oinaSelected ? oinaFacts : undefined,
       learnCardAttempts: oinaSelected ? learnCards : undefined,
-      category: category === 'all' ? undefined : category,
+      categories: categories.length ? categories : undefined,
       mode,
       timerMinutes: mode === 'assessment' && timerMinutes > 0 ? timerMinutes : undefined,
     };
@@ -196,7 +208,7 @@ export function RevisionSetup({ content, repository, userId, areas, onStart, onB
       groups: params.groups,
       oinaPromptKinds: params.oinaPromptKinds,
       learnCardAttempts: params.learnCardAttempts,
-      category: params.category,
+      categories: params.categories,
       mode,
       // Undefined caps nothing: practice mode then emits every eligible question,
       // which is what an OINA session is for (CR-018).
@@ -238,7 +250,11 @@ export function RevisionSetup({ content, repository, userId, areas, onStart, onB
           Session
         </h2>
         <p className="text-base" style={{ color: 'var(--ink2)' }}>
-          {areaSummary} · {poolSize} {category === 'all' ? 'structures' : category === 'muscle' ? 'muscles' : `${category}s`} in the pool
+          {areaSummary} · {poolSize}{' '}
+          {categories.length === 1
+            ? CATEGORY_OPTIONS.find((o) => o.value === categories[0])!.plural
+            : 'structures'}{' '}
+          in the pool
         </p>
 
         <div className="mt-14 flex gap-[88px]">
@@ -247,6 +263,18 @@ export function RevisionSetup({ content, repository, userId, areas, onStart, onB
               Question formats
             </div>
             <div className="mt-4 flex flex-wrap gap-2.5">
+              {/* The all-chip leads, as "All categories" does below. It is not a
+                  format, so it is named for what it does to the row rather than
+                  echoing the "Select all" format sitting four along. */}
+              <button
+                type="button"
+                onClick={chooseAllTypes}
+                aria-pressed={allTypes}
+                className="inline-flex min-h-[46px] items-center justify-center whitespace-nowrap rounded-full px-5"
+                style={{ fontFamily: 'var(--font-display)', fontSize: 17, ...chipStyle(allTypes) }}
+              >
+                All formats
+              </button>
               {QUESTION_TYPE_OPTIONS.map((opt) => (
                 <button
                   key={opt.value}
@@ -347,19 +375,36 @@ export function RevisionSetup({ content, repository, userId, areas, onStart, onB
               Category
             </div>
             <div className="mt-4 flex flex-wrap gap-2.5">
+              {/* Clearing the set is what "all" means, so this chip empties it
+                  rather than ticking all five — otherwise a student who then
+                  unticked one would be filtering without having chosen to. */}
+              <button
+                type="button"
+                onClick={() => setCategories([])}
+                aria-pressed={categories.length === 0}
+                className="inline-flex min-h-[40px] items-center justify-center whitespace-nowrap rounded-full px-4 text-sm"
+                style={chipStyle(categories.length === 0)}
+              >
+                All categories
+              </button>
               {CATEGORY_OPTIONS.map((opt) => (
                 <button
                   key={opt.value}
                   type="button"
-                  onClick={() => setCategory(opt.value)}
-                  aria-pressed={category === opt.value}
+                  onClick={() => toggleCategory(opt.value)}
+                  aria-pressed={categories.includes(opt.value)}
                   className="inline-flex min-h-[40px] items-center justify-center whitespace-nowrap rounded-full px-4 text-sm"
-                  style={chipStyle(category === opt.value)}
+                  style={chipStyle(categories.includes(opt.value))}
                 >
                   {opt.label}
                 </button>
               ))}
             </div>
+            <p className="mt-3.5 max-w-[44ch] text-sm" style={{ color: 'var(--ink3)' }}>
+              {categories.length === 0
+                ? 'Every category is in play until you narrow it.'
+                : `${categoriesSelected.length} of ${ALL_CATEGORIES.length} categories.`}
+            </p>
 
           </div>
 

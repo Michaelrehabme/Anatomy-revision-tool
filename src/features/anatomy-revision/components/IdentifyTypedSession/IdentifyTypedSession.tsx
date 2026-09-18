@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from 'react';
 import type { TypedIdentifyQuestion } from '../../types/question';
 import type { AnatomyImageAsset } from '../../types/image';
 import type { Confidence } from '../../types/attempt';
-import { questionLocationLabel } from '../../types/region';
 import { HotspotOverlay } from '../LocateStructureSession/HotspotOverlay';
 import { ImageViewer } from '../shared/ImageViewer';
 import { rotationFramesFor } from '../../lib/rotationFrames';
@@ -12,6 +11,7 @@ import { Button } from '../shared/Button';
 import { ExamAnswerFooter } from '../shared/ExamAnswerFooter';
 import { isAnswerMatch } from '../../lib/answerMatching';
 import { gradeTypedSlots } from '../../lib/oinaAnswer';
+import { questionHeaderLabel } from '../../lib/questionFormats';
 
 interface IdentifyTypedSessionProps {
   question: TypedIdentifyQuestion;
@@ -94,7 +94,7 @@ export function IdentifyTypedSession({ question, imagesById, onAnswer, onNext, e
             className="text-center"
             style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--acc)' }}
           >
-            {question.promptKind[0].toUpperCase() + question.promptKind.slice(1)} · {questionLocationLabel(question)}
+            {questionHeaderLabel(question)}
           </div>
           <h2
             className="mx-auto mt-6 text-center"

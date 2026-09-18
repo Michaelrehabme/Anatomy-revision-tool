@@ -30,6 +30,8 @@ export interface RevisionSetConfig {
   /** OR-matched against each structure's `groups` (CR-018) — how OINA sessions target "the hamstrings". */
   groups?: string[];
   category?: Category;
+  /** OR-matched against each structure's category. Takes precedence over `category` when non-empty. */
+  categories?: Category[];
   difficulty?: Difficulty;
   /**
    * practice = every eligible question once (shuffled, or mastery-weighted — see
@@ -267,6 +269,7 @@ export function generateRevisionSet(
 
   let pool = filterStructures(structures, {
     category: config.category,
+    categories: config.categories,
     region: config.region,
     regions: config.regions,
     subregion: config.subregion,
