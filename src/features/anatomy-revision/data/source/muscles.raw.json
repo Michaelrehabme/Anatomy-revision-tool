@@ -38,7 +38,7 @@
         "hip-flexion",
         "hip-external-rotation"
       ],
-      "actionText": "Flexes and externally rotates the hip; arises from the iliac fossa of the pelvis.",
+      "actionText": "A powerful hip flexor that also rotates the femur outward; joins psoas major as iliopsoas.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -87,7 +87,7 @@
         "hip-flexion",
         "hip-external-rotation"
       ],
-      "actionText": "Flexes and externally rotates the hip; arises from the transverse processes of T12 and all lumbar vertebrae (L1–L5).",
+      "actionText": "The strongest hip flexor, also rotating the femur outward; the lumbar half of iliopsoas.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -138,7 +138,7 @@
         "hip-flexion",
         "knee-extension"
       ],
-      "actionText": "Flexes the hip and extends the knee.",
+      "actionText": "Flexes the hip and extends the knee; the only quadriceps head that crosses the hip.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -1090,7 +1090,7 @@
       "actions": [
         "knee-extension"
       ],
-      "actionText": "Extends the knee; arises from the greater trochanter of the femur.",
+      "actionText": "Extends the knee; the largest of the quadriceps, arising from the lateral femur.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -1138,7 +1138,7 @@
       "actions": [
         "knee-extension"
       ],
-      "actionText": "Extends the knee; arises from the medial side of the femur.",
+      "actionText": "Extends the knee; its oblique lower fibres are what hold the patella tracking correctly.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -1236,7 +1236,7 @@
         "knee-flexion",
         "knee-internal-rotation"
       ],
-      "actionText": "Flexes and internally rotates the knee.",
+      "actionText": "Unlocks the extended knee by laterally rotating the femur on a fixed tibia, then assists knee flexion.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -1283,7 +1283,7 @@
         "shoulder-abduction",
         "glenohumeral-stabilisation"
       ],
-      "actionText": "Abducts the shoulder and stabilises the glenohumeral joint.",
+      "actionText": "Starts shoulder abduction, through roughly its first 15 degrees, and holds the humeral head in the glenoid.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -1845,7 +1845,7 @@
         "scapular-depression",
         "scapular-downward-rotation"
       ],
-      "actionText": "Protracts, depresses and downwardly rotates the scapula.",
+      "actionText": "Protracts, depresses and downwardly rotates the scapula; raises the ribs when the scapula is held still.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -1898,7 +1898,7 @@
         "forearm-supination",
         "shoulder-flexion"
       ],
-      "actionText": "Flexes the elbow, supinates the forearm and flexes the shoulder.",
+      "actionText": "Flexes the elbow and supinates the forearm — most powerfully with the elbow bent — and weakly flexes the shoulder.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -1946,7 +1946,7 @@
       "actions": [
         "elbow-flexion"
       ],
-      "actionText": "Flexes the elbow; inserts on the coronoid process & ulnar tuberosity.",
+      "actionText": "The prime mover of elbow flexion, and the one that works in any forearm position.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -2048,7 +2048,7 @@
         "shoulder-extension",
         "shoulder-adduction"
       ],
-      "actionText": "Extends the elbow; extends and adducts the shoulder.",
+      "actionText": "Extends the elbow; the long head also extends and adducts the shoulder.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -2095,7 +2095,7 @@
       "actions": [
         "elbow-extension"
       ],
-      "actionText": "Extends the elbow.",
+      "actionText": "Assists elbow extension and steadies the joint through pronation.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -2246,7 +2246,7 @@
         "inspiration",
         "core-stabilisation"
       ],
-      "actionText": "Drives inspiration and stabilises the core.",
+      "actionText": "The primary muscle of inspiration: flattens as it contracts to enlarge the thoracic cavity, and contributes to core stability.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -3443,7 +3443,7 @@
         "ankle-dorsiflexion",
         "foot-inversion"
       ],
-      "actionText": "Dorsiflexes the ankle and inverts the foot.",
+      "actionText": "Dorsiflexes the ankle and inverts the foot; lowers the foot under control after heel strike.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -3685,7 +3685,7 @@
         "foot-eversion",
         "ankle-plantarflexion"
       ],
-      "actionText": "Everts the foot and plantarflexes the ankle; inserts on the tuberosity of 5th metatarsal.",
+      "actionText": "Everts the foot and weakly assists ankle plantarflexion.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -3733,7 +3733,7 @@
         "ankle-plantarflexion",
         "knee-flexion"
       ],
-      "actionText": "Plantarflexes the ankle and flexes the knee; arises from the medial & lateral femoral condyles.",
+      "actionText": "Plantarflexes the ankle — most powerfully with the knee extended — and flexes the knee.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -3780,7 +3780,7 @@
       "actions": [
         "ankle-plantarflexion"
       ],
-      "actionText": "Plantarflexes the ankle.",
+      "actionText": "Plantarflexes the ankle, and unlike gastrocnemius does so whatever the knee is doing.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -3828,7 +3828,7 @@
         "ankle-plantarflexion",
         "knee-flexion"
       ],
-      "actionText": "Plantarflexes the ankle and flexes the knee; arises from the lateral supracondylar ridge of femur.",
+      "actionText": "Weakly assists plantarflexion and knee flexion; largely vestigial, and absent in some people.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -3927,7 +3927,7 @@
         "toe-flexion",
         "ankle-plantarflexion"
       ],
-      "actionText": "Flexes the toes and plantarflexes the ankle; inserts on the distal phalanges of toes 2–5.",
+      "actionText": "Flexes toes 2–5 and assists ankle plantarflexion.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -3975,7 +3975,7 @@
         "toe-flexion",
         "ankle-plantarflexion"
       ],
-      "actionText": "Flexes the toes and plantarflexes the ankle; inserts on the distal phalanx of big toe.",
+      "actionText": "Flexes the big toe and assists ankle plantarflexion; the muscle that drives push-off.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -4267,7 +4267,7 @@
       "actions": [
         "toe-flexion"
       ],
-      "actionText": "Flexes the toes; inserts on the posterolateral margin of tendon of flexor digitorum longus.",
+      "actionText": "Assists flexor digitorum longus in flexing toes 2–5, straightening its oblique line of pull.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -4664,7 +4664,7 @@
         "forearm-pronation",
         "elbow-flexion"
       ],
-      "actionText": "Pronates the forearm and flexes the elbow.",
+      "actionText": "Pronates the forearm and weakly assists elbow flexion.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -4759,7 +4759,7 @@
       "actions": [
         "wrist-flexion"
       ],
-      "actionText": "Flexes the wrist.",
+      "actionText": "Tenses the palmar fascia and weakly assists wrist flexion. Absent altogether in a sizeable minority of people.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -4859,7 +4859,7 @@
         "finger-flexion",
         "wrist-flexion"
       ],
-      "actionText": "Flexes the fingers and flexes the wrist; inserts on the middle phalanges of digits 2–5.",
+      "actionText": "Flexes the proximal interphalangeal joints of digits 2–5, and assists wrist flexion.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -4914,7 +4914,7 @@
         "finger-flexion",
         "wrist-flexion"
       ],
-      "actionText": "Flexes the fingers and flexes the wrist; inserts on the distal phalanges of digits 2–5.",
+      "actionText": "Flexes the distal interphalangeal joints of digits 2–5 — the only muscle that can — and assists wrist flexion.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -5054,7 +5054,7 @@
       "actions": [
         "elbow-flexion"
       ],
-      "actionText": "Flexes the elbow; inserts on the styloid process of radius.",
+      "actionText": "Flexes the elbow, most effectively with the forearm midway between pronation and supination — the handshake grip.",
       "clinical": null,
       "notes": null,
       "images": {

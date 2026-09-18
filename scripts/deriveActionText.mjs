@@ -164,6 +164,73 @@ const OVERRIDES = {
     'Abducts the toes, flexing the metatarsophalangeal joints while extending the interphalangeal joints.',
   'plantar-interossei':
     'Adducts the toes, flexing the metatarsophalangeal joints while extending the interphalangeal joints.',
+
+  // SECOND GROUP: muscles the tag vocabulary describes correctly but uselessly,
+  // or in two cases inaccurately.
+  //
+  // `toe-flexion` cannot say that flexor hallucis longus moves only the hallux,
+  // and `finger-flexion` cannot separate the superficialis at the PIP joints
+  // from the profundus at the DIP — which is the entire point of that pair. The
+  // generated sentences were not merely plainer, they were wrong enough to
+  // mislead a student.
+  //
+  // The rest lost the one fact that makes the muscle worth distinguishing:
+  // popliteus unlocking the knee, soleus working independently of knee position
+  // where gastrocnemius does not, supraspinatus starting the abduction the
+  // deltoid finishes. All are textbook commonplaces, written here from standard
+  // anatomy and not from the source deck.
+  popliteus:
+    'Unlocks the extended knee by laterally rotating the femur on a fixed tibia, then assists knee flexion.',
+  soleus:
+    'Plantarflexes the ankle, and unlike gastrocnemius does so whatever the knee is doing.',
+  gastrocnemius:
+    'Plantarflexes the ankle — most powerfully with the knee extended — and flexes the knee.',
+  supraspinatus:
+    'Starts shoulder abduction, through roughly its first 15 degrees, and holds the humeral head in the glenoid.',
+  brachioradialis:
+    'Flexes the elbow, most effectively with the forearm midway between pronation and supination — the handshake grip.',
+  'rectus-femoris':
+    'Flexes the hip and extends the knee; the only quadriceps head that crosses the hip.',
+  diaphragm:
+    'The primary muscle of inspiration: flattens as it contracts to enlarge the thoracic cavity, and contributes to core stability.',
+  brachialis:
+    'The prime mover of elbow flexion, and the one that works in any forearm position.',
+  'tibialis-anterior':
+    'Dorsiflexes the ankle and inverts the foot; lowers the foot under control after heel strike.',
+  'palmaris-longus':
+    'Tenses the palmar fascia and weakly assists wrist flexion. Absent altogether in a sizeable minority of people.',
+  'flexor-digitorum-superficialis':
+    'Flexes the proximal interphalangeal joints of digits 2–5, and assists wrist flexion.',
+  'flexor-digitorum-profundus':
+    'Flexes the distal interphalangeal joints of digits 2–5 — the only muscle that can — and assists wrist flexion.',
+  'flexor-hallucis-longus':
+    'Flexes the big toe and assists ankle plantarflexion; the muscle that drives push-off.',
+  'flexor-digitorum-longus':
+    'Flexes toes 2–5 and assists ankle plantarflexion.',
+  'quadratus-plantae':
+    'Assists flexor digitorum longus in flexing toes 2–5, straightening its oblique line of pull.',
+  'triceps-brachii':
+    'Extends the elbow; the long head also extends and adducts the shoulder.',
+  'pronator-teres':
+    'Pronates the forearm and weakly assists elbow flexion.',
+  anconeus:
+    'Assists elbow extension and steadies the joint through pronation.',
+  'biceps-brachii':
+    'Flexes the elbow and supinates the forearm — most powerfully with the elbow bent — and weakly flexes the shoulder.',
+  'pectoralis-minor':
+    'Protracts, depresses and downwardly rotates the scapula; raises the ribs when the scapula is held still.',
+  'peroneus-brevis':
+    'Everts the foot and weakly assists ankle plantarflexion.',
+  plantaris:
+    'Weakly assists plantarflexion and knee flexion; largely vestigial, and absent in some people.',
+  'vastus-medialis':
+    'Extends the knee; its oblique lower fibres are what hold the patella tracking correctly.',
+  'vastus-lateralis':
+    'Extends the knee; the largest of the quadriceps, arising from the lateral femur.',
+  iliacus:
+    'A powerful hip flexor that also rotates the femur outward; joins psoas major as iliopsoas.',
+  'psoas-major':
+    'The strongest hip flexor, also rotating the femur outward; the lumbar half of iliopsoas.',
 };
 
 function strip(s) {
