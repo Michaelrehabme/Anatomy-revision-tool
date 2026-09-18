@@ -35,6 +35,10 @@ export const educatorDemoAliases = [
   // Same problem from the account screen: accountLifecycle imports
   // firebase/auth at the top level to delete the Auth user.
   { find: /^.*\/data\/accountLifecycle$/, replacement: demoFile('accountLifecycle.demo.ts') },
+  // Aliased BEFORE anything reaches it. The real module imports the Firestore
+  // SDK and is loaded dynamically, so the leak would only appear the day
+  // useEntitlement is wired into a gate -- long after whoever wired it.
+  { find: /^.*\/data\/entitlementRepository$/, replacement: demoFile('entitlementRepository.demo.ts') },
   // And from App.tsx itself, which reads the marketing-page switch on load.
   { find: /^.*\/data\/siteSettings$/, replacement: demoFile('siteSettings.demo.ts') },
   // Screens import the guard as both './components/RequireEducator' and '../RequireEducator'.

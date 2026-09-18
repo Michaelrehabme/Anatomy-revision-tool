@@ -129,10 +129,23 @@ service cloud.firestore {
       allow create: if isSignedIn() && request.auth.uid == uid && cohortIsProven();
       // Unchanged is always allowed, so the ordinary profile write on every
       // sign-in (displayName, lastActiveAt) never pays for a cohort lookup.
-      allow update: if isSignedIn() && request.auth.uid == uid && (
-        request.resource.data.get('cohort', null) == resource.data.get('cohort', null)
-        || cohortIsProven()
-      );
+      //
+      // ENTITLEMENT IS NEVER CLIENT-WRITABLE (CR-027). A paywall a user can
+      // lift by editing their own document is decoration, so `entitlement`
+      // must be byte-identical across an update: only a payment webhook or an
+      // admin, both running through the Admin SDK and bypassing these rules
+      // entirely, may set it. The comparison is on the whole map rather than
+      // on `tier`, because a client that could change `expiresAt` alone would
+      // have every bit as much free access as one that could change the tier.
+      //
+      // Absent on both sides compares equal, so this costs an account that has
+      // never bought anything nothing at all.
+      allow update: if isSignedIn() && request.auth.uid == uid
+        && request.resource.data.get('entitlement', null) == resource.data.get('entitlement', null)
+        && (
+          request.resource.data.get('cohort', null) == resource.data.get('cohort', null)
+          || cohortIsProven()
+        );
       // Erasure — see data/accountLifecycle.ts.
       allow delete: if isSignedIn() && request.auth.uid == uid;
       allow read: if isAdmin();

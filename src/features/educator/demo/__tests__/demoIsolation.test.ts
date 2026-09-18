@@ -39,6 +39,7 @@ const KNOWN: Record<string, string> = {
   'features/anatomy-revision/context/AuthProvider.tsx': 'Aliased: authDemo.ts',
   'features/anatomy-revision/data/firestoreRepository.ts': 'Reached via data/repository, aliased: repositoryDemo.ts',
   'features/anatomy-revision/data/accountLifecycle.ts': 'Aliased: accountLifecycle.demo.ts',
+  'features/anatomy-revision/data/entitlementRepository.ts': 'Aliased: entitlementRepository.demo.ts',
   'features/anatomy-revision/data/__tests__/authLinking.test.ts': 'A test; never bundled.',
   'features/educator/data/cohortsRepository.ts': 'Aliased: cohortsRepository.demo.ts',
   'features/educator/data/assignmentsRepository.ts': 'Aliased: assignmentsRepository.demo.ts',
