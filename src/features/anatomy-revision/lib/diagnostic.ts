@@ -36,12 +36,24 @@ import { createRng, shuffle } from './rng';
  *    trying to demonstrate. Only the total is shown.
  *
  * 3. Every student in a cohort gets the SAME items, and the same ones again at
- *    the end. Two different samples of 20 questions produce two scores that
+ *    the end. Two different samples of fifteen questions produce two scores that
  *    cannot be subtracted from one another.
+ *
+ *    The ORDER is not part of that promise and is deliberately shuffled per
+ *    sitting, by whoever presents it. Fixing the items is what makes the two
+ *    scores comparable; fixing the order would only help a student remember
+ *    that the third question was peroneus longus.
  */
 
-/** Items in one sitting. Enough for a stable score, short enough to finish. */
-export const DIAGNOSTIC_SIZE = 20;
+/**
+ * Items in one sitting.
+ *
+ * Fifteen rather than twenty: free navigation and a review step make a sitting
+ * feel longer than its question count, and a baseline is only worth having if
+ * students actually finish it in the week they join. The score is a proportion,
+ * so a shorter paper costs precision, not comparability.
+ */
+export const DIAGNOSTIC_SIZE = 15;
 
 /**
  * The version of the item-selection rules. It is stamped on every result, and
