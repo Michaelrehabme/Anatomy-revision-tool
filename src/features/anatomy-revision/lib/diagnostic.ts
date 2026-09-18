@@ -90,6 +90,41 @@ export interface DiagnosticResult {
   takenAt: string;
   /** Wall-clock for the sitting, for sanity-checking a suspiciously fast one. */
   durationMs?: number;
+  /**
+   * The exact questions asked, in the order the generator produced them (NOT the
+   * order they were shown — that is shuffled per sitting and carries no meaning).
+   *
+   * WHY THIS IS STORED RATHER THAN RE-DERIVED. Pinning the structures is not
+   * enough: "which nerve innervates peroneus longus" and "which structure is
+   * highlighted" are different questions about the same muscle, and a follow-up
+   * that asked the other one would be measuring something else. Re-deriving the
+   * question from the structure would work only while the dataset stands still,
+   * and this dataset does not — images, prompt kinds and phrasing all changed
+   * during the week this was written.
+   *
+   * So the baseline records what it actually asked, and the follow-up replays
+   * exactly that. A term's comparison then survives any amount of content work
+   * in between, which is the only version of this that is safe to promise a
+   * university.
+   *
+   * Absent on sittings recorded before this was tracked; `sameQuestions` treats
+   * that as unknown rather than as a mismatch.
+   */
+  questionIds?: string[];
+}
+
+/**
+ * Whether a follow-up asked what its baseline asked.
+ *
+ * Order is ignored on purpose — the sitting shuffles it — so this compares the
+ * sets. Unknown (either side missing the record) is not a mismatch: it is an
+ * older sitting, and refusing to pair it would silently discard real data.
+ */
+export function sameQuestions(before: DiagnosticResult, after: DiagnosticResult): boolean {
+  if (!before.questionIds || !after.questionIds) return true;
+  if (before.questionIds.length !== after.questionIds.length) return false;
+  const seen = new Set(before.questionIds);
+  return after.questionIds.every((id) => seen.has(id));
 }
 
 /**
@@ -213,8 +248,9 @@ export interface DiagnosticGain {
  * Unpaired sittings are dropped rather than counted: a student with only a
  * follow-up looks like a high scorer and a student with only a baseline looks
  * like a low one, and including either would bias the mean in a direction that
- * depends on who dropped out. Mismatched versions are dropped for the same
- * reason — the two scores are not measurements of the same thing.
+ * depends on who dropped out. Mismatched versions, and follow-ups that asked
+ * different questions, are dropped for the same reason — the two scores are not
+ * measurements of the same thing.
  */
 export function pairDiagnostics(results: DiagnosticResult[]): DiagnosticGain[] {
   const byUser = new Map<string, DiagnosticResult[]>();
@@ -239,6 +275,8 @@ export function pairDiagnostics(results: DiagnosticResult[]): DiagnosticGain[] {
     const after = followUps[0];
     if (!before || !after) continue;
     if (before.version !== after.version) continue;
+    // A follow-up that asked different questions is not a follow-up.
+    if (!sameQuestions(before, after)) continue;
 
     const beforePct = percent(before);
     const afterPct = percent(after);

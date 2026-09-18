@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   buildDiagnostic,
+  sameQuestions,
   pairDiagnostics,
   summariseDiagnostics,
   scoreDiagnostic,
@@ -87,6 +88,33 @@ describe('pairDiagnostics', () => {
     expect(gains).toEqual([]);
   });
 
+  it('refuses to pair a follow-up that asked different questions', () => {
+    const gains = pairDiagnostics([
+      result({ userId: 'u1', phase: 'baseline', questionIds: ['q-a', 'q-b', 'q-c'] }),
+      result({ userId: 'u1', phase: 'followUp', correct: 18, questionIds: ['q-a', 'q-b', 'q-z'] }),
+    ]);
+    // Same structures can still mean different questions; that is not a follow-up.
+    expect(gains).toEqual([]);
+  });
+
+  it('ignores the order questions were asked in, since the sitting shuffles it', () => {
+    const [gain] = pairDiagnostics([
+      result({ userId: 'u1', phase: 'baseline', correct: 6, questionIds: ['q-a', 'q-b', 'q-c'] }),
+      result({ userId: 'u1', phase: 'followUp', correct: 12, questionIds: ['q-c', 'q-a', 'q-b'] }),
+    ]);
+    expect(gain).toBeDefined();
+    expect(gain.gainPoints).toBe(30);
+  });
+
+  it('still pairs older sittings that never recorded their questions', () => {
+    const [gain] = pairDiagnostics([
+      result({ userId: 'u1', phase: 'baseline', correct: 6 }),
+      result({ userId: 'u1', phase: 'followUp', correct: 12 }),
+    ]);
+    // Unknown is not a mismatch — refusing would silently discard real data.
+    expect(gain).toBeDefined();
+  });
+
   it('refuses to pair sittings built under different rules', () => {
     const gains = pairDiagnostics([
       result({ userId: 'u1', phase: 'baseline', version: 1 }),
@@ -102,6 +130,26 @@ describe('pairDiagnostics', () => {
       result({ userId: 'u1', phase: 'followUp', correct: 16, takenAt: '2026-12-01T09:00:00.000Z' }),
     ]);
     expect(gain.baselinePct).toBe(20);
+  });
+});
+
+describe('sameQuestions', () => {
+  const base = result({ userId: 'u1', phase: 'baseline', questionIds: ['a', 'b'] });
+
+  it('accepts the same set in a different order', () => {
+    expect(sameQuestions(base, result({ userId: 'u1', phase: 'followUp', questionIds: ['b', 'a'] }))).toBe(true);
+  });
+
+  it('rejects a different set', () => {
+    expect(sameQuestions(base, result({ userId: 'u1', phase: 'followUp', questionIds: ['a', 'c'] }))).toBe(false);
+  });
+
+  it('rejects a follow-up of a different length', () => {
+    expect(sameQuestions(base, result({ userId: 'u1', phase: 'followUp', questionIds: ['a'] }))).toBe(false);
+  });
+
+  it('treats an unrecorded sitting as unknown, not as a mismatch', () => {
+    expect(sameQuestions(base, result({ userId: 'u1', phase: 'followUp' }))).toBe(true);
   });
 });
 
