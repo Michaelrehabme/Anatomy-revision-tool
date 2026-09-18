@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import { subscribeToAuthState } from '../anatomy-revision/data/firebase';
-import { getRole } from './rolesRepository';
+// Spelled '../roles/...' rather than './...' although they are siblings: the
+// demo alias matches the specifier as written and needs the 'roles/' segment
+// in it. See hooks/useAdminEntry.ts for what the short spelling cost.
+import { getRole } from '../roles/rolesRepository';
 import { isBootstrapAdmin } from './bootstrap';
 import { NO_ROLE, type CurrentRole } from './types';
 

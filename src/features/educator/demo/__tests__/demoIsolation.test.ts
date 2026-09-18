@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { readFileSync, readdirSync, statSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, relative, sep } from 'node:path';
 
 /**
  * The public demo must not contain the Firebase SDK.
@@ -51,6 +51,46 @@ const KNOWN: Record<string, string> = {
   'scripts/backfillCohortRollups.ts': 'A one-off Node script run with tsx; never imported by the app.',
   'features/site/data/siteSettings.ts': 'Aliased: siteSettings.demo.ts — App.tsx reads it on every load.',
 };
+
+/**
+ * Modules the demo replaces by ALIAS, and the suffix an import of each must
+ * end with for vite.config.ts to rewrite it.
+ *
+ * Rollup's alias plugin matches the import specifier as written, not the file
+ * it resolves to. So `../../roles/useCurrentRole` is rewritten to the demo
+ * stand-in and `./useCurrentRole` — the natural spelling from a sibling inside
+ * features/roles/ — is not, which silently pulls the real module, and the
+ * whole Firebase SDK behind it, into the public demo bundle.
+ *
+ * That is exactly how this regressed: a useAdminEntry hook added in
+ * features/roles/ imported its neighbour relatively, and every test here
+ * passed, because the canary below only sees DIRECT firebase importers and
+ * useCurrentRole reaches the SDK through the local wrapper. Only grepping
+ * dist-demo caught it. This check is cheaper than that.
+ */
+const ALIASED_SUFFIXES = ['roles/useCurrentRole', 'roles/rolesRepository'];
+
+describe('alias-bypassing imports', () => {
+  it('imports every demo-aliased module by a specifier the alias actually matches', () => {
+    const offenders: string[] = [];
+
+    for (const file of walk(SRC)) {
+      if (file.includes(`${sep}demo${sep}`)) continue; // The stand-ins themselves.
+      const source = readFileSync(file, 'utf8');
+
+      for (const suffix of ALIASED_SUFFIXES) {
+        const name = suffix.split('/')[1];
+        const pattern = new RegExp(`from '([^']*${name})'`, 'g');
+        for (const [, specifier] of source.matchAll(pattern)) {
+          if (specifier.endsWith(suffix)) continue;
+          offenders.push(`${relative(SRC, file)} imports '${specifier}' — must end with '${suffix}'`);
+        }
+      }
+    }
+
+    expect(offenders).toEqual([]);
+  });
+});
 
 function walk(dir: string, out: string[] = []): string[] {
   for (const entry of readdirSync(dir)) {
