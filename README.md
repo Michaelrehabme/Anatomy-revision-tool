@@ -451,6 +451,11 @@ That config also:
 - pins `VITE_PERSISTENCE=local`, so the demo cannot reach a real project even if
   the demo site is given `VITE_FIREBASE_*` by accident;
 - mounts `DemoBanner`, the dismissible "sample data" notice and reset action.
+- carries `/pricing` as a **sandbox-only** checkout test bench, for Paddle's
+  onboarding. `readPaddleConfig` refuses anything but sandbox in this build,
+  and there is no webhook, so a test payment unlocks nothing. Set the four
+  `VITE_PADDLE_*` sandbox values on the demo Netlify site; leave them unset and
+  the page shows the plans with checkout switched off.
 
 Verify a demo build the way CI would, against the output rather than the chunk
 names:

@@ -31,6 +31,11 @@ describe('readPaddleConfig', () => {
     expect(config?.environment).toBe('production');
   });
 
+  it('refuses production in the public demo build, which may only ever run a sandbox checkout', () => {
+    expect(readPaddleConfig({ ...ENV, VITE_PADDLE_ENV: 'production', VITE_PADDLE_CLIENT_TOKEN: 'live_abc', VITE_PUBLIC_DEMO: '1' })).toBeNull();
+    expect(readPaddleConfig({ ...ENV, VITE_PUBLIC_DEMO: '1' })?.environment).toBe('sandbox');
+  });
+
   it('treats anything other than "production" as sandbox, so a typo can never take real money', () => {
     expect(readPaddleConfig({ ...ENV, VITE_PADDLE_ENV: 'prod' })?.environment).toBe('sandbox');
   });

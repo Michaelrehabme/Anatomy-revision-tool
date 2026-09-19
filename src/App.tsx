@@ -58,10 +58,11 @@ const AdminApp = PUBLIC_DEMO ? null : lazy(() => import('./features/admin/AdminA
  */
 const DemoBanner = PUBLIC_DEMO ? lazy(() => import('./features/educator/demo/DemoBanner')) : null;
 /**
- * Pricing and checkout (CR-033 item 11). Lazy because it pulls Paddle.js, and
- * null in the public demo, which must never be able to take a payment.
+ * Pricing and checkout (CR-033 item 11). Lazy because it pulls Paddle.js. The
+ * public demo carries it too, as a sandbox-only test bench: readPaddleConfig
+ * refuses a live checkout in that build.
  */
-const PricingPage = PUBLIC_DEMO ? null : lazy(() => import('./features/billing/PricingPage'));
+const PricingPage = lazy(() => import('./features/billing/PricingPage'));
 /** Code-split so students never download the educator bundle — see src/features/educator/EducatorApp.tsx. */
 const EducatorApp = lazy(() => import('./features/educator/EducatorApp'));
 /**
@@ -303,7 +304,9 @@ function App() {
     if (siteSettings.marketingHomeEnabled) return <MarketingHome />;
   }
 
-  if (!onboarded && location.pathname !== '/onboarding') {
+  // /pricing is exempt: someone following a link to the prices (Paddle's
+  // account reviewer among them) should see them, not a subject picker.
+  if (!onboarded && location.pathname !== '/onboarding' && location.pathname !== '/pricing') {
     return <Navigate to="/onboarding" replace />;
   }
 
@@ -644,16 +647,14 @@ function App() {
             )
           }
         />
-        {PricingPage && (
-          <Route
-            path="/pricing"
-            element={
-              <Suspense fallback={null}>
-                <PricingPage />
-              </Suspense>
-            }
-          />
-        )}
+        <Route
+          path="/pricing"
+          element={
+            <Suspense fallback={null}>
+              <PricingPage />
+            </Suspense>
+          }
+        />
         <Route
           path="/diagnostic"
           element={

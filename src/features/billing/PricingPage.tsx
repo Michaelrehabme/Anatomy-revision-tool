@@ -25,11 +25,15 @@ import { PLANS, buildCheckoutRequest, readPaddleConfig, type PlanId } from './li
  * attached to one is lost when the student clears their cookies, and we would
  * have taken money for something they can no longer reach.
  *
- * Kept out of the public demo build (see App.tsx), which must never load
- * Paddle.
+ * IN THE PUBLIC DEMO it is a sandbox test bench, for Paddle's onboarding step
+ * "build your pricing page and checkout". readPaddleConfig refuses anything
+ * but sandbox there. The demo account's licence is ignored so the buttons
+ * show, its made-up email is not sent to Paddle, and there is no webhook, so
+ * a completed payment unlocks nothing and the page says so.
  */
 
 const CONFIG = readPaddleConfig(import.meta.env);
+const DEMO = import.meta.env.VITE_PUBLIC_DEMO === '1';
 
 const cardLabel = {
   font: '500 10px/1 var(--font-mono)',
@@ -57,14 +61,16 @@ export function PricingPage() {
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
   const [showAuth, setShowAuth] = useState(false);
 
-  const pending = entitlement.tier !== 'free' && !hasStarted(entitlement);
-  const subscribed = tier !== 'free' || pending;
+  // The demo account always holds a licence, which would hide the checkout
+  // this page is in the demo to test.
+  const pending = !DEMO && entitlement.tier !== 'free' && !hasStarted(entitlement);
+  const subscribed = !DEMO && (tier !== 'free' || pending);
 
   // After checkout the webhook usually lands within a few seconds. Re-read
   // for about half a minute, then stop and let the message below take over.
   const [polls, setPolls] = useState(0);
   useEffect(() => {
-    if (!justPaid || subscribed || polls >= 10) return;
+    if (DEMO || !justPaid || subscribed || polls >= 10) return;
     const t = setTimeout(() => { refresh(); setPolls((n) => n + 1); }, 3000);
     return () => clearTimeout(t);
   }, [justPaid, subscribed, polls, refresh]);
@@ -82,7 +88,7 @@ export function PricingPage() {
         config: CONFIG,
         plan,
         uid: user.uid,
-        email: user.email,
+        email: DEMO ? null : user.email,
         coolingOffWaived: startNow,
         origin: window.location.origin,
       }));
@@ -107,6 +113,23 @@ export function PricingPage() {
         bone and landmark, with the same spaced revision behind all of it.
       </p>
 
+      {DEMO && (
+        <p className="mt-6 rounded-[4px] px-4 py-3" style={{ ...prose, fontSize: 13.5, background: 'var(--sf)', border: '1px dashed var(--line)' }}>
+          Sandbox test. No real payment is taken: pay with card 4242 4242 4242 4242, any future
+          expiry date and CVC 100.
+        </p>
+      )}
+
+      {DEMO && justPaid && (
+        <div className="mt-8 rounded-[4px] px-5 py-4" style={{ background: 'var(--accs)', border: '1px solid var(--line)' }} role="status">
+          <div style={{ fontFamily: 'var(--font-display)', fontSize: 20 }}>Sandbox payment completed</div>
+          <p className="mt-1.5" style={prose}>
+            Paddle took the test payment and sent you back here. The demo has no webhook, so nothing
+            unlocks. The transaction is in the Paddle sandbox dashboard.
+          </p>
+        </div>
+      )}
+
       {!loading && subscribed && (
         <div className="mt-8 rounded-[4px] px-5 py-4" style={{ background: 'var(--accs)', border: '1px solid var(--line)' }}>
           <div style={{ fontFamily: 'var(--font-display)', fontSize: 20 }}>
@@ -123,7 +146,7 @@ export function PricingPage() {
         </div>
       )}
 
-      {justPaid && !subscribed && (
+      {!DEMO && justPaid && !subscribed && (
         <div className="mt-8 rounded-[4px] px-5 py-4" style={{ background: 'var(--sf)', border: '1px solid var(--line)' }} role="status">
           <div style={{ fontFamily: 'var(--font-display)', fontSize: 20 }}>Payment received</div>
           <p className="mt-1.5" style={prose}>

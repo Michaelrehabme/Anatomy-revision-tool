@@ -52,6 +52,8 @@ export interface BillingEnv {
   VITE_PADDLE_CLIENT_TOKEN?: string;
   VITE_PADDLE_PRICE_MONTHLY?: string;
   VITE_PADDLE_PRICE_ANNUAL?: string;
+  /** '1' in the public demo build, which may run a sandbox checkout and nothing else. */
+  VITE_PUBLIC_DEMO?: string;
 }
 
 /**
@@ -76,6 +78,13 @@ export function readPaddleConfig(env: BillingEnv): PaddleConfig | null {
   const environment = env.VITE_PADDLE_ENV === 'production' ? 'production' : 'sandbox';
   const tokenIsLive = token.startsWith('live_');
   if (tokenIsLive !== (environment === 'production')) return null;
+
+  // The public demo carries the pricing page so Paddle's sandbox checkout can
+  // be tested on it (their onboarding step "build your pricing page and
+  // checkout"). It has no webhook and no real accounts, so a live checkout
+  // there would take money for nothing. Refused here, whatever the demo
+  // site's environment says.
+  if (env.VITE_PUBLIC_DEMO === '1' && environment !== 'sandbox') return null;
 
   return { environment, token, prices: { monthly, annual } };
 }
