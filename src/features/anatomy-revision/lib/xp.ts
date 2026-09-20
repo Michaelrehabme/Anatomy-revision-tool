@@ -12,6 +12,8 @@ export interface XpConfig {
   baseXpByQuestionType: Record<QuestionType, number>;
   /** Bonus for a structure's first correct answer within a session. */
   firstCorrectBonus: number;
+  /** On top of identify-typed when the hints are off — the ladder's top rung (lib/ladder.ts). */
+  typedBareBonus: number;
   /** Flat bonus for finishing a session (vs. abandoning it mid-way). */
   sessionCompletionBonus: number;
   /** Streak multiplier grows by this fraction per streak day... */
@@ -33,6 +35,7 @@ export const DEFAULT_XP_CONFIG: XpConfig = {
     oina: 14,
   },
   firstCorrectBonus: 10,
+  typedBareBonus: 4,
   sessionCompletionBonus: 20,
   streakMultiplierPerDay: 0.02,
   streakMultiplierCap: 2,
@@ -43,10 +46,12 @@ export function xpForAnswer(
   correct: boolean,
   questionType: QuestionType,
   isFirstCorrectInSession: boolean,
-  config: XpConfig = DEFAULT_XP_CONFIG,
+  options: { hints?: 'full' | 'none'; config?: XpConfig } = {},
 ): number {
   if (!correct) return 0;
-  return config.baseXpByQuestionType[questionType] + (isFirstCorrectInSession ? config.firstCorrectBonus : 0);
+  const config = options.config ?? DEFAULT_XP_CONFIG;
+  const bare = questionType === 'identify-typed' && options.hints === 'none' ? config.typedBareBonus : 0;
+  return config.baseXpByQuestionType[questionType] + bare + (isFirstCorrectInSession ? config.firstCorrectBonus : 0);
 }
 
 /** 1x at no streak, growing toward the cap — the streak a student walks INTO a session with, not one inflated by the session itself. */

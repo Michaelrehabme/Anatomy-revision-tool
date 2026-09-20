@@ -104,6 +104,12 @@ export interface TypedIdentifyQuestion extends RevisionQuestionBase {
    * Absent for everything that is not a ligament.
    */
   attachmentSlots?: { label: string; accepted: string[] }[];
+  /**
+   * Whether the letter-count and first-letter hints are shown. 'none' is the
+   * top rung of the difficulty ladder (lib/ladder.ts) and pays more XP.
+   * Absent means 'full', so every existing question keeps its hints.
+   */
+  hints?: 'full' | 'none';
   explanation: string;
 }
 

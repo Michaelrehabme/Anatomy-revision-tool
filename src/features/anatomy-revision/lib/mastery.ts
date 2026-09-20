@@ -1,4 +1,5 @@
 import type { StructureMastery, Confidence } from '../types/attempt';
+import { promoteOrDemote } from './ladder';
 
 const DEFAULT_EASE_FACTOR = 2.5;
 const MIN_EASE_FACTOR = 1.3;
@@ -108,6 +109,8 @@ export function updateMasteryAfterAttempt(
     lapses,
     isLeech,
     durationEwmaMs,
+    firstSeenAt: existing?.firstSeenAt ?? now.toISOString(),
+    ...promoteOrDemote(existing, params.correct),
   };
 
   const { intervalDays, easeFactor, dueAt } = computeNextReview(existing, resolvedConfidence, now);

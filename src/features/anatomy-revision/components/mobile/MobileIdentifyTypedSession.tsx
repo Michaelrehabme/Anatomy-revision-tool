@@ -151,7 +151,7 @@ export function MobileIdentifyTypedSession({ question, imagesById, onAnswer, onN
           />
         ))}
 
-        {!submitted && (
+        {!submitted && question.hints !== 'none' && (
           <div className="mt-4 flex flex-wrap gap-2">
             {hints.map((hint) => (
               <span
@@ -162,6 +162,13 @@ export function MobileIdentifyTypedSession({ question, imagesById, onAnswer, onN
                 {hint}
               </span>
             ))}
+          </div>
+        )}
+        {!submitted && question.hints === 'none' && (
+          <div className="mt-4 flex flex-wrap gap-2">
+            <span className="rounded-full px-3.5 py-2.5" style={{ font: '400 11.5px/1 var(--font-mono)', background: 'var(--accs)', color: 'var(--accd)' }}>
+              No hints · extra XP
+            </span>
           </div>
         )}
 

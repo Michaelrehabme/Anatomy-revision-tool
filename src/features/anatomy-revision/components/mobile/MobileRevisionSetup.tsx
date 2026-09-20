@@ -166,7 +166,9 @@ export function MobileRevisionSetup({ access, content, repository, userId, areas
       if (dueInPool.length > 0) dueStructureIds = dueInPool;
     }
 
-    const mastery = mode === 'adaptive' && repository && userId ? await repository.listMastery(userId) : undefined;
+    // Adaptive mode blends by it; practice mode climbs the difficulty ladder
+    // by it (lib/ladder.ts). An exam is uniform and reads nothing.
+    const mastery = mode !== 'assessment' && repository && userId ? await repository.listMastery(userId) : undefined;
     const factMastery = oinaSelected && repository && userId ? await repository.listFactMastery(userId) : undefined;
 
     const params: RevisionSetupParams = {

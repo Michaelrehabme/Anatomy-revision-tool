@@ -190,7 +190,9 @@ export function RevisionSetup({ access, content, repository, userId, areas, onSt
       if (dueInPool.length > 0) dueStructureIds = dueInPool;
     }
 
-    const mastery = mode === 'adaptive' && repository && userId ? await repository.listMastery(userId) : undefined;
+    // Adaptive mode blends by it; practice mode climbs the difficulty ladder
+    // by it (lib/ladder.ts). An exam is uniform and reads nothing.
+    const mastery = mode !== 'assessment' && repository && userId ? await repository.listMastery(userId) : undefined;
     // generateSet stays repository-free (CR-009), so fact mastery is fetched here and
     // passed in — it decides both the select/typed format per fact and whether a
     // question is preceded by its teaching flashcard.

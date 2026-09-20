@@ -894,3 +894,52 @@ describe('the due share buys distinct structures, most overdue first', () => {
     for (const id of multi.slice(0, 5)) expect(a.some((q) => q.structureId === id)).toBe(true);
   });
 });
+
+describe('the difficulty ladder in practice mode', () => {
+  const TYPES = ['flashcard', 'mcq', 'identify-typed', 'locate'] as const;
+  const now = new Date('2026-09-20T09:00:00.000Z');
+  // Structures that can be asked in every ladder format, so the rung alone decides.
+  const everything = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, { entitledAreas: AREAS, types: TYPES, mode: 'practice', seed: 41 });
+  const byStructure = new Map<string, Set<string>>();
+  for (const q of everything) {
+    if (!byStructure.has(q.structureId)) byStructure.set(q.structureId, new Set());
+    byStructure.get(q.structureId)!.add(q.type);
+  }
+  const capable = [...byStructure.entries()].filter(([, t]) => t.has('flashcard') && t.has('mcq') && t.has('identify-typed')).map(([id]) => id);
+  const [unseen, met, hinted, bare] = capable;
+  const row = (structureId: string, rung: 'mcq' | 'typed-hinted' | 'typed-bare') => ({
+    structureId, userId: 'u', attemptsTotal: 6, attemptsCorrect: 5, lastAttemptAt: '2026-09-10T09:00:00.000Z', rung,
+  });
+  const config = {
+    entitledAreas: AREAS, types: TYPES, mode: 'practice' as const, seed: 42, now,
+    structureIds: [unseen, met, hinted, bare],
+    mastery: [row(met, 'mcq'), row(hinted, 'typed-hinted'), row(bare, 'typed-bare')],
+  };
+  const ladderTypes = (qs: ReturnType<typeof generateRevisionSet>, id: string) =>
+    new Set(qs.filter((q) => q.structureId === id && q.type !== 'locate').map((q) => q.type));
+
+  it('asks each structure in the format of its rung', () => {
+    expect(capable.length).toBeGreaterThanOrEqual(4);
+    const result = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, config);
+    expect(ladderTypes(result, unseen)).toEqual(new Set(['flashcard']));
+    expect(ladderTypes(result, met)).toEqual(new Set(['mcq']));
+    expect(ladderTypes(result, hinted)).toEqual(new Set(['identify-typed']));
+    expect(ladderTypes(result, bare)).toEqual(new Set(['identify-typed']));
+    // Locate is outside the ladder and still asked for everyone who has one.
+    expect(result.some((q) => q.type === 'locate')).toBe(true);
+  });
+
+  it('drops the hints only on the top rung', () => {
+    const result = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, config);
+    const typed = result.filter((q) => q.type === 'identify-typed');
+    expect(typed.filter((q) => q.structureId === hinted).every((q) => q.type === 'identify-typed' && q.hints !== 'none')).toBe(true);
+    expect(typed.filter((q) => q.structureId === bare).every((q) => q.type === 'identify-typed' && q.hints === 'none')).toBe(true);
+  });
+
+  it('is off without mastery, or with a single ladder format', () => {
+    const noMastery = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, { ...config, mastery: undefined });
+    expect(ladderTypes(noMastery, unseen).size).toBeGreaterThan(1);
+    const onlyMcq = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, { ...config, types: ['mcq', 'locate'] });
+    expect(ladderTypes(onlyMcq, bare)).toEqual(new Set(['mcq']));
+  });
+});

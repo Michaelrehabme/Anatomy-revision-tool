@@ -65,3 +65,13 @@ describe('computeSessionXp', () => {
     expect(computeSessionXp({ answerXp: [], streakDays: 0, completed: true })).toBe(DEFAULT_XP_CONFIG.sessionCompletionBonus);
   });
 });
+
+describe('the ladder top rung', () => {
+  it('pays more for typed recall without hints than with them', () => {
+    const hinted = xpForAnswer(true, 'identify-typed', false, { hints: 'full' });
+    const bare = xpForAnswer(true, 'identify-typed', false, { hints: 'none' });
+    expect(bare).toBe(hinted + DEFAULT_XP_CONFIG.typedBareBonus);
+    // Hints mean nothing to any other format.
+    expect(xpForAnswer(true, 'mcq', false, { hints: 'none' })).toBe(xpForAnswer(true, 'mcq', false));
+  });
+});

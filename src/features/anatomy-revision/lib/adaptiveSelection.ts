@@ -2,6 +2,7 @@ import type { StructureMastery } from '../types/attempt';
 import type { QuestionType } from '../types/question';
 import type { Rng } from './rng';
 import { shuffle } from './rng';
+import { questionTypeForRung, rungFor } from './ladder';
 
 /**
  * All adaptive-selection tuning in one place, per CR-009 ("roughly 70/30
@@ -127,21 +128,14 @@ export function selectAdaptiveStructures<T extends { id: string }>(
 }
 
 /**
- * Escalates retrieval demand with mastery: recognition (mcq) first, then
- * cued recall (fill-blank), then free recall (identify-typed) — per CR-009.
- * Falls back down the ladder to whatever the session actually requested.
+ * The format for a structure in an adaptive session: its rung on the
+ * difficulty ladder (lib/ladder.ts), falling back to whatever the session
+ * requested. This used to be its own three accuracy tiers; practice mode now
+ * climbs the same ladder, and two rules for one idea would drift.
  */
 export function pickAdaptiveQuestionType(
   mastery: StructureMastery | undefined,
   requestedTypes: readonly QuestionType[],
 ): QuestionType | null {
-  const accuracy = mastery && mastery.attemptsTotal > 0 ? mastery.attemptsCorrect / mastery.attemptsTotal : 0;
-  const ladder: QuestionType[] =
-    accuracy >= 0.85
-      ? ['identify-typed', 'fill-blank', 'mcq', 'flashcard', 'locate']
-      : accuracy >= 0.6
-        ? ['fill-blank', 'mcq', 'identify-typed', 'flashcard', 'locate']
-        : ['mcq', 'flashcard', 'locate', 'fill-blank', 'identify-typed'];
-
-  return ladder.find((t) => requestedTypes.includes(t)) ?? requestedTypes[0] ?? null;
+  return questionTypeForRung(rungFor(mastery), requestedTypes) ?? requestedTypes[0] ?? null;
 }

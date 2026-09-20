@@ -144,3 +144,19 @@ describe('updateMasteryAfterAttempt', () => {
     expect(second.attemptsCorrect).toBe(1);
   });
 });
+
+describe('updateMasteryAfterAttempt and the ladder', () => {
+  it('stamps firstSeenAt once and climbs a rung after three correct answers', () => {
+    const now = new Date('2026-09-20T09:00:00.000Z');
+    let m: StructureMastery | undefined;
+    for (let i = 0; i < 3; i++) {
+      m = updateMasteryAfterAttempt(m, { structureId: 'deltoid', userId: 'u', correct: true, confidence: 'easy' }, now);
+    }
+    expect(m!.firstSeenAt).toBe(now.toISOString());
+    expect(m!.rung).toBe('typed-hinted');
+    const later = updateMasteryAfterAttempt(m, { structureId: 'deltoid', userId: 'u', correct: false, confidence: 'hard' }, new Date('2026-09-21T09:00:00.000Z'));
+    expect(later.firstSeenAt).toBe(now.toISOString());
+    expect(later.rung).toBe('typed-hinted');
+    expect(later.rungMissStreak).toBe(1);
+  });
+});

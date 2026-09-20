@@ -86,7 +86,7 @@ export function MuscleCard({
                 Your history
               </div>
               <div className="mt-3" style={{ font: '400 13px/1.9 var(--font-mono)', color: 'var(--ink2)' }}>
-                {mastery ? (
+                {mastery && mastery.attemptsTotal > 0 ? (
                   <>
                     {mastery.attemptsTotal} attempts
                     <br />

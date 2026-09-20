@@ -111,16 +111,19 @@ describe('selectAdaptiveStructures', () => {
 describe('pickAdaptiveQuestionType', () => {
   const allTypes = ['flashcard', 'mcq', 'locate', 'fill-blank', 'identify-typed'] as const;
 
-  it('picks mcq for a never-attempted structure', () => {
-    expect(pickAdaptiveQuestionType(undefined, allTypes)).toBe('mcq');
+  it('shows a never-attempted structure a flashcard first — the bottom rung of the ladder', () => {
+    expect(pickAdaptiveQuestionType(undefined, allTypes)).toBe('flashcard');
+    // With no flashcards requested it is recognised from options instead.
+    expect(pickAdaptiveQuestionType(undefined, ['mcq', 'identify-typed'])).toBe('mcq');
   });
 
   it('picks mcq for low accuracy', () => {
     expect(pickAdaptiveQuestionType(mastery({ attemptsTotal: 10, attemptsCorrect: 3 }), allTypes)).toBe('mcq');
   });
 
-  it('picks fill-blank for medium accuracy', () => {
-    expect(pickAdaptiveQuestionType(mastery({ attemptsTotal: 10, attemptsCorrect: 7 }), allTypes)).toBe('fill-blank');
+  it('picks typed recall for medium accuracy — the hinted rung', () => {
+    expect(pickAdaptiveQuestionType(mastery({ attemptsTotal: 10, attemptsCorrect: 7 }), allTypes)).toBe('identify-typed');
+    expect(pickAdaptiveQuestionType(mastery({ attemptsTotal: 10, attemptsCorrect: 7 }), ['mcq', 'fill-blank'])).toBe('fill-blank');
   });
 
   it('picks identify-typed for high accuracy', () => {

@@ -9,6 +9,7 @@ import type { OinaPromptKind, QuestionType } from '../types/question';
 import { isOinaQuestion } from '../types/question';
 import type { AnatomyRepository } from '../data/repository';
 import { updateMasteryAfterAttempt } from '../lib/mastery';
+import { markSeen } from '../lib/ladder';
 import { updateFactMasteryAfterAttempt } from '../lib/factMastery';
 import { ALL_STRUCTURES } from '../data/seed';
 import { toDayKey, computeStreak } from '../lib/streak';
@@ -215,7 +216,9 @@ async function computeGamification(
     const graded = a.graded !== false;
     const isFirstCorrect = graded && a.correct && !seenCorrectStructures.has(a.structureId);
     if (graded && a.correct) seenCorrectStructures.add(a.structureId);
-    return xpForAnswer(a.correct, question.type, isFirstCorrect);
+    return xpForAnswer(a.correct, question.type, isFirstCorrect, {
+      hints: question.type === 'identify-typed' ? question.hints : undefined,
+    });
   });
 
   const priorSummaries = await repository.listSessionSummaries(userId, 400);
@@ -370,8 +373,15 @@ export function useRevisionSession(repository: AnatomyRepository | null, userId:
 
           // Flashcards are purely for learning since CR-018 — they carry no
           // judgement, so they must not feed SM-2 scheduling. The exposure is
-          // still recorded above, so analytics can see what was studied.
-          if (record.graded === false) return;
+          // still recorded above, so analytics can see what was studied. It
+          // does mark the structure SEEN: a structure only ever shown leaves
+          // the ladder's flashcard rung (lib/ladder.ts) and counts as met on
+          // the account page, without a schedule or an accuracy.
+          if (record.graded === false) {
+            const seen = await repository.getMasteryForStructure(userId, record.structureId);
+            if (!seen) await repository.upsertMastery(markSeen(record.structureId, userId));
+            return;
+          }
 
           const existingMastery = await repository.getMasteryForStructure(userId, record.structureId);
           const nextMastery = updateMasteryAfterAttempt(existingMastery ?? undefined, {

@@ -94,6 +94,19 @@ export interface StructureMastery {
   lapses?: number;
   /** True once lapses reaches the leech threshold; interval growth is capped while true. */
   isLeech?: boolean;
+  /**
+   * The difficulty ladder (lib/ladder.ts). Absent on rows written before it
+   * existed, which rungFor places by accuracy. A flashcard writes a row with
+   * firstSeenAt and no attempts, so a structure only ever shown still counts
+   * as seen and leaves the flashcard rung.
+   */
+  rung?: 'flashcard' | 'mcq' | 'typed-hinted' | 'typed-bare';
+  /** Consecutive correct answers on the current rung — the promotion trigger. */
+  rungStreak?: number;
+  /** Consecutive misses on the current rung — the demotion trigger. */
+  rungMissStreak?: number;
+  /** When the student first met this structure, by any question or a flashcard. */
+  firstSeenAt?: string;
 }
 
 export interface RevisionSessionSummary {

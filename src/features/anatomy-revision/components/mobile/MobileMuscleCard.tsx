@@ -45,7 +45,7 @@ export function MobileMuscleCard({ access, structureId, content, repository, use
   }
 
   const muscle = isMuscle(structure) ? structure : null;
-  const record = mastery
+  const record = mastery && mastery.attemptsTotal > 0
     ? `Seen ${mastery.attemptsTotal} time${mastery.attemptsTotal === 1 ? '' : 's'} · ${Math.round((mastery.attemptsCorrect / mastery.attemptsTotal) * 100)}% correct${mastery.dueAt ? ` · next due ${relativeDue(mastery.dueAt, new Date())}` : ''}.`
     : 'No attempts yet.';
 

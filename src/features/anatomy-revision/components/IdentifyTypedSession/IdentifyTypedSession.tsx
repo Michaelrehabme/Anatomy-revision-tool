@@ -157,7 +157,7 @@ export function IdentifyTypedSession({ question, imagesById, onAnswer, onNext, e
             </div>
           )}
 
-          {!submitted && (
+          {!submitted && question.hints !== 'none' && (
             <div className="mt-5 flex justify-center gap-2.5">
               {hints.map((hint) => (
                 <span
@@ -168,6 +168,16 @@ export function IdentifyTypedSession({ question, imagesById, onAnswer, onNext, e
                   {hint}
                 </span>
               ))}
+            </div>
+          )}
+          {!submitted && question.hints === 'none' && (
+            <div className="mt-5 flex justify-center">
+              <span
+                className="inline-flex min-h-[40px] items-center justify-center whitespace-nowrap rounded-full px-4"
+                style={{ fontFamily: 'var(--font-mono)', fontSize: 12.5, background: 'var(--accs)', color: 'var(--accd)' }}
+              >
+                No hints · extra XP
+              </span>
             </div>
           )}
 

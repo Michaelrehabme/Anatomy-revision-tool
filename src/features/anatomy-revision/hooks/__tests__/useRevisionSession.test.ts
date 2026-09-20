@@ -220,8 +220,13 @@ describe('ungraded learn cards (CR-018)', () => {
 
     const [attempt] = await repository.listAttempts({ userId: 'user-1' });
     expect(attempt.graded).toBe(false);
-    // The whole point: revealing a card must not schedule the muscle as reviewed.
-    expect(await repository.getMasteryForStructure('user-1', 'biceps-femoris')).toBeNull();
+    // The whole point: revealing a card must not schedule the muscle as
+    // reviewed. It does mark it SEEN (lib/ladder.ts), so a row exists — with
+    // no attempts, no accuracy and nothing due.
+    const row = await repository.getMasteryForStructure('user-1', 'biceps-femoris');
+    expect(row?.attemptsTotal).toBe(0);
+    expect(row?.dueAt).toBeUndefined();
+    expect(row?.intervalDays).toBeUndefined();
   });
 
   it('keeps learn cards out of the session score', async () => {
@@ -361,5 +366,22 @@ describe('useRevisionSession abandon', () => {
     });
     expect(result.current.phase).toBe('setup');
     expect(await repository.listSessionSummaries('user-1', 10)).toEqual([]);
+  });
+});
+
+describe('a flashcard marks the structure seen', () => {
+  it('writes a mastery row with firstSeenAt and no schedule', async () => {
+    const repository = createMemoryRepository();
+    const { result } = renderHook(() => useRevisionSession(repository, 'user-1'));
+    const card = flashcard();
+    act(() => result.current.start([card], { types: ['flashcard'], mode: 'practice' }));
+    await act(async () => {
+      await result.current.submitAnswer({ questionId: card.id, structureId: card.structureId, correct: true, graded: false });
+    });
+    const row = await repository.getMasteryForStructure('user-1', card.structureId);
+    expect(row?.firstSeenAt).toBeDefined();
+    expect(row?.attemptsTotal).toBe(0);
+    expect(row?.dueAt).toBeUndefined();
+    expect(row?.rung).toBe('mcq');
   });
 });

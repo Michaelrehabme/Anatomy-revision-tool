@@ -8,6 +8,7 @@ import { areasOf } from '../../types/structure';
 import { createRng, sample, shuffle, weightedShuffle, type Rng } from '../rng';
 import { selectAdaptiveStructures, pickAdaptiveQuestionType } from '../adaptiveSelection';
 import { buildWeightMap, UNSEEN_WEIGHT } from '../scheduling';
+import { LADDER_TYPES, hintsForRung, questionTypeForRung, rungFor } from '../ladder';
 import { buildFlashcardQuestions, buildFieldFlashcard } from './flashcards';
 import { buildMcqQuestions } from './mcq';
 import { buildLocateQuestions } from './locate';
@@ -226,6 +227,42 @@ function blendPriorityWithRest(
   return shuffle([...fromDue, ...fromRest, ...topUp], rng);
 }
 
+/**
+ * Which name-recall format each structure is asked in a practice session
+ * that knows the student: its rung on the difficulty ladder (lib/ladder.ts).
+ *
+ * Without the ladder a practice session builds every requested format for
+ * every structure and shuffles, so a muscle met for the first time can open
+ * as a typed question and one recalled perfectly for a month still arrives
+ * as a flashcard. With mastery supplied and at least two ladder formats
+ * requested, each structure gets the one format its rung calls for — a
+ * flashcard when unseen, MCQ once met, typed with hints, then typed bare.
+ * Locate, multi-select and OINA are outside the ladder and unchanged.
+ *
+ * Null (no ladder) when there is no mastery to climb by, or only one ladder
+ * format was asked for — a session of only MCQs means MCQs.
+ */
+function ladderPlan(
+  pool: AnatomyStructure[],
+  config: RevisionSetConfig,
+): { byType: Map<QuestionType, AnatomyStructure[]>; bare: Set<string> } | null {
+  const requested = config.types.filter((t) => LADDER_TYPES.includes(t));
+  if (config.mode !== 'practice' || !config.mastery || requested.length < 2) return null;
+  const masteryById = new Map(config.mastery.map((m) => [m.structureId, m]));
+  const byType = new Map<QuestionType, AnatomyStructure[]>();
+  const bare = new Set<string>();
+  for (const structure of pool) {
+    const rung = rungFor(masteryById.get(structure.id));
+    const type = questionTypeForRung(rung, requested);
+    if (!type) continue;
+    const list = byType.get(type);
+    if (list) list.push(structure);
+    else byType.set(type, [structure]);
+    if (type === 'identify-typed' && hintsForRung(rung) === 'none') bare.add(structure.id);
+  }
+  return { byType, bare };
+}
+
 function generateOneQuestionForStructure(
   structure: AnatomyStructure,
   type: QuestionType,
@@ -348,7 +385,9 @@ export function generateRevisionSet(
       for (const type of orderedTypes) {
         const question = generateOneQuestionForStructure(structure, type, relevantImages, indexes, rng, config);
         if (question) {
-          adaptiveQuestions.push(question);
+          adaptiveQuestions.push(
+            question.type === 'identify-typed' ? { ...question, hints: hintsForRung(rungFor(mastery)) } : question,
+          );
           break;
         }
       }
@@ -361,24 +400,35 @@ export function generateRevisionSet(
   }
 
   const generated: RevisionQuestion[] = [];
-  if (config.types.includes('flashcard')) {
-    generated.push(...buildFlashcardQuestions(pool, relevantImages));
+  const ladder = ladderPlan(pool, config);
+  const poolFor = (type: QuestionType) => (ladder ? (ladder.byType.get(type) ?? []) : config.types.includes(type) ? pool : []);
+
+  const flashcardPool = poolFor('flashcard');
+  if (flashcardPool.length) {
+    generated.push(...buildFlashcardQuestions(flashcardPool, relevantImages));
   }
-  if (config.types.includes('mcq')) {
-    generated.push(...buildMcqQuestions(pool, relevantImages, indexes, rng));
+  const mcqPool = poolFor('mcq');
+  if (mcqPool.length) {
+    generated.push(...buildMcqQuestions(mcqPool, relevantImages, indexes, rng));
     // Clinical MCQs (CR-010) are just another mcq promptKind family, gated on the
     // structure actually having the relevant clinical field authored — same
     // convention as buildMcqQuestions itself generating several promptKinds at once.
-    generated.push(...buildClinicalQuestions(pool, rng));
+    generated.push(...buildClinicalQuestions(mcqPool, rng));
   }
   if (config.types.includes('locate')) {
     generated.push(...buildLocateQuestions(pool, relevantImages));
   }
-  if (config.types.includes('fill-blank')) {
-    generated.push(...buildFillBlankQuestions(pool, rng));
+  const fillBlankPool = poolFor('fill-blank');
+  if (fillBlankPool.length) {
+    generated.push(...buildFillBlankQuestions(fillBlankPool, rng));
   }
-  if (config.types.includes('identify-typed')) {
-    generated.push(...buildIdentifyTypedQuestions(pool, relevantImages, structures));
+  const typedPool = poolFor('identify-typed');
+  if (typedPool.length) {
+    generated.push(
+      ...buildIdentifyTypedQuestions(typedPool, relevantImages, structures).map((q) =>
+        ladder?.bare.has(q.structureId) ? { ...q, hints: 'none' as const } : q,
+      ),
+    );
   }
   if (config.types.includes('multi-select')) {
     generated.push(...buildMultiSelectQuestions(pool, indexes, rng));
