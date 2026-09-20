@@ -143,7 +143,14 @@ Rectification, restriction and objection are handled by email to michael@rehabme
 **Organisational.**
 
 - Single operator; access to production is limited to that one account.
-- No credential, key or secret is held in the repository, and none is present in its history.
+- No private key, service-account credential, API secret or access token is held in the
+  repository, and none is present in its history. Verified on 20 September 2026 by scanning every
+  blob in all 187 commits for credential-shaped strings. The Paddle API key, the webhook signing
+  secret and the Firebase service-account key exist only as environment variables in Netlify.
+  For completeness, because a reviewer running the same scan will find it: the Firebase **web**
+  API key does appear in the history, and still ships in the client. That key is public by design
+  — it identifies the project rather than authorising anything — and access is decided by
+  `firestore.rules` and the Auth configuration, not by possession of it.
 - Changes are version-controlled. A test suite (911 tests as at 20 September 2026) and a content validator cover the
   application, and are run before release **by the operator** — we have no continuous integration
   server, so this is a working practice rather than an automated gate, and we would rather say so

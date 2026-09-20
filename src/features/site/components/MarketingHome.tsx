@@ -355,10 +355,11 @@ export function MarketingHome() {
 
       <Section id="pricing">
         <Eyebrow>Pricing</Eyebrow>
-        <Heading>Cheaper than one textbook.</Heading>
+        <Heading>Revision that comes with you.</Heading>
         <Prose>
-          Start on one body area for nothing. When you need the whole body, the year works out at about the price of a
-          coffee a month.
+          Start on one body area for nothing. When you want the whole body, the year works out at about the price of a
+          coffee a month — and it goes where you do: between lectures, on the bus, or halfway up a mountain with no
+          signal at all.
         </Prose>
 
         <div className="mt-9 grid gap-4 md:grid-cols-3">

@@ -42,9 +42,8 @@ To add a claim: put it in the table with that evidence format, and the check sta
 | Claim | Where it appears | Evidence | Last verified |
 |---|---|---|---|
 | "£4.99 a month", "£29.99 a year" | MarketingHome (`PRICING`), /pricing (`PLANS`) | The two Paddle price records. **These are kept in step with Paddle by hand** — see the note in `checkout.ts`. Re-check both after any price change | 2026-09-20 |
-| "£2.50 a month" / "about the price of a coffee a month" | MarketingHome | £29.99 ÷ 12 = £2.499 | 2026-09-20 |
 | "Prices include VAT" | /pricing, MarketingHome | Paddle is merchant of record and handles VAT — CR-033 item 9 | 2026-09-20 |
-| "Cheaper than one textbook" | MarketingHome | **Comparative — needs a dated citation.** A standard MSK anatomy textbook is £40–£60 new. Before this is relied on, save a dated screenshot of two retail listings | 2026-09-20 |
+| "£2.50 a month" / "about the price of a coffee a month" | MarketingHome, /pricing | £29.99 ÷ 12 = £2.499, against a high-street coffee at £3–£4. A claim about our own price, not a competitor's | 2026-09-20 |
 | "Annual · best value" | MarketingHome price card | £29.99/yr vs £59.88/yr at the monthly rate — true against our own prices only, which is all it claims | 2026-09-20 |
 | "one free region, forever, no card" | MarketingHome (FAQ, hero, price card), /pricing | `FREE_AREAS` / `freeAreasFor` in entitlement.ts; checkout is never reached without a deliberate click | 2026-09-20 |
 | "change your free area once after 30 days" | MarketingHome (FAQ), account screen | The 30-day rule in the free-area change logic | 2026-09-20 |
@@ -73,7 +72,7 @@ The full set lives in docs/DATA-PROCESSING.md; the load-bearing ones are:
 | "deleted after 24 months of inactivity" | /privacy, DATA-PROCESSING.md | `retention.ts` + `scripts/deleteDormantAccounts.ts` | 2026-09-20 |
 | "Delete your account … all of it goes immediately" | /privacy | `AccountDataControls` + the account-lifecycle deletion covering every subcollection | 2026-09-20 |
 | "ICO registration ZC247309" | /privacy, DATA-PROCESSING.md | The ICO register entry | 2026-09-20 |
-| "No credential, key or secret is held in the repository, or in its history" | DATA-PROCESSING.md | **Hard to prove and easy to falsify.** Re-check with a history scan before sending this pack to a university | 2026-09-20 |
+| "No private key, service-account credential, API secret or access token … none in its history" | DATA-PROCESSING.md | History scan of every blob in all 187 commits, 20 September 2026: no private keys, no service accounts, no API secrets. The only `.env` files ever committed are `.env.example` and `.env.educator-demo`, both of which hold flags, not values. The Firebase **web** API key is in the history and ships in the client — public by design, and the doc now says so rather than leaving a reviewer to find it | 2026-09-20 |
 | "reply within one month" | /privacy, /refunds, /accessibility | UK GDPR response window; a commitment you have to meet | 2026-09-20 |
 | WCAG 2.2 AA, "partially compliant", no independent audit | /accessibility | Own testing, stated as such on the page | 2026-09-20 |
 
@@ -106,6 +105,7 @@ The full set lives in docs/DATA-PROCESSING.md; the load-bearing ones are:
 | "14 atlas slides … All rights reserved" | README licensing section | Those slides were removed; nothing AI-generated ships |
 | "No purchase history — there is no purchasing" | STORE-DATA-DECLARATIONS.md | Written before billing shipped. **Would have been a false store declaration** |
 | "A test suite of 732 tests" | DATA-PROCESSING.md | 911 now; dated so a reader can tell how old it is |
+| "Cheaper than one textbook" | MarketingHome pricing heading | A comparison that stops being true the longer somebody subscribes: three years at £29.99 passes a £60 textbook. Replaced with what does not expire — that it goes everywhere with you, which the offline support actually backs |
 
 ## Routine
 
