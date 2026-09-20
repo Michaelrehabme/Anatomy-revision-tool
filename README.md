@@ -542,6 +542,37 @@ overwrites one, so it's safe to re-run after an admin has changed a status/note 
 Status/notes edits made in `/admin/changes` itself are NOT written back to the seed file; if a
 completed change request's history is worth preserving in git, update the seed file by hand.
 
+### Running a pilot, and supporting the people in it
+
+Two admin scripts cover the whole of a licensed pilot. Both need
+`GOOGLE_APPLICATION_CREDENTIALS` pointed at a service account key, and both
+print what they would do until you add `--apply`.
+
+```bash
+# License a cohort until the end of the teaching year. Every member gets every
+# region, including students who join in week six; "none" withdraws it.
+npm run admin:account -- licence <cohortId> 2027-07-01 --apply
+
+# What the pilot actually did: take-up, use, and the diagnostic before/after.
+npm run admin:cohort-report              # every cohort, one line each
+npm run admin:cohort-report <cohortId>   # the full report
+```
+
+`admin:account` also covers the support cases a pilot generates:
+`list` and `show` find the account holding somebody's history (signing in with
+a new provider lands them on a fresh uid, which looks exactly like lost
+progress), `move` copies it across, `grant` gives an account permanent free
+access, and `failures` lists payments that verified but could not be written —
+each one a customer who paid and has nothing.
+
+A licence is a DATE, not a switch: a pilot that never ends is a pilot nobody
+converts. When it lapses students keep every answer they have given and drop
+to the free tier with their one free region still open.
+
+`licensedUntil` is pinned against the cohort's owner in `firestore.rules`, so
+a course lead cannot license their own class — only these scripts can, through
+the Admin SDK.
+
 ## Project structure
 
 ```
@@ -604,7 +635,9 @@ src/
 scripts/                                # Node-only, run via tsx — NOT part of the Vite app bundle
   setAdmin.ts                          # npm run admin:set-claim -- <uid> — see "Admin section" above
   seedChangeRequests.ts                # npm run admin:seed-changes
-  firebaseAdmin.ts                     # shared firebase-admin bootstrap for the two scripts above
+  accountData.ts                       # list/show/move/grant/failures/licence — see "Running a pilot"
+  cohortReport.ts                      # npm run admin:cohort-report — take-up, use, diagnostic
+  firebaseAdmin.ts                     # shared firebase-admin bootstrap for the scripts above
 ```
 
 ## Testing
