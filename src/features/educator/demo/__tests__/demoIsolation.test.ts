@@ -43,6 +43,7 @@ const KNOWN: Record<string, string> = {
   'features/anatomy-revision/data/__tests__/authLinking.test.ts': 'A test; never bundled.',
   'features/educator/data/cohortsRepository.ts': 'Aliased: cohortsRepository.demo.ts',
   'features/educator/data/assignmentsRepository.ts': 'Aliased: assignmentsRepository.demo.ts',
+  'features/educator/data/assignmentTemplatesRepository.ts': 'Aliased: assignmentTemplatesRepository.demo.ts',
   'features/educator/data/invitesRepository.ts': 'Aliased: invitesRepository.demo.ts',
   'features/educator/data/cohortRollups.ts': 'Reached only via cohortAnalytics, aliased: cohortAnalytics.demo.ts',
   'features/roles/rolesRepository.ts': 'Aliased: adminDemo.tsx',

@@ -27,6 +27,7 @@ const demoFile = (name: string) =>
 export const educatorDemoAliases = [
   { find: /^.*\/data\/cohortsRepository$/, replacement: demoFile('cohortsRepository.demo.ts') },
   { find: /^.*\/data\/assignmentsRepository$/, replacement: demoFile('assignmentsRepository.demo.ts') },
+  { find: /^.*\/data\/assignmentTemplatesRepository$/, replacement: demoFile('assignmentTemplatesRepository.demo.ts') },
   { find: /^.*\/data\/cohortAnalytics$/, replacement: demoFile('cohortAnalytics.demo.ts') },
   // Reached from CohortMembership, which is a SHARED component rather than an
   // educator-only one — without this alias the demo build pulls the whole

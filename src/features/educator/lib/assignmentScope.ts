@@ -1,4 +1,7 @@
-import type { RevisionSetConfig } from '../../anatomy-revision/lib/questionGenerators/generateSet';
+import { generateRevisionSet, type RevisionSetConfig } from '../../anatomy-revision/lib/questionGenerators/generateSet';
+import { ALL_IMAGES, ALL_STRUCTURES } from '../../anatomy-revision/data/seed';
+import { filterStructures } from '../../anatomy-revision/lib/indexes';
+import { AREAS as EVERY_AREA } from '../../anatomy-revision/types/region';
 import type { QuestionType } from '../../anatomy-revision/types/question';
 import { AREA_LABELS, normaliseAreas, type Area } from '../../anatomy-revision/types/region';
 import { CATEGORY_LABELS, MUSCLE_GROUP_LABELS } from '../../anatomy-revision/types/structure';
@@ -77,4 +80,31 @@ export function describeAssignmentScope(scope: AssignmentScope): string {
     return `${scope.groups.map((g) => MUSCLE_GROUP_LABELS[g] ?? g).join(', ')} · ${areas}`;
   }
   return `${scope.category ? CATEGORY_LABELS[scope.category] : 'Everything'} · ${areas}`;
+}
+
+/**
+ * What a scope and a format list would build: how many structures are in
+ * scope, and how many questions the generator can make from them, which is
+ * the ceiling on an attempt's length. The create form shows it live and the
+ * built-in templates are tested against it, so a preset can never be one
+ * that builds nothing.
+ *
+ * Over EVERY area, not the educator's own entitlement: this previews what the
+ * cohort will be set, and an educator on a free account must still be able
+ * to set work covering the whole body.
+ */
+export function previewAssignment(scope: AssignmentScope, types: readonly QuestionType[]): { poolSize: number; available: number } {
+  if (scope.areas.length === 0 || types.length === 0) return { poolSize: 0, available: 0 };
+  return {
+    poolSize: filterStructures(ALL_STRUCTURES, scope).length,
+    // Practice with learn cards off counts every question the scope can build.
+    available: generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+      entitledAreas: EVERY_AREA,
+      ...scope,
+      types: [...types],
+      mode: 'practice',
+      learnCardAttempts: 0,
+      seed: 1,
+    }).length,
+  };
 }
