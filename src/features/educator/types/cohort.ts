@@ -19,6 +19,20 @@ export interface Cohort {
   joinCode: string;
   createdAt: string;
   archivedAt: string | null;
+  /**
+   * ISO date this cohort's licence runs to, opening every region for its
+   * members. Null for an unlicensed class, whose students are on the free
+   * tier like anybody else.
+   *
+   * SET BY US, NEVER BY THE EDUCATOR. firestore.rules pins it across a client
+   * update for the same reason it pins `entitlement` on a user: a course lead
+   * who could licence their own cohort could licence the whole university.
+   * Written with scripts/accountData.ts licence, through the Admin SDK.
+   *
+   * A DATE RATHER THAN A FLAG, because a pilot that never expires is a pilot
+   * nobody converts. The academic year ends; so should the licence.
+   */
+  licensedUntil?: string | null;
 }
 
 /** Row shape for the educator's student list/detail screens — assembled from users/{uid} plus derived stats, not a raw Firestore doc. */

@@ -25,6 +25,7 @@ function toCohort(id: string, data: Record<string, unknown>): Cohort {
     joinCode: data.joinCode as string,
     createdAt: data.createdAt as string,
     archivedAt: (data.archivedAt as string | null) ?? null,
+    licensedUntil: (data.licensedUntil as string | null) ?? null,
   };
 }
 

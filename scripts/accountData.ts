@@ -13,6 +13,7 @@
  *   npx tsx scripts/accountData.ts move <from-uid> <to-uid> --apply  # do it
  *   npx tsx scripts/accountData.ts grant <uid> [tier] --apply        # permanent free access
  *   npx tsx scripts/accountData.ts failures                          # payments that did not land
+ *   npx tsx scripts/accountData.ts licence <cohortId> <YYYY-MM-DD|none> --apply
  *
  * DRY RUN BY DEFAULT, like deleteDormantAccounts.ts, and for the same reason:
  * this one writes over a live account's data.
@@ -215,6 +216,46 @@ async function failures(db: Firestore): Promise<void> {
   process.stdout.write('Fix by granting what the entitlement says, or by replaying the event from Paddle.\n');
 }
 
+/**
+ * Licenses a cohort until a date: every member gets every region, and anybody
+ * joining later gets it too, without a per-student grant.
+ *
+ * A DATE, NOT A SWITCH. A pilot that never ends is a pilot nobody converts,
+ * and an academic year does end. Pass the date the licence should run to —
+ * the end of the teaching year, or a month after a pilot's review.
+ *
+ * Only this script can set it: firestore.rules pins licensedUntil against the
+ * cohort's own owner, so a course lead cannot license their own class.
+ */
+async function licence(db: Firestore, cohortId: string, until: string): Promise<void> {
+  const when = until === 'none' ? null : until;
+  if (when !== null && Number.isNaN(Date.parse(when))) {
+    throw new Error(`"${until}" is not a date. Use YYYY-MM-DD, or "none" to withdraw the licence.`);
+  }
+
+  const ref = db.doc(`cohorts/${cohortId}`);
+  const snap = await ref.get();
+  if (!snap.exists) throw new Error(`No cohort ${cohortId}.`);
+
+  const cohort = snap.data() ?? {};
+  const members = await db.collection('users').where('cohort', '==', cohortId).count().get();
+  process.stdout.write(`${cohort.name} — ${cohort.institution || 'no institution'}\n`);
+  process.stdout.write(`  ${members.data().count} member(s)\n`);
+  process.stdout.write(`  now:  ${cohort.licensedUntil ?? 'not licensed'}\n`);
+  process.stdout.write(`  next: ${when ?? 'not licensed'}${APPLY ? '' : '  (dry run)'}\n`);
+
+  if (!APPLY) {
+    process.stdout.write('\nDry run. Re-run with --apply.\n');
+    return;
+  }
+  await ref.set({ licensedUntil: when }, { merge: true });
+  process.stdout.write(
+    when
+      ? `\nLicensed. Members have every region until ${when}; they see it on their next load.\n`
+      : '\nLicence withdrawn. Members drop back to the free tier, keeping all their progress.\n',
+  );
+}
+
 async function main(): Promise<void> {
   const db = getFirestore(getAdminApp());
   const [command, a, b] = process.argv.slice(2).filter((x) => !x.startsWith('--'));
@@ -224,6 +265,7 @@ async function main(): Promise<void> {
   if (command === 'move' && a && b) return move(db, a, b);
   if (command === 'grant' && a) return grant(db, a, b ?? 'institutional');
   if (command === 'failures') return failures(db);
+  if (command === 'licence' && a && b) return licence(db, a, b);
 
   process.stdout.write(
     'Usage:\n' +
@@ -231,7 +273,8 @@ async function main(): Promise<void> {
       '  npx tsx scripts/accountData.ts show <uid>\n' +
       '  npx tsx scripts/accountData.ts move <from-uid> <to-uid> [--apply]\n' +
       '  npx tsx scripts/accountData.ts grant <uid> [individual|institutional] [--apply]\n' +
-      '  npx tsx scripts/accountData.ts failures\n',
+      '  npx tsx scripts/accountData.ts failures\n' +
+      '  npx tsx scripts/accountData.ts licence <cohortId> <YYYY-MM-DD|none> [--apply]\n',
   );
 }
 

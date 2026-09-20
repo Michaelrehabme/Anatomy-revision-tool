@@ -270,3 +270,37 @@ describe('the free area is chosen, and swappable monthly', () => {
     expect(entitledAreas(AREAS, paid, NOW, freeAreasFor(choice))).toEqual(AREAS);
   });
 });
+
+describe('a university licence alongside a personal subscription', () => {
+  const NOW = new Date('2026-09-20T12:00:00.000Z');
+  const licence: Entitlement = {
+    tier: 'institutional',
+    source: 'licence',
+    expiresAt: '2027-07-01T00:00:00.000Z',
+    seatId: 'cohort-1',
+  };
+
+  it('beats a personal subscription, whatever the dates', () => {
+    const paid: Entitlement = { tier: 'individual', source: 'paddle', expiresAt: '2030-01-01T00:00:00.000Z' };
+    const winner = resolveEntitlement([paid, licence], NOW);
+    expect(winner.source).toBe('licence');
+    expect(winner.seatId).toBe('cohort-1');
+  });
+
+  it('leaves the subscription in force once the licence has run out', () => {
+    const afterPilot = new Date('2027-09-01T00:00:00.000Z');
+    const paid: Entitlement = { tier: 'individual', source: 'paddle', expiresAt: '2030-01-01T00:00:00.000Z' };
+    expect(resolveEntitlement([paid, licence], afterPilot).source).toBe('paddle');
+  });
+
+  it('drops a student back to free when the licence expires and they never paid', () => {
+    const afterPilot = new Date('2027-09-01T00:00:00.000Z');
+    expect(resolveEntitlement([licence], afterPilot).tier).toBe('free');
+    // The free area still works — a pilot ending must not lock somebody out entirely.
+    expect(canAccessArea('shoulder', resolveEntitlement([licence], afterPilot), afterPilot)).toBe(true);
+  });
+
+  it('opens every area while the licence runs', () => {
+    expect(entitledAreas(AREAS, licence, NOW)).toEqual(AREAS);
+  });
+});

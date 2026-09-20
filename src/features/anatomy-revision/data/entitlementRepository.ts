@@ -46,6 +46,42 @@ function parse(raw: unknown): Entitlement | null {
 }
 
 /**
+ * The entitlement a licensed cohort gives its members (CR-027's institutional
+ * tier), or null when the student is in no cohort or an unlicensed one.
+ *
+ * DERIVED, NOT STORED, and deliberately so. A pilot cohort's students arrive
+ * over weeks — some on the first day, some in week six — and a stored grant
+ * would mean a server write per student per join, which is a queue of things
+ * to go wrong before a course lead's first lecture. Membership already proves
+ * itself: firestore.rules refuses a change to `cohort` that arrives without a
+ * join code or an invitation, and pins `licensedUntil` against the educator
+ * who owns the cohort. So this reads two documents the student is already
+ * allowed to read and believes what they say.
+ *
+ * The seat id is the cohort id: there are no numbered seats yet, and a pilot
+ * does not need them. When licences are sold by seat count this is where that
+ * accounting goes.
+ */
+async function readCohortLicence(uid: string): Promise<Entitlement | null> {
+  const userSnap = await getDoc(doc(getDb(), 'users', uid));
+  const cohortId = userSnap.exists() ? (userSnap.data().cohort as string | null) : null;
+  if (!cohortId) return null;
+
+  const cohortSnap = await getDoc(doc(getDb(), 'cohorts', cohortId));
+  if (!cohortSnap.exists()) return null;
+
+  const licensedUntil = cohortSnap.data().licensedUntil;
+  if (typeof licensedUntil !== 'string') return null;
+
+  return {
+    tier: 'institutional',
+    source: 'licence',
+    expiresAt: licensedUntil,
+    seatId: cohortId,
+  };
+}
+
+/**
  * The entitlement in force for this user, or null when they have none.
  *
  * Throws on a failed read rather than returning null, so the caller can tell
@@ -60,9 +96,15 @@ export async function readEntitlement(uid: string): Promise<Entitlement | null> 
   const data = snapshot.data() as Record<string, unknown>;
   const raw = data.entitlement;
 
-  if (Array.isArray(raw)) {
-    const parsed = raw.map(parse).filter((e): e is Entitlement => e !== null);
-    return parsed.length > 0 ? resolveEntitlement(parsed) : null;
-  }
-  return parse(raw);
+  const stored = Array.isArray(raw)
+    ? raw.map(parse).filter((e): e is Entitlement => e !== null)
+    : [parse(raw)].filter((e): e is Entitlement => e !== null);
+
+  // A student can hold both: their own subscription and a seat on their
+  // university's licence. resolveEntitlement picks the one that wins rather
+  // than merging them — see lib/entitlement.ts.
+  const licence = await readCohortLicence(uid);
+  const all = licence ? [...stored, licence] : stored;
+
+  return all.length > 0 ? resolveEntitlement(all) : null;
 }

@@ -324,7 +324,15 @@ service cloud.firestore {
 
       // Ownership is pinned on update: a cohort that could be reassigned would
       // hand another account every student who joined it.
-      allow update: if (ownsCohort(cohortId) && request.resource.data.ownerUid == resource.data.ownerUid)
+      //
+      // `licensedUntil` is pinned for the same reason `entitlement` is pinned
+      // on a user (CR-027): it opens every region for every member, so a
+      // course lead who could set it on their own cohort could licence their
+      // whole university for nothing. Only an admin, through the Admin SDK,
+      // writes it — see scripts/accountData.ts licence.
+      allow update: if (ownsCohort(cohortId)
+          && request.resource.data.ownerUid == resource.data.ownerUid
+          && request.resource.data.get('licensedUntil', null) == resource.data.get('licensedUntil', null))
         || isAdmin();
       allow delete: if ownsCohort(cohortId) || isAdmin();
 
