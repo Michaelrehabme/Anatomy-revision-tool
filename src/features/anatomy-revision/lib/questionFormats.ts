@@ -25,7 +25,9 @@ export const QUESTION_FORMAT_LABELS: Record<QuestionType, string> = {
   mcq: 'Multiple choice',
   'identify-typed': 'Type answer',
   flashcard: 'Flashcard',
-  'multi-select': 'Select all',
+  // "Multi-select", not "Select all": that name sat one chip along from the
+  // picker's own select-everything control and read as a second one.
+  'multi-select': 'Multi-select',
   'fill-blank': 'Fill the blank',
   locate: 'Locate',
   oina: 'OINA Cards',

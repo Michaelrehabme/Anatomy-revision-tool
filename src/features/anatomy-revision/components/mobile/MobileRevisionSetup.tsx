@@ -21,21 +21,13 @@ import { MobileShell } from './MobileShell';
 import { QUESTION_FORMATS } from '../../lib/questionFormats';
 
 /**
- * Phone labels are lower-case and hyphenated, which is this screen's house
- * style rather than the desktop's. Keyed by QuestionType so a new format
- * cannot reach the phone unlabelled the way fill-blank reached neither picker.
+ * The phone reads the same Title-case names as the desktop and the session
+ * headers. It used to keep a lower-case hyphenated copy ("select-all",
+ * "locate"), which put a chip literally named select-all next to the row's
+ * own "all formats" control and left the names inconsistent with every
+ * header a student sees once the session starts.
  */
-const MOBILE_FORMAT_LABELS: Record<QuestionType, string> = {
-  flashcard: 'flashcard',
-  mcq: 'multiple-choice',
-  'identify-typed': 'type-answer',
-  'multi-select': 'select-all',
-  // Labelled but not offered — QUESTION_FORMATS leaves it out. See CR-035.
-  'fill-blank': 'fill-the-blank',
-  locate: 'locate',
-  oina: 'OINA cards',
-};
-const FORMAT_OPTIONS = QUESTION_FORMATS.map((o) => ({ value: o.value, label: MOBILE_FORMAT_LABELS[o.value] }));
+const FORMAT_OPTIONS = QUESTION_FORMATS;
 const ALL_QUESTION_TYPES = FORMAT_OPTIONS.map((o) => o.value);
 
 const OINA_FACT_LABELS: Record<OinaPromptKind, string> = {
@@ -237,7 +229,7 @@ export function MobileRevisionSetup({ access, content, repository, userId, areas
             className="inline-flex min-h-[44px] items-center justify-center rounded-full px-4.5"
             style={{ fontFamily: 'var(--font-display)', fontSize: 15.5, ...chipStyle(allTypes) }}
           >
-            all formats
+            All formats
           </button>
           {FORMAT_OPTIONS.map((opt) => (
             <button

@@ -66,7 +66,7 @@ describe('the line above a question', () => {
     expect(questionHeaderLabel(question('mcq', 'origin'))).toBe('Multiple choice · Origin · Knee');
     expect(questionHeaderLabel(question('mcq', 'nerve'))).toBe('Multiple choice · Nerve · Knee');
     expect(questionHeaderLabel(question('mcq', 'special-test'))).toBe('Multiple choice · Special test · Knee');
-    expect(questionHeaderLabel(question('multi-select', 'action'))).toBe('Select all · Action · Knee');
+    expect(questionHeaderLabel(question('multi-select', 'action'))).toBe('Multi-select · Action · Knee');
   });
 
   it('drops "identify", which every format does', () => {
