@@ -15,7 +15,7 @@ export const ONBOARDING_STEPS: OnboardingStep[] = [
   {
     kicker: 'Step one of three',
     title: 'Which areas are you learning?',
-    body: 'Pick the areas your course examines. Every session is built from your selection, so you will never be asked about the forearm if you did not ask for the forearm. The first area you pick is the one that stays free — the rest need a subscription, and you can swap your free area every month.',
+    body: 'Pick the areas your course examines. Every session is built from your selection, so you will never be asked about the forearm if you did not ask for the forearm. The first area you pick is the one that stays free — the rest need a subscription. You can change your free area once, 30 days from now, so pick the one your course starts with.',
     cta: 'Continue',
   },
   {

@@ -103,18 +103,22 @@ export function getFreeAreaChoice(): FreeAreaChoice | null {
   const raw = read(FREE_AREA_KEY);
   if (raw === null) return null;
   try {
-    const parsed = JSON.parse(raw) as { area?: unknown; chosenAt?: unknown };
+    const parsed = JSON.parse(raw) as { area?: unknown; chosenAt?: unknown; switches?: unknown };
     const [area] = normaliseAreas([parsed.area]);
     if (!area) return null;
     // A missing or junk timestamp reads as "chosen at the epoch", which makes
     // the area switchable now rather than trapping the student.
     const chosenAt = typeof parsed.chosenAt === 'string' ? parsed.chosenAt : new Date(0).toISOString();
-    return { area, chosenAt };
+    // A missing count reads as "already switched", not "never switched": the
+    // only records without one were written before the limit existed, and
+    // erring towards the paid product beats handing out an extra free area.
+    const switches = typeof parsed.switches === 'number' ? parsed.switches : 1;
+    return { area, chosenAt, switches };
   } catch {
     return null;
   }
 }
 
-export function setFreeAreaChoice(area: Area, now: Date = new Date()): void {
-  write(FREE_AREA_KEY, JSON.stringify({ area, chosenAt: now.toISOString() }));
+export function setFreeAreaChoice(area: Area, switches: number, now: Date = new Date()): void {
+  write(FREE_AREA_KEY, JSON.stringify({ area, chosenAt: now.toISOString(), switches }));
 }

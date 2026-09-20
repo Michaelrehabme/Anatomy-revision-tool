@@ -39,7 +39,7 @@ const ANSWER = 'B';
 const FAQS = [
   {
     q: 'What do I actually get for free?',
-    a: 'One full body area — every muscle in it, all three question branches, streaks and scheduling. Not a trial: it does not expire, and we do not ask for a card.',
+    a: 'One full body area of your choosing — every muscle in it, all three question branches, streaks and scheduling. Not a trial: it does not expire, and we do not ask for a card. You pick the area when you start, and can change it once after 30 days.',
   },
   {
     q: 'Which muscles are covered?',
@@ -365,7 +365,7 @@ export function MarketingHome() {
           <PriceCard
             name="Free"
             price="£0"
-            note="One full body area, free forever. Swap which one every month. No card, no trial clock."
+            note="One full body area, free forever. You choose which. No card, no trial clock."
             features={[
               'Any one region, your choice — in full',
               'All three question types',

@@ -50,10 +50,10 @@ export function UnlockNote({ access, className = '' }: { access: UseEntitlement;
       <Link to="/pricing" style={{ color: 'var(--accd)' }}>
         Unlock every region
       </Link>
-      {access.freeArea && !access.canSwitchFree && (
-        <> — or swap your free area in {access.daysUntilSwitch} {access.daysUntilSwitch === 1 ? 'day' : 'days'}.</>
+      {access.freeArea && access.canSwitchFree && <> — or make your one change of free area, from your account.</>}
+      {access.freeArea && !access.canSwitchFree && !access.switchUsed && (
+        <> — or change your free area in {access.daysUntilSwitch} {access.daysUntilSwitch === 1 ? 'day' : 'days'}.</>
       )}
-      {access.freeArea && access.canSwitchFree && <> — or swap your free area from your account.</>}
     </p>
   );
 }
@@ -80,7 +80,7 @@ export function LockedAreaPanel({
       </div>
       <p className="mt-2.5" style={{ font: '400 14px/1.6 var(--font-ui)', color: 'var(--ink2)' }}>
         Your free area is {access.freeArea ? AREA_LABELS[access.freeArea.area] : 'set elsewhere'}. A subscription opens
-        every region, or you can move your free area here.
+        every region{access.switchUsed ? '.' : ', or you can use your one change and move your free area here.'}
       </p>
       <div className="mt-4 flex flex-wrap items-center gap-4">
         <Link
@@ -96,7 +96,7 @@ export function LockedAreaPanel({
         >
           See the plans
         </Link>
-        {onSwitchFree && (
+        {onSwitchFree && !access.switchUsed && (
           <button
             type="button"
             disabled={!access.canSwitchFree}
@@ -105,8 +105,10 @@ export function LockedAreaPanel({
             style={{ font: '400 13.5px/1.4 var(--font-ui)', color: 'var(--accd)', textDecoration: 'underline' }}
           >
             {access.canSwitchFree
-              ? `Make ${AREA_LABELS[area]} my free area instead`
-              : `Free area can change in ${access.daysUntilSwitch} ${access.daysUntilSwitch === 1 ? 'day' : 'days'}`}
+              ? `Use my one change: make ${AREA_LABELS[area]} free instead`
+              : access.switchUsed
+                ? 'Your free area is fixed now'
+                : `Changeable in ${access.daysUntilSwitch} ${access.daysUntilSwitch === 1 ? 'day' : 'days'}`}
           </button>
         )}
       </div>

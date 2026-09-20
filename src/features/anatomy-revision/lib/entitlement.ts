@@ -85,17 +85,26 @@ export const FREE_AREAS: readonly Area[] = ['shoulder'];
  * nothing. So the first area picked at onboarding becomes the free one, and
  * FREE_AREAS above is only the fallback for an account that has not chosen.
  *
- * SWAPPABLE, BUT NOT FREELY. Locking the choice forever punishes a student who
- * picked wrong in week one; letting it change hourly hands over the whole body
- * an area at a time. A month is roughly a course block, which is the unit a
- * student actually revises in.
+ * ONE SWAP, AND NOT BEFORE 30 DAYS. Locking the choice at the first tap
+ * punishes a student who picked wrong in week one, so they get a second
+ * chance — once. Any more and a patient free account works through the whole
+ * body an area at a time, which is the paid product given away slowly.
+ *
+ * The delay matters as much as the limit: a month is roughly a course block,
+ * so the second choice is made by somebody who has actually used the thing,
+ * rather than by somebody still clicking around on day one.
  */
 export const FREE_AREA_SWITCH_DAYS = 30;
 
+/** How many times the free area may be changed after the first pick. */
+export const FREE_AREA_SWITCHES_ALLOWED = 1;
+
 export interface FreeAreaChoice {
   area: Area;
-  /** ISO, when it was chosen. The next swap is counted from here. */
+  /** ISO, when it was chosen. The wait is counted from here. */
   chosenAt: string;
+  /** Changes made since the first pick. At FREE_AREA_SWITCHES_ALLOWED the choice is final. */
+  switches: number;
 }
 
 /** The areas the free tier opens: the chosen one, or the default if none was chosen. */
@@ -104,7 +113,9 @@ export function freeAreasFor(choice: FreeAreaChoice | null | undefined): readonl
 }
 
 /**
- * Days until the free area may be changed again; 0 when it may be changed now.
+ * Days until the free area may be changed; 0 when it may be changed now, and
+ * 0 also when the one change has already been used — ask canSwitchFreeArea
+ * for that, since "0 days" and "never again" are different answers.
  *
  * An unparseable or future date reads as "changeable now", the same way an
  * unparseable expiry reads as live: a malformed record must never leave
@@ -121,10 +132,18 @@ export function daysUntilFreeAreaSwitch(
   return Math.max(0, Math.ceil(FREE_AREA_SWITCH_DAYS - elapsed));
 }
 
+/** Whether the one permitted change has already been made. */
+export function hasUsedFreeAreaSwitch(choice: FreeAreaChoice | null | undefined): boolean {
+  return (choice?.switches ?? 0) >= FREE_AREA_SWITCHES_ALLOWED;
+}
+
 export function canSwitchFreeArea(
   choice: FreeAreaChoice | null | undefined,
   now: Date = new Date(),
 ): boolean {
+  // No choice yet is not a switch: the first pick is free and immediate.
+  if (!choice) return true;
+  if (hasUsedFreeAreaSwitch(choice)) return false;
   return daysUntilFreeAreaSwitch(choice, now) === 0;
 }
 

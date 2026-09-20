@@ -14,6 +14,7 @@ import {
   entitledAreas,
   canSwitchFreeArea,
   daysUntilFreeAreaSwitch,
+  hasUsedFreeAreaSwitch,
   FREE_AREA_SWITCH_DAYS,
   type Entitlement,
 } from '../entitlement';
@@ -212,7 +213,7 @@ describe('the free area is chosen, and swappable monthly', () => {
   const NOW = new Date('2026-09-20T12:00:00.000Z');
 
   it('opens the area that was chosen, not the default', () => {
-    const choice = { area: 'knee' as const, chosenAt: NOW.toISOString() };
+    const choice = { area: 'knee' as const, chosenAt: NOW.toISOString(), switches: 0 };
     expect(canAccessArea('knee', FREE_ENTITLEMENT, NOW, freeAreasFor(choice))).toBe(true);
     expect(canAccessArea('shoulder', FREE_ENTITLEMENT, NOW, freeAreasFor(choice))).toBe(false);
   });
@@ -222,12 +223,12 @@ describe('the free area is chosen, and swappable monthly', () => {
   });
 
   it('opens exactly one area, whatever was chosen', () => {
-    const choice = { area: 'hip' as const, chosenAt: NOW.toISOString() };
+    const choice = { area: 'hip' as const, chosenAt: NOW.toISOString(), switches: 0 };
     expect(entitledAreas(AREAS, FREE_ENTITLEMENT, NOW, freeAreasFor(choice))).toEqual(['hip']);
   });
 
   it('holds the choice for 30 days, then lets it change', () => {
-    const justChosen = { area: 'hip' as const, chosenAt: NOW.toISOString() };
+    const justChosen = { area: 'hip' as const, chosenAt: NOW.toISOString(), switches: 0 };
     expect(canSwitchFreeArea(justChosen, NOW)).toBe(false);
     expect(daysUntilFreeAreaSwitch(justChosen, NOW)).toBe(FREE_AREA_SWITCH_DAYS);
 
@@ -239,14 +240,33 @@ describe('the free area is chosen, and swappable monthly', () => {
     expect(canSwitchFreeArea(justChosen, dayAfter)).toBe(true);
   });
 
+  it('allows exactly one change, and only after the wait', () => {
+    const NOW2 = new Date('2026-09-20T12:00:00.000Z');
+    const first = { area: 'hip' as const, chosenAt: NOW2.toISOString(), switches: 0 };
+    const afterWait = new Date(NOW2.getTime() + FREE_AREA_SWITCH_DAYS * 86400000);
+    expect(canSwitchFreeArea(first, afterWait)).toBe(true);
+
+    // ...and once that change is made, the choice is final however long they wait.
+    const swapped = { area: 'knee' as const, chosenAt: afterWait.toISOString(), switches: 1 };
+    const muchLater = new Date(afterWait.getTime() + 365 * 86400000);
+    expect(canSwitchFreeArea(swapped, muchLater)).toBe(false);
+    expect(hasUsedFreeAreaSwitch(swapped)).toBe(true);
+  });
+
+  it('treats a record written before the limit existed as having used its change', () => {
+    // preferences.getFreeAreaChoice defaults a missing count to 1 — erring
+    // towards the paid product rather than handing out an extra free area.
+    expect(hasUsedFreeAreaSwitch({ area: 'hip', chosenAt: '2026-01-01T00:00:00.000Z', switches: 1 })).toBe(true);
+  });
+
   it('never traps somebody behind a malformed or future date', () => {
-    expect(canSwitchFreeArea({ area: 'hip', chosenAt: 'not a date' }, NOW)).toBe(true);
-    expect(canSwitchFreeArea({ area: 'hip', chosenAt: '2099-01-01T00:00:00.000Z' }, NOW)).toBe(true);
+    expect(canSwitchFreeArea({ area: 'hip', chosenAt: 'not a date', switches: 0 }, NOW)).toBe(true);
+    expect(canSwitchFreeArea({ area: 'hip', chosenAt: '2099-01-01T00:00:00.000Z', switches: 0 }, NOW)).toBe(true);
   });
 
   it('gives a subscriber every area regardless of the choice', () => {
     const paid = { tier: 'individual' as const, source: 'paddle' as const, expiresAt: null };
-    const choice = { area: 'hip' as const, chosenAt: NOW.toISOString() };
+    const choice = { area: 'hip' as const, chosenAt: NOW.toISOString(), switches: 0 };
     expect(entitledAreas(AREAS, paid, NOW, freeAreasFor(choice))).toEqual(AREAS);
   });
 });

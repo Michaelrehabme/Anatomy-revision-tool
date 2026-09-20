@@ -112,8 +112,8 @@ export function PricingPage() {
         Unlock every region
       </h1>
       <p className="mt-3" style={prose}>
-        The shoulder stays free, for good. A subscription opens every other region: every muscle,
-        bone and landmark, with the same spaced revision behind all of it.
+        Your chosen area stays free, for good. A subscription opens every other region: every
+        muscle, bone and landmark, with the same spaced revision behind all of it.
       </p>
 
       {DEMO && (

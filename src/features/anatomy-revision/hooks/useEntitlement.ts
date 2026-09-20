@@ -6,6 +6,7 @@ import {
   canAccessArea,
   canSwitchFreeArea,
   daysUntilFreeAreaSwitch,
+  hasUsedFreeAreaSwitch,
   effectiveTier,
   entitledAreas,
   freeAreasFor,
@@ -50,6 +51,8 @@ export interface UseEntitlement {
   /** Whether the free area may be changed now, and how long until it can be. */
   canSwitchFree: boolean;
   daysUntilSwitch: number;
+  /** True once the single permitted change has been used: only a subscription opens more. */
+  switchUsed: boolean;
   /**
    * Read again. For the pricing page after checkout: the webhook writes the
    * entitlement a few seconds after Paddle takes the payment, so the first read
@@ -96,7 +99,9 @@ export function useEntitlement(uid: string | null): UseEntitlement {
   const chooseFreeArea = useCallback((area: Area) => {
     setFreeArea((current) => {
       if (!canSwitchFreeArea(current)) return current;
-      setFreeAreaChoice(area);
+      // The first pick is not a switch; every later one is, and there is only
+      // one of those — see FREE_AREA_SWITCHES_ALLOWED.
+      setFreeAreaChoice(area, current ? current.switches + 1 : 0);
       return getFreeAreaChoice();
     });
   }, []);
@@ -114,6 +119,7 @@ export function useEntitlement(uid: string | null): UseEntitlement {
     chooseFreeArea,
     canSwitchFree: canSwitchFreeArea(freeArea),
     daysUntilSwitch: daysUntilFreeAreaSwitch(freeArea),
+    switchUsed: hasUsedFreeAreaSwitch(freeArea),
     refresh,
   };
 }

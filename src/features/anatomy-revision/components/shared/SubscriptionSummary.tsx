@@ -24,7 +24,7 @@ function formatDate(iso: string): string {
 }
 
 export function SubscriptionSummary({ access }: { access: UseEntitlement }) {
-  const { entitlement, tier, loading, freeArea, canSwitchFree, daysUntilSwitch, chooseFreeArea } = access;
+  const { entitlement, tier, loading, freeArea, canSwitchFree, daysUntilSwitch, switchUsed, chooseFreeArea } = access;
   if (PUBLIC_DEMO || loading) return null;
 
   const pending = entitlement.tier !== 'free' && !hasStarted(entitlement);
@@ -70,9 +70,12 @@ export function SubscriptionSummary({ access }: { access: UseEntitlement }) {
             ))}
           </select>
           <p className="mt-2" style={{ font: '400 12.5px/1.5 var(--font-ui)', color: 'var(--ink3)' }}>
-            {canSwitchFree
-              ? 'You can change this once a month. Your progress in every area is kept either way.'
-              : `Changeable again in ${daysUntilSwitch} ${daysUntilSwitch === 1 ? 'day' : 'days'}. Your progress in every area is kept.`}
+            {switchUsed
+              ? 'You have used your one change, so this is now your free area. A subscription opens every region.'
+              : canSwitchFree
+                ? 'You can change this once. After that it is fixed, and only a subscription opens the rest.'
+                : `You can change this once, 30 days after you picked it — ${daysUntilSwitch} ${daysUntilSwitch === 1 ? 'day' : 'days'} to go.`}
+            {' '}Your progress in every area is kept either way.
           </p>
         </div>
       )}
