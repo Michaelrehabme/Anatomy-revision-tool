@@ -27,42 +27,51 @@ with real subscribers costs considerably more, and the DMCC obligations carry en
 | Cancellation online, one clear route, no email-us-to-cancel | **Done** | Account → Subscription → Manage subscription opens Paddle's customer portal |
 | Cancelling does not cut access short | **Done** | `actionForEvent` grants to the end of the current billing period |
 | Reminder before a free trial converts to a charge | **Not applicable** | There is no trial. The free region is permanent and takes no card, so nothing converts. **If a trial is ever added, this obligation switches on and must be built first** |
-| Renewal reminders — annual: every six months; monthly: before the sixth payment and every sixth after | **NOT BUILT** | See below |
+| Renewal reminder, annual plan | **Done — by Paddle** | UK law obliges an auto-renewal reminder for subscription periods of six months or longer, and Paddle sends those automatically to UK customers, 7 or 30 days ahead. Nothing to switch on; there is no setting for it in Paddle Billing |
+| Renewal reminder, monthly plan | **Built, sending disabled** | `netlify/functions/renewal-reminders.ts`, daily at 09:00 UTC. Monthly periods fall under the six-month line, so Paddle sends nothing and these are ours. **Without `RESEND_API_KEY` the run is a dry run**: it decides and logs, and emails nobody |
 | Renewal cooling-off: 14 days after an annual plan auto-renews, with a proportionate refund | **Decision needed** | /refunds currently offers a discretionary refund for an unexpected, unused renewal. Under the DMCC regime this becomes a right rather than a favour |
-| Notices reliable and auditable after the fact | **NOT BUILT** | Depends on the choice below |
+| Notices reliable and auditable after the fact | **Done** | Each send writes `billingReminders.<key>` on the user, checked before sending so nothing goes twice. Paddle's own sends are recorded in Paddle |
 
-## The gap: renewal reminders
+## How the reminders work
 
-This is the only part that cannot be done with a page. It needs something that wakes up on a
-schedule, works out who is due, sends a message, and leaves a record that it did.
+**The annual plan is Paddle's job and is already handled.** UK law requires an auto-renewal
+reminder for subscription periods of six months or longer, and Paddle sends those automatically to
+UK customers 7 or 30 days before renewal. There is no setting for it in Paddle Billing — the
+toggle that existed in Paddle Classic is gone — and nothing for us to configure. We must not send
+a second one: two emails about the same renewal is a support question, not extra compliance.
 
-### Option A — Paddle's own customer emails
+**The monthly plan is ours**, because a one-month period is under that six-month line. Paddle
+sends nothing, and the DMCC cadence — before the sixth payment and before every sixth after — is
+specific enough that it has to be counted rather than approximated.
 
-Paddle can send subscription emails on our behalf, which puts the sending, the deliverability and
-the record inside the system that already knows the renewal dates.
+There is no Paddle event to hang this on. Paddle emits nothing ahead of a renewal;
+`transaction.created` appears when the renewal transaction is generated, but the lead time is
+undocumented, and a legal notice cannot depend on an interval nobody has promised. Hence a
+schedule.
 
-- **Check first**: Paddle dashboard → Notifications → customer emails, for an upcoming-renewal
-  email and what cadence it allows. If it only offers a fixed number of days before renewal, that
-  covers the annual case but not "before the sixth monthly payment".
-- **Cost**: minutes, plus a screenshot of the setting as evidence.
-- **Risk**: the cadence is theirs, not ours, and the DMCC cadence is specific.
+### The parts
 
-### Option B — a scheduled Netlify Function
+- `src/features/billing/lib/renewalReminders.ts` decides who is due, with no database and no
+  clock. Every case it cannot work out returns "not due" with a reason, because a missing notice
+  shows up in the log while a wrong one reaches a student.
+- `netlify/functions/renewal-reminders.ts` runs daily at 09:00 UTC, scans Paddle subscribers, and
+  sends. It writes `billingReminders.<subscription>:<payment number>` on the user, checks that
+  before sending, and so cannot email the same person twice about the same renewal. That record is
+  the audit trail.
+- The schedule lives in `netlify.toml`. Scheduled functions only run on published production
+  deploys, never on previews, so it cannot fire twice from two environments.
 
-A daily function reads the entitlements, finds the ones whose `expiresAt` falls in the reminder
-window, sends an email, and writes a `remindersSent` record on the user so the same notice never
-goes twice and an auditor can see what was sent when.
+### Turning it on
 
-- **Needs**: an email sender (Resend, Postmark or similar — Firebase does not send arbitrary mail),
-  a template, and the schedule in `netlify.toml`.
-- **Cost**: a day or two, plus a few pounds a month.
-- **Gain**: the cadence is ours, the log is ours, and the same mechanism later carries the
-  renewal cooling-off notice.
+1. Deploy as is. **With no `RESEND_API_KEY` set it is a dry run** — it works out who is due and
+   logs it, and emails nobody. Watch the function log for a few weeks against real subscriptions.
+2. Sign up with Resend (or another sender), verify the sending domain, and set `RESEND_API_KEY`
+   and `REMINDER_FROM` in Netlify. Sending starts on the next run.
+3. Test it whenever you like without waiting for the schedule: Netlify UI → Functions →
+   renewal-reminders → **Run now**, or `netlify functions:invoke renewal-reminders`.
 
-**Recommendation: check Option A first, and build Option B anyway before the regime commences.**
-A is worth having immediately whatever else happens, because a student reminded of a renewal is a
-student who does not charge it back. B is what actually meets the cadence the Act sets out, and it
-is much easier to build now, against a handful of subscribers, than later against a few hundred.
+There will be nothing to send for six months after the first monthly subscriber, which is time
+enough to watch the dry run behave.
 
 ## The decision that is not technical
 
@@ -78,7 +87,8 @@ subscribers anyway. This is the owner's call, not an engineering one.
 
 ## Evidence to keep
 
-- A screenshot of whatever Paddle customer emails are switched on, dated.
-- The `remindersSent` records, once Option B exists — these are the proof a notice was sent, and
-  the thing an enforcement query asks for.
+- The `billingReminders` records on each user — the proof a notice was sent, and what an
+  enforcement query actually asks for.
+- Paddle's own record of the annual reminders it sends, in its dashboard.
+- The function log, which says what each run decided even when it sent nothing.
 - This file, updated when any row above changes.

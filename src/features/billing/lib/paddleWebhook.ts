@@ -89,6 +89,8 @@ export interface PaddleSubscription {
   customer_id?: string | null;
   /** When the subscription first began. Stable across renewals, unlike the billing period. */
   started_at?: string | null;
+  /** How often it bills. Paddle sends this as e.g. { interval: 'month', frequency: 1 }. */
+  billing_cycle?: { interval?: string; frequency?: number } | null;
   current_billing_period?: { starts_at: string; ends_at: string } | null;
   canceled_at?: string | null;
   custom_data?: Record<string, unknown> | null;
@@ -159,6 +161,33 @@ function readConsent(custom: Record<string, unknown> | null | undefined): Consen
 }
 
 /**
+ * How often the subscription bills, and when it started — the two things the
+ * renewal reminders need and `expiresAt` cannot tell them.
+ *
+ * Paddle states the cycle outright, but a period that is present and a cycle
+ * that is missing still answers the question, so fall back to measuring the
+ * period. Anything under 180 days is the monthly plan for our purposes, which
+ * is also the line UK law draws for who has to send the reminder.
+ */
+function billingShape(sub: PaddleSubscription): { interval?: 'month' | 'year'; startedAt?: string } {
+  const out: { interval?: 'month' | 'year'; startedAt?: string } = {};
+  if (sub.started_at) out.startedAt = sub.started_at;
+
+  const stated = sub.billing_cycle?.interval;
+  if (stated === 'month' || stated === 'year') {
+    out.interval = stated;
+    return out;
+  }
+
+  const period = sub.current_billing_period;
+  if (period?.starts_at && period.ends_at) {
+    const days = (Date.parse(period.ends_at) - Date.parse(period.starts_at)) / 86_400_000;
+    if (Number.isFinite(days) && days > 0) out.interval = days >= 180 ? 'year' : 'month';
+  }
+  return out;
+}
+
+/**
  * Decide what a verified Paddle event means for access.
  *
  * THE RULE THE OWNER SET: cancel whenever you like, for nothing, and keep
@@ -193,6 +222,7 @@ export function actionForEvent(event: PaddleEvent, now: Date = new Date()): Webh
 
   const consent = readConsent(sub.custom_data);
   const startsAt = delayedStart(sub, consent);
+  const billing = billingShape(sub);
   const periodEnd = sub.current_billing_period?.ends_at ?? null;
 
   if (sub.status === 'canceled') {
@@ -228,6 +258,7 @@ export function actionForEvent(event: PaddleEvent, now: Date = new Date()): Webh
       source: 'paddle',
       expiresAt: periodEnd,
       externalId: sub.id,
+      ...billing,
       ...(startsAt ? { startsAt } : {}),
     },
   };

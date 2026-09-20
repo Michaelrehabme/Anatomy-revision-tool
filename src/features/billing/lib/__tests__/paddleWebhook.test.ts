@@ -89,7 +89,39 @@ describe('actionForEvent', () => {
     expect(action.uid).toBe('user-1');
     expect(action.entitlement).toEqual({
       tier: 'individual', source: 'paddle', expiresAt: '2027-10-15T12:00:00.000Z', externalId: 'sub_123',
+      // Measured from the period, since this event states no billing cycle.
+      interval: 'year',
     });
+  });
+
+  it('records the billing cycle Paddle states', () => {
+    // The renewal reminders need to know which plan somebody is on, and
+    // expiresAt cannot tell them: a period end says nothing about its length.
+    const action = actionForEvent(event({
+      billing_cycle: { interval: 'month', frequency: 1 },
+      started_at: '2026-10-15T12:00:00.000Z',
+    }), NOW_DATE);
+    if (action.kind !== 'grant') throw new Error('expected grant');
+    expect(action.entitlement.interval).toBe('month');
+    expect(action.entitlement.startedAt).toBe('2026-10-15T12:00:00.000Z');
+  });
+
+  it('measures the cycle from the period when Paddle does not state it', () => {
+    const action = actionForEvent(event({
+      current_billing_period: { starts_at: '2026-10-15T12:00:00.000Z', ends_at: '2026-11-15T12:00:00.000Z' },
+    }), NOW_DATE);
+    if (action.kind !== 'grant') throw new Error('expected grant');
+    expect(action.entitlement.interval).toBe('month');
+  });
+
+  it('leaves the cycle unset rather than guessing it', () => {
+    // An unknown interval makes reminderDue decline, which is the safe way to
+    // be wrong: a missed notice shows in the log, a wrong one reaches a student.
+    const action = actionForEvent(event({
+      status: 'canceled', canceled_at: '2026-10-10T12:00:00.000Z',
+    }, 'subscription.canceled'), NOW_DATE);
+    if (action.kind !== 'grant') throw new Error('expected grant');
+    expect(action.entitlement.interval).toBeUndefined();
   });
 
   it('grants during a trial', () => {

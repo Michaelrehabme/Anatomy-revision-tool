@@ -18,6 +18,17 @@
   directory = "netlify/functions"
   node_bundler = "esbuild"
 
+# The renewal reminders UK law leaves to us — the monthly plan, whose period is
+# under the six months that obliges Paddle to send them. 09:00 UTC daily: the
+# rule only fires inside a seven-day window before a qualifying payment, so a
+# missed day is recoverable, and a morning send reads as a reminder rather than
+# something that went out overnight. See docs/DMCC-SUBSCRIPTIONS.md.
+#
+# Scheduled functions run only on published production deploys, never on branch
+# deploys or previews, so this cannot fire twice from two environments.
+[functions."renewal-reminders"]
+  schedule = "0 9 * * *"
+
 # SPA fallback. dist/_redirects (from public/) says the same thing; this is
 # here so the rule survives a build that loses the public/ copy.
 [[redirects]]

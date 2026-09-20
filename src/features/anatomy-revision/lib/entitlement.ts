@@ -51,6 +51,18 @@ export interface Entitlement {
    * data model cannot express is a commitment waiting to be broken.
    */
   startsAt?: string;
+  /**
+   * How often this subscription bills, and when it first started.
+   *
+   * Stored for the renewal reminders. UK law requires an auto-renewal reminder
+   * for subscription periods of six months or longer, which Paddle sends for
+   * us; the monthly plan falls below that line and its reminders are ours to
+   * send. Neither can be worked out from `expiresAt` alone — a period end says
+   * nothing about how long the period was or how many have been paid.
+   */
+  interval?: 'month' | 'year';
+  /** ISO, when the subscription first began. Stable across renewals. */
+  startedAt?: string;
   /** Institutional only: which seat of the licence this consumes. */
   seatId?: string;
   /** The provider's own id, for reconciling a support question against their dashboard. */
