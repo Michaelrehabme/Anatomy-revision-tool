@@ -6,6 +6,7 @@ import { isMuscle, type MuscleStructure } from '../types/structure';
 import type { Region } from '../types/region';
 import { REGIONS } from '../types/region';
 import { computeStreak } from '../lib/streak';
+import { lastDays, localDayKey } from '../lib/weekActivity';
 
 const FORECAST_DAYS = 14;
 
@@ -70,11 +71,10 @@ export function useProgressData(repository: AnatomyRepository | null, userId: st
   }).filter((r) => r.total > 0);
 
   const now = new Date();
-  const forecast = Array.from({ length: FORECAST_DAYS }, (_, i) => {
-    const day = new Date(now);
-    day.setDate(day.getDate() + i);
-    const key = day.toISOString().slice(0, 10);
-    return mastery.filter((m) => m.dueAt?.slice(0, 10) === key).length;
+  const horizon = lastDays(new Date(now.getFullYear(), now.getMonth(), now.getDate() + FORECAST_DAYS - 1), FORECAST_DAYS);
+  const forecast = horizon.map((day) => {
+    const key = localDayKey(day);
+    return mastery.filter((m) => m.dueAt && localDayKey(m.dueAt) === key).length;
   });
   const forecastMax = Math.max(1, ...forecast);
 

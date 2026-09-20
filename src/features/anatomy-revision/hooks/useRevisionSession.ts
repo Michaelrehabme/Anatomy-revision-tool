@@ -144,7 +144,7 @@ function reducer(state: SessionState, action: Action): SessionState {
   }
 }
 
-function buildSummary(state: SessionState, userId: string): RevisionSessionSummary {
+function buildSummary(state: SessionState, userId: string, partial = false): RevisionSessionSummary {
   const breakdownByCategory = emptyCategoryBreakdown();
   const breakdownByRegion: RevisionSessionSummary['breakdownByRegion'] = {};
   const missed = new Set<string>();
@@ -175,12 +175,18 @@ function buildSummary(state: SessionState, userId: string): RevisionSessionSumma
     questionTypes: state.setupParams?.types ?? [],
     regionFilter:
       state.setupParams?.regions ?? (state.setupParams?.region ? [state.setupParams.region] : undefined),
-    totalQuestions: state.questions.filter((q) => q.type !== 'flashcard').length,
+    // A session left early reports the questions it actually asked, so a
+    // three-answer walk-away is 3/3 in history rather than 3/20.
+    totalQuestions: partial
+      ? state.answers.filter((a) => a.graded !== false).length
+      : state.questions.filter((q) => q.type !== 'flashcard').length,
     correctCount: state.answers.filter((a) => a.graded !== false && a.correct).length,
     breakdownByCategory,
     breakdownByRegion,
     missedStructureIds: [...missed],
-    assignmentId: state.setupParams?.assignment?.id,
+    // A partial session is never an assignment attempt: scoring four
+    // answered questions would pass anything.
+    assignmentId: partial ? undefined : state.setupParams?.assignment?.id,
   };
 }
 
@@ -457,6 +463,28 @@ export function useRevisionSession(repository: AnatomyRepository | null, userId:
 
   const reset = useCallback(() => dispatch({ type: 'RESET' }), []);
 
+  /**
+   * Leaves a session part-way through without losing what was answered.
+   *
+   * A summary used to be written only by finish(), so a student who answered
+   * eight questions and tapped Today left no trace: no bar on "This week",
+   * no day on the streak, while every attempt and mastery row was saved. The
+   * partial summary carries the answers given, no assignment id and no
+   * gamification — XP and the completion bonus are for finishing.
+   */
+  const abandon = useCallback(async () => {
+    const answered = state.answers.some((a) => a.graded !== false);
+    const summary = answered ? buildSummary(state, userId ?? 'anonymous', true) : null;
+    dispatch({ type: 'RESET' });
+    if (summary && repository && userId) {
+      try {
+        await repository.saveSessionSummary(summary);
+      } catch (err) {
+        console.error('Failed to save partial session summary:', err);
+      }
+    }
+  }, [repository, userId, state]);
+
   const isLastQuestion = state.currentIndex >= state.questions.length - 1;
 
   return {
@@ -477,5 +505,6 @@ export function useRevisionSession(repository: AnatomyRepository | null, userId:
     next,
     finish,
     reset,
+    abandon,
   };
 }

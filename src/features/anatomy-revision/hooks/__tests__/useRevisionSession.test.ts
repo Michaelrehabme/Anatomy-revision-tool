@@ -315,3 +315,51 @@ describe('fact mastery (CR-018)', () => {
     expect(row.typed).toBe(true);
   });
 });
+
+describe('useRevisionSession abandon', () => {
+  it('saves a partial summary of what was answered, without an assignment id', async () => {
+    const repository = createMemoryRepository();
+    const { result } = renderHook(() => useRevisionSession(repository, 'user-1'));
+    const q1 = mcqQuestion();
+    const q2 = mcqQuestion({ id: 'q-biceps-mcq', structureId: 'biceps-brachii' });
+    const q3 = mcqQuestion({ id: 'q-trapezius-mcq', structureId: 'trapezius' });
+
+    act(() =>
+      result.current.start([q1, q2, q3], {
+        types: ['mcq'],
+        mode: 'assessment',
+        assignment: { id: 'assignment-1', title: 'Shoulder', targetAccuracyPct: 70 },
+      }),
+    );
+    await act(async () => {
+      await result.current.submitAnswer({ questionId: q1.id, structureId: q1.structureId, correct: true, confidence: 'easy' });
+    });
+    act(() => result.current.next());
+    await act(async () => {
+      await result.current.submitAnswer({ questionId: q2.id, structureId: q2.structureId, correct: false, confidence: 'hard' });
+    });
+
+    await act(async () => {
+      await result.current.abandon();
+    });
+
+    expect(result.current.phase).toBe('setup');
+    const [summary] = await repository.listSessionSummaries('user-1', 10);
+    expect(summary).toBeDefined();
+    expect(summary.totalQuestions).toBe(2);
+    expect(summary.correctCount).toBe(1);
+    expect(summary.assignmentId).toBeUndefined();
+    expect(summary.finishedAt).toBeDefined();
+  });
+
+  it('saves nothing when no graded answer was given', async () => {
+    const repository = createMemoryRepository();
+    const { result } = renderHook(() => useRevisionSession(repository, 'user-1'));
+    act(() => result.current.start([mcqQuestion()], { types: ['mcq'], mode: 'practice' }));
+    await act(async () => {
+      await result.current.abandon();
+    });
+    expect(result.current.phase).toBe('setup');
+    expect(await repository.listSessionSummaries('user-1', 10)).toEqual([]);
+  });
+});

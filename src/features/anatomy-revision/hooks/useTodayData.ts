@@ -5,8 +5,8 @@ import type { StructureMastery, RevisionSessionSummary } from '../types/attempt'
 import { areasOf, isMuscle } from '../types/structure';
 import type { Area } from '../types/region';
 import { computeStreak } from '../lib/streak';
+import { sessionsPerDay } from '../lib/weekActivity';
 
-const DAY_LABELS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 
 export interface TodayData {
   loading: boolean;
@@ -86,14 +86,13 @@ export function useTodayData(
     .sort((a, b) => a.dueAt!.localeCompare(b.dueAt!))
     .slice(0, 3);
 
-  const now = new Date();
-  const weekBuckets = Array.from({ length: 7 }, (_, i) => {
-    const day = new Date(now);
-    day.setDate(day.getDate() - (6 - i));
-    const key = day.toISOString().slice(0, 10);
-    return summaries.filter((s) => s.startedAt.slice(0, 10) === key).length;
-  });
+  // Seven local calendar days ending today, each labelled with its own
+  // weekday, so the axis is right every day of the week and a session at
+  // half past midnight lands on the day the student was actually up.
+  const week = sessionsPerDay(summaries, new Date());
+  const weekBuckets = week.map((d) => d.count);
   const weekMax = Math.max(1, ...weekBuckets);
+  const dayLabels = week.map((d) => d.label);
 
   return {
     loading,
@@ -106,7 +105,7 @@ export function useTodayData(
     comingDue,
     weekBuckets,
     weekMax,
-    dayLabels: DAY_LABELS,
+    dayLabels,
   };
 }
 

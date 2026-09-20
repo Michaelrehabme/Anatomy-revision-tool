@@ -168,14 +168,23 @@ export function MobileToday({ access, repository, userId, content, onStart, onCu
             >
               This week
             </div>
+            {/* Bars are direct children of the fixed-height row: a percentage
+                height only resolves against a definite parent, and the
+                auto-height column each bar used to sit in collapsed it to
+                nothing — which is why the week read as empty on a phone. */}
             <div className="mt-4 flex h-[78px] items-end gap-2.5">
               {weekBuckets.map((count, i) => (
-                <div key={i} className="flex flex-1 flex-col items-center gap-1.5">
-                  <span
-                    className="w-full rounded-sm"
-                    style={{ height: `${Math.max(4, (count / weekMax) * 100)}%`, background: i === 6 ? 'var(--acc)' : count === 0 ? 'var(--line)' : 'var(--fig-line)' }}
-                  />
-                  <span style={{ font: '400 10px/1 var(--font-mono)', color: 'var(--ink3)' }}>{dayLabels[i]}</span>
+                <div
+                  key={i}
+                  className="flex-1 rounded-sm"
+                  style={{ height: `${Math.max(4, (count / weekMax) * 100)}%`, background: i === 6 ? 'var(--acc)' : count === 0 ? 'var(--line)' : 'var(--fig-line)' }}
+                />
+              ))}
+            </div>
+            <div className="mt-1.5 flex gap-2.5">
+              {dayLabels.map((d, i) => (
+                <div key={i} className="flex-1 text-center" style={{ font: '400 10px/1 var(--font-mono)', color: 'var(--ink3)' }}>
+                  {d}
                 </div>
               ))}
             </div>

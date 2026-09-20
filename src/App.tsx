@@ -350,17 +350,20 @@ function App() {
   };
 
   const onNavigateSection = (next: NavSection) => {
-    if (session.phase !== 'setup') session.reset();
+    if (session.phase === 'in-progress') void session.abandon();
+    else if (session.phase !== 'setup') session.reset();
     navigate(SECTION_PATH[next]);
   };
 
   const mobileNavigate = (tab: MobileTab) => {
-    if (session.phase !== 'setup') session.reset();
+    if (session.phase === 'in-progress') void session.abandon();
+    else if (session.phase !== 'setup') session.reset();
     navigate(MOBILE_TAB_PATH[tab]);
   };
 
   const endSession = () => {
-    session.reset();
+    if (session.phase === 'in-progress') void session.abandon();
+    else session.reset();
     navigate('/');
   };
 
