@@ -11,7 +11,7 @@ import { MyClasses } from './MyClasses';
 import { useAuth, AUTH_ENABLED } from '../../context/AuthProvider';
 import { useProgressData } from '../../hooks/useProgressData';
 import { CATEGORIES, CATEGORY_LABELS } from '../../types/structure';
-import { accuracyTrend, accuracyDeltaByAttempts, type AccuracyTrendPoint } from '../../lib/accuracyTrend';
+import { accuracyDeltaByAttempts, accuracyTrendSplit, gradedAttempts } from '../../lib/accuracyTrend';
 import type { UserAttempt } from '../../types/attempt';
 import type { AnatomyContent } from '../../hooks/useAnatomyContent';
 import type { AnatomyRepository } from '../../data/repository';
@@ -93,12 +93,18 @@ export function Account({ access, content, repository, userId, onNavigate }: Acc
     };
   }, [repository, userId]);
 
-  const answered = attempts ?? [];
+  // Graded answers only: a flashcard learn card is recorded as an attempt
+  // but carries no judgement, and was inflating both the tile and the line.
+  const answered = gradedAttempts(attempts ?? []);
   const correct = answered.filter((a) => a.correct).length;
   const accuracyPct = answered.length > 0 ? Math.round((correct / answered.length) * 100) : null;
-  // No cohort series: the second argument is the class's attempts, which a student can't read.
-  const trend: AccuracyTrendPoint[] = accuracyTrend(answered, []);
-  const delta = accuracyDeltaByAttempts(answered);
+  // Two lines for one person: structures met for the first time, and
+  // structures seen before. No cohort series — a student cannot read their
+  // classmates' attempts.
+  const split = accuracyTrendSplit(answered);
+  // The headline number is about revision, so it reads the seen-before
+  // attempts; a student with too few of those falls back to everything.
+  const delta = accuracyDeltaByAttempts(split.seenBefore) ?? accuracyDeltaByAttempts(answered);
 
   return (
     <AppShell
@@ -140,7 +146,11 @@ export function Account({ access, content, repository, userId, onNavigate }: Acc
               </span>
             )}
           </h3>
-          <AccuracyTrendChart points={trend} studentName="You" />
+          <AccuracyTrendChart
+            points={split.seenBeforeTrend}
+            studentName="Seen before"
+            secondary={{ label: 'First sight', points: split.firstSightTrend }}
+          />
         </section>
 
         {AUTH_ENABLED && user && (

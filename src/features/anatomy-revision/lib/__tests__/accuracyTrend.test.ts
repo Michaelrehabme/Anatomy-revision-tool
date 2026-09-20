@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import type { UserAttempt } from '../../types/attempt';
-import { accuracyTrend, accuracyDeltaByAttempts } from '../accuracyTrend';
+import { accuracyTrend, accuracyDeltaByAttempts, accuracyTrendSplit, gradedAttempts, splitByFirstExposure } from '../accuracyTrend';
 
 function attempt(overrides: Partial<UserAttempt> & { userId: string; timestamp: string }): UserAttempt {
   return {
@@ -109,5 +109,52 @@ describe('accuracyDeltaByAttempts', () => {
 
   it('returns null when there is too little history to compare', () => {
     expect(accuracyDeltaByAttempts(day('s1', '2026-08-01', 39, 20))).toBeNull();
+  });
+});
+
+describe('gradedAttempts', () => {
+  it('drops learn cards, which carry no judgement', () => {
+    const graded = attempt({ userId: 's1', timestamp: '2026-08-01T09:00:00.000Z' });
+    const card = attempt({ userId: 's1', timestamp: '2026-08-01T09:01:00.000Z', graded: false, questionType: 'flashcard' });
+    expect(gradedAttempts([graded, card])).toEqual([graded]);
+  });
+});
+
+describe('splitByFirstExposure', () => {
+  it('sends each structure\'s first attempt to firstSight and the rest to seenBefore, in time order', () => {
+    const a1 = attempt({ userId: 's1', timestamp: '2026-08-02T09:00:00.000Z', structureId: 'deltoid', questionId: 'q-mcq' });
+    const a2 = attempt({ userId: 's1', timestamp: '2026-08-01T09:00:00.000Z', structureId: 'deltoid', questionId: 'q-locate' });
+    const b1 = attempt({ userId: 's1', timestamp: '2026-08-03T09:00:00.000Z', structureId: 'biceps-brachii', questionId: 'q-mcq' });
+    const { firstSight, seenBefore } = splitByFirstExposure([a1, a2, b1]);
+    // a2 is earlier than a1 even though it was listed second, and it is a
+    // different QUESTION — first sight is about the structure, not the question.
+    expect(firstSight).toEqual([a2, b1]);
+    expect(seenBefore).toEqual([a1]);
+  });
+});
+
+describe('accuracyTrendSplit', () => {
+  it('draws both lines over the same days', () => {
+    const attempts = [
+      ...day('s1', '2026-08-01', 10, 5).map((a, i) => ({ ...a, structureId: `new-${i}` })),
+      ...day('s1', '2026-08-05', 10, 9).map((a, i) => ({ ...a, structureId: `new-${i}` })),
+    ];
+    const split = accuracyTrendSplit(attempts);
+    expect(split.firstSight).toHaveLength(10);
+    expect(split.seenBefore).toHaveLength(10);
+    const dates = split.firstSightTrend.map((p) => p.date);
+    expect(dates).toEqual(split.seenBeforeTrend.map((p) => p.date));
+    expect(dates[0]).toBe('2026-08-01');
+    expect(dates[dates.length - 1]).toBe('2026-08-05');
+    // First sight was the 1st, seen-before the 5th: each line only has data where it happened.
+    expect(split.firstSightTrend[0].studentPct).toBe(50);
+    expect(split.seenBeforeTrend[0].studentPct).toBeNull();
+    expect(split.seenBeforeTrend[4].studentPct).toBe(90);
+  });
+
+  it('is empty for no attempts', () => {
+    const split = accuracyTrendSplit([]);
+    expect(split.firstSightTrend).toEqual([]);
+    expect(split.seenBeforeTrend).toEqual([]);
   });
 });

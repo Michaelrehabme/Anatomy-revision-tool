@@ -63,15 +63,24 @@ const shortDate = (date: string) => `${date.slice(8, 10)}/${date.slice(5, 7)}`;
 export function AccuracyTrendChart({
   points,
   studentName,
+  secondary,
 }: {
   points: AccuracyTrendPoint[];
   studentName: string;
+  /**
+   * A second line for the SAME person over the SAME days — the account page
+   * passes first-sight accuracy beside seen-before accuracy, so a week of new
+   * material does not read as a slump. Must be index-aligned with `points`.
+   */
+  secondary?: { label: string; points: AccuracyTrendPoint[] };
 }) {
   const [hover, setHover] = useState<number | null>(null);
 
   const drawable = points.filter((p) => p.studentPct !== null);
+  const secondaryDrawable = secondary?.points.filter((p) => p.studentPct !== null) ?? [];
   const hasCohortLine = points.some((p) => p.cohortPct !== null);
-  if (drawable.length < 2) {
+  const hasSecondaryLine = secondaryDrawable.length >= 2;
+  if (drawable.length < 2 && secondaryDrawable.length < 2) {
     return (
       <div
         className="mt-4 text-sm leading-relaxed"
@@ -85,6 +94,7 @@ export function AccuracyTrendChart({
   }
 
   const hovered = hover !== null ? points[hover] : null;
+  const axisPoints = points.length ? points : secondary?.points ?? [];
 
   const onMove = (event: React.PointerEvent<SVGSVGElement>) => {
     const rect = event.currentTarget.getBoundingClientRect();
@@ -113,6 +123,22 @@ export function AccuracyTrendChart({
           </svg>
           {studentName}
         </span>
+        {hasSecondaryLine && secondary && (
+          <span className="flex items-center gap-2">
+            <svg width="18" height="8" aria-hidden="true">
+              <line
+                x1="0"
+                y1="4"
+                x2="18"
+                y2="4"
+                stroke="var(--acc2d)"
+                strokeWidth="2"
+                strokeDasharray="2 3"
+              />
+            </svg>
+            {secondary.label}
+          </span>
+        )}
         {hasCohortLine && (
           <span className="flex items-center gap-2">
             <svg width="18" height="8" aria-hidden="true">
@@ -150,8 +176,8 @@ export function AccuracyTrendChart({
           role="img"
           aria-label={
             hasCohortLine
-              ? `${studentName}'s rolling accuracy compared with the class average, from ${points[0].date} to ${points[points.length - 1].date}`
-              : `${studentName}'s rolling accuracy from ${points[0].date} to ${points[points.length - 1].date}`
+              ? `${studentName}'s rolling accuracy compared with the class average, from ${axisPoints[0].date} to ${axisPoints[axisPoints.length - 1].date}`
+              : `${studentName}'s rolling accuracy from ${axisPoints[0].date} to ${axisPoints[axisPoints.length - 1].date}`
           }
           onPointerMove={onMove}
           onPointerLeave={() => setHover(null)}
@@ -185,7 +211,7 @@ export function AccuracyTrendChart({
             y={HEIGHT - 8}
             style={{ font: "400 10px/1 var(--font-mono)", fill: "var(--ink3)" }}
           >
-            {shortDate(points[0].date)}
+            {shortDate(axisPoints[0].date)}
           </text>
           <text
             x={WIDTH - PAD.right}
@@ -193,7 +219,7 @@ export function AccuracyTrendChart({
             textAnchor="end"
             style={{ font: "400 10px/1 var(--font-mono)", fill: "var(--ink3)" }}
           >
-            {shortDate(points[points.length - 1].date)}
+            {shortDate(axisPoints[axisPoints.length - 1].date)}
           </text>
 
           {segments(points, (p) => p.cohortPct).map((d) => (
@@ -207,6 +233,19 @@ export function AccuracyTrendChart({
               strokeLinecap="round"
             />
           ))}
+          {hasSecondaryLine &&
+            secondary &&
+            segments(secondary.points, (p) => p.studentPct).map((d) => (
+              <path
+                key={`secondary-${d}`}
+                d={d}
+                fill="none"
+                stroke="var(--acc2d)"
+                strokeWidth="2"
+                strokeDasharray="2 3"
+                strokeLinecap="round"
+              />
+            ))}
           {segments(points, (p) => p.studentPct).map((d) => (
             <path
               key={`student-${d}`}
@@ -232,6 +271,16 @@ export function AccuracyTrendChart({
                 <circle
                   cx={x(hover!, points.length)}
                   cy={y(hovered.cohortPct)}
+                  r="4.5"
+                  fill="var(--acc2d)"
+                  stroke="var(--pg)"
+                  strokeWidth="2"
+                />
+              )}
+              {hasSecondaryLine && secondary && secondary.points[hover!]?.studentPct !== null && secondary.points[hover!] && (
+                <circle
+                  cx={x(hover!, points.length)}
+                  cy={y(secondary.points[hover!].studentPct!)}
                   r="4.5"
                   fill="var(--acc2d)"
                   stroke="var(--pg)"
@@ -270,6 +319,11 @@ export function AccuracyTrendChart({
               ? `${studentName.split(" ")[0]} ${hovered.studentPct}%`
               : `${studentName.split(" ")[0]} —`}
             {" · "}
+            {hasSecondaryLine &&
+              secondary &&
+              (secondary.points[hover!]?.studentPct != null
+                ? `${secondary.label.toLowerCase()} ${secondary.points[hover!].studentPct}% · `
+                : `${secondary.label.toLowerCase()} — · `)}
             {hasCohortLine &&
               (hovered.cohortPct !== null
                 ? `class ${hovered.cohortPct}% · `

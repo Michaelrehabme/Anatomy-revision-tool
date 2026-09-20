@@ -105,12 +105,14 @@ export function accuracyTrendFromDayTallies(
   cohortByDay: Map<string, DayTally>,
   windowDays: number = ACCURACY_WINDOW_DAYS_DEFAULT,
   minAttempts: number = ACCURACY_MIN_ATTEMPTS_DEFAULT,
+  /** Draw over these days rather than the tallies' own first-to-last, so two series can share one axis. */
+  span?: { first: string; last: string },
 ): AccuracyTrendPoint[] {
-  if (studentByDay.size === 0) return [];
+  if (studentByDay.size === 0 && !span) return [];
 
   const dayKeys = [...studentByDay.keys()].sort();
-  const firstDay = Date.parse(`${dayKeys[0]}T00:00:00.000Z`);
-  const lastDay = Date.parse(`${dayKeys[dayKeys.length - 1]}T00:00:00.000Z`);
+  const firstDay = Date.parse(`${span?.first ?? dayKeys[0]}T00:00:00.000Z`);
+  const lastDay = Date.parse(`${span?.last ?? dayKeys[dayKeys.length - 1]}T00:00:00.000Z`);
   const dayCount = Math.round((lastDay - firstDay) / DAY_MS) + 1;
 
   return Array.from({ length: dayCount }, (_, i) => {
@@ -162,4 +164,78 @@ export function accuracyDeltaByAttempts(attempts: UserAttempt[]): AccuracyDelta 
   const lastPct = pct(chronological.slice(-sliceSize));
 
   return { deltaPts: lastPct - firstPct, firstPct, lastPct, sliceSize };
+}
+
+/**
+ * Only the answers that were graded. A flashcard learn card records an
+ * attempt so analytics can see what was studied, but it carries no judgement
+ * (types/attempt.ts), and the account page was feeding those rows into the
+ * accuracy tile and the trend — where a card that is never wrong inflates
+ * both. The admin and educator aggregations already filter them; this is the
+ * student's own view catching up.
+ */
+export function gradedAttempts(attempts: readonly UserAttempt[]): UserAttempt[] {
+  return attempts.filter((a) => a.graded !== false);
+}
+
+export interface ExposureSplit {
+  /** The first graded attempt at each structure — recall of something met for the first time. */
+  firstSight: UserAttempt[];
+  /** Every later attempt at a structure already met. */
+  seenBefore: UserAttempt[];
+}
+
+/**
+ * Splits a student's attempts by whether the structure had been met before.
+ *
+ * One accuracy line hides two different things: a student working through
+ * new material scores lower on it than on structures they have revised, so a
+ * week of new areas reads as a slump and a week of review reads as
+ * improvement. Neither is a change in the student. Each structure's first
+ * graded attempt goes to firstSight and the rest to seenBefore, reconstructed
+ * from the attempt history in time order rather than stored — the rows carry
+ * no such flag, and attemptNumber counts exposures to one QUESTION, not to
+ * the structure (a muscle has ten questions).
+ *
+ * Reconstructed from however many rows the caller fetched: for a student past
+ * the fetch limit the earliest exposures are missing and a repeat can be
+ * mistaken for a first sight. Acceptable for a personal chart.
+ */
+export function splitByFirstExposure(attempts: readonly UserAttempt[]): ExposureSplit {
+  const chronological = [...attempts].sort((a, b) => a.timestamp.localeCompare(b.timestamp));
+  const met = new Set<string>();
+  const firstSight: UserAttempt[] = [];
+  const seenBefore: UserAttempt[] = [];
+  for (const attempt of chronological) {
+    if (met.has(attempt.structureId)) seenBefore.push(attempt);
+    else {
+      met.add(attempt.structureId);
+      firstSight.push(attempt);
+    }
+  }
+  return { firstSight, seenBefore };
+}
+
+export interface AccuracyTrendSplit extends ExposureSplit {
+  /** Both drawn over the same days, so they can share one axis. */
+  firstSightTrend: AccuracyTrendPoint[];
+  seenBeforeTrend: AccuracyTrendPoint[];
+}
+
+/** The two-line version of accuracyTrend, for a student's own page (no cohort series). */
+export function accuracyTrendSplit(
+  attempts: readonly UserAttempt[],
+  windowDays: number = ACCURACY_WINDOW_DAYS_DEFAULT,
+  minAttempts: number = ACCURACY_MIN_ATTEMPTS_DEFAULT,
+): AccuracyTrendSplit {
+  const split = splitByFirstExposure(attempts);
+  if (attempts.length === 0) return { ...split, firstSightTrend: [], seenBeforeTrend: [] };
+  const days = attempts.map((a) => toDateKey(a.timestamp)).sort();
+  const span = { first: days[0], last: days[days.length - 1] };
+  const none = new Map<string, DayTally>();
+  return {
+    ...split,
+    firstSightTrend: accuracyTrendFromDayTallies(tallyByDay(split.firstSight), none, windowDays, minAttempts, span),
+    seenBeforeTrend: accuracyTrendFromDayTallies(tallyByDay(split.seenBefore), none, windowDays, minAttempts, span),
+  };
 }
