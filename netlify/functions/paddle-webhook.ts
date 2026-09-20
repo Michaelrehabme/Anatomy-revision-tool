@@ -20,7 +20,20 @@ import {
  *
  * Either missing, and every request is refused. Failing closed is the point:
  * a webhook that cannot verify must not grant.
+ *
+ * OPTIONAL: PADDLE_WEBHOOK_DRY_RUN=1 verifies the signature, works out what
+ * the event means, logs it and stops short of the write — no service account
+ * needed. It exists for the sandbox destination on the demo site.
+ *
+ * A SANDBOX EVENT LOOKS EXACTLY LIKE A REAL ONE, and the sandbox takes test
+ * cards from anyone. So a sandbox destination pointed at a webhook that writes
+ * would hand out real subscriptions for the price of card 4242. The dry run
+ * is what makes the sandbox safe to leave connected; it must never be set on
+ * the production site, where it would silently stop paying customers getting
+ * what they bought.
  */
+
+const DRY_RUN = process.env.PADDLE_WEBHOOK_DRY_RUN === '1';
 
 function adminApp(): App {
   const existing = getApps();
@@ -62,6 +75,16 @@ export default async function handler(req: Request): Promise<Response> {
     // 200 for anything we chose not to act on. A non-2xx makes Paddle retry,
     // and retrying an event we will never handle just fills the log.
     return new Response('ok', { status: 200 });
+  }
+
+  if (DRY_RUN) {
+    console.info(
+      `paddle-webhook: DRY RUN, nothing written — ${event.event_type} -> ${action.uid}, ` +
+      `tier ${action.entitlement.tier} until ${action.entitlement.expiresAt}` +
+      (action.entitlement.startsAt ? `, starting ${action.entitlement.startsAt}` : '') +
+      `, cooling-off waived: ${action.consent?.coolingOffWaived ?? 'not recorded'}`,
+    );
+    return new Response('ok (dry run)', { status: 200 });
   }
 
   const db = getFirestore(adminApp());
