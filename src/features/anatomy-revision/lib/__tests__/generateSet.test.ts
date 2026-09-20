@@ -848,3 +848,49 @@ describe('the paywall', () => {
     expect(paid.length).toBeGreaterThan(free.length);
   });
 });
+
+describe('the due share buys distinct structures, most overdue first', () => {
+  const TYPES = ['mcq', 'identify-typed', 'locate'] as const;
+  const pool = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, { entitledAreas: AREAS, types: TYPES, mode: 'practice', seed: 31 });
+  const perStructure = new Map<string, number>();
+  for (const q of pool) perStructure.set(q.structureId, (perStructure.get(q.structureId) ?? 0) + 1);
+  // Structures that ask several questions each, so a per-question slice
+  // would let one of them crowd the others out.
+  const multi = [...perStructure.entries()].filter(([, n]) => n >= 3).map(([id]) => id);
+
+  it('asks every due structure once before it asks any of them twice', () => {
+    expect(multi.length).toBeGreaterThan(12);
+    const priorityStructureIds = multi.slice(0, 12);
+    const result = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+      entitledAreas: AREAS, types: TYPES, mode: 'practice', count: 20, seed: 32, priorityStructureIds,
+    });
+    const dueAsked = result.filter((q) => priorityStructureIds.includes(q.structureId));
+    expect(dueAsked).toHaveLength(Math.round(20 * REVIEW_SHARE));
+    expect(new Set(dueAsked.map((q) => q.structureId)).size).toBe(12);
+  });
+
+  it('takes the priority list in the order it was given when there are more due than slots', () => {
+    const priorityStructureIds = multi.slice(0, 30);
+    const result = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+      entitledAreas: AREAS, types: TYPES, mode: 'practice', count: 20, seed: 33, priorityStructureIds,
+    });
+    const asked = new Set(result.filter((q) => priorityStructureIds.includes(q.structureId)).map((q) => q.structureId));
+    expect([...asked].sort()).toEqual(priorityStructureIds.slice(0, 12).sort());
+  });
+
+  it('is deterministic under a seed with mastery supplied', () => {
+    const now = new Date('2026-09-20T09:00:00.000Z');
+    const mastery = multi.slice(0, 5).map((structureId, i) => ({
+      structureId, userId: 'u', attemptsTotal: 4, attemptsCorrect: 1, lastAttemptAt: '2026-09-01T09:00:00.000Z',
+      dueAt: new Date(now.getTime() - (i + 1) * 86_400_000).toISOString(), intervalDays: 1, easeFactor: 2.5,
+    }));
+    const config = {
+      entitledAreas: AREAS, types: TYPES, mode: 'practice' as const, count: 20, seed: 34,
+      priorityStructureIds: multi.slice(0, 5), mastery, now,
+    };
+    const a = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, config);
+    const b = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, config);
+    expect(a.map((q) => q.id)).toEqual(b.map((q) => q.id));
+    for (const id of multi.slice(0, 5)) expect(a.some((q) => q.structureId === id)).toBe(true);
+  });
+});

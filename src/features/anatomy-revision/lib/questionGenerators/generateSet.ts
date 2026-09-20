@@ -175,14 +175,23 @@ function interleaveByType(
 export const REVIEW_SHARE = 0.6;
 
 /**
- * Caps the priority list's share of a session and fills the rest from the
- * wider pool, so priority and new material both get airtime.
+ * Reserves a share of the session for the priority list and fills the rest
+ * from the wider pool, so due material and new material both get airtime.
  *
  * Restricting a session to the due queue outright — which is what passing those
  * ids as `structureIds` does — locks a daily user into whatever they saw first:
  * answering a due structure reschedules it, so the queue refills itself and no
  * new structure is ever reachable. Either side tops up when the other runs
  * short, so a thin queue on either side can't shrink the session.
+ *
+ * THE SHARE BUYS DISTINCT STRUCTURES, IN THE CALLER'S ORDER. The due pile used
+ * to be sliced by question, and a structure asks several — MCQ, locate, typed,
+ * four OINA facts — so one overdue muscle could take half the twelve due slots
+ * while the tenth-most-overdue never appeared, and the session felt like it
+ * was ignoring the review. The first pass takes one question per due
+ * structure, walking the priority list in the order the caller gave it (Today
+ * passes most-overdue first); only when every due structure has had its turn
+ * do second questions fill what is left of the share.
  */
 function blendPriorityWithRest(
   ordered: RevisionQuestion[],
@@ -194,9 +203,22 @@ function blendPriorityWithRest(
   const priority = new Set(priorityStructureIds);
   const share = Math.min(1, Math.max(0, reviewShare ?? REVIEW_SHARE));
 
-  const due: RevisionQuestion[] = [];
+  const byStructure = new Map<string, RevisionQuestion[]>();
   const rest: RevisionQuestion[] = [];
-  for (const question of ordered) (priority.has(question.structureId) ? due : rest).push(question);
+  for (const question of ordered) {
+    if (!priority.has(question.structureId)) {
+      rest.push(question);
+      continue;
+    }
+    const queue = byStructure.get(question.structureId);
+    if (queue) queue.push(question);
+    else byStructure.set(question.structureId, [question]);
+  }
+  const rank = new Map(priorityStructureIds.map((id, i) => [id, i]));
+  const structures = [...byStructure.keys()].sort((a, b) => (rank.get(a) ?? 0) - (rank.get(b) ?? 0));
+  const firstPass = structures.map((id) => byStructure.get(id)![0]);
+  const secondPass = structures.flatMap((id) => byStructure.get(id)!.slice(1));
+  const due = [...firstPass, ...secondPass];
 
   const fromDue = due.slice(0, Math.min(Math.round(count * share), due.length));
   const fromRest = rest.slice(0, count - fromDue.length);

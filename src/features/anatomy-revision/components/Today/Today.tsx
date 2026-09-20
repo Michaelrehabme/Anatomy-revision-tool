@@ -53,7 +53,11 @@ export function Today({ access, repository, userId, content, onStart, onCustomSe
       }
       // An area with no muscles falls through to an ordinary session.
     }
-    const dueStructureIds = dueMuscles.map((m) => m.structureId);
+    // Most overdue first: the blend takes one question per due structure in
+    // this order, so the structures waiting longest are the ones it clears.
+    const dueStructureIds = [...dueMuscles]
+      .sort((a, b) => (a.dueAt ?? '').localeCompare(b.dueAt ?? ''))
+      .map((m) => m.structureId);
     // generateSet is repository-free (CR-009), so fact mastery is fetched here.
     const factMastery = repository && userId ? await repository.listFactMastery(userId) : undefined;
     const learnCardAttempts = getLearnCardAttempts();
@@ -66,6 +70,10 @@ export function Today({ access, repository, userId, content, onStart, onCustomSe
       // due-only session refills its own queue and never reaches new material.
       priorityStructureIds: dueStructureIds.length ? dueStructureIds : undefined,
       count: 20,
+      // Without mastery the generator falls back to a uniform shuffle and the
+      // scheduler's due/weakness weighting never runs on the daily review.
+      mastery: allMastery,
+      now: new Date(),
       factMastery,
       learnCardAttempts,
     });
