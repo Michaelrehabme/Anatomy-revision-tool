@@ -3,10 +3,10 @@ import type { TypedIdentifyQuestion } from '../../types/question';
 import type { AnatomyImageAsset } from '../../types/image';
 import type { Confidence } from '../../types/attempt';
 import { questionLocationLabel } from '../../types/region';
-import { HotspotOverlay } from '../LocateStructureSession/HotspotOverlay';
+import { PromptHighlightOverlay } from '../shared/PromptHighlightOverlay';
 import { ImageViewer } from '../shared/ImageViewer';
 import { rotationFramesFor } from '../../lib/rotationFrames';
-import { promptHighlightHotspots } from '../../lib/promptHighlight';
+import { promptHighlightFrames } from '../../lib/promptHighlight';
 import { ConfidenceButtons } from '../shared/ConfidenceButtons';
 import { BottomSheet } from '../shared/BottomSheet';
 import { ExamAnswerFooter } from '../shared/ExamAnswerFooter';
@@ -44,7 +44,6 @@ export function MobileIdentifyTypedSession({ question, imagesById, onAnswer, onN
   }, [question.id, slots]);
 
   const promptImage = imagesById.get(question.promptImageId);
-  const highlightHotspots = promptHighlightHotspots(promptImage, question.structureId);
   // Every angle of the same picture, so the student can turn it. A plate
   // that is not part of a rotation set gives back nothing and the viewer
   // simply shows no turn controls.
@@ -101,11 +100,9 @@ export function MobileIdentifyTypedSession({ question, imagesById, onAnswer, onN
           <ImageViewer
               className="mt-4"
               image={promptImage}
-              frames={promptFrames}
+              frames={promptHighlightFrames(promptFrames, question.structureId)}
               resetKey={question.id}
-              overlay={() => (highlightHotspots.length > 0
-                ? <HotspotOverlay hotspots={highlightHotspots} highlightStructureId={question.structureId} />
-                : null)}
+              overlay={(current) => <PromptHighlightOverlay image={current} structureId={question.structureId} />}
             />
         )}
 

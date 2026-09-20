@@ -3,6 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { IdentifyTypedSession } from '../IdentifyTypedSession/IdentifyTypedSession';
 import { buildIdentifyTypedQuestions } from '../../lib/questionGenerators/identifyTyped';
 import { rotationFramesFor, rotationSetKey, rotationAngle } from '../../lib/rotationFrames';
+import { promptHighlightFrames } from '../../lib/promptHighlight';
 import { ALL_STRUCTURES, ALL_IMAGES } from '../../data/seed';
 import type { TypedIdentifyQuestion } from '../../types/question';
 
@@ -71,5 +72,45 @@ describe('an identify question whose picture is a rotation set', () => {
     // The stage takes no button role, so nothing invites a tap at the target.
     const stage = screen.getByRole('img').closest('div');
     expect(stage?.parentElement?.getAttribute('role')).toBeNull();
+  });
+});
+
+describe('the highlight turns with the picture', () => {
+  const imagesById = new Map(ALL_IMAGES.map((i) => [i.id, i]));
+  // A rotation set whose frames carry hotspots (an atlas slide, not a
+  // pre-highlighted plate), so the green zone is drawn by the app and has
+  // to be looked up on the frame that is showing.
+  const question = buildIdentifyTypedQuestions(ALL_STRUCTURES, ALL_IMAGES).find(
+    (q): q is TypedIdentifyQuestion => {
+      const frames = rotationFramesFor(imagesById.get(q.promptImageId), ALL_IMAGES);
+      return frames.length > 1 && frames.filter((f) => (f.hotspots ?? []).some((h) => h.structureId === q.structureId)).length > 1;
+    },
+  );
+
+  function drawnPoints(): string {
+    return Array.from(document.querySelectorAll('svg polygon'))
+      .map((p) => p.getAttribute('points') ?? '')
+      .join('|');
+  }
+
+  it('draws the outline of the frame that is showing, not the opening one', () => {
+    expect(question).toBeDefined();
+    render(<IdentifyTypedSession question={question!} imagesById={imagesById} onAnswer={vi.fn()} onNext={vi.fn()} examMode />);
+    const before = drawnPoints();
+    expect(before).not.toBe('');
+    fireEvent.click(screen.getByLabelText('Rotate right'));
+    const after = drawnPoints();
+    expect(after).not.toBe('');
+    expect(after).not.toBe(before);
+  });
+
+  it('only offers angles where the target is traced', () => {
+    const frames = rotationFramesFor(imagesById.get(question!.promptImageId), ALL_IMAGES);
+    const offered = promptHighlightFrames(frames, question!.structureId);
+    expect(offered.length).toBeGreaterThan(1);
+    for (const f of offered) expect((f.hotspots ?? []).some((h) => h.structureId === question!.structureId)).toBe(true);
+    // A pre-highlighted set carries no hotspots at all, and is left alone.
+    const bare = frames.map((f) => ({ ...f, hotspots: [] }));
+    expect(promptHighlightFrames(bare, question!.structureId)).toBe(bare);
   });
 });

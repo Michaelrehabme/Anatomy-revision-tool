@@ -2,8 +2,8 @@ import { useMemo, useState } from 'react';
 import type { MCQQuestion } from '../../types/question';
 import type { AnatomyImageAsset } from '../../types/image';
 import { ImageViewer } from '../shared/ImageViewer';
-import { HotspotOverlay } from '../LocateStructureSession/HotspotOverlay';
-import { promptHighlightHotspots } from '../../lib/promptHighlight';
+import { PromptHighlightOverlay } from '../shared/PromptHighlightOverlay';
+import { promptHighlightFrames } from '../../lib/promptHighlight';
 import { rotationFramesFor } from '../../lib/rotationFrames';
 import { Button } from '../shared/Button';
 
@@ -55,7 +55,6 @@ export function DiagnosticSession({ questions, imagesById, onSubmit, onCancel }:
 
   const question = questions[at];
   const promptImage = question?.promptImageId ? imagesById.get(question.promptImageId) : undefined;
-  const highlights = promptHighlightHotspots(promptImage, question?.structureId ?? '');
   const frames = useMemo(
     () => rotationFramesFor(promptImage, imagesById.values()),
     [promptImage, imagesById],
@@ -161,11 +160,9 @@ export function DiagnosticSession({ questions, imagesById, onSubmit, onCancel }:
         <ImageViewer
           className="mt-6 max-w-md mx-auto"
           image={promptImage}
-          frames={frames}
+          frames={promptHighlightFrames(frames, question.structureId)}
           resetKey={question.id}
-          overlay={() => (highlights.length > 0
-            ? <HotspotOverlay hotspots={highlights} highlightStructureId={question.structureId} />
-            : null)}
+          overlay={(current) => <PromptHighlightOverlay image={current} structureId={question.structureId} />}
         />
       )}
 
