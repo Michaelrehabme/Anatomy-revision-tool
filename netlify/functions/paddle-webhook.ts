@@ -118,7 +118,14 @@ export default async function handler(req: Request): Promise<Response> {
           // firestore.rules makes that whole map immutable to clients, so the
           // evidence a disputed refund turns on cannot be edited by the person
           // disputing it.
-          entitlement: { ...action.entitlement, eventAt, consent: action.consent },
+          entitlement: {
+            ...action.entitlement,
+            eventAt,
+            consent: action.consent,
+            // Kept even on a cancellation: a former subscriber still needs the
+            // portal to see their invoices.
+            ...(action.customerId ? { customerId: action.customerId } : {}),
+          },
           updatedAt: FieldValue.serverTimestamp(),
         },
         { merge: true },
@@ -126,6 +133,22 @@ export default async function handler(req: Request): Promise<Response> {
     });
   } catch (error) {
     console.error(`paddle-webhook: write failed for ${action.uid}`, error);
+    // A durable record, because the log is not somewhere anybody looks: this
+    // is a customer who has paid and has nothing, and it must be findable
+    // tomorrow. Best effort — if Firestore is the thing that is broken, the
+    // 500 below is still what gets the event retried.
+    try {
+      await db.doc(`billingFailures/${event.event_id ?? `${action.uid}-${eventAt}`}`).set({
+        uid: action.uid,
+        eventType: event.event_type,
+        eventAt,
+        entitlement: action.entitlement,
+        error: String(error).slice(0, 500),
+        recordedAt: FieldValue.serverTimestamp(),
+      });
+    } catch {
+      console.error('paddle-webhook: could not record the failure either');
+    }
     // 500 so Paddle retries. This is a customer who has paid, and the retry is
     // the only thing standing between them and access they bought.
     return new Response('Retry', { status: 500 });

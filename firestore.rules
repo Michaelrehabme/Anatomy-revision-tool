@@ -364,5 +364,14 @@ service cloud.firestore {
     match /questionReviews/{questionId} {
       allow read, write: if isAdmin();
     }
+
+    // Payments that verified but could not be written (paddle-webhook.ts).
+    // Written by the Admin SDK, which bypasses these rules, and read by
+    // scripts/accountData.ts. Closed to every client, including an admin's
+    // browser: each record names an account and what it should have been
+    // granted, and nothing in the app has a reason to read it.
+    match /billingFailures/{eventId} {
+      allow read, write: if false;
+    }
   }
 }

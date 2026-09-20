@@ -80,6 +80,13 @@ export function verifyPaddleSignature(
 export interface PaddleSubscription {
   id: string;
   status: 'active' | 'trialing' | 'past_due' | 'paused' | 'canceled';
+  /**
+   * Paddle's id for the buyer, kept so the account screen can open their
+   * portal — where they cancel or change a card. /refunds promises they can
+   * cancel whenever they like, and a promise that requires emailing us is a
+   * promise we keep by hand until we forget to.
+   */
+  customer_id?: string | null;
   /** When the subscription first began. Stable across renewals, unlike the billing period. */
   started_at?: string | null;
   current_billing_period?: { starts_at: string; ends_at: string } | null;
@@ -96,7 +103,7 @@ export interface PaddleEvent {
 
 /** What the webhook should do, decided without touching any database. */
 export type WebhookAction =
-  | { kind: 'grant'; uid: string; entitlement: Entitlement; consent: ConsentRecord | null }
+  | { kind: 'grant'; uid: string; entitlement: Entitlement; consent: ConsentRecord | null; customerId: string | null }
   | { kind: 'ignore'; reason: string };
 
 /**
@@ -198,6 +205,7 @@ export function actionForEvent(event: PaddleEvent, now: Date = new Date()): Webh
       kind: 'grant',
       uid,
       consent,
+      customerId: sub.customer_id ?? null,
       entitlement: { tier: 'individual', source: 'paddle', expiresAt: effective, externalId: sub.id },
     };
   }
@@ -214,6 +222,7 @@ export function actionForEvent(event: PaddleEvent, now: Date = new Date()): Webh
     kind: 'grant',
     uid,
     consent,
+    customerId: sub.customer_id ?? null,
     entitlement: {
       tier: 'individual',
       source: 'paddle',

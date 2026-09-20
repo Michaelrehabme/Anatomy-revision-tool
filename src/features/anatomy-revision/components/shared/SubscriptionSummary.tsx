@@ -1,5 +1,6 @@
+import { lazy, Suspense } from 'react';
 import { Link } from 'react-router-dom';
-import { hasStarted } from '../../lib/entitlement';
+import { hasExpired, hasStarted } from '../../lib/entitlement';
 import { AREAS, AREA_LABELS, type Area } from '../../types/region';
 import type { UseEntitlement } from '../../hooks/useEntitlement';
 
@@ -19,6 +20,13 @@ import type { UseEntitlement } from '../../hooks/useEntitlement';
 
 const PUBLIC_DEMO = import.meta.env.VITE_PUBLIC_DEMO === '1';
 
+/**
+ * Lazy, and null in the demo: it fetches a billing portal link, which the
+ * demo has no account to ask about. Same treatment as the pricing page in
+ * App.tsx.
+ */
+const ManageSubscription = PUBLIC_DEMO ? null : lazy(() => import('../../../billing/ManageSubscription'));
+
 function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
 }
@@ -28,14 +36,23 @@ export function SubscriptionSummary({ access }: { access: UseEntitlement }) {
   if (PUBLIC_DEMO || loading) return null;
 
   const pending = entitlement.tier !== 'free' && !hasStarted(entitlement);
+  /**
+   * Bought something, and it has run out. Worth saying out loud: the regions
+   * simply relock, and a student who does not know why assumes the app broke.
+   * Only shown for a lapse — an ACTIVE subscription's expiry date is its
+   * renewal date, and warning about that would be a false alarm every month.
+   */
+  const lapsed = entitlement.tier !== 'free' && hasExpired(entitlement);
   const free = freeArea?.area ?? 'shoulder';
   const status = pending && entitlement.startsAt
     ? `Subscribed. Access starts ${formatDate(entitlement.startsAt)}.`
-    : tier === 'free'
-      ? `Free: ${AREA_LABELS[free].toLowerCase()} only.`
-      : entitlement.expiresAt
-        ? `Full access until ${formatDate(entitlement.expiresAt)}.`
-        : 'Full access.';
+    : lapsed && entitlement.expiresAt
+      ? `Your subscription ended on ${formatDate(entitlement.expiresAt)}. Free: ${AREA_LABELS[free].toLowerCase()} only.`
+      : tier === 'free'
+        ? `Free: ${AREA_LABELS[free].toLowerCase()} only.`
+        : entitlement.expiresAt
+          ? `Full access until ${formatDate(entitlement.expiresAt)}, when it renews.`
+          : 'Full access.';
 
   return (
     <div className="mt-4" style={{ font: '400 14px/1.5 var(--font-ui)', color: 'var(--ink2)' }}>
@@ -45,6 +62,14 @@ export function SubscriptionSummary({ access }: { access: UseEntitlement }) {
           {tier === 'free' && !pending ? 'Unlock every region' : 'Plan details'}
         </Link>
       </div>
+
+      {/* Only where there is something to manage: a licensed or comped account
+          has no Paddle subscription behind it, and the portal would be empty. */}
+      {entitlement.source === 'paddle' && ManageSubscription && (
+        <Suspense fallback={null}>
+          <ManageSubscription />
+        </Suspense>
+      )}
 
       {tier === 'free' && !pending && (
         <div className="mt-3">

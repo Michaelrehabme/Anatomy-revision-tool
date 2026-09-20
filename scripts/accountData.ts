@@ -12,6 +12,7 @@
  *   npx tsx scripts/accountData.ts move <from-uid> <to-uid>          # dry run
  *   npx tsx scripts/accountData.ts move <from-uid> <to-uid> --apply  # do it
  *   npx tsx scripts/accountData.ts grant <uid> [tier] --apply        # permanent free access
+ *   npx tsx scripts/accountData.ts failures                          # payments that did not land
  *
  * DRY RUN BY DEFAULT, like deleteDormantAccounts.ts, and for the same reason:
  * this one writes over a live account's data.
@@ -191,6 +192,29 @@ async function grant(db: Firestore, uid: string, tier: string): Promise<void> {
   }
 }
 
+/**
+ * Payments that verified but could not be written — each one is somebody who
+ * has paid and has nothing. Run it weekly: this is the only place they
+ * surface, since the webhook's own log is not somewhere anybody looks.
+ */
+async function failures(db: Firestore): Promise<void> {
+  const snap = await db.collection('billingFailures').orderBy('eventAt', 'desc').limit(50).get();
+  if (snap.empty) {
+    process.stdout.write('No failed payment writes. Every verified event landed.\n');
+    return;
+  }
+
+  process.stdout.write(`${snap.size} failed payment write(s) — each one is somebody who paid:\n\n`);
+  for (const d of snap.docs) {
+    const f = d.data();
+    process.stdout.write(`${f.eventAt}  ${f.eventType}  ${f.uid}\n`);
+    process.stdout.write(`  ${await describe(String(f.uid))}\n`);
+    process.stdout.write(`  should have had: ${JSON.stringify(f.entitlement)}\n`);
+    process.stdout.write(`  error: ${f.error}\n\n`);
+  }
+  process.stdout.write('Fix by granting what the entitlement says, or by replaying the event from Paddle.\n');
+}
+
 async function main(): Promise<void> {
   const db = getFirestore(getAdminApp());
   const [command, a, b] = process.argv.slice(2).filter((x) => !x.startsWith('--'));
@@ -199,13 +223,15 @@ async function main(): Promise<void> {
   if (command === 'show' && a) return show(db, a);
   if (command === 'move' && a && b) return move(db, a, b);
   if (command === 'grant' && a) return grant(db, a, b ?? 'institutional');
+  if (command === 'failures') return failures(db);
 
   process.stdout.write(
     'Usage:\n' +
       '  npx tsx scripts/accountData.ts list\n' +
       '  npx tsx scripts/accountData.ts show <uid>\n' +
       '  npx tsx scripts/accountData.ts move <from-uid> <to-uid> [--apply]\n' +
-      '  npx tsx scripts/accountData.ts grant <uid> [individual|institutional] [--apply]\n',
+      '  npx tsx scripts/accountData.ts grant <uid> [individual|institutional] [--apply]\n' +
+      '  npx tsx scripts/accountData.ts failures\n',
   );
 }
 
