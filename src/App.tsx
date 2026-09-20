@@ -417,6 +417,28 @@ function App() {
     session.start(questions, { types, mode: 'practice', learnCardAttempts });
   };
 
+  /**
+   * A mixed quiz over an explicit set of structures of any kind — the Atlas'
+   * "Quiz these", scoped to whatever the list is currently filtered to. OINA
+   * only covers muscles; bones, landmarks, joints and ligaments are asked
+   * through the formats that exist for them.
+   */
+  const quizStructures = async (structureIds: string[]) => {
+    const types: QuestionType[] = ['mcq', 'locate', 'identify-typed'];
+    const mastery = repository && userId ? await repository.listMastery(userId) : undefined;
+    const questions = generateRevisionSet(content.structures, content.images, {
+      types,
+      mode: 'practice',
+      structureIds,
+      entitledAreas,
+      count: 20,
+      mastery,
+      now: new Date(),
+      learnCardAttempts: 0,
+    });
+    session.start(questions, { types, mode: 'practice', learnCardAttempts: 0 });
+  };
+
   return (
     <>
       {DemoBanner && (
@@ -621,6 +643,7 @@ function App() {
                 userId={userId}
                 onOpenMuscle={openMuscle}
                 onDrillOina={drillOina}
+                onQuizStructures={quizStructures}
                 onNavigate={onNavigateSection}
               />
             ) : (
@@ -631,6 +654,7 @@ function App() {
                 userId={userId}
                 onOpenMuscle={openMuscle}
                 onDrillOina={drillOina}
+                onQuizStructures={quizStructures}
                 onBack={() => mobileNavigate('today')}
                 onNavigateTab={mobileNavigate}
               />
