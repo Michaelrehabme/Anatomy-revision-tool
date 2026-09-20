@@ -47,3 +47,6 @@ landmark-region-probe.json
 
 # Review output from scripts/deriveActionText.mjs
 scripts/deriveActionText.report.json
+
+# Claude Code personal settings (permissions etc) — not shared.
+.claude/settings.local.json
