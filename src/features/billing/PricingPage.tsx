@@ -5,7 +5,7 @@ import { useEntitlement } from '../anatomy-revision/hooks/useEntitlement';
 import { hasStarted } from '../anatomy-revision/lib/entitlement';
 import { AuthScreen } from '../anatomy-revision/components/Auth/AuthScreen';
 import { CoolingOffWaiver } from '../legal/CoolingOffWaiver';
-import { PLANS, buildCheckoutRequest, readPaddleConfig, type PlanId } from './lib/checkout';
+import { PLANS, buildCheckoutRequest, readPaddleConfig, renewalTerms, type PlanId } from './lib/checkout';
 
 /**
  * /pricing — CR-033 item 11. Pick a plan, choose when access starts, pay.
@@ -79,6 +79,7 @@ export function PricingPage() {
   }, [justPaid, subscribed, polls, refresh]);
 
   const needsAccount = !user || user.isAnonymous;
+  const terms = renewalTerms(plan);
 
   async function buy(startNow: boolean) {
     setCheckoutError(null);
@@ -210,7 +211,43 @@ export function PricingPage() {
             </div>
           ) : (
             <div className="mt-8">
-              <CoolingOffWaiver checked={waived} onChange={(v) => { setWaived(v); if (v) setShowWaiverError(false); }} showError={showWaiverError} />
+              {/*
+                PRE-CONTRACT INFORMATION, and it belongs above the pay button
+                rather than in the receipt. The Consumer Contracts Regulations
+                2013 require the price, the duration and how to cancel before
+                the customer is bound; the DMCC subscription regime adds that
+                auto-renewal must be told plainly rather than inferred from the
+                word "subscription". The date is the part that does the work:
+                a student who knows £29.99 comes out again on a named day is
+                not the student who files a chargeback a year later.
+              */}
+              <div className="rounded-[3px] px-4 py-3.5" style={{ background: 'var(--sf)', border: '1px solid var(--line)' }}>
+                <div style={cardLabel}>What you are agreeing to</div>
+                <ul className="mt-2.5 flex flex-col gap-1.5" style={{ ...prose, fontSize: 13.5, listStyle: 'none', padding: 0, margin: 0 }}>
+                  <li>
+                    <strong style={{ color: 'var(--ink)' }}>{terms.price} {terms.frequency}</strong>, including VAT,
+                    for every region of the body. There is no minimum term.
+                  </li>
+                  <li>
+                    It <strong style={{ color: 'var(--ink)' }}>renews by itself</strong> {terms.frequency} until you
+                    stop it. The next payment after today would be taken on{' '}
+                    <strong style={{ color: 'var(--ink)' }}>{formatDate(terms.nextChargeAt)}</strong>.
+                  </li>
+                  <li>
+                    Cancel any time from <strong style={{ color: 'var(--ink)' }}>Account → Subscription → Manage
+                    subscription</strong>. It takes effect at the end of the period you have paid for, and costs
+                    nothing.
+                  </li>
+                  <li>
+                    Part-used periods are not refunded. Your 14-day cancellation right is set by the box below —
+                    see <Link to="/refunds" style={{ color: 'var(--accd)' }}>cancellation and refunds</Link>.
+                  </li>
+                </ul>
+              </div>
+
+              <div className="mt-4">
+                <CoolingOffWaiver checked={waived} onChange={(v) => { setWaived(v); if (v) setShowWaiverError(false); }} showError={showWaiverError} />
+              </div>
 
               <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-3">
                 <button

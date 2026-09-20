@@ -34,6 +34,47 @@ export const PLANS: readonly Plan[] = [
 ];
 
 /**
+ * The pre-contract information a subscription has to carry BEFORE payment:
+ * what is being bought, what it costs, that it renews by itself, when the next
+ * charge lands, and how to stop it.
+ *
+ * WHY IT IS A FUNCTION AND NOT A PARAGRAPH. "It renews every year" is generic
+ * enough to be ignored; "£29.99 will be taken again on 20 September 2027" is
+ * the sentence somebody actually reads. The date is computed from the day they
+ * are looking at the page, which is the day the subscription starts.
+ *
+ * The Consumer Contracts Regulations 2013 already require this (Schedule 2:
+ * main characteristics, total price, duration, how to cancel). The DMCC Act
+ * 2024 subscription regime tightens it and adds the reminder notices, which
+ * are not a page and cannot be — see docs/DMCC-SUBSCRIPTIONS.md.
+ *
+ * DELAYED START. Somebody who keeps their 14-day cancellation right is charged
+ * now but reaches the app in 14 days. The renewal still runs from the purchase,
+ * so the dates here do not shift — saying otherwise would be a second promise
+ * to keep.
+ */
+export interface RenewalTerms {
+  /** "every year" / "every month" — the words that go in the sentence. */
+  frequency: string;
+  /** When the next payment is taken, as an ISO date. */
+  nextChargeAt: string;
+  price: string;
+}
+
+export function renewalTerms(plan: PlanId, now: Date = new Date()): RenewalTerms {
+  const next = new Date(now.getTime());
+  if (plan === 'annual') next.setFullYear(next.getFullYear() + 1);
+  else next.setMonth(next.getMonth() + 1);
+
+  const shown = PLANS.find((p) => p.id === plan);
+  return {
+    frequency: plan === 'annual' ? 'every year' : 'every month',
+    nextChargeAt: next.toISOString(),
+    price: shown?.price ?? '',
+  };
+}
+
+/**
  * Bump this whenever the wording in CoolingOffWaiver changes. It is stored with
  * each subscription, so a later rewording never changes what an earlier
  * customer is recorded as having agreed to.

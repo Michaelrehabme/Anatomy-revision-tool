@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildCheckoutRequest, readPaddleConfig, CONSENT_WORDING_VERSION, PLANS } from '../checkout';
+import { buildCheckoutRequest, readPaddleConfig, renewalTerms, CONSENT_WORDING_VERSION, PLANS } from '../checkout';
 
 const ENV = {
   VITE_PADDLE_ENV: 'sandbox',
@@ -81,5 +81,37 @@ describe('buildCheckoutRequest', () => {
 describe('PLANS', () => {
   it('lists annual first, the plan most students should pick', () => {
     expect(PLANS.map((p) => p.id)).toEqual(['annual', 'monthly']);
+  });
+});
+
+describe('renewalTerms', () => {
+  // The pre-contract information the checkout must show before anybody pays.
+  const NOW = new Date('2026-09-20T12:00:00.000Z');
+
+  it('dates the next annual charge a year out', () => {
+    const terms = renewalTerms('annual', NOW);
+    expect(terms.nextChargeAt.slice(0, 10)).toBe('2027-09-20');
+    expect(terms.frequency).toBe('every year');
+    expect(terms.price).toBe('£29.99');
+  });
+
+  it('dates the next monthly charge a month out', () => {
+    const terms = renewalTerms('monthly', NOW);
+    expect(terms.nextChargeAt.slice(0, 10)).toBe('2026-10-20');
+    expect(terms.frequency).toBe('every month');
+    expect(terms.price).toBe('£4.99');
+  });
+
+  it('does not invent a 31st of February', () => {
+    // Date.setMonth rolls a short month forward rather than throwing, and the
+    // customer must not be told about a day that does not exist.
+    const terms = renewalTerms('monthly', new Date('2027-01-31T12:00:00.000Z'));
+    expect(new Date(terms.nextChargeAt).getTime()).toBeGreaterThan(Date.parse('2027-02-27T00:00:00.000Z'));
+  });
+
+  it('carries the price actually shown for the plan', () => {
+    for (const plan of PLANS) {
+      expect(renewalTerms(plan.id, NOW).price).toBe(plan.price);
+    }
   });
 });
