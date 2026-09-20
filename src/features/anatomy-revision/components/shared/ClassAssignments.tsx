@@ -5,6 +5,7 @@ import type { RevisionSetupParams } from '../../hooks/useRevisionSession';
 import type { RevisionQuestion } from '../../types/question';
 import type { RevisionSessionSummary } from '../../types/attempt';
 import { generateRevisionSet } from '../../lib/questionGenerators/generateSet';
+import type { UseEntitlement } from '../../hooks/useEntitlement';
 import { AUTH_ENABLED } from '../../context/AuthProvider';
 import { isScopedAssignment, type ScopedAssignment } from '../../../educator/types/cohort';
 import { assignmentSetConfig, describeAssignmentScope } from '../../../educator/lib/assignmentScope';
@@ -15,6 +16,8 @@ const DAY_MS = 86_400_000;
 const PASSED_GRACE_DAYS = 7;
 
 interface ClassAssignmentsProps {
+  /** What this student may reach — set work does not lift the paywall, see assignmentSetConfig. */
+  access: UseEntitlement;
   repository: AnatomyRepository | null;
   userId: string | null;
   content: AnatomyContent;
@@ -53,7 +56,7 @@ function dueLabel(dueAt: string, now: Date): string {
  * (the first generation) are not listed: they have no set to start, and
  * listing one with nothing to press would be a dead end.
  */
-export function ClassAssignments({ repository, userId, content, onStart, compact }: ClassAssignmentsProps) {
+export function ClassAssignments({ access, repository, userId, content, onStart, compact }: ClassAssignmentsProps) {
   const [rows, setRows] = useState<Row[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [startingId, setStartingId] = useState<string | null>(null);
@@ -92,7 +95,7 @@ export function ClassAssignments({ repository, userId, content, onStart, compact
       // here — it decides whether each OINA fact is asked as select or typed.
       const factMastery =
         assignment.questionTypes.includes('oina') && repository && userId ? await repository.listFactMastery(userId) : undefined;
-      const questions = generateRevisionSet(content.structures, content.images, { ...assignmentSetConfig(assignment), factMastery });
+      const questions = generateRevisionSet(content.structures, content.images, { ...assignmentSetConfig(assignment, access.areas), factMastery });
       if (questions.length === 0) {
         setError('This assignment has no questions any more — let your educator know.');
         return;

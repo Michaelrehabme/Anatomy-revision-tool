@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { ALL_IMAGES, ALL_STRUCTURES } from '../../../anatomy-revision/data/seed';
 import { generateRevisionSet } from '../../../anatomy-revision/lib/questionGenerators/generateSet';
 import { areasOf } from '../../../anatomy-revision/types/structure';
-import type { Area } from '../../../anatomy-revision/types/region';
+import { AREAS, type Area } from '../../../anatomy-revision/types/region';
 import { DEMO_ASSIGNMENTS } from '../../demo/demoData';
 import { isScopedAssignment } from '../../types/cohort';
 import type { AssignmentScope, ScopedAssignment } from '../../types/cohort';
@@ -48,7 +48,7 @@ describe('describeAssignmentScope', () => {
       questionCount: 5,
       targetAccuracyPct: 70,
     };
-    expect(assignmentSetConfig(assignment).areas).toEqual(['cervical-spine', 'thoracic-spine', 'lumbar-spine']);
+    expect(assignmentSetConfig(assignment, AREAS).areas).toEqual(['cervical-spine', 'thoracic-spine', 'lumbar-spine']);
   });
 });
 
@@ -61,7 +61,7 @@ describe('assignmentSetConfig', () => {
   const scoped = DEMO_ASSIGNMENTS.filter(isScopedAssignment);
 
   it.each(scoped.map((a) => [a.title, a] as const))('builds a full exam inside its scope: %s', (_title, assignment) => {
-    const questions = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, assignmentSetConfig(assignment));
+    const questions = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, assignmentSetConfig(assignment, AREAS));
     expect(questions).toHaveLength(assignment.questionCount);
 
     for (const q of questions) {

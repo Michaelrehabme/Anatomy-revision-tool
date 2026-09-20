@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { ALL_STRUCTURES, ALL_IMAGES } from '../../data/seed';
 import { generateRevisionSet, REVIEW_SHARE } from '../questionGenerators/generateSet';
+import { AREAS, type Area } from '../../types/region';
 import { buildIndexes } from '../indexes';
 import { areasOf } from '../../types/structure';
 import { pickNameDistractors } from '../distractors';
@@ -11,7 +12,7 @@ import type { FactMastery, StructureMastery } from '../../types/attempt';
 
 describe('generateRevisionSet', () => {
   it('generates flashcards and MCQs for the full seed dataset deterministically', () => {
-    const config = { types: ['flashcard', 'mcq'] as const, mode: 'practice' as const, seed: 42 };
+    const config = { entitledAreas: AREAS, types: ['flashcard', 'mcq'] as const, mode: 'practice' as const, seed: 42 };
     const a = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, config);
     const b = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, config);
     expect(a.length).toBeGreaterThan(0);
@@ -19,7 +20,7 @@ describe('generateRevisionSet', () => {
   });
 
   it('generates locate questions from the posterior regional renders', () => {
-    const result = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+    const result = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, { entitledAreas: AREAS,
       types: ['locate'],
       mode: 'practice',
       seed: 1,
@@ -64,7 +65,7 @@ describe('generateRevisionSet', () => {
   });
 
   it('respects region filtering', () => {
-    const result = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+    const result = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, { entitledAreas: AREAS,
       types: ['flashcard'],
       region: 'hip-thigh',
       mode: 'practice',
@@ -75,7 +76,7 @@ describe('generateRevisionSet', () => {
   });
 
   it('respects multi-region filtering (OR-matched), taking precedence over `region`', () => {
-    const result = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+    const result = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, { entitledAreas: AREAS,
       types: ['flashcard'],
       region: 'back-core', // should be ignored since `regions` is set
       regions: ['hip-thigh', 'lower-leg-foot'],
@@ -87,13 +88,13 @@ describe('generateRevisionSet', () => {
   });
 
   it('an empty `regions` array applies no region filter at all', () => {
-    const filtered = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+    const filtered = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, { entitledAreas: AREAS,
       types: ['flashcard'],
       regions: [],
       mode: 'practice',
       seed: 1,
     });
-    const unfiltered = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+    const unfiltered = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, { entitledAreas: AREAS,
       types: ['flashcard'],
       mode: 'practice',
       seed: 1,
@@ -102,7 +103,7 @@ describe('generateRevisionSet', () => {
   });
 
   it('assessment mode samples the requested count (or fewer if pool is smaller)', () => {
-    const result = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+    const result = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, { entitledAreas: AREAS,
       types: ['flashcard'],
       mode: 'assessment',
       count: 3,
@@ -112,7 +113,7 @@ describe('generateRevisionSet', () => {
   });
 
   it('generates fill-blank questions for bones and landmarks, deterministically', () => {
-    const config = { types: ['fill-blank'] as const, mode: 'practice' as const, seed: 11 };
+    const config = { entitledAreas: AREAS, types: ['fill-blank'] as const, mode: 'practice' as const, seed: 11 };
     const a = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, config);
     const b = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, config);
     expect(a.length).toBeGreaterThan(0);
@@ -125,7 +126,7 @@ describe('generateRevisionSet', () => {
   });
 
   it('never generates identify-typed questions when no images have hotspots (atlas-slide gap), but does for single-structure images', () => {
-    const result = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+    const result = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, { entitledAreas: AREAS,
       types: ['identify-typed'],
       mode: 'practice',
       seed: 1,
@@ -134,7 +135,7 @@ describe('generateRevisionSet', () => {
   });
 
   it('MCQ choices always include the correct answer exactly once', () => {
-    const result = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+    const result = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, { entitledAreas: AREAS,
       types: ['mcq'],
       mode: 'practice',
       seed: 5,
@@ -152,6 +153,7 @@ describe('generateRevisionSet adaptive mode (CR-009)', () => {
 
   it('is deterministic given the same seed', () => {
     const config = {
+      entitledAreas: AREAS,
       types: ['mcq', 'fill-blank', 'identify-typed'] as const,
       mode: 'adaptive' as const,
       count: 15,
@@ -164,7 +166,7 @@ describe('generateRevisionSet adaptive mode (CR-009)', () => {
   });
 
   it('returns up to the requested count, one question per selected structure', () => {
-    const result = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+    const result = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, { entitledAreas: AREAS,
       types: ['mcq', 'flashcard'],
       mode: 'adaptive',
       count: 12,
@@ -187,7 +189,7 @@ describe('generateRevisionSet adaptive mode (CR-009)', () => {
         dueAt: '2026-09-01T00:00:00.000Z',
       },
     ];
-    const result = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+    const result = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, { entitledAreas: AREAS,
       types: ['mcq', 'identify-typed'],
       mode: 'adaptive',
       count: ALL_STRUCTURES.length,
@@ -202,7 +204,7 @@ describe('generateRevisionSet adaptive mode (CR-009)', () => {
   });
 
   it('works with no mastery data at all (first-ever session)', () => {
-    const result = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+    const result = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, { entitledAreas: AREAS,
       types: ['mcq'],
       mode: 'adaptive',
       count: 10,
@@ -219,7 +221,7 @@ describe('due-queue priority (prioritised, not restricted)', () => {
   // Ids that provably yield questions, so the blend always has both sides to work with.
   const answerableIds = [
     ...new Set(
-      generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, { types: TYPES, mode: 'practice', seed: 7 }).map((q) => q.structureId),
+      generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, { entitledAreas: AREAS, types: TYPES, mode: 'practice', seed: 7 }).map((q) => q.structureId),
     ),
   ];
 
@@ -228,7 +230,7 @@ describe('due-queue priority (prioritised, not restricted)', () => {
     // session to it, and since answering a due structure reschedules it, the queue
     // refilled itself and no new structure was ever reachable.
     const priorityStructureIds = answerableIds.slice(0, 5);
-    const result = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+    const result = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, { entitledAreas: AREAS,
       types: TYPES,
       mode: 'practice',
       count: 20,
@@ -242,7 +244,7 @@ describe('due-queue priority (prioritised, not restricted)', () => {
   it('caps the priority share even when the due queue could fill the session', () => {
     expect(answerableIds.length).toBeGreaterThan(60);
     const priorityStructureIds = answerableIds.slice(0, 60);
-    const result = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+    const result = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, { entitledAreas: AREAS,
       types: TYPES,
       mode: 'practice',
       count: 20,
@@ -255,7 +257,7 @@ describe('due-queue priority (prioritised, not restricted)', () => {
 
   it('honours an explicit reviewShare', () => {
     const priorityStructureIds = answerableIds.slice(0, 60);
-    const result = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+    const result = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, { entitledAreas: AREAS,
       types: TYPES,
       mode: 'practice',
       count: 20,
@@ -267,7 +269,7 @@ describe('due-queue priority (prioritised, not restricted)', () => {
   });
 
   it('does not shrink the session when the due queue is thin', () => {
-    const result = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+    const result = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, { entitledAreas: AREAS,
       types: TYPES,
       mode: 'practice',
       count: 20,
@@ -278,7 +280,7 @@ describe('due-queue priority (prioritised, not restricted)', () => {
   });
 
   it('treats an empty priority list as no priority at all', () => {
-    const base = { types: TYPES, mode: 'practice' as const, count: 20, seed: 15 };
+    const base = { entitledAreas: AREAS, types: TYPES, mode: 'practice' as const, count: 20, seed: 15 };
     const withEmpty = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, { ...base, priorityStructureIds: [] });
     const without = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, base);
     expect(withEmpty.map((q) => q.id)).toEqual(without.map((q) => q.id));
@@ -286,7 +288,7 @@ describe('due-queue priority (prioritised, not restricted)', () => {
 
   it('is ignored in adaptive mode, which already weights due-ness over the whole pool', () => {
     const priorityStructureIds = answerableIds.slice(0, 3);
-    const result = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+    const result = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, { entitledAreas: AREAS,
       types: TYPES,
       mode: 'adaptive',
       count: 20,
@@ -329,7 +331,7 @@ describe('pickNameDistractors', () => {
     }
 
     it('front-loads structures the user gets wrong', () => {
-      const config = { types: ['flashcard'] as const, mode: 'practice' as const, seed: 3 };
+      const config = { entitledAreas: AREAS, types: ['flashcard'] as const, mode: 'practice' as const, seed: 3 };
       const unweighted = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, config);
       const structureIds = [...new Set(unweighted.map((q) => q.structureId))];
       const weak = new Set(splitMastery(structureIds).filter((m) => m.attemptsCorrect === 0).map((m) => m.structureId));
@@ -348,10 +350,11 @@ describe('pickNameDistractors', () => {
 
     it('stays deterministic under a seed when weighted', () => {
       const structureIds = [...new Set(
-        generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, { types: ['flashcard'], mode: 'practice', seed: 3 })
+        generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, { entitledAreas: AREAS, types: ['flashcard'], mode: 'practice', seed: 3 })
           .map((q) => q.structureId),
       )];
       const config = {
+        entitledAreas: AREAS,
         types: ['flashcard'] as const,
         mode: 'practice' as const,
         seed: 3,
@@ -364,7 +367,7 @@ describe('pickNameDistractors', () => {
     });
 
     it('still returns the whole pool, only reordered', () => {
-      const config = { types: ['flashcard'] as const, mode: 'practice' as const, seed: 3 };
+      const config = { entitledAreas: AREAS, types: ['flashcard'] as const, mode: 'practice' as const, seed: 3 };
       const unweighted = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, config);
       const structureIds = [...new Set(unweighted.map((q) => q.structureId))];
       const weighted = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
@@ -377,7 +380,7 @@ describe('pickNameDistractors', () => {
 
     it('leaves generation untouched when no mastery is supplied', () => {
       // Signed-out and first-ever sessions must keep the uniform behaviour.
-      const config = { types: ['flashcard'] as const, mode: 'practice' as const, seed: 3 };
+      const config = { entitledAreas: AREAS, types: ['flashcard'] as const, mode: 'practice' as const, seed: 3 };
       const withEmpty = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, { ...config, mastery: [] });
       const without = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, config);
       expect(withEmpty.map((q) => q.id)).toEqual(without.map((q) => q.id));
@@ -386,7 +389,7 @@ describe('pickNameDistractors', () => {
 
 
   describe('blending due review with new material', () => {
-    const config = { types: ['flashcard'] as const, mode: 'practice' as const, seed: 21 };
+    const config = { entitledAreas: AREAS, types: ['flashcard'] as const, mode: 'practice' as const, seed: 21 };
     const pool = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, config);
     const allIds = [...new Set(pool.map((q) => q.structureId))].sort();
     const due = allIds.slice(0, 30);
@@ -481,7 +484,7 @@ describe('OINA sessions (CR-018)', () => {
   );
 
   it('scopes a session to a muscle group', () => {
-    const questions = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+    const questions = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, { entitledAreas: AREAS,
       types: ['oina'],
       groups: ['hamstrings'],
       mode: 'practice',
@@ -493,7 +496,7 @@ describe('OINA sessions (CR-018)', () => {
   });
 
   it('asks only the facts requested', () => {
-    const questions = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+    const questions = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, { entitledAreas: AREAS,
       types: ['oina'],
       groups: ['hamstrings'],
       oinaPromptKinds: ['origin', 'insertion'],
@@ -505,7 +508,7 @@ describe('OINA sessions (CR-018)', () => {
   });
 
   it('puts a learn card in front of every fact the student has not met', () => {
-    const questions = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+    const questions = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, { entitledAreas: AREAS,
       types: ['oina'],
       groups: ['hamstrings'],
       oinaPromptKinds: ['origin'],
@@ -526,6 +529,7 @@ describe('OINA sessions (CR-018)', () => {
 
   it('drops the learn card once the fact is known, and brings it back after a miss', () => {
     const base = {
+      entitledAreas: AREAS,
       types: ['oina'] as const,
       groups: ['hamstrings'],
       oinaPromptKinds: ['origin'] as const,
@@ -547,6 +551,7 @@ describe('OINA sessions (CR-018)', () => {
 
   it('shows the card only once when the student asks for that', () => {
     const base = {
+      entitledAreas: AREAS,
       types: ['oina'] as const,
       groups: ['hamstrings'],
       oinaPromptKinds: ['origin'] as const,
@@ -567,7 +572,7 @@ describe('OINA sessions (CR-018)', () => {
   });
 
   it('shows no cards at all at 0, even for a fact never seen', () => {
-    const questions = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+    const questions = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, { entitledAreas: AREAS,
       types: ['oina'],
       groups: ['hamstrings'],
       oinaPromptKinds: ['origin'],
@@ -580,7 +585,7 @@ describe('OINA sessions (CR-018)', () => {
   });
 
   it('covers every fact of every muscle in the group when uncapped', () => {
-    const questions = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+    const questions = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, { entitledAreas: AREAS,
       types: ['oina'],
       groups: ['hamstrings'],
       mode: 'practice',
@@ -596,7 +601,7 @@ describe('OINA sessions (CR-018)', () => {
   });
 
   it('does not spend the question budget on learn cards', () => {
-    const questions = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+    const questions = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, { entitledAreas: AREAS,
       types: ['oina'],
       groups: ['hamstrings'],
       mode: 'practice',
@@ -608,7 +613,7 @@ describe('OINA sessions (CR-018)', () => {
   });
 
   it('teaches nothing in an exam — those test rather than teach', () => {
-    const questions = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+    const questions = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, { entitledAreas: AREAS,
       types: ['oina'],
       groups: ['hamstrings'],
       mode: 'assessment',
@@ -619,7 +624,7 @@ describe('OINA sessions (CR-018)', () => {
   });
 
   it('escalates only the facts the student has mastered', () => {
-    const questions = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+    const questions = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, { entitledAreas: AREAS,
       types: ['oina'],
       groups: ['hamstrings'],
       mode: 'practice',
@@ -647,12 +652,12 @@ describe('generateRevisionSet with an unbuildable combination', () => {
     const drawn = new Set(ALL_IMAGES.flatMap((i) => (i.hotspots ?? []).map((h) => h.structureId)));
     const withoutHotspots = ALL_STRUCTURES.filter((s) => !drawn.has(s.id));
     expect(withoutHotspots.length).toBeGreaterThan(0);
-    const result = generateRevisionSet(withoutHotspots, ALL_IMAGES, { types: ['locate'], mode: 'practice', seed: 1 });
+    const result = generateRevisionSet(withoutHotspots, ALL_IMAGES, { entitledAreas: AREAS, types: ['locate'], mode: 'practice', seed: 1 });
     expect(result).toEqual([]);
   });
 
   it('does build locate questions over bones, which now have skeleton plates', () => {
-    const result = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, { types: ['locate'], category: 'bone', mode: 'practice', seed: 1 });
+    const result = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, { entitledAreas: AREAS, types: ['locate'], category: 'bone', mode: 'practice', seed: 1 });
     expect(result.length).toBeGreaterThan(0);
     expect(result.every((q) => q.type === 'locate')).toBe(true);
   });
@@ -674,7 +679,7 @@ describe('question area follows the area the session asked for', () => {
     ['cervical-spine'],
     ['thoracic-spine'],
   ] as const)('stamps every question with %s when that is the only area chosen', (area) => {
-    const questions = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+    const questions = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, { entitledAreas: AREAS,
       types: ['flashcard', 'mcq', 'identify-typed'],
       areas: [area],
       mode: 'practice',
@@ -688,7 +693,7 @@ describe('question area follows the area the session asked for', () => {
 
   it('picks one of the chosen areas when several are selected', () => {
     const areas = ['cervical-spine', 'thoracic-spine'] as const;
-    const questions = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+    const questions = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, { entitledAreas: AREAS,
       types: ['mcq'],
       areas: [...areas],
       mode: 'practice',
@@ -699,7 +704,7 @@ describe('question area follows the area the session asked for', () => {
   });
 
   it('stamps an assessment too, which takes a different exit from the generator', () => {
-    const questions = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+    const questions = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, { entitledAreas: AREAS,
       types: ['mcq'],
       areas: ['lumbar-spine'],
       mode: 'assessment',
@@ -711,7 +716,7 @@ describe('question area follows the area the session asked for', () => {
   });
 
   it('stamps the learn cards an OINA session inserts, not just the questions', () => {
-    const questions = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+    const questions = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, { entitledAreas: AREAS,
       types: ['oina'],
       areas: ['thoracic-spine'],
       mode: 'practice',
@@ -723,7 +728,7 @@ describe('question area follows the area the session asked for', () => {
   });
 
   it('leaves the default area in place when the session filtered by nothing', () => {
-    const questions = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+    const questions = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, { entitledAreas: AREAS,
       types: ['flashcard'],
       mode: 'practice',
       seed: 9,
@@ -736,6 +741,7 @@ describe('question area follows the area the session asked for', () => {
 describe('mixing question formats', () => {
   const base = {
     areas: [] as never[],
+    entitledAreas: AREAS,
     learnCardAttempts: 0,
     mode: 'practice' as const,
     seed: 7,
@@ -778,5 +784,67 @@ describe('mixing question formats', () => {
     });
     expect(set.length).toBeGreaterThan(200);
     expect(set.every((q) => q.type === 'oina')).toBe(true);
+  });
+});
+
+describe('the paywall', () => {
+  const FREE: Area[] = ['shoulder'];
+
+  it('serves nothing outside the entitled areas, even when more are asked for', () => {
+    const set = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+      types: ['flashcard'],
+      areas: ['knee', 'hip', 'shoulder'],
+      entitledAreas: FREE,
+      mode: 'practice',
+      seed: 5,
+    });
+    expect(set.length).toBeGreaterThan(0);
+    for (const q of set) {
+      const structure = ALL_STRUCTURES.find((s) => s.id === q.structureId)!;
+      expect(areasOf(structure).some((a) => FREE.includes(a))).toBe(true);
+    }
+  });
+
+  it('reads an unfiltered request as "every entitled area", never as every area', () => {
+    // The trap this closes: an empty area list means "everything" everywhere
+    // else in the codebase, so a free session with no filter used to be the
+    // whole body.
+    const set = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+      types: ['flashcard'],
+      entitledAreas: FREE,
+      mode: 'practice',
+      seed: 5,
+    });
+    expect(set.length).toBeGreaterThan(0);
+    for (const q of set) {
+      const structure = ALL_STRUCTURES.find((s) => s.id === q.structureId)!;
+      expect(areasOf(structure).some((a) => FREE.includes(a))).toBe(true);
+    }
+  });
+
+  it('closes the structureIds drill, which carries no area filter of its own', () => {
+    // The atlas and progress screens drill by id. Without the second pass in
+    // generateRevisionSet this returned locked material happily.
+    const lockedIds = ALL_STRUCTURES.filter((s) => !areasOf(s).some((a) => FREE.includes(a))).map((s) => s.id);
+    expect(lockedIds.length).toBeGreaterThan(0);
+
+    const set = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+      types: ['flashcard', 'mcq', 'oina'],
+      structureIds: lockedIds,
+      entitledAreas: FREE,
+      mode: 'practice',
+      seed: 5,
+    });
+    expect(set).toHaveLength(0);
+  });
+
+  it('leaves a subscriber untouched', () => {
+    const free = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+      types: ['flashcard'], entitledAreas: FREE, mode: 'practice', seed: 5,
+    });
+    const paid = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+      types: ['flashcard'], entitledAreas: AREAS, mode: 'practice', seed: 5,
+    });
+    expect(paid.length).toBeGreaterThan(free.length);
   });
 });

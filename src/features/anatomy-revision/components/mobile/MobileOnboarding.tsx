@@ -1,11 +1,15 @@
 import { useState } from 'react';
 import type { AnatomyContent } from '../../hooks/useAnatomyContent';
 import type { Area } from '../../types/region';
+import { AREA_LABELS } from '../../types/region';
+import type { UseEntitlement } from '../../hooks/useEntitlement';
 import { BodyFigure } from '../shared/BodyFigure';
 import { OnboardingAreaList } from '../Onboarding/OnboardingAreaList';
 import { ONBOARDING_STEPS } from '../Onboarding/onboardingSteps';
 
 interface MobileOnboardingProps {
+  /** What this account may reach — see Onboarding.tsx. */
+  access: UseEntitlement;
   content: AnatomyContent;
   initialAreas?: readonly Area[];
   /** Called with the chosen areas; empty means "every area" (Skip). */
@@ -13,11 +17,13 @@ interface MobileOnboardingProps {
 }
 
 /** Screen 01 (mobile). Three steps; the first is the real area picker — see onboardingSteps.ts. */
-export function MobileOnboarding({ content, initialAreas = [], onDone }: MobileOnboardingProps) {
+export function MobileOnboarding({ access, content, initialAreas = [], onDone }: MobileOnboardingProps) {
   const [step, setStep] = useState(0);
   const [selected, setSelected] = useState<Set<Area>>(() => new Set(initialAreas));
   const current = ONBOARDING_STEPS[step];
   const onAreaStep = step === 0;
+  // See Onboarding.tsx: insertion order makes this the first area they tapped.
+  const [firstPick] = [...selected];
   const canContinue = !onAreaStep || selected.size > 0;
 
   const toggle = (area: Area) => {
@@ -87,6 +93,17 @@ export function MobileOnboarding({ content, initialAreas = [], onDone }: MobileO
         <button type="button" onClick={() => onDone([])} className="border-0 bg-transparent px-1.5" style={{ fontSize: 15, color: 'var(--ink3)' }}>
           Skip
         </button>
+      </div>
+      <div className="px-6.5 pb-4">
+        {onAreaStep && (
+          <p style={{ font: '400 12.5px/1.5 var(--font-ui)', color: 'var(--ink3)' }}>
+            {access.tier === 'free'
+              ? firstPick
+                ? `${AREA_LABELS[firstPick]} will be your free area. Skip to keep the shoulder instead.`
+                : 'Skip keeps the shoulder as your free area.'
+              : 'Skip keeps every area in play.'}
+          </p>
+        )}
       </div>
     </div>
   );

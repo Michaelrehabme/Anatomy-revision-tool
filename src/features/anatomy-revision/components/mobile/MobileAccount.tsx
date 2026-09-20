@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { MobileShell } from './MobileShell';
 import { CohortMembership } from '../shared/CohortMembership';
 import { SubscriptionSummary } from '../shared/SubscriptionSummary';
+import type { UseEntitlement } from '../../hooks/useEntitlement';
 import { AccuracyTrendChart } from '../shared/AccuracyTrendChart';
 import { MyClasses } from '../Account/MyClasses';
 import { AuthScreen } from '../Auth/AuthScreen';
@@ -18,6 +19,8 @@ import type { MobileTab } from './MobileTabBar';
 const ATTEMPT_LIMIT = 5000;
 
 interface MobileAccountProps {
+  /** What this account may reach — the billing block and the free-area swap read it. */
+  access: UseEntitlement;
   content: AnatomyContent;
   repository: AnatomyRepository | null;
   userId: string | null;
@@ -46,7 +49,7 @@ function Stat({ label, value }: { label: string; value: string }) {
  * all: the account bits were a strip at the bottom of Progress, which nobody
  * would think to scroll to in order to start teaching.
  */
-export function MobileAccount({ content, repository, userId, onNavigateTab }: MobileAccountProps) {
+export function MobileAccount({ access, content, repository, userId, onNavigateTab }: MobileAccountProps) {
   const { user, signOut } = useAuth();
   const { streak, seenCount, muscles } = useProgressData(repository, userId, content);
   const [attempts, setAttempts] = useState<UserAttempt[] | null>(null);
@@ -115,7 +118,7 @@ export function MobileAccount({ content, repository, userId, onNavigateTab }: Mo
             <h3 style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 20, letterSpacing: '-.01em', margin: 0 }}>
               Subscription
             </h3>
-            <SubscriptionSummary uid={user.uid} />
+            <SubscriptionSummary access={access} />
 
             <h3 className="mt-9" style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 20, letterSpacing: '-.01em', margin: 0 }}>
               Classes

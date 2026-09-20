@@ -2,14 +2,18 @@ import { useEffect, useMemo, useState } from 'react';
 import type { AnatomyContent } from '../../hooks/useAnatomyContent';
 import type { AnatomyRepository } from '../../data/repository';
 import type { StructureMastery } from '../../types/attempt';
-import { isMuscle } from '../../types/structure';
+import { areasOf, isMuscle } from '../../types/structure';
 import type { Region } from '../../types/region';
 import { REGIONS, REGION_LABELS } from '../../types/region';
 import { Button } from '../shared/Button';
+import { UnlockNote } from '../shared/AreaLock';
+import type { UseEntitlement } from '../../hooks/useEntitlement';
 import { AppShell } from '../shell/AppShell';
 import { NavSidebar, type NavSection } from '../shell/NavSidebar';
 
 interface AtlasProps {
+  /** What this account may reach. The atlas lists only entitled muscles — see below. */
+  access: UseEntitlement;
   content: AnatomyContent;
   repository: AnatomyRepository | null;
   userId: string | null;
@@ -19,7 +23,7 @@ interface AtlasProps {
   onNavigate: (section: NavSection) => void;
 }
 
-export function Atlas({ content, repository, userId, onOpenMuscle, onDrillOina, onNavigate }: AtlasProps) {
+export function Atlas({ access, content, repository, userId, onOpenMuscle, onDrillOina, onNavigate }: AtlasProps) {
   const [regionFilter, setRegionFilter] = useState<Region | 'all'>('all');
   const [query, setQuery] = useState('');
   const [masteryByStructureId, setMasteryByStructureId] = useState<Map<string, StructureMastery>>(new Map());
@@ -35,7 +39,20 @@ export function Atlas({ content, repository, userId, onOpenMuscle, onDrillOina, 
     };
   }, [repository, userId]);
 
-  const muscles = useMemo(() => content.structures.filter(isMuscle), [content.structures]);
+  /**
+   * Entitled muscles only.
+   *
+   * The atlas is where every drill in the product starts ("Drill these facts",
+   * and each row opens a card with its own drill), so listing a locked muscle
+   * here would mean either a row that does nothing or a paywall interrupting a
+   * click — and the whole list is one click from a session. Locking the list
+   * itself keeps the boundary in one place; the note under the heading says
+   * what is missing and why.
+   */
+  const muscles = useMemo(
+    () => content.structures.filter(isMuscle).filter((m) => areasOf(m).some((a) => access.areas.includes(a))),
+    [content.structures, access.areas],
+  );
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -101,6 +118,7 @@ export function Atlas({ content, repository, userId, onOpenMuscle, onDrillOina, 
               {muscles.length} muscles · showing {filtered.length}
               {query ? ` matching “${query}”` : ''}
             </p>
+            <UnlockNote access={access} className="mt-1.5" />
           </div>
           <input
             type="text"

@@ -77,6 +77,57 @@ export const FREE_ENTITLEMENT: Entitlement = { tier: 'free', source: null, expir
  */
 export const FREE_AREAS: readonly Area[] = ['shoulder'];
 
+/**
+ * The free area is the student's to CHOOSE, not ours to assign.
+ *
+ * A physiotherapy student starting on the lower limb got nothing from a free
+ * tier fixed to the shoulder, and a free tier that teaches nothing sells
+ * nothing. So the first area picked at onboarding becomes the free one, and
+ * FREE_AREAS above is only the fallback for an account that has not chosen.
+ *
+ * SWAPPABLE, BUT NOT FREELY. Locking the choice forever punishes a student who
+ * picked wrong in week one; letting it change hourly hands over the whole body
+ * an area at a time. A month is roughly a course block, which is the unit a
+ * student actually revises in.
+ */
+export const FREE_AREA_SWITCH_DAYS = 30;
+
+export interface FreeAreaChoice {
+  area: Area;
+  /** ISO, when it was chosen. The next swap is counted from here. */
+  chosenAt: string;
+}
+
+/** The areas the free tier opens: the chosen one, or the default if none was chosen. */
+export function freeAreasFor(choice: FreeAreaChoice | null | undefined): readonly Area[] {
+  return choice ? [choice.area] : FREE_AREAS;
+}
+
+/**
+ * Days until the free area may be changed again; 0 when it may be changed now.
+ *
+ * An unparseable or future date reads as "changeable now", the same way an
+ * unparseable expiry reads as live: a malformed record must never leave
+ * somebody stuck with an area they cannot study.
+ */
+export function daysUntilFreeAreaSwitch(
+  choice: FreeAreaChoice | null | undefined,
+  now: Date = new Date(),
+): number {
+  if (!choice) return 0;
+  const at = Date.parse(choice.chosenAt);
+  if (Number.isNaN(at) || at > now.getTime()) return 0;
+  const elapsed = (now.getTime() - at) / 86400000;
+  return Math.max(0, Math.ceil(FREE_AREA_SWITCH_DAYS - elapsed));
+}
+
+export function canSwitchFreeArea(
+  choice: FreeAreaChoice | null | undefined,
+  now: Date = new Date(),
+): boolean {
+  return daysUntilFreeAreaSwitch(choice, now) === 0;
+}
+
 const TIER_RANK: Record<EntitlementTier, number> = { free: 0, individual: 1, institutional: 2 };
 
 /** Whether an entitlement has run out. A null expiry never expires. */
@@ -162,6 +213,23 @@ export function canAccessArea(
 ): boolean {
   if (isFreeArea(area, freeAreas)) return true;
   return effectiveTier(entitlement, now) !== 'free';
+}
+
+/**
+ * The areas this entitlement DOES reach — the allow-list every session, picker
+ * and drill is clamped to.
+ *
+ * The counterpart of lockedAreas below, and the one gates should prefer: an
+ * allow-list fails closed when a new area is added to the dataset, where a
+ * deny-list silently hands it out.
+ */
+export function entitledAreas(
+  allAreas: readonly Area[],
+  entitlement: Entitlement | null | undefined,
+  now: Date = new Date(),
+  freeAreas: readonly Area[] = FREE_AREAS,
+): Area[] {
+  return allAreas.filter((a) => canAccessArea(a, entitlement, now, freeAreas));
 }
 
 /** Areas this entitlement cannot reach — what a paywall offers to unlock. */

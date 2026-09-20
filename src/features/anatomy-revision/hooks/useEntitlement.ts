@@ -1,12 +1,18 @@
 import { useCallback, useEffect, useState } from 'react';
-import type { Area } from '../types/region';
+import { AREAS, type Area } from '../types/region';
+import { getFreeAreaChoice, setFreeAreaChoice } from '../lib/preferences';
 import {
   FREE_ENTITLEMENT,
   canAccessArea,
+  canSwitchFreeArea,
+  daysUntilFreeAreaSwitch,
   effectiveTier,
+  entitledAreas,
+  freeAreasFor,
   lockedAreas,
   type Entitlement,
   type EntitlementTier,
+  type FreeAreaChoice,
 } from '../lib/entitlement';
 
 /**
@@ -33,6 +39,18 @@ export interface UseEntitlement {
   canAccess: (area: Area) => boolean;
   locked: (allAreas: readonly Area[]) => Area[];
   /**
+   * Every area this person may reach. The allow-list to clamp a session,
+   * picker or drill to — see entitledAreas in lib/entitlement.ts.
+   */
+  areas: Area[];
+  /** Which single area the free tier opens, and when it was picked. Null until they pick. */
+  freeArea: FreeAreaChoice | null;
+  /** Records the free area. Ignored if the 30 days are not up — the caller should check first. */
+  chooseFreeArea: (area: Area) => void;
+  /** Whether the free area may be changed now, and how long until it can be. */
+  canSwitchFree: boolean;
+  daysUntilSwitch: number;
+  /**
    * Read again. For the pricing page after checkout: the webhook writes the
    * entitlement a few seconds after Paddle takes the payment, so the first read
    * usually finds nothing yet.
@@ -42,6 +60,7 @@ export interface UseEntitlement {
 
 export function useEntitlement(uid: string | null): UseEntitlement {
   const [entitlement, setEntitlement] = useState<Entitlement>(FREE_ENTITLEMENT);
+  const [freeArea, setFreeArea] = useState<FreeAreaChoice | null>(() => getFreeAreaChoice());
   const [loading, setLoading] = useState(true);
   const [readCount, setReadCount] = useState(0);
 
@@ -74,12 +93,27 @@ export function useEntitlement(uid: string | null): UseEntitlement {
 
   const refresh = useCallback(() => setReadCount((n) => n + 1), []);
 
+  const chooseFreeArea = useCallback((area: Area) => {
+    setFreeArea((current) => {
+      if (!canSwitchFreeArea(current)) return current;
+      setFreeAreaChoice(area);
+      return getFreeAreaChoice();
+    });
+  }, []);
+
+  const free = freeAreasFor(freeArea);
+
   return {
     entitlement,
     tier: effectiveTier(entitlement),
     loading,
-    canAccess: (area) => canAccessArea(area, entitlement),
-    locked: (allAreas) => lockedAreas(allAreas, entitlement),
+    canAccess: (area) => canAccessArea(area, entitlement, new Date(), free),
+    locked: (allAreas) => lockedAreas(allAreas, entitlement, new Date(), free),
+    areas: entitledAreas(AREAS, entitlement, new Date(), free),
+    freeArea,
+    chooseFreeArea,
+    canSwitchFree: canSwitchFreeArea(freeArea),
+    daysUntilSwitch: daysUntilFreeAreaSwitch(freeArea),
     refresh,
   };
 }

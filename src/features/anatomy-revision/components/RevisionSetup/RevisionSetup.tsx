@@ -20,6 +20,7 @@ import type { RevisionSetupParams } from '../../hooks/useRevisionSession';
 import type { RevisionQuestion } from '../../types/question';
 import type { AnatomyRepository } from '../../data/repository';
 import { Button } from '../shared/Button';
+import type { UseEntitlement } from '../../hooks/useEntitlement';
 import { AppShell } from '../shell/AppShell';
 import { NavSidebar, type NavSection } from '../shell/NavSidebar';
 
@@ -52,6 +53,8 @@ const ALL_CATEGORIES = CATEGORY_OPTIONS.map((o) => o.value);
 const LENGTHS = [10, 20, 40];
 
 interface RevisionSetupProps {
+  /** What this account may reach — every session built here is clamped to it. */
+  access: UseEntitlement;
   content: AnatomyContent;
   repository: AnatomyRepository | null;
   userId: string | null;
@@ -75,7 +78,7 @@ const SESSION_TYPE_OPTIONS: { value: 'practice' | 'adaptive' | 'assessment'; lab
 
 const TIMER_OPTIONS = [0, 10, 20, 30];
 
-export function RevisionSetup({ content, repository, userId, areas, onStart, onBack, onNavigate }: RevisionSetupProps) {
+export function RevisionSetup({ access, content, repository, userId, areas, onStart, onBack, onNavigate }: RevisionSetupProps) {
   const [types, setTypes] = useState<QuestionType[]>(['mcq']);
   // Empty means every category, as on the area picker.
   const [categories, setCategories] = useState<Category[]>([]);
@@ -158,6 +161,7 @@ export function RevisionSetup({ content, repository, userId, areas, onStart, onB
       generateRevisionSet(content.structures, content.images, {
         types,
         areas: [...areas],
+        entitledAreas: access.areas,
         groups: groups.length ? groups : undefined,
         oinaPromptKinds: oinaSelected ? oinaFacts : undefined,
         learnCardAttempts: 0,
@@ -165,7 +169,7 @@ export function RevisionSetup({ content, repository, userId, areas, onStart, onB
         mode: 'practice',
         seed: 1,
       }).length,
-    [content.structures, content.images, types, areas, groups, oinaSelected, oinaFacts, categories],
+    [content.structures, content.images, types, areas, access.areas, groups, oinaSelected, oinaFacts, categories],
   );
   // Undefined caps nothing; generateRevisionSet then emits every eligible
   // question. Only reachable from the All chip, which only OINA sessions show.
@@ -205,6 +209,7 @@ export function RevisionSetup({ content, repository, userId, areas, onStart, onB
     const questions = generateRevisionSet(content.structures, content.images, {
       types,
       areas: areasArray,
+      entitledAreas: access.areas,
       groups: params.groups,
       oinaPromptKinds: params.oinaPromptKinds,
       learnCardAttempts: params.learnCardAttempts,

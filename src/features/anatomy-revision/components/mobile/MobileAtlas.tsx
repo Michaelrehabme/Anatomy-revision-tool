@@ -2,13 +2,17 @@ import { useEffect, useMemo, useState } from 'react';
 import type { AnatomyContent } from '../../hooks/useAnatomyContent';
 import type { AnatomyRepository } from '../../data/repository';
 import type { StructureMastery } from '../../types/attempt';
-import { isMuscle } from '../../types/structure';
+import { areasOf, isMuscle } from '../../types/structure';
 import type { Region } from '../../types/region';
 import { REGIONS, REGION_LABELS } from '../../types/region';
+import { UnlockNote } from '../shared/AreaLock';
+import type { UseEntitlement } from '../../hooks/useEntitlement';
 import { MobileShell } from './MobileShell';
 import type { MobileTab } from './MobileTabBar';
 
 interface MobileAtlasProps {
+  /** What this account may reach — see Atlas.tsx for why the list itself is clamped. */
+  access: UseEntitlement;
   content: AnatomyContent;
   repository: AnatomyRepository | null;
   userId: string | null;
@@ -31,6 +35,7 @@ interface MobileAtlasProps {
  * nerve/action are one tap away on the muscle card.
  */
 export function MobileAtlas({
+  access,
   content,
   repository,
   userId,
@@ -54,7 +59,10 @@ export function MobileAtlas({
     };
   }, [repository, userId]);
 
-  const muscles = useMemo(() => content.structures.filter(isMuscle), [content.structures]);
+  const muscles = useMemo(
+    () => content.structures.filter(isMuscle).filter((m) => areasOf(m).some((a) => access.areas.includes(a))),
+    [content.structures, access.areas],
+  );
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -86,6 +94,7 @@ export function MobileAtlas({
           {muscles.length} muscles · showing {filtered.length}
           {query ? ` matching “${query}”` : ''}
         </p>
+        <UnlockNote access={access} className="mt-1.5" />
 
         <input
           type="text"

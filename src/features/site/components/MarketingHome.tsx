@@ -365,9 +365,9 @@ export function MarketingHome() {
           <PriceCard
             name="Free"
             price="£0"
-            note="One full body area, free forever. No card, no trial clock."
+            note="One full body area, free forever. Swap which one every month. No card, no trial clock."
             features={[
-              'Shoulder & arm, or any one region',
+              'Any one region, your choice — in full',
               'All three question types',
               'Spaced repetition and streaks',
             ]}
@@ -379,11 +379,7 @@ export function MarketingHome() {
             per="month"
             note="The whole body, month to month. Cancel whenever."
             features={['All 122 muscles, five regions', 'Full body progress map', 'Offline sessions']}
-            cta={
-              <a href={`mailto:${CONTACT}?subject=LocusMSK monthly`} style={{ font: '400 14px/1 var(--font-ui)', color: 'var(--accd)' }}>
-                Register interest
-              </a>
-            }
+            cta={<PrimaryLink to="/pricing?plan=monthly">Subscribe monthly</PrimaryLink>}
           />
           <PriceCard
             name="Annual · best value"
@@ -391,18 +387,14 @@ export function MarketingHome() {
             per="year"
             note={`${PRICING.annualNote}. Everything in monthly, and it keeps working through resits.`}
             features={['Everything in monthly', 'Exam-countdown planner', 'Keeps working through resits']}
-            cta={
-              <a href={`mailto:${CONTACT}?subject=LocusMSK annual`} style={{ font: '400 14px/1 var(--font-ui)', color: 'var(--accd)' }}>
-                Register interest
-              </a>
-            }
+            cta={<PrimaryLink to="/pricing?plan=annual">Subscribe annually</PrimaryLink>}
             emphasis
           />
         </div>
 
         <p className="mt-5" style={{ font: '400 12.5px/1.6 var(--font-mono)', color: 'var(--ink3)' }}>
-          Student card not required — the free area is genuinely free. Paid plans are not open yet; register interest
-          and you will hear when they are.
+          Student card not required — the free area is genuinely free. Prices include VAT, and payment is handled by
+          Paddle, who appear on your statement.
         </p>
       </Section>
 

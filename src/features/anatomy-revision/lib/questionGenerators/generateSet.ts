@@ -27,6 +27,19 @@ export interface RevisionSetConfig {
   subregion?: SubRegion;
   /** OR-matched against each structure's area (CR-017). Empty/undefined = all areas. */
   areas?: Area[];
+  /**
+   * THE PAYWALL, and the last line of it. Every area this person is entitled
+   * to; questions are never generated outside it.
+   *
+   * Required rather than optional so that adding a new way to start a session
+   * is a compile error until it says what the student may reach. The pickers
+   * lock their chips too, but a lock on a picker is a lock on one door —
+   * `structureIds` drills from the atlas and the progress screen never pass
+   * `areas` at all, and would otherwise serve locked material happily.
+   *
+   * Pass AREAS for an unrestricted session (an educator preview, a test).
+   */
+  entitledAreas: readonly Area[];
   /** OR-matched against each structure's `groups` (CR-018) — how OINA sessions target "the hamstrings". */
   groups?: string[];
   category?: Category;
@@ -267,13 +280,20 @@ export function generateRevisionSet(
 ): RevisionQuestion[] {
   const rng = createRng(config.seed);
 
+  // The requested areas, narrowed to the entitled ones. An unfiltered request
+  // (no `areas`) becomes a request for everything the student may reach —
+  // NOT for everything, which is what an empty area list means everywhere
+  // else in this codebase and would hand the whole body to a free account.
+  const askedFor = config.areas?.length ? config.areas : [...config.entitledAreas];
+  const allowedAreas = askedFor.filter((a) => config.entitledAreas.includes(a));
+
   let pool = filterStructures(structures, {
     category: config.category,
     categories: config.categories,
     region: config.region,
     regions: config.regions,
     subregion: config.subregion,
-    areas: config.areas,
+    areas: allowedAreas,
     groups: config.groups,
     difficulty: config.difficulty,
   });
@@ -281,6 +301,10 @@ export function generateRevisionSet(
     const allowed = new Set(config.structureIds);
     pool = pool.filter((s) => allowed.has(s.id));
   }
+  // A second pass for the structureIds path above, which narrows the pool by
+  // id and would otherwise smuggle in a locked structure: `areas` is usually
+  // undefined on a drill, and a structure belongs to several areas.
+  pool = pool.filter((s) => areasOf(s).some((a) => config.entitledAreas.includes(a)));
 
   const indexes = buildIndexes(structures); // built over the FULL dataset so distractor pools stay rich
   const relevantImages = images.filter((img) => {

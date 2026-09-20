@@ -7,6 +7,7 @@ import {
 } from '../questionFormats';
 import { filterStructures } from '../indexes';
 import { generateRevisionSet } from '../questionGenerators/generateSet';
+import { AREAS } from '../../types/region';
 import { ALL_IMAGES, ALL_STRUCTURES } from '../../data/seed';
 import type { PromptKind, QuestionType, RevisionQuestion } from '../../types/question';
 import type { Category } from '../../types/structure';
@@ -96,7 +97,7 @@ describe('studying several categories at once', () => {
   it('builds a session from bones and landmarks together', () => {
     // The pair the single-select could not express: the same picture, revised
     // in one sitting.
-    const qs = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+    const qs = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, { entitledAreas: AREAS,
       types: ['mcq'],
       categories: ['bone', 'landmark'],
       mode: 'practice',

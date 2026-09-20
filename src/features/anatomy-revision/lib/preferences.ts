@@ -1,4 +1,5 @@
 import type { Area } from '../types/region';
+import type { FreeAreaChoice } from './entitlement';
 import { normaliseAreas } from '../types/region';
 
 /**
@@ -85,4 +86,35 @@ export function getPreferredAreas(): Area[] {
 
 export function setPreferredAreas(areas: readonly Area[]): void {
   write(PREFERRED_AREAS_KEY, JSON.stringify(normaliseAreas([...areas])));
+}
+
+const FREE_AREA_KEY = `${PREFIX}freeArea`;
+
+/**
+ * Which area this device's free tier opens, and when it was chosen.
+ *
+ * Client-side, like every other preference here, and deliberately so: it is a
+ * CHOICE, not a grant. The grant is the entitlement, which only the server
+ * writes (see lib/entitlement.ts). Someone who edits this key swaps which one
+ * area is free, which is the same thing the app offers them every 30 days
+ * anyway — they cannot give themselves a second one.
+ */
+export function getFreeAreaChoice(): FreeAreaChoice | null {
+  const raw = read(FREE_AREA_KEY);
+  if (raw === null) return null;
+  try {
+    const parsed = JSON.parse(raw) as { area?: unknown; chosenAt?: unknown };
+    const [area] = normaliseAreas([parsed.area]);
+    if (!area) return null;
+    // A missing or junk timestamp reads as "chosen at the epoch", which makes
+    // the area switchable now rather than trapping the student.
+    const chosenAt = typeof parsed.chosenAt === 'string' ? parsed.chosenAt : new Date(0).toISOString();
+    return { area, chosenAt };
+  } catch {
+    return null;
+  }
+}
+
+export function setFreeAreaChoice(area: Area, now: Date = new Date()): void {
+  write(FREE_AREA_KEY, JSON.stringify({ area, chosenAt: now.toISOString() }));
 }

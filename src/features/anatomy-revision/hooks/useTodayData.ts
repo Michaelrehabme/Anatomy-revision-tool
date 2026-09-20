@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 import type { AnatomyRepository } from '../data/repository';
 import type { AnatomyContent } from './useAnatomyContent';
 import type { StructureMastery, RevisionSessionSummary } from '../types/attempt';
-import { isMuscle } from '../types/structure';
+import { areasOf, isMuscle } from '../types/structure';
+import type { Area } from '../types/region';
 import { computeStreak } from '../lib/streak';
 
 const DAY_LABELS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
@@ -28,7 +29,12 @@ export interface TodayData {
  * both the desktop and mobile versions source identical numbers from one
  * place rather than duplicating the fetch/derivation logic.
  */
-export function useTodayData(repository: AnatomyRepository | null, userId: string | null, content: AnatomyContent): TodayData {
+export function useTodayData(
+  repository: AnatomyRepository | null,
+  userId: string | null,
+  content: AnatomyContent,
+  entitledAreas: readonly Area[],
+): TodayData {
   const [due, setDue] = useState<StructureMastery[]>([]);
   const [allMastery, setAllMastery] = useState<StructureMastery[]>([]);
   const [summaries, setSummaries] = useState<RevisionSessionSummary[]>([]);
@@ -55,7 +61,16 @@ export function useTodayData(repository: AnatomyRepository | null, userId: strin
   }, [repository, userId]);
 
   const streak = computeStreak(summaries);
-  const muscleIds = new Set(content.structures.filter(isMuscle).map((s) => s.id));
+  // Clamped to what this account may reach, which is what makes every number
+  // and list below entitled-only: due, weakest, coming up, and the seen
+  // percentage. A free student's Today is about their region — offering a
+  // locked muscle as "due" would be offering something they cannot answer.
+  // Their mastery history is untouched; it simply is not listed here.
+  const muscleIds = new Set(
+    content.structures
+      .filter((s) => isMuscle(s) && areasOf(s).some((a) => entitledAreas.includes(a)))
+      .map((s) => s.id),
+  );
   const totalMuscleCount = muscleIds.size;
   const seenCount = allMastery.filter((m) => muscleIds.has(m.structureId)).length;
   const seenMusclePct = totalMuscleCount > 0 ? Math.round((seenCount / totalMuscleCount) * 100) : 0;

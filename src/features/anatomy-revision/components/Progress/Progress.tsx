@@ -3,6 +3,7 @@ import { generateRevisionSet } from '../../lib/questionGenerators/generateSet';
 import { getLearnCardAttempts } from '../../lib/preferences';
 import { useProgressData } from '../../hooks/useProgressData';
 import { Button } from '../shared/Button';
+import type { UseEntitlement } from '../../hooks/useEntitlement';
 import { AppShell } from '../shell/AppShell';
 import { NavSidebar, type NavSection } from '../shell/NavSidebar';
 import type { RevisionSetupParams } from '../../hooks/useRevisionSession';
@@ -11,6 +12,8 @@ import type { AnatomyContent } from '../../hooks/useAnatomyContent';
 import type { AnatomyRepository } from '../../data/repository';
 
 interface ProgressProps {
+  /** What this account may reach — the drills below are clamped to it. */
+  access: UseEntitlement;
   content: AnatomyContent;
   repository: AnatomyRepository | null;
   userId: string | null;
@@ -19,7 +22,7 @@ interface ProgressProps {
   onOpenAchievements: () => void;
 }
 
-export function Progress({ content, repository, userId, onStart, onNavigate, onOpenAchievements }: ProgressProps) {
+export function Progress({ access, content, repository, userId, onStart, onNavigate, onOpenAchievements }: ProgressProps) {
   const { streak, muscles, seenCount, untouched, leeches, byRegion: byRegionUnsorted, forecast, forecastMax } =
     useProgressData(repository, userId, content);
   // Desktop shows strongest-first; the mobile mockup keeps REGIONS' natural order instead.
@@ -38,6 +41,7 @@ export function Progress({ content, repository, userId, onStart, onNavigate, onO
       types,
       mode: 'practice',
       structureIds: untouched.map((m) => m.id),
+      entitledAreas: access.areas,
       factMastery,
       learnCardAttempts,
     });
@@ -54,6 +58,7 @@ export function Progress({ content, repository, userId, onStart, onNavigate, onO
       types,
       mode: 'practice',
       structureIds: leeches.map((m) => m.id),
+      entitledAreas: access.areas,
       factMastery,
       learnCardAttempts,
     });

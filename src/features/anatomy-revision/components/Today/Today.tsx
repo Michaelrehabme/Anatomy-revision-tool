@@ -12,6 +12,7 @@ import { NavSidebar, type NavSection } from '../shell/NavSidebar';
 import { Button } from '../shared/Button';
 import { ClassAssignments } from '../shared/ClassAssignments';
 import type { RevisionSetupParams } from '../../hooks/useRevisionSession';
+import type { UseEntitlement } from '../../hooks/useEntitlement';
 
 // OINA is in the default mix because attachments are the thing students come back
 // to relearn (CR-018); its own learn cards handle teaching, so 'flashcard' stays for
@@ -19,6 +20,8 @@ import type { RevisionSetupParams } from '../../hooks/useRevisionSession';
 const DEFAULT_TYPES: QuestionType[] = ['flashcard', 'mcq', 'locate', 'identify-typed', 'oina'];
 
 interface TodayProps {
+  /** What this account may reach — the starter set and the due queue are both clamped to it. */
+  access: UseEntitlement;
   repository: AnatomyRepository | null;
   userId: string | null;
   content: AnatomyContent;
@@ -28,19 +31,22 @@ interface TodayProps {
   onNavigate: (section: NavSection) => void;
 }
 
-export function Today({ repository, userId, content, onStart, onCustomSession, onOpenMuscle, onNavigate }: TodayProps) {
+export function Today({ access, repository, userId, content, onStart, onCustomSession, onOpenMuscle, onNavigate }: TodayProps) {
   const { loading, streak, totalMuscleCount, seenMusclePct, dueMuscles, allMastery, weakest, comingDue, weekBuckets, weekMax, dayLabels } =
-    useTodayData(repository, userId, content);
+    useTodayData(repository, userId, content, access.areas);
   const now = new Date();
   // Nothing attempted yet: the first session is the guided starter, and the
   // headline is an invitation rather than "0 due".
   const firstRun = !loading && allMastery.length === 0;
-  const preferredAreas = getPreferredAreas();
+  // Their saved preference, narrowed to what they may reach. Undefined means
+  // "no preference", which generateRevisionSet reads as every ENTITLED area —
+  // never as every area.
+  const preferredAreas = getPreferredAreas().filter((a) => access.areas.includes(a));
   const areas = preferredAreas.length ? preferredAreas : undefined;
 
   const handleStart = async () => {
     if (firstRun) {
-      const starter = buildStarterSet(content.structures, content.images, { areas });
+      const starter = buildStarterSet(content.structures, content.images, { areas: areas ?? access.areas });
       if (starter.length > 0) {
         onStart(starter, { types: STARTER_TYPES, mode: 'practice', areas });
         return;
@@ -55,6 +61,7 @@ export function Today({ repository, userId, content, onStart, onCustomSession, o
       types: DEFAULT_TYPES,
       mode: 'practice',
       areas,
+      entitledAreas: access.areas,
       // Prioritised, not restricted: answering a due structure reschedules it, so a
       // due-only session refills its own queue and never reaches new material.
       priorityStructureIds: dueStructureIds.length ? dueStructureIds : undefined,
@@ -118,7 +125,7 @@ export function Today({ repository, userId, content, onStart, onCustomSession, o
             </Button>
           </div>
 
-          <ClassAssignments repository={repository} userId={userId} content={content} onStart={onStart} />
+          <ClassAssignments access={access} repository={repository} userId={userId} content={content} onStart={onStart} />
 
           {!firstRun && (
             <>

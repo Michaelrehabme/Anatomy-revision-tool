@@ -44,7 +44,12 @@ function adminApp(): App {
 }
 
 export default async function handler(req: Request): Promise<Response> {
-  if (req.method !== 'POST') return new Response('Method not allowed', { status: 405 });
+  if (req.method !== 'POST') {
+    // Logged because a silent 405 is indistinguishable from nothing arriving
+    // at all, and telling those two apart is most of diagnosing a webhook.
+    console.warn(`paddle-webhook: ${req.method} refused, from ${req.headers.get('user-agent') ?? 'no user-agent'}`);
+    return new Response('Method not allowed', { status: 405 });
+  }
 
   // The RAW body, before any parsing. Re-serialised JSON almost never matches
   // Paddle's bytes, and every genuine event would then fail verification.

@@ -10,8 +10,14 @@ import {
   lockedAreas,
   daysUntilExpiry,
   isFreeArea,
+  freeAreasFor,
+  entitledAreas,
+  canSwitchFreeArea,
+  daysUntilFreeAreaSwitch,
+  FREE_AREA_SWITCH_DAYS,
   type Entitlement,
 } from '../entitlement';
+import { AREAS } from '../../types/region';
 import { AREAS } from '../../types/region';
 
 /**
@@ -200,5 +206,48 @@ describe('daysUntilExpiry', () => {
     expect(daysUntilExpiry(ent({ expiresAt: null }), NOW)).toBeNull();
     expect(daysUntilExpiry(null, NOW)).toBeNull();
     expect(daysUntilExpiry(ent({ expiresAt: '2020-01-01T00:00:00.000Z' }), NOW)).toBeNull();
+  });
+});
+
+describe('the free area is chosen, and swappable monthly', () => {
+  const NOW = new Date('2026-09-20T12:00:00.000Z');
+
+  it('opens the area that was chosen, not the default', () => {
+    const choice = { area: 'knee' as const, chosenAt: NOW.toISOString() };
+    expect(canAccessArea('knee', FREE_ENTITLEMENT, NOW, freeAreasFor(choice))).toBe(true);
+    expect(canAccessArea('shoulder', FREE_ENTITLEMENT, NOW, freeAreasFor(choice))).toBe(false);
+  });
+
+  it('falls back to the default area for an account that has never chosen', () => {
+    expect(freeAreasFor(null)).toEqual(FREE_AREAS);
+  });
+
+  it('opens exactly one area, whatever was chosen', () => {
+    const choice = { area: 'hip' as const, chosenAt: NOW.toISOString() };
+    expect(entitledAreas(AREAS, FREE_ENTITLEMENT, NOW, freeAreasFor(choice))).toEqual(['hip']);
+  });
+
+  it('holds the choice for 30 days, then lets it change', () => {
+    const justChosen = { area: 'hip' as const, chosenAt: NOW.toISOString() };
+    expect(canSwitchFreeArea(justChosen, NOW)).toBe(false);
+    expect(daysUntilFreeAreaSwitch(justChosen, NOW)).toBe(FREE_AREA_SWITCH_DAYS);
+
+    const dayBefore = new Date(NOW.getTime() + (FREE_AREA_SWITCH_DAYS - 1) * 86400000);
+    expect(canSwitchFreeArea(justChosen, dayBefore)).toBe(false);
+    expect(daysUntilFreeAreaSwitch(justChosen, dayBefore)).toBe(1);
+
+    const dayAfter = new Date(NOW.getTime() + FREE_AREA_SWITCH_DAYS * 86400000);
+    expect(canSwitchFreeArea(justChosen, dayAfter)).toBe(true);
+  });
+
+  it('never traps somebody behind a malformed or future date', () => {
+    expect(canSwitchFreeArea({ area: 'hip', chosenAt: 'not a date' }, NOW)).toBe(true);
+    expect(canSwitchFreeArea({ area: 'hip', chosenAt: '2099-01-01T00:00:00.000Z' }, NOW)).toBe(true);
+  });
+
+  it('gives a subscriber every area regardless of the choice', () => {
+    const paid = { tier: 'individual' as const, source: 'paddle' as const, expiresAt: null };
+    const choice = { area: 'hip' as const, chosenAt: NOW.toISOString() };
+    expect(entitledAreas(AREAS, paid, NOW, freeAreasFor(choice))).toEqual(AREAS);
   });
 });

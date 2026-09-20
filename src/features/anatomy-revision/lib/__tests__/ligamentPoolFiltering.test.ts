@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { ALL_STRUCTURES, ALL_IMAGES } from '../../data/seed';
 import { generateRevisionSet } from '../questionGenerators/generateSet';
+import { AREAS } from '../../types/region';
 import { isLigament } from '../../types/structure';
 
 /**
@@ -15,7 +16,7 @@ import { isLigament } from '../../types/structure';
  * narrowed pool specifically.
  */
 describe('a ligaments-only session', () => {
-  const set = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+  const set = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, { entitledAreas: AREAS,
     types: ['identify-typed', 'multi-select'],
     category: 'ligament',
     mode: 'practice',

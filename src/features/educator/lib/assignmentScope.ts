@@ -1,6 +1,6 @@
 import type { RevisionSetConfig } from '../../anatomy-revision/lib/questionGenerators/generateSet';
 import type { QuestionType } from '../../anatomy-revision/types/question';
-import { AREA_LABELS, normaliseAreas } from '../../anatomy-revision/types/region';
+import { AREA_LABELS, normaliseAreas, type Area } from '../../anatomy-revision/types/region';
 import { MUSCLE_GROUP_LABELS, type Category } from '../../anatomy-revision/types/structure';
 import type { AssignmentScope, ScopedAssignment } from '../types/cohort';
 
@@ -44,8 +44,19 @@ export const CATEGORY_LABELS: Record<Category, string> = {
  * would make the measurement meaningless. Everything else matches what the
  * study screen would build for the same choices.
  */
-export function assignmentSetConfig(assignment: ScopedAssignment): RevisionSetConfig {
+export function assignmentSetConfig(
+  assignment: ScopedAssignment,
+  /**
+   * What the STUDENT sitting it may reach (CR-027). A licensed cohort carries
+   * an institutional entitlement, so for the students this feature exists for
+   * it is every area. A free student in an unlicensed cohort is still a free
+   * student: an assignment is set work, not a licence, and must not become the
+   * way round the paywall.
+   */
+  entitledAreas: readonly Area[],
+): RevisionSetConfig {
   return {
+    entitledAreas,
     types: assignment.questionTypes,
     // Normalised here as well as on the Firestore read, so an assignment built in
     // memory (the demo cohort, a test fixture) with a since-split area still scopes

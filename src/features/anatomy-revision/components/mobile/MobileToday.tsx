@@ -8,6 +8,7 @@ import { getLearnCardAttempts, getPreferredAreas } from '../../lib/preferences';
 import { firstRunTitle, minutesFor } from '../../lib/sessionCopy';
 import { useTodayData } from '../../hooks/useTodayData';
 import type { RevisionSetupParams } from '../../hooks/useRevisionSession';
+import type { UseEntitlement } from '../../hooks/useEntitlement';
 import { MobileShell } from './MobileShell';
 import { ClassAssignments } from '../shared/ClassAssignments';
 import type { MobileTab } from './MobileTabBar';
@@ -18,6 +19,8 @@ import type { MobileTab } from './MobileTabBar';
 const DEFAULT_TYPES: QuestionType[] = ['flashcard', 'mcq', 'locate', 'identify-typed', 'oina'];
 
 interface MobileTodayProps {
+  /** What this account may reach — see Today.tsx. */
+  access: UseEntitlement;
   repository: AnatomyRepository | null;
   userId: string | null;
   content: AnatomyContent;
@@ -28,17 +31,18 @@ interface MobileTodayProps {
 }
 
 /** Screen 02 (mobile). Single decision on open: due count, one primary action. */
-export function MobileToday({ repository, userId, content, onStart, onCustomSession, onOpenMuscle, onNavigateTab }: MobileTodayProps) {
-  const { loading, streak, dueMuscles, allMastery, weakest, weekBuckets, weekMax, dayLabels } = useTodayData(repository, userId, content);
+export function MobileToday({ access, repository, userId, content, onStart, onCustomSession, onOpenMuscle, onNavigateTab }: MobileTodayProps) {
+  const { loading, streak, dueMuscles, allMastery, weakest, weekBuckets, weekMax, dayLabels } = useTodayData(repository, userId, content, access.areas);
   const now = new Date();
   // See Today.tsx: the guided starter until something has been attempted.
   const firstRun = !loading && allMastery.length === 0;
-  const preferredAreas = getPreferredAreas();
+  // Narrowed to the entitled areas — see Today.tsx for why undefined is safe.
+  const preferredAreas = getPreferredAreas().filter((a) => access.areas.includes(a));
   const areas = preferredAreas.length ? preferredAreas : undefined;
 
   const handleStart = async () => {
     if (firstRun) {
-      const starter = buildStarterSet(content.structures, content.images, { areas });
+      const starter = buildStarterSet(content.structures, content.images, { areas: areas ?? access.areas });
       if (starter.length > 0) {
         onStart(starter, { types: STARTER_TYPES, mode: 'practice', areas });
         return;
@@ -52,6 +56,7 @@ export function MobileToday({ repository, userId, content, onStart, onCustomSess
       types: DEFAULT_TYPES,
       mode: 'practice',
       areas,
+      entitledAreas: access.areas,
       // Prioritised, not restricted: answering a due structure reschedules it, so a
       // due-only session refills its own queue and never reaches new material.
       priorityStructureIds: dueStructureIds.length ? dueStructureIds : undefined,
@@ -110,7 +115,7 @@ export function MobileToday({ repository, userId, content, onStart, onCustomSess
           Build a custom session
         </button>
 
-        <ClassAssignments repository={repository} userId={userId} content={content} onStart={onStart} compact />
+        <ClassAssignments access={access} repository={repository} userId={userId} content={content} onStart={onStart} compact />
 
         <div
           className="mt-9"

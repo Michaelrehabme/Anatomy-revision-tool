@@ -4,6 +4,7 @@ import type { AnatomyStructure } from '../../types/structure';
 import type { AnatomyImageAsset } from '../../types/image';
 import type { MCQQuestion } from '../../types/question';
 import { generateRevisionSet } from '../../lib/questionGenerators/generateSet';
+import { AREAS } from '../../types/region';
 import {
   buildDiagnostic,
   buildDiagnosticQuestions,
@@ -57,8 +58,15 @@ export function DiagnosticScreen({
   // under the student's feet.
   const questions = useMemo(() => {
     const spec = buildDiagnostic(structures, cohortId);
+    // DELIBERATELY UNGATED, and the only caller that passes AREAS.
+    //
+    // The diagnostic measures what a student already knows across the whole
+    // body, for their course lead. Clamping it to a free student's one area
+    // would make the cohort's baseline depend on who had paid, which is not a
+    // baseline. Nothing here is revision: no attempt is recorded and no answer
+    // is shown (see the note above), so it teaches nothing that was paid for.
     const pool = generateRevisionSet(structures, images, {
-      types: ['mcq'], mode: 'practice', seed: 1,
+      types: ['mcq'], mode: 'practice', seed: 1, entitledAreas: AREAS,
     }).filter((q): q is MCQQuestion => q.type === 'mcq');
     return shuffleForSitting(buildDiagnosticQuestions(spec, pool, replayIds));
   }, [structures, images, cohortId, replayIds]);

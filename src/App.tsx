@@ -4,6 +4,7 @@ import { cachedSiteSettings, fetchSiteSettings } from './features/site/data/site
 import { Navigate, Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useRepository } from './features/anatomy-revision/hooks/useRepository';
 import { useAuth } from './features/anatomy-revision/context/AuthProvider';
+import { useEntitlement, type UseEntitlement } from './features/anatomy-revision/hooks/useEntitlement';
 import { useAnatomyContent, type AnatomyContent } from './features/anatomy-revision/hooks/useAnatomyContent';
 import { useRevisionSession } from './features/anatomy-revision/hooks/useRevisionSession';
 import { useIsDesktop } from './features/anatomy-revision/hooks/useIsDesktop';
@@ -106,6 +107,7 @@ const MOBILE_TAB_PATH: Record<MobileTab, string> = {
 };
 
 interface StructureRouteProps {
+  access: UseEntitlement;
   content: AnatomyContent;
   repository: AnatomyRepository | null;
   userId: string | null;
@@ -119,7 +121,7 @@ interface StructureRouteProps {
  * inside a matched Route's subtree, not in the App component that renders
  * the <Routes> table.
  */
-function StructureRoute({ content, repository, userId, isDesktop, onNavigateSection, onDrill }: StructureRouteProps) {
+function StructureRoute({ access, content, repository, userId, isDesktop, onNavigateSection, onDrill }: StructureRouteProps) {
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
   const navigate = useNavigate();
@@ -133,6 +135,7 @@ function StructureRoute({ content, repository, userId, isDesktop, onNavigateSect
   if (isDesktop) {
     return (
       <MuscleCard
+        access={access}
         structureId={id}
         content={content}
         repository={repository}
@@ -148,6 +151,7 @@ function StructureRoute({ content, repository, userId, isDesktop, onNavigateSect
 
   return (
     <MobileMuscleCard
+      access={access}
       structureId={id}
       content={content}
       repository={repository}
@@ -211,13 +215,26 @@ function App() {
       cancelled = true;
     };
   }, []);
+  /**
+   * What this account may reach (CR-027). Read once here and passed down, so
+   * every screen gates on the same answer and the entitlement is read once per
+   * session rather than once per screen.
+   */
+  const entitlement = useEntitlement(userId);
+  const entitledAreas = entitlement.areas;
+
   // Seeded from onboarding's choice, and written back whenever the picker
   // changes it — the areas a student said they are studying are the default
   // scope of every session, not a per-visit setting.
   const [selectedAreas, setSelectedAreas] = useState<Set<Area>>(() => new Set(getPreferredAreas()));
   const chooseAreas = (next: Set<Area>) => {
-    setSelectedAreas(next);
-    setPreferredAreas([...next]);
+    // Clamped to what they may reach. A locked area cannot arrive from a
+    // picker, which locks its own chips, but it can arrive from a stale
+    // preference written while a subscription was live — and an expired
+    // subscriber must not keep a silent filter over the whole body.
+    const allowed = new Set([...next].filter((a) => entitledAreas.includes(a)));
+    setSelectedAreas(allowed);
+    setPreferredAreas([...allowed]);
   };
   const [streak, setStreak] = useState(0);
 
@@ -311,6 +328,10 @@ function App() {
   }
 
   const handleOnboardingDone = (areas: Area[]) => {
+    // The first area they picked becomes the free one (CR-027). Recorded
+    // before the areas are saved, so chooseAreas below clamps against the
+    // choice just made rather than the default.
+    if (areas.length > 0) entitlement.chooseFreeArea(areas[0]);
     chooseAreas(new Set(areas));
     localStorage.setItem(ONBOARDED_KEY, 'true');
     setOnboarded(true);
@@ -365,6 +386,7 @@ function App() {
       types,
       mode: 'practice',
       structureIds: [structureId],
+      entitledAreas,
       factMastery,
       learnCardAttempts,
     });
@@ -383,6 +405,7 @@ function App() {
       types,
       mode: 'practice',
       structureIds,
+      entitledAreas,
       // No cap: drilling from the Atlas covers every fact of every muscle
       // currently listed, the same as an OINA session from setup.
       factMastery,
@@ -405,9 +428,9 @@ function App() {
             onboarded ? (
               <Navigate to="/" replace />
             ) : isDesktop ? (
-              <Onboarding content={content} initialAreas={[...selectedAreas]} onDone={handleOnboardingDone} />
+              <Onboarding content={content} initialAreas={[...selectedAreas]} access={entitlement} onDone={handleOnboardingDone} />
             ) : (
-              <MobileOnboarding content={content} initialAreas={[...selectedAreas]} onDone={handleOnboardingDone} />
+              <MobileOnboarding content={content} initialAreas={[...selectedAreas]} access={entitlement} onDone={handleOnboardingDone} />
             )
           }
         />
@@ -416,6 +439,7 @@ function App() {
           element={
             isDesktop ? (
               <Today
+                access={entitlement}
                 repository={repository}
                 userId={userId}
                 content={content}
@@ -426,6 +450,7 @@ function App() {
               />
             ) : (
               <MobileToday
+                access={entitlement}
                 repository={repository}
                 userId={userId}
                 content={content}
@@ -442,6 +467,7 @@ function App() {
           element={
             isDesktop ? (
               <RegionPicker
+                access={entitlement}
                 content={content}
                 selected={selectedAreas}
                 onChange={chooseAreas}
@@ -450,6 +476,7 @@ function App() {
               />
             ) : (
               <MobileRegionPicker
+                access={entitlement}
                 content={content}
                 selected={selectedAreas}
                 onChange={chooseAreas}
@@ -464,6 +491,7 @@ function App() {
           element={
             isDesktop ? (
               <RevisionSetup
+                access={entitlement}
                 content={content}
                 repository={repository}
                 userId={userId}
@@ -474,6 +502,7 @@ function App() {
               />
             ) : (
               <MobileRevisionSetup
+                access={entitlement}
                 content={content}
                 repository={repository}
                 userId={userId}
@@ -540,6 +569,7 @@ function App() {
                     // Deliberately still a hard restriction — "retry the N missed" means
                     // those N. Mastery only orders them, worst-known first.
                     structureIds: session.summary!.missedStructureIds,
+                    entitledAreas,
                     factMastery,
                     mastery,
                   });
@@ -567,6 +597,7 @@ function App() {
                   const nextQuestions = generateRevisionSet(content.structures, content.images, {
                     ...params,
                     count: session.summary!.totalQuestions,
+                    entitledAreas,
                     factMastery,
                     mastery,
                   });
@@ -581,6 +612,7 @@ function App() {
           element={
             isDesktop ? (
               <Atlas
+                access={entitlement}
                 content={content}
                 repository={repository}
                 userId={userId}
@@ -590,6 +622,7 @@ function App() {
               />
             ) : (
               <MobileAtlas
+                access={entitlement}
                 content={content}
                 repository={repository}
                 userId={userId}
@@ -605,6 +638,7 @@ function App() {
           path="/structure/:id"
           element={
             <StructureRoute
+              access={entitlement}
               content={content}
               repository={repository}
               userId={userId}
@@ -619,6 +653,7 @@ function App() {
           element={
             isDesktop ? (
               <Progress
+                access={entitlement}
                 content={content}
                 repository={repository}
                 userId={userId}
@@ -641,9 +676,9 @@ function App() {
           path="/account"
           element={
             isDesktop ? (
-              <Account content={content} repository={repository} userId={userId} onNavigate={onNavigateSection} />
+              <Account content={content} repository={repository} userId={userId} access={entitlement} onNavigate={onNavigateSection} />
             ) : (
-              <MobileAccount content={content} repository={repository} userId={userId} onNavigateTab={mobileNavigate} />
+              <MobileAccount content={content} repository={repository} userId={userId} access={entitlement} onNavigateTab={mobileNavigate} />
             )
           }
         />

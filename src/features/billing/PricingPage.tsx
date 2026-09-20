@@ -54,7 +54,10 @@ export function PricingPage() {
   const justPaid = params.get('checkout') === 'done';
   const { entitlement, tier, loading, refresh } = useEntitlement(user?.uid ?? null);
 
-  const [plan, setPlan] = useState<PlanId>('annual');
+  // ?plan=monthly comes from the home page's plan cards, so the choice made
+  // there is not silently thrown away on arrival. Annual otherwise: it is the
+  // better value and the one the page recommends.
+  const [plan, setPlan] = useState<PlanId>(params.get('plan') === 'monthly' ? 'monthly' : 'annual');
   const [waived, setWaived] = useState(false);
   const [showWaiverError, setShowWaiverError] = useState(false);
   const [opening, setOpening] = useState(false);

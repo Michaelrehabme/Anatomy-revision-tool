@@ -2,11 +2,15 @@ import { useState } from 'react';
 import type { AnatomyContent } from '../../hooks/useAnatomyContent';
 import type { Area } from '../../types/region';
 import { BodyFigure } from '../shared/BodyFigure';
+import { AREA_LABELS } from '../../types/region';
+import type { UseEntitlement } from '../../hooks/useEntitlement';
 import { Button } from '../shared/Button';
 import { OnboardingAreaList } from './OnboardingAreaList';
 import { ONBOARDING_STEPS } from './onboardingSteps';
 
 interface OnboardingProps {
+  /** What this account may reach. Onboarding is where a free account picks which one area that is. */
+  access: UseEntitlement;
   content: AnatomyContent;
   /** Areas already on record, if any — a device re-running onboarding starts from them. */
   initialAreas?: readonly Area[];
@@ -20,12 +24,15 @@ interface OnboardingProps {
  * picker, and what it collects becomes the default scope of every session
  * from here on — the single most useful thing onboarding can know.
  */
-export function Onboarding({ content, initialAreas = [], onDone }: OnboardingProps) {
+export function Onboarding({ access, content, initialAreas = [], onDone }: OnboardingProps) {
   const [step, setStep] = useState(0);
   const [selected, setSelected] = useState<Set<Area>>(() => new Set(initialAreas));
   const current = ONBOARDING_STEPS[step];
   const onAreaStep = step === 0;
   const canContinue = !onAreaStep || selected.size > 0;
+  // Insertion-ordered, so this is genuinely the first one they tapped — which
+  // is what becomes their free area (see App.tsx's handleOnboardingDone).
+  const [firstPick] = [...selected];
 
   const toggle = (area: Area) => {
     setSelected((prev) => {
@@ -90,7 +97,18 @@ export function Onboarding({ content, initialAreas = [], onDone }: OnboardingPro
           </div>
           {onAreaStep && (
             <p className="mt-3 text-sm" style={{ color: 'var(--ink3)' }}>
-              Skip keeps every area in play.
+              {access.tier === 'free' ? (
+                firstPick ? (
+                  <>
+                    <strong style={{ color: 'var(--ink2)' }}>{AREA_LABELS[firstPick]}</strong> will be your free area.
+                    Skip to keep the shoulder instead.
+                  </>
+                ) : (
+                  'Skip keeps the shoulder as your free area.'
+                )
+              ) : (
+                'Skip keeps every area in play.'
+              )}
             </p>
           )}
         </div>

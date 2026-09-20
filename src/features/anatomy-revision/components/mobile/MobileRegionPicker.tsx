@@ -3,11 +3,13 @@ import type { Area } from '../../types/region';
 import { AREAS, AREA_LABELS } from '../../types/region';
 import { areasOf } from '../../types/structure';
 import { BodyFigure } from '../shared/BodyFigure';
+import { LockPill, UnlockNote } from '../shared/AreaLock';
+import type { UseEntitlement } from '../../hooks/useEntitlement';
 import { MobileShell } from './MobileShell';
 
-const ALL_AREAS: ReadonlySet<Area> = new Set(AREAS);
-
 interface MobileRegionPickerProps {
+  /** What this account may reach — see RegionPicker.tsx. */
+  access: UseEntitlement;
   content: AnatomyContent;
   selected: Set<Area>;
   onChange: (next: Set<Area>) => void;
@@ -21,7 +23,8 @@ interface MobileRegionPickerProps {
  * MobileAtlas, and this is the first step of starting a session — the same
  * treatment Setup already had.
  */
-export function MobileRegionPicker({ content, selected, onChange, onContinue, onBack }: MobileRegionPickerProps) {
+export function MobileRegionPicker({ access, content, selected, onChange, onContinue, onBack }: MobileRegionPickerProps) {
+  const entitled: ReadonlySet<Area> = new Set(access.areas);
   // Counts every category, not just muscles — matching the desktop picker (CR-017).
   const countByArea = new Map<Area, number>();
   for (const s of content.structures) {
@@ -30,15 +33,16 @@ export function MobileRegionPicker({ content, selected, onChange, onContinue, on
   }
 
   const toggle = (area: Area) => {
+    if (!entitled.has(area)) return;
     const next = new Set(selected);
     if (next.has(area)) next.delete(area);
     else next.add(area);
     onChange(next);
   };
 
-  const poolSize = content.structures.filter((s) => {
-    return selected.size === 0 || areasOf(s).some((area) => selected.has(area));
-  }).length;
+  // "Nothing selected" means every area they can reach, not every area.
+  const effective = selected.size === 0 ? entitled : selected;
+  const poolSize = content.structures.filter((s) => areasOf(s).some((area) => effective.has(area))).length;
 
   return (
     <MobileShell>
@@ -52,34 +56,37 @@ export function MobileRegionPicker({ content, selected, onChange, onContinue, on
           Pick your areas
         </h2>
         <p style={{ fontSize: 13.5, lineHeight: 1.5, color: 'var(--ink3)' }}>
-          Tap the body or the list. Everything is included until you narrow it.
+          Tap the body or the list. Everything you can reach is included until you narrow it.
         </p>
 
         <div className="mt-1 flex justify-center">
           <div style={{ width: 134 }}>
-            {/* Empty means "everything" — figure and list both show all seven, matching desktop. */}
-            <BodyFigure selected={selected.size === 0 ? ALL_AREAS : selected} onToggle={toggle} />
+            {/* Empty means "everything entitled" — figure and list agree, matching desktop. */}
+            <BodyFigure selected={selected.size === 0 ? entitled : selected} locked={access.locked(AREAS)} onToggle={toggle} />
           </div>
         </div>
 
         <div className="mt-0.5 grid grid-cols-2 gap-x-3.5 gap-y-0.5">
           {AREAS.map((area) => {
-            const isSelected = selected.size === 0 || selected.has(area);
+            const isLocked = !entitled.has(area);
+            const isSelected = !isLocked && (selected.size === 0 || selected.has(area));
             return (
               <button
                 key={area}
                 type="button"
                 onClick={() => toggle(area)}
+                aria-disabled={isLocked}
                 className="flex min-h-[44px] items-start gap-2.5 border-0 bg-transparent py-1.5 text-left"
-                style={{ opacity: isSelected ? 1 : 1 }}
+                style={{ opacity: isLocked ? 0.5 : 1 }}
               >
                 <span
                   className="mt-0.5 h-2.5 w-2.5 flex-none rounded-sm"
                   style={{ background: isSelected ? 'var(--acc)' : 'transparent', boxShadow: 'inset 0 0 0 1.2px var(--ink3)' }}
                 />
                 <span className="flex-1">
-                  <span className="block" style={{ fontFamily: 'var(--font-display)', fontSize: 17, lineHeight: 1.2, color: isSelected ? 'var(--ink)' : 'var(--ink3)' }}>
+                  <span className="flex items-center gap-2" style={{ fontFamily: 'var(--font-display)', fontSize: 17, lineHeight: 1.2, color: isSelected ? 'var(--ink)' : 'var(--ink3)' }}>
                     {AREA_LABELS[area]}
+                    {isLocked && <LockPill compact />}
                   </span>
                   <span className="mt-0.5 block" style={{ font: '400 10.5px/1.4 var(--font-mono)', color: 'var(--ink3)' }}>
                     {countByArea.get(area) ?? 0} structures
@@ -90,8 +97,10 @@ export function MobileRegionPicker({ content, selected, onChange, onContinue, on
           })}
         </div>
 
+        <UnlockNote access={access} className="mt-2" />
+
         <div className="flex gap-4.5">
-          <button type="button" onClick={() => onChange(new Set(AREAS))} className="border-0 bg-transparent py-1.5 text-[13.5px] underline" style={{ color: 'var(--accd)' }}>
+          <button type="button" onClick={() => onChange(new Set(entitled))} className="border-0 bg-transparent py-1.5 text-[13.5px] underline" style={{ color: 'var(--accd)' }}>
             Select all
           </button>
           <button type="button" onClick={() => onChange(new Set())} className="border-0 bg-transparent py-1.5 text-[13.5px] underline" style={{ color: 'var(--accd)' }}>

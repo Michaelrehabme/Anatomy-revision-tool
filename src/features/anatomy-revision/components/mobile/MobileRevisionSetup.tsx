@@ -16,6 +16,7 @@ import {
   setLearnCardAttempts,
 } from '../../lib/preferences';
 import type { RevisionSetupParams } from '../../hooks/useRevisionSession';
+import type { UseEntitlement } from '../../hooks/useEntitlement';
 import { MobileShell } from './MobileShell';
 import { QUESTION_FORMATS } from '../../lib/questionFormats';
 
@@ -66,6 +67,8 @@ const SESSION_TYPE_OPTIONS: { value: 'practice' | 'adaptive' | 'assessment'; lab
 const TIMER_OPTIONS = [0, 10, 20, 30];
 
 interface MobileRevisionSetupProps {
+  /** What this account may reach — every session built here is clamped to it. */
+  access: UseEntitlement;
   content: AnatomyContent;
   repository: AnatomyRepository | null;
   userId: string | null;
@@ -81,7 +84,7 @@ function chipStyle(selected: boolean) {
 }
 
 /** Screen 04 (mobile). No tab bar (not in the mockup's showTabs list) — a step within the Study flow. */
-export function MobileRevisionSetup({ content, repository, userId, areas, onStart, onBack }: MobileRevisionSetupProps) {
+export function MobileRevisionSetup({ access, content, repository, userId, areas, onStart, onBack }: MobileRevisionSetupProps) {
   const [types, setTypes] = useState<QuestionType[]>(['mcq', 'identify-typed']);
   // Empty means every category, as on the area picker.
   const [categories, setCategories] = useState<Category[]>([]);
@@ -144,6 +147,7 @@ export function MobileRevisionSetup({ content, repository, userId, areas, onStar
       generateRevisionSet(content.structures, content.images, {
         types,
         areas: [...areas],
+        entitledAreas: access.areas,
         groups: groups.length ? groups : undefined,
         oinaPromptKinds: oinaSelected ? oinaFacts : undefined,
         learnCardAttempts: 0,
@@ -151,7 +155,7 @@ export function MobileRevisionSetup({ content, repository, userId, areas, onStar
         mode: 'practice',
         seed: 1,
       }).length,
-    [content.structures, content.images, types, areas, groups, oinaSelected, oinaFacts, categories],
+    [content.structures, content.images, types, areas, access.areas, groups, oinaSelected, oinaFacts, categories],
   );
   // The Begin label used to say "15 questions" under an OINA panel promising
   // hundreds; this is the number the session will actually contain.
@@ -186,6 +190,7 @@ export function MobileRevisionSetup({ content, repository, userId, areas, onStar
     const questions = generateRevisionSet(content.structures, content.images, {
       types,
       areas: areasArray,
+      entitledAreas: access.areas,
       groups: params.groups,
       oinaPromptKinds: params.oinaPromptKinds,
       learnCardAttempts: params.learnCardAttempts,

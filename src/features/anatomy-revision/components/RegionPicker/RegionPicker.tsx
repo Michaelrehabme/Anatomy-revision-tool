@@ -4,19 +4,21 @@ import { AREAS, AREA_LABELS } from '../../types/region';
 import type { Category } from '../../types/structure';
 import { areasOf } from '../../types/structure';
 import { BodyFigure } from '../shared/BodyFigure';
+import { LockPill, UnlockNote } from '../shared/AreaLock';
+import type { UseEntitlement } from '../../hooks/useEntitlement';
 import { Button } from '../shared/Button';
 import { AppShell } from '../shell/AppShell';
 import { NavSidebar, type NavSection } from '../shell/NavSidebar';
 
 interface RegionPickerProps {
+  /** What this account may reach. Locked areas are shown, not hidden — they are the offer. */
+  access: UseEntitlement;
   content: AnatomyContent;
   selected: Set<Area>;
   onChange: (next: Set<Area>) => void;
   onContinue: () => void;
   onNavigate: (section: NavSection) => void;
 }
-
-const ALL_AREAS: ReadonlySet<Area> = new Set(AREAS);
 
 /** Ordered so the breakdown reads the same way every time, biggest category first. */
 const COUNTED_CATEGORIES: { category: Category; singular: string; plural: string }[] = [
@@ -36,7 +38,8 @@ const COUNTED_CATEGORIES: { category: Category; singular: string; plural: string
  * 5x (the shoulder has 15 muscles and 47 structures in total) and silently hid
  * the bones, landmarks and joints a session would actually draw from.
  */
-export function RegionPicker({ content, selected, onChange, onContinue, onNavigate }: RegionPickerProps) {
+export function RegionPicker({ access, content, selected, onChange, onContinue, onNavigate }: RegionPickerProps) {
+  const entitled: ReadonlySet<Area> = new Set(access.areas);
   const byArea = new Map<Area, Map<Category, string[]>>();
   for (const s of content.structures) {
     // A structure spanning several areas is counted under each of them (CR-032): a
@@ -65,15 +68,19 @@ export function RegionPicker({ content, selected, onChange, onContinue, onNaviga
     });
 
   const toggle = (area: Area) => {
+    // A locked chip is inert. The row still renders, with the unlock line
+    // beneath the list — hiding it would leave a student wondering where the
+    // knee went.
+    if (!entitled.has(area)) return;
     const next = new Set(selected);
     if (next.has(area)) next.delete(area);
     else next.add(area);
     onChange(next);
   };
 
-  const poolSize = content.structures.filter(
-    (s) => selected.size === 0 || areasOf(s).some((area) => selected.has(area)),
-  ).length;
+  // "Nothing selected" means every area they can reach, not every area.
+  const effective = selected.size === 0 ? entitled : selected;
+  const poolSize = content.structures.filter((s) => areasOf(s).some((area) => effective.has(area))).length;
 
   return (
     <AppShell
@@ -94,7 +101,7 @@ export function RegionPicker({ content, selected, onChange, onContinue, onNaviga
       <div className="flex items-start gap-[72px] px-16 pt-16 pb-12">
         <div className="w-[300px] flex-none">
           {/* Empty means "everything", and the list ticks all seven — the figure has to agree, not sit blank beside it. */}
-          <BodyFigure selected={selected.size === 0 ? ALL_AREAS : selected} onToggle={toggle} />
+          <BodyFigure selected={selected.size === 0 ? entitled : selected} locked={access.locked(AREAS)} onToggle={toggle} />
         </div>
         <div className="flex-1">
           <h2
@@ -103,27 +110,31 @@ export function RegionPicker({ content, selected, onChange, onContinue, onNaviga
             Pick your areas
           </h2>
           <p className="max-w-md text-base leading-relaxed" style={{ color: 'var(--ink2)' }}>
-            Click the body or the list. Everything is included until you narrow it, and your choice is remembered for next time.
+            Click the body or the list. Everything you can reach is included until you narrow it, and your choice is
+            remembered for next time.
           </p>
 
           <div className="mt-9 flex flex-col">
             {AREAS.map((area) => {
-              const isSelected = selected.size === 0 || selected.has(area);
+              const isLocked = !entitled.has(area);
+              const isSelected = !isLocked && (selected.size === 0 || selected.has(area));
               return (
                 <button
                   key={area}
                   type="button"
                   onClick={() => toggle(area)}
+                  aria-disabled={isLocked}
                   className="flex items-start gap-3.5 py-3.5 text-left hover:opacity-70"
-                  style={{ opacity: isSelected ? 1 : 0.45 }}
+                  style={{ opacity: isLocked ? 0.4 : isSelected ? 1 : 0.45, cursor: isLocked ? 'default' : 'pointer' }}
                 >
                   <span
                     className="mt-1.5 h-3.5 w-3.5 flex-none rounded-sm"
                     style={{ background: isSelected ? 'var(--acc)' : 'var(--sf)', boxShadow: 'inset 0 0 0 1.2px var(--ink3)' }}
                   />
                   <span className="flex-1">
-                    <span className="block" style={{ fontFamily: 'var(--font-display)', fontSize: 24, lineHeight: 1.2 }}>
+                    <span className="flex items-center gap-2.5" style={{ fontFamily: 'var(--font-display)', fontSize: 24, lineHeight: 1.2 }}>
                       {AREA_LABELS[area]}
+                      {isLocked && <LockPill compact />}
                     </span>
                     <span className="mt-0.5 block" style={{ font: '400 12px/1.5 var(--font-mono)', color: 'var(--ink3)' }}>
                       {segments(area).map((seg, i) => (
@@ -141,8 +152,10 @@ export function RegionPicker({ content, selected, onChange, onContinue, onNaviga
             })}
           </div>
 
+          <UnlockNote access={access} className="mt-4" />
+
           <div className="mt-4 flex gap-5">
-            <button type="button" onClick={() => onChange(new Set(AREAS))} className="text-sm underline" style={{ color: 'var(--accd)' }}>
+            <button type="button" onClick={() => onChange(new Set(entitled))} className="text-sm underline" style={{ color: 'var(--accd)' }}>
               Select all
             </button>
             <button type="button" onClick={() => onChange(new Set())} className="text-sm underline" style={{ color: 'var(--accd)' }}>

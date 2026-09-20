@@ -5,6 +5,7 @@ import { NavSidebar, type NavSection } from '../shell/NavSidebar';
 import { AuthScreen } from '../Auth/AuthScreen';
 import { CohortMembership } from '../shared/CohortMembership';
 import { SubscriptionSummary } from '../shared/SubscriptionSummary';
+import type { UseEntitlement } from '../../hooks/useEntitlement';
 import { AccuracyTrendChart } from '../shared/AccuracyTrendChart';
 import { MyClasses } from './MyClasses';
 import { useAuth, AUTH_ENABLED } from '../../context/AuthProvider';
@@ -43,6 +44,8 @@ function Stat({ label, value }: { label: string; value: string }) {
 }
 
 interface AccountProps {
+  /** What this account may reach — the billing block and the free-area swap read it. */
+  access: UseEntitlement;
   content: AnatomyContent;
   repository: AnatomyRepository | null;
   userId: string | null;
@@ -61,7 +64,7 @@ interface AccountProps {
  * minus the class-average line: a student cannot read their classmates'
  * attempts (firestore.rules), so that comparison is genuinely not theirs.
  */
-export function Account({ content, repository, userId, onNavigate }: AccountProps) {
+export function Account({ access, content, repository, userId, onNavigate }: AccountProps) {
   const { user, signOut } = useAuth();
   const { streak, seenCount, muscles } = useProgressData(repository, userId, content);
   const [attempts, setAttempts] = useState<UserAttempt[] | null>(null);
@@ -136,7 +139,7 @@ export function Account({ content, repository, userId, onNavigate }: AccountProp
         {AUTH_ENABLED && user && (
           <section className="mt-12" style={{ maxWidth: 620 }}>
             <h3 style={heading}>Subscription</h3>
-            <SubscriptionSummary uid={user.uid} />
+            <SubscriptionSummary access={access} />
 
             <h3 className="mt-10" style={heading}>Classes</h3>
             <CohortMembership uid={user.uid} />

@@ -73,6 +73,13 @@ interface FigureProps<K extends string> {
   labels: Record<K, string>;
   /** Selection mode (pickers): binary selected/unselected tint, clickable. Ignored when `fills` is set. */
   selected?: ReadonlySet<K>;
+  /**
+   * Bands the paywall shuts (CR-027). They stay on the figure — the silhouette
+   * is the map of the body, and a body missing its knee is a worse thing to
+   * show than a knee marked shut — but they do not respond to a click and
+   * their title says why.
+   */
+  locked?: readonly K[];
   onToggle?: (key: K) => void;
   /**
    * Read-only mode (Progress screen): an explicit CSS color per band
@@ -93,7 +100,7 @@ interface FigureProps<K extends string> {
  * lib/hotspot/, which targets a single cropped structure image rather than the
  * whole-body figure.
  */
-function Figure<K extends string>({ bands, labels, selected, onToggle, fills, className }: FigureProps<K>) {
+function Figure<K extends string>({ bands, labels, selected, locked, onToggle, fills, className }: FigureProps<K>) {
   const readOnly = fills !== undefined;
   return (
     <div className={className} style={{ position: 'relative', width: '100%', aspectRatio: '608 / 1440' }}>
@@ -117,7 +124,8 @@ function Figure<K extends string>({ bands, labels, selected, onToggle, fills, cl
       {bands.map(({ key, rect }, i) => {
         const [x, y, w, h] = rect;
         const fillColor = fills?.[key];
-        const isSelected = !readOnly && (selected?.has(key) ?? false);
+        const isLocked = !readOnly && (locked?.includes(key) ?? false);
+        const isSelected = !readOnly && !isLocked && (selected?.has(key) ?? false);
         const color = readOnly ? (fillColor ?? 'transparent') : isSelected ? 'var(--acc)' : 'transparent';
         const tint = (
           <span
@@ -152,11 +160,26 @@ function Figure<K extends string>({ bands, labels, selected, onToggle, fills, cl
           <button
             key={`${key}-${i}`}
             type="button"
-            title={labels[key]}
+            title={isLocked ? `${labels[key]} — locked` : labels[key]}
             aria-pressed={isSelected}
-            onClick={() => onToggle?.(key)}
-            className="group absolute cursor-pointer border-0 bg-transparent p-0"
-            style={{ left: `${x * 100}%`, top: `${y * 100}%`, width: `${w * 100}%`, height: `${h * 100}%`, overflow: 'hidden' }}
+            aria-disabled={isLocked}
+            onClick={() => !isLocked && onToggle?.(key)}
+            className={
+              isLocked
+                ? 'absolute border-0 bg-transparent p-0'
+                : 'group absolute cursor-pointer border-0 bg-transparent p-0'
+            }
+            style={{
+              left: `${x * 100}%`,
+              top: `${y * 100}%`,
+              width: `${w * 100}%`,
+              height: `${h * 100}%`,
+              overflow: 'hidden',
+              cursor: isLocked ? 'default' : 'pointer',
+              // Enough to read as "not yours yet" without making the figure
+              // look broken or half-loaded.
+              opacity: isLocked ? 0.45 : 1,
+            }}
           >
             {tint}
           </button>

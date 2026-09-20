@@ -115,6 +115,10 @@ export function CreateAssignmentForm({
       // Practice with learn cards off counts every question the scope can
       // build, which is the ceiling on an attempt's length.
       available: generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+        // AREAS, not the educator's own entitlement: this is a preview of what
+        // the COHORT will be set, and an educator on a free account must still
+        // be able to build an assignment covering the whole body.
+        entitledAreas: AREAS,
         ...scope,
         types,
         mode: 'practice',

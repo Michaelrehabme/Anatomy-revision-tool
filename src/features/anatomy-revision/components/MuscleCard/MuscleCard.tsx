@@ -1,16 +1,20 @@
 import { useEffect } from 'react';
 import type { AnatomyContent } from '../../hooks/useAnatomyContent';
 import type { AnatomyRepository } from '../../data/repository';
-import { isMuscle } from '../../types/structure';
+import { areasOf, isMuscle } from '../../types/structure';
 import { useMuscleHistory } from '../../hooks/useMuscleHistory';
 import { REGION_LABELS } from '../../types/region';
 import { AttributionBadge } from '../shared/AttributionBadge';
 import { Button } from '../shared/Button';
+import { LockedAreaPanel } from '../shared/AreaLock';
+import type { UseEntitlement } from '../../hooks/useEntitlement';
 import { PronounceButton } from '../shared/PronounceButton';
 import { AppShell } from '../shell/AppShell';
 import { NavSidebar, type NavSection } from '../shell/NavSidebar';
 
 interface MuscleCardProps {
+  /** What this account may reach — a locked muscle's card offers the plans instead of a drill. */
+  access: UseEntitlement;
   structureId: string;
   content: AnatomyContent;
   repository: AnatomyRepository | null;
@@ -29,6 +33,7 @@ const FACT_ROWS = [
 ] as const;
 
 export function MuscleCard({
+  access,
   structureId,
   content,
   repository,
@@ -185,9 +190,15 @@ export function MuscleCard({
           </div>
 
           <div className="mt-6">
-            <Button variant="secondary" onClick={() => onDrill(structure.id)} className="min-w-[180px] min-h-[52px]">
-              Drill this muscle
-            </Button>
+            {/* A card can be reached by a typed URL or a stale link, so the
+                drill is gated here as well as in the atlas that lists it. */}
+            {areasOf(structure).some((a) => access.areas.includes(a)) ? (
+              <Button variant="secondary" onClick={() => onDrill(structure.id)} className="min-w-[180px] min-h-[52px]">
+                Drill this muscle
+              </Button>
+            ) : (
+              <LockedAreaPanel area={areasOf(structure)[0]} access={access} onSwitchFree={access.chooseFreeArea} />
+            )}
           </div>
         </div>
       </div>

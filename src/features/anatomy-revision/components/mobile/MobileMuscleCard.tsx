@@ -1,10 +1,12 @@
 import type { AnatomyContent } from '../../hooks/useAnatomyContent';
 import type { AnatomyRepository } from '../../data/repository';
-import { isMuscle } from '../../types/structure';
+import { areasOf, isMuscle } from '../../types/structure';
 import { REGION_LABELS } from '../../types/region';
 import { useMuscleHistory } from '../../hooks/useMuscleHistory';
 import { relativeDue } from '../../hooks/useTodayData';
 import { AttributionBadge } from '../shared/AttributionBadge';
+import { LockedAreaPanel } from '../shared/AreaLock';
+import type { UseEntitlement } from '../../hooks/useEntitlement';
 import { PronounceButton } from '../shared/PronounceButton';
 
 interface MobileMuscleCardProps {
@@ -14,6 +16,8 @@ interface MobileMuscleCardProps {
   userId: string | null;
   onBack: () => void;
   onDrill: (structureId: string) => void;
+  /** What this account may reach — see MuscleCard.tsx. */
+  access: UseEntitlement;
 }
 
 const FACT_ROWS = [
@@ -27,7 +31,7 @@ const FACT_ROWS = [
  * matching the mockup's `learnFrom: 'home' | 'session'` back-navigation
  * rather than a broader swipe-through browse context.
  */
-export function MobileMuscleCard({ structureId, content, repository, userId, onBack, onDrill }: MobileMuscleCardProps) {
+export function MobileMuscleCard({ access, structureId, content, repository, userId, onBack, onDrill }: MobileMuscleCardProps) {
   const mastery = useMuscleHistory(repository, userId, structureId);
   const structure = content.structuresById.get(structureId);
   const panelImage = content.images.find((img) => img.mode === 'single-structure' && img.structureId === structureId);
@@ -131,14 +135,22 @@ export function MobileMuscleCard({ structureId, content, repository, userId, onB
         {record}
       </p>
 
-      <button
-        type="button"
-        onClick={() => onDrill(structure.id)}
-        className="mt-5 w-full rounded-[3px]"
-        style={{ minHeight: 50, background: 'none', border: '1.3px solid var(--line)', color: 'var(--ink)', font: '500 15.5px/1 var(--font-ui)' }}
-      >
-        Drill this muscle
-      </button>
+      {/* Gated here as well as in the atlas — a card can be reached by a
+          typed URL or a stale link. See MuscleCard.tsx. */}
+      {areasOf(structure).some((a) => access.areas.includes(a)) ? (
+        <button
+          type="button"
+          onClick={() => onDrill(structure.id)}
+          className="mt-5 w-full rounded-[3px]"
+          style={{ minHeight: 50, background: 'none', border: '1.3px solid var(--line)', color: 'var(--ink)', font: '500 15.5px/1 var(--font-ui)' }}
+        >
+          Drill this muscle
+        </button>
+      ) : (
+        <div className="mt-5">
+          <LockedAreaPanel area={areasOf(structure)[0]} access={access} onSwitchFree={access.chooseFreeArea} />
+        </div>
+      )}
     </div>
   );
 }
