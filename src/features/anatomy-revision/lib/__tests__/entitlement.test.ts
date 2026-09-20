@@ -18,7 +18,6 @@ import {
   type Entitlement,
 } from '../entitlement';
 import { AREAS } from '../../types/region';
-import { AREAS } from '../../types/region';
 
 /**
  * CR-027 names three cases worth covering: expiry, precedence when somebody
