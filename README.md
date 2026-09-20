@@ -23,10 +23,11 @@ npm run validate-content    # checks seed data for broken cross-references
 npm run build                # type-checks + production build
 ```
 
-On first run you'll get a large, immediately-usable content library: all 122 muscles (from
-`muscles.json`) plus ~180 bones/landmarks/joints, illustrated by 14 bone/landmark atlas slides,
-21 single-muscle panels and 15 Z-Anatomy regional renders. Locate-the-structure questions
-cover 74 muscles across all five regions — see "Image and hotspot status" below.
+On first run you'll get a large, immediately-usable content library: 345 structures in all —
+122 muscles (from `muscles.json`) plus the bones, bony landmarks, joints and ligaments — across
+nine areas, illustrated by Z-Anatomy renders. Locate-the-structure questions cover all 122
+muscles and 322 of the 345 structures — see "Image and hotspot status" below. The live figures
+come from `npm run validate-content`; anything quoted in public belongs in docs/CLAIMS.md.
 
 ## Image and hotspot status
 
@@ -58,11 +59,11 @@ hidden behind bone drops out of its own mask.
 
 What's still missing, and what that means:
 
-1. **48 of the 122 muscles have no locate question.** They are occluded in every view a solo
-   silhouette can offer — you cannot tap what you cannot see. Unlocking them needs a *layered*
-   render pass that also hides superficial *muscles*, not just bone. Run `masksToHotspots.ts`
-   and read its closing "occluded in every view" list to see exactly which muscles that would
-   buy.
+1. **23 of the 345 structures have no locate question.** Every muscle now has one; what is
+   left is bony detail that no view a solo silhouette can offer makes tappable. Run
+   `masksToHotspots.ts` and read its closing "occluded in every view" list to see which.
+   (This section said "48 of the 122 muscles" long after that stopped being true. Any number
+   here that is also stated in public belongs in docs/CLAIMS.md, where the validator checks it.)
 2. **Hotspots for bones and landmarks.** The Blender masks only cover muscles, so the 163
    bone/landmark structures have no polygons and generate no locate questions. Author these by
    hand with the dev tool — see "Adding hotspots" below.
@@ -72,11 +73,11 @@ What's still missing, and what that means:
 
 ## Licensing — read before adding images
 
-The 14 atlas slides under `/public/anatomy/atlas/` are AI-generated illustrations the project
-owner created — credited as `'Rory Neary (AI-generated illustration)'` / `'All rights reserved'`
-(see the `AI_GENERATED_CREDIT`/`AI_GENERATED_LICENCE` constants in `images.seed.ts`). They are
-now the *only* AI-generated images left: the 21 muscle panels were re-rendered from Z-Anatomy
-and carry its licence instead, so check which constant an entry uses before copying one.
+No AI-generated imagery ships any more. The 14 atlas slides that carried
+`'Rory Neary (AI-generated illustration)'` / `'All rights reserved'` were removed under CR-033
+item 8, and the 21 muscle panels were re-rendered from Z-Anatomy. Everything shipped is now
+Z-Anatomy under CC BY-SA 4.0, which is what /attributions tells the public — so an image added
+under any other licence makes that page wrong. Check before you add one.
 
 The 15 regional renders under `/public/anatomy/regions/` and the 21 muscle panels under
 `/public/anatomy/panels/` come from the

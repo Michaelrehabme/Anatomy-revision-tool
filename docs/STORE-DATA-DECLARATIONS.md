@@ -45,7 +45,12 @@ ticked and it is unusual to be able to leave them empty.
   `grep -rhoE "from 'firebase/[a-z]+'" src`. There is no `firebase/analytics`.
 - **No crash or performance reporting.**
 - **No location, contacts, photos, camera, microphone, health or fitness data.**
-- **No purchase history** — there is no purchasing.
+- **Purchases**: subscriptions are sold through Paddle (web) and would be sold through the
+  store's own billing in a store build. We hold the subscription's status, its period end and
+  Paddle's subscription id, which is what unlocks the app. We never see or store a card number,
+  and we hold no itemised purchase history beyond the current subscription. Declare purchases as
+  collected and linked to the user; do NOT declare "no purchasing" — that was written before
+  billing shipped and is no longer true.
 - **No tracking across apps or websites**, so App Tracking Transparency does
   not apply and `NSUserTrackingUsageDescription` is not needed.
 - **Nothing is sold or shared for advertising.**

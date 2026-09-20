@@ -144,7 +144,7 @@ Rectification, restriction and objection are handled by email to michael@rehabme
 
 - Single operator; access to production is limited to that one account.
 - No credential, key or secret is held in the repository, and none is present in its history.
-- Changes are version-controlled. A test suite of 732 tests and a content validator cover the
+- Changes are version-controlled. A test suite (911 tests as at 20 September 2026) and a content validator cover the
   application, and are run before release **by the operator** — we have no continuous integration
   server, so this is a working practice rather than an automated gate, and we would rather say so
   than let the figure imply otherwise.

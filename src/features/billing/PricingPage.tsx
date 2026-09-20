@@ -235,7 +235,7 @@ export function PricingPage() {
 
               {!CONFIG && (
                 <p className="mt-3" style={{ font: '400 13px/1.5 var(--font-ui)', color: 'var(--ink3)' }}>
-                  Subscriptions are not open yet. The shoulder is free in the meantime.
+                  Subscriptions are not open yet. Your free region stays free in the meantime.
                 </p>
               )}
               {checkoutError && (

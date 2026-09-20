@@ -8,6 +8,7 @@
  * but exits non-zero on hard errors (duplicate ids) since those indicate a
  * real bug, not just incomplete content.
  */
+import { readFileSync } from 'node:fs';
 import { ALL_STRUCTURES, ALL_IMAGES } from '../features/anatomy-revision/data/seed';
 import { attachHotspots } from '../features/anatomy-revision/data/seed/hotspots';
 
@@ -32,6 +33,68 @@ function fail(message: string): void {
 function warn(message: string): void {
   console.warn(`WARN:  ${message}`);
   warnings += 1;
+}
+
+/**
+ * Every number LocusMSK states in public, checked against the content it is
+ * counted from. CR-033 item 18.
+ *
+ * WHY THIS IS IN THE VALIDATOR. Under the CAP code an objective claim needs
+ * evidence held BEFORE it is published, and the evidence for "345 structures"
+ * is this script's output. A number typed into a marketing page is a copy of
+ * that output which stops being true the moment content is added — the home
+ * page said "five regions" for weeks after the ninth area shipped, and nothing
+ * anywhere noticed. Now a drifted claim fails the build.
+ *
+ * TO ADD ONE: put the claim in docs/CLAIMS.md with an evidence cell reading
+ * `validate-content: <key>=<number>`, using a key below. A key that does not
+ * exist is an error rather than a silent pass, because a typo would otherwise
+ * quietly stop checking the claim.
+ */
+function validateClaims(): void {
+  const counts: Record<string, number> = {
+    structures: ALL_STRUCTURES.length,
+    muscles: ALL_STRUCTURES.filter(isMuscle).length,
+    joints: ALL_STRUCTURES.filter(isJoint).length,
+    areas: AREAS.length,
+    images: ALL_IMAGES.length,
+    // "Learn every muscle by where it lives" is only true while this equals the
+    // muscle count. It was false for months while the README still said so.
+    locatablemuscles: (() => {
+      const withHotspot = new Set<string>();
+      for (const img of ALL_IMAGES) for (const h of img.hotspots ?? []) withHotspot.add(h.structureId);
+      return ALL_STRUCTURES.filter(isMuscle).filter((m) => withHotspot.has(m.id)).length;
+    })(),
+  };
+
+  let file: string;
+  try {
+    file = readFileSync(new URL('../../docs/CLAIMS.md', import.meta.url), 'utf8');
+  } catch {
+    warn('docs/CLAIMS.md is missing — public claims are unchecked (CR-033 item 18)');
+    return;
+  }
+
+  const found = [...file.matchAll(/validate-content:\s*([a-z]+)\s*=\s*([0-9,]+)/g)];
+  if (found.length === 0) {
+    warn('docs/CLAIMS.md holds no checkable counts — every number in it is being taken on trust');
+    return;
+  }
+
+  for (const [, key, raw] of found) {
+    const claimed = Number(raw.replace(/,/g, ''));
+    const actual = counts[key];
+    if (actual === undefined) {
+      fail(`docs/CLAIMS.md cites "${key}", which is not a counted key (${Object.keys(counts).join(', ')})`);
+    } else if (actual !== claimed) {
+      fail(
+        `Published claim "${key} = ${claimed}" is out of date: the content now holds ${actual}. ` +
+          'Correct the page that states it AND docs/CLAIMS.md, or the claim is unsubstantiated',
+      );
+    }
+  }
+  console.log(`
+Checked ${found.length} published claim(s) in docs/CLAIMS.md against the content.`);
 }
 
 /**
@@ -199,6 +262,7 @@ function main(): void {
   }
 
   validateOina();
+  validateClaims();
 
   console.log(
     `\nStructures per area: ` +

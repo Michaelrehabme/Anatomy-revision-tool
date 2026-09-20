@@ -43,7 +43,7 @@ const FAQS = [
   },
   {
     q: 'Which muscles are covered?',
-    a: '122 muscles across five regions: shoulder and arm, forearm and hand, back and core, hip and thigh, and lower leg and foot. Questions are built on Z-Anatomy renders with the labels hidden, so what you revise looks like what you will be examined on.',
+    a: '122 muscles across nine regions: shoulder, elbow, wrist and hand, hip, knee, ankle and foot, and the cervical, thoracic and lumbar spine. Bones, landmarks, joints and ligaments bring it to 345 structures in all. Questions are built on Z-Anatomy renders with the labels hidden, so what you revise looks like what you will be examined on.',
   },
   {
     q: 'Does it work offline?',
@@ -378,7 +378,7 @@ export function MarketingHome() {
             price={PRICING.monthly}
             per="month"
             note="The whole body, month to month. Cancel whenever."
-            features={['All 122 muscles, five regions', 'Full body progress map', 'Offline sessions']}
+            features={['All 122 muscles, nine regions', 'Full body progress map', 'Offline sessions']}
             cta={<PrimaryLink to="/pricing?plan=monthly">Subscribe monthly</PrimaryLink>}
           />
           <PriceCard
@@ -447,9 +447,9 @@ export function MarketingHome() {
           <div className="p-6" style={{ border: '1.2px solid var(--line)' }}>
             <ul className="flex flex-col gap-3" style={{ listStyle: 'none', padding: 0, margin: 0 }}>
               {[
-                ['122 muscles', 'five regions, from Z-Anatomy renders'],
+                ['122 muscles', 'nine regions, from Z-Anatomy renders'],
                 ['3 question types', 'locate, identify and OINA'],
-                ['9 min', 'median session — it fits between lectures'],
+                ['10, 20 or 40', 'questions a session — it fits between lectures'],
               ].map(([figure, caption]) => (
                 <li key={figure}>
                   <div style={{ fontFamily: 'var(--font-display)', fontSize: 24, fontWeight: 500, color: 'var(--ink)' }}>
