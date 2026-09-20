@@ -6,6 +6,7 @@ import { SubscriptionSummary } from '../shared/SubscriptionSummary';
 import type { UseEntitlement } from '../../hooks/useEntitlement';
 import { AccuracyTrendChart } from '../shared/AccuracyTrendChart';
 import { MyClasses } from '../Account/MyClasses';
+import { AdminSection } from '../Account/AdminSection';
 import { AuthScreen } from '../Auth/AuthScreen';
 import { Button } from '../shared/Button';
 import { useAuth, AUTH_ENABLED } from '../../context/AuthProvider';
@@ -142,6 +143,7 @@ export function MobileAccount({ access, content, repository, userId, onNavigateT
             </h3>
             <CohortMembership uid={user.uid} compact />
             <MyClasses uid={user.uid} compact />
+            <AdminSection compact />
 
             <div className="mt-6 border-t pt-5" style={{ borderColor: 'var(--line)' }}>
               {user.isAnonymous ? (

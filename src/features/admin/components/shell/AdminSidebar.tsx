@@ -1,13 +1,8 @@
 import { Link, NavLink } from 'react-router-dom';
 
-const ADMIN_NAV_ITEMS: { path: string; label: string }[] = [
-  { path: '/admin/changes', label: 'Change Register' },
-  { path: '/admin/users', label: 'Users' },
-  { path: '/admin/analytics', label: 'Analytics' },
-  { path: '/admin/cohorts', label: 'Cohorts' },
-  { path: '/admin/people', label: 'People' },
-  { path: '/admin/site', label: 'Site' },
-];
+import { ADMIN_PAGES } from '../../adminPages';
+
+const ADMIN_NAV_ITEMS = ADMIN_PAGES;
 
 /** Admin-section counterpart to NavSidebar — same brand mark + nav-list treatment, different item set. */
 export function AdminSidebar() {

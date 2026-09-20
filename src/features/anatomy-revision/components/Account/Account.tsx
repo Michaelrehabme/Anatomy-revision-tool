@@ -8,6 +8,7 @@ import { SubscriptionSummary } from '../shared/SubscriptionSummary';
 import type { UseEntitlement } from '../../hooks/useEntitlement';
 import { AccuracyTrendChart } from '../shared/AccuracyTrendChart';
 import { MyClasses } from './MyClasses';
+import { AdminSection } from './AdminSection';
 import { useAuth, AUTH_ENABLED } from '../../context/AuthProvider';
 import { useProgressData } from '../../hooks/useProgressData';
 import { CATEGORIES, CATEGORY_LABELS } from '../../types/structure';
@@ -161,6 +162,7 @@ export function Account({ access, content, repository, userId, onNavigate }: Acc
             <h3 className="mt-10" style={heading}>Classes</h3>
             <CohortMembership uid={user.uid} />
             <MyClasses uid={user.uid} />
+            <AdminSection />
 
             <div className="mt-6 border-t pt-4" style={{ borderColor: 'var(--line)' }}>
               {user.isAnonymous ? (

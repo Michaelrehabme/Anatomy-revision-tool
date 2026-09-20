@@ -1,5 +1,3 @@
-import { Link } from 'react-router-dom';
-import { useAdminEntry } from '../../hooks/useAdminEntry';
 
 export type MobileTab = 'today' | 'atlas' | 'progress' | 'account';
 
@@ -24,16 +22,11 @@ interface MobileTabBarProps {
  * in a flow rather than a tab destination. Account is where a student joins a
  * class and anyone creates one.
  *
- * A fifth tab appears for an admin, and ONLY for an admin — see
- * hooks/useAdminEntry, which also explains why being admin is not sufficient.
- * It is a Link, not a tab: /admin is a separate route tree, not a section this
- * bar can activate, so it never takes the active underline. Five tabs is tight
- * on a narrow phone, but this one is on one person's own device, and the
- * alternative for them was typing a URL into a phone browser.
+ * The admin entrance is on the Account screen (Account/AdminSection), not
+ * a fifth tab: five was tight on a narrow phone, and /admin is a separate
+ * route tree that could never be the active tab anyway.
  */
 export function MobileTabBar({ active, onNavigate }: MobileTabBarProps) {
-  const showAdmin = useAdminEntry();
-
   return (
     <div className="flex flex-none px-5 pt-2 pb-6.5" style={{ background: 'var(--sf)' }}>
       {TABS.map((t) => {
@@ -51,16 +44,6 @@ export function MobileTabBar({ active, onNavigate }: MobileTabBarProps) {
           </button>
         );
       })}
-      {showAdmin && (
-        <Link
-          to="/admin"
-          className="flex min-h-[48px] flex-1 flex-col items-center justify-center gap-1.5"
-          style={{ fontFamily: 'var(--font-ui)', fontSize: 13.5, color: 'var(--ink3)', fontWeight: 400 }}
-        >
-          <span className="h-0.5 w-5 rounded-full" style={{ background: 'transparent' }} />
-          Admin
-        </Link>
-      )}
     </div>
   );
 }

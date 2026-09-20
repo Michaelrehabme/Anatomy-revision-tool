@@ -1,7 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react';
-import { Link } from 'react-router-dom';
 import { useAuth, AUTH_ENABLED } from '../../context/AuthProvider';
-import { useAdminEntry } from '../../hooks/useAdminEntry';
 import { AuthScreen } from '../Auth/AuthScreen';
 import { useRepository } from '../../hooks/useRepository';
 import { levelProgress } from '../../lib/levels';
@@ -115,35 +113,6 @@ function AccountSection() {
   );
 }
 
-/**
- * The way into /admin, for the one account that has it.
- *
- * A Link rather than a button on `onNavigate`: the tabs above switch sections
- * within this app, while /admin is a separate route tree and its own lazily
- * loaded bundle. Routing it through the section navigator would mean teaching
- * that navigator about a section it cannot render.
- *
- * Set apart from the nav items above by a rule, because it leaves the app
- * rather than moving around inside it — the same reason the account block
- * below is separated.
- */
-function AdminLink() {
-  const showAdmin = useAdminEntry();
-  if (!showAdmin) return null;
-
-  return (
-    <div className="mt-4 border-t pt-4" style={{ borderColor: 'var(--line)' }}>
-      <Link
-        to="/admin"
-        className="block rounded-[3px] px-3.5 py-2.5"
-        style={{ fontFamily: 'var(--font-display)', fontSize: 18, color: 'var(--ink3)' }}
-      >
-        Admin
-      </Link>
-    </div>
-  );
-}
-
 /** The standard persistent sidebar: brand mark, 4-item nav, footer slot, account section. */
 export function NavSidebar({ active, onNavigate, footer }: NavSidebarProps) {
   return (
@@ -172,7 +141,6 @@ export function NavSidebar({ active, onNavigate, footer }: NavSidebarProps) {
           );
         })}
       </nav>
-      <AdminLink />
       <div className="flex-1" />
       <LevelProgress />
       {footer}

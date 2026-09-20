@@ -2,7 +2,8 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthProvider';
 
 /**
- * Compact header affordance: taps through to the Account screen.
+ * Compact header nudge for a device-only account: taps through to Account
+ * to sign in.
  *
  * It used to carry sign-in/sign-out inline. Now that /account exists, those
  * live there — a header strip repeating them meant the same actions in two
@@ -11,9 +12,12 @@ import { useAuth } from '../../context/AuthProvider';
 export function MobileAccountButton() {
   const { user } = useAuth();
 
-  if (!user) return null;
+  // A signed-in person reaches their account from the tab bar; a header
+  // strip repeating their name on every screen was a row spent on nothing.
+  // The strip stays only as the sign-in nudge for a device-only account.
+  if (!user || !user.isAnonymous) return null;
 
-  const label = user.isAnonymous ? 'Sign in' : (user.displayName ?? user.email ?? 'Account');
+  const label = 'Sign in';
 
   return (
     <div className="flex items-center justify-end px-4 pt-3">
