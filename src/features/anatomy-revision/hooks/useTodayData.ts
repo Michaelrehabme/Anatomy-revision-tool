@@ -14,6 +14,9 @@ export interface TodayData {
   /** Muscles only — content also includes bones/landmarks, not part of this screen's "122 muscles" framing. */
   totalMuscleCount: number;
   seenMusclePct: number;
+  /** Every kind the account may reach, and how many of them have a mastery row. */
+  totalStructureCount: number;
+  seenStructureCount: number;
   dueMuscles: StructureMastery[];
   /** Every mastery row for the user, for correctness-weighted question selection. */
   allMastery: StructureMastery[];
@@ -75,6 +78,11 @@ export function useTodayData(
   const seenCount = allMastery.filter((m) => muscleIds.has(m.structureId)).length;
   const seenMusclePct = totalMuscleCount > 0 ? Math.round((seenCount / totalMuscleCount) * 100) : 0;
   const dueMuscles = due.filter((m) => muscleIds.has(m.structureId));
+  const entitledIds = new Set(
+    content.structures.filter((s) => areasOf(s).some((a) => entitledAreas.includes(a))).map((s) => s.id),
+  );
+  const totalStructureCount = entitledIds.size;
+  const seenStructureCount = allMastery.filter((m) => entitledIds.has(m.structureId)).length;
 
   const weakest = [...allMastery]
     .filter((m) => m.attemptsTotal > 0 && muscleIds.has(m.structureId))
@@ -99,6 +107,8 @@ export function useTodayData(
     streak,
     totalMuscleCount,
     seenMusclePct,
+    totalStructureCount,
+    seenStructureCount,
     dueMuscles,
     allMastery,
     weakest,

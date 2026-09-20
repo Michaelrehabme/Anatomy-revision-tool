@@ -32,7 +32,7 @@ interface TodayProps {
 }
 
 export function Today({ access, repository, userId, content, onStart, onCustomSession, onOpenMuscle, onNavigate }: TodayProps) {
-  const { loading, streak, totalMuscleCount, seenMusclePct, dueMuscles, allMastery, weakest, comingDue, weekBuckets, weekMax, dayLabels } =
+  const { loading, streak, totalMuscleCount, seenMusclePct, totalStructureCount, seenStructureCount, dueMuscles, allMastery, weakest, comingDue, weekBuckets, weekMax, dayLabels } =
     useTodayData(repository, userId, content, access.areas);
   const now = new Date();
   // Nothing attempted yet: the first session is the guided starter, and the
@@ -93,6 +93,9 @@ export function Today({ access, repository, userId, content, onStart, onCustomSe
               </div>
               <div className="mt-1.5" style={{ font: '400 11.5px/1.5 var(--font-mono)', color: 'var(--ink3)' }}>
                 {totalMuscleCount} muscles · {seenMusclePct}% seen
+              </div>
+              <div className="mt-1" style={{ font: '400 11.5px/1.5 var(--font-mono)', color: 'var(--ink3)' }}>
+                {seenStructureCount} of {totalStructureCount} structures
               </div>
             </>
           }

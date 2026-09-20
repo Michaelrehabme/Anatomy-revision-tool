@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import type { AnatomyRepository } from '../data/repository';
 import type { AnatomyContent } from './useAnatomyContent';
 import type { StructureMastery } from '../types/attempt';
-import { isMuscle, type MuscleStructure } from '../types/structure';
+import { CATEGORIES, isMuscle, type Category, type MuscleStructure } from '../types/structure';
 import type { Region } from '../types/region';
 import { REGIONS } from '../types/region';
 import { computeStreak } from '../lib/streak';
@@ -17,9 +17,19 @@ export interface RegionProgress {
   pct: number;
 }
 
+export interface CategoryCoverage {
+  seen: number;
+  total: number;
+}
+
 export interface ProgressData {
   streak: number;
   muscles: MuscleStructure[];
+  /** Every kind, not only muscles — the content has five and a student studies all of them. */
+  seenByCategory: Record<Category, CategoryCoverage>;
+  totalStructures: number;
+  /** Structures of every kind with at least one graded attempt. */
+  totalSeen: number;
   masteryByStructureId: Map<string, StructureMastery>;
   seenCount: number;
   untouched: MuscleStructure[];
@@ -51,17 +61,26 @@ export function useProgressData(repository: AnatomyRepository | null, userId: st
 
   const muscles = useMemo(() => content.structures.filter(isMuscle), [content.structures]);
   const masteryByStructureId = useMemo(() => new Map(mastery.map((m) => [m.structureId, m])), [mastery]);
+  // "Seen" means a mastery row exists: a structure the student has been
+  // graded on at least once, right or wrong. The region rows below used to
+  // require a correct answer as well, so a muscle attempted and missed showed
+  // as seen in the headline and unseen in its region.
   const seenIds = new Set(mastery.map((m) => m.structureId));
   const seenCount = muscles.filter((m) => seenIds.has(m.id)).length;
+  const seenByCategory = Object.fromEntries(
+    CATEGORIES.map((category) => {
+      const ofKind = content.structures.filter((s) => s.category === category);
+      return [category, { seen: ofKind.filter((s) => seenIds.has(s.id)).length, total: ofKind.length }];
+    }),
+  ) as Record<Category, CategoryCoverage>;
+  const totalStructures = content.structures.length;
+  const totalSeen = content.structures.filter((s) => seenIds.has(s.id)).length;
   const untouched = muscles.filter((m) => !seenIds.has(m.id));
   const leeches = muscles.filter((m) => masteryByStructureId.get(m.id)?.isLeech);
 
   const byRegion: RegionProgress[] = REGIONS.map((region) => {
     const regionMuscles = muscles.filter((m) => m.region === region);
-    const seen = regionMuscles.filter((m) => {
-      const row = masteryByStructureId.get(m.id);
-      return row && row.attemptsCorrect / Math.max(1, row.attemptsTotal) >= 0.01; // seen at all
-    });
+    const seen = regionMuscles.filter((m) => seenIds.has(m.id));
     const correct = regionMuscles.reduce((sum, m) => {
       const row = masteryByStructureId.get(m.id);
       return sum + (row ? row.attemptsCorrect / Math.max(1, row.attemptsTotal) : 0);
@@ -78,5 +97,18 @@ export function useProgressData(repository: AnatomyRepository | null, userId: st
   });
   const forecastMax = Math.max(1, ...forecast);
 
-  return { streak, muscles, masteryByStructureId, seenCount, untouched, leeches, byRegion, forecast, forecastMax };
+  return {
+    streak,
+    muscles,
+    seenByCategory,
+    totalStructures,
+    totalSeen,
+    masteryByStructureId,
+    seenCount,
+    untouched,
+    leeches,
+    byRegion,
+    forecast,
+    forecastMax,
+  };
 }

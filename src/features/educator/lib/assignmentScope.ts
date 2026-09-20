@@ -1,7 +1,7 @@
 import type { RevisionSetConfig } from '../../anatomy-revision/lib/questionGenerators/generateSet';
 import type { QuestionType } from '../../anatomy-revision/types/question';
 import { AREA_LABELS, normaliseAreas, type Area } from '../../anatomy-revision/types/region';
-import { MUSCLE_GROUP_LABELS, type Category } from '../../anatomy-revision/types/structure';
+import { CATEGORY_LABELS, MUSCLE_GROUP_LABELS } from '../../anatomy-revision/types/structure';
 import type { AssignmentScope, ScopedAssignment } from '../types/cohort';
 
 /**
@@ -30,13 +30,9 @@ export const ASSIGNMENT_QUESTION_COUNTS = [10, 20, 30, 40];
 export const DEFAULT_ASSIGNMENT_QUESTION_COUNT = 20;
 export const DEFAULT_TARGET_ACCURACY_PCT = 70;
 
-export const CATEGORY_LABELS: Record<Category, string> = {
-  muscle: 'Muscles',
-  bone: 'Bones',
-  landmark: 'Landmarks',
-  joint: 'Joints',
-  ligament: 'Ligaments',
-};
+// The plural kind names live with the Category type; re-exported so the
+// educator screens keep their import.
+export { CATEGORY_LABELS };
 
 /**
  * Exam mode: no feedback until the end, and never a learn card — an attempt is

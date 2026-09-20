@@ -10,6 +10,7 @@ import { AccuracyTrendChart } from '../shared/AccuracyTrendChart';
 import { MyClasses } from './MyClasses';
 import { useAuth, AUTH_ENABLED } from '../../context/AuthProvider';
 import { useProgressData } from '../../hooks/useProgressData';
+import { CATEGORIES, CATEGORY_LABELS } from '../../types/structure';
 import { accuracyTrend, accuracyDeltaByAttempts, type AccuracyTrendPoint } from '../../lib/accuracyTrend';
 import type { UserAttempt } from '../../types/attempt';
 import type { AnatomyContent } from '../../hooks/useAnatomyContent';
@@ -32,13 +33,18 @@ const statLabel = {
   color: 'var(--ink3)',
 } as const;
 
-function Stat({ label, value }: { label: string; value: string }) {
+function Stat({ label, value, detail }: { label: string; value: string; detail?: string }) {
   return (
     <div className="rounded-[4px] px-4 py-3" style={{ background: 'var(--sf)', border: '1px solid var(--line)', minWidth: 150 }}>
       <div style={statLabel}>{label}</div>
       <div className="mt-1.5" style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 26, letterSpacing: '-.01em' }}>
         {value}
       </div>
+      {detail && (
+        <div className="mt-1" style={{ font: '400 11px/1.4 var(--font-mono)', color: 'var(--ink3)' }}>
+          {detail}
+        </div>
+      )}
     </div>
   );
 }
@@ -66,7 +72,8 @@ interface AccountProps {
  */
 export function Account({ access, content, repository, userId, onNavigate }: AccountProps) {
   const { user, signOut } = useAuth();
-  const { streak, seenCount, muscles } = useProgressData(repository, userId, content);
+  const { streak, seenByCategory, totalSeen, totalStructures } = useProgressData(repository, userId, content);
+  const seenDetail = CATEGORIES.map((c) => `${seenByCategory[c].seen}/${seenByCategory[c].total} ${CATEGORY_LABELS[c].toLowerCase()}`).join(' · ');
   const [attempts, setAttempts] = useState<UserAttempt[] | null>(null);
   const [showAuthScreen, setShowAuthScreen] = useState(false);
 
@@ -116,7 +123,7 @@ export function Account({ access, content, repository, userId, onNavigate }: Acc
           <Stat label="Attempts" value={String(answered.length)} />
           <Stat label="Accuracy" value={accuracyPct !== null ? `${accuracyPct}%` : '—'} />
           <Stat label="Current streak" value={`${streak} ${streak === 1 ? 'day' : 'days'}`} />
-          <Stat label="Structures seen" value={`${seenCount} / ${muscles.length}`} />
+          <Stat label="Structures seen" value={`${totalSeen} / ${totalStructures}`} detail={seenDetail} />
         </div>
 
         <section className="mt-12">

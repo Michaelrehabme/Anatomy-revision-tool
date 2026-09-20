@@ -2,6 +2,7 @@ import { REGION_LABELS } from '../../types/region';
 import { generateRevisionSet } from '../../lib/questionGenerators/generateSet';
 import { getLearnCardAttempts } from '../../lib/preferences';
 import { useProgressData } from '../../hooks/useProgressData';
+import { CATEGORIES, CATEGORY_LABELS } from '../../types/structure';
 import { Button } from '../shared/Button';
 import type { UseEntitlement } from '../../hooks/useEntitlement';
 import { AppShell } from '../shell/AppShell';
@@ -23,7 +24,7 @@ interface ProgressProps {
 }
 
 export function Progress({ access, content, repository, userId, onStart, onNavigate, onOpenAchievements }: ProgressProps) {
-  const { streak, muscles, seenCount, untouched, leeches, byRegion: byRegionUnsorted, forecast, forecastMax } =
+  const { streak, muscles, seenCount, seenByCategory, totalSeen, totalStructures, untouched, leeches, byRegion: byRegionUnsorted, forecast, forecastMax } =
     useProgressData(repository, userId, content);
   // Desktop shows strongest-first; the mobile mockup keeps REGIONS' natural order instead.
   const byRegion = [...byRegionUnsorted].sort((a, b) => b.pct - a.pct);
@@ -83,8 +84,13 @@ export function Progress({ access, content, repository, userId, onStart, onNavig
         </h2>
         <div className="flex items-baseline justify-between">
           <p className="text-base" style={{ color: 'var(--ink2)' }}>
-            {muscles.length} muscles · {seenCount} seen at least once · {untouched.length} still untouched
+            {totalStructures} structures · {totalSeen} seen at least once · {muscles.length} muscles, {seenCount} seen, {untouched.length} still untouched
           </p>
+        </div>
+        <p className="mt-2" style={{ font: '400 12px/1.6 var(--font-mono)', color: 'var(--ink3)' }}>
+          {CATEGORIES.map((c) => `${seenByCategory[c].seen} / ${seenByCategory[c].total} ${CATEGORY_LABELS[c].toLowerCase()}`).join(' · ')}
+        </p>
+        <div>
           <button type="button" onClick={onOpenAchievements} style={{ font: '500 13px/1 var(--font-ui)', color: 'var(--accd)' }}>
             View achievements →
           </button>

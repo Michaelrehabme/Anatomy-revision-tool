@@ -12,6 +12,15 @@ export type Category = 'muscle' | 'bone' | 'landmark' | 'joint' | 'ligament';
  */
 export const CATEGORIES: Category[] = ['muscle', 'bone', 'landmark', 'joint', 'ligament'];
 
+/** Plural, as a heading or a count would say it: "30 Bones". */
+export const CATEGORY_LABELS: Record<Category, string> = {
+  muscle: 'Muscles',
+  bone: 'Bones',
+  landmark: 'Landmarks',
+  joint: 'Joints',
+  ligament: 'Ligaments',
+};
+
 /**
  * A zeroed per-category tally, the shape of
  * `RevisionSessionSummary['breakdownByCategory']`. Built from CATEGORIES
