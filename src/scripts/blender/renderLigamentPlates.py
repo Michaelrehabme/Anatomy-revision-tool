@@ -47,7 +47,12 @@ ap.add_argument("--fibres", action="store_true",
                 help="draw straps with the striped fibre texture. Off by default: at "
                      "plate size its 2.6mm bands alias into moire and the user read "
                      "every ligament as a striped ribbon. Kept for comparison.")
+ap.add_argument("--look", default="studio", choices=["flat", "studio"],
+                help="studio (default) is the landmark plates' look: a dim world, a key "
+                     "light aimed from the camera, occlusion in the hollows and an inked "
+                     "line pass. flat is the old evenly lit look.")
 a = ap.parse_args(argv)
+STUDIO = a.look == "studio"
 
 spec = json.load(open(a.spec))
 
@@ -68,7 +73,11 @@ scene.world.use_nodes = True
 _bg = scene.world.node_tree.nodes.get("Background")
 if _bg:
     _bg.inputs[0].default_value = (1.0, 1.0, 1.0, 1.0)
-    _bg.inputs[1].default_value = 0.55
+    # THE AMBIENT LIGHT FLATTENED THE BONES, as it did on the landmark plates
+    # before them: a white world at 0.55 lit every face from every side, so
+    # the bones read as one pale grey. Relief comes from a dim world and a key
+    # light raking across the surface. See renderLandmarkMarkers.py.
+    _bg.inputs[1].default_value = 0.12 if STUDIO else 0.55
 
 cam_data = bpy.data.cameras.new("ligcam")
 cam_data.type = "ORTHO"
@@ -77,7 +86,7 @@ scene.collection.objects.link(cam)
 scene.camera = cam
 
 sun = bpy.data.objects.new("ligsun", bpy.data.lights.new("ligsun", type="SUN"))
-sun.data.energy = 2.6
+sun.data.energy = 4.0 if STUDIO else 2.6
 # A sun with some angular size casts soft-edged shadows, which is most of
 # what separates a rendered bone from a painted one.
 sun.data.angle = 0.35
@@ -86,8 +95,50 @@ scene.collection.objects.link(sun)
 # A weaker fill from the other side, so the shadowed face of a bone is a
 # darker ivory rather than a hole. The reference illustration is lit this way.
 fill = bpy.data.objects.new("ligfill", bpy.data.lights.new("ligfill", type="SUN"))
-fill.data.energy = 0.9
+fill.data.energy = 0.6 if STUDIO else 0.9
 fill.data.angle = 0.6
+if STUDIO:
+    fill.data.use_shadow = False
+    sun.data.angle = math.radians(12)   # a soft-edged shadow, not a hard cut-out
+
+# Where the light travels in the CAMERA's own axes (x right, y up, -z away from
+# the lens): the key over the viewer's left shoulder, the convention of every
+# anatomical plate, and a fill lifting the shadow side from the lower right.
+# Fixed to the camera rather than the world, so every one of the eight angles
+# is lit the same way instead of the back view being lit flat from the front.
+KEY_DIR = (0.62, -0.62, -0.48)
+FILL_DIR = (-0.75, 0.25, -0.6)
+
+
+def aim_lights():
+    q = cam.rotation_euler.to_quaternion()
+    for ob, d in ((sun, KEY_DIR), (fill, FILL_DIR)):
+        ob.rotation_euler = (q @ mathutils.Vector(d)).to_track_quat("-Z", "Y").to_euler()
+
+
+if STUDIO:
+    # AgX rolls highlights off, and a bone is nearly all highlight. Standard
+    # keeps the light-to-shadow range the lights make.
+    scene.view_settings.view_transform = "Standard"
+    scene.view_settings.look = "None"
+    # THE LINE PASS, as on the landmark plates: Workbench, unlit and white,
+    # draws only the silhouette, the step in depth where one bone passes in
+    # front of another, and the creases. Multiplied over the lit render it
+    # separates two pale bones that no lighting can.
+    _sh = scene.display.shading
+    _sh.light = "FLAT"
+    _sh.color_type = "SINGLE"
+    _sh.single_color = (1, 1, 1)
+    _sh.show_cavity = True
+    _sh.cavity_type = "BOTH"
+    _sh.cavity_ridge_factor = 0.0
+    _sh.cavity_valley_factor = 2.0
+    _sh.curvature_ridge_factor = 0.0
+    _sh.curvature_valley_factor = 1.6
+    _sh.show_shadows = False
+    _sh.show_object_outline = True
+    _sh.object_outline_color = (0.16, 0.13, 0.11)
+    scene.display.render_aa = "16"
 scene.collection.objects.link(fill)
 
 # Contact shadow where a strap meets bone, which is what makes it sit ON the
@@ -148,6 +199,10 @@ _bl.select_by_collection = True
 _bl.collection = bone_coll
 _bl.linestyle.color = (0.42, 0.36, 0.28)
 _bl.linestyle.thickness = 1.1
+# In the studio look the Workbench line pass inks the bones, the way the
+# landmark plates do; this lineset on top of it drew stray ticks at every
+# small crease of the now smooth-shaded mesh.
+_bl.show_render = not STUDIO
 
 
 def principled(name, colour, roughness=0.5):
@@ -201,7 +256,26 @@ def bone_mat():
     return mat
 
 
-BONE_MAT = bone_mat()
+def studio_bone_mat():
+    """The landmark plates' bone: a pale warm ivory with ambient occlusion
+    multiplied into its colour, which is what separates a fossa's rim from its
+    floor and one carpal from the next."""
+    mat = principled("lig_bone_studio", (0.90, 0.88, 0.83, 1), 0.5)
+    nt = mat.node_tree
+    bsdf = nt.nodes["Principled BSDF"]
+    ao = nt.nodes.new("ShaderNodeAmbientOcclusion")
+    ao.samples = 16
+    ao.inputs["Distance"].default_value = 0.02
+    ao.inputs["Color"].default_value = (0.80, 0.76, 0.68, 1)
+    gamma = nt.nodes.new("ShaderNodeGamma")
+    gamma.inputs["Gamma"].default_value = 3.0
+    nt.links.new(ao.outputs["Color"], gamma.inputs["Color"])
+    nt.links.new(gamma.outputs["Color"], bsdf.inputs["Base Color"])
+    mat.diffuse_color = (0.90, 0.87, 0.80, 1)   # what Workbench draws
+    return mat
+
+
+BONE_MAT = studio_bone_mat() if STUDIO else bone_mat()
 # The two ligament colours. Each strap gets its own material instance built
 # from these, because the fibre texture has to be aligned to that strap's own
 # long axis — see fibre_mat.
@@ -406,8 +480,17 @@ def bake(names, mesh_name):
         bm.from_mesh(tmp)
         bpy.data.meshes.remove(tmp)
     mesh = bpy.data.meshes.new(mesh_name)
+    if STUDIO:
+        # The .l meshes are mirrored copies with their normals pointing inward;
+        # lit properly, half the skeleton would shade inside-out.
+        bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
     bm.to_mesh(mesh)
     bm.free()
+    if STUDIO:
+        # Smooth, but keep a real edge an edge: flat-shaded, the atlas's few
+        # hundred faces per bone read as anatomy that is not there.
+        mesh.polygons.foreach_set("use_smooth", [True] * len(mesh.polygons))
+        mesh.set_sharp_from_angle(angle=math.radians(50))
     return mesh
 
 
@@ -444,8 +527,11 @@ def frame_camera(lo, hi, angle_deg, elevation_deg, margin, min_frame, max_frame=
     cam.location = centre + offset
     cam.rotation_euler = (centre - cam.location).to_track_quat("-Z", "Y").to_euler()
     cam_data.ortho_scale = size
-    sun.rotation_euler = mathutils.Euler((0.9 - phi * 0.5, 0.3, 0.6 + theta), "XYZ")
-    fill.rotation_euler = mathutils.Euler((1.1, -0.4, theta - 1.8), "XYZ")
+    if STUDIO:
+        aim_lights()
+    else:
+        sun.rotation_euler = mathutils.Euler((0.9 - phi * 0.5, 0.3, 0.6 + theta), "XYZ")
+        fill.rotation_euler = mathutils.Euler((1.1, -0.4, theta - 1.8), "XYZ")
 
 
 def id_colour(i):
@@ -545,12 +631,50 @@ def soften_strap(ob):
     sub.render_levels = 1
 
 
+EEVEE_ENGINE = scene.render.engine
+
+
+def multiply_lines(path, line_path):
+    """Multiplies the Workbench line pass over the lit render, where there is
+    something under it (its transparent background would eat the edge)."""
+    import numpy as np
+    base = bpy.data.images.load(path)
+    line = bpy.data.images.load(line_path)
+    n = base.size[0] * base.size[1] * 4
+    bpx = np.empty(n, dtype=np.float32); base.pixels.foreach_get(bpx)
+    lpx = np.empty(n, dtype=np.float32); line.pixels.foreach_get(lpx)
+    bpx = bpx.reshape(-1, 4); lpx = lpx.reshape(-1, 4)
+    k = lpx[:, 3:4]
+    bpx[:, :3] *= lpx[:, :3] * k + (1 - k)
+    base.pixels.foreach_set(bpx.ravel())
+    base.filepath_raw = path
+    base.file_format = "PNG"
+    base.save()
+    bpy.data.images.remove(base)
+    bpy.data.images.remove(line)
+    os.remove(line_path)
+
+
 def render_to(path, outlines=True):
+    """outlines=True is a picture a student sees (context, highlight): it gets
+    the strap outlines and, in the studio look, the line pass. The mask and ID
+    renders pass False — a line would widen the traced hotspot."""
     path = os.path.abspath(path)
     os.makedirs(os.path.dirname(path), exist_ok=True)
     scene.render.filepath = path
+    scene.render.engine = EEVEE_ENGINE
     scene.render.use_freestyle = outlines
     bpy.ops.render.render(write_still=True)
+    if outlines and STUDIO:
+        line_path = path[:-4] + ".lines.png"
+        scene.render.filepath = line_path
+        scene.render.use_freestyle = False
+        scene.render.engine = "BLENDER_WORKBENCH"
+        try:
+            bpy.ops.render.render(write_still=True)
+        finally:
+            scene.render.engine = EEVEE_ENGINE
+        multiply_lines(path, line_path)
 
 
 skel = bpy.data.collections.get("1: Skeletal system")
