@@ -72,6 +72,9 @@ export const ACCEPTED_LARGE: Record<string, { maxArea: number; why: string }> = 
   'landmark-ilium-lateral': { maxArea: 0.185, why: 'the ilium is the blade of the hip bone, framed on the hip bone' },
   'landmark-pubis-anterior': { maxArea: 0.18, why: 'outline reviewed in a second pass; the anatomy alone is 13.6% of the plate' },
   'sub-sacrum-a000-plate': { maxArea: 0.185, why: 'a whole-bone outline on the plate framed for the sacral landmarks' },
+  'ligament-external-intercostal-membrane-a000-context': { maxArea: 0.08, why: 'the membrane fills every intercostal space in view; its outline is the sheet' },
+  'ligament-external-intercostal-membrane-a045-context': { maxArea: 0.08, why: 'the membrane fills every intercostal space in view; its outline is the sheet' },
+  'ligament-external-intercostal-membrane-a315-context': { maxArea: 0.08, why: 'the membrane fills every intercostal space in view; its outline is the sheet' },
 };
 
 export interface HotspotOffender {

@@ -96,11 +96,34 @@ const BY_AREA: Record<SubRegion, { minFrame: number; frame: number; keep: string
   neck: { minFrame: 0.14, frame: 0.22, keep: ['Vertebra C*', 'Vertebra T1', 'Vertebra T2', 'Occipital bone', 'Clavicle.*', ...STERNUM] },
 };
 
+/**
+ * TILTED VIEWS FOR THE FOOT. A foot's ligaments are read from above and below
+ * as much as from the side — the plantar ligaments are only ever seen from
+ * underneath — so every ankle-and-foot ligament also gets four frames on the
+ * other axis: tilted up 45 degrees and straight down onto the dorsum (turned
+ * from the posterior view, so the toes point up the picture), tilted down 45
+ * degrees and straight up at the sole (turned from the anterior view, toes up
+ * again). Each is [azimuth, elevation]. The publisher keeps the ones that trace.
+ */
+const FOOT_TILTS: [number, number][] = [[180, 45], [180, 90], [0, -45], [0, -90]];
+
+/**
+ * Ligaments whose area frame cannot show what they connect. The interosseous
+ * membranes run the whole length of the forearm and the leg, and a membrane is
+ * only legible with the joint at each end in shot: the elbow and the wrist,
+ * the knee and the ankle. Their frame is fixed at the length of the segment,
+ * and the bones of the far joint are added to the area's list.
+ */
+const OVERRIDES: Record<string, { frame: number; keepExtra: string[] }> = {
+  'interosseous-membrane-of-forearm': { frame: 0.36, keepExtra: [...CARPALS, '*metacarpal bone*', '*finger of hand*'] },
+  'interosseous-membrane-of-leg': { frame: 0.48, keepExtra: [...TARSALS, '*metatarsal bone*', '*finger of foot*'] },
+};
+
 const spec = JSON.parse(readFileSync(`${ROOT}/${specPath}`, 'utf8'));
 const byId = new Map(ALL_STRUCTURES.filter(isLigament).map((l) => [l.id, l]));
 
 let changed = 0;
-for (const entry of spec.ligaments as { key: string; subregion?: SubRegion; frame?: number; minFrame?: number; keep?: string[] }[]) {
+for (const entry of spec.ligaments as { key: string; subregion?: SubRegion; frame?: number; minFrame?: number; keep?: string[]; tilts?: [number, number][]; tiltCutaway?: string[] }[]) {
   // A second-tranche entry is not seeded yet, so it carries its own subregion.
   const lig = byId.get(entry.key) ?? (entry.subregion ? { subregion: entry.subregion } : undefined);
   if (!lig?.subregion) {
@@ -111,6 +134,21 @@ for (const entry of spec.ligaments as { key: string; subregion?: SubRegion; fram
   entry.frame = rule.frame;
   entry.minFrame = rule.minFrame;
   entry.keep = rule.keep;
+  const override = OVERRIDES[entry.key];
+  if (override) {
+    entry.frame = override.frame;
+    entry.minFrame = override.frame;
+    entry.keep = [...rule.keep, ...override.keepExtra];
+  }
+  if (lig.subregion === 'ankle-foot') {
+    entry.tilts = FOOT_TILTS;
+    // Looking down on the foot, the leg stands in the way; the upward tilts
+    // draw it cut away, as an atlas's dorsal view does.
+    entry.tiltCutaway = ['Tibia.*', 'Fibula.*'];
+  } else {
+    delete entry.tilts;
+    delete entry.tiltCutaway;
+  }
   changed++;
 }
 

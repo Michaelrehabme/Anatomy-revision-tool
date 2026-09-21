@@ -219,7 +219,7 @@ mkdirSync(OUT_DIR, { recursive: true });
 
 interface Row {
   structureId: string; name: string; region: string; subregion: string;
-  view: ViewType; angle: number; kind: 'context' | 'highlight';
+  view: ViewType; angle: number; elevation?: number; kind: 'context' | 'highlight';
   width: number; height: number; panelStructureNames: string[];
 }
 const rows: Row[] = [];
@@ -237,10 +237,17 @@ for (const ligId of readdirSync(rendersRoot).sort()) {
   if (!lig.subregion) { skipped.push(`${ligId}: no subregion, cannot place in an Area`); continue; }
 
   const ligDir = join(rendersRoot, ligId);
-  for (const angleDir of readdirSync(ligDir).filter((n) => /^a\d{3}$/.test(n)).sort()) {
+  for (const angleDir of readdirSync(ligDir).filter((n) => /^a\d{3}(?:[ud]\d{3})?$/.test(n)).sort()) {
     const dir = join(ligDir, angleDir);
-    const angle = Number(angleDir.slice(1));
-    const view = VIEW_FOR_ANGLE[angle];
+    const angle = Number(angleDir.slice(1, 4));
+    // A tilted frame (aNNNuMMM, aNNNdMMM) is named for where the camera is: a
+    // foot seen from above is its dorsum, from below its sole.
+    const tiltMatch = /([ud])(\d{3})$/.exec(angleDir);
+    const elevation = tiltMatch ? (tiltMatch[1] === 'u' ? 1 : -1) * Number(tiltMatch[2]) : 0;
+    const foot = lig?.subregion === 'ankle-foot';
+    const view: ViewType | undefined = elevation > 0 ? (foot ? 'dorsal' : 'superior')
+      : elevation < 0 ? (foot ? 'plantar' : 'inferior')
+      : VIEW_FOR_ANGLE[angle];
     if (!view) { skipped.push(`${ligId} ${angleDir}: no view name for this angle`); continue; }
     if (!['context', 'highlight', 'mask'].every((f) => existsSync(join(dir, `${f}.png`)))) {
       skipped.push(`${ligId} ${angleDir}: render incomplete`);
@@ -269,7 +276,7 @@ for (const ligId of readdirSync(rendersRoot).sort()) {
       const info = await sharp(join(dir, `${kind}.png`)).flatten({ background: '#ffffff' }).webp({ quality }).toFile(dest);
       rows.push({
         structureId: ligId, name: lig.name, region: lig.region, subregion: lig.subregion,
-        view, angle, kind, width: info.width, height: info.height,
+        view, angle, ...(elevation ? { elevation } : {}), kind, width: info.width, height: info.height,
         panelStructureNames: kind === 'context' ? names : [lig.name],
       });
       published++;
@@ -301,13 +308,13 @@ if (only) {
     hotspots[imageId] = list.map((h) => ({ structureId: h.structureId, polygons: h.polygons, area: h.area, centroid: h.centroid }));
   }
   rows.sort((a, b) =>
-    a.structureId.localeCompare(b.structureId) || a.angle - b.angle || a.kind.localeCompare(b.kind),
+    a.structureId.localeCompare(b.structureId) || a.angle - b.angle || (a.elevation ?? 0) - (b.elevation ?? 0) || a.kind.localeCompare(b.kind),
   );
 }
 
 const body = rows.map((r) =>
   `  { structureId: '${r.structureId}', name: ${JSON.stringify(r.name)}, region: '${r.region}', subregion: '${r.subregion}', ` +
-  `view: '${r.view}', angle: ${r.angle}, kind: '${r.kind}', width: ${r.width}, height: ${r.height}, ` +
+  `view: '${r.view}', angle: ${r.angle}, ${r.elevation ? `elevation: ${r.elevation}, ` : ''}kind: '${r.kind}', width: ${r.width}, height: ${r.height}, ` +
   `panelStructureNames: ${JSON.stringify(r.panelStructureNames)} },`,
 ).join('\n');
 
@@ -333,6 +340,8 @@ export interface LigamentPlate {
   view: ViewType;
   /** Camera angle around the vertical axis, degrees; 0 is anterior. */
   angle: number;
+  /** Degrees above (+) or below (-) the horizontal, for a tilted frame; absent when level. */
+  elevation?: number;
   kind: 'context' | 'highlight';
   width: number;
   height: number;
@@ -396,7 +405,9 @@ if (skipped.length) {
 }
 
 // Delete what nothing points at. A file name is <ligament>-a<angle>-<kind>.webp.
-const wanted = new Set(rows.map((r) => `${r.structureId}-a${String(r.angle).padStart(3, '0')}-${r.kind}.webp`));
+const markerOf = (r: Row) =>
+  `a${String(r.angle).padStart(3, '0')}${r.elevation ? `${r.elevation > 0 ? 'u' : 'd'}${String(Math.abs(r.elevation)).padStart(3, '0')}` : ''}`;
+const wanted = new Set(rows.map((r) => `${r.structureId}-${markerOf(r)}-${r.kind}.webp`));
 const stale = readdirSync(OUT_DIR).filter((name) => name.endsWith('.webp') && !wanted.has(name));
 for (const name of stale) unlinkSync(join(OUT_DIR, name));
 console.log(`${stale.length} stale image(s) removed from public/anatomy/ligaments`);

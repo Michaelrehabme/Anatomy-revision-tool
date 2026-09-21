@@ -188,12 +188,15 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
   // angles where the target traced are published. Rendered by
   // renderLigamentPlates.py, published by publishLigamentPlates.ts.
   ...LIGAMENT_PLATES.map((plate): AnatomyImageAsset => {
-    const id = `ligament-${plate.structureId}-a${String(plate.angle).padStart(3, '0')}-${plate.kind}`;
+    // aNNN, or aNNNuMMM / aNNNdMMM for a frame tilted up or down (lib/rotationFrames.ts).
+    const tilt = plate.elevation ?? 0;
+    const marker = `a${String(plate.angle).padStart(3, '0')}${tilt ? `${tilt > 0 ? 'u' : 'd'}${String(Math.abs(tilt)).padStart(3, '0')}` : ''}`;
+    const id = `ligament-${plate.structureId}-${marker}-${plate.kind}`;
     const viewLabel = `${plate.view[0].toUpperCase()}${plate.view.slice(1)}`;
     return plate.kind === 'context'
       ? {
           id,
-          filePath: `/anatomy/ligaments/${plate.structureId}-a${String(plate.angle).padStart(3, '0')}-context.webp`,
+          filePath: `/anatomy/ligaments/${plate.structureId}-${marker}-context.webp`,
           slideTitle: `${plate.name} — ${viewLabel} View`,
           mode: 'atlas-slide',
           panelStructureNames: plate.panelStructureNames,
@@ -209,7 +212,7 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
         }
       : {
           id,
-          filePath: `/anatomy/ligaments/${plate.structureId}-a${String(plate.angle).padStart(3, '0')}-highlight.webp`,
+          filePath: `/anatomy/ligaments/${plate.structureId}-${marker}-highlight.webp`,
           slideTitle: `${plate.name} — ${viewLabel} View (highlighted)`,
           mode: 'single-structure',
           structureId: plate.structureId,

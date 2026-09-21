@@ -4,7 +4,7 @@ import {
 } from 'react';
 import type { AnatomyImageAsset } from '../../types/image';
 import { normalizePointerEvent } from '../../lib/hotspot/normalizeCoordinates';
-import { rotationAngle } from '../../lib/rotationFrames';
+import { rotationAngle, rotationTilt } from '../../lib/rotationFrames';
 import { AttributionBadge } from './AttributionBadge';
 
 export const MIN_ZOOM = 1;
@@ -54,21 +54,33 @@ export function ImageViewer({ image, frames, overlay, onPick, locked, resetKey, 
   const stageRef = useRef<HTMLDivElement>(null);
 
   const frameList = frames && frames.length > 1 ? frames : [image];
-  const [frameIndex, setFrameIndex] = useState(() => Math.max(0, frameList.findIndex((f) => f.id === image.id)));
+  // TWO AXES. The turntable frames go round; tilted frames (a foot seen from
+  // above or below) sit on a ladder of their own. Turning left or right walks
+  // the ring; tilting up or down climbs the ladder, and coming back to level
+  // returns to the ring frame the student tilted away from.
+  const ring = frameList.filter((f) => rotationTilt(f.id) === 0);
+  const tiltFrames = frameList.filter((f) => rotationTilt(f.id) !== 0);
+  const tiltLevels = [...new Set([0, ...tiltFrames.map((f) => rotationTilt(f.id))])].sort((x, y) => x - y);
+  const startRing = () => Math.max(0, ring.findIndex((f) => f.id === image.id));
+  const [ringIndex, setRingIndex] = useState(startRing);
+  const [tilt, setTilt] = useState(() => rotationTilt(image.id));
   const [view, setView] = useState({ z: 1, tx: 0, ty: 0 });
   useEffect(() => {
-    setFrameIndex(Math.max(0, frameList.findIndex((f) => f.id === image.id)));
+    setRingIndex(startRing());
+    setTilt(rotationTilt(image.id));
     setView({ z: 1, tx: 0, ty: 0 });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [resetKey ?? image.id]);
 
-  const current = frameList[frameIndex] ?? image;
-  const canTurn = frameList.length > 1 && !locked;
+  const current = (tilt === 0 ? ring[ringIndex] : tiltFrames.find((f) => rotationTilt(f.id) === tilt)) ?? image;
+  const canTurn = ring.length > 1 && !locked && tilt === 0;
+  const canTilt = tiltFrames.length > 0 && !locked;
+  const tiltAt = tiltLevels.indexOf(tilt);
 
   const gesture = useRef<null | {
     kind: 'pan' | 'turn' | 'pinch';
     x: number; y: number; tx: number; ty: number; z: number;
-    moved: boolean; turned: number; dist?: number; mid?: [number, number];
+    moved: boolean; turned: number; tilted?: number; dist?: number; mid?: [number, number];
   }>(null);
   const pointers = useRef(new Map<number, [number, number]>());
   const suppressClick = useRef(false);
@@ -104,7 +116,15 @@ export function ImageViewer({ image, frames, overlay, onPick, locked, resetKey, 
 
   const turn = (step: number) => {
     if (!canTurn) return;
-    setFrameIndex((i) => (i + step + frameList.length) % frameList.length);
+    setRingIndex((i) => (i + step + ring.length) % ring.length);
+  };
+  /** One rung up (+1) or down (-1) the tilt ladder, stopping at either end. */
+  const tiltBy = (step: number) => {
+    if (!canTilt) return;
+    setTilt((t) => {
+      const at = tiltLevels.indexOf(t);
+      return tiltLevels[Math.min(tiltLevels.length - 1, Math.max(0, at + step))];
+    });
   };
 
   const handlePointerDown = (e: ReactPointerEvent<HTMLDivElement>) => {
@@ -113,10 +133,10 @@ export function ImageViewer({ image, frames, overlay, onPick, locked, resetKey, 
     stageRef.current?.setPointerCapture(e.pointerId);
     const pts = [...pointers.current.values()];
     if (pts.length === 1) {
-      gesture.current = { kind: view.z > 1.001 ? 'pan' : 'turn', x: pts[0][0], y: pts[0][1], tx: view.tx, ty: view.ty, z: view.z, moved: false, turned: 0 };
+      gesture.current = { kind: view.z > 1.001 ? 'pan' : 'turn', x: pts[0][0], y: pts[0][1], tx: view.tx, ty: view.ty, z: view.z, moved: false, turned: 0, tilted: 0 };
     } else if (pts.length === 2) {
       gesture.current = {
-        kind: 'pinch', x: 0, y: 0, tx: view.tx, ty: view.ty, z: view.z, moved: true, turned: 0,
+        kind: 'pinch', x: 0, y: 0, tx: view.tx, ty: view.ty, z: view.z, moved: true, turned: 0, tilted: 0,
         dist: Math.hypot(pts[0][0] - pts[1][0], pts[0][1] - pts[1][1]),
         mid: [(pts[0][0] + pts[1][0]) / 2, (pts[0][1] + pts[1][1]) / 2],
       };
@@ -143,6 +163,13 @@ export function ImageViewer({ image, frames, overlay, onPick, locked, resetKey, 
     if (!g.moved) return;
     if (g.kind === 'pan') {
       setView(clamp({ z: g.z, tx: g.tx + dx, ty: g.ty + dy }));
+    } else if (canTilt && Math.abs(dy) > Math.abs(dx)) {
+      // Dragging down pulls the top of the specimen towards you: tilt up.
+      const step = Math.round(dy / PX_PER_FRAME);
+      if (step !== g.tilted) {
+        tiltBy(step - (g.tilted ?? 0));
+        g.tilted = step;
+      }
     } else if (canTurn) {
       const step = Math.round(dx / PX_PER_FRAME);
       if (step !== g.turned) {
@@ -210,12 +237,20 @@ export function ImageViewer({ image, frames, overlay, onPick, locked, resetKey, 
           )}
         </div>
 
+        {/* Tilt: only for a set with tilted frames. Up is towards the top of the picture. */}
+        {tiltFrames.length > 0 && (
+          <div data-controls className="absolute left-2 top-2 flex flex-col gap-1" style={{ color: 'var(--ink)' }}>
+            <button type="button" className={controlButton} aria-label="Tilt up" disabled={!canTilt || tiltAt >= tiltLevels.length - 1} onClick={() => tiltBy(1)}>▲ tilt</button>
+            <button type="button" className={controlButton} aria-label="Tilt down" disabled={!canTilt || tiltAt <= 0} onClick={() => tiltBy(-1)}>▼ tilt</button>
+          </div>
+        )}
+
         {/* Rotation: only for a rotation set, and only until the answer is in. */}
         {frameList.length > 1 && (
           <div data-controls className="absolute bottom-2 left-2 right-2 flex items-center justify-between" style={{ color: 'var(--ink)' }}>
             <button type="button" className={controlButton} aria-label="Rotate left" disabled={!canTurn} onClick={() => turn(-1)}>◀ rotate</button>
             <span className="rounded bg-sf/90 px-2 py-1 text-[10px] tabular-nums" style={{ color: 'var(--ink3)' }}>
-              {angleLabel(current)} · {frameIndex + 1}/{frameList.length}
+              {tilt === 0 ? `${angleLabel(current)} · ${ringIndex + 1}/${ring.length}` : angleLabel(current)}
             </span>
             <button type="button" className={controlButton} aria-label="Rotate right" disabled={!canTurn} onClick={() => turn(1)}>rotate ▶</button>
           </div>
@@ -237,5 +272,7 @@ export function ImageViewer({ image, frames, overlay, onPick, locked, resetKey, 
 function angleLabel(image: AnatomyImageAsset): string {
   const name = image.view[0].toUpperCase() + image.view.slice(1);
   const deg = rotationAngle(image.id);
+  const tilt = rotationTilt(image.id);
+  if (tilt !== 0) return `${name} · tilted ${tilt > 0 ? 'up' : 'down'} ${Math.abs(tilt)}°`;
   return deg === null ? name : `${name} · ${deg}°`;
 }

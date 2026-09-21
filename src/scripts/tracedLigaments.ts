@@ -25,7 +25,7 @@ const MIN_ANGLES = Number(argOf('min-angles') ?? 2);
 const traced: string[] = [];
 const report: string[] = [];
 for (const id of readdirSync(root).filter((d) => existsSync(join(root, d)) && !d.includes('.')).sort()) {
-  const angles = readdirSync(join(root, id)).filter((n) => /^a\d{3}$/.test(n));
+  const angles = readdirSync(join(root, id)).filter((n) => /^a\d{3}(?:[ud]\d{3})?$/.test(n));
   if (!angles.length) continue; // not a ligament's render folder
   let ok = 0;
   let best = 0;

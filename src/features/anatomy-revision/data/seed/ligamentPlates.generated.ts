@@ -20,6 +20,8 @@ export interface LigamentPlate {
   view: ViewType;
   /** Camera angle around the vertical axis, degrees; 0 is anterior. */
   angle: number;
+  /** Degrees above (+) or below (-) the horizontal, for a tilted frame; absent when level. */
+  elevation?: number;
   kind: 'context' | 'highlight';
   width: number;
   height: number;

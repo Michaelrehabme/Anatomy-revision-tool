@@ -497,6 +497,11 @@ def bake(names, mesh_name):
     return mesh
 
 
+def mesh_bbox_padded(mesh, pad=0.003):
+    lo, hi = mesh_bbox(mesh)
+    return ([v - pad for v in lo], [v + pad for v in hi])
+
+
 def mesh_bbox(mesh):
     xs = [v.co.x for v in mesh.vertices]
     ys = [v.co.y for v in mesh.vertices]
@@ -539,7 +544,19 @@ def frame_camera(lo, hi, angle_deg, elevation_deg, margin, min_frame, max_frame=
                                -dist * math.cos(theta) * math.cos(phi),
                                dist * math.sin(phi)))
     cam.location = centre + offset
-    cam.rotation_euler = (centre - cam.location).to_track_quat("-Z", "Y").to_euler()
+    if abs(elevation_deg) >= 89.0:
+        # Straight down or straight up, "up" in the picture is undefined. Take
+        # the limit of the tilt instead: the far side going up, the near side
+        # going down. Tilting up from the posterior view and down from the
+        # anterior one, both put the toes at the top of the picture.
+        forward = (centre - cam.location).normalized()
+        far = mathutils.Vector((math.sin(theta), math.cos(theta), 0.0))
+        up_hint = far if elevation_deg > 0 else -far
+        right = forward.cross(up_hint).normalized()
+        true_up = right.cross(forward).normalized()
+        cam.rotation_euler = mathutils.Matrix((right, true_up, -forward)).transposed().to_euler()
+    else:
+        cam.rotation_euler = (centre - cam.location).to_track_quat("-Z", "Y").to_euler()
     cam_data.ortho_scale = size
     if STUDIO:
         aim_lights()
@@ -744,6 +761,23 @@ def straps_in_frame(centre, size, exclude):
             found.append(o.name)
     return found
 
+def world_box(name, pad=0.003):
+    """An object's world-space bounding box, grown by pad metres."""
+    ob = bpy.data.objects.get(name)
+    if not ob or ob.type != "MESH":
+        return None
+    pts = [ob.matrix_world @ mathutils.Vector(c) for c in ob.bound_box]
+    return ([min(p[i] for p in pts) - pad for i in range(3)], [max(p[i] for p in pts) + pad for i in range(3)])
+
+
+def boxes_touch(a, b):
+    return all(a[0][i] <= b[1][i] and a[1][i] >= b[0][i] for i in range(3))
+
+
+def touches_any(box, boxes):
+    return any(boxes_touch(box, b) for b in boxes)
+
+
 t0 = time.time()
 count = 0
 for entry in spec["ligaments"]:
@@ -793,7 +827,21 @@ for entry in spec["ligaments"]:
     # A cutaway or ghost list can name ligaments too — the patellar ligament is
     # as much in front of the ACL as the patella is.
     others = [n for n in straps_in_frame(centre, frame, set(lig_names) | drop | ghost)]
-    other_mesh = bake(others, "ligothers_" + key) if others else None
+    # BOTH SIDES. When the same ligament of the other side is in the picture —
+    # the right sacrotuberous behind the left, both halves of the interclavicular
+    # — it is part of the answer, not a neighbour: highlighted with the target,
+    # traced into the target's mask (two outlines, one per side, as landmarks
+    # are), and never offered as a wrong answer. The camera stays framed on the
+    # left side, so a twin is only drawn when it genuinely falls in shot.
+    import re
+    twin_names = {re.sub(r"\.((?:o\d?)?)l$", r".\1r", n) for n in lig_names} - set(lig_names)
+    twins = [n for n in others if n in twin_names]
+    if twins:
+        others = [n for n in others if n not in twins]
+        print("[twin] " + key + ": " + ", ".join(twins), flush=True)
+        bpy.data.meshes.remove(lig_mesh)
+        lig_mesh = bake(lig_names + twins, "lig_" + key)
+    other_mesh = None  # superseded by the per-view sets below
     if others:
         print("[straps] " + key + ": " + ", ".join(sorted(others)), flush=True)
 
@@ -809,41 +857,76 @@ for entry in spec["ligaments"]:
                                 strap_mat("muted_" + n, REST_MUTED_FILL, REST_MUTED_LINE, axes)))
         else:
             bpy.data.meshes.remove(m)
+    # A STRAP IS DRAWN ONLY IF IT TOUCHES A BONE IN THE PICTURE. The wider
+    # frames pulled in ligaments whose bones the keep list leaves out — the
+    # sacro-iliac straps hanging in space beside a forearm, foot ligaments
+    # floating under a leg — and a ligament with nothing to hold on to is not
+    # anatomy. A bounding-box contact test, generous by 3mm.
+    def straps_touching(bone_names):
+        boxes = [b for b in (world_box(n) for n in list(bone_names) + [g for g in ghost if g not in lig_names]) if b]
+        return [p for p in strap_parts if touches_any(mesh_bbox_padded(p[1]), boxes)]
+
+    level_straps = straps_touching(solid_names)
+    # TILTED UP, THE LEG IS IN THE WAY. Looking down on a foot from above, the
+    # tibia and fibula stand between the camera and the dorsum; an atlas draws
+    # a dorsal view with the leg removed, and so does this. Only the upward
+    # tilts lose them — a view from below has the leg behind it.
+    up_cut = expand(entry.get("tiltCutaway", []))
+    if up_cut and any(t[1] > 0 for t in entry.get("tilts", [])):
+        up_names = [n for n in solid_names if n not in up_cut]
+        bones_up = smooth(bake(up_names, "ligbonesup_" + key))
+        up_straps = straps_touching(up_names)
+    else:
+        bones_up, up_straps = bones, level_straps
+    other_level = bake([p[0] for p in level_straps], "ligothers_" + key) if level_straps else None
+    other_up = (bake([p[0] for p in up_straps], "ligothersup_" + key) if up_straps else None) if bones_up is not bones else other_level
+
     lig_axes = fibre_axes(lig_mesh)
     LIG_MAT = strap_mat("rest_" + key, REST_FILL, REST_LINE, lig_axes)
     HILITE_MAT = strap_mat("hilite_" + key, HILITE_FILL, HILITE_LINE, lig_axes, HILITE_GLOW)
 
     angles = entry.get("angles") or [entry["angle"]]
-    for angle in angles:
-      frame_camera(lo, hi, angle, entry.get("elevation", 0),
+    # The turntable views, then any tilted ones ([azimuth, elevation]), which
+    # are named aNNNuMMM or aNNNdMMM (lib/rotationFrames.ts).
+    views = [(ang, entry.get("elevation", 0), False) for ang in angles] + [(t[0], t[1], True) for t in entry.get("tilts", [])]
+    for angle, elev, tilted in views:
+      frame_camera(lo, hi, angle, elev,
                    entry.get("margin", a.margin), floor_m, ceiling_m)
+      marker = "a%03d" % angle
+      if tilted:
+          marker += ("u" if elev > 0 else "d") + "%03d" % abs(elev)
       # A single-angle entry keeps the flat layout the preview packer reads;
-      # a rotation set gets one folder per angle underneath it.
-      leaf_dir = os.path.join(a.out, key) if len(angles) == 1 else os.path.join(a.out, key, "a%03d" % angle)
+      # a rotation set gets one folder per view underneath it.
+      leaf_dir = os.path.join(a.out, key) if len(views) == 1 else os.path.join(a.out, key, marker)
       if a.skip_existing and os.path.exists(os.path.join(leaf_dir, "ids.json")):
-          print("[skip] " + key + " angle " + str(angle) + ": already rendered", flush=True)
+          print("[skip] " + key + " " + marker + ": already rendered", flush=True)
           continue
+
+      up_view = tilted and elev > 0
+      view_bones = bones_up if up_view else bones
+      view_straps = up_straps if up_view else level_straps
+      view_others = other_up if up_view else other_level
 
       span_mm = max(hi[0] - lo[0], hi[1] - lo[1], hi[2] - lo[2]) * 1000
       note = (", cutaway " + str(len(drop)) + " bone(s)") if drop else ""
       note += (", keeping " + str(len(solid_names)) + " bone(s)") if keep is not None else ""
       note += (", ghosting " + str(len(ghost)) + " bone(s)") if ghost else ""
       print("[lig] " + key + ": " + format(span_mm, ".0f") + "mm across, angle "
-            + str(angle) + note, flush=True)
+            + str(angle) + ("" if not tilted else " tilt " + str(elev)) + note, flush=True)
 
       clear()
-      link(bones, "ctx_bones_" + key, BONE_MAT, boned=True)
+      link(view_bones, "ctx_bones_" + key, BONE_MAT, boned=True)
       link(lig_mesh, "ctx_lig_" + key, LIG_MAT, outlined=True, soften=True)
-      for n, m, mat, _muted in strap_parts:
+      for n, m, mat, _muted in view_straps:
           link(m, "ctx_" + n, mat, outlined=True, soften=True)
       if ghost_mesh:
           link(ghost_mesh, "ctx_ghost_" + key, GHOST_MAT, boned=True)
       render_to(os.path.join(leaf_dir, "context.png"))
 
       clear()
-      link(bones, "hl_bones_" + key, BONE_MAT, boned=True)
+      link(view_bones, "hl_bones_" + key, BONE_MAT, boned=True)
       link(lig_mesh, "hl_lig_" + key, HILITE_MAT, outlined=True, soften=True)
-      for n, m, _rest, muted in strap_parts:
+      for n, m, _rest, muted in view_straps:
           link(m, "hl_" + n, muted, outlined=True, soften=True)
       if ghost_mesh:
           link(ghost_mesh, "hl_ghost_" + key, GHOST_MAT, boned=True)
@@ -858,18 +941,18 @@ for entry in spec["ligaments"]:
       # the femur held the mask out, the picture would show a target the hit test
       # would then reject.
       clear()
-      link(bones, "msk_bones_" + key, BONE_MAT, holdout=True)
-      if other_mesh:
-          link(other_mesh, "msk_others_" + key, BONE_MAT, holdout=True, soften=True)
+      link(view_bones, "msk_bones_" + key, BONE_MAT, holdout=True)
+      if view_others:
+          link(view_others, "msk_others_" + key, BONE_MAT, holdout=True, soften=True)
       link(lig_mesh, "msk_lig_" + key, MASK_MAT, soften=True)
       render_to(os.path.join(leaf_dir, "mask.png"), outlines=False)
 
       # The ID pass, with a legend the packer reads back. The target is index
       # 1; the neighbours follow in the order they were baked.
-      parts = [(1, lig_mesh)] + [(i + 2, m) for i, (n, m, _, _) in enumerate(strap_parts)]
-      render_ids(os.path.join(leaf_dir, "ids.png"), bones, parts)
+      parts = [(1, lig_mesh)] + [(i + 2, m) for i, (n, m, _, _) in enumerate(view_straps)]
+      render_ids(os.path.join(leaf_dir, "ids.png"), view_bones, parts)
       with open(os.path.join(leaf_dir, "ids.json"), "w") as f:
-          json.dump({"1": entry.get("name", key)} | {str(i + 2): n for i, (n, _, _, _) in enumerate(strap_parts)}, f)
+          json.dump({"1": entry.get("name", key)} | {str(i + 2): n for i, (n, _, _, _) in enumerate(view_straps)}, f)
 
       count += 4
     bpy.data.meshes.remove(lig_mesh)
@@ -878,6 +961,12 @@ for entry in spec["ligaments"]:
         bpy.data.meshes.remove(ghost_mesh)
     if other_mesh:
         bpy.data.meshes.remove(other_mesh)
+    if other_level:
+        bpy.data.meshes.remove(other_level)
+    if other_up is not None and other_up is not other_level:
+        bpy.data.meshes.remove(other_up)
+    if bones_up is not bones:
+        bpy.data.meshes.remove(bones_up)
     for _, m, _, _ in strap_parts:
         bpy.data.meshes.remove(m)
 

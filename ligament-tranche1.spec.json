@@ -33,7 +33,29 @@
     "*finger of foot*",
     "Sesamoid bones of foot.*"
    ],
-   "minFrame": 0.14
+   "minFrame": 0.14,
+   "tilts": [
+    [
+     180,
+     45
+    ],
+    [
+     180,
+     90
+    ],
+    [
+     0,
+     -45
+    ],
+    [
+     0,
+     -90
+    ]
+   ],
+   "tiltCutaway": [
+    "Tibia.*",
+    "Fibula.*"
+   ]
   },
   {
    "key": "deep-transverse-metatarsal-ligament",
@@ -66,7 +88,29 @@
     "*finger of foot*",
     "Sesamoid bones of foot.*"
    ],
-   "minFrame": 0.14
+   "minFrame": 0.14,
+   "tilts": [
+    [
+     180,
+     45
+    ],
+    [
+     180,
+     90
+    ],
+    [
+     0,
+     -45
+    ],
+    [
+     0,
+     -90
+    ]
+   ],
+   "tiltCutaway": [
+    "Tibia.*",
+    "Fibula.*"
+   ]
   },
   {
    "key": "plantar-metatarsophalangeal-ligaments",
@@ -99,7 +143,29 @@
     "*finger of foot*",
     "Sesamoid bones of foot.*"
    ],
-   "minFrame": 0.14
+   "minFrame": 0.14,
+   "tilts": [
+    [
+     180,
+     45
+    ],
+    [
+     180,
+     90
+    ],
+    [
+     0,
+     -45
+    ],
+    [
+     0,
+     -90
+    ]
+   ],
+   "tiltCutaway": [
+    "Tibia.*",
+    "Fibula.*"
+   ]
   },
   {
    "key": "interosseous-membrane-of-forearm",
@@ -117,14 +183,24 @@
     270,
     315
    ],
-   "frame": 0.2,
+   "frame": 0.36,
    "keep": [
     "Humerus.*",
     "Radius.*",
     "Ulna.*",
-    "Scapula.*"
+    "Scapula.*",
+    "Scaphoid bone.*",
+    "Lunate bone.*",
+    "Triquetrum bone.*",
+    "Pisiform bone.*",
+    "Trapezium bone.*",
+    "Trapezoid bone.*",
+    "Capitate bone.*",
+    "Hamate bone.*",
+    "*metacarpal bone*",
+    "*finger of hand*"
    ],
-   "minFrame": 0.12
+   "minFrame": 0.36
   },
   {
    "key": "radial-collateral-ligament",
@@ -372,14 +448,23 @@
     270,
     315
    ],
-   "frame": 0.2,
+   "frame": 0.48,
    "keep": [
     "Femur.*",
     "Tibia.*",
     "Fibula.*",
-    "Patella.*"
+    "Patella.*",
+    "Talus.*",
+    "Calcaneus.*",
+    "Navicular bone.*",
+    "Cuboid bone.*",
+    "Medial cuneiform bone.*",
+    "Intermediate cuneiform bone.*",
+    "Lateral cuneiform bone.*",
+    "*metatarsal bone*",
+    "*finger of foot*"
    ],
-   "minFrame": 0.14
+   "minFrame": 0.48
   },
   {
    "key": "medial-meniscus",
