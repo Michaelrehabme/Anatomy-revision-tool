@@ -137,7 +137,7 @@ describe('a set framed for another structure', () => {
 describe('the shipped ligament plates', () => {
   const qs = buildLocateQuestions(ALL_STRUCTURES, ALL_IMAGES).filter((q) => q.category === 'ligament');
   const ownerOf = (imageId: string) =>
-    imageId.replace(/^ligament-/, '').replace(/-a\d{3}-(context|highlight)$/, '');
+    imageId.replace(/^ligament-/, '').replace(/-a\d{3}(?:[ud]\d{3})?-(context|highlight)$/, '');
 
   it('opens every ligament on the plate framed for it', () => {
     const foreign = qs

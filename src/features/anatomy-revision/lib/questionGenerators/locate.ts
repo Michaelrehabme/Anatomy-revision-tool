@@ -1,3 +1,4 @@
+import { rotationAngle, rotationSetKey, rotationTilt } from '../rotationFrames';
 import { primaryAreaOf } from '../../types/structure';
 import type { AnatomyStructure } from '../../types/structure';
 import type { AnatomyImageAsset } from '../../types/image';
@@ -80,13 +81,16 @@ export function buildLocateQuestions(
   // frame the student may turn to. Without this a ligament visible from six
   // angles would be six questions, and the scheduler would drill it six times
   // over for one fact.
-  const setKey = (id: string) => (/-a\d{3}-/.test(id) ? id.replace(/-a\d{3}-/, '-*-') : null);
+  // The naming rule lives in lib/rotationFrames.ts. This generator used to
+  // keep its own copy, so when tilted frames (aNNNuMMM) arrived it read each
+  // one as a picture of its own and asked the foot ligaments on each other's.
+  const setKey = rotationSetKey;
   const sets = new Map<string, AnatomyImageAsset[]>();
   for (const image of images) {
     const key = setKey(image.id);
     if (key) sets.set(key, [...(sets.get(key) ?? []), image]);
   }
-  const angleOf = (id: string) => Number(/-a(\d{3})-/.exec(id)?.[1] ?? 0);
+  const angleOf = (id: string) => (rotationAngle(id) ?? 0) + rotationTilt(id) / 1000;
   const emitted = new Set<string>();
 
   /**
