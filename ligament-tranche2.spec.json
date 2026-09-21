@@ -3500,6 +3500,8 @@
    "frame": 0.26,
    "minFrame": 0.14,
    "keep": [
+    "Atlas (C1)",
+    "Axis (C2)",
     "Vertebra *",
     "Sacrum",
     "Coccyx",
@@ -3541,6 +3543,8 @@
    "frame": 0.26,
    "minFrame": 0.14,
    "keep": [
+    "Atlas (C1)",
+    "Axis (C2)",
     "Vertebra *",
     "Sacrum",
     "Coccyx",
@@ -3582,6 +3586,8 @@
    "frame": 0.26,
    "minFrame": 0.14,
    "keep": [
+    "Atlas (C1)",
+    "Axis (C2)",
     "Vertebra *",
     "Sacrum",
     "Coccyx",
@@ -3626,6 +3632,8 @@
    "frame": 0.26,
    "minFrame": 0.14,
    "keep": [
+    "Atlas (C1)",
+    "Axis (C2)",
     "Vertebra *",
     "Sacrum",
     "Coccyx",
@@ -3675,6 +3683,8 @@
    "frame": 0.26,
    "minFrame": 0.14,
    "keep": [
+    "Atlas (C1)",
+    "Axis (C2)",
     "Vertebra *",
     "Sacrum",
     "Coccyx",
@@ -3721,6 +3731,8 @@
    "frame": 0.26,
    "minFrame": 0.14,
    "keep": [
+    "Atlas (C1)",
+    "Axis (C2)",
     "Vertebra *",
     "Sacrum",
     "Coccyx",
@@ -3768,6 +3780,8 @@
    "frame": 0.26,
    "minFrame": 0.14,
    "keep": [
+    "Atlas (C1)",
+    "Axis (C2)",
     "Vertebra *",
     "Sacrum",
     "Coccyx",
@@ -3815,6 +3829,8 @@
    "frame": 0.26,
    "minFrame": 0.14,
    "keep": [
+    "Atlas (C1)",
+    "Axis (C2)",
     "Vertebra *",
     "Sacrum",
     "Coccyx",
@@ -3856,6 +3872,8 @@
    "frame": 0.26,
    "minFrame": 0.14,
    "keep": [
+    "Atlas (C1)",
+    "Axis (C2)",
     "Vertebra *",
     "Sacrum",
     "Coccyx",

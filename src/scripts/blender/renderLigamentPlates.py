@@ -594,13 +594,14 @@ def flat_emission(name, colour):
 BLACK_MAT = flat_emission("lig_id_black", (0, 0, 0, 1))
 
 
-def render_ids(path, bones_mesh, parts):
+def render_ids(path, bones_mesh, parts, target_thickness=0.0009):
     """One render where every strap is its own colour, so a click on the
     wrong ligament can be named. parts: list of (index, mesh)."""
     clear()
     link(bones_mesh, "id_bones", BLACK_MAT)
     for idx, m in parts:
-        link(m, "id_%d" % idx, flat_emission("lig_id_%d" % idx, id_colour(idx)), soften=True)
+        link(m, "id_%d" % idx, flat_emission("lig_id_%d" % idx, id_colour(idx)), soften=True,
+             thickness=target_thickness if idx == 1 else 0.0009)
     saved = (scene.view_settings.view_transform, scene.view_settings.look,
              scene.eevee.taa_render_samples, scene.render.dither_intensity, _bg.inputs[1].default_value if _bg else None)
     scene.view_settings.view_transform = "Standard"
@@ -626,7 +627,7 @@ def clear():
                 coll.objects.unlink(ob)
 
 
-def link(mesh, name, material, holdout=False, outlined=False, soften=False, boned=False):
+def link(mesh, name, material, holdout=False, outlined=False, soften=False, boned=False, thickness=0.0009):
     ob = bpy.data.objects.new(name, mesh)
     ob.data.materials.clear()
     ob.data.materials.append(material)
@@ -634,12 +635,12 @@ def link(mesh, name, material, holdout=False, outlined=False, soften=False, bone
         p.material_index = 0
     ob.is_holdout = holdout
     if soften:
-        soften_strap(ob)
+        soften_strap(ob, thickness)
     (outline_coll if outlined else bone_coll if boned else scene.collection).objects.link(ob)
     return ob
 
 
-def soften_strap(ob):
+def soften_strap(ob, thickness=0.0009):
     """Makes a Z-Anatomy ligament look like a band rather than a cut-out.
 
     The atlas models every ligament as a thin, low-polygon sheet: a handful
@@ -654,7 +655,7 @@ def soften_strap(ob):
     for poly in ob.data.polygons:
         poly.use_smooth = True
     solid = ob.modifiers.new("thickness", "SOLIDIFY")
-    solid.thickness = 0.0009
+    solid.thickness = thickness
     solid.offset = 0.0
     sub = ob.modifiers.new("soften", "SUBSURF")
     # One level, not two: two on a 0.9mm solidified sheet rippled the edge.
@@ -881,6 +882,8 @@ for entry in spec["ligaments"]:
     other_level = bake([p[0] for p in level_straps], "ligothers_" + key) if level_straps else None
     other_up = (bake([p[0] for p in up_straps], "ligothersup_" + key) if up_straps else None) if bones_up is not bones else other_level
 
+    # A sheet seen edge-on can ask to be drawn thicker (targetThickness, metres).
+    target_thick = entry.get("targetThickness", 0.0009)
     lig_axes = fibre_axes(lig_mesh)
     LIG_MAT = strap_mat("rest_" + key, REST_FILL, REST_LINE, lig_axes)
     HILITE_MAT = strap_mat("hilite_" + key, HILITE_FILL, HILITE_LINE, lig_axes, HILITE_GLOW)
@@ -916,7 +919,7 @@ for entry in spec["ligaments"]:
 
       clear()
       link(view_bones, "ctx_bones_" + key, BONE_MAT, boned=True)
-      link(lig_mesh, "ctx_lig_" + key, LIG_MAT, outlined=True, soften=True)
+      link(lig_mesh, "ctx_lig_" + key, LIG_MAT, outlined=True, soften=True, thickness=target_thick)
       for n, m, mat, _muted in view_straps:
           link(m, "ctx_" + n, mat, outlined=True, soften=True)
       if ghost_mesh:
@@ -925,7 +928,7 @@ for entry in spec["ligaments"]:
 
       clear()
       link(view_bones, "hl_bones_" + key, BONE_MAT, boned=True)
-      link(lig_mesh, "hl_lig_" + key, HILITE_MAT, outlined=True, soften=True)
+      link(lig_mesh, "hl_lig_" + key, HILITE_MAT, outlined=True, soften=True, thickness=target_thick)
       for n, m, _rest, muted in view_straps:
           link(m, "hl_" + n, muted, outlined=True, soften=True)
       if ghost_mesh:
@@ -944,13 +947,13 @@ for entry in spec["ligaments"]:
       link(view_bones, "msk_bones_" + key, BONE_MAT, holdout=True)
       if view_others:
           link(view_others, "msk_others_" + key, BONE_MAT, holdout=True, soften=True)
-      link(lig_mesh, "msk_lig_" + key, MASK_MAT, soften=True)
+      link(lig_mesh, "msk_lig_" + key, MASK_MAT, soften=True, thickness=target_thick)
       render_to(os.path.join(leaf_dir, "mask.png"), outlines=False)
 
       # The ID pass, with a legend the packer reads back. The target is index
       # 1; the neighbours follow in the order they were baked.
       parts = [(1, lig_mesh)] + [(i + 2, m) for i, (n, m, _, _) in enumerate(view_straps)]
-      render_ids(os.path.join(leaf_dir, "ids.png"), view_bones, parts)
+      render_ids(os.path.join(leaf_dir, "ids.png"), view_bones, parts, target_thick)
       with open(os.path.join(leaf_dir, "ids.json"), "w") as f:
           json.dump({"1": entry.get("name", key)} | {str(i + 2): n for i, (n, _, _, _) in enumerate(view_straps)}, f)
 

@@ -96,13 +96,15 @@ const BY_AREA: Record<SubRegion, { minFrame: number; frame: number; keep: string
   // The pelvis reads best whole, femurs included — they are what makes it a
   // hip rather than an abstract ring. The lumbar spine above it orients it.
   hip: { minFrame: 0.20, frame: 0.30, keep: ['Hip bone.*', 'Sacrum', 'Coccyx', 'Femur.*', 'Vertebra L*'] },
-  spine: { minFrame: 0.14, frame: 0.26, keep: ['Vertebra *', 'Sacrum', 'Coccyx', ...SKULL, '*rib*'] },
+  // The atlas and axis are "Atlas (C1)" and "Axis (C2)" in the model, not
+  // "Vertebra C1/C2", so 'Vertebra *' dropped the top of the neck.
+  spine: { minFrame: 0.14, frame: 0.26, keep: ['Atlas (C1)', 'Axis (C2)', 'Vertebra *', 'Sacrum', 'Coccyx', ...SKULL, '*rib*'] },
   torso: {
     minFrame: 0.20,
     frame: 0.30,
     keep: ['*rib*', ...STERNUM, 'Vertebra T*', 'Vertebra C7', 'Vertebra L1', 'Clavicle.*', 'Scapula.*'],
   },
-  neck: { minFrame: 0.14, frame: 0.22, keep: ['Vertebra C*', 'Vertebra T1', 'Vertebra T2', ...SKULL, 'Clavicle.*', ...STERNUM] },
+  neck: { minFrame: 0.14, frame: 0.22, keep: ['Atlas (C1)', 'Axis (C2)', 'Vertebra C*', 'Vertebra T1', 'Vertebra T2', ...SKULL, 'Clavicle.*', ...STERNUM] },
 };
 
 /**
@@ -123,16 +125,19 @@ const FOOT_TILTS: [number, number][] = [[180, 45], [180, 90], [0, -45], [0, -90]
  * the knee and the ankle. Their frame is fixed at the length of the segment,
  * and the bones of the far joint are added to the area's list.
  */
-const OVERRIDES: Record<string, { frame: number; keepExtra: string[] }> = {
+const OVERRIDES: Record<string, { frame?: number; keepExtra?: string[]; targetThickness?: number }> = {
   'interosseous-membrane-of-forearm': { frame: 0.36, keepExtra: [...CARPALS, '*metacarpal bone*', '*finger of hand*'] },
   'interosseous-membrane-of-leg': { frame: 0.48, keepExtra: [...TARSALS, '*metatarsal bone*', '*finger of foot*'] },
+  // A midline sheet seen from behind is its own edge: at the standard 0.9mm it
+  // drew as a hairline down the back of the neck. Thicker only shows edge-on.
+  'nuchal-ligament': { targetThickness: 0.0025 },
 };
 
 const spec = JSON.parse(readFileSync(`${ROOT}/${specPath}`, 'utf8'));
 const byId = new Map(ALL_STRUCTURES.filter(isLigament).map((l) => [l.id, l]));
 
 let changed = 0;
-for (const entry of spec.ligaments as { key: string; subregion?: SubRegion; frame?: number; minFrame?: number; keep?: string[]; tilts?: [number, number][]; tiltCutaway?: string[] }[]) {
+for (const entry of spec.ligaments as { key: string; subregion?: SubRegion; frame?: number; minFrame?: number; keep?: string[]; tilts?: [number, number][]; tiltCutaway?: string[]; targetThickness?: number }[]) {
   // A second-tranche entry is not seeded yet, so it carries its own subregion.
   const lig = byId.get(entry.key) ?? (entry.subregion ? { subregion: entry.subregion } : undefined);
   if (!lig?.subregion) {
@@ -144,11 +149,13 @@ for (const entry of spec.ligaments as { key: string; subregion?: SubRegion; fram
   entry.minFrame = rule.minFrame;
   entry.keep = rule.keep;
   const override = OVERRIDES[entry.key];
-  if (override) {
+  if (override?.frame) {
     entry.frame = override.frame;
     entry.minFrame = override.frame;
-    entry.keep = [...rule.keep, ...override.keepExtra];
   }
+  if (override?.keepExtra) entry.keep = [...rule.keep, ...override.keepExtra];
+  if (override?.targetThickness) entry.targetThickness = override.targetThickness;
+  else delete entry.targetThickness;
   if (lig.subregion === 'ankle-foot') {
     entry.tilts = FOOT_TILTS;
     // Looking down on the foot, the leg stands in the way; the upward tilts

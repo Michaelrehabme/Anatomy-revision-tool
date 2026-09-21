@@ -776,6 +776,8 @@
    "frame": 0.26,
    "minFrame": 0.14,
    "keep": [
+    "Atlas (C1)",
+    "Axis (C2)",
     "Vertebra *",
     "Sacrum",
     "Coccyx",
@@ -795,7 +797,8 @@
     "Inferior nasal concha bone.*",
     "Hyoid bone",
     "*rib*"
-   ]
+   ],
+   "targetThickness": 0.0025
   },
   {
    "key": "external-intercostal-membrane",
