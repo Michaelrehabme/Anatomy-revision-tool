@@ -504,6 +504,11 @@ def mesh_bbox(mesh):
     return (min(xs), min(ys), min(zs)), (max(xs), max(ys), max(zs))
 
 
+# The least frame, as a multiple of the ligament's own span: all of it, plus a
+# little of the bone at each end so the student can see what it connects.
+FULL_LIGAMENT = 1.2
+
+
 def frame_size(span, margin, min_frame, max_frame=None):
     """The wider of "a bit more than the ligament" and "enough to hold the
     joint" (see --min-frame), no wider than max_frame when one is given.
@@ -514,7 +519,13 @@ def frame_size(span, margin, min_frame, max_frame=None):
     minFrame (still enough to orient) and a long one grows up to frame.
     """
     size = max(span * margin, min_frame)
-    return min(size, max_frame) if max_frame else size
+    if max_frame:
+        size = min(size, max_frame)
+    # NEVER TIGHTER THAN THE LIGAMENT. The ceiling is for context, not for
+    # cropping: a 293mm interosseous membrane on a 200mm knee frame became a
+    # bare stretch of shin with neither joint in view. The whole ligament and
+    # a little of each end always fits.
+    return max(size, span * FULL_LIGAMENT)
 
 
 def frame_camera(lo, hi, angle_deg, elevation_deg, margin, min_frame, max_frame=None):
