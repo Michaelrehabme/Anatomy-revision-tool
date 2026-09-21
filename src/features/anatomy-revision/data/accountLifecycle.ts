@@ -53,6 +53,8 @@ const USER_SUBCOLLECTIONS = [
   'gamification',
   'questionExposure',
   'diagnostics',
+  // An educator's saved assignment templates (educator/data/assignmentTemplatesRepository).
+  'assignmentTemplates',
 ] as const;
 
 /** Firestore caps a batch at 500 writes; leave room rather than sail close. */
