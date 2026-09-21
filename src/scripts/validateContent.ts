@@ -21,6 +21,7 @@ import { OINA_PROMPT_KINDS } from '../features/anatomy-revision/types/question';
 import { correctValuesFor } from '../features/anatomy-revision/lib/questionGenerators/oina';
 import { acceptedVariantsFor, matchesSlot } from '../features/anatomy-revision/lib/oinaAnswer';
 import { stripHeadPrefix } from '../features/anatomy-revision/lib/oinaValues';
+import { auditHotspotSizes } from './lib/hotspotSizeAudit';
 
 let errors = 0;
 let warnings = 0;
@@ -262,6 +263,22 @@ function main(): void {
   }
 
   validateOina();
+  // HITBOXES THAT ARE TOO BIG. Every publisher enforces a floor; this is the
+  // ceiling. Warn-only, with the full list one command away, because the fix
+  // is usually a re-render and a validator that failed the build over it
+  // would be switched off. See src/scripts/lib/hotspotSizeAudit.ts.
+  const sizeAudit = auditHotspotSizes(ALL_IMAGES);
+  if (sizeAudit.offenders.length) {
+    const byFamily = Object.entries(sizeAudit.families)
+      .filter(([, st]) => st.offenders > 0)
+      .map(([name, st]) => `${name} ${st.offenders}`)
+      .join(', ');
+    warn(
+      `${sizeAudit.offenders.length} hitbox(es) larger than their family allows (${byFamily}). ` +
+        'Run npx tsx src/scripts/auditHotspotSizes.ts for the list.',
+    );
+  }
+
   validateClaims();
 
   console.log(

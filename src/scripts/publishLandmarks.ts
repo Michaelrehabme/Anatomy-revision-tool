@@ -58,6 +58,20 @@ const CAPSULE_MULTIPLE = 1.8;
 const MIN_ZONE_PX = 55;
 /** The near-miss halo: the whole target against the landmark's own radius. */
 const TARGET_MULTIPLE = 2.5;
+/**
+ * The largest a point target may be, as a fraction of the picture's width.
+ *
+ * The floors above make a small landmark tappable; nothing stopped a large one
+ * from swallowing the plate. A landmark authored with a generous radius — the
+ * inferior angle of the scapula, the sternal angle — came out with a target
+ * nearly half the frame across, so "locate the inferior angle" was answered by
+ * tapping anywhere on the lower scapula. The pass zone is a fixed share of the
+ * target (PASS_FRACTION in lib/hotspot/accuracy.ts), so capping the target
+ * shrinks the 10/10 zone and the halo together and the rings stay honest.
+ * Never below MIN_ZONE_PX * TARGET_MULTIPLE, so the fingertip floor still holds.
+ * See src/scripts/auditHotspotSizes.ts for the audit that found them.
+ */
+const MAX_TARGET_FRAC = 0.12;
 /** A circle is emitted as a polygon; 28 sides is smooth at any size shipped. */
 const CIRCLE_SIDES = 28;
 
@@ -172,6 +186,12 @@ const MIN_REGION_SHARE = 0.0035;
 const HITBOX_GROW_M = 0.006;
 /** ...and never less than this, or a hairline ridge is still unhittable. */
 const MIN_HITBOX_GROW_PX = 16;
+/**
+ * The least share of a region's hitbox the anatomy itself should fill. Below
+ * it the grow margin is reduced (not below MIN_HITBOX_GROW_PX). Matches the
+ * audit in src/scripts/lib/hotspotSizeAudit.ts.
+ */
+const MIN_CORE_SHARE = 0.35;
 
 /** Grows a binary mask by `radius` pixels — a square-kernel dilation, run separably. */
 function dilateMask(mask: Uint8Array, width: number, height: number, radius: number): Uint8Array {
@@ -254,6 +274,7 @@ const trimmedSpines: string[] = [];
 let floored = 0;
 /** Which targets were raised, so a teaching regression is named rather than counted. */
 const flooredNames: string[] = [];
+const capped: string[] = [];
 let regionViews = 0;
 let capsuleViews = 0;
 
@@ -382,8 +403,25 @@ for (const id of readdirSync(masksRoot).sort()) {
         hidden.push(`${id} ${view}: mask traced to nothing`);
         continue;
       }
-      const growPx = Math.max(Math.round(HITBOX_GROW_M * (mi.width / frameSize)), MIN_HITBOX_GROW_PX);
-      const grown = dilateMask(bits, mi.width, mi.height, growPx);
+      // THE MARGIN SHRINKS FOR A SMALL PART. 6mm around a crest is a fair
+      // allowance; 6mm around a pedicle seen from above is four times the
+      // pedicle, and the hitbox became mostly margin — "the hitboxes are huge".
+      // The margin steps down until the anatomy is at least MIN_CORE_SHARE of
+      // its hitbox, and never below the fingertip floor.
+      let corePx = 0;
+      for (let i = 0; i < bits.length; i++) corePx += bits[i];
+      let growPx = Math.max(Math.round(HITBOX_GROW_M * (mi.width / frameSize)), MIN_HITBOX_GROW_PX);
+      let grown = dilateMask(bits, mi.width, mi.height, growPx);
+      const countOf = (m: Uint8Array) => { let n = 0; for (let i = 0; i < m.length; i++) n += m[i]; return n; };
+      // ...and never so far that the hitbox drops under MIN_REGION_SHARE: a
+      // smaller target that can still be tapped beats a lost question.
+      while (growPx > MIN_HITBOX_GROW_PX && corePx / countOf(grown) < MIN_CORE_SHARE) {
+        const nextPx = Math.max(MIN_HITBOX_GROW_PX, Math.round(growPx * 0.75));
+        const next = dilateMask(bits, mi.width, mi.height, nextPx);
+        if (countOf(next) / next.length < MIN_REGION_SHARE) break;
+        growPx = nextPx;
+        grown = next;
+      }
       // TAPPABILITY IS A PROPERTY OF THE HITBOX, not of the anatomy inside it.
       // Testing the core instead dropped a region for being thin even when the
       // grown outline around it was perfectly easy to hit — and widening the
@@ -415,7 +453,12 @@ for (const id of readdirSync(masksRoot).sort()) {
     // A landmark that is a hole wants its pass zone to BE the hole and the
     // near-miss halo kept tight around it — "make the 10/10 ring the size of
     // the gap and shrink the outer rings" — so the spec may narrow the halo.
-    const targetPx = zone * (typeof entry.targetMultiple === 'number' ? entry.targetMultiple : TARGET_MULTIPLE);
+    const wantedPx = zone * (typeof entry.targetMultiple === 'number' ? entry.targetMultiple : TARGET_MULTIPLE);
+    const capPx = Math.max(MAX_TARGET_FRAC * info.width, MIN_ZONE_PX * TARGET_MULTIPLE);
+    const targetPx = Math.min(wantedPx, capPx);
+    if (wantedPx > capPx && !traced) {
+      capped.push(`${id} ${view}: target ${((wantedPx / info.width) * 100).toFixed(1)}% of the frame, capped at ${((capPx / info.width) * 100).toFixed(1)}%`);
+    }
     const rN = targetPx / info.width;
 
     const ring: number[][] = [];
@@ -625,6 +668,8 @@ const distinct = new Set(rows.map((r) => r.structureId)).size;
 console.log(`${rows.length} image(s) across ${distinct} landmark(s) -> public/anatomy/landmarks/`);
 console.log(`${floored} target(s) raised to the fingertip minimum`);
 for (const line of flooredNames) console.log(`  ${line}`);
+console.log(`${capped.length} target(s) capped at ${MAX_TARGET_FRAC * 100}% of the frame`);
+for (const line of capped) console.log(`  ${line}`);
 console.log(`${regionViews} view(s) published as a traced region rather than a circle`);
 console.log(`${capsuleViews} view(s) published as a capsule along a spine`);
 console.log(`${twinViews} view(s) carry a twin target for the other side`);
