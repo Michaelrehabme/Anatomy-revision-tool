@@ -46,35 +46,61 @@ const TARSALS = ['Talus.*', 'Calcaneus.*', 'Navicular bone.*', 'Cuboid bone.*',
   'Medial cuneiform bone.*', 'Intermediate cuneiform bone.*', 'Lateral cuneiform bone.*'];
 
 /**
- * Frame size in metres, and the bones worth showing at it. The frames are the
- * real dimensions of the part: a hand is about 190mm from wrist to fingertip,
- * a foot 250mm, a pelvis 280mm across.
+ * Frame size in metres, and the bones worth showing at it.
+ *
+ * `frame` is the CEILING — the real size of the part: a hand is about 190mm
+ * from wrist to fingertip, a foot 250mm, a pelvis 280mm across. `minFrame`
+ * is the FLOOR, the least that still shows where you are. The renderer frames
+ * each ligament at 2.6x its own span, clamped between the two, so a long
+ * interosseous membrane still gets the whole forearm while an 11mm
+ * acromioclavicular ligament is no longer a sliver on a 240mm shoulder. Both
+ * are needed: the first tranche framed at 110mm could not be oriented, and
+ * framing every ligament at the ceiling made the small ones unfindable.
+ *
+ * `keep` names Blender objects, and a pattern that names nothing drops
+ * those bones with no error — "Sternum*" matched nothing, because the atlas
+ * calls them "Manubrium of sternum" and "Body of sternum", so the shoulder
+ * plates had no sternal body. renderLigamentPlates.py now warns about a
+ * pattern that matches no bone. No area keeps the whole skeleton any more:
+ * a hip plate with the arms, ribs and far femur in it was the "surrounding
+ * bones don't render properly" complaint seen from the other side.
  */
-const BY_AREA: Record<SubRegion, { frame: number; keep: string[] | null }> = {
+const STERNUM = ['*of sternum', 'Xiphoid process'];
+const BY_AREA: Record<SubRegion, { minFrame: number; frame: number; keep: string[] }> = {
   'wrist-hand': {
+    minFrame: 0.12,
     frame: 0.20,
     keep: ['Radius.*', 'Ulna.*', 'Humerus.*', ...CARPALS, '*metacarpal bone*', '*finger of hand*', 'Sesamoid bones of hand.*'],
   },
   'ankle-foot': {
+    minFrame: 0.14,
     frame: 0.24,
     keep: ['Tibia.*', 'Fibula.*', ...TARSALS, '*metatarsal bone*', '*finger of foot*', 'Sesamoid bones of foot.*'],
   },
-  elbow: { frame: 0.20, keep: ['Humerus.*', 'Radius.*', 'Ulna.*', 'Scapula.*'] },
-  shoulder: { frame: 0.24, keep: ['Scapula.*', 'Clavicle.*', 'Humerus.*', 'Sternum*', 'Manubrium*', '*rib*', 'Vertebra T*'] },
-  knee: { frame: 0.20, keep: ['Femur.*', 'Tibia.*', 'Fibula.*', 'Patella.*'] },
+  elbow: { minFrame: 0.12, frame: 0.20, keep: ['Humerus.*', 'Radius.*', 'Ulna.*', 'Scapula.*'] },
+  shoulder: {
+    minFrame: 0.16,
+    frame: 0.24,
+    keep: ['Scapula.*', 'Clavicle.*', 'Humerus.*', ...STERNUM, '*rib*', 'Vertebra T*', 'Vertebra C7'],
+  },
+  knee: { minFrame: 0.14, frame: 0.20, keep: ['Femur.*', 'Tibia.*', 'Fibula.*', 'Patella.*'] },
   // The pelvis reads best whole, femurs included — they are what makes it a
-  // hip rather than an abstract ring. Only the arms are dropped.
-  hip: { frame: 0.30, keep: null },
-  spine: { frame: 0.26, keep: null },
-  torso: { frame: 0.30, keep: null },
-  neck: { frame: 0.22, keep: null },
+  // hip rather than an abstract ring. The lumbar spine above it orients it.
+  hip: { minFrame: 0.20, frame: 0.30, keep: ['Hip bone.*', 'Sacrum', 'Coccyx', 'Femur.*', 'Vertebra L*'] },
+  spine: { minFrame: 0.14, frame: 0.26, keep: ['Vertebra *', 'Sacrum', 'Coccyx', 'Occipital bone', '*rib*'] },
+  torso: {
+    minFrame: 0.20,
+    frame: 0.30,
+    keep: ['*rib*', ...STERNUM, 'Vertebra T*', 'Vertebra C7', 'Vertebra L1', 'Clavicle.*', 'Scapula.*'],
+  },
+  neck: { minFrame: 0.14, frame: 0.22, keep: ['Vertebra C*', 'Vertebra T1', 'Vertebra T2', 'Occipital bone', 'Clavicle.*', ...STERNUM] },
 };
 
 const spec = JSON.parse(readFileSync(`${ROOT}/${specPath}`, 'utf8'));
 const byId = new Map(ALL_STRUCTURES.filter(isLigament).map((l) => [l.id, l]));
 
 let changed = 0;
-for (const entry of spec.ligaments as { key: string; frame?: number; keep?: string[] }[]) {
+for (const entry of spec.ligaments as { key: string; frame?: number; minFrame?: number; keep?: string[] }[]) {
   const lig = byId.get(entry.key);
   if (!lig?.subregion) {
     console.log(`  ${entry.key}: no subregion, left alone`);
@@ -82,15 +108,15 @@ for (const entry of spec.ligaments as { key: string; frame?: number; keep?: stri
   }
   const rule = BY_AREA[lig.subregion];
   entry.frame = rule.frame;
-  if (rule.keep) entry.keep = rule.keep;
-  else delete entry.keep;
+  entry.minFrame = rule.minFrame;
+  entry.keep = rule.keep;
   changed++;
 }
 
 spec.note =
-  'First tranche: the 32 seeded ligaments, eight angles each, left side. Frames are the size of the ' +
-  'REGION rather than the joint, so a student can tell where they are before zooming in; `keep` names the ' +
-  'bones worth showing at that size. Set by src/scripts/ligamentFraming.ts.';
+  'Eight angles each, left side. Each ligament is framed at 2.6x its span, clamped between minFrame (enough ' +
+  'to orient) and frame (the size of the part); `keep` names the bones worth showing. Set by ' +
+  'src/scripts/ligamentFraming.ts.';
 writeFileSync(`${ROOT}/${specPath}`, JSON.stringify(spec, null, 1));
 
 const tally = new Map<string, number>();
@@ -101,5 +127,5 @@ for (const entry of spec.ligaments as { key: string }[]) {
 console.log(`framed ${changed} of ${spec.ligaments.length} ligaments -> ${specPath}`);
 for (const [sub, n] of [...tally.entries()].sort()) {
   const r = BY_AREA[sub as SubRegion];
-  console.log(`  ${sub.padEnd(12)} ${String(n).padStart(2)} ligament(s)  frame ${(r.frame * 1000).toFixed(0)}mm  ${r.keep ? r.keep.length + ' keep patterns' : 'whole skeleton'}`);
+  console.log(`  ${sub.padEnd(12)} ${String(n).padStart(2)} ligament(s)  frame ${(r.minFrame * 1000).toFixed(0)}-${(r.frame * 1000).toFixed(0)}mm  ${r.keep.length} keep patterns`);
 }

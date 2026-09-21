@@ -1,0 +1,107 @@
+{
+ "schemaVersion": 1,
+ "note": "Proof render for the Phase 3.2 changes: ACL (ghosted femur), acromioclavicular (small target), sacrotuberous (hip, formerly the whole skeleton). Render with --samples 48 and review at 1x and 3x before the full tranche.",
+ "ligaments": [
+  {
+   "key": "sacrotuberous-ligament",
+   "name": "Sacrotuberous ligament",
+   "objects": [
+    "Sacrotuberous ligament.l"
+   ],
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ],
+   "cutaway": [
+    "Humerus.*",
+    "Radius.*",
+    "Ulna.*",
+    "*of hand.*",
+    "*metacarpal*",
+    "Scaphoid bone.*",
+    "Lunate bone.*",
+    "Triquetrum bone.*",
+    "Pisiform bone.*",
+    "Trapezium bone.*",
+    "Trapezoid bone.*",
+    "Capitate bone.*",
+    "Hamate bone.*"
+   ],
+   "frame": 0.3,
+   "minFrame": 0.2,
+   "keep": [
+    "Hip bone.*",
+    "Sacrum",
+    "Coccyx",
+    "Femur.*",
+    "Vertebra L*"
+   ]
+  },
+  {
+   "key": "anterior-cruciate-ligament",
+   "name": "Anterior cruciate ligament",
+   "objects": [
+    "Anterior cruciate ligament.l"
+   ],
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ],
+   "ghost": [
+    "Femur.l"
+   ],
+   "cutaway": [
+    "Patella.l"
+   ],
+   "frame": 0.2,
+   "keep": [
+    "Femur.*",
+    "Tibia.*",
+    "Fibula.*",
+    "Patella.*"
+   ],
+   "minFrame": 0.14
+  },
+  {
+   "key": "acromioclavicular-ligament",
+   "name": "Acromioclavicular ligament",
+   "objects": [
+    "Acromioclavicular ligament.l"
+   ],
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ],
+   "frame": 0.24,
+   "keep": [
+    "Scapula.*",
+    "Clavicle.*",
+    "Humerus.*",
+    "*of sternum",
+    "Xiphoid process",
+    "*rib*",
+    "Vertebra T*",
+    "Vertebra C7"
+   ],
+   "minFrame": 0.16
+  }
+ ]
+}

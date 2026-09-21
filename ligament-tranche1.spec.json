@@ -1,6 +1,6 @@
 {
  "schemaVersion": 1,
- "note": "First tranche: the 32 seeded ligaments, eight angles each, left side. Frames are the size of the REGION rather than the joint, so a student can tell where they are before zooming in; `keep` names the bones worth showing at that size. Set by src/scripts/ligamentFraming.ts.",
+ "note": "Eight angles each, left side. Each ligament is framed at 2.6x its span, clamped between minFrame (enough to orient) and frame (the size of the part); `keep` names the bones worth showing. Set by src/scripts/ligamentFraming.ts.",
  "ligaments": [
   {
    "key": "anterior-tibiofibular-ligament",
@@ -32,7 +32,8 @@
     "*metatarsal bone*",
     "*finger of foot*",
     "Sesamoid bones of foot.*"
-   ]
+   ],
+   "minFrame": 0.14
   },
   {
    "key": "deep-transverse-metatarsal-ligament",
@@ -64,7 +65,8 @@
     "*metatarsal bone*",
     "*finger of foot*",
     "Sesamoid bones of foot.*"
-   ]
+   ],
+   "minFrame": 0.14
   },
   {
    "key": "plantar-metatarsophalangeal-ligaments",
@@ -96,7 +98,8 @@
     "*metatarsal bone*",
     "*finger of foot*",
     "Sesamoid bones of foot.*"
-   ]
+   ],
+   "minFrame": 0.14
   },
   {
    "key": "interosseous-membrane-of-forearm",
@@ -120,7 +123,8 @@
     "Radius.*",
     "Ulna.*",
     "Scapula.*"
-   ]
+   ],
+   "minFrame": 0.12
   },
   {
    "key": "radial-collateral-ligament",
@@ -144,7 +148,8 @@
     "Radius.*",
     "Ulna.*",
     "Scapula.*"
-   ]
+   ],
+   "minFrame": 0.12
   },
   {
    "key": "ulnar-collateral-ligament",
@@ -168,7 +173,8 @@
     "Radius.*",
     "Ulna.*",
     "Scapula.*"
-   ]
+   ],
+   "minFrame": 0.12
   },
   {
    "key": "obturator-membrane",
@@ -201,7 +207,15 @@
     "Capitate bone.*",
     "Hamate bone.*"
    ],
-   "frame": 0.3
+   "frame": 0.3,
+   "minFrame": 0.2,
+   "keep": [
+    "Hip bone.*",
+    "Sacrum",
+    "Coccyx",
+    "Femur.*",
+    "Vertebra L*"
+   ]
   },
   {
    "key": "pubofemoral-ligament",
@@ -219,7 +233,15 @@
     270,
     315
    ],
-   "frame": 0.3
+   "frame": 0.3,
+   "minFrame": 0.2,
+   "keep": [
+    "Hip bone.*",
+    "Sacrum",
+    "Coccyx",
+    "Femur.*",
+    "Vertebra L*"
+   ]
   },
   {
    "key": "sacrotuberous-ligament",
@@ -252,7 +274,15 @@
     "Capitate bone.*",
     "Hamate bone.*"
    ],
-   "frame": 0.3
+   "frame": 0.3,
+   "minFrame": 0.2,
+   "keep": [
+    "Hip bone.*",
+    "Sacrum",
+    "Coccyx",
+    "Femur.*",
+    "Vertebra L*"
+   ]
   },
   {
    "key": "superior-pubic-ligament",
@@ -285,7 +315,15 @@
     "Capitate bone.*",
     "Hamate bone.*"
    ],
-   "frame": 0.3
+   "frame": 0.3,
+   "minFrame": 0.2,
+   "keep": [
+    "Hip bone.*",
+    "Sacrum",
+    "Coccyx",
+    "Femur.*",
+    "Vertebra L*"
+   ]
   },
   {
    "key": "anterior-cruciate-ligament",
@@ -315,7 +353,8 @@
     "Tibia.*",
     "Fibula.*",
     "Patella.*"
-   ]
+   ],
+   "minFrame": 0.14
   },
   {
    "key": "interosseous-membrane-of-leg",
@@ -339,7 +378,8 @@
     "Tibia.*",
     "Fibula.*",
     "Patella.*"
-   ]
+   ],
+   "minFrame": 0.14
   },
   {
    "key": "medial-meniscus",
@@ -363,7 +403,8 @@
     "Tibia.*",
     "Fibula.*",
     "Patella.*"
-   ]
+   ],
+   "minFrame": 0.14
   },
   {
    "key": "popliteofibular-ligament",
@@ -387,7 +428,8 @@
     "Tibia.*",
     "Fibula.*",
     "Patella.*"
-   ]
+   ],
+   "minFrame": 0.14
   },
   {
    "key": "posterior-meniscotibial-ligament-lateral-meniscus",
@@ -418,7 +460,8 @@
     "Tibia.*",
     "Fibula.*",
     "Patella.*"
-   ]
+   ],
+   "minFrame": 0.14
   },
   {
    "key": "posterior-meniscotibial-ligament-medial-meniscus",
@@ -449,7 +492,8 @@
     "Tibia.*",
     "Fibula.*",
     "Patella.*"
-   ]
+   ],
+   "minFrame": 0.14
   },
   {
    "key": "transverse-ligament-of-knee",
@@ -480,7 +524,8 @@
     "Tibia.*",
     "Fibula.*",
     "Patella.*"
-   ]
+   ],
+   "minFrame": 0.14
   },
   {
    "key": "acromioclavicular-ligament",
@@ -503,11 +548,13 @@
     "Scapula.*",
     "Clavicle.*",
     "Humerus.*",
-    "Sternum*",
-    "Manubrium*",
+    "*of sternum",
+    "Xiphoid process",
     "*rib*",
-    "Vertebra T*"
-   ]
+    "Vertebra T*",
+    "Vertebra C7"
+   ],
+   "minFrame": 0.16
   },
   {
    "key": "anterior-sternoclavicular-ligament",
@@ -530,11 +577,13 @@
     "Scapula.*",
     "Clavicle.*",
     "Humerus.*",
-    "Sternum*",
-    "Manubrium*",
+    "*of sternum",
+    "Xiphoid process",
     "*rib*",
-    "Vertebra T*"
-   ]
+    "Vertebra T*",
+    "Vertebra C7"
+   ],
+   "minFrame": 0.16
   },
   {
    "key": "coracohumeral-ligament",
@@ -557,11 +606,13 @@
     "Scapula.*",
     "Clavicle.*",
     "Humerus.*",
-    "Sternum*",
-    "Manubrium*",
+    "*of sternum",
+    "Xiphoid process",
     "*rib*",
-    "Vertebra T*"
-   ]
+    "Vertebra T*",
+    "Vertebra C7"
+   ],
+   "minFrame": 0.16
   },
   {
    "key": "interclavicular-ligament",
@@ -584,11 +635,13 @@
     "Scapula.*",
     "Clavicle.*",
     "Humerus.*",
-    "Sternum*",
-    "Manubrium*",
+    "*of sternum",
+    "Xiphoid process",
     "*rib*",
-    "Vertebra T*"
-   ]
+    "Vertebra T*",
+    "Vertebra C7"
+   ],
+   "minFrame": 0.16
   },
   {
    "key": "transverse-humeral-ligament",
@@ -611,11 +664,13 @@
     "Scapula.*",
     "Clavicle.*",
     "Humerus.*",
-    "Sternum*",
-    "Manubrium*",
+    "*of sternum",
+    "Xiphoid process",
     "*rib*",
-    "Vertebra T*"
-   ]
+    "Vertebra T*",
+    "Vertebra C7"
+   ],
+   "minFrame": 0.16
   },
   {
    "key": "nuchal-ligament",
@@ -633,7 +688,15 @@
     270,
     315
    ],
-   "frame": 0.26
+   "frame": 0.26,
+   "minFrame": 0.14,
+   "keep": [
+    "Vertebra *",
+    "Sacrum",
+    "Coccyx",
+    "Occipital bone",
+    "*rib*"
+   ]
   },
   {
    "key": "external-intercostal-membrane",
@@ -651,7 +714,18 @@
     270,
     315
    ],
-   "frame": 0.3
+   "frame": 0.3,
+   "minFrame": 0.2,
+   "keep": [
+    "*rib*",
+    "*of sternum",
+    "Xiphoid process",
+    "Vertebra T*",
+    "Vertebra C7",
+    "Vertebra L1",
+    "Clavicle.*",
+    "Scapula.*"
+   ]
   },
   {
    "key": "collateral-metacarpophalangeal-ligaments",
@@ -685,7 +759,8 @@
     "*metacarpal bone*",
     "*finger of hand*",
     "Sesamoid bones of hand.*"
-   ]
+   ],
+   "minFrame": 0.12
   },
   {
    "key": "deep-transverse-metacarpal-ligament",
@@ -719,7 +794,8 @@
     "*metacarpal bone*",
     "*finger of hand*",
     "Sesamoid bones of hand.*"
-   ]
+   ],
+   "minFrame": 0.12
   },
   {
    "key": "palmar-interphalangeal-ligaments",
@@ -753,7 +829,8 @@
     "*metacarpal bone*",
     "*finger of hand*",
     "Sesamoid bones of hand.*"
-   ]
+   ],
+   "minFrame": 0.12
   },
   {
    "key": "palmar-radio-ulnar-ligament",
@@ -787,7 +864,8 @@
     "*metacarpal bone*",
     "*finger of hand*",
     "Sesamoid bones of hand.*"
-   ]
+   ],
+   "minFrame": 0.12
   },
   {
    "key": "ulnocapitate-ligament",
@@ -821,7 +899,8 @@
     "*metacarpal bone*",
     "*finger of hand*",
     "Sesamoid bones of hand.*"
-   ]
+   ],
+   "minFrame": 0.12
   },
   {
    "key": "ulnolunate-ligament",
@@ -855,7 +934,8 @@
     "*metacarpal bone*",
     "*finger of hand*",
     "Sesamoid bones of hand.*"
-   ]
+   ],
+   "minFrame": 0.12
   },
   {
    "key": "ulnopisiform-ligament",
@@ -889,7 +969,8 @@
     "*metacarpal bone*",
     "*finger of hand*",
     "Sesamoid bones of hand.*"
-   ]
+   ],
+   "minFrame": 0.12
   },
   {
    "key": "ulnotriquetral-ligament",
@@ -923,7 +1004,8 @@
     "*metacarpal bone*",
     "*finger of hand*",
     "Sesamoid bones of hand.*"
-   ]
+   ],
+   "minFrame": 0.12
   }
  ]
 }

@@ -1,4 +1,4 @@
-import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readdirSync, readFileSync, unlinkSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
@@ -8,12 +8,28 @@ import type { ViewType } from '../features/anatomy-revision/types/image';
 import { pointInAnyPolygon } from '../features/anatomy-revision/lib/hotspot/pointInPolygon';
 import { decodePng } from './lib/png';
 import { binariseAlpha, maskToPolygons } from './lib/maskToPolygons';
+import { LIGAMENT_PLATES } from '../features/anatomy-revision/data/seed/ligamentPlates.generated';
+import { LIGAMENT_HOTSPOTS } from '../features/anatomy-revision/data/seed/hotspots.ligaments.generated';
 
 /**
  * Publishes the ligament plates: two webps per ligament per angle, plus the
  * generated lists images.seed.ts builds its ligament image assets from.
  *
  *   npx tsx src/scripts/publishLigamentPlates.ts --renders renders/ligaments-tranche1
+ *   npx tsx src/scripts/publishLigamentPlates.ts --renders renders/ligaments-sample \
+ *     --only anterior-cruciate-ligament,acromioclavicular-ligament
+ *
+ * --only REPLACES THOSE LIGAMENTS AND KEEPS THE REST. Without it the renders
+ * directory is the whole truth and the seed is rebuilt from it; with it, the
+ * named ligaments are re-published from the directory and every other
+ * ligament's plates and hotspots are carried over from the current seed. That
+ * is what lets a three-ligament proof render be looked at in the app without
+ * re-rendering all 32.
+ *
+ * STALE IMAGES ARE DELETED. When an angle stops tracing (a re-render, a new
+ * MIN_TARGET_AREA), its webps used to stay in public/anatomy/ligaments with no
+ * row pointing at them: 22 such files were shipping on 20 Sep 2026. Anything
+ * in that directory the final rows do not name is removed.
  *
  * TWO PICTURES PER ANGLE, because the two question types need different ones.
  * The `context` render shows the joint with every ligament in the resting
@@ -72,6 +88,7 @@ function parseArgs(argv: string[]): Record<string, string> {
 }
 const args = parseArgs(process.argv.slice(2));
 const rendersRoot = join(ROOT, args.renders ?? 'renders/ligaments-tranche1');
+const only = args.only ? new Set(args.only.split(',').map((x) => x.trim()).filter(Boolean)) : null;
 const quality = Number(args.quality ?? '82');
 
 if (!existsSync(rendersRoot)) {
@@ -211,8 +228,11 @@ const skipped: string[] = [];
 const dropped: string[] = [];
 let published = 0;
 
+const areaReport: string[] = [];
 for (const ligId of readdirSync(rendersRoot).sort()) {
+  if (only && !only.has(ligId)) continue;
   const lig = byId.get(ligId);
+  const tracedAreas: number[] = [];
   if (!lig) { skipped.push(`${ligId}: not a seeded ligament`); continue; }
   if (!lig.subregion) { skipped.push(`${ligId}: no subregion, cannot place in an Area`); continue; }
 
@@ -236,6 +256,7 @@ for (const ligId of readdirSync(rendersRoot).sort()) {
     }
 
     const target: Hotspot = { structureId: ligId, polygons: traced.polygons, area: traced.area, centroid: traced.centroid };
+    tracedAreas.push(traced.area);
     const idPass = traceNeighbours(dir, ligId);
     const neighbours = makeExclusive(target, idPass.neighbours, idPass.ownerAt);
     if (neighbours.length < idPass.neighbours.length) {
@@ -255,6 +276,33 @@ for (const ligId of readdirSync(rendersRoot).sort()) {
     }
     hotspots[`ligament-${ligId}-${angleDir}-context`] = [target, ...neighbours];
   }
+  if (tracedAreas.length) {
+    const pct = (x: number) => `${(x * 100).toFixed(2)}%`;
+    areaReport.push(
+      `  ${ligId.padEnd(52)} ${String(tracedAreas.length).padStart(2)} angle(s)  target ${pct(Math.min(...tracedAreas))} - ${pct(Math.max(...tracedAreas))} of the frame`,
+    );
+  }
+}
+
+if (only) {
+  const missing = [...only].filter((id) => !rows.some((r) => r.structureId === id));
+  if (missing.length) {
+    console.error(`--only named ligament(s) with nothing published from ${rendersRoot}: ${missing.join(', ')}`);
+    process.exit(1);
+  }
+  // Carry every other ligament over from the current seed, untouched.
+  for (const plate of LIGAMENT_PLATES) {
+    if (only.has(plate.structureId)) continue;
+    rows.push({ ...plate, panelStructureNames: [...plate.panelStructureNames] });
+  }
+  for (const [imageId, list] of Object.entries(LIGAMENT_HOTSPOTS)) {
+    const owner = list[0]?.structureId;
+    if (owner && only.has(owner)) continue;
+    hotspots[imageId] = list.map((h) => ({ structureId: h.structureId, polygons: h.polygons, area: h.area, centroid: h.centroid }));
+  }
+  rows.sort((a, b) =>
+    a.structureId.localeCompare(b.structureId) || a.angle - b.angle || a.kind.localeCompare(b.kind),
+  );
 }
 
 const body = rows.map((r) =>
@@ -345,4 +393,15 @@ if (skipped.length) {
   console.log(`\n${skipped.length} skipped: ${hidden} hidden angles, ${incomplete} incomplete renders, ` +
     `${skipped.length - hidden - incomplete} other`);
   for (const s of skipped.filter((x) => !x.includes('hidden') && !x.includes('incomplete'))) console.log(`  ${s}`);
+}
+
+// Delete what nothing points at. A file name is <ligament>-a<angle>-<kind>.webp.
+const wanted = new Set(rows.map((r) => `${r.structureId}-a${String(r.angle).padStart(3, '0')}-${r.kind}.webp`));
+const stale = readdirSync(OUT_DIR).filter((name) => name.endsWith('.webp') && !wanted.has(name));
+for (const name of stale) unlinkSync(join(OUT_DIR, name));
+console.log(`${stale.length} stale image(s) removed from public/anatomy/ligaments`);
+for (const name of stale) console.log(`  ${name}`);
+if (areaReport.length) {
+  console.log('Target size per ligament published from this run:');
+  for (const line of areaReport) console.log(line);
 }

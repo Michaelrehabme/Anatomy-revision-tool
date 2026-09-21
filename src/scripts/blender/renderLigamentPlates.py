@@ -43,6 +43,10 @@ ap.add_argument("--min-frame", type=float, default=0.10,
                      "context is a featureless crop of the talus with no ankle in "
                      "it. The frame has to hold the JOINT, whose size does not "
                      "shrink with the ligament's.")
+ap.add_argument("--fibres", action="store_true",
+                help="draw straps with the striped fibre texture. Off by default: at "
+                     "plate size its 2.6mm bands alias into moire and the user read "
+                     "every ligament as a striped ribbon. Kept for comparison.")
 a = ap.parse_args(argv)
 
 spec = json.load(open(a.spec))
@@ -208,7 +212,13 @@ BONE_MAT = bone_mat()
 # leans on relief and lines instead.
 REST_FILL, REST_LINE = (0.56, 0.62, 0.86, 1), (0.14, 0.18, 0.42, 1)
 HILITE_FILL, HILITE_LINE = (0.0, 0.72, 0.95, 1), (0.0, 0.30, 0.48, 1)
-HILITE_GLOW = ((0.0, 0.85, 1.0, 1), 0.45)
+HILITE_GLOW = ((0.0, 0.85, 1.0, 1), 0.8)
+# THE OTHER STRAPS ON A HIGHLIGHT PLATE. Every strap used to be the same
+# lavender-blue with the target only a slightly brighter teal, so on a busy
+# wrist the answer barely stood out. On the highlight render only, the
+# neighbours drop to a quiet grey-lavender; the context render keeps them all
+# alike, because a locate question must not give the target away.
+REST_MUTED_FILL, REST_MUTED_LINE = (0.78, 0.78, 0.84, 1), (0.45, 0.46, 0.55, 1)
 
 
 def fibre_axes(mesh):
@@ -232,6 +242,38 @@ def fibre_axes(mesh):
     # Rows of the mapping: texture X across the width, Y along the length, Z
     # through the thickness. Right-handed by construction.
     return mathutils.Matrix((width, length, thick))
+
+
+def flat_strap_mat(name, fill, glow=None):
+    """A strap in one colour with a soft sheen, no stripes.
+
+    The fibre texture below was meant to read as a bundle of fibres, and at
+    1600px on a desktop it does. Shown at phone size its 2.6mm bands fall
+    below a pixel, alias into moire, and every ligament became a striped
+    ribbon whose shape was hard to read. The outline (Freestyle, on the strap
+    collection) carries the shape; the fill only has to say which strap is
+    which.
+    """
+    mat = principled(name, fill, 0.6)
+    bsdf = mat.node_tree.nodes["Principled BSDF"]
+    try:
+        bsdf.inputs["Coat Weight"].default_value = 0.2
+        bsdf.inputs["Coat Roughness"].default_value = 0.35
+    except KeyError:
+        pass
+    if glow:
+        colour, strength = glow
+        try:
+            bsdf.inputs["Emission Color"].default_value = colour
+            bsdf.inputs["Emission Strength"].default_value = strength
+        except KeyError:
+            pass
+    return mat
+
+
+def strap_mat(name, fill, line, axes, glow=None):
+    """The strap material this run draws with: flat unless --fibres."""
+    return fibre_mat(name, fill, line, axes, glow) if a.fibres else flat_strap_mat(name, fill, glow)
 
 
 def fibre_mat(name, fill, line, axes, glow=None):
@@ -327,7 +369,10 @@ def ghost_mat():
     """
     mat = principled("lig_ghost", (0.93, 0.87, 0.74, 1), 0.4)
     bsdf = mat.node_tree.nodes["Principled BSDF"]
-    bsdf.inputs["Alpha"].default_value = 0.22
+    # 0.45, not 0.22: at 0.22 a ghosted femur behind the ACL read as a bone
+    # that had failed to render. It is linked into the bone collection too,
+    # so it gets the bones' outline and keeps its shape.
+    bsdf.inputs["Alpha"].default_value = 0.45
     try:
         mat.blend_method = "BLEND"
     except (AttributeError, TypeError):
@@ -373,12 +418,23 @@ def mesh_bbox(mesh):
     return (min(xs), min(ys), min(zs)), (max(xs), max(ys), max(zs))
 
 
-def frame_camera(lo, hi, angle_deg, elevation_deg, margin, min_frame):
+def frame_size(span, margin, min_frame, max_frame=None):
+    """The wider of "a bit more than the ligament" and "enough to hold the
+    joint" (see --min-frame), no wider than max_frame when one is given.
+
+    Without a ceiling every ligament of an area was framed at the area's full
+    size, so an 11mm acromioclavicular ligament was a sliver on a 240mm
+    shoulder. With a spec that gives both, a small ligament is framed at
+    minFrame (still enough to orient) and a long one grows up to frame.
+    """
+    size = max(span * margin, min_frame)
+    return min(size, max_frame) if max_frame else size
+
+
+def frame_camera(lo, hi, angle_deg, elevation_deg, margin, min_frame, max_frame=None):
     centre = mathutils.Vector(((lo[0] + hi[0]) / 2, (lo[1] + hi[1]) / 2, (lo[2] + hi[2]) / 2))
     span = max(hi[0] - lo[0], hi[1] - lo[1], hi[2] - lo[2])
-    # The frame is the wider of "a bit more than the ligament" and "enough to
-    # hold the joint" — see --min-frame.
-    size = max(span * margin, min_frame)
+    size = frame_size(span, margin, min_frame, max_frame)
     dist = size * 8 + 0.5
     theta = math.radians(angle_deg)
     phi = math.radians(elevation_deg)
@@ -484,8 +540,9 @@ def soften_strap(ob):
     solid.thickness = 0.0009
     solid.offset = 0.0
     sub = ob.modifiers.new("soften", "SUBSURF")
-    sub.levels = 2
-    sub.render_levels = 2
+    # One level, not two: two on a 0.9mm solidified sheet rippled the edge.
+    sub.levels = 1
+    sub.render_levels = 1
 
 
 def render_to(path, outlines=True):
@@ -564,6 +621,14 @@ for entry in spec["ligaments"]:
     # bones of a hand to keep is shorter and far more stable than naming the
     # two hundred to drop.
     keep = expand(entry.get("keep", [])) if entry.get("keep") else None
+    # A keep pattern that names nothing drops those bones with no error —
+    # "Sternum*" matched nothing for a whole tranche, because the atlas names
+    # them "Manubrium of sternum" and "Body of sternum". Say so.
+    if entry.get("keep"):
+        import fnmatch
+        for pat in entry["keep"]:
+            if not any(fnmatch.fnmatch(n, pat) for n in skeleton_names):
+                print("[warn] " + key + ": keep pattern '" + pat + "' matches no bone", flush=True)
 
     lig_mesh = bake(lig_names, "lig_" + key)
     if not lig_mesh.vertices:
@@ -581,7 +646,12 @@ for entry in spec["ligaments"]:
 
     centre = ((lo[0] + hi[0]) / 2, (lo[1] + hi[1]) / 2, (lo[2] + hi[2]) / 2)
     span = max(hi[0] - lo[0], hi[1] - lo[1], hi[2] - lo[2])
-    frame = max(span * entry.get("margin", a.margin), entry.get("frame", a.min_frame))
+    # A spec with minFrame treats frame as the CEILING and minFrame as the
+    # floor (ligamentFraming.ts); an older spec with frame alone keeps frame
+    # as the floor, as it always was.
+    floor_m = entry.get("minFrame", entry.get("frame", a.min_frame))
+    ceiling_m = entry.get("frame") if "minFrame" in entry else None
+    frame = frame_size(span, entry.get("margin", a.margin), floor_m, ceiling_m)
     # A cutaway or ghost list can name ligaments too — the patellar ligament is
     # as much in front of the ACL as the patella is.
     others = [n for n in straps_in_frame(centre, frame, set(lig_names) | drop | ghost)]
@@ -596,17 +666,19 @@ for entry in spec["ligaments"]:
     for n in others:
         m = bake([n], "strap_" + key + "_" + n)
         if m.vertices:
-            strap_parts.append((n, m, fibre_mat("rest_" + n, REST_FILL, REST_LINE, fibre_axes(m))))
+            axes = fibre_axes(m)
+            strap_parts.append((n, m, strap_mat("rest_" + n, REST_FILL, REST_LINE, axes),
+                                strap_mat("muted_" + n, REST_MUTED_FILL, REST_MUTED_LINE, axes)))
         else:
             bpy.data.meshes.remove(m)
     lig_axes = fibre_axes(lig_mesh)
-    LIG_MAT = fibre_mat("rest_" + key, REST_FILL, REST_LINE, lig_axes)
-    HILITE_MAT = fibre_mat("hilite_" + key, HILITE_FILL, HILITE_LINE, lig_axes, HILITE_GLOW)
+    LIG_MAT = strap_mat("rest_" + key, REST_FILL, REST_LINE, lig_axes)
+    HILITE_MAT = strap_mat("hilite_" + key, HILITE_FILL, HILITE_LINE, lig_axes, HILITE_GLOW)
 
     angles = entry.get("angles") or [entry["angle"]]
     for angle in angles:
       frame_camera(lo, hi, angle, entry.get("elevation", 0),
-                   entry.get("margin", a.margin), entry.get("frame", a.min_frame))
+                   entry.get("margin", a.margin), floor_m, ceiling_m)
       # A single-angle entry keeps the flat layout the preview packer reads;
       # a rotation set gets one folder per angle underneath it.
       leaf_dir = os.path.join(a.out, key) if len(angles) == 1 else os.path.join(a.out, key, "a%03d" % angle)
@@ -621,19 +693,19 @@ for entry in spec["ligaments"]:
       clear()
       link(bones, "ctx_bones_" + key, BONE_MAT, boned=True)
       link(lig_mesh, "ctx_lig_" + key, LIG_MAT, outlined=True, soften=True)
-      for n, m, mat in strap_parts:
+      for n, m, mat, _muted in strap_parts:
           link(m, "ctx_" + n, mat, outlined=True, soften=True)
       if ghost_mesh:
-          link(ghost_mesh, "ctx_ghost_" + key, GHOST_MAT)
+          link(ghost_mesh, "ctx_ghost_" + key, GHOST_MAT, boned=True)
       render_to(os.path.join(leaf_dir, "context.png"))
 
       clear()
       link(bones, "hl_bones_" + key, BONE_MAT, boned=True)
       link(lig_mesh, "hl_lig_" + key, HILITE_MAT, outlined=True, soften=True)
-      for n, m, mat in strap_parts:
-          link(m, "hl_" + n, mat, outlined=True, soften=True)
+      for n, m, _rest, muted in strap_parts:
+          link(m, "hl_" + n, muted, outlined=True, soften=True)
       if ghost_mesh:
-          link(ghost_mesh, "hl_ghost_" + key, GHOST_MAT)
+          link(ghost_mesh, "hl_ghost_" + key, GHOST_MAT, boned=True)
       render_to(os.path.join(leaf_dir, "highlight.png"))
 
       # The mask holds the bones out rather than hiding them, so a ligament that
@@ -653,10 +725,10 @@ for entry in spec["ligaments"]:
 
       # The ID pass, with a legend the packer reads back. The target is index
       # 1; the neighbours follow in the order they were baked.
-      parts = [(1, lig_mesh)] + [(i + 2, m) for i, (n, m, _) in enumerate(strap_parts)]
+      parts = [(1, lig_mesh)] + [(i + 2, m) for i, (n, m, _, _) in enumerate(strap_parts)]
       render_ids(os.path.join(leaf_dir, "ids.png"), bones, parts)
       with open(os.path.join(leaf_dir, "ids.json"), "w") as f:
-          json.dump({"1": entry.get("name", key)} | {str(i + 2): n for i, (n, _, _) in enumerate(strap_parts)}, f)
+          json.dump({"1": entry.get("name", key)} | {str(i + 2): n for i, (n, _, _, _) in enumerate(strap_parts)}, f)
 
       count += 4
     bpy.data.meshes.remove(lig_mesh)
@@ -665,7 +737,7 @@ for entry in spec["ligaments"]:
         bpy.data.meshes.remove(ghost_mesh)
     if other_mesh:
         bpy.data.meshes.remove(other_mesh)
-    for _, m, _ in strap_parts:
+    for _, m, _, _ in strap_parts:
         bpy.data.meshes.remove(m)
 
 print("[complete] " + str(count) + " renders -> " + a.out
