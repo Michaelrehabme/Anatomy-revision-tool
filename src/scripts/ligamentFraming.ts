@@ -66,6 +66,15 @@ const TARSALS = ['Talus.*', 'Calcaneus.*', 'Navicular bone.*', 'Cuboid bone.*',
  * bones don't render properly" complaint seen from the other side.
  */
 const STERNUM = ['*of sternum', 'Xiphoid process'];
+/**
+ * The skull, bone by bone. The spine list kept only the occipital bone, so the
+ * nuchal ligament's plate showed a floating occiput with the rest of the head
+ * missing and the straps that attach to it hanging in space. Whole-bone names
+ * only: the atlas's ".j" objects are labels for parts of a bone.
+ */
+const SKULL = ['Frontal bone', 'Occipital bone', 'Parietal bone*', 'Temporal bone*', 'Sphenoid bone', 'Ethmoid bone',
+  'Mandible', 'Maxilla.*', 'Zygomatic bone*', 'Nasal bone.*', 'Lacrimal bone.*', 'Palatine bone*', 'Vomer',
+  'Inferior nasal concha bone.*', 'Hyoid bone'];
 const BY_AREA: Record<SubRegion, { minFrame: number; frame: number; keep: string[] }> = {
   'wrist-hand': {
     minFrame: 0.12,
@@ -87,13 +96,13 @@ const BY_AREA: Record<SubRegion, { minFrame: number; frame: number; keep: string
   // The pelvis reads best whole, femurs included — they are what makes it a
   // hip rather than an abstract ring. The lumbar spine above it orients it.
   hip: { minFrame: 0.20, frame: 0.30, keep: ['Hip bone.*', 'Sacrum', 'Coccyx', 'Femur.*', 'Vertebra L*'] },
-  spine: { minFrame: 0.14, frame: 0.26, keep: ['Vertebra *', 'Sacrum', 'Coccyx', 'Occipital bone', '*rib*'] },
+  spine: { minFrame: 0.14, frame: 0.26, keep: ['Vertebra *', 'Sacrum', 'Coccyx', ...SKULL, '*rib*'] },
   torso: {
     minFrame: 0.20,
     frame: 0.30,
     keep: ['*rib*', ...STERNUM, 'Vertebra T*', 'Vertebra C7', 'Vertebra L1', 'Clavicle.*', 'Scapula.*'],
   },
-  neck: { minFrame: 0.14, frame: 0.22, keep: ['Vertebra C*', 'Vertebra T1', 'Vertebra T2', 'Occipital bone', 'Clavicle.*', ...STERNUM] },
+  neck: { minFrame: 0.14, frame: 0.22, keep: ['Vertebra C*', 'Vertebra T1', 'Vertebra T2', ...SKULL, 'Clavicle.*', ...STERNUM] },
 };
 
 /**
