@@ -51,6 +51,9 @@ ap.add_argument("--look", default="studio", choices=["flat", "studio"],
                 help="studio (default) is the landmark plates' look: a dim world, a key "
                      "light aimed from the camera, occlusion in the hollows and an inked "
                      "line pass. flat is the old evenly lit look.")
+ap.add_argument("--skip-existing", action="store_true",
+                help="skip an angle whose ids.json (the last file each angle writes) "
+                     "already exists, so an interrupted run resumes where it stopped")
 a = ap.parse_args(argv)
 STUDIO = a.look == "studio"
 
@@ -806,6 +809,9 @@ for entry in spec["ligaments"]:
       # A single-angle entry keeps the flat layout the preview packer reads;
       # a rotation set gets one folder per angle underneath it.
       leaf_dir = os.path.join(a.out, key) if len(angles) == 1 else os.path.join(a.out, key, "a%03d" % angle)
+      if a.skip_existing and os.path.exists(os.path.join(leaf_dir, "ids.json")):
+          print("[skip] " + key + " angle " + str(angle) + ": already rendered", flush=True)
+          continue
 
       span_mm = max(hi[0] - lo[0], hi[1] - lo[1], hi[2] - lo[2]) * 1000
       note = (", cutaway " + str(len(drop)) + " bone(s)") if drop else ""
