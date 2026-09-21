@@ -192,6 +192,8 @@ const MIN_HITBOX_GROW_PX = 16;
  * audit in src/scripts/lib/hotspotSizeAudit.ts.
  */
 const MIN_CORE_SHARE = 0.35;
+/** A region whose anatomy already covers this share of the plate gets only the minimum margin. */
+const LARGE_REGION_SHARE = 0.04;
 
 /** Grows a binary mask by `radius` pixels — a square-kernel dilation, run separably. */
 function dilateMask(mask: Uint8Array, width: number, height: number, radius: number): Uint8Array {
@@ -410,7 +412,14 @@ for (const id of readdirSync(masksRoot).sort()) {
       // its hitbox, and never below the fingertip floor.
       let corePx = 0;
       for (let i = 0; i < bits.length; i++) corePx += bits[i];
-      let growPx = Math.max(Math.round(HITBOX_GROW_M * (mi.width / frameSize)), MIN_HITBOX_GROW_PX);
+      // A LARGE region needs no help being tapped — the ilium or a fossa is
+      // already a big share of the plate — and 6mm round its long perimeter
+      // added more area than any small landmark has in total. It gets the
+      // fingertip floor as its margin and no more.
+      const large = corePx / bits.length > LARGE_REGION_SHARE;
+      let growPx = large
+        ? MIN_HITBOX_GROW_PX
+        : Math.max(Math.round(HITBOX_GROW_M * (mi.width / frameSize)), MIN_HITBOX_GROW_PX);
       let grown = dilateMask(bits, mi.width, mi.height, growPx);
       const countOf = (m: Uint8Array) => { let n = 0; for (let i = 0; i < m.length; i++) n += m[i]; return n; };
       // ...and never so far that the hitbox drops under MIN_REGION_SHARE: a

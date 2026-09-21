@@ -60,6 +60,20 @@ export const THRESHOLDS: Record<HotspotFamily, FamilyThresholds> = {
 };
 
 
+/**
+ * Hitboxes that are big because the ANATOMY is big, checked by eye and
+ * accepted, each with a ceiling at its measured size so that growth is still
+ * caught. Shrinking these would redraw the anatomy wrong: a tap on the real
+ * ilium must count as the ilium. Measured 21 Sep 2026 after large regions
+ * were given the minimum margin (publishLandmarks.ts, LARGE_REGION_SHARE).
+ */
+export const ACCEPTED_LARGE: Record<string, { maxArea: number; why: string }> = {
+  'landmark-infraspinous-fossa-posterior': { maxArea: 0.225, why: 'the fossa is most of the posterior scapula; outline reviewed in three passes' },
+  'landmark-ilium-lateral': { maxArea: 0.185, why: 'the ilium is the blade of the hip bone, framed on the hip bone' },
+  'landmark-pubis-anterior': { maxArea: 0.18, why: 'outline reviewed in a second pass; the anatomy alone is 13.6% of the plate' },
+  'sub-sacrum-a000-plate': { maxArea: 0.185, why: 'a whole-bone outline on the plate framed for the sacral landmarks' },
+};
+
 export interface HotspotOffender {
   imageId: string;
   structureId: string;
@@ -91,7 +105,8 @@ function quantile(sorted: number[], q: number): number {
 /** Why one hotspot is over the line, or null when it is fine. */
 export function judgeHotspot(imageId: string, hotspot: HotspotPolygon, thresholds = THRESHOLDS): HotspotOffender | null {
   const family = familyOf(imageId);
-  const t = thresholds[family];
+  const accepted = ACCEPTED_LARGE[imageId];
+  const t = accepted ? { ...thresholds[family], maxArea: Math.max(thresholds[family].maxArea, accepted.maxArea) } : thresholds[family];
   const isPoint = family === 'landmark' && hotspot.targetRadius !== undefined && !hotspot.targetCore;
   const coreShare = hotspot.targetCore && hotspot.area > 0 ? polygonsArea(hotspot.targetCore) / hotspot.area : undefined;
   const reasons: string[] = [];

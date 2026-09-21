@@ -28,7 +28,7 @@ describe('judgeHotspot', () => {
 
   it('flags an outline over its family limit', () => {
     expect(judgeHotspot('ligament-x-a000-context', hotspot({ area: 0.07 }))?.reason).toMatch(/covers 7\.0%/);
-    expect(judgeHotspot('sub-sacrum-a000-plate', hotspot({ area: 0.18 }))?.reason).toMatch(/limit 15%/);
+    expect(judgeHotspot('sub-knee-a000-plate', hotspot({ area: 0.18 }))?.reason).toMatch(/limit 15%/);
   });
 
   it('flags a point target whose radius is over the cap, and allows the cap itself', () => {
@@ -57,5 +57,12 @@ describe('auditHotspotSizes', () => {
     expect(audit.families.ligament?.offenders).toBe(2);
     expect(audit.families.joint?.offenders).toBe(0);
     expect(audit.offenders.map((o) => o.area)).toEqual([0.09, 0.07]);
+  });
+});
+
+describe('accepted large structures', () => {
+  it('passes an accepted hitbox at its measured size but flags it if it grows', () => {
+    expect(judgeHotspot('landmark-ilium-lateral', hotspot({ area: 0.18 }))).toBeNull();
+    expect(judgeHotspot('landmark-ilium-lateral', hotspot({ area: 0.2 }))?.reason).toMatch(/covers 20\.0%/);
   });
 });
