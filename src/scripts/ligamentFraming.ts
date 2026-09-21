@@ -100,8 +100,9 @@ const spec = JSON.parse(readFileSync(`${ROOT}/${specPath}`, 'utf8'));
 const byId = new Map(ALL_STRUCTURES.filter(isLigament).map((l) => [l.id, l]));
 
 let changed = 0;
-for (const entry of spec.ligaments as { key: string; frame?: number; minFrame?: number; keep?: string[] }[]) {
-  const lig = byId.get(entry.key);
+for (const entry of spec.ligaments as { key: string; subregion?: SubRegion; frame?: number; minFrame?: number; keep?: string[] }[]) {
+  // A second-tranche entry is not seeded yet, so it carries its own subregion.
+  const lig = byId.get(entry.key) ?? (entry.subregion ? { subregion: entry.subregion } : undefined);
   if (!lig?.subregion) {
     console.log(`  ${entry.key}: no subregion, left alone`);
     continue;
@@ -121,7 +122,7 @@ writeFileSync(`${ROOT}/${specPath}`, JSON.stringify(spec, null, 1));
 
 const tally = new Map<string, number>();
 for (const entry of spec.ligaments as { key: string }[]) {
-  const sub = byId.get(entry.key)?.subregion;
+  const sub = byId.get(entry.key)?.subregion ?? (entry as { subregion?: SubRegion }).subregion;
   if (sub) tally.set(sub, (tally.get(sub) ?? 0) + 1);
 }
 console.log(`framed ${changed} of ${spec.ligaments.length} ligaments -> ${specPath}`);

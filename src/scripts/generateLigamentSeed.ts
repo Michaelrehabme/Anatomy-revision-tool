@@ -45,7 +45,25 @@ const attachments: { ligament: string; attachments: { bone: string; share: numbe
 const collections: Record<string, string[]> = read('ligament-collections.json');
 const skeletal: { id: string; category: string; blenderObjects?: string[] }[] = read('ta2-mapping-skeletal.resolved.json').mapping;
 
-const MIN_VISIBLE = 0.5;
+/**
+ * THE SECOND TRANCHE. The survey undercounts — the ATFL traced a real target
+ * once eight angles were rendered — so the rest are rendered first and only
+ * the ones that trace are seeded. Three switches make that possible without
+ * ever seeding an untested ligament:
+ *
+ *   --min-visible 0     consider every ligament in scope, not only the plainly visible
+ *   --candidates FILE   write the ligaments not yet seeded, with their meshes, subregion
+ *                       and attachment bones, and STOP (the seed is not touched)
+ *   --traced FILE       a JSON array of ids whose renders traced; a ligament under the
+ *                       first tranche's threshold is seeded only if it is listed
+ */
+const argv = process.argv.slice(2);
+const argOf = (name: string) => (argv.includes(`--${name}`) ? argv[argv.indexOf(`--${name}`) + 1] : undefined);
+const MIN_VISIBLE = Number(argOf('min-visible') ?? 0.5);
+/** The first tranche's threshold, which decides who needed a traced render to get in. */
+const TRANCHE_ONE_VISIBLE = 0.5;
+const candidatesOut = argOf('candidates');
+const tracedIds: Set<string> | null = argOf('traced') ? new Set(JSON.parse(readFileSync(argOf('traced')!, 'utf8'))) : null;
 
 /** Strip the side and part suffixes Z-Anatomy uses: ".l", ".r", ".o1l", ".or". */
 const baseName = (n: string) => n.replace(/\.(o\d?)?[lr]$/, '');
@@ -165,6 +183,35 @@ for (const l of byName.values()) {
   chosen.push({ ...l, derived, id: kebab(l.name), subregion, region: REGION_FOR[subregion], ids, tier });
 }
 chosen.sort((a, b) => a.subregion.localeCompare(b.subregion) || a.name.localeCompare(b.name));
+
+if (candidatesOut) {
+  const seeded = new Set(ALL_STRUCTURES.filter((st) => st.category === 'ligament').map((st) => st.id));
+  const candidates = chosen
+    .filter((l) => !seeded.has(l.id))
+    .map((l) => ({
+      id: l.id,
+      name: l.name,
+      subregion: l.subregion,
+      best: l.best,
+      meshes: l.meshes.sort(),
+      attachmentBones: l.derived.map((d) => d.bone),
+    }));
+  writeFileSync(candidatesOut, JSON.stringify({ minVisible: MIN_VISIBLE, candidates }, null, 1));
+  console.log(`${candidates.length} candidate ligament(s) not yet seeded -> ${candidatesOut}`);
+  process.exit(0);
+}
+
+// Below the first tranche's threshold a ligament must have traced in a render.
+if (tracedIds) {
+  const before = chosen.length;
+  for (let i = chosen.length - 1; i >= 0; i--) {
+    if (chosen[i].best < TRANCHE_ONE_VISIBLE && !tracedIds.has(chosen[i].id)) chosen.splice(i, 1);
+  }
+  console.log(`${before - chosen.length} under-threshold ligament(s) left out: no traced render`);
+} else if (MIN_VISIBLE < TRANCHE_ONE_VISIBLE) {
+  console.error('--min-visible below the first tranche needs --traced: never seed a ligament that has not traced.');
+  process.exit(1);
+}
 
 // ---- seed ----
 const q = (s: string) => `'${s.replace(/'/g, "\\'")}'`;
