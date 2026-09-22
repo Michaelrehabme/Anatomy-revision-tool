@@ -32,7 +32,15 @@ const SETS: Record<string, () => Promise<Record<string, HotspotPolygon[]>>> = {
   deep: () => import('./hotspots.deep.generated').then((m) => m.DEEP_HOTSPOTS),
   landmarks: () => import('./hotspots.landmarks.generated').then((m) => m.LANDMARK_HOTSPOTS),
   subregions: () => import('./hotspots.subregions.generated').then((m) => m.SUBREGION_HOTSPOTS),
-  ligaments: () => import('./hotspots.ligaments.generated').then((m) => m.LIGAMENT_HOTSPOTS),
+  // Ligaments come in seven area files: together they are past the 2 MiB a
+  // service worker will precache (see publishLigamentPlates.ts).
+  ligamentsUpper: () => import('./hotspots.ligaments.upper.generated').then((m) => m.LIGAMENT_HOTSPOTS_PART),
+  ligamentsHand: () => import('./hotspots.ligaments.hand.generated').then((m) => m.LIGAMENT_HOTSPOTS_PART),
+  ligamentsHip: () => import('./hotspots.ligaments.hip.generated').then((m) => m.LIGAMENT_HOTSPOTS_PART),
+  ligamentsKnee: () => import('./hotspots.ligaments.knee.generated').then((m) => m.LIGAMENT_HOTSPOTS_PART),
+  ligamentsFoot: () => import('./hotspots.ligaments.foot.generated').then((m) => m.LIGAMENT_HOTSPOTS_PART),
+  ligamentsFootTilt: () => import('./hotspots.ligaments.footTilt.generated').then((m) => m.LIGAMENT_HOTSPOTS_PART),
+  ligamentsAxial: () => import('./hotspots.ligaments.axial.generated').then((m) => m.LIGAMENT_HOTSPOTS_PART),
 };
 
 let pending: Promise<void> | null = null;

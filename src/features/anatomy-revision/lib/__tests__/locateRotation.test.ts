@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildLocateQuestions } from '../questionGenerators/locate';
+import { buildLocateQuestions, isTappableIn } from '../questionGenerators/locate';
 import type { AnatomyImageAsset } from '../../types/image';
 import type { AnatomyStructure } from '../../types/structure';
 import { ALL_IMAGES, ALL_STRUCTURES } from '../../data/seed';
@@ -138,12 +138,23 @@ describe('the shipped ligament plates', () => {
   const qs = buildLocateQuestions(ALL_STRUCTURES, ALL_IMAGES).filter((q) => q.category === 'ligament');
   const ownerOf = (imageId: string) =>
     imageId.replace(/^ligament-/, '').replace(/-a\d{3}(?:[ud]\d{3})?-(context|highlight)$/, '');
+  // A ligament too thin to tap on every frame of its own plate is asked on ONE
+  // neighbour's instead (locate.ts, fallbackSetFor): the interspinous
+  // ligaments and ligamenta flava are slivers on the whole-spine plate and a
+  // fair size on the iliolumbar ligament's lumbar close-up.
+  const onFallback = (id: string) =>
+    !ALL_IMAGES.some((img) => ownerOf(img.id) === id && img.id.endsWith('-context') && isTappableIn(img, id));
 
   it('opens every ligament on the plate framed for it', () => {
     const foreign = qs
-      .filter((q) => ownerOf(q.imageId) !== q.targetStructureId)
+      .filter((q) => ownerOf(q.imageId) !== q.targetStructureId && !onFallback(q.targetStructureId))
       .map((q) => `${q.targetStructureId} -> ${ownerOf(q.imageId)}`);
     expect(foreign).toEqual([]);
+  });
+
+  it('keeps the fallback to the few whose own plate cannot carry the question', () => {
+    const fallbacks = qs.filter((q) => ownerOf(q.imageId) !== q.targetStructureId).map((q) => q.targetStructureId).sort();
+    expect(fallbacks).toEqual(['interspinous-ligaments', 'ligamenta-flava']);
   });
 
   it('asks each ligament once, not once per plate it appears on', () => {
@@ -157,7 +168,8 @@ describe('the shipped ligament plates', () => {
   it('only turns through frames of that ligament\u2019s own set', () => {
     const strays = qs.flatMap((q) =>
       (q.frameImageIds ?? [])
-        .filter((id) => ownerOf(id) !== q.targetStructureId)
+        // Within one set: its own, or the one fallback it opens on.
+        .filter((id) => ownerOf(id) !== q.targetStructureId && ownerOf(id) !== ownerOf(q.imageId))
         .map((id) => `${q.targetStructureId} can turn to ${id}`),
     );
     expect(strays).toEqual([]);

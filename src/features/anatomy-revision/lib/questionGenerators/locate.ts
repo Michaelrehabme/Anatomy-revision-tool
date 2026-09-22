@@ -144,6 +144,30 @@ export function buildLocateQuestions(
     ownSetCache.set(structure.id, usable);
     return usable;
   };
+  const fallbackCache = new Map<string, string | undefined>();
+  /**
+   * With no usable set of its own, ONE neighbour's set carries the question —
+   * the one where the structure traces largest — not every plate it happens to
+   * be drawn on. The interspinous ligaments were once asked fifteen times.
+   */
+  const fallbackSetFor = (structure: AnatomyStructure): string | undefined => {
+    if (fallbackCache.has(structure.id)) return fallbackCache.get(structure.id);
+    let best: string | undefined;
+    let bestArea = 0;
+    for (const [key, frames] of sets) {
+      if (subjectBySet.get(key) === undefined) continue;
+      for (const f of frames) {
+        if (!isTappableIn(f, structure.id)) continue;
+        const area = (f.hotspots ?? []).find((h) => h.structureId === structure.id)?.area ?? 0;
+        if (area > bestArea) {
+          bestArea = area;
+          best = key;
+        }
+      }
+    }
+    fallbackCache.set(structure.id, best);
+    return best;
+  };
 
   for (const image of images) {
     if (!image.hotspots?.length) continue;
@@ -167,7 +191,7 @@ export function buildLocateQuestions(
         const isOwnSet =
           subject !== undefined &&
           [structure.name, ...structure.aliases].some((n) => n.toLowerCase() === subject);
-        if (subject !== undefined && !isOwnSet && hasUsableOwnSet(structure)) continue;
+        if (subject !== undefined && !isOwnSet && (hasUsableOwnSet(structure) || fallbackSetFor(structure) !== key)) continue;
 
         // A frame the target is a sliver in is not an angle to turn to: the tap
         // is graded against whichever frame is showing, so an unfair frame is an

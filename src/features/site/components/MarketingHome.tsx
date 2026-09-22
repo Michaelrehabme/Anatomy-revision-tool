@@ -43,7 +43,7 @@ const FAQS = [
   },
   {
     q: 'Which muscles are covered?',
-    a: '122 muscles across nine regions: shoulder, elbow, wrist and hand, hip, knee, ankle and foot, and the cervical, thoracic and lumbar spine. Bones, landmarks, joints and ligaments bring it to 345 structures in all. Questions are built on Z-Anatomy renders with the labels hidden, so what you revise looks like what you will be examined on.',
+    a: '122 muscles across nine regions: shoulder, elbow, wrist and hand, hip, knee, ankle and foot, and the cervical, thoracic and lumbar spine. Bones, landmarks, joints and ligaments bring it to 456 structures in all. Questions are built on Z-Anatomy renders with the labels hidden, so what you revise looks like what you will be examined on.',
   },
   {
     q: 'Does it work offline?',

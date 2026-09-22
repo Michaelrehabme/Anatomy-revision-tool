@@ -6,6 +6,7 @@ import { ALL_STRUCTURES } from '../features/anatomy-revision/data/seed/index';
 import { isLigament } from '../features/anatomy-revision/types/structure';
 import type { ViewType } from '../features/anatomy-revision/types/image';
 import { pointInAnyPolygon } from '../features/anatomy-revision/lib/hotspot/pointInPolygon';
+import { simplifyRing } from '../features/anatomy-revision/lib/hotspot/polygonGeometry';
 import { decodePng } from './lib/png';
 import { binariseAlpha, maskToPolygons } from './lib/maskToPolygons';
 import { LIGAMENT_PLATES } from '../features/anatomy-revision/data/seed/ligamentPlates.generated';
@@ -58,6 +59,40 @@ const ROOT = fileURLToPath(new URL('../..', import.meta.url));
 const OUT_DIR = `${ROOT}/public/anatomy/ligaments`;
 const OUT_TS = `${ROOT}/src/features/anatomy-revision/data/seed/ligamentPlates.generated.ts`;
 const OUT_HOTSPOTS = `${ROOT}/src/features/anatomy-revision/data/seed/hotspots.ligaments.generated.ts`;
+/**
+ * THE HOTSPOTS ARE SPLIT BY BODY AREA. With the second tranche there are over
+ * 900 locate pictures, and one file of their outlines was 7 MB — past the
+ * 2 MiB a service worker will precache, so the build refused. Each group is
+ * its own lazily loaded chunk (seed/hotspots.ts); the unsplit
+ * hotspots.ligaments.generated.ts only re-exports them all, for scripts.
+ * The group names are fixed because the loader lists them.
+ */
+const HOTSPOT_GROUPS: Record<string, string[]> = {
+  upper: ['shoulder', 'elbow'],
+  hand: ['wrist-hand'],
+  hip: ['hip'],
+  knee: ['knee'],
+  foot: ['ankle-foot'],
+  // The foot's tilted views are its own file: with them the foot alone was
+  // past the 2 MiB limit. Chosen by image id, not subregion (see groupFor).
+  footTilt: [],
+  axial: ['spine', 'torso', 'neck'],
+};
+const groupOf = (subregion: string | undefined) =>
+  Object.entries(HOTSPOT_GROUPS).find(([, subs]) => subregion && subs.includes(subregion))?.[0] ?? 'axial';
+const hotspotPartPath = (group: string) => `${ROOT}/src/features/anatomy-revision/data/seed/hotspots.ligaments.${group}.generated.ts`;
+
+/** Four decimals of a 1600px frame is a sixth of a pixel: more is only bytes. */
+const round4 = (n: number) => Math.round(n * 1e4) / 1e4;
+const roundRings = (polygons: number[][][]) => polygons.map((ring) => ring.map(([x, y]) => [round4(x), round4(y)]));
+/**
+ * A neighbour's outline only has to name a wrong tap, not grade a right one,
+ * so it is simplified harder than the target's: 0.003 of the frame (about
+ * five pixels) and at most 24 vertices a ring. Neighbours were 90% of the
+ * file.
+ */
+const coarsen = (polygons: number[][][]) =>
+  polygons.map((ring) => simplifyRing(ring, { epsilon: 0.003, maxVertices: 24, minVertices: 6 }));
 
 /**
  * Below this share of the frame a traced target is a few pixels, not a
@@ -312,11 +347,23 @@ if (only) {
   );
 }
 
-const body = rows.map((r) =>
-  `  { structureId: '${r.structureId}', name: ${JSON.stringify(r.name)}, region: '${r.region}', subregion: '${r.subregion}', ` +
-  `view: '${r.view}', angle: ${r.angle}, ${r.elevation ? `elevation: ${r.elevation}, ` : ''}kind: '${r.kind}', width: ${r.width}, height: ${r.height}, ` +
-  `panelStructureNames: ${JSON.stringify(r.panelStructureNames)} },`,
-).join('\n');
+// COMPACT ROWS. With the second tranche there are over 1,800 plates, and
+// written out in full the list was 890 kB of the app's entry chunk — most of
+// it the same ligament's name, region and view repeated on every image, and
+// every ligament in view spelled out on every locate picture. Each ligament's
+// facts are written once, names are a table, every plate is 1600px square,
+// and a row is [ligament, angle, elevation, kind, view, names].
+const NAMES = [...new Set(rows.flatMap((r) => r.panelStructureNames))].sort();
+const nameIndex = new Map(NAMES.map((n, i) => [n, i]));
+const VIEWS = [...new Set(rows.map((r) => r.view))].sort();
+const ligFacts: Record<string, [string, string, string]> = {};
+for (const r of rows) ligFacts[r.structureId] = [r.name, r.region, r.subregion];
+const sizes = new Set(rows.map((r) => `${r.width}x${r.height}`));
+if (sizes.size > 1) throw new Error(`plates are not all one size: ${[...sizes].join(', ')}`);
+const [W, H] = (rows[0] ? [rows[0].width, rows[0].height] : [1600, 1600]);
+const body = rows
+  .map((r) => JSON.stringify([r.structureId, r.angle, r.elevation ?? 0, r.kind === 'context' ? 0 : 1, VIEWS.indexOf(r.view), r.panelStructureNames.map((n) => nameIndex.get(n))]))
+  .join(',\n');
 
 writeFileSync(OUT_TS, `import type { ViewType } from '../../types/image';
 import type { Region, SubRegion } from '../../types/region';
@@ -326,11 +373,11 @@ import type { Region, SubRegion } from '../../types/region';
  * Regenerate with: npx tsx src/scripts/publishLigamentPlates.ts
  *
  * One row per file in public/anatomy/ligaments/. A ligament has up to eight
- * angles and each angle two kinds: 'context' (every ligament at rest; the
- * locate picture, with hotspots) and 'highlight' (the target in cyan; the
- * identify picture, no hotspots). Only angles where the target traced are
- * here. Dimensions are measured from the files, because they become the
- * aspect ratio of the box the student clicks in.
+ * angles (and a foot ligament four tilted views) and each view two kinds:
+ * 'context' (every ligament at rest; the locate picture, with hotspots) and
+ * 'highlight' (the target in cyan; the identify picture, no hotspots). Only
+ * views where the target traced are here. Stored compactly — see
+ * publishLigamentPlates.ts — and expanded to LigamentPlate on load.
  */
 export interface LigamentPlate {
   structureId: string;
@@ -349,39 +396,97 @@ export interface LigamentPlate {
   panelStructureNames: string[];
 }
 
-export const LIGAMENT_PLATES: LigamentPlate[] = [
+const W = ${W};
+const H = ${H};
+const NAMES: string[] = ${JSON.stringify(NAMES)};
+const VIEWS: ViewType[] = ${JSON.stringify(VIEWS)};
+const LIGS: Record<string, [string, Region, SubRegion]> = ${JSON.stringify(ligFacts)};
+const ROWS: [string, number, number, 0 | 1, number, number[]][] = [
 ${body}
 ];
+
+export const LIGAMENT_PLATES: LigamentPlate[] = ROWS.map(([structureId, angle, elevation, kind, view, names]) => {
+  const [name, region, subregion] = LIGS[structureId];
+  return {
+    structureId,
+    name,
+    region,
+    subregion,
+    view: VIEWS[view],
+    angle,
+    ...(elevation ? { elevation } : {}),
+    kind: kind === 0 ? 'context' : 'highlight',
+    width: W,
+    height: H,
+    panelStructureNames: names.map((i) => NAMES[i]),
+  };
+});
 `);
 
-const hsBody = Object.entries(hotspots).map(([id, list]) =>
-  `  '${id}': [\n${list.map((h) =>
-    `    { structureId: '${h.structureId}', polygons: ${JSON.stringify(h.polygons)}, area: ${h.area}, centroid: ${JSON.stringify(h.centroid)} },`,
-  ).join('\n')}\n  ],`,
-).join('\n');
-
-writeFileSync(OUT_HOTSPOTS, `/**
+const HEADER = `/**
  * GENERATED FILE — do not edit by hand.
  *
- * Regenerate with:
- *   blender atlas/Z-Anatomy/Startup.blend --background \\
- *     --python src/scripts/blender/renderLigamentPlates.py -- \\
- *     --spec ligament-tranche1.spec.json --out renders/ligaments-tranche1
- *   npx tsx src/scripts/publishLigamentPlates.ts --renders renders/ligaments-tranche1
+ * Regenerate with publishLigamentPlates.ts (renders from renderLigamentPlates.py).
  *
  * One entry per published context image. The first hotspot is the target
  * ligament, traced from its own mask with the bones and every other strap
  * held out; the rest are the other seeded ligaments in view, traced from the
- * ID pass, so a click on the wrong ligament can be named. Straps that are
- * not seeded ligaments are drawn but carry no hotspot, and a neighbour whose
- * outline would swallow another's is dropped so that every tap resolves to
- * the strap it landed on.
- */
+ * ID pass and simplified, so a click on the wrong ligament can be named.
+ */`;
+/** Share of the covered frame that two hotspots claim, on a 100x100 grid (as generateSet.test.ts measures it). */
+function doubledShare(rings: number[][][][]): number {
+  let covered = 0;
+  let doubled = 0;
+  for (let y = 0; y < 100; y++) {
+    for (let x = 0; x < 100; x++) {
+      const p: [number, number] = [(x + 0.5) / 100, (y + 0.5) / 100];
+      const hits = rings.filter((r) => pointInAnyPolygon(p, r)).length;
+      if (hits) covered++;
+      if (hits > 1) doubled++;
+    }
+  }
+  return covered ? doubled / covered : 0;
+}
+
+const byGroup = new Map<string, string[]>(Object.keys(HOTSPOT_GROUPS).map((g) => [g, []]));
+let keptFine = 0;
+for (const [imageId, list] of Object.entries(hotspots).sort(([a], [b]) => a.localeCompare(b))) {
+  const owner = byId.get(list[0]?.structureId ?? '');
+  // Coarsening can push a neighbour's corner across a strap it only touched
+  // (the ATFL's plantar view claimed 12% of the leg membrane). makeExclusive
+  // checked the detailed outlines, so where the coarse ones overlap, the
+  // image keeps its detailed ones.
+  const coarse = list.map((h, i) => roundRings(i === 0 ? h.polygons : coarsen(h.polygons)));
+  const fine = list.map((h) => roundRings(h.polygons));
+  const useFine = list.length > 1 && doubledShare(coarse) > 0.008;
+  if (useFine) keptFine++;
+  const lines = list.map((h, i) => {
+    const polygons = (useFine ? fine : coarse)[i];
+    return `    { structureId: '${h.structureId}', polygons: ${JSON.stringify(polygons)}, area: ${Number(h.area.toPrecision(5))}, centroid: ${JSON.stringify(h.centroid.map(round4))} },`;
+  });
+  const base = groupOf(owner?.subregion);
+  const group = base === 'foot' && /-a\d{3}[ud]\d{3}-context$/.test(imageId) ? 'footTilt' : base;
+  byGroup.get(group)!.push(`  '${imageId}': [\n${lines.join('\n')}\n  ],`);
+}
+console.log(`${keptFine} image(s) keep detailed neighbour outlines (coarse ones overlapped)`);
+for (const [group, entries] of byGroup) {
+  writeFileSync(hotspotPartPath(group), `${HEADER}
 import type { HotspotPolygon } from '../../types/image';
 
-export const LIGAMENT_HOTSPOTS: Record<string, HotspotPolygon[]> = {
-${hsBody}
+export const LIGAMENT_HOTSPOTS_PART: Record<string, HotspotPolygon[]> = {
+${entries.join('\n')}
 };
+`);
+}
+writeFileSync(OUT_HOTSPOTS, `/**
+ * GENERATED FILE — do not edit by hand. Every ligament hotspot, for SCRIPTS.
+ * The app never imports this: seed/hotspots.ts loads each group as its own
+ * chunk, because together they are past the 2 MiB precache limit.
+ */
+import type { HotspotPolygon } from '../../types/image';
+${Object.keys(HOTSPOT_GROUPS).map((g) => `import { LIGAMENT_HOTSPOTS_PART as ${g} } from './hotspots.ligaments.${g}.generated';`).join('\n')}
+
+export const LIGAMENT_HOTSPOTS: Record<string, HotspotPolygon[]> = { ${Object.keys(HOTSPOT_GROUPS).map((g) => '...' + g).join(', ')} };
 `);
 
 const contexts = rows.filter((r) => r.kind === 'context');

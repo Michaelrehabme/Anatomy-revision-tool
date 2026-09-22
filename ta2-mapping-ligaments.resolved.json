@@ -4,6 +4,26 @@
  "note": "Ligament id -> Z-Anatomy mesh names (both sides, all parts). Feeds renderLigamentPlates.py.",
  "mapping": [
   {
+   "id": "anterior-talocalcaneal-ligament",
+   "name": "Anterior talocalcaneal ligament",
+   "category": "ligament",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Anterior talocalcaneal ligament.l",
+    "Anterior talocalcaneal ligament.r"
+   ]
+  },
+  {
+   "id": "anterior-talofibular-ligament",
+   "name": "Anterior talofibular ligament",
+   "category": "ligament",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Anterior talofibular ligament.l",
+    "Anterior talofibular ligament.r"
+   ]
+  },
+  {
    "id": "anterior-tibiofibular-ligament",
    "name": "Anterior tibiofibular ligament",
    "category": "ligament",
@@ -11,6 +31,76 @@
    "blenderObjects": [
     "Anterior tibiofibular ligament.l",
     "Anterior tibiofibular ligament.r"
+   ]
+  },
+  {
+   "id": "calcaneocuboid-ligament",
+   "name": "Calcaneocuboid ligament",
+   "category": "ligament",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Calcaneocuboid ligament.l",
+    "Calcaneocuboid ligament.r"
+   ]
+  },
+  {
+   "id": "calcaneofibular-ligament",
+   "name": "Calcaneofibular ligament",
+   "category": "ligament",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Calcaneofibular ligament.l",
+    "Calcaneofibular ligament.r"
+   ]
+  },
+  {
+   "id": "calcaneonavicular-ligament",
+   "name": "Calcaneonavicular ligament",
+   "category": "ligament",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Calcaneonavicular ligament.l",
+    "Calcaneonavicular ligament.r"
+   ]
+  },
+  {
+   "id": "collateral-interphalangeal-ligaments-of-foot",
+   "name": "Collateral interphalangeal ligaments of foot",
+   "category": "ligament",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Collateral interphalangeal ligaments of foot.l",
+    "Collateral interphalangeal ligaments of foot.r"
+   ]
+  },
+  {
+   "id": "collateral-metatarsophalangeal-ligaments",
+   "name": "Collateral metatarsophalangeal ligaments",
+   "category": "ligament",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Collateral metatarsophalangeal ligaments.l",
+    "Collateral metatarsophalangeal ligaments.r"
+   ]
+  },
+  {
+   "id": "cuneocuboid-interosseous-ligament",
+   "name": "Cuneocuboid interosseous ligament",
+   "category": "ligament",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Cuneocuboid interosseous ligament.l",
+    "Cuneocuboid interosseous ligament.r"
+   ]
+  },
+  {
+   "id": "cuneometatarsal-interosseous-ligaments",
+   "name": "Cuneometatarsal interosseous ligaments",
+   "category": "ligament",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Cuneometatarsal interosseous ligaments.l",
+    "Cuneometatarsal interosseous ligaments.r"
    ]
   },
   {
@@ -24,6 +114,226 @@
    ]
   },
   {
+   "id": "dorsal-calcaneocuboid-ligament",
+   "name": "Dorsal calcaneocuboid ligament",
+   "category": "ligament",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Dorsal calcaneocuboid ligament.l",
+    "Dorsal calcaneocuboid ligament.r"
+   ]
+  },
+  {
+   "id": "dorsal-cuboideonavicular-ligament",
+   "name": "Dorsal cuboideonavicular ligament",
+   "category": "ligament",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Dorsal cuboideonavicular ligament.l",
+    "Dorsal cuboideonavicular ligament.r"
+   ]
+  },
+  {
+   "id": "dorsal-cuneocuboid-ligament",
+   "name": "Dorsal cuneocuboid ligament",
+   "category": "ligament",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Dorsal cuneocuboid ligament.l",
+    "Dorsal cuneocuboid ligament.r"
+   ]
+  },
+  {
+   "id": "dorsal-cuneonavicular-ligaments",
+   "name": "Dorsal cuneonavicular ligaments",
+   "category": "ligament",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Dorsal cuneonavicular ligaments.l",
+    "Dorsal cuneonavicular ligaments.r"
+   ]
+  },
+  {
+   "id": "dorsal-intercuneiform-ligaments",
+   "name": "Dorsal intercuneiform ligaments",
+   "category": "ligament",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Dorsal intercuneiform ligaments.l",
+    "Dorsal intercuneiform ligaments.r"
+   ]
+  },
+  {
+   "id": "dorsal-metatarsal-ligaments",
+   "name": "Dorsal metatarsal ligaments",
+   "category": "ligament",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Dorsal metatarsal ligaments.l",
+    "Dorsal metatarsal ligaments.r"
+   ]
+  },
+  {
+   "id": "dorsal-tarsometatarsal-ligaments",
+   "name": "Dorsal tarsometatarsal ligaments",
+   "category": "ligament",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Dorsal tarsometatarsal ligaments.l",
+    "Dorsal tarsometatarsal ligaments.r"
+   ]
+  },
+  {
+   "id": "intercuneiform-interosseous-ligaments",
+   "name": "Intercuneiform interosseous ligaments",
+   "category": "ligament",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Intercuneiform interosseous ligaments.l",
+    "Intercuneiform interosseous ligaments.r"
+   ]
+  },
+  {
+   "id": "intersesamoid-ligament",
+   "name": "Intersesamoid ligament",
+   "category": "ligament",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Intersesamoid ligament.l",
+    "Intersesamoid ligament.r"
+   ]
+  },
+  {
+   "id": "lateral-talocalcaneal-ligament",
+   "name": "Lateral talocalcaneal ligament",
+   "category": "ligament",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Lateral talocalcaneal ligament.l",
+    "Lateral talocalcaneal ligament.r"
+   ]
+  },
+  {
+   "id": "long-plantar-ligament",
+   "name": "Long plantar ligament",
+   "category": "ligament",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Long plantar ligament.l",
+    "Long plantar ligament.o1l",
+    "Long plantar ligament.o1r",
+    "Long plantar ligament.o2l",
+    "Long plantar ligament.o2r",
+    "Long plantar ligament.o3l",
+    "Long plantar ligament.o3r",
+    "Long plantar ligament.o4l",
+    "Long plantar ligament.o4r",
+    "Long plantar ligament.ol",
+    "Long plantar ligament.or",
+    "Long plantar ligament.r"
+   ]
+  },
+  {
+   "id": "medial-talocalcaneal-ligament",
+   "name": "Medial talocalcaneal ligament",
+   "category": "ligament",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Medial talocalcaneal ligament.l",
+    "Medial talocalcaneal ligament.r"
+   ]
+  },
+  {
+   "id": "metatarsal-interosseous-ligaments",
+   "name": "Metatarsal interosseous ligaments",
+   "category": "ligament",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Metatarsal interosseous ligaments.l",
+    "Metatarsal interosseous ligaments.r"
+   ]
+  },
+  {
+   "id": "plantar-calcaneocuboid-ligament",
+   "name": "Plantar calcaneocuboid ligament",
+   "category": "ligament",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Plantar calcaneocuboid ligament.l",
+    "Plantar calcaneocuboid ligament.r"
+   ]
+  },
+  {
+   "id": "plantar-calcaneonavicular-ligament",
+   "name": "Plantar calcaneonavicular ligament",
+   "category": "ligament",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Plantar calcaneonavicular ligament.l",
+    "Plantar calcaneonavicular ligament.r"
+   ]
+  },
+  {
+   "id": "plantar-cuboideonavicular-ligament",
+   "name": "Plantar cuboideonavicular ligament",
+   "category": "ligament",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Plantar cuboideonavicular ligament.l",
+    "Plantar cuboideonavicular ligament.r"
+   ]
+  },
+  {
+   "id": "plantar-cuneocuboid-ligament",
+   "name": "Plantar cuneocuboid ligament",
+   "category": "ligament",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Plantar cuneocuboid ligament.l",
+    "Plantar cuneocuboid ligament.r"
+   ]
+  },
+  {
+   "id": "plantar-cuneonavicular-ligaments",
+   "name": "Plantar cuneonavicular ligaments",
+   "category": "ligament",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Plantar cuneonavicular ligaments.l",
+    "Plantar cuneonavicular ligaments.r"
+   ]
+  },
+  {
+   "id": "plantar-intercuneiform-ligaments",
+   "name": "Plantar intercuneiform ligaments",
+   "category": "ligament",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Plantar intercuneiform ligaments.l",
+    "Plantar intercuneiform ligaments.r"
+   ]
+  },
+  {
+   "id": "plantar-interphalangeal-ligaments",
+   "name": "Plantar interphalangeal ligaments",
+   "category": "ligament",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Plantar interphalangeal ligaments.l",
+    "Plantar interphalangeal ligaments.r"
+   ]
+  },
+  {
+   "id": "plantar-metatarsal-ligaments",
+   "name": "Plantar metatarsal ligaments",
+   "category": "ligament",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Plantar metatarsal ligaments.l",
+    "Plantar metatarsal ligaments.r"
+   ]
+  },
+  {
    "id": "plantar-metatarsophalangeal-ligaments",
    "name": "Plantar metatarsophalangeal ligaments",
    "category": "ligament",
@@ -34,6 +344,116 @@
    ]
   },
   {
+   "id": "plantar-tarsometatarsal-ligaments",
+   "name": "Plantar tarsometatarsal ligaments",
+   "category": "ligament",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Plantar tarsometatarsal ligaments.l",
+    "Plantar tarsometatarsal ligaments.r"
+   ]
+  },
+  {
+   "id": "posterior-talocalcaneal-ligament",
+   "name": "Posterior talocalcaneal ligament",
+   "category": "ligament",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Posterior talocalcaneal ligament.l",
+    "Posterior talocalcaneal ligament.r"
+   ]
+  },
+  {
+   "id": "posterior-talofibular-ligament",
+   "name": "Posterior talofibular ligament",
+   "category": "ligament",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Posterior talofibular ligament.l",
+    "Posterior talofibular ligament.r"
+   ]
+  },
+  {
+   "id": "posterior-tibiofibular-ligament",
+   "name": "Posterior tibiofibular ligament",
+   "category": "ligament",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Posterior tibiofibular ligament.l",
+    "Posterior tibiofibular ligament.r"
+   ]
+  },
+  {
+   "id": "posterior-tibiotalar-ligament",
+   "name": "Posterior tibiotalar ligament",
+   "category": "ligament",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Posterior tibiotalar ligament.l",
+    "Posterior tibiotalar ligament.r"
+   ]
+  },
+  {
+   "id": "talocalcaneal-interosseous-ligament",
+   "name": "Talocalcaneal interosseous ligament",
+   "category": "ligament",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Talocalcaneal interosseous ligament.l",
+    "Talocalcaneal interosseous ligament.r"
+   ]
+  },
+  {
+   "id": "talonavicular-ligament",
+   "name": "Talonavicular ligament",
+   "category": "ligament",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Talonavicular ligament.l",
+    "Talonavicular ligament.r"
+   ]
+  },
+  {
+   "id": "tibiocalcaneal-ligament",
+   "name": "Tibiocalcaneal ligament",
+   "category": "ligament",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Tibiocalcaneal ligament.l",
+    "Tibiocalcaneal ligament.r"
+   ]
+  },
+  {
+   "id": "tibionavicular-ligament",
+   "name": "Tibionavicular ligament",
+   "category": "ligament",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Tibionavicular ligament.l",
+    "Tibionavicular ligament.r"
+   ]
+  },
+  {
+   "id": "transverse-tibiofibular-ligament",
+   "name": "Transverse tibiofibular ligament",
+   "category": "ligament",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Transverse tibiofibular ligament.l",
+    "Transverse tibiofibular ligament.r"
+   ]
+  },
+  {
+   "id": "annular-ligament-of-radius",
+   "name": "Annular ligament of radius",
+   "category": "ligament",
+   "region": "shoulder-arm",
+   "blenderObjects": [
+    "Annular ligament of radius.l",
+    "Annular ligament of radius.r"
+   ]
+  },
+  {
    "id": "interosseous-membrane-of-forearm",
    "name": "Interosseous membrane of forearm",
    "category": "ligament",
@@ -41,6 +461,16 @@
    "blenderObjects": [
     "Interosseous membrane of forearm.l",
     "Interosseous membrane of forearm.r"
+   ]
+  },
+  {
+   "id": "quadrate-ligament",
+   "name": "Quadrate ligament",
+   "category": "ligament",
+   "region": "shoulder-arm",
+   "blenderObjects": [
+    "Quadrate ligament.l",
+    "Quadrate ligament.r"
    ]
   },
   {
@@ -64,6 +494,85 @@
    ]
   },
   {
+   "id": "acetabular-labrum",
+   "name": "Acetabular labrum",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Acetabular labrum.l",
+    "Acetabular labrum.r"
+   ]
+  },
+  {
+   "id": "anterior-sacro-iliac-ligament",
+   "name": "Anterior sacro-iliac ligament",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Anterior sacro-iliac ligament.l",
+    "Anterior sacro-iliac ligament.r"
+   ]
+  },
+  {
+   "id": "descending-part-of-iliofemoral-ligament",
+   "name": "Descending part of iliofemoral ligament",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Descending part of iliofemoral ligament.l",
+    "Descending part of iliofemoral ligament.r"
+   ]
+  },
+  {
+   "id": "iliolumbar-ligament",
+   "name": "Iliolumbar ligament",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Iliolumbar ligament.l",
+    "Iliolumbar ligament.r"
+   ]
+  },
+  {
+   "id": "inferior-pubic-ligament",
+   "name": "Inferior pubic ligament",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Inferior pubic ligament"
+   ]
+  },
+  {
+   "id": "interosseous-sacro-iliac-ligament",
+   "name": "Interosseous sacro-iliac ligament",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Interosseous sacro-iliac ligament.l",
+    "Interosseous sacro-iliac ligament.r"
+   ]
+  },
+  {
+   "id": "ischiofemoral-ligament",
+   "name": "Ischiofemoral ligament",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Ischiofemoral ligament.l",
+    "Ischiofemoral ligament.r"
+   ]
+  },
+  {
+   "id": "ligament-of-head-of-femur",
+   "name": "Ligament of head of femur",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Ligament of head of femur.l",
+    "Ligament of head of femur.r"
+   ]
+  },
+  {
    "id": "obturator-membrane",
    "name": "Obturator membrane",
    "category": "ligament",
@@ -74,6 +583,16 @@
    ]
   },
   {
+   "id": "posterior-sacro-iliac-ligament",
+   "name": "Posterior sacro-iliac ligament",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Posterior sacro-iliac ligament.l",
+    "Posterior sacro-iliac ligament.r"
+   ]
+  },
+  {
    "id": "pubofemoral-ligament",
    "name": "Pubofemoral ligament",
    "category": "ligament",
@@ -81,6 +600,16 @@
    "blenderObjects": [
     "Pubofemoral ligament.l",
     "Pubofemoral ligament.r"
+   ]
+  },
+  {
+   "id": "sacrospinous-ligament",
+   "name": "Sacrospinous ligament",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Sacrospinous ligament.l",
+    "Sacrospinous ligament.r"
    ]
   },
   {
@@ -103,6 +632,26 @@
    ]
   },
   {
+   "id": "transverse-acetabular-ligament",
+   "name": "Transverse acetabular ligament",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Transverse acetabular ligament.l",
+    "Transverse acetabular ligament.r"
+   ]
+  },
+  {
+   "id": "transverse-part-of-iliofemoral-ligament",
+   "name": "Transverse part of iliofemoral ligament",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Transverse part of iliofemoral ligament.l",
+    "Transverse part of iliofemoral ligament.r"
+   ]
+  },
+  {
    "id": "anterior-cruciate-ligament",
    "name": "Anterior cruciate ligament",
    "category": "ligament",
@@ -110,6 +659,46 @@
    "blenderObjects": [
     "Anterior cruciate ligament.l",
     "Anterior cruciate ligament.r"
+   ]
+  },
+  {
+   "id": "anterior-ligament-of-fibular-head",
+   "name": "Anterior ligament of fibular head",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Anterior ligament of fibular head.l",
+    "Anterior ligament of fibular head.r"
+   ]
+  },
+  {
+   "id": "arcuate-popliteal-ligament",
+   "name": "Arcuate popliteal ligament",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Arcuate popliteal ligament.l",
+    "Arcuate popliteal ligament.r"
+   ]
+  },
+  {
+   "id": "deep-part-of-tibial-collateral-ligament",
+   "name": "Deep part of tibial collateral ligament",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Deep part of tibial collateral ligament.l",
+    "Deep part of tibial collateral ligament.r"
+   ]
+  },
+  {
+   "id": "fibular-collateral-ligament",
+   "name": "Fibular collateral ligament",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Fibular collateral ligament.l",
+    "Fibular collateral ligament.r"
    ]
   },
   {
@@ -123,6 +712,16 @@
    ]
   },
   {
+   "id": "lateral-meniscus",
+   "name": "Lateral meniscus",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Lateral meniscus.l",
+    "Lateral meniscus.r"
+   ]
+  },
+  {
    "id": "medial-meniscus",
    "name": "Medial meniscus",
    "category": "ligament",
@@ -133,6 +732,26 @@
    ]
   },
   {
+   "id": "meniscopatellar-ligament",
+   "name": "Meniscopatellar ligament",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Meniscopatellar ligament.l",
+    "Meniscopatellar ligament.r"
+   ]
+  },
+  {
+   "id": "oblique-popliteal-ligament",
+   "name": "Oblique popliteal ligament",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Oblique popliteal ligament.l",
+    "Oblique popliteal ligament.r"
+   ]
+  },
+  {
    "id": "popliteofibular-ligament",
    "name": "Popliteofibular ligament",
    "category": "ligament",
@@ -140,6 +759,26 @@
    "blenderObjects": [
     "Popliteofibular ligament.l",
     "Popliteofibular ligament.r"
+   ]
+  },
+  {
+   "id": "posterior-cruciate-ligament",
+   "name": "Posterior cruciate ligament",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Posterior cruciate ligament.l",
+    "Posterior cruciate ligament.r"
+   ]
+  },
+  {
+   "id": "posterior-ligament-of-fibular-head",
+   "name": "Posterior ligament of fibular head",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Posterior ligament of fibular head.l",
+    "Posterior ligament of fibular head.r"
    ]
   },
   {
@@ -160,6 +799,16 @@
    "blenderObjects": [
     "Posterior meniscotibial ligament (Medial meniscus).l",
     "Posterior meniscotibial ligament (Medial meniscus).r"
+   ]
+  },
+  {
+   "id": "superficial-part-of-tibial-collateral-ligament",
+   "name": "Superficial part of tibial collateral ligament",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Superficial part of tibial collateral ligament.l",
+    "Superficial part of tibial collateral ligament.r"
    ]
   },
   {
@@ -193,6 +842,26 @@
    ]
   },
   {
+   "id": "conoid-ligament",
+   "name": "Conoid ligament",
+   "category": "ligament",
+   "region": "shoulder-arm",
+   "blenderObjects": [
+    "Conoid ligament.l",
+    "Conoid ligament.r"
+   ]
+  },
+  {
+   "id": "coraco-acromial-ligament",
+   "name": "Coraco-acromial ligament",
+   "category": "ligament",
+   "region": "shoulder-arm",
+   "blenderObjects": [
+    "Coraco-acromial ligament.l",
+    "Coraco-acromial ligament.r"
+   ]
+  },
+  {
    "id": "coracohumeral-ligament",
    "name": "Coracohumeral ligament",
    "category": "ligament",
@@ -200,6 +869,46 @@
    "blenderObjects": [
     "Coracohumeral ligament.l",
     "Coracohumeral ligament.r"
+   ]
+  },
+  {
+   "id": "costoclavicular-ligament",
+   "name": "Costoclavicular ligament",
+   "category": "ligament",
+   "region": "shoulder-arm",
+   "blenderObjects": [
+    "Costoclavicular ligament.l",
+    "Costoclavicular ligament.r"
+   ]
+  },
+  {
+   "id": "glenoid-labrum",
+   "name": "Glenoid labrum",
+   "category": "ligament",
+   "region": "shoulder-arm",
+   "blenderObjects": [
+    "Glenoid labrum.l",
+    "Glenoid labrum.r"
+   ]
+  },
+  {
+   "id": "inferior-glenohumeral-ligament",
+   "name": "Inferior glenohumeral ligament",
+   "category": "ligament",
+   "region": "shoulder-arm",
+   "blenderObjects": [
+    "Inferior glenohumeral ligament.l",
+    "Inferior glenohumeral ligament.r"
+   ]
+  },
+  {
+   "id": "inferior-transverse-scapular-ligament",
+   "name": "Inferior transverse scapular ligament",
+   "category": "ligament",
+   "region": "shoulder-arm",
+   "blenderObjects": [
+    "Inferior transverse scapular ligament.l",
+    "Inferior transverse scapular ligament.r"
    ]
   },
   {
@@ -213,6 +922,46 @@
    ]
   },
   {
+   "id": "middle-glenohumeral-ligament",
+   "name": "Middle glenohumeral ligament",
+   "category": "ligament",
+   "region": "shoulder-arm",
+   "blenderObjects": [
+    "Middle glenohumeral ligament.l",
+    "Middle glenohumeral ligament.r"
+   ]
+  },
+  {
+   "id": "posterior-sternoclavicular-ligament",
+   "name": "Posterior sternoclavicular ligament",
+   "category": "ligament",
+   "region": "shoulder-arm",
+   "blenderObjects": [
+    "Posterior sternoclavicular ligament.l",
+    "Posterior sternoclavicular ligament.r"
+   ]
+  },
+  {
+   "id": "superior-glenohumeral-ligament",
+   "name": "Superior glenohumeral ligament",
+   "category": "ligament",
+   "region": "shoulder-arm",
+   "blenderObjects": [
+    "Superior glenohumeral ligament.l",
+    "Superior glenohumeral ligament.r"
+   ]
+  },
+  {
+   "id": "superior-transverse-scapular-ligament",
+   "name": "Superior transverse scapular ligament",
+   "category": "ligament",
+   "region": "shoulder-arm",
+   "blenderObjects": [
+    "Superior transverse scapular ligament.l",
+    "Superior transverse scapular ligament.r"
+   ]
+  },
+  {
    "id": "transverse-humeral-ligament",
    "name": "Transverse humeral ligament",
    "category": "ligament",
@@ -220,6 +969,63 @@
    "blenderObjects": [
     "Transverse humeral ligament.l",
     "Transverse humeral ligament.r"
+   ]
+  },
+  {
+   "id": "trapezoid-ligament",
+   "name": "Trapezoid ligament",
+   "category": "ligament",
+   "region": "shoulder-arm",
+   "blenderObjects": [
+    "Trapezoid ligament.l",
+    "Trapezoid ligament.r"
+   ]
+  },
+  {
+   "id": "anterior-longitudinal-ligament",
+   "name": "Anterior longitudinal ligament",
+   "category": "ligament",
+   "region": "back-core",
+   "blenderObjects": [
+    "Anterior longitudinal ligament"
+   ]
+  },
+  {
+   "id": "intercornual-ligament",
+   "name": "Intercornual ligament",
+   "category": "ligament",
+   "region": "back-core",
+   "blenderObjects": [
+    "Intercornual ligament.l",
+    "Intercornual ligament.r"
+   ]
+  },
+  {
+   "id": "interspinous-ligaments",
+   "name": "Interspinous ligaments",
+   "category": "ligament",
+   "region": "back-core",
+   "blenderObjects": [
+    "Interspinous ligaments"
+   ]
+  },
+  {
+   "id": "intra-articular-ligament-of-head-of-rib",
+   "name": "Intra-articular ligament of head of rib",
+   "category": "ligament",
+   "region": "back-core",
+   "blenderObjects": [
+    "Intra-articular ligament of head of rib",
+    "Intra-articular ligament of head of rib.r"
+   ]
+  },
+  {
+   "id": "ligamenta-flava",
+   "name": "Ligamenta flava",
+   "category": "ligament",
+   "region": "back-core",
+   "blenderObjects": [
+    "Ligamenta flava"
    ]
   },
   {
@@ -232,6 +1038,44 @@
    ]
   },
   {
+   "id": "posterior-longitudinal-ligament",
+   "name": "Posterior longitudinal ligament",
+   "category": "ligament",
+   "region": "back-core",
+   "blenderObjects": [
+    "Posterior longitudinal ligament"
+   ]
+  },
+  {
+   "id": "radiate-ligament-of-head-of-rib",
+   "name": "Radiate ligament of head of rib",
+   "category": "ligament",
+   "region": "back-core",
+   "blenderObjects": [
+    "Radiate ligament of head of rib.l",
+    "Radiate ligament of head of rib.r"
+   ]
+  },
+  {
+   "id": "supraspinous-ligament",
+   "name": "Supraspinous ligament",
+   "category": "ligament",
+   "region": "back-core",
+   "blenderObjects": [
+    "Supraspinous ligament"
+   ]
+  },
+  {
+   "id": "costotransverse-ligament",
+   "name": "Costotransverse ligament",
+   "category": "ligament",
+   "region": "back-core",
+   "blenderObjects": [
+    "Costotransverse ligament.l",
+    "Costotransverse ligament.r"
+   ]
+  },
+  {
    "id": "external-intercostal-membrane",
    "name": "External intercostal membrane",
    "category": "ligament",
@@ -239,6 +1083,26 @@
    "blenderObjects": [
     "External intercostal membrane.l",
     "External intercostal membrane.r"
+   ]
+  },
+  {
+   "id": "internal-intercostal-membrane",
+   "name": "Internal intercostal membrane",
+   "category": "ligament",
+   "region": "back-core",
+   "blenderObjects": [
+    "Internal intercostal membrane.l",
+    "Internal intercostal membrane.r"
+   ]
+  },
+  {
+   "id": "collateral-interphalangeal-ligaments-of-hand",
+   "name": "Collateral interphalangeal ligaments of hand",
+   "category": "ligament",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Collateral interphalangeal ligaments of hand.l",
+    "Collateral interphalangeal ligaments of hand.r"
    ]
   },
   {
@@ -262,6 +1126,106 @@
    ]
   },
   {
+   "id": "dorsal-carpometacarpal-ligaments",
+   "name": "Dorsal carpometacarpal ligaments",
+   "category": "ligament",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Dorsal carpometacarpal ligaments.l",
+    "Dorsal carpometacarpal ligaments.r"
+   ]
+  },
+  {
+   "id": "dorsal-intercarpal-ligaments",
+   "name": "Dorsal intercarpal ligaments",
+   "category": "ligament",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Dorsal intercarpal ligaments.l",
+    "Dorsal intercarpal ligaments.r"
+   ]
+  },
+  {
+   "id": "dorsal-metacarpal-ligaments",
+   "name": "Dorsal metacarpal ligaments",
+   "category": "ligament",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Dorsal metacarpal ligaments.l",
+    "Dorsal metacarpal ligaments.r"
+   ]
+  },
+  {
+   "id": "dorsal-radio-ulnar-ligament",
+   "name": "Dorsal radio-ulnar ligament",
+   "category": "ligament",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Dorsal radio-ulnar ligament.l",
+    "Dorsal radio-ulnar ligament.r"
+   ]
+  },
+  {
+   "id": "dorsal-radiocarpal-ligament",
+   "name": "Dorsal radiocarpal ligament",
+   "category": "ligament",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Dorsal radiocarpal ligament.l",
+    "Dorsal radiocarpal ligament.r"
+   ]
+  },
+  {
+   "id": "dorsal-scaphotriquetral-ligament",
+   "name": "Dorsal scaphotriquetral ligament",
+   "category": "ligament",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Dorsal scaphotriquetral ligament.l",
+    "Dorsal scaphotriquetral ligament.r"
+   ]
+  },
+  {
+   "id": "dorsal-ulnocarpal-ligament",
+   "name": "Dorsal ulnocarpal ligament",
+   "category": "ligament",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Dorsal ulnocarpal ligament.l",
+    "Dorsal ulnocarpal ligament.r"
+   ]
+  },
+  {
+   "id": "interosseous-metacarpal-ligaments",
+   "name": "Interosseous metacarpal ligaments",
+   "category": "ligament",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Interosseous metacarpal ligaments.l",
+    "Interosseous metacarpal ligaments.r"
+   ]
+  },
+  {
+   "id": "palmar-capitohamate-ligament",
+   "name": "Palmar capitohamate ligament",
+   "category": "ligament",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Palmar capitohamate ligament.l",
+    "Palmar capitohamate ligament.r"
+   ]
+  },
+  {
+   "id": "palmar-carpometacarpal-ligaments",
+   "name": "Palmar carpometacarpal ligaments",
+   "category": "ligament",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Palmar carpometacarpal ligaments.l",
+    "Palmar carpometacarpal ligaments.r"
+   ]
+  },
+  {
    "id": "palmar-interphalangeal-ligaments",
    "name": "Palmar interphalangeal ligaments",
    "category": "ligament",
@@ -272,6 +1236,26 @@
    ]
   },
   {
+   "id": "palmar-lunotriquetral-ligament",
+   "name": "Palmar lunotriquetral ligament",
+   "category": "ligament",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Palmar lunotriquetral ligament.l",
+    "Palmar lunotriquetral ligament.r"
+   ]
+  },
+  {
+   "id": "palmar-metacarpal-ligaments",
+   "name": "Palmar metacarpal ligaments",
+   "category": "ligament",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Palmar metacarpal ligaments.l",
+    "Palmar metacarpal ligaments.r"
+   ]
+  },
+  {
    "id": "palmar-radio-ulnar-ligament",
    "name": "Palmar radio-ulnar ligament",
    "category": "ligament",
@@ -279,6 +1263,136 @@
    "blenderObjects": [
     "Palmar radio-ulnar ligament.l",
     "Palmar radio-ulnar ligament.r"
+   ]
+  },
+  {
+   "id": "palmar-scaphotriquetral-ligament",
+   "name": "Palmar scaphotriquetral ligament",
+   "category": "ligament",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Palmar scaphotriquetral ligament.l",
+    "Palmar scaphotriquetral ligament.r"
+   ]
+  },
+  {
+   "id": "pisohamate-ligament",
+   "name": "Pisohamate ligament",
+   "category": "ligament",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Pisohamate ligament.l",
+    "Pisohamate ligament.r"
+   ]
+  },
+  {
+   "id": "pisometacarpal-ligament",
+   "name": "Pisometacarpal ligament",
+   "category": "ligament",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Pisometacarpal ligament.l",
+    "Pisometacarpal ligament.r"
+   ]
+  },
+  {
+   "id": "pisotriquetral-ligament",
+   "name": "Pisotriquetral ligament",
+   "category": "ligament",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Pisotriquetral ligament.l",
+    "Pisotriquetral ligament.r"
+   ]
+  },
+  {
+   "id": "radial-collateral-ligament-of-wrist-joint",
+   "name": "Radial collateral ligament of wrist joint",
+   "category": "ligament",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Radial collateral ligament of wrist joint.l",
+    "Radial collateral ligament of wrist joint.r"
+   ]
+  },
+  {
+   "id": "radiate-carpal-ligament",
+   "name": "Radiate carpal ligament",
+   "category": "ligament",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Radiate carpal ligament.l",
+    "Radiate carpal ligament.r"
+   ]
+  },
+  {
+   "id": "radiocapitate-ligament",
+   "name": "Radiocapitate ligament",
+   "category": "ligament",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Radiocapitate ligament.l",
+    "Radiocapitate ligament.r"
+   ]
+  },
+  {
+   "id": "radioscaphocapitate-ligament",
+   "name": "Radioscaphocapitate ligament",
+   "category": "ligament",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Radioscaphocapitate ligament.l",
+    "Radioscaphocapitate ligament.r"
+   ]
+  },
+  {
+   "id": "scaphocapitate-ligament",
+   "name": "Scaphocapitate ligament",
+   "category": "ligament",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Scaphocapitate ligament.l",
+    "Scaphocapitate ligament.r"
+   ]
+  },
+  {
+   "id": "scaphotrapeziotrapezoidal-ligament",
+   "name": "Scaphotrapeziotrapezoidal ligament",
+   "category": "ligament",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Scaphotrapeziotrapezoidal ligament.l",
+    "Scaphotrapeziotrapezoidal ligament.r"
+   ]
+  },
+  {
+   "id": "triquetrocapitate-ligament",
+   "name": "Triquetrocapitate ligament",
+   "category": "ligament",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Triquetrocapitate ligament.l",
+    "Triquetrocapitate ligament.r"
+   ]
+  },
+  {
+   "id": "triquetrohamate-ligament",
+   "name": "Triquetrohamate ligament",
+   "category": "ligament",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Triquetrohamate ligament.l",
+    "Triquetrohamate ligament.r"
+   ]
+  },
+  {
+   "id": "ulnar-collateral-ligament-of-wrist-joint",
+   "name": "Ulnar collateral ligament of wrist joint",
+   "category": "ligament",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Ulnar collateral ligament of wrist joint.l",
+    "Ulnar collateral ligament of wrist joint.r"
    ]
   },
   {

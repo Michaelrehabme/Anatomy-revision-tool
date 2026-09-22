@@ -3607,7 +3607,8 @@
     "Inferior nasal concha bone.*",
     "Hyoid bone",
     "*rib*"
-   ]
+   ],
+   "targetThickness": 0.0025
   },
   {
    "key": "intertransverse-ligaments",
@@ -3752,7 +3753,8 @@
     "Inferior nasal concha bone.*",
     "Hyoid bone",
     "*rib*"
-   ]
+   ],
+   "targetThickness": 0.0025
   },
   {
    "key": "posterior-longitudinal-ligament",
@@ -3929,7 +3931,8 @@
     "Vertebra L1",
     "Clavicle.*",
     "Scapula.*"
-   ]
+   ],
+   "targetThickness": 0.0025
   },
   {
    "key": "internal-intercostal-membrane",

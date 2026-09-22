@@ -23,10 +23,10 @@ npm run validate-content    # checks seed data for broken cross-references
 npm run build                # type-checks + production build
 ```
 
-On first run you'll get a large, immediately-usable content library: 345 structures in all —
+On first run you'll get a large, immediately-usable content library: 456 structures in all —
 122 muscles (from `muscles.json`) plus the bones, bony landmarks, joints and ligaments — across
 nine areas, illustrated by Z-Anatomy renders. Locate-the-structure questions cover all 122
-muscles and 322 of the 345 structures — see "Image and hotspot status" below. The live figures
+muscles and 425 of the 456 structures — see "Image and hotspot status" below. The live figures
 come from `npm run validate-content`; anything quoted in public belongs in docs/CLAIMS.md.
 
 ## Image and hotspot status
@@ -59,8 +59,9 @@ hidden behind bone drops out of its own mask.
 
 What's still missing, and what that means:
 
-1. **23 of the 345 structures have no locate question.** Every muscle now has one; what is
-   left is bony detail that no view a solo silhouette can offer makes tappable. Run
+1. **31 of the 456 structures have no locate question.** Every muscle now has one; what is
+   left is bony detail that no view a solo silhouette can offer makes tappable, and one
+   ligament (the intra-articular ligament of the head of the rib, buried in its joint). Run
    `masksToHotspots.ts` and read its closing "occluded in every view" list to see which.
    (This section said "48 of the 122 muscles" long after that stopped being true. Any number
    here that is also stated in public belongs in docs/CLAIMS.md, where the validator checks it.)

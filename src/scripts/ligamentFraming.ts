@@ -131,6 +131,13 @@ const OVERRIDES: Record<string, { frame?: number; keepExtra?: string[]; targetTh
   // A midline sheet seen from behind is its own edge: at the standard 0.9mm it
   // drew as a hairline down the back of the neck. Thicker only shows edge-on.
   'nuchal-ligament': { targetThickness: 0.0025 },
+  // The same between the spines and laminae: interspinous ligaments and
+  // ligamenta flava are midline sheets seen edge-on from most angles, and at
+  // 0.9mm no view but the lateral was tappable. The costotransverse ligament
+  // is a short band hidden behind the transverse process from most angles.
+  'interspinous-ligaments': { targetThickness: 0.0025 },
+  'ligamenta-flava': { targetThickness: 0.0025 },
+  'costotransverse-ligament': { targetThickness: 0.0025 },
 };
 
 const spec = JSON.parse(readFileSync(`${ROOT}/${specPath}`, 'utf8'));
