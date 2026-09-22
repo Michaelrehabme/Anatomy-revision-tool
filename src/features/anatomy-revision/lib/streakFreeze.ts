@@ -1,4 +1,4 @@
-import { toDayKey, computeStreakFromDayKeys } from './streak';
+import { toDayKey, shiftDayKey, computeStreakFromDayKeys } from './streak';
 
 /** Earn one freeze per this many streak days, held up to this cap. */
 export const STREAK_FREEZE_CONFIG = {
@@ -25,12 +25,6 @@ export interface ReconcileResult {
   effectiveStreak: number;
   freezeConsumedForDayKey: string | null;
   freezeEarned: boolean;
-}
-
-function addDays(iso: string, delta: number): string {
-  const d = new Date(Date.parse(`${iso}T00:00:00.000Z`));
-  d.setUTCDate(d.getUTCDate() + delta);
-  return toDayKey(d.toISOString());
 }
 
 /**
@@ -63,8 +57,8 @@ export function reconcileStreakFreezes(
   const frozenDayKeys = new Set(state.frozenDayKeys);
   let freezeConsumedForDayKey: string | null = null;
 
-  const yesterdayKey = addDays(todayKey, -1);
-  const dayBeforeKey = addDays(todayKey, -2);
+  const yesterdayKey = shiftDayKey(todayKey, -1);
+  const dayBeforeKey = shiftDayKey(todayKey, -2);
   const yesterdayMissed = !studiedDayKeys.has(yesterdayKey) && !frozenDayKeys.has(yesterdayKey);
   const streakWasActive = studiedDayKeys.has(dayBeforeKey) || frozenDayKeys.has(dayBeforeKey);
 

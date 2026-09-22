@@ -1,8 +1,28 @@
 import type { RevisionSessionSummary } from '../types/attempt';
+import { localDayKey } from './weekActivity';
 
-/** ISO date is lexically sortable, so string slicing is enough. Exported for lib/streakFreeze.ts. */
+/**
+ * The student's own calendar day (YYYY-MM-DD, local time) for a timestamp.
+ * Exported for lib/streakFreeze.ts.
+ *
+ * This was the UTC date, so in British summer time a session at half past
+ * midnight counted for the day before, and "This week" (lib/weekActivity.ts,
+ * local) and the streak could disagree about which day a student studied.
+ * Keys stored before the change are UTC dates; they differ only for sessions
+ * started within an hour of midnight, so they are left as they are.
+ */
 export function toDayKey(iso: string): string {
-  return iso.slice(0, 10);
+  return localDayKey(iso);
+}
+
+/**
+ * A day-key moved by whole days: calendar arithmetic on the key itself, done
+ * in UTC so a clock change can never make a day 23 or 25 hours long.
+ */
+export function shiftDayKey(dayKey: string, delta: number): string {
+  const d = new Date(Date.parse(`${dayKey}T00:00:00.000Z`));
+  d.setUTCDate(d.getUTCDate() + delta);
+  return d.toISOString().slice(0, 10);
 }
 
 export function daysBetween(a: string, b: string): number {
@@ -26,10 +46,10 @@ export function computeStreakFromDayKeys(days: Set<string>, now: Date = new Date
   if (daysBetween(todayKey, mostRecent) > 1) return 0; // streak lapsed
 
   let streak = 0;
-  const cursor = new Date(Date.parse(`${mostRecent}T00:00:00.000Z`));
-  while (days.has(toDayKey(cursor.toISOString()))) {
+  let cursor = mostRecent;
+  while (days.has(cursor)) {
     streak += 1;
-    cursor.setUTCDate(cursor.getUTCDate() - 1);
+    cursor = shiftDayKey(cursor, -1);
   }
   return streak;
 }

@@ -11,9 +11,8 @@ import type { RevisionSessionSummary } from '../types/attempt';
  * right on a Sunday. A day here is the wall-clock day the student studied on,
  * and the label is that day's own name.
  *
- * The streak (lib/streak.ts) still keys on UTC, because its freeze logic and
- * the gamification history are built on those keys; the one-hour difference
- * is only visible around midnight and is not worth migrating stored days for.
+ * The streak (lib/streak.ts) keys on the same local day, so the bars and the
+ * streak always agree about which day a session belongs to.
  */
 export interface WeekDay {
   /** Local calendar date, YYYY-MM-DD. */

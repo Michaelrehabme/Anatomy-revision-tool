@@ -1,7 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { reconcileStreakFreezes, INITIAL_STREAK_FREEZE_STATE, STREAK_FREEZE_CONFIG } from '../streakFreeze';
+import { localDayKey } from '../weekActivity';
 
-const now = new Date('2026-08-25T12:00:00.000Z'); // a Tuesday
+const now = new Date(2026, 7, 25, 12, 0); // local noon, a Tuesday; day keys are local
 
 describe('reconcileStreakFreezes', () => {
   it('returns 0 streak and no freeze activity with no history', () => {
@@ -52,8 +53,8 @@ describe('reconcileStreakFreezes', () => {
   it('earns a new freeze when the effective streak crosses the earn threshold', () => {
     const days = Array.from({ length: STREAK_FREEZE_CONFIG.earnEveryNDays }, (_, i) => {
       const d = new Date(now);
-      d.setUTCDate(d.getUTCDate() - i);
-      return d.toISOString().slice(0, 10);
+      d.setDate(d.getDate() - i);
+      return localDayKey(d);
     });
     const state = { ...INITIAL_STREAK_FREEZE_STATE, freezesHeld: 0 };
     const result = reconcileStreakFreezes(new Set(days), state, now);
@@ -65,8 +66,8 @@ describe('reconcileStreakFreezes', () => {
   it('never earns above the configured cap', () => {
     const days = Array.from({ length: STREAK_FREEZE_CONFIG.earnEveryNDays }, (_, i) => {
       const d = new Date(now);
-      d.setUTCDate(d.getUTCDate() - i);
-      return d.toISOString().slice(0, 10);
+      d.setDate(d.getDate() - i);
+      return localDayKey(d);
     });
     const state = { ...INITIAL_STREAK_FREEZE_STATE, freezesHeld: STREAK_FREEZE_CONFIG.maxHeld };
     const result = reconcileStreakFreezes(new Set(days), state, now);

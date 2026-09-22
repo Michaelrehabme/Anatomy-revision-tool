@@ -48,4 +48,21 @@ describe('sessionsPerDay', () => {
     expect(new Set(keys).size).toBe(7);
     expect(keys).toEqual(['2026-10-22', '2026-10-23', '2026-10-24', '2026-10-25', '2026-10-26', '2026-10-27', '2026-10-28']);
   });
+
+  it('counts late-night sessions on their own bars across a clock change, ending on today', () => {
+    // Late nights either side of the UK clocks going back (25 Oct), and 00:30
+    // on the change day itself — still summer time, so 23:30 UTC the night
+    // before. Each belongs on the bar of the day the student was up.
+    const now = new Date(2026, 9, 28, 12, 0); // Wednesday 28 Oct 2026
+    const sessions = [
+      summaryAt(new Date(2026, 9, 24, 23, 30).toISOString()),
+      summaryAt(new Date(2026, 9, 25, 0, 30).toISOString()),
+      summaryAt(new Date(2026, 9, 26, 23, 30).toISOString()),
+      summaryAt(new Date(2026, 9, 28, 8, 0).toISOString()),
+    ];
+    const week = sessionsPerDay(sessions, now);
+    expect(week.map((d) => d.count)).toEqual([0, 0, 1, 1, 1, 0, 1]);
+    expect(week.at(-1)!.key).toBe('2026-10-28');
+    expect(week.at(-1)!.label).toBe(now.toLocaleDateString(undefined, { weekday: 'narrow' }));
+  });
 });
