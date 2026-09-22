@@ -19,7 +19,7 @@
     "admin:account": "tsx scripts/accountData.ts",
     "admin:cohort-report": "tsx scripts/cohortReport.ts",
     "deploy:check": "node scripts/deployCheck.mjs",
-    "deploy": "npm run deploy:check && npm run build && netlify deploy --prod --dir=dist",
+    "deploy": "npm run deploy:check && npm run build && npx netlify deploy --prod --dir=dist",
     "deploy:rules": "firebase deploy --only firestore:rules"
   },
   "dependencies": {
