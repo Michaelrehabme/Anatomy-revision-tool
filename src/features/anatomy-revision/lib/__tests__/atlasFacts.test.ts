@@ -10,16 +10,15 @@ describe('atlasRow', () => {
     // The external intercostal membrane has no attachments authored and no
     // joint: docs/ligament-attachments-review.md questions whether it belongs
     // in the ligament set at all. Until that review lands it is the one row
-    // the atlas shows with a role only. The intersesamoid and interspinous
-    // ligaments (tranche 2) touch no mapped bone mesh, so nothing was derived;
-    // their attachments are the review's to author, not this test's.
-    const known = ['ligament:intersesamoid-ligament', 'ligament:interspinous-ligaments', 'ligament:external-intercostal-membrane'];
+    // the atlas shows with a role only. Ligaments awaiting review say
+    // "Being checked" instead of stating attachments nobody has verified.
+    const known = ['ligament:external-intercostal-membrane'];
     const thin = ALL_STRUCTURES.filter((s) => atlasRow(s, byId).columns.filter((c) => c.text).length < 2);
     expect(thin.map((s) => `${s.category}:${s.id}`)).toEqual(known);
   });
 
   it('resolves ids to names for ligaments and joints', () => {
-    const ligament = ALL_STRUCTURES.filter(isLigament).find((l) => l.attachmentStructureIds.length > 0)!;
+    const ligament = ALL_STRUCTURES.filter(isLigament).find((l) => !l.needsReview && l.attachmentStructureIds.length > 0)!;
     const row = atlasRow(ligament, byId);
     for (const id of ligament.attachmentStructureIds) {
       const named = byId.get(id);
@@ -33,6 +32,11 @@ describe('atlasRow', () => {
       const named = byId.get(id);
       if (named) expect(jointRow.columns[1].text).toContain(named.name);
     }
+  });
+
+  it('does not state attachments nobody has checked', () => {
+    const unchecked = ALL_STRUCTURES.filter(isLigament).find((l) => l.needsReview && l.attachmentStructureIds.length > 0)!;
+    expect(atlasRow(unchecked, byId).columns[0].text).toBe('Being checked');
   });
 
   it('keeps the muscle columns the table always had', () => {

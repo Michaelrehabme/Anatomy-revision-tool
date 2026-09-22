@@ -96,7 +96,8 @@ export function atlasRow(s: AnatomyStructure, byId: ReadonlyMap<string, AnatomyS
     ];
   } else {
     columns = [
-      { label: l1, text: join(s.attachmentStructureIds.map((id) => nameOf(id, byId))) },
+      // Unchecked attachments are not stated as fact (reviewedAttachmentIds).
+      { label: l1, text: s.needsReview ? 'Being checked' : join(s.attachmentStructureIds.map((id) => nameOf(id, byId))) },
       { label: l2, text: s.jointId ? nameOf(s.jointId, byId) : '' },
       { label: l3, text: firstSentence(s.description) },
     ];

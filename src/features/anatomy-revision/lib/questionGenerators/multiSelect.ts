@@ -2,6 +2,7 @@ import {
   isMuscle,
   isJoint,
   isLigament,
+  reviewedAttachmentIds,
   isBone,
   isLandmark,
   primaryAreaOf,
@@ -218,8 +219,9 @@ function buildLigamentAttachmentQuestions(
   const questions: MultiSelectQuestion[] = [];
 
   for (const lig of pool.filter(isLigament)) {
-    if (!lig.attachmentStructureIds.length) continue;
-    const correct = new Set(lig.attachmentStructureIds);
+    const attachments = reviewedAttachmentIds(lig);
+    if (!attachments.length) continue;
+    const correct = new Set(attachments);
     // A distractor must not be a different name for a correct answer. The
     // ATFL attaches to the fibula; offering "lateral malleolus" beside it
     // punishes the student who knows more precisely where. So a correct
@@ -239,7 +241,7 @@ function buildLigamentAttachmentQuestions(
     const distractors = sample(distractorPool, Math.min(MAX_DISTRACTORS, distractorPool.length), rng);
     if (distractors.length < 2) continue;
 
-    const correctNames = lig.attachmentStructureIds.map(nameOf);
+    const correctNames = attachments.map(nameOf);
     const choices = shuffle([...correctNames, ...distractors.map((s) => s.name)], rng);
     const correctSet = new Set(correctNames);
     questions.push({

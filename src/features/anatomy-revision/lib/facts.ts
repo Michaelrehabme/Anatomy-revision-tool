@@ -1,4 +1,4 @@
-import { isMuscle, isBone, isLandmark, isJoint, isLigament, areasOf, JOINT_TYPE_LABELS } from '../types/structure';
+import { isMuscle, isBone, isLandmark, isJoint, isLigament, reviewedAttachmentIds, areasOf, JOINT_TYPE_LABELS } from '../types/structure';
 import type { AnatomyStructure } from '../types/structure';
 import { REGION_LABELS, SUBREGION_LABELS, AREA_LABELS } from '../types/region';
 import type { OinaPromptKind } from '../types/question';
@@ -38,8 +38,9 @@ export function describeStructure(s: AnatomyStructure): string[] {
     if (s.attachments.length) lines.push(`Attachments: ${s.attachments.join('; ')}`);
     if (s.articulations?.length) lines.push(`Articulations: ${s.articulations.join('; ')}`);
   } else if (isLigament(s)) {
-    if (s.attachmentStructureIds.length) {
-      lines.push(`Attaches to: ${s.attachmentStructureIds.map((id) => id.replace(/-/g, ' ')).join('; ')}`);
+    const attachments = reviewedAttachmentIds(s);
+    if (attachments.length) {
+      lines.push(`Attaches to: ${attachments.map((id) => id.replace(/-/g, ' ')).join('; ')}`);
     }
     if (s.jointId) lines.push(`Stabilises: ${s.jointId.replace(/-/g, ' ')}`);
   } else if (isJoint(s)) {
@@ -98,7 +99,8 @@ export function buildIdentifyClue(s: AnatomyStructure): string {
   if (isLigament(s)) {
     // Its attachments, by id rather than name: facts.ts has no structure
     // lookup, and "attaches to: talus; fibula" reads fine from the ids.
-    if (s.attachmentStructureIds.length) return `attaches to: ${s.attachmentStructureIds.map((id) => id.replace(/-/g, ' ')).join('; ')}`;
+    const attachments = reviewedAttachmentIds(s);
+    if (attachments.length) return `attaches to: ${attachments.map((id) => id.replace(/-/g, ' ')).join('; ')}`;
     return s.description;
   }
   if (s.attachments.length) return s.attachments.join('; ');

@@ -58,7 +58,22 @@ describe('a ligaments-only session', () => {
       const lig = byId.get(q.structureId);
       if (!lig || !isLigament(lig)) continue;
       const slots = (q as { attachmentSlots?: unknown[] }).attachmentSlots ?? [];
-      expect(slots.length).toBe(lig.attachmentStructureIds.length);
+      // Only checked attachments are asked (reviewedAttachmentIds).
+      expect(slots.length).toBe(lig.needsReview ? 0 : lig.attachmentStructureIds.length);
     }
+  });
+
+  it('never asks or marks an attachment nobody has checked', () => {
+    const byId = new Map(ALL_STRUCTURES.map((s) => [s.id, s]));
+    const unchecked = (id: string) => {
+      const s = byId.get(id);
+      return !!s && isLigament(s) && !!s.needsReview;
+    };
+    const attachmentQs = set.filter(
+      (q) => unchecked(q.structureId) && (q.type === 'multi-select' || (q.type === 'identify-typed' && (q.attachmentSlots?.length ?? 0) > 0)),
+    );
+    expect(attachmentQs.map((q) => q.id)).toEqual([]);
+    // They are still asked by picture and name.
+    expect(set.some((q) => unchecked(q.structureId))).toBe(true);
   });
 });

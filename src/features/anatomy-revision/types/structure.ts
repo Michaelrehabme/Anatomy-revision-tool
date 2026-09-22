@@ -322,6 +322,22 @@ export const isJoint = (s: AnatomyStructure): s is JointStructure => s.category 
 export const isLigament = (s: AnatomyStructure): s is LigamentStructure => s.category === 'ligament';
 
 /**
+ * A ligament's attachments IF A PERSON HAS CHECKED THEM, else none.
+ *
+ * The second tranche's attachments are derived from which bone meshes a strap
+ * touches, and touching is not attaching (the supraspinous ligament came out
+ * as "C7 and the thoracic vertebrae"). A student must never be marked wrong
+ * against a fact nobody has verified, so everything that grades or states
+ * attachments reads them through here: until the review in
+ * docs/ligament-attachments-review.md clears `needsReview`, the ligament is
+ * asked by picture and name only. The seed keeps the derived list, so the
+ * review has something to confirm or correct.
+ */
+export function reviewedAttachmentIds(s: LigamentStructure): string[] {
+  return s.needsReview ? [] : s.attachmentStructureIds;
+}
+
+/**
  * Every area a structure revises under — its `areas` override if one is authored,
  * otherwise derived from its subregion. A level-agnostic vertebral part (a pedicle,
  * a facet joint) belongs to all three spine areas. Empty only for a structure with

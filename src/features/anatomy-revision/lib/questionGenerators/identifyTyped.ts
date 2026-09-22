@@ -1,4 +1,4 @@
-import { primaryAreaOf, isLigament } from '../../types/structure';
+import { primaryAreaOf, isLigament, reviewedAttachmentIds } from '../../types/structure';
 import { structureNameVariants } from '../nameVariants';
 import type { AnatomyStructure } from '../../types/structure';
 import type { AnatomyImageAsset } from '../../types/image';
@@ -35,7 +35,7 @@ export function buildIdentifyTypedQuestions(
     // the bones are named through the seed so "talus" and "tarsals" are
     // graded by the same variants the rest of the app accepts.
     const attachmentSlots = isLigament(structure)
-      ? structure.attachmentStructureIds.flatMap((id) => {
+      ? reviewedAttachmentIds(structure).flatMap((id) => {
           const bone = byId.get(id);
           return bone ? [{ label: 'Attaches to', accepted: structureNameVariants(bone.name, bone.aliases) }] : [];
         })
