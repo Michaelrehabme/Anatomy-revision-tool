@@ -777,6 +777,31 @@ export const BONE_STRUCTURES: BoneStructure[] = [
     notes: null,
   },
   {
+    // Added 22 Sep 2026 for the intersesamoid ligament, which joins the two
+    // hallux sesamoids and has no other bony attachment: without them its
+    // attachments were empty. The atlas holds both as one mesh a side.
+    id: 'sesamoids-foot',
+    name: 'Sesamoid Bones of the Hallux (grouped)',
+    category: 'bone',
+    region: 'lower-leg-foot',
+    subregion: 'ankle-foot',
+    groups: ['grouped-bone', 'foot'],
+    description:
+      'Two pea-sized bones in the tendons of flexor hallucis brevis under the head of the first metatarsal — one medial (tibial), one lateral (fibular). They carry load under the big toe and give the flexor tendons a better angle of pull.',
+    attachments: [
+      'Flexor hallucis brevis inserts through them, medial and lateral heads',
+      'Joined to each other by the intersesamoid ligament, and to the proximal phalanx by the plantar plate',
+    ],
+    articulations: ['The plantar surface of the head of the first metatarsal, in its two grooves'],
+    aliases: ['Hallux sesamoids', 'Sesamoid bones of the great toe'],
+    imageIds: [],
+    eligibility: { flashcard: false, mcq: true, locate: false },
+    difficulty: 'medium',
+    tags: ['grouped-bone', 'foot', 'sesamoid'],
+    clinical: 'Sesamoiditis and sesamoid fracture are causes of pain under the first metatarsal head; the bipartite tibial sesamoid is a normal variant mistaken for fracture.',
+    notes: null,
+  },
+  {
     id: 'phalanges-distal-foot',
     name: 'Distal Phalanges of the Foot (grouped)',
     category: 'bone',

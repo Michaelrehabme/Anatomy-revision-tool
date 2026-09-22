@@ -23,111 +23,236 @@
   "plantar-metatarsophalangeal-ligaments": {
    "confirmed": true,
    "source": "Netter lateral inset, 'Capsule and ligaments of metatarsophalangeal and interphalangeal joints'",
-   "why": "The plantar plate runs from the plantar aspect of the metatarsal head to the base of the proximal phalanx, which is what the derived pair already says."
+   "why": "The plantar plate runs from the plantar aspect of the metatarsal head to the base of the proximal phalanx, which is what the derived pair already says.",
+   "attachmentStructureIds": [
+    "metatarsals",
+    "phalanges-proximal-foot"
+   ],
+   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision."
   },
   "collateral-metacarpophalangeal-ligaments": {
    "confirmed": true,
    "source": "Same lateral inset, and the collateral ligaments labelled at the MTP joints of the dorsal diagram",
-   "why": "A collateral runs from the tubercle on the metacarpal head to the base of the proximal phalanx. Derived pair is right."
+   "why": "A collateral runs from the tubercle on the metacarpal head to the base of the proximal phalanx. Derived pair is right.",
+   "attachmentStructureIds": [
+    "metacarpals",
+    "phalanges-proximal-hand"
+   ],
+   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision."
   },
   "palmar-interphalangeal-ligaments": {
    "confirmed": true,
    "source": "Netter lateral inset, which draws the plate at the interphalangeal joint between middle and distal phalanx",
-   "why": "These are the palmar plates of the PIP and DIP joints together, so all three phalangeal rows are genuinely involved: proximal and middle at the PIP, middle and distal at the DIP."
+   "why": "These are the palmar plates of the PIP and DIP joints together, so all three phalangeal rows are genuinely involved: proximal and middle at the PIP, middle and distal at the DIP.",
+   "attachmentStructureIds": [
+    "phalanges-middle-hand",
+    "phalanges-distal-hand",
+    "phalanges-proximal-hand"
+   ],
+   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision."
   },
   "acromioclavicular-ligament": {
    "confirmed": true,
-   "source": "User review on the review page, 13 Sept 2026"
+   "source": "User review on the review page, 13 Sept 2026",
+   "attachmentStructureIds": [
+    "scapula",
+    "clavicle"
+   ],
+   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision."
   },
   "anterior-cruciate-ligament": {
    "confirmed": true,
-   "source": "User review on the review page, 13 Sept 2026"
+   "source": "User review on the review page, 13 Sept 2026",
+   "attachmentStructureIds": [
+    "tibia",
+    "femur"
+   ],
+   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision."
   },
   "anterior-sternoclavicular-ligament": {
    "confirmed": true,
-   "source": "User review on the review page, 13 Sept 2026"
+   "source": "User review on the review page, 13 Sept 2026",
+   "attachmentStructureIds": [
+    "clavicle",
+    "sternum"
+   ],
+   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision."
   },
   "anterior-tibiofibular-ligament": {
    "confirmed": true,
-   "source": "User review on the review page, 13 Sept 2026"
+   "source": "User review on the review page, 13 Sept 2026",
+   "attachmentStructureIds": [
+    "fibula",
+    "tibia"
+   ],
+   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision."
   },
   "coracohumeral-ligament": {
    "confirmed": true,
-   "source": "User review on the review page, 13 Sept 2026"
+   "source": "User review on the review page, 13 Sept 2026",
+   "attachmentStructureIds": [
+    "humerus",
+    "scapula"
+   ],
+   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision."
   },
   "interclavicular-ligament": {
    "confirmed": true,
-   "source": "User review on the review page, 13 Sept 2026"
+   "source": "User review on the review page, 13 Sept 2026",
+   "attachmentStructureIds": [
+    "sternum",
+    "clavicle"
+   ],
+   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision."
   },
   "interosseous-membrane-of-forearm": {
    "confirmed": true,
-   "source": "User review on the review page, 13 Sept 2026"
+   "source": "User review on the review page, 13 Sept 2026",
+   "attachmentStructureIds": [
+    "ulna",
+    "radius"
+   ],
+   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision."
   },
   "interosseous-membrane-of-leg": {
    "confirmed": true,
-   "source": "User review on the review page, 13 Sept 2026"
+   "source": "User review on the review page, 13 Sept 2026",
+   "attachmentStructureIds": [
+    "fibula",
+    "tibia"
+   ],
+   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision."
   },
   "medial-meniscus": {
    "confirmed": true,
-   "source": "User review on the review page, 13 Sept 2026"
+   "source": "User review on the review page, 13 Sept 2026",
+   "attachmentStructureIds": [
+    "tibia",
+    "femur"
+   ],
+   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision."
   },
   "nuchal-ligament": {
    "confirmed": true,
    "source": "User review on the review page, 13 Sept 2026",
-   "why": "Confirmed knowing the occipital bone is not a structure the app models, so this carries the cervical vertebrae only."
+   "why": "Confirmed knowing the occipital bone is not a structure the app models, so this carries the cervical vertebrae only.",
+   "attachmentStructureIds": [
+    "cervical-vertebrae",
+    "axis-c2"
+   ],
+   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision."
   },
   "obturator-membrane": {
    "confirmed": true,
    "source": "User review on the review page, 13 Sept 2026",
-   "why": "Spans the obturator foramen of one hip bone, so a single attachment is right."
+   "why": "Spans the obturator foramen of one hip bone, so a single attachment is right.",
+   "attachmentStructureIds": [
+    "pelvis"
+   ],
+   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision."
   },
   "palmar-radio-ulnar-ligament": {
    "confirmed": true,
-   "source": "User review on the review page, 13 Sept 2026"
+   "source": "User review on the review page, 13 Sept 2026",
+   "attachmentStructureIds": [
+    "ulna",
+    "radius"
+   ],
+   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision."
   },
   "pubofemoral-ligament": {
    "confirmed": true,
-   "source": "User review on the review page, 13 Sept 2026"
+   "source": "User review on the review page, 13 Sept 2026",
+   "attachmentStructureIds": [
+    "pelvis",
+    "femur"
+   ],
+   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision."
   },
   "radial-collateral-ligament": {
    "confirmed": true,
-   "source": "User review on the review page, 13 Sept 2026"
+   "source": "User review on the review page, 13 Sept 2026",
+   "attachmentStructureIds": [
+    "radius",
+    "humerus"
+   ],
+   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision."
   },
   "sacrotuberous-ligament": {
    "confirmed": true,
-   "source": "User review on the review page, 13 Sept 2026"
+   "source": "User review on the review page, 13 Sept 2026",
+   "attachmentStructureIds": [
+    "sacrum",
+    "pelvis"
+   ],
+   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision."
   },
   "superior-pubic-ligament": {
    "confirmed": true,
    "source": "User review on the review page, 13 Sept 2026",
-   "why": "Joins the two pubic bodies across the symphysis; both are the one pelvis structure in this app."
+   "why": "Joins the two pubic bodies across the symphysis; both are the one pelvis structure in this app.",
+   "attachmentStructureIds": [
+    "pelvis"
+   ],
+   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision."
   },
   "transverse-humeral-ligament": {
    "confirmed": true,
    "source": "User review on the review page, 13 Sept 2026",
-   "why": "Bridges the intertubercular groove between the two tubercles of the humerus, so one bone is right."
+   "why": "Bridges the intertubercular groove between the two tubercles of the humerus, so one bone is right.",
+   "attachmentStructureIds": [
+    "humerus"
+   ],
+   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision."
   },
   "transverse-ligament-of-knee": {
    "confirmed": true,
-   "source": "User review on the review page, 13 Sept 2026"
+   "source": "User review on the review page, 13 Sept 2026",
+   "attachmentStructureIds": [
+    "tibia",
+    "femur"
+   ],
+   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision."
   },
   "ulnar-collateral-ligament": {
    "confirmed": true,
    "source": "User review on the review page, 13 Sept 2026",
-   "why": "CONFIRMED BY THE USER AS DERIVED, but flagged: the elbow UCL runs medial epicondyle to coronoid process and olecranon, and standard teaching gives it no radial attachment. The radius contact is probably the mesh lying against the radial head. Raise before deploy."
+   "why": "CONFIRMED BY THE USER AS DERIVED, but flagged: the elbow UCL runs medial epicondyle to coronoid process and olecranon, and standard teaching gives it no radial attachment. The radius contact is probably the mesh lying against the radial head. Raise before deploy.",
+   "attachmentStructureIds": [
+    "ulna",
+    "radius",
+    "humerus"
+   ],
+   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision."
   },
   "ulnocapitate-ligament": {
    "confirmed": true,
    "source": "User review on the review page, 13 Sept 2026",
-   "why": "CONFIRMED BY THE USER AS DERIVED, but flagged: the ulnocapitate runs from the ulna (fovea / palmar radioulnar ligament) to the capitate and passes over the lunate rather than attaching to it, so the 25% lunate contact is probably passage. The supplied wrist plate does not label it, so this rests on standard teaching. Raise before deploy."
+   "why": "CONFIRMED BY THE USER AS DERIVED, but flagged: the ulnocapitate runs from the ulna (fovea / palmar radioulnar ligament) to the capitate and passes over the lunate rather than attaching to it, so the 25% lunate contact is probably passage. The supplied wrist plate does not label it, so this rests on standard teaching. Raise before deploy.",
+   "attachmentStructureIds": [
+    "ulna",
+    "lunate",
+    "capitate"
+   ],
+   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision."
   },
   "ulnopisiform-ligament": {
    "confirmed": true,
-   "source": "User review on the review page, 13 Sept 2026"
+   "source": "User review on the review page, 13 Sept 2026",
+   "attachmentStructureIds": [
+    "ulna",
+    "pisiform"
+   ],
+   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision."
   },
   "ulnotriquetral-ligament": {
    "confirmed": true,
-   "source": "User review on the review page, 13 Sept 2026"
+   "source": "User review on the review page, 13 Sept 2026",
+   "attachmentStructureIds": [
+    "ulna",
+    "triquetrum"
+   ],
+   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision."
   },
   "ulnolunate-ligament": {
    "attachmentStructureIds": [
@@ -172,6 +297,285 @@
    "confirmed": true,
    "source": "Review page, marked corrected with no attachment change, 13 Sept 2026",
    "why": "The reviewer marked this corrected but left the attachment field blank, which the page defines as \"the attachments are right but something else is wrong\". Tibia is right — the other end is the meniscus. What is wrong is that it can barely be seen: even with the meniscus ghosted it traces at 0.06% of frame at a single angle, the smallest target in the tranche. Flagged for a keep-or-drop decision; the attachment itself is settled."
+  },
+  "tibionavicular-ligament": {
+   "attachmentStructureIds": [
+    "tibia",
+    "navicular"
+   ],
+   "description": "The most anterior band of the superficial deltoid ligament. It runs from the anterior colliculus of the medial malleolus to the dorsomedial tuberosity of the navicular, crossing the ankle and talonavicular joints on its way — which is why the mesh touches the talus without attaching to it.",
+   "confirmed": true,
+   "grade": "verified",
+   "source": "Cross-check of the second tranche against named sources, 22 Sep 2026 (review artifact 2ePPLoqndkYYRMrZGwr43G)",
+   "sources": [
+    "IMAIOS e-Anatomy, Tibionavicular ligament",
+    "MRI of ankle ligaments: a pictorial essay, PMC6319113",
+    "Kenhub, Ankle joint"
+   ],
+   "why": "Most anterior band of the superficial deltoid: anterior colliculus of the medial malleolus to the navicular tuberosity. The talar contact is passage over the talus, not a footprint."
+  },
+  "costoclavicular-ligament": {
+   "attachmentStructureIds": [
+    "clavicle",
+    "first-rib"
+   ],
+   "description": "A short, strong band binding the underside of the medial clavicle, at the rhomboid fossa, to the first costal cartilage and the adjacent end of the first rib. It is the main restraint on elevation of the medial clavicle.",
+   "confirmed": true,
+   "grade": "verified",
+   "source": "Cross-check of the second tranche against named sources, 22 Sep 2026 (review artifact 2ePPLoqndkYYRMrZGwr43G)",
+   "sources": [
+    "Radiopaedia, Costoclavicular ligament",
+    "IMAIOS e-Anatomy, Costoclavicular ligament",
+    "TA98 A03.5.04.005"
+   ],
+   "why": "TA98 A03.5.04.005 gives from: first rib, to: clavicle. The sternum was never an attachment — the first rib’s costal cartilage was unmapped in the atlas, so the seed kept a manubrial contact the right-side mesh alone reported."
+  },
+  "long-plantar-ligament": {
+   "attachmentStructureIds": [
+    "calcaneus",
+    "cuboid",
+    "metatarsals"
+   ],
+   "description": "The longest ligament of the foot. It runs from the plantar calcaneus in front of the tuberosity to the ridge of the cuboid, where its deep fibres insert; the superficial fibres carry on to the bases of the second to fourth metatarsals, variably the fifth. It roofs the cuboid groove, turning it into the canal for peroneus longus.",
+   "confirmed": true,
+   "grade": "verified",
+   "source": "Cross-check of the second tranche against named sources, 22 Sep 2026 (review artifact 2ePPLoqndkYYRMrZGwr43G)",
+   "sources": [
+    "IMAIOS e-Anatomy, Long plantar ligament",
+    "Radiopaedia, Long plantar ligament",
+    "TA98 A03.6.10.517"
+   ],
+   "why": "The cuboid is the defining attachment and was missing; the medial cuneiform is not an attachment."
+  },
+  "acetabular-labrum": {
+   "attachmentStructureIds": [
+    "pelvis"
+   ],
+   "description": "A fibrocartilaginous ring attached to the bony rim of the acetabulum and, across the acetabular notch, to the transverse acetabular ligament. It deepens the socket and seals it; the femoral head sits within it but the labrum does not attach to the femur.",
+   "confirmed": true,
+   "grade": "verified",
+   "source": "Cross-check of the second tranche against named sources, 22 Sep 2026 (review artifact 2ePPLoqndkYYRMrZGwr43G)",
+   "sources": [
+    "Kenhub, Acetabular labrum",
+    "Radsource, Acetabular labral tear",
+    "TA98 A03.6.07.008"
+   ],
+   "why": "Articular contact with the femoral head was read as an attachment."
+  },
+  "glenoid-labrum": {
+   "attachmentStructureIds": [
+    "scapula"
+   ],
+   "description": "A fibrocartilaginous rim attached around the circumference of the glenoid cavity of the scapula, deepening the socket and anchoring the long head of biceps at its superior pole. The humeral head articulates against it.",
+   "confirmed": true,
+   "grade": "verified",
+   "source": "Cross-check of the second tranche against named sources, 22 Sep 2026 (review artifact 2ePPLoqndkYYRMrZGwr43G)",
+   "sources": [
+    "Gray’s Anatomy via Wikipedia, Glenoid labrum",
+    "TA98 A03.5.08.002"
+   ],
+   "why": "Articular contact with the humeral head was read as an attachment."
+  },
+  "annular-ligament-of-radius": {
+   "attachmentStructureIds": [
+    "ulna"
+   ],
+   "description": "A ring attached by both of its ends to the anterior and posterior margins of the radial notch of the ulna, forming about four-fifths of an osseofibrous collar that encircles the head of the radius and holds it against the ulna while it spins.",
+   "confirmed": true,
+   "grade": "verified",
+   "source": "Cross-check of the second tranche against named sources, 22 Sep 2026 (review artifact 2ePPLoqndkYYRMrZGwr43G)",
+   "sources": [
+    "Gray’s Anatomy via Wikipedia, Annular ligament of radius",
+    "Kenhub, Proximal radioulnar joint",
+    "TA98 A03.5.09.007"
+   ],
+   "why": "The radius is encircled, not attached to: the ring’s two ends are both on the ulna. (Some sources describe the distal margin blending with the neck of the radius; the description says the head is encircled rather than claiming no radial contact at all.)"
+  },
+  "meniscopatellar-ligament": {
+   "attachmentStructureIds": [
+    "patella"
+   ],
+   "description": "The medial patellomeniscal ligament: it runs from the medial meniscus to the distal pole of the patella, a few millimetres above its lower border. Only one end of it is bone.",
+   "confirmed": true,
+   "grade": "verified",
+   "source": "Cross-check of the second tranche against named sources, 22 Sep 2026 (review artifact 2ePPLoqndkYYRMrZGwr43G)",
+   "sources": [
+    "IMAIOS e-Anatomy, Meniscopatellar ligament",
+    "Hinckel et al., Arthroscopy 2017;33(10):1862-1873, doi:10.1016/j.arthro.2017.04.020"
+   ],
+   "why": "The femoral and tibial contacts are the mesh lying against the joint; the meniscal end is not a bone the app models."
+  },
+  "intersesamoid-ligament": {
+   "attachmentStructureIds": [
+    "sesamoids-foot"
+   ],
+   "description": "A short fibrous band joining the two sesamoid bones under the head of the first metatarsal, the medial (tibial) to the lateral (fibular). Its upper surface is grooved, and the tendon of flexor hallucis longus runs in that groove.",
+   "confirmed": true,
+   "grade": "verified",
+   "source": "Cross-check of the second tranche against named sources, 22 Sep 2026 (review artifact 2ePPLoqndkYYRMrZGwr43G)",
+   "sources": [
+    "Hallux sesamoid disorders, Foot Ankle Clin",
+    "Fiacco et al., Cureus 2017;9(11):e1819, doi:10.7759/cureus.1819"
+   ],
+   "why": "Nothing was derived because the atlas’s sesamoid mesh was unmapped; the grouped bone sesamoids-foot was added for it. The literature varies on the exact extent, but the two-sesamoid answer is consistent."
+  },
+  "interspinous-ligaments": {
+   "attachmentStructureIds": [
+    "c7-vertebra",
+    "thoracic-vertebrae",
+    "lumbar-vertebrae",
+    "sacrum"
+   ],
+   "description": "Thin sheets filling the gap between adjacent spinous processes, running from the root of one to its apex, a single segment at a time, from the neck to the sacrum. They blend with the ligamentum flavum in front and the supraspinous ligament behind. They are best developed at the thoracolumbar junction and in the lumbar spine, slight in the neck and thin or effectively absent in the upper thoracic spine.",
+   "confirmed": true,
+   "grade": "verified",
+   "source": "Cross-check of the second tranche against named sources, 22 Sep 2026 (review artifact 2ePPLoqndkYYRMrZGwr43G)",
+   "sources": [
+    "Physiopedia, Interspinous ligament",
+    "Johnson G, Zhang M. Eur Spine J 2002;11(4):382-388",
+    "Anatomy Standard, Ligg. inter et supraspinalia"
+   ],
+   "why": "Nothing was derived: the mesh reaches no mapped bone. The lumbar and lower thoracic levels are the defensible core, and the description says so."
+  },
+  "costotransverse-ligament": {
+   "attachmentStructureIds": [
+    "ribs",
+    "thoracic-vertebrae"
+   ],
+   "description": "Runs from the back of the neck of a rib to the front of the transverse process of its own thoracic vertebra, binding the two together. It is diminished or absent at the eleventh and twelfth ribs, which have no costotransverse joint.",
+   "confirmed": true,
+   "grade": "verified",
+   "source": "Cross-check of the second tranche against named sources, 22 Sep 2026 (review artifact 2ePPLoqndkYYRMrZGwr43G)",
+   "sources": [
+    "Gray’s Anatomy 42nd ed. via Wikipedia, Costotransverse ligament",
+    "Radiopaedia, Costovertebral joints",
+    "TA98 A03.3.04.006"
+   ],
+   "why": "Half the answer was missing: TA98 A03.3.04.006 gives from: rib, to: transverse process of a vertebra."
+  },
+  "supraspinous-ligament": {
+   "attachmentStructureIds": [
+    "c7-vertebra",
+    "thoracic-vertebrae",
+    "lumbar-vertebrae",
+    "sacrum"
+   ],
+   "description": "A cord-like band joining the tips of the spinous processes, continuous above with the nuchal ligament. Classically described as running from C7 to the sacrum (TA98), though in practice it is well developed only to the upper lumbar spine: it most often ends at L4, occasionally L3, reaches L5 in about one person in twenty, and is almost always absent at L5/S1.",
+   "confirmed": true,
+   "grade": "verified",
+   "source": "Cross-check of the second tranche against named sources, 22 Sep 2026 (review artifact 2ePPLoqndkYYRMrZGwr43G)",
+   "sources": [
+    "Kenhub, Joints and ligaments of the vertebral column",
+    "Physiopedia, Supraspinous ligament",
+    "Rissanen, cited in Anatomy Standard",
+    "TA98 A03.2.01.005"
+   ],
+   "why": "The lumbar levels were missing from the seed. The description carries the real extent as well as the classical line, so a student is not taught a sacral attachment that is usually not there."
+  },
+  "ligamenta-flava": {
+   "attachmentStructureIds": [
+    "axis-c2",
+    "cervical-vertebrae",
+    "c7-vertebra",
+    "thoracic-vertebrae",
+    "lumbar-vertebrae",
+    "sacrum"
+   ],
+   "description": "Short, elastic sheets joining the laminae of adjacent vertebral arches from C2 down to the sacrum, each running from the front of the lamina above to the back of the lamina below. Their elastin puts the spine under gentle tension and helps it straighten after bending.",
+   "confirmed": true,
+   "grade": "verified",
+   "source": "Cross-check of the second tranche against named sources, 22 Sep 2026 (review artifact 2ePPLoqndkYYRMrZGwr43G)",
+   "sources": [
+    "Kenhub, Joints and ligaments of the vertebral column",
+    "Human Kinetics, Ligaments of the vertebral column"
+   ],
+   "why": "The seed named the thoracic spine only; the ligaments run the length of the column."
+  },
+  "anterior-longitudinal-ligament": {
+   "attachmentStructureIds": [
+    "atlas-c1",
+    "cervical-vertebrae",
+    "c7-vertebra",
+    "thoracic-vertebrae",
+    "lumbar-vertebrae",
+    "sacrum"
+   ],
+   "description": "A broad band running the whole length of the front of the vertebral column, from the anterior tubercle of the atlas and the base of the skull to the sacrum. It is attached to the front of every vertebral body and lies against the discs between them, and it is the main check on extension.",
+   "confirmed": true,
+   "grade": "verified",
+   "source": "Cross-check of the second tranche against named sources, 22 Sep 2026 (review artifact 2ePPLoqndkYYRMrZGwr43G)",
+   "sources": [
+    "ScienceDirect Topics, Longitudinal ligaments overview",
+    "Human Kinetics, Ligaments of the vertebral column"
+   ],
+   "why": "The seed named the cervical spine and sacrum only."
+  },
+  "posterior-longitudinal-ligament": {
+   "attachmentStructureIds": [
+    "axis-c2",
+    "cervical-vertebrae",
+    "c7-vertebra",
+    "thoracic-vertebrae",
+    "lumbar-vertebrae",
+    "sacrum"
+   ],
+   "description": "Runs the length of the back of the vertebral bodies, inside the vertebral canal, from the body of the axis to the sacrum, continuous above with the tectorial membrane. Its fibres blend with each annulus and the neighbouring endplates, and it is narrow behind the mid-body, which is why discs herniate posterolaterally.",
+   "confirmed": true,
+   "grade": "verified",
+   "source": "Cross-check of the second tranche against named sources, 22 Sep 2026 (review artifact 2ePPLoqndkYYRMrZGwr43G)",
+   "sources": [
+    "ScienceDirect Topics, Longitudinal ligaments overview",
+    "Human Kinetics, Ligaments of the vertebral column"
+   ],
+   "why": "The seed named a single lumbar vertebra and the cervical and thoracic groups."
+  },
+  "radiate-carpal-ligament": {
+   "attachmentStructureIds": [
+    "capitate",
+    "scaphoid",
+    "lunate",
+    "triquetrum"
+   ],
+   "description": "A fan of about seven palmar bands radiating from the head of the capitate to the scaphoid, lunate and triquetrum, binding the carpus together from in front.",
+   "confirmed": true,
+   "grade": "verified",
+   "source": "Cross-check of the second tranche against named sources, 22 Sep 2026 (review artifact 2ePPLoqndkYYRMrZGwr43G)",
+   "sources": [
+    "IMAIOS e-Anatomy, Radiate carpal ligament",
+    "TA98 A03.5.11.103"
+   ],
+   "why": "TA98 A03.5.11.103 gives from: capitate, to: triquetral, lunate, scaphoid. The scaphoid and triquetrum were missing; the trapezoid and metacarpals are not part of it."
+  },
+  "transverse-acetabular-ligament": {
+   "attachmentStructureIds": [
+    "pelvis"
+   ],
+   "description": "Bridges the acetabular notch, completing the rim of the socket across the gap at its lower edge; the labrum is continuous with it at both ends. Vessels to the head of the femur pass beneath it.",
+   "confirmed": true,
+   "grade": "verified",
+   "source": "Cross-check of the second tranche against named sources, 22 Sep 2026 (review artifact 2ePPLoqndkYYRMrZGwr43G)",
+   "sources": [
+    "Kenhub, Acetabular labrum",
+    "Biomechanics, anatomy and pathology of the acetabular labrum, ScienceDirect"
+   ],
+   "why": "It spans a gap in the hip bone and does not attach to the femur; the femoral contact is articular."
+  },
+  "dorsal-scaphotriquetral-ligament": {
+   "attachmentStructureIds": [
+    "lunate",
+    "triquetrum",
+    "scaphoid"
+   ],
+   "description": "The dorsal intercarpal ligament: it runs across the back of the carpus from the dorsal tubercle of the triquetrum to the dorsal groove of the scaphoid, attaching to the back of the lunate on its way.",
+   "confirmed": true,
+   "grade": "verified (correction retracted, seed stands)",
+   "source": "Cross-check of the second tranche against named sources, 22 Sep 2026 (review artifact 2ePPLoqndkYYRMrZGwr43G)",
+   "sources": [
+    "Bateni et al., Imaging key wrist ligaments, AJR, doi:10.2214/AJR.12.9738",
+    "Wrist joint anatomy, Medscape",
+    "AAHS 2020 abstract, Anatomy of the dorsal scapholunotriquetral ligament complex"
+   ],
+   "why": "A proposed correction (drop the lunate as passage) was checked and RETRACTED: the lunate footprint is real, measured at 65.0 ± 28.3 mm² against 67.4 ± 26.8 mm² for the scaphoid. The derived 0.60 lunate contact was right."
   }
  }
 }
