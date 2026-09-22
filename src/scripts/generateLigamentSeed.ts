@@ -127,13 +127,17 @@ interface Correction {
   source?: string;
   /** How the decision was reached: 'verified' means a named source was checked. */
   grade?: string;
+  /** The sentence the source states it in, kept with the citation in the review sheet. */
+  quote?: string;
   /** Set when the ids were pinned rather than typed out by a reviewer. */
   pinned?: string;
   /**
-   * The works checked, carried into the seed entry's `notes`. A citation that
-   * lives only in a working file is gone by the time a student queries the
-   * answer, and one of these decisions is a RETRACTION of a confident
-   * correction — the reason it stands has to travel with it.
+   * The works checked, printed in docs/ligament-attachments-review.md beside
+   * the decision. A citation that lives only in a working file is gone by the
+   * time someone queries the answer, and one of these decisions is a
+   * RETRACTION of a confident correction — the reason it stands has to travel
+   * with it. It stays out of the seed because nothing in the app renders
+   * `notes`, and the works cited were 22 kB of the entry chunk.
    */
   sources?: string[];
   why?: string;
@@ -270,11 +274,10 @@ const entries = chosen.map((l) => {
       : `Ligament of the ${l.subregion.replace('-', ' and ')}.`);
   // A reviewed entry records WHY in `notes`, because the derived contact will
   // keep disagreeing with it and the next person to look needs the reason.
-  const notes = fix?.why
-    ? [fix.why, fix.source ? `(${fix.source})` : '', fix.sources?.length ? `Sources: ${fix.sources.join('; ')}.` : '']
-        .filter(Boolean)
-        .join(' ')
-    : null;
+  // The REASON ships with the entry; the CITATIONS go in the review sheet.
+  // Nothing in the app renders `notes`, and the works cited were 22 kB of the
+  // entry chunk — read by nobody, downloaded by every student.
+  const notes = fix?.why ? [fix.why, fix.source ? `(${fix.source})` : ''].filter(Boolean).join(' ') : null;
   return `  {
     id: ${q(l.id)},
     name: ${q(l.name)},
@@ -332,11 +335,13 @@ const rows = chosen.map((l) => {
     .join(', ');
   const fix = CORRECTIONS[l.id];
   const ids = fix?.attachmentStructureIds ?? l.ids;
+  const cited = fix?.sources?.length ? ` _Sources: ${fix.sources.join('; ')}._` : '';
+  const quoted = fix?.quote ? ` _“${fix.quote}”_` : '';
   const verdict = !fix
     ? ''
     : fix.attachmentStructureIds
-      ? `**corrected** — ${fix.why ?? ''}`
-      : `**confirmed** — ${fix.why ?? ''}`;
+      ? `**corrected** — ${fix.why ?? ''}${quoted}${cited}`
+      : `**confirmed** — ${fix.why ?? ''}${quoted}${cited}`;
   return `| ${l.name} | ${l.subregion} | ${derived || '—'} | ${ids.join(', ') || '—'} | ${l.tier} | ${Math.round(l.best * 100)}% | ${verdict} |`;
 });
 const sheet = `# Ligament attachments — review sheet
