@@ -385,9 +385,8 @@
     ]
    },
    "band": 0.005,
-   "seam": 6,
-   "catchMargin": 10,
-   "useSurface": true
+   "seam": 16,
+   "catchMargin": 12
   },
   {
    "id": "intervertebral-joint",
@@ -663,8 +662,11 @@
    },
    "bilateral": true,
    "allContacts": true,
-   "seam": 26,
-   "catchMargin": 10
+   "seam": 34,
+   "catchMargin": 12,
+   "views": [
+    0
+   ]
   },
   {
    "id": "radiocarpal-joint",
