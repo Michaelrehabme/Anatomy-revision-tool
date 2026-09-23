@@ -13,6 +13,7 @@
     "test:watch": "vitest",
     "lint": "eslint .",
     "validate-content": "tsx src/scripts/validateContent.ts",
+    "check:contrast": "tsx src/scripts/checkContrast.ts",
     "admin:set-claim": "tsx scripts/setAdmin.ts",
     "admin:seed-changes": "tsx scripts/seedChangeRequests.ts",
     "admin:delete-dormant": "tsx scripts/deleteDormantAccounts.ts",
