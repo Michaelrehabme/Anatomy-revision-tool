@@ -211,7 +211,10 @@ const results: Record<string, unknown[]> = {};
 interface V2Image {
   width: number;
   height: number;
-  hotspots: Record<string, { polygons: number[][][]; area: number; centroid: [number, number] }>;
+  hotspots: Record<
+    string,
+    { polygons: number[][][]; area: number; centroid: [number, number]; targetCore?: number[][][] }
+  >;
 }
 const v2Images: Record<string, V2Image> = {};
 let emitted = 0;
@@ -350,6 +353,9 @@ if (opts.tsPath) {
       lines.push(`      polygons: ${JSON.stringify(entry.polygons)},`);
       lines.push(`      area: ${entry.area},`);
       lines.push(`      centroid: [${entry.centroid[0]}, ${entry.centroid[1]}],`);
+      // The line itself, inside the catch area: a tap here is a bullseye, one
+      // in the surround passes (lib/hotspot/accuracy.ts, scoreRegion).
+      if (entry.targetCore) lines.push(`      targetCore: ${JSON.stringify(entry.targetCore)},`);
       lines.push('    },');
     }
     lines.push('  ],');

@@ -19,7 +19,7 @@
  * of forgetting is a student revising from a picture that no longer matches
  * the answer.
  */
-export const ANATOMY_CACHE_VERSION = '2026-09-23';
+export const ANATOMY_CACHE_VERSION = '2026-09-23b';
 
 export const ANATOMY_CACHE_NAME = `locusmsk-anatomy-images-${ANATOMY_CACHE_VERSION}`;
 
