@@ -227,33 +227,48 @@ export function ImageViewer({ image, frames, overlay, onPick, locked, resetKey, 
           {overlay?.(current)}
         </div>
 
-        {/* Zoom: scroll or pinch does the same; these are for those who prefer buttons. */}
-        <div data-controls className="absolute right-2 top-2 flex flex-col gap-1" style={{ color: 'var(--ink)' }}>
-          <button type="button" className={controlButton} aria-label="Zoom in" onClick={() => { const r = stageRef.current!.getBoundingClientRect(); zoomAt(1.5, r.width / 2, r.height / 2); }}>+</button>
-          <span className="rounded bg-sf/90 px-1 py-0.5 text-center text-[10px] tabular-nums" style={{ color: 'var(--ink3)' }}>{view.z.toFixed(1)}×</span>
-          <button type="button" className={controlButton} aria-label="Zoom out" onClick={() => { const r = stageRef.current!.getBoundingClientRect(); zoomAt(1 / 1.5, r.width / 2, r.height / 2); }}>−</button>
-          {zoomed && (
-            <button type="button" className={controlButton} aria-label="Reset zoom" onClick={() => setView({ z: 1, tx: 0, ty: 0 })}>↺</button>
-          )}
-        </div>
+      </div>
 
-        {/* Tilt: only for a set with tilted frames. Up is towards the top of the picture. */}
+      {/*
+        CONTROLS SIT UNDER THE PICTURE, NOT ON IT.
+        They were floated over the corners, where they covered the anatomy and
+        the angle caption ran across the structure being asked about — on a
+        phone the picture is the whole screen, so every control was in the way
+        of the thing to be identified. Below it they cost a row of height and
+        obscure nothing.
+      */}
+      <div
+        data-controls
+        className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1.5"
+        style={{ color: 'var(--ink)' }}
+      >
+        {frameList.length > 1 && (
+          <>
+            <button type="button" className={controlButton} aria-label="Rotate left" disabled={!canTurn} onClick={() => turn(-1)}>◀ rotate</button>
+            <button type="button" className={controlButton} aria-label="Rotate right" disabled={!canTurn} onClick={() => turn(1)}>rotate ▶</button>
+          </>
+        )}
         {tiltFrames.length > 0 && (
-          <div data-controls className="absolute left-2 top-2 flex flex-col gap-1" style={{ color: 'var(--ink)' }}>
+          <>
             <button type="button" className={controlButton} aria-label="Tilt up" disabled={!canTilt || tiltAt >= tiltLevels.length - 1} onClick={() => tiltBy(1)}>▲ tilt</button>
             <button type="button" className={controlButton} aria-label="Tilt down" disabled={!canTilt || tiltAt <= 0} onClick={() => tiltBy(-1)}>▼ tilt</button>
-          </div>
+          </>
         )}
 
-        {/* Rotation: only for a rotation set, and only until the answer is in. */}
-        {frameList.length > 1 && (
-          <div data-controls className="absolute bottom-2 left-2 right-2 flex items-center justify-between" style={{ color: 'var(--ink)' }}>
-            <button type="button" className={controlButton} aria-label="Rotate left" disabled={!canTurn} onClick={() => turn(-1)}>◀ rotate</button>
-            <span className="rounded bg-sf/90 px-2 py-1 text-[10px] tabular-nums" style={{ color: 'var(--ink3)' }}>
-              {tilt === 0 ? `${angleLabel(current)} · ${ringIndex + 1}/${ring.length}` : angleLabel(current)}
-            </span>
-            <button type="button" className={controlButton} aria-label="Rotate right" disabled={!canTurn} onClick={() => turn(1)}>rotate ▶</button>
-          </div>
+        <span className="min-w-0 flex-1 truncate text-[11px] tabular-nums" style={{ color: 'var(--ink3)' }}>
+          {frameList.length > 1
+            ? tilt === 0
+              ? `${angleLabel(current)} · ${ringIndex + 1}/${ring.length}`
+              : angleLabel(current)
+            : ''}
+        </span>
+
+        {/* Scroll or pinch does the same; these are for those who prefer buttons. */}
+        <button type="button" className={controlButton} aria-label="Zoom out" onClick={() => { const r = stageRef.current!.getBoundingClientRect(); zoomAt(1 / 1.5, r.width / 2, r.height / 2); }}>−</button>
+        <span className="px-0.5 text-[11px] tabular-nums" style={{ color: 'var(--ink3)' }}>{view.z.toFixed(1)}×</span>
+        <button type="button" className={controlButton} aria-label="Zoom in" onClick={() => { const r = stageRef.current!.getBoundingClientRect(); zoomAt(1.5, r.width / 2, r.height / 2); }}>+</button>
+        {zoomed && (
+          <button type="button" className={controlButton} aria-label="Reset zoom" onClick={() => setView({ z: 1, tx: 0, ty: 0 })}>↺</button>
         )}
       </div>
       <AttributionBadge image={current} />

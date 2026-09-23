@@ -1,0 +1,11 @@
+{
+  "note": "Joint bands to trim, each checked against its own plate with renders/overlay-one.mjs. NOT A RULE: a joint may legitimately come in many bands far apart — the knuckles are one band each, the knee has a medial and a lateral compartment, the costovertebral joints run the length of the thorax — so anything automatic that dropped 'small and far' rings destroyed those. An entry here says a human looked at the picture and the ring is not the joint.",
+  "trims": [
+    {
+      "imageId": "joint-transverse-tarsal-joint-anterior",
+      "dropRingsFartherThan": 0.18,
+      "smallerThanMainShare": 0.6,
+      "why": "Three specks over the metatarsal shafts and bases, a quarter of the frame distal to the Chopart line. The joint itself is the two bands over the talonavicular and calcaneocuboid gaps, which are adjacent and stay."
+    }
+  ]
+}

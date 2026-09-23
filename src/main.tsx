@@ -7,6 +7,11 @@ import { RepositoryProvider } from './features/anatomy-revision/context/Reposito
 import { AuthProvider } from './features/anatomy-revision/context/AuthProvider.tsx';
 import { UpdatePrompt } from './features/pwa/UpdatePrompt.tsx';
 import { OfflineIndicator } from './features/pwa/OfflineIndicator.tsx';
+import { purgeStaleAnatomyCaches } from './features/pwa/anatomyCache.ts';
+
+// Pictures from an earlier render, cached under the same filenames, are
+// dropped before the first one is asked for.
+void purgeStaleAnatomyCaches();
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

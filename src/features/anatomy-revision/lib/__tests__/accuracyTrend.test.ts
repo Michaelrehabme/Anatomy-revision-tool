@@ -157,4 +157,24 @@ describe('accuracyTrendSplit', () => {
     expect(split.firstSightTrend).toEqual([]);
     expect(split.seenBeforeTrend).toEqual([]);
   });
+
+  it('draws first sight from the few attempts a student can actually produce', () => {
+    // A realistic month: plenty of revision, and new structures met a couple at
+    // a time. Under the revision line's rule (5 in 7 days) the new-content line
+    // was computed and never drawn once — the chart showed one line and
+    // described two.
+    const attempts = [
+      ...day('s1', '2026-08-03', 2, 1).map((a, i) => ({ ...a, structureId: `new-a${i}` })),
+      ...day('s1', '2026-08-11', 2, 2).map((a, i) => ({ ...a, structureId: `new-b${i}` })),
+      ...day('s1', '2026-08-18', 2, 1).map((a, i) => ({ ...a, structureId: `new-c${i}` })),
+      ...day('s1', '2026-08-20', 12, 10).map((a, i) => ({ ...a, structureId: `new-a${i % 2}` })),
+    ];
+    const split = accuracyTrendSplit(attempts);
+    expect(split.firstSight).toHaveLength(6);
+    const drawn = split.firstSightTrend.filter((p) => p.studentPct !== null);
+    expect(drawn.length).toBeGreaterThan(1);
+    // Still refuses to draw a point from one lonely answer.
+    const sparse = accuracyTrendSplit(day('s1', '2026-08-03', 1, 1).map((a) => ({ ...a, structureId: 'only-one' })));
+    expect(sparse.firstSightTrend.every((p) => p.studentPct === null)).toBe(true);
+  });
 });

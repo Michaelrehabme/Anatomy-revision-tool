@@ -139,6 +139,14 @@ export function AccuracyTrendChart({
             {secondary.label}
           </span>
         )}
+        {/* A line that cannot be drawn says so. It used to vanish with its own
+            legend entry, so the chart quietly showed one series while the page
+            around it described two. */}
+        {!hasSecondaryLine && secondary && secondary.points.some((p) => p.studentAttempts > 0) && (
+          <span style={{ color: 'var(--ink3)' }}>
+            {secondary.label} — too few answers yet to plot
+          </span>
+        )}
         {hasCohortLine && (
           <span className="flex items-center gap-2">
             <svg width="18" height="8" aria-hidden="true">

@@ -3,6 +3,7 @@ import { fileURLToPath } from 'node:url';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 import { VitePWA } from 'vite-plugin-pwa';
+import { ANATOMY_CACHE_NAME } from './src/features/pwa/anatomyCache';
 
 /** Forward slashes even on Windows — Rollup's alias plugin compares and rewrites ids as POSIX-style strings. */
 const demoFile = (name: string) =>
@@ -106,7 +107,9 @@ const pwa = (disable: boolean) =>
           urlPattern: ({ url }) => url.pathname.startsWith('/anatomy/'),
           handler: 'CacheFirst',
           options: {
-            cacheName: 'locusmsk-anatomy-images',
+            // Versioned: a re-render reuses the filename, so an unversioned
+            // cache served yesterday's picture for a month (anatomyCache.ts).
+            cacheName: ANATOMY_CACHE_NAME,
             expiration: { maxEntries: 400, maxAgeSeconds: 60 * 60 * 24 * 30 },
             cacheableResponse: { statuses: [0, 200] },
           },

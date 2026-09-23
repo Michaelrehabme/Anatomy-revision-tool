@@ -222,11 +222,31 @@ export interface AccuracyTrendSplit extends ExposureSplit {
   seenBeforeTrend: AccuracyTrendPoint[];
 }
 
+/**
+ * FIRST SIGHT IS A RARER EVENT, AND NEEDS A WIDER NET.
+ *
+ * A structure can only be met for the first time once, so these attempts
+ * arrive at a few a week and dry up as a student works through an area. Under
+ * the revision line's rule — five attempts inside seven days — the new-content
+ * line was computed and then never drawn: the series existed, every point fell
+ * below the bar, and the legend disappeared with the line. The chart claimed
+ * to show two things and showed one.
+ *
+ * So it gets a window three times as long and a lower floor. That is not a
+ * looser standard for the same measurement: three first sights in a fortnight
+ * is as much evidence about new material as fifteen answers in a week is about
+ * revised material, because the student cannot produce more of it.
+ */
+export const FIRST_SIGHT_WINDOW_DAYS = 21;
+export const FIRST_SIGHT_MIN_ATTEMPTS = 3;
+
 /** The two-line version of accuracyTrend, for a student's own page (no cohort series). */
 export function accuracyTrendSplit(
   attempts: readonly UserAttempt[],
   windowDays: number = ACCURACY_WINDOW_DAYS_DEFAULT,
   minAttempts: number = ACCURACY_MIN_ATTEMPTS_DEFAULT,
+  firstSightWindowDays: number = FIRST_SIGHT_WINDOW_DAYS,
+  firstSightMinAttempts: number = FIRST_SIGHT_MIN_ATTEMPTS,
 ): AccuracyTrendSplit {
   const split = splitByFirstExposure(attempts);
   if (attempts.length === 0) return { ...split, firstSightTrend: [], seenBeforeTrend: [] };
@@ -235,7 +255,13 @@ export function accuracyTrendSplit(
   const none = new Map<string, DayTally>();
   return {
     ...split,
-    firstSightTrend: accuracyTrendFromDayTallies(tallyByDay(split.firstSight), none, windowDays, minAttempts, span),
+    firstSightTrend: accuracyTrendFromDayTallies(
+      tallyByDay(split.firstSight),
+      none,
+      firstSightWindowDays,
+      firstSightMinAttempts,
+      span,
+    ),
     seenBeforeTrend: accuracyTrendFromDayTallies(tallyByDay(split.seenBefore), none, windowDays, minAttempts, span),
   };
 }

@@ -6,6 +6,7 @@ import { rotationFramesFor, rotationSetKey, rotationAngle } from '../../lib/rota
 import { promptHighlightFrames } from '../../lib/promptHighlight';
 import { ALL_STRUCTURES, ALL_IMAGES } from '../../data/seed';
 import type { TypedIdentifyQuestion } from '../../types/question';
+import type { AnatomyImageAsset } from '../../types/image';
 
 beforeAll(() => {
   Element.prototype.setPointerCapture = () => {};
@@ -76,16 +77,47 @@ describe('an identify question whose picture is a rotation set', () => {
 });
 
 describe('the highlight turns with the picture', () => {
-  const imagesById = new Map(ALL_IMAGES.map((i) => [i.id, i]));
-  // A rotation set whose frames carry hotspots (an atlas slide, not a
-  // pre-highlighted plate), so the green zone is drawn by the app and has
-  // to be looked up on the frame that is showing.
-  const question = buildIdentifyTypedQuestions(ALL_STRUCTURES, ALL_IMAGES).find(
-    (q): q is TypedIdentifyQuestion => {
-      const frames = rotationFramesFor(imagesById.get(q.promptImageId), ALL_IMAGES);
-      return frames.length > 1 && frames.filter((f) => (f.hotspots ?? []).some((h) => h.structureId === q.structureId)).length > 1;
-    },
-  );
+  /*
+   * ON A FIXTURE, NOT THE SEED. Identify now opens on the plate framed for the
+   * structure (promptImages.ts), and for every rotatable structure that is a
+   * pre-highlighted plate carrying no hotspots — so no shipped question drives
+   * the app-drawn overlay any more. The rule it protects is still live for any
+   * set whose frames DO carry hotspots, so it is asserted against frames built
+   * here rather than found in the seed.
+   */
+  const frame = (angle: number, x: number): AnatomyImageAsset => ({
+    id: `sub-fixture-a${String(angle).padStart(3, '0')}-plate`,
+    filePath: `/x/a${angle}.webp`,
+    mode: 'atlas-slide',
+    region: 'lower-leg-foot',
+    subregion: 'ankle-foot',
+    view: 'anterior',
+    layer: 'skeletal',
+    credit: 'c',
+    licence: 'l',
+    width: 1400,
+    height: 1400,
+    hotspots: [
+      { structureId: 'fixture-structure', polygons: [[[x, 0.1], [x + 0.2, 0.1], [x + 0.2, 0.3]]], area: 0.02, centroid: [x + 0.1, 0.17] },
+    ],
+  });
+  const fixtureFrames = [frame(0, 0.1), frame(45, 0.4), frame(90, 0.6)];
+  const imagesById = new Map<string, AnatomyImageAsset>(fixtureFrames.map((f) => [f.id, f]));
+  const question: TypedIdentifyQuestion = {
+    structureId: 'fixture-structure',
+    region: 'lower-leg-foot',
+    subregion: 'ankle-foot',
+    area: 'ankle-foot',
+    category: 'bone',
+    difficulty: 'medium',
+    promptKind: 'identify',
+    type: 'identify-typed',
+    id: 'identify-typed-fixture',
+    prompt: 'Which structure is highlighted?',
+    promptImageId: fixtureFrames[0].id,
+    acceptedAnswers: ['Fixture structure'],
+    explanation: 'x',
+  };
 
   function drawnPoints(): string {
     return Array.from(document.querySelectorAll('svg polygon'))
@@ -94,8 +126,7 @@ describe('the highlight turns with the picture', () => {
   }
 
   it('draws the outline of the frame that is showing, not the opening one', () => {
-    expect(question).toBeDefined();
-    render(<IdentifyTypedSession question={question!} imagesById={imagesById} onAnswer={vi.fn()} onNext={vi.fn()} examMode />);
+    render(<IdentifyTypedSession question={question} imagesById={imagesById} onAnswer={vi.fn()} onNext={vi.fn()} examMode />);
     const before = drawnPoints();
     expect(before).not.toBe('');
     fireEvent.click(screen.getByLabelText('Rotate right'));
@@ -105,12 +136,12 @@ describe('the highlight turns with the picture', () => {
   });
 
   it('only offers angles where the target is traced', () => {
-    const frames = rotationFramesFor(imagesById.get(question!.promptImageId), ALL_IMAGES);
-    const offered = promptHighlightFrames(frames, question!.structureId);
+    const frames = rotationFramesFor(imagesById.get(question.promptImageId), fixtureFrames);
+    const offered = promptHighlightFrames(frames, question.structureId);
     expect(offered.length).toBeGreaterThan(1);
-    for (const f of offered) expect((f.hotspots ?? []).some((h) => h.structureId === question!.structureId)).toBe(true);
+    for (const f of offered) expect((f.hotspots ?? []).some((h) => h.structureId === question.structureId)).toBe(true);
     // A pre-highlighted set carries no hotspots at all, and is left alone.
     const bare = frames.map((f) => ({ ...f, hotspots: [] }));
-    expect(promptHighlightFrames(bare, question!.structureId)).toBe(bare);
+    expect(promptHighlightFrames(bare, question.structureId)).toBe(bare);
   });
 });

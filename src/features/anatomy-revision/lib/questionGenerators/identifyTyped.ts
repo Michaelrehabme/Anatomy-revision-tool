@@ -4,7 +4,7 @@ import type { AnatomyStructure } from '../../types/structure';
 import type { AnatomyImageAsset } from '../../types/image';
 import type { TypedIdentifyQuestion } from '../../types/question';
 import { summarizeStructure } from '../facts';
-import { imageDepicts } from './mcq';
+import { promptImagesFor } from './promptImages';
 
 /**
  * Builds a typed-answer counterpart to MCQ's image-based "identify"
@@ -41,7 +41,8 @@ export function buildIdentifyTypedQuestions(
         })
       : [];
 
-    for (const image of images.filter((img) => imageDepicts(img, structure.id))) {
+    // One per turntable, on the plate framed for this structure (promptImages.ts).
+    for (const image of promptImagesFor(structure, images)) {
       questions.push({
         structureId: structure.id,
         region: structure.region,

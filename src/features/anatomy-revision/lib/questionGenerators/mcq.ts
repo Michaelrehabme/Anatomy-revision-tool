@@ -6,6 +6,7 @@ import type { StructureIndexes } from '../indexes';
 import { pickNameDistractors, pickTextFieldDistractors, pickKeyDistractors } from '../distractors';
 import { buildIdentifyClue, summarizeStructure } from '../facts';
 import { shuffle, sample, type Rng } from '../rng';
+import { promptImagesFor } from './promptImages';
 
 export interface McqGenOptions {
   /** Total choices including the correct answer. Default 4. */
@@ -125,8 +126,8 @@ function buildOne(
       });
     }
 
-    // Image-based variants (one per matching image).
-    for (const image of images.filter((img) => imageDepicts(img, structure.id))) {
+    // One per turntable, on the plate framed for this structure (promptImages.ts).
+    for (const image of promptImagesFor(structure, images)) {
       const { choices: imgChoices, correctIndex: imgCorrectIndex } = buildChoices(
         structure.name,
         distractors,
