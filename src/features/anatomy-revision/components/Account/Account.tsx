@@ -166,7 +166,9 @@ export function Account({ access, content, repository, userId, onNavigate }: Acc
             setting — it is a per-device one. */}
         <section className="mt-12" style={{ maxWidth: 620 }}>
           <h3 style={heading}>Appearance</h3>
-          <ThemeControls />
+          <div className="mt-4">
+            <ThemeControls />
+          </div>
         </section>
 
         {AUTH_ENABLED && user && (

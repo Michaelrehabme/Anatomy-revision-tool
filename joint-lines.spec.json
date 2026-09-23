@@ -210,7 +210,11 @@
    },
    "bilateral": true,
    "allContacts": true,
-   "frame": 0.3
+   "frame": 0.3,
+   "views": [
+    0,
+    12
+   ]
   },
   {
    "id": "distal-interphalangeal-joint-hand",
@@ -359,8 +363,9 @@
      "Radius.r"
     ]
    },
-   "seam": 9,
-   "catchMargin": 12
+   "seam": 6,
+   "catchMargin": 10,
+   "useSurface": true
   },
   {
    "id": "humeroulnar-joint",
@@ -380,8 +385,9 @@
     ]
    },
    "band": 0.005,
-   "seam": 9,
-   "catchMargin": 12
+   "seam": 6,
+   "catchMargin": 10,
+   "useSurface": true
   },
   {
    "id": "intervertebral-joint",
@@ -657,8 +663,8 @@
    },
    "bilateral": true,
    "allContacts": true,
-   "seam": 12,
-   "catchMargin": 16
+   "seam": 26,
+   "catchMargin": 10
   },
   {
    "id": "radiocarpal-joint",

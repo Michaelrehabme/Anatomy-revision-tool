@@ -62,11 +62,36 @@ import { binariseAlpha, maskToPolygons, type BinaryMask } from './lib/maskToPoly
  * the flags.
  */
 const SPEC_PATH = 'joint-lines.spec.json';
-const specJoints: Record<string, { seam?: number; margin?: number }> = Object.fromEntries(
-  (JSON.parse(readFileSync(SPEC_PATH, 'utf8')).joints as { id: string; seam?: number; catchMargin?: number }[]).map(
+interface SpecJoint {
+  seam?: number;
+  margin?: number;
+  /**
+   * Take the whole articular SURFACE rather than the seam between the two
+   * silhouettes. The seam is right for a joint you see edge-on — a line across
+   * the foot, a line across the knee — and wrong for one whose articulation is
+   * a broad surface facing the camera. The capitulum against the radial head
+   * came out as a hairline; the pubic symphysis is a slab of fibrocartilage
+   * and reads as a band. For those, what a student should point at IS the
+   * surface, which is what this mask has always been.
+   */
+  useSurface?: boolean;
+  /** The views worth deriving, where a joint is unsighted or useless from the rest. */
+  views?: number[];
+}
+
+const specJoints: Record<string, SpecJoint> = Object.fromEntries(
+  (
+    JSON.parse(readFileSync(SPEC_PATH, 'utf8')).joints as {
+      id: string;
+      seam?: number;
+      catchMargin?: number;
+      useSurface?: boolean;
+      views?: number[];
+    }[]
+  ).map(
     // `catchMargin`, not `margin`: the renderer's own `margin` is camera slack,
     // and one key meaning two things framed the whole spine for one disc.
-    (j) => [j.id, { seam: j.seam, margin: j.catchMargin }],
+    (j) => [j.id, { seam: j.seam, margin: j.catchMargin, useSurface: j.useSurface, views: j.views }],
   ),
 );
 
@@ -249,6 +274,10 @@ for (const jointId of jointIds) {
     const dir = join(jointDir, view);
     const linePath = join(dir, 'line.png');
     if (!existsSync(linePath)) continue;
+    // A joint can rule a view out — unsighted from the front, or a view whose
+    // band says nothing worth asking. Masks may exist for it; they are skipped.
+    const allowed = specJoints[jointId]?.views;
+    if (allowed && !allowed.includes(Number(view.replace('view-', '')))) continue;
 
     const line = loadMask(linePath);
     const aPath = join(dir, 'a.png');
@@ -261,9 +290,9 @@ for (const jointId of jointIds) {
     // the humeroradial gap is wide enough to fatten a seam elsewhere back into
     // a blob, so each view takes the smallest one that finds anything — thin
     // where thin works, wider only where the gap demands it.
-    let band = dilateBy(line.mask, line.width, line.height, opts.pad);
+    let band = dilateBy(line.mask, line.width, line.height, specJoints[jointId]?.seam ?? opts.pad);
     let usedSeam = 0;
-    if (hasSilhouettes) {
+    if (hasSilhouettes && !specJoints[jointId]?.useSurface) {
       const aMask = loadMask(aPath).mask;
       const bMask = loadMask(bPath).mask;
       const baseSeam = specJoints[jointId]?.seam ?? opts.seam;

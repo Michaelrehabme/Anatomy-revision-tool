@@ -82,7 +82,7 @@ export function Atlas({ access, content, repository, userId, onOpenMuscle, onDri
           </div>
         )}
 
-        <div className="flex min-h-0 min-w-0 flex-1 flex-col px-14 pt-14">
+        <div className="flex min-h-0 min-w-0 flex-1 flex-col px-10 pt-14">
           <div className="flex items-end gap-8">
             <div className="flex-1">
               <h2
@@ -167,11 +167,11 @@ export function Atlas({ access, content, repository, userId, onOpenMuscle, onDri
             className="mt-6 flex gap-5 pb-3"
             style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}
           >
-            <span className="w-[230px] flex-none">{kind === 'all' ? 'Structure' : CATEGORY_LABELS[kind].replace(/s$/, '')}</span>
-            <span className="w-[240px] flex-none">{headings[0]}</span>
-            <span className="w-[230px] flex-none">{headings[1]}</span>
-            <span className="flex-1">{headings[2]}</span>
-            <span className="w-[88px] flex-none text-right">Mastery</span>
+            <span className="w-[190px] flex-none">{kind === 'all' ? 'Structure' : CATEGORY_LABELS[kind].replace(/s$/, '')}</span>
+            <span className="min-w-0 flex-1">{headings[0]}</span>
+            <span className="min-w-0 flex-1">{headings[1]}</span>
+            <span className="min-w-0 flex-[1.3]">{headings[2]}</span>
+            <span className="w-[78px] flex-none text-right">Mastery</span>
           </div>
 
           <div className="min-h-0 flex-1 overflow-auto pb-14">
@@ -192,7 +192,7 @@ export function Atlas({ access, content, repository, userId, onOpenMuscle, onDri
                   className="flex w-full items-baseline gap-5 py-3 text-left"
                   style={{ borderTop: '1px solid var(--line)' }}
                 >
-                  <span className="w-[230px] flex-none">
+                  <span className="w-[190px] flex-none">
                     <span style={{ fontFamily: 'var(--font-display)', fontSize: 20 }}>{s.name}</span>
                     {kind === 'all' && (
                       <span className="ml-2" style={{ font: '400 10.5px/1 var(--font-mono)', letterSpacing: '.08em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
@@ -200,13 +200,13 @@ export function Atlas({ access, content, repository, userId, onOpenMuscle, onDri
                       </span>
                     )}
                   </span>
-                  <span className="w-[240px] flex-none text-[14.5px] leading-snug" style={{ color: 'var(--ink2)' }}>
+                  <span className="min-w-0 flex-1 text-[14.5px] leading-snug" style={{ color: 'var(--ink2)' }}>
                     {cell(0)}
                   </span>
-                  <span className="w-[230px] flex-none text-[14.5px] leading-snug" style={{ color: 'var(--ink2)' }}>
+                  <span className="min-w-0 flex-1 text-[14.5px] leading-snug" style={{ color: 'var(--ink2)' }}>
                     {cell(1)}
                   </span>
-                  <span className="flex-1 text-[14.5px] leading-snug" style={{ color: 'var(--ink2)' }}>
+                  <span className="min-w-0 flex-[1.3] text-[14.5px] leading-snug" style={{ color: 'var(--ink2)' }}>
                     {cell(2)}
                   </span>
                   {/*
@@ -216,7 +216,7 @@ export function Atlas({ access, content, repository, userId, onOpenMuscle, onDri
                     contradict the seen filter sitting beside it.
                   */}
                   <span
-                    className="w-[88px] flex-none text-right"
+                    className="w-[78px] flex-none text-right"
                     style={{
                       font: '500 13px/1 var(--font-mono)',
                       color:

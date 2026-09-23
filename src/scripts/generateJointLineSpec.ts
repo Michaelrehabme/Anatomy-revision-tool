@@ -79,6 +79,8 @@ interface PartOverride {
   seam?: number;
   /** Pixels of catch area around the line, where a tap still passes. */
   catchMargin?: number;
+  /** Take the whole articular surface rather than the seam, for a broad articulation seen face-on. */
+  useSurface?: boolean;
 }
 
 const PART_OVERRIDE: Record<string, PartOverride> = {
@@ -322,6 +324,7 @@ for (const joint of joints) {
     ...(override?.views ? { views: override.views } : {}),
     ...(override?.seam ? { seam: override.seam } : {}),
     ...(override?.catchMargin ? { catchMargin: override.catchMargin } : {}),
+    ...(override?.useSurface ? { useSurface: true } : {}),
     ...(TUNING[joint.id] ?? {}),
   });
 }
