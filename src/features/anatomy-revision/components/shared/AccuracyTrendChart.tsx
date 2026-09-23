@@ -64,6 +64,7 @@ export function AccuracyTrendChart({
   points,
   studentName,
   secondary,
+  windowNote,
 }: {
   points: AccuracyTrendPoint[];
   studentName: string;
@@ -73,6 +74,8 @@ export function AccuracyTrendChart({
    * material does not read as a slump. Must be index-aligned with `points`.
    */
   secondary?: { label: string; points: AccuracyTrendPoint[] };
+  /** "Averaged over 7 days" and so on — each line can be over a different window. */
+  windowNote?: string;
 }) {
   const [hover, setHover] = useState<number | null>(null);
 
@@ -164,7 +167,7 @@ export function AccuracyTrendChart({
           </span>
         )}
         <span style={{ color: "var(--ink3)" }}>
-          · {ACCURACY_WINDOW_DAYS_DEFAULT}-day rolling accuracy
+          · {windowNote ?? `${ACCURACY_WINDOW_DAYS_DEFAULT}-day rolling accuracy`}
         </span>
       </div>
 

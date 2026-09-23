@@ -178,3 +178,25 @@ describe('accuracyTrendSplit', () => {
     expect(sparse.firstSightTrend.every((p) => p.studentPct === null)).toBe(true);
   });
 });
+
+describe('a sparse line is widened, not dropped', () => {
+  it('draws seen-before accuracy for a student who mostly meets new structures', () => {
+    // The complaint this came from: nearly every answer is a first encounter,
+    // so repeats never reach five inside a week and the revision line — the
+    // one the page leads with — was the one that never appeared.
+    const attempts = [
+      ...day('s1', '2026-08-02', 20, 15).map((a, i) => ({ ...a, structureId: `new-${i}` })),
+      ...day('s1', '2026-08-09', 20, 16).map((a, i) => ({ ...a, structureId: `later-${i}` })),
+      // A handful of repeats, spread out: two, then two.
+      ...day('s1', '2026-08-10', 2, 2).map((a, i) => ({ ...a, structureId: `new-${i}` })),
+      ...day('s1', '2026-08-14', 2, 1).map((a, i) => ({ ...a, structureId: `new-${i}` })),
+      ...day('s1', '2026-08-19', 2, 2).map((a, i) => ({ ...a, structureId: `new-${i}` })),
+    ];
+    const split = accuracyTrendSplit(attempts);
+    expect(split.seenBefore).toHaveLength(6);
+    expect(split.seenBeforeTrend.filter((p) => p.studentPct !== null).length).toBeGreaterThan(1);
+    // And it says it took three weeks of answers to make those points.
+    expect(split.seenBeforeWindowDays).toBe(21);
+    expect(split.firstSightWindowDays).toBe(7);
+  });
+});

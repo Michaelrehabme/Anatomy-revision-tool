@@ -220,6 +220,9 @@ export interface AccuracyTrendSplit extends ExposureSplit {
   /** Both drawn over the same days, so they can share one axis. */
   firstSightTrend: AccuracyTrendPoint[];
   seenBeforeTrend: AccuracyTrendPoint[];
+  /** How many days each line's trailing window covers, so the chart can say so. */
+  firstSightWindowDays: number;
+  seenBeforeWindowDays: number;
 }
 
 /**
@@ -237,31 +240,63 @@ export interface AccuracyTrendSplit extends ExposureSplit {
  * is as much evidence about new material as fifteen answers in a week is about
  * revised material, because the student cannot produce more of it.
  */
-export const FIRST_SIGHT_WINDOW_DAYS = 21;
-export const FIRST_SIGHT_MIN_ATTEMPTS = 3;
+/** The wider net a sparse line falls back to: three weeks, three answers. */
+export const WIDE_WINDOW_DAYS = 21;
+export const WIDE_MIN_ATTEMPTS = 3;
+
+/**
+ * THE SAME RESCUE FOR EITHER LINE, BECAUSE EITHER CAN BE THE SPARSE ONE.
+ *
+ * Splitting the attempts splits the evidence, and which half goes thin depends
+ * on how the student works. Someone meeting a lot of new material has almost
+ * no repeats, so it was the SEEN BEFORE line that never drew — the opposite of
+ * what the split was built for, and the same silent disappearance.
+ *
+ * So a series that cannot be drawn under the ordinary rule is computed again
+ * over a longer window with a lower floor, and the chart says which window it
+ * used. Widening beats interpolating: every point still comes from attempts
+ * that happened, it just takes three weeks of them to make one.
+ */
+function trendOrWider(
+  byDay: Map<string, DayTally>,
+  span: { first: string; last: string },
+  windowDays: number,
+  minAttempts: number,
+): { points: AccuracyTrendPoint[]; windowDays: number } {
+  const none = new Map<string, DayTally>();
+  const points = accuracyTrendFromDayTallies(byDay, none, windowDays, minAttempts, span);
+  if (points.filter((p) => p.studentPct !== null).length >= 2) return { points, windowDays };
+  return {
+    points: accuracyTrendFromDayTallies(byDay, none, WIDE_WINDOW_DAYS, WIDE_MIN_ATTEMPTS, span),
+    windowDays: WIDE_WINDOW_DAYS,
+  };
+}
 
 /** The two-line version of accuracyTrend, for a student's own page (no cohort series). */
 export function accuracyTrendSplit(
   attempts: readonly UserAttempt[],
   windowDays: number = ACCURACY_WINDOW_DAYS_DEFAULT,
   minAttempts: number = ACCURACY_MIN_ATTEMPTS_DEFAULT,
-  firstSightWindowDays: number = FIRST_SIGHT_WINDOW_DAYS,
-  firstSightMinAttempts: number = FIRST_SIGHT_MIN_ATTEMPTS,
 ): AccuracyTrendSplit {
   const split = splitByFirstExposure(attempts);
-  if (attempts.length === 0) return { ...split, firstSightTrend: [], seenBeforeTrend: [] };
+  if (attempts.length === 0) {
+    return {
+      ...split,
+      firstSightTrend: [],
+      seenBeforeTrend: [],
+      firstSightWindowDays: windowDays,
+      seenBeforeWindowDays: windowDays,
+    };
+  }
   const days = attempts.map((a) => toDateKey(a.timestamp)).sort();
   const span = { first: days[0], last: days[days.length - 1] };
-  const none = new Map<string, DayTally>();
+  const first = trendOrWider(tallyByDay(split.firstSight), span, windowDays, minAttempts);
+  const seen = trendOrWider(tallyByDay(split.seenBefore), span, windowDays, minAttempts);
   return {
     ...split,
-    firstSightTrend: accuracyTrendFromDayTallies(
-      tallyByDay(split.firstSight),
-      none,
-      firstSightWindowDays,
-      firstSightMinAttempts,
-      span,
-    ),
-    seenBeforeTrend: accuracyTrendFromDayTallies(tallyByDay(split.seenBefore), none, windowDays, minAttempts, span),
+    firstSightTrend: first.points,
+    seenBeforeTrend: seen.points,
+    firstSightWindowDays: first.windowDays,
+    seenBeforeWindowDays: seen.windowDays,
   };
 }

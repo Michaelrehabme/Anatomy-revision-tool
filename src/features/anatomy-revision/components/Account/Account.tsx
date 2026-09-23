@@ -103,6 +103,11 @@ export function Account({ access, content, repository, userId, onNavigate }: Acc
   // structures seen before. No cohort series — a student cannot read their
   // classmates' attempts.
   const split = accuracyTrendSplit(answered);
+  // A line too sparse for a weekly window is widened rather than dropped, so
+  // the chart has to say which window each one is over (accuracyTrend.ts).
+  const windowNote = split.seenBeforeWindowDays === split.firstSightWindowDays
+    ? `${split.seenBeforeWindowDays}-day rolling accuracy`
+    : `rolling accuracy: ${split.seenBeforeWindowDays} days seen before, ${split.firstSightWindowDays} days first sight`;
   // The headline number is about revision, so it reads the seen-before
   // attempts; a student with too few of those falls back to everything.
   const delta = accuracyDeltaByAttempts(split.seenBefore) ?? accuracyDeltaByAttempts(answered);
@@ -151,6 +156,7 @@ export function Account({ access, content, repository, userId, onNavigate }: Acc
             points={split.seenBeforeTrend}
             studentName="Seen before"
             secondary={{ label: 'First sight', points: split.firstSightTrend }}
+            windowNote={windowNote}
           />
         </section>
 

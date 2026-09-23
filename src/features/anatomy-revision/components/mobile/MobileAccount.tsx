@@ -90,6 +90,11 @@ export function MobileAccount({ access, content, repository, userId, onNavigateT
   // classmates' attempts. The headline reads the seen-before attempts and
   // falls back to everything while those are too few.
   const split = accuracyTrendSplit(answered);
+  // A line too sparse for a weekly window is widened rather than dropped, so
+  // the chart has to say which window each one is over (accuracyTrend.ts).
+  const windowNote = split.seenBeforeWindowDays === split.firstSightWindowDays
+    ? `${split.seenBeforeWindowDays}-day rolling accuracy`
+    : `rolling accuracy: ${split.seenBeforeWindowDays} days seen before, ${split.firstSightWindowDays} days first sight`;
   const delta = accuracyDeltaByAttempts(split.seenBefore) ?? accuracyDeltaByAttempts(answered);
 
   return (
@@ -128,6 +133,7 @@ export function MobileAccount({ access, content, repository, userId, onNavigateT
             points={split.seenBeforeTrend}
             studentName="Seen before"
             secondary={{ label: 'First sight', points: split.firstSightTrend }}
+            windowNote={windowNote}
           />
         </section>
 
