@@ -42,6 +42,9 @@ ap.add_argument("--joints", default="", help="comma-separated ids; default all i
 ap.add_argument("--views", default="0,6,12")
 ap.add_argument("--res", type=int, default=900)
 ap.add_argument("--margin", type=float, default=3.0, help="camera slack around the contact region")
+ap.add_argument("--min-frame", type=float, default=0.15, dest="min_frame",
+                help="narrowest a plate may be framed, in metres: below this the picture is a "
+                     "close-up of two lumps of bone and nobody can tell which joint it is")
 ap.add_argument("--band", type=float, default=0.02,
                 help="contact tolerance, as a fraction of bone A's bounding box")
 ap.add_argument("--cluster", type=float, default=0.12,
@@ -286,7 +289,13 @@ def frame_camera(lo, hi, angle_deg, margin, frame_size=None):
     # seventh the size of the thumb's, so the same multiplier frames a hand for
     # one and two white shapes for the other. `frame_size` sets the width in
     # world units instead, which is what "show me the whole hand" actually means.
-    cam_data.ortho_scale = frame_size if frame_size else size * margin
+    # A PLATE HAS TO SHOW WHERE IT IS. Three times the contact region frames
+    # the acromioclavicular joint at 60mm — two shapes of bone, no shoulder
+    # around them — and a student cannot answer a picture they cannot place.
+    # The hand joints already carry an explicit 150mm frame for this reason;
+    # this makes it the floor everywhere, which is the same span the landmark
+    # panels settled on.
+    cam_data.ortho_scale = frame_size if frame_size else max(size * margin, a.min_frame)
     sun.rotation_euler = mathutils.Euler((0.9, 0.3, 0.6 + theta), "XYZ")
 
 
