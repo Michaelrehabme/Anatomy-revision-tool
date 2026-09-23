@@ -65,7 +65,7 @@ function HotspotEditor() {
           type="button"
           onClick={handleCopyJson}
           className="rounded-[3px] px-4 py-2 text-[13px] font-medium"
-          style={{ background: 'var(--acc)', color: 'var(--onacc)' }}
+          style={{ background: 'var(--acc-fill)', color: 'var(--onacc)' }}
         >
           {copyStatus === 'copied' ? 'Copied!' : 'Copy JSON'}
         </button>

@@ -5,12 +5,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="Spaced-repetition anatomy revision for MSK students. 462 structures, with origin, insertion, nerve supply and action for every muscle, cross-referenced against Terminologia Anatomica, drilled until you can locate them."
+      content="Spaced-repetition anatomy revision for MSK students. 463 structures, with origin, insertion, nerve supply and action for every muscle, cross-referenced against Terminologia Anatomica, drilled until you can locate them."
     />
     <title>LocusMSK</title>
     <link rel="manifest" href="/manifest.webmanifest" />
-    <!-- Ink navy: the browser chrome and Android status bar take the brand, not the page ground. -->
-    <meta name="theme-color" content="#1f2a44" />
+    <!--
+      Theme bootstrap. Runs before first paint, so a dark-mode student never
+      sees a flash of paper on the way in. It cannot import
+      src/features/anatomy-revision/lib/theme.ts — a module is deferred, and
+      deferred means the light palette paints first — so the two storage keys
+      are duplicated here ON PURPOSE. lib/__tests__/theme.test.ts reads this
+      file and asserts the strings still match, so the duplication cannot rot.
+    -->
+    <script>
+      (function () {
+        try {
+          var el = document.documentElement;
+          var theme = localStorage.getItem('anatomy-revision:v1:theme');
+          var contrast = localStorage.getItem('anatomy-revision:v1:contrast');
+          // Anything that is not an explicit override follows the device:
+          // null, 'system', and any stale or hand-edited value alike.
+          var dark = theme === 'dark' || (theme !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches);
+          var high =
+            contrast === 'high' || (contrast !== 'normal' && matchMedia('(prefers-contrast: more)').matches);
+          el.setAttribute('data-theme', dark ? 'dark' : 'light');
+          el.setAttribute('data-contrast', high ? 'high' : 'normal');
+        } catch (e) {
+          /* Private browsing with storage blocked: light, which is what :root gives anyway. */
+        }
+      })();
+    </script>
+    <!-- Ink navy: the browser chrome and Android status bar take the brand, not
+         the page ground. Media-scoped, so they follow the DEVICE; anyone who
+         overrode the theme gets an unscoped meta written by ThemeProvider,
+         which beats both. -->
+    <meta name="theme-color" content="#1f2a44" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#121927" media="(prefers-color-scheme: dark)" />
     <!-- SVG first for browsers that scale it themselves, and it is the only cut
          that follows the tab strip into dark mode — the navy figure is drawn on
          chrome we do not control. The PNGs are the fallback for browsers that

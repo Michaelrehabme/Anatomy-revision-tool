@@ -117,7 +117,7 @@ export function MobileResults({ summary, answers, structuresById, gamification, 
         type="button"
         onClick={onDone}
         className="mt-6 w-full rounded-[3px] border-0"
-        style={{ minHeight: 54, background: 'var(--acc)', color: 'var(--onacc)', font: '500 16.5px/1 var(--font-ui)' }}
+        style={{ minHeight: 54, background: 'var(--acc-fill)', color: 'var(--onacc)', font: '500 16.5px/1 var(--font-ui)' }}
       >
         Done
       </button>

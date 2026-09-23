@@ -110,7 +110,7 @@ export function MobileToday({ access, repository, userId, content, onStart, onCu
           type="button"
           onClick={handleStart}
           className="mt-5.5 w-full rounded-[3px] border-0"
-          style={{ minHeight: 54, background: 'var(--acc)', color: 'var(--onacc)', font: '500 17px/1 var(--font-ui)' }}
+          style={{ minHeight: 54, background: 'var(--acc-fill)', color: 'var(--onacc)', font: '500 17px/1 var(--font-ui)' }}
         >
           {firstRun ? 'Start your first session' : 'Start review'}
         </button>

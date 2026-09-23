@@ -205,7 +205,7 @@ export function PeoplePage() {
                       onClick={() => save(row)}
                       disabled={!row.draft || saving === row.profile.uid}
                       className="rounded-[3px] px-3.5 py-2 disabled:opacity-40"
-                      style={{ font: '500 12.5px/1 var(--font-ui)', background: 'var(--acc)', color: 'var(--onacc)', border: 0 }}
+                      style={{ font: '500 12.5px/1 var(--font-ui)', background: 'var(--acc-fill)', color: 'var(--onacc)', border: 0 }}
                     >
                       {saving === row.profile.uid ? 'Saving…' : 'Save'}
                     </button>

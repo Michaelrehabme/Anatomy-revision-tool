@@ -5,6 +5,7 @@ import { NavSidebar, type NavSection } from '../shell/NavSidebar';
 import { AuthScreen } from '../Auth/AuthScreen';
 import { CohortMembership } from '../shared/CohortMembership';
 import { SubscriptionSummary } from '../shared/SubscriptionSummary';
+import { ThemeControls } from '../shared/ThemeControls';
 import type { UseEntitlement } from '../../hooks/useEntitlement';
 import { AccuracyTrendChart } from '../shared/AccuracyTrendChart';
 import { MyClasses } from './MyClasses';
@@ -158,6 +159,14 @@ export function Account({ access, content, repository, userId, onNavigate }: Acc
             secondary={{ label: 'First sight', points: split.firstSightTrend }}
             windowNote={windowNote}
           />
+        </section>
+
+        {/* Above the signed-in block deliberately: everything below it is
+            hidden for an anonymous user, and appearance is not an account
+            setting — it is a per-device one. */}
+        <section className="mt-12" style={{ maxWidth: 620 }}>
+          <h3 style={heading}>Appearance</h3>
+          <ThemeControls />
         </section>
 
         {AUTH_ENABLED && user && (

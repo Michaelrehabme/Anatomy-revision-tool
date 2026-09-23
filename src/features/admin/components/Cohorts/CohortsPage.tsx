@@ -89,7 +89,7 @@ export function CohortsPage() {
           onClick={handleCreate}
           disabled={creating || !name.trim() || !institution.trim() || !ownerUid.trim()}
           className="rounded-[3px] px-4 py-2 disabled:opacity-50"
-          style={{ font: '500 13.5px/1 var(--font-ui)', background: 'var(--acc)', color: 'var(--onacc)', border: 0 }}
+          style={{ font: '500 13.5px/1 var(--font-ui)', background: 'var(--acc-fill)', color: 'var(--onacc)', border: 0 }}
         >
           {creating ? 'Creating…' : 'Create cohort'}
         </button>

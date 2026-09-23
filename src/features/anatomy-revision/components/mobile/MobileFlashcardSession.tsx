@@ -51,7 +51,7 @@ export function MobileFlashcardSession({ question, imagesById, onAnswer, onNext 
               type="button"
               onClick={handleReveal}
               className="rounded-[3px] border-0"
-              style={{ minWidth: 180, minHeight: 46, background: 'var(--acc)', color: 'var(--onacc)', font: '500 15.5px/1 var(--font-ui)' }}
+              style={{ minWidth: 180, minHeight: 46, background: 'var(--acc-fill)', color: 'var(--onacc)', font: '500 15.5px/1 var(--font-ui)' }}
             >
               Reveal answer
             </button>

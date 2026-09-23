@@ -6,7 +6,7 @@ export function StructureFactsPanel({ structure }: { structure: AnatomyStructure
   const lines = describeStructure(structure);
 
   return (
-    <div className="rounded-lg border border-line bg-white p-4">
+    <div className="rounded-lg border border-line bg-sf p-4">
       <div className="flex items-center gap-1.5">
         <h3 className="text-lg font-semibold text-ink">{structure.name}</h3>
         <PronounceButton structure={structure} size={16} />

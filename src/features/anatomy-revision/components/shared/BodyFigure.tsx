@@ -103,7 +103,13 @@ interface FigureProps<K extends string> {
 function Figure<K extends string>({ bands, labels, selected, locked, onToggle, fills, className }: FigureProps<K>) {
   const readOnly = fills !== undefined;
   return (
-    <div className={className} style={{ position: 'relative', width: '100%', aspectRatio: '608 / 1440' }}>
+    // forcedColorAdjust: the figure is drawn entirely from background-color
+    // under a mask, and Windows High Contrast forces every background to
+    // Canvas — which makes the whole body vanish rather than merely restyle.
+    <div
+      className={className}
+      style={{ position: 'relative', width: '100%', aspectRatio: '608 / 1440', forcedColorAdjust: 'none' }}
+    >
       {/* Approximate outline: same mask, upscaled, in the darker stroke color, behind the fill */}
       <div
         aria-hidden

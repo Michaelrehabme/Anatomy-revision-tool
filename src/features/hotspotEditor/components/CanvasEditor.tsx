@@ -368,7 +368,7 @@ export function CanvasEditor({ image, hotspots, structures, onChange }: CanvasEd
               <button type="button" onClick={addPart} className="rounded-[3px] border px-2 py-1" style={{ borderColor: 'var(--line)' }}>
                 Add part
               </button>
-              <button type="button" onClick={commitActive} className="rounded-[3px] px-2 py-1" style={{ background: 'var(--acc)', color: 'var(--onacc)' }}>
+              <button type="button" onClick={commitActive} className="rounded-[3px] px-2 py-1" style={{ background: 'var(--acc-fill)', color: 'var(--onacc)' }}>
                 Finish & save
               </button>
               {activeHotspotIndex !== null && (

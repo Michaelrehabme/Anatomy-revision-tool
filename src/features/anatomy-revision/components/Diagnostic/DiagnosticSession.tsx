@@ -145,7 +145,10 @@ export function DiagnosticSession({ questions, imagesById, onSubmit, onCancel }:
         <span>Question {at + 1} of {questions.length}</span>
         <span>No feedback until the end</span>
       </div>
-      <div className="mt-2 h-1 overflow-hidden rounded-full" style={{ background: 'var(--sf2)' }}>
+      {/* --sf2 never existed, so this groove had no background at all. --line
+          is what the identical track in NavSidebar uses; --sf would be 1.10:1
+          on the page ground and effectively invisible. */}
+      <div className="mt-2 h-1 overflow-hidden rounded-full" style={{ background: 'var(--line)' }}>
         <div className="h-full" style={{ width: `${(at / questions.length) * 100}%`, background: 'var(--acc)' }} />
       </div>
 

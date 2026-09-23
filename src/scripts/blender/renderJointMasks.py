@@ -177,7 +177,7 @@ def kd_of(mesh):
     return tree
 
 
-def contact_region(mesh_a, mesh_b, band_frac, cluster_frac, z_prefer):
+def contact_region(mesh_a, mesh_b, band_frac, cluster_frac, z_prefer, all_contacts=False):
     """The facing surfaces of both bones, narrowed to the articulation z_prefer names.
 
     Returns (indices_a, indices_b, points), or None when the bones never come
@@ -208,6 +208,16 @@ def contact_region(mesh_a, mesh_b, band_frac, cluster_frac, z_prefer):
 
     d_min = min(min(dist_a), min(dist_b))
     cutoff = d_min + band
+
+    # EVERY LEVEL, NOT THE NEAREST ONE. A repeated joint — the discs down a
+    # spine, the ribs along a sternum, the knuckles across a hand — has one
+    # contact per level, and they are not all equally close: measuring from the
+    # single nearest contact leaves the tighter levels inside the band and the
+    # looser ones outside, so a lumbar plate highlighted one disc of five. With
+    # `allContacts` the band is measured from each level's own closest point,
+    # which keeps them all.
+    if all_contacts:
+        cutoff = d_min + band * 4
 
     idx_a = {i for i, d in enumerate(dist_a) if d <= cutoff}
     idx_b = {i for i, d in enumerate(dist_b) if d <= cutoff}
@@ -356,7 +366,13 @@ for jid in wanted:
         print(f"[skip] {jid}: not in spec", flush=True)
         continue
 
-    suffix = side_of(j["a"]["objects"] + j["b"]["objects"])
+    # BOTH SIDES WHERE BOTH ARE IN SHOT. A joint that exists left and right is
+    # drawn on both: a plate of the pelvis showing one sacro-iliac joint
+    # highlighted and the other not teaches that the other one is something
+    # else. `bilateral` keeps every mesh and lets the camera frame across the
+    # body; without it the plate is restricted to one side, which is what keeps
+    # a knee from being framed with the other leg in it.
+    suffix = None if j.get("bilateral") else side_of(j["a"]["objects"] + j["b"]["objects"])
     objs_a = restrict(j["a"]["objects"], suffix)
     objs_b = restrict(j["b"]["objects"], suffix)
 
@@ -380,7 +396,7 @@ for jid in wanted:
     margin = j.get("margin", a.margin)
     frame_size = j.get("frame")
 
-    found = contact_region(mesh_a, mesh_b, band, a.cluster, j.get("zPrefer"))
+    found = contact_region(mesh_a, mesh_b, band, a.cluster, j.get("zPrefer"), j.get("allContacts", False))
     if found is None:
         print(f"[skip] {jid}: {j['a']['id']} and {j['b']['id']} never come close enough", flush=True)
         continue

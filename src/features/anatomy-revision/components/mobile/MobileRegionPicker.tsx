@@ -113,7 +113,7 @@ export function MobileRegionPicker({ access, content, selected, onChange, onCont
           onClick={onContinue}
           disabled={poolSize === 0}
           className="mt-2.5 w-full rounded-[3px] border-0 disabled:opacity-45"
-          style={{ minHeight: 52, background: 'var(--acc)', color: 'var(--onacc)', font: '500 16.5px/1 var(--font-ui)' }}
+          style={{ minHeight: 52, background: 'var(--acc-fill)', color: 'var(--onacc)', font: '500 16.5px/1 var(--font-ui)' }}
         >
           {poolSize > 0 ? `${poolSize} structures — continue` : 'Select at least one area'}
         </button>

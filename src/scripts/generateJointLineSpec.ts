@@ -66,7 +66,22 @@ const Z_PREFER: Record<string, 'min' | 'max'> = {
  * Z-Anatomy mesh name used verbatim — the individual metacarpals are meshes in
  * the model but are only grouped as one structure in the seed.
  */
-const PART_OVERRIDE: Record<string, { a: string[]; b: string[] }> = {
+interface PartOverride {
+  a: string[];
+  b: string[];
+  /** Keep both sides' meshes, so a joint that exists left and right is drawn on both. */
+  bilateral?: boolean;
+  /** Keep every level's contact, not just the closest: the discs down a spine, the knuckles across a hand. */
+  allContacts?: boolean;
+  /** The angles worth rendering, where a joint is unsighted from some of them. */
+  views?: number[];
+  /** Pixels of reach when finding the seam, for an articulation broader than a hairline. */
+  seam?: number;
+  /** Pixels of catch area around the line, where a tap still passes. */
+  catchMargin?: number;
+}
+
+const PART_OVERRIDE: Record<string, PartOverride> = {
   'carpometacarpal-joint-thumb': {
     a: ['trapezium'],
     b: ['First metacarpal bone.l', 'First metacarpal bone.r'],
@@ -94,7 +109,8 @@ const PART_OVERRIDE: Record<string, { a: string[]; b: string[] }> = {
   // joint is named at the structure it actually forms against.
   'hip-joint': {
     a: ['femur'],
-    b: ['Acetabular labrum.l', 'Acetabular labrum.r'],
+    b: ['Hip bone.l', 'Hip bone.r'],
+    bilateral: true,
   },
 
   // The mortise: tibial plafond and both malleoli around the talar trochlea.
@@ -153,9 +169,19 @@ const PART_OVERRIDE: Record<string, { a: string[]; b: string[] }> = {
     a: ['l4-vertebra'],
     b: ['l5-vertebra'],
   },
+  // EVERY LEVEL IN THE PICTURE. Naming one pair highlighted one disc of the
+  // five on screen, which teaches that the other four are something else. The
+  // mask takes every vertebra against every disc, `allContacts` keeps each
+  // level's own contact rather than the nearest one, and `frame` holds the
+  // camera to one stretch of spine — without it the contact region is the
+  // whole column and the plate is a whole skeleton.
   'intervertebral-joint': {
-    a: ['l4-vertebra'],
-    b: ['Intervertebral disc L4-L5'],
+    a: ['*Vertebra *'],
+    b: ['*Intervertebral disc *'],
+    allContacts: true,
+    views: [0, 12],
+    seam: 9,
+    catchMargin: 14,
   },
 
   // The sternal end of the clavicle against the clavicular notch of the
@@ -185,9 +211,17 @@ const PART_OVERRIDE: Record<string, { a: string[]; b: string[] }> = {
   // three rows of phalanges, which is two joints — PIP and DIP — and a locate
   // question needs one target. PIP is the one that matters clinically and the
   // one a student is asked to find.
-  'interphalangeal-joint-hand': {
+  'proximal-interphalangeal-joint-hand': {
     a: ['phalanges-proximal-hand'],
     b: ['phalanges-middle-hand'],
+    allContacts: true,
+    catchMargin: 12,
+  },
+  'distal-interphalangeal-joint-hand': {
+    a: ['phalanges-middle-hand'],
+    b: ['phalanges-distal-hand'],
+    allContacts: true,
+    catchMargin: 12,
   },
 };
 
@@ -216,7 +250,8 @@ const TUNING: Record<string, { band?: number; margin?: number; frame?: number }>
   // Same coarse carpal meshing, one row up: at the default the proximal and
   // distal rows met in two faces and the band was a 289-pixel speck.
   'midcarpal-joint': { frame: 0.15, band: 0.04 },
-  'interphalangeal-joint-hand': { frame: 0.15, band: 0.04 },
+  'proximal-interphalangeal-joint-hand': { frame: 0.15, band: 0.04 },
+  'distal-interphalangeal-joint-hand': { frame: 0.15, band: 0.04 },
   'transverse-tarsal-joint': { band: 0.03 },
 };
 
@@ -279,6 +314,14 @@ for (const joint of joints) {
     a: { id: aId, objects: aObjects },
     b: { id: bId, objects: bObjects },
     ...(Z_PREFER[joint.id] ? { zPrefer: Z_PREFER[joint.id] } : {}),
+    // How this joint is found and drawn, where the defaults get it wrong:
+    // both sides, every level, which angles are worth rendering, and how wide
+    // to reach and to forgive. See PartOverride.
+    ...(override?.bilateral ? { bilateral: true } : {}),
+    ...(override?.allContacts ? { allContacts: true } : {}),
+    ...(override?.views ? { views: override.views } : {}),
+    ...(override?.seam ? { seam: override.seam } : {}),
+    ...(override?.catchMargin ? { catchMargin: override.catchMargin } : {}),
     ...(TUNING[joint.id] ?? {}),
   });
 }

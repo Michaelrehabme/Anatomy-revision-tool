@@ -82,7 +82,7 @@ export function NewChangeRequestForm({ onSubmit, onCancel }: NewChangeRequestFor
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center px-6" role="dialog" aria-label="New change request">
-      <div className="absolute inset-0" style={{ background: 'rgba(32, 30, 29, 0.4)' }} onClick={onCancel} />
+      <div className="absolute inset-0" style={{ background: 'var(--scrim)' }} onClick={onCancel} />
       <form
         onSubmit={handleSubmit}
         className="relative flex max-h-[88vh] w-[640px] flex-col overflow-y-auto rounded-[4px] px-8 py-8"

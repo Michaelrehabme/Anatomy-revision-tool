@@ -474,25 +474,55 @@ export const JOINT_STRUCTURES: JointStructure[] = [
     difficulty: 'medium',
     tags: ['synovial', 'wrist'],
   },
+  // TWO ROWS, TWO JOINTS. One entry covering both taught neither: a student
+  // asked to find "the interphalangeal joint" was shown a hand with the
+  // knuckles of two different rows highlighted at once. The thumb has only one
+  // interphalangeal joint, and it belongs with the proximal row, which is the
+  // row at that level of the hand.
   {
-    id: 'interphalangeal-joint-hand',
-    name: 'Interphalangeal Joint of the Hand',
+    id: 'proximal-interphalangeal-joint-hand',
+    name: 'Proximal Interphalangeal Joint of the Hand',
     category: 'joint',
     region: 'forearm-hand',
     subregion: 'wrist-hand',
     description:
-      'The hinge joints between adjacent phalanges — proximal (PIP) and distal (DIP) in the fingers, and a ' +
-      'single IP joint in the thumb. As true hinges they permit flexion and extension only, with no abduction ' +
-      'or rotation at all.',
+      'The hinge joint between the proximal and middle phalanx of a finger — the middle knuckle. A true hinge: ' +
+      'flexion and extension only, no abduction and no rotation, which is what lets the fingers grip in a line. ' +
+      'The thumb has a single interphalangeal joint at this level, between its two phalanges.',
     jointType: 'hinge',
-    articulatingStructureIds: ['phalanges-proximal-hand', 'phalanges-middle-hand', 'phalanges-distal-hand'],
+    articulatingStructureIds: ['phalanges-proximal-hand', 'phalanges-middle-hand'],
     movements: ['Flexion', 'Extension'],
     stabilizers: ['Collateral ligaments', 'Palmar plate'],
-    aliases: ['IP joint', 'PIP joint', 'DIP joint'],
+    aliases: ['PIP joint', 'PIP', 'Proximal IP joint'],
     imageIds: [],
     eligibility: { flashcard: true, mcq: true, locate: true },
     difficulty: 'easy',
     tags: ['synovial', 'wrist'],
+    clinical:
+      'Swelling here is characteristic of rheumatoid arthritis, where the distal joints are typically spared; ' +
+      'Bouchard nodes at this row are the osteoarthritic counterpart.',
+  },
+  {
+    id: 'distal-interphalangeal-joint-hand',
+    name: 'Distal Interphalangeal Joint of the Hand',
+    category: 'joint',
+    region: 'forearm-hand',
+    subregion: 'wrist-hand',
+    description:
+      'The hinge joint between the middle and distal phalanx of a finger — the last knuckle before the nail. ' +
+      'Flexion and extension only, driven by flexor digitorum profundus and the extensor mechanism.',
+    jointType: 'hinge',
+    articulatingStructureIds: ['phalanges-middle-hand', 'phalanges-distal-hand'],
+    movements: ['Flexion', 'Extension'],
+    stabilizers: ['Collateral ligaments', 'Palmar plate'],
+    aliases: ['DIP joint', 'DIP', 'Distal IP joint'],
+    imageIds: [],
+    eligibility: { flashcard: true, mcq: true, locate: true },
+    difficulty: 'easy',
+    tags: ['synovial', 'wrist'],
+    clinical:
+      'Heberden nodes here are a hallmark of osteoarthritis, and a mallet finger is rupture of the extensor ' +
+      'tendon at this joint.',
   },
 
   // ---------------------------------------------------------------------------

@@ -472,7 +472,7 @@ export function MobileRevisionSetup({ access, content, repository, userId, areas
           >
             <span
               className="absolute top-[3px] h-[25px] w-[25px] rounded-full transition-all"
-              style={{ left: useSrs ? 24 : 3, background: 'var(--sf)', boxShadow: '0 1px 3px rgba(0,0,0,.3)' }}
+              style={{ left: useSrs ? 24 : 3, background: 'var(--sf)', boxShadow: 'var(--shadow-knob)' }}
             />
           </button>
           <span style={{ fontSize: 15, lineHeight: 1.45, color: 'var(--ink2)' }}>
@@ -489,7 +489,7 @@ export function MobileRevisionSetup({ access, content, repository, userId, areas
           onClick={handleStart}
           disabled={!canStart || starting}
           className="mt-8 w-full rounded-[3px] border-0 disabled:opacity-45"
-          style={{ minHeight: 54, background: 'var(--acc)', color: 'var(--onacc)', font: '500 17px/1 var(--font-ui)' }}
+          style={{ minHeight: 54, background: 'var(--acc-fill)', color: 'var(--onacc)', font: '500 17px/1 var(--font-ui)' }}
         >
           {starting ? 'Starting…' : unbuildable ? 'Nothing to ask yet' : `Begin — ${effectiveCount} questions`}
         </button>

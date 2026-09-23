@@ -86,7 +86,7 @@ export function MobileOnboarding({ access, content, initialAreas = [], onDone }:
           onClick={handleNext}
           disabled={!canContinue}
           className="flex-1 rounded-[3px] border-0 disabled:opacity-45"
-          style={{ minHeight: 50, background: 'var(--acc)', color: 'var(--onacc)', font: '500 16.5px/1 var(--font-ui)' }}
+          style={{ minHeight: 50, background: 'var(--acc-fill)', color: 'var(--onacc)', font: '500 16.5px/1 var(--font-ui)' }}
         >
           {onAreaStep && selected.size === 0 ? 'Choose at least one area' : current.cta}
         </button>

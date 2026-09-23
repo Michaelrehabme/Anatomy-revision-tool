@@ -46,11 +46,29 @@
  * compiles. --v2 still writes the shape importHotspots reads, so the bands can
  * be put through that validation once the seed knows about them.
  */
-import { writeFileSync, mkdirSync, existsSync, readdirSync } from 'node:fs';
+import { writeFileSync, mkdirSync, existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { decodePng } from './lib/png';
 import { encodePng } from './lib/pngEncode';
 import { binariseAlpha, maskToPolygons, type BinaryMask } from './lib/maskToPolygons';
+
+/**
+ * PER-JOINT OVERRIDES, FROM THE SAME SPEC THE MASKS WERE RENDERED FROM.
+ *
+ * One seam width does not fit every articulation. The humeroradial joint is a
+ * broad surface whose seam is a sliver; the pubic symphysis is a gap with a
+ * disc in it. `seam` sets how far this joint reaches to find itself and
+ * `margin` how much catch area it gets, both in pixels, and both default to
+ * the flags.
+ */
+const SPEC_PATH = 'joint-lines.spec.json';
+const specJoints: Record<string, { seam?: number; margin?: number }> = Object.fromEntries(
+  (JSON.parse(readFileSync(SPEC_PATH, 'utf8')).joints as { id: string; seam?: number; catchMargin?: number }[]).map(
+    // `catchMargin`, not `margin`: the renderer's own `margin` is camera slack,
+    // and one key meaning two things framed the whole spine for one disc.
+    (j) => [j.id, { seam: j.seam, margin: j.catchMargin }],
+  ),
+);
 
 interface Options {
   masksRoot: string;
@@ -248,7 +266,8 @@ for (const jointId of jointIds) {
     if (hasSilhouettes) {
       const aMask = loadMask(aPath).mask;
       const bMask = loadMask(bPath).mask;
-      for (const seam of [1, 2, 3, 4, 6, 8].map((n) => opts.seam * n)) {
+      const baseSeam = specJoints[jointId]?.seam ?? opts.seam;
+      for (const seam of [1, 2, 3, 4, 6, 8].map((n) => baseSeam * n)) {
         band = seamBand(aMask, bMask, line.mask, line.width, line.height, seam, opts.gate);
         usedSeam = seam;
         if (countSet(band) >= opts.minPx) break;
@@ -271,8 +290,9 @@ for (const jointId of jointIds) {
     // scored this way since they were traced (publishLandmarks.ts), and
     // scoreRegion in lib/hotspot/accuracy.ts already reads both shapes.
     const core = maskToPolygons(band, line.width, line.height, { maxVertices: opts.maxVertices });
-    const traced = opts.margin
-      ? maskToPolygons(dilateBy(band, line.width, line.height, opts.margin), line.width, line.height, {
+    const margin = specJoints[jointId]?.margin ?? opts.margin;
+    const traced = margin
+      ? maskToPolygons(dilateBy(band, line.width, line.height, margin), line.width, line.height, {
           maxVertices: opts.maxVertices,
         })
       : core;
@@ -290,7 +310,7 @@ for (const jointId of jointIds) {
             polygons: traced.polygons,
             area: traced.area,
             centroid: traced.centroid,
-            ...(opts.margin ? { targetCore: core.polygons } : {}),
+            ...(margin ? { targetCore: core.polygons } : {}),
           },
         },
       };

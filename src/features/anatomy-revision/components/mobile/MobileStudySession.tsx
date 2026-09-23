@@ -66,7 +66,7 @@ export function MobileStudySession({ session, content, onEnd, onBackToSetup, onO
           type="button"
           onClick={onBackToSetup}
           className="mt-5 rounded-[3px] border-0 px-5 py-2.5"
-          style={{ background: 'var(--acc)', color: 'var(--onacc)' }}
+          style={{ background: 'var(--acc-fill)', color: 'var(--onacc)' }}
         >
           Back to setup
         </button>

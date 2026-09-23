@@ -114,7 +114,7 @@ export function MobileMultiSelectSession({ question, onAnswer, onNext, examMode 
             type="button"
             onClick={() => setChecked(true)}
             className="mt-6 w-full rounded-[3px] border-0"
-            style={{ minHeight: 52, background: 'var(--acc)', color: 'var(--onacc)', font: '500 16.5px/1 var(--font-ui)' }}
+            style={{ minHeight: 52, background: 'var(--acc-fill)', color: 'var(--onacc)', font: '500 16.5px/1 var(--font-ui)' }}
           >
             Check answer
           </button>
@@ -124,7 +124,7 @@ export function MobileMultiSelectSession({ question, onAnswer, onNext, examMode 
             type="button"
             onClick={handleExamSubmit}
             className="mt-6 w-full rounded-[3px] border-0"
-            style={{ minHeight: 52, background: 'var(--acc)', color: 'var(--onacc)', font: '500 16.5px/1 var(--font-ui)' }}
+            style={{ minHeight: 52, background: 'var(--acc-fill)', color: 'var(--onacc)', font: '500 16.5px/1 var(--font-ui)' }}
           >
             Submit
           </button>
@@ -149,7 +149,7 @@ export function MobileMultiSelectSession({ question, onAnswer, onNext, examMode 
               type="button"
               onClick={onNext}
               className="mt-4.5 w-full rounded-[3px] border-0"
-              style={{ minHeight: 52, background: 'var(--acc)', color: 'var(--onacc)', font: '500 16.5px/1 var(--font-ui)' }}
+              style={{ minHeight: 52, background: 'var(--acc-fill)', color: 'var(--onacc)', font: '500 16.5px/1 var(--font-ui)' }}
             >
               Next
             </button>

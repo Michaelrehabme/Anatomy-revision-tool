@@ -204,7 +204,7 @@ export function PricingPage() {
                 type="button"
                 onClick={() => setShowAuth(true)}
                 className="mt-4 rounded-[3px] px-5 py-3"
-                style={{ font: '500 14.5px/1 var(--font-ui)', background: 'var(--acc-fill)', color: '#fff' }}
+                style={{ font: '500 14.5px/1 var(--font-ui)', background: 'var(--acc-fill)', color: 'var(--onacc)' }}
               >
                 Create an account
               </button>
@@ -255,7 +255,7 @@ export function PricingPage() {
                   disabled={!CONFIG || opening}
                   onClick={() => buy(true)}
                   className="rounded-[3px] px-5 py-3 disabled:opacity-50"
-                  style={{ font: '500 14.5px/1 var(--font-ui)', background: 'var(--acc-fill)', color: '#fff' }}
+                  style={{ font: '500 14.5px/1 var(--font-ui)', background: 'var(--acc-fill)', color: 'var(--onacc)' }}
                 >
                   {opening ? 'Opening checkout…' : 'Subscribe and start now'}
                 </button>

@@ -94,7 +94,10 @@ describe('"of the hand" and "of the foot" are optional too', () => {
   });
 
   it('accepts the bare name when the qualifier is a phrase, not brackets', () => {
-    expect(accept('interphalangeal-joint-hand', 'interphalangeal joint')).toBe(true);
+    // The hand's interphalangeal joints are two rows now, so the qualifier
+    // being dropped here is "of the Hand" — not which row, which is the answer.
+    expect(accept('proximal-interphalangeal-joint-hand', 'proximal interphalangeal joint')).toBe(true);
+    expect(accept('distal-interphalangeal-joint-hand', 'distal interphalangeal joint')).toBe(true);
   });
 
   it('still refuses a different structure in the same part', () => {

@@ -93,7 +93,7 @@ export function StudySession({ session, content, onEnd, onBackToSetup }: StudySe
             type="button"
             onClick={onBackToSetup}
             className="mt-6 rounded-[3px] px-5 py-2.5"
-            style={{ background: 'var(--acc)', color: 'var(--onacc)' }}
+            style={{ background: 'var(--acc-fill)', color: 'var(--onacc)' }}
           >
             Back to setup
           </button>

@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { MobileShell } from './MobileShell';
 import { CohortMembership } from '../shared/CohortMembership';
 import { SubscriptionSummary } from '../shared/SubscriptionSummary';
+import { ThemeControls } from '../shared/ThemeControls';
 import type { UseEntitlement } from '../../hooks/useEntitlement';
 import { AccuracyTrendChart } from '../shared/AccuracyTrendChart';
 import { MyClasses } from '../Account/MyClasses';
@@ -135,6 +136,16 @@ export function MobileAccount({ access, content, repository, userId, onNavigateT
             secondary={{ label: 'First sight', points: split.firstSightTrend }}
             windowNote={windowNote}
           />
+        </section>
+
+        {/* Above the signed-in block — see Account.tsx for why. */}
+        <section className="mt-9">
+          <h3 style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 20, letterSpacing: '-.01em', margin: 0 }}>
+            Appearance
+          </h3>
+          <div className="mt-3.5">
+            <ThemeControls compact />
+          </div>
         </section>
 
         {AUTH_ENABLED && user && (

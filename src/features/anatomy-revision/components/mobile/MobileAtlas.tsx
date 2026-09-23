@@ -1,12 +1,10 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { AnatomyContent } from '../../hooks/useAnatomyContent';
 import type { AnatomyRepository } from '../../data/repository';
-import type { StructureMastery } from '../../types/attempt';
-import { CATEGORY_LABELS, areasOf, isMuscle, type Category } from '../../types/structure';
-import type { Area } from '../../types/region';
-import { AREAS, AREA_LABELS } from '../../types/region';
-import { ATLAS_KINDS, atlasRow } from '../../lib/atlasFacts';
+import { masteryState, sortById } from '../../lib/atlasList';
+import { useAtlasList } from '../../hooks/useAtlasList';
 import { UnlockNote } from '../shared/AreaLock';
+import { AtlasFilterPanel } from '../shared/AtlasFilterPanel';
 import type { UseEntitlement } from '../../hooks/useEntitlement';
 import { MobileShell } from './MobileShell';
 import type { MobileTab } from './MobileTabBar';
@@ -26,13 +24,7 @@ interface MobileAtlasProps {
   onNavigateTab: (tab: MobileTab) => void;
 }
 
-const chip = (on: boolean) => ({
-  fontFamily: 'var(--font-display)',
-  fontSize: 14.5,
-  border: on ? '1.2px solid var(--acc)' : '1.2px solid var(--line)',
-  background: on ? 'var(--accs)' : 'transparent',
-  color: on ? 'var(--accd)' : 'var(--ink2)',
-});
+const PANEL_ID = 'atlas-filters-mobile';
 
 /**
  * The mobile counterpart to the desktop Atlas (CR-018), now for every kind
@@ -41,6 +33,11 @@ const chip = (on: boolean) => ({
  * A stacked list rather than the desktop's table: two facts at a glance (a
  * muscle's origin and insertion, a ligament's attachments and the joint it
  * stabilises), the rest one tap away on the structure card.
+ *
+ * The filters are a drawer rather than the desktop's column. They were three
+ * wrapping chip rows costing about a third of the screen before a single
+ * structure appeared; with a seen filter and eight sorts added they would have
+ * pushed the list off the fold entirely.
  */
 export function MobileAtlas({
   access,
@@ -53,47 +50,41 @@ export function MobileAtlas({
   onBack,
   onNavigateTab,
 }: MobileAtlasProps) {
-  const [areaFilter, setAreaFilter] = useState<Area | 'all'>('all');
-  const [kind, setKind] = useState<Category | 'all'>('all');
-  const [query, setQuery] = useState('');
-  const [masteryByStructureId, setMasteryByStructureId] = useState<Map<string, StructureMastery>>(new Map());
+  const list = useAtlasList({ access, content, repository, userId });
+  // Always closed on arrival: the drawer is a modal over the list, and
+  // restoring it open would mean every visit starts with something to dismiss.
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const drawerRef = useRef<HTMLDivElement>(null);
 
+  const { entitled, visible, rows, filters, contextIds, muscleIds, activeCount } = list;
+
+  /**
+   * Modal behaviour, by hand because the app has no dialog primitive and
+   * <dialog> would bring its own top-layer stacking against the tab bar.
+   * Escape closes, focus moves in and comes back to the trigger, and the
+   * page behind does not scroll under the scrim.
+   */
   useEffect(() => {
-    if (!repository || !userId) return;
-    let cancelled = false;
-    repository.listMastery(userId).then((all) => {
-      if (!cancelled) setMasteryByStructureId(new Map(all.map((m) => [m.structureId, m])));
-    });
-    return () => {
-      cancelled = true;
+    if (!drawerOpen) return;
+    const trigger = triggerRef.current;
+    drawerRef.current?.focus();
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setDrawerOpen(false);
     };
-  }, [repository, userId]);
-
-  const entitled = useMemo(
-    () => content.structures.filter((s) => areasOf(s).some((a) => access.areas.includes(a))),
-    [content.structures, access.areas],
-  );
-  const rows = useMemo(
-    () => new Map(entitled.map((s) => [s.id, atlasRow(s, content.structuresById)])),
-    [entitled, content.structuresById],
-  );
-
-  const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    return entitled.filter((s) => {
-      if (kind !== 'all' && s.category !== kind) return false;
-      if (areaFilter !== 'all' && !areasOf(s).includes(areaFilter)) return false;
-      if (!q) return true;
-      return rows.get(s.id)!.searchText.includes(q);
-    });
-  }, [entitled, rows, kind, areaFilter, query]);
-
-  const contextIds = filtered.map((s) => s.id);
-  const muscleIds = filtered.filter(isMuscle).map((s) => s.id);
+    document.addEventListener('keydown', onKeyDown);
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', onKeyDown);
+      document.body.style.overflow = previousOverflow;
+      trigger?.focus();
+    };
+  }, [drawerOpen]);
 
   return (
     <MobileShell tabs={{ active: 'atlas', onNavigate: onNavigateTab }}>
-      <div className="px-6.5 pt-4 pb-6">
+      <div className="px-6.5 pt-4 pb-6" inert={drawerOpen}>
         <button type="button" onClick={onBack} className="border-0 bg-transparent p-0 pb-2.5" style={{ fontSize: 14.5, color: 'var(--ink3)' }}>
           &larr; Today
         </button>
@@ -102,16 +93,16 @@ export function MobileAtlas({
         >
           Atlas
         </h2>
-        <p style={{ fontSize: 13.5, lineHeight: 1.5, color: 'var(--ink3)' }}>
-          {entitled.length} structures · showing {filtered.length}
-          {query ? ` matching “${query}”` : ''}
+        <p aria-live="polite" style={{ fontSize: 13.5, lineHeight: 1.5, color: 'var(--ink3)' }}>
+          {entitled.length} structures · showing {visible.length}
+          {filters.query ? ` matching “${filters.query}”` : ''}
         </p>
         <UnlockNote access={access} className="mt-1.5" />
 
         <input
           type="text"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          value={filters.query}
+          onChange={(e) => list.setQuery(e.target.value)}
           placeholder="Search structures…"
           aria-label="Search structures"
           className="mt-4 w-full rounded-[3px] px-4"
@@ -125,36 +116,39 @@ export function MobileAtlas({
           }}
         />
 
-        <div className="mt-3.5 flex flex-wrap gap-2">
-          {ATLAS_KINDS.map((k) => (
-            <button
-              key={k}
-              type="button"
-              onClick={() => setKind(k)}
-              aria-pressed={kind === k}
-              className="inline-flex min-h-[38px] items-center justify-center rounded-full px-3.5"
-              style={chip(kind === k)}
-            >
-              {k === 'all' ? 'All kinds' : CATEGORY_LABELS[k]}
-            </button>
-          ))}
-        </div>
-        <div className="mt-2 flex flex-wrap gap-2">
-          {(['all', ...AREAS] as const).map((a) => (
-            <button
-              key={a}
-              type="button"
-              onClick={() => setAreaFilter(a)}
-              aria-pressed={areaFilter === a}
-              className="inline-flex min-h-[38px] items-center justify-center rounded-full px-3.5"
-              style={chip(areaFilter === a)}
-            >
-              {a === 'all' ? 'All areas' : AREA_LABELS[a]}
-            </button>
-          ))}
+        <div className="mt-3 flex items-center gap-2.5">
+          <button
+            ref={triggerRef}
+            type="button"
+            onClick={() => setDrawerOpen(true)}
+            aria-expanded={drawerOpen}
+            aria-controls={PANEL_ID}
+            className="inline-flex flex-none items-center gap-2 rounded-[3px] px-4"
+            style={{
+              minHeight: 44,
+              fontFamily: 'var(--font-display)',
+              fontSize: 15.5,
+              border: '1.2px solid var(--line)',
+              background: 'transparent',
+              color: 'var(--ink2)',
+            }}
+          >
+            Filters
+            {activeCount > 0 && (
+              <span
+                className="inline-flex min-w-[20px] items-center justify-center rounded-full px-1.5"
+                style={{ font: '500 11px/1.7 var(--font-mono)', background: 'var(--accs)', color: 'var(--accd)' }}
+              >
+                {activeCount}
+              </span>
+            )}
+          </button>
+          <span className="flex-1 truncate" style={{ fontSize: 13, color: 'var(--ink3)' }}>
+            {sortById(list.sortId).label}
+          </span>
         </div>
 
-        <div className="mt-4 flex gap-2.5">
+        <div className="mt-3.5 flex gap-2.5">
           <button
             type="button"
             onClick={() => onQuizStructures(contextIds)}
@@ -169,7 +163,7 @@ export function MobileAtlas({
             onClick={() => onDrillOina(muscleIds)}
             disabled={muscleIds.length === 0}
             className="flex-1 rounded-[3px] border-0 disabled:opacity-50"
-            style={{ minHeight: 52, background: 'var(--acc)', color: 'var(--onacc)', font: '500 16px/1 var(--font-ui)' }}
+            style={{ minHeight: 52, background: 'var(--acc-fill)', color: 'var(--onacc)', font: '500 16px/1 var(--font-ui)' }}
           >
             Drill these facts
           </button>
@@ -179,12 +173,8 @@ export function MobileAtlas({
         </p>
 
         <div className="mt-5 flex flex-col gap-2.5">
-          {filtered.map((s) => {
-            const mastery = masteryByStructureId.get(s.id);
-            const pct =
-              mastery && mastery.attemptsTotal > 0
-                ? Math.round((mastery.attemptsCorrect / mastery.attemptsTotal) * 100)
-                : null;
+          {visible.map((s) => {
+            const state = masteryState(list.masteryById.get(s.id));
             const { columns } = rows.get(s.id)!;
             const shown = columns.filter((c) => c.text).slice(0, 2);
             return (
@@ -202,13 +192,19 @@ export function MobileAtlas({
                   >
                     {s.name}
                   </span>
-                  {kind === 'all' && (
+                  {filters.kind === 'all' && (
                     <span style={{ font: '400 10.5px/1 var(--font-mono)', letterSpacing: '.08em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
                       {s.category}
                     </span>
                   )}
-                  <span style={{ font: '500 11.5px/1 var(--font-mono)', color: pct === null ? 'var(--ink3)' : 'var(--accd)' }}>
-                    {pct === null ? '—' : `${pct}%`}
+                  {/* Three states — see the same note in Atlas.tsx. */}
+                  <span
+                    style={{
+                      font: '500 11.5px/1 var(--font-mono)',
+                      color: state.kind === 'scored' ? 'var(--accd)' : 'var(--ink3)',
+                    }}
+                  >
+                    {state.kind === 'unseen' ? 'unseen' : state.kind === 'untested' ? 'not tested' : `${state.pct}%`}
                   </span>
                 </div>
                 <div className="mt-2 flex flex-col gap-1">
@@ -222,13 +218,62 @@ export function MobileAtlas({
               </button>
             );
           })}
-          {filtered.length === 0 && (
+          {visible.length === 0 && (
             <p className="py-8 text-center" style={{ fontSize: 14.5, color: 'var(--ink3)' }}>
-              Nothing matches that search.
+              {activeCount > 0 ? 'Nothing matches those filters.' : 'Nothing to show.'}
             </p>
           )}
         </div>
       </div>
+
+      {drawerOpen && (
+        <>
+          <div
+            className="fixed inset-0 z-40"
+            style={{ background: 'var(--scrim)' }}
+            onClick={() => setDrawerOpen(false)}
+            aria-hidden="true"
+          />
+          <div
+            ref={drawerRef}
+            id={PANEL_ID}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Filter and sort structures"
+            tabIndex={-1}
+            className="fixed inset-x-0 bottom-0 z-50 flex max-h-[85vh] flex-col rounded-t-2xl"
+            style={{ background: 'var(--pg)', borderTop: '1px solid var(--line)' }}
+          >
+            <div className="flex flex-none items-center justify-between px-6.5 pt-5 pb-3">
+              <span style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 22, color: 'var(--ink)' }}>
+                Filter &amp; sort
+              </span>
+              <button
+                type="button"
+                onClick={() => setDrawerOpen(false)}
+                aria-label="Close filters"
+                className="border-0 bg-transparent px-2 py-1"
+                style={{ fontSize: 22, lineHeight: 1, color: 'var(--ink3)' }}
+              >
+                &times;
+              </button>
+            </div>
+            <div className="min-h-0 flex-1 overflow-auto px-6.5 pb-4">
+              <AtlasFilterPanel list={list} id={`${PANEL_ID}-body`} />
+            </div>
+            <div className="flex-none px-6.5 pt-3 pb-6" style={{ borderTop: '1px solid var(--line)' }}>
+              <button
+                type="button"
+                onClick={() => setDrawerOpen(false)}
+                className="w-full rounded-[3px] border-0"
+                style={{ minHeight: 52, background: 'var(--acc-fill)', color: 'var(--onacc)', font: '500 16px/1 var(--font-ui)' }}
+              >
+                Show {visible.length} {visible.length === 1 ? 'structure' : 'structures'}
+              </button>
+            </div>
+          </div>
+        </>
+      )}
     </MobileShell>
   );
 }

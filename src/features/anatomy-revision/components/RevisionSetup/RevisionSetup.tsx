@@ -506,7 +506,7 @@ export function RevisionSetup({ access, content, repository, userId, areas, onSt
               >
                 <span
                   className="absolute top-[3px] h-[25px] w-[25px] rounded-full transition-all"
-                  style={{ left: useSrs ? 24 : 3, background: 'var(--sf)', boxShadow: '0 1px 3px rgba(0,0,0,.3)' }}
+                  style={{ left: useSrs ? 24 : 3, background: 'var(--sf)', boxShadow: 'var(--shadow-knob)' }}
                 />
               </span>
               <span className="flex-1">

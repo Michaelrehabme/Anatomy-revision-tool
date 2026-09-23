@@ -39,6 +39,11 @@ export function HotspotOverlay({ hotspots, highlightStructureId, clickPoint, cli
       viewBox="0 0 1 1"
       preserveAspectRatio="none"
       aria-hidden="true"
+      // Windows High Contrast forces every fill to a single system colour,
+      // which would collapse the whole scoring face into one flat shape. This
+      // is the case forced-color-adjust exists for: here the colour IS the
+      // information, not decoration.
+      style={{ forcedColorAdjust: 'none' }}
     >
       {hotspots.map((hotspot) => {
         const isTarget = hotspot.structureId === highlightStructureId;
@@ -57,7 +62,9 @@ export function HotspotOverlay({ hotspots, highlightStructureId, clickPoint, cli
           <polygon
             key={`${hotspot.structureId}-${partIndex}`}
             points={polygon.map(([x, y]) => `${x},${y}`).join(' ')}
-            className={isTarget ? 'fill-emerald-400/40 stroke-emerald-500' : 'fill-transparent stroke-transparent'}
+            fill={isTarget ? 'var(--ring-halo)' : 'transparent'}
+            fillOpacity={isTarget ? 0.4 : 0}
+            stroke={isTarget ? 'var(--ring-halo)' : 'transparent'}
             strokeWidth={0.003}
             vectorEffect="non-scaling-stroke"
           />
@@ -68,8 +75,8 @@ export function HotspotOverlay({ hotspots, highlightStructureId, clickPoint, cli
           cx={clickPoint[0]}
           cy={clickPoint[1]}
           r={0.012}
-          className={clickWasCorrect ? 'fill-emerald-500' : 'fill-rose-500'}
-          stroke="white"
+          fill={clickWasCorrect ? 'var(--ring-halo)' : 'var(--ring-red)'}
+          stroke="var(--ring-white)"
           strokeWidth={0.003}
           vectorEffect="non-scaling-stroke"
         />
@@ -88,11 +95,11 @@ export function HotspotOverlay({ hotspots, highlightStructureId, clickPoint, cli
  * landmark itself ends. See lib/hotspot/accuracy.ts.
  */
 const RING_COLOURS = [
-  '#f5c518', '#f5c518', // 10, 9 — gold
-  '#e05260', '#e05260', // 8, 7 — red   (pass boundary is the outer edge of this pair)
-  '#4aa3d8', '#4aa3d8', // 6, 5 — blue
-  '#3f4a5a', '#3f4a5a', // 4, 3 — black
-  '#e8eaed', '#e8eaed', // 2, 1 — white
+  'var(--ring-gold)', 'var(--ring-gold)', // 10, 9 — gold
+  'var(--ring-red)', 'var(--ring-red)', // 8, 7 — red   (pass boundary is the outer edge of this pair)
+  'var(--ring-blue)', 'var(--ring-blue)', // 6, 5 — blue
+  'var(--ring-black)', 'var(--ring-black)', // 4, 3 — black
+  'var(--ring-white)', 'var(--ring-white)', // 2, 1 — white
 ];
 
 /**
@@ -101,7 +108,7 @@ const RING_COLOURS = [
  * it — ten translucent discs stacked would accumulate alpha into a muddy blob
  * at the centre and lose the archery colours entirely.
  */
-const FACE_OPACITY = 0.42;
+const FACE_OPACITY = 'var(--ring-face-opacity)';
 
 /**
  * The dark rim marking the pass boundary, in normalized units. Laid down just
@@ -161,8 +168,8 @@ function TargetFace({ hotspot, scored }: { hotspot: HotspotPolygon; scored: bool
     // disc two and a half times too big.
     return (
       <g data-target-face>
-        {band('halo', radius, '#34d399', 0.12)}
-        {band('zone', radius * PASS_FRACTION, '#34d399', 0.45)}
+        {band('halo', radius, 'var(--ring-halo)', 0.12)}
+        {band('zone', radius * PASS_FRACTION, 'var(--ring-halo)', 0.45)}
       </g>
     );
   }
@@ -175,13 +182,13 @@ function TargetFace({ hotspot, scored }: { hotspot: HotspotPolygon; scored: bool
   // around an N-point spine would not be a one-liner.
   for (let i = RING_COUNT; i >= 1; i--) {
     if (i === PASS_BAND) {
-      bands.push(band('pass-boundary', (radius * i) / RING_COUNT + BOUNDARY_WIDTH, '#1b2430', undefined, true));
+      bands.push(band('pass-boundary', (radius * i) / RING_COUNT + BOUNDARY_WIDTH, 'var(--ring-rim)', undefined, true));
     }
     bands.push(band(`ring-${i}`, (radius * i) / RING_COUNT, RING_COLOURS[RING_COUNT - i]));
   }
 
   return (
-    <g opacity={FACE_OPACITY} data-target-face>
+    <g style={{ opacity: FACE_OPACITY }} data-target-face>
       {bands}
     </g>
   );

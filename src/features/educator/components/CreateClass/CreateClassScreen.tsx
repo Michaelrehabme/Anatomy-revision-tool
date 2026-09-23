@@ -95,7 +95,7 @@ export function CreateClassScreen({ firstRun = false }: { firstRun?: boolean }) 
             onClick={create}
             disabled={creating || !name.trim()}
             className="rounded-[3px] px-5 py-2.5 disabled:opacity-50"
-            style={{ font: '500 14px/1 var(--font-ui)', background: 'var(--acc)', color: 'var(--onacc)', border: 0 }}
+            style={{ font: '500 14px/1 var(--font-ui)', background: 'var(--acc-fill)', color: 'var(--onacc)', border: 0 }}
           >
             {creating ? 'Creating…' : 'Create class'}
           </button>

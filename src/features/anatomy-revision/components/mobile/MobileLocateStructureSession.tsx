@@ -191,7 +191,7 @@ export function MobileLocateStructureSession({
               type="button"
               onClick={onNext}
               className="mt-4.5 w-full rounded-[3px] border-0"
-              style={{ minHeight: 52, background: 'var(--acc)', color: 'var(--onacc)', font: '500 16.5px/1 var(--font-ui)' }}
+              style={{ minHeight: 52, background: 'var(--acc-fill)', color: 'var(--onacc)', font: '500 16.5px/1 var(--font-ui)' }}
             >
               Next
             </button>

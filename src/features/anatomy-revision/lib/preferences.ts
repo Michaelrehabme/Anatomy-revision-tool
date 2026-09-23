@@ -1,6 +1,14 @@
 import type { Area } from '../types/region';
 import type { FreeAreaChoice } from './entitlement';
 import { normaliseAreas } from '../types/region';
+import {
+  CONTRAST_KEY,
+  THEME_KEY,
+  asContrastPreference,
+  asThemePreference,
+  type ContrastPreference,
+  type ThemePreference,
+} from './theme';
 
 /**
  * Small per-device study preferences, kept in localStorage alongside the
@@ -121,4 +129,69 @@ export function getFreeAreaChoice(): FreeAreaChoice | null {
 
 export function setFreeAreaChoice(area: Area, switches: number, now: Date = new Date()): void {
   write(FREE_AREA_KEY, JSON.stringify({ area, chosenAt: now.toISOString(), switches }));
+}
+
+/**
+ * Appearance. The keys and the resolution rules live in lib/theme.ts, because
+ * the bootstrap script in index.html has to read the same keys before any
+ * module loads — see the note there.
+ */
+export function getThemePreference(): ThemePreference {
+  return asThemePreference(read(THEME_KEY));
+}
+
+export function setThemePreference(preference: ThemePreference): void {
+  write(THEME_KEY, preference);
+}
+
+export function getContrastPreference(): ContrastPreference {
+  return asContrastPreference(read(CONTRAST_KEY));
+}
+
+export function setContrastPreference(preference: ContrastPreference): void {
+  write(CONTRAST_KEY, preference);
+}
+
+const ATLAS_SORT_KEY = `${PREFIX}atlasSort`;
+const ATLAS_PANEL_KEY = `${PREFIX}atlasPanelOpen`;
+
+/**
+ * How this person likes the atlas ordered, as one of the ids in
+ * lib/atlasList.ts ATLAS_SORTS.
+ *
+ * The sort persists but the filters do not, and the split is deliberate: a
+ * sort is a reading preference that stays true across visits, where a filter
+ * is a question being asked right now. Coming back to the atlas tomorrow
+ * still narrowed to "unseen knee ligaments" would look like a bug. The one
+ * filter worth remembering — which areas this student studies — already has a
+ * durable home in preferredAreas above.
+ *
+ * Returned raw rather than validated against ATLAS_SORTS, which would make
+ * this module depend on atlasList: sortById() there resolves a stale or
+ * hand-edited id to the default, so the validation lives with the list of
+ * ids it has to agree with.
+ */
+export function getAtlasSortId(): string | null {
+  return read(ATLAS_SORT_KEY);
+}
+
+export function setAtlasSortId(id: string): void {
+  write(ATLAS_SORT_KEY, id);
+}
+
+/**
+ * Whether the desktop filter column is open. Desktop only — the mobile
+ * equivalent is a modal drawer, and restoring it open over the list on
+ * arrival would mean every visit starts behind something to dismiss.
+ *
+ * Defaults to open: a filter panel nobody can see is a filter panel nobody
+ * uses, and the point of making it collapsible is reclaiming the width on
+ * demand, not hiding the feature.
+ */
+export function getAtlasPanelOpen(): boolean {
+  return read(ATLAS_PANEL_KEY) !== 'false';
+}
+
+export function setAtlasPanelOpen(open: boolean): void {
+  write(ATLAS_PANEL_KEY, String(open));
 }

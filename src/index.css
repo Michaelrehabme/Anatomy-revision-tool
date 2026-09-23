@@ -3,13 +3,40 @@
 @import "./fonts.generated.css";
 
 /*
- * Press · light — the LocusMSK design tokens (from the Claude Design
- * handoff). Short names match the spec verbatim so BodyFigure.tsx and any
- * future dark-mode swap can reference var(--acc) etc. directly; the @theme
- * block below aliases them to Tailwind v4 color/font utilities (bg-pg,
- * text-ink2, font-display, ...) without duplicating the literal values.
+ * Press — the LocusMSK design tokens, in four scopes.
+ *
+ * <html> always carries data-theme="light|dark" and data-contrast="normal|high".
+ * They are written before first paint by the bootstrap script in index.html and
+ * kept in step with the device and the stored preference by
+ * context/ThemeProvider.tsx. Bare `:root` is the fallback for the one case
+ * where neither is set: JS disabled, or the bootstrap threw.
+ *
+ * WHICH BLOCK WINS IS DECIDED BY SPECIFICITY, NOT SOURCE ORDER — deliberately,
+ * so that moving a block cannot silently change the app:
+ *
+ *   :root                                          (0,1,0)
+ *   :root[data-theme='dark']                       (0,2,0)
+ *   :root[data-contrast='high']                    (0,2,0)
+ *   :root[data-theme='dark'][data-contrast='high'] (0,3,0)
+ *
+ * There is deliberately NO prefers-color-scheme media query here. The device
+ * signal and the manual override are resolved in JavaScript, which is what
+ * makes "follow my device, except when I said otherwise" expressible without
+ * the sixteen crossed selectors it would take in CSS alone. The app renders
+ * nothing without JS, so nothing is lost.
+ *
+ * EVERY BLOCK DECLARES EVERY TOKEN. A token missing from a scope silently
+ * inherits the light value through :root and produces an invisible contrast
+ * bug. src/scripts/checkContrast.ts asserts that completeness and the WCAG
+ * ratios for all four scopes — run it after touching anything here:
+ *
+ *   npm run check:contrast
  */
-:root {
+
+:root,
+:root[data-theme='light'] {
+  color-scheme: light;
+
   /*
    * The LocusMSK brand palette: ink navy, cartilage, bone, artery.
    *
@@ -17,18 +44,14 @@
    * them to pass WCAG 2.2 AA — UK public sector bodies are bound by it and
    * university procurement asks. Cartilage as drawn (#3F8F8A) is 3.15:1 on
    * bone: correct for an icon or a fill, a fail for link text. So the accent
-   * is split, and every pair here is checked by
-   * src/scripts/checkContrast.ts. Run it after touching any of these.
+   * is split, and every pair here is checked by the script above.
    */
-  /* Ground and surfaces. Paper is the page, bone is what sits on it — the
-     handoff is explicit that bone is for cards and secondary surfaces, which
-     is the opposite way round from the first pass at this palette. */
+
+  /* Ground and surfaces. Paper is the page, bone is what sits on it. */
   --pg: #f7f4ec; /* paper — page/app ground */
   --sf: #efe9da; /* bone — cards, secondary surfaces */
 
-  /* Text. Ink navy is for headings and dark surfaces; body copy is slate,
-     which is a deliberate step down from the heading colour rather than the
-     same navy at a lighter weight. */
+  /* Text. Ink navy is for headings and dark surfaces; body copy is slate. */
   --ink: #1f2a44; /* ink navy — headings, dark surfaces */
   --ink-pressed: #16203a;
   --ink2: #46505f; /* slate — body copy on light */
@@ -39,8 +62,10 @@
   --line: rgba(31, 42, 68, 0.14);
   --line-strong: rgba(31, 42, 68, 0.25);
 
-  /* Teal, split three ways because one value cannot do all three jobs: the
-     drawn colour is 3.15:1 on paper — right for a fill, a fail for link text. */
+  /* Teal, split four ways because one value cannot do every job: the drawn
+     colour is 3.15:1 on paper — right for a fill, a fail for text ON it.
+     --acc is a FILL (selection, correctness, progress). A button carrying a
+     label uses --acc-fill; white on --acc is 3.81:1 and fails AA. */
   --acc: #3f8f8a; /* cartilage — selection, correctness, progress */
   --accd: #2f6c68; /* text-safe — links and small text on light */
   --acc-fill: #34756f; /* primary button fill */
@@ -53,14 +78,201 @@
 
   --onacc: #ffffff;
 
+  /* Modal scrim. A token rather than a literal rgba so the dark and
+     high-contrast scopes can deepen it — a 45% navy veil over a dark ground
+     does not read as "the thing behind is out of reach". */
+  --scrim: rgba(31, 42, 68, 0.45);
+
   /* Body figure. */
   --fig-off: #e6e0d2;
   --fig-line: #a9a492;
   --fig-ink: #46505f;
+
   --shadow-card: 0 20px 60px rgba(31, 42, 68, 0.16);
+  --shadow-knob: 0 1px 3px rgba(31, 42, 68, 0.3);
 }
 
-@theme {
+/*
+ * Dark. The ground is the ink navy the product already owns, darkened —
+ * not a neutral grey, which would read as a different product at night.
+ *
+ * Two tokens invert their MEANING rather than just their value, and the names
+ * now under-describe them:
+ *   --accd was "darkened for text on light"; on a dark ground the text-safe
+ *          teal has to go LIGHTER than --acc. Same for --acc2d.
+ *   --onacc was white; accent fills are now lighter than the ground, so the
+ *          label on one has to be dark.
+ * Renaming them would touch 2,141 call sites to say the same thing, so the
+ * names stay and this note carries the meaning.
+ */
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --pg: #121927;
+  --sf: #1c2537;
+
+  --ink: #f3eee2; /* warm paper, echoing the light ground rather than pure white */
+  --ink-pressed: #fffdf7; /* pressed goes brighter in dark, not darker */
+  --ink2: #c5cbd6;
+  --ink3: #9ba4b5;
+
+  /* Translucent paper, mirroring light's translucent navy: still a quiet
+     hairline that composites correctly on both the ground and a card. */
+  --line: rgba(243, 238, 226, 0.16);
+  --line-strong: rgba(243, 238, 226, 0.3);
+
+  --acc: #5cb8b0;
+  --accd: #86d2c9;
+  --acc-fill: #63beb5;
+  --acc-pressed: #47a49b;
+  --accs: #17302f;
+
+  --acc2: #e2726a;
+  --acc2d: #f09a92;
+  --acc2s: #33191a;
+
+  --onacc: #0e1524;
+
+  --scrim: rgba(0, 0, 0, 0.7);
+
+  --fig-off: #262e40;
+  --fig-line: #7d879b;
+  --fig-ink: #c5cbd6;
+
+  /* A drop shadow is invisible on a dark ground, so the first layer is a
+     hairline ring — the card keeps an edge with no component changes. */
+  --shadow-card: 0 0 0 1px rgba(243, 238, 226, 0.07), 0 20px 60px rgba(0, 0, 0, 0.55);
+  --shadow-knob: 0 1px 3px rgba(0, 0, 0, 0.6);
+}
+
+/*
+ * High contrast, light. Text goes to the extremes, the decorative washes step
+ * back toward their surface, and — the single biggest change — the hairlines
+ * become OPAQUE. `border: 1px solid var(--line)` is the dominant card and
+ * control idiom across the app, so one token turns every one of them from a
+ * 14%-alpha suggestion into a boundary that passes WCAG 1.4.11.
+ */
+:root[data-contrast='high'],
+:root[data-theme='light'][data-contrast='high'] {
+  color-scheme: light;
+
+  --pg: #ffffff;
+  --sf: #f2ece0;
+
+  --ink: #0b1120;
+  --ink-pressed: #000000;
+  --ink2: #1b2740;
+  --ink3: #33405c;
+
+  --line: #1b2740;
+  --line-strong: #0b1120;
+
+  --acc: #1f6f6a;
+  --accd: #134442;
+  --acc-fill: #14524e;
+  --acc-pressed: #0e403d;
+  --accs: #dcece9;
+
+  --acc2: #8d2b25;
+  --acc2d: #7a241f;
+  --acc2s: #fdf0ee;
+
+  --onacc: #ffffff;
+
+  --scrim: rgba(11, 17, 32, 0.7);
+
+  --fig-off: #e8e2d4;
+  --fig-line: #0b1120;
+  --fig-ink: #0b1120;
+
+  --shadow-card: 0 0 0 2px var(--line), 0 12px 28px rgba(11, 17, 32, 0.22);
+  --shadow-knob: 0 0 0 1.5px var(--line);
+}
+
+/* High contrast, dark. Black ground, pure white text. */
+:root[data-theme='dark'][data-contrast='high'] {
+  color-scheme: dark;
+
+  --pg: #000000;
+  --sf: #0c1320;
+
+  --ink: #ffffff;
+  --ink-pressed: #ffffff;
+  --ink2: #e9edf4;
+  --ink3: #c8d0de;
+
+  --line: #c8d0de;
+  --line-strong: #ffffff;
+
+  --acc: #7fd8ce;
+  --accd: #9fe6dc;
+  --acc-fill: #9fe6dc;
+  --acc-pressed: #7fd8ce;
+  --accs: #08322e;
+
+  --acc2: #ff9d95;
+  --acc2d: #ffb3ab;
+  --acc2s: #3a1210;
+
+  --onacc: #000000;
+
+  --scrim: rgba(0, 0, 0, 0.85);
+
+  --fig-off: #141c2b;
+  --fig-line: #c8d0de;
+  --fig-ink: #e9edf4;
+
+  --shadow-card: 0 0 0 2px var(--line), 0 12px 28px rgba(0, 0, 0, 0.8);
+  --shadow-knob: 0 0 0 1.5px var(--line);
+}
+
+/*
+ * The locate-question scoring rings (components/LocateStructureSession).
+ *
+ * These do NOT change between light and dark, and that is the point: they are
+ * painted over a pale bone render that looks the same whatever the app is
+ * doing, and they are a learned semantic — an archery face — whose meaning
+ * would shift if gold became something else at night. They are judged against
+ * the image, not against the page.
+ *
+ * They DO strengthen in high contrast, and the opacity matters more than the
+ * hues: a 42% face over mid-tone bone puts the boundary between "correct" and
+ * "not" well under 3:1.
+ */
+:root {
+  --ring-gold: #f5c518;
+  --ring-red: #e05260;
+  --ring-blue: #4aa3d8;
+  --ring-black: #3f4a5a;
+  --ring-white: #e8eaed;
+  --ring-rim: #1b2430;
+  --ring-halo: #3f8f8a;
+  --ring-face-opacity: 0.42;
+  --ring-boundary-width: 2px;
+}
+
+:root[data-contrast='high'] {
+  --ring-gold: #ffd400;
+  --ring-red: #ff2d3f;
+  --ring-blue: #1b8ce0;
+  --ring-black: #111111;
+  --ring-white: #ffffff;
+  --ring-rim: #000000;
+  --ring-halo: #00e5a0;
+  --ring-face-opacity: 0.8;
+  --ring-boundary-width: 3.5px;
+}
+
+/*
+ * `inline` matters: without it Tailwind emits `--color-pg: var(--pg)` as a
+ * declaration on :root, which only follows the theme because data-theme also
+ * sits on <html>. Any scoped theme — a dark preview inside a light page —
+ * would leave every Tailwind utility on the light value while the inline
+ * var(--x) usages flipped. With `inline` the utility compiles straight to
+ * `var(--pg)` and resolves wherever it is used. Nothing references
+ * `var(--color-*)` directly, so this is a no-op today and a trap removed.
+ */
+@theme inline {
   --color-pg: var(--pg);
   --color-sf: var(--sf);
   --color-ink: var(--ink);
@@ -74,6 +286,7 @@
   --color-acc2d: var(--acc2d);
   --color-acc2s: var(--acc2s);
   --color-onacc: var(--onacc);
+  --color-scrim: var(--scrim);
   --color-ink-pressed: var(--ink-pressed);
   --color-acc-fill: var(--acc-fill);
   --color-acc-pressed: var(--acc-pressed);
@@ -104,11 +317,34 @@ body {
   font-family: var(--font-ui);
 }
 
+/* The colour was implicit before, inherited from whatever was selected. Stated
+   here so a future --accs change cannot quietly make selected text unreadable. */
 ::selection {
   background: var(--accs);
+  color: var(--ink);
 }
 
 :focus-visible {
   outline: 2px solid var(--acc);
   outline-offset: 2px;
+}
+
+/* A 2px teal ring is a weak affordance for someone who asked for high
+   contrast; the offset already puts the ring on the surrounding surface,
+   never on the accent fill it belongs to. */
+:root[data-contrast='high'] :focus-visible {
+  outline-width: 3px;
+  outline-color: var(--ink);
+}
+
+/*
+ * Windows High Contrast / forced-colors is the user overriding the palette
+ * entirely, and mostly it should be left to win. The exception is the places
+ * where colour IS the information (the scoring rings, the body figure), which
+ * opt out individually with forced-color-adjust.
+ */
+@media (forced-colors: active) {
+  :focus-visible {
+    outline-color: Highlight;
+  }
 }

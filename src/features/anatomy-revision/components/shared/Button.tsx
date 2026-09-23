@@ -10,7 +10,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 export function Button({ variant = 'primary', className = '', style, ...props }: ButtonProps) {
   const base: CSSProperties =
     variant === 'primary'
-      ? { background: 'var(--acc)', color: 'var(--onacc)' }
+      ? { background: 'var(--acc-fill)', color: 'var(--onacc)' }
       : { background: 'transparent', color: 'var(--ink2)', border: '1.2px solid var(--line)' };
   return (
     <button

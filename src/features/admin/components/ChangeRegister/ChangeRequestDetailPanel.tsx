@@ -43,7 +43,7 @@ export function ChangeRequestDetailPanel({
 
   return (
     <div className="fixed inset-0 z-40 flex justify-end" role="dialog" aria-label={`${item.ref} details`}>
-      <div className="absolute inset-0" style={{ background: 'rgba(32, 30, 29, 0.35)' }} onClick={onClose} />
+      <div className="absolute inset-0" style={{ background: 'var(--scrim)' }} onClick={onClose} />
       <div
         className="relative flex h-full w-[620px] flex-none flex-col overflow-y-auto px-9 py-9"
         style={{ background: 'var(--sf)', boxShadow: 'var(--shadow-card)' }}
