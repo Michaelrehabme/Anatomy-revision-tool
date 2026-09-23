@@ -26,7 +26,9 @@
  *   --masks DIR     Root written by renderJointMasks.py (default renders/joint-lines).
  *   --out FILE      Hotspot JSON (default joint-lines.hotspots.json).
  *   --overlays DIR  If set, write <joint>-<view>-overlay.png for checking by eye.
- *   --pad N         Dilation in pixels, each side (default 6).
+ *   --pad N         Dilation in pixels, each side, for the old surface-only path (default 6).
+ *   --seam N        Half-width of the seam where the two bones meet (default 5).
+ *   --gate N        How far a seam pixel may sit from the contact surface (default 26).
  *   --min-px N      Discard bands smaller than this; a handful of pixels is
  *                   contact noise, not an articulation (default 120).
  *   --max-vertices N  Vertex budget per polygon (default 150).
@@ -55,6 +57,12 @@ interface Options {
   outPath: string;
   overlaysDir: string | null;
   pad: number;
+  /** Half-width of the seam between the two silhouettes, in pixels. */
+  seam: number;
+  /** How far from the contact surface a seam pixel may sit and still count. */
+  gate: number;
+  /** Catch area around the line, in pixels. The line itself stays as targetCore. */
+  margin: number;
   minPx: number;
   maxVertices: number;
   only: string | null;
@@ -73,6 +81,9 @@ function parseArgs(argv: string[]): Options {
     outPath: get('out', 'joint-lines.hotspots.json'),
     overlaysDir: argv.includes('--overlays') ? get('overlays', 'renders/joint-lines-overlays') : null,
     pad: Number(get('pad', '6')),
+    seam: Number(get('seam', '5')),
+    gate: Number(get('gate', '26')),
+    margin: Number(get('margin', '0')),
     minPx: Number(get('min-px', '120')),
     maxVertices: Number(get('max-vertices', '150')),
     only: argv.includes('--only') ? get('only', '') : null,
@@ -113,6 +124,48 @@ function dilateBy(mask: BinaryMask, width: number, height: number, steps: number
     current = next;
   }
   return current;
+}
+
+function intersect(a: BinaryMask, b: BinaryMask): BinaryMask {
+  const out = new Uint8Array(a.length);
+  for (let i = 0; i < a.length; i++) out[i] = a[i] && b[i] ? 1 : 0;
+  return out;
+}
+
+/**
+ * THE SEAM WHERE THE TWO BONES MEET ON SCREEN.
+ *
+ * A joint reads as a LINE in a picture — the Chopart line runs clean across the
+ * foot, the knee line across the knee. Deriving the band from the contact
+ * SURFACES gave a line only where the articulation happened to be edge-on: seen
+ * face-on, a curved surface projects as a region, and the patellofemoral band
+ * came out as the whole back of the patella. 46 of 71 published bands were
+ * blobs of that kind.
+ *
+ * What a student points at is the seam: the pixels where this bone's visible
+ * silhouette runs into its partner's. Dilating each silhouette by `seam` and
+ * intersecting finds exactly that, and does it in the picture rather than in
+ * three dimensions, so it follows whatever the camera can actually see.
+ *
+ * Two silhouettes can also meet where the bones merely OVERLAP — the earlier 2D
+ * attempt drew the whole distal fibula on a lateral ankle for that reason — so
+ * the seam is kept only where the contact surface, generously dilated, says the
+ * two bones articulate. The surface is the evidence; the seam is the shape.
+ */
+function seamBand(
+  a: BinaryMask,
+  b: BinaryMask,
+  contact: BinaryMask,
+  width: number,
+  height: number,
+  seam: number,
+  gate: number,
+): BinaryMask {
+  const touching = intersect(dilateBy(a, width, height, seam), dilateBy(b, width, height, seam));
+  // The gate grows with the reach: a seam that had to span a 70px gap sits
+  // that much further from the surfaces it bridges, and a fixed gate rejected
+  // the whole pubic symphysis for sitting in the middle of its own joint space.
+  return intersect(touching, dilateBy(contact, width, height, gate + seam));
 }
 
 function countSet(mask: BinaryMask): number {
@@ -177,7 +230,27 @@ for (const jointId of jointIds) {
     if (!existsSync(linePath)) continue;
 
     const line = loadMask(linePath);
-    const band = dilateBy(line.mask, line.width, line.height, opts.pad);
+    const aPath = join(dir, 'a.png');
+    const bPath = join(dir, 'b.png');
+    const hasSilhouettes = existsSync(aPath) && existsSync(bPath);
+    // THE SMALLEST REACH THAT FINDS THE JOINT.
+    //
+    // The two bones do not touch in the render: there is a cartilage gap, and
+    // how wide it looks depends on the joint and the angle. A reach that spans
+    // the humeroradial gap is wide enough to fatten a seam elsewhere back into
+    // a blob, so each view takes the smallest one that finds anything — thin
+    // where thin works, wider only where the gap demands it.
+    let band = dilateBy(line.mask, line.width, line.height, opts.pad);
+    let usedSeam = 0;
+    if (hasSilhouettes) {
+      const aMask = loadMask(aPath).mask;
+      const bMask = loadMask(bPath).mask;
+      for (const seam of [1, 2, 3, 4, 6, 8].map((n) => opts.seam * n)) {
+        band = seamBand(aMask, bMask, line.mask, line.width, line.height, seam, opts.gate);
+        usedSeam = seam;
+        if (countSet(band) >= opts.minPx) break;
+      }
+    }
 
     const pixels = countSet(band);
     if (pixels < opts.minPx) {
@@ -186,8 +259,21 @@ for (const jointId of jointIds) {
       continue;
     }
 
-    const traced = maskToPolygons(band, line.width, line.height, { maxVertices: opts.maxVertices });
-    perView.push({ view, pixels, polygons: traced.polygons });
+    // THE LINE IS THE CORE; THE MARGIN AROUND IT IS THE CATCH AREA.
+    //
+    // A joint line is a few pixels wide, and a few pixels is not a tap on a
+    // phone. Drawing a fatter joint would teach a fatter joint, so instead the
+    // traced line is kept as `targetCore` — a tap there is full marks — and the
+    // hitbox grows around it, where a tap still passes. Landmark regions have
+    // scored this way since they were traced (publishLandmarks.ts), and
+    // scoreRegion in lib/hotspot/accuracy.ts already reads both shapes.
+    const core = maskToPolygons(band, line.width, line.height, { maxVertices: opts.maxVertices });
+    const traced = opts.margin
+      ? maskToPolygons(dilateBy(band, line.width, line.height, opts.margin), line.width, line.height, {
+          maxVertices: opts.maxVertices,
+        })
+      : core;
+    perView.push({ view, pixels, polygons: traced.polygons, core: core.polygons });
 
     // One image per joint per VIEW, mirroring the region hotspots: a composited
     // multi-view strip has no single coordinate space a polygon could live in.
@@ -197,12 +283,17 @@ for (const jointId of jointIds) {
         width: line.width,
         height: line.height,
         hotspots: {
-          [jointId]: { polygons: traced.polygons, area: traced.area, centroid: traced.centroid },
+          [jointId]: {
+            polygons: traced.polygons,
+            area: traced.area,
+            centroid: traced.centroid,
+            ...(opts.margin ? { targetCore: core.polygons } : {}),
+          },
         },
       };
     }
     emitted++;
-    console.log(`  ${jointId.padEnd(30)} ${view}  ${pixels}px  ${traced.polygons.length} polygon(s)`);
+    console.log(`  ${jointId.padEnd(30)} ${view}  ${pixels}px  ${traced.polygons.length} polygon(s)${usedSeam ? `  seam ${usedSeam}` : ''}`);
 
     const contextPath = join(dir, 'context.png');
     if (opts.overlaysDir && existsSync(contextPath)) {

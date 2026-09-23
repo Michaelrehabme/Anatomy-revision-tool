@@ -28,7 +28,7 @@ To add a claim: put it in the table with that evidence format, and the check sta
 |---|---|---|---|
 | "122 muscles" | MarketingHome (hero, FAQ, price cards, figures) | `validate-content: muscles=122` | 2026-09-20 |
 | "nine regions" | MarketingHome (FAQ, price cards, figures) | `validate-content: areas=9` | 2026-09-20 |
-| "457 structures" | MarketingHome (FAQ), index.html meta, manifest | `validate-content: structures=457` | 2026-09-22 |
+| "462 structures" | MarketingHome (FAQ), index.html meta, manifest | `validate-content: structures=462` | 2026-09-22 |
 | "Learn every muscle by where it lives" / "drilled until you can locate them" | MarketingHome H1, index.html meta | `validate-content: locatablemuscles=122` — every muscle has a locate hotspot. **If that check ever fails, this headline becomes false and must change.** | 2026-09-20 |
 | "origin, insertion, nerve supply and action for every muscle" | index.html meta, manifest | `validateOina()` fails if any muscle lacks an answerable value for any prompt kind | 2026-09-20 |
 | "cross-referenced against Terminologia Anatomica" | index.html meta, manifest | `ta2-mapping.resolved.json` maps all 122 muscle ids to TA2 identifiers | 2026-09-20 |

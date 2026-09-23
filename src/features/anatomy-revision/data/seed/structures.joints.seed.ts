@@ -347,7 +347,7 @@ export const JOINT_STRUCTURES: JointStructure[] = [
       'what gives the thumb opposition — the movement that makes the human hand prehensile — at the cost of ' +
       'being one of the least bony-stable joints in the hand.',
     jointType: 'saddle',
-    articulatingStructureIds: ['carpals', 'metacarpals'],
+    articulatingStructureIds: ['trapezium', 'first-metacarpal'],
     movements: ['Flexion', 'Extension', 'Abduction', 'Adduction', 'Opposition', 'Reposition', 'Circumduction'],
     stabilizers: ['Anterior and posterior oblique ligaments', 'Intermetacarpal ligament', 'Thenar muscles'],
     aliases: ['CMC joint of thumb', 'First carpometacarpal joint', 'Trapeziometacarpal joint'],
@@ -381,7 +381,7 @@ export const JOINT_STRUCTURES: JointStructure[] = [
       'it is essentially immobile, and that is the point: the second and third metacarpals form the fixed ' +
       'central pillar the mobile thumb and the mobile fourth and fifth rays work against.',
     jointType: 'plane',
-    articulatingStructureIds: ['trapezoid', 'metacarpals'],
+    articulatingStructureIds: ['trapezoid', 'second-metacarpal'],
     movements: ['Gliding'],
     stabilizers: ['Dorsal, palmar and interosseous carpometacarpal ligaments'],
     aliases: ['CMC 2', 'Second CMC joint'],
@@ -401,7 +401,7 @@ export const JOINT_STRUCTURES: JointStructure[] = [
       'the hand, and the axis the fingers abduct and adduct about — spreading the fingers is measured from ' +
       'the third ray, not the midline of the body.',
     jointType: 'plane',
-    articulatingStructureIds: ['capitate', 'metacarpals'],
+    articulatingStructureIds: ['capitate', 'third-metacarpal'],
     movements: ['Gliding'],
     stabilizers: ['Dorsal, palmar and interosseous carpometacarpal ligaments'],
     aliases: ['CMC 3', 'Third CMC joint'],
@@ -421,7 +421,7 @@ export const JOINT_STRUCTURES: JointStructure[] = [
       'it permits a little flexion and extension, the first of the two mobile rays that let the palm fold ' +
       'around an object rather than meeting it flat.',
     jointType: 'plane',
-    articulatingStructureIds: ['hamate', 'metacarpals'],
+    articulatingStructureIds: ['hamate', 'fourth-metacarpal'],
     movements: ['Flexion', 'Extension', 'Gliding'],
     stabilizers: ['Dorsal, palmar and interosseous carpometacarpal ligaments'],
     aliases: ['CMC 4', 'Fourth CMC joint'],
@@ -441,7 +441,7 @@ export const JOINT_STRUCTURES: JointStructure[] = [
       'four finger joints. Its flexion and slight opposition are what bring the little finger towards the ' +
       'thumb and deepen the hollow of the palm, the movement a grip closes with.',
     jointType: 'plane',
-    articulatingStructureIds: ['hamate', 'metacarpals'],
+    articulatingStructureIds: ['hamate', 'fifth-metacarpal'],
     movements: ['Flexion', 'Extension', 'Opposition', 'Gliding'],
     stabilizers: ['Dorsal, palmar and interosseous carpometacarpal ligaments', 'Opponens digiti minimi'],
     aliases: ['CMC 5', 'Fifth CMC joint'],

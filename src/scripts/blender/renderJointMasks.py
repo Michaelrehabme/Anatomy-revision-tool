@@ -31,6 +31,9 @@ to the proximal one, silently and plausibly.
 import bpy, json, sys, os, math, argparse, mathutils, bmesh
 from mathutils import kdtree
 
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+import boneLook  # noqa: E402
+
 argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
 ap = argparse.ArgumentParser()
 ap.add_argument("--spec", required=True)
@@ -80,6 +83,16 @@ scene.camera = cam
 sun = bpy.data.objects.new("jointsun", bpy.data.lights.new("jointsun", type="SUN"))
 sun.data.energy = 3.0
 scene.collection.objects.link(sun)
+
+# The plate a student sees is lit like every other plate in the app: the shared
+# key and fill, and a Freestyle pass over `outline_coll` so touching bones are
+# told apart by a drawn edge. Masks are emission and ignore all of it.
+key_light, fill_light = boneLook.add_lights(scene)
+CTX_MAT = boneLook.bone_material("joint_ctx_bone")
+outline_coll = bpy.data.collections.new("joint_outlined")
+scene.collection.children.link(outline_coll)
+boneLook.outline_lineset(scene, outline_coll)
+scene.render.use_freestyle = False
 
 
 def flat(name, colour):
@@ -380,7 +393,32 @@ for jid in wanted:
     own = set(objs_a) | set(objs_b)
     occluders = bake([n for n in skeleton_names if n not in own], f"occ_{jid}")
 
-    for frame in views:
+    # EACH BONE AS THE CAMERA SEES IT.
+    #
+    # The contact surfaces alone are not the joint line. Where an articulation
+    # is curved and faces the camera — the back of the patella, the head of the
+    # femur — the surface projects as a whole REGION, and 46 of the 71 published
+    # bands came out as blobs covering an articular surface rather than a line
+    # a student could point at. What reads as the joint in a picture is the seam
+    # where the two bones MEET on screen.
+    #
+    # So each bone is also rendered alone, with the whole rest of the skeleton
+    # (its partner included) holding it out, leaving exactly the pixels of that
+    # bone the student can see. jointLineHotspots.ts takes the band where those
+    # two silhouettes meet and keeps only the stretch the contact surface backs
+    # up — which is what stops "adjacent on screen" being mistaken for
+    # "articulating", the failure that sank the earlier 2D attempt.
+    # mesh_a and mesh_b are already baked; the partner bone simply joins the
+    # occluders as a second holdout, which saves baking the whole skeleton twice
+    # more per joint (1,243 meshes each time, and the run went from minutes to
+    # hours).
+    side_meshes = {"a": (mesh_a, mesh_b), "b": (mesh_b, mesh_a)}
+
+    # A JOINT CAN BE UNSIGHTED FROM AN ANGLE. The atlantoaxial joint sits
+    # behind the arch of the atlas and the body of the axis: from the front
+    # there is nothing of it to see, so a question asked there is a guess.
+    # `views` in the spec names the angles worth rendering for that joint.
+    for frame in j.get("views", views):
         # The joint line, rendered from the 3D contact surfaces rather than
         # recovered from flattened silhouettes. Intersecting two bone
         # silhouettes cannot tell "adjacent" from "one in front of the other",
@@ -394,13 +432,36 @@ for jid in wanted:
         link(patch, f"mask_line_{jid}", MASK_MAT)
         render_to(os.path.join(a.out, jid, f"view-{frame:02d}", "line.png"))
 
+        # The two bones' visible silhouettes, same camera, same pixels.
+        for side, (mesh, partner) in side_meshes.items():
+            clear()
+            frame_camera(lo, hi, frame * 15, margin, frame_size)
+            link(occluders, f"occ_{jid}", BONE_MAT, holdout=True)
+            link(partner, f"partner_{side}_{jid}", BONE_MAT, holdout=True)
+            link(mesh, f"mask_{side}_{jid}", MASK_MAT)
+            render_to(os.path.join(a.out, jid, f"view-{frame:02d}", f"{side}.png"))
+
         # The image a locate question actually shows: the whole skeleton framed
         # on this joint, lit normally and NOT highlighted — highlighting the
         # answer is what stopped the muscle panels carrying locate questions.
         # Pixel-aligned to the mask, so the band can also be checked by eye.
+        #
+        # IN THE SAME LOOK AS EVERY OTHER PLATE (boneLook.py): warm ivory, a
+        # soft key and fill, ambient occlusion in the hollows and a drawn edge
+        # between touching bones. Without the edge two adjacent carpals of one
+        # colour share no shading event at their boundary and read as a single
+        # lump, which is exactly where a joint question is asked. Freestyle goes
+        # on for this render only — a drawn line on a MASK would grow the
+        # traced band by the width of the line.
         clear()
-        link(skeleton_mesh, f"ctx_{jid}", BONE_MAT)
+        ctx = link(boneLook.smooth(skeleton_mesh), f"ctx_{jid}", CTX_MAT)
+        outline_coll.objects.link(ctx)
+        scene.collection.objects.unlink(ctx)
+        boneLook.aim_lights(cam, key_light, fill_light)
+        scene.render.use_freestyle = True
         render_to(os.path.join(a.out, jid, f"view-{frame:02d}", "context.png"))
+        scene.render.use_freestyle = False
+        outline_coll.objects.unlink(ctx)
 
     bpy.data.meshes.remove(occluders)
     done += 1

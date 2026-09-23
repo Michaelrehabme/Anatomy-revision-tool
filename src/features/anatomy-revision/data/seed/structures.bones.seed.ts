@@ -639,7 +639,9 @@ export const BONE_STRUCTURES: BoneStructure[] = [
       'Carpometacarpal joints with the carpals',
       'Metacarpophalangeal joints with the proximal phalanges',
     ],
-    aliases: ['First metacarpal', 'Second metacarpal', 'Third metacarpal', 'Fourth metacarpal', 'Fifth metacarpal'],
+    // The five names moved to the landmarks that now carry them: typing
+    // "first metacarpal" means that bone, not the set of all five.
+    aliases: [],
     imageIds: [],
     eligibility: { flashcard: false, mcq: true, locate: true },
     difficulty: 'easy',
