@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="Spaced-repetition anatomy revision for MSK students. 463 structures, with origin, insertion, nerve supply and action for every muscle, cross-referenced against Terminologia Anatomica, drilled until you can locate them."
+      content="Spaced-repetition anatomy revision for MSK students. 464 structures, with origin, insertion, nerve supply and action for every muscle, cross-referenced against Terminologia Anatomica, drilled until you can locate them."
     />
     <title>LocusMSK</title>
     <link rel="manifest" href="/manifest.webmanifest" />
@@ -60,12 +60,21 @@
       sends the student's IP address to Google, which has been found an
       unlawful transfer under GDPR. Regenerate with src/scripts/fetchFonts.ts.
 
-      One preload, because the whole product is now one family and Source Serif
-      4 is variable — the single latin file covers 400 and 600. `crossorigin` is
-      required on a font preload even same-origin; without it the browser
-      fetches the file twice.
+      Two preloads, one per family, and both are variable — each latin file
+      covers its whole weight range, so there is nothing per-weight to add. Only
+      the latin cuts: latin-ext carries the accents that a handful of eponyms
+      need and is not worth blocking first paint for. The italic is not
+      preloaded either; it is one line under a structure name, well below the
+      fold. `crossorigin` is required on a font preload even same-origin;
+      without it the browser fetches the file twice.
+
+      These two filenames are the only place a generated font file is named by
+      hand. fetchFonts.ts deliberately names any multi-weight file 'variable'
+      rather than after its range, so adding or dropping a weight cannot
+      silently break these two lines.
     -->
-    <link rel="preload" href="/fonts/source-serif-4-variable-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/hanken-grotesk-variable-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/bricolage-grotesque-variable-latin.woff2" as="font" type="font/woff2" crossorigin />
   </head>
   <body>
     <div id="root"></div>

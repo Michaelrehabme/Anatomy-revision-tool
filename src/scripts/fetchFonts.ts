@@ -25,17 +25,31 @@ const FONT_DIR = `${ROOT}/public/fonts`;
 const CSS_OUT = `${ROOT}/src/fonts.generated.css`;
 
 /**
- * Source Serif 4 only — weights 400 and 600 plus 400 italic, per the design
- * handoff, which sets one family for the whole product. It replaced Newsreader,
- * IBM Plex Sans and IBM Plex Mono together.
+ * Two families, one per job. Bricolage Grotesque is the display face — structure
+ * names, the due headline, the wordmark, nav. Hanken Grotesk is everything read
+ * in sentences plus every small uppercase label, so it covers --font-ui and
+ * --font-mono both. Together they replaced Source Serif 4, which had replaced
+ * Newsreader, IBM Plex Sans and IBM Plex Mono when the handoff briefly set one
+ * family for the whole product.
  *
- * SIL Open Font Licence, so self-hosting carries no fee and no per-pageview
- * term — worth checking before any future family, since a commercial webfont
- * licence is a real annual cost and a real liability when selling to
- * universities.
+ * Both arrive as variable files with a weight RANGE in one descriptor
+ * (`font-weight: 400 700`), not as one block per weight the way Source Serif 4
+ * did — see the naming note below, which handles both shapes.
+ *
+ * Bricolage has no italic. Google accepts an `ital` request for it and returns
+ * upright faces only, so asking would silently produce a browser-synthesised
+ * slant; the Latin name under a structure is italic --font-display and takes
+ * that slant. Hanken's real italic is fetched for --font-ui, where body italic
+ * does occur.
+ *
+ * Both are SIL Open Font Licence, so self-hosting carries no fee and no
+ * per-pageview term — worth checking before any future family, since a
+ * commercial webfont licence is a real annual cost and a real liability when
+ * selling to universities.
  */
 const SPEC =
-  'family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400' +
+  'family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..700' +
+  '&family=Hanken+Grotesk:ital,wght@0,400..600;1,400' +
   '&display=swap';
 
 /** Google serves woff2 only to a browser-like UA; with the default it returns truetype. */
@@ -55,8 +69,9 @@ async function main(): Promise<void> {
   mkdirSync(FONT_DIR, { recursive: true });
 
   // Each block is preceded by a /* subset */ comment. Whole blocks are kept
-  // and only their src rewritten, so whatever descriptors Google emits —
-  // including Source Serif 4's variable opsz range — survive untouched.
+  // and only their src rewritten, so whatever descriptors Google emits survive
+  // untouched — Bricolage's `font-stretch: 75% 100%` is the one that currently
+  // depends on this, and dropping it would lock the width axis at its default.
   const blocks = [...css.matchAll(/\/\*\s*([\w-]+)\s*\*\/\s*(@font-face\s*\{[^}]+\})/g)];
   if (blocks.length === 0) throw new Error('No @font-face blocks parsed — did the response format change?');
 
@@ -97,8 +112,13 @@ async function main(): Promise<void> {
     if (nameByUrl.has(face.url)) continue;
     const shared = faces.filter((f) => f.url === face.url);
     const weights = new Set(shared.map((f) => f.weight));
-    // A file covering several weights is misnamed by any one of them.
-    const weightPart = weights.size > 1 ? 'variable' : slug(face.weight);
+    // A file covering several weights is misnamed by any one of them, whether
+    // they arrive as separate blocks sharing a URL (Source Serif 4) or as a
+    // single range descriptor, `font-weight: 400 700` (Bricolage, Hanken).
+    // Naming those 'variable' also keeps the filename stable when a weight is
+    // added or dropped — index.html preloads one of these by name.
+    const isRange = /\s/.test(face.weight);
+    const weightPart = weights.size > 1 || isRange ? 'variable' : slug(face.weight);
     const stylePart = face.style === 'italic' ? '-italic' : '';
     nameByUrl.set(face.url, `${slug(face.family)}-${weightPart}${stylePart}-${face.subset}.woff2`);
   }

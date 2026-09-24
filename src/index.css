@@ -294,13 +294,25 @@
   --color-fig-line: var(--fig-line);
   --color-fig-ink: var(--fig-ink);
 
-  /* One family for the whole product, per the handoff. The three tokens stay
-     because every component references them, but they now resolve to the same
-     face — eyebrows and labels are distinguished by uppercase and letter
-     spacing rather than by switching to a mono. */
-  --font-display: 'Source Serif 4', Georgia, serif;
-  --font-ui: 'Source Serif 4', Georgia, serif;
-  --font-mono: 'Source Serif 4', Georgia, serif;
+  /* Two families across the three tokens, replacing the one-family pass the
+     handoff set. Bricolage Grotesque is the display face and nothing else: it
+     has deliberately uneven widths and an inked, coarse texture that reads as
+     character on a 34px structure name and as noise in a 15px fact value.
+     Hanken Grotesk takes everything read in sentences AND every small uppercase
+     label, so --font-ui and --font-mono resolve to the same face — eyebrows and
+     labels stay distinguished by uppercase and letter spacing, as before.
+
+     --font-mono is still a misnomer; it has never been monospaced since the
+     handoff dropped IBM Plex Mono. Renaming it would touch every label in the
+     app to say the same thing, so the name stays and this note carries it.
+
+     BRICOLAGE HAS NO ITALIC. `font-style: italic` on --font-display gets a
+     browser-synthesised slant — see fetchFonts.ts. That is the Latin name under
+     a structure (MobileMuscleCard.tsx) and the MSK in the wordmark. Italic on
+     --font-ui is a real cut. */
+  --font-display: 'Bricolage Grotesque', 'Segoe UI', system-ui, sans-serif;
+  --font-ui: 'Hanken Grotesk', 'Segoe UI', system-ui, sans-serif;
+  --font-mono: 'Hanken Grotesk', 'Segoe UI', system-ui, sans-serif;
 
   /* Legacy alias: FillBlankSession isn't one of the mockup's four session
      formats (out of scope for this pass) and still references brand-600/700
