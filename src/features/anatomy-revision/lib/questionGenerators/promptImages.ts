@@ -61,6 +61,14 @@ export function promptImagesFor(
   const openers = [...bySet.values()].map((frames) =>
     frames.reduce((best, f) => (rank(f) > rank(best) ? f : best), frames[0]),
   );
+  // How many frames the opener's own set has. An id can carry an angle and
+  // still be the only picture of its scene — one frame is not a turntable, and
+  // treating it as one let a neighbour's single plate outrank the structure's
+  // own on nothing but size.
+  const framesInSet = new Map<string, number>();
+  for (const [key, frames] of bySet) framesInSet.set(key, frames.length);
+  const turns = (image: AnatomyImageAsset): boolean =>
+    (framesInSet.get((rotationSetKey(image.id) ?? image.id).replace(/-(context|highlight)$/, '')) ?? 1) > 1;
 
   /**
    * A PLATE THAT IS NOT FRAMED FOR IT MUST AT LEAST SHOW IT.
@@ -77,16 +85,38 @@ export function promptImagesFor(
    */
   const MIN_LEGIBLE_AREA = 0.015;
   const own = openers.filter((img) => isOwnPlate(img, structure));
-  if (own.length) {
-    // A TURNTABLE BEATS A SNAPSHOT. Several joints have both: twelve frames of
-    // their own, and an older single-frame panel from when they had no
-    // rotation. Asking both is asking twice, and the flat one is the poorer
-    // question — a student cannot turn it to see what they are looking at.
-    const rotatable = own.filter((img) => rotationSetKey(img.id));
-    return rotatable.length ? rotatable : own;
-  }
   const legible = openers.filter((img) => areaIn(img, structure.id) >= MIN_LEGIBLE_AREA);
-  // Nothing framed for it and nothing legible: keep the best picture there is
+
+  /*
+   * A TURNTABLE BEATS A SNAPSHOT — even one framed for the structure.
+   *
+   * Two families have both: a joint has twelve frames of its own and an older
+   * single-frame panel, and a muscle has a flat panel while its region has a
+   * twelve-frame plate that shows it. Preferring the structure's own plate
+   * outright picked the flat one every time, and 42 muscles quietly lost the
+   * ability to be turned — asked instead on the older, poorer picture.
+   *
+   * So rotation wins, as long as the structure is legible where it rotates:
+   * that is what keeps a hip ligament off the whole-skeleton spine plate,
+   * where it is four pixels and the question is a guess.
+   */
+  const turnable = openers.filter(
+    (img) => turns(img) && (isOwnPlate(img, structure) || areaIn(img, structure.id) >= MIN_LEGIBLE_AREA),
+  );
+
+  /*
+   * ONE PICTURE, NOT ONE PER PLATE IT APPEARS ON. A muscle can be drawn on the
+   * torso plate and the spine plate both, and asking it on each is asking the
+   * same question twice — the complaint that started this: "it should be 1
+   * question for all the views". So the best candidate wins outright, and the
+   * order of preference is rotation, then framing, then how much of the frame
+   * the structure fills.
+   */
+  const biggest = (list: AnatomyImageAsset[]) =>
+    list.reduce((best, f) => (rank(f) > rank(best) ? f : best), list[0]);
+  if (turnable.length) return [biggest(turnable)];
+  if (own.length) return [biggest(own)];
+  // Nothing framed for it and nothing turnable: keep the best picture there is
   // rather than dropping the structure out of identify altogether.
-  return legible.length ? legible : [openers.reduce((best, f) => (rank(f) > rank(best) ? f : best), openers[0])];
+  return [biggest(legible.length ? legible : openers)];
 }
