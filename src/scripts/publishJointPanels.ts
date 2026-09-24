@@ -38,11 +38,27 @@ const ROOT = fileURLToPath(new URL('../..', import.meta.url));
 const OUT_DIR = `${ROOT}/public/anatomy/joints`;
 const OUT_TS = `${ROOT}/src/features/anatomy-revision/data/seed/jointPanels.generated.ts`;
 
-const VIEW_NAMES: Record<string, string> = {
-  'view-00': 'anterior',
-  'view-06': 'lateral',
-  'view-12': 'posterior',
+/**
+ * A frame's angle and the name that angle has. Copied from the sub-region
+ * plates (subRegionPlates.generated.ts), which are the same twelve-frame
+ * turntable: a joint and a sub-region photographed from 30 degrees must not
+ * disagree about what "30 degrees" is called.
+ */
+const VIEW_FOR_ANGLE: Record<number, string> = {
+  0: 'anterior', 30: 'anterolateral', 60: 'anterolateral', 90: 'lateral',
+  120: 'posterolateral', 150: 'posterolateral', 180: 'posterior',
+  210: 'posteromedial', 240: 'posteromedial', 270: 'medial',
+  300: 'anteromedial', 330: 'anteromedial',
 };
+
+/** "view-06" is the sixth 15-degree step, so 90 degrees. */
+const angleOfView = (view: string): number => (Number(view.replace('view-', '')) * 15) % 360;
+
+/** "a090", the segment that makes a set of frames one picture (lib/rotationFrames.ts). */
+const angleSlug = (angle: number): string => `a${String(angle).padStart(3, '0')}`;
+
+/** Every frame of the turntable, in the order a student turns through them. */
+const VIEW_DIRS: string[] = Array.from({ length: 12 }, (_, i) => `view-${String(i * 2).padStart(2, '0')}`);
 
 function parseArgs(argv: string[]): Record<string, string> {
   const out: Record<string, string> = {};
@@ -77,6 +93,8 @@ const withBands = new Set(
 mkdirSync(OUT_DIR, { recursive: true });
 
 interface Row {
+  /** Degrees around the vertical axis; 0 is anterior. Makes each frame its own picture. */
+  angle: number;
   structureId: string;
   name: string;
   region: string;
@@ -103,9 +121,12 @@ for (const jointId of readdirSync(masksRoot).sort()) {
     continue;
   }
 
-  for (const [viewDir, viewName] of Object.entries(VIEW_NAMES)) {
-    if (!withBands.has(`joint-${jointId}-${viewName}`)) {
-      skipped.push(`${jointId} ${viewName}: joint line not visible from here`);
+  for (const viewDir of VIEW_DIRS) {
+    const angle = angleOfView(viewDir);
+    const viewName = VIEW_FOR_ANGLE[angle];
+    const imageId = `joint-${jointId}-${angleSlug(angle)}-plate`;
+    if (!withBands.has(imageId)) {
+      skipped.push(`${jointId} ${angle}\u00b0: joint line not visible from here`);
       continue;
     }
 
@@ -115,7 +136,7 @@ for (const jointId of readdirSync(masksRoot).sort()) {
       continue;
     }
 
-    const dest = join(OUT_DIR, `${jointId}-${viewName}.webp`);
+    const dest = join(OUT_DIR, `${jointId}-${angleSlug(angle)}-plate.webp`);
     // Flattened onto the same near-white the region plates use. A transparent
     // PNG would composite against whatever card colour is behind it, and the
     // bone is nearly white, so on a light card the skeleton would vanish.
@@ -133,6 +154,7 @@ for (const jointId of readdirSync(masksRoot).sort()) {
       region: joint.region,
       subregion: joint.subregion,
       view: viewName,
+      angle,
       width: info.width,
       height: info.height,
     });
@@ -143,7 +165,7 @@ const body = rows
   .map(
     (r) =>
       `  { structureId: '${r.structureId}', name: ${JSON.stringify(r.name)}, ` +
-      `region: '${r.region}', subregion: '${r.subregion}', view: '${r.view}', ` +
+      `region: '${r.region}', subregion: '${r.subregion}', view: '${r.view}', angle: ${r.angle}, ` +
       `width: ${r.width}, height: ${r.height} },`,
   )
   .join('\n');
@@ -168,6 +190,8 @@ export interface JointPanel {
   region: Region;
   subregion: SubRegion;
   view: ViewType;
+  /** Degrees around the vertical axis; 0 is anterior. */
+  angle: number;
   width: number;
   height: number;
 }

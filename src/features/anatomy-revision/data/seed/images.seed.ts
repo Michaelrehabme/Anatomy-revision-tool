@@ -159,11 +159,17 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
   // the reason those carry no hotspots while these do is pre-highlighting, not
   // the mode: these show the answer nowhere.
   ...JOINT_PANELS.map((panel): AnatomyImageAsset => {
-    const id = `joint-${panel.structureId}-${panel.view}`;
+    // A TURNTABLE, LIKE EVERY OTHER FAMILY. The angle is what makes twelve
+    // frames one picture a student can walk round: lib/rotationFrames.ts reads
+    // the `-aNNN-` segment, locate asks once per set, and identify opens on
+    // one frame of it. Named views alone could not do this — two of the twelve
+    // angles share a name, so the ids collided.
+    const slug = `a${String(panel.angle).padStart(3, '0')}`;
+    const id = `joint-${panel.structureId}-${slug}-plate`;
     return {
       id,
-      filePath: `/anatomy/joints/${panel.structureId}-${panel.view}.webp`,
-      slideTitle: `${panel.name} — ${panel.view[0].toUpperCase()}${panel.view.slice(1)} View`,
+      filePath: `/anatomy/joints/${panel.structureId}-${slug}-plate.webp`,
+      slideTitle: `${panel.name} — ${panel.view[0].toUpperCase()}${panel.view.slice(1)} View (${panel.angle}°)`,
       mode: 'single-structure',
       structureId: panel.structureId,
       region: panel.region,

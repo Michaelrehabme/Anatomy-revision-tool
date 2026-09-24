@@ -77,7 +77,14 @@ export function promptImagesFor(
    */
   const MIN_LEGIBLE_AREA = 0.015;
   const own = openers.filter((img) => isOwnPlate(img, structure));
-  if (own.length) return own;
+  if (own.length) {
+    // A TURNTABLE BEATS A SNAPSHOT. Several joints have both: twelve frames of
+    // their own, and an older single-frame panel from when they had no
+    // rotation. Asking both is asking twice, and the flat one is the poorer
+    // question — a student cannot turn it to see what they are looking at.
+    const rotatable = own.filter((img) => rotationSetKey(img.id));
+    return rotatable.length ? rotatable : own;
+  }
   const legible = openers.filter((img) => areaIn(img, structure.id) >= MIN_LEGIBLE_AREA);
   // Nothing framed for it and nothing legible: keep the best picture there is
   // rather than dropping the structure out of identify altogether.
