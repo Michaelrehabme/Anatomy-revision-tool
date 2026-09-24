@@ -73,8 +73,8 @@ interface PartOverride {
   bilateral?: boolean;
   /** Keep every level's contact, not just the closest: the discs down a spine, the knuckles across a hand. */
   allContacts?: boolean;
-  /** The angles worth rendering, where a joint is unsighted from some of them. */
-  views?: number[];
+  /** Frames to sit out, where the joint is visible but the picture is no use. */
+  skipViews?: number[];
   /** Pixels of reach when finding the seam, for an articulation broader than a hairline. */
   seam?: number;
   /** Pixels of catch area around the line, where a tap still passes. */
@@ -181,7 +181,7 @@ const PART_OVERRIDE: Record<string, PartOverride> = {
     a: ['*Vertebra *'],
     b: ['*Intervertebral disc *'],
     allContacts: true,
-    views: [0, 12],
+    skipViews: [4, 6, 8, 16, 18, 20],
     seam: 9,
     catchMargin: 14,
   },
@@ -321,7 +321,7 @@ for (const joint of joints) {
     // to reach and to forgive. See PartOverride.
     ...(override?.bilateral ? { bilateral: true } : {}),
     ...(override?.allContacts ? { allContacts: true } : {}),
-    ...(override?.views ? { views: override.views } : {}),
+    ...(override?.skipViews ? { skipViews: override.skipViews } : {}),
     ...(override?.seam ? { seam: override.seam } : {}),
     ...(override?.catchMargin ? { catchMargin: override.catchMargin } : {}),
     ...(override?.useSurface ? { useSurface: true } : {}),

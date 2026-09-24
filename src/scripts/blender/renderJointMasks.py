@@ -439,11 +439,14 @@ for jid in wanted:
     # hours).
     side_meshes = {"a": (mesh_a, mesh_b), "b": (mesh_b, mesh_a)}
 
-    # A JOINT CAN BE UNSIGHTED FROM AN ANGLE. The atlantoaxial joint sits
-    # behind the arch of the atlas and the body of the axis: from the front
-    # there is nothing of it to see, so a question asked there is a guess.
-    # `views` in the spec names the angles worth rendering for that joint.
-    for frame in j.get("views", views):
+    # A JOINT CAN BE UNSIGHTED FROM AN ANGLE, and mostly that looks after
+    # itself: a frame whose band traces too small to tap is dropped when the
+    # hotspots are derived, so a student only turns to angles where the joint
+    # can be seen. `skipViews` is for the other case — a frame where the joint
+    # IS visible and the picture is still no use, like the costovertebral
+    # joints seen laterally through a thicket of ribs.
+    skip = set(j.get("skipViews", []))
+    for frame in [f for f in views if f not in skip]:
         # The joint line, rendered from the 3D contact surfaces rather than
         # recovered from flattened silhouettes. Intersecting two bone
         # silhouettes cannot tell "adjacent" from "one in front of the other",

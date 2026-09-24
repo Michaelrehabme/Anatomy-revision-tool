@@ -53,11 +53,12 @@
      "Axis (C2)"
     ]
    },
-   "views": [
-    6,
-    12
-   ],
-   "viewsWhy": "No anterior view: the joint lies behind the anterior arch of the atlas and the body of the axis, so from the front it is unsighted."
+   "viewsWhy": "No anterior view: the joint lies behind the anterior arch of the atlas and the body of the axis, so from the front it is unsighted.",
+   "skipViews": [
+    0,
+    2,
+    22
+   ]
   },
   {
    "id": "carpometacarpal-joint-2",
@@ -211,9 +212,13 @@
    "bilateral": true,
    "allContacts": true,
    "frame": 0.3,
-   "views": [
-    0,
-    12
+   "skipViews": [
+    4,
+    6,
+    8,
+    16,
+    18,
+    20
    ]
   },
   {
@@ -447,13 +452,17 @@
     ]
    },
    "allContacts": true,
-   "views": [
-    0,
-    12
-   ],
    "seam": 9,
    "catchMargin": 14,
-   "frame": 0.26
+   "frame": 0.26,
+   "skipViews": [
+    4,
+    6,
+    8,
+    16,
+    18,
+    20
+   ]
   },
   {
    "id": "metacarpophalangeal-joint",
@@ -664,8 +673,16 @@
    "allContacts": true,
    "seam": 34,
    "catchMargin": 12,
-   "views": [
-    0
+   "skipViews": [
+    10,
+    12,
+    14,
+    4,
+    6,
+    8,
+    16,
+    18,
+    20
    ]
   },
   {
@@ -737,8 +754,10 @@
    },
    "bilateral": true,
    "allContacts": true,
-   "views": [
-    0
+   "skipViews": [
+    10,
+    12,
+    14
    ]
   },
   {
@@ -772,11 +791,12 @@
    },
    "bilateral": true,
    "allContacts": true,
-   "views": [
-    0,
-    6
-   ],
-   "frame": 0.3
+   "frame": 0.3,
+   "skipViews": [
+    10,
+    12,
+    14
+   ]
   },
   {
    "id": "subtalar-joint",
