@@ -19,7 +19,7 @@
     "admin:delete-dormant": "tsx scripts/deleteDormantAccounts.ts",
     "admin:account": "tsx scripts/accountData.ts",
     "admin:cohort-report": "tsx scripts/cohortReport.ts",
-    "deploy:check": "node scripts/deployCheck.mjs",
+    "deploy:check": "node scripts/deployCheck.mjs && npm run validate-content",
     "deploy": "npm run deploy:check && npm run build && npx netlify deploy --prod --dir=dist",
     "deploy:rules": "firebase deploy --only firestore:rules"
   },

@@ -43,10 +43,11 @@ export function TermsPage() {
           </strong>
         </p>
         <p>
-          Do not use it as a source of authority when assessing or treating a patient. Anatomical content is drawn from
-          published teaching material and open anatomical models and may contain errors; some illustrations are
-          computer-generated and are being replaced. For clinical practice, use a current textbook, your professional
-          body&rsquo;s guidance and your supervisor.
+          Do not use it as a source of authority when assessing or treating a patient. Anatomical content is drafted
+          with AI assistance and checked against published works family by family; some of it has not been checked yet,
+          and it may contain errors. The{' '}
+          <Link to="/sources" style={{ color: 'var(--accd)' }}>sources page</Link> says which is which. For clinical
+          practice, use a current textbook, your professional body&rsquo;s guidance and your supervisor.
         </p>
         <p>Nothing here creates a clinical relationship or constitutes medical advice.</p>
       </Section>

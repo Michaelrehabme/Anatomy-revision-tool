@@ -21,6 +21,13 @@ import type { Area, Region, SubRegion } from '../../types/region';
  * sentence: it is what makes the derivation checkable. See the muscle dataset
  * section of docs/BACKLOG-STORE-MONETISATION.md.
  *
+ * AND THE DECK IS NOT THE ORIGIN EITHER. It drew on Visible Body (owner,
+ * 23 Sep 2026), so the chain is Visible Body -> the deck -> here, and `source.via`
+ * below records it. That makes the severance above MORE load-bearing, not less:
+ * attachment facts are not copyrightable, a compilation's wording is, and the
+ * re-derivation is what keeps the shipped prose clear of both. Do not "tidy up"
+ * deriveActionText.mjs by pasting sentences back in.
+ *
  * Fields with no equivalent in the source data (imageIds, eligibility,
  * difficulty, tags) are derived below rather than hand-maintained:
  * - imageIds: left empty here, populated by lib/linkImages.ts in index.ts
@@ -525,7 +532,10 @@ export const MUSCLE_STRUCTURES: MuscleStructure[] = RAW_MUSCLES.map((m): MuscleS
     clinical: m.clinical,
     notes: m.notes,
     needsReview: m.needsReview,
-    source: m.source,
+    // The deck is the second link, not the first: it drew on Visible Body
+    // (owner, 23 Sep 2026). Recorded here rather than in muscles.raw.json,
+    // which is a verbatim copy of its upstream file and has to stay one.
+    source: m.source ? { ...m.source, via: 'Visible Body' } : m.source,
     phoneticSpelling: PHONETIC_SPELLINGS[m.id],
     ...CLINICAL_CONTENT[m.id],
   };

@@ -160,6 +160,7 @@ const UNWATCHED = [
   '**/*.hotspots.json',
   '**/*.hotspots.v2.json',
   '**/*.data.json',
+  '**/bone-*.json',
   '**/joint-*.json',
   '**/landmark-*.json',
   '**/ligament-*.json',

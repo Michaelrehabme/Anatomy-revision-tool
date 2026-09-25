@@ -120,6 +120,28 @@ const ABBREVIATIONS: Record<string, string> = {
   'fibular-collateral-ligament': 'LCL', 'acromioclavicular-ligament': 'AC ligament', 'ulnar-collateral-ligament': 'UCL',
 };
 
+/**
+ * Names these ligaments are also known by, beyond their abbreviation.
+ *
+ * Added after the attachment reconciliation found bone and landmark claims
+ * failing to match a ligament the dataset DOES hold, purely because the claim
+ * used the other name: "Ligamentum nuchae" against nuchal-ligament, "Spring
+ * ligament" against plantar-calcaneonavicular-ligament. Aliases also feed
+ * answer matching, so a student typing the clinical name is now right too —
+ * which is the better reason for them to be here.
+ *
+ * Only unambiguous synonyms: one name, one structure. "Medial collateral
+ * ligament" is deliberately absent because the seed splits it into a deep and
+ * a superficial part, and the name would match both.
+ */
+const SYNONYMS: Record<string, string[]> = {
+  'nuchal-ligament': ['Ligamentum nuchae'],
+  'plantar-calcaneonavicular-ligament': ['Spring ligament'],
+  'fibular-collateral-ligament': ['Lateral collateral ligament'],
+  'ligamenta-flava': ['Ligamentum flavum'],
+  'interspinous-ligaments': ['Interspinous ligament'],
+};
+
 interface Correction {
   attachmentStructureIds?: string[];
   description?: string;
@@ -285,7 +307,8 @@ const entries = chosen.map((l) => {
     region: ${q(l.region)},
     subregion: ${q(l.subregion)},
     description: ${q(description)},
-    aliases: [${abbr ? q(abbr) : ''}],${abbr ? `\n    abbreviation: ${q(abbr)},` : ''}
+    aliases: [${[...new Set([...(abbr ? [abbr] : []), ...(SYNONYMS[l.id] ?? [])])].map(q).join(", ")}],${abbr ? `
+    abbreviation: ${q(abbr)},` : ""}
     attachmentStructureIds: [${ids.map(q).join(', ')}],${jointId ? `\n    jointId: ${q(jointId)},` : ''}
     imageIds: [],
     eligibility: { flashcard: true, mcq: true, locate: true },

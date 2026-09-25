@@ -337,6 +337,35 @@ export const BONE_STRUCTURES: BoneStructure[] = [
     notes: null,
   },
   {
+    id: 'occipital-bone',
+    name: 'Occipital Bone',
+    category: 'bone',
+    region: 'back-core',
+    subregion: 'neck',
+    description:
+      'The bone at the back and base of the skull. Its two occipital condyles sit either side of the foramen magnum and rest on the atlas, which is how the head is carried on the neck.',
+    attachments: [
+      'Trapezius and semispinalis capitis attach along the superior nuchal line',
+      'Ligamentum nuchae attaches to the external occipital protuberance and crest',
+      'Rectus capitis posterior major and minor attach to the nuchal lines',
+    ],
+    articulations: [
+      'Atlanto-occipital joint with the atlas (C1), between the occipital condyles and the superior articular facets',
+    ],
+    aliases: ['Occiput'],
+    imageIds: [],
+    // No plate renders the skull, so a locate question would have no target.
+    eligibility: { flashcard: false, mcq: true, locate: false },
+    difficulty: 'medium',
+    tags: ['craniocervical'],
+    clinical:
+      'The suboccipital muscles attaching here are a common source of cervicogenic headache, referred from the upper cervical segments to the back of the head.',
+    // Added for the atlanto-occipital joint, which could not name both its
+    // halves without it (mesh cross-check, 24 Sep 2026). The only skull bone
+    // in the dataset, and deliberately so.
+    notes: 'Present so the atlanto-occipital joint has two sides; the skull is otherwise out of scope.',
+  },
+  {
     id: 'atlas-c1',
     name: 'Atlas (C1)',
     category: 'bone',

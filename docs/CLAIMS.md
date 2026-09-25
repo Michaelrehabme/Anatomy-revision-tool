@@ -13,7 +13,8 @@ minutes, do not publish it. If it is not in this file, it should not be on a pub
 
 Rows whose evidence reads `validate-content: <key>=<number>` are checked by
 `npm run validate-content`, which counts the real content and **fails** if a published number has
-drifted. Keys: `structures`, `muscles`, `joints`, `areas`, `images`, `locatablemuscles`.
+drifted. Keys: `structures`, `muscles`, `joints`, `bones`, `landmarks`, `ligaments`, `areas`, `images`,
+`locatablemuscles`, `sourcechecked`, `sourcechecked<family>s`, `sourceheld`, `citedworks`.
 
 This is not bureaucracy. Every one of these had drifted before the file existed: the home page
 said "five regions" weeks after the ninth shipped, the meta description said "309 structures" when
@@ -28,7 +29,7 @@ To add a claim: put it in the table with that evidence format, and the check sta
 |---|---|---|---|
 | "122 muscles" | MarketingHome (hero, FAQ, price cards, figures) | `validate-content: muscles=122` | 2026-09-20 |
 | "nine regions" | MarketingHome (FAQ, price cards, figures) | `validate-content: areas=9` | 2026-09-20 |
-| "463 structures" | MarketingHome (FAQ), index.html meta, manifest | `validate-content: structures=463` | 2026-09-22 |
+| "464 structures" | MarketingHome (FAQ), index.html meta, manifest | `validate-content: structures=464` | 2026-09-22 |
 | "Learn every muscle by where it lives" / "drilled until you can locate them" | MarketingHome H1, index.html meta | `validate-content: locatablemuscles=122` — every muscle has a locate hotspot. **If that check ever fails, this headline becomes false and must change.** | 2026-09-20 |
 | "origin, insertion, nerve supply and action for every muscle" | index.html meta, manifest | `validateOina()` fails if any muscle lacks an answerable value for any prompt kind | 2026-09-20 |
 | "cross-referenced against Terminologia Anatomica" | index.html meta, manifest | `ta2-mapping.resolved.json` maps all 122 muscle ids to TA2 identifiers | 2026-09-20 |
@@ -57,7 +58,13 @@ To add a claim: put it in the table with that evidence format, and the check sta
 |---|---|---|---|
 | "Most anatomical renders derive from Z-Anatomy … CC BY-SA 4.0" | /attributions, /terms | Per-image `licence` and `credit` fields; `validate-content` warns on any unconfirmed licence. **No AI-generated imagery ships any more** (CR-033 item 8), so "most" is now conservative | 2026-09-20 |
 | "{n} images currently shipped, grouped by source" | /attributions | Computed at runtime from the seed — self-substantiating | 2026-09-20 |
-| Muscle data derives from "ALL_Muscles_of_the_body" (Vinnie Maynard, University of Salford), cross-referenced against TA2 | /attributions | The dataset provenance note (CR-033 item 4). The clinical sentences were removed and action text rewritten to common-knowledge terms | 2026-09-20 |
+| Muscle data derives from "ALL_Muscles_of_the_body" (Vinnie Maynard, University of Salford), cross-referenced against TA2, and the deck itself drew on Visible Body | /attributions, /sources | The dataset provenance note (CR-033 item 4). The clinical sentences were removed and action text rewritten to common-knowledge terms. `validate-content: sourcecheckedmuscles=122`. **The Visible Body link was missing until 23 Sep 2026 — see Corrected, below** | 2026-09-23 |
+| "Content is drafted with AI assistance, then checked against published works" | /sources, /terms | A statement about our own process, so self-substantiating — but it **binds**. If a family is ever authored by hand instead, the page changes first | 2026-09-23 |
+| "{n} of {total} structures rest on a named source" | /sources | Derived at render time from `provenance.generated.ts`; `validateProvenance()` fails the build if that file and the root `*-source-review` JSONs disagree. **Deliberately NOT a counted key**: the figure moves with every tranche, and a frozen number here would add churn without adding safety — the page states no typed number, so there is nothing to drift | 2026-09-23 |
+| "32 bones / 133 landmarks / 143 ligaments" | /sources | `validate-content: bones=32`, `validate-content: landmarks=133`, `validate-content: ligaments=143` | 2026-09-23 |
+| "{n} of the 143 ligaments have been checked against published works" | /sources | Derived and guarded by `validateProvenance()`; **not a counted key**, it moves with every tranche. Scope is **attachments only** — the page says so, and that caveat is the difference between this row and a false one | 2026-09-24 |
+| Per-family check progress, e.g. "22 of the 34 joints have been checked" | /sources | Derived per family from `provenance.generated.ts` and guarded by `validateProvenance()`. **Deliberately NOT counted keys**: these move with every tranche. They were frozen at 0 on 23 Sep and were stale within a day — the page, which counts rather than states, was right throughout | 2026-09-24 |
+| Works named on /sources are the works actually cited | /sources | `validateProvenance()` fails if any work on the excluded list (`EXCLUDED_WORKS`) still carries a citation. Dropping a name from the page while the record rests on it would make the work-set incomplete | 2026-09-23 |
 
 ## Privacy and security
 
@@ -105,6 +112,8 @@ The full set lives in docs/DATA-PROCESSING.md; the load-bearing ones are:
 | "14 atlas slides … All rights reserved" | README licensing section | Those slides were removed; nothing AI-generated ships |
 | "No purchase history — there is no purchasing" | STORE-DATA-DECLARATIONS.md | Written before billing shipped. **Would have been a false store declaration** |
 | "A test suite of 732 tests" | DATA-PROCESSING.md | 911 now; dated so a reader can tell how old it is |
+| Muscle data "derives from ALL_Muscles_of_the_body by Vinnie Maynard" | /attributions | True, but it named the second link of a three-link chain as though it were the first: the deck itself drew on Visible Body (owner, 23 Sep 2026). Now states the whole chain, on /attributions and /sources |
+| Anatomical content is "drawn from published teaching material and open anatomical models" | /terms | Incomplete once /sources existed to say more: it omitted that the content was AI-drafted and that three families were unchecked. Now says so and links to /sources |
 | "Cheaper than one textbook" | MarketingHome pricing heading | A comparison that stops being true the longer somebody subscribes: three years at £29.99 passes a £60 textbook. Replaced with what does not expire — that it goes everywhere with you, which the offline support actually backs |
 
 ## Routine

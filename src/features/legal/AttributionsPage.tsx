@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { ALL_IMAGES } from '../anatomy-revision/data/seed';
 import { LegalLayout, legalHeading, legalLabel, legalProse } from './LegalLayout';
 import { OSS_LICENCES } from './data/ossLicences.generated';
@@ -74,7 +75,14 @@ export function AttributionsPage() {
         <p className="mt-2" style={legalProse}>
           Origin, insertion, nerve supply and action data for the 122 muscles derives from
           &ldquo;ALL_Muscles_of_the_body&rdquo; by Vinnie Maynard, University of Salford, cross-referenced against
-          Terminologia Anatomica (TA2) identifiers.
+          Terminologia Anatomica (TA2) identifiers. That deck in turn drew on Visible Body, so the chain runs Visible
+          Body to the deck to here.
+        </p>
+        <p className="mt-3" style={legalProse}>
+          The wording in this app is not the deck&rsquo;s: the action descriptions were re-derived from each
+          muscle&rsquo;s own recorded actions and attachments, and the clinical sentences removed. Where every other
+          family&rsquo;s content came from, and how much of it has been checked, is on the{' '}
+          <Link to="/sources" style={{ color: 'var(--accd)' }}>sources page</Link>.
         </p>
       </section>
 

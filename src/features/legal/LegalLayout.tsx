@@ -60,6 +60,7 @@ export function LegalLayout({
           { to: '/privacy', label: 'Privacy' },
           { to: '/terms', label: 'Terms' },
           { to: '/attributions', label: 'Attributions' },
+          { to: '/sources', label: 'Sources' },
         ].map((item) => (
           <Link key={item.to} to={item.to} style={{ font: '400 13px/1 var(--font-ui)', color: 'var(--accd)' }}>
             {item.label}

@@ -1,0 +1,901 @@
+{
+ "schemaVersion": 1,
+ "note": "Literature source-check for the bones. Each row records what a NAMED work said about this structure, with the sentence it said it in. Written by src/scripts/sourceReview.ts --record; read by generateProvenance.ts, which is what /sources renders. A row graded verified needs a work carrying a quote plus a url or a named document, and a checked date, or validate-content fails. Corrections are hand-applied to the seed and then asserted here — an automated correction to unverified content is not evidence.",
+ "reviews": {
+  "femur": {
+   "grade": "verified",
+   "checked": "2026-09-24",
+   "works": [
+    {
+     "title": "ALL_Muscles_of_the_body — Vinnie Maynard, University of Salford",
+     "document": "ALL_Muscles_of_the_body.pdf",
+     "quote": "Gluteal tuberosity of the femur"
+    },
+    {
+     "title": "Femur - Wikipedia (Gray's, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Femur",
+     "quote": "The femur, or thigh bone is the only bone in the thigh - the region of the lower limb between the hip and the knee ... in humans the femur is the largest and thickest bone in the body"
+    }
+   ],
+   "facts": {
+    "attachments": {
+     "verdict": "confirmed",
+     "why": "All 5 attachment(s) corroborated exactly: the source places the named structure on this feature."
+    },
+    "articulations": {
+     "verdict": "confirmed",
+     "why": "All 2 articulation(s) corroborated exactly: each names a joint whose articulating surfaces were settled in the joint pass."
+    },
+    "description": {
+     "verdict": "confirmed",
+     "why": "The work defines this structure in its own words: \"The femur, or thigh bone is the only bone in the thigh - the region of the lower limb between the hip and the knee ... in humans the femur is the largest and thickest bone in the body\""
+    }
+   }
+  },
+  "tibia": {
+   "grade": "unverified",
+   "checked": "2026-09-24",
+   "works": [
+    {
+     "title": "ALL_Muscles_of_the_body — Vinnie Maynard, University of Salford",
+     "document": "ALL_Muscles_of_the_body.pdf",
+     "quote": "Proximal medial surface of the tibia at the pes anserinus"
+    },
+    {
+     "title": "Tibia - Wikipedia (Gray's, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Tibia",
+     "quote": "The tibia, also known as the shinbone, is the larger, stronger, and anterior of the two bones in the leg below the knee (the other being the fibula, behind and to the outside of the tibia); it connects the knee with the ankle."
+    }
+   ],
+   "facts": {
+    "attachments": {
+     "verdict": "held",
+     "why": "NOT SETTLED. 2 of 3 corroborated exactly. 1 name a structure this repo does not hold: \"Patellar ligament insertion — tibial tuberosity\"."
+    },
+    "articulations": {
+     "verdict": "confirmed",
+     "why": "All 3 articulation(s) corroborated exactly: each names a joint whose articulating surfaces were settled in the joint pass."
+    },
+    "description": {
+     "verdict": "confirmed",
+     "why": "The work defines this structure in its own words: \"The tibia, also known as the shinbone, is the larger, stronger, and anterior of the two bones in the leg below the knee (the other being the fibula, behind and to the outside of the tibia); it connects the knee with the ankle.\""
+    }
+   }
+  },
+  "humerus": {
+   "grade": "unverified",
+   "checked": "2026-09-24",
+   "works": [
+    {
+     "title": "ALL_Muscles_of_the_body — Vinnie Maynard, University of Salford",
+     "document": "ALL_Muscles_of_the_body.pdf",
+     "quote": "Greater tubercle of humerus"
+    },
+    {
+     "title": "Humerus - Wikipedia (Gray's, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Humerus",
+     "quote": "The humerus is a long bone in the arm that runs from the shoulder to the elbow."
+    }
+   ],
+   "facts": {
+    "attachments": {
+     "verdict": "held",
+     "why": "NOT SETTLED. 3 of 4 corroborated exactly. 1 name a structure this repo does not hold: \"Biceps brachii tendon — intertubercular (bicipital) groove\"."
+    },
+    "articulations": {
+     "verdict": "confirmed",
+     "why": "All 2 articulation(s) corroborated exactly: each names a joint whose articulating surfaces were settled in the joint pass."
+    },
+    "description": {
+     "verdict": "confirmed",
+     "why": "The work defines this structure in its own words: \"The humerus is a long bone in the arm that runs from the shoulder to the elbow.\""
+    }
+   }
+  },
+  "scapula": {
+   "grade": "unverified",
+   "checked": "2026-09-24",
+   "works": [
+    {
+     "title": "ALL_Muscles_of_the_body — Vinnie Maynard, University of Salford",
+     "document": "ALL_Muscles_of_the_body.pdf",
+     "quote": "Supraspinous fossa of scapula"
+    },
+    {
+     "title": "Scapula - Wikipedia (Gray's, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Scapula",
+     "quote": "The scapula, also known as the shoulder blade, is the bone that connects the humerus (upper arm bone) with the clavicle (collar bone)."
+    }
+   ],
+   "facts": {
+    "attachments": {
+     "verdict": "held",
+     "why": "NOT SETTLED. 4 of 6 corroborated exactly. 2 name a structure this repo does not hold: \"Long head of biceps origin — supraglenoid tubercle\"; \"Long head of triceps origin — infraglenoid tubercle\"."
+    },
+    "articulations": {
+     "verdict": "confirmed",
+     "why": "All 2 articulation(s) corroborated exactly: each names a joint whose articulating surfaces were settled in the joint pass."
+    },
+    "description": {
+     "verdict": "confirmed",
+     "why": "The work defines this structure in its own words: \"The scapula, also known as the shoulder blade, is the bone that connects the humerus (upper arm bone) with the clavicle (collar bone).\""
+    }
+   }
+  },
+  "pelvis": {
+   "grade": "verified",
+   "checked": "2026-09-24",
+   "works": [
+    {
+     "title": "ALL_Muscles_of_the_body — Vinnie Maynard, University of Salford",
+     "document": "ALL_Muscles_of_the_body.pdf",
+     "quote": "Anterior superior iliac spine (ASIS)"
+    },
+    {
+     "title": "Hip bone - Wikipedia (Gray's, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Hip_bone",
+     "quote": "The hip bone (os coxae, innominate bone, or coxal bone) is a large flat bone ... it is composed of three parts: the ilium, ischium, and the pubis ... By the end of puberty the three regions will have fused together"
+    }
+   ],
+   "facts": {
+    "attachments": {
+     "verdict": "confirmed",
+     "why": "All 6 attachment(s) corroborated exactly: the source places the named structure on this feature."
+    },
+    "articulations": {
+     "verdict": "confirmed",
+     "why": "All 3 articulation(s) corroborated exactly: each names a joint whose articulating surfaces were settled in the joint pass."
+    },
+    "description": {
+     "verdict": "confirmed",
+     "why": "The work defines this structure in its own words: \"The hip bone (os coxae, innominate bone, or coxal bone) is a large flat bone ... it is composed of three parts: the ilium, ischium, and the pubis ... By the end of puberty the three regions will have fused together\""
+    }
+   }
+  },
+  "ulna": {
+   "grade": "verified",
+   "checked": "2026-09-24",
+   "works": [
+    {
+     "title": "ALL_Muscles_of_the_body — Vinnie Maynard, University of Salford",
+     "document": "ALL_Muscles_of_the_body.pdf",
+     "quote": "Olecranon process of ulna"
+    },
+    {
+     "title": "Ulna - Wikipedia (Gray's, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Ulna",
+     "quote": "The ulna or ulnar bone is a long bone in the forearm stretching from the elbow to the wrist. It is on the same side of the forearm as the little finger, running parallel to the radius."
+    }
+   ],
+   "facts": {
+    "attachments": {
+     "verdict": "confirmed",
+     "why": "All 3 attachment(s) corroborated exactly: the source places the named structure on this feature."
+    },
+    "articulations": {
+     "verdict": "confirmed",
+     "why": "All 2 articulation(s) corroborated exactly: each names a joint whose articulating surfaces were settled in the joint pass."
+    },
+    "description": {
+     "verdict": "confirmed",
+     "why": "The work defines this structure in its own words: \"The ulna or ulnar bone is a long bone in the forearm stretching from the elbow to the wrist. It is on the same side of the forearm as the little finger, running parallel to the radius.\""
+    }
+   }
+  },
+  "radius": {
+   "grade": "verified",
+   "checked": "2026-09-24",
+   "works": [
+    {
+     "title": "ALL_Muscles_of_the_body — Vinnie Maynard, University of Salford",
+     "document": "ALL_Muscles_of_the_body.pdf",
+     "quote": "Radial tuberosity"
+    },
+    {
+     "title": "Radius (bone) - Wikipedia (Gray's, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Radius_(bone)",
+     "quote": "The radius or radial bone is one of the two large bones of the forearm, the other being the ulna ... it extends from the lateral side of the elbow to the thumb side of the wrist and runs parallel to the ulna."
+    }
+   ],
+   "facts": {
+    "attachments": {
+     "verdict": "confirmed",
+     "why": "All 4 attachment(s) corroborated exactly: the source places the named structure on this feature."
+    },
+    "articulations": {
+     "verdict": "confirmed",
+     "why": "All 3 articulation(s) corroborated exactly: each names a joint whose articulating surfaces were settled in the joint pass."
+    },
+    "description": {
+     "verdict": "confirmed",
+     "why": "The work defines this structure in its own words: \"The radius or radial bone is one of the two large bones of the forearm, the other being the ulna ... it extends from the lateral side of the elbow to the thumb side of the wrist and runs parallel to the ulna.\""
+    }
+   }
+  },
+  "clavicle": {
+   "grade": "unverified",
+   "checked": "2026-09-24",
+   "works": [
+    {
+     "title": "ALL_Muscles_of_the_body — Vinnie Maynard, University of Salford",
+     "document": "ALL_Muscles_of_the_body.pdf",
+     "quote": "Lateral clavicle"
+    },
+    {
+     "title": "Clavicle - Wikipedia (Gray's, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Clavicle",
+     "quote": "The clavicle, collarbone, or keybone is a slender, S-shaped long bone approximately 15 centimetres long that serves as a strut between the shoulder blade and the sternum (breastbone)."
+    }
+   ],
+   "facts": {
+    "attachments": {
+     "verdict": "held",
+     "why": "NOT SETTLED. 4 of 5 corroborated exactly. 1 name a structure this repo does not hold: \"Subclavius insertion — inferior surface\"."
+    },
+    "articulations": {
+     "verdict": "confirmed",
+     "why": "All 2 articulation(s) corroborated exactly: each names a joint whose articulating surfaces were settled in the joint pass."
+    },
+    "description": {
+     "verdict": "confirmed",
+     "why": "The work defines this structure in its own words: \"The clavicle, collarbone, or keybone is a slender, S-shaped long bone approximately 15 centimetres long that serves as a strut between the shoulder blade and the sternum (breastbone).\""
+    }
+   }
+  },
+  "sternum": {
+   "grade": "unverified",
+   "checked": "2026-09-24",
+   "works": [
+    {
+     "title": "ALL_Muscles_of_the_body — Vinnie Maynard, University of Salford",
+     "document": "ALL_Muscles_of_the_body.pdf",
+     "quote": "Sternocostal head: sternum & costal cartilages 1–6"
+    },
+    {
+     "title": "Sternum - Wikipedia (Gray's, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Sternum",
+     "quote": "The sternum or breastbone is a long flat bone located in the central part of the chest ... Its three regions are the manubrium, the body, and the xiphoid process."
+    }
+   ],
+   "facts": {
+    "attachments": {
+     "verdict": "held",
+     "why": "NOT SETTLED. 2 of 3 corroborated exactly. 1 name a structure this repo does not hold: \"Costal cartilages of ribs 1–7 attach along the lateral borders\"."
+    },
+    "articulations": {
+     "verdict": "confirmed",
+     "why": "All 3 articulation(s) corroborated exactly: each names a joint whose articulating surfaces were settled in the joint pass."
+    },
+    "description": {
+     "verdict": "confirmed",
+     "why": "The work defines this structure in its own words: \"The sternum or breastbone is a long flat bone located in the central part of the chest ... Its three regions are the manubrium, the body, and the xiphoid process.\""
+    }
+   }
+  },
+  "ribs": {
+   "grade": "unverified",
+   "checked": "2026-09-24",
+   "works": [
+    {
+     "title": "ALL_Muscles_of_the_body — Vinnie Maynard, University of Salford",
+     "document": "ALL_Muscles_of_the_body.pdf",
+     "quote": "Inferior border of ribs above"
+    },
+    {
+     "title": "Rib cage - Wikipedia (Gray's, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Rib_cage",
+     "quote": "A typical human thoracic cage consists of 12 pairs of ribs and the adjoining costal cartilages ... Ribs that articulate directly with the sternum are called true ribs, whereas those that do not articulate directly are termed false ribs. The false ribs include the floating ribs (eleven and twelve) that are not attached to the sternum at all."
+    }
+   ],
+   "facts": {
+    "attachments": {
+     "verdict": "held",
+     "why": "NOT SETTLED. 3 of 4 corroborated exactly. 1 name a structure this repo does not hold: \"Scalene muscles insertion — ribs 1–2\"."
+    },
+    "articulations": {
+     "verdict": "confirmed",
+     "why": "All 3 articulation(s) corroborated exactly: each names a joint whose articulating surfaces were settled in the joint pass."
+    },
+    "description": {
+     "verdict": "confirmed",
+     "why": "The work defines this structure in its own words: \"A typical human thoracic cage consists of 12 pairs of ribs and the adjoining costal cartilages ... Ribs that articulate directly with the sternum are called true ribs, whereas those that do not articulate directly are termed false ribs. The false ribs include the floating ribs (eleven and twelve) that are not attached to the sternum at all.\""
+    }
+   }
+  },
+  "cervical-vertebrae": {
+   "grade": "unverified",
+   "checked": "2026-09-24",
+   "works": [
+    {
+     "title": "ALL_Muscles_of_the_body — Vinnie Maynard, University of Salford",
+     "document": "ALL_Muscles_of_the_body.pdf",
+     "quote": "Spinous processes of upper thoracic & cervical vertebrae"
+    },
+    {
+     "title": "Cervical vertebrae - Wikipedia (Gray's, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Cervical_vertebrae",
+     "quote": "In tetrapods, cervical vertebrae are the vertebrae of the neck, immediately below the skull."
+    }
+   ],
+   "facts": {
+    "attachments": {
+     "verdict": "held",
+     "why": "NOT SETTLED. 1 of 3 corroborated exactly. 2 name a structure this repo does not hold: \"Longus colli and longus capitis attach to the vertebral bodies\"; \"Splenius cervicis inserts on the transverse processes\"."
+    },
+    "articulations": {
+     "verdict": "confirmed",
+     "why": "All 3 articulation(s) corroborated exactly: each names a joint whose articulating surfaces were settled in the joint pass."
+    },
+    "description": {
+     "verdict": "confirmed",
+     "why": "The work defines this structure in its own words: \"In tetrapods, cervical vertebrae are the vertebrae of the neck, immediately below the skull.\""
+    }
+   }
+  },
+  "occipital-bone": {
+   "grade": "unverified",
+   "checked": "2026-09-24",
+   "works": [
+    {
+     "title": "Occipital bone - Wikipedia (Gray's, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Occipital_bone",
+     "quote": "The occipital bone is a cranial dermal bone and the main bone of the occiput (back and lower part of the skull) ... At the base of the skull in the occipital bone, there is a large oval opening called the foramen magnum"
+    }
+   ],
+   "facts": {
+    "attachments": {
+     "verdict": "held",
+     "why": "NOT SETTLED. 1 of 3 corroborated exactly. 2 name a structure this repo does not hold: \"Ligamentum nuchae attaches to the external occipital protuberance and crest\"; \"Rectus capitis posterior major and minor attach to the nuchal lines\"."
+    },
+    "articulations": {
+     "verdict": "confirmed",
+     "why": "All 1 articulation(s) corroborated exactly: each names a joint whose articulating surfaces were settled in the joint pass."
+    },
+    "description": {
+     "verdict": "confirmed",
+     "why": "The work defines this structure in its own words: \"The occipital bone is a cranial dermal bone and the main bone of the occiput (back and lower part of the skull) ... At the base of the skull in the occipital bone, there is a large oval opening called the foramen magnum\""
+    }
+   }
+  },
+  "atlas-c1": {
+   "grade": "unverified",
+   "checked": "2026-09-24",
+   "works": [
+    {
+     "title": "Atlas (anatomy) - Wikipedia (Gray's, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Atlas_(anatomy)",
+     "quote": "In anatomy, the atlas (C1) is the most superior (first) cervical vertebra of the spine and is located in the neck ... The atlas's chief peculiarity is that it has no body, which has fused with the next vertebra."
+    }
+   ],
+   "facts": {
+    "attachments": {
+     "verdict": "held",
+     "why": "NOT SETTLED. 0 of 1 corroborated exactly. 1 name a structure this repo does not hold: \"Alar and transverse ligaments attach to the lateral masses and anterior arch\"."
+    },
+    "articulations": {
+     "verdict": "confirmed",
+     "why": "All 2 articulation(s) corroborated exactly: each names a joint whose articulating surfaces were settled in the joint pass."
+    },
+    "description": {
+     "verdict": "confirmed",
+     "why": "The work defines this structure in its own words: \"In anatomy, the atlas (C1) is the most superior (first) cervical vertebra of the spine and is located in the neck ... The atlas's chief peculiarity is that it has no body, which has fused with the next vertebra.\""
+    }
+   }
+  },
+  "axis-c2": {
+   "grade": "unverified",
+   "checked": "2026-09-24",
+   "works": [
+    {
+     "title": "Axis (anatomy) - Wikipedia (Gray's, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Axis_(anatomy)",
+     "quote": "the axis is the second cervical vertebra (C2) of the spine, immediately inferior to the atlas, upon which the head rests"
+    }
+   ],
+   "facts": {
+    "attachments": {
+     "verdict": "held",
+     "why": "NOT SETTLED. 0 of 1 corroborated exactly. 1 name a structure this repo does not hold: \"Alar and apical ligaments attach to the dens\"."
+    },
+    "articulations": {
+     "verdict": "confirmed",
+     "why": "All 1 articulation(s) corroborated exactly: each names a joint whose articulating surfaces were settled in the joint pass."
+    },
+    "description": {
+     "verdict": "confirmed",
+     "why": "The work defines this structure in its own words: \"the axis is the second cervical vertebra (C2) of the spine, immediately inferior to the atlas, upon which the head rests\""
+    }
+   }
+  },
+  "c7-vertebra": {
+   "grade": "unverified",
+   "checked": "2026-09-24",
+   "works": [
+    {
+     "title": "Vertebra prominens - Wikipedia (Gray's, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Vertebra_prominens",
+     "quote": "The vertebra prominens, or C7, has a distinctive long and prominent spinous process, which is palpable from the skin surface."
+    }
+   ],
+   "facts": {
+    "attachments": {
+     "verdict": "held",
+     "why": "NOT SETTLED. 2 of 3 corroborated exactly. 1 name a structure this repo does not hold: \"Ligamentum nuchae attaches to the spinous process\"."
+    },
+    "articulations": {
+     "verdict": "held",
+     "why": "NOT SETTLED. 2 of 3 corroborated exactly. 1 name a structure this repo does not hold: \"Costal facet for the first rib is absent — that belongs to T1, a common point of confusion\"."
+    },
+    "description": {
+     "verdict": "confirmed",
+     "why": "The work defines this structure in its own words: \"The vertebra prominens, or C7, has a distinctive long and prominent spinous process, which is palpable from the skin surface.\""
+    }
+   }
+  },
+  "thoracic-vertebrae": {
+   "grade": "unverified",
+   "checked": "2026-09-24",
+   "works": [
+    {
+     "title": "ALL_Muscles_of_the_body — Vinnie Maynard, University of Salford",
+     "document": "ALL_Muscles_of_the_body.pdf",
+     "quote": "Spinous processes of upper lumbar & lower thoracic vertebrae"
+    },
+    {
+     "title": "Thoracic vertebrae - Wikipedia (Gray's, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Thoracic_vertebrae",
+     "quote": "In vertebrates, thoracic vertebrae compose the middle segment of the vertebral column, between the cervical vertebrae and the lumbar vertebrae ... distinguished by the presence of facets on the sides of the bodies for articulation with the heads of the ribs"
+    }
+   ],
+   "facts": {
+    "attachments": {
+     "verdict": "held",
+     "why": "NOT SETTLED. 0 of 2 corroborated exactly. 2 name a structure this repo does not hold: \"Erector spinae and transversospinalis group muscles attach along the spinous/transverse processes\"; \"Rhomboids and trapezius attach to the spinous processes (upper/mid thoracic)\"."
+    },
+    "articulations": {
+     "verdict": "confirmed",
+     "why": "All 3 articulation(s) corroborated exactly: each names a joint whose articulating surfaces were settled in the joint pass."
+    },
+    "description": {
+     "verdict": "confirmed",
+     "why": "The work defines this structure in its own words: \"In vertebrates, thoracic vertebrae compose the middle segment of the vertebral column, between the cervical vertebrae and the lumbar vertebrae ... distinguished by the presence of facets on the sides of the bodies for articulation with the heads of the ribs\""
+    }
+   }
+  },
+  "lumbar-vertebrae": {
+   "grade": "unverified",
+   "checked": "2026-09-24",
+   "works": [
+    {
+     "title": "ALL_Muscles_of_the_body — Vinnie Maynard, University of Salford",
+     "document": "ALL_Muscles_of_the_body.pdf",
+     "quote": "Transverse processes of T12 and all lumbar vertebrae (L1–L5)"
+    },
+    {
+     "title": "Lumbar vertebrae - Wikipedia (Gray's, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Lumbar_vertebrae",
+     "quote": "The lumbar vertebrae are located between the thoracic vertebrae and sacrum ... In humans, there are typically five lumbar vertebrae."
+    }
+   ],
+   "facts": {
+    "attachments": {
+     "verdict": "held",
+     "why": "NOT SETTLED. 2 of 3 corroborated exactly. 1 name a structure this repo does not hold: \"Quadratus lumborum attaches to the transverse processes\"."
+    },
+    "articulations": {
+     "verdict": "confirmed",
+     "why": "All 3 articulation(s) corroborated exactly: each names a joint whose articulating surfaces were settled in the joint pass."
+    },
+    "description": {
+     "verdict": "confirmed",
+     "why": "The work defines this structure in its own words: \"The lumbar vertebrae are located between the thoracic vertebrae and sacrum ... In humans, there are typically five lumbar vertebrae.\""
+    }
+   }
+  },
+  "sacrum": {
+   "grade": "verified",
+   "checked": "2026-09-24",
+   "works": [
+    {
+     "title": "ALL_Muscles_of_the_body — Vinnie Maynard, University of Salford",
+     "document": "ALL_Muscles_of_the_body.pdf",
+     "quote": "Sacrum"
+    },
+    {
+     "title": "Sacrum - Wikipedia (Gray's, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Sacrum",
+     "quote": "The sacrum, in human anatomy, is a triangular bone at the base of the spine that forms by the fusing of the sacral vertebrae (S1-S5) between ages 18 and 30."
+    }
+   ],
+   "facts": {
+    "attachments": {
+     "verdict": "confirmed",
+     "why": "All 4 attachment(s) corroborated exactly: the source places the named structure on this feature."
+    },
+    "articulations": {
+     "verdict": "confirmed",
+     "why": "All 3 articulation(s) corroborated exactly: each names a joint whose articulating surfaces were settled in the joint pass."
+    },
+    "description": {
+     "verdict": "confirmed",
+     "why": "The work defines this structure in its own words: \"The sacrum, in human anatomy, is a triangular bone at the base of the spine that forms by the fusing of the sacral vertebrae (S1-S5) between ages 18 and 30.\""
+    }
+   }
+  },
+  "coccyx": {
+   "grade": "unverified",
+   "checked": "2026-09-24",
+   "works": [
+    {
+     "title": "ALL_Muscles_of_the_body — Vinnie Maynard, University of Salford",
+     "document": "ALL_Muscles_of_the_body.pdf",
+     "quote": "Coccyx"
+    },
+    {
+     "title": "Coccyx - Wikipedia (Gray's, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Coccyx",
+     "quote": "The coccyx, commonly referred to as the tailbone, is the final segment of the vertebral column ... It comprises three to five separate or fused coccygeal vertebrae below the sacrum."
+    }
+   ],
+   "facts": {
+    "attachments": {
+     "verdict": "held",
+     "why": "NOT SETTLED. 1 of 3 corroborated exactly. 2 name a structure this repo does not hold: \"Levator ani and coccygeus (pelvic floor) attach to its margins\"; \"Anococcygeal ligament attaches at the tip\"."
+    },
+    "articulations": {
+     "verdict": "confirmed",
+     "why": "All 1 articulation(s) corroborated exactly: each names a joint whose articulating surfaces were settled in the joint pass."
+    },
+    "description": {
+     "verdict": "confirmed",
+     "why": "The work defines this structure in its own words: \"The coccyx, commonly referred to as the tailbone, is the final segment of the vertebral column ... It comprises three to five separate or fused coccygeal vertebrae below the sacrum.\""
+    }
+   }
+  },
+  "patella": {
+   "grade": "verified",
+   "checked": "2026-09-24",
+   "works": [
+    {
+     "title": "ALL_Muscles_of_the_body — Vinnie Maynard, University of Salford",
+     "document": "ALL_Muscles_of_the_body.pdf",
+     "quote": "Tibial tuberosity via the patellar tendon"
+    },
+    {
+     "title": "Patella - Wikipedia (Gray's, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Patella",
+     "quote": "The patella, also known as the kneecap, is a flat, rounded triangular bone which articulates with the femur and covers and protects the anterior articular surface of the knee joint ... the largest sesamoid bone in the body."
+    }
+   ],
+   "facts": {
+    "attachments": {
+     "verdict": "confirmed",
+     "why": "All 2 attachment(s) corroborated exactly: the source places the named structure on this feature."
+    },
+    "articulations": {
+     "verdict": "confirmed",
+     "why": "All 1 articulation(s) corroborated exactly: each names a joint whose articulating surfaces were settled in the joint pass."
+    },
+    "description": {
+     "verdict": "confirmed",
+     "why": "The work defines this structure in its own words: \"The patella, also known as the kneecap, is a flat, rounded triangular bone which articulates with the femur and covers and protects the anterior articular surface of the knee joint ... the largest sesamoid bone in the body.\""
+    }
+   }
+  },
+  "fibula": {
+   "grade": "verified",
+   "checked": "2026-09-24",
+   "works": [
+    {
+     "title": "ALL_Muscles_of_the_body — Vinnie Maynard, University of Salford",
+     "document": "ALL_Muscles_of_the_body.pdf",
+     "quote": "Head of the fibula"
+    },
+    {
+     "title": "Fibula - Wikipedia (Gray's, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Fibula",
+     "quote": "The fibula or calf bone is a leg bone on the lateral side of the tibia, to which it is connected above and below ... The fibula does not carry any significant load (weight) of the body."
+    }
+   ],
+   "facts": {
+    "attachments": {
+     "verdict": "confirmed",
+     "why": "All 3 attachment(s) corroborated exactly: the source places the named structure on this feature."
+    },
+    "articulations": {
+     "verdict": "confirmed",
+     "why": "All 3 articulation(s) corroborated exactly: each names a joint whose articulating surfaces were settled in the joint pass."
+    },
+    "description": {
+     "verdict": "confirmed",
+     "why": "The work defines this structure in its own words: \"The fibula or calf bone is a leg bone on the lateral side of the tibia, to which it is connected above and below ... The fibula does not carry any significant load (weight) of the body.\""
+    }
+   }
+  },
+  "carpals": {
+   "grade": "unverified",
+   "checked": "2026-09-24",
+   "works": [
+    {
+     "title": "Carpal bones - Wikipedia (Gray's, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Carpal_bones",
+     "quote": "The carpal bones are the eight small bones that make up the wrist (carpus) that connects the hand to the forearm."
+    }
+   ],
+   "facts": {
+    "attachments": {
+     "verdict": "held",
+     "why": "NOT SETTLED. 0 of 2 corroborated exactly. 2 name a structure this repo does not hold: \"Flexor retinaculum attaches across the palmar carpals, forming the carpal tunnel\"; \"Extensor retinaculum attaches across the dorsal carpals\"."
+    },
+    "articulations": {
+     "verdict": "confirmed",
+     "why": "All 3 articulation(s) corroborated exactly: each names a joint whose articulating surfaces were settled in the joint pass."
+    },
+    "description": {
+     "verdict": "confirmed",
+     "why": "The work defines this structure in its own words: \"The carpal bones are the eight small bones that make up the wrist (carpus) that connects the hand to the forearm.\""
+    }
+   }
+  },
+  "tarsals": {
+   "grade": "unverified",
+   "checked": "2026-09-24",
+   "works": [
+    {
+     "title": "ALL_Muscles_of_the_body — Vinnie Maynard, University of Salford",
+     "document": "ALL_Muscles_of_the_body.pdf",
+     "quote": "Navicular"
+    },
+    {
+     "title": "Tarsus (skeleton) - Wikipedia (Gray's, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Tarsus_(skeleton)",
+     "quote": "In the human body, the tarsus is a cluster of seven articulating bones in each foot situated between the lower end of the tibia and the fibula of the lower leg and the metatarsus."
+    }
+   ],
+   "facts": {
+    "attachments": {
+     "verdict": "held",
+     "why": "NOT SETTLED. 2 of 3 corroborated exactly. 1 name a structure this repo does not hold: \"Plantar fascia originates from the calcaneus\"."
+    },
+    "articulations": {
+     "verdict": "confirmed",
+     "why": "All 3 articulation(s) corroborated exactly: each names a joint whose articulating surfaces were settled in the joint pass."
+    },
+    "description": {
+     "verdict": "confirmed",
+     "why": "The work defines this structure in its own words: \"In the human body, the tarsus is a cluster of seven articulating bones in each foot situated between the lower end of the tibia and the fibula of the lower leg and the metatarsus.\""
+    }
+   }
+  },
+  "metacarpals": {
+   "grade": "unverified",
+   "checked": "2026-09-24",
+   "works": [
+    {
+     "title": "Metacarpal bones - Wikipedia (Gray's, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Metacarpal_bones",
+     "quote": "the metacarpal bones, or palm bones, collectively the metacarpus, are the appendicular bones that form the intermediate part of the hand between the phalanges (fingers) and the carpal bones (wrist bones)"
+    }
+   ],
+   "facts": {
+    "attachments": {
+     "verdict": "held",
+     "why": "NOT SETTLED. 1 of 2 corroborated exactly. 1 name a structure this repo does not hold: \"Interossei muscles originate from the metacarpal shafts\"."
+    },
+    "articulations": {
+     "verdict": "confirmed",
+     "why": "All 2 articulation(s) corroborated exactly: each names a joint whose articulating surfaces were settled in the joint pass."
+    },
+    "description": {
+     "verdict": "confirmed",
+     "why": "The work defines this structure in its own words: \"the metacarpal bones, or palm bones, collectively the metacarpus, are the appendicular bones that form the intermediate part of the hand between the phalanges (fingers) and the carpal bones (wrist bones)\""
+    }
+   }
+  },
+  "metatarsals": {
+   "grade": "unverified",
+   "checked": "2026-09-24",
+   "works": [
+    {
+     "title": "Metatarsal bones - Wikipedia (Gray's, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Metatarsal_bones",
+     "quote": "The metatarsal bones, collectively the metatarsus, are a group of five long bones in the midfoot, located between the tarsal bones (which form the heel and the ankle) and the phalanges (toes)."
+    }
+   ],
+   "facts": {
+    "attachments": {
+     "verdict": "held",
+     "why": "NOT SETTLED. 0 of 2 corroborated exactly. 2 name a structure this repo does not hold: \"Fibularis (peroneus) brevis inserts on the base of the fifth metatarsal\"; \"Fibularis (peroneus) longus inserts on the base of the first metatarsal\"."
+    },
+    "articulations": {
+     "verdict": "confirmed",
+     "why": "All 2 articulation(s) corroborated exactly: each names a joint whose articulating surfaces were settled in the joint pass."
+    },
+    "description": {
+     "verdict": "confirmed",
+     "why": "The work defines this structure in its own words: \"The metatarsal bones, collectively the metatarsus, are a group of five long bones in the midfoot, located between the tarsal bones (which form the heel and the ankle) and the phalanges (toes).\""
+    }
+   }
+  },
+  "phalanges-proximal-hand": {
+   "grade": "unverified",
+   "checked": "2026-09-24",
+   "works": [
+    {
+     "title": "Phalanx bone - Wikipedia (Gray's, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Phalanx_bone",
+     "quote": "The phalanges are digital bones in the hands and feet of most vertebrates ... The proximal phalanges are those that are closest to the hand or foot."
+    }
+   ],
+   "facts": {
+    "attachments": {
+     "verdict": "held",
+     "why": "NOT SETTLED. 0 of 1 corroborated exactly. 1 name a structure this repo does not hold: \"Interossei and lumbricals attach around the metacarpophalangeal joints\"."
+    },
+    "articulations": {
+     "verdict": "confirmed",
+     "why": "All 2 articulation(s) corroborated exactly: each names a joint whose articulating surfaces were settled in the joint pass."
+    },
+    "description": {
+     "verdict": "confirmed",
+     "why": "The work defines this structure in its own words: \"The phalanges are digital bones in the hands and feet of most vertebrates ... The proximal phalanges are those that are closest to the hand or foot.\""
+    }
+   }
+  },
+  "phalanges-middle-hand": {
+   "grade": "unverified",
+   "checked": "2026-09-24",
+   "works": [
+    {
+     "title": "Phalanx bone - Wikipedia (Gray's, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Phalanx_bone",
+     "quote": "The intermediate phalanx is not only intermediate in location, but usually also in size."
+    }
+   ],
+   "facts": {
+    "attachments": {
+     "verdict": "held",
+     "why": "NOT SETTLED. 0 of 1 corroborated exactly. 1 name a structure this repo does not hold: \"Flexor digitorum superficialis inserts on the middle phalanges\"."
+    },
+    "articulations": {
+     "verdict": "confirmed",
+     "why": "All 2 articulation(s) corroborated exactly: each names a joint whose articulating surfaces were settled in the joint pass."
+    },
+    "description": {
+     "verdict": "confirmed",
+     "why": "The work defines this structure in its own words: \"The intermediate phalanx is not only intermediate in location, but usually also in size.\""
+    }
+   }
+  },
+  "phalanges-distal-hand": {
+   "grade": "unverified",
+   "checked": "2026-09-24",
+   "works": [
+    {
+     "title": "Phalanx bone - Wikipedia (Gray's, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Phalanx_bone",
+     "quote": "The distal phalanges are the bones at the tips of the fingers or toes."
+    }
+   ],
+   "facts": {
+    "attachments": {
+     "verdict": "held",
+     "why": "NOT SETTLED. 0 of 1 corroborated exactly. 1 name a structure this repo does not hold: \"Flexor digitorum profundus and extensor tendons insert at the base of the distal phalanges\"."
+    },
+    "articulations": {
+     "verdict": "confirmed",
+     "why": "All 1 articulation(s) corroborated exactly: each names a joint whose articulating surfaces were settled in the joint pass."
+    },
+    "description": {
+     "verdict": "confirmed",
+     "why": "The work defines this structure in its own words: \"The distal phalanges are the bones at the tips of the fingers or toes.\""
+    }
+   }
+  },
+  "phalanges-proximal-foot": {
+   "grade": "unverified",
+   "checked": "2026-09-24",
+   "works": [
+    {
+     "title": "Phalanx bone - Wikipedia (Gray's, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Phalanx_bone",
+     "quote": "in the foot, the proximal phalanges have a body that is compressed from side to side, convex above, and concave below"
+    }
+   ],
+   "facts": {
+    "attachments": {
+     "verdict": "held",
+     "why": "NOT SETTLED. 0 of 1 corroborated exactly. 1 name a structure this repo does not hold: \"Lumbricals and interossei attach around the metatarsophalangeal joints\"."
+    },
+    "articulations": {
+     "verdict": "confirmed",
+     "why": "All 2 articulation(s) corroborated exactly: each names a joint whose articulating surfaces were settled in the joint pass."
+    },
+    "description": {
+     "verdict": "confirmed",
+     "why": "The work defines this structure in its own words: \"in the foot, the proximal phalanges have a body that is compressed from side to side, convex above, and concave below\""
+    }
+   }
+  },
+  "phalanges-middle-foot": {
+   "grade": "unverified",
+   "checked": "2026-09-24",
+   "works": [
+    {
+     "title": "Phalanx bone - Wikipedia (Gray's, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Phalanx_bone",
+     "quote": "The middle phalanges of the foot are remarkably small and short."
+    }
+   ],
+   "facts": {
+    "attachments": {
+     "verdict": "held",
+     "why": "NOT SETTLED. 0 of 1 corroborated exactly. 1 name a structure this repo does not hold: \"Flexor digitorum brevis inserts on the middle phalanges\"."
+    },
+    "articulations": {
+     "verdict": "confirmed",
+     "why": "All 2 articulation(s) corroborated exactly: each names a joint whose articulating surfaces were settled in the joint pass."
+    },
+    "description": {
+     "verdict": "confirmed",
+     "why": "The work defines this structure in its own words: \"The middle phalanges of the foot are remarkably small and short.\""
+    }
+   }
+  },
+  "sesamoids-foot": {
+   "grade": "unverified",
+   "checked": "2026-09-24",
+   "works": [
+    {
+     "title": "ALL_Muscles_of_the_body — Vinnie Maynard, University of Salford",
+     "document": "ALL_Muscles_of_the_body.pdf",
+     "quote": "Intersesamoid ligament (source-checked) attaches to sesamoids-foot"
+    },
+    {
+     "title": "Sesamoid bone - Wikipedia (Gray's, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Sesamoid_bone",
+     "quote": "a bone embedded within a tendon or a muscle ... the first metatarsal bone usually has two sesamoid bones at its connection to the big toe (both within the tendon of flexor hallucis brevis)"
+    }
+   ],
+   "facts": {
+    "attachments": {
+     "verdict": "held",
+     "why": "NOT SETTLED. 1 of 2 corroborated exactly. 1 name a structure this repo does not hold: \"Flexor hallucis brevis inserts through them, medial and lateral heads\"."
+    },
+    "articulations": {
+     "verdict": "held",
+     "why": "NOT SETTLED. 0 of 1 corroborated exactly. 1 name a structure this repo does not hold: \"The plantar surface of the head of the first metatarsal, in its two grooves\"."
+    },
+    "description": {
+     "verdict": "confirmed",
+     "why": "The work defines this structure in its own words: \"a bone embedded within a tendon or a muscle ... the first metatarsal bone usually has two sesamoid bones at its connection to the big toe (both within the tendon of flexor hallucis brevis)\""
+    }
+   }
+  },
+  "phalanges-distal-foot": {
+   "grade": "unverified",
+   "checked": "2026-09-24",
+   "works": [
+    {
+     "title": "Phalanx bone - Wikipedia (Gray's, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Phalanx_bone",
+     "quote": "The distal phalanges of the foot are smaller and are flattened from above downward compared to their hand equivalents."
+    }
+   ],
+   "facts": {
+    "attachments": {
+     "verdict": "held",
+     "why": "NOT SETTLED. 0 of 1 corroborated exactly. 1 name a structure this repo does not hold: \"Flexor hallucis longus/flexor digitorum longus and extensor tendons insert at the base of the distal phalanges\"."
+    },
+    "articulations": {
+     "verdict": "confirmed",
+     "why": "All 1 articulation(s) corroborated exactly: each names a joint whose articulating surfaces were settled in the joint pass."
+    },
+    "description": {
+     "verdict": "confirmed",
+     "why": "The work defines this structure in its own words: \"The distal phalanges of the foot are smaller and are flattened from above downward compared to their hand equivalents.\""
+    }
+   }
+  }
+ }
+}

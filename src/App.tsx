@@ -15,6 +15,9 @@ import { computeStreak } from './features/anatomy-revision/lib/streak';
 import type { Area } from './features/anatomy-revision/types/region';
 import type { QuestionType } from './features/anatomy-revision/types/question';
 import type { AnatomyRepository } from './features/anatomy-revision/data/repository';
+// The legal gate list. Static, and never LegalRoutes itself, which is lazy
+// below — six strings cost the entry chunk nothing, the legal bundle would not.
+import { LEGAL_PATHS } from './features/legal/legalPaths';
 import { Onboarding } from './features/anatomy-revision/components/Onboarding/Onboarding';
 import { Today } from './features/anatomy-revision/components/Today/Today';
 import { RegionPicker } from './features/anatomy-revision/components/RegionPicker/RegionPicker';
@@ -71,13 +74,6 @@ const EducatorApp = lazy(() => import('./features/educator/EducatorApp'));
  * not sit in the chunk every student downloads to answer a question.
  */
 const LegalRoutes = lazy(() => import('./features/legal/LegalRoutes'));
-
-/**
- * Paths LegalRoutes owns. Checked before every gate below — both stores and
- * UK GDPR require these reachable by someone with no account who has not been
- * through onboarding. /privacy and /terms join this list under CR-025.
- */
-const LEGAL_PATHS = ['/privacy', '/terms', '/attributions', '/accessibility', '/refunds'];
 
 /** Dev-only hotspot authoring tool (CR-007) — route only registered in dev, see the /dev/hotspots Route below. */
 const HotspotEditorApp = lazy(() => import('./features/hotspotEditor/HotspotEditorApp'));

@@ -22,6 +22,10 @@ import { correctValuesFor } from '../features/anatomy-revision/lib/questionGener
 import { acceptedVariantsFor, matchesSlot } from '../features/anatomy-revision/lib/oinaAnswer';
 import { stripHeadPrefix } from '../features/anatomy-revision/lib/oinaValues';
 import { auditHotspotSizes } from './lib/hotspotSizeAudit';
+import { validateProvenance } from './lib/validateProvenance';
+import { buildProvenance } from './lib/provenance';
+import { CATEGORIES, isBone, isLandmark, isLigament } from '../features/anatomy-revision/types/structure';
+import { fileURLToPath } from 'node:url';
 
 let errors = 0;
 let warnings = 0;
@@ -34,6 +38,38 @@ function fail(message: string): void {
 function warn(message: string): void {
   console.warn(`WARN:  ${message}`);
   warnings += 1;
+}
+
+const PROJECT_ROOT = fileURLToPath(new URL('../..', import.meta.url));
+
+/** Per-category totals, the shape buildProvenance expects. */
+function categoryTotals() {
+  return Object.fromEntries(
+    CATEGORIES.map((c) => [c, ALL_STRUCTURES.filter((s) => s.category === c).length]),
+  ) as Record<(typeof CATEGORIES)[number], number>;
+}
+
+/** The muscles' deck provenance, which is a seed field rather than a review file. */
+function muscleDeckSources() {
+  return ALL_STRUCTURES.filter(isMuscle)
+    .map((m) => m.source)
+    .filter((s): s is NonNullable<typeof s> => Boolean(s?.deck));
+}
+
+/**
+ * Counted keys for the provenance claims. Computed from the review files
+ * through the same reducer the page is generated from, so a claim and the
+ * page can never be checked against two different readings of the record.
+ */
+function provenanceCounts(): Record<string, number> {
+  const { families, works } = buildProvenance(PROJECT_ROOT, categoryTotals(), muscleDeckSources());
+  const counts: Record<string, number> = {
+    sourcechecked: families.reduce((n, f) => n + f.checked, 0),
+    sourceheld: families.reduce((n, f) => n + f.held, 0),
+    citedworks: works.length,
+  };
+  for (const f of families) counts['sourcechecked' + f.category + 's'] = f.checked;
+  return counts;
 }
 
 /**
@@ -59,6 +95,12 @@ function validateClaims(): void {
     joints: ALL_STRUCTURES.filter(isJoint).length,
     areas: AREAS.length,
     images: ALL_IMAGES.length,
+    bones: ALL_STRUCTURES.filter(isBone).length,
+    landmarks: ALL_STRUCTURES.filter(isLandmark).length,
+    ligaments: ALL_STRUCTURES.filter(isLigament).length,
+    // Provenance. /sources derives its own numbers, so these exist to catch a
+    // figure typed into prose ANYWHERE — a page, the README, a store listing.
+    ...provenanceCounts(),
     // "Learn every muscle by where it lives" is only true while this equals the
     // muscle count. It was false for months while the README still said so.
     locatablemuscles: (() => {
@@ -280,6 +322,7 @@ function main(): void {
   }
 
   validateClaims();
+  validateProvenance(PROJECT_ROOT, categoryTotals(), muscleDeckSources(), { fail, warn });
 
   console.log(
     `\nStructures per area: ` +

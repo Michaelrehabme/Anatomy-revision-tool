@@ -9,7 +9,13 @@
    "description": "A series of short transverse bands joining the plantar plates of adjacent metatarsophalangeal joints, binding the heads of the metatarsals together and holding the forefoot as a unit.",
    "confirmed": true,
    "source": "Labelled dorsal foot diagram and Netter plantar/lateral foot plate, supplied 13 Sept 2026",
-   "why": "It runs head to head between the plantar plates and never reaches a phalanx. The derived contact with the proximal phalanges is the mesh lying against their bases — the clearest case in the tranche of touching not being attaching."
+   "why": "Metatarsals only, which is what the seed says — confirming the first tranche's finding that it never reaches a phalanx.",
+   "checked": "2026-09-24",
+   "grade": "verified",
+   "sources": [
+    "Transverse metatarsal ligament - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Deep_transverse_metatarsal_ligament"
+   ],
+   "quote": "a narrow band which runs across and connects together the heads of all the metatarsal bones"
   },
   "deep-transverse-metacarpal-ligament": {
    "attachmentStructureIds": [
@@ -18,27 +24,45 @@
    "description": "Short transverse bands joining the palmar plates of the second to fifth metacarpophalangeal joints, binding the metacarpal heads together. The thumb is free of it, which is part of why it opposes.",
    "confirmed": true,
    "source": "By the same anatomy as the foot band above, which the supplied plates settle; standard teaching for the hand",
-   "why": "The hand's band is the metatarsal band's counterpart and attaches the same way — plate to plate across the metacarpal heads, not to the phalanges. Derivation put the metacarpals top anyway (3rd 22%, 2nd 17%, 4th 17%)."
+   "why": "Metacarpals only, and the work confirms the thumb is free of it — which is the point the seed's description makes.",
+   "grade": "verified",
+   "checked": "2026-09-24",
+   "sources": [
+    "Deep transverse metacarpal ligament - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Deep_transverse_metacarpal_ligament"
+   ],
+   "quote": "connects the palmar surfaces of metacarpophalangeal joints of all the fingers of the hand except the thumb"
   },
   "plantar-metatarsophalangeal-ligaments": {
    "confirmed": true,
    "source": "Netter lateral inset, 'Capsule and ligaments of metatarsophalangeal and interphalangeal joints'",
-   "why": "The plantar plate runs from the plantar aspect of the metatarsal head to the base of the proximal phalanx, which is what the derived pair already says.",
+   "why": "NOT SETTLED, and the attempt is recorded so it is not repeated. The work places these plates at the metatarsophalangeal joints, which is consistent with the seed pair, but names no metatarsal or phalangeal attachment. Needs a work that states the attachments.",
    "attachmentStructureIds": [
     "metatarsals",
     "phalanges-proximal-foot"
    ],
-   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision."
+   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision.",
+   "grade": "unverified",
+   "checked": "2026-09-24",
+   "sources": [
+    "Plantar ligaments - Wikipedia. https://en.wikipedia.org/wiki/Plantar_ligaments"
+   ],
+   "quote": "Plantar plates, fibrocartilaginous structures in the metatarsophalangeal and interphalangeal joints of the toes."
   },
   "collateral-metacarpophalangeal-ligaments": {
    "confirmed": true,
    "source": "Same lateral inset, and the collateral ligaments labelled at the MTP joints of the dorsal diagram",
-   "why": "A collateral runs from the tubercle on the metacarpal head to the base of the proximal phalanx. Derived pair is right.",
+   "why": "Metacarpals and proximal phalanges both confirmed, exactly as the seed pairs them.",
    "attachmentStructureIds": [
     "metacarpals",
     "phalanges-proximal-hand"
    ],
-   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision."
+   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision.",
+   "grade": "verified",
+   "checked": "2026-09-24",
+   "sources": [
+    "Collateral ligaments of metacarpophalangeal joints - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Collateral_ligaments_of_metacarpophalangeal_joints"
+   ],
+   "quote": "The collateral ligaments originate on depressions on each side of the metacarpal heads dorsal to axis of rotation. From there, they extend obliquely and distally to their insertions onto tubercles at the base of the proximal phalanx."
   },
   "palmar-interphalangeal-ligaments": {
    "confirmed": true,
@@ -58,7 +82,14 @@
     "scapula",
     "clavicle"
    ],
-   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision."
+   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision.",
+   "checked": "2026-09-24",
+   "grade": "verified",
+   "sources": [
+    "Acromioclavicular ligament - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Acromioclavicular_ligament"
+   ],
+   "quote": "extending between the upper part of the lateral end of the clavicle and the adjoining part of the upper surface of the acromion",
+   "why": "Acromion (scapula) and clavicle both confirmed."
   },
   "anterior-cruciate-ligament": {
    "confirmed": true,
@@ -67,7 +98,14 @@
     "tibia",
     "femur"
    ],
-   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision."
+   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision.",
+   "checked": "2026-09-24",
+   "grade": "verified",
+   "sources": [
+    "Anterior cruciate ligament - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Anterior_cruciate_ligament"
+   ],
+   "quote": "The ACL originates from deep within the notch of the distal femur ... The ACL attaches in front of the intercondyloid eminence of the tibia.",
+   "why": "Femur and tibia both confirmed; the seed pair stands."
   },
   "anterior-sternoclavicular-ligament": {
    "confirmed": true,
@@ -76,7 +114,14 @@
     "clavicle",
     "sternum"
    ],
-   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision."
+   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision.",
+   "checked": "2026-09-24",
+   "grade": "unverified",
+   "sources": [
+    "Sternoclavicular joint - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Sternoclavicular_joint"
+   ],
+   "quote": "Anterior sternoclavicular ligament (intrinsic) ... Posterior sternoclavicular ligament (intrinsic)",
+   "why": "NOT SETTLED. The joint article names this ligament as an intrinsic stabiliser of the sternoclavicular joint, which confirms it spans clavicle and sternum, but gives no attachment detail of its own. Needs its own work."
   },
   "anterior-tibiofibular-ligament": {
    "confirmed": true,
@@ -85,7 +130,14 @@
     "fibula",
     "tibia"
    ],
-   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision."
+   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision.",
+   "checked": "2026-09-24",
+   "grade": "verified",
+   "sources": [
+    "Anterior tibiofibular ligament - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Anterior_tibiofibular_ligament"
+   ],
+   "quote": "extends obliquely downward and lateralward between the adjacent margins of the tibia and fibula, on the front aspect of the syndesmosis",
+   "why": "Both bones of the seed pair confirmed. The work gives the course rather than precise attachment sites."
   },
   "coracohumeral-ligament": {
    "confirmed": true,
@@ -94,7 +146,14 @@
     "humerus",
     "scapula"
    ],
-   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision."
+   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision.",
+   "checked": "2026-09-24",
+   "grade": "verified",
+   "sources": [
+    "Coracohumeral ligament - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Coracohumeral_ligament"
+   ],
+   "quote": "It attaches to the coracoid process at one end, and to the greater and lesser tubercles of the humerus at the other (as two discrete bands).",
+   "why": "Coracoid process (scapula) and humerus both confirmed."
   },
   "interclavicular-ligament": {
    "confirmed": true,
@@ -103,7 +162,14 @@
     "sternum",
     "clavicle"
    ],
-   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision."
+   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision.",
+   "checked": "2026-09-24",
+   "grade": "verified",
+   "sources": [
+    "Interclavicular ligament - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Interclavicular_ligament"
+   ],
+   "quote": "it passes in a curved direction from the upper part of the sternal end of one clavicle to that of the other, and is also attached to the upper margin of the sternum.",
+   "why": "Both clavicles and the sternum confirmed."
   },
   "interosseous-membrane-of-forearm": {
    "confirmed": true,
@@ -112,7 +178,14 @@
     "ulna",
     "radius"
    ],
-   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision."
+   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision.",
+   "checked": "2026-09-24",
+   "grade": "verified",
+   "sources": [
+    "Interosseous membrane of forearm - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Interosseous_membrane_of_forearm"
+   ],
+   "quote": "a fibrous sheet that connects the interosseous margins of the radius and the ulna",
+   "why": "Radius and ulna both confirmed."
   },
   "interosseous-membrane-of-leg": {
    "confirmed": true,
@@ -121,7 +194,14 @@
     "fibula",
     "tibia"
    ],
-   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision."
+   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision.",
+   "checked": "2026-09-24",
+   "grade": "verified",
+   "sources": [
+    "Interosseous membrane of leg - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Interosseous_membrane_of_leg"
+   ],
+   "quote": "a fibrous membrane which extends between the interosseous crests of the tibia and fibula",
+   "why": "Tibia and fibula both confirmed."
   },
   "medial-meniscus": {
    "confirmed": true,
@@ -130,26 +210,45 @@
     "tibia",
     "femur"
    ],
-   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision."
+   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision.",
+   "checked": "2026-09-24",
+   "grade": "unverified",
+   "sources": [
+    "Medial meniscus - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Medial_meniscus"
+   ],
+   "quote": "Its anterior end, thin and pointed, is attached to the anterior intercondyloid fossa of the tibia, in front of the anterior cruciate ligament ... Its posterior end is fixed to the posterior intercondyloid fossa of the tibia",
+   "why": "NOT SETTLED. Both tibial horns confirmed. The seed also lists the FEMUR, and this work gives no direct femoral attachment — only fusion with the tibial collateral ligament. An unsupported half of a pair."
   },
   "nuchal-ligament": {
    "confirmed": true,
    "source": "User review on the review page, 13 Sept 2026",
-   "why": "Confirmed knowing the occipital bone is not a structure the app models, so this carries the cervical vertebrae only.",
+   "why": "NOT SETTLED. The cervical vertebrae are confirmed, but the work names the OCCIPITAL BONE as the upper attachment, which the seed omits — and occipital-bone now exists as a structure. The work also names the atlas (C1), not the axis (C2) which the seed lists. Both need settling before the pair is right.",
    "attachmentStructureIds": [
     "cervical-vertebrae",
     "axis-c2"
    ],
-   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision."
+   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision.",
+   "checked": "2026-09-24",
+   "grade": "unverified",
+   "sources": [
+    "Nuchal ligament - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Nuchal_ligament"
+   ],
+   "quote": "The nuchal ligament extends from the external occipital protuberance on the skull and median nuchal line to the spinous process of the seventh cervical vertebra in the lower part of the neck."
   },
   "obturator-membrane": {
    "confirmed": true,
    "source": "User review on the review page, 13 Sept 2026",
-   "why": "Spans the obturator foramen of one hip bone, so a single attachment is right.",
+   "why": "Both named sites are on the pelvis, which is the seed's single attachment.",
    "attachmentStructureIds": [
     "pelvis"
    ],
-   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision."
+   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision.",
+   "checked": "2026-09-24",
+   "grade": "verified",
+   "sources": [
+    "Obturator membrane - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Obturator_membrane"
+   ],
+   "quote": "The membrane is attached to the sharp margin of the obturator foramen except at its lower lateral angle, where it is fixed to the pelvic surface of the inferior ramus of the ischium"
   },
   "palmar-radio-ulnar-ligament": {
    "confirmed": true,
@@ -158,7 +257,14 @@
     "ulna",
     "radius"
    ],
-   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision."
+   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision.",
+   "checked": "2026-09-24",
+   "grade": "unverified",
+   "sources": [
+    "Distal radioulnar articulation - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Distal_radioulnar_articulation"
+   ],
+   "quote": "The articulation is reinforced by the palmar radioulnar ligament, and dorsal radioulnar ligament",
+   "why": "NOT SETTLED. The work names this ligament as a reinforcement of the radioulnar articulation, which implies the seed pair, but gives no attachment detail of its own. Confirming a pair from the ligament's own name is not a source check."
   },
   "pubofemoral-ligament": {
    "confirmed": true,
@@ -167,7 +273,14 @@
     "pelvis",
     "femur"
    ],
-   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision."
+   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision.",
+   "checked": "2026-09-24",
+   "grade": "verified",
+   "sources": [
+    "Pubofemoral ligament - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Pubofemoral_ligament"
+   ],
+   "quote": "The ligament attaches superiorly at the superior ramus of pubis, and the iliopubic eminence; it attaches inferiorly at the inferior portion of the intertrochanteric line.",
+   "why": "Pelvis (superior pubic ramus) and femur (intertrochanteric line) both confirmed."
   },
   "radial-collateral-ligament": {
    "confirmed": true,
@@ -176,7 +289,14 @@
     "radius",
     "humerus"
    ],
-   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision."
+   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision.",
+   "checked": "2026-09-24",
+   "grade": "unverified",
+   "sources": [
+    "Radial collateral ligament of elbow joint - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Radial_collateral_ligament_of_elbow_joint"
+   ],
+   "quote": "from the lateral epicondyle to the annular ligament deep to the common extensor tendon",
+   "why": "NOT SETTLED. The humerus (lateral epicondyle) is confirmed. The seed also lists the RADIUS, but this work attaches the ligament to the ANNULAR LIGAMENT, not to the radius itself — a real distinction, and the reason this ligament does not restrain the radial head directly."
   },
   "sacrotuberous-ligament": {
    "confirmed": true,
@@ -185,25 +305,44 @@
     "sacrum",
     "pelvis"
    ],
-   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision."
+   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision.",
+   "checked": "2026-09-24",
+   "grade": "verified",
+   "sources": [
+    "Sacrotuberous ligament - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Sacrotuberous_ligament"
+   ],
+   "quote": "It runs from the sacrum (the lower transverse sacral tubercles, the inferior margins sacrum and the upper coccyx) to the tuberosity of the ischium.",
+   "why": "Sacrum and the ischial tuberosity (on the pelvis) both confirmed. The work also names the upper coccyx and the posterior superior iliac spine, which the seed omits — candidate additions, not applied."
   },
   "superior-pubic-ligament": {
    "confirmed": true,
    "source": "User review on the review page, 13 Sept 2026",
-   "why": "Joins the two pubic bodies across the symphysis; both are the one pelvis structure in this app.",
+   "why": "Both ends are on the pelvis, which is the seed's single attachment.",
    "attachmentStructureIds": [
     "pelvis"
    ],
-   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision."
+   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision.",
+   "checked": "2026-09-24",
+   "grade": "verified",
+   "sources": [
+    "Superior pubic ligament - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Superior_pubic_ligament"
+   ],
+   "quote": "The superior pubic ligament connects together the two pubic bones superiorly, extending laterally as far as the pubic tubercles."
   },
   "transverse-humeral-ligament": {
    "confirmed": true,
    "source": "User review on the review page, 13 Sept 2026",
-   "why": "Bridges the intertubercular groove between the two tubercles of the humerus, so one bone is right.",
+   "why": "Humerus only, which is exactly what the seed says — both ends are on the same bone.",
    "attachmentStructureIds": [
     "humerus"
    ],
-   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision."
+   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision.",
+   "checked": "2026-09-24",
+   "grade": "verified",
+   "sources": [
+    "Transverse humeral ligament - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Transverse_humeral_ligament"
+   ],
+   "quote": "The transverse humeral ligament (Brodie's ligament) forms a broad band bridging the lesser and greater tubercle of the humerus."
   },
   "transverse-ligament-of-knee": {
    "confirmed": true,
@@ -212,18 +351,31 @@
     "tibia",
     "femur"
    ],
-   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision."
+   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision.",
+   "checked": "2026-09-24",
+   "grade": "held",
+   "sources": [
+    "Transverse ligament of knee - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Transverse_ligament_of_knee"
+   ],
+   "quote": "The transverse or (anterior) meniscomeniscal ligament is a ligament in the knee joint that connects the anterior convex margin of the lateral meniscus to the anterior end of the medial meniscus.",
+   "why": "CONTRADICTED. The seed says this ligament attaches to the tibia and the femur. The work says it connects the two MENISCI to each other and names no bony attachment at all. Held rather than corrected because the replacement is a pair of menisci, and whether attachmentStructureIds should point at non-bone structures is a convention decision, not a fact to be guessed."
   },
   "ulnar-collateral-ligament": {
    "confirmed": true,
    "source": "User review on the review page, 13 Sept 2026",
-   "why": "CONFIRMED BY THE USER AS DERIVED, but flagged: the elbow UCL runs medial epicondyle to coronoid process and olecranon, and standard teaching gives it no radial attachment. The radius contact is probably the mesh lying against the radial head. Raise before deploy.",
+   "why": "NOT SETTLED. Humerus and ulna both confirmed precisely. The seed also lists the RADIUS, which this work does not mention at all — an unsupported third attachment.",
    "attachmentStructureIds": [
     "ulna",
     "radius",
     "humerus"
    ],
-   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision."
+   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision.",
+   "checked": "2026-09-24",
+   "grade": "unverified",
+   "sources": [
+    "Ulnar collateral ligament of elbow joint - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Ulnar_collateral_ligament_of_elbow_joint"
+   ],
+   "quote": "attached, above, by its apex, to the front part of the medial epicondyle of the humerus ... below, by its broad base to the medial margin of the coronoid process of the ulna ... below, to the medial margin of the olecranon"
   },
   "ulnocapitate-ligament": {
    "confirmed": true,
@@ -234,7 +386,8 @@
     "lunate",
     "capitate"
    ],
-   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision."
+   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision.",
+   "checked": "2026-09-13"
   },
   "ulnopisiform-ligament": {
    "confirmed": true,
@@ -243,7 +396,8 @@
     "ulna",
     "pisiform"
    ],
-   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision."
+   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision.",
+   "checked": "2026-09-13"
   },
   "ulnotriquetral-ligament": {
    "confirmed": true,
@@ -252,7 +406,14 @@
     "ulna",
     "triquetrum"
    ],
-   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision."
+   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision.",
+   "checked": "2026-09-24",
+   "grade": "verified",
+   "sources": [
+    "Palmar radiocarpal ligament - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Palmar_radiocarpal_ligament"
+   ],
+   "quote": "there is a rounded fasciculus, superficial to the rest, which reaches from the base of the styloid process of the ulna to the lunate and triangular bones",
+   "why": "Ulnar styloid to the triangular (triquetral) bone, confirming the seed pair. 'Triangular bone' is the older name for the triquetrum."
   },
   "ulnolunate-ligament": {
    "attachmentStructureIds": [
@@ -262,7 +423,13 @@
    "description": "A palmar ulnocarpal ligament running from the ulna, by way of the palmar radioulnar ligament and the triangular fibrocartilage, to the lunate.",
    "confirmed": true,
    "source": "Labelled palmar wrist plate supplied 13 Sept 2026 (ulnolunate drawn from the ulnar head region to the lunate)",
-   "why": "It arises with the palmar radioulnar ligament and inserts on the lunate. The derived scaphoid and capitate contact is the strap lying against the carpus on its way; only the lunate is an attachment."
+   "why": "Ulnar styloid to the lunate, confirming the seed pair. The work describes it as a superficial fasciculus of the palmar radiocarpal ligament rather than under the name ulnolunate.",
+   "checked": "2026-09-24",
+   "grade": "verified",
+   "sources": [
+    "Palmar radiocarpal ligament - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Palmar_radiocarpal_ligament"
+   ],
+   "quote": "there is a rounded fasciculus, superficial to the rest, which reaches from the base of the styloid process of the ulna to the lunate and triangular bones"
   },
   "popliteofibular-ligament": {
    "attachmentStructureIds": [
@@ -271,7 +438,13 @@
    "description": "A deep posterolateral band running from the popliteus tendon to the styloid process of the fibular head, resisting external rotation of the tibia.",
    "confirmed": true,
    "source": "Review page, confirmed 13 Sept 2026",
-   "why": "Only the fibula is a bony attachment. The other end is the popliteus tendon, which the app does not model as a structure, so one bone is the complete bony answer rather than a missing second one."
+   "why": "The fibula is the only bony attachment, which is what the seed says; the other end is the popliteus tendon.",
+   "checked": "2026-09-24",
+   "grade": "verified",
+   "sources": [
+    "Popliteofibular ligament - Wikipedia. https://en.wikipedia.org/wiki/Popliteofibular_ligament"
+   ],
+   "quote": "The popliteofibular ligament (PFL) connects the popliteus muscle at the musculotendinous junction to the posterior and medial portion of the fibular styloid."
   },
   "posterior-meniscotibial-ligament-medial-meniscus": {
    "attachmentStructureIds": [
@@ -280,14 +453,21 @@
    "description": "The posterior part of the coronary ligament of the medial meniscus, anchoring the meniscal rim to the margin of the tibial plateau.",
    "confirmed": true,
    "source": "Review page, confirmed 13 Sept 2026",
-   "why": "Tibia is the only bony end; the other attaches to the medial meniscus, which is not a bone. The derivation reporting one bone is correct, not incomplete."
+   "why": "Tibia is the only bony end; the other attaches to the medial meniscus, which is not a bone. The derivation reporting one bone is correct, not incomplete.",
+   "checked": "2026-09-13"
   },
   "external-intercostal-membrane": {
    "attachmentStructureIds": [],
    "description": "The aponeurotic sheet continuing the external intercostal muscle forwards between the costal cartilages.",
    "confirmed": true,
    "source": "Review page, confirmed 13 Sept 2026",
-   "why": "It spans costal cartilage, not bone, and the app models no cartilage structures — so an empty bony attachment list is the honest answer. It carries no attachment question, only locate and identify."
+   "why": "NOT SETTLED, attempt recorded. The seed carries no attachment ids for this structure at all, and the obvious work does not describe the membrane. Needs a thoracic anatomy source.",
+   "checked": "2026-09-24",
+   "grade": "unverified",
+   "sources": [
+    "Intercostal muscles - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Intercostal_muscles"
+   ],
+   "quote": "(the article describes the external intercostal muscles but contains no description of the external intercostal membrane)"
   },
   "posterior-meniscotibial-ligament-lateral-meniscus": {
    "attachmentStructureIds": [
@@ -296,7 +476,8 @@
    "description": "The posterior part of the coronary ligament of the lateral meniscus, anchoring the meniscal rim to the margin of the tibial plateau.",
    "confirmed": true,
    "source": "Review page, marked corrected with no attachment change, 13 Sept 2026",
-   "why": "The reviewer marked this corrected but left the attachment field blank, which the page defines as \"the attachments are right but something else is wrong\". Tibia is right — the other end is the meniscus. What is wrong is that it can barely be seen: even with the meniscus ghosted it traces at 0.06% of frame at a single angle, the smallest target in the tranche. Flagged for a keep-or-drop decision; the attachment itself is settled."
+   "why": "The reviewer marked this corrected but left the attachment field blank, which the page defines as \"the attachments are right but something else is wrong\". Tibia is right — the other end is the meniscus. What is wrong is that it can barely be seen: even with the meniscus ghosted it traces at 0.06% of frame at a single angle, the smallest target in the tranche. Flagged for a keep-or-drop decision; the attachment itself is settled.",
+   "checked": "2026-09-13"
   },
   "tibionavicular-ligament": {
    "attachmentStructureIds": [
@@ -308,11 +489,10 @@
    "grade": "verified",
    "source": "Cross-check of the second tranche against named sources, 22 Sep 2026 (review artifact 2ePPLoqndkYYRMrZGwr43G)",
    "sources": [
-    "IMAIOS e-Anatomy, Tibionavicular ligament",
-    "MRI of ankle ligaments: a pictorial essay, PMC6319113",
-    "Kenhub, Ankle joint"
+    "MRI of ankle ligaments: a pictorial essay, PMC6319113"
    ],
-   "why": "Most anterior band of the superficial deltoid: anterior colliculus of the medial malleolus to the navicular tuberosity. The talar contact is passage over the talus, not a footprint."
+   "why": "Most anterior band of the superficial deltoid: anterior colliculus of the medial malleolus to the navicular tuberosity. The talar contact is passage over the talus, not a footprint.",
+   "checked": "2026-09-22"
   },
   "costoclavicular-ligament": {
    "attachmentStructureIds": [
@@ -325,10 +505,10 @@
    "source": "Cross-check of the second tranche against named sources, 22 Sep 2026 (review artifact 2ePPLoqndkYYRMrZGwr43G)",
    "sources": [
     "Radiopaedia, Costoclavicular ligament",
-    "IMAIOS e-Anatomy, Costoclavicular ligament",
     "TA98 A03.5.04.005"
    ],
-   "why": "TA98 A03.5.04.005 gives from: first rib, to: clavicle. The sternum was never an attachment — the first rib’s costal cartilage was unmapped in the atlas, so the seed kept a manubrial contact the right-side mesh alone reported."
+   "why": "TA98 A03.5.04.005 gives from: first rib, to: clavicle. The sternum was never an attachment — the first rib’s costal cartilage was unmapped in the atlas, so the seed kept a manubrial contact the right-side mesh alone reported.",
+   "checked": "2026-09-22"
   },
   "long-plantar-ligament": {
    "attachmentStructureIds": [
@@ -341,11 +521,11 @@
    "grade": "verified",
    "source": "Cross-check of the second tranche against named sources, 22 Sep 2026 (review artifact 2ePPLoqndkYYRMrZGwr43G)",
    "sources": [
-    "IMAIOS e-Anatomy, Long plantar ligament",
     "Radiopaedia, Long plantar ligament",
     "TA98 A03.6.10.517"
    ],
-   "why": "The cuboid is the defining attachment and was missing; the medial cuneiform is not an attachment."
+   "why": "The cuboid is the defining attachment and was missing; the medial cuneiform is not an attachment.",
+   "checked": "2026-09-22"
   },
   "acetabular-labrum": {
    "attachmentStructureIds": [
@@ -356,11 +536,11 @@
    "grade": "verified",
    "source": "Cross-check of the second tranche against named sources, 22 Sep 2026 (review artifact 2ePPLoqndkYYRMrZGwr43G)",
    "sources": [
-    "Kenhub, Acetabular labrum",
     "Radsource, Acetabular labral tear",
     "TA98 A03.6.07.008"
    ],
-   "why": "Articular contact with the femoral head was read as an attachment."
+   "why": "Articular contact with the femoral head was read as an attachment.",
+   "checked": "2026-09-22"
   },
   "glenoid-labrum": {
    "attachmentStructureIds": [
@@ -374,7 +554,8 @@
     "Gray’s Anatomy via Wikipedia, Glenoid labrum",
     "TA98 A03.5.08.002"
    ],
-   "why": "Articular contact with the humeral head was read as an attachment."
+   "why": "Articular contact with the humeral head was read as an attachment.",
+   "checked": "2026-09-22"
   },
   "annular-ligament-of-radius": {
    "attachmentStructureIds": [
@@ -386,10 +567,10 @@
    "source": "Cross-check of the second tranche against named sources, 22 Sep 2026 (review artifact 2ePPLoqndkYYRMrZGwr43G)",
    "sources": [
     "Gray’s Anatomy via Wikipedia, Annular ligament of radius",
-    "Kenhub, Proximal radioulnar joint",
     "TA98 A03.5.09.007"
    ],
-   "why": "The radius is encircled, not attached to: the ring’s two ends are both on the ulna. (Some sources describe the distal margin blending with the neck of the radius; the description says the head is encircled rather than claiming no radial contact at all.)"
+   "why": "The radius is encircled, not attached to: the ring’s two ends are both on the ulna. (Some sources describe the distal margin blending with the neck of the radius; the description says the head is encircled rather than claiming no radial contact at all.)",
+   "checked": "2026-09-22"
   },
   "meniscopatellar-ligament": {
    "attachmentStructureIds": [
@@ -400,10 +581,10 @@
    "grade": "verified",
    "source": "Cross-check of the second tranche against named sources, 22 Sep 2026 (review artifact 2ePPLoqndkYYRMrZGwr43G)",
    "sources": [
-    "IMAIOS e-Anatomy, Meniscopatellar ligament",
     "Hinckel et al., Arthroscopy 2017;33(10):1862-1873, doi:10.1016/j.arthro.2017.04.020"
    ],
-   "why": "The femoral and tibial contacts are the mesh lying against the joint; the meniscal end is not a bone the app models."
+   "why": "The femoral and tibial contacts are the mesh lying against the joint; the meniscal end is not a bone the app models.",
+   "checked": "2026-09-22"
   },
   "intersesamoid-ligament": {
    "attachmentStructureIds": [
@@ -417,7 +598,8 @@
     "Hallux sesamoid disorders, Foot Ankle Clin",
     "Fiacco et al., Cureus 2017;9(11):e1819, doi:10.7759/cureus.1819"
    ],
-   "why": "Nothing was derived because the atlas’s sesamoid mesh was unmapped; the grouped bone sesamoids-foot was added for it. The literature varies on the exact extent, but the two-sesamoid answer is consistent."
+   "why": "Nothing was derived because the atlas’s sesamoid mesh was unmapped; the grouped bone sesamoids-foot was added for it. The literature varies on the exact extent, but the two-sesamoid answer is consistent.",
+   "checked": "2026-09-22"
   },
   "interspinous-ligaments": {
    "attachmentStructureIds": [
@@ -435,7 +617,8 @@
     "Johnson G, Zhang M. Eur Spine J 2002;11(4):382-388",
     "Anatomy Standard, Ligg. inter et supraspinalia"
    ],
-   "why": "Nothing was derived: the mesh reaches no mapped bone. The lumbar and lower thoracic levels are the defensible core, and the description says so."
+   "why": "Nothing was derived: the mesh reaches no mapped bone. The lumbar and lower thoracic levels are the defensible core, and the description says so.",
+   "checked": "2026-09-22"
   },
   "costotransverse-ligament": {
    "attachmentStructureIds": [
@@ -451,7 +634,8 @@
     "Radiopaedia, Costovertebral joints",
     "TA98 A03.3.04.006"
    ],
-   "why": "Half the answer was missing: TA98 A03.3.04.006 gives from: rib, to: transverse process of a vertebra."
+   "why": "Half the answer was missing: TA98 A03.3.04.006 gives from: rib, to: transverse process of a vertebra.",
+   "checked": "2026-09-22"
   },
   "supraspinous-ligament": {
    "attachmentStructureIds": [
@@ -465,12 +649,12 @@
    "grade": "verified",
    "source": "Cross-check of the second tranche against named sources, 22 Sep 2026 (review artifact 2ePPLoqndkYYRMrZGwr43G)",
    "sources": [
-    "Kenhub, Joints and ligaments of the vertebral column",
     "Physiopedia, Supraspinous ligament",
     "Rissanen, cited in Anatomy Standard",
     "TA98 A03.2.01.005"
    ],
-   "why": "The lumbar levels were missing from the seed. The description carries the real extent as well as the classical line, so a student is not taught a sacral attachment that is usually not there."
+   "why": "The lumbar levels were missing from the seed. The description carries the real extent as well as the classical line, so a student is not taught a sacral attachment that is usually not there.",
+   "checked": "2026-09-22"
   },
   "ligamenta-flava": {
    "attachmentStructureIds": [
@@ -486,10 +670,10 @@
    "grade": "verified",
    "source": "Cross-check of the second tranche against named sources, 22 Sep 2026 (review artifact 2ePPLoqndkYYRMrZGwr43G)",
    "sources": [
-    "Kenhub, Joints and ligaments of the vertebral column",
     "Human Kinetics, Ligaments of the vertebral column"
    ],
-   "why": "The seed named the thoracic spine only; the ligaments run the length of the column."
+   "why": "The seed named the thoracic spine only; the ligaments run the length of the column.",
+   "checked": "2026-09-22"
   },
   "anterior-longitudinal-ligament": {
    "attachmentStructureIds": [
@@ -508,7 +692,8 @@
     "ScienceDirect Topics, Longitudinal ligaments overview",
     "Human Kinetics, Ligaments of the vertebral column"
    ],
-   "why": "The seed named the cervical spine and sacrum only."
+   "why": "The seed named the cervical spine and sacrum only.",
+   "checked": "2026-09-22"
   },
   "posterior-longitudinal-ligament": {
    "attachmentStructureIds": [
@@ -527,7 +712,8 @@
     "ScienceDirect Topics, Longitudinal ligaments overview",
     "Human Kinetics, Ligaments of the vertebral column"
    ],
-   "why": "The seed named a single lumbar vertebra and the cervical and thoracic groups."
+   "why": "The seed named a single lumbar vertebra and the cervical and thoracic groups.",
+   "checked": "2026-09-22"
   },
   "radiate-carpal-ligament": {
    "attachmentStructureIds": [
@@ -541,10 +727,10 @@
    "grade": "verified",
    "source": "Cross-check of the second tranche against named sources, 22 Sep 2026 (review artifact 2ePPLoqndkYYRMrZGwr43G)",
    "sources": [
-    "IMAIOS e-Anatomy, Radiate carpal ligament",
     "TA98 A03.5.11.103"
    ],
-   "why": "TA98 A03.5.11.103 gives from: capitate, to: triquetral, lunate, scaphoid. The scaphoid and triquetrum were missing; the trapezoid and metacarpals are not part of it."
+   "why": "TA98 A03.5.11.103 gives from: capitate, to: triquetral, lunate, scaphoid. The scaphoid and triquetrum were missing; the trapezoid and metacarpals are not part of it.",
+   "checked": "2026-09-22"
   },
   "transverse-acetabular-ligament": {
    "attachmentStructureIds": [
@@ -555,10 +741,10 @@
    "grade": "verified",
    "source": "Cross-check of the second tranche against named sources, 22 Sep 2026 (review artifact 2ePPLoqndkYYRMrZGwr43G)",
    "sources": [
-    "Kenhub, Acetabular labrum",
     "Biomechanics, anatomy and pathology of the acetabular labrum, ScienceDirect"
    ],
-   "why": "It spans a gap in the hip bone and does not attach to the femur; the femoral contact is articular."
+   "why": "It spans a gap in the hip bone and does not attach to the femur; the femoral contact is articular.",
+   "checked": "2026-09-22"
   },
   "dorsal-scaphotriquetral-ligament": {
    "attachmentStructureIds": [
@@ -575,7 +761,8 @@
     "Wrist joint anatomy, Medscape",
     "AAHS 2020 abstract, Anatomy of the dorsal scapholunotriquetral ligament complex"
    ],
-   "why": "A proposed correction (drop the lunate as passage) was checked and RETRACTED: the lunate footprint is real, measured at 65.0 ± 28.3 mm² against 67.4 ± 26.8 mm² for the scaphoid. The derived 0.60 lunate contact was right."
+   "why": "A proposed correction (drop the lunate as passage) was checked and RETRACTED: the lunate footprint is real, measured at 65.0 ± 28.3 mm² against 67.4 ± 26.8 mm² for the scaphoid. The derived 0.60 lunate contact was right.",
+   "checked": "2026-09-22"
   },
   "anterior-talocalcaneal-ligament": {
    "attachmentStructureIds": [
@@ -590,7 +777,8 @@
     "Anterior talocalcaneal ligament — Wikipedia. https://en.wikipedia.org/wiki/Anterior_talocalcaneal_ligament"
    ],
    "quote": "The anterior talocalcaneal ligament extends from the front and lateral surface of the neck of the talus to the sinus tarsi of the calcaneus.",
-   "why": "Seed pair matches the source: talus neck to calcaneus at the sinus tarsi."
+   "why": "Seed pair matches the source: talus neck to calcaneus at the sinus tarsi.",
+   "checked": "2026-09-22"
   },
   "anterior-talofibular-ligament": {
    "attachmentStructureIds": [
@@ -600,12 +788,13 @@
    "description": "Runs from the anterior margin of the lateral malleolus of the fibula forwards to the lateral side of the neck of the talus. It resists inversion and plantarflexion and is the ligament most often torn in an ankle sprain.",
    "confirmed": true,
    "grade": "verified",
-   "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
+   "source": "Re-checked against a non-competitor work, 2026-09-23: the attachment pair was confirmed, the citation replaced",
    "sources": [
-    "Anterior talofibular ligament: Anatomy and function — Kenhub. https://www.kenhub.com/en/library/anatomy/anterior-talofibular-ligament"
+    "Anterior talofibular ligament - Wikipedia (text from Gray's Anatomy, public domain). https://en.wikipedia.org/wiki/Anterior_talofibular_ligament"
    ],
-   "quote": "The ATFL extends between the anterior margin of the lateral malleolus of the fibula to the lateral aspect of the neck of the talus.",
-   "why": "Seed pair is right; the fibular end is specifically the lateral malleolus, which the seed covers with the whole fibula."
+   "quote": "It passes from the anterior margin of the fibular malleolus, passing anteromedially to insert at the lateral aspect of the talus at the talar neck, in front of its lateral articular facet.",
+   "why": "Seed pair is right; the fibular end is specifically the lateral malleolus, which the seed covers with the whole fibula.",
+   "checked": "2026-09-23"
   },
   "calcaneocuboid-ligament": {
    "attachmentStructureIds": [
@@ -621,7 +810,8 @@
     "https://en.wikipedia.org/wiki/Bifurcated_ligament"
    ],
    "quote": "It originates from the anterior process of the calcaneus before dividing into two bands that insert into the navicular and cuboid.",
-   "why": "Seed pair matches the calcaneocuboid limb of the bifurcate ligament."
+   "why": "Seed pair matches the calcaneocuboid limb of the bifurcate ligament.",
+   "checked": "2026-09-22"
   },
   "calcaneofibular-ligament": {
    "attachmentStructureIds": [
@@ -633,11 +823,11 @@
    "grade": "verified",
    "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
    "sources": [
-    "Calcaneofibular ligament — Kenhub. https://www.kenhub.com/en/library/anatomy/calcaneofibular-ligament",
     "https://en.wikipedia.org/wiki/Calcaneofibular_ligament"
    ],
    "quote": "it extends from the depression located anterior to the apex of the lateral malleolus of the fibula to the tubercle on the lateral calcaneal surface.",
-   "why": "Seed pair is right; the fibular end is the lateral malleolus, covered by the whole fibula in the seed."
+   "why": "Seed pair is right; the fibular end is the lateral malleolus, covered by the whole fibula in the seed.",
+   "checked": "2026-09-22"
   },
   "calcaneonavicular-ligament": {
    "attachmentStructureIds": [
@@ -653,7 +843,8 @@
     "https://en.wikipedia.org/wiki/Bifurcated_ligament"
    ],
    "quote": "It originates from the anterior process of the calcaneus before dividing into two bands that insert into the navicular and cuboid.",
-   "why": "Cuboid dropped: the mesh only brushes the cuboid because the sibling calcaneocuboid limb lies alongside, and neither the bifurcate medial limb nor the plantar (spring) calcaneonavicular ligament attaches to it."
+   "why": "Cuboid dropped: the mesh only brushes the cuboid because the sibling calcaneocuboid limb lies alongside, and neither the bifurcate medial limb nor the plantar (spring) calcaneonavicular ligament attaches to it.",
+   "checked": "2026-09-22"
   },
   "collateral-interphalangeal-ligaments-of-foot": {
    "attachmentStructureIds": [
@@ -666,11 +857,11 @@
    "grade": "verified",
    "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
    "sources": [
-    "Interphalangeal joints of the foot: Anatomy and function — Kenhub. https://www.kenhub.com/en/library/anatomy/interphalangeal-joints-of-the-foot",
     "https://en.wikipedia.org/wiki/Interphalangeal_joints_of_the_foot"
    ],
    "quote": "strong ligaments found on the medial and lateral sides of each joint, extending proximally and medially from small tubercles present on each side the head of the proximal phalanx to the base of the next phalanx",
-   "why": "Distal phalanges added: the group includes the distal interphalangeal joints, whose collaterals run from the middle phalangeal heads to the bases of the distal phalanges, so the seed's proximal-plus-middle pair was incomplete."
+   "why": "Distal phalanges added: the group includes the distal interphalangeal joints, whose collaterals run from the middle phalangeal heads to the bases of the distal phalanges, so the seed's proximal-plus-middle pair was incomplete.",
+   "checked": "2026-09-22"
   },
   "collateral-metatarsophalangeal-ligaments": {
    "attachmentStructureIds": [
@@ -680,12 +871,13 @@
    "description": "Paired bands either side of each metatarsophalangeal joint, running from the dorsal tubercles on the metatarsal heads to the bases of the proximal phalanges. They check side-to-side movement of the toes and tighten in flexion.",
    "confirmed": true,
    "grade": "verified",
-   "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
+   "source": "Re-checked against a non-competitor work, 2026-09-23: the attachment pair was confirmed, the citation replaced",
    "sources": [
-    "Joints and ligaments of the foot: Anatomy — Kenhub. https://www.kenhub.com/en/library/anatomy/joints-and-ligaments-of-the-foot"
+    "Collateral ligament of metatarsophalangeal articulations - Wikipedia (text from Gray's Anatomy, public domain). https://en.wikipedia.org/wiki/Collateral_ligament_of_metatarsophalangeal_articulations"
    ],
-   "quote": "The collateral ligaments run from the dorsal tubercles of the metatarsal heads before widening and attaching to the bases of the proximal phalanges.",
-   "why": "Seed groups are right: metatarsal heads to the bases of the proximal phalanges."
+   "quote": "attached, by one end, to the posterior tubercle on the side of the head of the metatarsal bone, and, by the other, to the contiguous extremity of the phalanx.",
+   "why": "Seed groups are right: metatarsal heads to the bases of the proximal phalanges.",
+   "checked": "2026-09-23"
   },
   "cuneocuboid-interosseous-ligament": {
    "attachmentStructureIds": [
@@ -700,7 +892,8 @@
     "Interosseous cuneocuboid ligament — Wikipedia. https://en.wikipedia.org/wiki/Interosseous_cuneocuboid_ligament"
    ],
    "quote": "consists of a series of fibrous bands that connect the central portion of the cuboid to the lateral surfaces of the cuneiform bones.",
-   "why": "Seed pair stands: the source says 'cuneiform bones' loosely, but only the lateral cuneiform has a surface facing the cuboid."
+   "why": "Seed pair stands: the source says 'cuneiform bones' loosely, but only the lateral cuneiform has a surface facing the cuboid.",
+   "checked": "2026-09-22"
   },
   "cuneometatarsal-interosseous-ligaments": {
    "attachmentStructureIds": [
@@ -713,11 +906,11 @@
    "grade": "verified",
    "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
    "sources": [
-    "Tarsometatarsal joints — Wikipedia. https://en.wikipedia.org/wiki/Tarsometatarsal_joints",
-    "https://www.imaios.com/en/e-anatomy/anatomical-structures/cuneometatarsal-interosseous-ligaments-1537028836"
+    "Tarsometatarsal joints — Wikipedia. https://en.wikipedia.org/wiki/Tarsometatarsal_joints"
    ],
    "quote": "The first is the strongest, and passes from the lateral surface of the first cuneiform to the adjacent angle of the second metatarsal.",
-   "why": "Intermediate cuneiform dropped: both sources describe only three interosseous bands, arising from the medial and lateral cuneiforms, with the intermediate cuneiform merely adjacent in the mesh."
+   "why": "Intermediate cuneiform dropped: both sources describe only three interosseous bands, arising from the medial and lateral cuneiforms, with the intermediate cuneiform merely adjacent in the mesh.",
+   "checked": "2026-09-22"
   },
   "dorsal-calcaneocuboid-ligament": {
    "attachmentStructureIds": [
@@ -732,7 +925,8 @@
     "Dorsal calcaneocuboid ligament — Wikipedia. https://en.wikipedia.org/wiki/Dorsal_calcaneocuboid_ligament"
    ],
    "quote": "which passes between the contiguous surfaces of the calcaneus and cuboid, on the dorsal surface of the joint.",
-   "why": "Seed pair matches the source exactly."
+   "why": "Seed pair matches the source exactly.",
+   "checked": "2026-09-22"
   },
   "dorsal-cuboideonavicular-ligament": {
    "attachmentStructureIds": [
@@ -747,7 +941,8 @@
     "Dorsal cuboideonavicular ligament — Wikipedia. https://en.wikipedia.org/wiki/Dorsal_cuboideonavicular_ligament"
    ],
    "quote": "The dorsal cuboideonavicular ligament is a fibrous bundle connecting the dorsal surfaces of the cuboid and navicular bones.",
-   "why": "Seed pair matches the source exactly."
+   "why": "Seed pair matches the source exactly.",
+   "checked": "2026-09-22"
   },
   "dorsal-cuneocuboid-ligament": {
    "attachmentStructureIds": [
@@ -762,7 +957,8 @@
     "Dorsal cuneocuboid ligament — Wikipedia. https://en.wikipedia.org/wiki/Dorsal_cuneocuboid_ligament"
    ],
    "quote": "The dorsal cuneocuboid ligament consists of fibrous bands that connect the dorsal surfaces of the cuboid and lateral surfaces of the cuneiform bones.",
-   "why": "Seed pair stands: 'cuneiform bones' in the source is loose wording, as only the lateral cuneiform abuts the cuboid."
+   "why": "Seed pair stands: 'cuneiform bones' in the source is loose wording, as only the lateral cuneiform abuts the cuboid.",
+   "checked": "2026-09-22"
   },
   "dorsal-cuneonavicular-ligaments": {
    "attachmentStructureIds": [
@@ -776,12 +972,11 @@
    "grade": "verified",
    "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
    "sources": [
-    "Joints and ligaments of the foot: Anatomy | Kenhub. https://www.kenhub.com/en/library/anatomy/joints-and-ligaments-of-the-foot",
-    "https://www.imaios.com/en/e-anatomy/anatomical-structures/dorsal-cuneonavicular-ligaments-1537028848",
     "https://en.wikipedia.org/wiki/Cuneonavicular_joint"
    ],
    "quote": "The dorsal and plantar ligaments connect the navicular bone with each cuneiform.",
-   "why": "Seed is right: the group is three bundles, one to each cuneiform, all arising from the navicular."
+   "why": "Seed is right: the group is three bundles, one to each cuneiform, all arising from the navicular.",
+   "checked": "2026-09-22"
   },
   "dorsal-intercuneiform-ligaments": {
    "attachmentStructureIds": [
@@ -794,11 +989,11 @@
    "grade": "verified",
    "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
    "sources": [
-    "Joints and ligaments of the foot: Anatomy | Kenhub. https://www.kenhub.com/en/library/anatomy/joints-and-ligaments-of-the-foot",
     "https://en.wikipedia.org/wiki/Intercuneiform_joints"
    ],
    "quote": "Both the dorsal and plantar ligaments consist of three transverse bands, which run between the cuneiform bones and between the lateral cuneiform and the cuboid bone.",
-   "why": "Seed is right for the intercuneiform bands; sources describe a third transverse band running on to the cuboid, but that one is the dorsal cuneocuboid ligament and belongs to a separate entry."
+   "why": "Seed is right for the intercuneiform bands; sources describe a third transverse band running on to the cuboid, but that one is the dorsal cuneocuboid ligament and belongs to a separate entry.",
+   "checked": "2026-09-22"
   },
   "dorsal-metatarsal-ligaments": {
    "attachmentStructureIds": [
@@ -809,11 +1004,11 @@
    "grade": "verified",
    "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
    "sources": [
-    "Dorsal Metatarsal Ligaments | Complete Anatomy (Elsevier). https://www.elsevier.com/resources/anatomy/connective-tissue/connective-tissue-of-lower-limb/dorsal-metatarsal-ligaments/18105",
     "https://en.wikipedia.org/wiki/Intermetatarsal_joint"
    ],
    "quote": "The dorsal metatarsal ligaments are thin bands that join the dorsal aspects of the bases of the second to fifth metatarsal bones.",
-   "why": "Seed is right at the granularity the app models; strictly the bands span the bases of the second to fifth metatarsals only, the first metatarsal base having no such band, but only a grouped metatarsals id exists."
+   "why": "Seed is right at the granularity the app models; strictly the bands span the bases of the second to fifth metatarsals only, the first metatarsal base having no such band, but only a grouped metatarsals id exists.",
+   "checked": "2026-09-22"
   },
   "dorsal-tarsometatarsal-ligaments": {
    "attachmentStructureIds": [
@@ -828,11 +1023,11 @@
    "grade": "verified",
    "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
    "sources": [
-    "Dorsal tarsometatarsal ligaments - Wikipedia (text from Gray's Anatomy, 20th US ed., 1918). https://en.wikipedia.org/wiki/Dorsal_tarsometatarsal_ligaments",
-    "https://www.kenhub.com/en/library/anatomy/joints-and-ligaments-of-the-foot"
+    "Dorsal tarsometatarsal ligaments - Wikipedia (text from Gray's Anatomy, 20th US ed., 1918). https://en.wikipedia.org/wiki/Dorsal_tarsometatarsal_ligaments"
    ],
    "quote": "The first metatarsal is joined to the first cuneiform by a broad, thin band; the second has three, one from each cuneiform bone; the third has one from the third cuneiform; the fourth has one from the third cuneiform and one from the cuboid; and the fifth, one from the cuboid.",
-   "why": "Seed omitted the intermediate cuneiform, which supplies one of the three dorsal bands reaching the base of the second metatarsal; Kenhub likewise states the eight dorsal tarsometatarsal ligaments connect the metatarsals to the cuboid and cuneiform bones."
+   "why": "Seed omitted the intermediate cuneiform, which supplies one of the three dorsal bands reaching the base of the second metatarsal; Kenhub likewise states the eight dorsal tarsometatarsal ligaments connect the metatarsals to the cuboid and cuneiform bones.",
+   "checked": "2026-09-22"
   },
   "intercuneiform-interosseous-ligaments": {
    "attachmentStructureIds": [
@@ -849,7 +1044,8 @@
     "https://en.wikipedia.org/wiki/Intercuneiform_joints"
    ],
    "quote": "The interosseous intercuneiform ligaments are short fibrous bands that connect the adjacent surfaces of the medial and intermediate, and the intermediate and lateral cuneiform bones.",
-   "why": "Seed is right: two interosseous bands between the three cuneiforms, so all three cuneiform ids belong."
+   "why": "Seed is right: two interosseous bands between the three cuneiforms, so all three cuneiform ids belong.",
+   "checked": "2026-09-22"
   },
   "lateral-talocalcaneal-ligament": {
    "attachmentStructureIds": [
@@ -861,12 +1057,11 @@
    "grade": "verified",
    "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
    "sources": [
-    "Lateral talocalcaneal ligament - Wikipedia (text from Gray's Anatomy, 20th US ed., 1918). https://en.wikipedia.org/wiki/Lateral_talocalcaneal_ligament",
-    "https://www.imaios.com/en/e-anatomy/anatomical-structures/lateral-talocalcaneal-ligament-1161992",
-    "https://www.kenhub.com/en/library/anatomy/subtalar-joint"
+    "Lateral talocalcaneal ligament - Wikipedia (text from Gray's Anatomy, 20th US ed., 1918). https://en.wikipedia.org/wiki/Lateral_talocalcaneal_ligament"
    ],
    "quote": "It is a short, strong fasciculus, passing from the lateral surface of the talus, immediately beneath its fibular facet to the lateral surface of the calcaneus.",
-   "why": "Seed listed the talus alone; every source has the ligament inserting on the lateral surface of the calcaneus, so the calcaneus must be added."
+   "why": "Seed listed the talus alone; every source has the ligament inserting on the lateral surface of the calcaneus, so the calcaneus must be added.",
+   "checked": "2026-09-22"
   },
   "medial-talocalcaneal-ligament": {
    "attachmentStructureIds": [
@@ -878,11 +1073,11 @@
    "grade": "verified",
    "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
    "sources": [
-    "Subtalar joint: Bones, ligaments, movements | Kenhub. https://www.kenhub.com/en/library/anatomy/subtalar-joint",
     "https://en.wikipedia.org/wiki/Medial_talocalcaneal_ligament"
    ],
    "quote": "The medial talocalcaneal ligament spans between the medial aspects of talar tubercle and calcaneus and the posterior aspect of sustentaculum tali.",
-   "why": "Seed is right; if a finer target is ever wanted, the calcaneal end is specifically the back of the sustentaculum tali, and sustentaculum-tali exists in the vocabulary."
+   "why": "Seed is right; if a finer target is ever wanted, the calcaneal end is specifically the back of the sustentaculum tali, and sustentaculum-tali exists in the vocabulary.",
+   "checked": "2026-09-22"
   },
   "metatarsal-interosseous-ligaments": {
    "attachmentStructureIds": [
@@ -893,11 +1088,11 @@
    "grade": "verified",
    "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
    "sources": [
-    "Metatarsal Interosseous Ligaments | Complete Anatomy (Elsevier). https://www.elsevier.com/resources/anatomy/connective-tissue/connective-tissue-of-lower-limb-left/metatarsal-interosseous-ligaments-left/21727",
     "https://en.wikipedia.org/wiki/Intermetatarsal_joint"
    ],
    "quote": "The metatarsal interosseous ligaments are strong bands that join the adjacent articular surfaces of the bases of the second to fifth metatarsal bones.",
-   "why": "Seed is right at the granularity available; the true span is the bases of the second to fifth metatarsals, and only a grouped metatarsals id exists."
+   "why": "Seed is right at the granularity available; the true span is the bases of the second to fifth metatarsals, and only a grouped metatarsals id exists.",
+   "checked": "2026-09-22"
   },
   "plantar-calcaneocuboid-ligament": {
    "attachmentStructureIds": [
@@ -909,11 +1104,11 @@
    "grade": "verified",
    "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
    "sources": [
-    "Plantar calcaneocuboid ligament - Wikipedia (text from Gray's Anatomy, 20th US ed., 1918). https://en.wikipedia.org/wiki/Plantar_calcaneocuboid_ligament",
-    "https://www.kenhub.com/en/library/anatomy/joints-and-ligaments-of-the-foot"
+    "Plantar calcaneocuboid ligament - Wikipedia (text from Gray's Anatomy, 20th US ed., 1918). https://en.wikipedia.org/wiki/Plantar_calcaneocuboid_ligament"
    ],
    "quote": "It is a short but wide band of great strength, and extends from the calcaneal tubercle (sin. anterior tubercle of calcaneus) and the depression in front of it, on the forepart of the plantar surface of the calcaneus, to the plantar surface of the cuboid posterior to the groove for the fibularis longus tendon.",
-   "why": "Seed is right: a clean calcaneus-to-cuboid pair, confirmed by two sources."
+   "why": "Seed is right: a clean calcaneus-to-cuboid pair, confirmed by two sources.",
+   "checked": "2026-09-22"
   },
   "plantar-calcaneonavicular-ligament": {
    "attachmentStructureIds": [
@@ -929,7 +1124,8 @@
     "https://en.wikipedia.org/wiki/Plantar_calcaneonavicular_ligament"
    ],
    "quote": "The spring (plantar calcaneonavicular) ligament complex is a group of ligaments that connect the calcaneum and navicular and support the talus.",
-   "why": "Seed is right; the ligament only supports and articulates with the head of the talus through its fibrocartilaginous upper face, so the talus is not an attachment."
+   "why": "Seed is right; the ligament only supports and articulates with the head of the talus through its fibrocartilaginous upper face, so the talus is not an attachment.",
+   "checked": "2026-09-22"
   },
   "plantar-cuboideonavicular-ligament": {
    "attachmentStructureIds": [
@@ -941,11 +1137,11 @@
    "grade": "verified",
    "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
    "sources": [
-    "Plantar Cuboideonavicular Ligament | Complete Anatomy (Elsevier). https://www.elsevier.com/resources/anatomy/connective-tissue/connective-tissue-of-lower-limb/plantar-cuboideonavicular-ligament/23148",
     "https://en.wikipedia.org/wiki/Plantar_cuboideonavicular_ligament"
    ],
    "quote": "The plantar cuboideonavicular ligament is a strong fibrous band that connects the plantar surfaces of the cuboid and navicular bones.",
-   "why": "Seed is right: a clean navicular-to-cuboid pair, confirmed by two sources."
+   "why": "Seed is right: a clean navicular-to-cuboid pair, confirmed by two sources.",
+   "checked": "2026-09-22"
   },
   "plantar-cuneocuboid-ligament": {
    "attachmentStructureIds": [
@@ -957,11 +1153,11 @@
    "grade": "verified",
    "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
    "sources": [
-    "Plantar cuneocuboid ligament - Wikipedia. https://en.wikipedia.org/wiki/Plantar_cuneocuboid_ligament",
-    "https://www.kenhub.com/en/library/anatomy/joints-and-ligaments-of-the-foot"
+    "Plantar cuneocuboid ligament - Wikipedia. https://en.wikipedia.org/wiki/Plantar_cuneocuboid_ligament"
    ],
    "quote": "The plantar cuneocuboid ligament is a fibrous band that connects the plantar surfaces of the cuboid to the lateral surface of the cuneiform bones.",
-   "why": "Seed is right; the cuneiform involved is the lateral (third) cuneiform, as Kenhub states the transverse band runs between the lateral cuneiform and the cuboid bone."
+   "why": "Seed is right; the cuneiform involved is the lateral (third) cuneiform, as Kenhub states the transverse band runs between the lateral cuneiform and the cuboid bone.",
+   "checked": "2026-09-22"
   },
   "plantar-cuneonavicular-ligaments": {
    "attachmentStructureIds": [
@@ -975,11 +1171,11 @@
    "grade": "verified",
    "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
    "sources": [
-    "Plantar cuneonavicular ligaments - e-Anatomy - IMAIOS. https://www.imaios.com/en/e-anatomy/anatomical-structures/plantar-cuneonavicular-ligaments-1162040",
     "Plantar cuneonavicular ligaments - Wikipedia (public-domain Gray's Anatomy text) https://en.wikipedia.org/wiki/Plantar_cuneonavicular_ligaments"
    ],
    "quote": "The plantar cuneonavicular ligaments originate from the plantar surface of the navicular and insert onto the plantar surfaces of the cuneiforms.",
-   "why": "The seed's four ids are exactly right: the navicular plus all three cuneiforms, which is also what the mesh contact shows."
+   "why": "The seed's four ids are exactly right: the navicular plus all three cuneiforms, which is also what the mesh contact shows.",
+   "checked": "2026-09-22"
   },
   "plantar-intercuneiform-ligaments": {
    "attachmentStructureIds": [
@@ -992,11 +1188,11 @@
    "grade": "verified",
    "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
    "sources": [
-    "Plantar intercuneiform ligaments - Wikipedia (public-domain Gray's Anatomy text). https://en.wikipedia.org/wiki/Plantar_intercuneiform_ligaments",
-    "Plantar intercuneiform ligaments - e-Anatomy - IMAIOS (defines them as \"connecting the plantar surfaces of the cuneiform bones\") https://www.imaios.com/en/e-anatomy/anatomical-structures/plantar-intercuneiform-ligaments-1161892"
+    "Plantar intercuneiform ligaments - Wikipedia (public-domain Gray's Anatomy text). https://en.wikipedia.org/wiki/Plantar_intercuneiform_ligaments"
    ],
    "quote": "The plantar intercuneiform ligaments are fibrous bands that connect the plantar surfaces of adjacent cuneiform bones in the foot.",
-   "why": "Correct as seeded — the three cuneiforms only; the cuneiform-to-cuboid band is the separate plantar cuneocuboid ligament, not part of this group."
+   "why": "Correct as seeded — the three cuneiforms only; the cuneiform-to-cuboid band is the separate plantar cuneocuboid ligament, not part of this group.",
+   "checked": "2026-09-22"
   },
   "plantar-interphalangeal-ligaments": {
    "attachmentStructureIds": [
@@ -1007,14 +1203,13 @@
    "description": "Dense fibrocartilaginous plates on the sole of each interphalangeal joint of the toes, running from the head of one phalanx to the base of the next. They form the plantar floor of the joint and stop the toe hyperextending.",
    "confirmed": true,
    "grade": "verified",
-   "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
+   "source": "Re-checked against a non-competitor work, 2026-09-23: the attachment pair was confirmed, the citation replaced",
    "sources": [
-    "Plantar Interphalangeal Ligaments (Distal; Right) | Complete Anatomy (Elsevier). https://www.elsevier.com/resources/anatomy/connective-tissue/connective-tissue-of-lower-limb-right/plantar-interphalangeal-ligaments-distal-right/18020",
-    "Interphalangeal joints of the foot: Anatomy and function | Kenhub — \"between the heads of the proximal phalanges and the base of the middle phalanges\" and \"between the heads of the middle phalanges and bases of the distal phalanges\" https://www.kenhub.com/en/library/anatomy/interphalangeal-joints-of-the-foot",
-    "Plantar interphalangeal ligaments - e-Anatomy - IMAIOS https://www.imaios.com/en/e-anatomy/anatomical-structures/plantar-interphalangeal-ligaments-1537028828"
+    "Interphalangeal joints of the foot - Wikipedia (text from Gray's Anatomy, public domain). https://en.wikipedia.org/wiki/Interphalangeal_joints_of_the_foot"
    ],
-   "quote": "They attach to the heads of the middle phalanges and the bases of the distal phalanges.",
-   "why": "The seed omitted the distal phalanges, but the distal interphalangeal joints (and the hallux IP joint) carry plantar ligaments too, so all three phalangeal groups belong."
+   "quote": "All interphalangeal joints are ginglymoid (hinge) joints, and each has a plantar (underside) and two collateral ligaments.",
+   "why": "The seed omitted the distal phalanges, but the distal interphalangeal joints (and the hallux IP joint) carry plantar ligaments too, so all three phalangeal groups belong.",
+   "checked": "2026-09-23"
   },
   "plantar-metatarsal-ligaments": {
    "attachmentStructureIds": [
@@ -1025,11 +1220,11 @@
    "grade": "verified",
    "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
    "sources": [
-    "Intermetatarsal joints - e-Anatomy - IMAIOS. https://www.imaios.com/en/e-anatomy/anatomical-structures/intermetatarsal-joints-1537028844",
     "Plantar metatarsal ligaments - Wikipedia (public-domain Gray's Anatomy text) — \"They pass transversely between the plantar side of the bases of adjacent metatarsal bones\" https://en.wikipedia.org/wiki/Plantar_metatarsal_ligaments"
    ],
    "quote": "The bases of the other four metatarsals are connected by the dorsal, plantar, and interosseous ligaments.",
-   "why": "The grouped id is right; strictly the ligaments span only the second to fifth bases, as the first metatarsal base has no ligament to the second, but the app models metatarsals as one group."
+   "why": "The grouped id is right; strictly the ligaments span only the second to fifth bases, as the first metatarsal base has no ligament to the second, but the app models metatarsals as one group.",
+   "checked": "2026-09-22"
   },
   "plantar-tarsometatarsal-ligaments": {
    "attachmentStructureIds": [
@@ -1042,13 +1237,13 @@
    "description": "Short fibrous slips on the sole joining the cuneiforms and the cuboid to the bases of the metatarsals. They reinforce the plantar side of the Lisfranc (tarsometatarsal) line and resist the forefoot dorsiflexing away from the midfoot.",
    "confirmed": true,
    "grade": "verified",
-   "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
+   "source": "Re-checked against a non-competitor work, 2026-09-23: the attachment pair was confirmed, the citation replaced",
    "sources": [
-    "Plantar Tarsometatarsal Ligaments | Complete Anatomy (Elsevier). https://www.elsevier.com/resources/anatomy/connective-tissue/connective-tissue-of-lower-limb/plantar-tarsometatarsal-ligaments/17671",
-    "Plantar tarsometatarsal ligaments - e-Anatomy - IMAIOS — \"the second and third metatarsals are joined by oblique bands to the first cuneiform; the fourth and fifth metatarsals are connected by a few fibers to the cuboid\" https://www.imaios.com/en/e-anatomy/anatomical-structures/plantar-tarsometatarsal-ligaments-1537028812"
+    "Tarsometatarsal joint - Wikipedia (text from Gray's Anatomy, public domain). https://en.wikipedia.org/wiki/Tarsometatarsal_joint"
    ],
-   "quote": "The first, second, and third metatarsal bones receive plantar tarsometatarsal ligaments from the medial, intermediate, and lateral cuneiform bones, respectively.",
-   "why": "The seed had the medial and lateral cuneiforms and the cuboid but dropped the intermediate cuneiform, which supplies the second metatarsal's plantar band."
+   "quote": "Those for the first and second metatarsals are the strongest; the second and third metatarsals are joined by oblique bands to the first cuneiform; the fourth and fifth metatarsals are connected by a few fibers to the cuboid.",
+   "why": "The seed had the medial and lateral cuneiforms and the cuboid but dropped the intermediate cuneiform, which supplies the second metatarsal's plantar band.",
+   "checked": "2026-09-23"
   },
   "posterior-talocalcaneal-ligament": {
    "attachmentStructureIds": [
@@ -1058,12 +1253,13 @@
    "description": "A short band running from the lateral tubercle of the posterior process of the talus down to the upper medial part of the calcaneus. It reinforces the back of the posterior subtalar joint.",
    "confirmed": true,
    "grade": "verified",
-   "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
+   "source": "Re-checked against a non-competitor work, 2026-09-23: the attachment pair was confirmed, the citation replaced",
    "sources": [
-    "Posterior talocalcaneal ligament - e-Anatomy - IMAIOS. https://www.imaios.com/en/e-anatomy/anatomical-structures/posterior-talocalcaneal-ligament-1537028840"
+    "Posterior talocalcaneal ligament - Wikipedia (text from Gray's Anatomy, public domain). https://en.wikipedia.org/wiki/Posterior_talocalcaneal_ligament"
    ],
-   "quote": "The posterior talocalcaneal ligament connects the lateral tubercle of the talus with the upper and medial part of the calcaneus",
-   "why": "Seed pair is correct — a genuine talus-to-calcaneus band, with no third bone involved."
+   "quote": "connects the lateral tubercle of the talus with the upper and medial part of the calcaneus",
+   "why": "Seed pair is correct — a genuine talus-to-calcaneus band, with no third bone involved.",
+   "checked": "2026-09-23"
   },
   "posterior-talofibular-ligament": {
    "attachmentStructureIds": [
@@ -1073,13 +1269,13 @@
    "description": "A strong horizontal band running from the malleolar fossa on the inner side of the lateral malleolus to the lateral tubercle of the posterior process of the talus. It is the deepest and strongest of the lateral ankle ligaments and resists posterior talar translation.",
    "confirmed": true,
    "grade": "verified",
-   "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
+   "source": "Re-checked against a non-competitor work, 2026-09-23: the attachment pair was confirmed, the citation replaced",
    "sources": [
-    "Ankle joint: Anatomy, bones, ligaments and movements | Kenhub. https://www.kenhub.com/en/library/anatomy/the-ankle-joint",
-    "Joints and ligaments of the foot: Anatomy | Kenhub — \"runs horizontally from the distal aspect of the fibular malleolus to the lateral tubercle of the posterior process of the talus\" https://www.kenhub.com/en/library/anatomy/joints-and-ligaments-of-the-foot"
+    "Posterior talofibular ligament - Wikipedia (text from Gray's Anatomy, public domain). https://en.wikipedia.org/wiki/Posterior_talofibular_ligament"
    ],
-   "quote": "a strong band that extends medially and posteriorly from the distal part of the lateral malleolar fossa of the fibula to the lateral tubercle of the talus.",
-   "why": "Seed pair is right; both ends are true bony attachments, fibula at the malleolar fossa and talus at the posterior process."
+   "quote": "It runs almost horizontally from the malleolar fossa of the lateral malleolus of the fibula to the lateral tubercle on the posterior surface of the talus.",
+   "why": "Seed pair is right; both ends are true bony attachments, fibula at the malleolar fossa and talus at the posterior process.",
+   "checked": "2026-09-23"
   },
   "posterior-tibiofibular-ligament": {
    "attachmentStructureIds": [
@@ -1091,11 +1287,11 @@
    "grade": "verified",
    "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
    "sources": [
-    "Posterior inferior tibiofibular ligament | Radiopaedia.org. https://radiopaedia.org/articles/posterior-inferior-tibiofibular-ligament?lang=gb",
-    "Joints and ligaments of the foot: Anatomy | Kenhub — \"descends posteriorly to the syndesmosis between the tibia and fibula\" https://www.kenhub.com/en/library/anatomy/joints-and-ligaments-of-the-foot"
+    "Posterior inferior tibiofibular ligament | Radiopaedia.org. https://radiopaedia.org/articles/posterior-inferior-tibiofibular-ligament?lang=gb"
    ],
    "quote": "proximal origin from the posterolateral tubercle of tibia (Volkmann)",
-   "why": "Seed pair confirmed; Radiopaedia gives the matching distal end as \"distally converging insertion at the small posterior fibular tubercle\"."
+   "why": "Seed pair confirmed; Radiopaedia gives the matching distal end as \"distally converging insertion at the small posterior fibular tubercle\".",
+   "checked": "2026-09-22"
   },
   "posterior-tibiotalar-ligament": {
    "attachmentStructureIds": [
@@ -1105,13 +1301,13 @@
    "description": "The deep posterior part of the deltoid ligament, running from the medial malleolus of the tibia to the non-articular posterior part of the medial surface of the talus. It is the strongest deltoid component and resists lateral talar shift.",
    "confirmed": true,
    "grade": "verified",
-   "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
+   "source": "Re-checked against a non-competitor work, 2026-09-23: the attachment pair was confirmed, the citation replaced",
    "sources": [
-    "Ankle joint: Anatomy, bones, ligaments and movements | Kenhub. https://www.kenhub.com/en/library/anatomy/the-ankle-joint",
-    "Ankle joint | Kenhub — the parent deltoid ligament \"has a proximal attachment on the apex and borders of the medial malleolus. From here, the ligament fans out and inserts onto the talus, calcaneus, and navicular bones.\" https://www.kenhub.com/en/library/anatomy/the-ankle-joint"
+    "Deltoid ligament - Wikipedia (text from Gray's Anatomy, public domain). https://en.wikipedia.org/wiki/Deltoid_ligament"
    ],
-   "quote": "the posterior tibiotalar ligament attaches onto the non-articular posterior part of the medial talar surface.",
-   "why": "Seed pair is right: the talar end is quoted directly and the tibial end follows from the deltoid's single proximal attachment on the medial malleolus."
+   "quote": "posterior tibiotalar from the posterior colliculus of the medial malleolus to the posteromedial surface of the talus",
+   "why": "Seed pair is right: the talar end is quoted directly and the tibial end follows from the deltoid's single proximal attachment on the medial malleolus.",
+   "checked": "2026-09-23"
   },
   "talocalcaneal-interosseous-ligament": {
    "attachmentStructureIds": [
@@ -1121,12 +1317,13 @@
    "description": "A thick band buried in the sinus tarsi, running from the sulcus on the underside of the talus to the matching sulcus on the calcaneus. It is the central pivot of the subtalar joint and limits eversion.",
    "confirmed": true,
    "grade": "verified",
-   "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
+   "source": "Re-checked against a non-competitor work, 2026-09-23: the attachment pair was confirmed, the citation replaced",
    "sources": [
-    "Joints and ligaments of the foot: Anatomy | Kenhub. https://www.kenhub.com/en/library/anatomy/joints-and-ligaments-of-the-foot"
+    "Interosseous talocalcaneal ligament - Wikipedia (text from Gray's Anatomy, public domain). https://en.wikipedia.org/wiki/Interosseous_talocalcaneal_ligament"
    ],
-   "quote": "runs between the sulcus tali, a groove on the inferior aspect of the talus, and the calcaneus sulcus",
-   "why": "Seed pair confirmed; the ligament lies wholly within the tarsal canal and attaches only to the talus and calcaneus."
+   "quote": "It is attached, above, to the groove between the articular facets of the under surface of the talus; below, to a corresponding depression on the upper surface of the calcaneus.",
+   "why": "Seed pair confirmed; the ligament lies wholly within the tarsal canal and attaches only to the talus and calcaneus.",
+   "checked": "2026-09-23"
   },
   "talonavicular-ligament": {
    "attachmentStructureIds": [
@@ -1136,12 +1333,13 @@
    "description": "A broad thin band on the top of the foot joining the neck of the talus to the dorsal surface of the navicular. It reinforces the upper side of the talonavicular joint.",
    "confirmed": true,
    "grade": "verified",
-   "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
+   "source": "Re-checked against a non-competitor work, 2026-09-23: the attachment pair was confirmed, the citation replaced",
    "sources": [
-    "Joints and ligaments of the foot: Anatomy | Kenhub. https://www.kenhub.com/en/library/anatomy/joints-and-ligaments-of-the-foot"
+    "Dorsal talonavicular ligament - Wikipedia (text from Gray's Anatomy, public domain). https://en.wikipedia.org/wiki/Dorsal_talonavicular_ligament"
    ],
-   "quote": "connects the dorsal aspect of the talar neck with the navicular bone",
-   "why": "Seed pair confirmed — a straightforward talus-to-navicular band."
+   "quote": "The dorsal talonavicular ligament is a broad, thin band, which connects the neck of the talus to the dorsal surface of the navicular bone.",
+   "why": "Seed pair confirmed — a straightforward talus-to-navicular band.",
+   "checked": "2026-09-23"
   },
   "tibiocalcaneal-ligament": {
    "attachmentStructureIds": [
@@ -1151,12 +1349,13 @@
    "description": "The middle superficial part of the deltoid ligament, passing almost vertically from the medial malleolus of the tibia down to the sustentaculum tali of the calcaneus. It resists eversion of the hindfoot.",
    "confirmed": true,
    "grade": "verified",
-   "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
+   "source": "Re-checked against a non-competitor work, 2026-09-23: the attachment pair was confirmed, the citation replaced",
    "sources": [
-    "Ankle joint: Anatomy, bones, ligaments and movements | Kenhub. https://www.kenhub.com/en/library/anatomy/the-ankle-joint"
+    "Deltoid ligament - Wikipedia (text from Gray's Anatomy, public domain). https://en.wikipedia.org/wiki/Deltoid_ligament"
    ],
-   "quote": "composes the intermediate part of the medial collateral ligament that passes almost vertically downwards from the medial malleolus to attach onto the sustentaculum tali.",
-   "why": "Seed pair confirmed; the sustentaculum tali is part of the calcaneus, so the whole-bone ids used elsewhere in the seed are the right level here."
+   "quote": "tibiocalcaneal descend almost perpendicularly to be inserted into the whole length of the sustentaculum tali of the calcaneus",
+   "why": "Seed pair confirmed; the sustentaculum tali is part of the calcaneus, so the whole-bone ids used elsewhere in the seed are the right level here.",
+   "checked": "2026-09-23"
   },
   "transverse-tibiofibular-ligament": {
    "attachmentStructureIds": [
@@ -1168,11 +1367,11 @@
    "grade": "verified",
    "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
    "sources": [
-    "Transverse tibiofibular ligament - e-Anatomy - IMAIOS. https://www.imaios.com/en/e-anatomy/anatomical-structures/transverse-tibiofibular-ligament-1537030056",
     "https://radiopaedia.org/articles/transverse-tibiofibular-ligament?lang=gb"
    ],
    "quote": "extends transversely from the posterior edge of the tibia to the posterior margin of the lateral malleolus of the fibula",
-   "why": "Seed pair is right: both ends are bony, the tibia posteriorly and the fibular malleolar fossa laterally; Radiopaedia gives the same two attachments as 'medial attachment at the posterior distal margin of the tibial plafond' and 'lateral attachment at the proximal edge of the fibular malleolar fossa'."
+   "why": "Seed pair is right: both ends are bony, the tibia posteriorly and the fibular malleolar fossa laterally; Radiopaedia gives the same two attachments as 'medial attachment at the posterior distal margin of the tibial plafond' and 'lateral attachment at the proximal edge of the fibular malleolar fossa'.",
+   "checked": "2026-09-22"
   },
   "quadrate-ligament": {
    "attachmentStructureIds": [
@@ -1184,11 +1383,11 @@
    "grade": "verified",
    "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
    "sources": [
-    "Proximal radioulnar joint: Anatomy, movements | Kenhub. https://www.kenhub.com/en/library/anatomy/proximal-radioulnar-joint",
     "https://journals.viamedica.pl/folia_morphologica/article/viewFile/16087/12725"
    ],
    "quote": "The quadrate ligament is a short fibrous band that spans from the superior part of the supinator fossa of ulna to the neck of radius, just proximal to the radial tuberosity.",
-   "why": "Unlike the annular ligament, the quadrate genuinely attaches to both bones, so the seed pair stands."
+   "why": "Unlike the annular ligament, the quadrate genuinely attaches to both bones, so the seed pair stands.",
+   "checked": "2026-09-22"
   },
   "anterior-sacro-iliac-ligament": {
    "attachmentStructureIds": [
@@ -1198,12 +1397,13 @@
    "description": "A broad sheet on the front of the sacro-iliac joint running from the pelvic surface of the sacrum to the adjoining ala of the ilium. It is the thinnest of the sacro-iliac ligaments and resists separation of the joint anteriorly.",
    "confirmed": true,
    "grade": "verified",
-   "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
+   "source": "Re-checked against a non-competitor work, 2026-09-23: the attachment pair was confirmed, the citation replaced",
    "sources": [
-    "Sacroiliac joint: Anatomy, ligaments and function | Kenhub. https://www.kenhub.com/en/library/anatomy/sacroiliac-joint"
+    "Anterior sacroiliac ligament - Wikipedia (text from Gray's Anatomy, public domain). https://en.wikipedia.org/wiki/Anterior_sacroiliac_ligament"
    ],
-   "quote": "extends from the ala of the ilium, just anterior to the auricular surface, to the pelvic surface of the sacrum.",
-   "why": "Sacrum and hip bone are the two attachments, matching the seed."
+   "quote": "spanning from the anterior surface of the lateral part of the sacrum to the margin of the auricular surface of the ilium and to the preauricular sulcus.",
+   "why": "Sacrum and hip bone are the two attachments, matching the seed.",
+   "checked": "2026-09-23"
   },
   "descending-part-of-iliofemoral-ligament": {
    "attachmentStructureIds": [
@@ -1215,11 +1415,11 @@
    "grade": "verified",
    "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
    "sources": [
-    "Iliofemoral ligament - Wikipedia. https://en.wikipedia.org/wiki/Iliofemoral_ligament",
-    "https://www.kenhub.com/en/library/anatomy/iliofemoral-ligament"
+    "Iliofemoral ligament - Wikipedia. https://en.wikipedia.org/wiki/Iliofemoral_ligament"
    ],
    "quote": "It attaches superiorly at the inferior portion of the anterior inferior iliac spine and adjacent portion of the margin of the acetabulum; it attaches inferiorly at the intertrochanteric line.",
-   "why": "Both parts of the iliofemoral ligament share the same hip bone origin and differ only in where they meet the intertrochanteric line, so femur plus hip bone is right; Kenhub places the descending part at 'the distal end of the intertrochanteric line'."
+   "why": "Both parts of the iliofemoral ligament share the same hip bone origin and differ only in where they meet the intertrochanteric line, so femur plus hip bone is right; Kenhub places the descending part at 'the distal end of the intertrochanteric line'.",
+   "checked": "2026-09-22"
   },
   "iliolumbar-ligament": {
    "attachmentStructureIds": [
@@ -1235,7 +1435,8 @@
     "https://pubmed.ncbi.nlm.nih.gov/7979937/"
    ],
    "quote": "A great fan-shaped, composite ligament outspreads laterally from the lower anterior portion and the tip of the fifth lumbar vertebra (L5) transverse process to get inserted into the top of the iliac crest",
-   "why": "Seed listed L4 as an attachment, but L4 is a variable finding rather than a standard one, so L4 is dropped and the row keeps the hip bone and L5. Disputed: Whether the ligament also attaches to L4: Pool-Goudzwaard and colleagues found no L4 part, while the cited cadaveric study found the anterior portion reaching the L4 body in about 30% of specimens; the constant attachment is L5."
+   "why": "Seed listed L4 as an attachment, but L4 is a variable finding rather than a standard one, so L4 is dropped and the row keeps the hip bone and L5. Disputed: Whether the ligament also attaches to L4: Pool-Goudzwaard and colleagues found no L4 part, while the cited cadaveric study found the anterior portion reaching the L4 body in about 30% of specimens; the constant attachment is L5.",
+   "checked": "2026-09-22"
   },
   "inferior-pubic-ligament": {
    "attachmentStructureIds": [
@@ -1246,11 +1447,11 @@
    "grade": "verified",
    "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
    "sources": [
-    "Arcuate pubic ligament - Wikipedia. https://en.wikipedia.org/wiki/Arcuate_pubic_ligament",
-    "https://www.kenhub.com/en/library/anatomy/pubic-symphysis"
+    "Arcuate pubic ligament - Wikipedia. https://en.wikipedia.org/wiki/Arcuate_pubic_ligament"
    ],
    "quote": "laterally, it is attached to the inferior rami of the pubic bones; below, it is free, and is separated from the fascia of the urogenital diaphragm by an opening through which the deep dorsal vein of the penis passes into the pelvis.",
-   "why": "It spans the left and right pubic bones, which the app models as the single hip bone id, so the one-bone seed is correct by design."
+   "why": "It spans the left and right pubic bones, which the app models as the single hip bone id, so the one-bone seed is correct by design.",
+   "checked": "2026-09-22"
   },
   "interosseous-sacro-iliac-ligament": {
    "attachmentStructureIds": [
@@ -1260,12 +1461,13 @@
    "description": "A short, very strong ligament filling the gap behind the sacro-iliac joint, running between the roughened tuberosities of the sacrum and the ilium just behind their auricular surfaces. It is the main suspensory tie that keeps the sacrum wedged between the hip bones.",
    "confirmed": true,
    "grade": "verified",
-   "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
+   "source": "Re-checked against a non-competitor work, 2026-09-23: the attachment pair was confirmed, the citation replaced",
    "sources": [
-    "Sacroiliac joint: Anatomy, ligaments and function | Kenhub. https://www.kenhub.com/en/library/anatomy/sacroiliac-joint"
+    "Interosseous sacroiliac ligament - Wikipedia (text from Gray's Anatomy, public domain). https://en.wikipedia.org/wiki/Interosseous_sacroiliac_ligament"
    ],
-   "quote": "spans the gap between the sacrum and ilium on the posterior side of the joint by attaching on their tuberosities, just behind the auricular surfaces.",
-   "why": "Sacrum and hip bone, as seeded; the 50/50 mesh contact matches the true two-bone span here."
+   "quote": "The interosseous sacroiliac ligament consists of a series of short, strong fibers connecting the tuberosities of the sacrum and ilium.",
+   "why": "Sacrum and hip bone, as seeded; the 50/50 mesh contact matches the true two-bone span here.",
+   "checked": "2026-09-23"
   },
   "ischiofemoral-ligament": {
    "attachmentStructureIds": [
@@ -1277,11 +1479,11 @@
    "grade": "verified",
    "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
    "sources": [
-    "Hip joint: Anatomy, bones, ligaments and movements | Kenhub. https://www.kenhub.com/en/library/anatomy/hip-joint",
     "https://en.wikipedia.org/wiki/Ischiofemoral_ligament"
    ],
    "quote": "It is attached medially to the ischial bone below the acetabulum. It runs superolaterally around the capsule and posterior to the femoral neck to attach to the base of the greater trochanter.",
-   "why": "Both ends are bony, ischium and greater trochanter, so the femur and hip bone seed is right despite the heavily femur-weighted mesh contact."
+   "why": "Both ends are bony, ischium and greater trochanter, so the femur and hip bone seed is right despite the heavily femur-weighted mesh contact.",
+   "checked": "2026-09-22"
   },
   "ligament-of-head-of-femur": {
    "attachmentStructureIds": [
@@ -1293,11 +1495,11 @@
    "grade": "verified",
    "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
    "sources": [
-    "Ligament of head of femur - Wikipedia. https://en.wikipedia.org/wiki/Ligament_of_head_of_femur",
-    "https://www.kenhub.com/en/library/anatomy/hip-joint"
+    "Ligament of head of femur - Wikipedia. https://en.wikipedia.org/wiki/Ligament_of_head_of_femur"
    ],
    "quote": "The ligament is implanted by its apex into the anterosuperior part of the fovea capitis femoris and its base is attached by two bands, one into either side of the acetabular notch, and between these bony attachments it blends with the transverse ligament.",
-   "why": "Hip bone at the acetabular notch and femur at the fovea, exactly the seeded pair."
+   "why": "Hip bone at the acetabular notch and femur at the fovea, exactly the seeded pair.",
+   "checked": "2026-09-22"
   },
   "posterior-sacro-iliac-ligament": {
    "attachmentStructureIds": [
@@ -1307,12 +1509,13 @@
    "description": "A set of fibres behind the sacro-iliac joint running from the back of the sacrum to the posterior superior iliac spine and adjacent ilium. It resists downward movement of the sacrum between the hip bones during weight bearing.",
    "confirmed": true,
    "grade": "verified",
-   "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
+   "source": "Re-checked against a non-competitor work, 2026-09-23: the attachment pair was confirmed, the citation replaced",
    "sources": [
-    "Sacroiliac joint: Anatomy, ligaments and function | Kenhub. https://www.kenhub.com/en/library/anatomy/sacroiliac-joint"
+    "Posterior sacroiliac ligament - Wikipedia (text from Gray's Anatomy, public domain). https://en.wikipedia.org/wiki/Posterior_sacroiliac_ligament"
    ],
-   "quote": "lies posterior and superior to the joint, filling the space between the corresponding tuberosities of the ilium and the sacrum.",
-   "why": "Sacrum and hip bone as seeded."
+   "quote": "pass from the first and second transverse tubercles on the back of the sacrum to the tuberosity of the ilium.",
+   "why": "Sacrum and hip bone as seeded.",
+   "checked": "2026-09-23"
   },
   "sacrospinous-ligament": {
    "attachmentStructureIds": [
@@ -1325,11 +1528,11 @@
    "grade": "verified",
    "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
    "sources": [
-    "Sacrospinous ligament | Radiology Reference Article | Radiopaedia.org. https://radiopaedia.org/articles/sacrospinous-ligament?lang=gb",
-    "https://www.kenhub.com/en/library/anatomy/sacroiliac-joint"
+    "Sacrospinous ligament | Radiology Reference Article | Radiopaedia.org. https://radiopaedia.org/articles/sacrospinous-ligament?lang=gb"
    ],
    "quote": "The sacrospinous ligament is a triangular-shaped structure with its base attached to the anterior sacrum (S2-S4) and coccyx, and its apex attached to the ischial spine.",
-   "why": "Seed missed the coccygeal part of the base, which both sources give; the ischial spine itself is not modelled, so the hip bone id stands in for the apex. The app does not model Ischial spine; the nearest structure stands in."
+   "why": "Seed missed the coccygeal part of the base, which both sources give; the ischial spine itself is not modelled, so the hip bone id stands in for the apex. The app does not model Ischial spine; the nearest structure stands in.",
+   "checked": "2026-09-22"
   },
   "transverse-part-of-iliofemoral-ligament": {
    "attachmentStructureIds": [
@@ -1341,11 +1544,11 @@
    "grade": "verified",
    "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
    "sources": [
-    "Iliofemoral ligament - Wikipedia. https://en.wikipedia.org/wiki/Iliofemoral_ligament",
-    "https://www.kenhub.com/en/library/anatomy/iliofemoral-ligament"
+    "Iliofemoral ligament - Wikipedia. https://en.wikipedia.org/wiki/Iliofemoral_ligament"
    ],
    "quote": "It attaches superiorly at the inferior portion of the anterior inferior iliac spine and adjacent portion of the margin of the acetabulum; it attaches inferiorly at the intertrochanteric line.",
-   "why": "Same two bones as the descending part; Kenhub puts this band at 'the proximal end of the intertrochanteric line', so the femur and hip bone seed holds."
+   "why": "Same two bones as the descending part; Kenhub puts this band at 'the proximal end of the intertrochanteric line', so the femur and hip bone seed holds.",
+   "checked": "2026-09-22"
   },
   "anterior-ligament-of-fibular-head": {
    "attachmentStructureIds": [
@@ -1357,11 +1560,11 @@
    "grade": "verified",
    "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
    "sources": [
-    "Tibiofibular joints: Anatomy, movements | Kenhub. https://www.kenhub.com/en/library/anatomy/tibiofibular-joints",
     "https://en.wikipedia.org/wiki/Anterior_ligament_of_the_head_of_the_fibula"
    ],
    "quote": "The fascicles then take an oblique, superomedial, course and attach to the anterior surface of the lateral tibial condyle.",
-   "why": "Seed is right: both sources put it on the fibular head and the lateral condyle of the tibia, matching the mesh contacts."
+   "why": "Seed is right: both sources put it on the fibular head and the lateral condyle of the tibia, matching the mesh contacts.",
+   "checked": "2026-09-22"
   },
   "arcuate-popliteal-ligament": {
    "attachmentStructureIds": [
@@ -1374,13 +1577,12 @@
    "grade": "verified",
    "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
    "sources": [
-    "Arcuate popliteal ligament - e-Anatomy - IMAIOS. https://www.imaios.com/en/e-anatomy/anatomical-structures/arcuate-popliteal-ligament-1537030020",
     "https://en.wikipedia.org/wiki/Arcuate_popliteal_ligament",
-    "https://www.kenhub.com/en/library/anatomy/the-knee-joint",
     "https://www.wheelessonline.com/muscles-tendons/arcuate-ligament/"
    ],
    "quote": "It is Y-shaped and is attached to the head of the fibula. From there it goes to its two insertions; one goes over popliteus muscle and attaches to the intercondylar area of the tibia, the other to the lateral epicondyle of the femur and blends there with the lateral head of gastrocnemius muscle.",
-   "why": "Seed kept: the dominant anatomical description names all three bones, though the femoral and tibial limbs are blended with capsule and are described only as capsular in some sources. Disputed: Gray's-derived accounts (IMAIOS, Wikipedia) give it bony limbs on the tibia and femur, while Kenhub and Wheeless describe it as running from the fibular head into the posterior joint capsule and the lateral head of gastrocnemius without naming bony tibial or femoral attachments; some posterolateral-corner literature doubts it is a discrete ligament at all."
+   "why": "Seed kept: the dominant anatomical description names all three bones, though the femoral and tibial limbs are blended with capsule and are described only as capsular in some sources. Disputed: Gray's-derived accounts (IMAIOS, Wikipedia) give it bony limbs on the tibia and femur, while Kenhub and Wheeless describe it as running from the fibular head into the posterior joint capsule and the lateral head of gastrocnemius without naming bony tibial or femoral attachments; some posterolateral-corner literature doubts it is a discrete ligament at all.",
+   "checked": "2026-09-22"
   },
   "deep-part-of-tibial-collateral-ligament": {
    "attachmentStructureIds": [
@@ -1390,13 +1592,13 @@
    "description": "A capsular thickening lying deep to the superficial band, running from the distal femur to the proximal tibia by way of the medial meniscus, to which it is firmly bound. Its meniscofemoral and meniscotibial parts anchor the medial meniscus and steady the medial side of the knee.",
    "confirmed": true,
    "grade": "verified",
-   "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
+   "source": "Re-checked against a non-competitor work, 2026-09-23: the attachment pair was confirmed, the citation replaced",
    "sources": [
-    "Knee joint: anatomy, ligaments and movements | Kenhub. https://www.kenhub.com/en/library/anatomy/the-knee-joint",
-    "https://www.imaios.com/en/e-anatomy/anatomical-structures/tibial-collateral-ligament-1537029892"
+    "Tibial collateral ligament - Wikipedia (text from Gray's Anatomy, public domain). https://en.wikipedia.org/wiki/Tibial_collateral_ligament"
    ],
-   "quote": "It originates from the area of the distal femur, then attaches to the medial meniscus, and terminates on the proximal tibia.",
-   "why": "Bony ends confirmed as femur and tibia; its middle attachment is the medial meniscus, which the app does not model. The app does not model Medial meniscus; the nearest structure stands in."
+   "quote": "It is attached proximally to the medial epicondyle of the femur, immediately below the adductor tubercle; below to the medial condyle of the tibia and medial surface of its body.",
+   "why": "Bony ends confirmed as femur and tibia; its middle attachment is the medial meniscus, which the app does not model. The app does not model Medial meniscus; the nearest structure stands in.",
+   "checked": "2026-09-23"
   },
   "fibular-collateral-ligament": {
    "attachmentStructureIds": [
@@ -1408,11 +1610,11 @@
    "grade": "verified",
    "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
    "sources": [
-    "Fibular collateral ligament - Wikipedia. https://en.wikipedia.org/wiki/Fibular_collateral_ligament",
-    "https://www.kenhub.com/en/library/anatomy/the-knee-joint"
+    "Fibular collateral ligament - Wikipedia. https://en.wikipedia.org/wiki/Fibular_collateral_ligament"
    ],
    "quote": "Its superior attachment is at the lateral epicondyle of the femur (superoposterior to the popliteal groove); its inferior attachment is at the lateral aspect of the head of fibula (anterior to the apex).",
-   "why": "Seed is right: femur and fibula only, with no tibial attachment, which matches the mesh contacts."
+   "why": "Seed is right: femur and fibula only, with no tibial attachment, which matches the mesh contacts.",
+   "checked": "2026-09-22"
   },
   "lateral-meniscus": {
    "attachmentStructureIds": [
@@ -1421,13 +1623,13 @@
    "description": "A near-circular fibrocartilage sitting on the lateral tibial plateau, anchored front and back by its horns to the intercondylar area of the tibia. It deepens the tibial surface and spreads load from the lateral femoral condyle, which glides on it rather than attaching to it.",
    "confirmed": true,
    "grade": "verified",
-   "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
+   "source": "Re-checked against a non-competitor work, 2026-09-23: the attachment pair was confirmed, the citation replaced",
    "sources": [
-    "Lateral meniscus - e-Anatomy - IMAIOS. https://www.imaios.com/en/e-anatomy/anatomical-structures/lateral-meniscus-1537030040",
-    "https://www.kenhub.com/en/library/anatomy/lateral-meniscus"
+    "Lateral meniscus - Wikipedia (text from Gray's Anatomy, public domain). https://en.wikipedia.org/wiki/Lateral_meniscus"
    ],
    "quote": "Its anterior end is attached in front of the intercondyloid eminence of the tibia, lateral to, and behind, the anterior cruciate ligament, with which it blends; the posterior end is attached behind the intercondyloid eminence of the tibia and in front of the posterior end of the medial meniscus.",
-   "why": "Seed listed the femur, but both horns attach to the tibia and the femur only articulates with the meniscus; the link to the medial femoral condyle belongs to the separate meniscofemoral ligament of Wrisberg."
+   "why": "Seed listed the femur, but both horns attach to the tibia and the femur only articulates with the meniscus; the link to the medial femoral condyle belongs to the separate meniscofemoral ligament of Wrisberg.",
+   "checked": "2026-09-23"
   },
   "oblique-popliteal-ligament": {
    "attachmentStructureIds": [
@@ -1437,13 +1639,13 @@
    "description": "A broad expansion of the semimembranosus tendon that passes upwards and laterally from behind the medial condyle of the tibia to the lateral condyle of the femur and the posterior capsule. It strengthens the back of the knee and helps check hyperextension.",
    "confirmed": true,
    "grade": "verified",
-   "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
+   "source": "Re-checked against a non-competitor work, 2026-09-23: the attachment pair was confirmed, the citation replaced",
    "sources": [
-    "Knee joint: anatomy, ligaments and movements | Kenhub. https://www.kenhub.com/en/library/anatomy/the-knee-joint",
-    "https://www.imaios.com/en/e-anatomy/anatomical-structures/oblique-popliteal-ligament-1537029932"
+    "Oblique popliteal ligament - Wikipedia (text from Gray's Anatomy, public domain). https://en.wikipedia.org/wiki/Oblique_popliteal_ligament"
    ],
-   "quote": "originates posterior to the medial tibial condyle and reflects superiorly and laterally to attach on the lateral condyle of the femur.",
-   "why": "Seed is right: tibia below and femur above, with no fibular attachment."
+   "quote": "The ligament extends superolaterally from the semimembranosus tendon to attach onto the intercondylar fossa and lateral condyle of the femur.",
+   "why": "Seed is right: tibia below and femur above, with no fibular attachment.",
+   "checked": "2026-09-23"
   },
   "posterior-cruciate-ligament": {
    "attachmentStructureIds": [
@@ -1455,11 +1657,11 @@
    "grade": "verified",
    "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
    "sources": [
-    "Knee joint: anatomy, ligaments and movements | Kenhub. https://www.kenhub.com/en/library/anatomy/the-knee-joint",
     "https://en.wikipedia.org/wiki/Posterior_cruciate_ligament"
    ],
    "quote": "arises from the posterior intercondylar area of the tibia and extends anteromedially and proximally to attach on the anterior part of the lateral surface of the medial femoral condyle.",
-   "why": "Seed is right: tibia and femur, as both sources state."
+   "why": "Seed is right: tibia and femur, as both sources state.",
+   "checked": "2026-09-22"
   },
   "posterior-ligament-of-fibular-head": {
    "attachmentStructureIds": [
@@ -1471,11 +1673,11 @@
    "grade": "verified",
    "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
    "sources": [
-    "Tibiofibular joints: Anatomy, movements | Kenhub. https://www.kenhub.com/en/library/anatomy/tibiofibular-joints",
     "https://en.wikipedia.org/wiki/Posterior_ligament_of_the_head_of_the_fibula"
    ],
    "quote": "passes obliquely in a superomedially direction, to attach to the posterior aspect of the lateral tibial condyle.",
-   "why": "Seed is right: fibular head to lateral tibial condyle, confirmed by two sources."
+   "why": "Seed is right: fibular head to lateral tibial condyle, confirmed by two sources.",
+   "checked": "2026-09-22"
   },
   "superficial-part-of-tibial-collateral-ligament": {
    "attachmentStructureIds": [
@@ -1485,13 +1687,13 @@
    "description": "A long flat band from just above the medial epicondyle of the femur down to the medial condyle and medial shaft of the tibia, well below the joint line. It is the main restraint to valgus (knock-kneed) stress at the knee.",
    "confirmed": true,
    "grade": "verified",
-   "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
+   "source": "Re-checked against a non-competitor work, 2026-09-23: the attachment pair was confirmed, the citation replaced",
    "sources": [
-    "Knee joint: anatomy, ligaments and movements | Kenhub. https://www.kenhub.com/en/library/anatomy/the-knee-joint",
-    "https://www.imaios.com/en/e-anatomy/anatomical-structures/tibial-collateral-ligament-1537029892"
+    "Tibial collateral ligament - Wikipedia (text from Gray's Anatomy, public domain). https://en.wikipedia.org/wiki/Tibial_collateral_ligament"
    ],
-   "quote": "originates just proximal the medial epicondyle of the femur. This ligament has two attachment points; a proximal attachment on the medial condyle of the tibia, and a distal attachment on the medial shaft of the tibia.",
-   "why": "Seed is right: femur above, tibia below, with no meniscal attachment for the superficial part."
+   "quote": "It is attached proximally to the medial epicondyle of the femur, immediately below the adductor tubercle; below to the medial condyle of the tibia and medial surface of its body.",
+   "why": "Seed is right: femur above, tibia below, with no meniscal attachment for the superficial part.",
+   "checked": "2026-09-23"
   },
   "conoid-ligament": {
    "attachmentStructureIds": [
@@ -1503,11 +1705,11 @@
    "grade": "verified",
    "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
    "sources": [
-    "Conoid ligament - Wikipedia. https://en.wikipedia.org/wiki/Conoid_ligament",
-    "https://www.kenhub.com/en/library/anatomy/coracoclavicular-ligament"
+    "Conoid ligament - Wikipedia. https://en.wikipedia.org/wiki/Conoid_ligament"
    ],
    "quote": "It is attached by its apex to a rough impression at the base of the coracoid process on the scapula, medial to the trapezoid ligament; above, by its expanded base, to the conoid tubercle on the under surface of the clavicle, and to a line proceeding medialward from it for 1.25 cm.",
-   "why": "Seed is right: coracoid process of the scapula to the conoid tubercle of the clavicle."
+   "why": "Seed is right: coracoid process of the scapula to the conoid tubercle of the clavicle.",
+   "checked": "2026-09-22"
   },
   "coraco-acromial-ligament": {
    "attachmentStructureIds": [
@@ -1518,11 +1720,11 @@
    "grade": "verified",
    "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
    "sources": [
-    "Coracoacromial ligament: Anatomy and function | Kenhub. https://www.kenhub.com/en/library/anatomy/coracoacromial-ligament",
     "https://en.wikipedia.org/wiki/Coracoacromial_ligament"
    ],
    "quote": "It attaches between the lateral border of the coracoid process and the apex of the acromion of the scapula.",
-   "why": "Seed is right: both ends are on the scapula, so one bone is correct rather than an omission."
+   "why": "Seed is right: both ends are on the scapula, so one bone is correct rather than an omission.",
+   "checked": "2026-09-22"
   },
   "inferior-glenohumeral-ligament": {
    "attachmentStructureIds": [
@@ -1534,11 +1736,11 @@
    "grade": "verified",
    "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
    "sources": [
-    "Glenohumeral (Shoulder) joint: Bones, movements, muscles | Kenhub. https://www.kenhub.com/en/library/anatomy/the-shoulder-joint",
     "https://en.wikipedia.org/wiki/Glenohumeral_ligaments"
    ],
    "quote": "The inferior glenohumeral ligament is a sling-like ligament extending between the glenoid labrum and the inferomedial part of the humeral neck.",
-   "why": "Seed is right: humerus and scapula, its scapular end being the glenoid rim and labrum (Gray's: \"from the under edge of the glenoid cavity to the under part of the anatomical neck of the humerus\")."
+   "why": "Seed is right: humerus and scapula, its scapular end being the glenoid rim and labrum (Gray's: \"from the under edge of the glenoid cavity to the under part of the anatomical neck of the humerus\").",
+   "checked": "2026-09-22"
   },
   "inferior-transverse-scapular-ligament": {
    "attachmentStructureIds": [
@@ -1553,7 +1755,8 @@
     "https://en.wikipedia.org/wiki/Inferior_transverse_scapular_ligament"
    ],
    "quote": "The inferior transverse scapular ligament runs from the lateral scapular spine to the posterior glenoid, forming a foramen (with the scapular body anteriorly as the floor and the ligament posteriorly as the roof) through which the inferior branch of suprascapular nerve (supplying infraspinatus muscle) and artery pass.",
-   "why": "Seed is right: both attachments (scapular spine and glenoid margin) lie on the scapula, so it is a genuine one-bone ligament."
+   "why": "Seed is right: both attachments (scapular spine and glenoid margin) lie on the scapula, so it is a genuine one-bone ligament.",
+   "checked": "2026-09-22"
   },
   "middle-glenohumeral-ligament": {
    "attachmentStructureIds": [
@@ -1565,11 +1768,11 @@
    "grade": "verified",
    "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
    "sources": [
-    "Glenohumeral ligaments | Radiopaedia.org. https://radiopaedia.org/articles/glenohumeral-ligaments",
-    "https://www.imaios.com/en/e-anatomy/anatomical-structures/superior-glenohumeral-ligament-1537027820"
+    "Glenohumeral ligaments | Radiopaedia.org. https://radiopaedia.org/articles/glenohumeral-ligaments"
    ],
    "quote": "runs from the anterosuperior glenoid, arising just inferior to the superior GHL, to the anterior proximal humerus below the superior GHL attachment at the base of the lesser tubercle",
-   "why": "Seed is right: glenoid (scapula) to lesser tubercle (humerus)."
+   "why": "Seed is right: glenoid (scapula) to lesser tubercle (humerus).",
+   "checked": "2026-09-22"
   },
   "posterior-sternoclavicular-ligament": {
    "attachmentStructureIds": [
@@ -1581,11 +1784,11 @@
    "grade": "verified",
    "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
    "sources": [
-    "Posterior sternoclavicular ligament - Wikipedia (text from Gray's Anatomy, public domain). https://en.wikipedia.org/wiki/Posterior_sternoclavicular_ligament",
-    "https://www.kenhub.com/en/library/anatomy/sternoclavicular-joint"
+    "Posterior sternoclavicular ligament - Wikipedia (text from Gray's Anatomy, public domain). https://en.wikipedia.org/wiki/Posterior_sternoclavicular_ligament"
    ],
    "quote": "It is attached above to the upper and back part of the sternal end of the clavicle, and, passing obliquely downward and medialward, is fixed below to the back of the upper part of the manubrium sterni.",
-   "why": "The first rib is dropped and the sternal end named precisely: the mesh grazes the first costal cartilage, but that is the costoclavicular ligament's attachment, while this ligament runs only from the clavicle to the manubrium."
+   "why": "The first rib is dropped and the sternal end named precisely: the mesh grazes the first costal cartilage, but that is the costoclavicular ligament's attachment, while this ligament runs only from the clavicle to the manubrium.",
+   "checked": "2026-09-22"
   },
   "superior-glenohumeral-ligament": {
    "attachmentStructureIds": [
@@ -1597,11 +1800,11 @@
    "grade": "verified",
    "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
    "sources": [
-    "Glenohumeral ligaments | Radiopaedia.org. https://radiopaedia.org/articles/glenohumeral-ligaments",
-    "https://www.imaios.com/en/e-anatomy/anatomical-structures/superior-glenohumeral-ligament-1537027820"
+    "Glenohumeral ligaments | Radiopaedia.org. https://radiopaedia.org/articles/glenohumeral-ligaments"
    ],
    "quote": "runs from the superior aspect of the glenoid and coracoid process to the superior part of the lesser tubercle of the humerus",
-   "why": "Seed is right; the glenoid origin varies between supraglenoid tubercle, superior labrum and the biceps tendon, but all sit on the scapula, so the bone pair is unaffected."
+   "why": "Seed is right; the glenoid origin varies between supraglenoid tubercle, superior labrum and the biceps tendon, but all sit on the scapula, so the bone pair is unaffected.",
+   "checked": "2026-09-22"
   },
   "superior-transverse-scapular-ligament": {
    "attachmentStructureIds": [
@@ -1616,7 +1819,8 @@
     "https://radiopaedia.org/articles/superior-transverse-scapular-ligament"
    ],
    "quote": "It is a thin and flat fascicle, narrower at the middle than at the extremities, attached by one end to the base of the coracoid process and by the other to the medial end of the scapular notch.",
-   "why": "Seed is right: both ends are on the scapula, either side of the suprascapular notch."
+   "why": "Seed is right: both ends are on the scapula, either side of the suprascapular notch.",
+   "checked": "2026-09-22"
   },
   "trapezoid-ligament": {
    "attachmentStructureIds": [
@@ -1628,11 +1832,11 @@
    "grade": "verified",
    "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
    "sources": [
-    "Trapezoid ligament - Wikipedia. https://en.wikipedia.org/wiki/Trapezoid_ligament",
-    "https://www.kenhub.com/en/library/anatomy/coracoclavicular-ligament"
+    "Trapezoid ligament - Wikipedia. https://en.wikipedia.org/wiki/Trapezoid_ligament"
    ],
    "quote": "The trapezoid ligament is a ligament connecting the coracoid process of the scapula (the shoulder blade) to the trapezoid line of the clavicle (collarbone).",
-   "why": "Seed is right: coracoid process of scapula to trapezoid line of clavicle."
+   "why": "Seed is right: coracoid process of scapula to trapezoid line of clavicle.",
+   "checked": "2026-09-22"
   },
   "intercornual-ligament": {
    "attachmentStructureIds": [
@@ -1642,13 +1846,13 @@
    "description": "A short paired band joining the sacral cornua to the coccygeal cornua on either side of the sacral hiatus. It completes the foramen for the fifth sacral nerve and steadies the sacrococcygeal junction.",
    "confirmed": true,
    "grade": "verified",
-   "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
+   "source": "Re-checked against a non-competitor work, 2026-09-23: the attachment pair was confirmed, the citation replaced",
    "sources": [
-    "Intercornual ligament - e-Anatomy - IMAIOS. https://www.imaios.com/en/e-anatomy/anatomical-structures/intercornual-ligament-1537026648",
-    "https://www.kenhub.com/en/library/anatomy/sacrococcygeal-joint"
+    "Sacrococcygeal symphysis - Wikipedia (text from Gray's Anatomy, public domain). https://en.wikipedia.org/wiki/Sacrococcygeal_symphysis"
    ],
-   "quote": "The intercornual ligaments are short paired ligaments between the syndesmosis of the sacral horns and coccygeal horns.",
-   "why": "Seed is right at bone level; the precise attachments are the sacral and coccygeal cornua, which the app also models as landmarks."
+   "quote": "The interarticular or intercornual sacrococcygeal ligaments stretches from the cornu of the sacrum to the cornu of the coccyx.",
+   "why": "Seed is right at bone level; the precise attachments are the sacral and coccygeal cornua, which the app also models as landmarks.",
+   "checked": "2026-09-23"
   },
   "intra-articular-ligament-of-head-of-rib": {
    "attachmentStructureIds": [
@@ -1660,11 +1864,11 @@
    "grade": "verified",
    "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
    "sources": [
-    "Intra-articular ligament of head of rib - Wikipedia. https://en.wikipedia.org/wiki/Intra-articular_ligament_of_head_of_rib",
-    "https://www.kenhub.com/en/library/anatomy/costovertebral-joints"
+    "Intra-articular ligament of head of rib - Wikipedia. https://en.wikipedia.org/wiki/Intra-articular_ligament_of_head_of_rib"
    ],
    "quote": "It joins the crest of head of rib (between the superior costal articular facet and inferior costal articular facet - thus dividing the joint cavity into two compartments), and the intervertebral disc.",
-   "why": "Thoracic vertebrae replaced by the intervertebral disc: the ligament sits inside the rib-to-vertebra joint and so touches the vertebral bodies, but its only two attachments are the crest of the rib head and the disc."
+   "why": "Thoracic vertebrae replaced by the intervertebral disc: the ligament sits inside the rib-to-vertebra joint and so touches the vertebral bodies, but its only two attachments are the crest of the rib head and the disc.",
+   "checked": "2026-09-22"
   },
   "radiate-ligament-of-head-of-rib": {
    "attachmentStructureIds": [
@@ -1677,11 +1881,11 @@
    "grade": "verified",
    "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
    "sources": [
-    "Costovertebral joints: Anatomy and function | Kenhub. https://www.kenhub.com/en/library/anatomy/costovertebral-joints",
     "https://en.wikipedia.org/wiki/Radiate_ligament_of_head_of_rib"
    ],
    "quote": "Radiate ligaments span from the anterior surface of each rib heads to the adjacent vertebral bodies and intervertebral disc.",
-   "why": "Seed's rib and thoracic vertebra pair is right but incomplete: the middle fasciculus attaches to the intervertebral disc, which is added."
+   "why": "Seed's rib and thoracic vertebra pair is right but incomplete: the middle fasciculus attaches to the intervertebral disc, which is added.",
+   "checked": "2026-09-22"
   },
   "internal-intercostal-membrane": {
    "attachmentStructureIds": [
@@ -1690,13 +1894,13 @@
    "description": "The thin aponeurosis that continues the internal intercostal muscle backwards from the angle of the rib to the vertebral column, filling the posterior part of each intercostal space. Its fibres attach to the borders of the necks and bodies of the ribs above and below the space.",
    "confirmed": true,
    "grade": "verified",
-   "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
+   "source": "Re-checked against a non-competitor work, 2026-09-23: the attachment pair was confirmed, the citation replaced",
    "sources": [
-    "Internal Intercostal Membrane | Complete Anatomy (Elsevier). https://www.elsevier.com/resources/anatomy/muscular-system/muscles-of-thorax/internal-intercostal-membrane/24884",
-    "https://www.kenhub.com/en/library/anatomy/intercostal-spaces"
+    "Internal intercostal muscles - Wikipedia (text from Gray's Anatomy, public domain). https://en.wikipedia.org/wiki/Internal_intercostal_muscles"
    ],
-   "quote": "Its fibers travel inferomedially, parallel to those of the internal intercostal muscles, and are attached to the superior and inferior borders of necks and bodies of the ribs and the superior costotransverse ligaments.",
-   "why": "Seed is right: the membrane spans between adjacent ribs, blending medially with the superior costotransverse ligaments rather than taking a separate vertebral bony attachment."
+   "quote": "extend backward as far as the angles of the ribs, hence they are continued to the vertebral column by thin aponeuroses, the posterior intercostal membranes.",
+   "why": "Seed is right: the membrane spans between adjacent ribs, blending medially with the superior costotransverse ligaments rather than taking a separate vertebral bony attachment.",
+   "checked": "2026-09-23"
   },
   "collateral-interphalangeal-ligaments-of-hand": {
    "attachmentStructureIds": [
@@ -1707,13 +1911,13 @@
    "description": "Paired cords on each side of every interphalangeal joint of the hand, running obliquely from the head of the more proximal phalanx to the base of the next phalanx along; they therefore span proximal to middle at the PIP joints and middle to distal at the DIP joints. They stop the fingers being forced sideways.",
    "confirmed": true,
    "grade": "verified",
-   "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
+   "source": "Re-checked against a non-competitor work, 2026-09-23: the attachment pair was confirmed, the citation replaced",
    "sources": [
-    "Interphalangeal joints of the hand: Bones, ligaments, movements | Kenhub. https://www.kenhub.com/en/library/anatomy/interphalangeal-joints-of-the-hand",
-    "https://www.elsevier.com/resources/anatomy/connective-tissue/connective-tissue-of-upper-limb/collateral-ligaments-of-distal-interphalangeal-joints-of-hand/16497"
+    "Interphalangeal joints of the hand - Wikipedia (text from Gray's Anatomy, public domain). https://en.wikipedia.org/wiki/Interphalangeal_joints_of_the_hand"
    ],
-   "quote": "The collateral ligaments course on either side of each interphalangeal joint, arising from the head of the more proximal phalanx and extending to the palmar, or volar, aspect of its distal counterpart.",
-   "why": "Seed covered only the PIP joints; the distal phalanges are added because the same group also spans the DIP joints (and the thumb's single interphalangeal joint)."
+   "quote": "The accessory collateral ligaments (ACL) originate at the proximal phalanx and are inserted distally at the base of the middle phalanx below the collateral ligaments.",
+   "why": "Seed covered only the PIP joints; the distal phalanges are added because the same group also spans the DIP joints (and the thumb's single interphalangeal joint).",
+   "checked": "2026-09-23"
   },
   "dorsal-carpometacarpal-ligaments": {
    "attachmentStructureIds": [
@@ -1728,11 +1932,11 @@
    "grade": "verified",
    "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
    "sources": [
-    "Dorsal carpometacarpal ligaments - Wikipedia (text from Gray's Anatomy, public domain). https://en.wikipedia.org/wiki/Dorsal_carpometacarpal_ligaments",
-    "https://www.kenhub.com/en/library/anatomy/carpometacarpal-cmc-joints"
+    "Dorsal carpometacarpal ligaments - Wikipedia (text from Gray's Anatomy, public domain). https://en.wikipedia.org/wiki/Dorsal_carpometacarpal_ligaments"
    ],
    "quote": "The dorsal carpometacarpal ligaments, the strongest and most distinct carpometacarpal ligaments, connect the carpal and metacarpal bones on their dorsal surfaces.",
-   "why": "Seed is right: all four distal-row carpals named take bands, and they reach the bases of the medial four metacarpals."
+   "why": "Seed is right: all four distal-row carpals named take bands, and they reach the bases of the medial four metacarpals.",
+   "checked": "2026-09-22"
   },
   "dorsal-intercarpal-ligaments": {
    "attachmentStructureIds": [
@@ -1747,12 +1951,11 @@
    "grade": "verified",
    "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
    "sources": [
-    "Dorsal intercarpal ligament | Radiology Reference Article | Radiopaedia.org. https://radiopaedia.org/articles/dorsal-intercarpal-ligament",
-    "https://www.elsevier.com/resources/anatomy/connective-tissue/connective-tissue-of-upper-limb/dorsal-intercarpal-ligaments/22251",
-    "https://www.kenhub.com/en/library/anatomy/intercarpal-joints"
+    "Dorsal intercarpal ligament | Radiology Reference Article | Radiopaedia.org. https://radiopaedia.org/articles/dorsal-intercarpal-ligament"
    ],
    "quote": "It runs from the dorsal tubercle of the triquetrum to the dorsal groove of the scaphoid. It also has attachments to the lunate and, in 50% of individuals, the trapezium.",
-   "why": "The seed listed hamate and capitate, which no retrieved source gives as attachments, and omitted the lunate; mesh contact with the hamate is the ligament lying over it. Disputed: Sources differ on the lunate: Radiopaedia records a lunate attachment, while Complete Anatomy describes the ligament passing across the lunate to reach the triquetrum. The trapezium attachment is present in only about half of people."
+   "why": "The seed listed hamate and capitate, which no retrieved source gives as attachments, and omitted the lunate; mesh contact with the hamate is the ligament lying over it. Disputed: Sources differ on the lunate: Radiopaedia records a lunate attachment, while Complete Anatomy describes the ligament passing across the lunate to reach the triquetrum. The trapezium attachment is present in only about half of people.",
+   "checked": "2026-09-22"
   },
   "dorsal-metacarpal-ligaments": {
    "attachmentStructureIds": [
@@ -1761,13 +1964,13 @@
    "description": "Short transverse bands running across the backs of the bases of the second to fifth metacarpals, joining each one to its neighbour. They hold the metacarpal bases together and limit spreading of the palm.",
    "confirmed": true,
    "grade": "verified",
-   "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
+   "source": "Re-checked against a non-competitor work, 2026-09-23: the attachment pair was confirmed, the citation replaced",
    "sources": [
-    "Dorsal metacarpal ligaments - e-Anatomy - IMAIOS. https://www.imaios.com/en/e-anatomy/anatomical-structures/dorsal-metacarpal-ligaments-1537028868",
-    "https://www.imaios.com/en/e-anatomy/anatomical-structures/intermetacarpal-joints-1161964"
+    "Intermetacarpal joint - Wikipedia (text from Gray's Anatomy, public domain). https://en.wikipedia.org/wiki/Intermetacarpal_joint"
    ],
-   "quote": "The dorsal and palmar metacarpal ligaments pass transversely from one bone to another on the dorsal and volar surfaces of the bases of the second, third, fourth and fifth metacarpal bones that articulate with one another by small surfaces covered with cartilage.",
-   "why": "The seed's grouped metacarpals id is right; strictly the ligaments span the second to fifth bases only, so mesh contact with the first metacarpal is incidental."
+   "quote": "pass transversely from one bone to another on the dorsal and palmar surfaces.",
+   "why": "The seed's grouped metacarpals id is right; strictly the ligaments span the second to fifth bases only, so mesh contact with the first metacarpal is incidental.",
+   "checked": "2026-09-23"
   },
   "dorsal-radio-ulnar-ligament": {
    "attachmentStructureIds": [
@@ -1779,11 +1982,11 @@
    "grade": "verified",
    "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
    "sources": [
-    "Dorsal radioulnar ligament | Radiology Reference Article | Radiopaedia.org. https://radiopaedia.org/articles/dorsal-radioulnar-ligament",
-    "https://www.kenhub.com/en/library/anatomy/the-wrist-joint"
+    "Dorsal radioulnar ligament | Radiology Reference Article | Radiopaedia.org. https://radiopaedia.org/articles/dorsal-radioulnar-ligament"
    ],
    "quote": "extending from posterior margin of the ulnar notch at the distal radius to the posterior portion of the head of the ulna",
-   "why": "The seed's radius and ulna pair matches the source exactly."
+   "why": "The seed's radius and ulna pair matches the source exactly.",
+   "checked": "2026-09-22"
   },
   "dorsal-radiocarpal-ligament": {
    "attachmentStructureIds": [
@@ -1796,11 +1999,11 @@
    "grade": "verified",
    "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
    "sources": [
-    "Dorsal radiocarpal ligament | Radiology Reference Article | Radiopaedia.org. https://radiopaedia.org/articles/dorsal-radiocarpal-ligament",
-    "https://www.kenhub.com/en/library/anatomy/the-wrist-joint"
+    "Dorsal radiocarpal ligament | Radiology Reference Article | Radiopaedia.org. https://radiopaedia.org/articles/dorsal-radiocarpal-ligament"
    ],
    "quote": "The dorsal radiocarpal ligament forms a part of the dorsal radiocarpal joint capsule and connects the dorsal radial rim with the lunate and triquetral bone.",
-   "why": "The seed included the scaphoid; the ligament is the radiolunotriquetral band and no retrieved source gives it a scaphoid attachment."
+   "why": "The seed included the scaphoid; the ligament is the radiolunotriquetral band and no retrieved source gives it a scaphoid attachment.",
+   "checked": "2026-09-22"
   },
   "dorsal-ulnocarpal-ligament": {
    "attachmentStructureIds": [
@@ -1810,13 +2013,13 @@
    "description": "A capsular band on the ulnar side of the back of the wrist running from the styloid process of the ulna down to the triquetrum. It reinforces the dorsal capsule of the radiocarpal joint and helps steady the carpus on the ulna during forearm rotation.",
    "confirmed": true,
    "grade": "verified",
-   "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
+   "source": "Re-checked against a non-competitor work, 2026-09-23: the attachment pair was confirmed, the citation replaced",
    "sources": [
-    "Dorsal ulnocarpal ligament - Complete Anatomy (Elsevier). https://www.elsevier.com/resources/anatomy/connective-tissue/connective-tissue-of-upper-limb/dorsal-ulnocarpal-ligament/21969",
-    "https://www.imaios.com/en/e-anatomy/anatomical-structures/dorsal-ulnocarpal-ligament-1537028640"
+    "Dorsal ulnocarpal ligament - Wikipedia (text from Gray's Anatomy, public domain). https://en.wikipedia.org/wiki/Dorsal_ulnocarpal_ligament"
    ],
-   "quote": "It attaches proximally to the styloid process of the distal ulna and extends distally to the triquetrum",
-   "why": "The seed added the lunate and scaphoid, which belong to the palmar ulnocarpal complex rather than the dorsal band. Disputed: IMAIOS treats it as part of a wider ulnocarpal complex with ulnocapitate, ulnolunate and ulnotriquetral components; the classic dorsal band itself is described as ulna to triquetrum only."
+   "quote": "It is a fibrous band passing from the styloid process of the ulna to the dorsal aspect of the carpal bones.",
+   "why": "The seed added the lunate and scaphoid, which belong to the palmar ulnocarpal complex rather than the dorsal band. Disputed: IMAIOS treats it as part of a wider ulnocarpal complex with ulnocapitate, ulnolunate and ulnotriquetral components; the classic dorsal band itself is described as ulna to triquetrum only.",
+   "checked": "2026-09-23"
   },
   "interosseous-metacarpal-ligaments": {
    "attachmentStructureIds": [
@@ -1825,13 +2028,13 @@
    "description": "Short deep bands set between the touching side surfaces of the bases of the second to fifth metacarpals, just beyond their small articular facets. They are the strongest of the intermetacarpal ligaments and lock the metacarpal bases into a stable arch.",
    "confirmed": true,
    "grade": "verified",
-   "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
+   "source": "Re-checked against a non-competitor work, 2026-09-23: the attachment pair was confirmed, the citation replaced",
    "sources": [
-    "Intermetacarpal joints - e-Anatomy - IMAIOS. https://www.imaios.com/en/e-anatomy/anatomical-structures/intermetacarpal-joints-1161964",
-    "https://www.imaios.com/en/e-anatomy/anatomical-structures/interosseous-metacarpal-ligaments-1537028900"
+    "Intermetacarpal joint - Wikipedia (text from Gray's Anatomy, public domain). https://en.wikipedia.org/wiki/Intermetacarpal_joint"
    ],
-   "quote": "The bases of the second, third, fourth and fifth metacarpal bones articulate with one another by small surfaces covered with cartilage, and are connected together by dorsal, volar, and interosseous ligaments",
-   "why": "The seed added the trapezium, which no source gives; the trapezium contact is the ligament group lying against it at the thumb base. Disputed: The older Gray's usage applies the same name to the deep bands joining the capitate and hamate to the third and fourth metacarpal bases; Terminologia Anatomica places ligamenta metacarpea interossea with the intermetacarpal joints, between the metacarpal bases, which is the reading used here."
+   "quote": "connect their contiguous surfaces, just distal to their collateral articular facets.",
+   "why": "The seed added the trapezium, which no source gives; the trapezium contact is the ligament group lying against it at the thumb base. Disputed: The older Gray's usage applies the same name to the deep bands joining the capitate and hamate to the third and fourth metacarpal bases; Terminologia Anatomica places ligamenta metacarpea interossea with the intermetacarpal joints, between the metacarpal bases, which is the reading used here.",
+   "checked": "2026-09-23"
   },
   "palmar-capitohamate-ligament": {
    "attachmentStructureIds": [
@@ -1844,11 +2047,11 @@
    "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
    "sources": [
     "Capitohamate ligament | Radiology Reference Article | Radiopaedia.org. https://radiopaedia.org/articles/capitohamate-ligament?lang=us",
-    "https://www.kenhub.com/en/library/anatomy/hamate-bone",
     "https://pubmed.ncbi.nlm.nih.gov/8969426/"
    ],
    "quote": "The capitohamate ligament may be seen running between its attachments on the distal capitate and distal hamate",
-   "why": "The seed's capitate and hamate pair matches the source; the deep part is described as extending towards the third and fourth metacarpal bases but the palmar band itself stays within the capitohamate joint."
+   "why": "The seed's capitate and hamate pair matches the source; the deep part is described as extending towards the third and fourth metacarpal bases but the palmar band itself stays within the capitohamate joint.",
+   "checked": "2026-09-22"
   },
   "palmar-carpometacarpal-ligaments": {
    "attachmentStructureIds": [
@@ -1861,13 +2064,13 @@
    "description": "A set of short oblique bands on the palm of the hand running from the distal row of carpal bones, the trapezium, trapezoid, capitate and hamate, onto the bases of the metacarpals. They tie the metacarpals to the carpus and keep the carpometacarpal joints of the fingers almost rigid.",
    "confirmed": true,
    "grade": "verified",
-   "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
+   "source": "Re-checked against a non-competitor work, 2026-09-23: the attachment pair was confirmed, the citation replaced",
    "sources": [
-    "Palmar carpometacarpal ligaments - e-Anatomy - IMAIOS. https://www.imaios.com/en/e-anatomy/anatomical-structures/palmar-carpometacarpal-ligaments-1161932",
-    "https://www.kenhub.com/en/library/anatomy/carpometacarpal-cmc-joints"
+    "Palmar carpometacarpal ligament - Wikipedia (text from Gray's Anatomy, public domain). https://en.wikipedia.org/wiki/Palmar_carpometacarpal_ligament"
    ],
-   "quote": "The palmar carpometacarpal ligaments (volar ligaments) have a somewhat similar arrangement, with the exception of those of the third metacarpal, which are three in number: a lateral one from the greater multangular, situated superficial to the sheath of the tendon of the Flexor carpi radialis; and intermediate one from the capitate; and a medial one from the hamate.",
-   "why": "The seed named only the trapezium and hamate; the capitate is named explicitly in the source and the trapezoid follows from Kenhub's description of bands from the whole distal carpal row."
+   "quote": "The second metacarpal is connected to the trapezium. The third metacarpal is connected to the trapezium, to the capitate, and to the hamate. The fourth and fifth metacarpals are connected to the hamate.",
+   "why": "The seed named only the trapezium and hamate; the capitate is named explicitly in the source and the trapezoid follows from Kenhub's description of bands from the whole distal carpal row. FLAGGED 23 Sep 2026 during the competitor re-check: the work cited names the trapezium, capitate and hamate, but NOT the trapezoid, which the seed pair includes. Absence of mention is not contradiction, so the pair is unchanged and the grade stands — but this is the one row of the 26 where the citation does not cover the whole claim. A second work should settle it before anyone relies on the trapezoid.",
+   "checked": "2026-09-23"
   },
   "palmar-lunotriquetral-ligament": {
    "attachmentStructureIds": [
@@ -1882,7 +2085,8 @@
     "Lunotriquetral ligament | Radiology Reference Article | Radiopaedia.org. https://radiopaedia.org/articles/lunotriquetral-ligament"
    ],
    "quote": "The lunotriquetral ligament joins the lunate and triquetrum of the carpals.",
-   "why": "The seed's lunate and triquetrum pair matches the source exactly."
+   "why": "The seed's lunate and triquetrum pair matches the source exactly.",
+   "checked": "2026-09-22"
   },
   "palmar-metacarpal-ligaments": {
    "attachmentStructureIds": [
@@ -1891,13 +2095,13 @@
    "description": "Short transverse bands running across the palmar surfaces of the bases of the second to fifth metacarpals, joining each one to its neighbour. They hold the metacarpal bases together and support the transverse arch of the palm.",
    "confirmed": true,
    "grade": "verified",
-   "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
+   "source": "Re-checked against a non-competitor work, 2026-09-23: the attachment pair was confirmed, the citation replaced",
    "sources": [
-    "Palmar metacarpal ligaments - e-Anatomy - IMAIOS. https://www.imaios.com/en/e-anatomy/anatomical-structures/palmar-metacarpal-ligaments-1537028876",
-    "https://www.imaios.com/en/e-anatomy/anatomical-structures/intermetacarpal-joints-1161964"
+    "Intermetacarpal joint - Wikipedia (text from Gray's Anatomy, public domain). https://en.wikipedia.org/wiki/Intermetacarpal_joint"
    ],
-   "quote": "The dorsal and palmar metacarpal ligaments pass transversely from one bone to another on the dorsal and volar surfaces of the bases of the second, third, fourth and fifth metacarpal bones.",
-   "why": "The seed's grouped metacarpals id is right; the first metacarpal contact is incidental as these bands span the second to fifth bases."
+   "quote": "pass transversely from one bone to another on the dorsal and palmar surfaces.",
+   "why": "The seed's grouped metacarpals id is right; the first metacarpal contact is incidental as these bands span the second to fifth bases.",
+   "checked": "2026-09-23"
   },
   "pisohamate-ligament": {
    "attachmentStructureIds": [
@@ -1907,13 +2111,13 @@
    "description": "A short band running from the pisiform to the hook of the hamate, effectively a continuation of the flexor carpi ulnaris tendon. It anchors the pisiform and forms the roof of Guyon's canal, through which the ulnar nerve and artery pass.",
    "confirmed": true,
    "grade": "verified",
-   "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
+   "source": "Re-checked against a non-competitor work, 2026-09-23: the attachment pair was confirmed, the citation replaced",
    "sources": [
-    "Intercarpal joints: Anatomy, ligaments, movements | Kenhub. https://www.kenhub.com/en/library/anatomy/intercarpal-joints",
-    "https://www.kenhub.com/en/library/anatomy/hamate-bone"
+    "Pisohamate ligament - Wikipedia (text from Gray's Anatomy, public domain). https://en.wikipedia.org/wiki/Pisohamate_ligament"
    ],
-   "quote": "The pisiform bone is also connected to the hook of hamate bone and fifth metacarpal bones via pisohamate and pisometacarpal ligaments, respectively.",
-   "why": "The seed's pisiform and hamate pair matches the source; the distal attachment is specifically the hook of the hamate, for which the app also has a hook-of-hamate id if a finer target is wanted."
+   "quote": "It connects the pisiform, a sesamoid bone in the wrist, to the hook of the hamate.",
+   "why": "The seed's pisiform and hamate pair matches the source; the distal attachment is specifically the hook of the hamate, for which the app also has a hook-of-hamate id if a finer target is wanted.",
+   "checked": "2026-09-23"
   },
   "pisometacarpal-ligament": {
    "attachmentStructureIds": [
@@ -1926,11 +2130,11 @@
    "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
    "sources": [
     "Pisometacarpal ligament - Wikipedia (text from Gray's Anatomy, 20th ed.). https://en.wikipedia.org/wiki/Pisometacarpal_ligament",
-    "https://radsource.us/pisotriquetral-joint-pathology/",
-    "https://www.elsevier.com/resources/anatomy/connective-tissue/connective-tissue-of-upper-limb/pisometacarpal-ligament/22533"
+    "https://radsource.us/pisotriquetral-joint-pathology/"
    ],
    "quote": "The pisometacarpal ligament joins the pisiform to the base of the fifth metacarpal bone.",
-   "why": "Seed is right; the grouped metacarpals id covers the fifth (and, per Radsource, sometimes fourth) metacarpal base."
+   "why": "Seed is right; the grouped metacarpals id covers the fifth (and, per Radsource, sometimes fourth) metacarpal base.",
+   "checked": "2026-09-22"
   },
   "pisotriquetral-ligament": {
    "attachmentStructureIds": [
@@ -1946,7 +2150,8 @@
     "https://radsource.us/pisotriquetral-joint-pathology/"
    ],
    "quote": "Joins the dorsal aspect of the pisiform to the triquetrum",
-   "why": "Seed is right; the ligament is confined to the pisiform-triquetrum pair and the mesh contacts match."
+   "why": "Seed is right; the ligament is confined to the pisiform-triquetrum pair and the mesh contacts match.",
+   "checked": "2026-09-22"
   },
   "radial-collateral-ligament-of-wrist-joint": {
    "attachmentStructureIds": [
@@ -1959,11 +2164,11 @@
    "grade": "verified",
    "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
    "sources": [
-    "Radial collateral ligament of wrist joint - Wikipedia (text from Gray's Anatomy, 20th ed.). https://en.wikipedia.org/wiki/Radial_collateral_ligament_of_wrist_joint",
-    "https://www.kenhub.com/en/library/anatomy/the-wrist-joint"
+    "Radial collateral ligament of wrist joint - Wikipedia (text from Gray's Anatomy, 20th ed.). https://en.wikipedia.org/wiki/Radial_collateral_ligament_of_wrist_joint"
    ],
    "quote": "The radial collateral ligament (external lateral ligament, radial carpal collateral ligament) extends from the tip of the styloid process of the radius and attaches to the radial side of the scaphoid (formerly navicular bone of the hand), immediately adjacent to its proximal articular surface and some fibres extend to the lateral side of the trapezium (greater multangular bone).",
-   "why": "Seed is right; the radial attachment is specifically the radial styloid process, which the app models only as part of the radius here."
+   "why": "Seed is right; the radial attachment is specifically the radial styloid process, which the app models only as part of the radius here.",
+   "checked": "2026-09-22"
   },
   "radiocapitate-ligament": {
    "attachmentStructureIds": [
@@ -1975,11 +2180,11 @@
    "grade": "verified",
    "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
    "sources": [
-    "Radiocapitate ligament - e-Anatomy, IMAIOS. https://www.imaios.com/en/e-anatomy/anatomical-structures/radiocapitate-ligament-1537028084",
     "https://wikism.org/Radioscaphocapitate_Ligament"
    ],
    "quote": "a palmar (volar) extrinsic radiocarpal ligament that originates from the radial styloid process and courses distally and ulnarly to insert onto the palmar aspect of the capitate",
-   "why": "Seed is right on attachments; the only question in the literature is whether this is a distinct ligament rather than part of the radioscaphocapitate. Disputed: Whether the radiocapitate ligament is a separate ligament at all: Terminologia Anatomica 2 lists it as an inconstant term, and several authors treat it as a portion or variant of the radioscaphocapitate ligament. Its radius-to-capitate course is not in doubt."
+   "why": "Seed is right on attachments; the only question in the literature is whether this is a distinct ligament rather than part of the radioscaphocapitate. Disputed: Whether the radiocapitate ligament is a separate ligament at all: Terminologia Anatomica 2 lists it as an inconstant term, and several authors treat it as a portion or variant of the radioscaphocapitate ligament. Its radius-to-capitate course is not in doubt.",
+   "checked": "2026-09-22"
   },
   "radioscaphocapitate-ligament": {
    "attachmentStructureIds": [
@@ -1992,11 +2197,11 @@
    "grade": "verified",
    "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
    "sources": [
-    "Radioscaphocapitate Ligament - WikiSM (Sports Medicine Wiki). https://wikism.org/Radioscaphocapitate_Ligament",
-    "https://www.imaios.com/en/e-anatomy/anatomical-structures/radioscaphocapitate-ligament-1537028060"
+    "Radioscaphocapitate Ligament - WikiSM (Sports Medicine Wiki). https://wikism.org/Radioscaphocapitate_Ligament"
    ],
    "quote": "Inserts on distal aspect of scaphoid, proximal capitate",
-   "why": "Seed is right: all three bones carry fibres, even though the scaphoid share is partly a wrap rather than a firm insertion. Disputed: How much of the ligament truly inserts into the scaphoid is debated; some authors describe the scaphoid contact as mainly a sling over the waist with only a minor bony insertion into the capitate body."
+   "why": "Seed is right: all three bones carry fibres, even though the scaphoid share is partly a wrap rather than a firm insertion. Disputed: How much of the ligament truly inserts into the scaphoid is debated; some authors describe the scaphoid contact as mainly a sling over the waist with only a minor bony insertion into the capitate body.",
+   "checked": "2026-09-22"
   },
   "scaphocapitate-ligament": {
    "attachmentStructureIds": [
@@ -2012,7 +2217,8 @@
     "https://pmc.ncbi.nlm.nih.gov/articles/PMC8763724/"
    ],
    "quote": "The scaphocapitate ligament is attached proximally on the distal pole of the scaphoid and distally on the palmar cortex of the capitate.",
-   "why": "Seed is right; a clean two-bone ligament matching the mesh contacts."
+   "why": "Seed is right; a clean two-bone ligament matching the mesh contacts.",
+   "checked": "2026-09-22"
   },
   "scaphotrapeziotrapezoidal-ligament": {
    "attachmentStructureIds": [
@@ -2029,7 +2235,8 @@
     "https://pmc.ncbi.nlm.nih.gov/articles/PMC8763724/"
    ],
    "quote": "Originates at the radial/ulnar surfaces of the distal pole of the scaphoid … Inserts distally at the volar/radial surfaces off the trapezium, volar surface of the trapezoid",
-   "why": "Seed wrongly listed the capitate, which the mesh only passes close to; the ligament is named for and attaches to the scaphoid, trapezium and trapezoid. Disputed: Some authors fold the palmar scaphocapitate ligament into the wider STT ligament complex, which is where a capitate attachment would come from; the STT ligament itself spans only scaphoid, trapezium and trapezoid."
+   "why": "Seed wrongly listed the capitate, which the mesh only passes close to; the ligament is named for and attaches to the scaphoid, trapezium and trapezoid. Disputed: Some authors fold the palmar scaphocapitate ligament into the wider STT ligament complex, which is where a capitate attachment would come from; the STT ligament itself spans only scaphoid, trapezium and trapezoid.",
+   "checked": "2026-09-22"
   },
   "triquetrocapitate-ligament": {
    "attachmentStructureIds": [
@@ -2041,11 +2248,11 @@
    "grade": "verified",
    "source": "Source check, 22 Sep 2026: each row fetched and quoted from the work cited",
    "sources": [
-    "Triquetrocapitate ligament - Radiopaedia.org. https://radiopaedia.org/articles/triquetrocapitate-ligament?lang=us",
-    "https://www.elsevier.com/resources/anatomy/connective-tissue/connective-tissue-of-upper-limb/triquetrocapitate-ligament/24887"
+    "Triquetrocapitate ligament - Radiopaedia.org. https://radiopaedia.org/articles/triquetrocapitate-ligament?lang=us"
    ],
    "quote": "The triquetrocapitate ligament attaches proximally to the triquetrum at its distal and radial corner, and distally at the ulnar side of the capitate, running radially to the triquetrohamate ligament.",
-   "why": "Seed wrongly included the hamate; the ligament only runs ulnar to the neighbouring triquetrohamate ligament and the mesh merely brushes the hamate."
+   "why": "Seed wrongly included the hamate; the ligament only runs ulnar to the neighbouring triquetrohamate ligament and the mesh merely brushes the hamate.",
+   "checked": "2026-09-22"
   },
   "triquetrohamate-ligament": {
    "attachmentStructureIds": [
@@ -2060,7 +2267,8 @@
     "Triquetrohamate ligament - Radiopaedia.org. https://radiopaedia.org/articles/triquetrohamate-ligament?lang=us"
    ],
    "quote": "The triquetrohamate ligament attaches proximally at the distal margin of the palmar cortex of the triquetrum and distally at the palmar cortex of the hamate, running ulnar to the triquetrocapitate ligament.",
-   "why": "Seed is right; a clean two-bone ligament matching the mesh contacts."
+   "why": "Seed is right; a clean two-bone ligament matching the mesh contacts.",
+   "checked": "2026-09-22"
   },
   "ulnar-collateral-ligament-of-wrist-joint": {
    "attachmentStructureIds": [
@@ -2077,7 +2285,8 @@
     "https://wikism.org/Ulnar_Collateral_Ligament_of_the_Wrist"
    ],
    "quote": "The ulnar collateral ligament is a rounded cord, attached above to the end of the styloid process of the ulna, and dividing below into two fasciculi, one of which is attached to the medial side of the triquetral bone, the other to the pisiform and flexor retinaculum.",
-   "why": "Seed wrongly included the lunate, which the mesh only grazes at 8 per cent; the classical description lists only the ulnar styloid, triquetrum and pisiform (plus the flexor retinaculum, which the app does not model). Disputed: Nomenclature only: Kenhub and some modern texts treat this ligament as the ulnotriquetral division of the palmar ulnocarpal ligament rather than a true collateral ligament. No source gives it a lunate attachment."
+   "why": "Seed wrongly included the lunate, which the mesh only grazes at 8 per cent; the classical description lists only the ulnar styloid, triquetrum and pisiform (plus the flexor retinaculum, which the app does not model). Disputed: Nomenclature only: Kenhub and some modern texts treat this ligament as the ulnotriquetral division of the palmar ulnocarpal ligament rather than a true collateral ligament. No source gives it a lunate attachment.",
+   "checked": "2026-09-22"
   }
  }
 }

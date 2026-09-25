@@ -3,11 +3,13 @@ import { AccessibilityPage } from './AccessibilityPage';
 import { AttributionsPage } from './AttributionsPage';
 import { PrivacyPage } from './PrivacyPage';
 import { RefundsPage } from './RefundsPage';
+import { SourcesPage } from './SourcesPage';
 import { TermsPage } from './TermsPage';
 
 /**
  * Public legal routes, mounted by App.tsx ABOVE its onboarding and content
- * gates — see LEGAL_PATHS there. Both app stores and UK GDPR require these
+ * gates — see LEGAL_PATHS in legalPaths.ts, which is both that gate list and
+ * the source of truth for this table. Both app stores and UK GDPR require these
  * reachable from a cold link by someone with no account, who has not been
  * through onboarding, before any anatomy content has loaded.
  *
@@ -23,6 +25,7 @@ export default function LegalRoutes() {
       <Route path="/attributions" element={<AttributionsPage />} />
       <Route path="/accessibility" element={<AccessibilityPage />} />
       <Route path="/refunds" element={<RefundsPage />} />
+      <Route path="/sources" element={<SourcesPage />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

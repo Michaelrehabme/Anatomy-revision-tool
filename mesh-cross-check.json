@@ -1,0 +1,449 @@
+{
+ "schemaVersion": 1,
+ "generated": "2026-09-24",
+ "note": "Tier 1 of the source-check: coherence against the Z-Anatomy plates and the seed graph. NOTHING HERE IS APPLIED AUTOMATICALLY — an automated correction to unverified content is not evidence. Adjudicate each finding, fix the seed by hand, and re-run. Regenerated wholesale, so do not hand-edit.",
+ "counts": {
+  "total": 71,
+  "error": 0
+ },
+ "findings": [
+  {
+   "check": "joint-vs-mesh",
+   "severity": "review",
+   "id": "facet-joint",
+   "what": "the plate is drawn from [l4-vertebra + l5-vertebra], but the seed articulates [cervical-vertebrae, thoracic-vertebrae, lumbar-vertebrae] — l4-vertebra, l5-vertebra is in the picture and not in the field."
+  },
+  {
+   "check": "bone-articulation-unparsed",
+   "severity": "info",
+   "id": "pelvis",
+   "what": "\"Pubic symphysis (left and right pubic bones)\" names no structure this script recognises — cannot be cross-checked."
+  },
+  {
+   "check": "bone-articulation-unparsed",
+   "severity": "info",
+   "id": "ribs",
+   "what": "\"Costovertebral joints with the thoracic vertebral bodies\" names no structure this script recognises — cannot be cross-checked."
+  },
+  {
+   "check": "bone-articulation-unparsed",
+   "severity": "info",
+   "id": "cervical-vertebrae",
+   "what": "\"Zygapophyseal (facet) joints between adjacent vertebrae\" names no structure this script recognises — cannot be cross-checked."
+  },
+  {
+   "check": "bone-articulation-unparsed",
+   "severity": "info",
+   "id": "atlas-c1",
+   "what": "\"Atlanto-occipital joint with the occipital condyles of the skull (\"yes\" nodding movement)\" names no structure this script recognises — cannot be cross-checked."
+  },
+  {
+   "check": "bone-articulation-unparsed",
+   "severity": "info",
+   "id": "c7-vertebra",
+   "what": "\"Zygapophyseal (facet) joints with C6 above and T1 below\" names no structure this script recognises — cannot be cross-checked."
+  },
+  {
+   "check": "bone-articulation-unparsed",
+   "severity": "info",
+   "id": "thoracic-vertebrae",
+   "what": "\"Zygapophyseal (facet) joints between adjacent vertebrae\" names no structure this script recognises — cannot be cross-checked."
+  },
+  {
+   "check": "bone-articulation-unparsed",
+   "severity": "info",
+   "id": "lumbar-vertebrae",
+   "what": "\"Zygapophyseal (facet) joints between adjacent vertebrae\" names no structure this script recognises — cannot be cross-checked."
+  },
+  {
+   "check": "bone-articulation-unparsed",
+   "severity": "info",
+   "id": "sacrum",
+   "what": "\"Lumbosacral joint with L5\" names no structure this script recognises — cannot be cross-checked."
+  },
+  {
+   "check": "bone-articulation-unparsed",
+   "severity": "info",
+   "id": "carpals",
+   "what": "\"Midcarpal joint between the proximal and distal carpal rows\" names no structure this script recognises — cannot be cross-checked."
+  },
+  {
+   "check": "bone-articulation-unparsed",
+   "severity": "info",
+   "id": "carpals",
+   "what": "\"Carpometacarpal joints with the metacarpals\" names no structure this script recognises — cannot be cross-checked."
+  },
+  {
+   "check": "bone-articulation-unparsed",
+   "severity": "info",
+   "id": "tarsals",
+   "what": "\"Tarsometatarsal joints with the metatarsals\" names no structure this script recognises — cannot be cross-checked."
+  },
+  {
+   "check": "bone-articulation-unparsed",
+   "severity": "info",
+   "id": "metacarpals",
+   "what": "\"Carpometacarpal joints with the carpals\" names no structure this script recognises — cannot be cross-checked."
+  },
+  {
+   "check": "bone-articulation-unparsed",
+   "severity": "info",
+   "id": "metacarpals",
+   "what": "\"Metacarpophalangeal joints with the proximal phalanges\" names no structure this script recognises — cannot be cross-checked."
+  },
+  {
+   "check": "bone-articulation-unparsed",
+   "severity": "info",
+   "id": "metatarsals",
+   "what": "\"Tarsometatarsal joints with the tarsals\" names no structure this script recognises — cannot be cross-checked."
+  },
+  {
+   "check": "bone-articulation-unparsed",
+   "severity": "info",
+   "id": "metatarsals",
+   "what": "\"Metatarsophalangeal joints with the proximal phalanges\" names no structure this script recognises — cannot be cross-checked."
+  },
+  {
+   "check": "bone-articulation-unparsed",
+   "severity": "info",
+   "id": "phalanges-proximal-hand",
+   "what": "\"Metacarpophalangeal joints with the metacarpals\" names no structure this script recognises — cannot be cross-checked."
+  },
+  {
+   "check": "bone-articulation-unparsed",
+   "severity": "info",
+   "id": "phalanges-proximal-hand",
+   "what": "\"Proximal interphalangeal joints with the middle phalanges (digits 2–5)\" names no structure this script recognises — cannot be cross-checked."
+  },
+  {
+   "check": "bone-articulation-unparsed",
+   "severity": "info",
+   "id": "phalanges-middle-hand",
+   "what": "\"Proximal interphalangeal joints with the proximal phalanges\" names no structure this script recognises — cannot be cross-checked."
+  },
+  {
+   "check": "bone-articulation-unparsed",
+   "severity": "info",
+   "id": "phalanges-middle-hand",
+   "what": "\"Distal interphalangeal joints with the distal phalanges\" names no structure this script recognises — cannot be cross-checked."
+  },
+  {
+   "check": "bone-articulation-unparsed",
+   "severity": "info",
+   "id": "phalanges-distal-hand",
+   "what": "\"Distal interphalangeal joints (digits 2–5) / interphalangeal joint (thumb) with the middle/proximal phalanges\" names no structure this script recognises — cannot be cross-checked."
+  },
+  {
+   "check": "bone-articulation-unparsed",
+   "severity": "info",
+   "id": "phalanges-proximal-foot",
+   "what": "\"Metatarsophalangeal joints with the metatarsals\" names no structure this script recognises — cannot be cross-checked."
+  },
+  {
+   "check": "bone-articulation-unparsed",
+   "severity": "info",
+   "id": "phalanges-proximal-foot",
+   "what": "\"Proximal interphalangeal joints with the middle phalanges (toes 2–5)\" names no structure this script recognises — cannot be cross-checked."
+  },
+  {
+   "check": "bone-articulation-unparsed",
+   "severity": "info",
+   "id": "phalanges-middle-foot",
+   "what": "\"Proximal interphalangeal joints with the proximal phalanges\" names no structure this script recognises — cannot be cross-checked."
+  },
+  {
+   "check": "bone-articulation-unparsed",
+   "severity": "info",
+   "id": "phalanges-middle-foot",
+   "what": "\"Distal interphalangeal joints with the distal phalanges\" names no structure this script recognises — cannot be cross-checked."
+  },
+  {
+   "check": "bone-articulation-unparsed",
+   "severity": "info",
+   "id": "sesamoids-foot",
+   "what": "\"The plantar surface of the head of the first metatarsal, in its two grooves\" names no structure this script recognises — cannot be cross-checked."
+  },
+  {
+   "check": "bone-articulation-unparsed",
+   "severity": "info",
+   "id": "phalanges-distal-foot",
+   "what": "\"Distal interphalangeal joints (toes 2–5) / interphalangeal joint (big toe) with the middle/proximal phalanges\" names no structure this script recognises — cannot be cross-checked."
+  },
+  {
+   "check": "landmark-no-target",
+   "severity": "review",
+   "id": "inferior-articular-process",
+   "what": "has no tap target on any image, so it can never be a locate question."
+  },
+  {
+   "check": "landmark-no-target",
+   "severity": "review",
+   "id": "superior-costal-facet",
+   "what": "has no tap target on any image, so it can never be a locate question."
+  },
+  {
+   "check": "landmark-no-target",
+   "severity": "review",
+   "id": "inferior-costal-facet",
+   "what": "has no tap target on any image, so it can never be a locate question."
+  },
+  {
+   "check": "landmark-no-target",
+   "severity": "review",
+   "id": "transverse-costal-facet",
+   "what": "has no tap target on any image, so it can never be a locate question."
+  },
+  {
+   "check": "landmark-size-guessed",
+   "severity": "review",
+   "id": "pars-interarticularis",
+   "what": "its hitbox radius is the 10mm default — the name matched no size class, so nothing measured this.",
+   "suggest": "Needs an anatomist to set a real radius; this is the number that decides right from wrong."
+  },
+  {
+   "check": "landmark-no-target",
+   "severity": "review",
+   "id": "l5-s1-junction",
+   "what": "has no tap target on any image, so it can never be a locate question."
+  },
+  {
+   "check": "landmark-size-guessed",
+   "severity": "review",
+   "id": "lateral-mass-atlas",
+   "what": "its hitbox radius is the 10mm default — the name matched no size class, so nothing measured this.",
+   "suggest": "Needs an anatomist to set a real radius; this is the number that decides right from wrong."
+  },
+  {
+   "check": "landmark-no-target",
+   "severity": "review",
+   "id": "transverse-foramen",
+   "what": "has no tap target on any image, so it can never be a locate question."
+  },
+  {
+   "check": "landmark-no-target",
+   "severity": "review",
+   "id": "bifid-spinous-process",
+   "what": "has no tap target on any image, so it can never be a locate question."
+  },
+  {
+   "check": "landmark-no-target",
+   "severity": "review",
+   "id": "c7-spinous-process",
+   "what": "has no tap target on any image, so it can never be a locate question."
+  },
+  {
+   "check": "landmark-no-target",
+   "severity": "review",
+   "id": "xiphoid-process",
+   "what": "has no tap target on any image, so it can never be a locate question."
+  },
+  {
+   "check": "landmark-no-target",
+   "severity": "review",
+   "id": "jugular-notch",
+   "what": "has no tap target on any image, so it can never be a locate question."
+  },
+  {
+   "check": "landmark-no-target",
+   "severity": "review",
+   "id": "costal-margin",
+   "what": "has no tap target on any image, so it can never be a locate question."
+  },
+  {
+   "check": "landmark-size-guessed",
+   "severity": "review",
+   "id": "sacral-promontory",
+   "what": "its hitbox radius is the 10mm default — the name matched no size class, so nothing measured this.",
+   "suggest": "Needs an anatomist to set a real radius; this is the number that decides right from wrong."
+  },
+  {
+   "check": "landmark-size-guessed",
+   "severity": "review",
+   "id": "sacral-apex",
+   "what": "its hitbox radius is the 10mm default — the name matched no size class, so nothing measured this.",
+   "suggest": "Needs an anatomist to set a real radius; this is the number that decides right from wrong."
+  },
+  {
+   "check": "landmark-size-guessed",
+   "severity": "review",
+   "id": "glenoid-cavity",
+   "what": "its hitbox radius is the 10mm default — the name matched no size class, so nothing measured this.",
+   "suggest": "Needs an anatomist to set a real radius; this is the number that decides right from wrong."
+  },
+  {
+   "check": "landmark-parent-vs-plate",
+   "severity": "review",
+   "id": "hook-of-hamate",
+   "what": "the seed says it belongs to \"carpals\", the plate draws it on \"hamate\"."
+  },
+  {
+   "check": "landmark-no-target",
+   "severity": "review",
+   "id": "hook-of-hamate",
+   "what": "has no tap target on any image, so it can never be a locate question."
+  },
+  {
+   "check": "landmark-size-guessed",
+   "severity": "review",
+   "id": "hook-of-hamate",
+   "what": "its hitbox radius is the 10mm default — the name matched no size class, so nothing measured this.",
+   "suggest": "Needs an anatomist to set a real radius; this is the number that decides right from wrong."
+  },
+  {
+   "check": "landmark-parent-vs-plate",
+   "severity": "review",
+   "id": "scaphoid-tubercle",
+   "what": "the seed says it belongs to \"carpals\", the plate draws it on \"scaphoid\"."
+  },
+  {
+   "check": "landmark-no-target",
+   "severity": "review",
+   "id": "scaphoid-tubercle",
+   "what": "has no tap target on any image, so it can never be a locate question."
+  },
+  {
+   "check": "landmark-no-target",
+   "severity": "review",
+   "id": "base-of-first-metacarpal",
+   "what": "has no tap target on any image, so it can never be a locate question."
+  },
+  {
+   "check": "landmark-no-target",
+   "severity": "review",
+   "id": "head-of-first-metacarpal",
+   "what": "has no tap target on any image, so it can never be a locate question."
+  },
+  {
+   "check": "landmark-no-target",
+   "severity": "review",
+   "id": "anatomical-snuffbox",
+   "what": "has no tap target on any image, so it can never be a locate question."
+  },
+  {
+   "check": "landmark-no-target",
+   "severity": "review",
+   "id": "first-metacarpal",
+   "what": "has no tap target on any image, so it can never be a locate question."
+  },
+  {
+   "check": "landmark-no-target",
+   "severity": "review",
+   "id": "second-metacarpal",
+   "what": "has no tap target on any image, so it can never be a locate question."
+  },
+  {
+   "check": "landmark-no-target",
+   "severity": "review",
+   "id": "third-metacarpal",
+   "what": "has no tap target on any image, so it can never be a locate question."
+  },
+  {
+   "check": "landmark-no-target",
+   "severity": "review",
+   "id": "fourth-metacarpal",
+   "what": "has no tap target on any image, so it can never be a locate question."
+  },
+  {
+   "check": "landmark-no-target",
+   "severity": "review",
+   "id": "fifth-metacarpal",
+   "what": "has no tap target on any image, so it can never be a locate question."
+  },
+  {
+   "check": "landmark-size-guessed",
+   "severity": "review",
+   "id": "ilium",
+   "what": "its hitbox radius is the 10mm default — the name matched no size class, so nothing measured this.",
+   "suggest": "Needs an anatomist to set a real radius; this is the number that decides right from wrong."
+  },
+  {
+   "check": "landmark-size-guessed",
+   "severity": "review",
+   "id": "ischium",
+   "what": "its hitbox radius is the 10mm default — the name matched no size class, so nothing measured this.",
+   "suggest": "Needs an anatomist to set a real radius; this is the number that decides right from wrong."
+  },
+  {
+   "check": "landmark-size-guessed",
+   "severity": "review",
+   "id": "pubis",
+   "what": "its hitbox radius is the 10mm default — the name matched no size class, so nothing measured this.",
+   "suggest": "Needs an anatomist to set a real radius; this is the number that decides right from wrong."
+  },
+  {
+   "check": "landmark-size-guessed",
+   "severity": "review",
+   "id": "acetabulum",
+   "what": "its hitbox radius is the 10mm default — the name matched no size class, so nothing measured this.",
+   "suggest": "Needs an anatomist to set a real radius; this is the number that decides right from wrong."
+  },
+  {
+   "check": "landmark-size-guessed",
+   "severity": "review",
+   "id": "linea-aspera",
+   "what": "its hitbox radius is the 10mm default — the name matched no size class, so nothing measured this.",
+   "suggest": "Needs an anatomist to set a real radius; this is the number that decides right from wrong."
+  },
+  {
+   "check": "landmark-no-target",
+   "severity": "review",
+   "id": "gerdys-tubercle",
+   "what": "has no tap target on any image, so it can never be a locate question."
+  },
+  {
+   "check": "landmark-no-target",
+   "severity": "review",
+   "id": "ankle-mortise",
+   "what": "has no tap target on any image, so it can never be a locate question."
+  },
+  {
+   "check": "landmark-no-target",
+   "severity": "review",
+   "id": "intermediate-cuneiform",
+   "what": "has no tap target on any image, so it can never be a locate question."
+  },
+  {
+   "check": "landmark-no-target",
+   "severity": "review",
+   "id": "lateral-cuneiform",
+   "what": "has no tap target on any image, so it can never be a locate question."
+  },
+  {
+   "check": "landmark-size-guessed",
+   "severity": "review",
+   "id": "sustentaculum-tali",
+   "what": "its hitbox radius is the 10mm default — the name matched no size class, so nothing measured this.",
+   "suggest": "Needs an anatomist to set a real radius; this is the number that decides right from wrong."
+  },
+  {
+   "check": "landmark-parent-vs-plate",
+   "severity": "review",
+   "id": "calcaneal-tuberosity",
+   "what": "the seed says it belongs to \"tarsals\", the plate draws it on \"calcaneus\"."
+  },
+  {
+   "check": "landmark-no-target",
+   "severity": "review",
+   "id": "calcaneal-tuberosity",
+   "what": "has no tap target on any image, so it can never be a locate question."
+  },
+  {
+   "check": "landmark-parent-vs-plate",
+   "severity": "review",
+   "id": "navicular-tuberosity",
+   "what": "the seed says it belongs to \"tarsals\", the plate draws it on \"navicular\"."
+  },
+  {
+   "check": "landmark-no-target",
+   "severity": "review",
+   "id": "navicular-tuberosity",
+   "what": "has no tap target on any image, so it can never be a locate question."
+  },
+  {
+   "check": "landmark-no-target",
+   "severity": "review",
+   "id": "base-of-fifth-metatarsal",
+   "what": "has no tap target on any image, so it can never be a locate question."
+  }
+ ]
+}

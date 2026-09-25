@@ -189,10 +189,45 @@ export interface QuestionEligibility {
   locate: boolean;
 }
 
+/**
+ * How well a fact is evidenced. 'unverified' is the absence of a check, not a
+ * doubt about the fact; 'held' means a named work CONTRADICTS what the seed
+ * says and the replacement is not settled — see isHeld().
+ */
+export type SourceGrade = 'verified' | 'unverified' | 'held';
+
+/** One work a fact was checked against, as /sources should name it. */
+export interface CitedWork {
+  /** e.g. "Radiopaedia — Calcaneofibular ligament". */
+  title: string;
+  url?: string;
+  /**
+   * The sentence the work states it in. Recorded in the root *-source-review
+   * JSONs, NOT here: 143 ligaments' worth of quotes was 22 kB of the entry
+   * chunk, downloaded by every student and rendered nowhere.
+   */
+  quote?: string;
+}
+
 export interface StructureSource {
+  // The lecture-deck shape. The 122 muscles carry these three, and
+  // muscles.raw.json is untouched by the source-check work.
   deck?: string;
   author?: string;
   slides?: number[];
+  /**
+   * What the deck itself drew on. "ALL_Muscles_of_the_body" drew on Visible
+   * Body, so the chain is Visible Body -> the deck -> here; /attributions named
+   * only the middle link until this was recorded (owner, 23 Sep 2026).
+   */
+  via?: string;
+
+  // Added by the source-check pass. A work-cited check has works, a grade and
+  // a date; a deck-sourced one has a deck. Both are a source.
+  works?: CitedWork[];
+  grade?: SourceGrade;
+  /** ISO date the check was made. A grade with no date is a grade of unknown age. */
+  checked?: string;
 }
 
 interface AnatomyStructureBase {
@@ -335,6 +370,31 @@ export const isLigament = (s: AnatomyStructure): s is LigamentStructure => s.cat
  */
 export function reviewedAttachmentIds(s: LigamentStructure): string[] {
   return s.needsReview ? [] : s.attachmentStructureIds;
+}
+
+/**
+ * A structure's provenance grade. An absent `source` reads as 'unverified',
+ * because silence is not a grade — 199 of the 464 structures were drafted from
+ * standard anatomy and checked against nothing, and the honest default has to
+ * say so rather than let a missing field pass for a clean one.
+ *
+ * Note this is NOT the ligament gate above. Unverified content is still asked;
+ * /sources states plainly which families have been checked. Only 'held' — a
+ * fact a named work contradicts — is withheld from questions, via isHeld().
+ */
+export function sourceGradeOf(s: AnatomyStructure): SourceGrade {
+  return s.source?.grade ?? 'unverified';
+}
+
+/**
+ * True when a named work contradicted this structure's facts and the
+ * replacement is not settled. Everything that grades an answer must skip these
+ * — including as a DISTRACTOR: multiSelect builds "which movement is NOT
+ * possible here" from other joints' movements, so a held joint that still
+ * donates movements manufactures a false question somewhere else.
+ */
+export function isHeld(s: AnatomyStructure): boolean {
+  return sourceGradeOf(s) === 'held';
 }
 
 /**

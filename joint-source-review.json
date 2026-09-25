@@ -1,0 +1,1001 @@
+{
+ "schemaVersion": 1,
+ "note": "Literature source-check for the joints. Each row records what a NAMED work said about this structure, with the sentence it said it in. Written by src/scripts/sourceReview.ts --record; read by generateProvenance.ts, which is what /sources renders. A row graded verified needs a work with a url AND a quote and a checked date, or validate-content fails. Corrections are hand-applied to the seed and then asserted here — an automated correction to unverified content is not evidence.",
+ "reviews": {
+  "glenohumeral-joint": {
+   "grade": "verified",
+   "checked": "2026-09-24",
+   "works": [
+    {
+     "title": "Shoulder joint - Wikipedia (text from Gray's Anatomy, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Shoulder_joint",
+     "quote": "structurally classified as a synovial ball-and-socket joint and functionally as a diarthrosis and multiaxial joint ... an articulation between the glenoid fossa of the scapula (shoulder blade) and the head of the humerus (upper arm bone)"
+    }
+   ],
+   "facts": {
+    "jointType": {
+     "verdict": "confirmed"
+    },
+    "articulatingStructureIds": {
+     "verdict": "corrected",
+     "was": [
+      "humerus",
+      "scapula"
+     ],
+     "now": [
+      "humerus",
+      "glenoid-cavity"
+     ],
+     "why": "The work names the glenoid fossa, not the whole scapula. Naming the articular part is the standing rule, and glenoid-cavity already exists as a landmark."
+    },
+    "movements": {
+     "verdict": "confirmed",
+     "why": "Flexion, extension, abduction, adduction, medial and lateral rotation and circumduction are all listed by the work; nothing in the seed is missing from it."
+    },
+    "stabilizers": {
+     "verdict": "confirmed",
+     "why": "Rotator cuff by name, glenoid labrum, the three glenohumeral ligaments and the long head of biceps all appear in the work."
+    }
+   }
+  },
+  "sternoclavicular-joint": {
+   "grade": "verified",
+   "checked": "2026-09-24",
+   "works": [
+    {
+     "title": "Sternoclavicular joint - Wikipedia (text from Gray's Anatomy, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Sternoclavicular_joint",
+     "quote": "a synovial saddle joint ... between the sternal end of the clavicle, the clavicular notch of the sternum, and (the superior surface of) the costal cartilage of the first rib ... allows movement of the clavicle in three planes, predominantly in the anteroposterior and vertical planes, although some rotation also occurs"
+    }
+   ],
+   "facts": {
+    "jointType": {
+     "verdict": "confirmed"
+    },
+    "articulatingStructureIds": {
+     "verdict": "confirmed",
+     "why": "Clavicle and sternum confirmed. The work adds the costal cartilage of the first rib as a third articulating surface; the seed has no costal cartilage structure, so this is noted rather than added."
+    },
+    "movements": {
+     "verdict": "confirmed",
+     "why": "Elevation, depression, protraction, retraction and rotation are all named by the work; the seed lists exactly these five and omits none."
+    },
+    "stabilizers": {
+     "verdict": "confirmed",
+     "why": "Anterior and posterior sternoclavicular, costoclavicular and interclavicular ligaments plus the articular disc all named by the work."
+    }
+   }
+  },
+  "acromioclavicular-joint": {
+   "grade": "unverified",
+   "checked": "2026-09-24",
+   "works": [
+    {
+     "title": "Acromioclavicular joint - Wikipedia (text from Gray's Anatomy, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Acromioclavicular_joint",
+     "quote": "It is a plane synovial joint ... the junction between the acromion (part of the scapula that forms the highest point of the shoulder) and the clavicle."
+    }
+   ],
+   "facts": {
+    "jointType": {
+     "verdict": "confirmed"
+    },
+    "articulatingStructureIds": {
+     "verdict": "corrected",
+     "was": [
+      "clavicle",
+      "scapula"
+     ],
+     "now": [
+      "clavicle",
+      "acromion"
+     ],
+     "why": "The work names the acromion, not the whole scapula. acromion already exists as a landmark."
+    },
+    "stabilizers": {
+     "verdict": "confirmed",
+     "why": "Acromioclavicular and coracoclavicular (conoid and trapezoid) ligaments both named. The work also names the coracoacromial ligament, which the seed omits — a candidate addition, not applied."
+    },
+    "movements": {
+     "verdict": "held",
+     "why": "NOT SETTLED. The work describes the joint's function ('provides the ability to raise the arm above the head', acts as a pivot) but does not enumerate its movements, so it neither confirms nor refutes the seed's ['Gliding','Rotation']. Physiopedia and Radiopaedia both refused the fetch. This is why the row is graded unverified: completeness on movements is what multiSelect depends on."
+    }
+   }
+  },
+  "humeroulnar-joint": {
+   "grade": "verified",
+   "checked": "2026-09-24",
+   "works": [
+    {
+     "title": "Elbow - Wikipedia (text from Gray's Anatomy, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Elbow",
+     "quote": "simple hinge-joint ... Trochlear notch of ulna to trochlea of humerus ... Flexion and extension only"
+    }
+   ],
+   "facts": {
+    "jointType": {
+     "verdict": "confirmed"
+    },
+    "articulatingStructureIds": {
+     "verdict": "confirmed",
+     "why": "Trochlea of humerus to trochlear notch of ulna. The seed names the two whole bones; neither articular surface exists as a structure to name instead."
+    },
+    "movements": {
+     "verdict": "confirmed",
+     "why": "The work says flexion and extension ONLY, so the seed omits nothing — which is the check that matters for multiSelect."
+    },
+    "stabilizers": {
+     "verdict": "confirmed",
+     "why": "Ulnar collateral ligament named directly. The work attributes the radial collateral to the humeroradial joint, but the elbow capsule is common to both and standard teaching stabilises the humeroulnar with both collaterals; kept, noted."
+    }
+   }
+  },
+  "humeroradial-joint": {
+   "grade": "verified",
+   "checked": "2026-09-24",
+   "works": [
+    {
+     "title": "Elbow - Wikipedia (text from Gray's Anatomy, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Elbow",
+     "quote": "ball-and-socket joint ... Head of radius to capitulum of humerus ... Flexion, extension, and some rotation capability"
+    }
+   ],
+   "facts": {
+    "jointType": {
+     "verdict": "confirmed",
+     "why": "Worth recording explicitly: 'ball-and-socket' looks wrong beside a hinge elbow, and it is right — the radial head spins on the capitulum."
+    },
+    "articulatingStructureIds": {
+     "verdict": "confirmed"
+    },
+    "movements": {
+     "verdict": "confirmed",
+     "why": "The work's 'some rotation capability' is the pronation/supination the seed names; nothing in the seed is absent from the work."
+    },
+    "stabilizers": {
+     "verdict": "confirmed"
+    }
+   }
+  },
+  "proximal-radioulnar-joint": {
+   "grade": "verified",
+   "checked": "2026-09-24",
+   "works": [
+    {
+     "title": "Elbow - Wikipedia (text from Gray's Anatomy, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Elbow",
+     "quote": "Head of radius to radial notch of ulna ... pronation and supination ... Anular ligament, oblique cord, and quadrate ligament"
+    }
+   ],
+   "facts": {
+    "jointType": {
+     "verdict": "confirmed"
+    },
+    "articulatingStructureIds": {
+     "verdict": "confirmed"
+    },
+    "movements": {
+     "verdict": "confirmed"
+    },
+    "stabilizers": {
+     "verdict": "confirmed",
+     "why": "Annular and quadrate confirmed. The work also names the oblique cord, which the seed omits — a candidate addition, not applied."
+    }
+   }
+  },
+  "distal-radioulnar-joint": {
+   "grade": "verified",
+   "checked": "2026-09-24",
+   "works": [
+    {
+     "title": "Distal radioulnar joint - Wikipedia (text from Gray's Anatomy, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Distal_radioulnar_joint",
+     "quote": "a synovial pivot joint between the two bones in the forearm; the radius and ulna ... formed by the head of ulna, and the ulnar notch of the distal radius ... palmar radioulnar ligament, and dorsal radioulnar ligament"
+    }
+   ],
+   "facts": {
+    "jointType": {
+     "verdict": "confirmed"
+    },
+    "articulatingStructureIds": {
+     "verdict": "confirmed"
+    },
+    "movements": {
+     "verdict": "confirmed",
+     "why": "Pronation and supination only; the seed lists exactly these."
+    },
+    "stabilizers": {
+     "verdict": "confirmed",
+     "why": "The work names the triangular articular disc rather than the acronym TFCC, and both radioulnar ligaments."
+    }
+   }
+  },
+  "radiocarpal-joint": {
+   "grade": "verified",
+   "checked": "2026-09-24",
+   "works": [
+    {
+     "title": "Wrist - Wikipedia (text from Gray's Anatomy, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Wrist",
+     "quote": "The radiocarpal (wrist) joint is an ellipsoid joint formed by the radius and the articular disc proximally and the proximal row of carpal bones distally ... the scaphoid, lunate, and triquetrum ... the palmar and dorsal radiocarpal ligaments, and the ulnar and radial collateral ligaments."
+    }
+   ],
+   "facts": {
+    "jointType": {
+     "verdict": "confirmed",
+     "why": "The work says 'ellipsoid', which is the same joint class the seed calls condyloid."
+    },
+    "articulatingStructureIds": {
+     "verdict": "corrected",
+     "was": [
+      "radius",
+      "carpals"
+     ],
+     "now": [
+      "radius",
+      "scaphoid",
+      "lunate",
+      "triquetrum"
+     ],
+     "why": "The work names the proximal row specifically. 'carpals' is the grouped bone and includes the distal row, which belongs to the midcarpal joint, not this one."
+    },
+    "movements": {
+     "verdict": "confirmed",
+     "why": "Flexion, extension, radial and ulnar deviation all named. The work does not list circumduction; it is the combination of the four and is kept, noted."
+    },
+    "stabilizers": {
+     "verdict": "confirmed"
+    }
+   }
+  },
+  "midcarpal-joint": {
+   "grade": "unverified",
+   "checked": "2026-09-24",
+   "works": [
+    {
+     "title": "Midcarpal joint - Wikipedia (text from Gray's Anatomy, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Midcarpal_joint",
+     "quote": "a form of diarthrodial, almost condyloid joint ... Proximal row: scaphoid, lunate, and triquetral bones. Distal row: trapezium, trapezoid, capitate, and hamate bones ... interosseous ligaments and by volar, dorsal, radial, and ulnar ligaments"
+    }
+   ],
+   "facts": {
+    "articulatingStructureIds": {
+     "verdict": "confirmed",
+     "why": "Confirms the seven-bone correction made from the mesh cross-check: proximal row scaphoid/lunate/triquetrum against distal row trapezium/trapezoid/capitate/hamate."
+    },
+    "movements": {
+     "verdict": "confirmed",
+     "why": "Flexion/extension and radial/ulnar deviation; matches the seed exactly."
+    },
+    "stabilizers": {
+     "verdict": "confirmed"
+    },
+    "jointType": {
+     "verdict": "held",
+     "why": "NOT SETTLED. The seed says 'plane'; the work says 'a form of diarthrodial, almost condyloid joint'. Those are different classes and the work does not say plane. jointType is the literal MCQ answer in mcq.ts, so this needs a second work before it is asked."
+    }
+   }
+  },
+  "carpometacarpal-joint-thumb": {
+   "grade": "verified",
+   "checked": "2026-09-24",
+   "works": [
+    {
+     "title": "Carpometacarpal joint - Wikipedia (text from Gray's Anatomy, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Carpometacarpal_joint",
+     "quote": "A saddle joint with two degrees of freedom, also called the trapeziometacarpal (TMC) joint, connecting the trapezium to the first metacarpal ... flexion and extension in the plane of the palm of the hand, abduction and adduction in a plane at right angles to the palm, circumduction, and opposition."
+    }
+   ],
+   "facts": {
+    "jointType": {
+     "verdict": "confirmed"
+    },
+    "articulatingStructureIds": {
+     "verdict": "confirmed"
+    },
+    "movements": {
+     "verdict": "confirmed",
+     "why": "All six named by the work. The seed adds Reposition, the return from opposition, which the work does not list separately; kept, noted."
+    },
+    "stabilizers": {
+     "verdict": "confirmed",
+     "why": "Anterior and posterior oblique and the first intermetacarpal ligament all named; the work calls the intermetacarpal 'the most important restraining structure'."
+    }
+   }
+  },
+  "metacarpophalangeal-joint": {
+   "grade": "verified",
+   "checked": "2026-09-24",
+   "works": [
+    {
+     "title": "Metacarpophalangeal joint - Wikipedia (text from Gray's Anatomy, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Metacarpophalangeal_joint",
+     "quote": "These joints are of the condyloid kind, formed by the reception of the rounded heads of the metacarpal bones into shallow cavities on the proximal ends ... flexion (hand closing), extension (hand opening), abduction (spreading the fingers), adduction (squeezing together of the fingers) and circumduction"
+    }
+   ],
+   "facts": {
+    "jointType": {
+     "verdict": "confirmed"
+    },
+    "articulatingStructureIds": {
+     "verdict": "confirmed"
+    },
+    "movements": {
+     "verdict": "confirmed",
+     "why": "All five named by the work and the seed lists exactly those five — nothing omitted."
+    },
+    "stabilizers": {
+     "verdict": "confirmed"
+    }
+   }
+  },
+  "proximal-interphalangeal-joint-hand": {
+   "grade": "verified",
+   "checked": "2026-09-24",
+   "works": [
+    {
+     "title": "Interphalangeal joints of the hand - Wikipedia (text from Gray's Anatomy, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Interphalangeal_joints_of_the_hand",
+     "quote": "The interphalangeal joints of the hand are the hinge joints between the phalanges of the fingers ... The only movements permitted in the interphalangeal joints are flexion and extension."
+    }
+   ],
+   "facts": {
+    "jointType": {
+     "verdict": "confirmed"
+    },
+    "articulatingStructureIds": {
+     "verdict": "confirmed",
+     "why": "The work places the PIP between the first and second phalanges, i.e. proximal and middle."
+    },
+    "movements": {
+     "verdict": "confirmed",
+     "why": "The work says flexion and extension ONLY, so the seed omits nothing."
+    },
+    "stabilizers": {
+     "verdict": "confirmed"
+    }
+   }
+  },
+  "distal-interphalangeal-joint-hand": {
+   "grade": "verified",
+   "checked": "2026-09-24",
+   "works": [
+    {
+     "title": "Interphalangeal joints of the hand - Wikipedia (text from Gray's Anatomy, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Interphalangeal_joints_of_the_hand",
+     "quote": "The interphalangeal joints of the hand are the hinge joints between the phalanges of the fingers ... The only movements permitted in the interphalangeal joints are flexion and extension."
+    }
+   ],
+   "facts": {
+    "jointType": {
+     "verdict": "confirmed"
+    },
+    "articulatingStructureIds": {
+     "verdict": "confirmed",
+     "why": "The work places the DIP between the second and third phalanges, i.e. middle and distal."
+    },
+    "movements": {
+     "verdict": "confirmed"
+    },
+    "stabilizers": {
+     "verdict": "confirmed"
+    }
+   }
+  },
+  "hip-joint": {
+   "grade": "verified",
+   "checked": "2026-09-24",
+   "works": [
+    {
+     "title": "Hip - Wikipedia (text from Gray's Anatomy, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Hip",
+     "quote": "a ball and socket synovial joint ... the rounded head of the femur and the cup-like acetabulum of the pelvis ... flexion, extension, abduction, adduction, lateral rotation, and medial rotation, plus circumduction"
+    }
+   ],
+   "facts": {
+    "jointType": {
+     "verdict": "confirmed"
+    },
+    "articulatingStructureIds": {
+     "verdict": "confirmed",
+     "why": "Confirms the mesh cross-check correction: the acetabulum is the articular part, not the whole pelvis."
+    },
+    "movements": {
+     "verdict": "confirmed",
+     "why": "All seven named by the work; the seed lists exactly those seven."
+    },
+    "stabilizers": {
+     "verdict": "confirmed",
+     "why": "Iliofemoral, pubofemoral, ischiofemoral, labrum and ligamentum teres all named. The work adds the zona orbicularis, which the seed omits — a candidate addition, not applied."
+    }
+   }
+  },
+  "carpometacarpal-joint-2": {
+   "grade": "unverified",
+   "checked": "2026-09-24",
+   "works": [
+    {
+     "title": "Carpometacarpal joint - Wikipedia (text from Gray's Anatomy, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Carpometacarpal_joint",
+     "quote": "Synovial condyloid joints that are mostly immobile, particularly the second and third CMCs ... 2nd metacarpal: trapezoid (primary), trapezium and capitate (secondary)"
+    }
+   ],
+   "facts": {
+    "articulatingStructureIds": {
+     "verdict": "confirmed",
+     "why": "Trapezoid is the primary articulation; the work notes trapezium and capitate as secondary, which the seed omits."
+    },
+    "movements": {
+     "verdict": "confirmed",
+     "why": "The work calls it mostly immobile, consistent with gliding only."
+    },
+    "stabilizers": {
+     "verdict": "confirmed"
+    },
+    "jointType": {
+     "verdict": "held",
+     "why": "NOT SETTLED. The seed says 'plane'; this work says 'synovial condyloid'. jointType is the literal MCQ answer in mcq.ts, so a second work is needed before this is asked."
+    }
+   }
+  },
+  "carpometacarpal-joint-3": {
+   "grade": "unverified",
+   "checked": "2026-09-24",
+   "works": [
+    {
+     "title": "Carpometacarpal joint - Wikipedia (text from Gray's Anatomy, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Carpometacarpal_joint",
+     "quote": "Synovial condyloid joints that are mostly immobile, particularly the second and third CMCs ... 3rd metacarpal: capitate (primary)"
+    }
+   ],
+   "facts": {
+    "articulatingStructureIds": {
+     "verdict": "confirmed"
+    },
+    "movements": {
+     "verdict": "confirmed"
+    },
+    "stabilizers": {
+     "verdict": "confirmed"
+    },
+    "jointType": {
+     "verdict": "held",
+     "why": "NOT SETTLED — same conflict as carpometacarpal-joint-2: seed 'plane' against the work's 'synovial condyloid'."
+    }
+   }
+  },
+  "carpometacarpal-joint-4": {
+   "grade": "unverified",
+   "checked": "2026-09-24",
+   "works": [
+    {
+     "title": "Carpometacarpal joint - Wikipedia (text from Gray's Anatomy, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Carpometacarpal_joint",
+     "quote": "4th metacarpal: capitate and hamate"
+    }
+   ],
+   "facts": {
+    "articulatingStructureIds": {
+     "verdict": "corrected",
+     "was": [
+      "hamate",
+      "fourth-metacarpal"
+     ],
+     "now": [
+      "capitate",
+      "hamate",
+      "fourth-metacarpal"
+     ],
+     "why": "The work names the capitate as well as the hamate. The seed named only the hamate."
+    },
+    "movements": {
+     "verdict": "confirmed"
+    },
+    "stabilizers": {
+     "verdict": "confirmed"
+    },
+    "jointType": {
+     "verdict": "held",
+     "why": "NOT SETTLED — same conflict: seed 'plane' against the work's 'synovial condyloid'."
+    }
+   }
+  },
+  "carpometacarpal-joint-5": {
+   "grade": "unverified",
+   "checked": "2026-09-24",
+   "works": [
+    {
+     "title": "Carpometacarpal joint - Wikipedia (text from Gray's Anatomy, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Carpometacarpal_joint",
+     "quote": "5th metacarpal: hamate"
+    }
+   ],
+   "facts": {
+    "articulatingStructureIds": {
+     "verdict": "confirmed"
+    },
+    "movements": {
+     "verdict": "confirmed",
+     "why": "The work describes increasing mobility toward the ulnar side, consistent with the seed's flexion/extension/opposition/gliding, but does not enumerate them."
+    },
+    "stabilizers": {
+     "verdict": "confirmed"
+    },
+    "jointType": {
+     "verdict": "held",
+     "why": "NOT SETTLED — same conflict: seed 'plane' against the work's 'synovial condyloid'."
+    }
+   }
+  },
+  "tibiofemoral-joint": {
+   "grade": "verified",
+   "checked": "2026-09-24",
+   "works": [
+    {
+     "title": "Knee - Wikipedia (text from Gray's Anatomy, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Knee",
+     "quote": "a modified hinge joint, a type of synovial joint ... Femoral condyles (medial and lateral) articulate with tibial condyles ... Flexion ... Extension ... Internal rotation: 10 degrees (when flexed) ... External rotation: 30-40 degrees (when flexed)"
+    }
+   ],
+   "facts": {
+    "jointType": {
+     "verdict": "confirmed",
+     "why": "The work's 'modified hinge' is the seed's 'hinge' with the rotation caveat the seed already carries in its movements."
+    },
+    "articulatingStructureIds": {
+     "verdict": "confirmed"
+    },
+    "movements": {
+     "verdict": "confirmed",
+     "why": "Flexion, extension and both rotations named; the seed lists exactly these four and omits none."
+    },
+    "stabilizers": {
+     "verdict": "confirmed",
+     "why": "Cruciates, collaterals and both menisci all named by the work."
+    }
+   }
+  },
+  "sacroiliac-joint": {
+   "grade": "verified",
+   "checked": "2026-09-24",
+   "works": [
+    {
+     "title": "Sacroiliac joint - Wikipedia (text from Gray's Anatomy, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Sacroiliac_joint",
+     "quote": "a synovial plane joint with irregular elevations and depressions that produce interlocking ... only slight movements occur on these joints ... Anterior sacroiliac ligament, Posterior sacroiliac ligament, Interosseous sacroiliac ligament, Sacrotuberous ligament, Sacrospinous ligament"
+    }
+   ],
+   "facts": {
+    "jointType": {
+     "verdict": "confirmed"
+    },
+    "articulatingStructureIds": {
+     "verdict": "confirmed"
+    },
+    "movements": {
+     "verdict": "confirmed",
+     "why": "The work gives only slight motion, consistent with the seed's gliding."
+    },
+    "stabilizers": {
+     "verdict": "confirmed",
+     "why": "All four the seed names are confirmed. The work also names the interosseous sacroiliac ligament as particularly strong, which the seed omits — a candidate addition, not applied."
+    }
+   }
+  },
+  "talocrural-joint": {
+   "grade": "verified",
+   "checked": "2026-09-24",
+   "works": [
+    {
+     "title": "Ankle - Wikipedia (text from Gray's Anatomy, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Ankle",
+     "quote": "The talocrural joint is a synovial hinge joint that connects the distal ends of the tibia and fibula in the lower limb with the proximal end of the talus ... allows dorsiflexion and plantarflexion of the foot"
+    }
+   ],
+   "facts": {
+    "jointType": {
+     "verdict": "confirmed"
+    },
+    "articulatingStructureIds": {
+     "verdict": "confirmed",
+     "why": "Tibia, fibula and talus — exactly the three the seed names."
+    },
+    "movements": {
+     "verdict": "confirmed",
+     "why": "Dorsiflexion and plantarflexion. The work adds side-to-side gliding, rotation, adduction and abduction but only when plantarflexed; the seed's two are the joint's movements proper."
+    },
+    "stabilizers": {
+     "verdict": "confirmed",
+     "why": "Deltoid medially and all three of the lateral complex named exactly as the seed has them."
+    }
+   }
+  },
+  "subtalar-joint": {
+   "grade": "verified",
+   "checked": "2026-09-24",
+   "works": [
+    {
+     "title": "Subtalar joint - Wikipedia (text from Gray's Anatomy, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Subtalar_joint",
+     "quote": "The joint is classed structurally as a synovial joint, and functionally as a plane joint ... allows inversion and eversion of the foot, but plays minimal role in dorsiflexion or plantarflexion ... the interosseous talocalcaneal ligament, a thick, strong band"
+    }
+   ],
+   "facts": {
+    "jointType": {
+     "verdict": "confirmed"
+    },
+    "articulatingStructureIds": {
+     "verdict": "confirmed"
+    },
+    "movements": {
+     "verdict": "confirmed",
+     "why": "Inversion and eversion, and the work explicitly excludes dorsiflexion and plantarflexion — so the seed's two are complete."
+    },
+    "stabilizers": {
+     "verdict": "confirmed",
+     "why": "Interosseous talocalcaneal confirmed as the primary. The work lists the anterior/posterior/lateral/medial talocalcaneal as the supplementary ones rather than the cervical and calcaneofibular the seed names; both are standard teaching and the seed is kept, noted."
+    }
+   }
+  },
+  "patellofemoral-joint": {
+   "grade": "unverified",
+   "checked": "2026-09-24",
+   "works": [
+    {
+     "title": "Knee - Wikipedia (text from Gray's Anatomy, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Knee",
+     "quote": "Patella slides along the patellar groove on the femur's anterior surface ... Its posterior surface is referred to as the trochlea of the knee"
+    }
+   ],
+   "facts": {
+    "articulatingStructureIds": {
+     "verdict": "confirmed"
+    },
+    "movements": {
+     "verdict": "confirmed",
+     "why": "The work describes the patella sliding in the groove, which is the seed's gliding."
+    },
+    "jointType": {
+     "verdict": "held",
+     "why": "NOT SETTLED. The work classifies the KNEE as a modified hinge and gives no separate class for the patellofemoral joint, so the seed's 'plane' is neither confirmed nor refuted."
+    },
+    "stabilizers": {
+     "verdict": "held",
+     "why": "NOT SETTLED. The seed names the medial patellofemoral ligament, vastus medialis obliquus, trochlear depth and the retinacula; this work names none of them. They are standard teaching but need a work that states them."
+    }
+   }
+  },
+  "atlanto-occipital-joint": {
+   "grade": "verified",
+   "checked": "2026-09-24",
+   "works": [
+    {
+     "title": "Atlanto-occipital joint - Wikipedia (text from Gray's Anatomy, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Atlanto-occipital_joint",
+     "quote": "It consists of a pair of condyloid joints. It is a synovial joint ... flexion and extension around the mediolateral axis, which give rise to the ordinary forward and backward nodding of the head ... slight lateral motion, lateroflexion, to one or other side."
+    }
+   ],
+   "facts": {
+    "jointType": {
+     "verdict": "confirmed"
+    },
+    "articulatingStructureIds": {
+     "verdict": "confirmed",
+     "why": "The work names the occipital condyles and the articular processes of the atlas — confirming the occipital bone added after the mesh cross-check found this joint naming only one side."
+    },
+    "movements": {
+     "verdict": "confirmed",
+     "why": "Flexion, extension and lateral flexion; the seed lists exactly these three and no rotation, which the work also withholds."
+    },
+    "stabilizers": {
+     "verdict": "confirmed",
+     "why": "Both atlanto-occipital membranes and the joint capsules named. The seed also lists the alar ligaments, which this work treats under the atlantoaxial joint; kept, noted."
+    }
+   }
+  },
+  "atlantoaxial-joint": {
+   "grade": "verified",
+   "checked": "2026-09-24",
+   "works": [
+    {
+     "title": "Atlanto-axial joint - Wikipedia (text from Gray's Anatomy, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Atlanto-axial_joint",
+     "quote": "It is a pivot joint, that provides 40 to 70% of axial rotation of the head ... There is a pivot articulation between the odontoid process of the axis and the ring formed by the anterior arch and the transverse ligament of the atlas."
+    }
+   ],
+   "facts": {
+    "jointType": {
+     "verdict": "confirmed"
+    },
+    "articulatingStructureIds": {
+     "verdict": "confirmed"
+    },
+    "movements": {
+     "verdict": "confirmed",
+     "why": "Rotation only, which is exactly what the seed lists."
+    },
+    "stabilizers": {
+     "verdict": "confirmed",
+     "why": "Transverse ligament of the atlas and alar ligaments named directly; the seed's 'cruciate ligament complex' is the transverse plus its longitudinal bands."
+    }
+   }
+  },
+  "intervertebral-joint": {
+   "grade": "verified",
+   "checked": "2026-09-24",
+   "works": [
+    {
+     "title": "Intervertebral disc - Wikipedia (text from Gray's Anatomy, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Intervertebral_disc",
+     "quote": "Each disc forms a fibrocartilaginous joint (a symphysis) ... Anterior longitudinal ligament ... Posterior longitudinal ligament"
+    }
+   ],
+   "facts": {
+    "jointType": {
+     "verdict": "confirmed"
+    },
+    "articulatingStructureIds": {
+     "verdict": "confirmed",
+     "why": "Vertebral bodies joined by the disc — exactly the two the seed names."
+    },
+    "movements": {
+     "verdict": "confirmed",
+     "why": "The work names flexion, extension and lateral bending. It does not name rotation, which the seed also lists; rotation at this joint is limited but standard teaching, so it is kept and noted rather than removed."
+    },
+    "stabilizers": {
+     "verdict": "confirmed",
+     "why": "Both longitudinal ligaments and the anulus fibrosus all named."
+    }
+   }
+  },
+  "facet-joint": {
+   "grade": "unverified",
+   "checked": "2026-09-24",
+   "works": [
+    {
+     "title": "Facet joint - Wikipedia (text from Gray's Anatomy, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Facet_joint",
+     "quote": "The facet joints (also zygapophysial joints, zygapophyseal, apophyseal, or Z-joints) are a set of synovial, plane joints between the articular processes of two adjacent vertebrae ... The facet joints, both superior and inferior, are aligned in a way to allow flexion and extension, and to limit rotation."
+    }
+   ],
+   "facts": {
+    "jointType": {
+     "verdict": "confirmed"
+    },
+    "articulatingStructureIds": {
+     "verdict": "corrected",
+     "was": [
+      "cervical-vertebrae",
+      "thoracic-vertebrae",
+      "lumbar-vertebrae"
+     ],
+     "now": [
+      "superior-articular-process",
+      "inferior-articular-process"
+     ],
+     "why": "The work names the ARTICULAR PROCESSES of adjacent vertebrae. The seed named the three spinal regions the joint occurs in, which is where it is rather than what articulates — and both processes already exist as landmarks."
+    },
+    "stabilizers": {
+     "verdict": "confirmed",
+     "why": "Joint capsule and ligamenta flava both named."
+    },
+    "movements": {
+     "verdict": "held",
+     "why": "NOT SETTLED. The seed says 'Gliding'; the work says the joints 'allow flexion and extension, and to limit rotation'. Those describe different things — the joint's own movement versus the segment's — and the work does not say gliding. Needs a work that states the facet joint's own movement before it is asked."
+    }
+   }
+  },
+  "pubic-symphysis": {
+   "grade": "verified",
+   "checked": "2026-09-24",
+   "works": [
+    {
+     "title": "Pubic symphysis - Wikipedia (text from Gray's Anatomy, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Pubic_symphysis",
+     "quote": "A secondary cartilaginous joint that is nonsynovial and amphiarthrodial ... connects the left and right superior rami of the pubis of the hip bones ... roughly 2 mm and with 1 degree rotation"
+    }
+   ],
+   "facts": {
+    "jointType": {
+     "verdict": "confirmed",
+     "why": "A secondary cartilaginous joint is a symphysis."
+    },
+    "articulatingStructureIds": {
+     "verdict": "confirmed",
+     "why": "Left and right pubis — confirming the midline-joint decision that this names one paired structure rather than the pelvis."
+    },
+    "movements": {
+     "verdict": "confirmed",
+     "why": "About 2mm of translation with 1 degree of rotation, which is the seed's gliding."
+    },
+    "stabilizers": {
+     "verdict": "confirmed",
+     "why": "Superior pubic, inferior (arcuate) pubic and the interpubic fibrocartilaginous disc — all three exactly as the seed has them."
+    }
+   }
+  },
+  "proximal-tibiofibular-joint": {
+   "grade": "verified",
+   "checked": "2026-09-24",
+   "works": [
+    {
+     "title": "Superior tibiofibular joint - Wikipedia (text from Gray's Anatomy, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Superior_tibiofibular_joint",
+     "quote": "An arthrodial joint between the lateral condyle of tibia and the head of the fibula ... The contiguous surfaces of the bones present flat, oval facets covered with cartilage ... Connected together by an articular capsule and by anterior and posterior fibula head ligaments."
+    }
+   ],
+   "facts": {
+    "jointType": {
+     "verdict": "confirmed",
+     "why": "'Arthrodial' is the older name for a plane joint, which is what the seed says."
+    },
+    "articulatingStructureIds": {
+     "verdict": "confirmed"
+    },
+    "movements": {
+     "verdict": "confirmed",
+     "why": "An arthrodial joint is by definition a gliding one, and the work describes flat oval facets. That is a fact about the joint class the work assigns, not an inference about this joint."
+    },
+    "stabilizers": {
+     "verdict": "confirmed",
+     "why": "Anterior and posterior fibular head ligaments named. The seed also lists biceps femoris and the lateral collateral, which this work does not; standard teaching, kept and noted."
+    }
+   }
+  },
+  "metatarsophalangeal-joint": {
+   "grade": "verified",
+   "checked": "2026-09-24",
+   "works": [
+    {
+     "title": "Metatarsophalangeal joints - Wikipedia (text from Gray's Anatomy, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Metatarsophalangeal_joints",
+     "quote": "Condyloid joints, meaning that an elliptical or rounded surface (of the metatarsal bones) comes close to a shallow cavity (of the proximal phalanges) ... The movements permitted in the metatarsophalangeal joints are flexion, extension, abduction, adduction and circumduction."
+    }
+   ],
+   "facts": {
+    "jointType": {
+     "verdict": "confirmed"
+    },
+    "articulatingStructureIds": {
+     "verdict": "confirmed"
+    },
+    "movements": {
+     "verdict": "corrected",
+     "was": [
+      "Flexion",
+      "Extension",
+      "Abduction",
+      "Adduction"
+     ],
+     "now": [
+      "Flexion",
+      "Extension",
+      "Abduction",
+      "Adduction",
+      "Circumduction"
+     ],
+     "why": "THE DANGEROUS DIRECTION. The work names circumduction and the seed omitted it. multiSelect builds 'which movement is NOT possible here' from other joints' movements, so an omitted movement does not leave a gap — it lets circumduction be offered as the correct answer to a question about this joint, marking a student wrong for knowing better. The equivalent hand joint already listed it."
+    },
+    "stabilizers": {
+     "verdict": "confirmed",
+     "why": "The work gives 'the plantar and two collateral'. The seed's deep transverse metatarsal ligament is not named here but is standard; kept, noted."
+    }
+   }
+  },
+  "transverse-tarsal-joint": {
+   "grade": "unverified",
+   "checked": "2026-09-24",
+   "works": [
+    {
+     "title": "Transverse tarsal joint - Wikipedia (text from Gray's Anatomy, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Transverse_tarsal_joint",
+     "quote": "a compound intertarsal synovial joint ... the calcaneocuboid joint (connecting the calcaneus and cuboid) and the talocalcaneonavicular joint (connecting the talus and navicular) ... the sole being at the same time carried medially (inverted) or laterally (everted)"
+    }
+   ],
+   "facts": {
+    "articulatingStructureIds": {
+     "verdict": "confirmed",
+     "why": "Confirms the mesh cross-check correction exactly: talus-navicular plus calcaneus-cuboid, not the grouped 'tarsals'."
+    },
+    "movements": {
+     "verdict": "confirmed",
+     "why": "Inversion and eversion named directly."
+    },
+    "stabilizers": {
+     "verdict": "confirmed",
+     "why": "Spring, bifurcate and long plantar all named in the work's joint table."
+    },
+    "jointType": {
+     "verdict": "held",
+     "why": "NOT SETTLED. The seed says 'plane'; the work says 'a compound intertarsal synovial joint' and gives no simple class. jointType is the literal MCQ answer, so it needs a work that states one."
+    }
+   }
+  },
+  "distal-tibiofibular-joint": {
+   "grade": "unverified",
+   "checked": "2026-09-24",
+   "works": [
+    {
+     "title": "Inferior tibiofibular joint - Wikipedia (text from Gray's Anatomy, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Inferior_tibiofibular_joint",
+     "quote": "The inferior tibiofibular joint, also known as the distal tibiofibular joint (tibiofibular syndesmosis) ... the rough, convex surface of the medial side of the distal end of the fibula ... a rough concave surface on the lateral side of the tibia"
+    }
+   ],
+   "facts": {
+    "jointType": {
+     "verdict": "confirmed",
+     "why": "Named a syndesmosis outright."
+    },
+    "articulatingStructureIds": {
+     "verdict": "confirmed"
+    },
+    "stabilizers": {
+     "verdict": "confirmed",
+     "why": "Anterior and posterior ligaments of the lateral malleolus (the inferior tibiofibular ligaments) and the interosseous membrane all named."
+    },
+    "movements": {
+     "verdict": "held",
+     "why": "NOT SETTLED. The work does not describe any movement at this joint, so the seed's 'Gliding' is unsupported by it. A syndesmosis permits very little, and what it does permit needs stating rather than assuming."
+    }
+   }
+  },
+  "sternocostal-joint": {
+   "grade": "unverified",
+   "checked": "2026-09-24",
+   "works": [
+    {
+     "title": "Sternocostal joints - Wikipedia (text from Gray's Anatomy, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Sternocostal_joints",
+     "quote": "Synovial plane joints connecting the costal cartilages to the sternum, with the first rib being an exception - it has a synchondrosis joint instead ... articular capsules, intraarticular sternocostal ligaments, radiate sternocostal ligaments, and costoxiphoid ligaments"
+    }
+   ],
+   "facts": {
+    "jointType": {
+     "verdict": "confirmed",
+     "why": "Synovial plane, except the first rib which is a synchondrosis — a distinction the seed does not draw."
+    },
+    "articulatingStructureIds": {
+     "verdict": "confirmed",
+     "why": "The work names the costal cartilages rather than the ribs; the seed has no costal cartilage structure, so 'ribs' is the nearest available and is noted."
+    },
+    "stabilizers": {
+     "verdict": "confirmed",
+     "why": "Radiate and intra-articular sternocostal ligaments both named."
+    },
+    "movements": {
+     "verdict": "held",
+     "why": "NOT SETTLED. The work calls these joints important for thoracic wall mobility but does not name a movement, so the seed's 'Gliding' is unsupported by it."
+    }
+   }
+  },
+  "costovertebral-joint": {
+   "grade": "unverified",
+   "checked": "2026-09-24",
+   "works": [
+    {
+     "title": "Costovertebral joints - Wikipedia (text from Gray's Anatomy, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Costovertebral_joints",
+     "quote": "The articulation of the head of rib connects the head of the rib and the bodies of vertebrae ... The costotransverse joint connects the rib with the transverse processes of vertebrae ... Radiate ligament, Intra-articular ligament ... Costotransverse ligament"
+    }
+   ],
+   "facts": {
+    "articulatingStructureIds": {
+     "verdict": "confirmed",
+     "why": "Head of rib to vertebral bodies, and rib to transverse processes."
+    },
+    "stabilizers": {
+     "verdict": "confirmed",
+     "why": "Radiate, intra-articular and costotransverse ligaments — all three the seed names."
+    },
+    "jointType": {
+     "verdict": "held",
+     "why": "NOT SETTLED. The article is a stub and states no classification, so the seed's 'plane' is unsupported by it."
+    },
+    "movements": {
+     "verdict": "held",
+     "why": "NOT SETTLED. The article states no movement, so 'Gliding' and 'Rotation' are both unsupported by it."
+    }
+   }
+  }
+ }
+}

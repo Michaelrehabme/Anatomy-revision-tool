@@ -1,0 +1,2479 @@
+{
+ "generated": "2026-09-24",
+ "rows": [
+  {
+   "structure": "femur",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Gluteus maximus insertion — gluteal tuberosity",
+   "status": "supported",
+   "level": "exact",
+   "by": "Gluteus Maximus: \"Gluteal tuberosity of the femur\""
+  },
+  {
+   "structure": "femur",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Gluteus medius/minimus insertion — greater trochanter",
+   "status": "supported",
+   "level": "exact",
+   "by": "Gluteus Medius: \"Greater trochanter of the femur\""
+  },
+  {
+   "structure": "femur",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Iliopsoas insertion — lesser trochanter",
+   "status": "supported",
+   "level": "exact",
+   "by": "Iliacus: \"Lesser trochanter of the femur\""
+  },
+  {
+   "structure": "femur",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Quadriceps origins — linea aspera and anterior shaft",
+   "status": "supported",
+   "level": "exact",
+   "by": "Vastus Lateralis: \"Greater trochanter of the femur\""
+  },
+  {
+   "structure": "femur",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Adductor magnus insertion — adductor tubercle and linea aspera",
+   "status": "supported",
+   "level": "exact",
+   "by": "Adductor Magnus: \"Linea aspera of the femur\""
+  },
+  {
+   "structure": "femur",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Hip joint with the acetabulum of the pelvis",
+   "status": "supported",
+   "level": "exact",
+   "by": "acromioclavicular-joint articulates [clavicle, acromion]"
+  },
+  {
+   "structure": "femur",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Knee joint with the tibia and patella",
+   "status": "supported",
+   "level": "exact",
+   "by": "acromioclavicular-joint articulates [clavicle, acromion]"
+  },
+  {
+   "structure": "tibia",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Patellar ligament insertion — tibial tuberosity",
+   "status": "unsupported",
+   "by": "names no muscle or source-checked ligament this repo holds"
+  },
+  {
+   "structure": "tibia",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Sartorius, gracilis, semitendinosus insertion — pes anserinus",
+   "status": "supported",
+   "level": "exact",
+   "by": "Sartorius: \"Proximal medial surface of the tibia at the pes anserinus\""
+  },
+  {
+   "structure": "tibia",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Tibialis posterior and soleus origins — posterior shaft",
+   "status": "supported",
+   "level": "exact",
+   "by": "Soleus: \"Upper posterior fibula & tibia\""
+  },
+  {
+   "structure": "tibia",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Knee joint with the femur",
+   "status": "supported",
+   "level": "exact",
+   "by": "acromioclavicular-joint articulates [clavicle, acromion]"
+  },
+  {
+   "structure": "tibia",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Ankle joint (mortise) with the talus and fibula",
+   "status": "supported",
+   "level": "exact",
+   "by": "acromioclavicular-joint articulates [clavicle, acromion]"
+  },
+  {
+   "structure": "tibia",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Proximal and distal tibiofibular joints with the fibula",
+   "status": "supported",
+   "level": "exact",
+   "by": "acromioclavicular-joint articulates [clavicle, acromion]"
+  },
+  {
+   "structure": "humerus",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Rotator cuff insertions — greater and lesser tubercles",
+   "status": "supported",
+   "level": "exact",
+   "by": "Supraspinatus: \"Greater tubercle of humerus\""
+  },
+  {
+   "structure": "humerus",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Deltoid insertion — deltoid tuberosity",
+   "status": "supported",
+   "level": "exact",
+   "by": "Deltoid: \"Deltoid tuberosity of humerus\""
+  },
+  {
+   "structure": "humerus",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Biceps brachii tendon — intertubercular (bicipital) groove",
+   "status": "unsupported",
+   "by": "names Biceps Brachii, but no deck site places any of them here or on this bone"
+  },
+  {
+   "structure": "humerus",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Triceps brachii origin — posterior shaft",
+   "status": "supported",
+   "level": "exact",
+   "by": "Triceps Brachii: \"Lateral head: posterior humerus\""
+  },
+  {
+   "structure": "humerus",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Shoulder joint with the glenoid cavity of the scapula",
+   "status": "supported",
+   "level": "exact",
+   "by": "glenohumeral-joint articulates [humerus, glenoid-cavity]"
+  },
+  {
+   "structure": "humerus",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Elbow joint with the radius and ulna",
+   "status": "supported",
+   "level": "exact",
+   "by": "acromioclavicular-joint articulates [clavicle, acromion]"
+  },
+  {
+   "structure": "scapula",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Rotator cuff origins — supraspinous and infraspinous fossae, subscapular fossa",
+   "status": "supported",
+   "level": "exact",
+   "by": "Supraspinatus: \"Supraspinous fossa of scapula\""
+  },
+  {
+   "structure": "scapula",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Rhomboid major/minor insertion — medial border",
+   "status": "supported",
+   "level": "exact",
+   "by": "Rhomboid Minor: \"Medial border of scapula (at level of the spine)\""
+  },
+  {
+   "structure": "scapula",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Trapezius insertion — spine of scapula and acromion",
+   "status": "supported",
+   "level": "exact",
+   "by": "Trapezius: \"Spine of scapula\""
+  },
+  {
+   "structure": "scapula",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Serratus anterior insertion — medial border (costal surface)",
+   "status": "supported",
+   "level": "exact",
+   "by": "Serratus Anterior: \"Anterior surface of medial border of scapula\""
+  },
+  {
+   "structure": "scapula",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Long head of biceps origin — supraglenoid tubercle",
+   "status": "unsupported",
+   "by": "names no muscle or source-checked ligament this repo holds"
+  },
+  {
+   "structure": "scapula",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Long head of triceps origin — infraglenoid tubercle",
+   "status": "unsupported",
+   "by": "names no muscle or source-checked ligament this repo holds"
+  },
+  {
+   "structure": "scapula",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Shoulder (glenohumeral) joint with the humerus",
+   "status": "supported",
+   "level": "exact",
+   "by": "glenohumeral-joint articulates [humerus, glenoid-cavity]"
+  },
+  {
+   "structure": "scapula",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Acromioclavicular joint with the clavicle",
+   "status": "supported",
+   "level": "exact",
+   "by": "acromioclavicular-joint articulates [clavicle, acromion]"
+  },
+  {
+   "structure": "pelvis",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Sartorius origin — ASIS",
+   "status": "supported",
+   "level": "exact",
+   "by": "Sartorius: \"Anterior superior iliac spine (ASIS)\""
+  },
+  {
+   "structure": "pelvis",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Rectus femoris (straight head) origin — AIIS",
+   "status": "supported",
+   "level": "exact",
+   "by": "Rectus Femoris: \"Anterior Inferior Iliac Spine (AIIS)\""
+  },
+  {
+   "structure": "pelvis",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Iliacus origin — iliac fossa",
+   "status": "supported",
+   "level": "exact",
+   "by": "Iliacus: \"Iliac fossa of the pelvis\""
+  },
+  {
+   "structure": "pelvis",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Hamstrings origin — ischial tuberosity",
+   "status": "supported",
+   "level": "exact",
+   "by": "Semitendinosus: \"Ischial tuberosity\""
+  },
+  {
+   "structure": "pelvis",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Adductors and gracilis origin — pubis",
+   "status": "supported",
+   "level": "exact",
+   "by": "Gracilis: \"Inferior ramus of pubis\""
+  },
+  {
+   "structure": "pelvis",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Gluteus medius/minimus origin — outer ilium",
+   "status": "supported",
+   "level": "exact",
+   "by": "Gluteus Medius: \"Outer surface of the ilium (between the anterior and posterior gluteal lines)\""
+  },
+  {
+   "structure": "pelvis",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Hip joint with the femur (via the acetabulum)",
+   "status": "supported",
+   "level": "exact",
+   "by": "acromioclavicular-joint articulates [clavicle, acromion]"
+  },
+  {
+   "structure": "pelvis",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Sacroiliac joint with the sacrum",
+   "status": "supported",
+   "level": "exact",
+   "by": "acromioclavicular-joint articulates [clavicle, acromion]"
+  },
+  {
+   "structure": "pelvis",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Pubic symphysis (left and right pubic bones)",
+   "status": "supported",
+   "level": "exact",
+   "by": "pubic-symphysis articulates [pubis]"
+  },
+  {
+   "structure": "ulna",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Triceps brachii insertion — olecranon",
+   "status": "supported",
+   "level": "exact",
+   "by": "Triceps Brachii: \"Olecranon process of ulna\""
+  },
+  {
+   "structure": "ulna",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Brachialis insertion — coronoid process",
+   "status": "supported",
+   "level": "exact",
+   "by": "Brachialis: \"Coronoid process & ulnar tuberosity\""
+  },
+  {
+   "structure": "ulna",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Flexor carpi ulnaris origin — proximal shaft",
+   "status": "supported",
+   "level": "exact",
+   "by": "Flexor Carpi Ulnaris: \"Olecranon process of ulna\""
+  },
+  {
+   "structure": "ulna",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Elbow joint with the humerus (trochlear notch) and radius (radial notch)",
+   "status": "supported",
+   "level": "exact",
+   "by": "acromioclavicular-joint articulates [clavicle, acromion]"
+  },
+  {
+   "structure": "ulna",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Distal radioulnar joint with the radius",
+   "status": "supported",
+   "level": "exact",
+   "by": "acromioclavicular-joint articulates [clavicle, acromion]"
+  },
+  {
+   "structure": "radius",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Biceps brachii insertion — radial tuberosity",
+   "status": "supported",
+   "level": "exact",
+   "by": "Biceps Brachii: \"Radial tuberosity\""
+  },
+  {
+   "structure": "radius",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Pronator teres insertion — lateral mid-shaft",
+   "status": "supported",
+   "level": "exact",
+   "by": "Pronator Teres: \"Lateral surface of the radius\""
+  },
+  {
+   "structure": "radius",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Pronator quadratus insertion — distal shaft",
+   "status": "supported",
+   "level": "exact",
+   "by": "Pronator Quadratus: \"Distal anterior surface of radius\""
+  },
+  {
+   "structure": "radius",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Brachioradialis insertion — styloid process",
+   "status": "supported",
+   "level": "exact",
+   "by": "Brachioradialis: \"Styloid process of radius\""
+  },
+  {
+   "structure": "radius",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Elbow joint with the humerus (head of radius) and ulna (radial notch)",
+   "status": "supported",
+   "level": "exact",
+   "by": "acromioclavicular-joint articulates [clavicle, acromion]"
+  },
+  {
+   "structure": "radius",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Proximal and distal radioulnar joints with the ulna",
+   "status": "supported",
+   "level": "exact",
+   "by": "acromioclavicular-joint articulates [clavicle, acromion]"
+  },
+  {
+   "structure": "radius",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Wrist joint with the scaphoid and lunate",
+   "status": "supported",
+   "level": "exact",
+   "by": "acromioclavicular-joint articulates [clavicle, acromion]"
+  },
+  {
+   "structure": "clavicle",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Trapezius insertion — lateral third",
+   "status": "supported",
+   "level": "exact",
+   "by": "Trapezius: \"Lateral clavicle\""
+  },
+  {
+   "structure": "clavicle",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Sternocleidomastoid origin — medial third",
+   "status": "supported",
+   "level": "exact",
+   "by": "Sternocleidomastoid: \"Medial 1/3 clavicle\""
+  },
+  {
+   "structure": "clavicle",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Deltoid origin — lateral third (anterior border)",
+   "status": "supported",
+   "level": "exact",
+   "by": "Deltoid: \"Lateral 1/3 clavicle\""
+  },
+  {
+   "structure": "clavicle",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Pectoralis major origin — medial two-thirds",
+   "status": "supported",
+   "level": "exact",
+   "by": "Pectoralis Major: \"Clavicular head: medial clavicle\""
+  },
+  {
+   "structure": "clavicle",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Subclavius insertion — inferior surface",
+   "status": "unsupported",
+   "by": "names no muscle or source-checked ligament this repo holds"
+  },
+  {
+   "structure": "clavicle",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Sternoclavicular joint with the manubrium of the sternum",
+   "status": "supported",
+   "level": "exact",
+   "by": "acromioclavicular-joint articulates [clavicle, acromion]"
+  },
+  {
+   "structure": "clavicle",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Acromioclavicular joint with the acromion of the scapula",
+   "status": "supported",
+   "level": "exact",
+   "by": "acromioclavicular-joint articulates [clavicle, acromion]"
+  },
+  {
+   "structure": "sternum",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Pectoralis major origin — anterior surface",
+   "status": "supported",
+   "level": "exact",
+   "by": "Pectoralis Major: \"Sternocostal head: sternum & costal cartilages 1–6\""
+  },
+  {
+   "structure": "sternum",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Sternocleidomastoid and sternohyoid origin — manubrium",
+   "status": "supported",
+   "level": "exact",
+   "by": "Sternocleidomastoid: \"Manubrium of sternum\""
+  },
+  {
+   "structure": "sternum",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Costal cartilages of ribs 1–7 attach along the lateral borders",
+   "status": "unsupported",
+   "by": "names no muscle or source-checked ligament this repo holds"
+  },
+  {
+   "structure": "sternum",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Sternoclavicular joints with both clavicles",
+   "status": "supported",
+   "level": "exact",
+   "by": "acromioclavicular-joint articulates [clavicle, acromion]"
+  },
+  {
+   "structure": "sternum",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Sternocostal joints with the costal cartilages of ribs 1–7",
+   "status": "supported",
+   "level": "exact",
+   "by": "acromioclavicular-joint articulates [clavicle, acromion]"
+  },
+  {
+   "structure": "sternum",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Manubriosternal joint (sternal angle) between manubrium and body",
+   "status": "supported",
+   "level": "exact",
+   "by": "acromioclavicular-joint articulates [clavicle, acromion]"
+  },
+  {
+   "structure": "ribs",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "External/internal intercostal muscles between adjacent ribs",
+   "status": "supported",
+   "level": "exact",
+   "by": "External Intercostals: \"Inferior border of ribs above\""
+  },
+  {
+   "structure": "ribs",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Diaphragm origin — inner surface of ribs 7–12",
+   "status": "supported",
+   "level": "exact",
+   "by": "Diaphragm: \"Costal cartilages of ribs 7–12\""
+  },
+  {
+   "structure": "ribs",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Serratus anterior origin — ribs 1–8/9 (lateral surface)",
+   "status": "supported",
+   "level": "exact",
+   "by": "Serratus Anterior: \"Lateral surfaces of ribs 1–8\""
+  },
+  {
+   "structure": "ribs",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Scalene muscles insertion — ribs 1–2",
+   "status": "unsupported",
+   "by": "names no muscle or source-checked ligament this repo holds"
+  },
+  {
+   "structure": "ribs",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Costovertebral joints with the thoracic vertebral bodies",
+   "status": "supported",
+   "level": "exact",
+   "by": "acromioclavicular-joint articulates [clavicle, acromion]"
+  },
+  {
+   "structure": "ribs",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Costotransverse joints with the thoracic transverse processes",
+   "status": "supported",
+   "level": "exact",
+   "by": "acromioclavicular-joint articulates [clavicle, acromion]"
+  },
+  {
+   "structure": "ribs",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Sternocostal joints (ribs 1–7, \"true ribs\") with the sternum via costal cartilage",
+   "status": "supported",
+   "level": "exact",
+   "by": "acromioclavicular-joint articulates [clavicle, acromion]"
+  },
+  {
+   "structure": "cervical-vertebrae",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Longus colli and longus capitis attach to the vertebral bodies",
+   "status": "unsupported",
+   "by": "names Longus Colli, Longus Capitis, but no deck site places any of them here or on this bone"
+  },
+  {
+   "structure": "cervical-vertebrae",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Semispinalis cervicis and multifidus attach to the spinous/transverse processes",
+   "status": "supported",
+   "level": "exact",
+   "by": "Spinalis: \"Spinous processes of upper thoracic & cervical vertebrae\""
+  },
+  {
+   "structure": "cervical-vertebrae",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Splenius cervicis inserts on the transverse processes",
+   "status": "unsupported",
+   "by": "names Splenius Cervicis, but no deck site places any of them here or on this bone"
+  },
+  {
+   "structure": "cervical-vertebrae",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Zygapophyseal (facet) joints between adjacent vertebrae",
+   "status": "supported",
+   "level": "exact",
+   "by": "acromioclavicular-joint articulates [clavicle, acromion]"
+  },
+  {
+   "structure": "cervical-vertebrae",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Uncovertebral joints (C3–C7) at the lateral vertebral body margins",
+   "status": "supported",
+   "level": "exact",
+   "by": "acromioclavicular-joint articulates [clavicle, acromion]"
+  },
+  {
+   "structure": "cervical-vertebrae",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Intervertebral discs between adjacent vertebral bodies",
+   "status": "supported",
+   "level": "exact",
+   "by": "intervertebral-joint articulates [vertebral-body, intervertebral-disc]"
+  },
+  {
+   "structure": "occipital-bone",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Trapezius and semispinalis capitis attach along the superior nuchal line",
+   "status": "supported",
+   "level": "exact",
+   "by": "Trapezius: \"External occipital protuberance\""
+  },
+  {
+   "structure": "occipital-bone",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Ligamentum nuchae attaches to the external occipital protuberance and crest",
+   "status": "unsupported",
+   "by": "names no muscle or source-checked ligament this repo holds"
+  },
+  {
+   "structure": "occipital-bone",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Rectus capitis posterior major and minor attach to the nuchal lines",
+   "status": "unsupported",
+   "by": "names no muscle or source-checked ligament this repo holds"
+  },
+  {
+   "structure": "occipital-bone",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Atlanto-occipital joint with the atlas (C1), between the occipital condyles and the superior articular facets",
+   "status": "supported",
+   "level": "exact",
+   "by": "acromioclavicular-joint articulates [clavicle, acromion]"
+  },
+  {
+   "structure": "atlas-c1",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Alar and transverse ligaments attach to the lateral masses and anterior arch",
+   "status": "unsupported",
+   "by": "names no muscle or source-checked ligament this repo holds"
+  },
+  {
+   "structure": "atlas-c1",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Atlanto-occipital joint with the occipital condyles of the skull (\"yes\" nodding movement)",
+   "status": "supported",
+   "level": "exact",
+   "by": "acromioclavicular-joint articulates [clavicle, acromion]"
+  },
+  {
+   "structure": "atlas-c1",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Atlanto-axial joint with the axis (C2), around the dens (\"no\" rotation movement)",
+   "status": "supported",
+   "level": "exact",
+   "by": "acromioclavicular-joint articulates [clavicle, acromion]"
+  },
+  {
+   "structure": "axis-c2",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Alar and apical ligaments attach to the dens",
+   "status": "unsupported",
+   "by": "names no muscle or source-checked ligament this repo holds"
+  },
+  {
+   "structure": "axis-c2",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Atlanto-axial joint with the atlas (C1)",
+   "status": "supported",
+   "level": "exact",
+   "by": "acromioclavicular-joint articulates [clavicle, acromion]"
+  },
+  {
+   "structure": "c7-vertebra",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Ligamentum nuchae attaches to the spinous process",
+   "status": "unsupported",
+   "by": "names no muscle or source-checked ligament this repo holds"
+  },
+  {
+   "structure": "c7-vertebra",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Trapezius and rhomboid minor attach at the spinous process",
+   "status": "supported",
+   "level": "exact",
+   "by": "Trapezius: \"Spinous processes C7–T12\""
+  },
+  {
+   "structure": "c7-vertebra",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Serratus posterior superior and splenius capitis arise nearby",
+   "status": "supported",
+   "level": "exact",
+   "by": "Splenius Capitis: \"Spinous processes C7–T3\""
+  },
+  {
+   "structure": "c7-vertebra",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Zygapophyseal (facet) joints with C6 above and T1 below",
+   "status": "supported",
+   "level": "exact",
+   "by": "acromioclavicular-joint articulates [clavicle, acromion]"
+  },
+  {
+   "structure": "c7-vertebra",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Intervertebral discs with C6 and T1",
+   "status": "supported",
+   "level": "exact",
+   "by": "intervertebral-joint articulates [vertebral-body, intervertebral-disc]"
+  },
+  {
+   "structure": "c7-vertebra",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Costal facet for the first rib is absent — that belongs to T1, a common point of confusion",
+   "status": "unsupported",
+   "by": "names no joint this repo holds as a structure"
+  },
+  {
+   "structure": "thoracic-vertebrae",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Erector spinae and transversospinalis group muscles attach along the spinous/transverse processes",
+   "status": "unsupported",
+   "by": "names Iliocostalis, Longissimus, Spinalis, but no deck site places any of them here or on this bone"
+  },
+  {
+   "structure": "thoracic-vertebrae",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Rhomboids and trapezius attach to the spinous processes (upper/mid thoracic)",
+   "status": "unsupported",
+   "by": "names Trapezius, but no deck site places any of them here or on this bone"
+  },
+  {
+   "structure": "thoracic-vertebrae",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Zygapophyseal (facet) joints between adjacent vertebrae",
+   "status": "supported",
+   "level": "exact",
+   "by": "acromioclavicular-joint articulates [clavicle, acromion]"
+  },
+  {
+   "structure": "thoracic-vertebrae",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Costovertebral and costotransverse joints with the ribs",
+   "status": "supported",
+   "level": "exact",
+   "by": "acromioclavicular-joint articulates [clavicle, acromion]"
+  },
+  {
+   "structure": "thoracic-vertebrae",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Intervertebral discs between adjacent vertebral bodies",
+   "status": "supported",
+   "level": "exact",
+   "by": "intervertebral-joint articulates [vertebral-body, intervertebral-disc]"
+  },
+  {
+   "structure": "lumbar-vertebrae",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Psoas major origin — vertebral bodies and transverse processes",
+   "status": "supported",
+   "level": "exact",
+   "by": "Psoas Major: \"Transverse processes of T12 and all lumbar vertebrae (L1–L5)\""
+  },
+  {
+   "structure": "lumbar-vertebrae",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Erector spinae and multifidus attach along the spinous/transverse processes",
+   "status": "supported",
+   "level": "exact",
+   "by": "Spinalis: \"Spinous processes of upper lumbar & lower thoracic vertebrae\""
+  },
+  {
+   "structure": "lumbar-vertebrae",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Quadratus lumborum attaches to the transverse processes",
+   "status": "unsupported",
+   "by": "names Quadratus Lumborum, but no deck site places any of them here or on this bone"
+  },
+  {
+   "structure": "lumbar-vertebrae",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Zygapophyseal (facet) joints between adjacent vertebrae",
+   "status": "supported",
+   "level": "exact",
+   "by": "acromioclavicular-joint articulates [clavicle, acromion]"
+  },
+  {
+   "structure": "lumbar-vertebrae",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Intervertebral discs between adjacent vertebral bodies",
+   "status": "supported",
+   "level": "exact",
+   "by": "intervertebral-joint articulates [vertebral-body, intervertebral-disc]"
+  },
+  {
+   "structure": "lumbar-vertebrae",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Lumbosacral joint (L5–S1) with the sacrum",
+   "status": "supported",
+   "level": "exact",
+   "by": "acromioclavicular-joint articulates [clavicle, acromion]"
+  },
+  {
+   "structure": "sacrum",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Erector spinae and multifidus origin — posterior surface",
+   "status": "supported",
+   "level": "exact",
+   "by": "Iliocostalis: \"Sacrum\""
+  },
+  {
+   "structure": "sacrum",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Piriformis origin — anterior surface",
+   "status": "supported",
+   "level": "exact",
+   "by": "Piriformis: \"Sacrum\""
+  },
+  {
+   "structure": "sacrum",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Gluteus maximus origin — posterior surface (partial)",
+   "status": "supported",
+   "level": "exact",
+   "by": "Gluteus Maximus: \"Sacrum\""
+  },
+  {
+   "structure": "sacrum",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Strong posterior/anterior sacroiliac and sacrotuberous/sacrospinous ligaments",
+   "status": "supported",
+   "level": "exact",
+   "by": "Anterior sacro-iliac ligament (source-checked) attaches to sacrum"
+  },
+  {
+   "structure": "sacrum",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Sacroiliac joints with the left and right ilium",
+   "status": "supported",
+   "level": "exact",
+   "by": "acromioclavicular-joint articulates [clavicle, acromion]"
+  },
+  {
+   "structure": "sacrum",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Lumbosacral joint with L5",
+   "status": "supported",
+   "level": "exact",
+   "by": "acromioclavicular-joint articulates [clavicle, acromion]"
+  },
+  {
+   "structure": "sacrum",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Sacrococcygeal joint with the coccyx",
+   "status": "supported",
+   "level": "exact",
+   "by": "acromioclavicular-joint articulates [clavicle, acromion]"
+  },
+  {
+   "structure": "coccyx",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Gluteus maximus origin (partial)",
+   "status": "supported",
+   "level": "exact",
+   "by": "Gluteus Maximus: \"Coccyx\""
+  },
+  {
+   "structure": "coccyx",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Levator ani and coccygeus (pelvic floor) attach to its margins",
+   "status": "unsupported",
+   "by": "names no muscle or source-checked ligament this repo holds"
+  },
+  {
+   "structure": "coccyx",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Anococcygeal ligament attaches at the tip",
+   "status": "unsupported",
+   "by": "names no muscle or source-checked ligament this repo holds"
+  },
+  {
+   "structure": "coccyx",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Sacrococcygeal joint with the sacrum",
+   "status": "supported",
+   "level": "exact",
+   "by": "acromioclavicular-joint articulates [clavicle, acromion]"
+  },
+  {
+   "structure": "patella",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Quadriceps tendon attaches superiorly",
+   "status": "supported",
+   "level": "exact",
+   "by": "Rectus Femoris: \"Tibial tuberosity via the patellar tendon\""
+  },
+  {
+   "structure": "patella",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Patellar ligament (continuation of the quadriceps tendon) attaches inferiorly to the tibial tuberosity",
+   "status": "supported",
+   "level": "exact",
+   "by": "Rectus Femoris: \"Tibial tuberosity via the patellar tendon\""
+  },
+  {
+   "structure": "patella",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Patellofemoral joint with the anterior surface (trochlear groove) of the femur",
+   "status": "supported",
+   "level": "exact",
+   "by": "acromioclavicular-joint articulates [clavicle, acromion]"
+  },
+  {
+   "structure": "fibula",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Biceps femoris insertion — head of fibula",
+   "status": "supported",
+   "level": "exact",
+   "by": "Biceps Femoris: \"Head of the fibula\""
+  },
+  {
+   "structure": "fibula",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Fibularis (peroneus) longus and brevis origin — lateral shaft",
+   "status": "supported",
+   "level": "exact",
+   "by": "Peroneus Longus: \"Head & upper lateral fibula\""
+  },
+  {
+   "structure": "fibula",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Soleus origin — posterior head/proximal shaft",
+   "status": "supported",
+   "level": "exact",
+   "by": "Soleus: \"Upper posterior fibula & tibia\""
+  },
+  {
+   "structure": "fibula",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Proximal tibiofibular joint with the tibia",
+   "status": "supported",
+   "level": "exact",
+   "by": "acromioclavicular-joint articulates [clavicle, acromion]"
+  },
+  {
+   "structure": "fibula",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Distal tibiofibular joint with the tibia",
+   "status": "supported",
+   "level": "exact",
+   "by": "acromioclavicular-joint articulates [clavicle, acromion]"
+  },
+  {
+   "structure": "fibula",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Ankle joint (mortise) with the talus, alongside the tibia",
+   "status": "supported",
+   "level": "exact",
+   "by": "acromioclavicular-joint articulates [clavicle, acromion]"
+  },
+  {
+   "structure": "carpals",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Flexor retinaculum attaches across the palmar carpals, forming the carpal tunnel",
+   "status": "unsupported",
+   "by": "names no muscle or source-checked ligament this repo holds"
+  },
+  {
+   "structure": "carpals",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Extensor retinaculum attaches across the dorsal carpals",
+   "status": "unsupported",
+   "by": "names no muscle or source-checked ligament this repo holds"
+  },
+  {
+   "structure": "carpals",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Radiocarpal (wrist) joint with the radius",
+   "status": "supported",
+   "level": "exact",
+   "by": "acromioclavicular-joint articulates [clavicle, acromion]"
+  },
+  {
+   "structure": "carpals",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Midcarpal joint between the proximal and distal carpal rows",
+   "status": "supported",
+   "level": "exact",
+   "by": "acromioclavicular-joint articulates [clavicle, acromion]"
+  },
+  {
+   "structure": "carpals",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Carpometacarpal joints with the metacarpals",
+   "status": "supported",
+   "level": "exact",
+   "by": "acromioclavicular-joint articulates [clavicle, acromion]"
+  },
+  {
+   "structure": "tarsals",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Tibialis posterior inserts broadly across the navicular and other tarsals",
+   "status": "supported",
+   "level": "exact",
+   "by": "Tibialis Posterior: \"Navicular\""
+  },
+  {
+   "structure": "tarsals",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Plantar fascia originates from the calcaneus",
+   "status": "unsupported",
+   "by": "names no muscle or source-checked ligament this repo holds"
+  },
+  {
+   "structure": "tarsals",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Spring ligament (calcaneonavicular) supports the medial arch",
+   "status": "supported",
+   "level": "exact",
+   "by": "Calcaneonavicular ligament (source-checked) attaches to calcaneus, a feature of this bone"
+  },
+  {
+   "structure": "tarsals",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Ankle joint (talus) with the tibia and fibula",
+   "status": "supported",
+   "level": "exact",
+   "by": "acromioclavicular-joint articulates [clavicle, acromion]"
+  },
+  {
+   "structure": "tarsals",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Subtalar joint between talus and calcaneus",
+   "status": "supported",
+   "level": "exact",
+   "by": "acromioclavicular-joint articulates [clavicle, acromion]"
+  },
+  {
+   "structure": "tarsals",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Tarsometatarsal joints with the metatarsals",
+   "status": "supported",
+   "level": "exact",
+   "by": "acromioclavicular-joint articulates [clavicle, acromion]"
+  },
+  {
+   "structure": "metacarpals",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Interossei muscles originate from the metacarpal shafts",
+   "status": "unsupported",
+   "by": "names no muscle or source-checked ligament this repo holds"
+  },
+  {
+   "structure": "metacarpals",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Opponens pollicis inserts on the first metacarpal",
+   "status": "supported",
+   "level": "exact",
+   "by": "Opponens Pollicis: \"Lateral side of 1st metacarpal\""
+  },
+  {
+   "structure": "metacarpals",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Carpometacarpal joints with the carpals",
+   "status": "supported",
+   "level": "exact",
+   "by": "acromioclavicular-joint articulates [clavicle, acromion]"
+  },
+  {
+   "structure": "metacarpals",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Metacarpophalangeal joints with the proximal phalanges",
+   "status": "supported",
+   "level": "exact",
+   "by": "acromioclavicular-joint articulates [clavicle, acromion]"
+  },
+  {
+   "structure": "metatarsals",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Fibularis (peroneus) brevis inserts on the base of the fifth metatarsal",
+   "status": "unsupported",
+   "by": "names Peroneus Brevis, but no deck site places any of them here or on this bone"
+  },
+  {
+   "structure": "metatarsals",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Fibularis (peroneus) longus inserts on the base of the first metatarsal",
+   "status": "unsupported",
+   "by": "names Peroneus Longus, but no deck site places any of them here or on this bone"
+  },
+  {
+   "structure": "metatarsals",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Tarsometatarsal joints with the tarsals",
+   "status": "supported",
+   "level": "exact",
+   "by": "acromioclavicular-joint articulates [clavicle, acromion]"
+  },
+  {
+   "structure": "metatarsals",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Metatarsophalangeal joints with the proximal phalanges",
+   "status": "supported",
+   "level": "exact",
+   "by": "acromioclavicular-joint articulates [clavicle, acromion]"
+  },
+  {
+   "structure": "phalanges-proximal-hand",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Interossei and lumbricals attach around the metacarpophalangeal joints",
+   "status": "unsupported",
+   "by": "names no muscle or source-checked ligament this repo holds"
+  },
+  {
+   "structure": "phalanges-proximal-hand",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Metacarpophalangeal joints with the metacarpals",
+   "status": "supported",
+   "level": "exact",
+   "by": "acromioclavicular-joint articulates [clavicle, acromion]"
+  },
+  {
+   "structure": "phalanges-proximal-hand",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Proximal interphalangeal joints with the middle phalanges (digits 2–5)",
+   "status": "supported",
+   "level": "exact",
+   "by": "acromioclavicular-joint articulates [clavicle, acromion]"
+  },
+  {
+   "structure": "phalanges-middle-hand",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Flexor digitorum superficialis inserts on the middle phalanges",
+   "status": "unsupported",
+   "by": "names Flexor Digitorum Superficialis, but no deck site places any of them here or on this bone"
+  },
+  {
+   "structure": "phalanges-middle-hand",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Proximal interphalangeal joints with the proximal phalanges",
+   "status": "supported",
+   "level": "exact",
+   "by": "acromioclavicular-joint articulates [clavicle, acromion]"
+  },
+  {
+   "structure": "phalanges-middle-hand",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Distal interphalangeal joints with the distal phalanges",
+   "status": "supported",
+   "level": "exact",
+   "by": "acromioclavicular-joint articulates [clavicle, acromion]"
+  },
+  {
+   "structure": "phalanges-distal-hand",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Flexor digitorum profundus and extensor tendons insert at the base of the distal phalanges",
+   "status": "unsupported",
+   "by": "names Flexor Digitorum Profundus, Extensor Digitorum, but no deck site places any of them here or on this bone"
+  },
+  {
+   "structure": "phalanges-distal-hand",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Distal interphalangeal joints (digits 2–5) / interphalangeal joint (thumb) with the middle/proximal phalanges",
+   "status": "supported",
+   "level": "exact",
+   "by": "acromioclavicular-joint articulates [clavicle, acromion]"
+  },
+  {
+   "structure": "phalanges-proximal-foot",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Lumbricals and interossei attach around the metatarsophalangeal joints",
+   "status": "unsupported",
+   "by": "names no muscle or source-checked ligament this repo holds"
+  },
+  {
+   "structure": "phalanges-proximal-foot",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Metatarsophalangeal joints with the metatarsals",
+   "status": "supported",
+   "level": "exact",
+   "by": "acromioclavicular-joint articulates [clavicle, acromion]"
+  },
+  {
+   "structure": "phalanges-proximal-foot",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Proximal interphalangeal joints with the middle phalanges (toes 2–5)",
+   "status": "supported",
+   "level": "exact",
+   "by": "acromioclavicular-joint articulates [clavicle, acromion]"
+  },
+  {
+   "structure": "phalanges-middle-foot",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Flexor digitorum brevis inserts on the middle phalanges",
+   "status": "unsupported",
+   "by": "names Flexor Digitorum Brevis, but no deck site places any of them here or on this bone"
+  },
+  {
+   "structure": "phalanges-middle-foot",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Proximal interphalangeal joints with the proximal phalanges",
+   "status": "supported",
+   "level": "exact",
+   "by": "acromioclavicular-joint articulates [clavicle, acromion]"
+  },
+  {
+   "structure": "phalanges-middle-foot",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Distal interphalangeal joints with the distal phalanges",
+   "status": "supported",
+   "level": "exact",
+   "by": "acromioclavicular-joint articulates [clavicle, acromion]"
+  },
+  {
+   "structure": "sesamoids-foot",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Flexor hallucis brevis inserts through them, medial and lateral heads",
+   "status": "unsupported",
+   "by": "names Flexor Hallucis Brevis, but no deck site places any of them here or on this bone"
+  },
+  {
+   "structure": "sesamoids-foot",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Joined to each other by the intersesamoid ligament, and to the proximal phalanx by the plantar plate",
+   "status": "supported",
+   "level": "exact",
+   "by": "Intersesamoid ligament (source-checked) attaches to sesamoids-foot"
+  },
+  {
+   "structure": "sesamoids-foot",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "The plantar surface of the head of the first metatarsal, in its two grooves",
+   "status": "unsupported",
+   "by": "names no joint this repo holds as a structure"
+  },
+  {
+   "structure": "phalanges-distal-foot",
+   "kind": "bone",
+   "field": "attachments",
+   "claim": "Flexor hallucis longus/flexor digitorum longus and extensor tendons insert at the base of the distal phalanges",
+   "status": "unsupported",
+   "by": "names Extensor Hallucis Longus, Extensor Digitorum Longus, Flexor Digitorum Longus, Flexor Hallucis Longus, Extensor Digitorum, but no deck site places any of them here or on this bone"
+  },
+  {
+   "structure": "phalanges-distal-foot",
+   "kind": "bone",
+   "field": "articulations",
+   "claim": "Distal interphalangeal joints (toes 2–5) / interphalangeal joint (big toe) with the middle/proximal phalanges",
+   "status": "supported",
+   "level": "exact",
+   "by": "acromioclavicular-joint articulates [clavicle, acromion]"
+  },
+  {
+   "structure": "greater-trochanter",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Gluteus medius insertion",
+   "status": "supported",
+   "level": "exact",
+   "by": "Gluteus Medius: \"Greater trochanter of the femur\""
+  },
+  {
+   "structure": "greater-trochanter",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Gluteus minimus insertion",
+   "status": "supported",
+   "level": "exact",
+   "by": "Gluteus Minimus: \"Greater trochanter of the femur\""
+  },
+  {
+   "structure": "greater-trochanter",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Piriformis and other short external rotators insertion",
+   "status": "supported",
+   "level": "exact",
+   "by": "Piriformis: \"Greater trochanter of the femur\""
+  },
+  {
+   "structure": "asis",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Sartorius origin",
+   "status": "supported",
+   "level": "exact",
+   "by": "Sartorius: \"Anterior superior iliac spine (ASIS)\""
+  },
+  {
+   "structure": "asis",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Inguinal ligament attachment",
+   "status": "unsupported",
+   "by": "names no muscle or source-checked ligament this repo holds"
+  },
+  {
+   "structure": "acromion",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Deltoid origin (acromial part)",
+   "status": "supported",
+   "level": "exact",
+   "by": "Deltoid: \"Acromion\""
+  },
+  {
+   "structure": "acromion",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Trapezius insertion (upper fibres)",
+   "status": "supported",
+   "level": "exact",
+   "by": "Trapezius: \"Acromion\""
+  },
+  {
+   "structure": "olecranon",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Triceps brachii insertion",
+   "status": "supported",
+   "level": "exact",
+   "by": "Triceps Brachii: \"Olecranon process of ulna\""
+  },
+  {
+   "structure": "medial-malleolus",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Deltoid (medial collateral) ligament origin",
+   "status": "unsupported",
+   "by": "names Deltoid, but no deck site places any of them here or on this bone"
+  },
+  {
+   "structure": "vertebral-body",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Anterior and posterior longitudinal ligaments run along the vertebral bodies",
+   "status": "supported",
+   "level": "spinal",
+   "by": "Anterior longitudinal ligament (source-checked) attaches to atlas-c1, cervical-vertebrae, c7-vertebra, thoracic-vertebrae, lumbar-vertebrae, sacrum"
+  },
+  {
+   "structure": "spinous-process",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Supraspinous and interspinous ligaments attach along adjacent spinous processes",
+   "status": "supported",
+   "level": "spinal",
+   "by": "Interspinous ligaments (source-checked) attaches to c7-vertebra, thoracic-vertebrae, lumbar-vertebrae, sacrum"
+  },
+  {
+   "structure": "spinous-process",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Multifidus and other transversospinalis muscles attach here",
+   "status": "supported",
+   "level": "exact",
+   "by": "Spinalis: \"Spinous processes of upper lumbar & lower thoracic vertebrae\""
+  },
+  {
+   "structure": "transverse-process",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Erector spinae and transversospinalis group muscles attach here",
+   "status": "supported",
+   "level": "exact",
+   "by": "Iliocostalis: \"Cervical transverse processes\""
+  },
+  {
+   "structure": "transverse-process",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Intertransverse ligaments run between adjacent transverse processes",
+   "status": "unsupported",
+   "by": "names no muscle or source-checked ligament this repo holds"
+  },
+  {
+   "structure": "lamina",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Ligamentum flavum connects adjacent laminae",
+   "status": "supported",
+   "level": "spinal",
+   "by": "Ligamenta flava (source-checked) attaches to axis-c2, cervical-vertebrae, c7-vertebra, thoracic-vertebrae, lumbar-vertebrae, sacrum"
+  },
+  {
+   "structure": "intervertebral-disc",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Anterior and posterior longitudinal ligaments reinforce the disc anteriorly/posteriorly",
+   "status": "supported",
+   "level": "spinal",
+   "by": "Anterior longitudinal ligament (source-checked) attaches to atlas-c1, cervical-vertebrae, c7-vertebra, thoracic-vertebrae, lumbar-vertebrae, sacrum"
+  },
+  {
+   "structure": "dens-odontoid-process",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Alar and apical ligaments attach at its tip",
+   "status": "unsupported",
+   "by": "names no muscle or source-checked ligament this repo holds"
+  },
+  {
+   "structure": "dens-odontoid-process",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Transverse ligament of the atlas holds it against the anterior arch of the atlas",
+   "status": "unsupported",
+   "by": "names no muscle or source-checked ligament this repo holds"
+  },
+  {
+   "structure": "posterior-arch-atlas",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Posterior atlanto-occipital membrane attaches along its superior border",
+   "status": "unsupported",
+   "by": "names no muscle or source-checked ligament this repo holds"
+  },
+  {
+   "structure": "lateral-mass-atlas",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Transverse ligament of the atlas attaches to its medial tubercle",
+   "status": "unsupported",
+   "by": "names no muscle or source-checked ligament this repo holds"
+  },
+  {
+   "structure": "bifid-spinous-process",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Nuchal ligament attaches along the cervical spinous process tips",
+   "status": "supported",
+   "level": "parent",
+   "by": "Nuchal ligament (source-checked) attaches to cervical-vertebrae, the bone this landmark sits on"
+  },
+  {
+   "structure": "c7-spinous-process",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Nuchal ligament attaches here",
+   "status": "unsupported",
+   "by": "names no muscle or source-checked ligament this repo holds"
+  },
+  {
+   "structure": "manubrium",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Sternocleidomastoid and sternohyoid origin",
+   "status": "supported",
+   "level": "exact",
+   "by": "Sternocleidomastoid: \"Manubrium of sternum\""
+  },
+  {
+   "structure": "sternal-body",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Pectoralis major origin",
+   "status": "supported",
+   "level": "parent",
+   "by": "Pectoralis Major: \"Sternocostal head: sternum & costal cartilages 1–6\""
+  },
+  {
+   "structure": "xiphoid-process",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Rectus abdominis and diaphragm attach near/around it",
+   "status": "supported",
+   "level": "exact",
+   "by": "Diaphragm: \"Xiphoid process\""
+  },
+  {
+   "structure": "xiphoid-process",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Linea alba attaches here",
+   "status": "unsupported",
+   "by": "names no muscle or source-checked ligament this repo holds"
+  },
+  {
+   "structure": "costal-margin",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Diaphragm and abdominal wall muscles attach along its inner/outer surfaces",
+   "status": "supported",
+   "level": "parent",
+   "by": "Diaphragm: \"Costal cartilages of ribs 7–12\""
+  },
+  {
+   "structure": "first-rib",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Scalenus anterior and medius attach here",
+   "status": "supported",
+   "level": "exact",
+   "by": "Scalene Anterior: \"1st rib\""
+  },
+  {
+   "structure": "twelfth-rib",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Quadratus lumborum and diaphragm attach here",
+   "status": "supported",
+   "level": "parent",
+   "by": "Diaphragm: \"Costal cartilages of ribs 7–12\""
+  },
+  {
+   "structure": "sacral-promontory",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Iliolumbar and anterior longitudinal ligament attach nearby",
+   "status": "supported",
+   "level": "parent",
+   "by": "Anterior longitudinal ligament (source-checked) attaches to sacrum, the bone this landmark sits on"
+  },
+  {
+   "structure": "sacral-hiatus",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Sacrococcygeal ligament covers it posteriorly",
+   "status": "unsupported",
+   "by": "names no muscle or source-checked ligament this repo holds"
+  },
+  {
+   "structure": "sacral-ala",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Iliolumbar ligament attaches here",
+   "status": "unsupported",
+   "by": "names no muscle or source-checked ligament this repo holds"
+  },
+  {
+   "structure": "coracoid-process",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Pectoralis minor insertion",
+   "status": "supported",
+   "level": "exact",
+   "by": "Pectoralis Minor: \"Coracoid process of scapula\""
+  },
+  {
+   "structure": "coracoid-process",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Coracobrachialis and short head of biceps brachii origin",
+   "status": "supported",
+   "level": "exact",
+   "by": "Biceps Brachii: \"Short head: coracoid process\""
+  },
+  {
+   "structure": "coracoid-process",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Coracoclavicular and coracoacromial ligaments attach here",
+   "status": "supported",
+   "level": "parent",
+   "by": "Acromioclavicular ligament (source-checked) attaches to scapula, the bone this landmark sits on"
+  },
+  {
+   "structure": "spine-of-scapula",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Trapezius insertion (lower fibres)",
+   "status": "supported",
+   "level": "exact",
+   "by": "Trapezius: \"Spine of scapula\""
+  },
+  {
+   "structure": "spine-of-scapula",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Deltoid origin (posterior fibres)",
+   "status": "supported",
+   "level": "exact",
+   "by": "Deltoid: \"Spine of scapula\""
+  },
+  {
+   "structure": "glenoid-cavity",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Glenoid labrum (fibrocartilage rim) deepens the socket",
+   "status": "supported",
+   "level": "parent",
+   "by": "Glenoid labrum (source-checked) attaches to scapula, the bone this landmark sits on"
+  },
+  {
+   "structure": "glenoid-cavity",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Long head of biceps origin at the supraglenoid tubercle",
+   "status": "unsupported",
+   "by": "names no muscle or source-checked ligament this repo holds"
+  },
+  {
+   "structure": "superior-angle-scapula",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Levator scapulae insertion",
+   "status": "supported",
+   "level": "exact",
+   "by": "Levator Scapulae: \"Superior angle & medial border of scapula\""
+  },
+  {
+   "structure": "inferior-angle-scapula",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Serratus anterior insertion (lower fibres)",
+   "status": "supported",
+   "level": "parent",
+   "by": "Serratus Anterior: \"Anterior surface of medial border of scapula\""
+  },
+  {
+   "structure": "inferior-angle-scapula",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Latissimus dorsi has a variable attachment here",
+   "status": "unsupported",
+   "by": "names Latissimus Dorsi, but no deck site places any of them here or on this bone"
+  },
+  {
+   "structure": "supraspinous-fossa",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Supraspinatus origin",
+   "status": "supported",
+   "level": "exact",
+   "by": "Supraspinatus: \"Supraspinous fossa of scapula\""
+  },
+  {
+   "structure": "infraspinous-fossa",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Infraspinatus origin",
+   "status": "supported",
+   "level": "exact",
+   "by": "Infraspinatus: \"Infraspinous fossa of scapula\""
+  },
+  {
+   "structure": "greater-tubercle-humerus",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Supraspinatus, infraspinatus and teres minor insertions (top to bottom)",
+   "status": "supported",
+   "level": "exact",
+   "by": "Supraspinatus: \"Greater tubercle of humerus\""
+  },
+  {
+   "structure": "lesser-tubercle-humerus",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Subscapularis insertion",
+   "status": "supported",
+   "level": "exact",
+   "by": "Subscapularis: \"Lesser tubercle of humerus\""
+  },
+  {
+   "structure": "intertubercular-sulcus",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Tendon of the long head of biceps brachii runs through it",
+   "status": "unsupported",
+   "by": "names Biceps Brachii, but no deck site places any of them here or on this bone"
+  },
+  {
+   "structure": "intertubercular-sulcus",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Latissimus dorsi and teres major insert along its margins",
+   "status": "supported",
+   "level": "exact",
+   "by": "Teres Major: \"Medial lip of intertubercular sulcus of humerus\""
+  },
+  {
+   "structure": "deltoid-tuberosity",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Deltoid insertion",
+   "status": "supported",
+   "level": "exact",
+   "by": "Deltoid: \"Deltoid tuberosity of humerus\""
+  },
+  {
+   "structure": "anatomical-neck-humerus",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Joint capsule of the shoulder attaches here",
+   "status": "supported",
+   "level": "parent",
+   "by": "Deltoid: \"Deltoid tuberosity of humerus\""
+  },
+  {
+   "structure": "medial-epicondyle-humerus",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Common flexor tendon origin (wrist/finger flexors and pronator teres)",
+   "status": "supported",
+   "level": "exact",
+   "by": "Pronator Teres: \"Medial epicondyle of humerus (humeral head)\""
+  },
+  {
+   "structure": "medial-epicondyle-humerus",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Ulnar collateral ligament origin",
+   "status": "supported",
+   "level": "parent",
+   "by": "Ulnar collateral ligament (source-checked) attaches to humerus, the bone this landmark sits on"
+  },
+  {
+   "structure": "lateral-epicondyle-humerus",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Common extensor tendon origin (wrist/finger extensors)",
+   "status": "unsupported",
+   "by": "names no muscle or source-checked ligament this repo holds"
+  },
+  {
+   "structure": "lateral-epicondyle-humerus",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Radial collateral ligament origin",
+   "status": "supported",
+   "level": "parent",
+   "by": "Radial collateral ligament (source-checked) attaches to humerus, the bone this landmark sits on"
+  },
+  {
+   "structure": "lateral-epicondyle-humerus",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Supinator origin (partial)",
+   "status": "supported",
+   "level": "exact",
+   "by": "Supinator: \"Lateral epicondyle of humerus\""
+  },
+  {
+   "structure": "coronoid-process-ulna",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Brachialis insertion",
+   "status": "supported",
+   "level": "exact",
+   "by": "Brachialis: \"Coronoid process & ulnar tuberosity\""
+  },
+  {
+   "structure": "head-of-radius",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Annular ligament wraps around it, holding it against the ulna",
+   "status": "unsupported",
+   "by": "names no muscle or source-checked ligament this repo holds"
+  },
+  {
+   "structure": "radial-tuberosity",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Biceps brachii insertion",
+   "status": "supported",
+   "level": "exact",
+   "by": "Biceps Brachii: \"Radial tuberosity\""
+  },
+  {
+   "structure": "ulnar-styloid-process",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Triangular fibrocartilage complex (TFCC) attaches here",
+   "status": "unsupported",
+   "by": "names no muscle or source-checked ligament this repo holds"
+  },
+  {
+   "structure": "radial-styloid-process",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Brachioradialis insertion",
+   "status": "supported",
+   "level": "parent",
+   "by": "Brachioradialis: \"Styloid process of radius\""
+  },
+  {
+   "structure": "pisiform",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Flexor carpi ulnaris insertion",
+   "status": "supported",
+   "level": "exact",
+   "by": "Flexor Carpi Ulnaris: \"Pisiform\""
+  },
+  {
+   "structure": "pisiform",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Origin of the hypothenar muscles (abductor digiti minimi)",
+   "status": "supported",
+   "level": "exact",
+   "by": "Abductor Digiti Minimi (Hand): \"Pisiform\""
+  },
+  {
+   "structure": "trapezium",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Flexor retinaculum attaches here",
+   "status": "unsupported",
+   "by": "names no muscle or source-checked ligament this repo holds"
+  },
+  {
+   "structure": "hook-of-hamate",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Flexor retinaculum attaches here",
+   "status": "unsupported",
+   "by": "names no muscle or source-checked ligament this repo holds"
+  },
+  {
+   "structure": "hook-of-hamate",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Origin of flexor digiti minimi brevis and opponens digiti minimi",
+   "status": "unsupported",
+   "by": "names no muscle or source-checked ligament this repo holds"
+  },
+  {
+   "structure": "scaphoid-tubercle",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Flexor retinaculum attaches here",
+   "status": "unsupported",
+   "by": "names no muscle or source-checked ligament this repo holds"
+  },
+  {
+   "structure": "base-of-first-metacarpal",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Abductor pollicis longus insertion nearby",
+   "status": "supported",
+   "level": "exact",
+   "by": "Abductor Pollicis Longus: \"Base of 1st metacarpal\""
+  },
+  {
+   "structure": "ilium",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Gluteus medius/minimus origin (outer surface)",
+   "status": "supported",
+   "level": "exact",
+   "by": "Gluteus Medius: \"Outer surface of the ilium (between the anterior and posterior gluteal lines)\""
+  },
+  {
+   "structure": "ilium",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Iliacus origin (inner surface, iliac fossa)",
+   "status": "supported",
+   "level": "parent",
+   "by": "Iliacus: \"Iliac fossa of the pelvis\""
+  },
+  {
+   "structure": "ischium",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Hamstrings origin — ischial tuberosity",
+   "status": "unsupported",
+   "by": "names Semitendinosus, Semimembranosus, Biceps Femoris, but no deck site places any of them here or on this bone"
+  },
+  {
+   "structure": "pubis",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Adductor longus/brevis and gracilis origin",
+   "status": "supported",
+   "level": "exact",
+   "by": "Adductor Longus: \"Pubis near the symphysis\""
+  },
+  {
+   "structure": "acetabulum",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Acetabular labrum (fibrocartilage rim) deepens the socket",
+   "status": "supported",
+   "level": "parent",
+   "by": "Acetabular labrum (source-checked) attaches to pelvis, the bone this landmark sits on"
+  },
+  {
+   "structure": "acetabulum",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Ligamentum teres attaches at its floor to the femoral head",
+   "status": "unsupported",
+   "by": "names no muscle or source-checked ligament this repo holds"
+  },
+  {
+   "structure": "iliac-crest",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Transversus abdominis, internal/external oblique, latissimus dorsi and quadratus lumborum all attach along its length",
+   "status": "supported",
+   "level": "exact",
+   "by": "Latissimus Dorsi: \"Iliac crest\""
+  },
+  {
+   "structure": "aiis",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Rectus femoris origin (straight head)",
+   "status": "supported",
+   "level": "exact",
+   "by": "Rectus Femoris: \"Anterior Inferior Iliac Spine (AIIS)\""
+  },
+  {
+   "structure": "aiis",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Iliofemoral ligament origin",
+   "status": "unsupported",
+   "by": "names no muscle or source-checked ligament this repo holds"
+  },
+  {
+   "structure": "psis",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Posterior sacroiliac ligaments attach here",
+   "status": "supported",
+   "level": "parent",
+   "by": "Posterior sacro-iliac ligament (source-checked) attaches to pelvis, the bone this landmark sits on"
+  },
+  {
+   "structure": "psis",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Multifidus and erector spinae attach nearby",
+   "status": "unsupported",
+   "by": "names Iliocostalis, Longissimus, Spinalis, Multifidus, but no deck site places any of them here or on this bone"
+  },
+  {
+   "structure": "ischial-tuberosity",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Hamstrings origin (biceps femoris long head, semitendinosus, semimembranosus)",
+   "status": "supported",
+   "level": "exact",
+   "by": "Semitendinosus: \"Ischial tuberosity\""
+  },
+  {
+   "structure": "ischial-tuberosity",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Sacrotuberous ligament attaches here",
+   "status": "supported",
+   "level": "parent",
+   "by": "Sacrotuberous ligament (source-checked) attaches to pelvis, the bone this landmark sits on"
+  },
+  {
+   "structure": "pubic-tubercle",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Inguinal ligament attaches here",
+   "status": "unsupported",
+   "by": "names no muscle or source-checked ligament this repo holds"
+  },
+  {
+   "structure": "pubic-tubercle",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Adductor longus origin nearby",
+   "status": "unsupported",
+   "by": "names Adductor Longus, but no deck site places any of them here or on this bone"
+  },
+  {
+   "structure": "femoral-head",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Ligamentum teres attaches at the fovea capitis (a small pit on its surface)",
+   "status": "unsupported",
+   "by": "names no muscle or source-checked ligament this repo holds"
+  },
+  {
+   "structure": "femoral-neck",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Hip joint capsule attaches along its margins",
+   "status": "unsupported",
+   "by": "names no muscle or source-checked ligament this repo holds"
+  },
+  {
+   "structure": "lesser-trochanter",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Iliopsoas insertion",
+   "status": "supported",
+   "level": "exact",
+   "by": "Iliacus: \"Lesser trochanter of the femur\""
+  },
+  {
+   "structure": "intertrochanteric-line",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Iliofemoral ligament attaches here",
+   "status": "unsupported",
+   "by": "names no muscle or source-checked ligament this repo holds"
+  },
+  {
+   "structure": "intertrochanteric-line",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Vastus lateralis and vastus medialis origin (partial)",
+   "status": "supported",
+   "level": "parent",
+   "by": "Vastus Lateralis: \"Greater trochanter of the femur\""
+  },
+  {
+   "structure": "obturator-foramen",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Obturator internus and obturator externus originate from its membrane/margins",
+   "status": "supported",
+   "level": "exact",
+   "by": "Obturator Externus: \"Margin of bone immediately around the medial side of the obturator foramen\""
+  },
+  {
+   "structure": "medial-condyle-femur",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Medial collateral ligament origin",
+   "status": "supported",
+   "level": "parent",
+   "by": "Fibular collateral ligament (source-checked) attaches to femur, the bone this landmark sits on"
+  },
+  {
+   "structure": "medial-condyle-femur",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Medial head of gastrocnemius origin",
+   "status": "unsupported",
+   "by": "names Gastrocnemius, but no deck site places any of them here or on this bone"
+  },
+  {
+   "structure": "lateral-condyle-femur",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Lateral collateral ligament origin",
+   "status": "supported",
+   "level": "parent",
+   "by": "Fibular collateral ligament (source-checked) attaches to femur, the bone this landmark sits on"
+  },
+  {
+   "structure": "lateral-condyle-femur",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Lateral head of gastrocnemius origin",
+   "status": "unsupported",
+   "by": "names Gastrocnemius, but no deck site places any of them here or on this bone"
+  },
+  {
+   "structure": "lateral-condyle-femur",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Popliteus origin",
+   "status": "unsupported",
+   "by": "names Popliteus, but no deck site places any of them here or on this bone"
+  },
+  {
+   "structure": "medial-epicondyle-femur",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Medial collateral ligament of the knee attaches here",
+   "status": "supported",
+   "level": "parent",
+   "by": "Fibular collateral ligament (source-checked) attaches to femur, the bone this landmark sits on"
+  },
+  {
+   "structure": "lateral-epicondyle-femur",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Lateral collateral ligament of the knee attaches here",
+   "status": "supported",
+   "level": "parent",
+   "by": "Fibular collateral ligament (source-checked) attaches to femur, the bone this landmark sits on"
+  },
+  {
+   "structure": "adductor-tubercle",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Adductor magnus insertion",
+   "status": "supported",
+   "level": "exact",
+   "by": "Adductor Magnus: \"Adductor tubercle of the femur\""
+  },
+  {
+   "structure": "linea-aspera",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Vastus medialis and vastus lateralis origin (medial/lateral lips)",
+   "status": "supported",
+   "level": "exact",
+   "by": "Vastus Lateralis: \"Linea aspera of the femur\""
+  },
+  {
+   "structure": "linea-aspera",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Adductor magnus, adductor longus and adductor brevis insertion",
+   "status": "supported",
+   "level": "exact",
+   "by": "Adductor Magnus: \"Linea aspera of the femur\""
+  },
+  {
+   "structure": "linea-aspera",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Short head of biceps femoris origin",
+   "status": "supported",
+   "level": "exact",
+   "by": "Biceps Femoris: \"Short head: linea aspera of the femur\""
+  },
+  {
+   "structure": "intercondylar-fossa-femur",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Anterior and posterior cruciate ligaments originate from its walls",
+   "status": "supported",
+   "level": "parent",
+   "by": "Anterior cruciate ligament (source-checked) attaches to femur, the bone this landmark sits on"
+  },
+  {
+   "structure": "medial-condyle-tibia",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Medial collateral ligament attaches nearby",
+   "status": "unsupported",
+   "by": "names no muscle or source-checked ligament this repo holds"
+  },
+  {
+   "structure": "medial-condyle-tibia",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Semimembranosus insertion (partial)",
+   "status": "supported",
+   "level": "exact",
+   "by": "Semimembranosus: \"Medial condyle of the tibia\""
+  },
+  {
+   "structure": "lateral-condyle-tibia",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Gerdy's tubercle (iliotibial band insertion) is on its anterolateral aspect",
+   "status": "unsupported",
+   "by": "names no muscle or source-checked ligament this repo holds"
+  },
+  {
+   "structure": "tibial-tuberosity",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Patellar ligament insertion (continuation of the quadriceps tendon)",
+   "status": "supported",
+   "level": "exact",
+   "by": "Rectus Femoris: \"Tibial tuberosity via the patellar tendon\""
+  },
+  {
+   "structure": "intercondylar-eminence-tibia",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Anterior and posterior cruciate ligaments insert near its slopes",
+   "status": "supported",
+   "level": "parent",
+   "by": "Anterior cruciate ligament (source-checked) attaches to tibia, the bone this landmark sits on"
+  },
+  {
+   "structure": "intercondylar-eminence-tibia",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Menisci attach near its margins",
+   "status": "unsupported",
+   "by": "names no muscle or source-checked ligament this repo holds"
+  },
+  {
+   "structure": "tibial-plateau",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Menisci sit on its surface",
+   "status": "unsupported",
+   "by": "names no muscle or source-checked ligament this repo holds"
+  },
+  {
+   "structure": "tibial-crest",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Tibialis anterior origin (lateral surface, adjacent to the crest)",
+   "status": "supported",
+   "level": "parent",
+   "by": "Tibialis Anterior: \"Lateral condyle and upper 2/3 of lateral tibia\""
+  },
+  {
+   "structure": "head-of-fibula",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Biceps femoris insertion",
+   "status": "supported",
+   "level": "exact",
+   "by": "Biceps Femoris: \"Head of the fibula\""
+  },
+  {
+   "structure": "head-of-fibula",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Fibular (lateral) collateral ligament of the knee attaches here",
+   "status": "supported",
+   "level": "parent",
+   "by": "Fibular collateral ligament (source-checked) attaches to fibula, the bone this landmark sits on"
+  },
+  {
+   "structure": "gerdys-tubercle",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Iliotibial band insertion",
+   "status": "unsupported",
+   "by": "names no muscle or source-checked ligament this repo holds"
+  },
+  {
+   "structure": "lateral-malleolus",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Anterior talofibular, calcaneofibular and posterior talofibular ligaments (lateral ankle ligament complex) attach here",
+   "status": "supported",
+   "level": "parent",
+   "by": "Anterior talofibular ligament (source-checked) attaches to fibula, the bone this landmark sits on"
+  },
+  {
+   "structure": "calcaneus",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Achilles (calcaneal) tendon insertion — gastrocnemius/soleus",
+   "status": "supported",
+   "level": "exact",
+   "by": "Gastrocnemius: \"Calcaneus via Achilles tendon\""
+  },
+  {
+   "structure": "calcaneus",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Plantar fascia origin",
+   "status": "unsupported",
+   "by": "names no muscle or source-checked ligament this repo holds"
+  },
+  {
+   "structure": "navicular",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Tibialis posterior insertion (main attachment, plus slips to other bones)",
+   "status": "supported",
+   "level": "exact",
+   "by": "Tibialis Posterior: \"Navicular\""
+  },
+  {
+   "structure": "cuboid",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Fibularis (peroneus) longus tendon grooves along its plantar surface",
+   "status": "supported",
+   "level": "exact",
+   "by": "Long plantar ligament (source-checked) attaches to cuboid"
+  },
+  {
+   "structure": "medial-cuneiform",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Tibialis anterior insertion (partial)",
+   "status": "supported",
+   "level": "exact",
+   "by": "Tibialis Anterior: \"Medial cuneiform\""
+  },
+  {
+   "structure": "medial-cuneiform",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Tibialis posterior insertion (slip)",
+   "status": "unsupported",
+   "by": "names Tibialis Posterior, but no deck site places any of them here or on this bone"
+  },
+  {
+   "structure": "sustentaculum-tali",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Spring (calcaneonavicular) ligament attaches here",
+   "status": "unsupported",
+   "by": "names no muscle or source-checked ligament this repo holds"
+  },
+  {
+   "structure": "sustentaculum-tali",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Flexor hallucis longus tendon grooves along its inferior surface",
+   "status": "unsupported",
+   "by": "names Flexor Hallucis Longus, but no deck site places any of them here or on this bone"
+  },
+  {
+   "structure": "sustentaculum-tali",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Deltoid ligament (deep part) attaches here",
+   "status": "unsupported",
+   "by": "names Deltoid, but no deck site places any of them here or on this bone"
+  },
+  {
+   "structure": "calcaneal-tuberosity",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Achilles tendon insertion (posterior surface)",
+   "status": "unsupported",
+   "by": "names no muscle or source-checked ligament this repo holds"
+  },
+  {
+   "structure": "calcaneal-tuberosity",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Plantar fascia origin (plantar surface, medial process)",
+   "status": "unsupported",
+   "by": "names no muscle or source-checked ligament this repo holds"
+  },
+  {
+   "structure": "navicular-tuberosity",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Main insertion of tibialis posterior",
+   "status": "unsupported",
+   "by": "names Tibialis Posterior, but no deck site places any of them here or on this bone"
+  },
+  {
+   "structure": "base-of-fifth-metatarsal",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Fibularis (peroneus) brevis insertion",
+   "status": "unsupported",
+   "by": "names Peroneus Brevis, but no deck site places any of them here or on this bone"
+  },
+  {
+   "structure": "head-of-first-metatarsal",
+   "kind": "landmark",
+   "field": "attachments",
+   "claim": "Sesamoid bones sit beneath it within the flexor hallucis brevis tendon",
+   "status": "unsupported",
+   "by": "names Flexor Hallucis Brevis, but no deck site places any of them here or on this bone"
+  }
+ ]
+}

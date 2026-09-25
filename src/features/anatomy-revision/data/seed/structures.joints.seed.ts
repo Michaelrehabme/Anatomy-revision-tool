@@ -62,7 +62,7 @@ export const JOINT_STRUCTURES: JointStructure[] = [
       'motion of any joint in the body, which is why it relies so heavily on the rotator cuff and labrum for ' +
       'dynamic and static stability rather than bony congruence.',
     jointType: 'ball-and-socket',
-    articulatingStructureIds: ['humerus', 'scapula'],
+    articulatingStructureIds: ['humerus', 'glenoid-cavity'],
     movements: ['Flexion', 'Extension', 'Abduction', 'Adduction', 'Internal rotation', 'External rotation', 'Circumduction'],
     stabilizers: ['Rotator cuff (supraspinatus, infraspinatus, teres minor, subscapularis)', 'Glenoid labrum', 'Glenohumeral ligaments', 'Long head of biceps tendon'],
     aliases: ['Shoulder joint'],
@@ -108,7 +108,7 @@ export const JOINT_STRUCTURES: JointStructure[] = [
       'It allows only small gliding and rotational movements, but is essential for the scapula to rotate ' +
       'smoothly against the clavicle during arm elevation.',
     jointType: 'plane',
-    articulatingStructureIds: ['clavicle', 'scapula'],
+    articulatingStructureIds: ['clavicle', 'acromion'],
     // Rotation here is accessory, occurring during scapular movement rather than as a
     // volitional motion — that nuance lives in the description above, not in the movement
     // string. CR-017: the string must stay canonical, since the sternoclavicular joint also
@@ -148,7 +148,9 @@ export const JOINT_STRUCTURES: JointStructure[] = [
       'with an articular disc that lets it move somewhat like a ball-and-socket joint despite its saddle shape. ' +
       'It is the only joint directly connecting the upper limb to the axial skeleton.',
     jointType: 'saddle',
-    articulatingStructureIds: ['clavicle'],
+    // The manubrium, not "the sternum": the clavicle meets its clavicular notch
+    // (articulating surfaces are named specifically, owner's rule).
+    articulatingStructureIds: ['clavicle', 'manubrium'],
     movements: ['Elevation', 'Depression', 'Protraction', 'Retraction', 'Rotation'],
     stabilizers: ['Sternoclavicular ligaments', 'Costoclavicular ligament', 'Interclavicular ligament', 'Articular disc'],
     aliases: ['SC joint'],
@@ -286,7 +288,7 @@ export const JOINT_STRUCTURES: JointStructure[] = [
       'pronation and supination belong to the radioulnar joints, and the radiocarpal joint simply travels ' +
       'with the radius as it turns.',
     jointType: 'condyloid',
-    articulatingStructureIds: ['radius', 'carpals'],
+    articulatingStructureIds: ['radius', 'scaphoid', 'lunate', 'triquetrum'],
     movements: ['Flexion', 'Extension', 'Radial deviation', 'Ulnar deviation', 'Circumduction'],
     stabilizers: ['Palmar and dorsal radiocarpal ligaments', 'Radial and ulnar collateral ligaments', 'Triangular fibrocartilage complex (TFCC)'],
     aliases: ['Wrist joint'],
@@ -327,7 +329,15 @@ export const JOINT_STRUCTURES: JointStructure[] = [
       'half of total wrist flexion and extension, which is why wrist movement is only partly lost when the ' +
       'radiocarpal joint alone is fused.',
     jointType: 'plane',
-    articulatingStructureIds: ['carpals'],
+    articulatingStructureIds: [
+      'scaphoid',
+      'lunate',
+      'triquetrum',
+      'trapezium',
+      'trapezoid',
+      'capitate',
+      'hamate',
+    ],
     movements: ['Flexion', 'Extension', 'Radial deviation', 'Ulnar deviation'],
     stabilizers: ['Interosseous, palmar and dorsal intercarpal ligaments', 'Scapholunate and lunotriquetral ligaments'],
     aliases: [],
@@ -421,7 +431,7 @@ export const JOINT_STRUCTURES: JointStructure[] = [
       'it permits a little flexion and extension, the first of the two mobile rays that let the palm fold ' +
       'around an object rather than meeting it flat.',
     jointType: 'plane',
-    articulatingStructureIds: ['hamate', 'fourth-metacarpal'],
+    articulatingStructureIds: ['capitate', 'hamate', 'fourth-metacarpal'],
     movements: ['Flexion', 'Extension', 'Gliding'],
     stabilizers: ['Dorsal, palmar and interosseous carpometacarpal ligaments'],
     aliases: ['CMC 4', 'Fourth CMC joint'],
@@ -539,7 +549,7 @@ export const JOINT_STRUCTURES: JointStructure[] = [
       'It is the direct counterpart to the glenohumeral joint, and the comparison is the point: the deep, ' +
       'labrum-rimmed socket here trades range of motion for the bony stability the shoulder gives up.',
     jointType: 'ball-and-socket',
-    articulatingStructureIds: ['femur', 'pelvis', 'acetabulum'],
+    articulatingStructureIds: ['femur', 'acetabulum'],
     movements: ['Flexion', 'Extension', 'Abduction', 'Adduction', 'Internal rotation', 'External rotation', 'Circumduction'],
     stabilizers: ['Iliofemoral, pubofemoral and ischiofemoral ligaments', 'Acetabular labrum', 'Ligamentum teres', 'Deep gluteal and short external rotator muscles'],
     aliases: ['Acetabulofemoral joint', 'Coxofemoral joint'],
@@ -586,7 +596,7 @@ export const JOINT_STRUCTURES: JointStructure[] = [
       'fibrocartilaginous disc. Not a synovial joint at all — it permits only slight gliding, and softens ' +
       'under relaxin in late pregnancy to let the pelvic ring widen for delivery.',
     jointType: 'symphysis',
-    articulatingStructureIds: ['pubis', 'pelvis'],
+    articulatingStructureIds: ['pubis'],
     movements: ['Gliding'],
     stabilizers: ['Superior pubic ligament', 'Inferior (arcuate) pubic ligament', 'Interpubic fibrocartilaginous disc'],
     aliases: ['Symphysis pubis'],
@@ -738,7 +748,7 @@ export const JOINT_STRUCTURES: JointStructure[] = [
       'works with the subtalar joint to let the foot alternate between a mobile shock absorber at heel strike ' +
       'and a rigid lever at push-off.',
     jointType: 'plane',
-    articulatingStructureIds: ['talus', 'calcaneus', 'tarsals'],
+    articulatingStructureIds: ['talus', 'navicular', 'calcaneus', 'cuboid'],
     movements: ['Inversion', 'Eversion'],
     stabilizers: ['Spring (plantar calcaneonavicular) ligament', 'Bifurcate ligament', 'Long and short plantar ligaments'],
     aliases: ['Midtarsal joint', 'Chopart joint'],
@@ -759,7 +769,7 @@ export const JOINT_STRUCTURES: JointStructure[] = [
       'pathology.',
     jointType: 'condyloid',
     articulatingStructureIds: ['metatarsals', 'phalanges-proximal-foot'],
-    movements: ['Flexion', 'Extension', 'Abduction', 'Adduction'],
+    movements: ['Flexion', 'Extension', 'Abduction', 'Adduction', 'Circumduction'],
     stabilizers: ['Collateral ligaments', 'Plantar plate', 'Deep transverse metatarsal ligament'],
     aliases: ['MTP joint'],
     imageIds: [],
@@ -805,7 +815,7 @@ export const JOINT_STRUCTURES: JointStructure[] = [
       'vertebrae. Their facet orientation is what decides which movements each spinal region allows — near-' +
       'horizontal in the cervical spine (free rotation), near-sagittal in the lumbar spine (rotation blocked).',
     jointType: 'plane',
-    articulatingStructureIds: ['cervical-vertebrae', 'thoracic-vertebrae', 'lumbar-vertebrae'],
+    articulatingStructureIds: ['superior-articular-process', 'inferior-articular-process'],
     movements: ['Gliding'],
     stabilizers: ['Facet joint capsule', 'Ligamentum flavum'],
     aliases: ['Zygapophyseal Joint', 'Lumbar Facet Joint', 'Thoracic Zygapophyseal (Facet) Joint', 'Apophyseal joint'],
@@ -826,7 +836,7 @@ export const JOINT_STRUCTURES: JointStructure[] = [
       'facets of the atlas (C1). This is the "yes" joint — it provides most of the nodding movement of the ' +
       'head, and essentially no rotation.',
     jointType: 'condyloid',
-    articulatingStructureIds: ['atlas-c1'],
+    articulatingStructureIds: ['atlas-c1', 'occipital-bone'],
     movements: ['Flexion', 'Extension', 'Lateral flexion'],
     stabilizers: ['Anterior and posterior atlanto-occipital membranes', 'Alar ligaments', 'Joint capsules'],
     aliases: ['AO joint', 'C0-C1 joint'],

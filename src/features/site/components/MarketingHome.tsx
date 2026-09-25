@@ -43,7 +43,7 @@ const FAQS = [
   },
   {
     q: 'Which muscles are covered?',
-    a: '122 muscles across nine regions: shoulder, elbow, wrist and hand, hip, knee, ankle and foot, and the cervical, thoracic and lumbar spine. Bones, landmarks, joints and ligaments bring it to 463 structures in all. Questions are built on Z-Anatomy renders with the labels hidden, so what you revise looks like what you will be examined on.',
+    a: '122 muscles across nine regions: shoulder, elbow, wrist and hand, hip, knee, ankle and foot, and the cervical, thoracic and lumbar spine. Bones, landmarks, joints and ligaments bring it to 464 structures in all. Questions are built on Z-Anatomy renders with the labels hidden, so what you revise looks like what you will be examined on.',
   },
   {
     q: 'Does it work offline?',
@@ -522,6 +522,7 @@ export function MarketingHome() {
             <Link to="/accessibility" style={{ color: 'var(--ink2)', textDecoration: 'none' }}>Accessibility</Link>
             <Link to="/refunds" style={{ color: 'var(--ink2)', textDecoration: 'none' }}>Refunds</Link>
             <Link to="/attributions" style={{ color: 'var(--ink2)', textDecoration: 'none' }}>Attributions</Link>
+            <Link to="/sources" style={{ color: 'var(--ink2)', textDecoration: 'none' }}>Sources</Link>
           </nav>
           <div style={{ font: '400 12px/1 var(--font-mono)', color: 'var(--ink3)' }}>© 2026 LocusMSK</div>
         </div>

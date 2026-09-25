@@ -1,7 +1,7 @@
 {
   "name": "LocusMSK",
   "short_name": "LocusMSK",
-  "description": "Spaced-repetition anatomy revision for MSK students. 463 structures, with origin, insertion, nerve supply and action for every muscle, cross-referenced against Terminologia Anatomica.",
+  "description": "Spaced-repetition anatomy revision for MSK students. 464 structures, with origin, insertion, nerve supply and action for every muscle, cross-referenced against Terminologia Anatomica.",
   "id": "/",
   "start_url": "/",
   "scope": "/",

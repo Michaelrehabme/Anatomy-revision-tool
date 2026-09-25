@@ -217,7 +217,12 @@ export const UPPER_LIMB_LANDMARK_STRUCTURES: LandmarkStructure[] = [
     description: 'The groove running between the greater and lesser tubercles of the humerus.',
     attachments: ['Tendon of the long head of biceps brachii runs through it', 'Latissimus dorsi and teres major insert along its margins'],
     articulations: [],
-    palpability: 'not-palpable',
+    // Corrected 25 Sep 2026: the groove is palpated directly in shoulder exam
+    // (StatPearls: 'Direct palpation over the patient's bicipital groove elicits a
+    // painful response in the setting of pathology'). The seed said not-palpable
+    // while its own clinical note describes bicipital tendinopathy, which is
+    // diagnosed by palpating here. Deep under the deltoid, hence palpable-deep.
+    palpability: 'palpable-deep',
     aliases: ['Bicipital Groove', 'Intertubercular Sulcus', 'Intertubercular Groove'],
     imageIds: [],
     eligibility: { flashcard: true, mcq: true, locate: true },
