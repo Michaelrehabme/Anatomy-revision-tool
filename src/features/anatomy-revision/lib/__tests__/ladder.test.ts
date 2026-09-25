@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { LADDER_CONFIG, hintsForRung, markSeen, promoteOrDemote, questionTypeForRung, rungFor } from '../ladder';
+import { LADDER_CONFIG, hintsForRung, markSeen, promoteOrDemote, questionTypeForRung, rungFor, rungOfQuestion } from '../ladder';
 import type { StructureMastery } from '../../types/attempt';
 
 function row(overrides: Partial<StructureMastery> = {}): StructureMastery {
@@ -38,6 +38,39 @@ describe('rungFor', () => {
   it('prefers a stored rung over the accuracy heuristic', () => {
     expect(rungFor(row({ attemptsTotal: 10, attemptsCorrect: 9, rung: 'mcq' }))).toBe('mcq');
   });
+
+  it('will not read one lucky answer as earned accuracy', () => {
+    // The bug this guards: a pre-ladder row with a single correct answer is
+    // 100% accurate, which used to place it on typed-bare — a no-hint typed
+    // question on a structure seen once.
+    expect(rungFor(row({ attemptsTotal: 1, attemptsCorrect: 1 }))).toBe('mcq');
+    expect(rungFor(row({ attemptsTotal: 2, attemptsCorrect: 2 }))).toBe('mcq');
+    expect(rungFor(row({ attemptsTotal: 5, attemptsCorrect: 5 }))).toBe('typed-hinted');
+    expect(rungFor(row({ attemptsTotal: 6, attemptsCorrect: 6 }))).toBe('typed-bare');
+  });
+
+  it('asks for as many answers as climbing would have cost', () => {
+    const { legacyMinAttempts, promotionStreak } = LADDER_CONFIG;
+    expect(legacyMinAttempts['typed-hinted']).toBe(promotionStreak);
+    expect(legacyMinAttempts['typed-bare']).toBe(promotionStreak * 2);
+  });
+});
+
+describe('rungOfQuestion', () => {
+  it('reads the demand off the question, hints included', () => {
+    expect(rungOfQuestion('flashcard')).toBe('flashcard');
+    expect(rungOfQuestion('mcq')).toBe('mcq');
+    expect(rungOfQuestion('fill-blank')).toBe('typed-hinted');
+    expect(rungOfQuestion('identify-typed', 'full')).toBe('typed-hinted');
+    expect(rungOfQuestion('identify-typed')).toBe('typed-hinted');
+    expect(rungOfQuestion('identify-typed', 'none')).toBe('typed-bare');
+  });
+
+  it('puts the formats with progressions of their own outside the ladder', () => {
+    expect(rungOfQuestion('locate')).toBeNull();
+    expect(rungOfQuestion('multi-select')).toBeNull();
+    expect(rungOfQuestion('oina')).toBeNull();
+  });
 });
 
 describe('promoteOrDemote', () => {
@@ -71,6 +104,57 @@ describe('promoteOrDemote', () => {
 
   it('never leaves a graded structure on the flashcard rung', () => {
     expect(promoteOrDemote(undefined, false).rung).toBe('mcq');
+  });
+});
+
+describe('promoteOrDemote and the format that was asked', () => {
+  const met = row({ attemptsTotal: 6, attemptsCorrect: 6, rung: 'mcq', rungStreak: 2, rungMissStreak: 0 });
+
+  it('does not climb on answers from outside the ladder', () => {
+    // Three right locate taps used to carry a structure to typed recall, and
+    // the next session asked for its name with nothing to go on.
+    let m = met;
+    for (let i = 0; i < 3; i++) m = { ...m, ...promoteOrDemote(m, true, null) };
+    expect(m.rung).toBe('mcq');
+    expect(m.rungStreak).toBe(2); // untouched, not reset and not advanced
+  });
+
+  it('does not let a wrong locate tap wipe the streak it did not earn', () => {
+    const after = promoteOrDemote(met, false, null);
+    expect(after.rungStreak).toBe(2);
+    expect(after.rungMissStreak).toBe(0);
+  });
+
+  it('climbs on three answers at the structure own rung', () => {
+    let m = row({ attemptsTotal: 6, attemptsCorrect: 6, rung: 'mcq', rungStreak: 0 });
+    for (let i = 0; i < 3; i++) {
+      m = { ...m, ...promoteOrDemote(m, true, 'mcq'), attemptsTotal: m.attemptsTotal + 1, attemptsCorrect: m.attemptsCorrect + 1 };
+    }
+    expect(m.rung).toBe('typed-hinted');
+  });
+
+  it('gives no promotion credit for an easier question than the rung asks', () => {
+    // A session offering only MCQs, asking a structure that has earned hints.
+    let m = row({ attemptsTotal: 9, attemptsCorrect: 9, rung: 'typed-hinted', rungStreak: 0 });
+    for (let i = 0; i < 4; i++) {
+      m = { ...m, ...promoteOrDemote(m, true, 'mcq'), attemptsTotal: m.attemptsTotal + 1, attemptsCorrect: m.attemptsCorrect + 1 };
+    }
+    expect(m.rung).toBe('typed-hinted');
+    expect(m.rungStreak).toBe(0);
+  });
+
+  it('still demotes on an easier question missed twice', () => {
+    let m = row({ attemptsTotal: 9, attemptsCorrect: 9, rung: 'typed-bare', rungStreak: 0 });
+    for (let i = 0; i < 2; i++) m = { ...m, ...promoteOrDemote(m, false, 'mcq'), attemptsTotal: m.attemptsTotal + 1 };
+    expect(m.rung).toBe('typed-hinted');
+  });
+
+  it('credits an answer harder than the rung asks', () => {
+    let m = row({ attemptsTotal: 6, attemptsCorrect: 6, rung: 'mcq', rungStreak: 0 });
+    for (let i = 0; i < 3; i++) {
+      m = { ...m, ...promoteOrDemote(m, true, 'typed-bare'), attemptsTotal: m.attemptsTotal + 1, attemptsCorrect: m.attemptsCorrect + 1 };
+    }
+    expect(m.rung).toBe('typed-hinted');
   });
 });
 

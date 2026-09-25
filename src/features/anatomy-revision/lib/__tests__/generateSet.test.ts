@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { ALL_STRUCTURES, ALL_IMAGES } from '../../data/seed';
-import { generateRevisionSet, REVIEW_SHARE } from '../questionGenerators/generateSet';
+import { generateRevisionSet, MAX_QUESTIONS_PER_STRUCTURE, REVIEW_SHARE } from '../questionGenerators/generateSet';
 import { AREAS, type Area } from '../../types/region';
 import { buildIndexes } from '../indexes';
 import { areasOf } from '../../types/structure';
@@ -941,5 +941,81 @@ describe('the difficulty ladder in practice mode', () => {
     expect(ladderTypes(noMastery, unseen).size).toBeGreaterThan(1);
     const onlyMcq = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, { ...config, types: ['mcq', 'locate'] });
     expect(ladderTypes(onlyMcq, bare)).toEqual(new Set(['mcq']));
+  });
+});
+
+describe('no one structure may take over a capped session', () => {
+  const TYPES = ['mcq', 'identify-typed', 'locate', 'oina'] as const;
+  const now = new Date('2026-09-20T09:00:00.000Z');
+  const base = { entitledAreas: AREAS, types: TYPES, mode: 'practice' as const, count: 20 };
+
+  // Questions only. A learn card riding in front of its own OINA question is
+  // deliberate teaching, not a repeat, and it never spent a slot in `count`.
+  const asked = <T extends { type: string }>(questions: T[]): T[] => questions.filter((q) => q.type !== 'flashcard');
+  const worst = (questions: { structureId: string; type: string }[]) => {
+    const per = new Map<string, number>();
+    for (const q of asked(questions)) per.set(q.structureId, (per.get(q.structureId) ?? 0) + 1);
+    return Math.max(...per.values());
+  };
+
+  it('holds the cap when a handful of overdue structures would otherwise fill the set', () => {
+    const pool = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, { ...base, count: undefined, seed: 61 });
+    const per = new Map<string, number>();
+    for (const q of pool) per.set(q.structureId, (per.get(q.structureId) ?? 0) + 1);
+    // Three structures with four or more questions each and every one overdue:
+    // the exact shape that produced a fifteen-question review with six
+    // questions about one muscle.
+    const greedy = [...per.entries()].filter(([, n]) => n >= 4).map(([id]) => id).slice(0, 3);
+    expect(greedy).toHaveLength(3);
+    const mastery: StructureMastery[] = greedy.map((structureId, i) => ({
+      structureId, userId: 'u', attemptsTotal: 8, attemptsCorrect: 1, lastAttemptAt: '2026-09-01T09:00:00.000Z',
+      dueAt: new Date(now.getTime() - (i + 1) * 86_400_000).toISOString(), intervalDays: 1, easeFactor: 2.5,
+    }));
+    const result = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+      ...base, seed: 62, mastery, now, priorityStructureIds: greedy,
+    });
+    expect(asked(result)).toHaveLength(20);
+    for (const id of greedy) {
+      expect(asked(result).filter((q) => q.structureId === id).length).toBeLessThanOrEqual(MAX_QUESTIONS_PER_STRUCTURE);
+    }
+  });
+
+  it('holds it on the plain weighted path too, with no due queue at all', () => {
+    const result = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, { ...base, seed: 63 });
+    expect(asked(result)).toHaveLength(20);
+    expect(worst(result)).toBeLessThanOrEqual(MAX_QUESTIONS_PER_STRUCTURE);
+    // ...which is the point of the cap: breadth. Twenty questions two-apiece
+    // cannot come from fewer than ten structures.
+    expect(new Set(asked(result).map((q) => q.structureId)).size).toBeGreaterThanOrEqual(10);
+  });
+
+  it('is honoured by an exam as well as a study session', () => {
+    // An exam gets no learn cards at all (CR-018), so every item is a question.
+    const result = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, { ...base, mode: 'assessment', seed: 64 });
+    expect(result).toHaveLength(20);
+    expect(worst(result)).toBeLessThanOrEqual(MAX_QUESTIONS_PER_STRUCTURE);
+  });
+
+  it('takes the override when one is given', () => {
+    const result = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, { ...base, seed: 65, maxPerStructure: 1 });
+    expect(asked(result)).toHaveLength(20);
+    expect(new Set(asked(result).map((q) => q.structureId)).size).toBe(20);
+  });
+
+  it('yields rather than short-change a session scoped too narrowly to obey it', () => {
+    // Six structures, twenty questions: the cap cannot hold and a short
+    // session is the worse failure, so it relaxes a step at a time.
+    const pool = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, { ...base, count: undefined, seed: 66 });
+    const per = new Map<string, number>();
+    for (const q of pool) per.set(q.structureId, (per.get(q.structureId) ?? 0) + 1);
+    const few = [...per.entries()].filter(([, n]) => n >= 4).map(([id]) => id).slice(0, 6);
+    const result = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, { ...base, seed: 67, structureIds: few });
+    expect(asked(result).length).toBeGreaterThan(few.length * MAX_QUESTIONS_PER_STRUCTURE);
+    expect(new Set(asked(result).map((q) => q.structureId)).size).toBe(few.length);
+  });
+
+  it('leaves an uncapped practice session alone — it means every question', () => {
+    const all = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, { ...base, count: undefined, seed: 68 });
+    expect(worst(all)).toBeGreaterThan(MAX_QUESTIONS_PER_STRUCTURE);
   });
 });

@@ -82,6 +82,12 @@ export function MobileStudySession({ session, content, onEnd, onBackToSetup, onO
   const progressTotal = gradedTotal > 0 ? gradedTotal : session.questions.length;
   const progressCurrent = gradedTotal > 0 ? Math.max(1, gradedSoFar) : session.currentIndex + 1;
   const progressPct = Math.round((progressCurrent / progressTotal) * 100);
+  // Learn cards get their own number rather than none — see SessionSidebar for
+  // why the question counter must not move for them.
+  const cardsTotal = session.questions.filter((q) => q.type === 'flashcard').length;
+  const cardsSeen = new Set(
+    session.answers.filter((a) => a.graded === false).map((a) => a.questionId),
+  ).size;
 
   return (
     <div className="flex min-h-screen flex-col" style={{ background: 'var(--pg)', color: 'var(--ink)' }}>
@@ -95,6 +101,14 @@ export function MobileStudySession({ session, content, onEnd, onBackToSetup, onO
           </div>
           <span style={{ font: '400 11.5px/1 var(--font-mono)', color: 'var(--ink3)' }}>
             {progressCurrent} / {progressTotal}
+            {cardsTotal > 0 && (
+              <>
+                {' '}
+                <span style={{ color: 'var(--ink3)', opacity: 0.7 }}>
+                  · {cardsSeen}/{cardsTotal} cards
+                </span>
+              </>
+            )}
           </span>
         </div>
         {examMode && (

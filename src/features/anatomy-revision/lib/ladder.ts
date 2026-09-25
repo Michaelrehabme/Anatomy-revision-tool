@@ -20,6 +20,19 @@ import type { QuestionType } from '../types/question';
  * (lib/factMastery.ts), which the student already lives with. Locate is
  * outside the ladder — it tests where a thing is, not what it is called —
  * and so are multi-select and OINA, which have shapes of their own.
+ *
+ * EVERY RUNG IS EARNED, AT THE RUNG. Two things used to let a structure skip
+ * one, and the result was a bare typed question on something barely met:
+ *
+ *   - the streak counted any correct answer, so three right locate taps or
+ *     three OINA facts could carry a muscle from options to typed recall
+ *     without the student ever having typed its name. `rungOfQuestion` says
+ *     what a question asks at, and only an answer at the structure's own rung
+ *     or harder earns promotion credit (see promoteOrDemote);
+ *   - a row from before the ladder had no stored rung and was placed by
+ *     accuracy alone, so one lucky first answer read as 100% and landed on
+ *     typed-bare. `legacyMinAttempts` now asks for as many answers as
+ *     climbing would have taken.
  */
 export type Rung = 'flashcard' | 'mcq' | 'typed-hinted' | 'typed-bare';
 
@@ -32,6 +45,22 @@ export const LADDER_CONFIG = {
   promotionAccuracy: 0.7,
   /** Consecutive misses before a structure drops a rung. */
   demotionStreak: 2,
+  /**
+   * How many graded answers a row with NO stored rung must carry before its
+   * accuracy may place it above MCQ — one entry per rung that can be inferred.
+   *
+   * Only rows written before the ladder existed take that path, but they are
+   * most of the rows on a long-standing account, and accuracy over one or two
+   * answers is not accuracy: a single correct first answer reads as 100% and
+   * put the structure on typed-bare, which is how a student met a no-hint
+   * typed question on something they had barely seen. The figures are what
+   * climbing would have cost — promotionStreak to reach typed-hinted, and
+   * another promotionStreak on top to reach typed-bare.
+   */
+  legacyMinAttempts: {
+    'typed-hinted': 3,
+    'typed-bare': 6,
+  } as Record<'typed-hinted' | 'typed-bare', number>,
 };
 
 type LadderConfig = typeof LADDER_CONFIG;
@@ -42,34 +71,106 @@ export const LADDER_TYPES: readonly QuestionType[] = ['flashcard', 'mcq', 'fill-
 /**
  * Which rung a structure is on. A stored rung wins; a row without one (every
  * row written before the ladder existed) is placed by its accuracy, so a
- * student who had already earned typed recall is not sent back to options.
+ * student who had already earned typed recall is not sent back to options —
+ * but only once it carries enough answers for that accuracy to mean anything
+ * (LADDER_CONFIG.legacyMinAttempts). A thin row starts at MCQ and climbs from
+ * there like any other.
  */
-export function rungFor(mastery: StructureMastery | undefined): Rung {
+export function rungFor(mastery: StructureMastery | undefined, config: LadderConfig = LADDER_CONFIG): Rung {
   if (!mastery) return 'flashcard';
   if (mastery.rung) return mastery.rung;
   if (mastery.attemptsTotal === 0) return 'mcq';
   const accuracy = mastery.attemptsCorrect / mastery.attemptsTotal;
-  if (accuracy >= 0.85) return 'typed-bare';
-  if (accuracy >= 0.6) return 'typed-hinted';
+  if (accuracy >= 0.85 && mastery.attemptsTotal >= config.legacyMinAttempts['typed-bare']) return 'typed-bare';
+  if (accuracy >= 0.6 && mastery.attemptsTotal >= config.legacyMinAttempts['typed-hinted']) return 'typed-hinted';
   return 'mcq';
 }
 
-/** The rung fields after one graded answer. */
+/**
+ * What a question ASKS AT — the demand it makes of the student — or null for a
+ * format outside the ladder, whose answers must move it neither way.
+ *
+ * This is what keeps the climb linear. Without it the streak that promotes a
+ * structure counted every correct answer about it, so a muscle could reach
+ * typed-bare on locate taps and OINA facts alone and then ask for its name
+ * from nothing, with no hints.
+ *
+ * Fill-blank is typed, but the sentence around the gap carries most of the
+ * answer's context, so it asks no more than hinted recall.
+ */
+export function rungOfQuestion(type: QuestionType, hints?: 'full' | 'none'): Rung | null {
+  switch (type) {
+    case 'flashcard':
+      return 'flashcard';
+    case 'mcq':
+      return 'mcq';
+    case 'fill-blank':
+      return 'typed-hinted';
+    case 'identify-typed':
+      return hints === 'none' ? 'typed-bare' : 'typed-hinted';
+    default:
+      // locate, multi-select, OINA — outside the ladder by design.
+      return null;
+  }
+}
+
+/**
+ * The rung fields after one graded answer.
+ *
+ * `asked` is the rung the question just answered asks at — from
+ * `rungOfQuestion`. Three cases, and the middle one is the whole point:
+ *
+ *   - null: a format outside the ladder. The answer still counts towards
+ *     accuracy and the schedule, but it leaves the rung and both streaks
+ *     exactly as they were. A wrong locate tap must not wipe two right MCQs
+ *     off the promotion streak, any more than three right ones should fill it.
+ *   - easier than the structure's rung: a session offering only MCQs asking a
+ *     typed-hinted structure. Getting it right clears the miss streak — right
+ *     is right — but earns no promotion, because the student was not asked to
+ *     do the harder thing. Getting it wrong counts in full: failing an easier
+ *     question is a clearer signal, not a weaker one.
+ *   - at the rung or harder: counts both ways, which is the ordinary climb.
+ *
+ * `undefined` means the caller does not know what was asked, and the answer is
+ * credited at the structure's current rung.
+ */
 export function promoteOrDemote(
   existing: StructureMastery | undefined,
   correct: boolean,
+  asked?: Rung | null,
   config: LadderConfig = LADDER_CONFIG,
 ): Pick<StructureMastery, 'rung' | 'rungStreak' | 'rungMissStreak'> {
   const attemptsTotal = (existing?.attemptsTotal ?? 0) + 1;
   const attemptsCorrect = (existing?.attemptsCorrect ?? 0) + (correct ? 1 : 0);
-  // A graded answer means the structure has been met, whatever the row said.
-  let rung: Rung = rungFor(existing);
+  // A graded answer means the structure has been met, whatever the row said —
+  // true of a locate question too, which is why this precedes the null check.
+  let rung: Rung = rungFor(existing, config);
   if (rung === 'flashcard') rung = 'mcq';
-  let rungStreak = correct ? (existing?.rungStreak ?? 0) + 1 : 0;
-  let rungMissStreak = correct ? 0 : (existing?.rungMissStreak ?? 0) + 1;
+
+  if (asked === null) {
+    return { rung, rungStreak: existing?.rungStreak ?? 0, rungMissStreak: existing?.rungMissStreak ?? 0 };
+  }
 
   const at = RUNGS.indexOf(rung);
-  if (correct && rungStreak >= config.promotionStreak && attemptsCorrect / attemptsTotal >= config.promotionAccuracy && at < RUNGS.length - 1) {
+  const earnsCredit = asked === undefined || RUNGS.indexOf(asked) >= at;
+
+  let rungStreak = existing?.rungStreak ?? 0;
+  let rungMissStreak = existing?.rungMissStreak ?? 0;
+  if (correct) {
+    rungMissStreak = 0;
+    if (earnsCredit) rungStreak += 1;
+  } else {
+    rungStreak = 0;
+    rungMissStreak += 1;
+  }
+
+  if (
+    correct &&
+    earnsCredit &&
+    rungStreak >= config.promotionStreak &&
+    attemptsCorrect / attemptsTotal >= config.promotionAccuracy &&
+    at < RUNGS.length - 1
+  ) {
     rung = RUNGS[at + 1];
     rungStreak = 0;
   } else if (!correct && rungMissStreak >= config.demotionStreak && at > RUNGS.indexOf('mcq')) {

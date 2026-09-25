@@ -69,6 +69,12 @@ export interface RevisionSetConfig {
   priorityStructureIds?: string[];
   /** Ceiling on the share of the set drawn from `priorityStructureIds`. Defaults to REVIEW_SHARE. */
   reviewShare?: number;
+  /**
+   * Most questions one structure may contribute to a capped session. Defaults
+   * to MAX_QUESTIONS_PER_STRUCTURE; ignored by an uncapped practice session,
+   * which means "ask me everything" and gets it.
+   */
+  maxPerStructure?: number;
   /** Fixed seed for deterministic/testable generation. Defaults to time-based. */
   seed?: number;
   /**
@@ -176,6 +182,56 @@ function interleaveByType(
 export const REVIEW_SHARE = 0.6;
 
 /**
+ * Most questions any one structure may contribute to a capped session.
+ *
+ * A structure asks many questions — MCQ, locate, typed, four OINA facts, a
+ * fill-blank per attachment — so a fifteen-question review could come out six
+ * questions about the deltoid, and the ordering that produced it was working
+ * as designed: the deltoid was the most overdue thing in the pool, so the
+ * weighting put its whole family at the front. Depth on one muscle is not what
+ * a revision session is for. Two is enough to catch a structure from two
+ * angles and still leave room for ten others.
+ */
+export const MAX_QUESTIONS_PER_STRUCTURE = 2;
+
+/**
+ * Takes up to `count` questions in the order given, letting no structure
+ * exceed `cap` of them.
+ *
+ * `counts` is shared between calls so the due side and the wider pool spend
+ * one budget per structure rather than a cap each. `relax` raises the limit a
+ * step at a time once the list has nothing left within it: a session scoped to
+ * five structures cannot deal twenty questions two at a time, and a session
+ * short of the length it promised is worse than a repetitive one. The callers
+ * that can top up from elsewhere pass `relax: false` and let the other side
+ * try first.
+ */
+function takeWithStructureCap(
+  ordered: readonly RevisionQuestion[],
+  count: number,
+  cap: number,
+  counts: Map<string, number> = new Map(),
+  relax = false,
+): RevisionQuestion[] {
+  if (count <= 0) return [];
+  const taken: RevisionQuestion[] = [];
+  const used = new Set<RevisionQuestion>();
+  for (let limit = cap; ; limit++) {
+    for (const question of ordered) {
+      if (taken.length >= count) break;
+      if (used.has(question)) continue;
+      const already = counts.get(question.structureId) ?? 0;
+      if (already >= limit) continue;
+      counts.set(question.structureId, already + 1);
+      used.add(question);
+      taken.push(question);
+    }
+    if (!relax || taken.length >= count || used.size === ordered.length) break;
+  }
+  return taken;
+}
+
+/**
  * Reserves a share of the session for the priority list and fills the rest
  * from the wider pool, so due material and new material both get airtime.
  *
@@ -192,7 +248,9 @@ export const REVIEW_SHARE = 0.6;
  * was ignoring the review. The first pass takes one question per due
  * structure, walking the priority list in the order the caller gave it (Today
  * passes most-overdue first); only when every due structure has had its turn
- * do second questions fill what is left of the share.
+ * do second questions fill what is left of the share — and no more than `cap`
+ * of them, which is where the fifteen-question review that was six questions
+ * about one muscle used to come from (MAX_QUESTIONS_PER_STRUCTURE).
  */
 function blendPriorityWithRest(
   ordered: RevisionQuestion[],
@@ -200,6 +258,7 @@ function blendPriorityWithRest(
   count: number,
   reviewShare: number | undefined,
   rng: Rng,
+  cap: number,
 ): RevisionQuestion[] {
   const priority = new Set(priorityStructureIds);
   const share = Math.min(1, Math.max(0, reviewShare ?? REVIEW_SHARE));
@@ -221,9 +280,21 @@ function blendPriorityWithRest(
   const secondPass = structures.flatMap((id) => byStructure.get(id)!.slice(1));
   const due = [...firstPass, ...secondPass];
 
-  const fromDue = due.slice(0, Math.min(Math.round(count * share), due.length));
-  const fromRest = rest.slice(0, count - fromDue.length);
-  const topUp = due.slice(fromDue.length, fromDue.length + (count - fromDue.length - fromRest.length));
+  // One budget per structure across both sides, since the top-up below draws
+  // from either and must not hand a structure a second cap's worth.
+  const counts = new Map<string, number>();
+  const fromDue = takeWithStructureCap(due, Math.min(Math.round(count * share), due.length), cap, counts);
+  const fromRest = takeWithStructureCap(rest, count - fromDue.length, cap, counts);
+  // Neither side could fill the session within the cap — a narrow pool, not a
+  // greedy structure — so now, and only now, the cap gives.
+  const picked = new Set([...fromDue, ...fromRest]);
+  const topUp = takeWithStructureCap(
+    [...due, ...rest].filter((q) => !picked.has(q)),
+    count - picked.size,
+    cap,
+    counts,
+    true,
+  );
   return shuffle([...fromDue, ...fromRest, ...topUp], rng);
 }
 
@@ -452,11 +523,15 @@ export function generateRevisionSet(
   // Only a CAPPED session needs balancing — an uncapped one asks everything it
   // built, in whatever order the weighting chose.
   const balanced = count && config.types.length > 1 ? interleaveByType(ordered, config.types) : ordered;
+  const cap = Math.max(1, config.maxPerStructure ?? MAX_QUESTIONS_PER_STRUCTURE);
   const selected = !count
     ? balanced
     : config.priorityStructureIds?.length
-      ? blendPriorityWithRest(balanced, config.priorityStructureIds, count, config.reviewShare, rng)
-      : shuffle(balanced.slice(0, count), rng);
+      ? blendPriorityWithRest(balanced, config.priorityStructureIds, count, config.reviewShare, rng, cap)
+      : // Breadth over depth here too: the mastery weighting front-loads a weak
+        // structure's whole question family, so a plain slice is as lopsided as
+        // the due blend was.
+        shuffle(takeWithStructureCap(balanced, count, cap, new Map(), true), rng);
 
   // An exam tests rather than teaches, so it never gets a learn card (CR-018).
   if (config.mode === 'assessment') return stampRequestedArea(selected, indexes.byId, config.areas);

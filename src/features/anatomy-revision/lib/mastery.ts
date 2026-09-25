@@ -1,5 +1,5 @@
 import type { StructureMastery, Confidence } from '../types/attempt';
-import { promoteOrDemote } from './ladder';
+import { promoteOrDemote, type Rung } from './ladder';
 
 const DEFAULT_EASE_FACTOR = 2.5;
 const MIN_EASE_FACTOR = 1.3;
@@ -72,7 +72,20 @@ export function deriveImplicitConfidence(
 
 export function updateMasteryAfterAttempt(
   existing: StructureMastery | undefined,
-  params: { structureId: string; userId: string; correct: boolean; confidence?: Confidence; durationMs?: number },
+  params: {
+    structureId: string;
+    userId: string;
+    correct: boolean;
+    confidence?: Confidence;
+    durationMs?: number;
+    /**
+     * The rung the question just answered asks at — `rungOfQuestion(type, hints)`.
+     * null for a format outside the ladder (locate, multi-select, OINA), whose
+     * answers move accuracy and the schedule but not the rung. Omitted, the
+     * answer is credited at whatever rung the structure is already on.
+     */
+    askedRung?: Rung | null;
+  },
   now: Date = new Date(),
 ): StructureMastery {
   const attemptsTotal = (existing?.attemptsTotal ?? 0) + 1;
@@ -110,7 +123,7 @@ export function updateMasteryAfterAttempt(
     isLeech,
     durationEwmaMs,
     firstSeenAt: existing?.firstSeenAt ?? now.toISOString(),
-    ...promoteOrDemote(existing, params.correct),
+    ...promoteOrDemote(existing, params.correct, params.askedRung),
   };
 
   const { intervalDays, easeFactor, dueAt } = computeNextReview(existing, resolvedConfidence, now);

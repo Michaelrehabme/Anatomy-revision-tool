@@ -6,10 +6,10 @@ import type { Area, Region, SubRegion } from '../types/region';
 import { REGIONS } from '../types/region';
 import type { Confidence, RevisionSessionSummary, UserAttempt } from '../types/attempt';
 import type { OinaPromptKind, QuestionType } from '../types/question';
-import { isOinaQuestion } from '../types/question';
+import { isOinaQuestion, isTypedIdentifyQuestion } from '../types/question';
 import type { AnatomyRepository } from '../data/repository';
 import { updateMasteryAfterAttempt } from '../lib/mastery';
-import { markSeen } from '../lib/ladder';
+import { markSeen, rungOfQuestion } from '../lib/ladder';
 import { updateFactMasteryAfterAttempt } from '../lib/factMastery';
 import { ALL_STRUCTURES } from '../data/seed';
 import { toDayKey, computeStreak } from '../lib/streak';
@@ -390,6 +390,14 @@ export function useRevisionSession(repository: AnatomyRepository | null, userId:
             correct: record.correct,
             confidence: record.confidence,
             durationMs,
+            // What this question actually demanded, so the ladder only promotes
+            // on answers at the structure's own rung or harder (lib/ladder.ts).
+            // Without it a run of locate taps carried a structure to typed-bare
+            // and the next session asked for its name with no hints.
+            askedRung: rungOfQuestion(
+              currentQuestion.type,
+              isTypedIdentifyQuestion(currentQuestion) ? currentQuestion.hints : undefined,
+            ),
           });
           await repository.upsertMastery(nextMastery);
 

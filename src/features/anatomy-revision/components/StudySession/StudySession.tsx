@@ -80,6 +80,14 @@ export function StudySession({ session, content, onEnd, onBackToSetup }: StudySe
   const progressTotal = gradedTotal > 0 ? gradedTotal : session.questions.length;
   const progressCurrent = gradedTotal > 0 ? Math.max(1, gradedSoFar) : session.currentIndex + 1;
 
+  // ...which is why the cards get a counter of their own: they are the reason
+  // the question number can stand still while the session moves on. Counted by
+  // distinct question id, so a double-submitted reveal cannot inflate it.
+  const cardsTotal = session.questions.filter((q) => q.type === 'flashcard').length;
+  const cardsSeen = new Set(
+    session.answers.filter((a) => a.graded === false).map((a) => a.questionId),
+  ).size;
+
   if (!question) {
     return (
       <AppShell
@@ -118,6 +126,8 @@ export function StudySession({ session, content, onEnd, onBackToSetup }: StudySe
           total={progressTotal}
           correctCount={correctCount}
           wrongCount={wrongCount}
+          cardsSeen={cardsSeen}
+          cardsTotal={cardsTotal}
           onEnd={onEnd}
           hint={
             examMode

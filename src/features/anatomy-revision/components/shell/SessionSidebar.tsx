@@ -5,12 +5,22 @@ interface SessionSidebarProps {
   total: number;
   correctCount: number;
   wrongCount: number;
+  /**
+   * Flashcards revealed so far, and how many the session holds. Their own
+   * number because they are deliberately outside `current`/`total`: a card is
+   * taught, not asked, so counting it would put "16/24" on a 16-question
+   * session. But clicking past one and watching the counter stand still reads
+   * as a bug rather than as a distinction, so the cards are counted where they
+   * can be seen. Omit for a session with no cards in it.
+   */
+  cardsSeen?: number;
+  cardsTotal?: number;
   onEnd: () => void;
   hint?: ReactNode;
 }
 
 /** The in-session sidebar (screens 05–08): replaces nav while a question is active. */
-export function SessionSidebar({ current, total, correctCount, wrongCount, onEnd, hint }: SessionSidebarProps) {
+export function SessionSidebar({ current, total, correctCount, wrongCount, cardsSeen = 0, cardsTotal = 0, onEnd, hint }: SessionSidebarProps) {
   const pct = total > 0 ? (current / total) * 100 : 0;
   return (
     <>
@@ -33,6 +43,29 @@ export function SessionSidebar({ current, total, correctCount, wrongCount, onEnd
       <div className="mt-4 h-1 overflow-hidden rounded-full" style={{ background: 'var(--line)' }}>
         <div className="h-full transition-all duration-300" style={{ width: `${pct}%`, background: 'var(--acc)' }} />
       </div>
+      <div className="mt-2" style={{ font: '400 11.5px/1.5 var(--font-mono)', color: 'var(--ink3)' }}>
+        questions answered
+      </div>
+
+      {cardsTotal > 0 && (
+        <>
+          <div
+            className="mt-8"
+            style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}
+          >
+            Learn cards
+          </div>
+          <div className="mt-3 flex items-baseline gap-2">
+            <span style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 28, lineHeight: 1, letterSpacing: '-.03em' }}>
+              {cardsSeen}
+            </span>
+            <span style={{ fontFamily: 'var(--font-display)', fontSize: 15, color: 'var(--ink3)' }}>/ {cardsTotal}</span>
+          </div>
+          <div className="mt-1.5" style={{ font: '400 11.5px/1.5 var(--font-mono)', color: 'var(--ink3)' }}>
+            seen · not scored
+          </div>
+        </>
+      )}
 
       {(correctCount > 0 || wrongCount > 0) && (
         <>
