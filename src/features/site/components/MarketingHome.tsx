@@ -10,9 +10,10 @@ import { Link } from 'react-router-dom';
  * the brand, so a page that repeated the colours literally would drift the
  * first time one changed.
  *
- * THE SAMPLE QUESTION USES REAL PANELS. The four images are the same
- * Z-Anatomy renders the app serves from /anatomy/panels/, not screenshots or
- * mock-ups. A visitor deciding whether this is worth £29.99 is really asking
+ * THE SAMPLE QUESTION USES REAL PLATES. The four images are the same
+ * Z-Anatomy renders the app serves from /anatomy/muscles/ — each muscle's
+ * highlight picture at the angle where it shows largest, which is the one its
+ * own card opens on — not screenshots or mock-ups. A visitor deciding whether this is worth £29.99 is really asking
  * "what will the questions look like", and the honest answer is to show them
  * one. It also means the sample cannot drift from the product: if the renders
  * change, this changes with them.
@@ -27,12 +28,21 @@ const PRICING = {
   annualNote: '£2.50 a month',
 } as const;
 
-const PANELS = [
-  { letter: 'A', id: 'infraspinatus', name: 'Infraspinatus' },
-  { letter: 'B', id: 'supraspinatus', name: 'Supraspinatus' },
-  { letter: 'C', id: 'subscapularis', name: 'Subscapularis' },
-  { letter: 'D', id: 'deltoid', name: 'Deltoid' },
+/**
+ * `angle` is each muscle's PRIMARY frame (musclePlates.generated.ts), named
+ * here rather than looked up so the landing page does not pull the plate list
+ * in with it. marketingPanels.test.ts fails if a re-render moves or drops one.
+ */
+export const PANELS = [
+  { letter: 'A', id: 'infraspinatus', name: 'Infraspinatus', angle: 210 },
+  { letter: 'B', id: 'supraspinatus', name: 'Supraspinatus', angle: 210 },
+  { letter: 'C', id: 'subscapularis', name: 'Subscapularis', angle: 0 },
+  { letter: 'D', id: 'deltoid', name: 'Deltoid', angle: 270 },
 ] as const;
+
+/** The highlight plate a sample card shows. */
+export const panelSrc = (panel: (typeof PANELS)[number]) =>
+  `/anatomy/muscles/${panel.id}-a${String(panel.angle).padStart(3, '0')}-highlight.webp`;
 
 const ANSWER = 'B';
 
@@ -177,7 +187,7 @@ function SampleQuestion() {
               }}
             >
               <img
-                src={`/anatomy/panels/${panel.id}.webp`}
+                src={panelSrc(panel)}
                 alt=""
                 loading="lazy"
                 style={{ width: '100%', display: 'block' }}
