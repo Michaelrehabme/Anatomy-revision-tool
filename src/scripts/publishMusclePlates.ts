@@ -327,13 +327,17 @@ if (only) {
 }
 
 // COMPACT ROWS, for the reason publishLigamentPlates.ts gives: 122 muscles at
-// twelve angles and two kinds is nearly 3,000 plates, and written out in full
-// that list is most of a megabyte of the entry chunk — the same muscle's name,
-// region and view repeated on every image. Each muscle's facts are written
-// once, names are a table, every plate is square and one size, and a row is
-// [muscle, angle, view, names, primary].
-const NAMES = [...new Set(rows.flatMap((r) => r.panelStructureNames))].sort();
-const nameIndex = new Map(NAMES.map((n, i) => [n, i]));
+// twelve angles and two kinds is nearly 3,000 plates, and this list lives in the
+// app's ENTRY CHUNK. Each muscle's facts are written once, every plate is square
+// and one size, and a row is [muscle, angle, view, primary].
+//
+// NO NEIGHBOUR NAMES. The locate picture used to list every muscle in it, and
+// those lists were 74 kB of the 124 kB this file cost the entry chunk, which had
+// 78 kB left under the 2 MiB precache limit. Nothing at runtime needed them:
+// whether a picture shows a muscle is read from its hotspots (mcq.ts
+// imageDepicts), which load separately and name every muscle traced in it; locate
+// and prompt-image selection read only [0], the subject. Their one other reader,
+// linkImages -> imageIds, feeds only a tie-break in the diagnostic's ordering.
 const VIEWS = [...new Set(rows.map((r) => r.view))].sort();
 const facts: Record<string, [string, string, string, 0 | 1]> = {};
 for (const r of rows) facts[r.structureId] = [r.name, r.region, r.subregion, r.deep ? 1 : 0];
@@ -341,8 +345,7 @@ const sizes = new Set(rows.map((r) => `${r.width}x${r.height}`));
 if (sizes.size > 1) throw new Error(`plates are not all one size: ${[...sizes].join(', ')}`);
 const [W, H] = rows[0] ? [rows[0].width, rows[0].height] : [1500, 1500];
 const body = rows
-  .map((r) => JSON.stringify([r.structureId, r.angle, VIEWS.indexOf(r.view),
-    r.panelStructureNames.map((n) => nameIndex.get(n)), r.primary ? 1 : 0]))
+  .map((r) => JSON.stringify([r.structureId, r.angle, VIEWS.indexOf(r.view), r.primary ? 1 : 0]))
   .join(',\n');
 
 writeFileSync(OUT_TS, `import type { LayerType, ViewType } from '../../types/image';
@@ -352,12 +355,11 @@ import type { Region, SubRegion } from '../../types/region';
  * GENERATED — do not edit by hand.
  * Regenerate with: npx tsx src/scripts/publishMusclePlates.ts
  *
- * One row per file in public/anatomy/muscles/. A muscle has up to twelve
- * angles and each angle two kinds: 'context' (every muscle in frame in the
- * same red; the locate picture, with hotspots) and 'highlight' (the target in
- * cyan; the identify and atlas picture, no hotspots). Only angles where the
- * target traced are here. Stored compactly — see publishMusclePlates.ts — and
- * expanded to MusclePlate on load.
+ * One row per angle; each angle is two files in public/anatomy/muscles/:
+ * 'context' (every muscle in frame in the same red; the locate picture, with
+ * hotspots) and 'highlight' (the target in cyan; the identify and atlas
+ * picture, no hotspots). Only angles where the target traced are here. Stored
+ * compactly — see publishMusclePlates.ts — and expanded to MusclePlate on load.
  */
 export interface MusclePlate {
   structureId: string;
@@ -372,7 +374,11 @@ export interface MusclePlate {
   deep: boolean;
   width: number;
   height: number;
-  /** Every seeded muscle visible in the picture, the target first. */
+  /**
+   * The subject alone. The other muscles in a locate picture are named by its
+   * hotspots, which load separately; listing them here cost the entry chunk
+   * 74 kB (see publishMusclePlates.ts).
+   */
   panelStructureNames: string[];
   /** The one highlight frame per muscle where it shows largest: its card picture. */
   primary: boolean;
@@ -384,20 +390,17 @@ export const layerOfPlate = (plate: MusclePlate): LayerType =>
 
 const W = ${W};
 const H = ${H};
-const NAMES: string[] = ${JSON.stringify(NAMES)};
 const VIEWS: ViewType[] = ${JSON.stringify(VIEWS)};
 const MUSCLES: Record<string, [string, Region, SubRegion, 0 | 1]> = ${JSON.stringify(facts)};
-const ROWS: [string, number, number, number[], 0 | 1][] = [
+const ROWS: [string, number, number, 0 | 1][] = [
 ${body}
 ];
 
 /**
  * Two plates per row: every published angle has a context picture and a
- * highlight picture, written together by the publisher. The highlight one
- * names only the muscle itself — it is pre-highlighted, so it carries no
- * hotspots and can never be a locate question.
+ * highlight picture, written together by the publisher.
  */
-export const MUSCLE_PLATES: MusclePlate[] = ROWS.flatMap(([structureId, angle, view, names, primary]) => {
+export const MUSCLE_PLATES: MusclePlate[] = ROWS.flatMap(([structureId, angle, view, primary]) => {
   const [name, region, subregion, deep] = MUSCLES[structureId];
   const shared = {
     structureId,
@@ -409,10 +412,11 @@ export const MUSCLE_PLATES: MusclePlate[] = ROWS.flatMap(([structureId, angle, v
     deep: deep === 1,
     width: W,
     height: H,
+    panelStructureNames: [name],
   };
   return [
-    { ...shared, kind: 'context' as const, panelStructureNames: names.map((i) => NAMES[i]), primary: false },
-    { ...shared, kind: 'highlight' as const, panelStructureNames: [name], primary: primary === 1 },
+    { ...shared, kind: 'context' as const, primary: false },
+    { ...shared, kind: 'highlight' as const, primary: primary === 1 },
   ];
 });
 `);
