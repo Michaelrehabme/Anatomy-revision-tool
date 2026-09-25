@@ -514,6 +514,14 @@ for entry in entries:
         # frame, everything on that side is.
         other_side = None
 
+    # WHETHER THIS IS A MIDLINE PLATE decides what its angles are called: a
+    # plate with both sides in it has no medial view (lib/viewForAngle.ts). The
+    # publisher cannot work it out — the twin test needs the geometry — so it is
+    # written down here, beside the frames it describes.
+    os.makedirs(os.path.join(a.out, key), exist_ok=True)
+    with open(os.path.join(a.out, key, "meta.json"), "w") as f:
+        json.dump({"midline": bool(twins) or not side}, f)
+
     mine = set(own) | set(entry["twins"])
     # THE SUPERFICIAL LAYER COMES OFF A DEEP MUSCLE, and stays on a superficial
     # one. Two layers, not a per-angle occlusion test: which layer a muscle is

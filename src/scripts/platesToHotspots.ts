@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
 import { decodePng } from './lib/png';
 import { binariseAlpha, maskToPolygons } from './lib/maskToPolygons';
+import { viewForAngle } from './lib/viewForAngle';
 
 /**
  * Turns a set of plates and masks into shipped images and hotspots.
@@ -72,18 +73,16 @@ const FAMILIES: Record<string, Family> = {
  * viewer shows degrees beside the name, which is what "turn it a bit further"
  * actually needs.
  *
- * 90 is LATERAL here, not medial. The plates draw a whole region and 90 degrees
- * round from anterior is its lateral side; publishLigamentPlates.ts maps the
- * same angle to medial because a ligament plate is drawn on one side of the
- * body and turns the other way. The two are not in conflict, but do not copy
- * one table into the other.
+ * THE NAME COMES FROM lib/viewForAngle.ts. This table used to say 90 was
+ * lateral, arguing that a region plate turns the other way from a ligament
+ * plate. It does not: every renderer uses the same camera and frames a limb on
+ * its left copy, so 90 looks at it from the inside. The leg plate at 270 shows
+ * the fibula and lateral malleolus face-on, and was labelled medial.
+ *
+ * The axial regions are midline plates: turned 90 degrees either way, the
+ * camera is at the body's side, so neither view is medial.
  */
-const VIEW_FOR_ANGLE: Record<number, string> = {
-  0: 'anterior', 30: 'anterolateral', 60: 'anterolateral', 90: 'lateral',
-  120: 'posterolateral', 150: 'posterolateral', 180: 'posterior',
-  210: 'posteromedial', 240: 'posteromedial', 270: 'medial',
-  300: 'anteromedial', 330: 'anteromedial',
-};
+const isAxial = (dirName: string) => dirName.startsWith('back-core');
 
 const VIEW_NAMES: Record<string, string> = {
   'view-00': 'anterior',
@@ -256,7 +255,7 @@ for (const dirName of readdirSync(masksRoot).sort()) {
   // of the same one, and stays the single picture it has always been.
   const turntable = readdirSync(regionDir)
     .filter((n) => /^a\d{3}\.png$/.test(n))
-    .map((n) => [n.slice(0, 4), VIEW_FOR_ANGLE[Number(n.slice(1, 4))], Number(n.slice(1, 4))] as const)
+    .map((n) => [n.slice(0, 4), viewForAngle(Number(n.slice(1, 4)), isAxial(dirName)) as string, Number(n.slice(1, 4))] as const)
     .filter(([, view]) => view)
     .sort((x, y) => x[2] - y[2]);
   const leaves: (readonly [string, string, number | undefined])[] = [

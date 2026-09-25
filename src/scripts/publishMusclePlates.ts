@@ -10,6 +10,7 @@ import { pointInAnyPolygon } from '../features/anatomy-revision/lib/hotspot/poin
 import { simplifyRing } from '../features/anatomy-revision/lib/hotspot/polygonGeometry';
 import { decodePng } from './lib/png';
 import { binariseAlpha, maskToPolygons } from './lib/maskToPolygons';
+import { viewForAngle } from './lib/viewForAngle';
 import { MUSCLE_PLATES } from '../features/anatomy-revision/data/seed/musclePlates.generated';
 import { MUSCLE_HOTSPOTS } from '../features/anatomy-revision/data/seed/hotspots.muscles.generated';
 
@@ -77,19 +78,6 @@ const coarsen = (polygons: number[][][]) =>
 const MIN_TARGET_AREA = Number(
   process.argv.includes('--min-area') ? process.argv[process.argv.indexOf('--min-area') + 1] : 0.0002,
 );
-
-/**
- * A frame's angle and the name that angle has. Copied from publishJointPanels.ts,
- * which copied it from the sub-region plates: a muscle, a joint and a
- * sub-region photographed from thirty degrees must not disagree about what
- * "thirty degrees" is called.
- */
-const VIEW_FOR_ANGLE: Record<number, ViewType> = {
-  0: 'anterior', 30: 'anterolateral', 60: 'anterolateral', 90: 'lateral',
-  120: 'posterolateral', 150: 'posterolateral', 180: 'posterior',
-  210: 'posteromedial', 240: 'posteromedial', 270: 'medial',
-  300: 'anteromedial', 330: 'anteromedial',
-};
 
 function parseArgs(argv: string[]): Record<string, string> {
   const out: Record<string, string> = {};
@@ -248,11 +236,16 @@ for (const muscleId of readdirSync(rendersRoot).sort()) {
 
   const tracedAreas: number[] = [];
   const muscleDir = join(rendersRoot, muscleId);
+  // Written by the renderer: a plate with both sides in it has no medial view
+  // (lib/viewForAngle.ts). Missing means an older render; say so rather than
+  // guess, because a guess is how every plate came to be labelled backwards.
+  const metaPath = join(muscleDir, 'meta.json');
+  if (!existsSync(metaPath)) { skipped.push(`${muscleId}: no meta.json, re-render it`); continue; }
+  const midline = Boolean(JSON.parse(readFileSync(metaPath, 'utf8')).midline);
   for (const angleDir of readdirSync(muscleDir).filter((n) => /^a\d{3}$/.test(n)).sort()) {
     const dir = join(muscleDir, angleDir);
     const angle = Number(angleDir.slice(1));
-    const view = VIEW_FOR_ANGLE[angle];
-    if (!view) { skipped.push(`${muscleId} ${angleDir}: no view name for this angle`); continue; }
+    const view = viewForAngle(angle, midline);
     if (!['context', 'highlight', 'mask'].every((f) => existsSync(join(dir, `${f}.png`)))) {
       skipped.push(`${muscleId} ${angleDir}: render incomplete`);
       continue;

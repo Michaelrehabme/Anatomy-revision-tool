@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
 import { ALL_STRUCTURES } from '../features/anatomy-revision/data/seed/index';
 import { isJoint } from '../features/anatomy-revision/types/structure';
+import { viewForAngle } from './lib/viewForAngle';
 
 /**
  * Publishes the joint locate images: one webp per joint per view, plus the
@@ -38,19 +39,6 @@ const ROOT = fileURLToPath(new URL('../..', import.meta.url));
 const OUT_DIR = `${ROOT}/public/anatomy/joints`;
 const OUT_TS = `${ROOT}/src/features/anatomy-revision/data/seed/jointPanels.generated.ts`;
 
-/**
- * A frame's angle and the name that angle has. Copied from the sub-region
- * plates (subRegionPlates.generated.ts), which are the same twelve-frame
- * turntable: a joint and a sub-region photographed from 30 degrees must not
- * disagree about what "30 degrees" is called.
- */
-const VIEW_FOR_ANGLE: Record<number, string> = {
-  0: 'anterior', 30: 'anterolateral', 60: 'anterolateral', 90: 'lateral',
-  120: 'posterolateral', 150: 'posterolateral', 180: 'posterior',
-  210: 'posteromedial', 240: 'posteromedial', 270: 'medial',
-  300: 'anteromedial', 330: 'anteromedial',
-};
-
 /** "view-06" is the sixth 15-degree step, so 90 degrees. */
 const angleOfView = (view: string): number => (Number(view.replace('view-', '')) * 15) % 360;
 
@@ -81,6 +69,22 @@ if (!existsSync(masksRoot)) {
 }
 
 const jointById = new Map(ALL_STRUCTURES.filter(isJoint).map((j) => [j.id, j]));
+
+/**
+ * Which joints are drawn across the midline: flagged bilateral in the spec, or
+ * with no sided bone in them at all. Those have no medial view — turned either
+ * way the camera is at the body's side (lib/viewForAngle.ts).
+ */
+const midlineJoints = new Set<string>();
+{
+  const spec = JSON.parse(readFileSync(join(ROOT, 'joint-lines.spec.json'), 'utf8'));
+  const entries: { id: string; bilateral?: boolean; a?: { objects?: string[] }; b?: { objects?: string[] } }[] =
+    Array.isArray(spec.joints) ? spec.joints : Object.values(spec.joints ?? spec);
+  for (const j of entries) {
+    const objects = [...(j.a?.objects ?? []), ...(j.b?.objects ?? [])];
+    if (j.bilateral || !objects.some((n) => /\.(l|r)$/.test(n))) midlineJoints.add(j.id);
+  }
+}
 
 if (!existsSync(hotspotsPath)) {
   console.error(`No hotspots at ${hotspotsPath} — run jointLineHotspots.ts --v2 first.`);
@@ -123,7 +127,7 @@ for (const jointId of readdirSync(masksRoot).sort()) {
 
   for (const viewDir of VIEW_DIRS) {
     const angle = angleOfView(viewDir);
-    const viewName = VIEW_FOR_ANGLE[angle];
+    const viewName = viewForAngle(angle, midlineJoints.has(jointId));
     const imageId = `joint-${jointId}-${angleSlug(angle)}-plate`;
     if (!withBands.has(imageId)) {
       skipped.push(`${jointId} ${angle}\u00b0: joint line not visible from here`);

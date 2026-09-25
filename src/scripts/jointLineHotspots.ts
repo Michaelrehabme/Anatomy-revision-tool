@@ -169,18 +169,7 @@ function dilateBy(mask: BinaryMask, width: number, height: number, steps: number
   return current;
 }
 
-/**
- * A frame's angle and the name that angle has. Copied from the sub-region
- * plates (subRegionPlates.generated.ts), which are the same twelve-frame
- * turntable: a joint and a sub-region photographed from 30 degrees must not
- * disagree about what "30 degrees" is called.
- */
-const VIEW_FOR_ANGLE: Record<number, string> = {
-  0: 'anterior', 30: 'anterolateral', 60: 'anterolateral', 90: 'lateral',
-  120: 'posterolateral', 150: 'posterolateral', 180: 'posterior',
-  210: 'posteromedial', 240: 'posteromedial', 270: 'medial',
-  300: 'anteromedial', 330: 'anteromedial',
-};
+
 
 /** "view-06" is the sixth 15-degree step, so 90 degrees. */
 const angleOfView = (view: string): number => (Number(view.replace('view-', '')) * 15) % 360;
@@ -349,8 +338,9 @@ for (const jointId of jointIds) {
     // One image per joint per VIEW, mirroring the region hotspots: a composited
     // multi-view strip has no single coordinate space a polygon could live in.
     const angle = angleOfView(view);
-    const viewName = VIEW_FOR_ANGLE[angle];
-    if (viewName) {
+    // Every angle has a name (lib/viewForAngle.ts); this only ever checked that
+    // the frame was one of the twelve.
+    if (angle % 30 === 0) {
       v2Images[`joint-${jointId}-${angleSlug(angle)}-plate`] = {
         width: line.width,
         height: line.height,
