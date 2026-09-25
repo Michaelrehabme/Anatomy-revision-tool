@@ -3,6 +3,7 @@ import { ALL_STRUCTURES, ALL_IMAGES } from '../../data/seed';
 import { buildStarterSet, STARTER_COUNT, STARTER_TYPES } from '../questionGenerators/starterSet';
 import { areasOf, isMuscle } from '../../types/structure';
 import { isLocateQuestion, isMcqQuestion } from '../../types/question';
+import { buildLocateQuestions } from '../questionGenerators/locate';
 
 const byId = new Map(ALL_STRUCTURES.map((s) => [s.id, s]));
 
@@ -35,15 +36,19 @@ describe('buildStarterSet', () => {
     expect(locates.length).toBeGreaterThan(0);
     const areaOfQ = (q: (typeof locates)[number]) =>
       ALL_IMAGES.find((img) => img.id === q.imageId)!.hotspots!.find((h) => h.structureId === q.structureId)!.area;
+    // THE BAR IS WHAT CAN ACTUALLY BE ASKED, not the biggest polygon anywhere.
+    // Since the muscle plates landed, a muscle is asked on the plate framed for
+    // IT (locate.ts), and a knee muscle's hotspot is often larger on a
+    // neighbour's plate than on its own — vastus lateralis fills more of the
+    // vastus medialis frame than of its own. Measuring against a picture the
+    // question can never open on would fail whatever the starter set chose.
     const largestAvailable = Math.max(
-      ...ALL_IMAGES.flatMap((img) =>
-        (img.hotspots ?? [])
-          .filter((h) => {
-            const s = byId.get(h.structureId);
-            return !!s && isMuscle(s) && areasOf(s).includes('knee') && s.eligibility.locate;
-          })
-          .map((h) => h.area),
-      ),
+      ...buildLocateQuestions(ALL_STRUCTURES, ALL_IMAGES)
+        .filter((q) => {
+          const s = byId.get(q.structureId);
+          return !!s && isMuscle(s) && areasOf(s).includes('knee');
+        })
+        .map(areaOfQ),
     );
     expect(areaOfQ(locates[0])).toBe(largestAvailable);
   });

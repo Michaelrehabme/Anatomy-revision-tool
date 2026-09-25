@@ -8,6 +8,7 @@ import { DEEP_PLATES } from './deepPlates.generated';
 import { LANDMARK_PANELS } from './landmarkPanels.generated';
 import { SUBREGION_PLATES } from './subRegionPlates.generated';
 import { LIGAMENT_PLATES } from './ligamentPlates.generated';
+import { MUSCLE_PLATES, layerOfPlate } from './musclePlates.generated';
 
 /**
  * Two image sets, in the order they appear below:
@@ -70,6 +71,9 @@ const Z_ANATOMY_CREDIT =
   'Derived from Z-Anatomy (Gauthier Kervyn et al.), based on BodyParts3D (Database Center for Life Science).';
 const Z_ANATOMY_LICENCE = 'CC BY-SA 4.0';
 
+/** The muscles that have a twelve-frame plate, so their old panel is skipped. */
+const MUSCLE_PLATE_IDS = new Set(MUSCLE_PLATES.map((p) => p.structureId));
+
 export const IMAGE_ASSETS: AnatomyImageAsset[] = [
   // --- Bone / landmark atlas images (14) ---
   // --- Single-muscle panel crops (21), for the Muscle Card screen ---
@@ -94,7 +98,15 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
   // there, and each entry carries the real pixel dimensions of its own file
   // rather than one nominal pair shared by all of them. Regenerate with
   // src/scripts/generateMusclePanels.ts.
-  ...MUSCLE_PANELS.map(
+  //
+  // A MUSCLE WITH A PLATE IS NOT SHOWN ITS PANEL. The plates below are the same
+  // 122 muscles rendered twelve ways in the shared look, and leaving the panel
+  // in the list as well would leave the old picture winning wherever a screen
+  // takes the FIRST single-structure image for a structure (MuscleCard,
+  // MobileMuscleCard) — which is how coracobrachialis was still on its 18
+  // September render after the rest of the app had moved on. The panels of
+  // bones, landmarks and joints stay: nothing has replaced those.
+  ...MUSCLE_PANELS.filter(({ structureId }) => !MUSCLE_PLATE_IDS.has(structureId)).map(
     ({ structureId, region, subregion, layer, width, height }): AnatomyImageAsset => ({
       id: `panel-${structureId}`,
       filePath: `/anatomy/panels/${structureId}.webp`,
@@ -233,6 +245,56 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
           licence: Z_ANATOMY_LICENCE,
         };
   }),
+
+  // --- Muscle plates: one muscle in context, twelve angles ---
+  // Two pictures per angle, the same pair the ligament plates ship. The context
+  // picture draws every seeded muscle in frame in the same red and carries a
+  // hotspot for each, so it is the locate picture and a wrong tap can be named.
+  // The highlight picture picks the target out in cyan: pre-highlighted, so no
+  // hotspots and never a locate question — it is the identify picture, and the
+  // one the muscle's own card opens on, which is what the user asked for ("in
+  // the atlas i want the muscle highlighted as if it were an identify question
+  // as opposed to on its own"). A deep muscle's plates are drawn with the
+  // superficial layer taken off, which is why `layer` is read from the plate.
+  // Rendered by renderMusclePlates.py, published by publishMusclePlates.ts.
+  //
+  // PRIMARY FIRST. MuscleCard takes the first single-structure image it finds
+  // for a structure, and the angle where the muscle shows largest is the one
+  // worth meeting it at: sorted this way, trapezius opens from behind rather
+  // than from the front, where almost none of it can be seen.
+  ...[...MUSCLE_PLATES]
+    .sort((a, b) => Number(b.primary) - Number(a.primary))
+    .map((plate): AnatomyImageAsset => {
+      const marker = `a${String(plate.angle).padStart(3, '0')}`;
+      const id = `muscle-${plate.structureId}-${marker}-${plate.kind}`;
+      const viewLabel = `${plate.view[0].toUpperCase()}${plate.view.slice(1)}`;
+      const shared: Omit<AnatomyImageAsset, 'mode'> = {
+        id,
+        filePath: `/anatomy/muscles/${plate.structureId}-${marker}-${plate.kind}.webp`,
+        region: plate.region,
+        subregion: plate.subregion,
+        view: plate.view,
+        layer: layerOfPlate(plate),
+        width: plate.width,
+        height: plate.height,
+        hotspots: [],  // attached by seed/hotspots.ts; see the note there
+        credit: Z_ANATOMY_CREDIT,
+        licence: Z_ANATOMY_LICENCE,
+      };
+      return plate.kind === 'context'
+        ? {
+            ...shared,
+            slideTitle: `${plate.name} — ${viewLabel} View`,
+            mode: 'atlas-slide',
+            panelStructureNames: plate.panelStructureNames,
+          }
+        : {
+            ...shared,
+            slideTitle: `${plate.name} — ${viewLabel} View (highlighted)`,
+            mode: 'single-structure',
+            structureId: plate.structureId,
+          };
+    }),
 
   // --- Bone plates: the skeleton by region, one image per view ---
   // Bones were the only category already eligible for locate questions with no

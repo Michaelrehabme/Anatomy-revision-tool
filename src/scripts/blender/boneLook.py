@@ -45,6 +45,38 @@ BONE_COLOUR = (0.90, 0.88, 0.83, 1)
 """Base colour before occlusion darkens the hollows."""
 
 
+"""Things filed under "1: Skeletal system" that a skeleton does not have.
+
+Z-Anatomy keeps the nasal cartilages in the skeletal collection, so every plate
+that draws the skull draws a NOSE on it — a soft, rounded tip sitting on the
+bone, which is the one thing in the picture that is not skeleton. The ear
+cartilages are the same: a skull with ears.
+
+The costal cartilages stay. They are cartilage too, but they complete the rib
+cage, they are where several muscles attach, and a rib that stops in mid-air is
+the fault they fix. So this is a named list, not a rule about the word.
+"""
+NOT_BONE = (
+    "Major alar cartilage",
+    "Nasal septal cartilage",
+    "Lateral process of nasal septal cartilage",
+    "Nasal cartilages",
+    "Cartilages of ear",
+)
+
+
+def is_bone(name):
+    """False for a mesh in the skeletal collection that is not skeleton.
+
+    `.g` is the collection's own title text, which sits beside the body and
+    prints "SYSTEM" at the edge of any wide frame.
+    """
+    if name.endswith(".g"):
+        return False
+    base = name.rsplit(".", 1)[0] if "." in name else name
+    return base not in NOT_BONE and name not in NOT_BONE
+
+
 def setup_world(scene):
     """A dim white world. Returns the background node for callers that want it."""
     scene.world = bpy.data.worlds.new("BoneLookWorld")

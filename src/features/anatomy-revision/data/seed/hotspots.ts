@@ -1,5 +1,6 @@
 import type { HotspotPolygon } from '../../types/image';
 import { IMAGE_ASSETS } from './images.seed';
+import { MUSCLE_HOTSPOT_SETS } from './hotspots.muscles.index.generated';
 
 /**
  * The hotspot polygons, fetched separately from the images they belong to.
@@ -41,6 +42,11 @@ const SETS: Record<string, () => Promise<Record<string, HotspotPolygon[]>>> = {
   ligamentsFoot: () => import('./hotspots.ligaments.foot.generated').then((m) => m.LIGAMENT_HOTSPOTS_PART),
   ligamentsFootTilt: () => import('./hotspots.ligaments.footTilt.generated').then((m) => m.LIGAMENT_HOTSPOTS_PART),
   ligamentsAxial: () => import('./hotspots.ligaments.axial.generated').then((m) => m.LIGAMENT_HOTSPOTS_PART),
+  // Muscles are split by area too, but how many parts an area needs depends on
+  // how much of it traces — the wrist and hand alone came to 2.06 MB on the
+  // first full run — so that list is GENERATED beside the parts rather than
+  // typed here, where it would go stale at the next render.
+  ...MUSCLE_HOTSPOT_SETS,
 };
 
 let pending: Promise<void> | null = null;

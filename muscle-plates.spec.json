@@ -1,0 +1,3611 @@
+{
+ "schemaVersion": 1,
+ "note": "Twelve angles each, framed on the left side at 1.45x the muscle’s span with a per-area floor. `layer` 1 is a deep muscle: the renderer draws no layer-0 muscle in front of it, and a muscle object the atlas has but this list does not is treated as layer 0. Written by src/scripts/generateMusclePlateSpec.ts.",
+ "muscles": [
+  {
+   "key": "diaphragm",
+   "name": "Diaphragm",
+   "region": "back-core",
+   "subregion": "spine",
+   "objects": [
+    "Diaphragm"
+   ],
+   "twins": [],
+   "side": null,
+   "layer": 3,
+   "minFrame": 0.22,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "external-intercostals",
+   "name": "External Intercostals",
+   "region": "back-core",
+   "subregion": "spine",
+   "objects": [
+    "External intercostal muscles.l"
+   ],
+   "twins": [
+    "External intercostal muscles.r"
+   ],
+   "side": ".l",
+   "layer": 1,
+   "minFrame": 0.22,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "external-oblique",
+   "name": "External Oblique",
+   "region": "back-core",
+   "subregion": "torso",
+   "objects": [
+    "External abdominal oblique muscle.l"
+   ],
+   "twins": [
+    "External abdominal oblique muscle.r"
+   ],
+   "side": ".l",
+   "layer": 0,
+   "minFrame": 0.26,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "iliocostalis",
+   "name": "Iliocostalis",
+   "region": "back-core",
+   "subregion": "spine",
+   "objects": [
+    "Iliocostalis lumborum muscle.l",
+    "Iliocostalis thoracis muscle.l",
+    "Iliocostalis colli muscle"
+   ],
+   "twins": [
+    "Iliocostalis colli muscle.r",
+    "Iliocostalis lumborum muscle.r",
+    "Iliocostalis thoracis muscle.r"
+   ],
+   "side": ".l",
+   "layer": 2,
+   "minFrame": 0.22,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "internal-intercostals",
+   "name": "Internal Intercostals",
+   "region": "back-core",
+   "subregion": "spine",
+   "objects": [
+    "Internal intercostal muscles.l"
+   ],
+   "twins": [
+    "Internal intercostal muscles.r"
+   ],
+   "side": ".l",
+   "layer": 2,
+   "minFrame": 0.22,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "internal-oblique",
+   "name": "Internal Oblique",
+   "region": "back-core",
+   "subregion": "torso",
+   "objects": [
+    "Internal abdominal oblique muscle.l"
+   ],
+   "twins": [
+    "Internal abdominal oblique muscle.r"
+   ],
+   "side": ".l",
+   "layer": 1,
+   "minFrame": 0.26,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "interspinales",
+   "name": "Interspinales",
+   "region": "back-core",
+   "subregion": "spine",
+   "objects": [
+    "Interspinales colli muscles.l",
+    "Interspinales lumborum muscles.l",
+    "Interspinales thoracis muscles.l"
+   ],
+   "twins": [
+    "Interspinales colli muscles.r",
+    "Interspinales lumborum muscles.r",
+    "Interspinales thoracis muscles.r"
+   ],
+   "side": ".l",
+   "layer": 4,
+   "minFrame": 0.22,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "intertransversarii",
+   "name": "Intertransversarii",
+   "region": "back-core",
+   "subregion": "spine",
+   "objects": [
+    "Dorsal parts of lateral intertransversarii lumborum muscles.l",
+    "Ventral parts of lateral intertransversarii lumborum muscles.l"
+   ],
+   "twins": [
+    "Dorsal parts of lateral intertransversarii lumborum muscles.r",
+    "Ventral parts of lateral intertransversarii lumborum muscles.r"
+   ],
+   "side": ".l",
+   "layer": 4,
+   "minFrame": 0.22,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "longissimus",
+   "name": "Longissimus",
+   "region": "back-core",
+   "subregion": "spine",
+   "objects": [
+    "Longissimus capitis muscle.l",
+    "Longissimus colli muscle.l",
+    "Longissimus thoracis muscle.l"
+   ],
+   "twins": [
+    "Longissimus capitis muscle.r",
+    "Longissimus colli muscle.r",
+    "Longissimus thoracis muscle.r"
+   ],
+   "side": ".l",
+   "layer": 2,
+   "minFrame": 0.22,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "longus-capitis",
+   "name": "Longus Capitis",
+   "region": "back-core",
+   "subregion": "spine",
+   "objects": [
+    "Longus capitis muscle.l"
+   ],
+   "twins": [
+    "Longus capitis muscle.r"
+   ],
+   "side": ".l",
+   "layer": 2,
+   "minFrame": 0.22,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "longus-colli",
+   "name": "Longus Colli",
+   "region": "back-core",
+   "subregion": "spine",
+   "objects": [
+    "Longus colli muscle.l"
+   ],
+   "twins": [
+    "Longus colli muscle.r"
+   ],
+   "side": ".l",
+   "layer": 2,
+   "minFrame": 0.22,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "multifidus",
+   "name": "Multifidus",
+   "region": "back-core",
+   "subregion": "spine",
+   "objects": [
+    "Multifidus colli muscle.l",
+    "Multifidus lumborum muscle.l",
+    "Multifidus thoracis muscle.l"
+   ],
+   "twins": [
+    "Multifidus colli muscle.r",
+    "Multifidus lumborum muscle.r",
+    "Multifidus thoracis muscle.r"
+   ],
+   "side": ".l",
+   "layer": 3,
+   "minFrame": 0.22,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "quadratus-lumborum",
+   "name": "Quadratus Lumborum",
+   "region": "back-core",
+   "subregion": "torso",
+   "objects": [
+    "Quadratus lumborum muscle.l"
+   ],
+   "twins": [
+    "Quadratus lumborum muscle.r"
+   ],
+   "side": ".l",
+   "layer": 3,
+   "minFrame": 0.26,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "rectus-abdominis",
+   "name": "Rectus Abdominis",
+   "region": "back-core",
+   "subregion": "torso",
+   "objects": [
+    "Rectus abdominis muscle.l"
+   ],
+   "twins": [
+    "Rectus abdominis muscle.r"
+   ],
+   "side": ".l",
+   "layer": 1,
+   "hide": [
+    "internal-oblique",
+    "transversus-abdominis"
+   ],
+   "minFrame": 0.26,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "rotatores",
+   "name": "Rotatores",
+   "region": "back-core",
+   "subregion": "spine",
+   "objects": [
+    "Rotatores.l"
+   ],
+   "twins": [
+    "Rotatores.r"
+   ],
+   "side": ".l",
+   "layer": 3,
+   "minFrame": 0.22,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "scalene-anterior",
+   "name": "Scalene Anterior",
+   "region": "back-core",
+   "subregion": "neck",
+   "objects": [
+    "Scalenus anterior muscle.l"
+   ],
+   "twins": [
+    "Scalenus anterior muscle.r"
+   ],
+   "side": ".l",
+   "layer": 1,
+   "minFrame": 0.18,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "scalene-middle",
+   "name": "Scalene Middle",
+   "region": "back-core",
+   "subregion": "neck",
+   "objects": [
+    "Scalenus medius muscle.l"
+   ],
+   "twins": [
+    "Scalenus medius muscle.r"
+   ],
+   "side": ".l",
+   "layer": 1,
+   "minFrame": 0.18,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "scalene-posterior",
+   "name": "Scalene Posterior",
+   "region": "back-core",
+   "subregion": "neck",
+   "objects": [
+    "Scalenus posterior muscle.l"
+   ],
+   "twins": [
+    "Scalenus posterior muscle.r"
+   ],
+   "side": ".l",
+   "layer": 1,
+   "minFrame": 0.18,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "semispinalis",
+   "name": "Semispinalis",
+   "region": "back-core",
+   "subregion": "spine",
+   "objects": [
+    "Semispinalis colli muscle.l",
+    "Semispinalis thoracis muscle.l"
+   ],
+   "twins": [
+    "Semispinalis colli muscle.r",
+    "Semispinalis thoracis muscle.r"
+   ],
+   "side": ".l",
+   "layer": 3,
+   "minFrame": 0.22,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "spinalis",
+   "name": "Spinalis",
+   "region": "back-core",
+   "subregion": "spine",
+   "objects": [
+    "Spinalis capitis muscle.l",
+    "Spinalis colli muscle.l",
+    "Spinalis thoracis muscle.l"
+   ],
+   "twins": [
+    "Spinalis capitis muscle.r",
+    "Spinalis colli muscle.r",
+    "Spinalis thoracis muscle.r"
+   ],
+   "side": ".l",
+   "layer": 2,
+   "minFrame": 0.22,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "splenius-capitis",
+   "name": "Splenius Capitis",
+   "region": "back-core",
+   "subregion": "spine",
+   "objects": [
+    "Splenius capitis muscle.l"
+   ],
+   "twins": [
+    "Splenius capitis muscle.r"
+   ],
+   "side": ".l",
+   "layer": 1,
+   "minFrame": 0.22,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "splenius-cervicis",
+   "name": "Splenius Cervicis",
+   "region": "back-core",
+   "subregion": "spine",
+   "objects": [
+    "Splenius colli muscle.l"
+   ],
+   "twins": [
+    "Splenius colli muscle.r"
+   ],
+   "side": ".l",
+   "layer": 1,
+   "minFrame": 0.22,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "sternocleidomastoid",
+   "name": "Sternocleidomastoid",
+   "region": "back-core",
+   "subregion": "neck",
+   "objects": [
+    "Sternocleidomastoid muscle.l"
+   ],
+   "twins": [
+    "Sternocleidomastoid muscle.r"
+   ],
+   "side": ".l",
+   "layer": 0,
+   "minFrame": 0.18,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "transversus-abdominis",
+   "name": "Transversus Abdominis",
+   "region": "back-core",
+   "subregion": "torso",
+   "objects": [
+    "Transversus abdominis muscle.l"
+   ],
+   "twins": [
+    "Transversus abdominis muscle.r"
+   ],
+   "side": ".l",
+   "layer": 2,
+   "minFrame": 0.26,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "abductor-digiti-minimi-hand",
+   "name": "Abductor Digiti Minimi (Hand)",
+   "region": "forearm-hand",
+   "subregion": "wrist-hand",
+   "objects": [
+    "Abductor digiti minimi of hand.l"
+   ],
+   "twins": [
+    "Abductor digiti minimi of hand.r"
+   ],
+   "side": ".l",
+   "layer": 1,
+   "minFrame": 0.17,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "abductor-pollicis-brevis",
+   "name": "Abductor Pollicis Brevis",
+   "region": "forearm-hand",
+   "subregion": "wrist-hand",
+   "objects": [
+    "Abductor pollicis brevis.l"
+   ],
+   "twins": [
+    "Abductor pollicis brevis.r"
+   ],
+   "side": ".l",
+   "layer": 1,
+   "minFrame": 0.17,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "abductor-pollicis-longus",
+   "name": "Abductor Pollicis Longus",
+   "region": "forearm-hand",
+   "subregion": "wrist-hand",
+   "objects": [
+    "Abductor pollicis longus.l"
+   ],
+   "twins": [
+    "Abductor pollicis longus.r"
+   ],
+   "side": ".l",
+   "layer": 1,
+   "minFrame": 0.17,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "adductor-pollicis",
+   "name": "Adductor Pollicis",
+   "region": "forearm-hand",
+   "subregion": "wrist-hand",
+   "objects": [
+    "Oblique head of adductor pollicis.l",
+    "Transverse head of adductor pollicis.l"
+   ],
+   "twins": [
+    "Oblique head of adductor pollicis.r",
+    "Transverse head of adductor pollicis.r"
+   ],
+   "side": ".l",
+   "layer": 2,
+   "minFrame": 0.17,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "brachioradialis",
+   "name": "Brachioradialis",
+   "region": "forearm-hand",
+   "subregion": "elbow",
+   "objects": [
+    "Brachioradialis muscle.l"
+   ],
+   "twins": [
+    "Brachioradialis muscle.r"
+   ],
+   "side": ".l",
+   "layer": 0,
+   "minFrame": 0.17,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "dorsal-interossei-hand",
+   "name": "Dorsal Interossei (Hand)",
+   "region": "forearm-hand",
+   "subregion": "wrist-hand",
+   "objects": [
+    "Dorsal interossei muscles of hand.l"
+   ],
+   "twins": [
+    "Dorsal interossei muscles of hand.r"
+   ],
+   "side": ".l",
+   "layer": 3,
+   "minFrame": 0.17,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "extensor-carpi-radialis-brevis",
+   "name": "Extensor Carpi Radialis Brevis",
+   "region": "forearm-hand",
+   "subregion": "wrist-hand",
+   "objects": [
+    "Extensor carpi radialis brevis.l"
+   ],
+   "twins": [
+    "Extensor carpi radialis brevis.r"
+   ],
+   "side": ".l",
+   "layer": 1,
+   "minFrame": 0.17,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "extensor-carpi-radialis-longus",
+   "name": "Extensor Carpi Radialis Longus",
+   "region": "forearm-hand",
+   "subregion": "wrist-hand",
+   "objects": [
+    "Extensor carpi radialis longus.l"
+   ],
+   "twins": [
+    "Extensor carpi radialis longus.r"
+   ],
+   "side": ".l",
+   "layer": 0,
+   "minFrame": 0.17,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "extensor-carpi-ulnaris",
+   "name": "Extensor Carpi Ulnaris",
+   "region": "forearm-hand",
+   "subregion": "wrist-hand",
+   "objects": [
+    "Humeral head of extensor carpi ulnaris.l",
+    "Ulnar head of extensor carpi ulnaris.l"
+   ],
+   "twins": [
+    "Humeral head of extensor carpi ulnaris.r",
+    "Ulnar head of extensor carpi ulnaris.r"
+   ],
+   "side": ".l",
+   "layer": 0,
+   "minFrame": 0.17,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "extensor-digiti-minimi",
+   "name": "Extensor Digiti Minimi",
+   "region": "forearm-hand",
+   "subregion": "wrist-hand",
+   "objects": [
+    "Extensor digiti minimi.l"
+   ],
+   "twins": [
+    "Extensor digiti minimi.r"
+   ],
+   "side": ".l",
+   "layer": 1,
+   "minFrame": 0.17,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "extensor-digitorum",
+   "name": "Extensor Digitorum",
+   "region": "forearm-hand",
+   "subregion": "wrist-hand",
+   "objects": [
+    "Extensor digitorum.l"
+   ],
+   "twins": [
+    "Extensor digitorum.r"
+   ],
+   "side": ".l",
+   "layer": 0,
+   "minFrame": 0.17,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "extensor-indicis",
+   "name": "Extensor Indicis",
+   "region": "forearm-hand",
+   "subregion": "wrist-hand",
+   "objects": [
+    "Extensor indicis.l"
+   ],
+   "twins": [
+    "Extensor indicis.r"
+   ],
+   "side": ".l",
+   "layer": 2,
+   "minFrame": 0.17,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "extensor-pollicis-brevis",
+   "name": "Extensor Pollicis Brevis",
+   "region": "forearm-hand",
+   "subregion": "wrist-hand",
+   "objects": [
+    "Extensor pollicis brevis.l"
+   ],
+   "twins": [
+    "Extensor pollicis brevis.r"
+   ],
+   "side": ".l",
+   "layer": 1,
+   "minFrame": 0.17,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "extensor-pollicis-longus",
+   "name": "Extensor Pollicis Longus",
+   "region": "forearm-hand",
+   "subregion": "wrist-hand",
+   "objects": [
+    "Extensor pollicis longus.l"
+   ],
+   "twins": [
+    "Extensor pollicis longus.r"
+   ],
+   "side": ".l",
+   "layer": 1,
+   "minFrame": 0.17,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "flexor-carpi-radialis",
+   "name": "Flexor Carpi Radialis",
+   "region": "forearm-hand",
+   "subregion": "wrist-hand",
+   "objects": [
+    "Flexor carpi radialis.l"
+   ],
+   "twins": [
+    "Flexor carpi radialis.r"
+   ],
+   "side": ".l",
+   "layer": 0,
+   "minFrame": 0.17,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "flexor-carpi-ulnaris",
+   "name": "Flexor Carpi Ulnaris",
+   "region": "forearm-hand",
+   "subregion": "wrist-hand",
+   "objects": [
+    "Humeral head of flexor carpi ulnaris.l",
+    "Ulnar head of flexor carpi ulnaris.l"
+   ],
+   "twins": [
+    "Humeral head of flexor carpi ulnaris.r",
+    "Ulnar head of flexor carpi ulnaris.r"
+   ],
+   "side": ".l",
+   "layer": 0,
+   "minFrame": 0.17,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "flexor-digiti-minimi-brevis-hand",
+   "name": "Flexor Digiti Minimi Brevis (Hand)",
+   "region": "forearm-hand",
+   "subregion": "wrist-hand",
+   "objects": [
+    "Flexor digiti minimi of hand.l"
+   ],
+   "twins": [
+    "Flexor digiti minimi of hand.r"
+   ],
+   "side": ".l",
+   "layer": 1,
+   "minFrame": 0.17,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "flexor-digitorum-profundus",
+   "name": "Flexor Digitorum Profundus",
+   "region": "forearm-hand",
+   "subregion": "wrist-hand",
+   "objects": [
+    "Flexor digitorum profundus.l"
+   ],
+   "twins": [
+    "Flexor digitorum profundus.r"
+   ],
+   "side": ".l",
+   "layer": 2,
+   "minFrame": 0.17,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "flexor-digitorum-superficialis",
+   "name": "Flexor Digitorum Superficialis",
+   "region": "forearm-hand",
+   "subregion": "wrist-hand",
+   "objects": [
+    "Humero-ulnar head of flexor digitorum superficialis.l",
+    "Radial head of flexor digitorum superficialis.l"
+   ],
+   "twins": [
+    "Humero-ulnar head of flexor digitorum superficialis.r",
+    "Radial head of flexor digitorum superficialis.r"
+   ],
+   "side": ".l",
+   "layer": 1,
+   "minFrame": 0.17,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "flexor-pollicis-brevis",
+   "name": "Flexor Pollicis Brevis",
+   "region": "forearm-hand",
+   "subregion": "wrist-hand",
+   "objects": [
+    "Deep head of flexor pollicis brevis.l",
+    "Superficial head of flexor pollicis brevis.l"
+   ],
+   "twins": [
+    "Deep head of flexor pollicis brevis.r",
+    "Superficial head of flexor pollicis brevis.r"
+   ],
+   "side": ".l",
+   "layer": 1,
+   "minFrame": 0.17,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "flexor-pollicis-longus",
+   "name": "Flexor Pollicis Longus",
+   "region": "forearm-hand",
+   "subregion": "wrist-hand",
+   "objects": [
+    "Flexor pollicis longus.l"
+   ],
+   "twins": [
+    "Flexor pollicis longus.r"
+   ],
+   "side": ".l",
+   "layer": 2,
+   "minFrame": 0.17,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "lumbricals-hand",
+   "name": "Lumbricals (Hand)",
+   "region": "forearm-hand",
+   "subregion": "wrist-hand",
+   "objects": [
+    "Lumbrical muscles of hand.l"
+   ],
+   "twins": [
+    "Lumbrical muscles of hand.r"
+   ],
+   "side": ".l",
+   "layer": 2,
+   "minFrame": 0.17,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "opponens-digiti-minimi-hand",
+   "name": "Opponens Digiti Minimi (Hand)",
+   "region": "forearm-hand",
+   "subregion": "wrist-hand",
+   "objects": [
+    "Opponens digiti minimi muscle of hand.l"
+   ],
+   "twins": [
+    "Opponens digiti minimi muscle of hand.r"
+   ],
+   "side": ".l",
+   "layer": 2,
+   "minFrame": 0.17,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "opponens-pollicis",
+   "name": "Opponens Pollicis",
+   "region": "forearm-hand",
+   "subregion": "wrist-hand",
+   "objects": [
+    "Opponens pollicis muscle.l"
+   ],
+   "twins": [
+    "Opponens pollicis muscle.r"
+   ],
+   "side": ".l",
+   "layer": 2,
+   "minFrame": 0.17,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "palmar-interossei",
+   "name": "Palmar Interossei",
+   "region": "forearm-hand",
+   "subregion": "wrist-hand",
+   "objects": [
+    "Palmar interossei muscles.l"
+   ],
+   "twins": [
+    "Palmar interossei muscles.r"
+   ],
+   "side": ".l",
+   "layer": 3,
+   "minFrame": 0.17,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "palmaris-longus",
+   "name": "Palmaris Longus",
+   "region": "forearm-hand",
+   "subregion": "wrist-hand",
+   "objects": [
+    "Palmaris longus muscle.l"
+   ],
+   "twins": [
+    "Palmaris longus muscle.r"
+   ],
+   "side": ".l",
+   "layer": 0,
+   "minFrame": 0.17,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "pronator-quadratus",
+   "name": "Pronator Quadratus",
+   "region": "forearm-hand",
+   "subregion": "wrist-hand",
+   "objects": [
+    "Pronator quadratus.l"
+   ],
+   "twins": [
+    "Pronator quadratus.r"
+   ],
+   "side": ".l",
+   "layer": 2,
+   "minFrame": 0.17,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "pronator-teres",
+   "name": "Pronator Teres",
+   "region": "forearm-hand",
+   "subregion": "wrist-hand",
+   "objects": [
+    "Deep head of pronator teres.l",
+    "Superficial head of pronator teres.l"
+   ],
+   "twins": [
+    "Deep head of pronator teres.r",
+    "Superficial head of pronator teres.r"
+   ],
+   "side": ".l",
+   "layer": 0,
+   "minFrame": 0.17,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "supinator",
+   "name": "Supinator",
+   "region": "forearm-hand",
+   "subregion": "wrist-hand",
+   "objects": [
+    "Supinator.l"
+   ],
+   "twins": [
+    "Supinator.r"
+   ],
+   "side": ".l",
+   "layer": 2,
+   "minFrame": 0.17,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "adductor-brevis",
+   "name": "Adductor Brevis",
+   "region": "hip-thigh",
+   "subregion": "hip",
+   "objects": [
+    "Adductor brevis.l"
+   ],
+   "twins": [
+    "Adductor brevis.r"
+   ],
+   "side": ".l",
+   "layer": 1,
+   "minFrame": 0.26,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "adductor-longus",
+   "name": "Adductor Longus",
+   "region": "hip-thigh",
+   "subregion": "hip",
+   "objects": [
+    "Adductor longus.l"
+   ],
+   "twins": [
+    "Adductor longus.r"
+   ],
+   "side": ".l",
+   "layer": 0,
+   "minFrame": 0.26,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "adductor-magnus",
+   "name": "Adductor Magnus",
+   "region": "hip-thigh",
+   "subregion": "hip",
+   "objects": [
+    "Adductor magnus.l"
+   ],
+   "twins": [
+    "Adductor magnus.r"
+   ],
+   "side": ".l",
+   "layer": 2,
+   "minFrame": 0.26,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "biceps-femoris",
+   "name": "Biceps Femoris",
+   "region": "hip-thigh",
+   "subregion": "knee",
+   "objects": [
+    "Long head of biceps femoris.l",
+    "Short head of biceps femoris.l"
+   ],
+   "twins": [
+    "Long head of biceps femoris.r",
+    "Short head of biceps femoris.r"
+   ],
+   "side": ".l",
+   "layer": 0,
+   "minFrame": 0.2,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "gemelli",
+   "name": "Gemelli (Superior & Inferior)",
+   "region": "hip-thigh",
+   "subregion": "hip",
+   "objects": [
+    "Superior gemellus muscle.l"
+   ],
+   "twins": [
+    "Superior gemellus muscle.r"
+   ],
+   "side": ".l",
+   "layer": 2,
+   "minFrame": 0.26,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "gluteus-maximus",
+   "name": "Gluteus Maximus",
+   "region": "hip-thigh",
+   "subregion": "hip",
+   "objects": [
+    "Gluteus maximus muscle.l"
+   ],
+   "twins": [
+    "Gluteus maximus muscle.r"
+   ],
+   "side": ".l",
+   "layer": 0,
+   "minFrame": 0.26,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "gluteus-medius",
+   "name": "Gluteus Medius",
+   "region": "hip-thigh",
+   "subregion": "hip",
+   "objects": [
+    "Gluteus medius muscle.l"
+   ],
+   "twins": [
+    "Gluteus medius muscle.r"
+   ],
+   "side": ".l",
+   "layer": 1,
+   "minFrame": 0.26,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "gluteus-minimus",
+   "name": "Gluteus Minimus",
+   "region": "hip-thigh",
+   "subregion": "hip",
+   "objects": [
+    "Gluteus minimus muscle.l"
+   ],
+   "twins": [
+    "Gluteus minimus muscle.r"
+   ],
+   "side": ".l",
+   "layer": 2,
+   "minFrame": 0.26,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "gracilis",
+   "name": "Gracilis",
+   "region": "hip-thigh",
+   "subregion": "hip",
+   "objects": [
+    "Gracilis muscle.l"
+   ],
+   "twins": [
+    "Gracilis muscle.r"
+   ],
+   "side": ".l",
+   "layer": 0,
+   "minFrame": 0.26,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "iliacus",
+   "name": "Iliacus",
+   "region": "hip-thigh",
+   "subregion": "hip",
+   "objects": [
+    "Iliacus muscle.l"
+   ],
+   "twins": [
+    "Iliacus muscle.r"
+   ],
+   "side": ".l",
+   "layer": 1,
+   "minFrame": 0.26,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "obturator-externus",
+   "name": "Obturator Externus",
+   "region": "hip-thigh",
+   "subregion": "hip",
+   "objects": [
+    "Obturator externus.l"
+   ],
+   "twins": [
+    "Obturator externus.r"
+   ],
+   "side": ".l",
+   "layer": 2,
+   "minFrame": 0.26,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "obturator-internus",
+   "name": "Obturator Internus",
+   "region": "hip-thigh",
+   "subregion": "hip",
+   "objects": [
+    "Obturator internus.l"
+   ],
+   "twins": [
+    "Obturator internus.r"
+   ],
+   "side": ".l",
+   "layer": 2,
+   "minFrame": 0.26,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "pectineus",
+   "name": "Pectineus",
+   "region": "hip-thigh",
+   "subregion": "hip",
+   "objects": [
+    "Pectineus muscle.l"
+   ],
+   "twins": [
+    "Pectineus muscle.r"
+   ],
+   "side": ".l",
+   "layer": 0,
+   "minFrame": 0.26,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "piriformis",
+   "name": "Piriformis",
+   "region": "hip-thigh",
+   "subregion": "hip",
+   "objects": [
+    "Piriformis muscle.l"
+   ],
+   "twins": [
+    "Piriformis muscle.r"
+   ],
+   "side": ".l",
+   "layer": 2,
+   "minFrame": 0.26,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "psoas-major",
+   "name": "Psoas Major",
+   "region": "hip-thigh",
+   "subregion": "hip",
+   "objects": [
+    "Psoas major.l"
+   ],
+   "twins": [
+    "Psoas major.r"
+   ],
+   "side": ".l",
+   "layer": 2,
+   "hide": [
+    "transversus-abdominis"
+   ],
+   "minFrame": 0.26,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "quadratus-femoris",
+   "name": "Quadratus Femoris",
+   "region": "hip-thigh",
+   "subregion": "hip",
+   "objects": [
+    "Quadratus femoris muscle.l"
+   ],
+   "twins": [
+    "Quadratus femoris muscle.r"
+   ],
+   "side": ".l",
+   "layer": 2,
+   "minFrame": 0.26,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "rectus-femoris",
+   "name": "Rectus Femoris",
+   "region": "hip-thigh",
+   "subregion": "knee",
+   "objects": [
+    "Rectus femoris muscle.l"
+   ],
+   "twins": [
+    "Rectus femoris muscle.r"
+   ],
+   "side": ".l",
+   "layer": 0,
+   "minFrame": 0.2,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "sartorius",
+   "name": "Sartorius",
+   "region": "hip-thigh",
+   "subregion": "hip",
+   "objects": [
+    "Sartorius muscle.l"
+   ],
+   "twins": [
+    "Sartorius muscle.r"
+   ],
+   "side": ".l",
+   "layer": 0,
+   "minFrame": 0.26,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "semimembranosus",
+   "name": "Semimembranosus",
+   "region": "hip-thigh",
+   "subregion": "knee",
+   "objects": [
+    "Semimembranosus muscle.l"
+   ],
+   "twins": [
+    "Semimembranosus muscle.r"
+   ],
+   "side": ".l",
+   "layer": 1,
+   "minFrame": 0.2,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "semitendinosus",
+   "name": "Semitendinosus",
+   "region": "hip-thigh",
+   "subregion": "knee",
+   "objects": [
+    "Semitendinosus muscle.l"
+   ],
+   "twins": [
+    "Semitendinosus muscle.r"
+   ],
+   "side": ".l",
+   "layer": 0,
+   "minFrame": 0.2,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "tensor-fasciae-latae",
+   "name": "Tensor Fasciae Latae",
+   "region": "hip-thigh",
+   "subregion": "hip",
+   "objects": [
+    "Tensor fasciae latae.l"
+   ],
+   "twins": [
+    "Tensor fasciae latae.r"
+   ],
+   "side": ".l",
+   "layer": 0,
+   "minFrame": 0.26,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "vastus-intermedius",
+   "name": "Vastus Intermedius",
+   "region": "hip-thigh",
+   "subregion": "knee",
+   "objects": [
+    "Vastus intermedius muscle.l"
+   ],
+   "twins": [
+    "Vastus intermedius muscle.r"
+   ],
+   "side": ".l",
+   "layer": 2,
+   "minFrame": 0.2,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "vastus-lateralis",
+   "name": "Vastus Lateralis",
+   "region": "hip-thigh",
+   "subregion": "knee",
+   "objects": [
+    "Vastus lateralis muscle.l"
+   ],
+   "twins": [
+    "Vastus lateralis muscle.r"
+   ],
+   "side": ".l",
+   "layer": 0,
+   "minFrame": 0.2,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "vastus-medialis",
+   "name": "Vastus Medialis",
+   "region": "hip-thigh",
+   "subregion": "knee",
+   "objects": [
+    "Vastus medialis muscle.l"
+   ],
+   "twins": [
+    "Vastus medialis muscle.r"
+   ],
+   "side": ".l",
+   "layer": 0,
+   "minFrame": 0.2,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "abductor-digiti-minimi-foot",
+   "name": "Abductor Digiti Minimi (Foot)",
+   "region": "lower-leg-foot",
+   "subregion": "ankle-foot",
+   "objects": [
+    "Abductor digiti minimi of foot.l"
+   ],
+   "twins": [
+    "Abductor digiti minimi of foot.r"
+   ],
+   "side": ".l",
+   "layer": 1,
+   "minFrame": 0.19,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "abductor-hallucis",
+   "name": "Abductor Hallucis",
+   "region": "lower-leg-foot",
+   "subregion": "ankle-foot",
+   "objects": [
+    "Abductor hallucis.l"
+   ],
+   "twins": [
+    "Abductor hallucis.r"
+   ],
+   "side": ".l",
+   "layer": 1,
+   "minFrame": 0.19,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "adductor-hallucis",
+   "name": "Adductor Hallucis",
+   "region": "lower-leg-foot",
+   "subregion": "ankle-foot",
+   "objects": [
+    "Oblique head of adductor hallucis.l",
+    "Transverse head of adductor hallucis.l"
+   ],
+   "twins": [
+    "Oblique head of adductor hallucis.r",
+    "Transverse head of adductor hallucis.r"
+   ],
+   "side": ".l",
+   "layer": 3,
+   "minFrame": 0.19,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "dorsal-interossei-foot",
+   "name": "Dorsal Interossei (Foot)",
+   "region": "lower-leg-foot",
+   "subregion": "ankle-foot",
+   "objects": [
+    "Dorsal interossei muscles of foot.l"
+   ],
+   "twins": [
+    "Dorsal interossei muscles of foot.r"
+   ],
+   "side": ".l",
+   "layer": 4,
+   "minFrame": 0.19,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "extensor-digitorum-brevis",
+   "name": "Extensor Digitorum Brevis",
+   "region": "lower-leg-foot",
+   "subregion": "ankle-foot",
+   "objects": [
+    "Extensor digitorum brevis.l"
+   ],
+   "twins": [
+    "Extensor digitorum brevis.r"
+   ],
+   "side": ".l",
+   "layer": 1,
+   "minFrame": 0.19,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "extensor-digitorum-longus",
+   "name": "Extensor Digitorum Longus",
+   "region": "lower-leg-foot",
+   "subregion": "ankle-foot",
+   "objects": [
+    "Extensor digitorum longus.l"
+   ],
+   "twins": [
+    "Extensor digitorum longus.r"
+   ],
+   "side": ".l",
+   "layer": 0,
+   "minFrame": 0.19,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "extensor-hallucis-brevis",
+   "name": "Extensor Hallucis Brevis",
+   "region": "lower-leg-foot",
+   "subregion": "ankle-foot",
+   "objects": [
+    "Extensor hallucis brevis.l"
+   ],
+   "twins": [
+    "Extensor hallucis brevis.r"
+   ],
+   "side": ".l",
+   "layer": 1,
+   "minFrame": 0.19,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "extensor-hallucis-longus",
+   "name": "Extensor Hallucis Longus",
+   "region": "lower-leg-foot",
+   "subregion": "ankle-foot",
+   "objects": [
+    "Extensor hallucis longus.l"
+   ],
+   "twins": [
+    "Extensor hallucis longus.r"
+   ],
+   "side": ".l",
+   "layer": 1,
+   "minFrame": 0.19,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "flexor-digiti-minimi-brevis-foot",
+   "name": "Flexor Digiti Minimi Brevis (Foot)",
+   "region": "lower-leg-foot",
+   "subregion": "ankle-foot",
+   "objects": [
+    "Flexor digiti minimi of foot.l"
+   ],
+   "twins": [
+    "Flexor digiti minimi of foot.r"
+   ],
+   "side": ".l",
+   "layer": 3,
+   "minFrame": 0.19,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "flexor-digitorum-brevis",
+   "name": "Flexor Digitorum Brevis",
+   "region": "lower-leg-foot",
+   "subregion": "ankle-foot",
+   "objects": [
+    "Flexor digitorum brevis.l"
+   ],
+   "twins": [
+    "Flexor digitorum brevis.r"
+   ],
+   "side": ".l",
+   "layer": 1,
+   "minFrame": 0.19,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "flexor-digitorum-longus",
+   "name": "Flexor Digitorum Longus",
+   "region": "lower-leg-foot",
+   "subregion": "ankle-foot",
+   "objects": [
+    "Flexor digitorum longus.l"
+   ],
+   "twins": [
+    "Flexor digitorum longus.r"
+   ],
+   "side": ".l",
+   "layer": 2,
+   "minFrame": 0.19,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "flexor-hallucis-brevis",
+   "name": "Flexor Hallucis Brevis",
+   "region": "lower-leg-foot",
+   "subregion": "ankle-foot",
+   "objects": [
+    "Lateral head of flexor hallucis brevis.l",
+    "Medial head of flexor hallucis brevis.l"
+   ],
+   "twins": [
+    "Lateral head of flexor hallucis brevis.r",
+    "Medial head of flexor hallucis brevis.r"
+   ],
+   "side": ".l",
+   "layer": 3,
+   "minFrame": 0.19,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "flexor-hallucis-longus",
+   "name": "Flexor Hallucis Longus",
+   "region": "lower-leg-foot",
+   "subregion": "ankle-foot",
+   "objects": [
+    "Flexor hallucis longus.l"
+   ],
+   "twins": [
+    "Flexor hallucis longus.r"
+   ],
+   "side": ".l",
+   "layer": 2,
+   "minFrame": 0.19,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "gastrocnemius",
+   "name": "Gastrocnemius",
+   "region": "lower-leg-foot",
+   "subregion": "ankle-foot",
+   "objects": [
+    "Lateral head of gastrocnemius.l",
+    "Medial head of gastrocnemius.l"
+   ],
+   "twins": [
+    "Lateral head of gastrocnemius.r",
+    "Medial head of gastrocnemius.r"
+   ],
+   "side": ".l",
+   "layer": 0,
+   "minFrame": 0.19,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "lumbricals-foot",
+   "name": "Lumbricals (Foot)",
+   "region": "lower-leg-foot",
+   "subregion": "ankle-foot",
+   "objects": [
+    "Lumbrical muscles of foot.l"
+   ],
+   "twins": [
+    "Lumbrical muscles of foot.r"
+   ],
+   "side": ".l",
+   "layer": 2,
+   "minFrame": 0.19,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "opponens-digiti-minimi-foot",
+   "name": "Opponens Digiti Minimi (Foot)",
+   "region": "lower-leg-foot",
+   "subregion": "ankle-foot",
+   "objects": [
+    "(Opponens digiti minimi muscle of foot).l"
+   ],
+   "twins": [
+    "(Opponens digiti minimi muscle of foot).r"
+   ],
+   "side": ".l",
+   "layer": 3,
+   "minFrame": 0.19,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "peroneus-brevis",
+   "name": "Peroneus Brevis",
+   "region": "lower-leg-foot",
+   "subregion": "ankle-foot",
+   "objects": [
+    "Fibularis brevis muscle.l"
+   ],
+   "twins": [
+    "Fibularis brevis muscle.r"
+   ],
+   "side": ".l",
+   "layer": 1,
+   "minFrame": 0.19,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "peroneus-longus",
+   "name": "Peroneus Longus",
+   "region": "lower-leg-foot",
+   "subregion": "ankle-foot",
+   "objects": [
+    "Fibularis longus muscle.l"
+   ],
+   "twins": [
+    "Fibularis longus muscle.r"
+   ],
+   "side": ".l",
+   "layer": 0,
+   "minFrame": 0.19,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "peroneus-tertius",
+   "name": "Peroneus Tertius",
+   "region": "lower-leg-foot",
+   "subregion": "ankle-foot",
+   "objects": [
+    "Fibularis tertius muscle.l"
+   ],
+   "twins": [
+    "Fibularis tertius muscle.r"
+   ],
+   "side": ".l",
+   "layer": 1,
+   "minFrame": 0.19,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "plantar-interossei",
+   "name": "Plantar Interossei",
+   "region": "lower-leg-foot",
+   "subregion": "ankle-foot",
+   "objects": [
+    "Plantar interossei muscles.l"
+   ],
+   "twins": [
+    "Plantar interossei muscles.r"
+   ],
+   "side": ".l",
+   "layer": 4,
+   "minFrame": 0.19,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "plantaris",
+   "name": "Plantaris",
+   "region": "lower-leg-foot",
+   "subregion": "ankle-foot",
+   "objects": [
+    "Plantaris muscle.l"
+   ],
+   "twins": [
+    "Plantaris muscle.r"
+   ],
+   "side": ".l",
+   "layer": 1,
+   "minFrame": 0.19,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "popliteus",
+   "name": "Popliteus",
+   "region": "lower-leg-foot",
+   "subregion": "knee",
+   "objects": [
+    "Popliteus muscle.l"
+   ],
+   "twins": [
+    "Popliteus muscle.r"
+   ],
+   "side": ".l",
+   "layer": 2,
+   "minFrame": 0.2,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "quadratus-plantae",
+   "name": "Quadratus Plantae",
+   "region": "lower-leg-foot",
+   "subregion": "ankle-foot",
+   "objects": [
+    "Quadratus plantae muscle.l"
+   ],
+   "twins": [
+    "Quadratus plantae muscle.r"
+   ],
+   "side": ".l",
+   "layer": 2,
+   "minFrame": 0.19,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "soleus",
+   "name": "Soleus",
+   "region": "lower-leg-foot",
+   "subregion": "ankle-foot",
+   "objects": [
+    "Soleus muscle.l"
+   ],
+   "twins": [
+    "Soleus muscle.r"
+   ],
+   "side": ".l",
+   "layer": 1,
+   "minFrame": 0.19,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "tibialis-anterior",
+   "name": "Tibialis Anterior",
+   "region": "lower-leg-foot",
+   "subregion": "ankle-foot",
+   "objects": [
+    "Tibialis anterior muscle.l"
+   ],
+   "twins": [
+    "Tibialis anterior muscle.r"
+   ],
+   "side": ".l",
+   "layer": 0,
+   "minFrame": 0.19,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "tibialis-posterior",
+   "name": "Tibialis Posterior",
+   "region": "lower-leg-foot",
+   "subregion": "ankle-foot",
+   "objects": [
+    "Tibialis posterior muscle.l"
+   ],
+   "twins": [
+    "Tibialis posterior muscle.r"
+   ],
+   "side": ".l",
+   "layer": 2,
+   "minFrame": 0.19,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "anconeus",
+   "name": "Anconeus",
+   "region": "shoulder-arm",
+   "subregion": "elbow",
+   "objects": [
+    "Anconeus muscle.l"
+   ],
+   "twins": [
+    "Anconeus muscle.r"
+   ],
+   "side": ".l",
+   "layer": 0,
+   "minFrame": 0.17,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "biceps-brachii",
+   "name": "Biceps Brachii",
+   "region": "shoulder-arm",
+   "subregion": "elbow",
+   "objects": [
+    "Long head of biceps brachii.l",
+    "Short head of biceps brachii.l"
+   ],
+   "twins": [
+    "Long head of biceps brachii.r",
+    "Short head of biceps brachii.r"
+   ],
+   "side": ".l",
+   "layer": 0,
+   "minFrame": 0.17,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "brachialis",
+   "name": "Brachialis",
+   "region": "shoulder-arm",
+   "subregion": "elbow",
+   "objects": [
+    "Brachialis muscle.l"
+   ],
+   "twins": [
+    "Brachialis muscle.r"
+   ],
+   "side": ".l",
+   "layer": 1,
+   "minFrame": 0.17,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "coracobrachialis",
+   "name": "Coracobrachialis",
+   "region": "shoulder-arm",
+   "subregion": "shoulder",
+   "objects": [
+    "Coracobrachialis muscle.l"
+   ],
+   "twins": [
+    "Coracobrachialis muscle.r"
+   ],
+   "side": ".l",
+   "layer": 1,
+   "minFrame": 0.2,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "deltoid",
+   "name": "Deltoid",
+   "region": "shoulder-arm",
+   "subregion": "shoulder",
+   "objects": [
+    "Acromial part of deltoid muscle.l",
+    "Clavicular part of deltoid muscle.l",
+    "Scapular spinal part of deltoid muscle.l"
+   ],
+   "twins": [
+    "Acromial part of deltoid muscle.r",
+    "Clavicular part of deltoid muscle.r",
+    "Scapular spinal part of deltoid muscle.r"
+   ],
+   "side": ".l",
+   "layer": 0,
+   "minFrame": 0.2,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "infraspinatus",
+   "name": "Infraspinatus",
+   "region": "shoulder-arm",
+   "subregion": "shoulder",
+   "objects": [
+    "Infraspinatus muscle.l"
+   ],
+   "twins": [
+    "Infraspinatus muscle.r"
+   ],
+   "side": ".l",
+   "layer": 1,
+   "minFrame": 0.2,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "latissimus-dorsi",
+   "name": "Latissimus Dorsi",
+   "region": "shoulder-arm",
+   "subregion": "shoulder",
+   "objects": [
+    "Latissimus dorsi muscle.l"
+   ],
+   "twins": [
+    "Latissimus dorsi muscle.r"
+   ],
+   "side": ".l",
+   "layer": 0,
+   "minFrame": 0.2,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "levator-scapulae",
+   "name": "Levator Scapulae",
+   "region": "shoulder-arm",
+   "subregion": "shoulder",
+   "objects": [
+    "Levator scapulae.l"
+   ],
+   "twins": [
+    "Levator scapulae.r"
+   ],
+   "side": ".l",
+   "layer": 1,
+   "minFrame": 0.2,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "pectoralis-major",
+   "name": "Pectoralis Major",
+   "region": "shoulder-arm",
+   "subregion": "shoulder",
+   "objects": [
+    "(Abdominal part of pectoralis major muscle).l",
+    "Clavicular head of pectoralis major muscle.l",
+    "Sternocostal head of pectoralis major muscle.l"
+   ],
+   "twins": [
+    "(Abdominal part of pectoralis major muscle).r",
+    "Clavicular head of pectoralis major muscle.r",
+    "Sternocostal head of pectoralis major muscle.r"
+   ],
+   "side": ".l",
+   "layer": 0,
+   "minFrame": 0.2,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "pectoralis-minor",
+   "name": "Pectoralis Minor",
+   "region": "shoulder-arm",
+   "subregion": "shoulder",
+   "objects": [
+    "Pectoralis minor muscle.l"
+   ],
+   "twins": [
+    "Pectoralis minor muscle.r"
+   ],
+   "side": ".l",
+   "layer": 1,
+   "minFrame": 0.2,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "rhomboid-major",
+   "name": "Rhomboid Major",
+   "region": "shoulder-arm",
+   "subregion": "shoulder",
+   "objects": [
+    "Rhomboid major muscle.l"
+   ],
+   "twins": [
+    "Rhomboid major muscle.r"
+   ],
+   "side": ".l",
+   "layer": 1,
+   "minFrame": 0.2,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "rhomboid-minor",
+   "name": "Rhomboid Minor",
+   "region": "shoulder-arm",
+   "subregion": "shoulder",
+   "objects": [
+    "Rhomboid minor muscle.l"
+   ],
+   "twins": [
+    "Rhomboid minor muscle.r"
+   ],
+   "side": ".l",
+   "layer": 1,
+   "minFrame": 0.2,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "serratus-anterior",
+   "name": "Serratus Anterior",
+   "region": "shoulder-arm",
+   "subregion": "shoulder",
+   "objects": [
+    "Serratus anterior muscle.l"
+   ],
+   "twins": [
+    "Serratus anterior muscle.r"
+   ],
+   "side": ".l",
+   "layer": 0,
+   "minFrame": 0.2,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "subscapularis",
+   "name": "Subscapularis",
+   "region": "shoulder-arm",
+   "subregion": "shoulder",
+   "objects": [
+    "Subscapularis muscle.l"
+   ],
+   "twins": [
+    "Subscapularis muscle.r"
+   ],
+   "side": ".l",
+   "layer": 2,
+   "minFrame": 0.2,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "supraspinatus",
+   "name": "Supraspinatus",
+   "region": "shoulder-arm",
+   "subregion": "shoulder",
+   "objects": [
+    "Supraspinatus muscle.l"
+   ],
+   "twins": [
+    "Supraspinatus muscle.r"
+   ],
+   "side": ".l",
+   "layer": 1,
+   "minFrame": 0.2,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "teres-major",
+   "name": "Teres Major",
+   "region": "shoulder-arm",
+   "subregion": "shoulder",
+   "objects": [
+    "Teres major muscle.l"
+   ],
+   "twins": [
+    "Teres major muscle.r"
+   ],
+   "side": ".l",
+   "layer": 1,
+   "minFrame": 0.2,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "teres-minor",
+   "name": "Teres Minor",
+   "region": "shoulder-arm",
+   "subregion": "shoulder",
+   "objects": [
+    "Teres minor muscle.l"
+   ],
+   "twins": [
+    "Teres minor muscle.r"
+   ],
+   "side": ".l",
+   "layer": 1,
+   "minFrame": 0.2,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "trapezius",
+   "name": "Trapezius",
+   "region": "shoulder-arm",
+   "subregion": "shoulder",
+   "objects": [
+    "Ascending part of trapezius muscle.l",
+    "Descending part of trapezius muscle.l",
+    "Transverse part of trapezius muscle.l"
+   ],
+   "twins": [
+    "Ascending part of trapezius muscle.r",
+    "Descending part of trapezius muscle.r",
+    "Transverse part of trapezius muscle.r"
+   ],
+   "side": ".l",
+   "layer": 0,
+   "minFrame": 0.2,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  },
+  {
+   "key": "triceps-brachii",
+   "name": "Triceps Brachii",
+   "region": "shoulder-arm",
+   "subregion": "elbow",
+   "objects": [
+    "Lateral head of triceps brachii.l",
+    "Long head of triceps brachii.l",
+    "Medial head of triceps brachii.l"
+   ],
+   "twins": [
+    "Lateral head of triceps brachii.r",
+    "Long head of triceps brachii.r",
+    "Medial head of triceps brachii.r"
+   ],
+   "side": ".l",
+   "layer": 0,
+   "minFrame": 0.17,
+   "angles": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ]
+  }
+ ]
+}

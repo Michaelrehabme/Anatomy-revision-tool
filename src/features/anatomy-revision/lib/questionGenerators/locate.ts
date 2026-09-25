@@ -183,6 +183,13 @@ export function buildLocateQuestions(
       seen.add(structure.id);
       if (!isTappableIn(image, structure.id)) continue;
 
+      // A FLAT PICTURE IS SOMEBODY ELSE'S PLATE TOO. The rule below only ever
+      // looked at rotation sets, so a structure with a turntable of its own was
+      // still asked a second time on the region plate it happens to appear in —
+      // flexor carpi radialis on the whole anterior forearm, in the older look.
+      // Those plates keep the structures that have no turntable.
+      if (!frames && hasUsableOwnSet(structure)) continue;
+
       let opening = image;
       let frameIds: string[] | undefined;
       if (frames) {
@@ -192,6 +199,12 @@ export function buildLocateQuestions(
           subject !== undefined &&
           [structure.name, ...structure.aliases].some((n) => n.toLowerCase() === subject);
         if (subject !== undefined && !isOwnSet && (hasUsableOwnSet(structure) || fallbackSetFor(structure) !== key)) continue;
+        // A REGION'S TURNTABLE IS SOMEBODY ELSE'S PLATE TOO. A sub-region set
+        // names no subject, so it was never skipped, and a structure with a
+        // plate of its own was asked twice: once on its own picture and once as
+        // a speck on the whole forearm. "It should be 1 question for all the
+        // views" applies to the pictures as well as to the angles of one.
+        if (subject === undefined && hasUsableOwnSet(structure)) continue;
 
         // A frame the target is a sliver in is not an angle to turn to: the tap
         // is graded against whichever frame is showing, so an unfair frame is an

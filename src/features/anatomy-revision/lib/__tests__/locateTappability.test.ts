@@ -29,13 +29,17 @@ describe('buildLocateQuestions', () => {
     }
   });
 
-  it('drops the sliver angle of flexor carpi radialis but keeps the one that reads', () => {
-    // The lateral forearm plate shows FCR as a two-pixel strip between
-    // brachioradialis and the wrist; the anterior plate shows the whole belly.
+  it('asks flexor carpi radialis once, on the plate framed for it', () => {
+    // It used to be asked on region-forearm-hand-anterior, the whole forearm
+    // seen from one side, because that was the only picture it was tappable in;
+    // the sliver angle on the lateral plate was dropped. Now it has a turntable
+    // of its own, so the question is one question on its own plate, and the
+    // region plate is somebody else's picture (locate.ts).
     const fcr = buildLocateQuestions(ALL_STRUCTURES, ALL_IMAGES).filter(
       (q) => q.targetStructureId === 'flexor-carpi-radialis',
     );
-    expect(fcr.map((q) => q.imageId)).toEqual(['region-forearm-hand-anterior']);
+    expect(fcr).toHaveLength(1);
+    expect(fcr[0].imageId).toMatch(/^muscle-flexor-carpi-radialis-a\d{3}-context$/);
   });
 
   it('still builds a locate question for most of the dataset', () => {
