@@ -508,7 +508,10 @@ export const MUSCLE_STRUCTURES: MuscleStructure[] = RAW_MUSCLES.map((m): MuscleS
     id: m.id,
     name: m.name,
     category: 'muscle',
-    latin: m.latin,
+    // The raw deck carries no Latin; the TA2 mapping has it for every
+    // muscle and was only feeding the aliases. Shown behind the Latin
+    // setting (lib/preferences.ts getShowLatin).
+    latin: m.latin ?? TA2_BY_ID.get(m.id)?.ta2_latin ?? null,
     region,
     subregion: inferSubregion(m.region, m.groups),
     areas: trunkAreas(m.region, m.groups),

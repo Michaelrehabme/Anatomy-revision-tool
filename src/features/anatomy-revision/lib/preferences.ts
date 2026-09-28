@@ -152,6 +152,21 @@ export function setContrastPreference(preference: ContrastPreference): void {
   write(CONTRAST_KEY, preference);
 }
 
+const SHOW_LATIN_KEY = `${PREFIX}showLatin`;
+
+/**
+ * Whether structure cards show the Latin (Terminologia Anatomica 2) name
+ * under the English one. Off by default: most students learn and are
+ * examined in English, and a second name on every card is noise to them.
+ */
+export function getShowLatin(): boolean {
+  return read(SHOW_LATIN_KEY) === 'true';
+}
+
+export function setShowLatin(show: boolean): void {
+  write(SHOW_LATIN_KEY, show ? 'true' : 'false');
+}
+
 const ATLAS_SORT_KEY = `${PREFIX}atlasSort`;
 const ATLAS_PANEL_KEY = `${PREFIX}atlasPanelOpen`;
 

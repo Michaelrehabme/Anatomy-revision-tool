@@ -1,6 +1,7 @@
 import type { AnatomyContent } from '../../hooks/useAnatomyContent';
 import { MasteryLevelBadge } from '../shared/MasteryLevelBadge';
 import { masteryLevel } from '../../lib/masteryLevel';
+import { getShowLatin } from '../../lib/preferences';
 import type { AnatomyRepository } from '../../data/repository';
 import { areasOf, isMuscle } from '../../types/structure';
 import { REGION_LABELS } from '../../types/region';
@@ -36,6 +37,7 @@ const FACT_ROWS = [
 export function MobileMuscleCard({ access, structureId, content, repository, userId, onBack, onDrill }: MobileMuscleCardProps) {
   const mastery = useMuscleHistory(repository, userId, structureId);
   const level = masteryLevel(mastery ?? undefined);
+  const showLatin = getShowLatin();
   const structure = content.structuresById.get(structureId);
   const panelImage = content.images.find((img) => img.mode === 'single-structure' && img.structureId === structureId);
 
@@ -71,6 +73,11 @@ export function MobileMuscleCard({ access, structureId, content, repository, use
       {structure.phoneticSpelling && (
         <div className="mt-0.5" style={{ font: '400 12.5px/1.4 var(--font-mono)', color: 'var(--ink3)' }}>
           {structure.phoneticSpelling}
+        </div>
+      )}
+      {showLatin && structure.latin && (
+        <div lang="la" className="mt-0.5" style={{ font: 'italic 400 13.5px/1.4 var(--font-ui)', color: 'var(--ink3)' }}>
+          {structure.latin}
         </div>
       )}
       {structure.groups?.length ? (

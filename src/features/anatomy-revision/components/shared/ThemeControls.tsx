@@ -1,4 +1,6 @@
+import { useId, useState } from 'react';
 import { useTheme } from '../../context/ThemeProvider';
+import { getShowLatin, setShowLatin } from '../../lib/preferences';
 import { THEME_PREFERENCES, THEME_PREFERENCE_LABELS } from '../../lib/theme';
 
 /**
@@ -14,6 +16,9 @@ import { THEME_PREFERENCES, THEME_PREFERENCE_LABELS } from '../../lib/theme';
  * once an explicit choice has been made.
  */
 export function ThemeControls({ compact = false }: { compact?: boolean }) {
+  const contrastLabelId = useId();
+  const latinLabelId = useId();
+  const [showLatin, setShowLatinState] = useState(getShowLatin);
   const {
     themePreference,
     contrastPreference,
@@ -66,6 +71,7 @@ export function ThemeControls({ compact = false }: { compact?: boolean }) {
           type="button"
           role="switch"
           aria-checked={contrast === 'high'}
+          aria-labelledby={contrastLabelId}
           onClick={() => setContrastPreference(contrast === 'high' ? 'normal' : 'high')}
           className="relative flex-none rounded-full"
           style={{
@@ -90,7 +96,7 @@ export function ThemeControls({ compact = false }: { compact?: boolean }) {
           />
         </button>
         <div className="flex-1">
-          <div style={{ fontFamily: 'var(--font-display)', fontSize: compact ? 16 : 16.5, color: 'var(--ink)' }}>
+          <div id={contrastLabelId} style={{ fontFamily: 'var(--font-display)', fontSize: compact ? 16 : 16.5, color: 'var(--ink)' }}>
             High contrast
           </div>
           <p className="mt-0.5" style={{ fontSize: 13, lineHeight: 1.5, color: 'var(--ink3)' }}>
@@ -110,6 +116,51 @@ export function ThemeControls({ compact = false }: { compact?: boolean }) {
           Use my device setting
         </button>
       )}
+
+      <div className="mt-7" style={label}>
+        Names
+      </div>
+      <div className="mt-2.5 flex items-center gap-3.5">
+        <button
+          type="button"
+          role="switch"
+          aria-checked={showLatin}
+          aria-labelledby={latinLabelId}
+          onClick={() => {
+            setShowLatin(!showLatin);
+            setShowLatinState(!showLatin);
+          }}
+          className="relative flex-none rounded-full"
+          style={{
+            width: 52,
+            height: 31,
+            border: '1.2px solid var(--line)',
+            background: showLatin ? 'var(--acc-fill)' : 'transparent',
+            transition: 'background 120ms',
+          }}
+        >
+          <span
+            className="absolute rounded-full"
+            style={{
+              width: 25,
+              height: 25,
+              top: 2,
+              left: showLatin ? 24 : 2,
+              background: showLatin ? 'var(--onacc)' : 'var(--ink3)',
+              boxShadow: 'var(--shadow-knob)',
+              transition: 'left 120ms',
+            }}
+          />
+        </button>
+        <div className="flex-1">
+          <div id={latinLabelId} style={{ fontFamily: 'var(--font-display)', fontSize: compact ? 16 : 16.5, color: 'var(--ink)' }}>
+            Show Latin names
+          </div>
+          <p className="mt-0.5" style={{ fontSize: 13, lineHeight: 1.5, color: 'var(--ink3)' }}>
+            The Terminologia Anatomica name under the English one, on each muscle&rsquo;s card.
+          </p>
+        </div>
+      </div>
     </div>
   );
 }

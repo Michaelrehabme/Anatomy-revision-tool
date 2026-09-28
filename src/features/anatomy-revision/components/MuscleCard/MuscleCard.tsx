@@ -11,6 +11,7 @@ import type { UseEntitlement } from '../../hooks/useEntitlement';
 import { PronounceButton } from '../shared/PronounceButton';
 import { MasteryLevelBadge } from '../shared/MasteryLevelBadge';
 import { masteryLevel } from '../../lib/masteryLevel';
+import { getShowLatin } from '../../lib/preferences';
 import { AppShell } from '../shell/AppShell';
 import { NavSidebar, type NavSection } from '../shell/NavSidebar';
 
@@ -48,6 +49,7 @@ export function MuscleCard({
 }: MuscleCardProps) {
   const mastery = useMuscleHistory(repository, userId, structureId);
   const level = masteryLevel(mastery ?? undefined);
+  const showLatin = getShowLatin();
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -157,6 +159,11 @@ export function MuscleCard({
           {structure.phoneticSpelling && (
             <div className="mt-1.5" style={{ font: '400 14px/1.4 var(--font-mono)', color: 'var(--ink3)' }}>
               {structure.phoneticSpelling}
+            </div>
+          )}
+          {showLatin && structure.latin && (
+            <div lang="la" className="mt-1" style={{ font: 'italic 400 15px/1.4 var(--font-ui)', color: 'var(--ink3)' }}>
+              {structure.latin}
             </div>
           )}
 
