@@ -307,6 +307,14 @@ interface SessionSpec {
   regionFilter?: Region[];
   /** Added to the student's ability for every question in the session. */
   bonus: number;
+  /**
+   * The structures this student keeps coming back to. Half of each session's
+   * questions are drawn from here: real students on the spaced schedule meet
+   * the same structures again and again, which is what lets any of them climb
+   * the ladder to Advanced or Master (lib/masteryLevel.ts). Without it every
+   * structure was met two or three times and the demo read "0 advanced".
+   */
+  core?: AnatomyStructure[];
   /** Chance the session was finished rather than abandoned — drawn after its questions, see buildSession. */
   finishChance: number;
   assignmentId?: string;
@@ -333,10 +341,22 @@ function buildSession(
   let cursor = spec.startedAt;
 
   for (let q = 0; q < spec.size; q++) {
-    const structure = pick(rand, spec.structures);
+    // One draw either way, so the generator's sequence — and every other
+    // figure in the class — keeps its shape.
+    const r = rand();
+    const structure =
+      spec.core && spec.core.length > 0 && r < 0.5
+        ? spec.core[Math.floor((r / 0.5) * spec.core.length)]
+        : spec.structures[Math.floor((spec.core && spec.core.length > 0 ? (r - 0.5) / 0.5 : r) * spec.structures.length)];
     const difficulty = DIFFICULTY.get(structure.id) ?? 0.3;
     const correct = rand() < Math.min(0.97, student.ability + spec.bonus - difficulty);
-    const type = pick(rand, spec.questionTypes);
+    // The app asks a well-known structure at its rung — typed recall — rather
+    // than in any format at random (lib/ladder.ts). Mirrored for the core set
+    // once met six times; the draw still happens, so the sequence is unchanged.
+    const drawnType = pick(rand, spec.questionTypes);
+    const drilled =
+      spec.core?.includes(structure) && (exposure.get(structure.id) ?? 0) >= 6 && spec.questionTypes.includes('identify-typed');
+    const type: QuestionType = drilled ? 'identify-typed' : drawnType;
     const durationMs = Math.round(between(rand, 1800, 11_000) * (correct ? 1 : 1.4));
     cursor += durationMs + intBetween(rand, 1500, 14_000);
 
@@ -417,6 +437,10 @@ function generateForStudent(student: DemoStudent, seed: number): GeneratedActivi
   const focusRegions: Region[] = [pick(rand, QUIZZABLE).region, pick(rand, QUIZZABLE).region];
   const pool = QUIZZABLE.filter((s) => focusRegions.includes(s.region));
   const structures = pool.length > 20 ? pool : QUIZZABLE;
+  // Eight structures this student drills most, from their own seeded
+  // generator so the main sequence above is untouched.
+  const coreRand = makeRandom(seed + 4242);
+  const core = [...structures].sort(() => coreRand() - 0.5).slice(0, 8);
 
   let remaining = student.attemptCount;
   let sessionIndex = 0;
@@ -436,6 +460,7 @@ function generateForStudent(student: DemoStudent, seed: number): GeneratedActivi
       structures,
       questionTypes: QUESTION_TYPES,
       regionFilter: focusRegions,
+      core,
       // Later sessions are a bit better than early ones — a flat accuracy line over 45 days reads as fake.
       bonus: Math.min(0.12, sessionIndex * 0.012),
       // A tenth of sessions are abandoned, so completion rate isn't a flat 100%.
