@@ -4,6 +4,7 @@ import { MobileShell } from './MobileShell';
 import { CohortMembership } from '../shared/CohortMembership';
 import { SubscriptionSummary } from '../shared/SubscriptionSummary';
 import { ThemeControls } from '../shared/ThemeControls';
+import { LegalLinks } from '../shared/LegalLinks';
 import type { UseEntitlement } from '../../hooks/useEntitlement';
 import { AccuracyTrendChart } from '../shared/AccuracyTrendChart';
 import { MyClasses } from '../Account/MyClasses';
@@ -178,7 +179,16 @@ export function MobileAccount({ access, content, repository, userId, onNavigateT
           </section>
         )}
 
-        {showAuthScreen && <AuthScreen onClose={() => setShowAuthScreen(false)} />}
+        <section className="mt-9">
+          <h3 style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 20, letterSpacing: '-.01em', margin: 0 }}>
+            About this app
+          </h3>
+          <div className="mt-2">
+            <LegalLinks compact />
+          </div>
+        </section>
+
+        {showAuthScreen &&<AuthScreen onClose={() => setShowAuthScreen(false)} />}
       </div>
     </MobileShell>
   );

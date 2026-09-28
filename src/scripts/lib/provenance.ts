@@ -62,7 +62,7 @@ interface ReviewEntry {
   grade?: string;
   checked?: string;
   sources?: string[];
-  works?: { title: string; url?: string }[];
+  works?: { title: string; url?: string; quote?: string; document?: string }[];
 }
 
 /** Which root file holds each family's review, and what that review covers. */

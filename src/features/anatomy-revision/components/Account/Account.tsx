@@ -6,6 +6,7 @@ import { AuthScreen } from '../Auth/AuthScreen';
 import { CohortMembership } from '../shared/CohortMembership';
 import { SubscriptionSummary } from '../shared/SubscriptionSummary';
 import { ThemeControls } from '../shared/ThemeControls';
+import { LegalLinks } from '../shared/LegalLinks';
 import type { UseEntitlement } from '../../hooks/useEntitlement';
 import { AccuracyTrendChart } from '../shared/AccuracyTrendChart';
 import { MyClasses } from './MyClasses';
@@ -205,7 +206,14 @@ export function Account({ access, content, repository, userId, onNavigate }: Acc
           </section>
         )}
 
-        {showAuthScreen && <AuthScreen onClose={() => setShowAuthScreen(false)} />}
+        <section className="mt-12" style={{ maxWidth: 620 }}>
+          <h3 style={heading}>About this app</h3>
+          <div className="mt-3">
+            <LegalLinks />
+          </div>
+        </section>
+
+        {showAuthScreen &&<AuthScreen onClose={() => setShowAuthScreen(false)} />}
       </div>
     </AppShell>
   );
