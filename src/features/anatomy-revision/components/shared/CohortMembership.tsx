@@ -190,7 +190,7 @@ export function CohortMembership({ uid, compact }: CohortMembershipProps) {
               decision rather than after it — this is the moment consent is
               actually given. */}
           <div className="mt-1.5" style={noteStyle}>
-            They will see your accuracy, streak and weak areas — never your individual answers. You can leave any time,
+            They will see your accuracy, streak, weak areas and mastery level for each structure — never your individual answers. You can leave any time,
             which stops it.
           </div>
           <div className="mt-2.5 flex flex-wrap items-center gap-3">
@@ -231,7 +231,7 @@ export function CohortMembership({ uid, compact }: CohortMembershipProps) {
             </button>
           </div>
           <div className="mt-2" style={noteStyle}>
-            Your educator sees your accuracy, streak and weak areas — never your individual answers.
+            Your educator sees your accuracy, streak, weak areas and mastery level for each structure — never your individual answers.
           </div>
           {/* Renders nothing unless a sitting is actually due; see DiagnosticPrompt. */}
           <DiagnosticPrompt
@@ -281,7 +281,7 @@ export function CohortMembership({ uid, compact }: CohortMembershipProps) {
             </div>
           )}
           <div className="mt-2" style={noteStyle}>
-            Joining a class lets your educator see your accuracy, streak and weak areas — never your individual
+            Joining a class lets your educator see your accuracy, streak, weak areas and mastery level for each structure — never your individual
             answers. You can leave any time, which stops it.
           </div>
         </>

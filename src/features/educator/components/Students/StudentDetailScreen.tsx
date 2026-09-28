@@ -1,6 +1,8 @@
 import { Link, useParams } from 'react-router-dom';
 import { useCohortAnalytics } from '../../hooks/useCohortAnalytics';
-import { computeStreak } from '../../../anatomy-revision/lib/streak';
+import { computeStreakFromDayKeys } from '../../../anatomy-revision/lib/streak';
+import { masteryMixByRegion } from '../../lib/rollupAggregation';
+import { MasteryByRegion } from '../shared/MasteryByRegion';
 import { StatTile } from '../../../admin/components/Analytics/StatTile';
 import { REGION_LABELS } from '../../../anatomy-revision/types/region';
 import { ALL_STRUCTURES } from '../../../anatomy-revision/data/seed';
@@ -41,7 +43,6 @@ export function EducatorStudentDetailScreen() {
 
   const student = students.find((s) => s.uid === uid);
   const stats = snapshot.statsByUid.get(uid);
-  const summaries = snapshot.summariesByUid.get(uid) ?? [];
 
   if (!student) {
     return (
@@ -57,7 +58,10 @@ export function EducatorStudentDetailScreen() {
   // answered anything yet — every figure below is a zero, not an error.
   const accuracyPct =
     stats && stats.gradedTotal > 0 ? Math.round((stats.gradedCorrect / stats.gradedTotal) * 100) : null;
-  const streak = computeStreak(summaries);
+  // Study days come from the student's rollup (lib/studentRollup.ts): day
+  // keys only, never session times, which the rules keep from educators.
+  const streak = computeStreakFromDayKeys(new Set(stats?.rollup?.sessionDays ?? []));
+  const mastery = stats ? masteryMixByRegion([stats], ALL_STRUCTURES) : null;
   const weakest = stats ? structureWeaknessForStudentStats(stats, ALL_STRUCTURES).slice(0, WEAKEST_LIMIT) : [];
   const trend = stats
     ? accuracyTrendFromDayTallies(stats.dayTallies, mergeDayTallies([...snapshot.statsByUid.values()]))
@@ -96,6 +100,13 @@ export function EducatorStudentDetailScreen() {
           )}
         </h2>
         <AccuracyTrendChart points={trend} studentName={displayName} />
+      </section>
+
+      <section className="mt-10">
+        <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 20, letterSpacing: '-.01em', margin: 0 }}>
+          Mastery by region
+        </h2>
+        <MasteryByRegion regions={mastery?.regions ?? []} studentsReporting={mastery?.studentsReporting ?? 0} />
       </section>
 
       <section className="mt-10">

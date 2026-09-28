@@ -9,6 +9,8 @@ import type {
   StructureWeaknessRow,
 } from '../../admin/types/analytics';
 import type { ConfusionStatsDoc, StudentStatsDoc } from '../data/cohortRollups';
+import type { Region } from '../../anatomy-revision/types/region';
+import type { LevelCounts } from '../../anatomy-revision/hooks/useProgressData';
 
 /**
  * Turns cohort rollup documents into the same shapes the educator screens
@@ -337,4 +339,68 @@ export function confusionPairsFromStats(
       structureIds: idsByName.get(d.correctAnswer.toLowerCase()) ?? [],
     }))
     .sort((a, b) => b.count - a.count);
+}
+
+/**
+ * Session length and completion from the students' rollups (lib/studentRollup.ts)
+ * — the same three figures sessionMetricsFromSummaries gives, without reading
+ * a single session summary. Students whose app has not yet written a rollup
+ * are simply not in the sums.
+ */
+export function sessionMetricsFromRollups(stats: StudentStatsDoc[]): {
+  meanSessionLengthMinutes: number | null;
+  completionRatePct: number | null;
+  totalSessions: number;
+} {
+  let total = 0;
+  let finished = 0;
+  let minutes = 0;
+  for (const row of stats) {
+    if (!row.rollup) continue;
+    total += row.rollup.sessions.total;
+    finished += row.rollup.sessions.finished;
+    minutes += row.rollup.sessions.finishedMinutes;
+  }
+  return {
+    meanSessionLengthMinutes: finished > 0 ? minutes / finished : null,
+    completionRatePct: total > 0 ? Math.round((finished / total) * 100) : null,
+    totalSessions: total,
+  };
+}
+
+export interface RegionMasteryMix {
+  region: Region;
+  /** Student-structure pairs at each level; `unmet` fills up to students x structures in the region. */
+  levels: LevelCounts;
+  /** Structures in the region, the denominator per student. */
+  structureCount: number;
+}
+
+/**
+ * How far a class has got, region by region: every (student, structure) pair
+ * counted at its mastery level. Only students whose rollup exists are counted
+ * — a student on an older app version would otherwise read as having met
+ * nothing — and `studentsReporting` says how many that was.
+ *
+ * Also used for one student (pass a single row), which is the detail screen.
+ */
+export function masteryMixByRegion(
+  stats: StudentStatsDoc[],
+  structures: AnatomyStructure[],
+): { regions: RegionMasteryMix[]; studentsReporting: number } {
+  const reporting = stats.filter((row) => row.rollup);
+  const byRegion = new Map<Region, RegionMasteryMix>();
+  for (const s of structures) {
+    let mix = byRegion.get(s.region);
+    if (!mix) {
+      mix = { region: s.region, structureCount: 0, levels: { unmet: 0, beginner: 0, novice: 0, intermediate: 0, advanced: 0, master: 0 } };
+      byRegion.set(s.region, mix);
+    }
+    mix.structureCount += 1;
+    for (const row of reporting) {
+      const level = row.rollup!.levels[s.id];
+      mix.levels[level ?? 'unmet'] += 1;
+    }
+  }
+  return { regions: [...byRegion.values()], studentsReporting: reporting.length };
 }

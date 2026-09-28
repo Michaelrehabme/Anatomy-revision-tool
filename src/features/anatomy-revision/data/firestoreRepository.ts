@@ -18,7 +18,7 @@ import type { StructureFilter } from '../lib/indexes';
 import { filterStructures } from '../lib/indexes';
 import { ALL_STRUCTURES, ALL_IMAGES } from './seed';
 import { attachHotspots } from './seed/hotspots';
-import { rollUpAttemptDetached } from '../../educator/data/cohortRollups';
+import { rollUpAttemptDetached, syncStudentRollup } from '../../educator/data/cohortRollups';
 import type { DiagnosticResult } from '../lib/diagnostic';
 import { getDb, getFirebaseAuth } from './firebase';
 import type { AchievementDoc } from '../lib/achievements';
@@ -62,8 +62,37 @@ function omitUndefined<T extends object>(value: T): T {
   return Object.fromEntries(Object.entries(value).filter(([, v]) => v !== undefined)) as T;
 }
 
+/**
+ * How many of a student's session summaries the cohort rollup is rebuilt
+ * from — the figure the educator dashboard used to read per student.
+ */
+const ROLLUP_SESSION_LIMIT = 300;
+
 export async function createFirestoreRepository(): Promise<AnatomyRepository> {
   const db = getDb();
+
+  const listMasteryRows = async (userId: string) => {
+    const snapshot = await getDocs(collection(db, 'users', userId, 'mastery'));
+    return snapshot.docs.map((d) => d.data() as StructureMastery);
+  };
+
+  const listSummaries = async (userId: string, limitCount: number) => {
+    const q = query(collection(db, 'users', userId, 'sessions'), orderBy('startedAt', 'desc'), fsLimit(limitCount));
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map((d) => d.data() as RevisionSessionSummary);
+  };
+
+  /** See educator/data/cohortRollups.ts syncStudentRollup. Never throws: a stale class chart is not worth an error. */
+  const syncCohortRollup = async (userId: string) => {
+    try {
+      await syncStudentRollup(db, userId, getFirebaseAuth().currentUser?.displayName ?? null, async () => ({
+        mastery: await listMasteryRows(userId),
+        summaries: await listSummaries(userId, ROLLUP_SESSION_LIMIT),
+      }));
+    } catch {
+      /* Rebuilt again after the next session or app open. */
+    }
+  };
 
   return {
     async listStructures(filter?: StructureFilter) {
@@ -165,8 +194,7 @@ export async function createFirestoreRepository(): Promise<AnatomyRepository> {
     },
 
     async listMastery(userId: string) {
-      const snapshot = await getDocs(collection(db, 'users', userId, 'mastery'));
-      return snapshot.docs.map((d) => d.data() as StructureMastery);
+      return listMasteryRows(userId);
     },
 
     /**
@@ -216,19 +244,21 @@ export async function createFirestoreRepository(): Promise<AnatomyRepository> {
       return snapshot.docs.map((d) => d.data() as DiagnosticResult);
     },
 
+    /**
+     * A finished session also rebuilds the student's cohort rollup — levels,
+     * session totals, assignment scores — detached, like the per-answer
+     * counters. It is what an educator reads instead of this summary.
+     */
     async saveSessionSummary(summary: RevisionSessionSummary) {
       await setDoc(doc(db, 'users', summary.userId, 'sessions', summary.id), omitUndefined(summary));
+      void syncCohortRollup(summary.userId);
     },
 
     async listSessionSummaries(userId: string, limitCount = 20) {
-      const q = query(
-        collection(db, 'users', userId, 'sessions'),
-        orderBy('startedAt', 'desc'),
-        fsLimit(limitCount),
-      );
-      const snapshot = await getDocs(q);
-      return snapshot.docs.map((d) => d.data() as RevisionSessionSummary);
+      return listSummaries(userId, limitCount);
     },
+
+    syncCohortRollup,
 
     async getGamificationProfile(userId: string) {
       const snap = await getDoc(doc(db, 'users', userId, 'gamification', 'profile'));

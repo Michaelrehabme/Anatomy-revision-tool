@@ -1,4 +1,10 @@
 import { describe, it, expect } from 'vitest';
+import { buildStudentRollup } from '../studentRollup';
+
+/** What the student's device would have written from these summaries. */
+function rollups(summaries: Map<string, RevisionSessionSummary[]>) {
+  return new Map([...summaries].map(([uid, list]) => [uid, buildStudentRollup([], list)]));
+}
 import type { RevisionSessionSummary } from '../../../anatomy-revision/types/attempt';
 import { emptyCategoryBreakdown } from '../../../anatomy-revision/types/structure';
 import type { RegionAssignment, ScopedAssignment } from '../../types/cohort';
@@ -60,7 +66,7 @@ describe('computeAssignmentCompletion', () => {
     const summaries = new Map([
       ['student-1', [session('student-1', '2026-08-01T00:00:00.000Z', { 'shoulder-arm': { total: 5, correct: 4 } })]],
     ]);
-    const result = computeAssignmentCompletion(ASSIGNMENT, ['student-1'], summaries, new Date('2026-08-25'));
+    const result = computeAssignmentCompletion(ASSIGNMENT, ['student-1'], rollups(summaries), new Date('2026-08-25'));
     expect(result[0].attempted).toBe(false);
   });
 
@@ -68,7 +74,7 @@ describe('computeAssignmentCompletion', () => {
     const summaries = new Map([
       ['student-1', [session('student-1', '2026-08-22T00:00:00.000Z', { 'hip-thigh': { total: 5, correct: 4 } })]],
     ]);
-    const result = computeAssignmentCompletion(ASSIGNMENT, ['student-1'], summaries, new Date('2026-08-25'));
+    const result = computeAssignmentCompletion(ASSIGNMENT, ['student-1'], rollups(summaries), new Date('2026-08-25'));
     expect(result[0].attempted).toBe(false);
   });
 
@@ -83,7 +89,7 @@ describe('computeAssignmentCompletion', () => {
         ],
       ],
     ]);
-    const result = computeAssignmentCompletion(ASSIGNMENT, ['student-1'], summaries, new Date('2026-08-25'));
+    const result = computeAssignmentCompletion(ASSIGNMENT, ['student-1'], rollups(summaries), new Date('2026-08-25'));
     expect(result[0]).toEqual({
       uid: 'student-1',
       attempted: true,
@@ -108,7 +114,7 @@ describe('computeAssignmentCompletion', () => {
         ],
       ],
     ]);
-    const result = computeAssignmentCompletion(ASSIGNMENT, ['student-1'], summaries, new Date('2026-08-25'));
+    const result = computeAssignmentCompletion(ASSIGNMENT, ['student-1'], rollups(summaries), new Date('2026-08-25'));
     expect(result[0].attemptCount).toBe(2);
     expect(result[0].accuracyPct).toBe(50);
   });
@@ -125,7 +131,7 @@ describe('computeAssignmentCompletion', () => {
     const result = computeAssignmentCompletion(
       ASSIGNMENT,
       ['student-1', 'student-2'],
-      summaries,
+      rollups(summaries),
       new Date('2026-08-25'),
     );
     expect(result.find((r) => r.uid === 'student-1')?.attempted).toBe(true);
@@ -175,7 +181,7 @@ describe('computeAssignmentCompletion — scoped assignments', () => {
         ],
       ],
     ]);
-    expect(computeAssignmentCompletion(SCOPED, ['student-1'], summaries, now)[0]).toEqual({
+    expect(computeAssignmentCompletion(SCOPED, ['student-1'], rollups(summaries), now)[0]).toEqual({
       uid: 'student-1',
       attempted: true,
       attemptCount: 60,
@@ -189,12 +195,12 @@ describe('computeAssignmentCompletion — scoped assignments', () => {
 
   it('treats a score exactly on the pass mark as a pass', () => {
     const summaries = new Map([['student-1', [attempt('student-1', '2026-08-21T00:00:00.000Z', 14)]]]);
-    expect(computeAssignmentCompletion(SCOPED, ['student-1'], summaries, now)[0].completed).toBe(true);
+    expect(computeAssignmentCompletion(SCOPED, ['student-1'], rollups(summaries), now)[0].completed).toBe(true);
   });
 
   it('is attempted but not complete while every attempt is below the pass mark', () => {
     const summaries = new Map([['student-1', [attempt('student-1', '2026-08-21T00:00:00.000Z', 13)]]]);
-    const [status] = computeAssignmentCompletion(SCOPED, ['student-1'], summaries, now);
+    const [status] = computeAssignmentCompletion(SCOPED, ['student-1'], rollups(summaries), now);
     expect(status.attempted).toBe(true);
     expect(status.completed).toBe(false);
     expect(status.bestScorePct).toBe(65);
@@ -204,7 +210,7 @@ describe('computeAssignmentCompletion — scoped assignments', () => {
     const summaries = new Map([
       ['student-1', [attempt('student-1', '2026-08-21T00:00:00.000Z', 20, { assignmentId: undefined })]],
     ]);
-    const [status] = computeAssignmentCompletion(SCOPED, ['student-1'], summaries, now);
+    const [status] = computeAssignmentCompletion(SCOPED, ['student-1'], rollups(summaries), now);
     expect(status.attempted).toBe(false);
     expect(status.completed).toBe(false);
   });
@@ -213,14 +219,14 @@ describe('computeAssignmentCompletion — scoped assignments', () => {
     const summaries = new Map([
       ['student-1', [attempt('student-1', '2026-08-21T00:00:00.000Z', 20, { assignmentId: 'other' })]],
     ]);
-    expect(computeAssignmentCompletion(SCOPED, ['student-1'], summaries, now)[0].attempted).toBe(false);
+    expect(computeAssignmentCompletion(SCOPED, ['student-1'], rollups(summaries), now)[0].attempted).toBe(false);
   });
 
   it('ignores an abandoned attempt, however well it was going', () => {
     const summaries = new Map([
       ['student-1', [attempt('student-1', '2026-08-21T00:00:00.000Z', 18, { finishedAt: undefined })]],
     ]);
-    expect(computeAssignmentCompletion(SCOPED, ['student-1'], summaries, now)[0].attemptsTaken).toBe(0);
+    expect(computeAssignmentCompletion(SCOPED, ['student-1'], rollups(summaries), now)[0].attemptsTaken).toBe(0);
   });
 });
 

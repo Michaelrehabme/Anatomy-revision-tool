@@ -9,8 +9,9 @@ import {
   writeBatch,
   type Firestore,
 } from 'firebase/firestore';
-import type { UserAttempt } from '../../anatomy-revision/types/attempt';
+import type { RevisionSessionSummary, StructureMastery, UserAttempt } from '../../anatomy-revision/types/attempt';
 import type { DayTally } from '../../anatomy-revision/lib/accuracyTrend';
+import { buildStudentRollup, parseStudentRollup, type StudentRollup } from '../lib/studentRollup';
 
 /**
  * Cohort rollups (CR-031) — what an educator reads INSTEAD of student rows.
@@ -70,9 +71,12 @@ function detach(promise: Promise<unknown>): void {
  * changes at most once or twice a year.
  */
 const cohortCache = new Map<string, string | null>();
+/** users/{uid}.cohortJoinedAt, cached alongside the cohort. */
+const joinedAtCache = new Map<string, string | null>();
 
 export function forgetCachedCohort(uid: string): void {
   cohortCache.delete(uid);
+  joinedAtCache.delete(uid);
 }
 
 async function cohortOf(db: Firestore, uid: string): Promise<string | null> {
@@ -81,7 +85,9 @@ async function cohortOf(db: Firestore, uid: string): Promise<string | null> {
 
   const snapshot = await getDoc(doc(db, 'users', uid));
   const cohort = (snapshot.exists() ? (snapshot.data().cohort as string | null) : null) || null;
+  const joinedAt = snapshot.exists() ? snapshot.data().cohortJoinedAt : null;
   cohortCache.set(uid, cohort);
+  joinedAtCache.set(uid, typeof joinedAt === 'string' ? joinedAt : null);
   return cohort;
 }
 
@@ -202,6 +208,45 @@ export function rollUpAttemptDetached(db: Firestore, attempt: UserAttempt, displ
   detach(rollUpAttempt(db, attempt, displayName));
 }
 
+/**
+ * Rebuilds the student's `rollup` block (lib/studentRollup.ts) and writes it
+ * over the old one. Does nothing, and reads nothing, for a student who is not
+ * in a class. `load` is only called once the cohort is known, so the common
+ * case costs one cached lookup.
+ *
+ * mergeFields rather than merge: `rollup` is replaced whole, so a structure
+ * that dropped a level or an assignment the student no longer has cannot
+ * linger as a stale key, while the per-answer counters beside it are left
+ * exactly as they are.
+ */
+/**
+ * Where a rollup starts for a member whose join predates cohortJoinedAt being
+ * recorded: the day the rollup shipped. Earlier than that, nothing in the
+ * rollup was ever shown to an educator, so starting here reveals nothing new.
+ */
+const ROLLUP_FALLBACK_SINCE = '2026-09-28T00:00:00.000Z';
+
+export async function syncStudentRollup(
+  db: Firestore,
+  uid: string,
+  displayName: string | null,
+  load: () => Promise<{ mastery: StructureMastery[]; summaries: RevisionSessionSummary[] }>,
+): Promise<void> {
+  const cohortId = await cohortOf(db, uid);
+  if (!cohortId) return;
+  const { mastery, summaries } = await load();
+  await setDoc(
+    doc(db, 'cohorts', cohortId, 'studentStats', uid),
+    {
+      uid,
+      displayName,
+      rollup: buildStudentRollup(mastery, summaries, new Date(), joinedAtCache.get(uid) ?? ROLLUP_FALLBACK_SINCE),
+      rollupAt: serverTimestamp(),
+    },
+    { mergeFields: ['uid', 'displayName', 'rollup', 'rollupAt'] },
+  );
+}
+
 /** Clears a student's summary when they leave a class, so an educator stops seeing them immediately. */
 export async function clearStudentStats(db: Firestore, cohortId: string, uid: string): Promise<void> {
   await setDoc(doc(db, 'cohorts', cohortId, 'studentStats', uid), { removed: true }, { merge: true });
@@ -246,6 +291,12 @@ export interface StudentStatsDoc {
   activeDays: string[];
   /** Graded totals per day, for the accuracy-over-time chart. Days with no graded answers are absent. */
   dayTallies: Map<string, DayTally>;
+  /**
+   * Levels, session totals, study days and assignment scores, rebuilt on the
+   * student's device (lib/studentRollup.ts). Absent until that student's app
+   * has run a version that writes it.
+   */
+  rollup?: StudentRollup;
   /** Set when the student left the cohort; such rows are filtered out on read. */
   removed?: boolean;
 }
@@ -309,6 +360,7 @@ export async function readStudentStats(db: Firestore, cohortId: string): Promise
             })
             .filter(([, tally]) => tally.total > 0),
         ),
+        rollup: parseStudentRollup(data.rollup),
         removed: data.removed === true,
       } satisfies StudentStatsDoc;
     })

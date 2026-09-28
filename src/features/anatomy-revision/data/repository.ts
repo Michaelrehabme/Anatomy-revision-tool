@@ -91,6 +91,13 @@ export interface AnatomyRepository {
 
   saveSessionSummary(summary: RevisionSessionSummary): Promise<void>;
   listSessionSummaries(userId: string, limit?: number): Promise<RevisionSessionSummary[]>;
+  /**
+   * Rebuild this student's summary on their class's dashboard, if they are in
+   * a class (educator/data/cohortRollups.ts syncStudentRollup). Firestore only:
+   * local and in-memory repositories have no classes and leave it undefined.
+   * Never throws.
+   */
+  syncCohortRollup?(userId: string): Promise<void>;
 
   /**
    * Baseline and follow-up sittings (lib/diagnostic.ts).

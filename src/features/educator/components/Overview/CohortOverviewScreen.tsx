@@ -5,6 +5,7 @@ import { JoinCodePanel } from './JoinCodePanel';
 import { StatTile } from '../../../admin/components/Analytics/StatTile';
 import { AccuracyByRegionChart } from '../../../admin/components/Analytics/AccuracyByRegionChart';
 import { ActiveUsersChart } from '../../../admin/components/Analytics/ActiveUsersChart';
+import { MasteryByRegion } from '../shared/MasteryByRegion';
 
 const sectionHeading = {
   fontFamily: 'var(--font-display)',
@@ -65,6 +66,15 @@ export function EducatorCohortOverviewScreen() {
           }
         />
       </div>
+
+      <section className="mt-12">
+        <h2 style={sectionHeading}>Mastery by region</h2>
+        <MasteryByRegion
+          regions={snapshot.masteryByRegion}
+          studentsReporting={snapshot.masteryStudentsReporting}
+          enrolled={students.length}
+        />
+      </section>
 
       <section className="mt-12">
         <h2 style={sectionHeading}>Accuracy by region</h2>

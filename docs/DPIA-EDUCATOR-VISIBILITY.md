@@ -24,7 +24,8 @@ Everything else LocusMSK does is a student's own data shown to that student. Thi
 | Overall accuracy | The option they picked instead |
 | How recently they were active | The question-by-question record |
 | Structures most often wrong | When individual answers were given |
-| | Anything from before they joined the class |
+| Mastery level per structure, Beginner to Master (from 28 Sep 2026) | Anything from before they joined the class |
+| Session totals, days studied, assignment scores (from 28 Sep 2026) | Session start and finish times; structures missed in a session |
 
 ### How the data physically moves
 
@@ -139,6 +140,14 @@ Firebase (Google Ireland Limited) and Netlify both operate documented safeguards
 ### R6 — A student consents and then forgets they have — **MITIGATED, WATCH**
 
 Consent given once in week one governs a whole term. The account screen shows the class the student is in and the control to leave it, so the state is visible rather than buried. If pilots show students surprised by what their educator can see, the answer is a periodic reminder, not a smaller disclosure.
+
+### R7 — The dashboard still read session summaries after the rules forbade it — **CLOSED 28 September 2026**
+
+R1 removed the cohort-owner read on `users/{uid}/sessions`, but `educator/data/cohortAnalytics.ts` kept reading every student's summaries for the session figures, streaks and assignment completion. With the rules deployed that read is refused, and for any educator who is not an admin the whole dashboard failed to load; without them deployed, an educator could still read each session's missed structures and exact times. Either way the code contradicted this assessment.
+
+Fixed by extending the on-device aggregation. Each student's device now rebuilds a `rollup` block on its own `studentStats` document — mastery level per structure, session totals, study days, assignment scores — after every session and on each app open, and the dashboard reads only that. It carries day keys, never times, and never a list of missed structures, and it only covers activity since the student joined the class (`cohortJoinedAt`; for members who joined before that field existed, from 28 Sep 2026). See `educator/lib/studentRollup.ts`.
+
+The mastery level per structure is a new category of visible data. The privacy policy (updated 28 Sep 2026) and all three join notices were changed to name it before it shipped. Students who joined under the earlier wording see the new notice on their account screen.
 
 ---
 

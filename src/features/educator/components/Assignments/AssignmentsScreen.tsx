@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { REGION_LABELS } from '../../../anatomy-revision/types/region';
-import type { RevisionSessionSummary } from '../../../anatomy-revision/types/attempt';
+import type { StudentStatsDoc } from '../../data/cohortRollups';
 import { useCohortAnalytics } from '../../hooks/useCohortAnalytics';
 import { useEducatorSession } from '../RequireEducator';
 import { listAssignments, createAssignment } from '../../data/assignmentsRepository';
@@ -176,18 +176,18 @@ function ScopedAssignmentCard({
 function AssignmentCard({
   assignment,
   students,
-  summariesByUid,
+  statsByUid,
   cohortId,
 }: {
   assignment: Assignment;
   students: CohortStudent[];
-  summariesByUid: Map<string, RevisionSessionSummary[]>;
+  statsByUid: Map<string, StudentStatsDoc>;
   cohortId: string;
 }) {
   const statuses = computeAssignmentCompletion(
     assignment,
     students.map((s) => s.uid),
-    summariesByUid,
+    new Map(students.map((s) => [s.uid, statsByUid.get(s.uid)?.rollup])),
   );
   if (!isScopedAssignment(assignment)) return <RegionAssignmentCard assignment={assignment} statuses={statuses} />;
   const rows = students.map((student, i) => ({ student, status: statuses[i] }));
@@ -269,7 +269,7 @@ export function EducatorAssignmentsScreen() {
               key={assignment.id}
               assignment={assignment}
               students={students}
-              summariesByUid={snapshot.summariesByUid}
+              statsByUid={snapshot.statsByUid}
               cohortId={cohortId}
             />
           ))}

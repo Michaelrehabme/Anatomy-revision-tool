@@ -1,15 +1,16 @@
 import { ALL_STRUCTURES } from '../../anatomy-revision/data/seed';
-import type { RevisionSessionSummary } from '../../anatomy-revision/types/attempt';
 import { STRUCTURE_WEAKNESS_MIN_ATTEMPTS_DEFAULT } from '../../admin/lib/analyticsAggregation';
 import type { CohortAnalyticsSnapshot } from '../data/cohortAnalytics';
 import {
   accuracyByRegionFromStats,
   activeUsersByDayFromStats,
   confusionPairsFromStats,
+  masteryMixByRegion,
   retentionFromStats,
-  sessionMetricsFromSummaries,
+  sessionMetricsFromRollups,
   structureWeaknessFromStats,
 } from '../lib/rollupAggregation';
+import { buildStudentRollup, replayMastery } from '../lib/studentRollup';
 import { buildConfusionStats, buildStudentStats } from '../lib/rollupFromAttempts';
 import { demoAttempts, demoSessionSummaries } from './demoData';
 
@@ -35,13 +36,19 @@ export async function loadCohortAnalytics(
   minAttempts: number = STRUCTURE_WEAKNESS_MIN_ATTEMPTS_DEFAULT,
 ): Promise<CohortAnalyticsSnapshot> {
   const attemptsByUid = new Map(studentUids.map((uid) => [uid, demoAttempts(uid)]));
-  const summariesByUid = new Map<string, RevisionSessionSummary[]>(
-    studentUids.map((uid) => [uid, demoSessionSummaries(uid)]),
-  );
 
-  const stats = studentUids.map((uid) => buildStudentStats(uid, null, attemptsByUid.get(uid) ?? []));
+  // The rollup a demo student's device would have written: mastery replayed
+  // from their attempts, sessions from their generated summaries.
+  const stats = studentUids.map((uid) => {
+    const attempts = attemptsByUid.get(uid) ?? [];
+    return {
+      ...buildStudentStats(uid, null, attempts),
+      rollup: buildStudentRollup(replayMastery(uid, attempts), demoSessionSummaries(uid)),
+    };
+  });
   const confusion = buildConfusionStats([...attemptsByUid.values()].flat());
-  const sessionMetrics = sessionMetricsFromSummaries([...summariesByUid.values()].flat());
+  const sessionMetrics = sessionMetricsFromRollups(stats);
+  const mastery = masteryMixByRegion(stats, ALL_STRUCTURES);
 
   return {
     overview: {
@@ -56,6 +63,7 @@ export async function loadCohortAnalytics(
     structureWeakness: structureWeaknessFromStats(stats, ALL_STRUCTURES, minAttempts),
     confusionPairs: confusionPairsFromStats(confusion, ALL_STRUCTURES),
     statsByUid: new Map(stats.map((row) => [row.uid, row])),
-    summariesByUid,
+    masteryByRegion: mastery.regions,
+    masteryStudentsReporting: mastery.studentsReporting,
   };
 }

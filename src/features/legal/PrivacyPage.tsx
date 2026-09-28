@@ -54,7 +54,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 
 export function PrivacyPage() {
   return (
-    <LegalLayout title="Privacy policy" updated="14 September 2026">
+    <LegalLayout title="Privacy policy" updated="28 September 2026">
       <p className="mt-4" style={legalProse}>
         LocusMSK is an anatomy revision app for musculoskeletal students. This policy explains what it collects, why,
         how long it keeps it, and what you can do about it.
@@ -120,14 +120,15 @@ export function PrivacyPage() {
         </p>
         <p>
           While you are in a class, its owner — normally your module leader — can see your name, your overall accuracy,
-          how recently you were active, and which structures you get wrong most. It is meant to tell them what the
-          group finds hard, in time to reteach it.
+          how recently you were active and on which days, which structures you get wrong most, your mastery level for
+          each structure (from Beginner to Master), how many sessions you finished, and your scores on the assignments
+          they set. It is meant to tell them what the group finds hard, in time to reteach it.
         </p>
         <p>
           They cannot see your individual answers. Not the questions you got wrong one by one, not what you picked
           instead, not when you answered. What reaches them is counted up on your own device first — how often a
-          structure was attempted and how often it was right — so the answer-by-answer record never leaves your
-          account. This is enforced by the database’s own permission rules, not merely by what the app chooses to
+          structure was attempted and how often it was right, and the level that leaves you on — so the
+          answer-by-answer record never leaves your account. This is enforced by the database’s own permission rules, not merely by what the app chooses to
           display.
         </p>
         <p>

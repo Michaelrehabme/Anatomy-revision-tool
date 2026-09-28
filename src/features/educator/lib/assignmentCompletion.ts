@@ -1,4 +1,6 @@
 import type { RevisionSessionSummary } from '../../anatomy-revision/types/attempt';
+import { toDayKey } from '../../anatomy-revision/lib/streak';
+import type { StudentRollup } from './studentRollup';
 import { isScopedAssignment, type Assignment, type RegionAssignment, type ScopedAssignment } from '../types/cohort';
 
 export interface StudentAssignmentStatus {
@@ -60,44 +62,46 @@ export function assignmentAttempts(
  *
  * REGION ASSIGNMENTS (the first generation, still in Firestore) have no bar.
  * "Completion" there means "has engaged with the assigned region since it was
- * set" — attemptCount/accuracyPct since assignment.createdAt, read off each
- * session's breakdownByRegion because the cohort rollup counters carry a
- * region or a time window but never both (CR-031). Those figures are
- * graded-only: a session's breakdownByRegion excludes learn cards, so a
- * student who did nothing but learn cards in the region reads as not started.
+ * set" — graded totals in the region from the day it was set, so a session
+ * earlier on that same day counts too; the rollup keeps days, never times.
+ *
+ * Read from each student's rollup (lib/studentRollup.ts), which their own
+ * device builds from their session summaries. The educator used to read those
+ * summaries directly; the rules no longer allow it, because a summary carries
+ * missed structures and exact times. A student with no rollup yet reads as not
+ * started until their app next opens.
  */
 export function computeAssignmentCompletion(
   assignment: Assignment,
   studentUids: string[],
-  summariesByUid: Map<string, RevisionSessionSummary[]>,
+  rollupsByUid: Map<string, StudentRollup | undefined>,
   now: Date = new Date(),
 ): StudentAssignmentStatus[] {
   const isOverdue = now.getTime() > Date.parse(assignment.dueAt);
   return studentUids.map((uid) => {
-    const summaries = summariesByUid.get(uid) ?? [];
+    const rollup = rollupsByUid.get(uid);
     return isScopedAssignment(assignment)
-      ? scopedStatus(assignment, uid, summaries, isOverdue)
-      : regionStatus(assignment, uid, summaries, isOverdue);
+      ? scopedStatus(assignment, uid, rollup, isOverdue)
+      : regionStatus(assignment, uid, rollup, isOverdue);
   });
 }
 
 function scopedStatus(
   assignment: ScopedAssignment,
   uid: string,
-  summaries: RevisionSessionSummary[],
+  rollup: StudentRollup | undefined,
   isOverdue: boolean,
 ): StudentAssignmentStatus {
-  const { attempts, bestScorePct, passed } = assignmentAttempts(assignment, summaries);
-  const total = attempts.reduce((sum, s) => sum + s.totalQuestions, 0);
-  const correct = attempts.reduce((sum, s) => sum + s.correctCount, 0);
+  const a = rollup?.assignments[assignment.id];
+  const bestScorePct = a?.bestPct ?? null;
   return {
     uid,
-    attempted: attempts.length > 0,
-    attemptCount: total,
-    accuracyPct: total > 0 ? Math.round((correct / total) * 100) : null,
-    attemptsTaken: attempts.length,
+    attempted: (a?.taken ?? 0) > 0,
+    attemptCount: a?.questions ?? 0,
+    accuracyPct: a && a.questions > 0 ? Math.round((a.correct / a.questions) * 100) : null,
+    attemptsTaken: a?.taken ?? 0,
     bestScorePct,
-    completed: passed,
+    completed: bestScorePct !== null && bestScorePct >= assignment.targetAccuracyPct,
     isOverdue,
   };
 }
@@ -105,16 +109,16 @@ function scopedStatus(
 function regionStatus(
   assignment: RegionAssignment,
   uid: string,
-  summaries: RevisionSessionSummary[],
+  rollup: StudentRollup | undefined,
   isOverdue: boolean,
 ): StudentAssignmentStatus {
-  const createdMs = Date.parse(assignment.createdAt);
+  const createdDay = toDayKey(assignment.createdAt);
   let total = 0;
   let correct = 0;
 
-  for (const summary of summaries) {
-    if (Date.parse(summary.startedAt) < createdMs) continue;
-    const bucket = summary.breakdownByRegion[assignment.region];
+  for (const [day, regions] of Object.entries(rollup?.regionDays ?? {})) {
+    if (day < createdDay) continue;
+    const bucket = regions[assignment.region];
     if (!bucket) continue;
     total += bucket.total;
     correct += bucket.correct;

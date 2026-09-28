@@ -369,6 +369,11 @@ function buildSession(
       category: structure.category,
       correct,
       attemptNumber,
+      // The ladder takes the hints away once a structure is well known; a
+      // question met three times stands in for that here, so demo students
+      // can reach Advanced and Master (lib/masteryLevel.ts). Consumes no
+      // randomness, so every other generated figure is unchanged.
+      ...(type === 'identify-typed' ? { hints: attemptNumber > 3 ? ('none' as const) : ('full' as const) } : {}),
       timestamp: new Date(cursor).toISOString(),
       durationMs,
       // Only the typed/choice question types carry an answer string — locate and

@@ -184,6 +184,14 @@ function App() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  // Once per signed-in app open: rebuild this student's summary on their
+  // class dashboard, if they are in a class. A finished session does the same;
+  // this catches the student who opens the app and does not finish one, and
+  // backfills anyone whose summary predates the mastery levels.
+  useEffect(() => {
+    if (repository && userId) void repository.syncCohortRollup?.(userId);
+  }, [repository, userId]);
+
   const [onboarded, setOnboarded] = useState(() => localStorage.getItem(ONBOARDED_KEY) === 'true');
   /*
    * The marketing home page, and whether an admin has switched it on.

@@ -1,7 +1,5 @@
 import { getDb } from '../../anatomy-revision/data/firebase';
-import { getRepository } from '../../anatomy-revision/data/repository';
 import { ALL_STRUCTURES } from '../../anatomy-revision/data/seed';
-import type { RevisionSessionSummary } from '../../anatomy-revision/types/attempt';
 import { STRUCTURE_WEAKNESS_MIN_ATTEMPTS_DEFAULT } from '../../admin/lib/analyticsAggregation';
 import type { CohortOverview, StructureWeaknessRow, ConfusionPair } from '../../admin/types/analytics';
 import { readConfusionStats, readStudentStats, type StudentStatsDoc } from './cohortRollups';
@@ -9,9 +7,11 @@ import {
   accuracyByRegionFromStats,
   activeUsersByDayFromStats,
   confusionPairsFromStats,
+  masteryMixByRegion,
   retentionFromStats,
-  sessionMetricsFromSummaries,
+  sessionMetricsFromRollups,
   structureWeaknessFromStats,
+  type RegionMasteryMix,
 } from '../lib/rollupAggregation';
 
 /**
@@ -25,24 +25,19 @@ import {
  * on every attempt row of every student, selectedAnswer included, and the
  * join notice could not honestly promise otherwise.
  *
- * WHAT IT DOES NOW. Two reads of pre-aggregated counters written on each
- * student's own device, plus the session summaries that were always readable:
+ * WHAT IT DOES NOW. Two reads, both of documents written on each student's
+ * own device:
  *
  *   cohorts/{id}/studentStats/{uid}        one document per student
  *   cohorts/{id}/confusionStats/{pairKey}  anonymous counters
- *   users/{uid}/sessions                   unchanged
  *
- * That is roughly forty documents plus sessions for a class of forty, against
- * up to two hundred thousand attempt rows before. The privacy win is the
- * point; the cost and latency win is a side effect worth having.
- *
- * SESSIONS ARE STILL PER-STUDENT READS. The rules still permit them — a
- * session summary is a total and a duration, never an answer — and they carry
- * the completion and session-length figures nothing else has. That read is
- * the remaining N+1 here, and the remaining reason this is not one query.
+ * Until 28 Sep it also read users/{uid}/sessions for every student, for the
+ * session figures, streaks and assignment completion. The rules had stopped
+ * allowing that on 18 Sep (cf5a934) — a summary carries missed structures and
+ * exact times — so for any educator who was not an admin the whole load
+ * failed. Those figures now come from each student's `rollup` block
+ * (lib/studentRollup.ts), which carries totals and day keys only.
  */
-
-const SESSION_SUMMARIES_PER_STUDENT = 300;
 
 export interface CohortAnalyticsSnapshot {
   overview: CohortOverview & { activeStudentCount: number };
@@ -54,7 +49,10 @@ export interface CohortAnalyticsSnapshot {
    * miss as "no activity yet" rather than as an error.
    */
   statsByUid: Map<string, StudentStatsDoc>;
-  summariesByUid: Map<string, RevisionSessionSummary[]>;
+  /** Every (student, structure) pair at its mastery level, per region. */
+  masteryByRegion: RegionMasteryMix[];
+  /** Students whose app has written a rollup yet; the mastery mix covers only these. */
+  masteryStudentsReporting: number;
 }
 
 export async function loadCohortAnalytics(
@@ -63,13 +61,8 @@ export async function loadCohortAnalytics(
   minAttempts: number = STRUCTURE_WEAKNESS_MIN_ATTEMPTS_DEFAULT,
 ): Promise<CohortAnalyticsSnapshot> {
   const db = getDb();
-  const repository = await getRepository();
 
-  const [stats, confusion, summariesPerStudent] = await Promise.all([
-    readStudentStats(db, cohortId),
-    readConfusionStats(db, cohortId),
-    Promise.all(studentUids.map((uid) => repository.listSessionSummaries(uid, SESSION_SUMMARIES_PER_STUDENT))),
-  ]);
+  const [stats, confusion] = await Promise.all([readStudentStats(db, cohortId), readConfusionStats(db, cohortId)]);
 
   // A rollup document can outlive a student's membership by a moment — they
   // leave, the roster updates, and their row is only cleared on the next
@@ -78,8 +71,8 @@ export async function loadCohortAnalytics(
   const roster = new Set(studentUids);
   const inCohort = stats.filter((row) => roster.has(row.uid));
 
-  const summariesByUid = new Map(studentUids.map((uid, i) => [uid, summariesPerStudent[i]]));
-  const sessionMetrics = sessionMetricsFromSummaries(summariesPerStudent.flat());
+  const sessionMetrics = sessionMetricsFromRollups(inCohort);
+  const mastery = masteryMixByRegion(inCohort, ALL_STRUCTURES);
 
   return {
     overview: {
@@ -94,6 +87,7 @@ export async function loadCohortAnalytics(
     structureWeakness: structureWeaknessFromStats(inCohort, ALL_STRUCTURES, minAttempts),
     confusionPairs: confusionPairsFromStats(confusion, ALL_STRUCTURES),
     statsByUid: new Map(inCohort.map((row) => [row.uid, row])),
-    summariesByUid,
+    masteryByRegion: mastery.regions,
+    masteryStudentsReporting: mastery.studentsReporting,
   };
 }
