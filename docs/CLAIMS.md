@@ -96,6 +96,14 @@ The full set lives in docs/DATA-PROCESSING.md; the load-bearing ones are:
   comparison page (CR-033 item 17) does not exist yet; it must not ship without its rows added
   here. The competitor figures in docs/BACKLOG-STORE-MONETISATION.md are dated 8 September 2026
   and are **not** evidence for anything published later than that.
+
+  **Evidence on file:** `docs/evidence/competitors-2026-09-28/` — dated full-page captures of the
+  pricing pages of TeachMeAnatomy (and its institutional page), Kenhub, Complete Anatomy, Visible
+  Body and RemNote, taken 28 Sep 2026, with the prices read off each in its README. Quizlet
+  blocked automated capture and still needs one taken by hand. These support a comparison
+  published on or shortly after that date; re-capture before any later publication, and at the
+  latest by 28 Dec 2026. Note Complete Anatomy's UK price is in pounds (£34.99 first year, then
+  £69.99), not the dollar figure the backlog quotes.
 - **"The most complete", "the only", "the best"** — superlatives need evidence covering the whole
   market, which is not realistically obtainable. Say what the product has instead.
 
