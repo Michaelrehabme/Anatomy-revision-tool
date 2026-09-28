@@ -3,7 +3,8 @@ import type { AnatomyContent } from '../../hooks/useAnatomyContent';
 import type { AnatomyRepository } from '../../data/repository';
 import { CATEGORY_LABELS, type Category } from '../../types/structure';
 import { ATLAS_COLUMN_LABELS, ATLAS_MIXED_LABELS } from '../../lib/atlasFacts';
-import { masteryState, sortById } from '../../lib/atlasList';
+import { accuracyText, atlasMasteryCell, sortById } from '../../lib/atlasList';
+import { MasteryLevelBadge } from '../shared/MasteryLevelBadge';
 import { getAtlasPanelOpen, setAtlasPanelOpen } from '../../lib/preferences';
 import { useAtlasList } from '../../hooks/useAtlasList';
 import { Button } from '../shared/Button';
@@ -171,12 +172,12 @@ export function Atlas({ access, content, repository, userId, onOpenMuscle, onDri
             <span className="min-w-0 flex-1">{headings[0]}</span>
             <span className="min-w-0 flex-1">{headings[1]}</span>
             <span className="min-w-0 flex-[1.3]">{headings[2]}</span>
-            <span className="w-[78px] flex-none text-right">Mastery</span>
+            <span className="w-[150px] flex-none">Mastery</span>
           </div>
 
           <div className="min-h-0 flex-1 overflow-auto pb-14">
             {visible.map((s) => {
-              const state = masteryState(list.masteryById.get(s.id));
+              const mastery = atlasMasteryCell(list.masteryById.get(s.id));
               const { columns } = rows.get(s.id)!;
               const cell = (i: 0 | 1 | 2) => (
                 <>
@@ -210,24 +211,15 @@ export function Atlas({ access, content, repository, userId, onOpenMuscle, onDri
                     {cell(2)}
                   </span>
                   {/*
-                    Three states, not two. A flashcard writes a mastery row
-                    with no attempts, so "unseen" for attemptsTotal === 0 said
-                    a structure had never been met when it had — and would now
-                    contradict the seen filter sitting beside it.
+                    The level, not the all-time percentage: the percentage
+                    keeps every answer from before the structure was learned
+                    (lib/masteryLevel.ts). It stays, smaller, underneath.
                   */}
-                  <span
-                    className="w-[78px] flex-none text-right"
-                    style={{
-                      font: '500 13px/1 var(--font-mono)',
-                      color:
-                        state.kind === 'scored'
-                          ? state.pct < 60
-                            ? 'var(--acc2d)'
-                            : 'var(--accd)'
-                          : 'var(--ink3)',
-                    }}
-                  >
-                    {state.kind === 'unseen' ? 'unseen' : state.kind === 'untested' ? 'not tested' : `${state.pct}%`}
+                  <span className="flex w-[150px] flex-none flex-col gap-1.5">
+                    <MasteryLevelBadge state={mastery.level} />
+                    {accuracyText(mastery.accuracy) && (
+                      <span style={{ font: '400 11px/1 var(--font-mono)', color: 'var(--ink3)' }}>{accuracyText(mastery.accuracy)}</span>
+                    )}
                   </span>
                 </button>
               );

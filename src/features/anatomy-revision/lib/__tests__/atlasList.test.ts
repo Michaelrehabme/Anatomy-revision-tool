@@ -189,8 +189,8 @@ describe('sortAtlas', () => {
 
 describe('sort options', () => {
   it('offers every key in both directions with distinct ids', () => {
-    expect(ATLAS_SORTS).toHaveLength(8);
-    expect(new Set(ATLAS_SORTS.map((s) => s.id)).size).toBe(8);
+    expect(ATLAS_SORTS).toHaveLength(10);
+    expect(new Set(ATLAS_SORTS.map((s) => s.id)).size).toBe(10);
   });
 
   it('falls back to the default rather than crashing on a stale stored id', () => {

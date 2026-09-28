@@ -4,6 +4,7 @@ import { getLearnCardAttempts } from '../../lib/preferences';
 import { useProgressData } from '../../hooks/useProgressData';
 import { CATEGORIES, CATEGORY_LABELS } from '../../types/structure';
 import { Button } from '../shared/Button';
+import { RegionLevelBar, RegionLevelLegend } from '../shared/RegionLevelBar';
 import type { UseEntitlement } from '../../hooks/useEntitlement';
 import { AppShell } from '../shell/AppShell';
 import { NavSidebar, type NavSection } from '../shell/NavSidebar';
@@ -101,32 +102,31 @@ export function Progress({ access, content, repository, userId, onStart, onNavig
             <div style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
               By region
             </div>
+            <div className="mt-3.5">
+              <RegionLevelLegend />
+            </div>
             <div className="mt-5.5 flex flex-col gap-6.5">
-              {byRegion.map(({ region, total, seenCount: rSeen, pct }) => (
+              {byRegion.map(({ region, levels }) => {
+                const all = Object.values(levels).reduce((a, b) => a + b, 0);
+                return (
                 <div key={region}>
                   <div className="flex items-baseline gap-3.5">
                     <span className="flex-1" style={{ fontFamily: 'var(--font-display)', fontSize: 23 }}>
                       {REGION_LABELS[region]}
                     </span>
                     <span style={{ font: '400 12px/1 var(--font-mono)', color: 'var(--ink3)' }}>
-                      {rSeen} / {total}
+                      {all - levels.unmet} / {all} met
                     </span>
-                    <span
-                      style={{
-                        font: '500 13.5px/1 var(--font-mono)',
-                        color: pct < 60 ? 'var(--acc2d)' : 'var(--accd)',
-                        minWidth: 40,
-                        textAlign: 'right',
-                      }}
-                    >
-                      {pct}%
+                    <span style={{ font: '500 13.5px/1 var(--font-mono)', color: 'var(--accd)', minWidth: 40, textAlign: 'right' }}>
+                      {levels.master} mastered
                     </span>
                   </div>
-                  <div className="mt-2.5 h-2" style={{ background: 'var(--line)' }}>
-                    <div className="h-full" style={{ width: `${pct}%`, background: pct < 60 ? 'var(--acc2)' : 'var(--acc)' }} />
+                  <div className="mt-2.5">
+                    <RegionLevelBar levels={levels} />
                   </div>
                 </div>
-              ))}
+                );
+              })}
             </div>
           </div>
 

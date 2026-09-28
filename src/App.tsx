@@ -563,6 +563,7 @@ function App() {
                 structuresById={content.structuresById}
                 streak={streak}
                 gamification={session.gamification}
+                levelChanges={session.levelChanges}
                 sessionMode={session.setupParams?.mode}
                 assignment={session.setupParams?.assignment}
                 onRestart={endSession}
@@ -601,6 +602,7 @@ function App() {
               <MobileResults
                 summary={session.summary}
                 answers={session.answers}
+                levelChanges={session.levelChanges}
                 structuresById={content.structuresById}
                 gamification={session.gamification}
                 sessionMode={session.setupParams?.mode}

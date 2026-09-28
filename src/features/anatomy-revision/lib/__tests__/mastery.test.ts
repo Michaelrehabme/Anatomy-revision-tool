@@ -159,4 +159,17 @@ describe('updateMasteryAfterAttempt and the ladder', () => {
     expect(later.rung).toBe('typed-hinted');
     expect(later.rungMissStreak).toBe(1);
   });
+
+  it('keeps recentAccuracy on the row, seeded from all-time for a row that predates it', () => {
+    const legacy: StructureMastery = {
+      structureId: 'deltoid',
+      userId: 'u',
+      attemptsTotal: 10,
+      attemptsCorrect: 2,
+      lastAttemptAt: '2026-09-01T09:00:00.000Z',
+      rung: 'mcq',
+    };
+    const next = updateMasteryAfterAttempt(legacy, { structureId: 'deltoid', userId: 'u', correct: true, confidence: 'easy' });
+    expect(next.recentAccuracy).toBeCloseTo(0.25 + 0.75 * 0.2);
+  });
 });

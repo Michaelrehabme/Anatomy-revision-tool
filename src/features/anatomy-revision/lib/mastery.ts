@@ -1,5 +1,5 @@
 import type { StructureMastery, Confidence } from '../types/attempt';
-import { promoteOrDemote, type Rung } from './ladder';
+import { nextRecentAccuracy, promoteOrDemote, type Rung } from './ladder';
 
 const DEFAULT_EASE_FACTOR = 2.5;
 const MIN_EASE_FACTOR = 1.3;
@@ -123,6 +123,7 @@ export function updateMasteryAfterAttempt(
     isLeech,
     durationEwmaMs,
     firstSeenAt: existing?.firstSeenAt ?? now.toISOString(),
+    recentAccuracy: nextRecentAccuracy(existing, params.correct),
     ...promoteOrDemote(existing, params.correct, params.askedRung),
   };
 

@@ -4,6 +4,7 @@ import type { Region } from '../../types/region';
 import { REGION_LABELS } from '../../types/region';
 import { useProgressData } from '../../hooks/useProgressData';
 import { RegionBodyFigure } from '../shared/BodyFigure';
+import { RegionLevelBar, RegionLevelLegend } from '../shared/RegionLevelBar';
 import { MobileShell } from './MobileShell';
 import type { MobileTab } from './MobileTabBar';
 
@@ -54,17 +55,20 @@ export function MobileProgress({ content, repository, userId, onNavigateTab, onO
           </div>
         </div>
 
-        <div className="mt-0.5 flex flex-col">
+        <div className="mt-2">
+          <RegionLevelLegend />
+        </div>
+        <div className="mt-1.5 flex flex-col">
           {byRegion.map((r) => (
             <div key={r.region} className="py-2.5">
               <div className="flex items-baseline gap-2.5">
                 <span className="flex-1" style={{ fontSize: 16.5, lineHeight: 1.2 }}>
                   {REGION_LABELS[r.region]}
                 </span>
-                <span style={{ font: '500 12.5px/1 var(--font-mono)', color: 'var(--ink2)' }}>{r.pct}%</span>
+                <span style={{ font: '500 12.5px/1 var(--font-mono)', color: 'var(--ink2)' }}>{r.levels.master} mastered</span>
               </div>
-              <div className="mt-2 h-1 overflow-hidden rounded-full" style={{ background: 'var(--line)' }}>
-                <div className="h-full" style={{ width: `${r.pct}%`, background: masteryFill(r.pct) }} />
+              <div className="mt-2 overflow-hidden rounded-full">
+                <RegionLevelBar levels={r.levels} height={6} />
               </div>
             </div>
           ))}

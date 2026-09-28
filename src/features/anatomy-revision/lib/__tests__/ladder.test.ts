@@ -1,5 +1,14 @@
 import { describe, it, expect } from 'vitest';
-import { LADDER_CONFIG, hintsForRung, markSeen, promoteOrDemote, questionTypeForRung, rungFor, rungOfQuestion } from '../ladder';
+import {
+  LADDER_CONFIG,
+  hintsForRung,
+  markSeen,
+  nextRecentAccuracy,
+  promoteOrDemote,
+  questionTypeForRung,
+  rungFor,
+  rungOfQuestion,
+} from '../ladder';
 import type { StructureMastery } from '../../types/attempt';
 
 function row(overrides: Partial<StructureMastery> = {}): StructureMastery {
@@ -18,7 +27,13 @@ function climb(start: StructureMastery | undefined, answers: boolean[]): Structu
   let m: StructureMastery = start ?? row();
   for (const correct of answers) {
     const next = promoteOrDemote(start === undefined && m === start ? undefined : m, correct);
-    m = { ...m, ...next, attemptsTotal: m.attemptsTotal + 1, attemptsCorrect: m.attemptsCorrect + (correct ? 1 : 0) };
+    m = {
+      ...m,
+      ...next,
+      recentAccuracy: nextRecentAccuracy(m, correct),
+      attemptsTotal: m.attemptsTotal + 1,
+      attemptsCorrect: m.attemptsCorrect + (correct ? 1 : 0),
+    };
   }
   return m;
 }
@@ -82,7 +97,17 @@ describe('promoteOrDemote', () => {
     expect(afterSix.rung).toBe('typed-bare');
   });
 
-  it('will not climb on a streak when overall accuracy is poor', () => {
+  it('climbs once recent answers are good, however poor the old ones were', () => {
+    // 2 of 12 all-time. Four right in a row pulls recent accuracy over the
+    // bar while all-time is still 6 of 16 — the old gate held this student
+    // on MCQ for answers they gave before they learned the structure.
+    const poor = row({ attemptsTotal: 12, attemptsCorrect: 2, rung: 'mcq', rungStreak: 0 });
+    const after = climb(poor, [true, true, true, true]);
+    expect(after.attemptsCorrect / after.attemptsTotal).toBeLessThan(LADDER_CONFIG.promotionAccuracy);
+    expect(after.rung).toBe('typed-hinted');
+  });
+
+  it('will not climb on a streak when recent accuracy is still poor', () => {
     const poor = row({ attemptsTotal: 12, attemptsCorrect: 2, rung: 'mcq', rungStreak: 0 });
     const after = climb(poor, [true, true, true]);
     expect(after.rung).toBe('mcq');
@@ -104,6 +129,22 @@ describe('promoteOrDemote', () => {
 
   it('never leaves a graded structure on the flashcard rung', () => {
     expect(promoteOrDemote(undefined, false).rung).toBe('mcq');
+  });
+});
+
+describe('nextRecentAccuracy', () => {
+  it('starts from the first answer on a row with no answers', () => {
+    expect(nextRecentAccuracy(undefined, true)).toBe(1);
+    expect(nextRecentAccuracy(markSeen('deltoid', 'user-1'), false)).toBe(0);
+  });
+
+  it('seeds a row that predates it from the all-time ratio', () => {
+    const legacy = row({ attemptsTotal: 4, attemptsCorrect: 2 });
+    expect(nextRecentAccuracy(legacy, true)).toBeCloseTo(0.25 * 1 + 0.75 * 0.5);
+  });
+
+  it('moves a stored value a quarter of the way towards the new answer', () => {
+    expect(nextRecentAccuracy(row({ attemptsTotal: 9, attemptsCorrect: 9, recentAccuracy: 0.8 }), false)).toBeCloseTo(0.6);
   });
 });
 

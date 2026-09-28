@@ -3,6 +3,7 @@ import { areasOf } from '../types/structure';
 import type { Area } from '../types/region';
 import type { StructureMastery } from '../types/attempt';
 import type { AtlasRow } from './atlasFacts';
+import { masteryLevel, masteryLevelRank, type MasteryLevelState } from './masteryLevel';
 
 /**
  * How the Atlas list is narrowed and ordered.
@@ -20,7 +21,7 @@ import type { AtlasRow } from './atlasFacts';
  */
 
 export type SeenFilter = 'all' | 'seen' | 'unseen';
-export type AtlasSortKey = 'body' | 'accuracy' | 'name' | 'seen';
+export type AtlasSortKey = 'body' | 'level' | 'accuracy' | 'name' | 'seen';
 export type SortDirection = 'asc' | 'desc';
 
 export interface AtlasFilters {
@@ -99,6 +100,25 @@ export type AtlasMasteryState =
   | { kind: 'scored'; pct: number };
 
 /**
+ * What the Atlas mastery column shows: the level (lib/masteryLevel.ts), with
+ * the all-time percentage kept as a secondary figure — the level is what the
+ * student can do now, the percentage is history.
+ */
+export interface AtlasMasteryCell {
+  level: MasteryLevelState;
+  accuracy: AtlasMasteryState;
+}
+
+export function atlasMasteryCell(mastery: StructureMastery | undefined, now: Date = new Date()): AtlasMasteryCell {
+  return { level: masteryLevel(mastery, now), accuracy: masteryState(mastery) };
+}
+
+/** An accuracy state as the short text the Atlas prints under the level — nothing for unseen, which the level already says. */
+export function accuracyText(state: AtlasMasteryState): string | null {
+  return state.kind === 'unseen' ? null : state.kind === 'untested' ? 'not tested' : `${state.pct}% all-time`;
+}
+
+/**
  * The three states the mastery column has to tell apart.
  *
  * The Atlas used to print "unseen" whenever attemptsTotal was 0, which
@@ -166,6 +186,13 @@ export function sortAtlas(
         return bodyRank(a) - bodyRank(b);
       case 'name':
         return a.name.localeCompare(b.name, 'en');
+      case 'level': {
+        // Never met ranks below a flashcard-only Beginner, so "lowest first"
+        // starts on what has not been touched at all.
+        const rank = (m: StructureMastery | undefined) => (m ? masteryLevelRank(masteryLevel(m).level) : -1);
+        // Descending by default, like accuracy: the asc label is "highest first".
+        return rank(masteryById.get(b.id)) - rank(masteryById.get(a.id));
+      }
       case 'accuracy': {
         // No data counts as 0%, so "lowest first" doubles as a to-do list of
         // everything not yet studied rather than burying it under the scores.
@@ -206,6 +233,8 @@ export interface AtlasSortOption {
 export const ATLAS_SORTS: AtlasSortOption[] = [
   { id: 'body-asc', key: 'body', direction: 'asc', label: 'Top → bottom' },
   { id: 'body-desc', key: 'body', direction: 'desc', label: 'Bottom → top' },
+  { id: 'level-asc', key: 'level', direction: 'asc', label: 'Most mastered first' },
+  { id: 'level-desc', key: 'level', direction: 'desc', label: 'Least mastered first' },
   { id: 'accuracy-asc', key: 'accuracy', direction: 'asc', label: 'Highest accuracy first' },
   { id: 'accuracy-desc', key: 'accuracy', direction: 'desc', label: 'Lowest accuracy first' },
   { id: 'name-asc', key: 'name', direction: 'asc', label: 'A–Z' },

@@ -10,6 +10,7 @@ import { isOinaQuestion, isTypedIdentifyQuestion } from '../types/question';
 import type { AnatomyRepository } from '../data/repository';
 import { updateMasteryAfterAttempt } from '../lib/mastery';
 import { markSeen, rungOfQuestion } from '../lib/ladder';
+import { masteryLevel, type MasteryLevel } from '../lib/masteryLevel';
 import { updateFactMasteryAfterAttempt } from '../lib/factMastery';
 import { ALL_STRUCTURES } from '../data/seed';
 import { toDayKey, computeStreak } from '../lib/streak';
@@ -67,6 +68,16 @@ export interface RevisionSetupParams {
   assignment?: { id: string; title: string; targetAccuracyPct: number };
 }
 
+/**
+ * A structure whose mastery level (lib/masteryLevel.ts) moved during the
+ * session: where it stood before its first answer and where it ended.
+ */
+export interface LevelChange {
+  structureId: string;
+  from: MasteryLevel;
+  to: MasteryLevel;
+}
+
 /** Everything a results screen needs to show the CR-008 payoff for one finished session. */
 export interface GamificationResult {
   xpEarned: number;
@@ -90,6 +101,8 @@ interface SessionState {
   summary: RevisionSessionSummary | null;
   persistError: string | null;
   gamification: GamificationResult | null;
+  /** Keyed by structure; `from` is fixed by the first answer, `to` follows the latest. */
+  levels: Record<string, { from: MasteryLevel; to: MasteryLevel }>;
 }
 
 type Action =
@@ -98,6 +111,7 @@ type Action =
   | { type: 'NEXT' }
   | { type: 'FINISH'; summary: RevisionSessionSummary }
   | { type: 'GAMIFICATION_RESULT'; result: GamificationResult }
+  | { type: 'LEVEL'; structureId: string; from: MasteryLevel; to: MasteryLevel }
   | { type: 'PERSIST_ERROR'; message: string }
   | { type: 'CLEAR_PERSIST_ERROR' }
   | { type: 'RESET' };
@@ -113,6 +127,7 @@ const initialState: SessionState = {
   summary: null,
   persistError: null,
   gamification: null,
+  levels: {},
 };
 
 function reducer(state: SessionState, action: Action): SessionState {
@@ -134,6 +149,10 @@ function reducer(state: SessionState, action: Action): SessionState {
       return { ...state, phase: 'results', summary: action.summary, gamification: null };
     case 'GAMIFICATION_RESULT':
       return { ...state, gamification: action.result };
+    case 'LEVEL': {
+      const from = state.levels[action.structureId]?.from ?? action.from;
+      return { ...state, levels: { ...state.levels, [action.structureId]: { from, to: action.to } } };
+    }
     case 'PERSIST_ERROR':
       return { ...state, persistError: action.message };
     case 'CLEAR_PERSIST_ERROR':
@@ -368,6 +387,7 @@ export function useRevisionSession(repository: AnatomyRepository | null, userId:
             timestamp: new Date().toISOString(),
             durationMs,
             graded: record.graded,
+            hints: isTypedIdentifyQuestion(currentQuestion) ? (currentQuestion.hints ?? 'full') : undefined,
           };
           await repository.recordAttempt(attempt);
 
@@ -379,7 +399,11 @@ export function useRevisionSession(repository: AnatomyRepository | null, userId:
           // the account page, without a schedule or an accuracy.
           if (record.graded === false) {
             const seen = await repository.getMasteryForStructure(userId, record.structureId);
-            if (!seen) await repository.upsertMastery(markSeen(record.structureId, userId));
+            if (!seen) {
+              const seenRow = markSeen(record.structureId, userId);
+              await repository.upsertMastery(seenRow);
+              dispatch({ type: 'LEVEL', structureId: record.structureId, from: masteryLevel(undefined).level, to: masteryLevel(seenRow).level });
+            }
             return;
           }
 
@@ -400,6 +424,12 @@ export function useRevisionSession(repository: AnatomyRepository | null, userId:
             ),
           });
           await repository.upsertMastery(nextMastery);
+          dispatch({
+            type: 'LEVEL',
+            structureId: record.structureId,
+            from: masteryLevel(existingMastery ?? undefined).level,
+            to: masteryLevel(nextMastery).level,
+          });
 
           // Per-(muscle, fact) progress, which is what decides whether this
           // fact is next asked as recognition or recall (CR-018). Inside the
@@ -505,6 +535,10 @@ export function useRevisionSession(repository: AnatomyRepository | null, userId:
 
   const isLastQuestion = state.currentIndex >= state.questions.length - 1;
 
+  const levelChanges: LevelChange[] = Object.entries(state.levels)
+    .filter(([, l]) => l.from !== l.to)
+    .map(([structureId, l]) => ({ structureId, ...l }));
+
   return {
     phase: state.phase,
     questions: state.questions,
@@ -515,6 +549,7 @@ export function useRevisionSession(repository: AnatomyRepository | null, userId:
     summary: state.summary,
     isLastQuestion,
     gamification: state.gamification,
+    levelChanges,
     persistError: state.persistError,
     retryPersist,
     dismissPersistError,

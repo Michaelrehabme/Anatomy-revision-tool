@@ -1,6 +1,7 @@
 import type { RevisionSessionSummary } from '../../types/attempt';
 import type { AnatomyStructure } from '../../types/structure';
-import type { AnswerRecord, GamificationResult, RevisionSetupParams } from '../../hooks/useRevisionSession';
+import type { AnswerRecord, GamificationResult, LevelChange, RevisionSetupParams } from '../../hooks/useRevisionSession';
+import { LevelChangesList } from '../shared/LevelChangesList';
 import { AssignmentResultNote } from '../shared/AssignmentResultNote';
 import { REGION_LABELS } from '../../types/region';
 import { levelProgress } from '../../lib/levels';
@@ -11,6 +12,8 @@ const DUE_TEXT: Record<'hard' | 'medium' | 'easy', string> = { hard: 'tomorrow',
 interface MobileResultsProps {
   summary: RevisionSessionSummary;
   answers: AnswerRecord[];
+  /** Structures whose mastery level moved this session (useRevisionSession.levelChanges). */
+  levelChanges?: readonly LevelChange[];
   structuresById: Map<string, AnatomyStructure>;
   /** Null until useRevisionSession.finish()'s async XP/achievement computation resolves — renders in when ready. */
   gamification: GamificationResult | null;
@@ -39,7 +42,7 @@ function resultsLine(summary: RevisionSessionSummary, structuresById: Map<string
 }
 
 /** Screen 09 (mobile). Score, then "back in the queue" — no by-region chart (not in the mobile spec). */
-export function MobileResults({ summary, answers, structuresById, gamification, sessionMode, assignment, onDone, onRetry }: MobileResultsProps) {
+export function MobileResults({ summary, answers, levelChanges = [], structuresById, gamification, sessionMode, assignment, onDone, onRetry }: MobileResultsProps) {
   const isExam = sessionMode === 'assessment';
   const progress = gamification ? levelProgress(gamification.xpTotal) : null;
   const queueRows = summary.missedStructureIds.map((id) => {
@@ -70,6 +73,12 @@ export function MobileResults({ summary, answers, structuresById, gamification, 
         <p className="mt-4 text-[15px] leading-relaxed" style={{ color: 'var(--ink2)' }}>
           {resultsLine(summary, structuresById)}
         </p>
+      )}
+
+      {levelChanges.length > 0 && (
+        <div className="mt-6">
+          <LevelChangesList changes={levelChanges} structuresById={structuresById} />
+        </div>
       )}
 
       {gamification && progress && (

@@ -1,4 +1,6 @@
 import type { AnatomyContent } from '../../hooks/useAnatomyContent';
+import { MasteryLevelBadge } from '../shared/MasteryLevelBadge';
+import { masteryLevel } from '../../lib/masteryLevel';
 import type { AnatomyRepository } from '../../data/repository';
 import { areasOf, isMuscle } from '../../types/structure';
 import { REGION_LABELS } from '../../types/region';
@@ -33,6 +35,7 @@ const FACT_ROWS = [
  */
 export function MobileMuscleCard({ access, structureId, content, repository, userId, onBack, onDrill }: MobileMuscleCardProps) {
   const mastery = useMuscleHistory(repository, userId, structureId);
+  const level = masteryLevel(mastery ?? undefined);
   const structure = content.structuresById.get(structureId);
   const panelImage = content.images.find((img) => img.mode === 'single-structure' && img.structureId === structureId);
 
@@ -46,7 +49,7 @@ export function MobileMuscleCard({ access, structureId, content, repository, use
 
   const muscle = isMuscle(structure) ? structure : null;
   const record = mastery && mastery.attemptsTotal > 0
-    ? `Seen ${mastery.attemptsTotal} time${mastery.attemptsTotal === 1 ? '' : 's'} · ${Math.round((mastery.attemptsCorrect / mastery.attemptsTotal) * 100)}% correct${mastery.dueAt ? ` · next due ${relativeDue(mastery.dueAt, new Date())}` : ''}.`
+    ? `Seen ${mastery.attemptsTotal} time${mastery.attemptsTotal === 1 ? '' : 's'} · ${Math.round((mastery.attemptsCorrect / mastery.attemptsTotal) * 100)}% correct all-time${mastery.dueAt ? ` · next due ${relativeDue(mastery.dueAt, new Date())}` : ''}.`
     : 'No attempts yet.';
 
   return (
@@ -130,6 +133,14 @@ export function MobileMuscleCard({ access, structureId, content, repository, use
         style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}
       >
         Your record
+      </div>
+      <div className="mt-2.5">
+        <MasteryLevelBadge state={level} />
+        {level.next && (
+          <div className="mt-1.5" style={{ font: '400 12px/1.5 var(--font-mono)', color: 'var(--ink3)' }}>
+            Next: {level.next.toLowerCase()}
+          </div>
+        )}
       </div>
       <p className="mt-2.5 text-[15px] leading-relaxed" style={{ color: 'var(--ink2)' }}>
         {record}

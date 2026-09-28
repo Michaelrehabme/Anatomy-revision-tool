@@ -2,7 +2,8 @@ import type { RevisionSessionSummary } from '../../types/attempt';
 import type { AnatomyStructure } from '../../types/structure';
 import { isMuscle } from '../../types/structure';
 import { REGION_LABELS } from '../../types/region';
-import type { GamificationResult, RevisionSetupParams } from '../../hooks/useRevisionSession';
+import type { GamificationResult, LevelChange, RevisionSetupParams } from '../../hooks/useRevisionSession';
+import { LevelChangesList } from '../shared/LevelChangesList';
 import { AssignmentResultNote } from '../shared/AssignmentResultNote';
 import { levelProgress } from '../../lib/levels';
 import { Button } from '../shared/Button';
@@ -16,6 +17,8 @@ interface RevisionResultsProps {
   streak: number;
   /** Null until useRevisionSession.finish()'s async XP/achievement computation resolves — renders in when ready. */
   gamification: GamificationResult | null;
+  /** Structures whose mastery level moved this session (useRevisionSession.levelChanges). */
+  levelChanges?: readonly LevelChange[];
   /** From session.setupParams?.mode — RevisionSessionSummary itself doesn't carry mode, so App.tsx passes it separately. */
   sessionMode?: 'practice' | 'adaptive' | 'assessment';
   /** From session.setupParams?.assignment — set when this session was an attempt at a class assignment. */
@@ -39,6 +42,7 @@ export function RevisionResults({
   structuresById,
   streak,
   gamification,
+  levelChanges = [],
   sessionMode,
   assignment,
   onRetryIncorrect,
@@ -94,6 +98,12 @@ export function RevisionResults({
           </div>
 
           {assignment && <AssignmentResultNote assignment={assignment} summary={summary} />}
+
+          {levelChanges.length > 0 && (
+            <div className="mt-7">
+              <LevelChangesList changes={levelChanges} structuresById={structuresById} onOpen={onOpenMuscle} />
+            </div>
+          )}
 
           {gamification && progress && (
             <div className="mt-7 rounded-[4px] p-4" style={{ background: 'var(--accs)' }}>

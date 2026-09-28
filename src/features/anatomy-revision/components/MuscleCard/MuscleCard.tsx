@@ -9,6 +9,8 @@ import { Button } from '../shared/Button';
 import { LockedAreaPanel } from '../shared/AreaLock';
 import type { UseEntitlement } from '../../hooks/useEntitlement';
 import { PronounceButton } from '../shared/PronounceButton';
+import { MasteryLevelBadge } from '../shared/MasteryLevelBadge';
+import { masteryLevel } from '../../lib/masteryLevel';
 import { AppShell } from '../shell/AppShell';
 import { NavSidebar, type NavSection } from '../shell/NavSidebar';
 
@@ -45,6 +47,7 @@ export function MuscleCard({
   onNavigate,
 }: MuscleCardProps) {
   const mastery = useMuscleHistory(repository, userId, structureId);
+  const level = masteryLevel(mastery ?? undefined);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -85,12 +88,20 @@ export function MuscleCard({
               <div style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
                 Your history
               </div>
+              <div className="mt-3">
+                <MasteryLevelBadge state={level} />
+                {level.next && (
+                  <div className="mt-2" style={{ font: '400 12px/1.5 var(--font-mono)', color: 'var(--ink3)' }}>
+                    Next: {level.next.toLowerCase()}
+                  </div>
+                )}
+              </div>
               <div className="mt-3" style={{ font: '400 13px/1.9 var(--font-mono)', color: 'var(--ink2)' }}>
                 {mastery && mastery.attemptsTotal > 0 ? (
                   <>
                     {mastery.attemptsTotal} attempts
                     <br />
-                    {Math.round((mastery.attemptsCorrect / mastery.attemptsTotal) * 100)}% correct
+                    {Math.round((mastery.attemptsCorrect / mastery.attemptsTotal) * 100)}% correct all-time
                     <br />
                     {mastery.dueAt ? `due ${new Date(mastery.dueAt).toLocaleDateString()}` : 'not yet due'}
                   </>

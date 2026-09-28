@@ -41,8 +41,20 @@ export const RUNGS: Rung[] = ['flashcard', 'mcq', 'typed-hinted', 'typed-bare'];
 export const LADDER_CONFIG = {
   /** Consecutive correct answers before a structure climbs a rung. */
   promotionStreak: 3,
-  /** ...and the all-time accuracy that must hold as well, so three lucky guesses after ten misses do not promote. */
+  /**
+   * ...and the accuracy that must hold as well, so three lucky guesses in a
+   * run of misses do not promote. RECENT accuracy (StructureMastery.recentAccuracy),
+   * not all-time: all-time kept counting misses from weeks ago, so a student
+   * who had since learned the structure could be held on a rung by answers
+   * they would no longer get wrong.
+   */
   promotionAccuracy: 0.7,
+  /**
+   * Consecutive correct answers ON typed-bare before a structure reads as
+   * Master (lib/masteryLevel.ts). Not a rung — typed-bare is already the
+   * hardest thing asked — but the proof that the recall holds.
+   */
+  masterStreak: 3,
   /** Consecutive misses before a structure drops a rung. */
   demotionStreak: 2,
   /**
@@ -114,6 +126,22 @@ export function rungOfQuestion(type: QuestionType, hints?: 'full' | 'none'): Run
   }
 }
 
+/** How much each new graded answer moves recentAccuracy: roughly the last eight answers carry it. */
+export const RECENT_ACCURACY_ALPHA = 0.25;
+
+/**
+ * recentAccuracy after one more graded answer. A row that predates the field
+ * but has answers is seeded from its all-time ratio — the only history it
+ * has — and a row with none starts from this answer alone.
+ */
+export function nextRecentAccuracy(existing: StructureMastery | undefined, correct: boolean): number {
+  const score = correct ? 1 : 0;
+  const prior =
+    existing?.recentAccuracy ??
+    (existing && existing.attemptsTotal > 0 ? existing.attemptsCorrect / existing.attemptsTotal : undefined);
+  return prior === undefined ? score : RECENT_ACCURACY_ALPHA * score + (1 - RECENT_ACCURACY_ALPHA) * prior;
+}
+
 /**
  * The rung fields after one graded answer.
  *
@@ -140,8 +168,7 @@ export function promoteOrDemote(
   asked?: Rung | null,
   config: LadderConfig = LADDER_CONFIG,
 ): Pick<StructureMastery, 'rung' | 'rungStreak' | 'rungMissStreak'> {
-  const attemptsTotal = (existing?.attemptsTotal ?? 0) + 1;
-  const attemptsCorrect = (existing?.attemptsCorrect ?? 0) + (correct ? 1 : 0);
+  const accuracy = nextRecentAccuracy(existing, correct);
   // A graded answer means the structure has been met, whatever the row said —
   // true of a locate question too, which is why this precedes the null check.
   let rung: Rung = rungFor(existing, config);
@@ -168,7 +195,7 @@ export function promoteOrDemote(
     correct &&
     earnsCredit &&
     rungStreak >= config.promotionStreak &&
-    attemptsCorrect / attemptsTotal >= config.promotionAccuracy &&
+    accuracy >= config.promotionAccuracy &&
     at < RUNGS.length - 1
   ) {
     rung = RUNGS[at + 1];

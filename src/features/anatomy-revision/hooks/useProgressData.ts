@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { masteryLevel, type MasteryLevel } from '../lib/masteryLevel';
 import type { AnatomyRepository } from '../data/repository';
 import type { AnatomyContent } from './useAnatomyContent';
 import type { StructureMastery } from '../types/attempt';
@@ -15,7 +16,16 @@ export interface RegionProgress {
   total: number;
   seenCount: number;
   pct: number;
+  /**
+   * Every kind of structure in the region — bones, joints, ligaments as well
+   * as muscles — counted by mastery level (lib/masteryLevel.ts), plus those
+   * never met. Sums to the region's structure count, not `total`, which is
+   * muscles only.
+   */
+  levels: LevelCounts;
 }
+
+export type LevelCounts = Record<MasteryLevel | 'unmet', number>;
 
 export interface CategoryCoverage {
   seen: number;
@@ -78,6 +88,7 @@ export function useProgressData(repository: AnatomyRepository | null, userId: st
   const untouched = muscles.filter((m) => !seenIds.has(m.id));
   const leeches = muscles.filter((m) => masteryByStructureId.get(m.id)?.isLeech);
 
+  const now = new Date();
   const byRegion: RegionProgress[] = REGIONS.map((region) => {
     const regionMuscles = muscles.filter((m) => m.region === region);
     const seen = regionMuscles.filter((m) => seenIds.has(m.id));
@@ -86,10 +97,15 @@ export function useProgressData(repository: AnatomyRepository | null, userId: st
       return sum + (row ? row.attemptsCorrect / Math.max(1, row.attemptsTotal) : 0);
     }, 0);
     const pct = regionMuscles.length > 0 ? Math.round((correct / regionMuscles.length) * 100) : 0;
-    return { region, total: regionMuscles.length, seenCount: seen.length, pct };
+    const levels: LevelCounts = { unmet: 0, beginner: 0, novice: 0, intermediate: 0, advanced: 0, master: 0 };
+    for (const s of content.structures) {
+      if (s.region !== region) continue;
+      const state = masteryLevel(masteryByStructureId.get(s.id), now);
+      levels[state.seen ? state.level : 'unmet'] += 1;
+    }
+    return { region, total: regionMuscles.length, seenCount: seen.length, pct, levels };
   }).filter((r) => r.total > 0);
 
-  const now = new Date();
   const horizon = lastDays(new Date(now.getFullYear(), now.getMonth(), now.getDate() + FORECAST_DAYS - 1), FORECAST_DAYS);
   const forecast = horizon.map((day) => {
     const key = localDayKey(day);

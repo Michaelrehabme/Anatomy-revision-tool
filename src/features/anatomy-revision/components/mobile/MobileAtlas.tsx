@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import type { AnatomyContent } from '../../hooks/useAnatomyContent';
 import type { AnatomyRepository } from '../../data/repository';
-import { masteryState, sortById } from '../../lib/atlasList';
+import { atlasMasteryCell, sortById } from '../../lib/atlasList';
+import { MasteryLevelBadge } from '../shared/MasteryLevelBadge';
 import { useAtlasList } from '../../hooks/useAtlasList';
 import { UnlockNote } from '../shared/AreaLock';
 import { AtlasFilterPanel } from '../shared/AtlasFilterPanel';
@@ -174,7 +175,7 @@ export function MobileAtlas({
 
         <div className="mt-5 flex flex-col gap-2.5">
           {visible.map((s) => {
-            const state = masteryState(list.masteryById.get(s.id));
+            const mastery = atlasMasteryCell(list.masteryById.get(s.id));
             const { columns } = rows.get(s.id)!;
             const shown = columns.filter((c) => c.text).slice(0, 2);
             return (
@@ -197,15 +198,8 @@ export function MobileAtlas({
                       {s.category}
                     </span>
                   )}
-                  {/* Three states — see the same note in Atlas.tsx. */}
-                  <span
-                    style={{
-                      font: '500 11.5px/1 var(--font-mono)',
-                      color: state.kind === 'scored' ? 'var(--accd)' : 'var(--ink3)',
-                    }}
-                  >
-                    {state.kind === 'unseen' ? 'unseen' : state.kind === 'untested' ? 'not tested' : `${state.pct}%`}
-                  </span>
+                  {/* The level, not the all-time percentage — see the note in Atlas.tsx. */}
+                  <MasteryLevelBadge state={mastery.level} />
                 </div>
                 <div className="mt-2 flex flex-col gap-1">
                   {shown.map((c) => (

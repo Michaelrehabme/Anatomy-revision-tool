@@ -48,6 +48,12 @@ export interface UserAttempt {
    * still recorded so that analytics can see what was studied.
    */
   graded?: boolean;
+  /**
+   * Identify-typed only: whether the letter-count and first-letter hints were
+   * shown. The same question type asks at two rungs (lib/ladder.ts), and
+   * without this a stored attempt cannot say which one it was answered at.
+   */
+  hints?: 'full' | 'none';
 }
 
 /**
@@ -105,6 +111,14 @@ export interface StructureMastery {
   rungStreak?: number;
   /** Consecutive misses on the current rung — the demotion trigger. */
   rungMissStreak?: number;
+  /**
+   * Accuracy weighted towards recent graded answers (EWMA, lib/mastery.ts),
+   * 0-1. The ladder's promotion gate reads this rather than the all-time
+   * ratio, which kept counting misses from when the student knew less.
+   * Absent on rows written before it existed; the first update seeds it from
+   * the all-time ratio.
+   */
+  recentAccuracy?: number;
   /** When the student first met this structure, by any question or a flashcard. */
   firstSeenAt?: string;
 }
