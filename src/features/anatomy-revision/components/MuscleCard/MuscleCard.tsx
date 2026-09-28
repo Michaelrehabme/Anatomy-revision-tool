@@ -143,7 +143,7 @@ export function MuscleCard({
           </button>
           <div
             className="mt-6"
-            style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--acc)' }}
+            style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--accd)' }}
           >
             {REGION_LABELS[structure.region]}
             {structure.groups?.length ? ` · ${structure.groups[0]}` : ''}

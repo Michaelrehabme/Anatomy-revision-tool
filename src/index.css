@@ -3,6 +3,21 @@
 @import "./fonts.generated.css";
 
 /*
+ * A link inside running text is underlined (WCAG 1.4.1, axe link-in-text-block).
+ * Colour alone was the only cue: --accd against --ink2 body text is 1.34:1 in
+ * light and 1.06:1 in dark, far under the 3:1 a colour-only link needs. In the
+ * base layer, so a utility class such as `no-underline` still wins where a
+ * design wants it.
+ */
+@layer base {
+  :where(p, li, dd, td) a {
+    text-decoration-line: underline;
+    text-underline-offset: 0.15em;
+    text-decoration-thickness: 1px;
+  }
+}
+
+/*
  * Press — the LocusMSK design tokens, in four scopes.
  *
  * <html> always carries data-theme="light|dark" and data-contrast="normal|high".

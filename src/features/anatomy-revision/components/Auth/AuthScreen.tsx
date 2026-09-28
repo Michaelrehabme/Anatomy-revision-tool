@@ -118,7 +118,7 @@ export function AuthScreen({ initialMode = 'sign-up', onClose }: AuthScreenProps
               font: '500 10px/1 var(--font-mono)',
               letterSpacing: '.16em',
               textTransform: 'uppercase',
-              color: 'var(--acc)',
+              color: 'var(--accd)',
             }}
           >
             {mode === 'sign-up' ? 'Create your account' : 'Welcome back'}

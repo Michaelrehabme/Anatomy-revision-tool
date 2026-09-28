@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { FeedbackHeading } from '../shared/FeedbackHeading';
 import type { OinaTypedQuestion } from '../../types/question';
 import type { Confidence } from '../../types/attempt';
 import { gradeTypedSlots } from '../../lib/oinaAnswer';
@@ -65,7 +66,7 @@ export function OinaTypedSession({ question, onAnswer, onNext, examMode }: OinaT
         <div className="mx-auto w-full max-w-[760px]">
           <div
             className="text-center"
-            style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--acc)' }}
+            style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--accd)' }}
           >
             OINA · from memory
           </div>
@@ -138,7 +139,7 @@ export function OinaTypedSession({ question, onAnswer, onNext, examMode }: OinaT
           <div className="mx-auto flex max-w-[1000px] items-start gap-[72px]">
             <div className="flex-1">
               <div className="flex items-baseline gap-3.5">
-                <span
+                <FeedbackHeading
                   style={{
                     fontFamily: 'var(--font-display)',
                     fontWeight: 500,
@@ -147,7 +148,7 @@ export function OinaTypedSession({ question, onAnswer, onNext, examMode }: OinaT
                   }}
                 >
                   {result.allCorrect ? 'Correct' : 'Not quite'}
-                </span>
+                </FeedbackHeading>
                 {!result.allCorrect && question.slots.length > 1 && (
                   <span style={{ font: '500 12.5px/1 var(--font-mono)', color: 'var(--ink3)' }}>
                     {result.correctCount}/{question.slots.length} found

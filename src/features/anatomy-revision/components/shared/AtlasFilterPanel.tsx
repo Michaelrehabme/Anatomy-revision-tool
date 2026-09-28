@@ -121,7 +121,7 @@ export function AtlasFilterPanel({ list, id }: AtlasFilterPanelProps) {
           {ATLAS_KINDS.map((k) => (
             <Chip key={k} on={filters.kind === k} onClick={() => list.setKind(k)}>
               {k === 'all' ? 'All kinds' : CATEGORY_LABELS[k]}
-              <span className="ml-2" style={{ font: '400 11.5px/1 var(--font-mono)', color: 'inherit', opacity: 0.75 }}>
+              <span className="ml-2" style={{ font: '400 11.5px/1 var(--font-mono)', color: 'inherit' }}>
                 {kindCounts[k] ?? 0}
               </span>
             </Chip>

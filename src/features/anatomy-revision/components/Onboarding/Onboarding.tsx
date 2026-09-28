@@ -60,7 +60,7 @@ export function Onboarding({ access, content, initialAreas = [], onDone }: Onboa
               font: '500 10px/1 var(--font-mono)',
               letterSpacing: '.16em',
               textTransform: 'uppercase',
-              color: 'var(--acc)',
+              color: 'var(--accd)',
             }}
           >
             {current.kicker}

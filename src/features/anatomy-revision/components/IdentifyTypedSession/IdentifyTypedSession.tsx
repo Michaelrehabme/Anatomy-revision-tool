@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { FeedbackHeading } from '../shared/FeedbackHeading';
 import type { TypedIdentifyQuestion } from '../../types/question';
 import type { AnatomyImageAsset } from '../../types/image';
 import type { Confidence } from '../../types/attempt';
@@ -91,7 +92,7 @@ export function IdentifyTypedSession({ question, imagesById, onAnswer, onNext, e
         <div className="mx-auto w-full max-w-[820px]">
           <div
             className="text-center"
-            style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--acc)' }}
+            style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--accd)' }}
           >
             {questionHeaderLabel(question)}
           </div>
@@ -202,16 +203,16 @@ export function IdentifyTypedSession({ question, imagesById, onAnswer, onNext, e
         <div className="flex-none px-24 py-10" style={{ background: submitted.correct ? 'var(--accs)' : 'var(--acc2s)' }}>
           <div className="mx-auto flex max-w-[1000px] items-start gap-[72px]">
             <div className="flex-1">
-              <span
+              <FeedbackHeading
                 style={{
                   fontFamily: 'var(--font-display)',
                   fontWeight: 500,
                   fontSize: 32,
                   color: submitted.correct ? 'var(--accd)' : 'var(--acc2d)',
                 }}
-              >
+               label={submitted.correct ? 'Correct' : `Not quite. The answer is ${correctAnswer}.`}>
                 {submitted.correct ? 'Correct' : 'Not quite'}
-              </span>
+              </FeedbackHeading>
               <p className="mt-3.5 max-w-[56ch] text-lg leading-relaxed" style={{ color: 'var(--ink)' }}>
                 <strong className="font-semibold">{correctAnswer}.</strong> {question.explanation}
               </p>

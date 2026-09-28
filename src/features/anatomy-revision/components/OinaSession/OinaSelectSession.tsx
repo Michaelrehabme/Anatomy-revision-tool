@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { FeedbackHeading } from '../shared/FeedbackHeading';
 import type { OinaSelectQuestion } from '../../types/question';
 import type { Confidence } from '../../types/attempt';
 import { scoreMultiSelect } from '../../lib/multiSelectScoring';
@@ -76,7 +77,7 @@ export function OinaSelectSession({ question, onAnswer, onNext, examMode }: Oina
         <div className="mx-auto w-full max-w-[920px]">
           <div
             className="text-center"
-            style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--acc)' }}
+            style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--accd)' }}
           >
             OINA · {total === 1 ? '1 correct answer' : `${total} correct answers`}
           </div>
@@ -159,7 +160,7 @@ export function OinaSelectSession({ question, onAnswer, onNext, examMode }: Oina
           <div className="mx-auto flex max-w-[1000px] items-start gap-[72px]">
             <div className="flex-1">
               <div className="flex items-baseline gap-3.5">
-                <span
+                <FeedbackHeading
                   style={{
                     fontFamily: 'var(--font-display)',
                     fontWeight: 500,
@@ -168,7 +169,7 @@ export function OinaSelectSession({ question, onAnswer, onNext, examMode }: Oina
                   }}
                 >
                   {score.isFullyCorrect ? 'Correct' : 'Not quite'}
-                </span>
+                </FeedbackHeading>
                 {!score.isFullyCorrect && (
                   <span style={{ font: '500 12.5px/1 var(--font-mono)', color: 'var(--ink3)' }}>
                     {score.correctCount}/{score.totalCorrect} found

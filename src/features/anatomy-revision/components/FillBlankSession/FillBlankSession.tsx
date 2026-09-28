@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { FeedbackHeading } from '../shared/FeedbackHeading';
 import type { FillBlankQuestion } from '../../types/question';
 import { isAnswerMatch } from '../../lib/answerMatching';
 import { ExamAnswerFooter } from '../shared/ExamAnswerFooter';
@@ -66,7 +67,12 @@ export function FillBlankSession({ question, onAnswer, onNext, examMode }: FillB
       {submitted && !examMode && (
         <div className="space-y-3">
           <div className={`rounded-lg p-3 text-sm ${submitted.correct ? 'bg-accs text-accd' : 'bg-acc2s text-acc2d'}`}>
-            <p className="font-medium">{submitted.correct ? 'Correct.' : 'Not quite.'}</p>
+            <FeedbackHeading
+              className="text-sm font-medium"
+              label={submitted.correct ? 'Correct' : `Not quite. The answer is ${question.answer}.`}
+            >
+              {submitted.correct ? 'Correct.' : 'Not quite.'}
+            </FeedbackHeading>
             <p className="mt-1 text-ink2">
               Answer: <span className="font-medium">{question.answer}</span>
             </p>

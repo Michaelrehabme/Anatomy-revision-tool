@@ -18,6 +18,7 @@ import { MobileMultiSelectSession } from './MobileMultiSelectSession';
 import { MobileOinaSession } from './MobileOinaSession';
 import { FillBlankSession } from '../FillBlankSession/FillBlankSession';
 import { PersistErrorBanner } from '../shared/PersistErrorBanner';
+import { useRecoverFocus } from '../shared/useRecoverFocus';
 
 interface MobileStudySessionProps {
   session: ReturnType<typeof useRevisionSession>;
@@ -38,6 +39,10 @@ function formatClock(totalSeconds: number): string {
 export function MobileStudySession({ session, content, onEnd, onBackToSetup, onOpenMuscle }: MobileStudySessionProps) {
   const question = session.currentQuestion;
   const advance = () => (session.isLastQuestion ? session.finish() : session.next());
+  // Where focus goes when the question it was on is replaced, or the button
+  // it was on disappears — see useRecoverFocus. Called before any early return.
+  const questionRegion = useRef<HTMLDivElement>(null);
+  useRecoverFocus(questionRegion, `${session.currentIndex}:${session.answers.length}`);
   const openFullCard = (structureId: string) =>
     onOpenMuscle(structureId, session.questions.map((q) => q.structureId));
 
@@ -90,7 +95,13 @@ export function MobileStudySession({ session, content, onEnd, onBackToSetup, onO
   ).size;
 
   return (
-    <div className="flex min-h-screen flex-col" style={{ background: 'var(--pg)', color: 'var(--ink)' }}>
+    <div
+      ref={questionRegion}
+      tabIndex={-1}
+      aria-label={`Question ${session.currentIndex + 1} of ${session.questions.length}`}
+      className="flex min-h-screen flex-col outline-none"
+      style={{ background: 'var(--pg)', color: 'var(--ink)' }}
+    >
       <div className="flex-none px-6.5 pt-3">
         <div className="flex items-center gap-3.5">
           <button type="button" onClick={onEnd} className="border-0 bg-transparent p-0 leading-none" style={{ fontSize: 19, color: 'var(--ink3)' }}>

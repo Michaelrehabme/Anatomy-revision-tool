@@ -353,7 +353,7 @@ export function MobileRevisionSetup({ access, content, repository, userId, areas
           {LENGTHS.map((n) => {
             const on = !allCards && !customActive && count === n;
             return (
-              <button
+              <button aria-pressed={on}
                 key={n}
                 type="button"
                 onClick={() => {
@@ -399,7 +399,7 @@ export function MobileRevisionSetup({ access, content, repository, userId, areas
 
         {oinaSelected && (
           <>
-            <button
+            <button aria-pressed={allCards}
               type="button"
               onClick={() => setAllCards(true)}
               className="mt-2.5 w-full rounded-[3px]"
@@ -422,7 +422,7 @@ export function MobileRevisionSetup({ access, content, repository, userId, areas
         </div>
         <div className="mt-3.5 flex gap-2.5">
           {SESSION_TYPE_OPTIONS.map((opt) => (
-            <button
+            <button aria-pressed={mode === opt.value}
               key={opt.value}
               type="button"
               onClick={() => setMode(opt.value)}
@@ -449,7 +449,7 @@ export function MobileRevisionSetup({ access, content, repository, userId, areas
             </div>
             <div className="mt-3.5 flex gap-2">
               {TIMER_OPTIONS.map((n) => (
-                <button
+                <button aria-pressed={timerMinutes === n}
                   key={n}
                   type="button"
                   onClick={() => setTimerMinutes(n)}
@@ -466,6 +466,9 @@ export function MobileRevisionSetup({ access, content, repository, userId, areas
         <div className="mt-7.5 flex items-start gap-3.5">
           <button
             type="button"
+            role="switch"
+            aria-checked={useSrs}
+            aria-labelledby="mobile-srs-label"
             onClick={() => setUseSrs((v) => !v)}
             className="relative h-[31px] w-[52px] flex-none rounded-full border-0 p-0"
             style={{ background: useSrs ? 'var(--acc)' : 'var(--fig-line)' }}
@@ -475,7 +478,7 @@ export function MobileRevisionSetup({ access, content, repository, userId, areas
               style={{ left: useSrs ? 24 : 3, background: 'var(--sf)', boxShadow: 'var(--shadow-knob)' }}
             />
           </button>
-          <span style={{ fontSize: 15, lineHeight: 1.45, color: 'var(--ink2)' }}>
+          <span id="mobile-srs-label" style={{ fontSize: 15, lineHeight: 1.45, color: 'var(--ink2)' }}>
             Weight toward structures that are due
             <br />
             <span style={{ fontSize: 13, color: 'var(--ink3)' }}>

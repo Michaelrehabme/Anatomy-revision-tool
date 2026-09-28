@@ -19,6 +19,7 @@ import { MultiSelectSession } from '../MultiSelectSession/MultiSelectSession';
 import { OinaSession } from '../OinaSession/OinaSession';
 import { AppShell } from '../shell/AppShell';
 import { SessionSidebar } from '../shell/SessionSidebar';
+import { useRecoverFocus } from '../shared/useRecoverFocus';
 import { PersistErrorBanner } from '../shared/PersistErrorBanner';
 import { AnswerAnnouncer } from '../shared/AnswerAnnouncer';
 
@@ -40,6 +41,10 @@ function formatClock(totalSeconds: number): string {
 export function StudySession({ session, content, onEnd, onBackToSetup }: StudySessionProps) {
   const question = session.currentQuestion;
   const advance = () => (session.isLastQuestion ? session.finish() : session.next());
+  // Where focus goes when the question it was on is replaced, or the button
+  // it was on disappears — see useRecoverFocus. Called before any early return.
+  const questionRegion = useRef<HTMLDivElement>(null);
+  useRecoverFocus(questionRegion, `${session.currentIndex}:${session.answers.length}`);
 
   // EXAM: no feedback until the end, no per-question retries, an optional timer — see CR-009.
   // Flashcards stay self-rated even in exam mode (see FlashcardSession — there's no objective
@@ -139,7 +144,12 @@ export function StudySession({ session, content, onEnd, onBackToSetup }: StudySe
         />
       }
     >
-      <div className="flex min-h-screen flex-col">
+      <div
+        ref={questionRegion}
+        tabIndex={-1}
+        aria-label={`Question ${session.currentIndex + 1} of ${session.questions.length}`}
+        className="flex min-h-screen flex-col outline-none"
+      >
         {/* Announced to screen readers only; mirrors exactly what the visible
             UI reveals, which in assessment mode is nothing. */}
         <AnswerAnnouncer

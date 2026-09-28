@@ -460,7 +460,6 @@ export function RevisionSetup({ access, content, repository, userId, areas, onSt
                   const n = parseInt(raw, 10);
                   if (!Number.isNaN(n) && n > 0) setCount(n);
                 }}
-                aria-pressed={!allCards && customActive}
                 aria-label="Custom session length"
                 className="inline-flex min-h-[56px] w-0 flex-1 items-center justify-center whitespace-nowrap rounded-[3px] text-center"
                 style={{

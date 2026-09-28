@@ -99,7 +99,7 @@ export function LocateStructureSession({
     <div className="flex flex-col items-center px-24 pt-14 pb-12">
       <div
         className="text-center"
-        style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--acc)' }}
+        style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--accd)' }}
       >
         {questionHeaderLabel(question)}
       </div>

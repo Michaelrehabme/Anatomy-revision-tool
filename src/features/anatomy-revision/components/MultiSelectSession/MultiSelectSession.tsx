@@ -68,7 +68,7 @@ export function MultiSelectSession({ question, onAnswer, onNext, examMode }: Mul
         <div className="mx-auto w-full max-w-[920px]">
           <div
             className="text-center"
-            style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--acc)' }}
+            style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--accd)' }}
           >
             {questionHeaderLabel(question)}
           </div>

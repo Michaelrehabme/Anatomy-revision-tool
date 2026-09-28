@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { FeedbackHeading } from '../shared/FeedbackHeading';
 import type { MCQQuestion } from '../../types/question';
 import type { AnatomyImageAsset } from '../../types/image';
 import type { Confidence } from '../../types/attempt';
@@ -82,7 +83,7 @@ export function MCQSession({ question, imagesById, onAnswer, onNext, examMode }:
         <div className="mx-auto w-full max-w-[920px]">
           <div
             className="text-center"
-            style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--acc)' }}
+            style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--accd)' }}
           >
             {questionHeaderLabel(question)}
           </div>
@@ -163,9 +164,9 @@ export function MCQSession({ question, imagesById, onAnswer, onNext, examMode }:
           <div className="mx-auto flex max-w-[1000px] items-start gap-[72px]">
             <div className="flex-1">
               <div className="flex items-baseline gap-3.5">
-                <span style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 32, color: isCorrect ? 'var(--accd)' : 'var(--acc2d)' }}>
+                <FeedbackHeading style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 32, color: isCorrect ? 'var(--accd)' : 'var(--acc2d)' }} label={isCorrect ? 'Correct' : `Not quite. The answer is ${question.choices[question.correctIndex]}.`}>
                   {isCorrect ? 'Correct' : 'Not quite'}
-                </span>
+                </FeedbackHeading>
               </div>
               <p className="mt-3.5 max-w-[56ch] text-lg leading-relaxed" style={{ color: 'var(--ink)' }}>
                 <strong className="font-semibold">{question.choices[question.correctIndex]}.</strong>{' '}

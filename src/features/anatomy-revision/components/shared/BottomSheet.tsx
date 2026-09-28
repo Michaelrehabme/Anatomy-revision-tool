@@ -1,3 +1,4 @@
+import { FeedbackHeading } from './FeedbackHeading';
 import type { ReactNode } from 'react';
 
 interface BottomSheetProps {
@@ -23,7 +24,8 @@ export function BottomSheet({ correct, title, body, onFullCard, children }: Bott
       style={{ background: correct ? 'var(--accs)' : 'var(--acc2s)' }}
     >
       <div className="flex items-baseline gap-2.5">
-        <span style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 24, color }}>{title}</span>
+        {/* Focused as it appears, so the verdict is read out at once — see FeedbackHeading. */}
+        <FeedbackHeading style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 24, color }}>{title}</FeedbackHeading>
         <span className="flex-1" />
         {onFullCard && (
           <button type="button" onClick={onFullCard} className="border-0 bg-transparent p-0 underline" style={{ fontSize: 13.5, color }}>
