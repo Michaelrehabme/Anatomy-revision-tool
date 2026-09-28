@@ -316,7 +316,7 @@ export const BONE_STRUCTURES: BoneStructure[] = [
     description:
       'The typical (non-specialised) cervical vertebrae, C3 through C6, sharing a common general shape — small body, bifid spinous process, transverse foramina for the vertebral artery. C1 (atlas) and C2 (axis) are atypical and modeled as their own structures.',
     attachments: [
-      'Longus colli and longus capitis attach to the vertebral bodies',
+      'Longus colli attaches to the vertebral bodies; longus capitis arises from the transverse processes C3–C6',
       'Semispinalis cervicis and multifidus attach to the spinous/transverse processes',
       'Splenius cervicis inserts on the transverse processes',
     ],
@@ -374,7 +374,7 @@ export const BONE_STRUCTURES: BoneStructure[] = [
     groups: ['vertebra'],
     description:
       'The first cervical vertebra — a ring-shaped bone with no vertebral body, supporting the skull directly via the occipital condyles.',
-    attachments: ['Alar and transverse ligaments attach to the lateral masses and anterior arch'],
+    attachments: ['Transverse ligament of the atlas attaches to a tubercle on each lateral mass, holding the dens against the anterior arch'],
     articulations: [
       'Atlanto-occipital joint with the occipital condyles of the skull ("yes" nodding movement)',
       'Atlanto-axial joint with the axis (C2), around the dens ("no" rotation movement)',

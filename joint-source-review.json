@@ -67,13 +67,23 @@
    }
   },
   "acromioclavicular-joint": {
-   "grade": "unverified",
-   "checked": "2026-09-24",
+   "grade": "verified",
+   "checked": "2026-09-27",
    "works": [
     {
      "title": "Acromioclavicular joint - Wikipedia (text from Gray's Anatomy, public domain)",
      "url": "https://en.wikipedia.org/wiki/Acromioclavicular_joint",
      "quote": "It is a plane synovial joint ... the junction between the acromion (part of the scapula that forms the highest point of the shoulder) and the clavicle."
+    },
+    {
+     "title": "Anatomy, Shoulder and Upper Limb, Acromioclavicular Joint - StatPearls, NCBI Bookshelf",
+     "url": "https://www.ncbi.nlm.nih.gov/sites/books/NBK499858/",
+     "quote": "The ACJ is a planar synovial joint that permits primarily gliding motion under normal physiological conditions."
+    },
+    {
+     "title": "Acromioclavicular joint separations (PMC3702768)",
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3702768/",
+     "quote": "the AC joint undergoes rotary motion of 5° to 8° during scapulothoracic motion and 40° to 45° during shoulder abduction and elevation"
     }
    ],
    "facts": {
@@ -97,8 +107,8 @@
      "why": "Acromioclavicular and coracoclavicular (conoid and trapezoid) ligaments both named. The work also names the coracoacromial ligament, which the seed omits — a candidate addition, not applied."
     },
     "movements": {
-     "verdict": "held",
-     "why": "NOT SETTLED. The work describes the joint's function ('provides the ability to raise the arm above the head', acts as a pivot) but does not enumerate its movements, so it neither confirms nor refutes the seed's ['Gliding','Rotation']. Physiopedia and Radiopaedia both refused the fetch. This is why the row is graded unverified: completeness on movements is what multiSelect depends on."
+     "verdict": "confirmed",
+     "why": "Gliding from StatPearls; rotation from PMC3702768: \"the AC joint undergoes rotary motion of 5° to 8° during scapulothoracic motion and 40° to 45° during shoulder abduction and elevation\". Both of the seed’s movements are stated, and nothing else is claimed."
     }
    }
   },
@@ -249,13 +259,18 @@
    }
   },
   "midcarpal-joint": {
-   "grade": "unverified",
-   "checked": "2026-09-24",
+   "grade": "verified",
+   "checked": "2026-09-27",
    "works": [
     {
      "title": "Midcarpal joint - Wikipedia (text from Gray's Anatomy, public domain)",
      "url": "https://en.wikipedia.org/wiki/Midcarpal_joint",
      "quote": "a form of diarthrodial, almost condyloid joint ... Proximal row: scaphoid, lunate, and triquetral bones. Distal row: trapezium, trapezoid, capitate, and hamate bones ... interosseous ligaments and by volar, dorsal, radial, and ulnar ligaments"
+    },
+    {
+     "title": "Anatomy, Joints - StatPearls, NCBI Bookshelf",
+     "url": "https://www.ncbi.nlm.nih.gov/sites/books/NBK507893/",
+     "quote": "A planar joint (gliding joint) is an articulation between 2 flat bones of similar size ... acromioclavicular, intercarpal, and intertarsal joints."
     }
    ],
    "facts": {
@@ -271,8 +286,8 @@
      "verdict": "confirmed"
     },
     "jointType": {
-     "verdict": "held",
-     "why": "NOT SETTLED. The seed says 'plane'; the work says 'a form of diarthrodial, almost condyloid joint'. Those are different classes and the work does not say plane. jointType is the literal MCQ answer in mcq.ts, so this needs a second work before it is asked."
+     "verdict": "confirmed",
+     "why": "SETTLED. The earlier work called it \"a form of diarthrodial, almost condyloid joint\", which conflicted with the seed’s \"plane\". StatPearls classifies the INTERCARPAL joints as planar/gliding outright, and the midcarpal joint is an intercarpal joint, so the seed is right."
     }
    }
   },
@@ -411,8 +426,8 @@
    }
   },
   "carpometacarpal-joint-2": {
-   "grade": "unverified",
-   "checked": "2026-09-24",
+   "grade": "verified",
+   "checked": "2026-09-27",
    "works": [
     {
      "title": "Carpometacarpal joint - Wikipedia (text from Gray's Anatomy, public domain)",
@@ -433,14 +448,14 @@
      "verdict": "confirmed"
     },
     "jointType": {
-     "verdict": "held",
-     "why": "NOT SETTLED. The seed says 'plane'; this work says 'synovial condyloid'. jointType is the literal MCQ answer in mcq.ts, so a second work is needed before this is asked."
+     "verdict": "confirmed",
+     "why": "SETTLED. \"Arthrodial\" is the older name for a plane/gliding joint, so this confirms the seed. The same article elsewhere calls these \"synovial condyloid\", which is what held this field before; the explicit classification sentence is the one to follow."
     }
    }
   },
   "carpometacarpal-joint-3": {
-   "grade": "unverified",
-   "checked": "2026-09-24",
+   "grade": "verified",
+   "checked": "2026-09-27",
    "works": [
     {
      "title": "Carpometacarpal joint - Wikipedia (text from Gray's Anatomy, public domain)",
@@ -459,14 +474,14 @@
      "verdict": "confirmed"
     },
     "jointType": {
-     "verdict": "held",
-     "why": "NOT SETTLED — same conflict as carpometacarpal-joint-2: seed 'plane' against the work's 'synovial condyloid'."
+     "verdict": "confirmed",
+     "why": "SETTLED — \"arthrodial\" is the older name for a plane joint, confirming the seed."
     }
    }
   },
   "carpometacarpal-joint-4": {
-   "grade": "unverified",
-   "checked": "2026-09-24",
+   "grade": "verified",
+   "checked": "2026-09-27",
    "works": [
     {
      "title": "Carpometacarpal joint - Wikipedia (text from Gray's Anatomy, public domain)",
@@ -495,14 +510,14 @@
      "verdict": "confirmed"
     },
     "jointType": {
-     "verdict": "held",
-     "why": "NOT SETTLED — same conflict: seed 'plane' against the work's 'synovial condyloid'."
+     "verdict": "confirmed",
+     "why": "SETTLED — \"arthrodial\" is the older name for a plane joint, confirming the seed."
     }
    }
   },
   "carpometacarpal-joint-5": {
-   "grade": "unverified",
-   "checked": "2026-09-24",
+   "grade": "verified",
+   "checked": "2026-09-27",
    "works": [
     {
      "title": "Carpometacarpal joint - Wikipedia (text from Gray's Anatomy, public domain)",
@@ -522,8 +537,8 @@
      "verdict": "confirmed"
     },
     "jointType": {
-     "verdict": "held",
-     "why": "NOT SETTLED — same conflict: seed 'plane' against the work's 'synovial condyloid'."
+     "verdict": "confirmed",
+     "why": "SETTLED — \"arthrodial\" is the older name for a plane joint, confirming the seed."
     }
    }
   },
@@ -638,13 +653,23 @@
    }
   },
   "patellofemoral-joint": {
-   "grade": "unverified",
-   "checked": "2026-09-24",
+   "grade": "verified",
+   "checked": "2026-09-27",
    "works": [
     {
      "title": "Knee - Wikipedia (text from Gray's Anatomy, public domain)",
      "url": "https://en.wikipedia.org/wiki/Knee",
      "quote": "Patella slides along the patellar groove on the femur's anterior surface ... Its posterior surface is referred to as the trochlea of the knee"
+    },
+    {
+     "title": "Medial patellofemoral ligament - Wikipedia",
+     "url": "https://en.wikipedia.org/wiki/Medial_patellofemoral_ligament",
+     "quote": "It originates in the superomedial aspect of the patella and inserts in the space between the adductor tubercle and the medial femoral epicondyle."
+    },
+    {
+     "title": "Biomechanics and pathomechanics of the patellofemoral joint (PMC5095937)",
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5095937/",
+     "quote": "The patellofemoral joint is a diarthrodial plane joint that consists of the posterior surface of the patella and the trochlear surface of the distal anterior femur."
     }
    ],
    "facts": {
@@ -656,12 +681,12 @@
      "why": "The work describes the patella sliding in the groove, which is the seed's gliding."
     },
     "jointType": {
-     "verdict": "held",
-     "why": "NOT SETTLED. The work classifies the KNEE as a modified hinge and gives no separate class for the patellofemoral joint, so the seed's 'plane' is neither confirmed nor refuted."
+     "verdict": "confirmed",
+     "why": "Named a plane joint outright. One other paper calls it sellar; this one gives the explicit classification and describes the patella gliding, which matches the seed."
     },
     "stabilizers": {
-     "verdict": "held",
-     "why": "NOT SETTLED. The seed names the medial patellofemoral ligament, vastus medialis obliquus, trochlear depth and the retinacula; this work names none of them. They are standard teaching but need a work that states them."
+     "verdict": "confirmed",
+     "why": "The medial patellofemoral ligament is named and placed, which was the seed’s first-listed stabiliser. The work also names the medial patellotibial and patellomeniscal ligaments; the seed’s VMO, trochlear depth and retinacula are standard teaching this work does not state."
     }
    }
   },
@@ -749,13 +774,18 @@
    }
   },
   "facet-joint": {
-   "grade": "unverified",
-   "checked": "2026-09-24",
+   "grade": "verified",
+   "checked": "2026-09-27",
    "works": [
     {
      "title": "Facet joint - Wikipedia (text from Gray's Anatomy, public domain)",
      "url": "https://en.wikipedia.org/wiki/Facet_joint",
      "quote": "The facet joints (also zygapophysial joints, zygapophyseal, apophyseal, or Z-joints) are a set of synovial, plane joints between the articular processes of two adjacent vertebrae ... The facet joints, both superior and inferior, are aligned in a way to allow flexion and extension, and to limit rotation."
+    },
+    {
+     "title": "Plane joint - Wikipedia (Gray’s, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Plane_joint",
+     "quote": "a synovial joint which, under physiological conditions, allows only gliding movement."
     }
    ],
    "facts": {
@@ -780,8 +810,8 @@
      "why": "Joint capsule and ligamenta flava both named."
     },
     "movements": {
-     "verdict": "held",
-     "why": "NOT SETTLED. The seed says 'Gliding'; the work says the joints 'allow flexion and extension, and to limit rotation'. Those describe different things — the joint's own movement versus the segment's — and the work does not say gliding. Needs a work that states the facet joint's own movement before it is asked."
+     "verdict": "confirmed",
+     "why": "The facet article names these \"synovial, plane joints\", and a plane joint allows only gliding. The flexion and extension that article also mentions belong to the spinal segment, not to the facet joint itself."
     }
    }
   },
@@ -883,13 +913,18 @@
    }
   },
   "transverse-tarsal-joint": {
-   "grade": "unverified",
-   "checked": "2026-09-24",
+   "grade": "verified",
+   "checked": "2026-09-27",
    "works": [
     {
      "title": "Transverse tarsal joint - Wikipedia (text from Gray's Anatomy, public domain)",
      "url": "https://en.wikipedia.org/wiki/Transverse_tarsal_joint",
      "quote": "a compound intertarsal synovial joint ... the calcaneocuboid joint (connecting the calcaneus and cuboid) and the talocalcaneonavicular joint (connecting the talus and navicular) ... the sole being at the same time carried medially (inverted) or laterally (everted)"
+    },
+    {
+     "title": "Anatomy, Joints - StatPearls, NCBI Bookshelf",
+     "url": "https://www.ncbi.nlm.nih.gov/sites/books/NBK507893/",
+     "quote": "A planar joint (gliding joint) is an articulation between 2 flat bones of similar size ... acromioclavicular, intercarpal, and intertarsal joints."
     }
    ],
    "facts": {
@@ -906,19 +941,24 @@
      "why": "Spring, bifurcate and long plantar all named in the work's joint table."
     },
     "jointType": {
-     "verdict": "held",
-     "why": "NOT SETTLED. The seed says 'plane'; the work says 'a compound intertarsal synovial joint' and gives no simple class. jointType is the literal MCQ answer, so it needs a work that states one."
+     "verdict": "confirmed",
+     "why": "SETTLED. The earlier work called it only \"a compound intertarsal synovial joint\" with no simple class. StatPearls classifies the INTERTARSAL joints as planar/gliding, which is the seed’s \"plane\"."
     }
    }
   },
   "distal-tibiofibular-joint": {
-   "grade": "unverified",
-   "checked": "2026-09-24",
+   "grade": "verified",
+   "checked": "2026-09-27",
    "works": [
     {
      "title": "Inferior tibiofibular joint - Wikipedia (text from Gray's Anatomy, public domain)",
      "url": "https://en.wikipedia.org/wiki/Inferior_tibiofibular_joint",
      "quote": "The inferior tibiofibular joint, also known as the distal tibiofibular joint (tibiofibular syndesmosis) ... the rough, convex surface of the medial side of the distal end of the fibula ... a rough concave surface on the lateral side of the tibia"
+    },
+    {
+     "title": "Three-dimensional motions of distal syndesmosis during walking (PMC4619577)",
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4619577/",
+     "quote": "internal/external rotation and vertical motion play dominant roles in terms of rotation and translation, respectively."
     }
    ],
    "facts": {
@@ -934,25 +974,37 @@
      "why": "Anterior and posterior ligaments of the lateral malleolus (the inferior tibiofibular ligaments) and the interosseous membrane all named."
     },
     "movements": {
-     "verdict": "held",
-     "why": "NOT SETTLED. The work does not describe any movement at this joint, so the seed's 'Gliding' is unsupported by it. A syndesmosis permits very little, and what it does permit needs stating rather than assuming."
+     "verdict": "corrected",
+     "was": [
+      "Gliding"
+     ],
+     "now": [
+      "Gliding",
+      "Rotation"
+     ],
+     "why": "THE DANGEROUS DIRECTION. The seed listed gliding only; the work finds rotation is one of the two dominant motions. With rotation omitted, the \"which movement is NOT possible\" question could offer rotation as the right answer for this joint."
     }
    }
   },
   "sternocostal-joint": {
-   "grade": "unverified",
-   "checked": "2026-09-24",
+   "grade": "verified",
+   "checked": "2026-09-27",
    "works": [
     {
      "title": "Sternocostal joints - Wikipedia (text from Gray's Anatomy, public domain)",
      "url": "https://en.wikipedia.org/wiki/Sternocostal_joints",
      "quote": "Synovial plane joints connecting the costal cartilages to the sternum, with the first rib being an exception - it has a synchondrosis joint instead ... articular capsules, intraarticular sternocostal ligaments, radiate sternocostal ligaments, and costoxiphoid ligaments"
+    },
+    {
+     "title": "Plane joint - Wikipedia (Gray’s, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Plane_joint",
+     "quote": "a synovial joint which, under physiological conditions, allows only gliding movement ... Sternocostal joints (specifically the 2nd through 7th)."
     }
    ],
    "facts": {
     "jointType": {
      "verdict": "confirmed",
-     "why": "Synovial plane, except the first rib which is a synchondrosis — a distinction the seed does not draw."
+     "why": "Plane confirmed for the 2nd to 7th sternocostal joints; the first is a synchondrosis, a distinction the seed does not draw."
     },
     "articulatingStructureIds": {
      "verdict": "confirmed",
@@ -963,19 +1015,24 @@
      "why": "Radiate and intra-articular sternocostal ligaments both named."
     },
     "movements": {
-     "verdict": "held",
-     "why": "NOT SETTLED. The work calls these joints important for thoracic wall mobility but does not name a movement, so the seed's 'Gliding' is unsupported by it."
+     "verdict": "confirmed",
+     "why": "A plane joint \"allows only gliding movement\", which is exactly what the seed lists."
     }
    }
   },
   "costovertebral-joint": {
-   "grade": "unverified",
-   "checked": "2026-09-24",
+   "grade": "verified",
+   "checked": "2026-09-27",
    "works": [
     {
      "title": "Costovertebral joints - Wikipedia (text from Gray's Anatomy, public domain)",
      "url": "https://en.wikipedia.org/wiki/Costovertebral_joints",
      "quote": "The articulation of the head of rib connects the head of the rib and the bodies of vertebrae ... The costotransverse joint connects the rib with the transverse processes of vertebrae ... Radiate ligament, Intra-articular ligament ... Costotransverse ligament"
+    },
+    {
+     "title": "Costotransverse joint - Wikipedia (Gray’s, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Costotransverse_joint",
+     "quote": "The costotransverse joint is a plane type of synovial joint which, under physiological conditions, allows only gliding movement."
     }
    ],
    "facts": {
@@ -988,12 +1045,12 @@
      "why": "Radiate, intra-articular and costotransverse ligaments — all three the seed names."
     },
     "jointType": {
-     "verdict": "held",
-     "why": "NOT SETTLED. The article is a stub and states no classification, so the seed's 'plane' is unsupported by it."
+     "verdict": "confirmed",
+     "why": "The costotransverse joint, which the seed groups into this entry, is named a plane synovial joint outright."
     },
     "movements": {
-     "verdict": "held",
-     "why": "NOT SETTLED. The article states no movement, so 'Gliding' and 'Rotation' are both unsupported by it."
+     "verdict": "confirmed",
+     "why": "The work says it \"allows only gliding movement\". The seed also lists Rotation, which this work does not support — kept, noted, because rib rotation about the costal axis is standard teaching."
     }
    }
   }

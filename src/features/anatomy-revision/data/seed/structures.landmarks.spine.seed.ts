@@ -331,7 +331,10 @@ export const SPINE_LANDMARK_STRUCTURES: LandmarkStructure[] = [
     description: 'The fifth and lowest lumbar vertebra, articulating with the sacrum below at the lumbosacral junction.',
     attachments: [],
     articulations: ['Lumbosacral joint with the sacrum'],
-    palpability: 'palpable-deep',
+    // Palpability corrected 2026-09-27 from the owner's review of all 89 unsourced
+    // values: was 'palpable-deep'. The owner is a sports rehabilitation student and palpates
+    // these in practicals; no published work consulted states this one.
+    palpability: 'easily-palpable',
     aliases: [],
     imageIds: [],
     eligibility: { flashcard: true, mcq: true, locate: true },
@@ -652,7 +655,10 @@ export const SPINE_LANDMARK_STRUCTURES: LandmarkStructure[] = [
     description: 'The lowest "floating" rib, with no anterior attachment to the sternum or costal cartilage above.',
     attachments: ['Quadratus lumborum and diaphragm attach here'],
     articulations: ['Costovertebral joint with T12'],
-    palpability: 'palpable-deep',
+    // Palpability corrected 2026-09-27 from the owner's review of all 89 unsourced
+    // values: was 'palpable-deep'. The owner is a sports rehabilitation student and palpates
+    // these in practicals; no published work consulted states this one.
+    palpability: 'easily-palpable',
     aliases: [],
     imageIds: [],
     eligibility: { flashcard: true, mcq: true, locate: true },

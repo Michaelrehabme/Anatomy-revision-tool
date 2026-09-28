@@ -35,7 +35,10 @@ describe('atlasRow', () => {
   });
 
   it('does not state attachments nobody has checked', () => {
-    const unchecked = ALL_STRUCTURES.filter(isLigament).find((l) => l.needsReview && l.attachmentStructureIds.length > 0)!;
+    // Built rather than found: every ligament in the data is checked as of
+    // 28 Sep 2026, and the guard has to keep working for the next one added.
+    const real = ALL_STRUCTURES.filter(isLigament).find((l) => l.attachmentStructureIds.length > 0)!;
+    const unchecked = { ...real, needsReview: true };
     expect(atlasRow(unchecked, byId).columns[0].text).toBe('Being checked');
   });
 

@@ -219,7 +219,15 @@ function buildLigamentAttachmentQuestions(
   const questions: MultiSelectQuestion[] = [];
 
   for (const lig of pool.filter(isLigament)) {
-    const attachments = reviewedAttachmentIds(lig);
+    // The question asks for BONES, so only bony attachments are right answers
+    // to it. The transverse ligament of the knee joins the two menisci and
+    // attaches to no bone at all; offering "Medial meniscus" as the answer to
+    // "select all the bones" would teach the wrong category. Such a ligament is
+    // still asked its attachments by name, just not by this question.
+    const attachments = reviewedAttachmentIds(lig).filter((id) => {
+      const s = indexes.byId.get(id);
+      return !s || isBone(s) || isLandmark(s);
+    });
     if (!attachments.length) continue;
     const correct = new Set(attachments);
     // A distractor must not be a different name for a correct answer. The

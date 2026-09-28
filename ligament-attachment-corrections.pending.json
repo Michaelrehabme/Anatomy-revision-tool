@@ -18,7 +18,8 @@
     "triquetrum"
    ],
    "why": "The seed included the lunate, but the source names attachments only to the scaphoid and triquetrum; the ligament passes in front of the lunate and capitate rather than attaching to them, which is what the heavy lunate mesh contact reflects.",
-   "reviewNote": "Held despite a source: Sennwald names the scaphoid and triquetrum and does not mention the lunate. Silence is not a denial, and the identical inference was retracted for the dorsal scaphotriquetral ligament. Cited: The anatomy of the palmar scaphotriquetral ligament - The Journal of Bone & Joint Surgery (Br) — \"Its attachment to the triquetrum is substantial but that to the scaphoid is thin and fan-shaped, its fibres interdigitating with those of the radioscaphocapitate ligament.\""
+   "reviewNote": "Held despite a source: Sennwald names the scaphoid and triquetrum and does not mention the lunate. Silence is not a denial, and the identical inference was retracted for the dorsal scaphotriquetral ligament. Cited: The anatomy of the palmar scaphotriquetral ligament - The Journal of Bone & Joint Surgery (Br) — \"Its attachment to the triquetrum is substantial but that to the scaphoid is thin and fan-shaped, its fibres interdigitating with those of the radioscaphocapitate ligament.\"",
+   "resolved": "28 Sep 2026: promoted into ligament-attachment-corrections.json after the owner confirmed no lunate attachment. The proposed correction here turned out right."
   }
  ],
  "alsoHeld": {

@@ -1,4 +1,4 @@
-import { writeFileSync } from 'node:fs';
+import { readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { ALL_STRUCTURES } from '../features/anatomy-revision/data/seed';
 import {
@@ -122,6 +122,22 @@ interface Row {
   by?: string;
 }
 
+/**
+ * The specific bone each landmark is DRAWN on, from landmark-markers.spec.json.
+ * The seed often names the grouped bone (calcaneal-tuberosity -> tarsals) while
+ * the deck names the specific one ("Calcaneus via the Achilles tendon"), so
+ * parent-level matching looked for the wrong word and missed the match. The
+ * plate already resolved this: its marker parent is the specific bone.
+ */
+const markerParent = new Map<string, string>();
+try {
+  const spec = JSON.parse(readFileSync(ROOT + '/landmark-markers.spec.json', 'utf8')) as {
+    landmarks: { id: string; parent: string }[];
+  };
+  for (const m of spec.landmarks) if (m.parent) markerParent.set(m.id, m.parent);
+} catch {
+  // No spec yet is not an error; it just means no second parent to try.
+}
 const landmarkParent = new Map<string, string>();
 for (const l of landmarks) if (l.parentBoneId) landmarkParent.set(l.id, l.parentBoneId);
 

@@ -728,7 +728,7 @@ export const JOINT_STRUCTURES: JointStructure[] = [
       'mortise closed around the talus.',
     jointType: 'syndesmosis',
     articulatingStructureIds: ['tibia', 'fibula'],
-    movements: ['Gliding'],
+    movements: ['Gliding', 'Rotation'],
     stabilizers: ['Anterior and posterior inferior tibiofibular ligaments', 'Interosseous ligament and membrane'],
     aliases: ['Ankle syndesmosis', 'Inferior tibiofibular joint'],
     imageIds: [],

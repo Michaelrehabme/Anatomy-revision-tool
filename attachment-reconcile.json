@@ -1,5 +1,5 @@
 {
- "generated": "2026-09-24",
+ "generated": "2026-09-27",
  "rows": [
   {
    "structure": "femur",
@@ -69,8 +69,9 @@
    "kind": "bone",
    "field": "attachments",
    "claim": "Patellar ligament insertion — tibial tuberosity",
-   "status": "unsupported",
-   "by": "names no muscle or source-checked ligament this repo holds"
+   "status": "supported",
+   "level": "exact",
+   "by": "Patellar Ligament (source-checked) attaches to tibia"
   },
   {
    "structure": "tibia",
@@ -514,8 +515,9 @@
    "kind": "bone",
    "field": "attachments",
    "claim": "Costal cartilages of ribs 1–7 attach along the lateral borders",
-   "status": "unsupported",
-   "by": "names no muscle or source-checked ligament this repo holds"
+   "status": "supported",
+   "level": "exact",
+   "by": "Costal Cartilage (source-checked) attaches to sternum"
   },
   {
    "structure": "sternum",
@@ -723,8 +725,9 @@
    "kind": "bone",
    "field": "attachments",
    "claim": "Alar and apical ligaments attach to the dens",
-   "status": "unsupported",
-   "by": "names no muscle or source-checked ligament this repo holds"
+   "status": "supported",
+   "level": "exact",
+   "by": "Alar Ligaments (source-checked) attaches to axis-c2"
   },
   {
    "structure": "axis-c2",
@@ -1066,8 +1069,9 @@
    "kind": "bone",
    "field": "attachments",
    "claim": "Flexor retinaculum attaches across the palmar carpals, forming the carpal tunnel",
-   "status": "unsupported",
-   "by": "names no muscle or source-checked ligament this repo holds"
+   "status": "supported",
+   "level": "exact",
+   "by": "Flexor Retinaculum (source-checked) attaches to carpals"
   },
   {
    "structure": "carpals",
@@ -1118,8 +1122,9 @@
    "kind": "bone",
    "field": "attachments",
    "claim": "Plantar fascia originates from the calcaneus",
-   "status": "unsupported",
-   "by": "names no muscle or source-checked ligament this repo holds"
+   "status": "supported",
+   "level": "exact",
+   "by": "Plantar Fascia (source-checked) attaches to tarsals"
   },
   {
    "structure": "tarsals",
@@ -1430,8 +1435,9 @@
    "kind": "landmark",
    "field": "attachments",
    "claim": "Inguinal ligament attachment",
-   "status": "unsupported",
-   "by": "names no muscle or source-checked ligament this repo holds"
+   "status": "supported",
+   "level": "exact",
+   "by": "Inguinal Ligament (source-checked) attaches to asis"
   },
   {
    "structure": "acromion",
@@ -1509,8 +1515,9 @@
    "kind": "landmark",
    "field": "attachments",
    "claim": "Intertransverse ligaments run between adjacent transverse processes",
-   "status": "unsupported",
-   "by": "names no muscle or source-checked ligament this repo holds"
+   "status": "supported",
+   "level": "exact",
+   "by": "Intertransverse Ligaments (source-checked) attaches to transverse-process"
   },
   {
    "structure": "lamina",
@@ -1535,16 +1542,18 @@
    "kind": "landmark",
    "field": "attachments",
    "claim": "Alar and apical ligaments attach at its tip",
-   "status": "unsupported",
-   "by": "names no muscle or source-checked ligament this repo holds"
+   "status": "supported",
+   "level": "exact",
+   "by": "Alar Ligaments (source-checked) attaches to dens-odontoid-process"
   },
   {
    "structure": "dens-odontoid-process",
    "kind": "landmark",
    "field": "attachments",
    "claim": "Transverse ligament of the atlas holds it against the anterior arch of the atlas",
-   "status": "unsupported",
-   "by": "names no muscle or source-checked ligament this repo holds"
+   "status": "supported",
+   "level": "exact",
+   "by": "Transverse Ligament of the Atlas (source-checked) attaches to dens-odontoid-process"
   },
   {
    "structure": "posterior-arch-atlas",
@@ -1559,8 +1568,9 @@
    "kind": "landmark",
    "field": "attachments",
    "claim": "Transverse ligament of the atlas attaches to its medial tubercle",
-   "status": "unsupported",
-   "by": "names no muscle or source-checked ligament this repo holds"
+   "status": "supported",
+   "level": "exact",
+   "by": "Transverse Ligament of the Atlas (source-checked) attaches to lateral-mass-atlas"
   },
   {
    "structure": "bifid-spinous-process",
@@ -1611,8 +1621,9 @@
    "kind": "landmark",
    "field": "attachments",
    "claim": "Linea alba attaches here",
-   "status": "unsupported",
-   "by": "names no muscle or source-checked ligament this repo holds"
+   "status": "supported",
+   "level": "exact",
+   "by": "Linea Alba (source-checked) attaches to xiphoid-process"
   },
   {
    "structure": "costal-margin",
@@ -1900,8 +1911,9 @@
    "kind": "landmark",
    "field": "attachments",
    "claim": "Triangular fibrocartilage complex (TFCC) attaches here",
-   "status": "unsupported",
-   "by": "names no muscle or source-checked ligament this repo holds"
+   "status": "supported",
+   "level": "exact",
+   "by": "Triangular Fibrocartilage Complex (source-checked) attaches to ulnar-styloid-process"
   },
   {
    "structure": "radial-styloid-process",
@@ -1935,16 +1947,18 @@
    "kind": "landmark",
    "field": "attachments",
    "claim": "Flexor retinaculum attaches here",
-   "status": "unsupported",
-   "by": "names no muscle or source-checked ligament this repo holds"
+   "status": "supported",
+   "level": "exact",
+   "by": "Flexor Retinaculum (source-checked) attaches to trapezium"
   },
   {
    "structure": "hook-of-hamate",
    "kind": "landmark",
    "field": "attachments",
    "claim": "Flexor retinaculum attaches here",
-   "status": "unsupported",
-   "by": "names no muscle or source-checked ligament this repo holds"
+   "status": "supported",
+   "level": "exact",
+   "by": "Flexor Retinaculum (source-checked) attaches to hook-of-hamate"
   },
   {
    "structure": "hook-of-hamate",
@@ -1959,8 +1973,9 @@
    "kind": "landmark",
    "field": "attachments",
    "claim": "Flexor retinaculum attaches here",
-   "status": "unsupported",
-   "by": "names no muscle or source-checked ligament this repo holds"
+   "status": "supported",
+   "level": "exact",
+   "by": "Flexor Retinaculum (source-checked) attaches to scaphoid-tubercle"
   },
   {
    "structure": "base-of-first-metacarpal",
@@ -2020,8 +2035,9 @@
    "kind": "landmark",
    "field": "attachments",
    "claim": "Ligamentum teres attaches at its floor to the femoral head",
-   "status": "unsupported",
-   "by": "names no muscle or source-checked ligament this repo holds"
+   "status": "supported",
+   "level": "exact",
+   "by": "Ligament of the Head of the Femur (source-checked) attaches to acetabulum"
   },
   {
    "structure": "iliac-crest",
@@ -2046,8 +2062,9 @@
    "kind": "landmark",
    "field": "attachments",
    "claim": "Iliofemoral ligament origin",
-   "status": "unsupported",
-   "by": "names no muscle or source-checked ligament this repo holds"
+   "status": "supported",
+   "level": "exact",
+   "by": "Iliofemoral Ligament (source-checked) attaches to aiis"
   },
   {
    "structure": "psis",
@@ -2089,8 +2106,9 @@
    "kind": "landmark",
    "field": "attachments",
    "claim": "Inguinal ligament attaches here",
-   "status": "unsupported",
-   "by": "names no muscle or source-checked ligament this repo holds"
+   "status": "supported",
+   "level": "exact",
+   "by": "Inguinal Ligament (source-checked) attaches to pubic-tubercle"
   },
   {
    "structure": "pubic-tubercle",
@@ -2105,8 +2123,9 @@
    "kind": "landmark",
    "field": "attachments",
    "claim": "Ligamentum teres attaches at the fovea capitis (a small pit on its surface)",
-   "status": "unsupported",
-   "by": "names no muscle or source-checked ligament this repo holds"
+   "status": "supported",
+   "level": "exact",
+   "by": "Ligament of the Head of the Femur (source-checked) attaches to femoral-head"
   },
   {
    "structure": "femoral-neck",
@@ -2130,8 +2149,9 @@
    "kind": "landmark",
    "field": "attachments",
    "claim": "Iliofemoral ligament attaches here",
-   "status": "unsupported",
-   "by": "names no muscle or source-checked ligament this repo holds"
+   "status": "supported",
+   "level": "exact",
+   "by": "Iliofemoral Ligament (source-checked) attaches to intertrochanteric-line"
   },
   {
    "structure": "intertrochanteric-line",
@@ -2278,8 +2298,9 @@
    "kind": "landmark",
    "field": "attachments",
    "claim": "Gerdy's tubercle (iliotibial band insertion) is on its anterolateral aspect",
-   "status": "unsupported",
-   "by": "names no muscle or source-checked ligament this repo holds"
+   "status": "supported",
+   "level": "exact",
+   "by": "Iliotibial Band (source-checked) attaches to lateral-condyle-tibia"
   },
   {
    "structure": "tibial-tuberosity",
@@ -2347,8 +2368,9 @@
    "kind": "landmark",
    "field": "attachments",
    "claim": "Iliotibial band insertion",
-   "status": "unsupported",
-   "by": "names no muscle or source-checked ligament this repo holds"
+   "status": "supported",
+   "level": "exact",
+   "by": "Iliotibial Band (source-checked) attaches to gerdys-tubercle"
   },
   {
    "structure": "lateral-malleolus",
@@ -2373,8 +2395,9 @@
    "kind": "landmark",
    "field": "attachments",
    "claim": "Plantar fascia origin",
-   "status": "unsupported",
-   "by": "names no muscle or source-checked ligament this repo holds"
+   "status": "supported",
+   "level": "exact",
+   "by": "Plantar Fascia (source-checked) attaches to calcaneus"
   },
   {
    "structure": "navicular",
@@ -2440,16 +2463,18 @@
    "kind": "landmark",
    "field": "attachments",
    "claim": "Achilles tendon insertion (posterior surface)",
-   "status": "unsupported",
-   "by": "names no muscle or source-checked ligament this repo holds"
+   "status": "supported",
+   "level": "exact",
+   "by": "Achilles Tendon (source-checked) attaches to calcaneal-tuberosity"
   },
   {
    "structure": "calcaneal-tuberosity",
    "kind": "landmark",
    "field": "attachments",
    "claim": "Plantar fascia origin (plantar surface, medial process)",
-   "status": "unsupported",
-   "by": "names no muscle or source-checked ligament this repo holds"
+   "status": "supported",
+   "level": "exact",
+   "by": "Plantar Fascia (source-checked) attaches to calcaneal-tuberosity"
   },
   {
    "structure": "navicular-tuberosity",

@@ -99,6 +99,16 @@ export const REVIEW_FILES: Record<string, { file: string; key: string; scope: st
  * Order matters — first match wins, so put the specific before the general.
  */
 const PUBLISHERS: { pattern: RegExp; title: string; url?: string }[] = [
+  // The owner reviewed these rows personally. They are a sports rehabilitation
+  // STUDENT, not a qualified therapist, and the page must say so: a named,
+  // dated, attributable check by someone studying the subject is real evidence,
+  // but it is not expert sign-off and must not be dressed up as one. It is
+  // strongest for palpability, which he practises directly and which published
+  // texts almost never state, and weakest anywhere a published work disagrees -
+  // where the work wins (see transverse-ligament-of-knee).
+  { pattern: /user review|owner review|review page|reviewer/i, title: "Checked by the project owner, a sports rehabilitation student" },
+  { pattern: /netter/i, title: "Netter plates supplied by the project owner" },
+  { pattern: /z-anatomy|Models-of-human-anatomy/i, title: "Z-Anatomy (Gauthier Kervyn and contributors), CC BY-SA 4.0", url: "https://github.com/Z-Anatomy/Models-of-human-anatomy" },
   { pattern: /gray|wikipedia/i, title: "Gray's Anatomy (public domain, via Wikipedia)", url: 'https://en.wikipedia.org/wiki/Gray%27s_Anatomy' },
   { pattern: /radiopaedia/i, title: 'Radiopaedia', url: 'https://radiopaedia.org/' },
   { pattern: /physio-?pedia/i, title: 'Physiopedia', url: 'https://www.physio-pedia.com/' },

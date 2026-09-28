@@ -7,6 +7,7 @@ import { UPPER_LIMB_LANDMARK_STRUCTURES } from './structures.landmarks.upper-lim
 import { LOWER_LIMB_LANDMARK_STRUCTURES } from './structures.landmarks.lower-limb.seed';
 import { JOINT_STRUCTURES } from './structures.joints.seed';
 import { LIGAMENT_STRUCTURES } from './structures.ligaments.seed';
+import { CONNECTIVE_STRUCTURES } from './structures.connective.seed';
 import { IMAGE_ASSETS } from './images.seed';
 import { linkImages } from '../../lib/linkImages';
 
@@ -31,6 +32,7 @@ const UNLINKED_STRUCTURES: AnatomyStructure[] = [
   ...LOWER_LIMB_LANDMARK_STRUCTURES,
   ...JOINT_STRUCTURES,
   ...LIGAMENT_STRUCTURES,
+  ...CONNECTIVE_STRUCTURES,
 ];
 
 export const ALL_IMAGES = IMAGE_ASSETS;

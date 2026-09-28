@@ -131,7 +131,10 @@ export const LOWER_LIMB_LANDMARK_STRUCTURES: LandmarkStructure[] = [
     description: 'A bony projection below the ASIS, less prominent and palpable than its neighbour.',
     attachments: ['Rectus femoris origin (straight head)', 'Iliofemoral ligament origin'],
     articulations: [],
-    palpability: 'palpable-deep',
+    // Palpability corrected 2026-09-27 from the owner's review of all 89 unsourced
+    // values: was 'palpable-deep'. The owner is a sports rehabilitation student and palpates
+    // these in practicals; no published work consulted states this one.
+    palpability: 'easily-palpable',
     aliases: ['AIIS'],
     imageIds: [],
     eligibility: { flashcard: true, mcq: true, locate: true },
@@ -670,7 +673,10 @@ export const LOWER_LIMB_LANDMARK_STRUCTURES: LandmarkStructure[] = [
     description: 'The tarsal bone that sits within the ankle mortise, transmitting body weight from the tibia/fibula into the foot; unique in having no muscle attachments.',
     attachments: [],
     articulations: ['Ankle joint with the tibia and fibula', 'Subtalar joint with the calcaneus', 'Talonavicular joint with the navicular'],
-    palpability: 'not-palpable',
+    // Palpability corrected 2026-09-27 from the owner's review of all 89 unsourced
+    // values: was 'not-palpable'. The owner is a sports rehabilitation student and palpates
+    // these in practicals; no published work consulted states this one.
+    palpability: 'palpable-deep',
     aliases: [],
     imageIds: [],
     eligibility: { flashcard: true, mcq: true, locate: true },
@@ -750,7 +756,10 @@ export const LOWER_LIMB_LANDMARK_STRUCTURES: LandmarkStructure[] = [
     description: 'The largest of the three cuneiform bones, on the medial midfoot.',
     attachments: ['Tibialis anterior insertion (partial)', 'Tibialis posterior insertion (slip)'],
     articulations: ['Tarsometatarsal joint with the first metatarsal'],
-    palpability: 'palpable-deep',
+    // Palpability corrected 2026-09-27 from the owner's review of all 89 unsourced
+    // values: was 'palpable-deep'. The owner is a sports rehabilitation student and palpates
+    // these in practicals; no published work consulted states this one.
+    palpability: 'easily-palpable',
     aliases: [],
     imageIds: [],
     eligibility: { flashcard: true, mcq: true, locate: true },
@@ -770,7 +779,10 @@ export const LOWER_LIMB_LANDMARK_STRUCTURES: LandmarkStructure[] = [
     description: 'The smallest of the three cuneiform bones, between the medial and lateral cuneiforms.',
     attachments: [],
     articulations: ['Tarsometatarsal joint with the second metatarsal'],
-    palpability: 'not-palpable',
+    // Palpability corrected 2026-09-27 from the owner's review of all 89 unsourced
+    // values: was 'not-palpable'. The owner is a sports rehabilitation student and palpates
+    // these in practicals; no published work consulted states this one.
+    palpability: 'easily-palpable',
     aliases: [],
     imageIds: [],
     eligibility: { flashcard: true, mcq: true, locate: false },
@@ -790,7 +802,10 @@ export const LOWER_LIMB_LANDMARK_STRUCTURES: LandmarkStructure[] = [
     description: 'The most lateral of the three cuneiform bones, between the intermediate cuneiform and the cuboid.',
     attachments: [],
     articulations: ['Tarsometatarsal joint with the third metatarsal'],
-    palpability: 'not-palpable',
+    // Palpability corrected 2026-09-27 from the owner's review of all 89 unsourced
+    // values: was 'not-palpable'. The owner is a sports rehabilitation student and palpates
+    // these in practicals; no published work consulted states this one.
+    palpability: 'palpable-deep',
     aliases: [],
     imageIds: [],
     eligibility: { flashcard: true, mcq: true, locate: false },

@@ -53,8 +53,10 @@ function readableDate(iso: string): string {
 function statusOf(f: FamilyProvenance): string {
   if (f.method === 'lecture-deck') return `All ${f.total} come from the teaching material named below.`;
   if (f.checked === 0) return 'Not yet checked against any published work.';
-  if (f.checked < f.total) return `${f.checked} of the ${f.total} have been checked against published works.`;
-  return `All ${f.total} have been checked against published works.`;
+  // "against the sources listed" rather than "against published works": some
+  // checks are the owner's own review, and the list below names them as such.
+  if (f.checked < f.total) return `${f.checked} of the ${f.total} have been checked against the sources listed.`;
+  return `All ${f.total} have been checked against the sources listed.`;
 }
 
 function FamilyBlock({ family }: { family: FamilyProvenance }) {
@@ -104,30 +106,39 @@ export function SourcesPage() {
   const untouched = FAMILIES.filter((f) => f.method === 'ai-drafted' && f.checked === 0);
 
   return (
-    <LegalLayout title="Where this content comes from" updated="23 September 2026">
+    <LegalLayout title="Where this content comes from" updated="28 September 2026">
       <p className="mt-4" style={legalProse}>
-        LocusMSK holds {total} structures. This page says where the information about each of them came from, how much
-        of it has been checked against a published work, and how much of it has not. It is kept honest by the build:
-        every number below is counted from the content itself rather than typed in.
+        LocusMSK holds {total} structures. This page says where the information about each of them came from, what has
+        been checked and against what, and what the checking does not cover. It is kept honest by the build: every
+        number below is counted from the content itself rather than typed in.
       </p>
 
       <Section title="How this content was made">
         <p>
           <strong style={{ color: 'var(--ink)' }}>
-            The anatomical content in this app was drafted with AI assistance, and is being checked against published
-            works family by family.
+            The anatomical content in this app was drafted with AI assistance, and then checked family by family against
+            the sources named below.
           </strong>{' '}
           That is stated here rather than left to be discovered, because an AI draft is confident whether or not it is
           right, and you cannot tell the difference from inside a revision session.
         </p>
         <p>
-          {checked} of the {total} structures currently rest on a named source. The rest were written from standard
-          anatomy and have not yet been checked by anyone against a published work. Which is which is set out below.
+          {checked} of the {total} structures currently rest on a named source
+          {checked < total
+            ? '. The rest were written from standard anatomy and have not yet been checked against anything; which is which is set out below.'
+            : ' for the facts listed under each family below.'}
         </p>
         <p>
           Checking means the fact was looked up in a work named below and quoted from it, not recalled. Where a work
           contradicted what we had, the entry was corrected and the correction recorded; where the right answer was not
           clear, the fact was put on hold and taken out of the question bank rather than guessed at.
+        </p>
+        <p>
+          A few facts were checked a different way. Whether a landmark can be felt through the skin is something
+          anatomy texts describe in detail for bones and almost never state for touch, so those were checked by the
+          project owner, a sports rehabilitation student, against their own palpation practice. That is a real check but
+          not a clinician&rsquo;s sign-off, and where a published work and the owner’s review disagreed, the published work was
+          followed.
         </p>
       </Section>
 
@@ -140,31 +151,43 @@ export function SourcesPage() {
         ))}
       </Section>
 
-      {unchecked.length > 0 && (
-        <Section title="What has not been checked">
-          <p>
-            {untouched.length > 0 && (
-              <>
-                The{' '}
-                {untouched
-                  .map((f) => `${f.total} ${CATEGORY_LABELS[f.category].toLowerCase()}`)
-                  .join(', ')
-                  .replace(/, ([^,]*)$/, ' and $1')}{' '}
-                have not been checked against a published work at all. They were drafted from standard anatomy and are
-                most likely right, but nobody has confirmed them, and this page will not pretend otherwise until
-                somebody has.{' '}
-              </>
-            )}
-            The ligament work checked where each ligament attaches; the descriptions have not been checked to the same
-            standard.
-          </p>
+      {/*
+        Always rendered. It used to appear only while a family was unchecked, so
+        the moment every count reached its total the page's most important limit
+        vanished with it. "Checked" covers the fields named per family above and
+        nothing else; that has to stay said however high the numbers go.
+      */}
+      <Section title="What the checking does not cover">
+        <p>
+          {untouched.length > 0 && (
+            <>
+              The{' '}
+              {untouched
+                .map((f) => `${f.total} ${CATEGORY_LABELS[f.category].toLowerCase()}`)
+                .join(', ')
+                .replace(/, ([^,]*)$/, ' and $1')}{' '}
+              have not been checked against a published work at all. They were drafted from standard anatomy and are
+              most likely right, but nobody has confirmed them, and this page will not pretend otherwise until somebody
+              has.{' '}
+            </>
+          )}
+          Each family above lists the facts that were checked. The ligament work checked where each ligament attaches;
+          the descriptions have not been checked to the same standard, and neither have the joint descriptions.
+        </p>
+        <p>
+          The short clinical notes some entries carry — the kind that say where a bone commonly fractures or which test
+          examines a structure — are not covered by the check either. They are drafted content, and they are the part of
+          this app furthest from a revision fact and closest to clinical advice, which is exactly why the warning below
+          applies to them.
+        </p>
+        {unchecked.length > 0 && (
           <p>
             Unchecked content is still used in questions. The alternative — withholding it — would empty most of the app
             while saying less than this paragraph does. What is withheld is anything a published work actively
             contradicts.
           </p>
-        </Section>
-      )}
+        )}
+      </Section>
 
       <Section title="Imagery, and the muscle dataset">
         <p>

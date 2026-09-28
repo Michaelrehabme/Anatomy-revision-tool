@@ -64,16 +64,29 @@ describe('a ligaments-only session', () => {
   });
 
   it('never asks or marks an attachment nobody has checked', () => {
-    const byId = new Map(ALL_STRUCTURES.map((s) => [s.id, s]));
-    const unchecked = (id: string) => {
-      const s = byId.get(id);
-      return !!s && isLigament(s) && !!s.needsReview;
-    };
-    const attachmentQs = set.filter(
-      (q) => unchecked(q.structureId) && (q.type === 'multi-select' || (q.type === 'identify-typed' && (q.attachmentSlots?.length ?? 0) > 0)),
+    // Built rather than found. This used to look for an unchecked ligament in
+    // the data, and on 28 Sep 2026 the last one was checked — at which point
+    // the test failed for the best possible reason and stopped testing the
+    // guard at all. The guard is what matters: the next ligament added
+    // unreviewed must still be asked by picture and name only.
+    const target = ALL_STRUCTURES.filter(isLigament).find(
+      (l) => l.attachmentStructureIds.length > 0 && l.eligibility.mcq && l.imageIds.length > 0,
+    )!;
+    const structures = ALL_STRUCTURES.map((s) => (s.id === target.id ? { ...s, needsReview: true } : s));
+    const questions = generateRevisionSet(structures, ALL_IMAGES, {
+      entitledAreas: AREAS,
+      types: ['identify-typed', 'multi-select'],
+      category: 'ligament',
+      mode: 'practice',
+      structureIds: [target.id],
+      seed: 11,
+    });
+
+    const attachmentQs = questions.filter(
+      (q) => q.type === 'multi-select' || (q.type === 'identify-typed' && (q.attachmentSlots?.length ?? 0) > 0),
     );
     expect(attachmentQs.map((q) => q.id)).toEqual([]);
-    // They are still asked by picture and name.
-    expect(set.some((q) => unchecked(q.structureId))).toBe(true);
+    // It is still asked by picture and name.
+    expect(questions.some((q) => q.type === 'identify-typed')).toBe(true);
   });
 });

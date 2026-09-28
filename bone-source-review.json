@@ -33,7 +33,7 @@
    }
   },
   "tibia": {
-   "grade": "unverified",
+   "grade": "verified",
    "checked": "2026-09-24",
    "works": [
     {
@@ -49,8 +49,8 @@
    ],
    "facts": {
     "attachments": {
-     "verdict": "held",
-     "why": "NOT SETTLED. 2 of 3 corroborated exactly. 1 name a structure this repo does not hold: \"Patellar ligament insertion — tibial tuberosity\"."
+     "verdict": "confirmed",
+     "why": "All 3 attachment(s) corroborated exactly: the source places the named structure on this feature."
     },
     "articulations": {
      "verdict": "confirmed",
@@ -63,8 +63,8 @@
    }
   },
   "humerus": {
-   "grade": "unverified",
-   "checked": "2026-09-24",
+   "grade": "verified",
+   "checked": "2026-09-27",
    "works": [
     {
      "title": "ALL_Muscles_of_the_body — Vinnie Maynard, University of Salford",
@@ -75,12 +75,17 @@
      "title": "Humerus - Wikipedia (Gray's, public domain)",
      "url": "https://en.wikipedia.org/wiki/Humerus",
      "quote": "The humerus is a long bone in the arm that runs from the shoulder to the elbow."
+    },
+    {
+     "title": "Humerus - Wikipedia (Gray's, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Humerus",
+     "quote": "deep groove, the bicipital groove, which lodges the long tendon of the biceps brachii muscle"
     }
    ],
    "facts": {
     "attachments": {
-     "verdict": "held",
-     "why": "NOT SETTLED. 3 of 4 corroborated exactly. 1 name a structure this repo does not hold: \"Biceps brachii tendon — intertubercular (bicipital) groove\"."
+     "verdict": "confirmed",
+     "why": "Every attachment claim settled by hand against a quoted source (1 work)."
     },
     "articulations": {
      "verdict": "confirmed",
@@ -93,8 +98,8 @@
    }
   },
   "scapula": {
-   "grade": "unverified",
-   "checked": "2026-09-24",
+   "grade": "verified",
+   "checked": "2026-09-27",
    "works": [
     {
      "title": "ALL_Muscles_of_the_body — Vinnie Maynard, University of Salford",
@@ -105,12 +110,22 @@
      "title": "Scapula - Wikipedia (Gray's, public domain)",
      "url": "https://en.wikipedia.org/wiki/Scapula",
      "quote": "The scapula, also known as the shoulder blade, is the bone that connects the humerus (upper arm bone) with the clavicle (collar bone)."
+    },
+    {
+     "title": "ALL_Muscles_of_the_body — Vinnie Maynard, University of Salford",
+     "document": "ALL_Muscles_of_the_body.pdf",
+     "quote": "Biceps brachii — Long head: supraglenoid tubercle & adjacent glenoid labrum"
+    },
+    {
+     "title": "ALL_Muscles_of_the_body — Vinnie Maynard, University of Salford",
+     "document": "ALL_Muscles_of_the_body.pdf",
+     "quote": "Triceps brachii — Long head: infraglenoid tubercle"
     }
    ],
    "facts": {
     "attachments": {
-     "verdict": "held",
-     "why": "NOT SETTLED. 4 of 6 corroborated exactly. 2 name a structure this repo does not hold: \"Long head of biceps origin — supraglenoid tubercle\"; \"Long head of triceps origin — infraglenoid tubercle\"."
+     "verdict": "confirmed",
+     "why": "Every attachment claim settled by hand against a quoted source (2 works)."
     },
     "articulations": {
      "verdict": "confirmed",
@@ -213,8 +228,8 @@
    }
   },
   "clavicle": {
-   "grade": "unverified",
-   "checked": "2026-09-24",
+   "grade": "verified",
+   "checked": "2026-09-27",
    "works": [
     {
      "title": "ALL_Muscles_of_the_body — Vinnie Maynard, University of Salford",
@@ -225,12 +240,17 @@
      "title": "Clavicle - Wikipedia (Gray's, public domain)",
      "url": "https://en.wikipedia.org/wiki/Clavicle",
      "quote": "The clavicle, collarbone, or keybone is a slender, S-shaped long bone approximately 15 centimetres long that serves as a strut between the shoulder blade and the sternum (breastbone)."
+    },
+    {
+     "title": "Subclavius muscle - Wikipedia (Gray's, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Subclavius_muscle",
+     "quote": "The fleshy fibers proceed obliquely superolaterally, to be inserted into the groove on the under surface of the clavicle."
     }
    ],
    "facts": {
     "attachments": {
-     "verdict": "held",
-     "why": "NOT SETTLED. 4 of 5 corroborated exactly. 1 name a structure this repo does not hold: \"Subclavius insertion — inferior surface\"."
+     "verdict": "confirmed",
+     "why": "Every attachment claim settled by hand against a quoted source (1 work)."
     },
     "articulations": {
      "verdict": "confirmed",
@@ -243,7 +263,7 @@
    }
   },
   "sternum": {
-   "grade": "unverified",
+   "grade": "verified",
    "checked": "2026-09-24",
    "works": [
     {
@@ -259,8 +279,8 @@
    ],
    "facts": {
     "attachments": {
-     "verdict": "held",
-     "why": "NOT SETTLED. 2 of 3 corroborated exactly. 1 name a structure this repo does not hold: \"Costal cartilages of ribs 1–7 attach along the lateral borders\"."
+     "verdict": "confirmed",
+     "why": "All 3 attachment(s) corroborated exactly: the source places the named structure on this feature."
     },
     "articulations": {
      "verdict": "confirmed",
@@ -273,8 +293,8 @@
    }
   },
   "ribs": {
-   "grade": "unverified",
-   "checked": "2026-09-24",
+   "grade": "verified",
+   "checked": "2026-09-27",
    "works": [
     {
      "title": "ALL_Muscles_of_the_body — Vinnie Maynard, University of Salford",
@@ -285,12 +305,17 @@
      "title": "Rib cage - Wikipedia (Gray's, public domain)",
      "url": "https://en.wikipedia.org/wiki/Rib_cage",
      "quote": "A typical human thoracic cage consists of 12 pairs of ribs and the adjoining costal cartilages ... Ribs that articulate directly with the sternum are called true ribs, whereas those that do not articulate directly are termed false ribs. The false ribs include the floating ribs (eleven and twelve) that are not attached to the sternum at all."
+    },
+    {
+     "title": "ALL_Muscles_of_the_body — Vinnie Maynard, University of Salford",
+     "document": "ALL_Muscles_of_the_body.pdf",
+     "quote": "Scalene anterior — insertion: 1st rib; Scalene middle — insertion: 1st rib; Scalene posterior — insertion: 2nd rib"
     }
    ],
    "facts": {
     "attachments": {
-     "verdict": "held",
-     "why": "NOT SETTLED. 3 of 4 corroborated exactly. 1 name a structure this repo does not hold: \"Scalene muscles insertion — ribs 1–2\"."
+     "verdict": "confirmed",
+     "why": "Every attachment claim settled by hand against a quoted source (1 work)."
     },
     "articulations": {
      "verdict": "confirmed",
@@ -303,8 +328,8 @@
    }
   },
   "cervical-vertebrae": {
-   "grade": "unverified",
-   "checked": "2026-09-24",
+   "grade": "verified",
+   "checked": "2026-09-27",
    "works": [
     {
      "title": "ALL_Muscles_of_the_body — Vinnie Maynard, University of Salford",
@@ -315,12 +340,17 @@
      "title": "Cervical vertebrae - Wikipedia (Gray's, public domain)",
      "url": "https://en.wikipedia.org/wiki/Cervical_vertebrae",
      "quote": "In tetrapods, cervical vertebrae are the vertebrae of the neck, immediately below the skull."
+    },
+    {
+     "title": "ALL_Muscles_of_the_body — Vinnie Maynard, University of Salford",
+     "document": "ALL_Muscles_of_the_body.pdf",
+     "quote": "Longus colli — Anterior bodies and transverse processes C3–T3; Longus capitis — Transverse processes C3–C6; Splenius cervicis — insertion: Transverse processes C1–C3"
     }
    ],
    "facts": {
     "attachments": {
-     "verdict": "held",
-     "why": "NOT SETTLED. 1 of 3 corroborated exactly. 2 name a structure this repo does not hold: \"Longus colli and longus capitis attach to the vertebral bodies\"; \"Splenius cervicis inserts on the transverse processes\"."
+     "verdict": "confirmed",
+     "why": "Every attachment claim settled by hand against a quoted source (1 work). The claim was corrected in the seed: longus capitis arises from the transverse processes, not the vertebral bodies, as the deck states."
     },
     "articulations": {
      "verdict": "confirmed",
@@ -333,19 +363,34 @@
    }
   },
   "occipital-bone": {
-   "grade": "unverified",
-   "checked": "2026-09-24",
+   "grade": "verified",
+   "checked": "2026-09-27",
    "works": [
     {
      "title": "Occipital bone - Wikipedia (Gray's, public domain)",
      "url": "https://en.wikipedia.org/wiki/Occipital_bone",
      "quote": "The occipital bone is a cranial dermal bone and the main bone of the occiput (back and lower part of the skull) ... At the base of the skull in the occipital bone, there is a large oval opening called the foramen magnum"
+    },
+    {
+     "title": "Nuchal ligament - Wikipedia (Gray's, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Nuchal_ligament",
+     "quote": "The nuchal ligament extends from the external occipital protuberance on the skull and median nuchal line to the spinous process of the seventh cervical vertebra ... to the spinous processes of the cervical vertebrae."
+    },
+    {
+     "title": "Rectus capitis posterior major muscle - Wikipedia (Gray's, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Rectus_capitis_posterior_major_muscle",
+     "quote": "It is inserted superiorly into (the lateral portion of) the inferior nuchal line and the surface of the occipital bone just inferior to this line."
+    },
+    {
+     "title": "Rectus capitis posterior minor muscle - Wikipedia (Gray's, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Rectus_capitis_posterior_minor_muscle",
+     "quote": "It is inserted superiorly into the medial portion of the inferior nuchal line and the external surface of the occipital bone inferior to it."
     }
    ],
    "facts": {
     "attachments": {
-     "verdict": "held",
-     "why": "NOT SETTLED. 1 of 3 corroborated exactly. 2 name a structure this repo does not hold: \"Ligamentum nuchae attaches to the external occipital protuberance and crest\"; \"Rectus capitis posterior major and minor attach to the nuchal lines\"."
+     "verdict": "confirmed",
+     "why": "Every attachment claim settled by hand against a quoted source (3 works)."
     },
     "articulations": {
      "verdict": "confirmed",
@@ -358,19 +403,24 @@
    }
   },
   "atlas-c1": {
-   "grade": "unverified",
-   "checked": "2026-09-24",
+   "grade": "verified",
+   "checked": "2026-09-27",
    "works": [
     {
      "title": "Atlas (anatomy) - Wikipedia (Gray's, public domain)",
      "url": "https://en.wikipedia.org/wiki/Atlas_(anatomy)",
      "quote": "In anatomy, the atlas (C1) is the most superior (first) cervical vertebra of the spine and is located in the neck ... The atlas's chief peculiarity is that it has no body, which has fused with the next vertebra."
+    },
+    {
+     "title": "Transverse ligament of atlas - Wikipedia (Gray's, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Transverse_ligament_of_atlas",
+     "quote": "The ligament attaches on either side onto a small yet prominent tubercle upon the medial aspect of either lateral mass of atlas."
     }
    ],
    "facts": {
     "attachments": {
-     "verdict": "held",
-     "why": "NOT SETTLED. 0 of 1 corroborated exactly. 1 name a structure this repo does not hold: \"Alar and transverse ligaments attach to the lateral masses and anterior arch\"."
+     "verdict": "confirmed",
+     "why": "Every attachment claim settled by hand against a quoted source (1 work). The claim was corrected in the seed: the alar ligaments run from the dens to the occipital condyles and do not attach to the atlas."
     },
     "articulations": {
      "verdict": "confirmed",
@@ -383,7 +433,7 @@
    }
   },
   "axis-c2": {
-   "grade": "unverified",
+   "grade": "verified",
    "checked": "2026-09-24",
    "works": [
     {
@@ -394,8 +444,8 @@
    ],
    "facts": {
     "attachments": {
-     "verdict": "held",
-     "why": "NOT SETTLED. 0 of 1 corroborated exactly. 1 name a structure this repo does not hold: \"Alar and apical ligaments attach to the dens\"."
+     "verdict": "confirmed",
+     "why": "All 1 attachment(s) corroborated exactly: the source places the named structure on this feature."
     },
     "articulations": {
      "verdict": "confirmed",
@@ -408,23 +458,33 @@
    }
   },
   "c7-vertebra": {
-   "grade": "unverified",
-   "checked": "2026-09-24",
+   "grade": "verified",
+   "checked": "2026-09-27",
    "works": [
     {
      "title": "Vertebra prominens - Wikipedia (Gray's, public domain)",
      "url": "https://en.wikipedia.org/wiki/Vertebra_prominens",
      "quote": "The vertebra prominens, or C7, has a distinctive long and prominent spinous process, which is palpable from the skin surface."
+    },
+    {
+     "title": "Nuchal ligament - Wikipedia (Gray's, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Nuchal_ligament",
+     "quote": "The nuchal ligament extends from the external occipital protuberance on the skull and median nuchal line to the spinous process of the seventh cervical vertebra ... to the spinous processes of the cervical vertebrae."
+    },
+    {
+     "title": "Thoracic vertebrae - Wikipedia (Gray’s, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Thoracic_vertebrae",
+     "quote": "The first thoracic vertebra has, on either side of the body, an entire articular facet for the head of the first rib, and a demi-facet for the upper half of the head of the second rib."
     }
    ],
    "facts": {
     "attachments": {
-     "verdict": "held",
-     "why": "NOT SETTLED. 2 of 3 corroborated exactly. 1 name a structure this repo does not hold: \"Ligamentum nuchae attaches to the spinous process\"."
+     "verdict": "confirmed",
+     "why": "Every attachment claim settled by hand against a quoted source (1 work)."
     },
     "articulations": {
-     "verdict": "held",
-     "why": "NOT SETTLED. 2 of 3 corroborated exactly. 1 name a structure this repo does not hold: \"Costal facet for the first rib is absent — that belongs to T1, a common point of confusion\"."
+     "verdict": "confirmed",
+     "why": "The remaining claim - that the first rib’s facet belongs to T1, not C7 - is stated by the work: T1 carries the entire facet for the head of the first rib."
     },
     "description": {
      "verdict": "confirmed",
@@ -433,8 +493,8 @@
    }
   },
   "thoracic-vertebrae": {
-   "grade": "unverified",
-   "checked": "2026-09-24",
+   "grade": "verified",
+   "checked": "2026-09-27",
    "works": [
     {
      "title": "ALL_Muscles_of_the_body — Vinnie Maynard, University of Salford",
@@ -445,12 +505,17 @@
      "title": "Thoracic vertebrae - Wikipedia (Gray's, public domain)",
      "url": "https://en.wikipedia.org/wiki/Thoracic_vertebrae",
      "quote": "In vertebrates, thoracic vertebrae compose the middle segment of the vertebral column, between the cervical vertebrae and the lumbar vertebrae ... distinguished by the presence of facets on the sides of the bodies for articulation with the heads of the ribs"
+    },
+    {
+     "title": "ALL_Muscles_of_the_body — Vinnie Maynard, University of Salford",
+     "document": "ALL_Muscles_of_the_body.pdf",
+     "quote": "Spinalis — Spinous processes of upper lumbar & lower thoracic vertebrae; Rotatores — Transverse processes of the thoracic vertebrae; Rhomboid major — Spinous processes T2–T5; Trapezius — Spinous processes C7–T12"
     }
    ],
    "facts": {
     "attachments": {
-     "verdict": "held",
-     "why": "NOT SETTLED. 0 of 2 corroborated exactly. 2 name a structure this repo does not hold: \"Erector spinae and transversospinalis group muscles attach along the spinous/transverse processes\"; \"Rhomboids and trapezius attach to the spinous processes (upper/mid thoracic)\"."
+     "verdict": "confirmed",
+     "why": "Every attachment claim settled by hand against a quoted source (1 work)."
     },
     "articulations": {
      "verdict": "confirmed",
@@ -463,8 +528,8 @@
    }
   },
   "lumbar-vertebrae": {
-   "grade": "unverified",
-   "checked": "2026-09-24",
+   "grade": "verified",
+   "checked": "2026-09-27",
    "works": [
     {
      "title": "ALL_Muscles_of_the_body — Vinnie Maynard, University of Salford",
@@ -475,12 +540,17 @@
      "title": "Lumbar vertebrae - Wikipedia (Gray's, public domain)",
      "url": "https://en.wikipedia.org/wiki/Lumbar_vertebrae",
      "quote": "The lumbar vertebrae are located between the thoracic vertebrae and sacrum ... In humans, there are typically five lumbar vertebrae."
+    },
+    {
+     "title": "ALL_Muscles_of_the_body — Vinnie Maynard, University of Salford",
+     "document": "ALL_Muscles_of_the_body.pdf",
+     "quote": "Quadratus lumborum — insertion: Transverse processes L1–L4"
     }
    ],
    "facts": {
     "attachments": {
-     "verdict": "held",
-     "why": "NOT SETTLED. 2 of 3 corroborated exactly. 1 name a structure this repo does not hold: \"Quadratus lumborum attaches to the transverse processes\"."
+     "verdict": "confirmed",
+     "why": "Every attachment claim settled by hand against a quoted source (1 work)."
     },
     "articulations": {
      "verdict": "confirmed",
@@ -523,8 +593,8 @@
    }
   },
   "coccyx": {
-   "grade": "unverified",
-   "checked": "2026-09-24",
+   "grade": "verified",
+   "checked": "2026-09-27",
    "works": [
     {
      "title": "ALL_Muscles_of_the_body — Vinnie Maynard, University of Salford",
@@ -535,12 +605,27 @@
      "title": "Coccyx - Wikipedia (Gray's, public domain)",
      "url": "https://en.wikipedia.org/wiki/Coccyx",
      "quote": "The coccyx, commonly referred to as the tailbone, is the final segment of the vertebral column ... It comprises three to five separate or fused coccygeal vertebrae below the sacrum."
+    },
+    {
+     "title": "Coccygeus muscle - Wikipedia (Gray's, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Coccygeus_muscle",
+     "quote": "It is inserted by its base into the margin of the coccyx and into the side of the lowest piece of the sacrum."
+    },
+    {
+     "title": "Levator ani - Wikipedia (Gray's, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Levator_ani",
+     "quote": "the most posterior are inserted into the side of the last two segments of the coccyx"
+    },
+    {
+     "title": "Anococcygeal body - Wikipedia (Gray's, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Anococcygeal_body",
+     "quote": "The anococcygeal body is a fibrous median raphe in the floor of the pelvis, which extends between the coccyx and the margin of the anus."
     }
    ],
    "facts": {
     "attachments": {
-     "verdict": "held",
-     "why": "NOT SETTLED. 1 of 3 corroborated exactly. 2 name a structure this repo does not hold: \"Levator ani and coccygeus (pelvic floor) attach to its margins\"; \"Anococcygeal ligament attaches at the tip\"."
+     "verdict": "confirmed",
+     "why": "Every attachment claim settled by hand against a quoted source (3 works)."
     },
     "articulations": {
      "verdict": "confirmed",
@@ -613,19 +698,24 @@
    }
   },
   "carpals": {
-   "grade": "unverified",
-   "checked": "2026-09-24",
+   "grade": "verified",
+   "checked": "2026-09-27",
    "works": [
     {
      "title": "Carpal bones - Wikipedia (Gray's, public domain)",
      "url": "https://en.wikipedia.org/wiki/Carpal_bones",
      "quote": "The carpal bones are the eight small bones that make up the wrist (carpus) that connects the hand to the forearm."
+    },
+    {
+     "title": "Extensor retinaculum (wrist) - Radiopaedia",
+     "url": "https://radiopaedia.org/articles/extensor-retinaculum-wrist",
+     "quote": "It is obliquely orientated and attaches proximally to the lateral surface of the distal radius towards the styloid process and distally attaches to the pisiform and triquetral bones."
     }
    ],
    "facts": {
     "attachments": {
-     "verdict": "held",
-     "why": "NOT SETTLED. 0 of 2 corroborated exactly. 2 name a structure this repo does not hold: \"Flexor retinaculum attaches across the palmar carpals, forming the carpal tunnel\"; \"Extensor retinaculum attaches across the dorsal carpals\"."
+     "verdict": "confirmed",
+     "why": "Every attachment claim settled by hand against a quoted source (1 work). The work places the retinaculum on the pisiform and triquetrum, two dorsal-ulnar carpals, rather than \"across the dorsal carpals\" as a whole."
     },
     "articulations": {
      "verdict": "confirmed",
@@ -638,7 +728,7 @@
    }
   },
   "tarsals": {
-   "grade": "unverified",
+   "grade": "verified",
    "checked": "2026-09-24",
    "works": [
     {
@@ -654,8 +744,8 @@
    ],
    "facts": {
     "attachments": {
-     "verdict": "held",
-     "why": "NOT SETTLED. 2 of 3 corroborated exactly. 1 name a structure this repo does not hold: \"Plantar fascia originates from the calcaneus\"."
+     "verdict": "confirmed",
+     "why": "All 3 attachment(s) corroborated exactly: the source places the named structure on this feature."
     },
     "articulations": {
      "verdict": "confirmed",
@@ -668,19 +758,24 @@
    }
   },
   "metacarpals": {
-   "grade": "unverified",
-   "checked": "2026-09-24",
+   "grade": "verified",
+   "checked": "2026-09-27",
    "works": [
     {
      "title": "Metacarpal bones - Wikipedia (Gray's, public domain)",
      "url": "https://en.wikipedia.org/wiki/Metacarpal_bones",
      "quote": "the metacarpal bones, or palm bones, collectively the metacarpus, are the appendicular bones that form the intermediate part of the hand between the phalanges (fingers) and the carpal bones (wrist bones)"
+    },
+    {
+     "title": "ALL_Muscles_of_the_body — Vinnie Maynard, University of Salford",
+     "document": "ALL_Muscles_of_the_body.pdf",
+     "quote": "Dorsal interossei (hand) — Adjacent sides of two metacarpals; Palmar interossei — Metacarpals"
     }
    ],
    "facts": {
     "attachments": {
-     "verdict": "held",
-     "why": "NOT SETTLED. 1 of 2 corroborated exactly. 1 name a structure this repo does not hold: \"Interossei muscles originate from the metacarpal shafts\"."
+     "verdict": "confirmed",
+     "why": "Every attachment claim settled by hand against a quoted source (1 work)."
     },
     "articulations": {
      "verdict": "confirmed",
@@ -693,19 +788,24 @@
    }
   },
   "metatarsals": {
-   "grade": "unverified",
-   "checked": "2026-09-24",
+   "grade": "verified",
+   "checked": "2026-09-27",
    "works": [
     {
      "title": "Metatarsal bones - Wikipedia (Gray's, public domain)",
      "url": "https://en.wikipedia.org/wiki/Metatarsal_bones",
      "quote": "The metatarsal bones, collectively the metatarsus, are a group of five long bones in the midfoot, located between the tarsal bones (which form the heel and the ankle) and the phalanges (toes)."
+    },
+    {
+     "title": "ALL_Muscles_of_the_body — Vinnie Maynard, University of Salford",
+     "document": "ALL_Muscles_of_the_body.pdf",
+     "quote": "Peroneus brevis — insertion: Tuberosity of 5th metatarsal; Peroneus longus — insertion: Medial cuneiform; Base of 1st metatarsal"
     }
    ],
    "facts": {
     "attachments": {
-     "verdict": "held",
-     "why": "NOT SETTLED. 0 of 2 corroborated exactly. 2 name a structure this repo does not hold: \"Fibularis (peroneus) brevis inserts on the base of the fifth metatarsal\"; \"Fibularis (peroneus) longus inserts on the base of the first metatarsal\"."
+     "verdict": "confirmed",
+     "why": "Every attachment claim settled by hand against a quoted source (1 work)."
     },
     "articulations": {
      "verdict": "confirmed",
@@ -718,19 +818,24 @@
    }
   },
   "phalanges-proximal-hand": {
-   "grade": "unverified",
-   "checked": "2026-09-24",
+   "grade": "verified",
+   "checked": "2026-09-27",
    "works": [
     {
      "title": "Phalanx bone - Wikipedia (Gray's, public domain)",
      "url": "https://en.wikipedia.org/wiki/Phalanx_bone",
      "quote": "The phalanges are digital bones in the hands and feet of most vertebrates ... The proximal phalanges are those that are closest to the hand or foot."
+    },
+    {
+     "title": "Extensor expansion - Wikipedia (Gray's, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Extensor_expansion",
+     "quote": "the extensor tendon will expand to form a hood, which covers the back and sides of the head of the metacarpal and the proximal phalanx ... The lumbricals of the hand, extensor indicis muscle, dorsal interossei of the hand, and palmar interossei insert on these bands ... the lateral bands stretch all the way to the distal phalanx."
     }
    ],
    "facts": {
     "attachments": {
-     "verdict": "held",
-     "why": "NOT SETTLED. 0 of 1 corroborated exactly. 1 name a structure this repo does not hold: \"Interossei and lumbricals attach around the metacarpophalangeal joints\"."
+     "verdict": "confirmed",
+     "why": "Every attachment claim settled by hand against a quoted source (1 work). The interossei and lumbricals insert into the extensor hood over the proximal phalanx, which is what \"around the metacarpophalangeal joints\" describes."
     },
     "articulations": {
      "verdict": "confirmed",
@@ -743,19 +848,24 @@
    }
   },
   "phalanges-middle-hand": {
-   "grade": "unverified",
-   "checked": "2026-09-24",
+   "grade": "verified",
+   "checked": "2026-09-27",
    "works": [
     {
      "title": "Phalanx bone - Wikipedia (Gray's, public domain)",
      "url": "https://en.wikipedia.org/wiki/Phalanx_bone",
      "quote": "The intermediate phalanx is not only intermediate in location, but usually also in size."
+    },
+    {
+     "title": "ALL_Muscles_of_the_body — Vinnie Maynard, University of Salford",
+     "document": "ALL_Muscles_of_the_body.pdf",
+     "quote": "Flexor digitorum superficialis — insertion: Middle phalanges of digits 2–5"
     }
    ],
    "facts": {
     "attachments": {
-     "verdict": "held",
-     "why": "NOT SETTLED. 0 of 1 corroborated exactly. 1 name a structure this repo does not hold: \"Flexor digitorum superficialis inserts on the middle phalanges\"."
+     "verdict": "confirmed",
+     "why": "Every attachment claim settled by hand against a quoted source (1 work)."
     },
     "articulations": {
      "verdict": "confirmed",
@@ -768,19 +878,29 @@
    }
   },
   "phalanges-distal-hand": {
-   "grade": "unverified",
-   "checked": "2026-09-24",
+   "grade": "verified",
+   "checked": "2026-09-27",
    "works": [
     {
      "title": "Phalanx bone - Wikipedia (Gray's, public domain)",
      "url": "https://en.wikipedia.org/wiki/Phalanx_bone",
      "quote": "The distal phalanges are the bones at the tips of the fingers or toes."
+    },
+    {
+     "title": "ALL_Muscles_of_the_body — Vinnie Maynard, University of Salford",
+     "document": "ALL_Muscles_of_the_body.pdf",
+     "quote": "Flexor digitorum profundus — insertion: Distal phalanges of digits 2–5"
+    },
+    {
+     "title": "Extensor expansion - Wikipedia (Gray's, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Extensor_expansion",
+     "quote": "the extensor tendon will expand to form a hood, which covers the back and sides of the head of the metacarpal and the proximal phalanx ... The lumbricals of the hand, extensor indicis muscle, dorsal interossei of the hand, and palmar interossei insert on these bands ... the lateral bands stretch all the way to the distal phalanx."
     }
    ],
    "facts": {
     "attachments": {
-     "verdict": "held",
-     "why": "NOT SETTLED. 0 of 1 corroborated exactly. 1 name a structure this repo does not hold: \"Flexor digitorum profundus and extensor tendons insert at the base of the distal phalanges\"."
+     "verdict": "confirmed",
+     "why": "Every attachment claim settled by hand against a quoted source (2 works)."
     },
     "articulations": {
      "verdict": "confirmed",
@@ -793,19 +913,24 @@
    }
   },
   "phalanges-proximal-foot": {
-   "grade": "unverified",
-   "checked": "2026-09-24",
+   "grade": "verified",
+   "checked": "2026-09-27",
    "works": [
     {
      "title": "Phalanx bone - Wikipedia (Gray's, public domain)",
      "url": "https://en.wikipedia.org/wiki/Phalanx_bone",
      "quote": "in the foot, the proximal phalanges have a body that is compressed from side to side, convex above, and concave below"
+    },
+    {
+     "title": "ALL_Muscles_of_the_body — Vinnie Maynard, University of Salford",
+     "document": "ALL_Muscles_of_the_body.pdf",
+     "quote": "Dorsal interossei (foot) — Proximal phalanges and extensor expansions of toes 2–4; Plantar interossei — Medial side of proximal phalanges 3–5; Lumbricals (foot) — Medial side of extensor expansions of toes 2–5"
     }
    ],
    "facts": {
     "attachments": {
-     "verdict": "held",
-     "why": "NOT SETTLED. 0 of 1 corroborated exactly. 1 name a structure this repo does not hold: \"Lumbricals and interossei attach around the metatarsophalangeal joints\"."
+     "verdict": "confirmed",
+     "why": "Every attachment claim settled by hand against a quoted source (1 work)."
     },
     "articulations": {
      "verdict": "confirmed",
@@ -818,19 +943,24 @@
    }
   },
   "phalanges-middle-foot": {
-   "grade": "unverified",
-   "checked": "2026-09-24",
+   "grade": "verified",
+   "checked": "2026-09-27",
    "works": [
     {
      "title": "Phalanx bone - Wikipedia (Gray's, public domain)",
      "url": "https://en.wikipedia.org/wiki/Phalanx_bone",
      "quote": "The middle phalanges of the foot are remarkably small and short."
+    },
+    {
+     "title": "ALL_Muscles_of_the_body — Vinnie Maynard, University of Salford",
+     "document": "ALL_Muscles_of_the_body.pdf",
+     "quote": "Flexor digitorum brevis — insertion: Middle phalanges of toes 2–5"
     }
    ],
    "facts": {
     "attachments": {
-     "verdict": "held",
-     "why": "NOT SETTLED. 0 of 1 corroborated exactly. 1 name a structure this repo does not hold: \"Flexor digitorum brevis inserts on the middle phalanges\"."
+     "verdict": "confirmed",
+     "why": "Every attachment claim settled by hand against a quoted source (1 work)."
     },
     "articulations": {
      "verdict": "confirmed",
@@ -843,8 +973,8 @@
    }
   },
   "sesamoids-foot": {
-   "grade": "unverified",
-   "checked": "2026-09-24",
+   "grade": "verified",
+   "checked": "2026-09-27",
    "works": [
     {
      "title": "ALL_Muscles_of_the_body — Vinnie Maynard, University of Salford",
@@ -855,16 +985,26 @@
      "title": "Sesamoid bone - Wikipedia (Gray's, public domain)",
      "url": "https://en.wikipedia.org/wiki/Sesamoid_bone",
      "quote": "a bone embedded within a tendon or a muscle ... the first metatarsal bone usually has two sesamoid bones at its connection to the big toe (both within the tendon of flexor hallucis brevis)"
+    },
+    {
+     "title": "Sesamoid bone - Wikipedia (Gray's, public domain)",
+     "url": "https://en.wikipedia.org/wiki/Sesamoid_bone",
+     "quote": "the first metatarsal bone usually has two sesamoid bones at its connection to the big toe (both within the tendon of flexor hallucis brevis)"
+    },
+    {
+     "title": "First metatarsal bone - Wikipedia (Gray’s, public domain)",
+     "url": "https://en.wikipedia.org/wiki/First_metatarsal_bone",
+     "quote": "The head is large; on its plantar surface are two grooved facets on which the sesamoid bones glide."
     }
    ],
    "facts": {
     "attachments": {
-     "verdict": "held",
-     "why": "NOT SETTLED. 1 of 2 corroborated exactly. 1 name a structure this repo does not hold: \"Flexor hallucis brevis inserts through them, medial and lateral heads\"."
+     "verdict": "confirmed",
+     "why": "Every attachment claim settled by hand against a quoted source (1 work)."
     },
     "articulations": {
-     "verdict": "held",
-     "why": "NOT SETTLED. 0 of 1 corroborated exactly. 1 name a structure this repo does not hold: \"The plantar surface of the head of the first metatarsal, in its two grooves\"."
+     "verdict": "confirmed",
+     "why": "The sesamoids glide in two grooved facets on the plantar surface of the first metatarsal head, exactly as the seed says."
     },
     "description": {
      "verdict": "confirmed",
@@ -873,19 +1013,24 @@
    }
   },
   "phalanges-distal-foot": {
-   "grade": "unverified",
-   "checked": "2026-09-24",
+   "grade": "verified",
+   "checked": "2026-09-27",
    "works": [
     {
      "title": "Phalanx bone - Wikipedia (Gray's, public domain)",
      "url": "https://en.wikipedia.org/wiki/Phalanx_bone",
      "quote": "The distal phalanges of the foot are smaller and are flattened from above downward compared to their hand equivalents."
+    },
+    {
+     "title": "ALL_Muscles_of_the_body — Vinnie Maynard, University of Salford",
+     "document": "ALL_Muscles_of_the_body.pdf",
+     "quote": "Flexor hallucis longus — Distal phalanx of big toe; Flexor digitorum longus — Distal phalanges of toes 2–5; Extensor hallucis longus — Base of distal phalanx of big toe; Extensor digitorum longus — Distal phalanges of toes 2–5"
     }
    ],
    "facts": {
     "attachments": {
-     "verdict": "held",
-     "why": "NOT SETTLED. 0 of 1 corroborated exactly. 1 name a structure this repo does not hold: \"Flexor hallucis longus/flexor digitorum longus and extensor tendons insert at the base of the distal phalanges\"."
+     "verdict": "confirmed",
+     "why": "Every attachment claim settled by hand against a quoted source (1 work)."
     },
     "articulations": {
      "verdict": "confirmed",

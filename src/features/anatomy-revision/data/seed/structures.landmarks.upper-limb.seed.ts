@@ -402,7 +402,10 @@ export const UPPER_LIMB_LANDMARK_STRUCTURES: LandmarkStructure[] = [
     description: 'A bony prominence just distal to the neck of the radius, on its medial side.',
     attachments: ['Biceps brachii insertion'],
     articulations: [],
-    palpability: 'not-palpable',
+    // Palpability corrected 2026-09-27 from the owner's review of all 89 unsourced
+    // values: was 'not-palpable'. The owner is a sports rehabilitation student and palpates
+    // these in practicals; no published work consulted states this one.
+    palpability: 'easily-palpable',
     aliases: [],
     imageIds: [],
     eligibility: { flashcard: true, mcq: true, locate: true },
@@ -482,7 +485,10 @@ export const UPPER_LIMB_LANDMARK_STRUCTURES: LandmarkStructure[] = [
     description: 'A crescent-moon-shaped carpal bone in the proximal row, between the scaphoid and triquetrum.',
     attachments: [],
     articulations: ['Radiocarpal joint with the radius'],
-    palpability: 'not-palpable',
+    // Palpability corrected 2026-09-27 from the owner's review of all 89 unsourced
+    // values: was 'not-palpable'. The owner is a sports rehabilitation student and palpates
+    // these in practicals; no published work consulted states this one.
+    palpability: 'palpable-deep',
     aliases: [],
     imageIds: [],
     eligibility: { flashcard: true, mcq: true, locate: true },
@@ -562,7 +568,10 @@ export const UPPER_LIMB_LANDMARK_STRUCTURES: LandmarkStructure[] = [
     description: 'A small carpal bone in the distal row, between the trapezium and capitate.',
     attachments: [],
     articulations: ['Carpometacarpal joint with the second metacarpal'],
-    palpability: 'not-palpable',
+    // Palpability corrected 2026-09-27 from the owner's review of all 89 unsourced
+    // values: was 'not-palpable'. The owner is a sports rehabilitation student and palpates
+    // these in practicals; no published work consulted states this one.
+    palpability: 'palpable-deep',
     aliases: [],
     imageIds: [],
     eligibility: { flashcard: true, mcq: true, locate: true },

@@ -374,7 +374,7 @@ export function reviewedAttachmentIds(s: LigamentStructure): string[] {
 
 /**
  * A structure's provenance grade. An absent `source` reads as 'unverified',
- * because silence is not a grade — 199 of the 464 structures were drafted from
+ * because silence is not a grade — 199 of the 479 structures were drafted from
  * standard anatomy and checked against nothing, and the honest default has to
  * say so rather than let a missing field pass for a clean one.
  *

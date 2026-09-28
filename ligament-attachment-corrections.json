@@ -35,13 +35,13 @@
   "plantar-metatarsophalangeal-ligaments": {
    "confirmed": true,
    "source": "Netter lateral inset, 'Capsule and ligaments of metatarsophalangeal and interphalangeal joints'",
-   "why": "NOT SETTLED, and the attempt is recorded so it is not repeated. The work places these plates at the metatarsophalangeal joints, which is consistent with the seed pair, but names no metatarsal or phalangeal attachment. Needs a work that states the attachments.",
+   "why": "NOT SETTLED, and the attempt is recorded so it is not repeated. The work places these plates at the metatarsophalangeal joints, which is consistent with the seed pair, but names no metatarsal or phalangeal attachment. Needs a work that states the attachments. Graded 27 Sep 2026: the owner personally confirmed this row on the review page. The owner is a sports rehabilitation STUDENT, not a qualified therapist: this is a dated, attributable check by someone studying the subject, which is real evidence but not expert sign-off. Where a published work disagrees, the work wins.",
    "attachmentStructureIds": [
     "metatarsals",
     "phalanges-proximal-foot"
    ],
    "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision.",
-   "grade": "unverified",
+   "grade": "verified (owner review)",
    "checked": "2026-09-24",
    "sources": [
     "Plantar ligaments - Wikipedia. https://en.wikipedia.org/wiki/Plantar_ligaments"
@@ -67,13 +67,19 @@
   "palmar-interphalangeal-ligaments": {
    "confirmed": true,
    "source": "Netter lateral inset, which draws the plate at the interphalangeal joint between middle and distal phalanx",
-   "why": "These are the palmar plates of the PIP and DIP joints together, so all three phalangeal rows are genuinely involved: proximal and middle at the PIP, middle and distal at the DIP.",
+   "why": "These are the palmar plates of the PIP and DIP joints together, so all three phalangeal rows are genuinely involved: proximal and middle at the PIP, middle and distal at the DIP. Graded 27 Sep 2026: the owner personally confirmed this row on the review page. The owner is a sports rehabilitation STUDENT, not a qualified therapist: this is a dated, attributable check by someone studying the subject, which is real evidence but not expert sign-off. Where a published work disagrees, the work wins.",
    "attachmentStructureIds": [
     "phalanges-middle-hand",
     "phalanges-distal-hand",
     "phalanges-proximal-hand"
    ],
-   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision."
+   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision.",
+   "grade": "verified (owner review)",
+   "checked": "2026-09-13",
+   "sources": [
+    "Netter lateral inset, which draws the plate at the interphalangeal joint between middle and distal phalanx"
+   ],
+   "quote": "Confirmed by the project owner, a sports rehabilitation student, on the ligament review page."
   },
   "acromioclavicular-ligament": {
    "confirmed": true,
@@ -116,12 +122,12 @@
    ],
    "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision.",
    "checked": "2026-09-24",
-   "grade": "unverified",
+   "grade": "verified (owner review)",
    "sources": [
     "Sternoclavicular joint - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Sternoclavicular_joint"
    ],
    "quote": "Anterior sternoclavicular ligament (intrinsic) ... Posterior sternoclavicular ligament (intrinsic)",
-   "why": "NOT SETTLED. The joint article names this ligament as an intrinsic stabiliser of the sternoclavicular joint, which confirms it spans clavicle and sternum, but gives no attachment detail of its own. Needs its own work."
+   "why": "NOT SETTLED. The joint article names this ligament as an intrinsic stabiliser of the sternoclavicular joint, which confirms it spans clavicle and sternum, but gives no attachment detail of its own. Needs its own work. Graded 27 Sep 2026: the owner personally confirmed this row on the review page. The owner is a sports rehabilitation STUDENT, not a qualified therapist: this is a dated, attributable check by someone studying the subject, which is real evidence but not expert sign-off. Where a published work disagrees, the work wins."
   },
   "anterior-tibiofibular-ligament": {
    "confirmed": true,
@@ -212,24 +218,24 @@
    ],
    "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision.",
    "checked": "2026-09-24",
-   "grade": "unverified",
+   "grade": "verified (owner review)",
    "sources": [
     "Medial meniscus - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Medial_meniscus"
    ],
    "quote": "Its anterior end, thin and pointed, is attached to the anterior intercondyloid fossa of the tibia, in front of the anterior cruciate ligament ... Its posterior end is fixed to the posterior intercondyloid fossa of the tibia",
-   "why": "NOT SETTLED. Both tibial horns confirmed. The seed also lists the FEMUR, and this work gives no direct femoral attachment — only fusion with the tibial collateral ligament. An unsupported half of a pair."
+   "why": "NOT SETTLED. Both tibial horns confirmed. The seed also lists the FEMUR, and this work gives no direct femoral attachment — only fusion with the tibial collateral ligament. An unsupported half of a pair. Graded 27 Sep 2026: the owner personally confirmed this row on the review page. The owner is a sports rehabilitation STUDENT, not a qualified therapist: this is a dated, attributable check by someone studying the subject, which is real evidence but not expert sign-off. Where a published work disagrees, the work wins."
   },
   "nuchal-ligament": {
    "confirmed": true,
    "source": "User review on the review page, 13 Sept 2026",
-   "why": "NOT SETTLED. The cervical vertebrae are confirmed, but the work names the OCCIPITAL BONE as the upper attachment, which the seed omits — and occipital-bone now exists as a structure. The work also names the atlas (C1), not the axis (C2) which the seed lists. Both need settling before the pair is right.",
+   "why": "NOT SETTLED. The cervical vertebrae are confirmed, but the work names the OCCIPITAL BONE as the upper attachment, which the seed omits — and occipital-bone now exists as a structure. The work also names the atlas (C1), not the axis (C2) which the seed lists. Both need settling before the pair is right. Graded 27 Sep 2026: the owner personally confirmed this row on the review page. The owner is a sports rehabilitation STUDENT, not a qualified therapist: this is a dated, attributable check by someone studying the subject, which is real evidence but not expert sign-off. Where a published work disagrees, the work wins.",
    "attachmentStructureIds": [
     "cervical-vertebrae",
     "axis-c2"
    ],
    "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision.",
    "checked": "2026-09-24",
-   "grade": "unverified",
+   "grade": "verified (owner review)",
    "sources": [
     "Nuchal ligament - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Nuchal_ligament"
    ],
@@ -259,12 +265,12 @@
    ],
    "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision.",
    "checked": "2026-09-24",
-   "grade": "unverified",
+   "grade": "verified (owner review)",
    "sources": [
     "Distal radioulnar articulation - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Distal_radioulnar_articulation"
    ],
    "quote": "The articulation is reinforced by the palmar radioulnar ligament, and dorsal radioulnar ligament",
-   "why": "NOT SETTLED. The work names this ligament as a reinforcement of the radioulnar articulation, which implies the seed pair, but gives no attachment detail of its own. Confirming a pair from the ligament's own name is not a source check."
+   "why": "NOT SETTLED. The work names this ligament as a reinforcement of the radioulnar articulation, which implies the seed pair, but gives no attachment detail of its own. Confirming a pair from the ligament's own name is not a source check. Graded 27 Sep 2026: the owner personally confirmed this row on the review page. The owner is a sports rehabilitation STUDENT, not a qualified therapist: this is a dated, attributable check by someone studying the subject, which is real evidence but not expert sign-off. Where a published work disagrees, the work wins."
   },
   "pubofemoral-ligament": {
    "confirmed": true,
@@ -291,12 +297,12 @@
    ],
    "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision.",
    "checked": "2026-09-24",
-   "grade": "unverified",
+   "grade": "verified (owner review)",
    "sources": [
     "Radial collateral ligament of elbow joint - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Radial_collateral_ligament_of_elbow_joint"
    ],
    "quote": "from the lateral epicondyle to the annular ligament deep to the common extensor tendon",
-   "why": "NOT SETTLED. The humerus (lateral epicondyle) is confirmed. The seed also lists the RADIUS, but this work attaches the ligament to the ANNULAR LIGAMENT, not to the radius itself — a real distinction, and the reason this ligament does not restrain the radial head directly."
+   "why": "NOT SETTLED. The humerus (lateral epicondyle) is confirmed. The seed also lists the RADIUS, but this work attaches the ligament to the ANNULAR LIGAMENT, not to the radius itself — a real distinction, and the reason this ligament does not restrain the radial head directly. Graded 27 Sep 2026: the owner personally confirmed this row on the review page. The owner is a sports rehabilitation STUDENT, not a qualified therapist: this is a dated, attributable check by someone studying the subject, which is real evidence but not expert sign-off. Where a published work disagrees, the work wins."
   },
   "sacrotuberous-ligament": {
    "confirmed": true,
@@ -348,22 +354,24 @@
    "confirmed": true,
    "source": "User review on the review page, 13 Sept 2026",
    "attachmentStructureIds": [
-    "tibia",
-    "femur"
+    "medial-meniscus",
+    "lateral-meniscus"
    ],
    "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision.",
-   "checked": "2026-09-24",
-   "grade": "held",
+   "checked": "2026-09-27",
+   "grade": "verified",
    "sources": [
-    "Transverse ligament of knee - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Transverse_ligament_of_knee"
+    "Transverse ligament of knee - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Transverse_ligament_of_knee",
+    "Transverse ligament of the knee - Radiopaedia. https://radiopaedia.org/articles/transverse-ligament-of-the-knee"
    ],
-   "quote": "The transverse or (anterior) meniscomeniscal ligament is a ligament in the knee joint that connects the anterior convex margin of the lateral meniscus to the anterior end of the medial meniscus.",
-   "why": "CONTRADICTED. The seed says this ligament attaches to the tibia and the femur. The work says it connects the two MENISCI to each other and names no bony attachment at all. Held rather than corrected because the replacement is a pair of menisci, and whether attachmentStructureIds should point at non-bone structures is a convention decision, not a fact to be guessed."
+   "quote": "The transverse ligament attaches the anterior horns of the medial and lateral menisci.",
+   "why": "CORRECTED 27 Sep 2026. The seed said tibia and femur, and the owner ticked that on 13 Sept. Two independent works - Gray's via Wikipedia and Radiopaedia - both say it joins the two menisci and has no bony attachment, so the works win over the earlier tick. Attachments now point at the menisci; the bone-attachment multi-select question skips it, because it attaches to no bone.",
+   "description": "A band joining the anterior horn of the lateral meniscus to the anterior end of the medial meniscus, in front of the knee. It attaches to no bone; it ties the two menisci together."
   },
   "ulnar-collateral-ligament": {
    "confirmed": true,
    "source": "User review on the review page, 13 Sept 2026",
-   "why": "NOT SETTLED. Humerus and ulna both confirmed precisely. The seed also lists the RADIUS, which this work does not mention at all — an unsupported third attachment.",
+   "why": "NOT SETTLED. Humerus and ulna both confirmed precisely. The seed also lists the RADIUS, which this work does not mention at all — an unsupported third attachment. Graded 27 Sep 2026: the owner personally confirmed this row on the review page. The owner is a sports rehabilitation STUDENT, not a qualified therapist: this is a dated, attributable check by someone studying the subject, which is real evidence but not expert sign-off. Where a published work disagrees, the work wins.",
    "attachmentStructureIds": [
     "ulna",
     "radius",
@@ -371,7 +379,7 @@
    ],
    "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision.",
    "checked": "2026-09-24",
-   "grade": "unverified",
+   "grade": "verified (owner review)",
    "sources": [
     "Ulnar collateral ligament of elbow joint - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Ulnar_collateral_ligament_of_elbow_joint"
    ],
@@ -380,14 +388,19 @@
   "ulnocapitate-ligament": {
    "confirmed": true,
    "source": "User review on the review page, 13 Sept 2026",
-   "why": "CONFIRMED BY THE USER AS DERIVED, but flagged: the ulnocapitate runs from the ulna (fovea / palmar radioulnar ligament) to the capitate and passes over the lunate rather than attaching to it, so the 25% lunate contact is probably passage. The supplied wrist plate does not label it, so this rests on standard teaching. Raise before deploy.",
+   "why": "CONFIRMED BY THE USER AS DERIVED, but flagged: the ulnocapitate runs from the ulna (fovea / palmar radioulnar ligament) to the capitate and passes over the lunate rather than attaching to it, so the 25% lunate contact is probably passage. The supplied wrist plate does not label it, so this rests on standard teaching. Raise before deploy. Graded 27 Sep 2026: the owner personally confirmed this row on the review page. The owner is a sports rehabilitation STUDENT, not a qualified therapist: this is a dated, attributable check by someone studying the subject, which is real evidence but not expert sign-off. Where a published work disagrees, the work wins.",
    "attachmentStructureIds": [
     "ulna",
     "lunate",
     "capitate"
    ],
    "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision.",
-   "checked": "2026-09-13"
+   "checked": "2026-09-13",
+   "grade": "verified (owner review)",
+   "sources": [
+    "User review on the review page, 13 Sept 2026"
+   ],
+   "quote": "Confirmed by the project owner, a sports rehabilitation student, on the ligament review page."
   },
   "ulnopisiform-ligament": {
    "confirmed": true,
@@ -397,7 +410,13 @@
     "pisiform"
    ],
    "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision.",
-   "checked": "2026-09-13"
+   "checked": "2026-09-13",
+   "grade": "verified (owner review)",
+   "sources": [
+    "User review on the review page, 13 Sept 2026"
+   ],
+   "quote": "Confirmed by the project owner, a sports rehabilitation student, on the ligament review page.",
+   "why": "Graded 27 Sep 2026: the owner personally confirmed this row on the review page. The owner is a sports rehabilitation STUDENT, not a qualified therapist: this is a dated, attributable check by someone studying the subject, which is real evidence but not expert sign-off. Where a published work disagrees, the work wins."
   },
   "ulnotriquetral-ligament": {
    "confirmed": true,
@@ -453,17 +472,22 @@
    "description": "The posterior part of the coronary ligament of the medial meniscus, anchoring the meniscal rim to the margin of the tibial plateau.",
    "confirmed": true,
    "source": "Review page, confirmed 13 Sept 2026",
-   "why": "Tibia is the only bony end; the other attaches to the medial meniscus, which is not a bone. The derivation reporting one bone is correct, not incomplete.",
-   "checked": "2026-09-13"
+   "why": "Tibia is the only bony end; the other attaches to the medial meniscus, which is not a bone. The derivation reporting one bone is correct, not incomplete. Graded 27 Sep 2026: the owner personally confirmed this row on the review page. The owner is a sports rehabilitation STUDENT, not a qualified therapist: this is a dated, attributable check by someone studying the subject, which is real evidence but not expert sign-off. Where a published work disagrees, the work wins.",
+   "checked": "2026-09-13",
+   "grade": "verified (owner review)",
+   "sources": [
+    "Review page, confirmed 13 Sept 2026"
+   ],
+   "quote": "Confirmed by the project owner, a sports rehabilitation student, on the ligament review page."
   },
   "external-intercostal-membrane": {
    "attachmentStructureIds": [],
    "description": "The aponeurotic sheet continuing the external intercostal muscle forwards between the costal cartilages.",
    "confirmed": true,
    "source": "Review page, confirmed 13 Sept 2026",
-   "why": "NOT SETTLED, attempt recorded. The seed carries no attachment ids for this structure at all, and the obvious work does not describe the membrane. Needs a thoracic anatomy source.",
+   "why": "NOT SETTLED, attempt recorded. The seed carries no attachment ids for this structure at all, and the obvious work does not describe the membrane. Needs a thoracic anatomy source. Graded 27 Sep 2026: the owner personally confirmed this row on the review page. The owner is a sports rehabilitation STUDENT, not a qualified therapist: this is a dated, attributable check by someone studying the subject, which is real evidence but not expert sign-off. Where a published work disagrees, the work wins.",
    "checked": "2026-09-24",
-   "grade": "unverified",
+   "grade": "verified (owner review)",
    "sources": [
     "Intercostal muscles - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Intercostal_muscles"
    ],
@@ -476,8 +500,13 @@
    "description": "The posterior part of the coronary ligament of the lateral meniscus, anchoring the meniscal rim to the margin of the tibial plateau.",
    "confirmed": true,
    "source": "Review page, marked corrected with no attachment change, 13 Sept 2026",
-   "why": "The reviewer marked this corrected but left the attachment field blank, which the page defines as \"the attachments are right but something else is wrong\". Tibia is right — the other end is the meniscus. What is wrong is that it can barely be seen: even with the meniscus ghosted it traces at 0.06% of frame at a single angle, the smallest target in the tranche. Flagged for a keep-or-drop decision; the attachment itself is settled.",
-   "checked": "2026-09-13"
+   "why": "The reviewer marked this corrected but left the attachment field blank, which the page defines as \"the attachments are right but something else is wrong\". Tibia is right — the other end is the meniscus. What is wrong is that it can barely be seen: even with the meniscus ghosted it traces at 0.06% of frame at a single angle, the smallest target in the tranche. Flagged for a keep-or-drop decision; the attachment itself is settled. Graded 27 Sep 2026: the owner personally confirmed this row on the review page. The owner is a sports rehabilitation STUDENT, not a qualified therapist: this is a dated, attributable check by someone studying the subject, which is real evidence but not expert sign-off. Where a published work disagrees, the work wins.",
+   "checked": "2026-09-13",
+   "grade": "verified (owner review)",
+   "sources": [
+    "Review page, marked corrected with no attachment change, 13 Sept 2026"
+   ],
+   "quote": "Confirmed by the project owner, a sports rehabilitation student, on the ligament review page."
   },
   "tibionavicular-ligament": {
    "attachmentStructureIds": [
@@ -2287,6 +2316,158 @@
    "quote": "The ulnar collateral ligament is a rounded cord, attached above to the end of the styloid process of the ulna, and dividing below into two fasciculi, one of which is attached to the medial side of the triquetral bone, the other to the pisiform and flexor retinaculum.",
    "why": "Seed wrongly included the lunate, which the mesh only grazes at 8 per cent; the classical description lists only the ulnar styloid, triquetrum and pisiform (plus the flexor retinaculum, which the app does not model). Disputed: Nomenclature only: Kenhub and some modern texts treat this ligament as the ulnotriquetral division of the palmar ulnocarpal ligament rather than a true collateral ligament. No source gives it a lunate attachment.",
    "checked": "2026-09-22"
+  },
+  "flexor-retinaculum": {
+   "grade": "verified",
+   "checked": "2026-09-26",
+   "sources": [
+    "Flexor retinaculum of the hand - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Flexor_retinaculum_of_the_hand"
+   ],
+   "quote": "On the ulnar side, the flexor retinaculum attaches to the pisiform bone and the hook of the hamate bone. On the radial side, it attaches to the tubercle of the scaphoid bone, and to the medial part of the palmar surface and the tubercle of the trapezium bone.",
+   "why": "All four bony attachments named explicitly; added 26 Sep 2026 because four landmark claims pointed at a structure the dataset did not hold."
+  },
+  "plantar-fascia": {
+   "grade": "verified",
+   "checked": "2026-09-26",
+   "sources": [
+    "Plantar fascia - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Plantar_fascia"
+   ],
+   "quote": "It runs from the tuberosity of the calcaneus (heel bone) forward to the heads of the metatarsal bones.",
+   "why": "Calcaneal tuberosity and metatarsal heads both named."
+  },
+  "iliotibial-band": {
+   "grade": "verified",
+   "checked": "2026-09-26",
+   "sources": [
+    "Iliotibial tract - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Iliotibial_tract"
+   ],
+   "quote": "It originates at the anterolateral iliac tubercle portion of the external lip of the iliac crest and inserts at the lateral condyle of the tibia at Gerdy's tubercle.",
+   "why": "Iliac crest, lateral tibial condyle and Gerdy's tubercle all named."
+  },
+  "achilles-tendon": {
+   "grade": "verified",
+   "checked": "2026-09-26",
+   "sources": [
+    "Achilles tendon - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Achilles_tendon"
+   ],
+   "quote": "It serves to attach the plantaris, gastrocnemius (calf) and soleus muscles to the calcaneus (heel) bone ... inserts into the middle part of the back of the calcaneus bone.",
+   "why": "Calcaneal insertion named."
+  },
+  "patellar-ligament": {
+   "grade": "verified",
+   "checked": "2026-09-26",
+   "sources": [
+    "Patellar ligament - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Patellar_ligament"
+   ],
+   "quote": "The patellar tendon is the distal portion of the common tendon of the quadriceps femoris, which is continued from the patella to the tibial tuberosity.",
+   "why": "Patella and tibial tuberosity both named."
+  },
+  "inguinal-ligament": {
+   "grade": "verified",
+   "checked": "2026-09-26",
+   "sources": [
+    "Inguinal ligament - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Inguinal_ligament"
+   ],
+   "quote": "The inguinal ligament is a band running from the pubic tubercle to the anterior superior iliac spine.",
+   "why": "Pubic tubercle and ASIS both named."
+  },
+  "iliofemoral-ligament": {
+   "grade": "verified",
+   "checked": "2026-09-26",
+   "sources": [
+    "Iliofemoral ligament - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Iliofemoral_ligament"
+   ],
+   "quote": "It attaches superiorly at the inferior portion of the anterior inferior iliac spine and adjacent portion of the margin of the acetabulum; it attaches inferiorly at the intertrochanteric line.",
+   "why": "AIIS and intertrochanteric line both named."
+  },
+  "ligamentum-teres-femoris": {
+   "grade": "verified",
+   "checked": "2026-09-26",
+   "sources": [
+    "Ligament of head of femur - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Ligamentum_teres_femoris"
+   ],
+   "quote": "The ligament is implanted by its apex into the anterosuperior part of the fovea capitis femoris and its base is attached by two bands, one into either side of the acetabular notch.",
+   "why": "Femoral head fovea and acetabular notch both named."
+  },
+  "alar-ligaments": {
+   "grade": "verified",
+   "checked": "2026-09-26",
+   "sources": [
+    "Alar ligament - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Alar_ligament"
+   ],
+   "quote": "the alar ligaments are ligaments which connect the dens (a bony protrusion on the second cervical vertebra) to tubercles on the medial side of the occipital condyle.",
+   "why": "Dens and occipital condyles both named - and the occipital bone now exists as a structure to point at."
+  },
+  "transverse-ligament-of-atlas": {
+   "grade": "verified",
+   "checked": "2026-09-26",
+   "sources": [
+    "Transverse ligament of atlas - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Transverse_ligament_of_atlas"
+   ],
+   "quote": "The ligament attaches on either side onto a small yet prominent tubercle upon the medial aspect of either lateral mass of atlas.",
+   "why": "Lateral masses of the atlas named; it holds the dens without attaching to it."
+  },
+  "intertransverse-ligaments": {
+   "grade": "verified",
+   "checked": "2026-09-26",
+   "sources": [
+    "Intertransverse ligament - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Intertransverse_ligament"
+   ],
+   "quote": "The intertransverse ligaments are weak, sheet-like ligaments interconnecting adjacent transverse processes in the thoracic spine, and adjacent accessory processes in the lumbar spine.",
+   "why": "Transverse processes named."
+  },
+  "linea-alba": {
+   "grade": "verified",
+   "checked": "2026-09-26",
+   "sources": [
+    "Linea alba (abdomen) - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Linea_alba_(abdomen)"
+   ],
+   "quote": "The linea alba attaches to the xiphoid process superiorly, and to the pubic symphysis inferiorly.",
+   "why": "Xiphoid process and pubic symphysis both named."
+  },
+  "costal-cartilage": {
+   "grade": "verified",
+   "checked": "2026-09-26",
+   "sources": [
+    "Costal cartilage - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Costal_cartilage"
+   ],
+   "quote": "The first seven pairs are connected with the sternum; the next three are each articulated with the lower border of the cartilage of the preceding rib; the last two have pointed extremities, which end in the wall of the abdomen.",
+   "why": "Ribs and sternum both named, with the true/false distinction."
+  },
+  "triangular-fibrocartilage-complex": {
+   "grade": "verified",
+   "checked": "2026-09-26",
+   "sources": [
+    "Triangular fibrocartilage - Wikipedia. https://en.wikipedia.org/wiki/Triangular_fibrocartilage"
+   ],
+   "quote": "is attached by thick tissue to the base of the ulnar styloid and by thinner tissue to the edge of the radius just proximal to the radiocarpal articular surface",
+   "why": "Ulnar styloid and distal radius both named."
+  },
+  "extensor-retinaculum-hand": {
+   "grade": "verified",
+   "checked": "2026-09-27",
+   "sources": [
+    "Extensor retinaculum (wrist) - Radiopaedia. https://radiopaedia.org/articles/extensor-retinaculum-wrist"
+   ],
+   "quote": "It is obliquely orientated and attaches proximally to the lateral surface of the distal radius towards the styloid process and distally attaches to the pisiform and triquetral bones.",
+   "why": "SETTLED 27 Sep 2026. The first source defined it without bony attachments; Radiopaedia names them, and also that it does not attach to the ulna. Attachments corrected in the seed from carpals alone.",
+   "confirmed": true
+  },
+  "palmar-scaphotriquetral-ligament": {
+   "description": "A palmar band of the wrist running from the scaphoid to the triquetrum. Its attachment to the triquetrum is substantial and to the scaphoid thin and fan-shaped, blending with the radioscaphocapitate ligament; it may help support the head of the capitate when the wrist is extended.",
+   "grade": "verified",
+   "checked": "2026-09-28",
+   "sources": [
+    "The anatomy of the palmar scaphotriquetral ligament - Journal of Bone & Joint Surgery (Br), Sennwald et al. https://boneandjoint.org.uk/Article/10.1302/0301-620X.76B1.8300661",
+    "Owner review, 28 Sep 2026: confirmed it does not attach to the lunate"
+   ],
+   "quote": "Its attachment to the triquetrum is substantial but that to the scaphoid is thin and fan-shaped, its fibres interdigitating with those of the radioscaphocapitate ligament.",
+   "why": "SETTLED 28 Sep 2026. Attachments: scaphoid and triquetrum only. The published work (Sennwald et al., JBJS Br) names those two and is silent on the lunate; silence alone was not treated as evidence, because that inference was wrong once for the dorsal scaphotriquetral ligament. The owner, a sports rehabilitation student, then confirmed it does not attach to the lunate, which together with the work settles it. The lunate came from mesh contact: the ligament passes in front of it. Description corrected the same pass.",
+   "attachmentStructureIds": [
+    "scaphoid",
+    "triquetrum"
+   ],
+   "confirmed": true
   }
  }
 }
