@@ -72,6 +72,7 @@ function MobileOinaSelect({
     onAnswer({
       structureId: question.structureId,
       correct: score.isFullyCorrect,
+      partialCredit: score.score,
       confidence,
       selectedAnswer: selectedList.map((i) => question.choices[i]).join(', ') || '(none selected)',
       correctAnswer: question.correctIndices.map((i) => question.choices[i]).join(', '),
@@ -211,6 +212,7 @@ function MobileOinaTyped({
     onAnswer({
       structureId: question.structureId,
       correct: result.allCorrect,
+      partialCredit: result.correctCount / question.slots.length,
       confidence,
       selectedAnswer: inputs.map((v) => v.trim()).filter(Boolean).join(', ') || '(no answer)',
       correctAnswer: question.slots.map((s) => s.accepted[0]).join(', '),

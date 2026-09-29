@@ -11,6 +11,8 @@ export interface OinaAnswerParams {
   structureId: string;
   correct: boolean;
   confidence?: Confidence;
+  /** Share of a multi-part answer that was right — see lib/mastery.ts scheduleConfidence. */
+  partialCredit?: number;
   selectedAnswer: string;
   correctAnswer: string;
 }
@@ -66,7 +68,7 @@ export function OinaSelectSession({ question, onAnswer, onNext, examMode }: Oina
 
   const handleRate = (confidence: Confidence) => {
     setRated(true);
-    onAnswer({ structureId: question.structureId, correct: score.isFullyCorrect, confidence, ...answerStrings() });
+    onAnswer({ structureId: question.structureId, correct: score.isFullyCorrect, partialCredit: score.score, confidence, ...answerStrings() });
   };
 
   const total = question.correctIndices.length;

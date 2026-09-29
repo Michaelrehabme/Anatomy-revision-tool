@@ -22,6 +22,15 @@ export interface TodayData {
   allMastery: StructureMastery[];
   weakest: StructureMastery[];
   comingDue: StructureMastery[];
+  /**
+   * What "Start review" prioritises, in order: every due muscle, most overdue
+   * first, then the not-yet-due ones soonest first. The second half is the
+   * pull-forward — once today's queue is cleared, another review brings the
+   * next ones forward rather than drawing at random. The session takes
+   * REVIEW_SHARE of its questions from the front of this list, so upcoming
+   * muscles only get in when the due ones have run out.
+   */
+  reviewQueue: string[];
   weekBuckets: number[];
   weekMax: number;
   dayLabels: string[];
@@ -89,10 +98,13 @@ export function useTodayData(
     .sort((a, b) => a.attemptsCorrect / a.attemptsTotal - b.attemptsCorrect / b.attemptsTotal)
     .slice(0, 5);
 
-  const comingDue = [...allMastery]
+  const upcoming = [...allMastery]
     .filter((m) => m.dueAt && muscleIds.has(m.structureId) && !dueMuscles.some((d) => d.structureId === m.structureId))
-    .sort((a, b) => a.dueAt!.localeCompare(b.dueAt!))
-    .slice(0, 3);
+    .sort((a, b) => a.dueAt!.localeCompare(b.dueAt!));
+  const comingDue = upcoming.slice(0, 3);
+  const reviewQueue = [...[...dueMuscles].sort((a, b) => (a.dueAt ?? '').localeCompare(b.dueAt ?? '')), ...upcoming].map(
+    (m) => m.structureId,
+  );
 
   // Seven local calendar days ending today, each labelled with its own
   // weekday, so the axis is right every day of the week and a session at
@@ -113,6 +125,7 @@ export function useTodayData(
     allMastery,
     weakest,
     comingDue,
+    reviewQueue,
     weekBuckets,
     weekMax,
     dayLabels,

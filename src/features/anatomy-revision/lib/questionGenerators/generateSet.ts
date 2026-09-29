@@ -182,6 +182,17 @@ function interleaveByType(
 export const REVIEW_SHARE = 0.6;
 
 /**
+ * Share of a prioritised session reserved for structures never answered —
+ * no mastery row, or only a flashcard's "seen" row with nothing graded yet.
+ *
+ * Without it new material only got whatever the weighted draw left over, and
+ * a seen structure that was weak or nearly due outweighed an unseen one — so
+ * a student with a long review history could go days meeting nothing new.
+ * Twenty questions: twelve review, five new, three from the weighted rest.
+ */
+export const NEW_SHARE = 0.25;
+
+/**
  * Most questions any one structure may contribute to a capped session.
  *
  * A structure asks many questions — MCQ, locate, typed, four OINA facts, a
@@ -259,15 +270,17 @@ function blendPriorityWithRest(
   reviewShare: number | undefined,
   rng: Rng,
   cap: number,
+  newStructureIds: ReadonlySet<string> | null,
 ): RevisionQuestion[] {
   const priority = new Set(priorityStructureIds);
   const share = Math.min(1, Math.max(0, reviewShare ?? REVIEW_SHARE));
 
   const byStructure = new Map<string, RevisionQuestion[]>();
+  const fresh: RevisionQuestion[] = [];
   const rest: RevisionQuestion[] = [];
   for (const question of ordered) {
     if (!priority.has(question.structureId)) {
-      rest.push(question);
+      (newStructureIds?.has(question.structureId) ? fresh : rest).push(question);
       continue;
     }
     const queue = byStructure.get(question.structureId);
@@ -284,18 +297,30 @@ function blendPriorityWithRest(
   // from either and must not hand a structure a second cap's worth.
   const counts = new Map<string, number>();
   const fromDue = takeWithStructureCap(due, Math.min(Math.round(count * share), due.length), cap, counts);
-  const fromRest = takeWithStructureCap(rest, count - fromDue.length, cap, counts);
+  const fromNew = takeWithStructureCap(fresh, Math.min(Math.round(count * NEW_SHARE), count - fromDue.length), cap, counts);
+  const fromRest = takeWithStructureCap(rest, count - fromDue.length - fromNew.length, cap, counts);
   // Neither side could fill the session within the cap — a narrow pool, not a
   // greedy structure — so now, and only now, the cap gives.
-  const picked = new Set([...fromDue, ...fromRest]);
+  const picked = new Set([...fromDue, ...fromNew, ...fromRest]);
   const topUp = takeWithStructureCap(
-    [...due, ...rest].filter((q) => !picked.has(q)),
+    [...due, ...fresh, ...rest].filter((q) => !picked.has(q)),
     count - picked.size,
     cap,
     counts,
     true,
   );
-  return shuffle([...fromDue, ...fromRest, ...topUp], rng);
+  return shuffle([...fromDue, ...fromNew, ...fromRest, ...topUp], rng);
+}
+
+/**
+ * The pool's structures with nothing graded yet, for NEW_SHARE. Null without
+ * mastery: with no history there is no telling new from known, and every
+ * structure is new anyway.
+ */
+function newStructureIds(pool: AnatomyStructure[], mastery: readonly StructureMastery[] | undefined): Set<string> | null {
+  if (!mastery) return null;
+  const answered = new Set(mastery.filter((m) => m.attemptsTotal > 0).map((m) => m.structureId));
+  return new Set(pool.filter((s) => !answered.has(s.id)).map((s) => s.id));
 }
 
 /**
@@ -527,7 +552,7 @@ export function generateRevisionSet(
   const selected = !count
     ? balanced
     : config.priorityStructureIds?.length
-      ? blendPriorityWithRest(balanced, config.priorityStructureIds, count, config.reviewShare, rng, cap)
+      ? blendPriorityWithRest(balanced, config.priorityStructureIds, count, config.reviewShare, rng, cap, newStructureIds(pool, config.mastery))
       : // Breadth over depth here too: the mastery weighting front-loads a weak
         // structure's whole question family, so a plain slice is as lopsided as
         // the due blend was.

@@ -8,15 +8,31 @@ const LAPSE_INTERVAL_THRESHOLD_DAYS = 7;
 const LEECH_THRESHOLD_LAPSES = 4;
 const LEECH_INTERVAL_CAP_DAYS = 7;
 
+/** The first step off a 1-day interval — what the buttons' "4 days" / "10 days" promise. */
+const FIRST_INTERVAL_DAYS = { medium: 4, easy: 10 } as const;
+/** Easy grows faster than Medium by this much on top of the ease factor. */
+const EASY_BONUS = 1.3;
+/**
+ * The longest a structure can go unseen, however often it is rated Easy.
+ * Compounding growth has no ceiling of its own — without one a well-known
+ * muscle drifts out past the exam it was being revised for.
+ */
+export const MAX_INTERVAL_DAYS = 30;
+
 /**
  * SM-2-lite: confidence rating drives a simplified spaced-repetition
- * schedule. This intentionally does not implement full SM-2 (no quality
- * 0-5 scale, no per-attempt streak) — it's a lightweight approximation
- * suited to a 3-button confidence UI (easy/medium/hard).
+ * schedule, suited to a 3-button confidence UI (easy/medium/hard).
  *
- * - "easy": grows the interval by the ease factor and nudges ease up.
- * - "medium": holds the interval steady, ease unchanged.
  * - "hard": resets the interval to 1 day and drops ease (floor MIN_EASE_FACTOR).
+ * - "medium": 4 days off a 1-day interval, then grows by the ease factor.
+ * - "easy": 10 days off a 1-day interval, then grows by ease × EASY_BONUS,
+ *   and nudges ease up.
+ *
+ * Medium used to HOLD the interval, and every structure starts on 1 day — so
+ * anything rated Medium came back every day however often it was answered
+ * right, the due queue only grew, and it crowded new material out of the
+ * daily review. Both non-Hard ratings now move a structure on; nothing goes
+ * past MAX_INTERVAL_DAYS.
  */
 export function computeNextReview(
   mastery: Pick<StructureMastery, 'intervalDays' | 'easeFactor'> | undefined,
@@ -31,11 +47,11 @@ export function computeNextReview(
 
   switch (confidence) {
     case 'easy':
-      nextInterval = Math.max(1, Math.round(currentInterval * easeFactor));
+      nextInterval = currentInterval <= 1 ? FIRST_INTERVAL_DAYS.easy : Math.round(currentInterval * easeFactor * EASY_BONUS);
       nextEase = easeFactor + 0.15;
       break;
     case 'medium':
-      nextInterval = Math.max(1, currentInterval);
+      nextInterval = currentInterval <= 1 ? FIRST_INTERVAL_DAYS.medium : Math.round(currentInterval * easeFactor);
       nextEase = easeFactor;
       break;
     case 'hard':
@@ -43,9 +59,32 @@ export function computeNextReview(
       nextEase = Math.max(MIN_EASE_FACTOR, easeFactor - 0.2);
       break;
   }
+  nextInterval = Math.min(MAX_INTERVAL_DAYS, nextInterval);
 
   const dueAt = new Date(now.getTime() + nextInterval * 24 * 60 * 60 * 1000);
   return { intervalDays: nextInterval, easeFactor: nextEase, dueAt: dueAt.toISOString() };
+}
+
+/** Least share of a multi-part answer that counts as "mostly right" — see scheduleConfidence. */
+export const PARTIAL_CREDIT_THRESHOLD = 0.5;
+
+/**
+ * What the schedule actually acts on, given the rating and the result.
+ *
+ * The rating used to be taken at its word, so a wrong answer rated Easy went
+ * ten days out and a correct one rated Hard came back tomorrow. A wrong
+ * answer now counts as Hard whatever was pressed — unless it was a
+ * multi-part answer that was mostly right (two of three attachments), which
+ * is a near miss rather than a blank and may count as Medium at most. A
+ * correct answer keeps its rating: Hard on a correct answer is the student
+ * saying it was a guess, and that is theirs to say.
+ */
+export function scheduleConfidence(correct: boolean, confidence: Confidence, partialCredit?: number): Confidence {
+  if (correct) return confidence;
+  if (partialCredit !== undefined && partialCredit >= PARTIAL_CREDIT_THRESHOLD) {
+    return confidence === 'easy' ? 'medium' : confidence;
+  }
+  return 'hard';
 }
 
 /**
@@ -79,6 +118,12 @@ export function updateMasteryAfterAttempt(
     confidence?: Confidence;
     durationMs?: number;
     /**
+     * Share of a multi-part answer that was right, 0-1 — multi-select and
+     * OINA, where "wrong" can mean two of three. Softens how a wrong answer
+     * is scheduled (scheduleConfidence); absent for single-answer formats.
+     */
+    partialCredit?: number;
+    /**
      * The rung the question just answered asks at — `rungOfQuestion(type, hints)`.
      * null for a format outside the ladder (locate, multi-select, OINA), whose
      * answers move accuracy and the schedule but not the rung. Omitted, the
@@ -99,7 +144,10 @@ export function updateMasteryAfterAttempt(
   const lapses = (existing?.lapses ?? 0) + (hadLongInterval && !params.correct ? 1 : 0);
   const isLeech = lapses >= LEECH_THRESHOLD_LAPSES;
 
-  const resolvedConfidence = params.confidence ?? deriveImplicitConfidence(params.correct, params.durationMs, existing?.durationEwmaMs);
+  const resolvedConfidence =
+    params.confidence !== undefined
+      ? scheduleConfidence(params.correct, params.confidence, params.partialCredit)
+      : deriveImplicitConfidence(params.correct, params.durationMs, existing?.durationEwmaMs);
 
   // The duration baseline only exists to serve deriveImplicitConfidence, so
   // it's only updated on the implicit path — mixing in durations from

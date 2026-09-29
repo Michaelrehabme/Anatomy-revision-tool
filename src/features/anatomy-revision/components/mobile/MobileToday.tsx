@@ -32,7 +32,7 @@ interface MobileTodayProps {
 
 /** Screen 02 (mobile). Single decision on open: due count, one primary action. */
 export function MobileToday({ access, repository, userId, content, onStart, onCustomSession, onOpenMuscle, onNavigateTab }: MobileTodayProps) {
-  const { loading, streak, dueMuscles, allMastery, weakest, weekBuckets, weekMax, dayLabels } = useTodayData(repository, userId, content, access.areas);
+  const { loading, streak, dueMuscles, allMastery, weakest, reviewQueue, weekBuckets, weekMax, dayLabels } = useTodayData(repository, userId, content, access.areas);
   const now = new Date();
   // See Today.tsx: the guided starter until something has been attempted.
   const firstRun = !loading && allMastery.length === 0;
@@ -48,11 +48,6 @@ export function MobileToday({ access, repository, userId, content, onStart, onCu
         return;
       }
     }
-    // Most overdue first: the blend takes one question per due structure in
-    // this order, so the structures waiting longest are the ones it clears.
-    const dueStructureIds = [...dueMuscles]
-      .sort((a, b) => (a.dueAt ?? '').localeCompare(b.dueAt ?? ''))
-      .map((m) => m.structureId);
     // generateSet is repository-free (CR-009), so fact mastery is fetched here.
     const factMastery = repository && userId ? await repository.listFactMastery(userId) : undefined;
     const learnCardAttempts = getLearnCardAttempts();
@@ -61,9 +56,10 @@ export function MobileToday({ access, repository, userId, content, onStart, onCu
       mode: 'practice',
       areas,
       entitledAreas: access.areas,
-      // Prioritised, not restricted: answering a due structure reschedules it, so a
-      // due-only session refills its own queue and never reaches new material.
-      priorityStructureIds: dueStructureIds.length ? dueStructureIds : undefined,
+      // Prioritised, not restricted: the queue fills REVIEW_SHARE of the session
+      // and NEW_SHARE is kept for structures never answered, so every review is
+      // both. Due first, then the soonest upcoming (useTodayData.reviewQueue).
+      priorityStructureIds: reviewQueue.length ? reviewQueue : undefined,
       count: 20,
       // Without mastery the generator falls back to a uniform shuffle and the
       // scheduler's due/weakness weighting never runs on the daily review.
@@ -103,7 +99,7 @@ export function MobileToday({ access, repository, userId, content, onStart, onCu
             ? `${STARTER_COUNT} questions, about ${minutesFor(STARTER_COUNT)} minutes. Multiple choice and locate-on-the-image, nothing harder yet.`
             : dueMuscles.length > 0
               ? 'Scheduled from your recent sessions.'
-              : 'Nothing scheduled — build a custom session instead.'}
+              : 'All caught up. A review now brings the next ones forward, plus new material.'}
         </p>
 
         <button

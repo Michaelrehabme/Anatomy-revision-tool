@@ -13,6 +13,8 @@ interface MobileMultiSelectSessionProps {
     structureId: string;
     correct: boolean;
     confidence?: Confidence;
+    /** Share of the answer that was right, net of wrong picks — see lib/mastery.ts scheduleConfidence. */
+    partialCredit?: number;
     selectedAnswer: string;
     correctAnswer: string;
   }) => void;
@@ -55,7 +57,7 @@ export function MobileMultiSelectSession({ question, onAnswer, onNext, examMode 
 
   const handleRate = (confidence: Confidence) => {
     setRated(true);
-    onAnswer({ structureId: question.structureId, correct: score.isFullyCorrect, confidence, ...answerStrings() });
+    onAnswer({ structureId: question.structureId, correct: score.isFullyCorrect, partialCredit: score.score, confidence, ...answerStrings() });
   };
 
   return (

@@ -42,7 +42,7 @@ export function OinaTypedSession({ question, onAnswer, onNext, examMode }: OinaT
   });
 
   const submit = (confidence?: Confidence) => {
-    onAnswer({ structureId: question.structureId, correct: result.allCorrect, confidence, ...answerStrings() });
+    onAnswer({ structureId: question.structureId, correct: result.allCorrect, partialCredit: result.correctCount / question.slots.length, confidence, ...answerStrings() });
   };
 
   const handleCheck = () => {

@@ -32,7 +32,7 @@ interface TodayProps {
 }
 
 export function Today({ access, repository, userId, content, onStart, onCustomSession, onOpenMuscle, onNavigate }: TodayProps) {
-  const { loading, streak, totalMuscleCount, seenMusclePct, totalStructureCount, seenStructureCount, dueMuscles, allMastery, weakest, comingDue, weekBuckets, weekMax, dayLabels } =
+  const { loading, streak, totalMuscleCount, seenMusclePct, totalStructureCount, seenStructureCount, dueMuscles, allMastery, weakest, comingDue, reviewQueue, weekBuckets, weekMax, dayLabels } =
     useTodayData(repository, userId, content, access.areas);
   const now = new Date();
   // Nothing attempted yet: the first session is the guided starter, and the
@@ -53,11 +53,6 @@ export function Today({ access, repository, userId, content, onStart, onCustomSe
       }
       // An area with no muscles falls through to an ordinary session.
     }
-    // Most overdue first: the blend takes one question per due structure in
-    // this order, so the structures waiting longest are the ones it clears.
-    const dueStructureIds = [...dueMuscles]
-      .sort((a, b) => (a.dueAt ?? '').localeCompare(b.dueAt ?? ''))
-      .map((m) => m.structureId);
     // generateSet is repository-free (CR-009), so fact mastery is fetched here.
     const factMastery = repository && userId ? await repository.listFactMastery(userId) : undefined;
     const learnCardAttempts = getLearnCardAttempts();
@@ -66,9 +61,10 @@ export function Today({ access, repository, userId, content, onStart, onCustomSe
       mode: 'practice',
       areas,
       entitledAreas: access.areas,
-      // Prioritised, not restricted: answering a due structure reschedules it, so a
-      // due-only session refills its own queue and never reaches new material.
-      priorityStructureIds: dueStructureIds.length ? dueStructureIds : undefined,
+      // Prioritised, not restricted: the queue fills REVIEW_SHARE of the session
+      // and NEW_SHARE is kept for structures never answered, so every review is
+      // both. Due first, then the soonest upcoming (useTodayData.reviewQueue).
+      priorityStructureIds: reviewQueue.length ? reviewQueue : undefined,
       count: 20,
       // Without mastery the generator falls back to a uniform shuffle and the
       // scheduler's due/weakness weighting never runs on the daily review.
@@ -125,7 +121,7 @@ export function Today({ access, repository, userId, content, onStart, onCustomSe
               ? `${STARTER_COUNT} questions, about ${minutesFor(STARTER_COUNT)} minutes. Multiple choice and locate-on-the-image, nothing harder yet.`
               : dueMuscles.length > 0
                 ? 'Scheduled from your recent sessions.'
-                : 'Nothing scheduled — start a custom session or drill the untouched set.'}
+                : 'All caught up. A review now brings the next ones forward, plus new material.'}
           </p>
           <div className="mt-9 flex gap-3.5">
             <Button onClick={handleStart} className="min-w-[180px] min-h-[56px]">

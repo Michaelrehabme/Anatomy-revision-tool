@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { computeNextReview, deriveImplicitConfidence, updateMasteryAfterAttempt } from '../mastery';
+import { computeNextReview, deriveImplicitConfidence, MAX_INTERVAL_DAYS, scheduleConfidence, updateMasteryAfterAttempt } from '../mastery';
 import type { StructureMastery } from '../../types/attempt';
 
 describe('computeNextReview', () => {
@@ -18,9 +18,24 @@ describe('computeNextReview', () => {
     expect(reset.intervalDays).toBe(1);
   });
 
-  it('holds the interval steady on a medium rating', () => {
-    const result = computeNextReview({ intervalDays: 4, easeFactor: 2.5 }, 'medium');
-    expect(result.intervalDays).toBe(4);
+  // The daily review repeated the same muscles for days: every structure
+  // starts on 1 day and Medium held it there, so a Medium was a Hard.
+  it('moves a 1-day structure on to 4 days on medium and 10 on easy, as the buttons say', () => {
+    expect(computeNextReview(undefined, 'medium').intervalDays).toBe(4);
+    expect(computeNextReview({ intervalDays: 1, easeFactor: 2.5 }, 'medium').intervalDays).toBe(4);
+    expect(computeNextReview(undefined, 'easy').intervalDays).toBe(10);
+  });
+
+  it('grows the interval by the ease factor on medium, and faster on easy', () => {
+    expect(computeNextReview({ intervalDays: 4, easeFactor: 2.5 }, 'medium').intervalDays).toBe(10);
+    expect(computeNextReview({ intervalDays: 4, easeFactor: 2.5 }, 'easy').intervalDays).toBe(13);
+  });
+
+  it('never schedules a structure further out than the ceiling, however often it is easy', () => {
+    let mastery = computeNextReview(undefined, 'easy');
+    for (let i = 0; i < 10; i++) mastery = computeNextReview(mastery, 'easy');
+    expect(mastery.intervalDays).toBe(MAX_INTERVAL_DAYS);
+    expect(computeNextReview({ intervalDays: 25, easeFactor: 2.5 }, 'medium').intervalDays).toBe(MAX_INTERVAL_DAYS);
   });
 
   it('never drops ease factor below the floor', () => {
@@ -29,6 +44,25 @@ describe('computeNextReview', () => {
       mastery = computeNextReview(mastery, 'hard');
     }
     expect(mastery.easeFactor).toBeGreaterThanOrEqual(1.3);
+  });
+});
+
+describe('scheduleConfidence', () => {
+  it('takes a correct answer at its rating, Hard included', () => {
+    expect(scheduleConfidence(true, 'easy')).toBe('easy');
+    expect(scheduleConfidence(true, 'hard')).toBe('hard');
+  });
+
+  it('schedules a wrong answer as Hard whatever was pressed', () => {
+    expect(scheduleConfidence(false, 'easy')).toBe('hard');
+    expect(scheduleConfidence(false, 'medium')).toBe('hard');
+  });
+
+  it('lets a mostly-right multi-part answer count as Medium at most', () => {
+    expect(scheduleConfidence(false, 'easy', 2 / 3)).toBe('medium');
+    expect(scheduleConfidence(false, 'medium', 2 / 3)).toBe('medium');
+    expect(scheduleConfidence(false, 'hard', 2 / 3)).toBe('hard');
+    expect(scheduleConfidence(false, 'medium', 1 / 3)).toBe('hard');
   });
 });
 
@@ -62,7 +96,7 @@ describe('updateMasteryAfterAttempt', () => {
   it('seeds the duration baseline and derives medium on a first no-confidence attempt', () => {
     const result = updateMasteryAfterAttempt(undefined, { ...base, correct: true, durationMs: 4000 });
     expect(result.durationEwmaMs).toBe(4000);
-    expect(result.intervalDays).toBe(1); // 'medium' holds the default interval of 1 steady
+    expect(result.intervalDays).toBe(4); // 'medium' takes the default 1-day interval to 4
   });
 
   it('derives easy and grows the interval when a later attempt is faster than the baseline', () => {
@@ -71,10 +105,12 @@ describe('updateMasteryAfterAttempt', () => {
     expect(faster.intervalDays).toBeGreaterThan(seeded.intervalDays!);
   });
 
-  it('derives medium and holds the interval when a later attempt is slower than the baseline', () => {
+  it('derives medium, growing the interval less than easy, when a later attempt is slower than the baseline', () => {
     const seeded = updateMasteryAfterAttempt(undefined, { ...base, correct: true, durationMs: 4000 });
     const slower = updateMasteryAfterAttempt(seeded, { ...base, correct: true, durationMs: 8000 });
-    expect(slower.intervalDays).toBe(seeded.intervalDays);
+    const faster = updateMasteryAfterAttempt(seeded, { ...base, correct: true, durationMs: 1000 });
+    expect(slower.intervalDays).toBeGreaterThan(seeded.intervalDays!);
+    expect(slower.intervalDays).toBeLessThan(faster.intervalDays!);
   });
 
   it('derives hard and resets the interval on an incorrect no-confidence attempt', () => {
@@ -95,6 +131,14 @@ describe('updateMasteryAfterAttempt', () => {
     });
     expect(result.intervalDays).toBeGreaterThan(seeded.intervalDays!);
     expect(result.durationEwmaMs).toBe(seeded.durationEwmaMs);
+  });
+
+  it('does not push a wrong answer out, but lets two of three right keep its place', () => {
+    const known: StructureMastery = { ...base, attemptsTotal: 3, attemptsCorrect: 3, lastAttemptAt: '', intervalDays: 4, easeFactor: 2.5 };
+    const blank = updateMasteryAfterAttempt(known, { ...base, correct: false, confidence: 'easy' });
+    const near = updateMasteryAfterAttempt(known, { ...base, correct: false, confidence: 'easy', partialCredit: 2 / 3 });
+    expect(blank.intervalDays).toBe(1);
+    expect(near.intervalDays).toBe(10);
   });
 
   it('increments lapses only when the pre-attempt interval was 7+ days and the answer is wrong', () => {

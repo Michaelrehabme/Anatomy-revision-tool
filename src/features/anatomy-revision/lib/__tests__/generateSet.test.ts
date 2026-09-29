@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { ALL_STRUCTURES, ALL_IMAGES } from '../../data/seed';
-import { generateRevisionSet, MAX_QUESTIONS_PER_STRUCTURE, REVIEW_SHARE } from '../questionGenerators/generateSet';
+import { generateRevisionSet, MAX_QUESTIONS_PER_STRUCTURE, NEW_SHARE, REVIEW_SHARE } from '../questionGenerators/generateSet';
 import { AREAS, type Area } from '../../types/region';
 import { buildIndexes } from '../indexes';
 import { areasOf } from '../../types/structure';
@@ -447,6 +447,32 @@ describe('pickNameDistractors', () => {
         count: 20,
       });
       expect(withEmpty.map((q) => q.id)).toEqual(withNone.map((q) => q.id));
+    });
+
+    // A long history crowded new material out: weak seen structures outweigh
+    // unseen ones in the draw, so the wider pool never reached them.
+    it('keeps a share of the session for structures never answered', () => {
+      const unseen = allIds.slice(-40);
+      const mastery: StructureMastery[] = allIds
+        .filter((id) => !unseen.includes(id))
+        .map((structureId) => ({ structureId, userId: 'u1', attemptsTotal: 10, attemptsCorrect: 0, lastAttemptAt: '' }));
+      const result = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+        ...config,
+        priorityStructureIds: due,
+        mastery,
+        count: 20,
+      });
+      expect(result).toHaveLength(20);
+      expect(result.filter((q) => unseen.includes(q.structureId)).length).toBeGreaterThanOrEqual(Math.round(20 * NEW_SHARE));
+      expect(shareOfDue(result)).toBeCloseTo(REVIEW_SHARE);
+    });
+
+    it('fills the new share from elsewhere once everything has been answered', () => {
+      const mastery: StructureMastery[] = allIds.map((structureId) => ({
+        structureId, userId: 'u1', attemptsTotal: 1, attemptsCorrect: 1, lastAttemptAt: '',
+      }));
+      const result = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, { ...config, priorityStructureIds: due, mastery, count: 20 });
+      expect(result).toHaveLength(20);
     });
 
     it('is deterministic under a seed', () => {

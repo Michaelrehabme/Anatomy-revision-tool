@@ -36,6 +36,8 @@ export interface AnswerRecord {
    */
   graded?: boolean;
   confidence?: Confidence;
+  /** Multi-part formats only: share of the answer that was right, 0-1. Softens a wrong answer's schedule. */
+  partialCredit?: number;
   hitDistance?: number;
   /** Locate questions on a landmark: the archery score, 1-10 in, 0 outside. */
   accuracy?: number;
@@ -413,6 +415,7 @@ export function useRevisionSession(repository: AnatomyRepository | null, userId:
             userId,
             correct: record.correct,
             confidence: record.confidence,
+            partialCredit: record.partialCredit,
             durationMs,
             // What this question actually demanded, so the ladder only promotes
             // on answers at the structure's own rung or harder (lib/ladder.ts).
