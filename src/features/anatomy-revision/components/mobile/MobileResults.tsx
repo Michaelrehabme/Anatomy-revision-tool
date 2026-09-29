@@ -57,7 +57,7 @@ export function MobileResults({ summary, answers, levelChanges = [], structuresB
   });
 
   return (
-    <div className="flex min-h-screen flex-col px-6.5 pt-5 pb-7.5" style={{ background: 'var(--pg)', color: 'var(--ink)' }}>
+    <main className="flex min-h-screen flex-col px-6.5 pt-5 pb-7.5" style={{ background: 'var(--pg)', color: 'var(--ink)' }}>
       <div style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
         {isExam ? 'Exam results' : 'Session complete'}
       </div>
@@ -138,6 +138,6 @@ export function MobileResults({ summary, answers, levelChanges = [], structuresB
       >
         Another {summary.totalQuestions}
       </button>
-    </div>
+    </main>
   );
 }

@@ -41,7 +41,7 @@ export function MobileOnboarding({ access, content, initialAreas = [], onDone }:
   };
 
   return (
-    <div className="flex min-h-screen flex-col px-6.5 pt-6 pb-9" style={{ background: 'var(--pg)', color: 'var(--ink)', boxSizing: 'border-box' }}>
+    <main className="flex min-h-screen flex-col px-6.5 pt-6 pb-9" style={{ background: 'var(--pg)', color: 'var(--ink)', boxSizing: 'border-box' }}>
       <div style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--accd)' }}>
         {current.kicker}
       </div>
@@ -105,6 +105,6 @@ export function MobileOnboarding({ access, content, initialAreas = [], onDone }:
           </p>
         )}
       </div>
-    </div>
+    </main>
   );
 }

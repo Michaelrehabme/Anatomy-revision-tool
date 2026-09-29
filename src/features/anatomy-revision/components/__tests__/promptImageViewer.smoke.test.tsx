@@ -71,8 +71,9 @@ describe('an identify question whose picture is a rotation set', () => {
   it('does not let the picture be answered on — that is what locate is for', () => {
     render(<IdentifyTypedSession question={question!} imagesById={imagesById} onAnswer={vi.fn()} onNext={vi.fn()} examMode />);
     // The stage takes no button role, so nothing invites a tap at the target.
+    // It is a labelled group, so the picture's name is read out (WCAG 4.1.2).
     const stage = screen.getByRole('img').closest('div');
-    expect(stage?.parentElement?.getAttribute('role')).toBeNull();
+    expect(stage?.parentElement?.getAttribute('role')).toBe('group');
   });
 });
 

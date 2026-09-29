@@ -1,4 +1,5 @@
 import { StrictMode } from 'react';
+import { PageTitle } from './features/anatomy-revision/components/shared/PageTitle';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import './index.css';
@@ -24,6 +25,7 @@ createRoot(document.getElementById('root')!).render(
       <ThemeProvider>
         <AuthProvider>
           <RepositoryProvider>
+            <PageTitle />
             <App />
             {/* Outside App so they survive its loading and error early returns —
                 losing the connection during content load is exactly when a

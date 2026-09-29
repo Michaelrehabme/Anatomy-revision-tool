@@ -29,27 +29,25 @@ real screen reader was driven, and the phone keyboard pass was not done.
 | Atlas filter counts dimmed to 3.2–4.0:1 by opacity | 1.4.3 | Opacity removed |
 | Links in body text distinguished by colour alone (1.34:1 light, 1.06:1 dark) | 1.4.1 | Links inside `p`, `li`, `dd`, `td` are underlined (`src/index.css`) |
 
+## Fixed on 29 Sep
+
+| Finding | WCAG | Fix |
+|---|---|---|
+| Chosen MCQ option not exposed; arrow keys did nothing | 4.1.2 | `aria-pressed` on each option in a labelled group; arrows move focus between options without choosing (`shared/arrowFocus.ts`) — choosing on the phone submits, so an arrow that selected would answer by accident |
+| Every route titled "LocusMSK" | 2.4.2 | `shared/PageTitle.tsx` names every route, legal pages included; a structure card names itself ("Deltoid · LocusMSK") |
+| No `<main>`/`<nav>` at phone width; nothing marked the current page | 1.3.1 | Phone shell content is `<main>`, the tab bar a labelled `<nav>`; both navs set `aria-current="page"`; the full-screen phone pages and the legal layout are `<main>` |
+| Plate viewer's label ignored | 4.1.2 | A labelled `role="group"` — not `img`, which would hide the controls inside it |
+| Contrast script let small text in `--acc` through | 1.4.3 | A test fails if any component sets `--acc` as a text colour (`lib/__tests__/contrast.test.ts`) |
+
 ## Still open
 
-1. **MCQ options don't expose which is chosen, and arrow keys do nothing** (4.1.2).
-   Options are plain buttons; make them a radiogroup on desktop and phone.
-2. **Every route is titled "LocusMSK"** (2.4.2). Set `document.title` per route.
-3. **Landmarks and headings** (1.3.1): no `<main>`/`<nav>` at phone width
-   (`MobileShell.tsx`), the tab bar is a `<div>` with no `aria-current`, the legal
-   and pricing pages have no `<main>`, and app routes have no `<h1>`.
-4. **The plate viewer's label is ignored**: a `<div aria-label>` with no role.
-   `role="img"` is wrong here — it would hide the zoom and turn controls inside
-   it (tried; five viewer tests caught it). Give the picture itself the label,
-   or wrap the viewer in a labelled `role="group"`.
-5. **Locate questions have no non-visual route.** A decision, not a bug: offer an
+1. **Locate questions have no non-visual route.** A decision, not a bug: offer an
    alternative question for the same structure, or state the limitation.
-6. **Long descriptions for plates** — none yet.
-7. **The contrast script's blind spot**: it treats `--acc` on the page as
-   non-text only, so small text in `--acc` passes it. Add a text check for
-   `--acc` or forbid it for text under 18px.
-8. **Focus ring on the pale selected-chip background** is about 3.1:1 —
+2. **Long descriptions for plates** — none yet.
+3. **App routes have no `<h1>`**; the big page names are styled text.
+4. **Focus ring on the pale selected-chip background** is about 3.1:1 —
    marginal; check by eye.
-9. Phone keyboard pass, and a pass with NVDA and VoiceOver.
+5. Phone keyboard pass, and a pass with NVDA and VoiceOver.
 
 Raw scan output (not in the repo): the session scratchpad `a11y/` folder —
 `results.json`, `results-session.json`, `structure.txt`, `contrast.txt`.

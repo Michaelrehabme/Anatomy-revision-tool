@@ -56,7 +56,7 @@ export function MobileAchievements({ repository, userId, onBack }: MobileAchieve
   const milestones = ACHIEVEMENT_DEFINITIONS.filter((d) => d.tier === 'milestone');
 
   return (
-    <div className="flex min-h-screen flex-col px-6.5 pt-4 pb-7.5" style={{ background: 'var(--pg)', color: 'var(--ink)' }}>
+    <main className="flex min-h-screen flex-col px-6.5 pt-4 pb-7.5" style={{ background: 'var(--pg)', color: 'var(--ink)' }}>
       <button type="button" onClick={onBack} className="border-0 bg-transparent p-0 pb-2" style={{ fontSize: 14.5, color: 'var(--ink3)' }}>
         &larr; Back
       </button>
@@ -84,6 +84,6 @@ export function MobileAchievements({ repository, userId, onBack }: MobileAchieve
           <AchievementRow key={def.id} def={def} doc={byId.get(def.id)} />
         ))}
       </div>
-    </div>
+    </main>
   );
 }

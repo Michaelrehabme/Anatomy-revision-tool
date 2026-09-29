@@ -215,7 +215,10 @@ export function ImageViewer({ image, frames, overlay, onPick, locked, resetKey, 
           aspectRatio: current.width && current.height ? `${current.width} / ${current.height}` : undefined,
           touchAction: 'none',
         }}
-        role={pickable ? 'button' : undefined}
+        // A labelled group, so the name is actually read out. Not role="img":
+        // that makes everything inside presentational, hiding the zoom and
+        // turn controls from a screen reader (docs/ACCESSIBILITY-AUDIT-2026-09-28.md).
+        role={pickable ? 'button' : 'group'}
         aria-label={current.slideTitle ?? 'Anatomy image'}
       >
         <div

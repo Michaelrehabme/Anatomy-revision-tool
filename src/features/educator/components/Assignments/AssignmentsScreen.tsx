@@ -86,9 +86,9 @@ function ScopedAssignmentCard({
     .join(', ');
   const target = assignment.targetAccuracyPct;
   const segments = [
-    { count: passed, color: 'var(--acc)', label: 'passed' },
-    { count: below, color: 'var(--acc2)', label: `below ${target}%` },
-    { count: notStarted, color: 'var(--fig-off)', label: 'not started' },
+    { count: passed, fill: 'var(--acc)', label: 'passed' },
+    { count: below, fill: 'var(--acc2)', label: `below ${target}%` },
+    { count: notStarted, fill: 'var(--fig-off)', label: 'not started' },
   ];
 
   return (
@@ -104,7 +104,7 @@ function ScopedAssignmentCard({
       {rows.length > 0 && (
         <div className="mt-3.5 flex h-2 overflow-hidden rounded-full" style={{ background: 'var(--fig-off)' }} aria-hidden>
           {segments.map((s) =>
-            s.count > 0 ? <div key={s.label} style={{ width: `${(s.count / rows.length) * 100}%`, background: s.color }} /> : null,
+            s.count > 0 ? <div key={s.label} style={{ width: `${(s.count / rows.length) * 100}%`, background: s.fill }} /> : null,
           )}
         </div>
       )}

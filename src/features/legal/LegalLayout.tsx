@@ -39,7 +39,7 @@ export function LegalLayout({
   children: ReactNode;
 }) {
   return (
-    <div className="mx-auto max-w-[760px] px-5 py-10" style={{ color: 'var(--ink)' }}>
+    <main className="mx-auto max-w-[760px] px-5 py-10" style={{ color: 'var(--ink)' }}>
       <Link to="/" style={{ font: '400 12.5px/1 var(--font-ui)', color: 'var(--ink3)', textDecoration: 'none' }}>
         ← Back to the app
       </Link>
@@ -67,6 +67,6 @@ export function LegalLayout({
           </Link>
         ))}
       </nav>
-    </div>
+    </main>
   );
 }

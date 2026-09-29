@@ -28,7 +28,7 @@ interface MobileTabBarProps {
  */
 export function MobileTabBar({ active, onNavigate }: MobileTabBarProps) {
   return (
-    <div className="flex flex-none px-5 pt-2 pb-6.5" style={{ background: 'var(--sf)' }}>
+    <nav aria-label="Main" className="flex flex-none px-5 pt-2 pb-6.5" style={{ background: 'var(--sf)' }}>
       {TABS.map((t) => {
         const isActive = t.tab === active;
         return (
@@ -36,6 +36,7 @@ export function MobileTabBar({ active, onNavigate }: MobileTabBarProps) {
             key={t.tab}
             type="button"
             onClick={() => onNavigate(t.tab)}
+            aria-current={isActive ? 'page' : undefined}
             className="flex min-h-[48px] flex-1 flex-col items-center justify-center gap-1.5 border-0 bg-transparent"
             style={{ fontFamily: 'var(--font-ui)', fontSize: 13.5, color: isActive ? 'var(--accd)' : 'var(--ink3)', fontWeight: isActive ? 600 : 400 }}
           >
@@ -44,6 +45,6 @@ export function MobileTabBar({ active, onNavigate }: MobileTabBarProps) {
           </button>
         );
       })}
-    </div>
+    </nav>
   );
 }

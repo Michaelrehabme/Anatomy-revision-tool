@@ -14,7 +14,7 @@ export function MobileShell({ children, tabs }: MobileShellProps) {
   return (
     <div className="flex min-h-screen flex-col" style={{ background: 'var(--pg)', color: 'var(--ink)' }}>
       {tabs && AUTH_ENABLED && <MobileAccountButton />}
-      <div className="min-h-0 flex-1 overflow-y-auto">{children}</div>
+      <main className="min-h-0 flex-1 overflow-y-auto">{children}</main>
       {tabs && <MobileTabBar active={tabs.active} onNavigate={tabs.onNavigate} />}
     </div>
   );

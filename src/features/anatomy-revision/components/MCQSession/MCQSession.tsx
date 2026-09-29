@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { moveFocusWithArrows } from '../shared/arrowFocus';
 import { FeedbackHeading } from '../shared/FeedbackHeading';
 import type { MCQQuestion } from '../../types/question';
 import type { AnatomyImageAsset } from '../../types/image';
@@ -104,7 +105,7 @@ export function MCQSession({ question, imagesById, onAnswer, onNext, examMode }:
             />
           )}
 
-          <div className="mt-14 grid grid-cols-2 gap-4">
+          <div className="mt-14 grid grid-cols-2 gap-4" role="group" aria-label="Answers" onKeyDown={moveFocusWithArrows}>
             {question.choices.map((choice, index) => {
               const isSelected = index === selectedIndex;
               const isAnswerCorrect = index === question.correctIndex;
@@ -130,6 +131,7 @@ export function MCQSession({ question, imagesById, onAnswer, onNext, examMode }:
                   key={choice}
                   type="button"
                   disabled={examMode ? examSubmitted : checked}
+                  aria-pressed={isSelected}
                   onClick={() => handleSelect(index)}
                   className="flex min-h-[82px] items-center gap-4 rounded-[3px] px-6 text-left text-xl disabled:cursor-default"
                   style={{ border, background, color }}

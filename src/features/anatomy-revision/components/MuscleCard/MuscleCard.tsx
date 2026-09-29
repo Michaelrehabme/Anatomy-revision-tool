@@ -12,6 +12,7 @@ import { PronounceButton } from '../shared/PronounceButton';
 import { MasteryLevelBadge } from '../shared/MasteryLevelBadge';
 import { masteryLevel } from '../../lib/masteryLevel';
 import { getShowLatin } from '../../lib/preferences';
+import { structureTitle } from '../shared/PageTitle';
 import { AppShell } from '../shell/AppShell';
 import { NavSidebar, type NavSection } from '../shell/NavSidebar';
 
@@ -50,6 +51,10 @@ export function MuscleCard({
   const mastery = useMuscleHistory(repository, userId, structureId);
   const level = masteryLevel(mastery ?? undefined);
   const showLatin = getShowLatin();
+  const titleName = content.structuresById.get(structureId)?.name;
+  useEffect(() => {
+    if (titleName) document.title = structureTitle(titleName);
+  }, [titleName]);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {

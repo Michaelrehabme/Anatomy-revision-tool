@@ -1,7 +1,9 @@
+import { useEffect } from 'react';
 import type { AnatomyContent } from '../../hooks/useAnatomyContent';
 import { MasteryLevelBadge } from '../shared/MasteryLevelBadge';
 import { masteryLevel } from '../../lib/masteryLevel';
 import { getShowLatin } from '../../lib/preferences';
+import { structureTitle } from '../shared/PageTitle';
 import type { AnatomyRepository } from '../../data/repository';
 import { areasOf, isMuscle } from '../../types/structure';
 import { REGION_LABELS } from '../../types/region';
@@ -38,6 +40,10 @@ export function MobileMuscleCard({ access, structureId, content, repository, use
   const mastery = useMuscleHistory(repository, userId, structureId);
   const level = masteryLevel(mastery ?? undefined);
   const showLatin = getShowLatin();
+  const titleName = content.structuresById.get(structureId)?.name;
+  useEffect(() => {
+    if (titleName) document.title = structureTitle(titleName);
+  }, [titleName]);
   const structure = content.structuresById.get(structureId);
   const panelImage = content.images.find((img) => img.mode === 'single-structure' && img.structureId === structureId);
 
@@ -55,7 +61,7 @@ export function MobileMuscleCard({ access, structureId, content, repository, use
     : 'No attempts yet.';
 
   return (
-    <div className="flex min-h-screen flex-col px-6.5 pt-4 pb-7.5" style={{ background: 'var(--pg)', color: 'var(--ink)' }}>
+    <main className="flex min-h-screen flex-col px-6.5 pt-4 pb-7.5" style={{ background: 'var(--pg)', color: 'var(--ink)' }}>
       <button type="button" onClick={onBack} className="border-0 bg-transparent p-0 pb-2" style={{ fontSize: 14.5, color: 'var(--ink3)' }}>
         &larr; Back
       </button>
@@ -169,6 +175,6 @@ export function MobileMuscleCard({ access, structureId, content, repository, use
           <LockedAreaPanel area={areasOf(structure)[0]} access={access} onSwitchFree={access.chooseFreeArea} />
         </div>
       )}
-    </div>
+    </main>
   );
 }

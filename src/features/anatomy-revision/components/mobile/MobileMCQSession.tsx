@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { moveFocusWithArrows } from '../shared/arrowFocus';
 import type { MCQQuestion } from '../../types/question';
 import type { AnatomyImageAsset } from '../../types/image';
 import type { Confidence } from '../../types/attempt';
@@ -100,7 +101,7 @@ export function MobileMCQSession({ question, imagesById, onAnswer, onNext, onFul
             />
         )}
 
-        <div className="mt-6 flex flex-col gap-2.5">
+        <div className="mt-6 flex flex-col gap-2.5" role="group" aria-label="Answers" onKeyDown={moveFocusWithArrows}>
           {question.choices.map((choice, index) => {
             const isSelected = index === selectedIndex;
             const isAnswerCorrect = index === question.correctIndex;
@@ -122,6 +123,7 @@ export function MobileMCQSession({ question, imagesById, onAnswer, onNext, onFul
                 key={choice}
                 type="button"
                 disabled={checked}
+                aria-pressed={isSelected}
                 onClick={() => handleSelect(index)}
                 className="flex min-h-[60px] items-center gap-3.5 rounded-[3px] px-4.5 text-left text-[16.5px] leading-tight disabled:cursor-default"
                 style={{ border, background, color }}

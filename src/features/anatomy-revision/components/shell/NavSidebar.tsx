@@ -120,7 +120,7 @@ export function NavSidebar({ active, onNavigate, footer }: NavSidebarProps) {
       <div style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 25, letterSpacing: '-0.018em' }}>
         LocusMSK
       </div>
-      <nav className="mt-10 flex flex-col gap-0.5">
+      <nav aria-label="Main" className="mt-10 flex flex-col gap-0.5">
         {NAV_ITEMS.map((item) => {
           const isActive = item.section === active;
           return (
@@ -128,6 +128,7 @@ export function NavSidebar({ active, onNavigate, footer }: NavSidebarProps) {
               key={item.section}
               type="button"
               onClick={() => onNavigate(item.section)}
+              aria-current={isActive ? 'page' : undefined}
               className="rounded-[3px] px-3.5 py-2.5 text-left transition-colors"
               style={{
                 fontFamily: 'var(--font-display)',

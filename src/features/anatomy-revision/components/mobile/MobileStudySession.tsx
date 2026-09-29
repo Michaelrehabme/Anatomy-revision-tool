@@ -41,7 +41,7 @@ export function MobileStudySession({ session, content, onEnd, onBackToSetup, onO
   const advance = () => (session.isLastQuestion ? session.finish() : session.next());
   // Where focus goes when the question it was on is replaced, or the button
   // it was on disappears — see useRecoverFocus. Called before any early return.
-  const questionRegion = useRef<HTMLDivElement>(null);
+  const questionRegion = useRef<HTMLElement>(null);
   useRecoverFocus(questionRegion, `${session.currentIndex}:${session.answers.length}`);
   const openFullCard = (structureId: string) =>
     onOpenMuscle(structureId, session.questions.map((q) => q.structureId));
@@ -95,7 +95,7 @@ export function MobileStudySession({ session, content, onEnd, onBackToSetup, onO
   ).size;
 
   return (
-    <div
+    <main
       ref={questionRegion}
       tabIndex={-1}
       aria-label={`Question ${session.currentIndex + 1} of ${session.questions.length}`}
@@ -207,6 +207,6 @@ export function MobileStudySession({ session, content, onEnd, onBackToSetup, onO
           examMode={examMode}
         />
       )}
-    </div>
+    </main>
   );
 }
