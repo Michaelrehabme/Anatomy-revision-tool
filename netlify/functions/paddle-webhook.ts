@@ -96,9 +96,21 @@ export default async function handler(req: Request): Promise<Response> {
   const ref = db.doc(`users/${action.uid}`);
   const eventAt = event.occurred_at ?? new Date().toISOString();
 
+  // Set when the account's document is gone — see below.
+  let noAccount = false;
+
   try {
     await db.runTransaction(async (tx) => {
       const snap = await tx.get(ref);
+      // NEVER CREATE THE ACCOUNT. A student signs in, and so has a document,
+      // before they can check out; a missing one means the account was
+      // deleted. Writing here used to recreate users/{uid} with the customer
+      // id and consent — personal data back after an erasure (paywall trace
+      // finding 5, docs/PAYWALL-TRACE-2026-09-29.md).
+      if (!snap.exists) {
+        noAccount = true;
+        return;
+      }
       const current = snap.exists ? (snap.data()?.entitlement as Record<string, unknown> | undefined) : undefined;
 
       // OUT-OF-ORDER DELIVERY. Paddle does not promise ordering, and retries
@@ -111,25 +123,22 @@ export default async function handler(req: Request): Promise<Response> {
         return;
       }
 
-      tx.set(
-        ref,
-        {
-          // The consent record rides INSIDE the entitlement map on purpose:
-          // firestore.rules makes that whole map immutable to clients, so the
-          // evidence a disputed refund turns on cannot be edited by the person
-          // disputing it.
-          entitlement: {
-            ...action.entitlement,
-            eventAt,
-            consent: action.consent,
-            // Kept even on a cancellation: a former subscriber still needs the
-            // portal to see their invoices.
-            ...(action.customerId ? { customerId: action.customerId } : {}),
-          },
-          updatedAt: FieldValue.serverTimestamp(),
-        },
-        { merge: true },
+      // The map is REPLACED, not merged into. A merge kept whatever the new
+      // event did not mention — a refunded delayed-start plan's future
+      // `startsAt` would then lock the next, immediate one (finding 13). Two
+      // fields are carried over on purpose when this event lacks them:
+      //  - consent rides INSIDE the entitlement map because firestore.rules
+      //    makes the whole map immutable to clients, so the evidence a
+      //    disputed refund turns on cannot be edited by the person disputing
+      //    it; a renewal event without it must not erase it;
+      //  - customerId, kept even on a cancellation, because a former
+      //    subscriber still needs the portal to see their invoices.
+      const consent = action.consent ?? current?.consent;
+      const customerId = action.customerId ?? current?.customerId;
+      const entitlement = Object.fromEntries(
+        Object.entries({ ...action.entitlement, eventAt, consent, customerId }).filter(([, v]) => v !== undefined),
       );
+      tx.update(ref, { entitlement, updatedAt: FieldValue.serverTimestamp() });
     });
   } catch (error) {
     console.error(`paddle-webhook: write failed for ${action.uid}`, error);
@@ -152,6 +161,26 @@ export default async function handler(req: Request): Promise<Response> {
     // 500 so Paddle retries. This is a customer who has paid, and the retry is
     // the only thing standing between them and access they bought.
     return new Response('Retry', { status: 500 });
+  }
+
+  if (noAccount) {
+    console.error(`paddle-webhook: ${event.event_type} for ${action.uid}, whose account no longer exists`);
+    // Findable tomorrow, like a failed write — most likely a deleted account
+    // whose subscription is still charging, which someone must cancel by
+    // hand. 200 rather than 500: a retry cannot bring the account back.
+    try {
+      await db.doc(`billingFailures/${event.event_id ?? `${action.uid}-${eventAt}`}`).set({
+        uid: action.uid,
+        eventType: event.event_type,
+        eventAt,
+        entitlement: action.entitlement,
+        error: 'no users/{uid} document: account deleted? Cancel the subscription in Paddle.',
+        recordedAt: FieldValue.serverTimestamp(),
+      });
+    } catch {
+      console.error('paddle-webhook: could not record the missing account either');
+    }
+    return new Response('ok (no account)', { status: 200 });
   }
 
   console.info(`paddle-webhook: ${event.event_type} -> ${action.uid} until ${action.entitlement.expiresAt}`);
