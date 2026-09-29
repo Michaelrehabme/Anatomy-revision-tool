@@ -1,0 +1,3011 @@
+[
+  {
+    "id": "iliacus",
+    "name": "Iliacus",
+    "arteries": [
+      "Iliolumbar artery (iliac branch)",
+      "Deep circumflex iliac artery",
+      "Obturator artery (iliac branch)",
+      "Femoral artery (muscular branches)"
+    ],
+    "text": "Iliolumbar artery (iliac branch), with deep circumflex iliac and obturator contributions",
+    "sources": [
+      {
+        "title": "Radiopaedia: Iliacus muscle",
+        "url": "https://radiopaedia.org/articles/iliacus-muscle"
+      },
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb: Thigh Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK482445/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb: Iliopsoas Muscle",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK531508/"
+      }
+    ],
+    "confidence": "medium",
+    "notes": "Radiopaedia: mainly the iliolumbar artery, plus femoral, obturator and deep circumflex iliac. StatPearls Thigh Muscles garbles it as 'the lumbar branch of the iliopsoas of the internal iliac artery', read here as iliolumbar. The StatPearls Iliopsoas chapter instead gives the external iliac artery (muscular branches) as the primary supply. That conflicts with the other two, so it was not adopted."
+  },
+  {
+    "id": "psoas-major",
+    "name": "Psoas Major",
+    "arteries": [
+      "Lumbar arteries",
+      "Iliolumbar artery (lumbar branch)",
+      "Deep circumflex iliac artery",
+      "External iliac artery",
+      "Obturator artery",
+      "Femoral artery"
+    ],
+    "text": "Lumbar and iliolumbar arteries, with deep circumflex iliac and femoral branches below",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb: Psoas Major",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK535418/"
+      },
+      {
+        "title": "Radiopaedia: Psoas major muscle",
+        "url": "https://radiopaedia.org/articles/psoas-major-muscle"
+      }
+    ],
+    "confidence": "high",
+    "notes": "Radiopaedia, by level: upper part from the lumbar arteries; middle part from the iliolumbar (the main artery to the muscle), deep circumflex iliac and external iliac; lower part from femoral branches. StatPearls lists lumbar, iliolumbar, circumflex iliac, obturator and femoral. The StatPearls Iliopsoas chapter also mentions small common iliac branches."
+  },
+  {
+    "id": "rectus-femoris",
+    "name": "Rectus Femoris",
+    "arteries": [
+      "Lateral circumflex femoral artery (descending branch)"
+    ],
+    "text": "Lateral circumflex femoral artery (descending branch)",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Abdomen and Pelvis, Rectus Femoris Muscle",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK539897/"
+      },
+      {
+        "title": "Radiopaedia: Rectus femoris muscle",
+        "url": "https://radiopaedia.org/articles/rectus-femoris-muscle"
+      },
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb: Thigh Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK482445/"
+      }
+    ],
+    "confidence": "high",
+    "notes": ""
+  },
+  {
+    "id": "sartorius",
+    "name": "Sartorius",
+    "arteries": [
+      "Femoral artery (muscular branches)",
+      "Lateral circumflex femoral artery",
+      "Profunda femoris artery",
+      "Descending genicular artery",
+      "Superficial circumflex iliac artery",
+      "Superior medial genicular artery"
+    ],
+    "text": "Muscular branches of the femoral artery",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb: Thigh Sartorius Muscle",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK532889/"
+      },
+      {
+        "title": "Radiopaedia: Sartorius muscle",
+        "url": "https://radiopaedia.org/articles/sartorius-muscle"
+      },
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb: Thigh Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK482445/"
+      }
+    ],
+    "confidence": "high",
+    "notes": "Segmental supply. Over half comes from femoral muscular branches (StatPearls). Radiopaedia, by thirds: proximal from femoral, profunda, the 'quadriceps artery' and lateral circumflex femoral; middle from femoral; distal from femoral and descending genicular."
+  },
+  {
+    "id": "gluteus-maximus",
+    "name": "Gluteus Maximus",
+    "arteries": [
+      "Inferior gluteal artery",
+      "Superior gluteal artery (superficial branch)"
+    ],
+    "text": "Inferior and superior gluteal arteries",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb, Gluteus Maximus Muscle",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK538193/"
+      },
+      {
+        "title": "Radiopaedia: Gluteus maximus muscle",
+        "url": "https://radiopaedia.org/articles/gluteus-maximus-muscle"
+      },
+      {
+        "title": "Wikipedia: Inferior gluteal artery (Distribution section, referenced to Moore, Clinically Oriented Anatomy, 8th ed.)",
+        "url": "https://en.wikipedia.org/wiki/Inferior_gluteal_artery"
+      }
+    ],
+    "confidence": "high",
+    "notes": "StatPearls and Radiopaedia name both gluteal arteries without ranking them. Inferior is listed first because Moore (via Wikipedia) lists it and StatPearls describes it at length. The 'superficial branch' of the superior gluteal comes from the Wikipedia superior gluteal artery page."
+  },
+  {
+    "id": "semitendinosus",
+    "name": "Semitendinosus",
+    "arteries": [
+      "Profunda femoris artery (perforating branches)",
+      "Inferior gluteal artery",
+      "Popliteal artery"
+    ],
+    "text": "Perforating branches of the profunda femoris and inferior gluteal arteries",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb: Thigh Semitendinosus Muscle",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK539862/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb, Hamstring Muscle",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK546688/"
+      },
+      {
+        "title": "Radiopaedia: Semitendinosus muscle",
+        "url": "https://radiopaedia.org/articles/semitendinosus-muscle"
+      }
+    ],
+    "confidence": "high",
+    "notes": "The inferior gluteal artery supplies the proximal part. Only Radiopaedia lists the popliteal."
+  },
+  {
+    "id": "semimembranosus",
+    "name": "Semimembranosus",
+    "arteries": [
+      "Profunda femoris artery (perforating branches)",
+      "Inferior gluteal artery",
+      "Popliteal artery"
+    ],
+    "text": "Perforating branches of the profunda femoris and inferior gluteal arteries",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb, Hamstring Muscle",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK546688/"
+      },
+      {
+        "title": "Radiopaedia: Semimembranosus muscle",
+        "url": "https://radiopaedia.org/articles/semimembranosus-muscle"
+      },
+      {
+        "title": "Wikipedia: Inferior gluteal artery (Distribution section, referenced to Moore, Clinically Oriented Anatomy, 8th ed.)",
+        "url": "https://en.wikipedia.org/wiki/Inferior_gluteal_artery"
+      }
+    ],
+    "confidence": "high",
+    "notes": "The inferior gluteal artery supplies the proximal part. Only Radiopaedia lists the popliteal."
+  },
+  {
+    "id": "biceps-femoris",
+    "name": "Biceps Femoris",
+    "arteries": [
+      "Profunda femoris artery (perforating branches)",
+      "Inferior gluteal artery",
+      "Popliteal artery"
+    ],
+    "text": "Perforating branches of the profunda femoris, inferior gluteal and popliteal arteries",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb, Hamstring Muscle",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK546688/"
+      },
+      {
+        "title": "Radiopaedia: Biceps femoris muscle",
+        "url": "https://radiopaedia.org/articles/biceps-femoris-muscle"
+      }
+    ],
+    "confidence": "high",
+    "notes": "StatPearls: the long head is fed by profunda femoris branches plus the inferior gluteal; the short head by the profunda femoris and, distally, the popliteal. Radiopaedia lists all three without splitting by head."
+  },
+  {
+    "id": "gluteus-medius",
+    "name": "Gluteus Medius",
+    "arteries": [
+      "Superior gluteal artery (deep branch)"
+    ],
+    "text": "Superior gluteal artery (deep branch)",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb, Gluteus Medius Muscle",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK557509/"
+      },
+      {
+        "title": "Radiopaedia: Gluteus medius muscle",
+        "url": "https://radiopaedia.org/articles/gluteus-medius-muscle"
+      }
+    ],
+    "confidence": "high",
+    "notes": "StatPearls: the superior and inferior divisions of the deep branch both send perforators into the muscle."
+  },
+  {
+    "id": "gluteus-minimus",
+    "name": "Gluteus Minimus",
+    "arteries": [
+      "Superior gluteal artery (deep branch)"
+    ],
+    "text": "Superior gluteal artery (deep branch)",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb, Gluteus Minimus Muscle",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK556144/"
+      },
+      {
+        "title": "Radiopaedia: Gluteus minimus muscle",
+        "url": "https://radiopaedia.org/articles/gluteus-minimus-muscle"
+      }
+    ],
+    "confidence": "high",
+    "notes": ""
+  },
+  {
+    "id": "tensor-fasciae-latae",
+    "name": "Tensor Fasciae Latae",
+    "arteries": [
+      "Superior gluteal artery (deep branch)",
+      "Lateral circumflex femoral artery"
+    ],
+    "text": "Superior gluteal (deep branch) and lateral circumflex femoral arteries",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb: Tensor Fasciae Latae Muscle",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK499870/"
+      },
+      {
+        "title": "Radiopaedia: Tensor fasciae latae muscle",
+        "url": "https://radiopaedia.org/articles/tensor-fasciae-latae-muscle"
+      }
+    ],
+    "confidence": "high",
+    "notes": "Both sources name the superior gluteal artery; StatPearls specifies the deep branch. Only Radiopaedia adds the lateral circumflex femoral artery. Neither source ranks the two."
+  },
+  {
+    "id": "adductor-magnus",
+    "name": "Adductor Magnus",
+    "arteries": [
+      "Profunda femoris artery (perforating branches)",
+      "Medial circumflex femoral artery",
+      "Obturator artery",
+      "Femoral artery",
+      "Popliteal artery",
+      "Inferior gluteal artery"
+    ],
+    "text": "Perforating branches of the profunda femoris, medial circumflex femoral and obturator arteries",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb: Thigh Adductor Magnus Muscle",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK534842/"
+      },
+      {
+        "title": "Radiopaedia: Adductor magnus muscle",
+        "url": "https://radiopaedia.org/articles/adductor-magnus-muscle"
+      },
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb: Thigh Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK482445/"
+      }
+    ],
+    "confidence": "high",
+    "notes": "The perforators are the primary supply. The medial circumflex femoral supplies the upper part; the femoral, popliteal and genicular arteries the lower part. StatPearls Thigh Muscles also lists the inferior gluteal artery."
+  },
+  {
+    "id": "adductor-longus",
+    "name": "Adductor Longus",
+    "arteries": [
+      "Profunda femoris artery",
+      "Obturator artery",
+      "Medial circumflex femoral artery"
+    ],
+    "text": "Profunda femoris, obturator and medial circumflex femoral arteries",
+    "sources": [
+      {
+        "title": "Radiopaedia: Adductor longus muscle",
+        "url": "https://radiopaedia.org/articles/adductor-longus-muscle"
+      },
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb: Thigh Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK482445/"
+      }
+    ],
+    "confidence": "high",
+    "notes": "Both sources name the obturator artery. Radiopaedia adds the profunda femoris; StatPearls adds the medial circumflex femoral."
+  },
+  {
+    "id": "adductor-brevis",
+    "name": "Adductor Brevis",
+    "arteries": [
+      "Profunda femoris artery",
+      "Obturator artery",
+      "Medial circumflex femoral artery"
+    ],
+    "text": "Profunda femoris, obturator and medial circumflex femoral arteries",
+    "sources": [
+      {
+        "title": "Radiopaedia: Adductor brevis muscle",
+        "url": "https://radiopaedia.org/articles/adductor-brevis-muscle"
+      },
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb: Thigh Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK482445/"
+      }
+    ],
+    "confidence": "medium",
+    "notes": "Radiopaedia names only the profunda femoris; StatPearls Thigh Muscles names the obturator and medial circumflex femoral. They are compatible, since the medial circumflex femoral usually branches from the profunda, but no single artery is named by both."
+  },
+  {
+    "id": "pectineus",
+    "name": "Pectineus",
+    "arteries": [
+      "Medial circumflex femoral artery",
+      "Obturator artery (anterior branch)"
+    ],
+    "text": "Medial circumflex femoral and obturator (anterior branch) arteries",
+    "sources": [
+      {
+        "title": "Radiopaedia: Pectineus muscle",
+        "url": "https://radiopaedia.org/articles/pectineus-muscle"
+      },
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb: Thigh Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK482445/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Abdomen and Pelvis: Hip Arteries",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK542174/"
+      }
+    ],
+    "confidence": "high",
+    "notes": "Radiopaedia: the superficial part is fed by the medial circumflex femoral, the deep part by the anterior branch of the obturator."
+  },
+  {
+    "id": "gracilis",
+    "name": "Gracilis",
+    "arteries": [
+      "Medial circumflex femoral artery",
+      "Profunda femoris artery",
+      "Obturator artery (anterior branch)",
+      "Femoral artery",
+      "Descending genicular artery"
+    ],
+    "text": "Medial circumflex femoral artery (main pedicle), with obturator and profunda femoris branches",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb: Thigh Gracilis Muscle",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK538229/"
+      },
+      {
+        "title": "Radiopaedia: Gracilis muscle",
+        "url": "https://radiopaedia.org/articles/gracilis-muscle"
+      },
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb: Thigh Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK482445/"
+      }
+    ],
+    "confidence": "high",
+    "notes": "StatPearls: the major pedicle may come from the medial circumflex femoral, the profunda femoris or the anterior branch of the obturator. Minor pedicles come from the superficial femoral and descending genicular. Radiopaedia names the medial circumflex femoral."
+  },
+  {
+    "id": "piriformis",
+    "name": "Piriformis",
+    "arteries": [
+      "Superior gluteal artery",
+      "Inferior gluteal artery",
+      "Internal pudendal artery",
+      "Lateral sacral artery"
+    ],
+    "text": "Superior and inferior gluteal arteries",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb: Piriformis Muscle",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK519497/"
+      },
+      {
+        "title": "Radiopaedia: Piriformis muscle",
+        "url": "https://radiopaedia.org/articles/piriformis-muscle"
+      }
+    ],
+    "confidence": "high",
+    "notes": "Both sources agree on the superior and inferior gluteal arteries. StatPearls adds the internal pudendal; Radiopaedia adds the lateral sacral."
+  },
+  {
+    "id": "gemelli",
+    "name": "Gemelli (Superior & Inferior)",
+    "arteries": [
+      "Inferior gluteal artery"
+    ],
+    "text": "Inferior gluteal artery",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb, Gemelli Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK557420/"
+      },
+      {
+        "title": "Radiopaedia: Superior gemellus muscle",
+        "url": "https://radiopaedia.org/articles/superior-gemellus-muscle"
+      },
+      {
+        "title": "Radiopaedia: Inferior gemellus muscle",
+        "url": "https://radiopaedia.org/articles/inferior-gemellus-muscle"
+      }
+    ],
+    "confidence": "high",
+    "notes": ""
+  },
+  {
+    "id": "obturator-internus",
+    "name": "Obturator Internus",
+    "arteries": [
+      "Inferior gluteal artery",
+      "Obturator artery",
+      "Internal pudendal artery"
+    ],
+    "text": "Inferior gluteal, obturator and internal pudendal arteries",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Abdomen and Pelvis, Obturator Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK589636/"
+      },
+      {
+        "title": "Radiopaedia: Obturator internus muscle",
+        "url": "https://radiopaedia.org/articles/obturator-internus-muscle"
+      },
+      {
+        "title": "Wikipedia: Inferior gluteal artery (Distribution section, referenced to Moore, Clinically Oriented Anatomy, 8th ed.)",
+        "url": "https://en.wikipedia.org/wiki/Inferior_gluteal_artery"
+      }
+    ],
+    "confidence": "high",
+    "notes": "Radiopaedia and Moore (via Wikipedia) name only the inferior gluteal. StatPearls adds the obturator artery and the internal pudendal (gemellar and inferior rectal branches), which supply the lateral part."
+  },
+  {
+    "id": "obturator-externus",
+    "name": "Obturator Externus",
+    "arteries": [
+      "Obturator artery (anterior branch)",
+      "Medial circumflex femoral artery"
+    ],
+    "text": "Obturator (anterior branch) and medial circumflex femoral arteries",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Abdomen and Pelvis, Obturator Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK589636/"
+      },
+      {
+        "title": "Radiopaedia: Obturator externus muscle",
+        "url": "https://radiopaedia.org/articles/obturator-externus-muscle"
+      }
+    ],
+    "confidence": "high",
+    "notes": "StatPearls: the share between the two varies, and either one may supply most of the muscle."
+  },
+  {
+    "id": "quadratus-femoris",
+    "name": "Quadratus Femoris",
+    "arteries": [
+      "Inferior gluteal artery"
+    ],
+    "text": "Inferior gluteal artery",
+    "sources": [
+      {
+        "title": "Radiopaedia: Quadratus femoris muscle",
+        "url": "https://radiopaedia.org/articles/quadratus-femoris-muscle"
+      },
+      {
+        "title": "Wikipedia: Inferior gluteal artery (Distribution section, referenced to Moore, Clinically Oriented Anatomy, 8th ed.)",
+        "url": "https://en.wikipedia.org/wiki/Inferior_gluteal_artery"
+      }
+    ],
+    "confidence": "high",
+    "notes": "There is no StatPearls chapter for this muscle. The Wikipedia quadratus femoris infobox also lists the medial circumflex femoral artery, but without a reference, so it is left out of arteries. The reviewer may want to add it: it is commonly taught."
+  },
+  {
+    "id": "vastus-lateralis",
+    "name": "Vastus Lateralis",
+    "arteries": [
+      "Lateral circumflex femoral artery (descending branch)",
+      "Profunda femoris artery (perforating branches)"
+    ],
+    "text": "Lateral circumflex femoral artery, with profunda femoris perforators",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb: Vastus Lateralis Muscle",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK532309/"
+      },
+      {
+        "title": "Radiopaedia: Vastus lateralis muscle",
+        "url": "https://radiopaedia.org/articles/vastus-lateralis-muscle"
+      }
+    ],
+    "confidence": "high",
+    "notes": "Radiopaedia: the ascending, transverse and descending branches of the lateral circumflex femoral all contribute. StatPearls names the lateral circumflex femoral as the primary supply."
+  },
+  {
+    "id": "vastus-medialis",
+    "name": "Vastus Medialis",
+    "arteries": [
+      "Femoral artery",
+      "Profunda femoris artery",
+      "Superior medial genicular artery"
+    ],
+    "text": "Femoral, profunda femoris and superior medial genicular arteries",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb: Thigh Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK482445/"
+      },
+      {
+        "title": "Radiopaedia: Vastus medialis muscle",
+        "url": "https://radiopaedia.org/articles/vastus-medialis-muscle"
+      },
+      {
+        "title": "StatPearls: Anatomy, Abdomen and Pelvis: Hip Arteries",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK542174/"
+      }
+    ],
+    "confidence": "high",
+    "notes": "Unlike the other vasti, its main supply is not the lateral circumflex femoral artery."
+  },
+  {
+    "id": "vastus-intermedius",
+    "name": "Vastus Intermedius",
+    "arteries": [
+      "Lateral circumflex femoral artery",
+      "Profunda femoris artery"
+    ],
+    "text": "Lateral circumflex femoral and profunda femoris arteries",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb: Thigh Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK482445/"
+      },
+      {
+        "title": "Radiopaedia: Vastus intermedius muscle",
+        "url": "https://radiopaedia.org/articles/vastus-intermedius-muscle"
+      },
+      {
+        "title": "StatPearls: Anatomy, Abdomen and Pelvis: Hip Arteries",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK542174/"
+      }
+    ],
+    "confidence": "high",
+    "notes": "StatPearls names only the lateral circumflex femoral; Radiopaedia adds the profunda femoris."
+  },
+  {
+    "id": "popliteus",
+    "name": "Popliteus",
+    "arteries": [
+      "Inferior medial genicular artery",
+      "Posterior tibial artery",
+      "Posterior tibial recurrent artery"
+    ],
+    "text": "Inferior medial genicular artery (from popliteal) and posterior tibial artery",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb: Popliteus Muscle",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK526084/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb: Arteries",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK544319/"
+      },
+      {
+        "title": "Gray's Anatomy (1918): The Popliteal Artery",
+        "url": "https://www.bartleby.com/107/159.html"
+      },
+      {
+        "title": "Gray's Anatomy (1918): The Anterior Tibial Artery",
+        "url": "https://www.bartleby.com/107/160.html"
+      }
+    ],
+    "confidence": "high",
+    "notes": "StatPearls Popliteus names the medial inferior genicular branch of the popliteal plus a muscular branch of the posterior tibial. StatPearls Arteries just says 'the popliteal artery'. Gray's 1918 confirms genicular branches to Popliteus and adds the inconstant posterior tibial recurrent artery, which comes off the anterior tibial."
+  },
+  {
+    "id": "supraspinatus",
+    "name": "Supraspinatus",
+    "arteries": [
+      "Suprascapular artery",
+      "Dorsal scapular artery"
+    ],
+    "text": "Suprascapular and dorsal scapular arteries",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Rotator Cuff",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK441844/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Scapulohumeral Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK546633/"
+      },
+      {
+        "title": "Radiopaedia: Supraspinatus muscle",
+        "url": "https://radiopaedia.org/articles/supraspinatus-muscle"
+      }
+    ],
+    "confidence": "high",
+    "notes": "All sources give the suprascapular artery; the Scapulohumeral Muscles chapter and Radiopaedia add the dorsal scapular artery, while the Rotator Cuff chapter names only the suprascapular."
+  },
+  {
+    "id": "infraspinatus",
+    "name": "Infraspinatus",
+    "arteries": [
+      "Suprascapular artery",
+      "Circumflex scapular artery"
+    ],
+    "text": "Suprascapular and circumflex scapular arteries",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Infraspinatus Muscle",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK513255/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Scapulohumeral Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK546633/"
+      },
+      {
+        "title": "Radiopaedia: Infraspinatus muscle",
+        "url": "https://radiopaedia.org/articles/infraspinatus-muscle"
+      }
+    ],
+    "confidence": "high",
+    "notes": "The two arteries anastomose in the infraspinous fossa (the scapular anastomosis)."
+  },
+  {
+    "id": "teres-minor",
+    "name": "Teres Minor",
+    "arteries": [
+      "Circumflex scapular artery",
+      "Posterior circumflex humeral artery",
+      "Subscapular artery"
+    ],
+    "text": "Circumflex scapular and posterior circumflex humeral arteries",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Scapulohumeral Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK546633/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Rotator Cuff",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK441844/"
+      },
+      {
+        "title": "Radiopaedia: Teres minor",
+        "url": "https://radiopaedia.org/articles/teres-minor"
+      }
+    ],
+    "confidence": "medium",
+    "notes": "Sources weight it differently. The Rotator Cuff chapter gives the posterior circumflex humeral only; Radiopaedia (citing Gray's) gives the circumflex scapular only; the Scapulohumeral chapter gives the subscapular, circumflex scapular and posterior circumflex humeral. The circumflex scapular is a branch of the subscapular, so the subscapular is listed last as the parent vessel."
+  },
+  {
+    "id": "subscapularis",
+    "name": "Subscapularis",
+    "arteries": [
+      "Subscapular artery",
+      "Suprascapular artery",
+      "Axillary artery (direct branches)"
+    ],
+    "text": "Subscapular artery",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Subscapularis Muscle",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK513344/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Rotator Cuff",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK441844/"
+      },
+      {
+        "title": "Radiopaedia: Subscapularis muscle",
+        "url": "https://radiopaedia.org/articles/subscapularis-muscle"
+      }
+    ],
+    "confidence": "high",
+    "notes": "Every source names the subscapular artery. Radiopaedia also names the suprascapular and axillary arteries, listed here as minor contributors."
+  },
+  {
+    "id": "deltoid",
+    "name": "Deltoid",
+    "arteries": [
+      "Thoracoacromial artery (deltoid and acromial branches)",
+      "Posterior circumflex humeral artery",
+      "Anterior circumflex humeral artery",
+      "Profunda brachii artery (deltoid branch)",
+      "Subscapular artery"
+    ],
+    "text": "Thoracoacromial (deltoid branch) and posterior circumflex humeral arteries",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Deltoid Muscle",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK537056/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Axillary Artery",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK482174/"
+      },
+      {
+        "title": "Radiopaedia: Deltoid muscle",
+        "url": "https://radiopaedia.org/articles/deltoid-muscle"
+      }
+    ],
+    "confidence": "high",
+    "notes": "The StatPearls Deltoid chapter makes the thoracoacromial the main supply, with minor contributions from the posterior circumflex humeral and profunda brachii. The Axillary Artery chapter says the posterior circumflex humeral supplies the deltoid. Radiopaedia also names the anterior circumflex humeral and subscapular arteries."
+  },
+  {
+    "id": "trapezius",
+    "name": "Trapezius",
+    "arteries": [
+      "Transverse cervical artery",
+      "Dorsal scapular artery",
+      "Posterior intercostal arteries"
+    ],
+    "text": "Transverse cervical artery, with dorsal scapular and posterior intercostal contributions",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Back, Trapezius",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK518994/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Back, Extrinsic Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK537216/"
+      }
+    ],
+    "confidence": "high",
+    "notes": "Two StatPearls chapters agree that the transverse cervical artery is the main supply. The Trapezius chapter adds collateral supply from the dorsal scapular (superior part) and posterior intercostal arteries (deep part), and says a less common variant is dominated by the dorsal scapular. Radiopaedia gives no arterial supply."
+  },
+  {
+    "id": "levator-scapulae",
+    "name": "Levator Scapulae",
+    "arteries": [
+      "Dorsal scapular artery",
+      "Transverse cervical artery",
+      "Ascending cervical artery"
+    ],
+    "text": "Dorsal scapular and transverse cervical arteries",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Head and Neck, Levator Scapulae Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK553120/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Back, Extrinsic Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK537216/"
+      },
+      {
+        "title": "Radiopaedia: Levator scapulae muscle",
+        "url": "https://radiopaedia.org/articles/levator-scapulae-muscle"
+      }
+    ],
+    "confidence": "medium",
+    "notes": "Naming differs. The Levator Scapulae chapter calls the dorsal scapular artery predominant and treats it as the deep branch of the transverse cervical when it arises there. The Extrinsic Muscles chapter says transverse cervical, and Radiopaedia says transverse cervical plus ascending cervical. The sources may describe the same vessel under different names depending on its origin."
+  },
+  {
+    "id": "rhomboid-minor",
+    "name": "Rhomboid Minor",
+    "arteries": [
+      "Dorsal scapular artery",
+      "Transverse cervical artery (deep branch)"
+    ],
+    "text": "Dorsal scapular artery",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Back, Rhomboid Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK534856/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Back, Extrinsic Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK537216/"
+      },
+      {
+        "title": "Radiopaedia: Rhomboid minor muscle",
+        "url": "https://radiopaedia.org/articles/rhomboid-minor-muscle"
+      }
+    ],
+    "confidence": "high",
+    "notes": "The Extrinsic Muscles chapter says the deep branch of the transverse cervical artery supplies it in some people, in place of a separate dorsal scapular."
+  },
+  {
+    "id": "rhomboid-major",
+    "name": "Rhomboid Major",
+    "arteries": [
+      "Dorsal scapular artery",
+      "Transverse cervical artery (deep branch)"
+    ],
+    "text": "Dorsal scapular artery",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Back, Rhomboid Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK534856/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Back, Extrinsic Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK537216/"
+      },
+      {
+        "title": "Radiopaedia: Rhomboid major muscle",
+        "url": "https://radiopaedia.org/articles/rhomboid-major-muscle"
+      }
+    ],
+    "confidence": "high",
+    "notes": "The Extrinsic Muscles chapter says the deep branch of the transverse cervical artery supplies it in some people, in place of a separate dorsal scapular."
+  },
+  {
+    "id": "serratus-anterior",
+    "name": "Serratus Anterior",
+    "arteries": [
+      "Lateral thoracic artery",
+      "Thoracodorsal artery",
+      "Superior thoracic artery"
+    ],
+    "text": "Lateral thoracic, thoracodorsal and superior thoracic arteries",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Thorax, Serratus Anterior Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK531457/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Axillary Artery",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK482174/"
+      }
+    ],
+    "confidence": "high",
+    "notes": "The Serratus Anterior chapter names all three: superior thoracic (upper part), lateral thoracic (middle) and thoracodorsal (lower). The Axillary Artery chapter confirms the lateral thoracic. Radiopaedia gives no arterial supply."
+  },
+  {
+    "id": "pectoralis-major",
+    "name": "Pectoralis Major",
+    "arteries": [
+      "Thoracoacromial artery (pectoral branch)",
+      "Internal thoracic artery (perforating branches)",
+      "Lateral thoracic artery",
+      "Superior thoracic artery"
+    ],
+    "text": "Thoracoacromial (pectoral branch) and internal thoracic (perforating branches) arteries",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Pectoral Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK545241/"
+      },
+      {
+        "title": "Radiopaedia: Pectoralis major muscle",
+        "url": "https://radiopaedia.org/articles/pectoralis-major-muscle"
+      },
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Axillary Artery",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK482174/"
+      }
+    ],
+    "confidence": "high",
+    "notes": "Sources agree the thoracoacromial (pectoral branch) is the main supply. Radiopaedia adds a segmental supply from internal thoracic perforators. The Axillary Artery chapter says the superior thoracic and lateral thoracic arteries also supply the pectoral muscles."
+  },
+  {
+    "id": "pectoralis-minor",
+    "name": "Pectoralis Minor",
+    "arteries": [
+      "Thoracoacromial artery (pectoral branch)",
+      "Lateral thoracic artery",
+      "Superior thoracic artery"
+    ],
+    "text": "Thoracoacromial (pectoral branch), lateral thoracic and superior thoracic arteries",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Pectoral Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK545241/"
+      },
+      {
+        "title": "Radiopaedia: Pectoralis minor muscle",
+        "url": "https://radiopaedia.org/articles/pectoralis-minor-muscle"
+      },
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Axillary Artery",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK482174/"
+      }
+    ],
+    "confidence": "high",
+    "notes": "The Pectoral Muscles chapter names only the pectoral branch of the thoracoacromial. Radiopaedia and the Axillary Artery chapter add the superior thoracic and lateral thoracic arteries."
+  },
+  {
+    "id": "biceps-brachii",
+    "name": "Biceps Brachii",
+    "arteries": [
+      "Brachial artery (muscular branches)",
+      "Inferior ulnar collateral artery"
+    ],
+    "text": "Muscular branches of the brachial artery",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Biceps Muscle",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK519538/"
+      },
+      {
+        "title": "Radiopaedia: Biceps brachii muscle",
+        "url": "https://radiopaedia.org/articles/biceps-brachii-muscle"
+      },
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Brachial Artery",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK537145/"
+      }
+    ],
+    "confidence": "high",
+    "notes": "The Brachial Artery chapter also lists the inferior ulnar collateral artery as supplying the biceps."
+  },
+  {
+    "id": "brachialis",
+    "name": "Brachialis",
+    "arteries": [
+      "Brachial artery (muscular branches)",
+      "Radial recurrent artery",
+      "Inferior ulnar collateral artery"
+    ],
+    "text": "Brachial artery (muscular branches) and radial recurrent artery",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Brachialis Muscle",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK551630/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Brachial Artery",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK537145/"
+      }
+    ],
+    "confidence": "medium",
+    "notes": "Both sources are StatPearls chapters, but they agree on the brachial artery. The Brachialis chapter adds the radial recurrent artery and, occasionally, branches of the ulnar collateral arteries; the Brachial Artery chapter names the inferior ulnar collateral. Radiopaedia gives no arterial supply."
+  },
+  {
+    "id": "coracobrachialis",
+    "name": "Coracobrachialis",
+    "arteries": [
+      "Brachial artery (muscular branches)"
+    ],
+    "text": "Muscular branches of the brachial artery",
+    "sources": [
+      {
+        "title": "Radiopaedia: Coracobrachialis muscle",
+        "url": "https://radiopaedia.org/articles/coracobrachialis-muscle"
+      },
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Brachial Artery",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK537145/"
+      }
+    ],
+    "confidence": "high",
+    "notes": "The Brachial Artery chapter also lists the inferior ulnar collateral artery for coracobrachialis. That is anatomically odd, since the muscle ends at mid-humerus, so it is left out of the arteries list."
+  },
+  {
+    "id": "triceps-brachii",
+    "name": "Triceps Brachii",
+    "arteries": [
+      "Profunda brachii artery",
+      "Middle collateral artery",
+      "Superior ulnar collateral artery"
+    ],
+    "text": "Profunda brachii (deep brachial) artery",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Triceps Muscle",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK536996/"
+      },
+      {
+        "title": "Radiopaedia: Triceps brachii muscle",
+        "url": "https://radiopaedia.org/articles/triceps-brachii-muscle"
+      },
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Profunda Brachii Artery",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK542225/"
+      }
+    ],
+    "confidence": "high",
+    "notes": "The Triceps chapter cites the deep brachial artery \"supplied by ulnar collateral arteries\". The Profunda Brachii chapter places its middle collateral branch in the medial head. The chapter does not say which ulnar collateral; the superior one is listed because it runs with the ulnar nerve along the medial head. That choice is an inference, so verify it. A posterior circumflex humeral supply to the long head is standard in textbooks but was not stated in the sources read, so it is left out."
+  },
+  {
+    "id": "anconeus",
+    "name": "Anconeus",
+    "arteries": [
+      "Recurrent interosseous artery",
+      "Middle collateral artery (profunda brachii)"
+    ],
+    "text": "Recurrent interosseous and middle collateral arteries",
+    "sources": [
+      {
+        "title": "Radiopaedia: Anconeus muscle",
+        "url": "https://radiopaedia.org/articles/anconeus-muscle"
+      },
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Profunda Brachii Artery",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK542225/"
+      }
+    ],
+    "confidence": "medium",
+    "notes": "Radiopaedia gives the posterior interosseous recurrent artery (the modern name is recurrent interosseous artery). StatPearls says the profunda brachii supplies the anconeus but does not name the middle collateral branch. Flap literature seen in search snippets (not read in full) describes a dominant recurrent interosseous pedicle and a minor middle collateral pedicle."
+  },
+  {
+    "id": "teres-major",
+    "name": "Teres Major",
+    "arteries": [
+      "Thoracodorsal artery",
+      "Posterior circumflex humeral artery",
+      "Circumflex scapular artery"
+    ],
+    "text": "Thoracodorsal and posterior circumflex humeral arteries",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Teres Major Muscle",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK580487/"
+      },
+      {
+        "title": "Radiopaedia: Teres major muscle",
+        "url": "https://radiopaedia.org/articles/teres-major-muscle"
+      },
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Scapulohumeral Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK546633/"
+      }
+    ],
+    "confidence": "high",
+    "notes": "The Scapulohumeral chapter says the supply is either the thoracodorsal or the circumflex scapular (both branches of the subscapular)."
+  },
+  {
+    "id": "latissimus-dorsi",
+    "name": "Latissimus Dorsi",
+    "arteries": [
+      "Thoracodorsal artery"
+    ],
+    "text": "Thoracodorsal artery",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Back, Extrinsic Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK537216/"
+      },
+      {
+        "title": "Radiopaedia: Latissimus dorsi muscle",
+        "url": "https://radiopaedia.org/articles/latissimus-dorsi-muscle"
+      },
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Axillary Artery",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK482174/"
+      }
+    ],
+    "confidence": "high",
+    "notes": "The thoracodorsal artery is the continuation of the subscapular artery. Segmental supply from posterior intercostal and lumbar perforators is standard but was not stated in the sources read, so it is left out."
+  },
+  {
+    "id": "diaphragm",
+    "name": "Diaphragm",
+    "arteries": [
+      "Inferior phrenic arteries",
+      "Superior phrenic arteries",
+      "Musculophrenic arteries",
+      "Pericardiacophrenic arteries",
+      "Lower five posterior intercostal arteries",
+      "Subcostal arteries"
+    ],
+    "text": "Inferior and superior phrenic and musculophrenic arteries",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Thorax: Diaphragm",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK519558/"
+      },
+      {
+        "title": "Radiopaedia: Diaphragm",
+        "url": "https://radiopaedia.org/articles/diaphragm"
+      },
+      {
+        "title": "StatPearls: Anatomy, Thorax, Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK538321/"
+      }
+    ],
+    "confidence": "high",
+    "notes": "Radiopaedia gives the inferior phrenic and the lower intercostal and subcostal arteries as the main supply, with the superior phrenic, musculophrenic and pericardiacophrenic arteries adding to it. StatPearls (Thorax: Diaphragm) lists the musculophrenic, superior phrenic, lower five intercostal, subcostal and inferior phrenic arteries but leaves out the pericardiacophrenic."
+  },
+  {
+    "id": "external-intercostals",
+    "name": "External Intercostals",
+    "arteries": [
+      "Posterior intercostal arteries",
+      "Anterior intercostal arteries",
+      "Superior (supreme) intercostal artery"
+    ],
+    "text": "Anterior and posterior intercostal arteries",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Thorax, Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK538321/"
+      },
+      {
+        "title": "Radiopaedia: External intercostal muscle",
+        "url": "https://radiopaedia.org/articles/external-intercostal-muscle"
+      }
+    ],
+    "confidence": "high",
+    "notes": "Segmental supply. The posterior intercostal arteries for spaces 1–2 come from the superior intercostal artery (costocervical trunk) and for spaces 3–11 from the thoracic aorta. The anterior intercostal arteries come from the internal thoracic artery (spaces 1–6) and the musculophrenic artery (spaces 7–9)."
+  },
+  {
+    "id": "internal-intercostals",
+    "name": "Internal Intercostals",
+    "arteries": [
+      "Posterior intercostal arteries",
+      "Anterior intercostal arteries",
+      "Superior (supreme) intercostal artery"
+    ],
+    "text": "Anterior and posterior intercostal arteries",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Thorax, Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK538321/"
+      },
+      {
+        "title": "Radiopaedia: Internal intercostal muscle",
+        "url": "https://radiopaedia.org/articles/internal-intercostal-muscle"
+      }
+    ],
+    "confidence": "high",
+    "notes": "Segmental supply. The posterior intercostal arteries for spaces 1–2 come from the superior intercostal artery (costocervical trunk) and for spaces 3–11 from the thoracic aorta. The anterior intercostal arteries come from the internal thoracic artery (spaces 1–6) and the musculophrenic artery (spaces 7–9)."
+  },
+  {
+    "id": "sternocleidomastoid",
+    "name": "Sternocleidomastoid",
+    "arteries": [
+      "Occipital artery",
+      "Superior thyroid artery"
+    ],
+    "text": "Occipital and superior thyroid arteries",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Head and Neck: Sternocleidomastoid Muscle",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK532881/"
+      },
+      {
+        "title": "Radiopaedia: Sternocleidomastoid muscle",
+        "url": "https://radiopaedia.org/articles/sternocleidomastoid-muscle"
+      }
+    ],
+    "confidence": "high",
+    "notes": "Both are branches of the external carotid artery."
+  },
+  {
+    "id": "scalene-anterior",
+    "name": "Scalene Anterior",
+    "arteries": [
+      "Inferior thyroid artery",
+      "Ascending cervical artery"
+    ],
+    "text": "Inferior thyroid and ascending cervical arteries",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Head and Neck, Scalenus Muscle",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK519058/"
+      },
+      {
+        "title": "Radiopaedia: Scalenus anterior muscle",
+        "url": "https://radiopaedia.org/articles/anterior-scalene-muscle"
+      },
+      {
+        "title": "Radiopaedia: Scalene muscles",
+        "url": "https://radiopaedia.org/articles/scalene-muscles"
+      }
+    ],
+    "confidence": "medium",
+    "notes": "StatPearls gives the inferior thyroid artery (thyrocervical trunk) for the anterior scalene; Radiopaedia gives the ascending cervical artery. The two fit together, since the ascending cervical artery is itself a branch of the inferior thyroid artery, but neither source names both."
+  },
+  {
+    "id": "scalene-middle",
+    "name": "Scalene Middle",
+    "arteries": [
+      "Ascending cervical artery"
+    ],
+    "text": "Ascending cervical artery",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Head and Neck, Scalenus Muscle",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK519058/"
+      },
+      {
+        "title": "Radiopaedia: Scalene muscles",
+        "url": "https://radiopaedia.org/articles/scalene-muscles"
+      }
+    ],
+    "confidence": "high",
+    "notes": "StatPearls says the 'ascending or superficial cervical' artery. 'Superficial cervical' is an older name for a branch of the transverse cervical artery, so this wording is ambiguous; Radiopaedia names only the ascending cervical artery."
+  },
+  {
+    "id": "scalene-posterior",
+    "name": "Scalene Posterior",
+    "arteries": [
+      "Ascending cervical artery"
+    ],
+    "text": "Ascending cervical artery",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Head and Neck, Scalenus Muscle",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK519058/"
+      },
+      {
+        "title": "Radiopaedia: Scalene muscles",
+        "url": "https://radiopaedia.org/articles/scalene-muscles"
+      }
+    ],
+    "confidence": "high",
+    "notes": "StatPearls says the 'ascending or superficial cervical' artery. 'Superficial cervical' is an older name for a branch of the transverse cervical artery, so this wording is ambiguous; Radiopaedia names only the ascending cervical artery."
+  },
+  {
+    "id": "splenius-capitis",
+    "name": "Splenius Capitis",
+    "arteries": [
+      "Occipital artery (descending branch)",
+      "Deep cervical artery"
+    ],
+    "text": "Occipital and deep cervical arteries",
+    "sources": [
+      {
+        "title": "Radiopaedia: Splenius capitis muscle",
+        "url": "https://radiopaedia.org/articles/splenius-capitis-muscle"
+      },
+      {
+        "title": "StatPearls: Anatomy, Back, Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK537074/"
+      }
+    ],
+    "confidence": "medium",
+    "notes": "Radiopaedia names the descending branch of the occipital artery and the deep cervical artery. StatPearls (Back, Muscles) names the deep cervical artery only in a general statement covering all back muscles; nothing independent confirms the occipital branch."
+  },
+  {
+    "id": "splenius-cervicis",
+    "name": "Splenius Cervicis",
+    "arteries": [
+      "Occipital artery (descending branch)",
+      "Deep cervical artery"
+    ],
+    "text": "Occipital and deep cervical arteries",
+    "sources": [
+      {
+        "title": "Radiopaedia: Splenius cervicis muscle",
+        "url": "https://radiopaedia.org/articles/splenius-cervicis-muscle"
+      },
+      {
+        "title": "StatPearls: Anatomy, Back, Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK537074/"
+      }
+    ],
+    "confidence": "medium",
+    "notes": "Radiopaedia names the descending branch of the occipital artery and the deep cervical artery. StatPearls (Back, Muscles) names the deep cervical artery only in a general statement covering all back muscles; nothing independent confirms the occipital branch."
+  },
+  {
+    "id": "iliocostalis",
+    "name": "Iliocostalis",
+    "arteries": [
+      "Posterior intercostal arteries (dorsal branches)",
+      "Lumbar arteries (dorsal branches)",
+      "Subcostal artery",
+      "Deep cervical artery"
+    ],
+    "text": "Dorsal branches of posterior intercostal and lumbar arteries",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Back, Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK537074/"
+      },
+      {
+        "title": "Radiopaedia: Erector spinae muscles",
+        "url": "https://radiopaedia.org/articles/erector-spinae-muscles"
+      }
+    ],
+    "confidence": "high",
+    "notes": "Both sources give the supply for the back muscle groups as a whole, not per muscle. StatPearls adds the deep cervical artery (cervical parts) and the subcostal artery; Radiopaedia names the dorsal branches of the posterior intercostal and lumbar arteries."
+  },
+  {
+    "id": "longissimus",
+    "name": "Longissimus",
+    "arteries": [
+      "Posterior intercostal arteries (dorsal branches)",
+      "Lumbar arteries (dorsal branches)",
+      "Subcostal artery",
+      "Deep cervical artery"
+    ],
+    "text": "Dorsal branches of posterior intercostal and lumbar arteries",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Back, Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK537074/"
+      },
+      {
+        "title": "Radiopaedia: Erector spinae muscles",
+        "url": "https://radiopaedia.org/articles/erector-spinae-muscles"
+      }
+    ],
+    "confidence": "high",
+    "notes": "Both sources give the supply for the back muscle groups as a whole, not per muscle. StatPearls adds the deep cervical artery (cervical and capitis parts) and the subcostal artery; Radiopaedia names the dorsal branches of the posterior intercostal and lumbar arteries."
+  },
+  {
+    "id": "spinalis",
+    "name": "Spinalis",
+    "arteries": [
+      "Posterior intercostal arteries (dorsal branches)",
+      "Lumbar arteries (dorsal branches)",
+      "Deep cervical artery"
+    ],
+    "text": "Dorsal branches of posterior intercostal and lumbar arteries",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Back, Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK537074/"
+      },
+      {
+        "title": "Radiopaedia: Erector spinae muscles",
+        "url": "https://radiopaedia.org/articles/erector-spinae-muscles"
+      }
+    ],
+    "confidence": "high",
+    "notes": "Both sources give the supply for the back muscle groups as a whole, not per muscle. StatPearls adds the deep cervical artery (cervical part); Radiopaedia names the dorsal branches of the posterior intercostal and lumbar arteries."
+  },
+  {
+    "id": "semispinalis",
+    "name": "Semispinalis",
+    "arteries": [
+      "Posterior intercostal arteries (dorsal branches)",
+      "Deep cervical artery"
+    ],
+    "text": "Deep cervical and posterior intercostal arteries (dorsal branches)",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Back, Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK537074/"
+      },
+      {
+        "title": "Radiopaedia: Transversospinalis muscle group",
+        "url": "https://radiopaedia.org/articles/transversospinalis-muscle-group"
+      }
+    ],
+    "confidence": "medium",
+    "notes": "The sources cover the transversospinalis group as a whole. Semispinalis runs only from C4 to T12, so the lumbar arteries do not apply. The deep cervical artery for the cervical and capitis parts comes only from the general statement for back muscles in StatPearls. The occipital artery is often said to supply semispinalis capitis as well, but none of the sources I used confirms it, so it is left out."
+  },
+  {
+    "id": "multifidus",
+    "name": "Multifidus",
+    "arteries": [
+      "Posterior intercostal arteries (dorsal branches)",
+      "Lumbar arteries (dorsal branches)",
+      "Deep cervical artery"
+    ],
+    "text": "Dorsal branches of posterior intercostal and lumbar arteries",
+    "sources": [
+      {
+        "title": "Radiopaedia: Multifidus muscle",
+        "url": "https://radiopaedia.org/articles/multifidus-muscle"
+      },
+      {
+        "title": "StatPearls: Anatomy, Back, Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK537074/"
+      }
+    ],
+    "confidence": "high",
+    "notes": "Segmental supply. StatPearls adds the deep cervical artery (cervical part) in its general statement for back muscles."
+  },
+  {
+    "id": "rotatores",
+    "name": "Rotatores",
+    "arteries": [
+      "Posterior intercostal arteries (dorsal branches)"
+    ],
+    "text": "Dorsal branches of posterior intercostal arteries",
+    "sources": [
+      {
+        "title": "Radiopaedia: Transversospinalis muscle group",
+        "url": "https://radiopaedia.org/articles/transversospinalis-muscle-group"
+      },
+      {
+        "title": "StatPearls: Anatomy, Back, Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK537074/"
+      }
+    ],
+    "confidence": "high",
+    "notes": "Both sources give the supply only at group level (the transversospinalis group, or all back muscles). The card describes the thoracic rotatores, so the posterior intercostal arteries apply; the cervical and lumbar rotatores would take the deep cervical and lumbar arteries."
+  },
+  {
+    "id": "interspinales",
+    "name": "Interspinales",
+    "arteries": [
+      "Vertebral artery (muscular branches)",
+      "Deep cervical artery",
+      "Posterior intercostal arteries (dorsal branches)",
+      "Lumbar arteries (dorsal branches)",
+      "Occipital artery",
+      "Transverse cervical artery"
+    ],
+    "text": "Segmental: vertebral, deep cervical, posterior intercostal and lumbar arteries",
+    "sources": [
+      {
+        "title": "Radiopaedia: Interspinales muscles",
+        "url": "https://radiopaedia.org/articles/interspinales-muscles"
+      },
+      {
+        "title": "StatPearls: Anatomy, Back, Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK537074/"
+      }
+    ],
+    "confidence": "high",
+    "notes": "Radiopaedia by region. Cervical: vertebral, deep cervical, occipital and transverse cervical arteries. Thoracic: dorsal branches of the superior and posterior intercostal arteries and the subcostal artery. Lumbar: lumbar arteries. StatPearls agrees at group level (deep cervical, posterior intercostal, subcostal, lumbar)."
+  },
+  {
+    "id": "intertransversarii",
+    "name": "Intertransversarii",
+    "arteries": [
+      "Vertebral artery (muscular branches)",
+      "Deep cervical artery",
+      "Ascending cervical artery",
+      "Lumbar arteries (dorsal branches)",
+      "Occipital artery"
+    ],
+    "text": "Segmental: vertebral, deep and ascending cervical, and lumbar arteries",
+    "sources": [
+      {
+        "title": "Radiopaedia: Intertransversarii muscles",
+        "url": "https://radiopaedia.org/articles/intertransversarii-muscles"
+      },
+      {
+        "title": "StatPearls: Anatomy, Back, Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK537074/"
+      }
+    ],
+    "confidence": "high",
+    "notes": "Radiopaedia by part. Anterior cervical: occipital, deep cervical and vertebral arteries. Posterior cervical: ascending cervical artery. Lumbar: dorsal branches of the lumbar arteries. StatPearls agrees at group level (deep cervical, lumbar)."
+  },
+  {
+    "id": "longus-colli",
+    "name": "Longus Colli",
+    "arteries": [
+      "Ascending cervical artery",
+      "Inferior thyroid artery",
+      "Vertebral artery (muscular branches)",
+      "Ascending pharyngeal artery"
+    ],
+    "text": "Ascending cervical, inferior thyroid and vertebral arteries",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Head and Neck, Prevertebral Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK560569/"
+      },
+      {
+        "title": "Radiopaedia: Longus colli muscle",
+        "url": "https://radiopaedia.org/articles/longus-colli-muscle"
+      }
+    ],
+    "confidence": "high",
+    "notes": "Both sources give the ascending cervical artery (a branch of the inferior thyroid artery). StatPearls adds the ascending pharyngeal and vertebral arteries; Radiopaedia adds muscular branches of the inferior thyroid artery."
+  },
+  {
+    "id": "longus-capitis",
+    "name": "Longus Capitis",
+    "arteries": [
+      "Ascending cervical artery",
+      "Inferior thyroid artery",
+      "Ascending pharyngeal artery",
+      "Vertebral artery (muscular branches)"
+    ],
+    "text": "Ascending cervical, inferior thyroid and ascending pharyngeal arteries",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Head and Neck, Prevertebral Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK560569/"
+      },
+      {
+        "title": "Radiopaedia: Longus capitis muscle",
+        "url": "https://radiopaedia.org/articles/longus-capitis-muscle"
+      }
+    ],
+    "confidence": "high",
+    "notes": "Both sources give the ascending cervical artery (a branch of the inferior thyroid artery). StatPearls adds the ascending pharyngeal and vertebral arteries; Radiopaedia adds muscular branches of the inferior thyroid artery."
+  },
+  {
+    "id": "rectus-abdominis",
+    "name": "Rectus Abdominis",
+    "arteries": [
+      "Superior epigastric artery",
+      "Inferior epigastric artery"
+    ],
+    "text": "Superior and inferior epigastric arteries",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Abdomen and Pelvis: Abdominal Wall",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK551649/"
+      },
+      {
+        "title": "Radiopaedia: Rectus abdominis muscle",
+        "url": "https://radiopaedia.org/articles/rectus-abdominis-muscle"
+      }
+    ],
+    "confidence": "high",
+    "notes": ""
+  },
+  {
+    "id": "external-oblique",
+    "name": "External Oblique",
+    "arteries": [
+      "Lower posterior intercostal arteries",
+      "Subcostal artery",
+      "Deep circumflex iliac artery"
+    ],
+    "text": "Lower posterior intercostal and deep circumflex iliac arteries",
+    "sources": [
+      {
+        "title": "Radiopaedia: External oblique muscle",
+        "url": "https://radiopaedia.org/articles/external-oblique-muscle"
+      },
+      {
+        "title": "StatPearls: Anatomy, Abdomen and Pelvis: Abdominal Wall",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK551649/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Anterolateral Abdominal Wall Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK470334/"
+      }
+    ],
+    "confidence": "medium",
+    "notes": "Only Radiopaedia gives a supply for this muscle specifically: the lower intercostal arteries above and the deep circumflex iliac artery below. The StatPearls abdominal wall chapters give the supply by region only (10th–11th posterior intercostal and subcostal arteries laterally; deep circumflex iliac artery inferolaterally), which is consistent."
+  },
+  {
+    "id": "internal-oblique",
+    "name": "Internal Oblique",
+    "arteries": [
+      "Lower posterior intercostal arteries",
+      "Subcostal artery",
+      "Deep circumflex iliac artery"
+    ],
+    "text": "Lower posterior intercostal and subcostal arteries",
+    "sources": [
+      {
+        "title": "Radiopaedia: Internal oblique muscle",
+        "url": "https://radiopaedia.org/articles/internal-oblique-muscle"
+      },
+      {
+        "title": "StatPearls: Anatomy, Abdomen and Pelvis: Abdominal Wall",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK551649/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Anterolateral Abdominal Wall Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK470334/"
+      }
+    ],
+    "confidence": "medium",
+    "notes": "Radiopaedia lists only the subcostal artery. StatPearls (Abdominal Wall) says the 10th–11th posterior intercostal and subcostal arteries run between the internal oblique and transversus abdominis to supply the lateral wall. The deep circumflex iliac artery is included only because StatPearls describes it supplying that region (the deep iliac fossa), not this muscle by name."
+  },
+  {
+    "id": "transversus-abdominis",
+    "name": "Transversus Abdominis",
+    "arteries": [
+      "Lower posterior intercostal arteries",
+      "Subcostal artery",
+      "Superior epigastric artery",
+      "Inferior epigastric artery",
+      "Deep circumflex iliac artery",
+      "Lumbar arteries",
+      "Iliolumbar artery"
+    ],
+    "text": "Lower posterior intercostal, subcostal and deep circumflex iliac arteries",
+    "sources": [
+      {
+        "title": "Radiopaedia: Transversus abdominis muscle",
+        "url": "https://radiopaedia.org/articles/transversus-abdominis-muscle"
+      },
+      {
+        "title": "StatPearls: Anatomy, Abdomen and Pelvis: Abdominal Wall",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK551649/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Abdomen and Pelvis, Quadratus Lumborum",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK535407/"
+      }
+    ],
+    "confidence": "high",
+    "notes": "Radiopaedia also lists the superficial circumflex iliac artery; it is left out here because it is a superficial vessel. StatPearls (Quadratus Lumborum) says branches of the iliolumbar artery reach the transverse abdominal muscle."
+  },
+  {
+    "id": "quadratus-lumborum",
+    "name": "Quadratus Lumborum",
+    "arteries": [
+      "Lumbar arteries",
+      "Iliolumbar artery (lumbar branch)",
+      "Subcostal artery",
+      "Median sacral artery (arteria lumbalis ima)"
+    ],
+    "text": "Lumbar arteries and lumbar branch of iliolumbar artery",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Abdomen and Pelvis, Quadratus Lumborum",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK535407/"
+      },
+      {
+        "title": "Radiopaedia: Quadratus lumborum muscle",
+        "url": "https://radiopaedia.org/articles/quadratus-lumborum-muscle"
+      }
+    ],
+    "confidence": "high",
+    "notes": "Radiopaedia also lists branches of the subcostal artery and the arteria lumbalis ima (the fifth lumbar artery, from the median sacral artery)."
+  },
+  {
+    "id": "tibialis-anterior",
+    "name": "Tibialis Anterior",
+    "arteries": [
+      "Anterior tibial artery",
+      "Medial tarsal arteries"
+    ],
+    "text": "Anterior tibial artery",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb: Tibialis Anterior Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK513304/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb: Leg Anterior Compartment",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK539725/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb: Arteries",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK544319/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb, Foot Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK539705/"
+      }
+    ],
+    "confidence": "high",
+    "notes": "StatPearls Tibialis Anterior: the medial tarsal arteries (from the dorsalis pedis) supply the tendon distally."
+  },
+  {
+    "id": "extensor-hallucis-longus",
+    "name": "Extensor Hallucis Longus",
+    "arteries": [
+      "Anterior tibial artery"
+    ],
+    "text": "Anterior tibial artery",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb: Extensor Hallucis Longus Muscle",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK539875/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb: Leg Anterior Compartment",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK539725/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb: Arteries",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK544319/"
+      },
+      {
+        "title": "Gray's Anatomy (1918): The Anterior Tibial Artery",
+        "url": "https://www.bartleby.com/107/160.html"
+      }
+    ],
+    "confidence": "high",
+    "notes": ""
+  },
+  {
+    "id": "extensor-digitorum-longus",
+    "name": "Extensor Digitorum Longus",
+    "arteries": [
+      "Anterior tibial artery"
+    ],
+    "text": "Anterior tibial artery",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb: Leg Anterior Compartment",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK539725/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb: Arteries",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK544319/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb, Foot Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK539705/"
+      },
+      {
+        "title": "Gray's Anatomy (1918): The Anterior Tibial Artery",
+        "url": "https://www.bartleby.com/107/160.html"
+      }
+    ],
+    "confidence": "high",
+    "notes": ""
+  },
+  {
+    "id": "peroneus-tertius",
+    "name": "Peroneus Tertius",
+    "arteries": [
+      "Anterior tibial artery"
+    ],
+    "text": "Anterior tibial artery",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb: Leg Anterior Compartment",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK539725/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb: Arteries",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK544319/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb, Foot Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK539705/"
+      }
+    ],
+    "confidence": "high",
+    "notes": "Fibularis tertius."
+  },
+  {
+    "id": "peroneus-longus",
+    "name": "Peroneus Longus",
+    "arteries": [
+      "Anterior tibial artery",
+      "Fibular artery"
+    ],
+    "text": "Anterior tibial and fibular arteries",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb: Calf Peroneus Longus Muscle",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK546650/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb: Leg Lateral Compartment",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK519526/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb: Arteries",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK544319/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb, Foot Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK539705/"
+      },
+      {
+        "title": "Gray's Anatomy (1918): The Anterior Tibial Artery",
+        "url": "https://www.bartleby.com/107/160.html"
+      },
+      {
+        "title": "Gray's Anatomy (1918): The Posterior Tibial Artery",
+        "url": "https://www.bartleby.com/107/162.html"
+      }
+    ],
+    "confidence": "medium",
+    "notes": "Fibularis longus. All sources agree both arteries contribute; they disagree on which is primary. StatPearls Foot Muscles: mainly the anterior tibial. StatPearls Arteries: the fibular. StatPearls Lateral Compartment: the anterior tibial proximally (superior/inferior lateral fibular branches), the fibular distally. The dedicated Peroneus Longus chapter lists both. In Gray's 1918 the 'fibular artery' (circumflex fibular) ends in the muscle, and 'peroneal' = fibular artery."
+  },
+  {
+    "id": "peroneus-brevis",
+    "name": "Peroneus Brevis",
+    "arteries": [
+      "Fibular artery",
+      "Anterior tibial artery"
+    ],
+    "text": "Fibular artery",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb, Foot Peroneus Brevis Muscle",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK535427/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb: Arteries",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK544319/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb, Foot Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK539705/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb: Leg Lateral Compartment",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK519526/"
+      },
+      {
+        "title": "Gray's Anatomy (1918): The Posterior Tibial Artery",
+        "url": "https://www.bartleby.com/107/162.html"
+      }
+    ],
+    "confidence": "high",
+    "notes": "Fibularis brevis; the fibular artery is the peroneal artery. StatPearls Lateral Compartment adds anterior tibial branches proximally."
+  },
+  {
+    "id": "gastrocnemius",
+    "name": "Gastrocnemius",
+    "arteries": [
+      "Sural arteries"
+    ],
+    "text": "Sural arteries (from popliteal artery)",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb: Gastrocnemius Muscle",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK532946/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb: Arteries",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK544319/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb: Popliteal Artery",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK537125/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb, Foot Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK539705/"
+      },
+      {
+        "title": "Gray's Anatomy (1918): The Popliteal Artery",
+        "url": "https://www.bartleby.com/107/159.html"
+      }
+    ],
+    "confidence": "high",
+    "notes": "The sural arteries are branches of the popliteal artery."
+  },
+  {
+    "id": "soleus",
+    "name": "Soleus",
+    "arteries": [
+      "Sural arteries",
+      "Posterior tibial artery",
+      "Fibular artery"
+    ],
+    "text": "Sural, posterior tibial and fibular arteries",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb: Arteries",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK544319/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb, Foot Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK539705/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb: Gastrocnemius Muscle",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK532946/"
+      },
+      {
+        "title": "Gray's Anatomy (1918): The Popliteal Artery",
+        "url": "https://www.bartleby.com/107/159.html"
+      },
+      {
+        "title": "Gray's Anatomy (1918): The Posterior Tibial Artery",
+        "url": "https://www.bartleby.com/107/162.html"
+      }
+    ],
+    "confidence": "high",
+    "notes": "StatPearls Arteries gives the sural contribution as 'the popliteal artery'. StatPearls Gastrocnemius also names the circumflex fibular artery, and Gray's 1918 likewise has a 'fibular artery' passing through the soleus."
+  },
+  {
+    "id": "plantaris",
+    "name": "Plantaris",
+    "arteries": [
+      "Sural arteries"
+    ],
+    "text": "Sural arteries (from popliteal artery)",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb: Arteries",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK544319/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb: Popliteal Artery",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK537125/"
+      },
+      {
+        "title": "Gray's Anatomy (1918): The Popliteal Artery",
+        "url": "https://www.bartleby.com/107/159.html"
+      }
+    ],
+    "confidence": "high",
+    "notes": ""
+  },
+  {
+    "id": "tibialis-posterior",
+    "name": "Tibialis Posterior",
+    "arteries": [
+      "Posterior tibial artery",
+      "Fibular artery"
+    ],
+    "text": "Posterior tibial artery (and fibular artery)",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb: Tibialis Posterior Muscle",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK539913/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb: Arteries",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK544319/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb, Foot Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK539705/"
+      },
+      {
+        "title": "Gray's Anatomy (1918): The Posterior Tibial Artery",
+        "url": "https://www.bartleby.com/107/162.html"
+      }
+    ],
+    "confidence": "high",
+    "notes": "StatPearls Foot Muscles also lists the sural arteries. No other source says so, so they are left out of the array."
+  },
+  {
+    "id": "flexor-digitorum-longus",
+    "name": "Flexor Digitorum Longus",
+    "arteries": [
+      "Posterior tibial artery"
+    ],
+    "text": "Posterior tibial artery",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb: Arteries",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK544319/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb, Foot Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK539705/"
+      },
+      {
+        "title": "Gray's Anatomy (1918): The Posterior Tibial Artery",
+        "url": "https://www.bartleby.com/107/162.html"
+      }
+    ],
+    "confidence": "high",
+    "notes": ""
+  },
+  {
+    "id": "flexor-hallucis-longus",
+    "name": "Flexor Hallucis Longus",
+    "arteries": [
+      "Fibular artery",
+      "Posterior tibial artery"
+    ],
+    "text": "Fibular artery (and posterior tibial artery)",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb: Calf Flexor Hallucis Longus Muscle",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK539776/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb: Arteries",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK544319/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb, Foot Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK539705/"
+      },
+      {
+        "title": "Gray's Anatomy (1918): The Posterior Tibial Artery",
+        "url": "https://www.bartleby.com/107/162.html"
+      }
+    ],
+    "confidence": "high",
+    "notes": "Fibular = peroneal artery. StatPearls FHL calls it the 'peroneal portion of the posterior tibial artery'."
+  },
+  {
+    "id": "extensor-digitorum-brevis",
+    "name": "Extensor Digitorum Brevis",
+    "arteries": [
+      "Dorsalis pedis artery",
+      "Lateral tarsal artery",
+      "Fibular artery",
+      "Anterior tibial artery"
+    ],
+    "text": "Dorsalis pedis artery (lateral tarsal branch)",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb: Arteries",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK544319/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb, Foot Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK539705/"
+      },
+      {
+        "title": "Gray's Anatomy (1918): The Arteria Dorsalis Pedis",
+        "url": "https://www.bartleby.com/107/161.html"
+      }
+    ],
+    "confidence": "high",
+    "notes": "StatPearls Foot Muscles lists the fibular, anterior tibial and dorsalis pedis arteries. Gray's 1918 names the lateral tarsal branch of the dorsalis pedis as the supply."
+  },
+  {
+    "id": "extensor-hallucis-brevis",
+    "name": "Extensor Hallucis Brevis",
+    "arteries": [
+      "Dorsalis pedis artery"
+    ],
+    "text": "Dorsalis pedis artery",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb: Arteries",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK544319/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb, Foot Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK539705/"
+      },
+      {
+        "title": "Gray's Anatomy (1918): The Arteria Dorsalis Pedis",
+        "url": "https://www.bartleby.com/107/161.html"
+      }
+    ],
+    "confidence": "high",
+    "notes": "Gray's 1918 treats EHB as the first slip of extensor digitorum brevis, supplied by the lateral tarsal branch of the dorsalis pedis."
+  },
+  {
+    "id": "flexor-digitorum-brevis",
+    "name": "Flexor Digitorum Brevis",
+    "arteries": [
+      "Medial plantar artery"
+    ],
+    "text": "Medial plantar artery",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb: Arteries",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK544319/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb, Foot Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK539705/"
+      },
+      {
+        "title": "Gray's Anatomy (1918): The Posterior Tibial Artery",
+        "url": "https://www.bartleby.com/107/162.html"
+      }
+    ],
+    "confidence": "high",
+    "notes": ""
+  },
+  {
+    "id": "abductor-hallucis",
+    "name": "Abductor Hallucis",
+    "arteries": [
+      "Medial plantar artery"
+    ],
+    "text": "Medial plantar artery",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb: Arteries",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK544319/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb, Foot Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK539705/"
+      },
+      {
+        "title": "Gray's Anatomy (1918): The Posterior Tibial Artery",
+        "url": "https://www.bartleby.com/107/162.html"
+      }
+    ],
+    "confidence": "high",
+    "notes": ""
+  },
+  {
+    "id": "abductor-digiti-minimi-foot",
+    "name": "Abductor Digiti Minimi (Foot)",
+    "arteries": [
+      "Lateral plantar artery"
+    ],
+    "text": "Lateral plantar artery",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb: Arteries",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK544319/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb, Foot Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK539705/"
+      }
+    ],
+    "confidence": "high",
+    "notes": "Both sources are StatPearls chapters by different authors."
+  },
+  {
+    "id": "quadratus-plantae",
+    "name": "Quadratus Plantae",
+    "arteries": [
+      "Lateral plantar artery"
+    ],
+    "text": "Lateral plantar artery",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb: Arteries",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK544319/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb, Foot Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK539705/"
+      }
+    ],
+    "confidence": "high",
+    "notes": "Both sources are StatPearls chapters by different authors."
+  },
+  {
+    "id": "lumbricals-foot",
+    "name": "Lumbricals (Foot)",
+    "arteries": [
+      "Medial plantar artery",
+      "Lateral plantar artery"
+    ],
+    "text": "Medial and lateral plantar arteries",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb: Arteries",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK544319/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb, Foot Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK539705/"
+      }
+    ],
+    "confidence": "high",
+    "notes": "Both sources are StatPearls chapters by different authors."
+  },
+  {
+    "id": "flexor-hallucis-brevis",
+    "name": "Flexor Hallucis Brevis",
+    "arteries": [
+      "Medial plantar artery"
+    ],
+    "text": "Medial plantar artery",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb: Arteries",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK544319/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb, Foot Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK539705/"
+      }
+    ],
+    "confidence": "high",
+    "notes": "Both sources are StatPearls chapters by different authors."
+  },
+  {
+    "id": "adductor-hallucis",
+    "name": "Adductor Hallucis",
+    "arteries": [
+      "Lateral plantar artery",
+      "First plantar metatarsal artery"
+    ],
+    "text": "Lateral plantar artery (plantar arch)",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb: Arteries",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK544319/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb, Foot Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK539705/"
+      },
+      {
+        "title": "Gray's Anatomy (1918): The Posterior Tibial Artery",
+        "url": "https://www.bartleby.com/107/162.html"
+      }
+    ],
+    "confidence": "medium",
+    "notes": "StatPearls Arteries: the lateral plantar artery. StatPearls Foot Muscles: the 1st plantar metatarsal artery, which arises from the plantar arch formed by the lateral plantar artery (Gray's 1918). The two agree; they just name the vessel at different levels."
+  },
+  {
+    "id": "flexor-digiti-minimi-brevis-foot",
+    "name": "Flexor Digiti Minimi Brevis (Foot)",
+    "arteries": [
+      "Lateral plantar artery"
+    ],
+    "text": "Lateral plantar artery",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb: Arteries",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK544319/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb, Foot Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK539705/"
+      }
+    ],
+    "confidence": "high",
+    "notes": "Both sources are StatPearls chapters by different authors."
+  },
+  {
+    "id": "opponens-digiti-minimi-foot",
+    "name": "Opponens Digiti Minimi (Foot)",
+    "arteries": [
+      "Lateral plantar artery"
+    ],
+    "text": "Lateral plantar artery",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb: Arteries",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK544319/"
+      }
+    ],
+    "confidence": "medium",
+    "notes": "Only StatPearls Arteries states it: the lateral plantar artery supplies the lateral compartment of the sole, opponens digiti minimi included. The muscle is inconstant and often counted as part of flexor digiti minimi brevis."
+  },
+  {
+    "id": "dorsal-interossei-foot",
+    "name": "Dorsal Interossei (Foot)",
+    "arteries": [
+      "Dorsal metatarsal arteries",
+      "Plantar metatarsal arteries",
+      "Dorsalis pedis artery",
+      "Lateral plantar artery"
+    ],
+    "text": "Dorsal and plantar metatarsal arteries",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb: Arteries",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK544319/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb, Foot Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK539705/"
+      },
+      {
+        "title": "Gray's Anatomy (1918): The Arteria Dorsalis Pedis",
+        "url": "https://www.bartleby.com/107/161.html"
+      }
+    ],
+    "confidence": "high",
+    "notes": "The 2nd-4th dorsal metatarsal arteries (from the arcuate artery) supply the 2nd-4th dorsal interossei. The 1st dorsal interosseous is supplied by the dorsalis pedis (1st dorsal metatarsal artery)."
+  },
+  {
+    "id": "plantar-interossei",
+    "name": "Plantar Interossei",
+    "arteries": [
+      "Plantar metatarsal arteries",
+      "Lateral plantar artery"
+    ],
+    "text": "Plantar metatarsal arteries",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb: Arteries",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK544319/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Bony Pelvis and Lower Limb, Foot Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK539705/"
+      },
+      {
+        "title": "Gray's Anatomy (1918): The Posterior Tibial Artery",
+        "url": "https://www.bartleby.com/107/162.html"
+      }
+    ],
+    "confidence": "high",
+    "notes": "The plantar metatarsal arteries arise from the deep plantar arch (the lateral plantar artery plus the deep plantar branch of the dorsalis pedis)."
+  },
+  {
+    "id": "pronator-teres",
+    "name": "Pronator Teres",
+    "arteries": [
+      "Anterior ulnar recurrent artery",
+      "Inferior ulnar collateral artery",
+      "Common interosseous artery",
+      "Radial recurrent artery"
+    ],
+    "text": "Anterior ulnar recurrent, inferior ulnar collateral and common interosseous arteries",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Pronator Teres",
+        "url": "https://www.ncbi.nlm.nih.gov/sites/books/NBK580564/"
+      },
+      {
+        "title": "Radiopaedia: Pronator teres muscle",
+        "url": "https://radiopaedia.org/articles/pronator-teres-muscle"
+      },
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Forearm Arteries",
+        "url": "https://www.ncbi.nlm.nih.gov/sites/books/NBK545155/"
+      }
+    ],
+    "confidence": "high",
+    "notes": "Radiopaedia splits by head: humeral head from inferior ulnar collateral + anterior ulnar recurrent; ulnar head from common interosseous. StatPearls adds the radial recurrent artery, and wrongly calls the inferior ulnar collateral a branch of the ulnar artery (it is a brachial artery branch)."
+  },
+  {
+    "id": "flexor-carpi-radialis",
+    "name": "Flexor Carpi Radialis",
+    "arteries": [
+      "Radial artery",
+      "Anterior ulnar recurrent artery",
+      "Posterior ulnar recurrent artery"
+    ],
+    "text": "Radial artery and ulnar recurrent arteries",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Forearm Arteries",
+        "url": "https://www.ncbi.nlm.nih.gov/sites/books/NBK545155/"
+      },
+      {
+        "title": "Radiopaedia: Flexor carpi radialis muscle",
+        "url": "https://radiopaedia.org/articles/flexor-carpi-radialis-muscle-1"
+      }
+    ],
+    "confidence": "medium",
+    "notes": "Sources name different vessels: StatPearls Forearm Arteries lists FCR under the radial artery; Radiopaedia gives the anterior or posterior ulnar recurrent artery. Not contradictory (dual supply) but no two sources agree on the same primary vessel."
+  },
+  {
+    "id": "palmaris-longus",
+    "name": "Palmaris Longus",
+    "arteries": [
+      "Ulnar artery",
+      "Anterior ulnar recurrent artery",
+      "Posterior ulnar recurrent artery"
+    ],
+    "text": "Ulnar artery (via its recurrent branches)",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Hand Palmaris Tendon",
+        "url": "https://www.ncbi.nlm.nih.gov/sites/books/NBK519516/"
+      },
+      {
+        "title": "Radiopaedia: Palmaris longus muscle",
+        "url": "https://radiopaedia.org/articles/palmaris-longus-muscle"
+      },
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Forearm Arteries",
+        "url": "https://www.ncbi.nlm.nih.gov/sites/books/NBK545155/"
+      }
+    ],
+    "confidence": "high",
+    "notes": "All sources agree on the ulnar system but differ on the branch: StatPearls Palmaris Tendon says ulnar artery; Radiopaedia says anterior ulnar recurrent; StatPearls Forearm Arteries says posterior ulnar recurrent."
+  },
+  {
+    "id": "flexor-carpi-ulnaris",
+    "name": "Flexor Carpi Ulnaris",
+    "arteries": [
+      "Ulnar artery",
+      "Posterior ulnar recurrent artery"
+    ],
+    "text": "Ulnar and posterior ulnar recurrent arteries",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Forearm Flexor Carpi Ulnaris Muscle",
+        "url": "https://www.ncbi.nlm.nih.gov/sites/books/NBK526051/"
+      },
+      {
+        "title": "Radiopaedia: Flexor carpi ulnaris muscle",
+        "url": "https://radiopaedia.org/articles/flexor-carpi-ulnaris-muscle-1"
+      },
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Forearm Arteries",
+        "url": "https://www.ncbi.nlm.nih.gov/sites/books/NBK545155/"
+      }
+    ],
+    "confidence": "high",
+    "notes": ""
+  },
+  {
+    "id": "flexor-digitorum-superficialis",
+    "name": "Flexor Digitorum Superficialis",
+    "arteries": [
+      "Ulnar artery",
+      "Radial artery"
+    ],
+    "text": "Ulnar artery (and radial artery)",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Hand Flexor Digitorum Superficialis Muscle",
+        "url": "https://www.ncbi.nlm.nih.gov/sites/books/NBK539723/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Forearm Arteries",
+        "url": "https://www.ncbi.nlm.nih.gov/sites/books/NBK545155/"
+      }
+    ],
+    "confidence": "high",
+    "notes": "StatPearls FDS chapter names the ulnar artery as primary; Forearm Arteries lists FDS under both ulnar and radial arteries. Radiopaedia article gives no arterial supply."
+  },
+  {
+    "id": "flexor-digitorum-profundus",
+    "name": "Flexor Digitorum Profundus",
+    "arteries": [
+      "Anterior interosseous artery",
+      "Ulnar artery"
+    ],
+    "text": "Anterior interosseous and ulnar arteries",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Hand Flexor Digitorum Profundus Muscle",
+        "url": "https://www.ncbi.nlm.nih.gov/sites/books/NBK526046/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Forearm Arteries",
+        "url": "https://www.ncbi.nlm.nih.gov/sites/books/NBK545155/"
+      }
+    ],
+    "confidence": "high",
+    "notes": "Radiopaedia article gives no arterial supply."
+  },
+  {
+    "id": "flexor-pollicis-longus",
+    "name": "Flexor Pollicis Longus",
+    "arteries": [
+      "Anterior interosseous artery"
+    ],
+    "text": "Anterior interosseous artery",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Hand Flexor Pollicis Longus Muscle",
+        "url": "https://www.ncbi.nlm.nih.gov/sites/books/NBK538490/"
+      },
+      {
+        "title": "Radiopaedia: Flexor pollicis longus muscle",
+        "url": "https://radiopaedia.org/articles/flexor-pollicis-longus-muscle"
+      },
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Forearm Arteries",
+        "url": "https://www.ncbi.nlm.nih.gov/sites/books/NBK545155/"
+      }
+    ],
+    "confidence": "high",
+    "notes": "Tendon (not muscle belly) is also fed by vincula from the princeps pollicis/digital arteries; the Princeps Pollicis chapter lists FPL among muscles that artery supplies."
+  },
+  {
+    "id": "pronator-quadratus",
+    "name": "Pronator Quadratus",
+    "arteries": [
+      "Anterior interosseous artery",
+      "Radial artery",
+      "Ulnar artery"
+    ],
+    "text": "Anterior interosseous artery",
+    "sources": [
+      {
+        "title": "Radiopaedia: Pronator quadratus muscle",
+        "url": "https://radiopaedia.org/articles/pronator-quadratus-muscle"
+      },
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Forearm Arteries",
+        "url": "https://www.ncbi.nlm.nih.gov/sites/books/NBK545155/"
+      },
+      {
+        "title": "PMC: The Vascular Basis of the Pronator Quadratus Muscle Flap and Its Use in Clinical Cases",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8012782/"
+      }
+    ],
+    "confidence": "high",
+    "notes": "PMC flap study: anterior interosseous is the major pedicle; minor pedicles from radial artery (all specimens) and ulnar artery (77%)."
+  },
+  {
+    "id": "brachioradialis",
+    "name": "Brachioradialis",
+    "arteries": [
+      "Radial recurrent artery"
+    ],
+    "text": "Radial recurrent artery",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Forearm Brachioradialis Muscle",
+        "url": "https://www.ncbi.nlm.nih.gov/sites/books/NBK526110/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Forearm Arteries",
+        "url": "https://www.ncbi.nlm.nih.gov/sites/books/NBK545155/"
+      },
+      {
+        "title": "Wikipedia: Radial recurrent artery (text from Gray's Anatomy 1918, p. 594)",
+        "url": "https://en.wikipedia.org/wiki/Radial_recurrent_artery"
+      }
+    ],
+    "confidence": "high",
+    "notes": "Radiopaedia article gives no arterial supply."
+  },
+  {
+    "id": "extensor-carpi-radialis-longus",
+    "name": "Extensor Carpi Radialis Longus",
+    "arteries": [
+      "Radial recurrent artery",
+      "Radial artery"
+    ],
+    "text": "Radial recurrent artery (and radial artery)",
+    "sources": [
+      {
+        "title": "Radiopaedia: Extensor carpi radialis longus muscle",
+        "url": "https://radiopaedia.org/articles/extensor-carpi-radialis-longus-muscle"
+      },
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Forearm Arteries",
+        "url": "https://www.ncbi.nlm.nih.gov/sites/books/NBK545155/"
+      }
+    ],
+    "confidence": "high",
+    "notes": ""
+  },
+  {
+    "id": "extensor-carpi-radialis-brevis",
+    "name": "Extensor Carpi Radialis Brevis",
+    "arteries": [
+      "Radial recurrent artery",
+      "Radial artery",
+      "Radial collateral artery"
+    ],
+    "text": "Radial recurrent and radial arteries",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Forearm Extensor Carpi Radialis Brevis Muscle",
+        "url": "https://www.ncbi.nlm.nih.gov/sites/books/NBK539719/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Forearm Arteries",
+        "url": "https://www.ncbi.nlm.nih.gov/sites/books/NBK545155/"
+      }
+    ],
+    "confidence": "high",
+    "notes": "StatPearls ECRB chapter adds the radial collateral branch of the profunda brachii. Radiopaedia gives no arterial supply."
+  },
+  {
+    "id": "extensor-digitorum",
+    "name": "Extensor Digitorum",
+    "arteries": [
+      "Posterior interosseous artery",
+      "Radial recurrent artery"
+    ],
+    "text": "Posterior interosseous and radial recurrent arteries",
+    "sources": [
+      {
+        "title": "Radiopaedia: Extensor digitorum muscle",
+        "url": "https://radiopaedia.org/articles/extensor-digitorum-muscle"
+      },
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Forearm Arteries",
+        "url": "https://www.ncbi.nlm.nih.gov/sites/books/NBK545155/"
+      },
+      {
+        "title": "Wikipedia: Posterior interosseous artery (text from Gray's Anatomy 1918, p. 596)",
+        "url": "https://en.wikipedia.org/wiki/Posterior_interosseous_artery"
+      }
+    ],
+    "confidence": "high",
+    "notes": ""
+  },
+  {
+    "id": "extensor-digiti-minimi",
+    "name": "Extensor Digiti Minimi",
+    "arteries": [
+      "Posterior interosseous artery",
+      "Radial recurrent artery"
+    ],
+    "text": "Posterior interosseous and radial recurrent arteries",
+    "sources": [
+      {
+        "title": "Radiopaedia: Extensor digiti minimi muscle",
+        "url": "https://radiopaedia.org/articles/extensor-digiti-minimi-muscle"
+      },
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Forearm Arteries",
+        "url": "https://www.ncbi.nlm.nih.gov/sites/books/NBK545155/"
+      },
+      {
+        "title": "Wikipedia: Posterior interosseous artery (text from Gray's Anatomy 1918, p. 596)",
+        "url": "https://en.wikipedia.org/wiki/Posterior_interosseous_artery"
+      }
+    ],
+    "confidence": "high",
+    "notes": ""
+  },
+  {
+    "id": "extensor-carpi-ulnaris",
+    "name": "Extensor Carpi Ulnaris",
+    "arteries": [
+      "Posterior interosseous artery",
+      "Ulnar artery",
+      "Radial recurrent artery"
+    ],
+    "text": "Posterior interosseous and ulnar arteries",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Forearm Extensor Carpi Ulnaris Muscle",
+        "url": "https://www.ncbi.nlm.nih.gov/sites/books/NBK539760/"
+      },
+      {
+        "title": "Radiopaedia: Extensor carpi ulnaris muscle",
+        "url": "https://radiopaedia.org/articles/extensor-carpi-ulnaris-muscle"
+      },
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Forearm Arteries",
+        "url": "https://www.ncbi.nlm.nih.gov/sites/books/NBK545155/"
+      }
+    ],
+    "confidence": "high",
+    "notes": "All three agree on the posterior interosseous artery. StatPearls ECU chapter calls the ulnar artery the primary supply; Radiopaedia adds the radial recurrent artery instead."
+  },
+  {
+    "id": "supinator",
+    "name": "Supinator",
+    "arteries": [
+      "Radial recurrent artery",
+      "Posterior interosseous artery"
+    ],
+    "text": "Radial recurrent and posterior interosseous arteries",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Forearm Arteries",
+        "url": "https://www.ncbi.nlm.nih.gov/sites/books/NBK545155/"
+      },
+      {
+        "title": "Wikipedia: Radial recurrent artery (text from Gray's Anatomy 1918, p. 594)",
+        "url": "https://en.wikipedia.org/wiki/Radial_recurrent_artery"
+      },
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Wrist Extensor Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/sites/books/NBK534805/"
+      }
+    ],
+    "confidence": "high",
+    "notes": "Radial recurrent confirmed by Forearm Arteries and Gray's 1918 (p. 594); posterior interosseous by Forearm Arteries, with Wrist Extensor Muscles stating the PIA is the principal supply of the posterior forearm muscles (compartment-level only). Radiopaedia gives no arterial supply."
+  },
+  {
+    "id": "abductor-pollicis-longus",
+    "name": "Abductor Pollicis Longus",
+    "arteries": [
+      "Posterior interosseous artery",
+      "Anterior interosseous artery",
+      "Princeps pollicis artery"
+    ],
+    "text": "Posterior and anterior interosseous arteries",
+    "sources": [
+      {
+        "title": "Radiopaedia: Abductor pollicis longus muscle",
+        "url": "https://radiopaedia.org/articles/abductor-pollicis-longus-muscle"
+      },
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Forearm Arteries",
+        "url": "https://www.ncbi.nlm.nih.gov/sites/books/NBK545155/"
+      },
+      {
+        "title": "Wikipedia: Posterior interosseous artery (text from Gray's Anatomy 1918, p. 596)",
+        "url": "https://en.wikipedia.org/wiki/Posterior_interosseous_artery"
+      },
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Princeps Pollicis Artery",
+        "url": "https://www.ncbi.nlm.nih.gov/sites/books/NBK546657/"
+      }
+    ],
+    "confidence": "high",
+    "notes": "Radiopaedia: posterior interosseous proximally, a branch of the anterior interosseous distally. StatPearls Princeps Pollicis chapter also lists APL."
+  },
+  {
+    "id": "extensor-pollicis-brevis",
+    "name": "Extensor Pollicis Brevis",
+    "arteries": [
+      "Posterior interosseous artery",
+      "Princeps pollicis artery"
+    ],
+    "text": "Posterior interosseous artery",
+    "sources": [
+      {
+        "title": "Radiopaedia: Extensor pollicis brevis muscle",
+        "url": "https://radiopaedia.org/articles/extensor-pollicis-brevis-muscle"
+      },
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Forearm Arteries",
+        "url": "https://www.ncbi.nlm.nih.gov/sites/books/NBK545155/"
+      },
+      {
+        "title": "Wikipedia: Posterior interosseous artery (text from Gray's Anatomy 1918, p. 596)",
+        "url": "https://en.wikipedia.org/wiki/Posterior_interosseous_artery"
+      },
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Princeps Pollicis Artery",
+        "url": "https://www.ncbi.nlm.nih.gov/sites/books/NBK546657/"
+      }
+    ],
+    "confidence": "high",
+    "notes": ""
+  },
+  {
+    "id": "extensor-pollicis-longus",
+    "name": "Extensor Pollicis Longus",
+    "arteries": [
+      "Posterior interosseous artery",
+      "Anterior interosseous artery"
+    ],
+    "text": "Anterior and posterior interosseous arteries",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Hand Extensor Pollicis Longus Muscle",
+        "url": "https://www.ncbi.nlm.nih.gov/sites/books/NBK544294/"
+      },
+      {
+        "title": "Radiopaedia: Extensor pollicis longus muscle",
+        "url": "https://radiopaedia.org/articles/extensor-pollicis-longus-muscle"
+      },
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Forearm Arteries",
+        "url": "https://www.ncbi.nlm.nih.gov/sites/books/NBK545155/"
+      },
+      {
+        "title": "Wikipedia: Posterior interosseous artery (text from Gray's Anatomy 1918, p. 596)",
+        "url": "https://en.wikipedia.org/wiki/Posterior_interosseous_artery"
+      }
+    ],
+    "confidence": "high",
+    "notes": "StatPearls EPL chapter gives the anterior interosseous artery (and its posterior ramus) for the belly; tendon distally fed by dorsal carpal arch, radial artery and 1st dorsal metacarpal artery. Radiopaedia: anterior and posterior interosseous. Forearm Arteries/Gray's: posterior interosseous."
+  },
+  {
+    "id": "extensor-indicis",
+    "name": "Extensor Indicis",
+    "arteries": [
+      "Posterior interosseous artery"
+    ],
+    "text": "Posterior interosseous artery",
+    "sources": [
+      {
+        "title": "Radiopaedia: Extensor indicis muscle",
+        "url": "https://radiopaedia.org/articles/extensor-indicis-muscle"
+      },
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Forearm Arteries",
+        "url": "https://www.ncbi.nlm.nih.gov/sites/books/NBK545155/"
+      },
+      {
+        "title": "Wikipedia: Posterior interosseous artery (text from Gray's Anatomy 1918, p. 596)",
+        "url": "https://en.wikipedia.org/wiki/Posterior_interosseous_artery"
+      }
+    ],
+    "confidence": "high",
+    "notes": ""
+  },
+  {
+    "id": "abductor-pollicis-brevis",
+    "name": "Abductor Pollicis Brevis",
+    "arteries": [
+      "Superficial palmar branch of radial artery",
+      "Superficial palmar arch",
+      "Princeps pollicis artery"
+    ],
+    "text": "Superficial palmar branch of the radial artery",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Hand Thenar Eminence",
+        "url": "https://www.ncbi.nlm.nih.gov/sites/books/NBK580533/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Hand Intrinsic Muscles",
+        "url": "https://ncbi.nlm.nih.gov/sites/books/NBK539810/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Princeps Pollicis Artery",
+        "url": "https://www.ncbi.nlm.nih.gov/sites/books/NBK546657/"
+      }
+    ],
+    "confidence": "medium",
+    "notes": "All StatPearls (Thenar Eminence: superficial palmar branch of radial artery; Intrinsic Muscles: superficial palmar arch). Radiopaedia gives no arterial supply, so no independent second publisher."
+  },
+  {
+    "id": "flexor-pollicis-brevis",
+    "name": "Flexor Pollicis Brevis",
+    "arteries": [
+      "Superficial palmar branch of radial artery",
+      "Superficial palmar arch",
+      "Princeps pollicis artery"
+    ],
+    "text": "Superficial palmar branch of the radial artery",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Hand Thenar Eminence",
+        "url": "https://www.ncbi.nlm.nih.gov/sites/books/NBK580533/"
+      },
+      {
+        "title": "Radiopaedia: Flexor pollicis brevis muscle",
+        "url": "https://radiopaedia.org/articles/flexor-pollicis-brevis-muscle"
+      },
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Hand Intrinsic Muscles",
+        "url": "https://ncbi.nlm.nih.gov/sites/books/NBK539810/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Princeps Pollicis Artery",
+        "url": "https://www.ncbi.nlm.nih.gov/sites/books/NBK546657/"
+      }
+    ],
+    "confidence": "high",
+    "notes": "Radiopaedia says superficial palmar arch; the superficial palmar branch of the radial artery completes that arch."
+  },
+  {
+    "id": "opponens-pollicis",
+    "name": "Opponens Pollicis",
+    "arteries": [
+      "Superficial palmar branch of radial artery",
+      "Superficial palmar arch",
+      "Princeps pollicis artery"
+    ],
+    "text": "Superficial palmar branch of the radial artery",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Hand Thenar Eminence",
+        "url": "https://www.ncbi.nlm.nih.gov/sites/books/NBK580533/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Hand Opponens Pollicis Muscle",
+        "url": "https://www.ncbi.nlm.nih.gov/sites/books/NBK546603/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Princeps Pollicis Artery",
+        "url": "https://www.ncbi.nlm.nih.gov/sites/books/NBK546657/"
+      }
+    ],
+    "confidence": "medium",
+    "notes": "All StatPearls; Radiopaedia gives no arterial supply. The Opponens Pollicis chapter says superficial palmar arch but mis-assigns the arches (calls the superficial arch radial and the deep arch ulnar)."
+  },
+  {
+    "id": "adductor-pollicis",
+    "name": "Adductor Pollicis",
+    "arteries": [
+      "Deep palmar arch",
+      "Princeps pollicis artery"
+    ],
+    "text": "Deep palmar arch",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Hand Adductor Pollicis",
+        "url": "https://www.ncbi.nlm.nih.gov/sites/books/NBK526059/"
+      },
+      {
+        "title": "Radiopaedia: Adductor pollicis muscle",
+        "url": "https://radiopaedia.org/articles/adductor-pollicis-muscle"
+      },
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Princeps Pollicis Artery",
+        "url": "https://www.ncbi.nlm.nih.gov/sites/books/NBK546657/"
+      }
+    ],
+    "confidence": "high",
+    "notes": ""
+  },
+  {
+    "id": "abductor-digiti-minimi-hand",
+    "name": "Abductor Digiti Minimi (Hand)",
+    "arteries": [
+      "Ulnar artery",
+      "Superficial palmar arch",
+      "Deep palmar arch"
+    ],
+    "text": "Ulnar artery",
+    "sources": [
+      {
+        "title": "Radiopaedia: Abductor digiti minimi muscle (hand)",
+        "url": "https://radiopaedia.org/articles/abductor-digiti-minimi-muscle-hand"
+      },
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Hand Hypothenar Eminence",
+        "url": "https://www.ncbi.nlm.nih.gov/sites/books/NBK546622/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Hand Intrinsic Muscles",
+        "url": "https://ncbi.nlm.nih.gov/sites/books/NBK539810/"
+      }
+    ],
+    "confidence": "high",
+    "notes": "StatPearls gives this at hypothenar-group level (ulnar artery via superficial palmar arch; deep arch collateral), not per muscle."
+  },
+  {
+    "id": "flexor-digiti-minimi-brevis-hand",
+    "name": "Flexor Digiti Minimi Brevis (Hand)",
+    "arteries": [
+      "Ulnar artery",
+      "Superficial palmar arch",
+      "Deep palmar arch"
+    ],
+    "text": "Ulnar artery",
+    "sources": [
+      {
+        "title": "Radiopaedia: Flexor digiti minimi brevis muscle (hand)",
+        "url": "https://radiopaedia.org/articles/flexor-digiti-minimi-brevis-muscle-hand"
+      },
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Hand Hypothenar Eminence",
+        "url": "https://www.ncbi.nlm.nih.gov/sites/books/NBK546622/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Hand Intrinsic Muscles",
+        "url": "https://ncbi.nlm.nih.gov/sites/books/NBK539810/"
+      }
+    ],
+    "confidence": "high",
+    "notes": "StatPearls gives this at hypothenar-group level, not per muscle."
+  },
+  {
+    "id": "opponens-digiti-minimi-hand",
+    "name": "Opponens Digiti Minimi (Hand)",
+    "arteries": [
+      "Ulnar artery",
+      "Superficial palmar arch",
+      "Deep palmar arch"
+    ],
+    "text": "Ulnar artery",
+    "sources": [
+      {
+        "title": "Radiopaedia: Opponens digiti minimi muscle",
+        "url": "https://radiopaedia.org/articles/opponens-digiti-minimi-muscle-1"
+      },
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Hand Hypothenar Eminence",
+        "url": "https://www.ncbi.nlm.nih.gov/sites/books/NBK546622/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Hand Intrinsic Muscles",
+        "url": "https://ncbi.nlm.nih.gov/sites/books/NBK539810/"
+      }
+    ],
+    "confidence": "high",
+    "notes": "StatPearls gives this at hypothenar-group level, not per muscle."
+  },
+  {
+    "id": "lumbricals-hand",
+    "name": "Lumbricals (Hand)",
+    "arteries": [
+      "Superficial palmar arch",
+      "Deep palmar arch",
+      "Common palmar digital arteries",
+      "Dorsal digital arteries",
+      "Palmar metacarpal arteries"
+    ],
+    "text": "Superficial palmar arch (plus deep arch branches)",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Hand Lumbrical Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/sites/books/NBK534876/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Hand Intrinsic Muscles",
+        "url": "https://ncbi.nlm.nih.gov/sites/books/NBK539810/"
+      },
+      {
+        "title": "Radiopaedia: Lumbrical muscles of the hand",
+        "url": "https://radiopaedia.org/articles/lumbrical-muscles-of-the-hand"
+      }
+    ],
+    "confidence": "medium",
+    "notes": "StatPearls: primarily superficial palmar arch, plus deep palmar arch, dorsal digital and palmar digital arteries. Radiopaedia names only the palmar metacarpal arteries (deep arch branches). Primary vessel differs between publishers."
+  },
+  {
+    "id": "dorsal-interossei-hand",
+    "name": "Dorsal Interossei (Hand)",
+    "arteries": [
+      "Dorsal metacarpal arteries",
+      "Palmar metacarpal arteries",
+      "Radial artery",
+      "Deep palmar arch"
+    ],
+    "text": "Dorsal metacarpal arteries",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Hand Dorsal Interossei Muscle",
+        "url": "https://www.ncbi.nlm.nih.gov/sites/books/NBK536922/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Hand Interossei Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/sites/books/NBK534772/"
+      },
+      {
+        "title": "Radiopaedia: Dorsal interossei muscles (hand)",
+        "url": "https://radiopaedia.org/articles/dorsal-interossei-muscles-hand-1"
+      }
+    ],
+    "confidence": "high",
+    "notes": "1st dorsal metacarpal artery (from radial artery) supplies the 1st; the rest from dorsal metacarpal arteries off the dorsal carpal arch. Radiopaedia also lists palmar metacarpal, princeps pollicis, radialis indicis and perforating branches of the deep palmar arch."
+  },
+  {
+    "id": "palmar-interossei",
+    "name": "Palmar Interossei",
+    "arteries": [
+      "Palmar metacarpal arteries",
+      "Deep palmar arch",
+      "Princeps pollicis artery"
+    ],
+    "text": "Palmar metacarpal arteries (deep palmar arch)",
+    "sources": [
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Hand Palmar Interosseous Muscle",
+        "url": "https://www.ncbi.nlm.nih.gov/sites/books/NBK537165/"
+      },
+      {
+        "title": "StatPearls: Anatomy, Shoulder and Upper Limb, Hand Interossei Muscles",
+        "url": "https://www.ncbi.nlm.nih.gov/sites/books/NBK534772/"
+      },
+      {
+        "title": "Radiopaedia: Palmar interossei muscles (hand)",
+        "url": "https://radiopaedia.org/articles/palmar-interossei-muscles-hand"
+      }
+    ],
+    "confidence": "high",
+    "notes": ""
+  }
+]
