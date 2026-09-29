@@ -209,6 +209,28 @@ export interface CitedWork {
   quote?: string;
 }
 
+/**
+ * A structure's blood supply, as reviewed on the blood-supply page and
+ * accepted by the owner (blood-supply-review.json; generated into
+ * data/seed/bloodSupply.generated.ts by src/scripts/generateBloodSupplySeed.ts).
+ * The verbatim quotes behind every artery stay in that JSON, not the bundle.
+ *
+ * `rating` is the owner's framework (Rich / Moderate / Poor): the anatomy of
+ * the supply first, then the tissue's baseline, perfusion evidence and
+ * clinical behaviour. Landmarks carry none — they are parts of bones.
+ */
+export interface BloodSupply {
+  /** The dominant artery. Null where sources rate the supply but name no vessel. */
+  primary: string | null;
+  /** The other named arteries, in the order sources give them. */
+  assisting: string[];
+  rating: BloodSupplyRating;
+  /** The poorly supplied part, where one is documented (a watershed zone, a retrograde pole). */
+  zone?: string;
+}
+
+export type BloodSupplyRating = 'rich' | 'moderate' | 'poor';
+
 export interface StructureSource {
   // The lecture-deck shape. The 122 muscles carry these three, and
   // muscles.raw.json is untouched by the source-check work.
@@ -278,6 +300,9 @@ interface AnatomyStructureBase {
   referredPainPattern?: string;
   /** Everyday or sporting movements this structure loads. */
   functionalContext?: string;
+
+  /** Arterial supply and how rich it is. Absent on landmarks and on anything not yet reviewed. */
+  bloodSupply?: BloodSupply;
 }
 
 export interface MuscleStructure extends AnatomyStructureBase {

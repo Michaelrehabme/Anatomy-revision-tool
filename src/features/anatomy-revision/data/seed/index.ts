@@ -1,4 +1,5 @@
 import type { AnatomyStructure } from '../../types/structure';
+import { BLOOD_SUPPLY } from './bloodSupply.generated';
 import { MUSCLE_STRUCTURES } from './structures.muscles.seed';
 import { BONE_STRUCTURES } from './structures.bones.seed';
 import { LANDMARK_STRUCTURES } from './structures.landmarks.seed';
@@ -36,7 +37,12 @@ const UNLINKED_STRUCTURES: AnatomyStructure[] = [
 ];
 
 export const ALL_IMAGES = IMAGE_ASSETS;
-export const ALL_STRUCTURES: AnatomyStructure[] = linkImages(UNLINKED_STRUCTURES, ALL_IMAGES);
+// Blood supply is reviewed and generated separately (bloodSupply.generated.ts)
+// and joined here by id, so no family's seed file has to carry it.
+export const ALL_STRUCTURES: AnatomyStructure[] = linkImages(
+  UNLINKED_STRUCTURES.map((s) => (BLOOD_SUPPLY[s.id] ? { ...s, bloodSupply: BLOOD_SUPPLY[s.id] } : s)),
+  ALL_IMAGES,
+);
 
 export {
   MUSCLE_STRUCTURES,

@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { BloodSupplyFacts } from '../shared/BloodSupplyFacts';
 import type { AnatomyContent } from '../../hooks/useAnatomyContent';
 import { MasteryLevelBadge } from '../shared/MasteryLevelBadge';
 import { masteryLevel } from '../../lib/masteryLevel';
@@ -129,6 +130,7 @@ export function MobileMuscleCard({ access, structureId, content, repository, use
             <div className="mt-1.5 text-base leading-relaxed">{muscle.actionText}</div>
           </div>
         )}
+        <BloodSupplyFacts structure={structure} compact />
         {structure.clinical && (
           <div className="py-3.5">
             <div style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>

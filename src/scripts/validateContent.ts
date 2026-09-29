@@ -22,6 +22,7 @@ import { correctValuesFor } from '../features/anatomy-revision/lib/questionGener
 import { acceptedVariantsFor, matchesSlot } from '../features/anatomy-revision/lib/oinaAnswer';
 import { stripHeadPrefix } from '../features/anatomy-revision/lib/oinaValues';
 import { auditHotspotSizes } from './lib/hotspotSizeAudit';
+import { vesselKey } from '../features/anatomy-revision/lib/questionGenerators/bloodSupply';
 import { validateProvenance } from './lib/validateProvenance';
 import { buildProvenance } from './lib/provenance';
 import { CATEGORIES, isBone, isLandmark, isLigament } from '../features/anatomy-revision/types/structure';
@@ -203,6 +204,37 @@ function validateOina(): void {
   );
 }
 
+/**
+ * The reviewed blood supply (types/structure.ts BloodSupply). Never on a
+ * landmark (the owner took landmarks out of these questions), a rating in the
+ * three-tier set, a primary that is not repeated among the assisting arteries,
+ * and the generated file in step with the review JSON's acceptances — a row
+ * accepted on the review page but never regenerated must not go unnoticed.
+ */
+function validateBloodSupply(): void {
+  const ratings = new Set(['rich', 'moderate', 'poor']);
+  let count = 0;
+  for (const s of ALL_STRUCTURES) {
+    const b = s.bloodSupply;
+    if (!b) continue;
+    count++;
+    if (isLandmark(s)) fail(`${s.id}: a landmark carries a blood supply`);
+    if (!ratings.has(b.rating)) fail(`${s.id}: blood supply rating "${b.rating}" is not rich/moderate/poor`);
+    if (b.primary && b.assisting.map(vesselKey).includes(vesselKey(b.primary))) {
+      fail(`${s.id}: primary artery "${b.primary}" is repeated among the assisting arteries`);
+    }
+    if (!b.primary && b.assisting.length) fail(`${s.id}: assisting arteries but no primary`);
+  }
+  const review = JSON.parse(readFileSync(new URL('../../blood-supply-review.json', import.meta.url), 'utf8')) as {
+    category: string;
+    review?: { status: string };
+  }[];
+  const accepted = review.filter((r) => r.review?.status === 'accepted' && r.category !== 'landmark').length;
+  if (accepted !== count) {
+    fail(`blood supply: ${accepted} rows accepted in blood-supply-review.json but ${count} in the seed — run npm run generate:blood-supply`);
+  }
+}
+
 function main(): void {
   const structureIds = new Set<string>();
   for (const s of ALL_STRUCTURES) {
@@ -305,6 +337,7 @@ function main(): void {
   }
 
   validateOina();
+  validateBloodSupply();
   // HITBOXES THAT ARE TOO BIG. Every publisher enforces a floor; this is the
   // ceiling. Warn-only, with the full list one command away, because the fix
   // is usually a re-render and a validator that failed the build over it

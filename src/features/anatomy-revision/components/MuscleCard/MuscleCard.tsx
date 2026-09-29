@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { BloodSupplyFacts } from '../shared/BloodSupplyFacts';
 import type { AnatomyContent } from '../../hooks/useAnatomyContent';
 import type { AnatomyRepository } from '../../data/repository';
 import { areasOf, isMuscle } from '../../types/structure';
@@ -200,6 +201,7 @@ export function MuscleCard({
                 </div>
               </div>
             )}
+            <BloodSupplyFacts structure={structure} />
             {structure.clinical && (
               <div className="py-4.5">
                 <div style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>

@@ -15,6 +15,7 @@ import { buildLocateQuestions } from './locate';
 import { buildFillBlankQuestions } from './fillBlank';
 import { buildIdentifyTypedQuestions } from './identifyTyped';
 import { buildMultiSelectQuestions } from './multiSelect';
+import { buildBloodSupplyMcqs, buildBloodSupplyMultiSelect } from './bloodSupply';
 import { buildClinicalQuestions } from './clinical';
 import { buildOinaQuestions } from './oina';
 import { indexFactMastery, shouldPrecedeWithLearnCard } from '../factMastery';
@@ -510,6 +511,9 @@ export function generateRevisionSet(
     // structure actually having the relevant clinical field authored — same
     // convention as buildMcqQuestions itself generating several promptKinds at once.
     generated.push(...buildClinicalQuestions(mcqPool, rng));
+    // Blood supply (29 Sep 2026): wrong answers are drawn from every
+    // structure's arteries, so it takes the whole dataset as well as the pool.
+    generated.push(...buildBloodSupplyMcqs(mcqPool, structures, rng));
   }
   if (config.types.includes('locate')) {
     generated.push(...buildLocateQuestions(pool, relevantImages));
@@ -528,6 +532,7 @@ export function generateRevisionSet(
   }
   if (config.types.includes('multi-select')) {
     generated.push(...buildMultiSelectQuestions(pool, indexes, rng));
+    generated.push(...buildBloodSupplyMultiSelect(pool, structures, rng));
   }
   if (config.types.includes('oina')) {
     generated.push(

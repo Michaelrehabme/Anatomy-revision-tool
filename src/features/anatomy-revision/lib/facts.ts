@@ -49,6 +49,12 @@ export function describeStructure(s: AnatomyStructure): string[] {
     if (s.stabilizers?.length) lines.push(`Stabilizers: ${s.stabilizers.join('; ')}`);
   }
 
+  if (s.bloodSupply) {
+    const b = s.bloodSupply;
+    const rating = { rich: 'rich', moderate: 'moderate', poor: 'poor' }[b.rating];
+    const vessels = b.primary ? [b.primary, ...b.assisting].join(', ') : 'no single named artery';
+    lines.push(`Blood supply (${rating}): ${vessels}`);
+  }
   if (s.clinical) lines.push(`Clinical relevance: ${s.clinical}`);
   return lines;
 }

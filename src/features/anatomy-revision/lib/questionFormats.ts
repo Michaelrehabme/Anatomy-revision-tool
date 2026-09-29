@@ -75,6 +75,9 @@ const PROMPT_KIND_LABELS: Partial<Record<PromptKind, string>> = {
   functional: 'Function',
   'joint-type': 'Joint type',
   'joint-movement': 'Movement',
+  'blood-supply': 'Blood supply',
+  'blood-supply-assisting': 'Blood supply',
+  'blood-supply-rating': 'Blood supply',
 };
 
 /**

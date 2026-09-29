@@ -21,7 +21,11 @@ export type PromptKind =
   | 'functional'
   // --- Joints (CR-014) ---
   | 'joint-type'
-  | 'joint-movement';
+  | 'joint-movement'
+  // --- Blood supply (29 Sep 2026) ---
+  | 'blood-supply'
+  | 'blood-supply-assisting'
+  | 'blood-supply-rating';
 
 interface RevisionQuestionBase {
   id: string;

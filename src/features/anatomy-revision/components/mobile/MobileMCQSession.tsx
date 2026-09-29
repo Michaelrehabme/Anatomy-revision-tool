@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { promptKindLabel } from '../../lib/questionFormats';
 import { moveFocusWithArrows } from '../shared/arrowFocus';
 import type { MCQQuestion } from '../../types/question';
 import type { AnatomyImageAsset } from '../../types/image';
@@ -78,7 +79,7 @@ export function MobileMCQSession({ question, imagesById, onAnswer, onNext, onFul
       <div className="flex-1 overflow-y-auto px-6.5 pb-5">
         <div className="mt-4.5 flex items-baseline gap-2.5">
           <span style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--accd)' }}>
-            {question.promptKind}
+            {promptKindLabel(question.promptKind) ?? question.promptKind}
           </span>
           <span style={{ font: '400 10px/1 var(--font-mono)', letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
             {questionLocationLabel(question)}

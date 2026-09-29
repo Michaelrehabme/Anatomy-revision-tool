@@ -55,7 +55,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 4 named arteries — Iliolumbar artery (iliac branch), Deep circumflex iliac artery, Obturator artery (iliac branch), Femoral artery (muscular branches)."
+    "ratingWhy": "Rich: 4 named arteries — Iliolumbar artery (iliac branch), Deep circumflex iliac artery, Obturator artery (iliac branch), Femoral artery (muscular branches).",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "psoas-major",
@@ -103,7 +107,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 6 named arteries — Lumbar arteries, Iliolumbar artery (lumbar branch), Deep circumflex iliac artery, External iliac artery, Obturator artery, Femoral artery."
+    "ratingWhy": "Rich: 6 named arteries — Lumbar arteries, Iliolumbar artery (lumbar branch), Deep circumflex iliac artery, External iliac artery, Obturator artery, Femoral artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "rectus-femoris",
@@ -186,7 +194,11 @@
       ]
     },
     "category": "muscle",
-    "ratingWhy": "Poor because its tendon has a documented watershed zone (below). The belly itself is fed by 1 named artery."
+    "ratingWhy": "Poor because its tendon has a documented watershed zone (below). The belly itself is fed by 1 named artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "sartorius",
@@ -246,7 +258,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 6 named arteries — Femoral artery (muscular branches), Lateral circumflex femoral artery, Profunda femoris artery, Descending genicular artery, Superficial circumflex iliac artery, Superior medial genicular artery."
+    "ratingWhy": "Rich: 6 named arteries — Femoral artery (muscular branches), Lateral circumflex femoral artery, Profunda femoris artery, Descending genicular artery, Superficial circumflex iliac artery, Superior medial genicular artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "gluteus-maximus",
@@ -302,7 +318,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 2 named arteries — Inferior gluteal artery, Superior gluteal artery (superficial branch)."
+    "ratingWhy": "Rich: 2 named arteries — Inferior gluteal artery, Superior gluteal artery (superficial branch).",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "semitendinosus",
@@ -359,7 +379,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 3 named arteries — Profunda femoris artery (perforating branches), Inferior gluteal artery, Popliteal artery."
+    "ratingWhy": "Rich: 3 named arteries — Profunda femoris artery (perforating branches), Inferior gluteal artery, Popliteal artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "semimembranosus",
@@ -416,7 +440,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 3 named arteries — Profunda femoris artery (perforating branches), Inferior gluteal artery, Popliteal artery."
+    "ratingWhy": "Rich: 3 named arteries — Profunda femoris artery (perforating branches), Inferior gluteal artery, Popliteal artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "biceps-femoris",
@@ -461,7 +489,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 3 named arteries — Profunda femoris artery (perforating branches), Inferior gluteal artery, Popliteal artery."
+    "ratingWhy": "Rich: 3 named arteries — Profunda femoris artery (perforating branches), Inferior gluteal artery, Popliteal artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "gluteus-medius",
@@ -504,7 +536,11 @@
     "rating": "moderate",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Moderate: one dominant supply (Superior gluteal artery (deep branch)). Muscle is well-supplied tissue, so a single artery is not poor on its own."
+    "ratingWhy": "Moderate: one dominant supply (Superior gluteal artery (deep branch)). Muscle is well-supplied tissue, so a single artery is not poor on its own.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "gluteus-minimus",
@@ -547,7 +583,11 @@
     "rating": "moderate",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Moderate: one dominant supply (Superior gluteal artery (deep branch)). Muscle is well-supplied tissue, so a single artery is not poor on its own."
+    "ratingWhy": "Moderate: one dominant supply (Superior gluteal artery (deep branch)). Muscle is well-supplied tissue, so a single artery is not poor on its own.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "tensor-fasciae-latae",
@@ -591,7 +631,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 2 named arteries — Superior gluteal artery (deep branch), Lateral circumflex femoral artery."
+    "ratingWhy": "Rich: 2 named arteries — Superior gluteal artery (deep branch), Lateral circumflex femoral artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "adductor-magnus",
@@ -651,7 +695,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 6 named arteries — Profunda femoris artery (perforating branches), Medial circumflex femoral artery, Obturator artery, Femoral artery, Popliteal artery, Inferior gluteal artery."
+    "ratingWhy": "Rich: 6 named arteries — Profunda femoris artery (perforating branches), Medial circumflex femoral artery, Obturator artery, Femoral artery, Popliteal artery, Inferior gluteal artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "adductor-longus",
@@ -696,7 +744,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 3 named arteries — Profunda femoris artery, Obturator artery, Medial circumflex femoral artery."
+    "ratingWhy": "Rich: 3 named arteries — Profunda femoris artery, Obturator artery, Medial circumflex femoral artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "adductor-brevis",
@@ -741,7 +793,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 3 named arteries — Profunda femoris artery, Obturator artery, Medial circumflex femoral artery."
+    "ratingWhy": "Rich: 3 named arteries — Profunda femoris artery, Obturator artery, Medial circumflex femoral artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "pectineus",
@@ -797,7 +853,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 2 named arteries — Medial circumflex femoral artery, Obturator artery (anterior branch)."
+    "ratingWhy": "Rich: 2 named arteries — Medial circumflex femoral artery, Obturator artery (anterior branch).",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "gracilis",
@@ -856,7 +916,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 5 named arteries — Medial circumflex femoral artery, Profunda femoris artery, Obturator artery (anterior branch), Femoral artery, Descending genicular artery."
+    "ratingWhy": "Rich: 5 named arteries — Medial circumflex femoral artery, Profunda femoris artery, Obturator artery (anterior branch), Femoral artery, Descending genicular artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "piriformis",
@@ -902,7 +966,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 4 named arteries — Superior gluteal artery, Inferior gluteal artery, Internal pudendal artery, Lateral sacral artery."
+    "ratingWhy": "Rich: 4 named arteries — Superior gluteal artery, Inferior gluteal artery, Internal pudendal artery, Lateral sacral artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "gemelli",
@@ -957,7 +1025,11 @@
     "rating": "moderate",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Moderate: one dominant supply (Inferior gluteal artery). Muscle is well-supplied tissue, so a single artery is not poor on its own."
+    "ratingWhy": "Moderate: one dominant supply (Inferior gluteal artery). Muscle is well-supplied tissue, so a single artery is not poor on its own.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "obturator-internus",
@@ -1014,7 +1086,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 3 named arteries — Inferior gluteal artery, Obturator artery, Internal pudendal artery."
+    "ratingWhy": "Rich: 3 named arteries — Inferior gluteal artery, Obturator artery, Internal pudendal artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "obturator-externus",
@@ -1058,7 +1134,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 2 named arteries — Obturator artery (anterior branch), Medial circumflex femoral artery."
+    "ratingWhy": "Rich: 2 named arteries — Obturator artery (anterior branch), Medial circumflex femoral artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "quadratus-femoris",
@@ -1101,7 +1181,11 @@
     "rating": "moderate",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Moderate: one dominant supply (Inferior gluteal artery). Muscle is well-supplied tissue, so a single artery is not poor on its own."
+    "ratingWhy": "Moderate: one dominant supply (Inferior gluteal artery). Muscle is well-supplied tissue, so a single artery is not poor on its own.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "vastus-lateralis",
@@ -1173,7 +1257,11 @@
       ]
     },
     "category": "muscle",
-    "ratingWhy": "Poor because its tendon has a documented watershed zone (below). The belly itself is fed by 2 named arteries."
+    "ratingWhy": "Poor because its tendon has a documented watershed zone (below). The belly itself is fed by 2 named arteries.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "vastus-medialis",
@@ -1258,7 +1346,11 @@
       ]
     },
     "category": "muscle",
-    "ratingWhy": "Poor because its tendon has a documented watershed zone (below). The belly itself is fed by 3 named arteries."
+    "ratingWhy": "Poor because its tendon has a documented watershed zone (below). The belly itself is fed by 3 named arteries.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "vastus-intermedius",
@@ -1342,7 +1434,11 @@
       ]
     },
     "category": "muscle",
-    "ratingWhy": "Poor because its tendon has a documented watershed zone (below). The belly itself is fed by 2 named arteries."
+    "ratingWhy": "Poor because its tendon has a documented watershed zone (below). The belly itself is fed by 2 named arteries.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "popliteus",
@@ -1411,7 +1507,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 3 named arteries — Inferior medial genicular artery, Posterior tibial artery, Posterior tibial recurrent artery."
+    "ratingWhy": "Rich: 3 named arteries — Inferior medial genicular artery, Posterior tibial artery, Posterior tibial recurrent artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "supraspinatus",
@@ -1495,7 +1595,11 @@
       ]
     },
     "category": "muscle",
-    "ratingWhy": "Poor because its tendon has a documented watershed zone (below). The belly itself is fed by 2 named arteries."
+    "ratingWhy": "Poor because its tendon has a documented watershed zone (below). The belly itself is fed by 2 named arteries.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "infraspinatus",
@@ -1567,7 +1671,11 @@
       ]
     },
     "category": "muscle",
-    "ratingWhy": "Poor because its tendon has a documented watershed zone (below). The belly itself is fed by 2 named arteries."
+    "ratingWhy": "Poor because its tendon has a documented watershed zone (below). The belly itself is fed by 2 named arteries.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "teres-minor",
@@ -1624,7 +1732,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 3 named arteries — Circumflex scapular artery, Posterior circumflex humeral artery, Subscapular artery."
+    "ratingWhy": "Rich: 3 named arteries — Circumflex scapular artery, Posterior circumflex humeral artery, Subscapular artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "subscapularis",
@@ -1681,7 +1793,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 3 named arteries — Subscapular artery, Suprascapular artery, Axillary artery (direct branches)."
+    "ratingWhy": "Rich: 3 named arteries — Subscapular artery, Suprascapular artery, Axillary artery (direct branches).",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "deltoid",
@@ -1740,7 +1856,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 5 named arteries — Thoracoacromial artery (deltoid and acromial branches), Posterior circumflex humeral artery, Anterior circumflex humeral artery, Profunda brachii artery (deltoid branch), Subscapular artery."
+    "ratingWhy": "Rich: 5 named arteries — Thoracoacromial artery (deltoid and acromial branches), Posterior circumflex humeral artery, Anterior circumflex humeral artery, Profunda brachii artery (deltoid branch), Subscapular artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "trapezius",
@@ -1785,7 +1905,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 3 named arteries — Transverse cervical artery, Dorsal scapular artery, Posterior intercostal arteries."
+    "ratingWhy": "Rich: 3 named arteries — Transverse cervical artery, Dorsal scapular artery, Posterior intercostal arteries.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "levator-scapulae",
@@ -1842,7 +1966,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 3 named arteries — Dorsal scapular artery, Transverse cervical artery, Ascending cervical artery."
+    "ratingWhy": "Rich: 3 named arteries — Dorsal scapular artery, Transverse cervical artery, Ascending cervical artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "rhomboid-minor",
@@ -1898,7 +2026,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 2 named arteries — Dorsal scapular artery, Transverse cervical artery (deep branch)."
+    "ratingWhy": "Rich: 2 named arteries — Dorsal scapular artery, Transverse cervical artery (deep branch).",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "rhomboid-major",
@@ -1954,7 +2086,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 2 named arteries — Dorsal scapular artery, Transverse cervical artery (deep branch)."
+    "ratingWhy": "Rich: 2 named arteries — Dorsal scapular artery, Transverse cervical artery (deep branch).",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "serratus-anterior",
@@ -1999,7 +2135,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 3 named arteries — Lateral thoracic artery, Thoracodorsal artery, Superior thoracic artery."
+    "ratingWhy": "Rich: 3 named arteries — Lateral thoracic artery, Thoracodorsal artery, Superior thoracic artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "pectoralis-major",
@@ -2057,7 +2197,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 4 named arteries — Thoracoacromial artery (pectoral branch), Internal thoracic artery (perforating branches), Lateral thoracic artery, Superior thoracic artery."
+    "ratingWhy": "Rich: 4 named arteries — Thoracoacromial artery (pectoral branch), Internal thoracic artery (perforating branches), Lateral thoracic artery, Superior thoracic artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "pectoralis-minor",
@@ -2114,7 +2258,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 3 named arteries — Thoracoacromial artery (pectoral branch), Lateral thoracic artery, Superior thoracic artery."
+    "ratingWhy": "Rich: 3 named arteries — Thoracoacromial artery (pectoral branch), Lateral thoracic artery, Superior thoracic artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "biceps-brachii",
@@ -2186,7 +2334,11 @@
       ]
     },
     "category": "muscle",
-    "ratingWhy": "Poor because its tendon has a documented watershed zone (below). The belly itself is fed by 2 named arteries."
+    "ratingWhy": "Poor because its tendon has a documented watershed zone (below). The belly itself is fed by 2 named arteries.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "brachialis",
@@ -2231,7 +2383,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 3 named arteries — Brachial artery (muscular branches), Radial recurrent artery, Inferior ulnar collateral artery."
+    "ratingWhy": "Rich: 3 named arteries — Brachial artery (muscular branches), Radial recurrent artery, Inferior ulnar collateral artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "coracobrachialis",
@@ -2274,7 +2430,11 @@
     "rating": "moderate",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Moderate: one dominant supply (Brachial artery (muscular branches)). Muscle is well-supplied tissue, so a single artery is not poor on its own."
+    "ratingWhy": "Moderate: one dominant supply (Brachial artery (muscular branches)). Muscle is well-supplied tissue, so a single artery is not poor on its own.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "triceps-brachii",
@@ -2333,7 +2493,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 2 named arteries — Profunda brachii artery, Superior ulnar collateral artery."
+    "ratingWhy": "Rich: 2 named arteries — Profunda brachii artery, Superior ulnar collateral artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "anconeus",
@@ -2379,7 +2543,11 @@
     "rating": "moderate",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Moderate: one dominant supply (Recurrent interosseous artery). Muscle is well-supplied tissue, so a single artery is not poor on its own."
+    "ratingWhy": "Moderate: one dominant supply (Recurrent interosseous artery). Muscle is well-supplied tissue, so a single artery is not poor on its own.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "teres-major",
@@ -2436,7 +2604,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 3 named arteries — Thoracodorsal artery, Posterior circumflex humeral artery, Circumflex scapular artery."
+    "ratingWhy": "Rich: 3 named arteries — Thoracodorsal artery, Posterior circumflex humeral artery, Circumflex scapular artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "latissimus-dorsi",
@@ -2491,7 +2663,11 @@
     "rating": "moderate",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Moderate: one dominant supply (Thoracodorsal artery). Muscle is well-supplied tissue, so a single artery is not poor on its own."
+    "ratingWhy": "Moderate: one dominant supply (Thoracodorsal artery). Muscle is well-supplied tissue, so a single artery is not poor on its own.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "diaphragm",
@@ -2551,7 +2727,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 6 named arteries — Inferior phrenic arteries, Superior phrenic arteries, Musculophrenic arteries, Pericardiacophrenic arteries, Lower five posterior intercostal arteries, Subcostal arteries."
+    "ratingWhy": "Rich: 6 named arteries — Inferior phrenic arteries, Superior phrenic arteries, Musculophrenic arteries, Pericardiacophrenic arteries, Lower five posterior intercostal arteries, Subcostal arteries.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "external-intercostals",
@@ -2596,7 +2776,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 3 named arteries — Posterior intercostal arteries, Anterior intercostal arteries, Superior (supreme) intercostal artery."
+    "ratingWhy": "Rich: 3 named arteries — Posterior intercostal arteries, Anterior intercostal arteries, Superior (supreme) intercostal artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "internal-intercostals",
@@ -2641,7 +2825,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 3 named arteries — Posterior intercostal arteries, Anterior intercostal arteries, Superior (supreme) intercostal artery."
+    "ratingWhy": "Rich: 3 named arteries — Posterior intercostal arteries, Anterior intercostal arteries, Superior (supreme) intercostal artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "sternocleidomastoid",
@@ -2685,7 +2873,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 2 named arteries — Occipital artery, Superior thyroid artery."
+    "ratingWhy": "Rich: 2 named arteries — Occipital artery, Superior thyroid artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "scalene-anterior",
@@ -2741,7 +2933,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 2 named arteries — Inferior thyroid artery, Ascending cervical artery."
+    "ratingWhy": "Rich: 2 named arteries — Inferior thyroid artery, Ascending cervical artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "scalene-middle",
@@ -2784,7 +2980,11 @@
     "rating": "moderate",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Moderate: one dominant supply (Ascending cervical artery). Muscle is well-supplied tissue, so a single artery is not poor on its own."
+    "ratingWhy": "Moderate: one dominant supply (Ascending cervical artery). Muscle is well-supplied tissue, so a single artery is not poor on its own.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "scalene-posterior",
@@ -2827,7 +3027,11 @@
     "rating": "moderate",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Moderate: one dominant supply (Ascending cervical artery). Muscle is well-supplied tissue, so a single artery is not poor on its own."
+    "ratingWhy": "Moderate: one dominant supply (Ascending cervical artery). Muscle is well-supplied tissue, so a single artery is not poor on its own.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "splenius-capitis",
@@ -2871,7 +3075,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 2 named arteries — Occipital artery (descending branch), Deep cervical artery."
+    "ratingWhy": "Rich: 2 named arteries — Occipital artery (descending branch), Deep cervical artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "splenius-cervicis",
@@ -2915,7 +3123,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 2 named arteries — Occipital artery (descending branch), Deep cervical artery."
+    "ratingWhy": "Rich: 2 named arteries — Occipital artery (descending branch), Deep cervical artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "iliocostalis",
@@ -2961,7 +3173,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 4 named arteries — Posterior intercostal arteries (dorsal branches), Lumbar arteries (dorsal branches), Subcostal artery, Deep cervical artery."
+    "ratingWhy": "Rich: 4 named arteries — Posterior intercostal arteries (dorsal branches), Lumbar arteries (dorsal branches), Subcostal artery, Deep cervical artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "longissimus",
@@ -3007,7 +3223,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 4 named arteries — Posterior intercostal arteries (dorsal branches), Lumbar arteries (dorsal branches), Subcostal artery, Deep cervical artery."
+    "ratingWhy": "Rich: 4 named arteries — Posterior intercostal arteries (dorsal branches), Lumbar arteries (dorsal branches), Subcostal artery, Deep cervical artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "spinalis",
@@ -3052,7 +3272,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 3 named arteries — Posterior intercostal arteries (dorsal branches), Lumbar arteries (dorsal branches), Deep cervical artery."
+    "ratingWhy": "Rich: 3 named arteries — Posterior intercostal arteries (dorsal branches), Lumbar arteries (dorsal branches), Deep cervical artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "semispinalis",
@@ -3096,7 +3320,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 2 named arteries — Posterior intercostal arteries (dorsal branches), Deep cervical artery."
+    "ratingWhy": "Rich: 2 named arteries — Posterior intercostal arteries (dorsal branches), Deep cervical artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "multifidus",
@@ -3141,7 +3369,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 3 named arteries — Posterior intercostal arteries (dorsal branches), Lumbar arteries (dorsal branches), Deep cervical artery."
+    "ratingWhy": "Rich: 3 named arteries — Posterior intercostal arteries (dorsal branches), Lumbar arteries (dorsal branches), Deep cervical artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "rotatores",
@@ -3184,7 +3416,11 @@
     "rating": "moderate",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Moderate: one dominant supply (Posterior intercostal arteries (dorsal branches)). Muscle is well-supplied tissue, so a single artery is not poor on its own."
+    "ratingWhy": "Moderate: one dominant supply (Posterior intercostal arteries (dorsal branches)). Muscle is well-supplied tissue, so a single artery is not poor on its own.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "interspinales",
@@ -3232,7 +3468,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 6 named arteries — Vertebral artery (muscular branches), Deep cervical artery, Posterior intercostal arteries (dorsal branches), Lumbar arteries (dorsal branches), Occipital artery, Transverse cervical artery."
+    "ratingWhy": "Rich: 6 named arteries — Vertebral artery (muscular branches), Deep cervical artery, Posterior intercostal arteries (dorsal branches), Lumbar arteries (dorsal branches), Occipital artery, Transverse cervical artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "intertransversarii",
@@ -3279,7 +3519,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 5 named arteries — Vertebral artery (muscular branches), Deep cervical artery, Ascending cervical artery, Lumbar arteries (dorsal branches), Occipital artery."
+    "ratingWhy": "Rich: 5 named arteries — Vertebral artery (muscular branches), Deep cervical artery, Ascending cervical artery, Lumbar arteries (dorsal branches), Occipital artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "longus-colli",
@@ -3325,7 +3569,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 4 named arteries — Ascending cervical artery, Inferior thyroid artery, Vertebral artery (muscular branches), Ascending pharyngeal artery."
+    "ratingWhy": "Rich: 4 named arteries — Ascending cervical artery, Inferior thyroid artery, Vertebral artery (muscular branches), Ascending pharyngeal artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "longus-capitis",
@@ -3371,7 +3619,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 4 named arteries — Ascending cervical artery, Inferior thyroid artery, Ascending pharyngeal artery, Vertebral artery (muscular branches)."
+    "ratingWhy": "Rich: 4 named arteries — Ascending cervical artery, Inferior thyroid artery, Ascending pharyngeal artery, Vertebral artery (muscular branches).",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "rectus-abdominis",
@@ -3415,7 +3667,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 2 named arteries — Superior epigastric artery, Inferior epigastric artery."
+    "ratingWhy": "Rich: 2 named arteries — Superior epigastric artery, Inferior epigastric artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "external-oblique",
@@ -3472,7 +3728,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 3 named arteries — Lower posterior intercostal arteries, Subcostal artery, Deep circumflex iliac artery."
+    "ratingWhy": "Rich: 3 named arteries — Lower posterior intercostal arteries, Subcostal artery, Deep circumflex iliac artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "internal-oblique",
@@ -3529,7 +3789,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 3 named arteries — Lower posterior intercostal arteries, Subcostal artery, Deep circumflex iliac artery."
+    "ratingWhy": "Rich: 3 named arteries — Lower posterior intercostal arteries, Subcostal artery, Deep circumflex iliac artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "transversus-abdominis",
@@ -3590,7 +3854,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 7 named arteries — Lower posterior intercostal arteries, Subcostal artery, Superior epigastric artery, Inferior epigastric artery, Deep circumflex iliac artery, Lumbar arteries, Iliolumbar artery."
+    "ratingWhy": "Rich: 7 named arteries — Lower posterior intercostal arteries, Subcostal artery, Superior epigastric artery, Inferior epigastric artery, Deep circumflex iliac artery, Lumbar arteries, Iliolumbar artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "quadratus-lumborum",
@@ -3636,7 +3904,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 4 named arteries — Lumbar arteries, Iliolumbar artery (lumbar branch), Subcostal artery, Median sacral artery (arteria lumbalis ima)."
+    "ratingWhy": "Rich: 4 named arteries — Lumbar arteries, Iliolumbar artery (lumbar branch), Subcostal artery, Median sacral artery (arteria lumbalis ima).",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "tibialis-anterior",
@@ -3722,7 +3994,11 @@
       ]
     },
     "category": "muscle",
-    "ratingWhy": "Poor because its tendon has a documented watershed zone (below). The belly itself is fed by 1 named artery."
+    "ratingWhy": "Poor because its tendon has a documented watershed zone (below). The belly itself is fed by 1 named artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "extensor-hallucis-longus",
@@ -3789,7 +4065,11 @@
     "rating": "moderate",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Moderate: one dominant supply (Anterior tibial artery). Muscle is well-supplied tissue, so a single artery is not poor on its own."
+    "ratingWhy": "Moderate: one dominant supply (Anterior tibial artery). Muscle is well-supplied tissue, so a single artery is not poor on its own.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "extensor-digitorum-longus",
@@ -3856,7 +4136,11 @@
     "rating": "moderate",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Moderate: one dominant supply (Anterior tibial artery). Muscle is well-supplied tissue, so a single artery is not poor on its own."
+    "ratingWhy": "Moderate: one dominant supply (Anterior tibial artery). Muscle is well-supplied tissue, so a single artery is not poor on its own.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "peroneus-tertius",
@@ -3911,7 +4195,11 @@
     "rating": "moderate",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Moderate: one dominant supply (Anterior tibial artery). Muscle is well-supplied tissue, so a single artery is not poor on its own."
+    "ratingWhy": "Moderate: one dominant supply (Anterior tibial artery). Muscle is well-supplied tissue, so a single artery is not poor on its own.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "peroneus-longus",
@@ -4029,7 +4317,11 @@
       ]
     },
     "category": "muscle",
-    "ratingWhy": "Poor because its tendon has a documented watershed zone (below). The belly itself is fed by 2 named arteries."
+    "ratingWhy": "Poor because its tendon has a documented watershed zone (below). The belly itself is fed by 2 named arteries.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "peroneus-brevis",
@@ -4127,7 +4419,11 @@
       ]
     },
     "category": "muscle",
-    "ratingWhy": "Poor because its tendon has a documented watershed zone (below). The belly itself is fed by 2 named arteries."
+    "ratingWhy": "Poor because its tendon has a documented watershed zone (below). The belly itself is fed by 2 named arteries.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "gastrocnemius",
@@ -4234,7 +4530,11 @@
       ]
     },
     "category": "muscle",
-    "ratingWhy": "Poor because its tendon has a documented watershed zone (below). The belly itself is fed by 1 named artery."
+    "ratingWhy": "Poor because its tendon has a documented watershed zone (below). The belly itself is fed by 1 named artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "soleus",
@@ -4351,7 +4651,11 @@
       ]
     },
     "category": "muscle",
-    "ratingWhy": "Poor because its tendon has a documented watershed zone (below). The belly itself is fed by 3 named arteries."
+    "ratingWhy": "Poor because its tendon has a documented watershed zone (below). The belly itself is fed by 3 named arteries.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "plantaris",
@@ -4406,7 +4710,11 @@
     "rating": "moderate",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Moderate: one dominant supply (Sural arteries). Muscle is well-supplied tissue, so a single artery is not poor on its own."
+    "ratingWhy": "Moderate: one dominant supply (Sural arteries). Muscle is well-supplied tissue, so a single artery is not poor on its own.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "tibialis-posterior",
@@ -4498,7 +4806,11 @@
       ]
     },
     "category": "muscle",
-    "ratingWhy": "Poor because its tendon has a documented watershed zone (below). The belly itself is fed by 2 named arteries."
+    "ratingWhy": "Poor because its tendon has a documented watershed zone (below). The belly itself is fed by 2 named arteries.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "flexor-digitorum-longus",
@@ -4553,7 +4865,11 @@
     "rating": "moderate",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Moderate: one dominant supply (Posterior tibial artery). Muscle is well-supplied tissue, so a single artery is not poor on its own."
+    "ratingWhy": "Moderate: one dominant supply (Posterior tibial artery). Muscle is well-supplied tissue, so a single artery is not poor on its own.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "flexor-hallucis-longus",
@@ -4631,7 +4947,11 @@
       ]
     },
     "category": "muscle",
-    "ratingWhy": "Poor because its tendon has a documented watershed zone (below). The belly itself is fed by 2 named arteries."
+    "ratingWhy": "Poor because its tendon has a documented watershed zone (below). The belly itself is fed by 2 named arteries.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "extensor-digitorum-brevis",
@@ -4689,7 +5009,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 4 named arteries — Dorsalis pedis artery, Lateral tarsal artery, Fibular artery, Anterior tibial artery."
+    "ratingWhy": "Rich: 4 named arteries — Dorsalis pedis artery, Lateral tarsal artery, Fibular artery, Anterior tibial artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "extensor-hallucis-brevis",
@@ -4744,7 +5068,11 @@
     "rating": "moderate",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Moderate: one dominant supply (Dorsalis pedis artery). Muscle is well-supplied tissue, so a single artery is not poor on its own."
+    "ratingWhy": "Moderate: one dominant supply (Dorsalis pedis artery). Muscle is well-supplied tissue, so a single artery is not poor on its own.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "flexor-digitorum-brevis",
@@ -4799,7 +5127,11 @@
     "rating": "moderate",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Moderate: one dominant supply (Medial plantar artery). Muscle is well-supplied tissue, so a single artery is not poor on its own."
+    "ratingWhy": "Moderate: one dominant supply (Medial plantar artery). Muscle is well-supplied tissue, so a single artery is not poor on its own.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "abductor-hallucis",
@@ -4854,7 +5186,11 @@
     "rating": "moderate",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Moderate: one dominant supply (Medial plantar artery). Muscle is well-supplied tissue, so a single artery is not poor on its own."
+    "ratingWhy": "Moderate: one dominant supply (Medial plantar artery). Muscle is well-supplied tissue, so a single artery is not poor on its own.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "abductor-digiti-minimi-foot",
@@ -4897,7 +5233,11 @@
     "rating": "moderate",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Moderate: one dominant supply (Lateral plantar artery). Muscle is well-supplied tissue, so a single artery is not poor on its own."
+    "ratingWhy": "Moderate: one dominant supply (Lateral plantar artery). Muscle is well-supplied tissue, so a single artery is not poor on its own.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "quadratus-plantae",
@@ -4940,7 +5280,11 @@
     "rating": "moderate",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Moderate: one dominant supply (Lateral plantar artery). Muscle is well-supplied tissue, so a single artery is not poor on its own."
+    "ratingWhy": "Moderate: one dominant supply (Lateral plantar artery). Muscle is well-supplied tissue, so a single artery is not poor on its own.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "lumbricals-foot",
@@ -4984,7 +5328,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 2 named arteries — Medial plantar artery, Lateral plantar artery."
+    "ratingWhy": "Rich: 2 named arteries — Medial plantar artery, Lateral plantar artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "flexor-hallucis-brevis",
@@ -5027,7 +5375,11 @@
     "rating": "moderate",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Moderate: one dominant supply (Medial plantar artery). Muscle is well-supplied tissue, so a single artery is not poor on its own."
+    "ratingWhy": "Moderate: one dominant supply (Medial plantar artery). Muscle is well-supplied tissue, so a single artery is not poor on its own.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "adductor-hallucis",
@@ -5083,7 +5435,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 2 named arteries — Lateral plantar artery, First plantar metatarsal artery."
+    "ratingWhy": "Rich: 2 named arteries — Lateral plantar artery, First plantar metatarsal artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "flexor-digiti-minimi-brevis-foot",
@@ -5126,7 +5482,11 @@
     "rating": "moderate",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Moderate: one dominant supply (Lateral plantar artery). Muscle is well-supplied tissue, so a single artery is not poor on its own."
+    "ratingWhy": "Moderate: one dominant supply (Lateral plantar artery). Muscle is well-supplied tissue, so a single artery is not poor on its own.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "opponens-digiti-minimi-foot",
@@ -5157,7 +5517,11 @@
     "rating": "moderate",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Moderate: one dominant supply (Lateral plantar artery). Muscle is well-supplied tissue, so a single artery is not poor on its own."
+    "ratingWhy": "Moderate: one dominant supply (Lateral plantar artery). Muscle is well-supplied tissue, so a single artery is not poor on its own.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "dorsal-interossei-foot",
@@ -5223,7 +5587,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 4 named arteries — Dorsal metatarsal arteries, Plantar metatarsal arteries, Dorsalis pedis artery, Lateral plantar artery."
+    "ratingWhy": "Rich: 4 named arteries — Dorsal metatarsal arteries, Plantar metatarsal arteries, Dorsalis pedis artery, Lateral plantar artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "plantar-interossei",
@@ -5279,7 +5647,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 2 named arteries — Plantar metatarsal arteries, Lateral plantar artery."
+    "ratingWhy": "Rich: 2 named arteries — Plantar metatarsal arteries, Lateral plantar artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "pronator-teres",
@@ -5337,7 +5709,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 4 named arteries — Anterior ulnar recurrent artery, Inferior ulnar collateral artery, Common interosseous artery, Radial recurrent artery."
+    "ratingWhy": "Rich: 4 named arteries — Anterior ulnar recurrent artery, Inferior ulnar collateral artery, Common interosseous artery, Radial recurrent artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "flexor-carpi-radialis",
@@ -5382,7 +5758,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 3 named arteries — Radial artery, Anterior ulnar recurrent artery, Posterior ulnar recurrent artery."
+    "ratingWhy": "Rich: 3 named arteries — Radial artery, Anterior ulnar recurrent artery, Posterior ulnar recurrent artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "palmaris-longus",
@@ -5439,7 +5819,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 3 named arteries — Ulnar artery, Anterior ulnar recurrent artery, Posterior ulnar recurrent artery."
+    "ratingWhy": "Rich: 3 named arteries — Ulnar artery, Anterior ulnar recurrent artery, Posterior ulnar recurrent artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "flexor-carpi-ulnaris",
@@ -5495,7 +5879,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 2 named arteries — Ulnar artery, Posterior ulnar recurrent artery."
+    "ratingWhy": "Rich: 2 named arteries — Ulnar artery, Posterior ulnar recurrent artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "flexor-digitorum-superficialis",
@@ -5555,7 +5943,11 @@
       ]
     },
     "category": "muscle",
-    "ratingWhy": "Poor because its tendon has a documented watershed zone (below). The belly itself is fed by 2 named arteries."
+    "ratingWhy": "Poor because its tendon has a documented watershed zone (below). The belly itself is fed by 2 named arteries.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "flexor-digitorum-profundus",
@@ -5621,7 +6013,11 @@
       ]
     },
     "category": "muscle",
-    "ratingWhy": "Poor because its tendon has a documented watershed zone (below). The belly itself is fed by 2 named arteries."
+    "ratingWhy": "Poor because its tendon has a documented watershed zone (below). The belly itself is fed by 2 named arteries.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "flexor-pollicis-longus",
@@ -5686,7 +6082,11 @@
       ]
     },
     "category": "muscle",
-    "ratingWhy": "Poor because its tendon has a documented watershed zone (below). The belly itself is fed by 1 named artery."
+    "ratingWhy": "Poor because its tendon has a documented watershed zone (below). The belly itself is fed by 1 named artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "pronator-quadratus",
@@ -5743,7 +6143,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 3 named arteries — Anterior interosseous artery, Radial artery, Ulnar artery."
+    "ratingWhy": "Rich: 3 named arteries — Anterior interosseous artery, Radial artery, Ulnar artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "brachioradialis",
@@ -5798,7 +6202,11 @@
     "rating": "moderate",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Moderate: one dominant supply (Radial recurrent artery). Muscle is well-supplied tissue, so a single artery is not poor on its own."
+    "ratingWhy": "Moderate: one dominant supply (Radial recurrent artery). Muscle is well-supplied tissue, so a single artery is not poor on its own.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "extensor-carpi-radialis-longus",
@@ -5842,7 +6250,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 2 named arteries — Radial recurrent artery, Radial artery."
+    "ratingWhy": "Rich: 2 named arteries — Radial recurrent artery, Radial artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "extensor-carpi-radialis-brevis",
@@ -5903,7 +6315,11 @@
       ]
     },
     "category": "muscle",
-    "ratingWhy": "Poor because its tendon has a documented watershed zone (below). The belly itself is fed by 3 named arteries."
+    "ratingWhy": "Poor because its tendon has a documented watershed zone (below). The belly itself is fed by 3 named arteries.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "extensor-digitorum",
@@ -5959,7 +6375,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 2 named arteries — Posterior interosseous artery, Radial recurrent artery."
+    "ratingWhy": "Rich: 2 named arteries — Posterior interosseous artery, Radial recurrent artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "extensor-digiti-minimi",
@@ -6015,7 +6435,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 2 named arteries — Posterior interosseous artery, Radial recurrent artery."
+    "ratingWhy": "Rich: 2 named arteries — Posterior interosseous artery, Radial recurrent artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "extensor-carpi-ulnaris",
@@ -6072,7 +6496,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 3 named arteries — Posterior interosseous artery, Ulnar artery, Radial recurrent artery."
+    "ratingWhy": "Rich: 3 named arteries — Posterior interosseous artery, Ulnar artery, Radial recurrent artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "supinator",
@@ -6128,7 +6556,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 2 named arteries — Radial recurrent artery, Posterior interosseous artery."
+    "ratingWhy": "Rich: 2 named arteries — Radial recurrent artery, Posterior interosseous artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "abductor-pollicis-longus",
@@ -6197,7 +6629,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 3 named arteries — Posterior interosseous artery, Anterior interosseous artery, Princeps pollicis artery."
+    "ratingWhy": "Rich: 3 named arteries — Posterior interosseous artery, Anterior interosseous artery, Princeps pollicis artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "extensor-pollicis-brevis",
@@ -6265,7 +6701,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 2 named arteries — Posterior interosseous artery, Princeps pollicis artery."
+    "ratingWhy": "Rich: 2 named arteries — Posterior interosseous artery, Princeps pollicis artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "extensor-pollicis-longus",
@@ -6355,7 +6795,11 @@
       ]
     },
     "category": "muscle",
-    "ratingWhy": "Poor because its tendon has a documented watershed zone (below). The belly itself is fed by 2 named arteries."
+    "ratingWhy": "Poor because its tendon has a documented watershed zone (below). The belly itself is fed by 2 named arteries.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "extensor-indicis",
@@ -6410,7 +6854,11 @@
     "rating": "moderate",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Moderate: one dominant supply (Posterior interosseous artery). Muscle is well-supplied tissue, so a single artery is not poor on its own."
+    "ratingWhy": "Moderate: one dominant supply (Posterior interosseous artery). Muscle is well-supplied tissue, so a single artery is not poor on its own.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "abductor-pollicis-brevis",
@@ -6467,7 +6915,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 3 named arteries — Superficial palmar branch of radial artery, Superficial palmar arch, Princeps pollicis artery."
+    "ratingWhy": "Rich: 3 named arteries — Superficial palmar branch of radial artery, Superficial palmar arch, Princeps pollicis artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "flexor-pollicis-brevis",
@@ -6536,7 +6988,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 3 named arteries — Superficial palmar branch of radial artery, Superficial palmar arch, Princeps pollicis artery."
+    "ratingWhy": "Rich: 3 named arteries — Superficial palmar branch of radial artery, Superficial palmar arch, Princeps pollicis artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "opponens-pollicis",
@@ -6593,7 +7049,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 3 named arteries — Superficial palmar branch of radial artery, Superficial palmar arch, Princeps pollicis artery."
+    "ratingWhy": "Rich: 3 named arteries — Superficial palmar branch of radial artery, Superficial palmar arch, Princeps pollicis artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "adductor-pollicis",
@@ -6649,7 +7109,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 2 named arteries — Deep palmar arch, Princeps pollicis artery."
+    "ratingWhy": "Rich: 2 named arteries — Deep palmar arch, Princeps pollicis artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "abductor-digiti-minimi-hand",
@@ -6706,7 +7170,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 3 named arteries — Ulnar artery, Superficial palmar arch, Deep palmar arch."
+    "ratingWhy": "Rich: 3 named arteries — Ulnar artery, Superficial palmar arch, Deep palmar arch.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "flexor-digiti-minimi-brevis-hand",
@@ -6763,7 +7231,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 3 named arteries — Ulnar artery, Superficial palmar arch, Deep palmar arch."
+    "ratingWhy": "Rich: 3 named arteries — Ulnar artery, Superficial palmar arch, Deep palmar arch.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "opponens-digiti-minimi-hand",
@@ -6820,7 +7292,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 3 named arteries — Ulnar artery, Superficial palmar arch, Deep palmar arch."
+    "ratingWhy": "Rich: 3 named arteries — Ulnar artery, Superficial palmar arch, Deep palmar arch.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "lumbricals-hand",
@@ -6879,7 +7355,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 5 named arteries — Superficial palmar arch, Deep palmar arch, Common palmar digital arteries, Dorsal digital arteries, Palmar metacarpal arteries."
+    "ratingWhy": "Rich: 5 named arteries — Superficial palmar arch, Deep palmar arch, Common palmar digital arteries, Dorsal digital arteries, Palmar metacarpal arteries.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "dorsal-interossei-hand",
@@ -6937,7 +7417,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 4 named arteries — Dorsal metacarpal arteries, Palmar metacarpal arteries, Radial artery, Deep palmar arch."
+    "ratingWhy": "Rich: 4 named arteries — Dorsal metacarpal arteries, Palmar metacarpal arteries, Radial artery, Deep palmar arch.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "palmar-interossei",
@@ -6994,7 +7478,11 @@
     "rating": "rich",
     "zone": null,
     "category": "muscle",
-    "ratingWhy": "Rich: 3 named arteries — Palmar metacarpal arteries, Deep palmar arch, Princeps pollicis artery."
+    "ratingWhy": "Rich: 3 named arteries — Palmar metacarpal arteries, Deep palmar arch, Princeps pollicis artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "femur",
@@ -7084,7 +7572,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Rich: Supply anatomy: a long bone fed by several anastomosing sources (circumflex ring, perforating branches, obturator). The femoral head and neck are the exception and are carried in the zone."
+    "ratingWhy": "Rich: Supply anatomy: a long bone fed by several anastomosing sources (circumflex ring, perforating branches, obturator). The femoral head and neck are the exception and are carried in the zone.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "tibia",
@@ -7117,7 +7609,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Rich: Supply anatomy: a long bone with both an endosteal nutrient artery and a periosteal network from a second artery."
+    "ratingWhy": "Rich: Supply anatomy: a long bone with both an endosteal nutrient artery and a periosteal network from a second artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "humerus",
@@ -7178,7 +7674,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Rich: Supply anatomy: a long bone with an anastomosing circumflex supply to the head plus periosteal and nutrient supply to the shaft."
+    "ratingWhy": "Rich: Supply anatomy: a long bone with an anastomosing circumflex supply to the head plus periosteal and nutrient supply to the shaft.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "scapula",
@@ -7226,7 +7726,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Rich: Supply anatomy: a flat bone wrapped in a documented multi-source anastomosis from the subclavian and axillary systems."
+    "ratingWhy": "Rich: Supply anatomy: a flat bone wrapped in a documented multi-source anastomosis from the subclavian and axillary systems.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "pelvis",
@@ -7286,7 +7790,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Rich: Supply anatomy: a flat, largely cancellous bone supplied by several internal iliac branches including a dominant nutrient artery."
+    "ratingWhy": "Rich: Supply anatomy: a flat, largely cancellous bone supplied by several internal iliac branches including a dominant nutrient artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "ulna",
@@ -7334,7 +7842,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Rich: Supply anatomy: a long bone with nutrient supply to the shaft plus separate metaphyseal and head supply from several arteries."
+    "ratingWhy": "Rich: Supply anatomy: a long bone with nutrient supply to the shaft plus separate metaphyseal and head supply from several arteries.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "radius",
@@ -7369,7 +7881,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Rich: Supply anatomy: a long bone supplied along its length by several named arteries."
+    "ratingWhy": "Rich: Supply anatomy: a long bone supplied along its length by several named arteries.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "clavicle",
@@ -7416,7 +7932,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Supply anatomy: several arteries, but StatPearls describes a periosteal-only supply with no central nutrient artery and a poorly defined medullary cavity, so not the full periosteal-plus-endosteal network of a typical long bone."
+    "ratingWhy": "Moderate: Supply anatomy: several arteries, but StatPearls describes a periosteal-only supply with no central nutrient artery and a poorly defined medullary cavity, so not the full periosteal-plus-endosteal network of a typical long bone.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "sternum",
@@ -7461,7 +7981,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Supply anatomy: one dominant named source (the paired internal thoracic arteries); StatPearls ties sternotomy healing and infection to harvest of that artery."
+    "ratingWhy": "Moderate: Supply anatomy: one dominant named source (the paired internal thoracic arteries); StatPearls ties sternotomy healing and infection to harvest of that artery.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "ribs",
@@ -7511,7 +8035,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Rich: Supply anatomy: each true rib is fed from both ends, by anterior and posterior intercostal arteries."
+    "ratingWhy": "Rich: Supply anatomy: each true rib is fed from both ends, by anterior and posterior intercostal arteries.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "cervical-vertebrae",
@@ -7584,7 +8112,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Rich: Supply anatomy: cancellous vertebral bone with segmental supply from two arterial systems, anterior and posterior branches to body and arch."
+    "ratingWhy": "Rich: Supply anatomy: cancellous vertebral bone with segmental supply from two arterial systems, anterior and posterior branches to body and arch.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "occipital-bone",
@@ -7739,7 +8271,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Rich: Supply anatomy: cancellous vertebral bone with a segmental supply; the dens base is a documented watershed and is carried in the zone."
+    "ratingWhy": "Rich: Supply anatomy: cancellous vertebral bone with a segmental supply; the dens base is a documented watershed and is carried in the zone.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "c7-vertebra",
@@ -7843,7 +8379,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Rich: Supply anatomy: paired segmental arteries at every level, with periosteal and nutrient branches into cancellous bone and marrow."
+    "ratingWhy": "Rich: Supply anatomy: paired segmental arteries at every level, with periosteal and nutrient branches into cancellous bone and marrow.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "lumbar-vertebrae",
@@ -7903,7 +8443,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Rich: Supply anatomy: paired segmental arteries at every level into large cancellous vertebral bodies."
+    "ratingWhy": "Rich: Supply anatomy: paired segmental arteries at every level into large cancellous vertebral bodies.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "sacrum",
@@ -7976,7 +8520,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Rich: Supply anatomy: three named sources to a cancellous bone."
+    "ratingWhy": "Rich: Supply anatomy: three named sources to a cancellous bone.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "coccyx",
@@ -8009,7 +8557,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Supply anatomy: two named sources are given, but only in one sentence of a pelvic chapter; nothing describes the bone's own network."
+    "ratingWhy": "Moderate: Supply anatomy: two named sources are given, but only in one sentence of a pelvic chapter; nothing describes the bone's own network.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "patella",
@@ -8068,7 +8620,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Rich: Supply anatomy: an extraosseous anastomotic ring plus two intraosseous systems."
+    "ratingWhy": "Rich: Supply anatomy: an extraosseous anastomotic ring plus two intraosseous systems.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "fibula",
@@ -8114,7 +8670,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Rich: Supply anatomy: a long bone with nutrient and periosteal supply from the fibular artery and a second artery to the ends. StatPearls calls it 'great vascularity' as a graft."
+    "ratingWhy": "Rich: Supply anatomy: a long bone with nutrient and periosteal supply from the fibular artery and a second artery to the ends. StatPearls calls it 'great vascularity' as a graft.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "carpals",
@@ -8204,7 +8764,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Group rating: most carpals have two entry surfaces and intraosseous anastomoses, but the scaphoid, capitate and some lunates depend on a single vessel. The scaphoid's retrograde flow is carried in the zone."
+    "ratingWhy": "Moderate: Group rating: most carpals have two entry surfaces and intraosseous anastomoses, but the scaphoid, capitate and some lunates depend on a single vessel. The scaphoid's retrograde flow is carried in the zone.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "tarsals",
@@ -8322,7 +8886,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Group rating: the calcaneus has a rich anastomotic supply, but the talus depends on easily disrupted extraosseous vessels and the navicular's central third is hypovascular. These are carried in the zone."
+    "ratingWhy": "Moderate: Group rating: the calcaneus has a rich anastomotic supply, but the talus depends on easily disrupted extraosseous vessels and the navicular's central third is hypovascular. These are carried in the zone.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "metacarpals",
@@ -8365,7 +8933,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Supply anatomy: a single nutrient foramen in over 90% of bones, so one dominant endosteal vessel per bone. No source fetched describes the periosteal side."
+    "ratingWhy": "Moderate: Supply anatomy: a single nutrient foramen in over 90% of bones, so one dominant endosteal vessel per bone. No source fetched describes the periosteal side.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "metatarsals",
@@ -8440,7 +9012,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Supply anatomy: one dominant nutrient artery per shaft plus metaphyseal vessels at the ends. The 5th metatarsal's metaphyseal–diaphyseal watershed is carried in the zone."
+    "ratingWhy": "Moderate: Supply anatomy: one dominant nutrient artery per shaft plus metaphyseal vessels at the ends. The 5th metatarsal's metaphyseal–diaphyseal watershed is carried in the zone.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "phalanges-proximal-hand",
@@ -8486,7 +9062,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Supply anatomy: periosteal plus one consistent nutrient vessel. The head often relies on that single vessel and is carried in the zone."
+    "ratingWhy": "Moderate: Supply anatomy: periosteal plus one consistent nutrient vessel. The head often relies on that single vessel and is carried in the zone.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "phalanges-middle-hand",
@@ -8591,7 +9171,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Supply anatomy: small long bones with a nutrient artery from the digital arteries; no multi-source network documented."
+    "ratingWhy": "Moderate: Supply anatomy: small long bones with a nutrient artery from the digital arteries; no multi-source network documented.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "phalanges-middle-foot",
@@ -8697,7 +9281,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Poor: Supply anatomy: each sesamoid depends mainly on one vessel entering the proximal pole, with only small plantar and capsular additions. StatPearls calls the supply limited and prone to avascular necrosis."
+    "ratingWhy": "Poor: Supply anatomy: each sesamoid depends mainly on one vessel entering the proximal pole, with only small plantar and capsular additions. StatPearls calls the supply limited and prone to avascular necrosis.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "phalanges-distal-foot",
@@ -16180,7 +16768,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Supply anatomy: two circumflex humeral arteries plus the suprascapular, which anastomose; but capsule and synovium are intermediate-vascularity tissue, so Moderate under the framework."
+    "ratingWhy": "Moderate: Supply anatomy: two circumflex humeral arteries plus the suprascapular, which anastomose; but capsule and synovium are intermediate-vascularity tissue, so Moderate under the framework.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "acromioclavicular-joint",
@@ -16239,7 +16831,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Supply anatomy: two sources meeting in the acromial arterial network, but the joint is capsule and ligament (intermediate tissue), so Moderate."
+    "ratingWhy": "Moderate: Supply anatomy: two sources meeting in the acromial arterial network, but the joint is capsule and ligament (intermediate tissue), so Moderate.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "sternoclavicular-joint",
@@ -16299,7 +16895,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Supply anatomy: several named sources, but capsule and synovium are intermediate-vascularity tissue, so Moderate."
+    "ratingWhy": "Moderate: Supply anatomy: several named sources, but capsule and synovium are intermediate-vascularity tissue, so Moderate.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "humeroulnar-joint",
@@ -16350,7 +16950,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Framework: multiple anastomotic sources, but capsule and synovium are intermediate-vascularity tissue, so the joint rates Moderate (Rich needs high-vascularity tissue as well)."
+    "ratingWhy": "Moderate: Framework: multiple anastomotic sources, but capsule and synovium are intermediate-vascularity tissue, so the joint rates Moderate (Rich needs high-vascularity tissue as well).",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "proximal-radioulnar-joint",
@@ -16398,7 +17002,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Framework: multiple anastomotic sources, but capsule and synovium are intermediate-vascularity tissue, so the joint rates Moderate (Rich needs high-vascularity tissue as well)."
+    "ratingWhy": "Moderate: Framework: multiple anastomotic sources, but capsule and synovium are intermediate-vascularity tissue, so the joint rates Moderate (Rich needs high-vascularity tissue as well).",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "humeroradial-joint",
@@ -16446,7 +17054,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Framework: multiple anastomotic sources, but capsule and synovium are intermediate-vascularity tissue, so the joint rates Moderate (Rich needs high-vascularity tissue as well)."
+    "ratingWhy": "Moderate: Framework: multiple anastomotic sources, but capsule and synovium are intermediate-vascularity tissue, so the joint rates Moderate (Rich needs high-vascularity tissue as well).",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "radiocarpal-joint",
@@ -16510,7 +17122,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Framework: multiple anastomotic sources, but capsule and synovium are intermediate-vascularity tissue, so the joint rates Moderate (Rich needs high-vascularity tissue as well)."
+    "ratingWhy": "Moderate: Framework: multiple anastomotic sources, but capsule and synovium are intermediate-vascularity tissue, so the joint rates Moderate (Rich needs high-vascularity tissue as well).",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "distal-radioulnar-joint",
@@ -16561,7 +17177,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Framework: multiple anastomotic sources, but capsule and synovium are intermediate-vascularity tissue, so the joint rates Moderate (Rich needs high-vascularity tissue as well)."
+    "ratingWhy": "Moderate: Framework: multiple anastomotic sources, but capsule and synovium are intermediate-vascularity tissue, so the joint rates Moderate (Rich needs high-vascularity tissue as well).",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "midcarpal-joint",
@@ -16609,7 +17229,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Framework: multiple anastomotic sources, but capsule and synovium are intermediate-vascularity tissue, so the joint rates Moderate (Rich needs high-vascularity tissue as well)."
+    "ratingWhy": "Moderate: Framework: multiple anastomotic sources, but capsule and synovium are intermediate-vascularity tissue, so the joint rates Moderate (Rich needs high-vascularity tissue as well).",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "carpometacarpal-joint-thumb",
@@ -16656,7 +17280,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Framework: multiple anastomotic sources, but capsule and synovium are intermediate-vascularity tissue, so the joint rates Moderate (Rich needs high-vascularity tissue as well)."
+    "ratingWhy": "Moderate: Framework: multiple anastomotic sources, but capsule and synovium are intermediate-vascularity tissue, so the joint rates Moderate (Rich needs high-vascularity tissue as well).",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "carpometacarpal-joint-2",
@@ -16690,7 +17318,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Supply anatomy: several contributing arteries via the dorsal carpal network; capsule and synovium are intermediate-vascularity tissue, so Moderate."
+    "ratingWhy": "Moderate: Supply anatomy: several contributing arteries via the dorsal carpal network; capsule and synovium are intermediate-vascularity tissue, so Moderate.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "carpometacarpal-joint-3",
@@ -16724,7 +17356,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Supply anatomy: several contributing arteries via the dorsal carpal network; capsule and synovium are intermediate-vascularity tissue, so Moderate."
+    "ratingWhy": "Moderate: Supply anatomy: several contributing arteries via the dorsal carpal network; capsule and synovium are intermediate-vascularity tissue, so Moderate.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "carpometacarpal-joint-4",
@@ -16758,7 +17394,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Supply anatomy: several contributing arteries via the dorsal carpal network; capsule and synovium are intermediate-vascularity tissue, so Moderate."
+    "ratingWhy": "Moderate: Supply anatomy: several contributing arteries via the dorsal carpal network; capsule and synovium are intermediate-vascularity tissue, so Moderate.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "carpometacarpal-joint-5",
@@ -16792,7 +17432,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Supply anatomy: several contributing arteries via the dorsal carpal network; capsule and synovium are intermediate-vascularity tissue, so Moderate."
+    "ratingWhy": "Moderate: Supply anatomy: several contributing arteries via the dorsal carpal network; capsule and synovium are intermediate-vascularity tissue, so Moderate.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "metacarpophalangeal-joint",
@@ -16840,7 +17484,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Framework: multiple anastomotic sources, but capsule and synovium are intermediate-vascularity tissue, so the joint rates Moderate (Rich needs high-vascularity tissue as well)."
+    "ratingWhy": "Moderate: Framework: multiple anastomotic sources, but capsule and synovium are intermediate-vascularity tissue, so the joint rates Moderate (Rich needs high-vascularity tissue as well).",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "proximal-interphalangeal-joint-hand",
@@ -17008,7 +17656,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Framework: multiple anastomotic sources, but capsule and synovium are intermediate-vascularity tissue, so the joint rates Moderate (Rich needs high-vascularity tissue as well). The femoral head's own vulnerable retinacular supply belongs to the femur/landmark entries, not this capsule rating."
+    "ratingWhy": "Moderate: Framework: multiple anastomotic sources, but capsule and synovium are intermediate-vascularity tissue, so the joint rates Moderate (Rich needs high-vascularity tissue as well). The femoral head's own vulnerable retinacular supply belongs to the femur/landmark entries, not this capsule rating.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "sacroiliac-joint",
@@ -17055,7 +17707,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Supply anatomy: several named arteries; the joint is capsule plus heavy interosseous ligament (intermediate-to-low vascularity tissue), so Moderate."
+    "ratingWhy": "Moderate: Supply anatomy: several named arteries; the joint is capsule plus heavy interosseous ligament (intermediate-to-low vascularity tissue), so Moderate.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "pubic-symphysis",
@@ -17116,7 +17772,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Supply anatomy is described as rich and multi-source, but the joint itself is a fibrocartilaginous disc (low-vascularity tissue, which the same study calls 'bradytroph'), so Moderate rather than Rich."
+    "ratingWhy": "Moderate: Supply anatomy is described as rich and multi-source, but the joint itself is a fibrocartilaginous disc (low-vascularity tissue, which the same study calls 'bradytroph'), so Moderate rather than Rich.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "tibiofemoral-joint",
@@ -17210,7 +17870,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Framework: multiple anastomotic sources, but capsule and synovium are intermediate-vascularity tissue, so the joint rates Moderate (Rich needs high-vascularity tissue as well)."
+    "ratingWhy": "Moderate: Framework: multiple anastomotic sources, but capsule and synovium are intermediate-vascularity tissue, so the joint rates Moderate (Rich needs high-vascularity tissue as well).",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "patellofemoral-joint",
@@ -17273,7 +17937,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Framework: multiple anastomotic sources, but capsule and synovium are intermediate-vascularity tissue, so the joint rates Moderate (Rich needs high-vascularity tissue as well)."
+    "ratingWhy": "Moderate: Framework: multiple anastomotic sources, but capsule and synovium are intermediate-vascularity tissue, so the joint rates Moderate (Rich needs high-vascularity tissue as well).",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "proximal-tibiofibular-joint",
@@ -17320,7 +17988,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Supply anatomy: small branches from more than one recurrent/genicular vessel; capsule and synovium are intermediate-vascularity tissue, so Moderate."
+    "ratingWhy": "Moderate: Supply anatomy: small branches from more than one recurrent/genicular vessel; capsule and synovium are intermediate-vascularity tissue, so Moderate.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "talocrural-joint",
@@ -17380,7 +18052,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Framework: multiple anastomotic sources, but capsule and synovium are intermediate-vascularity tissue, so the joint rates Moderate (Rich needs high-vascularity tissue as well)."
+    "ratingWhy": "Moderate: Framework: multiple anastomotic sources, but capsule and synovium are intermediate-vascularity tissue, so the joint rates Moderate (Rich needs high-vascularity tissue as well).",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "subtalar-joint",
@@ -17426,7 +18102,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Supply anatomy: anastomoses of more than one artery around the tarsal joints; capsule and synovium are intermediate-vascularity tissue, so Moderate."
+    "ratingWhy": "Moderate: Supply anatomy: anastomoses of more than one artery around the tarsal joints; capsule and synovium are intermediate-vascularity tissue, so Moderate.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "distal-tibiofibular-joint",
@@ -17472,7 +18152,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Tissue baseline: a ligamentous (fibrous) joint, Moderate at best; the fibular artery supplies it, alone at the back in most cases."
+    "ratingWhy": "Moderate: Tissue baseline: a ligamentous (fibrous) joint, Moderate at best; the fibular artery supplies it, alone at the back in most cases.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "transverse-tarsal-joint",
@@ -17518,7 +18202,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Supply anatomy: anastomoses of more than one artery around the tarsal joints; capsule and synovium are intermediate-vascularity tissue, so Moderate."
+    "ratingWhy": "Moderate: Supply anatomy: anastomoses of more than one artery around the tarsal joints; capsule and synovium are intermediate-vascularity tissue, so Moderate.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "metatarsophalangeal-joint",
@@ -17581,7 +18269,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Framework: multiple anastomotic sources, but capsule and synovium are intermediate-vascularity tissue, so the joint rates Moderate (Rich needs high-vascularity tissue as well)."
+    "ratingWhy": "Moderate: Framework: multiple anastomotic sources, but capsule and synovium are intermediate-vascularity tissue, so the joint rates Moderate (Rich needs high-vascularity tissue as well).",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "intervertebral-joint",
@@ -17640,7 +18332,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Poor: Tissue baseline: avascular fibrocartilage and nucleus pulposus fed by diffusion - the largest avascular structure in the body."
+    "ratingWhy": "Poor: Tissue baseline: avascular fibrocartilage and nucleus pulposus fed by diffusion - the largest avascular structure in the body.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "facet-joint",
@@ -17674,7 +18370,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Segmental supply at each level; capsule and synovium are intermediate-vascularity tissue, so Moderate."
+    "ratingWhy": "Moderate: Segmental supply at each level; capsule and synovium are intermediate-vascularity tissue, so Moderate.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "atlanto-occipital-joint",
@@ -17708,7 +18408,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Framework: multiple anastomotic sources, but capsule and synovium are intermediate-vascularity tissue, so the joint rates Moderate (Rich needs high-vascularity tissue as well)."
+    "ratingWhy": "Moderate: Framework: multiple anastomotic sources, but capsule and synovium are intermediate-vascularity tissue, so the joint rates Moderate (Rich needs high-vascularity tissue as well).",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "atlantoaxial-joint",
@@ -17742,7 +18446,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Framework: multiple anastomotic sources, but capsule and synovium are intermediate-vascularity tissue, so the joint rates Moderate (Rich needs high-vascularity tissue as well)."
+    "ratingWhy": "Moderate: Framework: multiple anastomotic sources, but capsule and synovium are intermediate-vascularity tissue, so the joint rates Moderate (Rich needs high-vascularity tissue as well).",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "costovertebral-joint",
@@ -17836,7 +18544,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Tissue baseline (extra-articular ligament) with a documented segmental arterial network on its surface; no source documents a rich supply or a hypovascular zone."
+    "ratingWhy": "Moderate: Tissue baseline (extra-articular ligament) with a documented segmental arterial network on its surface; no source documents a rich supply or a hypovascular zone.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "intercornual-ligament",
@@ -17952,7 +18664,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Poor: Documented hypovascular tissue: a histology study describes the ligamentum flavum as primarily hypovascular, even though a surface arterial network is named."
+    "ratingWhy": "Poor: Documented hypovascular tissue: a histology study describes the ligamentum flavum as primarily hypovascular, even though a surface arterial network is named.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "nuchal-ligament",
@@ -18200,7 +18916,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Tissue baseline (ligament) with a documented anastomotic arcade around it; no vessels were seen entering bone at its insertion, so nothing lifts it above Moderate."
+    "ratingWhy": "Moderate: Tissue baseline (ligament) with a documented anastomotic arcade around it; no vessels were seen entering bone at its insertion, so nothing lifts it above Moderate.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "transverse-ligament-of-atlas",
@@ -18319,7 +19039,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Poor: Documented avascular / poorly vascularised tissue: two StatPearls chapters describe it as an avascular plane."
+    "ratingWhy": "Poor: Documented avascular / poorly vascularised tissue: two StatPearls chapters describe it as an avascular plane.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "costal-cartilage",
@@ -18375,7 +19099,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Poor: Tissue baseline: hyaline cartilage is avascular and diffusion-dependent; central cartilage canals are sourced but do not make it a vascular tissue."
+    "ratingWhy": "Poor: Tissue baseline: hyaline cartilage is avascular and diffusion-dependent; central cartilage canals are sourced but do not make it a vascular tissue.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "acetabular-labrum",
@@ -18423,7 +19151,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Poor: Fibrocartilage vascular only at its periphery: an injection study found the labrum relatively avascular, with the articular side (zone II) significantly less vascular than the capsular side."
+    "ratingWhy": "Poor: Fibrocartilage vascular only at its periphery: an injection study found the labrum relatively avascular, with the articular side (zone II) significantly less vascular than the capsular side.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "anterior-sacro-iliac-ligament",
@@ -18734,7 +19466,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Poor: Intra-articular ligament ensheathed in synovium: the framework places the adult ligamentum teres at Poor. It does carry the obturator-derived artery of the ligamentum teres, but that vessel is for the femoral head and is negligible in adults."
+    "ratingWhy": "Poor: Intra-articular ligament ensheathed in synovium: the framework places the adult ligamentum teres at Poor. It does carry the obturator-derived artery of the ligamentum teres, but that vessel is for the femoral head and is negligible in adults.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "obturator-membrane",
@@ -19077,7 +19813,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Poor: Intra-articular ligament fed only through its synovial covering, with a documented avascular zone in the anterior fibrocartilaginous part."
+    "ratingWhy": "Poor: Intra-articular ligament fed only through its synovial covering, with a documented avascular zone in the anterior fibrocartilaginous part.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "anterior-ligament-of-fibular-head",
@@ -19217,7 +19957,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Extra-articular ligament with more than one named supply: ligament tissue baseline caps it at Moderate."
+    "ratingWhy": "Moderate: Extra-articular ligament with more than one named supply: ligament tissue baseline caps it at Moderate.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "interosseous-membrane-of-leg",
@@ -19322,7 +20066,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Poor: Fibrocartilage vascular only at its periphery (red zone); the inner part is avascular and diffusion-fed, and the popliteal hiatus region has no penetrating vessels."
+    "ratingWhy": "Poor: Fibrocartilage vascular only at its periphery (red zone); the inner part is avascular and diffusion-fed, and the popliteal hiatus region has no penetrating vessels.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "medial-meniscus",
@@ -19385,7 +20133,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Poor: Fibrocartilage vascular only at its periphery (red zone); most of the meniscus is avascular and diffusion-fed."
+    "ratingWhy": "Poor: Fibrocartilage vascular only at its periphery (red zone); most of the meniscus is avascular and diffusion-fed.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "meniscopatellar-ligament",
@@ -19553,7 +20305,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Poor: Documented avascular zones (both fibrocartilaginous attachments and the centre of the middle third) in a ligament with a single dominant supply."
+    "ratingWhy": "Poor: Documented avascular zones (both fibrocartilaginous attachments and the centre of the middle third) in a ligament with a single dominant supply.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "posterior-ligament-of-fibular-head",
@@ -19691,7 +20447,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Extra-articular ligament with a well-vascularised surface layer: ligament tissue baseline caps it at Moderate."
+    "ratingWhy": "Moderate: Extra-articular ligament with a well-vascularised surface layer: ligament tissue baseline caps it at Moderate.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "transverse-ligament-of-knee",
@@ -19739,7 +20499,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Fascial/tendinous tissue with two named sources: tendon/ligament baseline caps it at Moderate."
+    "ratingWhy": "Moderate: Fascial/tendinous tissue with two named sources: tendon/ligament baseline caps it at Moderate.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "patellar-ligament",
@@ -19776,7 +20540,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Poor: Documented hypovascular zones at both ends, which match the commonest rupture sites."
+    "ratingWhy": "Poor: Documented hypovascular zones at both ends, which match the commonest rupture sites.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "inguinal-ligament",
@@ -19911,7 +20679,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Poor: Intra-articular ligament ensheathed in synovium: the framework places the adult ligamentum teres at Poor. It does carry the obturator-derived artery of the ligamentum teres, but that vessel is for the femoral head and is negligible in adults."
+    "ratingWhy": "Poor: Intra-articular ligament ensheathed in synovium: the framework places the adult ligamentum teres at Poor. It does carry the obturator-derived artery of the ligamentum teres, but that vessel is for the femoral head and is negligible in adults.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "anterior-talocalcaneal-ligament",
@@ -19985,7 +20757,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Supply anatomy and tissue baseline: an extra-articular ligament with two named feeding vessels in an injection study, but ligament tissue caps it at Moderate."
+    "ratingWhy": "Moderate: Supply anatomy and tissue baseline: an extra-articular ligament with two named feeding vessels in an injection study, but ligament tissue caps it at Moderate.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "anterior-tibiofibular-ligament",
@@ -20057,7 +20833,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Supply anatomy: one dominant vessel (perforating peroneal) with a variable anterior tibial collateral, on ligament tissue. Not Poor, because no source maps a discrete avascular zone."
+    "ratingWhy": "Moderate: Supply anatomy: one dominant vessel (perforating peroneal) with a variable anterior tibial collateral, on ligament tissue. Not Poor, because no source maps a discrete avascular zone.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "calcaneocuboid-ligament",
@@ -20131,7 +20911,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Supply anatomy and tissue baseline: an extra-articular ligament fed by two peroneal branches in an injection study; ligament tissue caps it at Moderate."
+    "ratingWhy": "Moderate: Supply anatomy and tissue baseline: an extra-articular ligament fed by two peroneal branches in an injection study; ligament tissue caps it at Moderate.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "calcaneonavicular-ligament",
@@ -20464,7 +21248,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Poor: Avascular fibrocartilaginous portion: a microvascular study found an avascular articular facet in the superomedial part that slings the talar head."
+    "ratingWhy": "Poor: Avascular fibrocartilaginous portion: a microvascular study found an avascular articular facet in the superomedial part that slings the talar head.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "plantar-cuboideonavicular-ligament",
@@ -20600,7 +21388,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Poor: Documented hypovascular zone: nano-CT shows the midsubstance of the plantar plate is relatively hypovascular, with vessels concentrated at the attachments."
+    "ratingWhy": "Poor: Documented hypovascular zone: nano-CT shows the midsubstance of the plantar plate is relatively hypovascular, with vessels concentrated at the attachments.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "plantar-tarsometatarsal-ligaments",
@@ -20689,7 +21481,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Supply anatomy and tissue baseline: a ligament with two named feeding vessels in an injection study; ligament tissue caps it at Moderate."
+    "ratingWhy": "Moderate: Supply anatomy and tissue baseline: a ligament with two named feeding vessels in an injection study; ligament tissue caps it at Moderate.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "posterior-tibiofibular-ligament",
@@ -20747,7 +21543,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Supply anatomy: a single dominant, fairly constant vessel (posterior peroneal branch) on ligament tissue."
+    "ratingWhy": "Moderate: Supply anatomy: a single dominant, fairly constant vessel (posterior peroneal branch) on ligament tissue.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "posterior-tibiotalar-ligament",
@@ -20807,7 +21607,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Supply anatomy and tissue baseline: the deltoid complex has three extraosseous and two intraosseous sources, but ligament tissue caps it at Moderate."
+    "ratingWhy": "Moderate: Supply anatomy and tissue baseline: the deltoid complex has three extraosseous and two intraosseous sources, but ligament tissue caps it at Moderate.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "talocalcaneal-interosseous-ligament",
@@ -20912,7 +21716,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Supply anatomy and tissue baseline: the deltoid complex has three extraosseous sources, but ligament tissue caps it at Moderate."
+    "ratingWhy": "Moderate: Supply anatomy and tissue baseline: the deltoid complex has three extraosseous sources, but ligament tissue caps it at Moderate.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "tibionavicular-ligament",
@@ -20972,7 +21780,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Supply anatomy and tissue baseline: the deltoid complex has three extraosseous sources, but ligament tissue caps it at Moderate."
+    "ratingWhy": "Moderate: Supply anatomy and tissue baseline: the deltoid complex has three extraosseous sources, but ligament tissue caps it at Moderate.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "transverse-tibiofibular-ligament",
@@ -21030,7 +21842,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Supply anatomy: a single dominant vessel to the posterior syndesmotic ligaments, on ligament tissue."
+    "ratingWhy": "Moderate: Supply anatomy: a single dominant vessel to the posterior syndesmotic ligaments, on ligament tissue.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "plantar-fascia",
@@ -21089,7 +21905,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Poor: Documented hypovascular zone: injection, histology and contrast ultrasound find no vessels in the calcaneal enthesis, and the proximal fascia is relatively hypovascular."
+    "ratingWhy": "Poor: Documented hypovascular zone: injection, histology and contrast ultrasound find no vessels in the calcaneal enthesis, and the proximal fascia is relatively hypovascular.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "achilles-tendon",
@@ -21164,7 +21984,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Poor: Watershed: a documented hypovascular midsection about 2-6 cm above the insertion, where ruptures cluster."
+    "ratingWhy": "Poor: Watershed: a documented hypovascular midsection about 2-6 cm above the insertion, where ruptures cluster.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "annular-ligament-of-radius",
@@ -21225,7 +22049,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Tissue baseline (ligament) supplied from a multi-source periarticular anastomosis; no study of the ligament's own vascularity found."
+    "ratingWhy": "Moderate: Tissue baseline (ligament) supplied from a multi-source periarticular anastomosis; no study of the ligament's own vascularity found.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "interosseous-membrane-of-forearm",
@@ -21316,7 +22144,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Tissue baseline (capsular ligament) supplied from a multi-source periarticular anastomosis; no ligament-specific study found."
+    "ratingWhy": "Moderate: Tissue baseline (capsular ligament) supplied from a multi-source periarticular anastomosis; no ligament-specific study found.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "radial-collateral-ligament",
@@ -21377,7 +22209,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Tissue baseline (extra-articular collateral ligament) with a multi-source periarticular anastomosis around the elbow; no ligament-specific perfusion study found."
+    "ratingWhy": "Moderate: Tissue baseline (extra-articular collateral ligament) with a multi-source periarticular anastomosis around the elbow; no ligament-specific perfusion study found.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "ulnar-collateral-ligament",
@@ -21454,7 +22290,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Poor: Documented hypovascular zone: India-ink injection shows the distal ligament is hypovascular while the proximal part is well supplied (framework: a documented hypovascular zone rates Poor)."
+    "ratingWhy": "Poor: Documented hypovascular zone: India-ink injection shows the distal ligament is hypovascular while the proximal part is well supplied (framework: a documented hypovascular zone rates Poor).",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "acromioclavicular-ligament",
@@ -21500,7 +22340,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Tissue baseline (capsular ligament) with two named arterial sources to the joint; no ligament-specific perfusion study found."
+    "ratingWhy": "Moderate: Tissue baseline (capsular ligament) with two named arterial sources to the joint; no ligament-specific perfusion study found.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "anterior-sternoclavicular-ligament",
@@ -21533,7 +22377,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Tissue baseline (capsular ligament) with two named sources to the joint; no ligament-specific study found."
+    "ratingWhy": "Moderate: Tissue baseline (capsular ligament) with two named sources to the joint; no ligament-specific study found.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "conoid-ligament",
@@ -21566,7 +22414,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Tissue baseline (extra-articular ligament) with two named arterial systems; no perfusion study found."
+    "ratingWhy": "Moderate: Tissue baseline (extra-articular ligament) with two named arterial systems; no perfusion study found.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "coraco-acromial-ligament",
@@ -21656,7 +22508,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Tissue baseline (capsular ligament) with several named sources to the glenohumeral joint; no ligament-specific study found."
+    "ratingWhy": "Moderate: Tissue baseline (capsular ligament) with several named sources to the glenohumeral joint; no ligament-specific study found.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "costoclavicular-ligament",
@@ -21754,7 +22610,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Poor: Fibrocartilage vascular only at its periphery, with a documented less-vascular superior and anterosuperior region (framework: avascular fibrocartilaginous portions / hypovascular zone rate Poor)."
+    "ratingWhy": "Poor: Fibrocartilage vascular only at its periphery, with a documented less-vascular superior and anterosuperior region (framework: avascular fibrocartilaginous portions / hypovascular zone rate Poor).",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "inferior-glenohumeral-ligament",
@@ -21815,7 +22675,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Tissue baseline (capsular ligament) with a well-vascularised, multi-source capsular supply documented by injection study."
+    "ratingWhy": "Moderate: Tissue baseline (capsular ligament) with a well-vascularised, multi-source capsular supply documented by injection study.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "inferior-transverse-scapular-ligament",
@@ -21939,7 +22803,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Tissue baseline (capsular ligament) with a well-vascularised, multi-source capsular supply documented by injection study."
+    "ratingWhy": "Moderate: Tissue baseline (capsular ligament) with a well-vascularised, multi-source capsular supply documented by injection study.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "posterior-sternoclavicular-ligament",
@@ -21972,7 +22840,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Tissue baseline (capsular ligament) with two named sources to the joint; no ligament-specific study found."
+    "ratingWhy": "Moderate: Tissue baseline (capsular ligament) with two named sources to the joint; no ligament-specific study found.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "superior-glenohumeral-ligament",
@@ -22020,7 +22892,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Tissue baseline (capsular ligament) with a well-vascularised, multi-source capsular supply documented by injection study."
+    "ratingWhy": "Moderate: Tissue baseline (capsular ligament) with a well-vascularised, multi-source capsular supply documented by injection study.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "superior-transverse-scapular-ligament",
@@ -22113,7 +22989,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Tissue baseline (extra-articular ligament) with two named arterial systems; no perfusion study found."
+    "ratingWhy": "Moderate: Tissue baseline (extra-articular ligament) with two named arterial systems; no perfusion study found.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "collateral-interphalangeal-ligaments-of-hand",
@@ -22175,7 +23055,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Tissue baseline (capsular ligament) with a joint-level supply from the anastomosing palmar arches; no ligament-specific study found."
+    "ratingWhy": "Moderate: Tissue baseline (capsular ligament) with a joint-level supply from the anastomosing palmar arches; no ligament-specific study found.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "deep-transverse-metacarpal-ligament",
@@ -22336,7 +23220,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Vascular peripheral part of the triangular fibrocartilage complex with several named sources; ligament tissue caps it at Moderate."
+    "ratingWhy": "Moderate: Vascular peripheral part of the triangular fibrocartilage complex with several named sources; ligament tissue caps it at Moderate.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "dorsal-radiocarpal-ligament",
@@ -22395,7 +23283,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Tissue baseline (capsular wrist ligament) with a joint-level supply from the palmar and dorsal carpal branches of the radial and ulnar arteries; no ligament-specific perfusion study found."
+    "ratingWhy": "Moderate: Tissue baseline (capsular wrist ligament) with a joint-level supply from the palmar and dorsal carpal branches of the radial and ulnar arteries; no ligament-specific perfusion study found.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "dorsal-scaphotriquetral-ligament",
@@ -22496,7 +23388,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Tissue baseline (capsular wrist ligament) with a joint-level supply from the palmar and dorsal carpal branches of the radial and ulnar arteries; no ligament-specific perfusion study found."
+    "ratingWhy": "Moderate: Tissue baseline (capsular wrist ligament) with a joint-level supply from the palmar and dorsal carpal branches of the radial and ulnar arteries; no ligament-specific perfusion study found.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "interosseous-metacarpal-ligaments",
@@ -22701,7 +23597,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Vascular peripheral part of the triangular fibrocartilage complex with several named sources; ligament tissue caps it at Moderate."
+    "ratingWhy": "Moderate: Vascular peripheral part of the triangular fibrocartilage complex with several named sources; ligament tissue caps it at Moderate.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "palmar-scaphotriquetral-ligament",
@@ -22837,7 +23737,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Tissue baseline (capsular wrist ligament) with a joint-level supply from the palmar and dorsal carpal branches of the radial and ulnar arteries; no ligament-specific perfusion study found."
+    "ratingWhy": "Moderate: Tissue baseline (capsular wrist ligament) with a joint-level supply from the palmar and dorsal carpal branches of the radial and ulnar arteries; no ligament-specific perfusion study found.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "radiate-carpal-ligament",
@@ -22926,7 +23830,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Tissue baseline (capsular wrist ligament) with a joint-level supply from the palmar and dorsal carpal branches of the radial and ulnar arteries; no ligament-specific perfusion study found."
+    "ratingWhy": "Moderate: Tissue baseline (capsular wrist ligament) with a joint-level supply from the palmar and dorsal carpal branches of the radial and ulnar arteries; no ligament-specific perfusion study found.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "radioscaphocapitate-ligament",
@@ -22985,7 +23893,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Tissue baseline (capsular wrist ligament) with a joint-level supply from the palmar and dorsal carpal branches of the radial and ulnar arteries; no ligament-specific perfusion study found."
+    "ratingWhy": "Moderate: Tissue baseline (capsular wrist ligament) with a joint-level supply from the palmar and dorsal carpal branches of the radial and ulnar arteries; no ligament-specific perfusion study found.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "scaphocapitate-ligament",
@@ -23151,7 +24063,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Tissue baseline (capsular wrist ligament) with a joint-level supply from the palmar and dorsal carpal branches of the radial and ulnar arteries; no ligament-specific perfusion study found."
+    "ratingWhy": "Moderate: Tissue baseline (capsular wrist ligament) with a joint-level supply from the palmar and dorsal carpal branches of the radial and ulnar arteries; no ligament-specific perfusion study found.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "ulnocapitate-ligament",
@@ -23209,7 +24125,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Tissue baseline (capsular wrist ligament) with a joint-level supply from the palmar and dorsal carpal branches of the radial and ulnar arteries; no ligament-specific perfusion study found."
+    "ratingWhy": "Moderate: Tissue baseline (capsular wrist ligament) with a joint-level supply from the palmar and dorsal carpal branches of the radial and ulnar arteries; no ligament-specific perfusion study found.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "ulnolunate-ligament",
@@ -23268,7 +24188,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Tissue baseline (capsular ulnocarpal ligament) attached to the vascular periphery of the TFCC; no ligament-specific study found."
+    "ratingWhy": "Moderate: Tissue baseline (capsular ulnocarpal ligament) attached to the vascular periphery of the TFCC; no ligament-specific study found.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "ulnopisiform-ligament",
@@ -23342,7 +24266,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Tissue baseline (capsular ulnocarpal ligament) attached to the vascular periphery of the TFCC; no ligament-specific study found."
+    "ratingWhy": "Moderate: Tissue baseline (capsular ulnocarpal ligament) attached to the vascular periphery of the TFCC; no ligament-specific study found.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "flexor-retinaculum",
@@ -23375,7 +24303,11 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Moderate: Two documented vascular networks from two sources, on fibrous ligament-type tissue, which caps it at Moderate."
+    "ratingWhy": "Moderate: Two documented vascular networks from two sources, on fibrous ligament-type tissue, which caps it at Moderate.",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   },
   {
     "id": "extensor-retinaculum-hand",
@@ -23480,6 +24412,10 @@
       }
     ],
     "unsupported": [],
-    "ratingWhy": "Poor: Avascular fibrocartilaginous centre: vessels reach only the peripheral 10-40% of the disc, and central tears do not heal (framework: avascular fibrocartilage portions rate Poor)."
+    "ratingWhy": "Poor: Avascular fibrocartilaginous centre: vessels reach only the peripheral 10-40% of the disc, and central tears do not heal (framework: avascular fibrocartilage portions rate Poor).",
+    "review": {
+      "status": "accepted",
+      "by": "owner, 29 Sep 2026: every high- and medium-confidence row outside landmarks"
+    }
   }
 ]
