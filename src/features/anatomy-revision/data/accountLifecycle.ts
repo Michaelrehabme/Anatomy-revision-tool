@@ -149,6 +149,32 @@ export interface DeletionProgress {
  * than merely survivable: visibility to an educator is revoked in the first
  * two steps, before anything slow happens.
  */
+/**
+ * Whether the stored entitlement is a Paddle subscription still live or yet to
+ * start — one that will keep charging after the account is gone.
+ *
+ * Deleting then was the paywall trace's finding 5: nothing cancels in Paddle,
+ * so the renewal still charges, and its webhook writes users/{uid} straight
+ * back — personal data returning after an erasure, on an account the student
+ * can no longer sign in to and cancel from.
+ */
+export function hasLiveSubscription(rawEntitlement: unknown, now: Date = new Date()): boolean {
+  const entries = Array.isArray(rawEntitlement) ? rawEntitlement : [rawEntitlement];
+  return entries.some((e) => {
+    if (!e || typeof e !== 'object') return false;
+    const { source, tier, expiresAt } = e as Record<string, unknown>;
+    if (source !== 'paddle' || tier === 'free') return false;
+    return expiresAt == null || (typeof expiresAt === 'string' && Date.parse(expiresAt) > now.getTime());
+  });
+}
+
+/** Firebase refuses to delete an Auth user signed in longer ago than this. */
+const RECENT_SIGN_IN_MS = 5 * 60 * 1000;
+
+function refusal(code: string, message: string): Error {
+  return Object.assign(new Error(message), { code });
+}
+
 export async function deleteAccountData(
   uid: string,
   onProgress?: (progress: DeletionProgress) => void,
@@ -156,8 +182,29 @@ export async function deleteAccountData(
   const db = getDb();
   const step = (s: string) => onProgress?.({ step: s });
 
-  step('Removing you from your class');
+  // BEFORE ANYTHING IS DELETED. Both refusals used to arrive too late: a
+  // live subscription was never checked at all, and the recent-sign-in rule
+  // only bit at the final step, after the profile and its entitlement were
+  // already gone — leaving a paying student half-deleted and reading as free.
   const profileSnap = await getDoc(doc(db, 'users', uid));
+  if (profileSnap.exists() && hasLiveSubscription(profileSnap.data().entitlement)) {
+    throw refusal(
+      'subscription-active',
+      'You still have a subscription. Cancel it under Manage subscription first — otherwise it keeps ' +
+        'charging after your account is gone — then delete your account.',
+    );
+  }
+  const current: User | null = getFirebaseAuth().currentUser;
+  // Anonymous accounts cannot sign in again, so the check would strand them;
+  // they keep the old behaviour of finding out at the last step.
+  if (current && current.uid === uid && !current.isAnonymous) {
+    const { authTime } = await current.getIdTokenResult();
+    if (Date.now() - Date.parse(authTime) > RECENT_SIGN_IN_MS) {
+      throw refusal('auth/requires-recent-login', 'Please sign in again, then delete your account.');
+    }
+  }
+
+  step('Removing you from your class');
   const cohortId = profileSnap.exists() && typeof profileSnap.data().cohort === 'string'
     ? (profileSnap.data().cohort as string)
     : null;

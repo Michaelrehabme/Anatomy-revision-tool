@@ -81,3 +81,24 @@ describe('account erasure covers every per-user subcollection', () => {
     expect(stale, `Listed for deletion but nothing writes them: ${stale.join(', ')}`).toEqual([]);
   });
 });
+
+describe('deleting an account with a subscription still charging', () => {
+  it('is refused while a Paddle subscription is live or has not started', async () => {
+    const { hasLiveSubscription } = await import('../accountLifecycle');
+    const now = new Date('2026-09-29T12:00:00.000Z');
+    expect(hasLiveSubscription({ tier: 'individual', source: 'paddle', expiresAt: '2026-10-29T12:00:00.000Z' }, now)).toBe(true);
+    expect(hasLiveSubscription({ tier: 'individual', source: 'paddle', expiresAt: null }, now)).toBe(true);
+    expect(
+      hasLiveSubscription([{ tier: 'individual', source: 'paddle', startsAt: '2026-10-10T00:00:00.000Z', expiresAt: '2026-11-10T00:00:00.000Z' }], now),
+    ).toBe(true);
+  });
+
+  it('is allowed once it has ended, for a class licence or a complimentary grant, and with nothing bought', async () => {
+    const { hasLiveSubscription } = await import('../accountLifecycle');
+    const now = new Date('2026-09-29T12:00:00.000Z');
+    expect(hasLiveSubscription({ tier: 'individual', source: 'paddle', expiresAt: '2026-09-01T00:00:00.000Z' }, now)).toBe(false);
+    expect(hasLiveSubscription({ tier: 'institutional', source: 'licence', expiresAt: null }, now)).toBe(false);
+    expect(hasLiveSubscription({ tier: 'individual', source: 'complimentary', expiresAt: null }, now)).toBe(false);
+    expect(hasLiveSubscription(undefined, now)).toBe(false);
+  });
+});
