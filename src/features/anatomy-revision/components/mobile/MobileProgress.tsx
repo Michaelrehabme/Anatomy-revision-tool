@@ -32,11 +32,11 @@ export function MobileProgress({ content, repository, userId, onNavigateTab, onO
   return (
     <MobileShell tabs={{ active: 'progress', onNavigate: onNavigateTab }}>
       <div className="px-6.5 pt-4.5 pb-7.5">
-        <h2
+        <h1
           style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 35, lineHeight: 1.04, letterSpacing: '-.022em', margin: 0 }}
         >
           Progress
-        </h2>
+        </h1>
         <p className="mt-2.5 text-[14.5px] leading-relaxed" style={{ color: 'var(--ink3)' }}>
           Mastery shades the map. Pale means unseen, deep means retained.
         </p>

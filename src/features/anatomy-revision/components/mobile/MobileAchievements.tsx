@@ -60,9 +60,9 @@ export function MobileAchievements({ repository, userId, onBack }: MobileAchieve
       <button type="button" onClick={onBack} className="border-0 bg-transparent p-0 pb-2" style={{ fontSize: 14.5, color: 'var(--ink3)' }}>
         &larr; Back
       </button>
-      <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 30, lineHeight: 1.04, letterSpacing: '-.02em', margin: '8px 0 4px' }}>
+      <h1 style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 30, lineHeight: 1.04, letterSpacing: '-.02em', margin: '8px 0 4px' }}>
         Achievements
-      </h2>
+      </h1>
       <p className="text-[13.5px]" style={{ color: 'var(--ink2)' }}>
         {achievements.length} of {ACHIEVEMENT_DEFINITIONS.length} earned
       </p>

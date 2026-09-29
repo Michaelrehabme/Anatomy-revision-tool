@@ -89,11 +89,11 @@ export function MobileAtlas({
         <button type="button" onClick={onBack} className="border-0 bg-transparent p-0 pb-2.5" style={{ fontSize: 14.5, color: 'var(--ink3)' }}>
           &larr; Today
         </button>
-        <h2
+        <h1
           style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 30, lineHeight: 1.05, letterSpacing: '-.02em', margin: '2px 0 5px' }}
         >
           Atlas
-        </h2>
+        </h1>
         <p aria-live="polite" style={{ fontSize: 13.5, lineHeight: 1.5, color: 'var(--ink3)' }}>
           {entitled.length} structures · showing {visible.length}
           {filters.query ? ` matching “${filters.query}”` : ''}

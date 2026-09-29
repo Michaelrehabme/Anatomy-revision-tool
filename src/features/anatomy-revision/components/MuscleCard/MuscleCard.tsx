@@ -154,11 +154,11 @@ export function MuscleCard({
             {structure.groups?.length ? ` · ${structure.groups[0]}` : ''}
           </div>
           <div className="mt-[18px] flex items-center gap-2.5">
-            <h2
+            <h1
               style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 58, lineHeight: 1, letterSpacing: '-.028em', margin: 0 }}
             >
               {structure.name}
-            </h2>
+            </h1>
             <PronounceButton structure={structure} size={22} />
           </div>
           {structure.phoneticSpelling && (

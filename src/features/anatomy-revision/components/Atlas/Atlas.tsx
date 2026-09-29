@@ -86,11 +86,11 @@ export function Atlas({ access, content, repository, userId, onOpenMuscle, onDri
         <div className="flex min-h-0 min-w-0 flex-1 flex-col px-10 pt-14">
           <div className="flex items-end gap-8">
             <div className="flex-1">
-              <h2
+              <h1
                 style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 44, lineHeight: 1.02, letterSpacing: '-.024em', margin: '0 0 8px' }}
               >
                 Atlas
-              </h2>
+              </h1>
               {/*
                 Announced politely so a screen-reader user hears the list
                 resize when a filter changes — the count is the only feedback

@@ -38,16 +38,16 @@ real screen reader was driven, and the phone keyboard pass was not done.
 | No `<main>`/`<nav>` at phone width; nothing marked the current page | 1.3.1 | Phone shell content is `<main>`, the tab bar a labelled `<nav>`; both navs set `aria-current="page"`; the full-screen phone pages and the legal layout are `<main>` |
 | Plate viewer's label ignored | 4.1.2 | A labelled `role="group"` — not `img`, which would hide the controls inside it |
 | Contrast script let small text in `--acc` through | 1.4.3 | A test fails if any component sets `--acc` as a text colour (`lib/__tests__/contrast.test.ts`) |
+| App routes had no `<h1>` | 1.3.1 | The page names (Atlas, Progress, Account, Achievements) and a structure card's name are the page's `<h1>`, desktop and phone |
 
 ## Still open
 
 1. **Locate questions have no non-visual route.** A decision, not a bug: offer an
    alternative question for the same structure, or state the limitation.
 2. **Long descriptions for plates** — none yet.
-3. **App routes have no `<h1>`**; the big page names are styled text.
-4. **Focus ring on the pale selected-chip background** is about 3.1:1 —
+3. **Focus ring on the pale selected-chip background** is about 3.1:1 —
    marginal; check by eye.
-5. Phone keyboard pass, and a pass with NVDA and VoiceOver.
+4. Phone keyboard pass, and a pass with NVDA and VoiceOver.
 
 Raw scan output (not in the repo): the session scratchpad `a11y/` folder —
 `results.json`, `results-session.json`, `structure.txt`, `contrast.txt`.

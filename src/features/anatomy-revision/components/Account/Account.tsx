@@ -125,9 +125,9 @@ export function Account({ access, content, repository, userId, onNavigate }: Acc
       }
     >
       <div className="px-16 pt-[72px] pb-12">
-        <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 52, lineHeight: 1.02, letterSpacing: '-.026em', margin: '0 0 12px' }}>
+        <h1 style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 52, lineHeight: 1.02, letterSpacing: '-.026em', margin: '0 0 12px' }}>
           Account
-        </h2>
+        </h1>
         <p className="text-sm leading-relaxed" style={{ color: 'var(--ink2)', maxWidth: 620 }}>
           {user?.displayName ?? user?.email ?? 'Signed in'}
           {user?.isAnonymous && ' — this device only, until you create an account.'}

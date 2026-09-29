@@ -78,11 +78,11 @@ export function Progress({ access, content, repository, userId, onStart, onNavig
       }
     >
       <div className="px-16 pt-[72px] pb-12">
-        <h2
+        <h1
           style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 52, lineHeight: 1.02, letterSpacing: '-.026em', margin: '0 0 12px' }}
         >
           Progress
-        </h2>
+        </h1>
         <div className="flex items-baseline justify-between">
           <p className="text-base" style={{ color: 'var(--ink2)' }}>
             {totalStructures} structures · {totalSeen} seen at least once · {muscles.length} muscles, {seenCount} seen, {untouched.length} still untouched

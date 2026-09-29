@@ -69,11 +69,11 @@ export function MobileMuscleCard({ access, structureId, content, repository, use
         {REGION_LABELS[structure.region]}
       </div>
       <div className="mt-2.5 flex items-center gap-2">
-        <h2
+        <h1
           style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 38, lineHeight: 1.02, letterSpacing: '-.024em' }}
         >
           {structure.name}
-        </h2>
+        </h1>
         <PronounceButton structure={structure} size={19} />
       </div>
       {structure.phoneticSpelling && (

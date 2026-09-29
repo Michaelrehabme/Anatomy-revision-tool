@@ -63,9 +63,9 @@ export function Achievements({ repository, userId, onNavigate }: AchievementsPro
   return (
     <AppShell sidebar={<NavSidebar active="progress" onNavigate={onNavigate} />}>
       <div className="px-16 pt-[72px] pb-12">
-        <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 52, lineHeight: 1.02, letterSpacing: '-.026em', margin: '0 0 12px' }}>
+        <h1 style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 52, lineHeight: 1.02, letterSpacing: '-.026em', margin: '0 0 12px' }}>
           Achievements
-        </h2>
+        </h1>
         <p className="text-base" style={{ color: 'var(--ink2)' }}>
           {achievements.length} of {ACHIEVEMENT_DEFINITIONS.length} earned
         </p>
