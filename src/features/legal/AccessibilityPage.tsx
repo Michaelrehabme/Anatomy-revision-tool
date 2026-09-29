@@ -31,7 +31,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 
 export function AccessibilityPage() {
   return (
-    <LegalLayout title="Accessibility statement" updated="18 September 2026">
+    <LegalLayout title="Accessibility statement" updated="29 September 2026">
       <p className="mt-4" style={legalProse}>
         This statement applies to LocusMSK, an anatomy revision web application. It is written against
         WCAG 2.2 level AA.
@@ -54,10 +54,16 @@ export function AccessibilityPage() {
           reachable by Tab and activated by Enter or Space, and the focused element is always outlined.
         </p>
         <p>
-          The result of each answer is announced to a screen reader as soon as it is given — whether it
-          was right, and where the app reveals it, what the correct answer was. In assessment mode the
-          app tells you an answer was recorded and nothing more, which is the same information a sighted
-          student gets.
+          When you check an answer, focus moves to the result, so a screen reader reads it straight away
+          — whether it was right and, where the app reveals it, what the correct answer was. Before 28
+          September 2026 the result was only read out after you rated your confidence, and not at all on
+          a phone; that is fixed. In assessment mode the app tells you an answer was recorded and nothing
+          more, which is the same information a sighted student gets.
+        </p>
+        <p>
+          Each page has its own title and a main heading, the navigation is marked as navigation with the
+          current page identified, and in multiple choice the option you have chosen is announced as
+          selected. The arrow keys move between options without choosing one.
         </p>
         <p>
           Locate questions can be answered without a pointer. The{' '}
@@ -84,29 +90,38 @@ export function AccessibilityPage() {
           substantial content project, not a code change.
         </p>
         <p>
-          <strong style={{ color: 'var(--ink)' }}>No full audit has been carried out.</strong> This
-          statement is based on our own testing with a keyboard and a screen reader, not on an
-          independent assessment or automated conformance report. We will say so to anyone who asks
-          rather than imply otherwise.
+          <strong style={{ color: 'var(--ink)' }}>No independent audit has been carried out.</strong> On
+          28 and 29 September 2026 we ran an automated scan against the WCAG 2.1 AA rules (axe-core) over
+          eleven screens and a live question, at desktop and phone width, in light and dark, and worked
+          through a revision session with the keyboard alone on a desktop. We fixed what it found and
+          list what remains here. We have not yet repeated the keyboard pass on a phone, or tested with
+          NVDA or VoiceOver end to end. This is our own testing, not an assessment, and we will say so to
+          anyone who asks.
         </p>
         <p>
-          <strong style={{ color: 'var(--ink)' }}>Colour contrast has not been verified everywhere.</strong>{' '}
-          The palette was designed with contrast in mind and the app carries a contrast-checking script,
-          but not every combination in every state has been measured.
+          <strong style={{ color: 'var(--ink)' }}>Contrast is measured for the palette, not every
+          state.</strong>{' '}
+          Every text and background pairing in all four themes (light, dark, and both high-contrast
+          versions) is measured by the app's test suite, which also fails if the lighter accent is ever
+          used for text. The September scan found small labels and filter counts below the minimum; both
+          were fixed. The focus outline on a selected option is about 3.1:1 against its pale background,
+          just above the minimum for an outline, and is being checked by eye.
         </p>
       </Section>
 
       <Section title="What we are doing about it">
         <p>
-          Before the first pilot cohort completes a term: an independent keyboard and screen-reader pass
-          over a full revision session, with the findings published here.
+          Before the first pilot cohort completes a term: a keyboard pass on a phone, a full revision
+          session with NVDA and with VoiceOver, and an independent pass if a pilot institution can
+          provide one, with the findings published here.
         </p>
         <p>
           Alternative text for the most-used anatomical plates, starting with those a first session
           shows, rather than attempting all of them at once.
         </p>
         <p>
-          A measured contrast report across every interactive state.
+          The same automated scan repeated before each release, so a fixed problem cannot quietly
+          return.
         </p>
       </Section>
 

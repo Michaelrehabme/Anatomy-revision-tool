@@ -81,7 +81,7 @@ The full set lives in docs/DATA-PROCESSING.md; the load-bearing ones are:
 | "ICO registration ZC247309" | /privacy, DATA-PROCESSING.md | The ICO register entry | 2026-09-20 |
 | "No private key, service-account credential, API secret or access token … none in its history" | DATA-PROCESSING.md | History scan of every blob in all 187 commits, 20 September 2026: no private keys, no service accounts, no API secrets. The only `.env` files ever committed are `.env.example` and `.env.educator-demo`, both of which hold flags, not values. The Firebase **web** API key is in the history and ships in the client — public by design, and the doc now says so rather than leaving a reviewer to find it | 2026-09-20 |
 | "reply within one month" | /privacy, /refunds, /accessibility | UK GDPR response window; a commitment you have to meet | 2026-09-20 |
-| WCAG 2.2 AA, "partially compliant", no independent audit | /accessibility | Own testing, stated as such on the page | 2026-09-20 |
+| WCAG 2.2 AA, "partially compliant", no independent audit; automated scan and desktop keyboard pass on 28–29 Sep | /accessibility | Own testing, stated as such on the page; method, fixes and open items in docs/ACCESSIBILITY-AUDIT-2026-09-28.md; contrast pairs and the accent-as-text rule are asserted in lib/__tests__/contrast.test.ts | 2026-09-29 |
 
 ## Claims NOT to make until there is evidence
 
