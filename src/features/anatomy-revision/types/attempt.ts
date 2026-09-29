@@ -1,5 +1,5 @@
 import type { Category } from './structure';
-import type { QuestionType, PromptKind, OinaPromptKind } from './question';
+import type { QuestionType, PromptKind, FactKind } from './question';
 import type { Region } from './region';
 
 export type Confidence = 'easy' | 'medium' | 'hard';
@@ -69,7 +69,7 @@ export interface UserAttempt {
 export interface FactMastery {
   userId: string;
   structureId: string;
-  promptKind: OinaPromptKind;
+  promptKind: FactKind;
   attemptsTotal: number;
   attemptsCorrect: number;
   /** Consecutive fully-correct answers — the promotion trigger. */
@@ -81,6 +81,13 @@ export interface FactMastery {
   lastAttemptAt: string;
   /** True once this fact has been promoted from select to typed recall. */
   typed: boolean;
+  /**
+   * Typed recall WITHOUT the hints (29 Sep 2026). False on the hinted stage.
+   * Absent on a typed row written before the hinted stage existed — and
+   * typed recall then never showed hints, so such a row has already earned
+   * this and reads as true (see factStage).
+   */
+  bare?: boolean;
 }
 
 /** SM-2-lite spaced-repetition state for one structure, per user. */

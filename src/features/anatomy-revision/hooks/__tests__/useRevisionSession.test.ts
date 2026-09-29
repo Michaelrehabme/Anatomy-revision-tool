@@ -316,8 +316,11 @@ describe('fact mastery (CR-018)', () => {
     }
 
     const [row] = await repository.listFactMastery('user-1');
-    expect(row.streak).toBe(3);
+    expect(row.attemptsCorrect).toBe(3);
     expect(row.typed).toBe(true);
+    // Promoted to typed WITH hints; the streak starts again for the next stage.
+    expect(row.bare).toBe(false);
+    expect(row.streak).toBe(0);
   });
 });
 

@@ -1,8 +1,11 @@
 import { describe, it, expect } from 'vitest';
-import { masteryLevel } from '../masteryLevel';
+import { factsIndex, masteryLevel } from '../masteryLevel';
+import { requiredFactKinds } from '../factMastery';
+import { ALL_STRUCTURES } from '../../data/seed';
+import type { FactKind } from '../../types/question';
 import { markSeen, rungOfQuestion } from '../ladder';
 import { updateMasteryAfterAttempt } from '../mastery';
-import type { StructureMastery } from '../../types/attempt';
+import type { FactMastery, StructureMastery } from '../../types/attempt';
 
 const NOW = new Date('2026-09-27T09:00:00.000Z');
 
@@ -67,5 +70,53 @@ describe('masteryLevel', () => {
     const due = (daysAgo: number) => new Date(NOW.getTime() - daysAgo * 86_400_000).toISOString();
     expect(masteryLevel({ ...master, dueAt: due(5) }, NOW).fading).toBe(false);
     expect(masteryLevel({ ...master, dueAt: due(11) }, NOW)).toMatchObject({ level: 'master', fading: true });
+  });
+});
+
+describe('masteryLevel with facts (29 Sep 2026)', () => {
+  const structure = ALL_STRUCTURES.find((s) => s.id === 'deltoid')!;
+  const named = row({ rung: 'typed-bare', rungStreak: 3 });
+  const done = (kind: FactKind): FactMastery => ({
+    userId: 'u',
+    structureId: 'deltoid',
+    promptKind: kind,
+    attemptsTotal: 9,
+    attemptsCorrect: 9,
+    streak: 3,
+    missStreak: 0,
+    lastCorrect: true,
+    lastAttemptAt: NOW.toISOString(),
+    typed: kind !== 'blood-supply-rating',
+    bare: kind !== 'blood-supply-rating',
+  });
+
+  it('needs the blood supply facts as well as the muscle ones', () => {
+    expect(requiredFactKinds(structure)).toEqual(expect.arrayContaining(['origin', 'blood-supply', 'blood-supply-rating']));
+  });
+
+  it('holds a structure named unaided at Advanced while any fact is outstanding', () => {
+    const kinds = requiredFactKinds(structure);
+    const partial = factsIndex(kinds.slice(1).map(done));
+    const state = masteryLevel(named, NOW, { structure, factsByKey: partial });
+    expect(state.level).toBe('advanced');
+    expect(state.factsLeft).toEqual([kinds[0]]);
+    expect(state.next).toMatch(/^Recall from memory: /);
+  });
+
+  it('makes it Master once every fact is complete', () => {
+    const all = factsIndex(requiredFactKinds(structure).map(done));
+    expect(masteryLevel(named, NOW, { structure, factsByKey: all })).toMatchObject({ level: 'master', factsLeft: [] });
+  });
+
+  it('does not let finished facts lift a structure that cannot yet be named', () => {
+    const all = factsIndex(requiredFactKinds(structure).map(done));
+    expect(masteryLevel(row({ rung: 'mcq' }), NOW, { structure, factsByKey: all }).level).toBe('novice');
+  });
+});
+
+describe('rungOfQuestion for fact questions', () => {
+  it('gives blood-supply questions no naming rung', () => {
+    expect(rungOfQuestion('mcq', undefined, 'blood-supply-rating')).toBeNull();
+    expect(rungOfQuestion('oina', undefined, 'blood-supply')).toBeNull();
   });
 });

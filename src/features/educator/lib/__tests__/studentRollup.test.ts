@@ -2,7 +2,9 @@ import { describe, it, expect } from 'vitest';
 import { buildStudentRollup, parseStudentRollup, replayMastery } from '../studentRollup';
 import { masteryMixByRegion, sessionMetricsFromRollups } from '../rollupAggregation';
 import type { StudentStatsDoc } from '../../data/cohortRollups';
-import type { RevisionSessionSummary, StructureMastery, UserAttempt } from '../../../anatomy-revision/types/attempt';
+import type { FactMastery, RevisionSessionSummary, StructureMastery, UserAttempt } from '../../../anatomy-revision/types/attempt';
+import { requiredFactKinds } from '../../../anatomy-revision/lib/factMastery';
+import { ALL_STRUCTURES } from '../../../anatomy-revision/data/seed';
 import type { AnatomyStructure } from '../../../anatomy-revision/types/structure';
 
 const NOW = new Date('2026-09-28T12:00:00.000Z');
@@ -26,14 +28,36 @@ function row(structureId: string, overrides: Partial<StructureMastery> = {}): St
   return { structureId, userId: 'u', attemptsTotal: 5, attemptsCorrect: 5, lastAttemptAt: '2026-09-27T09:00:00.000Z', ...overrides };
 }
 
+/** Every fact of the deltoid at its final stage, which Master needs as well as naming. */
+const DELTOID_FACTS: FactMastery[] = requiredFactKinds(ALL_STRUCTURES.find((s) => s.id === 'deltoid')!).map((promptKind) => ({
+  userId: 'u',
+  structureId: 'deltoid',
+  promptKind,
+  attemptsTotal: 9,
+  attemptsCorrect: 9,
+  streak: 3,
+  missStreak: 0,
+  lastCorrect: true,
+  lastAttemptAt: '2026-09-27T09:00:00.000Z',
+  typed: promptKind !== 'blood-supply-rating',
+  bare: promptKind !== 'blood-supply-rating',
+}));
+
 describe('buildStudentRollup', () => {
   it('keeps the level of every met structure and nothing for unmet ones', () => {
     const rollup = buildStudentRollup(
       [row('deltoid', { rung: 'typed-bare', rungStreak: 3 }), row('supraspinatus', { rung: 'mcq' })],
       [],
       NOW,
+      undefined,
+      DELTOID_FACTS,
     );
     expect(rollup.levels).toEqual({ deltoid: 'master', supraspinatus: 'novice' });
+  });
+
+  it('holds a structure named unaided at Advanced until its facts are done', () => {
+    const rollup = buildStudentRollup([row('deltoid', { rung: 'typed-bare', rungStreak: 3 })], [], NOW);
+    expect(rollup.levels.deltoid).toBe('advanced');
   });
 
   it('sums sessions, keeps the best assignment score, and carries no time finer than a day', () => {
@@ -101,7 +125,7 @@ describe('replayMastery', () => {
       ...[6, 7, 8].map((i) => attempt(i, 'identify-typed', 'none')),
     ];
     const [deltoid] = replayMastery('u', log);
-    expect(buildStudentRollup([deltoid], [], NOW).levels.deltoid).toBe('master');
+    expect(buildStudentRollup([deltoid], [], NOW, undefined, DELTOID_FACTS).levels.deltoid).toBe('master');
   });
 });
 
@@ -116,7 +140,7 @@ describe('class aggregation from rollups', () => {
     ({ uid, rollup }) as unknown as StudentStatsDoc;
 
   it('counts every student-structure pair, and leaves out students with no rollup yet', () => {
-    const a = buildStudentRollup([row('deltoid', { rung: 'typed-bare', rungStreak: 3 })], [], NOW);
+    const a = buildStudentRollup([row('deltoid', { rung: 'typed-bare', rungStreak: 3 })], [], NOW, undefined, DELTOID_FACTS);
     const b = buildStudentRollup([row('deltoid', { rung: 'mcq' }), row('gluteus-maximus', { rung: 'typed-hinted' })], [], NOW);
     const { regions, studentsReporting } = masteryMixByRegion([stat('a', a), stat('b', b), stat('c')], structures);
     expect(studentsReporting).toBe(2);

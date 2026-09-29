@@ -17,7 +17,7 @@ import { attachHotspots } from '../features/anatomy-revision/data/seed/hotspots'
 await attachHotspots();
 import { isJoint, isMuscle, areasOf } from '../features/anatomy-revision/types/structure';
 import { AREAS, AREA_LABELS } from '../features/anatomy-revision/types/region';
-import { OINA_PROMPT_KINDS } from '../features/anatomy-revision/types/question';
+import { MUSCLE_FACT_KINDS } from '../features/anatomy-revision/types/question';
 import { correctValuesFor } from '../features/anatomy-revision/lib/questionGenerators/oina';
 import { acceptedVariantsFor, matchesSlot } from '../features/anatomy-revision/lib/oinaAnswer';
 import { stripHeadPrefix } from '../features/anatomy-revision/lib/oinaValues';
@@ -151,7 +151,7 @@ function validateOina(): void {
   const muscles = ALL_STRUCTURES.filter(isMuscle);
 
   for (const m of muscles) {
-    for (const promptKind of OINA_PROMPT_KINDS) {
+    for (const promptKind of MUSCLE_FACT_KINDS) {
       const values = correctValuesFor(m, promptKind);
       if (values.length === 0) {
         fail(
@@ -181,7 +181,7 @@ function validateOina(): void {
     // gradeTypedSlots matches inputs to slots first-fit rather than solving an
     // optimal assignment, which is only sound while no muscle has two of its own
     // values that could satisfy the same typed answer.
-    for (const promptKind of OINA_PROMPT_KINDS) {
+    for (const promptKind of MUSCLE_FACT_KINDS) {
       const values = correctValuesFor(m, promptKind);
       for (const a of values) {
         for (const b of values) {
@@ -197,9 +197,28 @@ function validateOina(): void {
     }
   }
 
+  // Blood-supply facts, on every structure that carries them: the same
+  // first-fit soundness across the primary and every assisting artery — two
+  // arteries of one structure that one typed answer could satisfy would let a
+  // student fill two boxes with one name.
+  let bloodChecked = 0;
+  for (const s of ALL_STRUCTURES) {
+    if (!s.bloodSupply?.primary) continue;
+    bloodChecked++;
+    const values = [...correctValuesFor(s, 'blood-supply'), ...correctValuesFor(s, 'blood-supply-assisting')];
+    for (const a of values) {
+      for (const b of values) {
+        if (a === b) continue;
+        if (matchesSlot(b, acceptedVariantsFor('blood-supply', a), true)) {
+          fail(`${s.id} blood supply: ${JSON.stringify(b)} also grades as ${JSON.stringify(a)} — one typed answer could fill two boxes`);
+        }
+      }
+    }
+  }
+
   const noNerve = muscles.filter((m) => m.nerve.length > 0 && correctValuesFor(m, 'nerve').length === 0);
   console.log(
-    `\nOINA: ${muscles.length} muscles x ${OINA_PROMPT_KINDS.length} facts checked` +
+    `\nFacts: ${bloodChecked} structures' blood supply, and ${muscles.length} muscles x ${MUSCLE_FACT_KINDS.length} muscle facts, checked` +
       (noNerve.length ? `; ${noNerve.length} with no answerable nerve` : ''),
   );
 }

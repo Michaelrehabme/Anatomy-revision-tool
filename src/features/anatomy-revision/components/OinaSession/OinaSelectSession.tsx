@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { factEyebrow } from '../shared/SlotHints';
 import { FeedbackHeading } from '../shared/FeedbackHeading';
 import type { OinaSelectQuestion } from '../../types/question';
 import type { Confidence } from '../../types/attempt';
@@ -81,7 +82,7 @@ export function OinaSelectSession({ question, onAnswer, onNext, examMode }: Oina
             className="text-center"
             style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--accd)' }}
           >
-            OINA · {total === 1 ? '1 correct answer' : `${total} correct answers`}
+            {factEyebrow(question.promptKind)} · {total === 1 ? '1 correct answer' : `${total} correct answers`}
           </div>
           <h2
             className="mx-auto mt-6 text-center"

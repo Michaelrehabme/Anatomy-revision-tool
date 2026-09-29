@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useFactMastery } from '../../hooks/useFactMastery';
 import { BloodSupplyFacts } from '../shared/BloodSupplyFacts';
 import type { AnatomyContent } from '../../hooks/useAnatomyContent';
 import type { AnatomyRepository } from '../../data/repository';
@@ -50,7 +51,9 @@ export function MuscleCard({
   onNavigate,
 }: MuscleCardProps) {
   const mastery = useMuscleHistory(repository, userId, structureId);
-  const level = masteryLevel(mastery ?? undefined);
+  const factsByKey = useFactMastery(repository, userId);
+  const cardStructure = content.structuresById.get(structureId);
+  const level = masteryLevel(mastery ?? undefined, undefined, cardStructure ? { structure: cardStructure, factsByKey } : undefined);
   const showLatin = getShowLatin();
   const titleName = content.structuresById.get(structureId)?.name;
   useEffect(() => {

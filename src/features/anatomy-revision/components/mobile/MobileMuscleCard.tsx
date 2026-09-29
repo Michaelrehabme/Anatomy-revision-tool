@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useFactMastery } from '../../hooks/useFactMastery';
 import { BloodSupplyFacts } from '../shared/BloodSupplyFacts';
 import type { AnatomyContent } from '../../hooks/useAnatomyContent';
 import { MasteryLevelBadge } from '../shared/MasteryLevelBadge';
@@ -39,7 +40,9 @@ const FACT_ROWS = [
  */
 export function MobileMuscleCard({ access, structureId, content, repository, userId, onBack, onDrill }: MobileMuscleCardProps) {
   const mastery = useMuscleHistory(repository, userId, structureId);
-  const level = masteryLevel(mastery ?? undefined);
+  const factsByKey = useFactMastery(repository, userId);
+  const cardStructure = content.structuresById.get(structureId);
+  const level = masteryLevel(mastery ?? undefined, undefined, cardStructure ? { structure: cardStructure, factsByKey } : undefined);
   const showLatin = getShowLatin();
   const titleName = content.structuresById.get(structureId)?.name;
   useEffect(() => {

@@ -9,9 +9,9 @@ describe('unbuildableSessionReason', () => {
     expect(unbuildableSessionReason({ types: ['mcq'], poolSize: 0, available: 0 })).toBeNull();
   });
 
-  it('names the hotspot gap for a locate-only dead end and the muscle-only one for OINA', () => {
+  it('names the hotspot gap for a locate-only dead end and the missing facts for OINA', () => {
     expect(unbuildableSessionReason({ types: ['locate'], poolSize: 28, available: 0 })).toMatch(/hotspots/);
-    expect(unbuildableSessionReason({ types: ['oina'], poolSize: 28, available: 0 })).toMatch(/only muscles/);
+    expect(unbuildableSessionReason({ types: ['oina'], poolSize: 28, available: 0 })).toMatch(/muscles only/);
     expect(unbuildableSessionReason({ types: ['locate', 'mcq'], poolSize: 28, available: 0 })).toMatch(/adding a format/);
   });
 });

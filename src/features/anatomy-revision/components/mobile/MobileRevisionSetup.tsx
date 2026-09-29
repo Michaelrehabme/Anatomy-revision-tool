@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import type { AnatomyContent } from '../../hooks/useAnatomyContent';
-import { unbuildableSessionReason } from '../../lib/setupCount';
+import { factCardCount, unbuildableSessionReason } from '../../lib/setupCount';
 import type { AnatomyRepository } from '../../data/repository';
 import type { OinaPromptKind, QuestionType, RevisionQuestion } from '../../types/question';
 import { OINA_PROMPT_KINDS } from '../../types/question';
@@ -35,6 +35,8 @@ const OINA_FACT_LABELS: Record<OinaPromptKind, string> = {
   insertion: 'insertion',
   nerve: 'nerve supply',
   action: 'action',
+  'blood-supply': 'blood supply',
+  'blood-supply-assisting': 'other arteries',
 };
 
 // Mirrors the desktop picker. Mobile was hardcoded to muscles before CR-017, which put
@@ -131,8 +133,9 @@ export function MobileRevisionSetup({ access, content, repository, userId, areas
   };
   const poolSize = content.structures.filter(inPool).length;
   // See RevisionSetup: an OINA session covers every fact in scope, not a fixed count.
-  const oinaMuscleCount = content.structures.filter((s) => isMuscle(s) && inPool(s)).length;
-  const oinaQuestionCount = oinaMuscleCount * oinaFacts.length;
+  const oinaCount = factCardCount(content.structures.filter(inPool), oinaFacts);
+  const oinaMuscleCount = oinaCount.structures;
+  const oinaQuestionCount = oinaCount.cards;
   // See RevisionSetup: the real count for this combination, not the pool size.
   const available = useMemo(
     () =>
@@ -408,8 +411,8 @@ export function MobileRevisionSetup({ access, content, repository, userId, areas
               All {oinaQuestionCount} cards
             </button>
             <p className="mt-3 text-[13px] leading-relaxed" style={{ color: 'var(--ink3)' }}>
-              {oinaFacts.length} fact{oinaFacts.length === 1 ? '' : 's'} for each of {oinaMuscleCount}{' '}
-              muscle{oinaMuscleCount === 1 ? '' : 's'}. A shorter session draws at random from those.
+              Every fact picked, across {oinaMuscleCount}{' '}
+structure{oinaMuscleCount === 1 ? '' : 's'}. A shorter session draws at random from those.
             </p>
           </>
         )}

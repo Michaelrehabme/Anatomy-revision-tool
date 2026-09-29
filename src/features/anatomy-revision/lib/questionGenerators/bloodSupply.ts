@@ -1,26 +1,22 @@
 import { areasOf, primaryAreaOf } from '../../types/structure';
 import type { AnatomyStructure, BloodSupplyRating } from '../../types/structure';
-import type { MCQQuestion, MultiSelectQuestion, PromptKind } from '../../types/question';
-import { shuffle, sample, type Rng } from '../rng';
+import type { MCQQuestion, PromptKind } from '../../types/question';
+import { shuffle, type Rng } from '../rng';
 
 /**
- * Blood-supply questions (owner, 29 Sep 2026), from the reviewed `bloodSupply`
- * field (types/structure.ts BloodSupply):
+ * Blood supply (owner, 29 Sep 2026), from the reviewed `bloodSupply` field
+ * (types/structure.ts BloodSupply).
  *
- *   - primary   "What is the primary blood supply of X?"        one answer
- *   - assisting "X's primary supply is P. Select ALL the other
- *                arteries that also supply it."                  select all
- *   - rating    "How rich is the blood supply of X?"            Rich / Moderate / Poor
+ * The primary artery and the assisting arteries are FACTS, on the fact track
+ * with the muscle facts: choose, then typed with hints, then typed without
+ * (lib/factMastery.ts, questionGenerators/oina.ts). This file supplies that
+ * track's wrong answers and name handling, and builds the one question that
+ * stays multiple choice — "How rich is the blood supply of X?".
  *
  * Wrong answers come from every structure's arteries, not just the session's
- * pool — a knee-only session still needs four knee-plausible arteries to
- * choose between, and the same reasoning made ligament attachments draw from
- * the whole index. Nearest first: the same region, then an overlapping area,
- * then anywhere.
+ * pool: a knee-only session still needs knee-plausible alternatives.
  */
 
-const MCQ_CHOICES = 4;
-const MAX_ASSISTING = 4;
 const MAX_WRONG = 3;
 
 export const RATING_CHOICES: readonly { rating: BloodSupplyRating; label: string }[] = [
@@ -111,7 +107,7 @@ function sentence(text: string): string {
 /** Descriptive phrases ("radial branches of the periacetabular periosteal vascular ring") make poor wrong answers. */
 const MAX_WRONG_NAME = 40;
 
-function arteriesOf(s: AnatomyStructure): string[] {
+export function arteriesOf(s: AnatomyStructure): string[] {
   const b = s.bloodSupply;
   if (!b) return [];
   return [...(b.primary ? [b.primary] : []), ...b.assisting];
@@ -133,7 +129,7 @@ const NOT_A_DISTRACTOR = /penis|clitoris|pudendal|vesical|uterine|rectal|ovarian
  * first (the hip, for the ACL), then anywhere — which keeps them plausible and
  * keeps them wrong.
  */
-function wrongArteries(structure: AnatomyStructure, all: readonly AnatomyStructure[], own: readonly string[], rng: Rng): string[] {
+export function wrongArteries(structure: AnatomyStructure, all: readonly AnatomyStructure[], own: readonly string[], rng: Rng): string[] {
   const myAreas = new Set(areasOf(structure));
   const sharesArea = (s: AnatomyStructure) => areasOf(s).some((a) => myAreas.has(a));
   // The rule is about the VESSEL, not where the name was found: an artery
@@ -158,32 +154,12 @@ function wrongArteries(structure: AnatomyStructure, all: readonly AnatomyStructu
   return out;
 }
 
-export function buildBloodSupplyMcqs(pool: readonly AnatomyStructure[], all: readonly AnatomyStructure[], rng: Rng): MCQQuestion[] {
-  const supplied = all.filter((s) => s.bloodSupply);
+/** "How rich is the blood supply of X?" — every reviewed structure but landmarks. */
+export function buildBloodSupplyRatingMcqs(pool: readonly AnatomyStructure[]): MCQQuestion[] {
   const questions: MCQQuestion[] = [];
-
   for (const structure of pool) {
     const b = structure.bloodSupply;
     if (!b || structure.category === 'landmark') continue;
-
-    if (b.primary) {
-      const wrong = sample(wrongArteries(structure, supplied, arteriesOf(structure), rng), MCQ_CHOICES - 1, rng);
-      const right = choiceName(b.primary);
-      if (wrong.length === MCQ_CHOICES - 1) {
-        const choices = shuffle([right, ...wrong], rng);
-        const also = b.assisting.length ? `, with help from the ${b.assisting.join(', ')}` : '';
-        questions.push({
-          ...base(structure, 'blood-supply'),
-          type: 'mcq',
-          id: `bloodsupply-${structure.id}-primary`,
-          prompt: `What is the primary blood supply of the ${displayName(structure)}?`,
-          choices,
-          correctIndex: choices.indexOf(right),
-          explanation: `${displayName(structure)}: supplied mainly by the ${b.primary}${also}.`,
-        });
-      }
-    }
-
     // A fixed, ordered scale: Rich / Moderate / Poor read as a scale, so they
     // are not shuffled.
     const choices = RATING_CHOICES.map((c) => c.label);
@@ -198,39 +174,5 @@ export function buildBloodSupplyMcqs(pool: readonly AnatomyStructure[], all: rea
       explanation: `${RATING_CHOICES.find((c) => c.rating === b.rating)!.label}: ${RATING_MEANING[b.rating]}.${zone}`,
     });
   }
-
-  return questions;
-}
-
-export function buildBloodSupplyMultiSelect(
-  pool: readonly AnatomyStructure[],
-  all: readonly AnatomyStructure[],
-  rng: Rng,
-): MultiSelectQuestion[] {
-  const supplied = all.filter((s) => s.bloodSupply);
-  const questions: MultiSelectQuestion[] = [];
-
-  for (const structure of pool) {
-    const b = structure.bloodSupply;
-    if (!b?.primary || b.assisting.length === 0 || structure.category === 'landmark') continue;
-
-    const correct = [...new Set(sample([...b.assisting], Math.min(MAX_ASSISTING, b.assisting.length), rng).map(choiceName))];
-    // The primary is excluded too: it does supply the structure, so offering
-    // it as a wrong answer would be marking a true statement false.
-    const wrong = sample(wrongArteries(structure, supplied, arteriesOf(structure), rng), MAX_WRONG, rng);
-    if (wrong.length < 2) continue;
-
-    const choices = shuffle([...correct, ...wrong], rng);
-    questions.push({
-      ...base(structure, 'blood-supply-assisting'),
-      type: 'multi-select',
-      id: `bloodsupply-${structure.id}-assisting`,
-      prompt: `The primary blood supply of the ${displayName(structure)} is the ${choiceName(b.primary)}. Select ALL the other arteries that also supply it.`,
-      choices,
-      correctIndices: choices.reduce<number[]>((acc, c, i) => (correct.includes(c) ? [...acc, i] : acc), []),
-      explanation: `Besides the ${b.primary}, the ${displayName(structure)} is supplied by the ${b.assisting.join(', ')}.`,
-    });
-  }
-
   return questions;
 }

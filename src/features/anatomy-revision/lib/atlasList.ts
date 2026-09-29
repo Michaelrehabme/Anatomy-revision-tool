@@ -1,4 +1,6 @@
 import type { AnatomyStructure, Category } from '../types/structure';
+import type { FactContext } from './masteryLevel';
+import type { FactMastery } from '../types/attempt';
 import { areasOf } from '../types/structure';
 import type { Area } from '../types/region';
 import type { StructureMastery } from '../types/attempt';
@@ -109,8 +111,12 @@ export interface AtlasMasteryCell {
   accuracy: AtlasMasteryState;
 }
 
-export function atlasMasteryCell(mastery: StructureMastery | undefined, now: Date = new Date()): AtlasMasteryCell {
-  return { level: masteryLevel(mastery, now), accuracy: masteryState(mastery) };
+export function atlasMasteryCell(
+  mastery: StructureMastery | undefined,
+  context: FactContext,
+  now: Date = new Date(),
+): AtlasMasteryCell {
+  return { level: masteryLevel(mastery, now, context), accuracy: masteryState(mastery) };
 }
 
 /** An accuracy state as the short text the Atlas prints under the level — nothing for unseen, which the level already says. */
@@ -177,6 +183,7 @@ export function sortAtlas(
   key: AtlasSortKey,
   direction: SortDirection,
   masteryById: ReadonlyMap<string, StructureMastery>,
+  factsByKey: ReadonlyMap<string, FactMastery> = new Map(),
 ): AnatomyStructure[] {
   const sign = direction === 'asc' ? 1 : -1;
 
@@ -189,9 +196,12 @@ export function sortAtlas(
       case 'level': {
         // Never met ranks below a flashcard-only Beginner, so "lowest first"
         // starts on what has not been touched at all.
-        const rank = (m: StructureMastery | undefined) => (m ? masteryLevelRank(masteryLevel(m).level) : -1);
+        const rank = (s: AnatomyStructure) => {
+          const m = masteryById.get(s.id);
+          return m ? masteryLevelRank(masteryLevel(m, undefined, { structure: s, factsByKey }).level) : -1;
+        };
         // Descending by default, like accuracy: the asc label is "highest first".
-        return rank(masteryById.get(b.id)) - rank(masteryById.get(a.id));
+        return rank(b) - rank(a);
       }
       case 'accuracy': {
         // No data counts as 0%, so "lowest first" doubles as a to-do list of

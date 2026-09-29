@@ -1,8 +1,9 @@
 import { isMuscle, primaryAreaOf } from '../../types/structure';
-import type { AnatomyStructure, MuscleStructure } from '../../types/structure';
+import type { AnatomyStructure } from '../../types/structure';
 import type { FactMastery } from '../../types/attempt';
 import type { OinaPromptKind, OinaQuestion, OinaSelectQuestion, OinaTypedQuestion } from '../../types/question';
-import { OINA_PROMPT_KINDS } from '../../types/question';
+import { OINA_PROMPT_KINDS, isBloodFactKind } from '../../types/question';
+import { arteriesOf, choiceName, vesselKey, wrongArteries } from './bloodSupply';
 import type { StructureIndexes } from '../indexes';
 import { pickItemDistractors, pickTieredKeyDistractors } from '../distractors';
 import { describeFact } from '../facts';
@@ -15,7 +16,7 @@ import {
   humanizeActionTag,
   stripHeadPrefix,
 } from '../oinaValues';
-import { factMasteryKey, pickOinaFormat } from '../factMastery';
+import { factHints, factMasteryKey, pickOinaFormat } from '../factMastery';
 
 /**
  * OINA Cards (CR-018): one question per (muscle, fact), asked about each
@@ -48,6 +49,8 @@ const FACT_NOUN: Record<OinaPromptKind, string> = {
   insertion: 'insertion',
   nerve: 'nerve supply',
   action: 'action',
+  'blood-supply': 'primary blood supply',
+  'blood-supply-assisting': 'artery',
 };
 
 /** Carries the preposition, since "nerves supplying X" does not take "of". */
@@ -56,6 +59,8 @@ const FACT_NOUN_PLURAL: Record<OinaPromptKind, string> = {
   insertion: 'insertions of',
   nerve: 'nerves supplying',
   action: 'actions of',
+  'blood-supply': 'primary blood supplies of',
+  'blood-supply-assisting': 'other arteries supplying',
 };
 
 /**
@@ -64,24 +69,48 @@ const FACT_NOUN_PLURAL: Record<OinaPromptKind, string> = {
  * triceps brachii's lateral and medial heads both read "Posterior humerus"
  * once the prefix is gone, and two identical choice buttons is not a question.
  */
-export function correctValuesFor(muscle: MuscleStructure, promptKind: OinaPromptKind): string[] {
+export function correctValuesFor(structure: AnatomyStructure, promptKind: OinaPromptKind): string[] {
+  if (isBloodFactKind(promptKind)) {
+    const b = structure.category === 'landmark' ? undefined : structure.bloodSupply;
+    if (!b?.primary) return [];
+    if (promptKind === 'blood-supply') return [choiceName(b.primary)];
+    // Plain vessel names, one per vessel: two authored names for one vessel
+    // would be two boxes asking for the same answer.
+    const seen = new Set<string>([vesselKey(b.primary)]);
+    return b.assisting.map(choiceName).filter((name) => {
+      const key = vesselKey(name);
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  }
+  if (!isMuscle(structure)) return [];
   switch (promptKind) {
     case 'origin':
-      return [...new Set(muscle.origin.map(stripHeadPrefix))];
+      return [...new Set(structure.origin.map(stripHeadPrefix))];
     case 'insertion':
-      return [...new Set(muscle.insertion.map(stripHeadPrefix))];
+      return [...new Set(structure.insertion.map(stripHeadPrefix))];
     case 'nerve':
-      return canonicalNerveNames(muscle.nerve);
+      return canonicalNerveNames(structure.nerve);
     case 'action':
-      return [...new Set(muscle.actions)];
+      return [...new Set(structure.actions)];
   }
 }
 
 /** The authored value behind each canonical one, so typed answers accept the original wording too. */
-function rawValuesFor(muscle: MuscleStructure, promptKind: OinaPromptKind): Map<string, string> {
+function rawValuesFor(structure: AnatomyStructure, promptKind: OinaPromptKind): Map<string, string> {
   const map = new Map<string, string>();
-  if (promptKind === 'origin' || promptKind === 'insertion') {
-    for (const raw of promptKind === 'origin' ? muscle.origin : muscle.insertion) {
+  if (isBloodFactKind(promptKind)) {
+    // The authored artery, bracketed detail and all, so a student who types
+    // the full name is right too; the plain name is what a choice shows.
+    for (const raw of arteriesOf(structure)) {
+      const plain = choiceName(raw);
+      if (!map.has(plain)) map.set(plain, raw);
+    }
+    return map;
+  }
+  if (isMuscle(structure) && (promptKind === 'origin' || promptKind === 'insertion')) {
+    for (const raw of promptKind === 'origin' ? structure.origin : structure.insertion) {
       const canonical = stripHeadPrefix(raw);
       if (!map.has(canonical)) map.set(canonical, raw);
     }
@@ -89,7 +118,7 @@ function rawValuesFor(muscle: MuscleStructure, promptKind: OinaPromptKind): Map<
   return map;
 }
 
-function baseFields(structure: MuscleStructure, promptKind: OinaPromptKind) {
+function baseFields(structure: AnatomyStructure, promptKind: OinaPromptKind) {
   return {
     type: 'oina' as const,
     structureId: structure.id,
@@ -108,13 +137,18 @@ function rejectsFor(promptKind: OinaPromptKind) {
 }
 
 function buildDistractors(
-  muscle: MuscleStructure,
+  muscle: AnatomyStructure,
   all: AnatomyStructure[],
   indexes: StructureIndexes,
   promptKind: OinaPromptKind,
   correctValues: string[],
   rng: Rng,
 ): string[] {
+  if (isBloodFactKind(promptKind)) {
+    // The primary is excluded from the wrong answers for the assisting set
+    // too: it does supply the structure. See bloodSupply.ts wrongArteries.
+    return wrongArteries(muscle, all.filter((s) => s.bloodSupply), arteriesOf(muscle), rng);
+  }
   const reject = rejectsFor(promptKind);
 
   if (promptKind === 'origin' || promptKind === 'insertion') {
@@ -155,8 +189,29 @@ function buildDistractors(
   return [...tiered, ...sample([...new Set(globalKeys)], DISTRACTOR_COUNT - tiered.length, rng)];
 }
 
+/** The question's wording: blood facts read as questions about arteries, not "every origin of". */
+function promptFor(structure: AnatomyStructure, promptKind: OinaPromptKind, format: 'select' | 'typed', count: number): string {
+  const b = structure.bloodSupply;
+  if (promptKind === 'blood-supply') {
+    return format === 'select'
+      ? `Which artery is the primary blood supply of the ${structure.name}?`
+      : `What is the primary blood supply of the ${structure.name}?`;
+  }
+  if (promptKind === 'blood-supply-assisting' && b?.primary) {
+    const lead = `The primary blood supply of the ${structure.name} is the ${choiceName(b.primary)}.`;
+    if (format === 'select') return `${lead} Select every other artery that also supplies it.`;
+    return count > 1
+      ? `${lead} Name the ${count} other arteries that also supply it.`
+      : `${lead} Name the other artery that also supplies it.`;
+  }
+  if (format === 'select') return `Select every ${FACT_NOUN[promptKind]} of ${structure.name}.`;
+  return count > 1
+    ? `Name all ${count} ${FACT_NOUN_PLURAL[promptKind]} ${structure.name}.`
+    : `What is the ${FACT_NOUN[promptKind]} of ${structure.name}?`;
+}
+
 function buildSelect(
-  muscle: MuscleStructure,
+  muscle: AnatomyStructure,
   promptKind: OinaPromptKind,
   correctValues: string[],
   distractors: string[],
@@ -174,7 +229,7 @@ function buildSelect(
     ...baseFields(muscle, promptKind),
     format: 'select',
     id: `oina-${muscle.id}-${promptKind}-select`,
-    prompt: `Select every ${FACT_NOUN[promptKind]} of ${muscle.name}.`,
+    prompt: promptFor(muscle, promptKind, 'select', correctValues.length),
     choices: choiceValues.map(display),
     correctIndices: choiceValues.flatMap((value, index) => (correctSet.has(value) ? [index] : [])),
     explanation: describeFact(muscle, promptKind),
@@ -182,10 +237,11 @@ function buildSelect(
 }
 
 function buildTyped(
-  muscle: MuscleStructure,
+  muscle: AnatomyStructure,
   promptKind: OinaPromptKind,
   correctValues: string[],
   display: (value: string) => string,
+  hints: 'full' | 'none',
 ): OinaTypedQuestion {
   const raws = rawValuesFor(muscle, promptKind);
   const multiple = correctValues.length > 1;
@@ -195,16 +251,16 @@ function buildTyped(
     // answer, not as a trick.
     label: multiple ? `${FACT_NOUN[promptKind]} ${index + 1} of ${correctValues.length}` : FACT_NOUN[promptKind],
     accepted: acceptedVariantsFor(promptKind, raws.get(value) ?? display(value)),
+    ...(isBloodFactKind(promptKind) ? { strict: true } : {}),
   }));
 
   return {
     ...baseFields(muscle, promptKind),
     format: 'typed',
     id: `oina-${muscle.id}-${promptKind}-typed`,
-    prompt: multiple
-      ? `Name all ${correctValues.length} ${FACT_NOUN_PLURAL[promptKind]} ${muscle.name}.`
-      : `What is the ${FACT_NOUN[promptKind]} of ${muscle.name}?`,
+    prompt: promptFor(muscle, promptKind, 'typed', correctValues.length),
     slots,
+    hints,
     explanation: describeFact(muscle, promptKind),
   };
 }
@@ -223,7 +279,10 @@ export function buildOinaQuestions(
   const questions: OinaQuestion[] = [];
 
   for (const structure of structures) {
-    if (!isMuscle(structure) || !structure.eligibility.mcq) continue;
+    // Every family now: muscles carry the four muscle facts, and everything
+    // but landmarks may carry blood supply. correctValuesFor returns nothing
+    // for a fact a structure does not have, which skips it below.
+    if (!structure.eligibility.mcq) continue;
 
     for (const promptKind of promptKinds) {
       const correctValues = correctValuesFor(structure, promptKind);
@@ -233,11 +292,13 @@ export function buildOinaQuestions(
       if (correctValues.length === 0) continue;
 
       const display = promptKind === 'action' ? humanizeActionTag : (value: string) => value;
-      const format =
-        options.forceFormat ?? pickOinaFormat(masteryByKey.get(factMasteryKey(structure.id, promptKind)));
+      const fact = masteryByKey.get(factMasteryKey(structure.id, promptKind));
+      const format = options.forceFormat ?? pickOinaFormat(fact);
 
       if (format === 'typed') {
-        questions.push(buildTyped(structure, promptKind, correctValues, display));
+        // The setup screen's "typed" override is the hard setting: no hints.
+        const hints = options.forceFormat === 'typed' ? 'none' : factHints(fact);
+        questions.push(buildTyped(structure, promptKind, correctValues, display, hints));
         continue;
       }
 

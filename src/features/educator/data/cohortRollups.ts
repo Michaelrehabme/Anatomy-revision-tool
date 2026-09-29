@@ -9,7 +9,7 @@ import {
   writeBatch,
   type Firestore,
 } from 'firebase/firestore';
-import type { RevisionSessionSummary, StructureMastery, UserAttempt } from '../../anatomy-revision/types/attempt';
+import type { FactMastery, RevisionSessionSummary, StructureMastery, UserAttempt } from '../../anatomy-revision/types/attempt';
 import type { DayTally } from '../../anatomy-revision/lib/accuracyTrend';
 import { buildStudentRollup, parseStudentRollup, type StudentRollup } from '../lib/studentRollup';
 
@@ -230,17 +230,17 @@ export async function syncStudentRollup(
   db: Firestore,
   uid: string,
   displayName: string | null,
-  load: () => Promise<{ mastery: StructureMastery[]; summaries: RevisionSessionSummary[] }>,
+  load: () => Promise<{ mastery: StructureMastery[]; summaries: RevisionSessionSummary[]; facts: FactMastery[] }>,
 ): Promise<void> {
   const cohortId = await cohortOf(db, uid);
   if (!cohortId) return;
-  const { mastery, summaries } = await load();
+  const { mastery, summaries, facts } = await load();
   await setDoc(
     doc(db, 'cohorts', cohortId, 'studentStats', uid),
     {
       uid,
       displayName,
-      rollup: buildStudentRollup(mastery, summaries, new Date(), joinedAtCache.get(uid) ?? ROLLUP_FALLBACK_SINCE),
+      rollup: buildStudentRollup(mastery, summaries, new Date(), joinedAtCache.get(uid) ?? ROLLUP_FALLBACK_SINCE, facts),
       rollupAt: serverTimestamp(),
     },
     { mergeFields: ['uid', 'displayName', 'rollup', 'rollupAt'] },

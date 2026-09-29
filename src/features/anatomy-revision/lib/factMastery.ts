@@ -1,16 +1,22 @@
 import type { FactMastery } from '../types/attempt';
-import type { OinaPromptKind } from '../types/question';
+import type { FactKind } from '../types/question';
+import { MUSCLE_FACT_KINDS } from '../types/question';
+import { isMuscle, type AnatomyStructure } from '../types/structure';
 
 /**
  * All OINA escalation tuning in one place, matching the convention
  * ADAPTIVE_CONFIG and DEFAULT_XP_CONFIG set.
  */
 export const FACT_MASTERY_CONFIG = {
-  /** Consecutive fully-correct select answers before a fact switches to typed recall. */
+  /**
+   * Consecutive fully-correct answers before a fact moves up a stage: select
+   * to typed with hints, and typed with hints to typed without. "How rich" has
+   * no typed form; it is complete after this many right in a row.
+   */
   promotionStreak: 3,
   /** ...and the all-time accuracy floor that must hold as well, so a fact answered 3 right after 12 wrong isn't promoted. */
   promotionAccuracy: 0.7,
-  /** Consecutive typed misses before a fact drops back to select. */
+  /** Consecutive misses before a fact drops a stage: without hints to with, with hints to select. */
   demotionStreak: 2,
   /**
    * Default for how many attempts a fact is still "being learned" for. Below
@@ -25,7 +31,7 @@ export const FACT_MASTERY_CONFIG = {
   learnCardAttempts: 3,
 };
 
-export function factMasteryKey(structureId: string, promptKind: OinaPromptKind): string {
+export function factMasteryKey(structureId: string, promptKind: FactKind): string {
   return `${structureId}__${promptKind}`;
 }
 
@@ -34,9 +40,59 @@ export function indexFactMastery(rows: readonly FactMastery[]): Map<string, Fact
   return new Map(rows.map((row) => [factMasteryKey(row.structureId, row.promptKind), row]));
 }
 
+/**
+ * The fact's stage, the naming ladder's shape: recognise it among options,
+ * recall it with the letter-count and first-letter hints, then recall it bare.
+ */
+export type FactStage = 'select' | 'typed-hinted' | 'typed-bare';
+
+export function factStage(fact: FactMastery | undefined): FactStage {
+  if (!fact?.typed) return 'select';
+  // Absent `bare` on a typed row is a row from before the hinted stage, when
+  // typed recall never showed hints: it has already earned the bare stage.
+  return fact.bare === false ? 'typed-hinted' : 'typed-bare';
+}
+
 /** Recognition until the student has shown they can do without the options. */
 export function pickOinaFormat(fact: FactMastery | undefined): 'select' | 'typed' {
-  return fact?.typed ? 'typed' : 'select';
+  return factStage(fact) === 'select' ? 'select' : 'typed';
+}
+
+/** Hints on the first typed stage, none once recall without them is earned. */
+export function factHints(fact: FactMastery | undefined): 'full' | 'none' {
+  return factStage(fact) === 'typed-hinted' ? 'full' : 'none';
+}
+
+/**
+ * The facts a structure must know to be mastered (owner, 29 Sep 2026): a
+ * muscle's origin, insertion, nerve and action, and — outside landmarks —
+ * its blood supply: the primary artery where one is named, the assisting
+ * arteries where there are any, and how rich the supply is.
+ */
+export function requiredFactKinds(structure: AnatomyStructure): FactKind[] {
+  const kinds: FactKind[] = isMuscle(structure) ? [...MUSCLE_FACT_KINDS] : [];
+  const b = structure.category === 'landmark' ? undefined : structure.bloodSupply;
+  if (b) {
+    if (b.primary) kinds.push('blood-supply');
+    if (b.primary && b.assisting.length) kinds.push('blood-supply-assisting');
+    kinds.push('blood-supply-rating');
+  }
+  return kinds;
+}
+
+/** Whether a fact is at its final stage: typed without hints, or for "how rich", right three times running. */
+export function factComplete(kind: FactKind, fact: FactMastery | undefined, config = FACT_MASTERY_CONFIG): boolean {
+  if (!fact) return false;
+  if (kind === 'blood-supply-rating') return fact.streak >= config.promotionStreak;
+  return factStage(fact) === 'typed-bare';
+}
+
+/** The required facts not yet at their final stage. */
+export function outstandingFacts(
+  structure: AnatomyStructure,
+  factsByKey: ReadonlyMap<string, FactMastery>,
+): FactKind[] {
+  return requiredFactKinds(structure).filter((k) => !factComplete(k, factsByKey.get(factMasteryKey(structure.id, k))));
 }
 
 /**
@@ -60,7 +116,7 @@ export function shouldPrecedeWithLearnCard(
 export interface FactAttemptInput {
   userId: string;
   structureId: string;
-  promptKind: OinaPromptKind;
+  promptKind: FactKind;
   correct: boolean;
   now?: Date;
 }
@@ -81,18 +137,26 @@ export function updateFactMasteryAfterAttempt(
   const now = input.now ?? new Date();
   const attemptsTotal = (existing?.attemptsTotal ?? 0) + 1;
   const attemptsCorrect = (existing?.attemptsCorrect ?? 0) + (input.correct ? 1 : 0);
-  const streak = input.correct ? (existing?.streak ?? 0) + 1 : 0;
+  let streak = input.correct ? (existing?.streak ?? 0) + 1 : 0;
   const missStreak = input.correct ? 0 : (existing?.missStreak ?? 0) + 1;
   const accuracy = attemptsCorrect / attemptsTotal;
 
-  const wasTyped = existing?.typed ?? false;
-  let typed = wasTyped;
-  if (typed) {
-    if (missStreak >= config.demotionStreak) typed = false;
-  } else if (streak >= config.promotionStreak && accuracy >= config.promotionAccuracy) {
-    typed = true;
+  const before = factStage(existing);
+  let stage = before;
+  // "How rich" is multiple choice only: its streak simply counts, and
+  // factComplete reads it. Every other fact climbs the three stages.
+  if (input.promptKind !== 'blood-supply-rating') {
+    if (missStreak >= config.demotionStreak && before !== 'select') {
+      stage = before === 'typed-bare' ? 'typed-hinted' : 'select';
+    } else if (input.correct && streak >= config.promotionStreak && before !== 'typed-bare') {
+      if (before === 'typed-hinted' || accuracy >= config.promotionAccuracy) {
+        stage = before === 'select' ? 'typed-hinted' : 'typed-bare';
+      }
+    }
   }
-  const demoted = wasTyped && !typed;
+  // A change of stage in either direction starts the streak again: each
+  // stage is earned AT that stage, as on the naming ladder.
+  if (stage !== before) streak = 0;
 
   return {
     userId: input.userId,
@@ -100,11 +164,11 @@ export function updateFactMasteryAfterAttempt(
     promptKind: input.promptKind,
     attemptsTotal,
     attemptsCorrect,
-    // A demotion resets the ladder rather than leaving a stale streak behind.
-    streak: demoted ? 0 : streak,
-    missStreak,
+    streak,
+    missStreak: stage !== before ? 0 : missStreak,
     lastCorrect: input.correct,
     lastAttemptAt: now.toISOString(),
-    typed,
+    typed: stage !== 'select',
+    bare: stage === 'typed-bare',
   };
 }

@@ -132,9 +132,27 @@ export interface MultiSelectQuestion extends RevisionQuestionBase {
   explanation: string;
 }
 
-/** The four facts OINA Cards drill (CR-018). */
-export const OINA_PROMPT_KINDS = ['origin', 'insertion', 'nerve', 'action'] as const;
+/** The four muscle facts OINA Cards drill (CR-018). */
+export const MUSCLE_FACT_KINDS = ['origin', 'insertion', 'nerve', 'action'] as const;
+/**
+ * Blood-supply facts (29 Sep 2026), on the same select -> typed track, for
+ * every family but landmarks: the primary artery (one box) and the arteries
+ * that assist (one box each).
+ */
+export const BLOOD_FACT_KINDS = ['blood-supply', 'blood-supply-assisting'] as const;
+/** Every fact the fact track drills. The name predates blood supply joining it. */
+export const OINA_PROMPT_KINDS = [...MUSCLE_FACT_KINDS, ...BLOOD_FACT_KINDS] as const;
 export type OinaPromptKind = (typeof OINA_PROMPT_KINDS)[number];
+/**
+ * A fact whose progress is tracked. "How rich" is asked only as multiple
+ * choice, so it never reaches typed recall; it is still a fact a structure
+ * must know to be mastered (lib/masteryLevel.ts).
+ */
+export type FactKind = OinaPromptKind | 'blood-supply-rating';
+
+export function isBloodFactKind(kind: string): kind is (typeof BLOOD_FACT_KINDS)[number] {
+  return (BLOOD_FACT_KINDS as readonly string[]).includes(kind);
+}
 
 interface OinaQuestionBase extends RevisionQuestionBase {
   type: 'oina';
@@ -169,6 +187,13 @@ export interface OinaSelectQuestion extends OinaQuestionBase {
 export interface OinaTypedQuestion extends OinaQuestionBase {
   format: 'typed';
   slots: { label: string; accepted: string[] }[];
+  /**
+   * The letter-count and first-letter hints, per box — the same two the
+   * naming ladder gives. 'full' on the first typed stage, 'none' once earned
+   * (lib/factMastery.ts). Absent reads as 'none', which is how typed recall
+   * always ran before the hinted stage existed.
+   */
+  hints?: 'full' | 'none';
 }
 
 /**

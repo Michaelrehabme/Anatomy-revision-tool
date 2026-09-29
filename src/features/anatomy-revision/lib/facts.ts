@@ -74,6 +74,15 @@ export function summarizeStructure(s: AnatomyStructure): string {
  * the ischial tuberosity is specifically the long head is the useful part.
  */
 export function describeFact(s: AnatomyStructure, promptKind: OinaPromptKind): string {
+  const b = s.bloodSupply;
+  if (promptKind === 'blood-supply') {
+    return b?.primary ? `${s.name} — primary blood supply: ${b.primary}` : '';
+  }
+  if (promptKind === 'blood-supply-assisting') {
+    return b?.primary && b.assisting.length
+      ? `${s.name} — primary blood supply: ${b.primary}; also supplied by: ${b.assisting.join('; ')}`
+      : '';
+  }
   if (!isMuscle(s)) return '';
   switch (promptKind) {
     case 'origin':

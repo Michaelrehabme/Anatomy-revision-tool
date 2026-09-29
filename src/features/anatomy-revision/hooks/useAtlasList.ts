@@ -1,4 +1,6 @@
 import { useCallback, useMemo, useState } from 'react';
+import type { FactMastery } from '../types/attempt';
+import { useFactMastery } from './useFactMastery';
 import type { AnatomyContent } from './useAnatomyContent';
 import type { AnatomyRepository } from '../data/repository';
 import type { UseEntitlement } from './useEntitlement';
@@ -39,6 +41,8 @@ export interface UseAtlasList {
   entitled: AnatomyStructure[];
   rows: ReadonlyMap<string, AtlasRow>;
   masteryById: ReadonlyMap<string, StructureMastery>;
+  /** Fact progress, which Master needs as well as naming (lib/masteryLevel.ts). */
+  factsByKey: ReadonlyMap<string, FactMastery>;
   /** Filtered and sorted — what the screen renders, in the order it renders it. */
   visible: AnatomyStructure[];
   filters: AtlasFilters;
@@ -78,6 +82,7 @@ export function useAtlasList({ access, content, repository, userId }: UseAtlasLi
 
   const mastery = useMastery(repository, userId);
   const masteryById = useMemo(() => new Map(mastery.map((m) => [m.structureId, m])), [mastery]);
+  const factsByKey = useFactMastery(repository, userId);
 
   const entitled = useMemo(
     () => content.structures.filter((s) => areasOf(s).some((a) => access.areas.includes(a))),
@@ -92,8 +97,8 @@ export function useAtlasList({ access, content, repository, userId }: UseAtlasLi
   const visible = useMemo(() => {
     const matched = filterAtlas(entitled, rows, filters, masteryById);
     const { key, direction } = sortById(sortId);
-    return sortAtlas(matched, key, direction, masteryById);
-  }, [entitled, rows, filters, masteryById, sortId]);
+    return sortAtlas(matched, key, direction, masteryById, factsByKey);
+  }, [entitled, rows, filters, masteryById, factsByKey, sortId]);
 
   const kindCounts = useMemo(() => {
     const counts = { all: entitled.length } as Record<Category | 'all', number>;
@@ -130,6 +135,7 @@ export function useAtlasList({ access, content, repository, userId }: UseAtlasLi
     entitled,
     rows,
     masteryById,
+    factsByKey,
     visible,
     filters,
     sortId,

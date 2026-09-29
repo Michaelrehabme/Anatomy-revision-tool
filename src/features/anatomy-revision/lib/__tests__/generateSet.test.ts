@@ -7,7 +7,8 @@ import { areasOf } from '../../types/structure';
 import { pickNameDistractors } from '../distractors';
 import { createRng } from '../rng';
 import { pointInAnyPolygon } from '../hotspot/pointInPolygon';
-import { isMcqQuestion, isFillBlankQuestion, isOinaQuestion, isFlashcardQuestion } from '../../types/question';
+import { isMcqQuestion, isFillBlankQuestion, isOinaQuestion, isFlashcardQuestion, OINA_PROMPT_KINDS } from '../../types/question';
+import { correctValuesFor } from '../questionGenerators/oina';
 import type { FactMastery, StructureMastery } from '../../types/attempt';
 
 describe('generateRevisionSet', () => {
@@ -618,11 +619,18 @@ describe('OINA sessions (CR-018)', () => {
       seed: 7,
       factMastery: KNOWN_HAMSTRINGS,
     });
-    // 3 hamstrings x 4 facts, with nothing dropped and nothing capped.
-    expect(questions.filter(isOinaQuestion)).toHaveLength(HAMSTRINGS.length * 4);
+    // Every fact of every hamstring — the four muscle facts plus the arteries
+    // each one has — with nothing dropped and nothing capped.
+    const expected = (id: string) => {
+      const s = ALL_STRUCTURES.find((x) => x.id === id)!;
+      return OINA_PROMPT_KINDS.filter((k) => correctValuesFor(s, k).length > 0);
+    };
+    const total = HAMSTRINGS.reduce((n, id) => n + expected(id).length, 0);
+    expect(total).toBeGreaterThan(HAMSTRINGS.length * 4);
+    expect(questions.filter(isOinaQuestion)).toHaveLength(total);
     for (const id of HAMSTRINGS) {
       const facts = questions.filter(isOinaQuestion).filter((q) => q.structureId === id).map((q) => q.promptKind);
-      expect(new Set(facts), id).toEqual(new Set(['origin', 'insertion', 'nerve', 'action']));
+      expect(new Set(facts), id).toEqual(new Set(expected(id)));
     }
   });
 

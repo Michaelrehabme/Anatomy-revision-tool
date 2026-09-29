@@ -4,15 +4,17 @@ import type { Category, Difficulty } from '../types/structure';
 import { emptyCategoryBreakdown, isMuscle } from '../types/structure';
 import type { Area, Region, SubRegion } from '../types/region';
 import { REGIONS } from '../types/region';
-import type { Confidence, RevisionSessionSummary, UserAttempt } from '../types/attempt';
-import type { OinaPromptKind, QuestionType } from '../types/question';
+import type { Confidence, FactMastery, RevisionSessionSummary, UserAttempt } from '../types/attempt';
+import type { FactKind, OinaPromptKind, QuestionType } from '../types/question';
 import { isOinaQuestion, isTypedIdentifyQuestion } from '../types/question';
 import type { AnatomyRepository } from '../data/repository';
 import { updateMasteryAfterAttempt } from '../lib/mastery';
 import { markSeen, rungOfQuestion } from '../lib/ladder';
-import { masteryLevel, type MasteryLevel } from '../lib/masteryLevel';
+import { factsIndex, masteryLevel, type MasteryLevel } from '../lib/masteryLevel';
 import { updateFactMasteryAfterAttempt } from '../lib/factMastery';
 import { ALL_STRUCTURES } from '../data/seed';
+
+const STRUCTURES_BY_ID = new Map(ALL_STRUCTURES.map((s) => [s.id, s]));
 import { toDayKey, computeStreak } from '../lib/streak';
 import { reconcileStreakFreezes } from '../lib/streakFreeze';
 import { xpForAnswer, computeSessionXp } from '../lib/xp';
@@ -347,9 +349,14 @@ export function useRevisionSession(repository: AnatomyRepository | null, userId:
   const [state, dispatch] = useReducer(reducer, initialState);
   const questionStartedAt = useRef<number>(Date.now());
   const lastFailedPersist = useRef<(() => Promise<void>) | null>(null);
+  /** This student's fact rows, read on the first answer and kept current here. */
+  const factRows = useRef<FactMastery[] | null>(null);
 
   const start = useCallback((questions: RevisionQuestion[], setupParams: RevisionSetupParams) => {
     questionStartedAt.current = Date.now();
+    // Re-read fact rows each session: another device, or another account on
+    // this one, may have changed them since.
+    factRows.current = null;
     dispatch({
       type: 'START',
       questions,
@@ -424,33 +431,49 @@ export function useRevisionSession(repository: AnatomyRepository | null, userId:
             askedRung: rungOfQuestion(
               currentQuestion.type,
               isTypedIdentifyQuestion(currentQuestion) ? currentQuestion.hints : undefined,
+              currentQuestion.promptKind,
             ),
           });
           await repository.upsertMastery(nextMastery);
+
+          // Per-(structure, fact) progress: which stage a fact is next asked
+          // at, and — since 29 Sep 2026 — whether the structure can be Master,
+          // which needs its facts as well as its name. Fact questions and "how
+          // rich" both count. Inside the same persist() so the existing retry
+          // banner covers it too.
+          //
+          // The rows are read once per session and kept here, not re-read per
+          // answer: a long-standing student has hundreds, and every answer now
+          // needs them to work out the level.
+          if (!factRows.current) factRows.current = await repository.listFactMastery(userId);
+          const factsBefore = factRows.current;
+          const factKind: FactKind | null = isOinaQuestion(currentQuestion)
+            ? currentQuestion.promptKind
+            : currentQuestion.promptKind === 'blood-supply-rating'
+              ? 'blood-supply-rating'
+              : null;
+          let factsAfter = factsBefore;
+          if (factKind) {
+            const existingFact = factsBefore.find((f) => f.structureId === record.structureId && f.promptKind === factKind);
+            const nextFact = updateFactMasteryAfterAttempt(existingFact, {
+              userId,
+              structureId: record.structureId,
+              promptKind: factKind,
+              correct: record.correct,
+            });
+            await repository.upsertFactMastery(nextFact);
+            factsAfter = [...factsBefore.filter((f) => f !== existingFact), nextFact];
+            factRows.current = factsAfter;
+          }
+
+          const structure = STRUCTURES_BY_ID.get(record.structureId);
+          const context = (rows: FactMastery[]) => (structure ? { structure, factsByKey: factsIndex(rows) } : undefined);
           dispatch({
             type: 'LEVEL',
             structureId: record.structureId,
-            from: masteryLevel(existingMastery ?? undefined).level,
-            to: masteryLevel(nextMastery).level,
+            from: masteryLevel(existingMastery ?? undefined, undefined, context(factsBefore)).level,
+            to: masteryLevel(nextMastery, undefined, context(factsAfter)).level,
           });
-
-          // Per-(muscle, fact) progress, which is what decides whether this
-          // fact is next asked as recognition or recall (CR-018). Inside the
-          // same persist() so the existing retry banner covers it too.
-          if (isOinaQuestion(currentQuestion)) {
-            const existingFacts = await repository.listFactMastery(userId);
-            const existingFact = existingFacts.find(
-              (f) => f.structureId === record.structureId && f.promptKind === currentQuestion.promptKind,
-            );
-            await repository.upsertFactMastery(
-              updateFactMasteryAfterAttempt(existingFact, {
-                userId,
-                structureId: record.structureId,
-                promptKind: currentQuestion.promptKind,
-                correct: record.correct,
-              }),
-            );
-          }
         };
 
         try {

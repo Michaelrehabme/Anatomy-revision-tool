@@ -1,5 +1,5 @@
 import type { StructureMastery } from '../types/attempt';
-import type { QuestionType } from '../types/question';
+import type { PromptKind, QuestionType } from '../types/question';
 
 /**
  * The difficulty ladder a structure climbs, one rung at a time:
@@ -110,7 +110,11 @@ export function rungFor(mastery: StructureMastery | undefined, config: LadderCon
  * Fill-blank is typed, but the sentence around the gap carries most of the
  * answer's context, so it asks no more than hinted recall.
  */
-export function rungOfQuestion(type: QuestionType, hints?: 'full' | 'none'): Rung | null {
+export function rungOfQuestion(type: QuestionType, hints?: 'full' | 'none', promptKind?: PromptKind): Rung | null {
+  // Blood supply is a FACT (lib/factMastery.ts), tracked on its own; a right
+  // "how rich" answer says nothing about whether the student can name the
+  // structure, so it earns no naming credit (owner, 29 Sep 2026).
+  if (promptKind?.startsWith('blood-supply')) return null;
   switch (type) {
     case 'flashcard':
       return 'flashcard';

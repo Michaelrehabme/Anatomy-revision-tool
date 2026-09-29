@@ -88,6 +88,7 @@ export async function createFirestoreRepository(): Promise<AnatomyRepository> {
       await syncStudentRollup(db, userId, getFirebaseAuth().currentUser?.displayName ?? null, async () => ({
         mastery: await listMasteryRows(userId),
         summaries: await listSummaries(userId, ROLLUP_SESSION_LIMIT),
+        facts: (await getDocs(collection(db, 'users', userId, 'factMastery'))).docs.map((d) => d.data() as FactMastery),
       }));
     } catch {
       /* Rebuilt again after the next session or app open. */

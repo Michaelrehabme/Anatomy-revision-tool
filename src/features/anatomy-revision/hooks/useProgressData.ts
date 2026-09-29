@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
+import type { FactMastery } from '../types/attempt';
+import { factsIndex } from '../lib/masteryLevel';
 import { masteryLevel, type MasteryLevel } from '../lib/masteryLevel';
 import type { AnatomyRepository } from '../data/repository';
 import type { AnatomyContent } from './useAnatomyContent';
@@ -52,15 +54,17 @@ export interface ProgressData {
 /** Shared data-fetching + derivation for the Progress screen (desktop and mobile). */
 export function useProgressData(repository: AnatomyRepository | null, userId: string | null, content: AnatomyContent): ProgressData {
   const [mastery, setMastery] = useState<StructureMastery[]>([]);
+  const [facts, setFacts] = useState<FactMastery[]>([]);
   const [streak, setStreak] = useState(0);
 
   useEffect(() => {
     if (!repository || !userId) return;
     let cancelled = false;
-    Promise.all([repository.listMastery(userId), repository.listSessionSummaries(userId, 60)]).then(
-      ([m, summaries]) => {
+    Promise.all([repository.listMastery(userId), repository.listSessionSummaries(userId, 60), repository.listFactMastery(userId)]).then(
+      ([m, summaries, facts]) => {
         if (cancelled) return;
         setMastery(m);
+        setFacts(facts);
         setStreak(computeStreak(summaries));
       },
     );
@@ -71,6 +75,7 @@ export function useProgressData(repository: AnatomyRepository | null, userId: st
 
   const muscles = useMemo(() => content.structures.filter(isMuscle), [content.structures]);
   const masteryByStructureId = useMemo(() => new Map(mastery.map((m) => [m.structureId, m])), [mastery]);
+  const factsByKey = useMemo(() => factsIndex(facts), [facts]);
   // "Seen" means a mastery row exists: a structure the student has been
   // graded on at least once, right or wrong. The region rows below used to
   // require a correct answer as well, so a muscle attempted and missed showed
@@ -100,7 +105,7 @@ export function useProgressData(repository: AnatomyRepository | null, userId: st
     const levels: LevelCounts = { unmet: 0, beginner: 0, novice: 0, intermediate: 0, advanced: 0, master: 0 };
     for (const s of content.structures) {
       if (s.region !== region) continue;
-      const state = masteryLevel(masteryByStructureId.get(s.id), now);
+      const state = masteryLevel(masteryByStructureId.get(s.id), now, { structure: s, factsByKey });
       levels[state.seen ? state.level : 'unmet'] += 1;
     }
     return { region, total: regionMuscles.length, seenCount: seen.length, pct, levels };

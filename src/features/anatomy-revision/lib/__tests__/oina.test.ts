@@ -1,3 +1,5 @@
+import { MUSCLE_FACT_KINDS } from '../../types/question';
+import { isBloodFactKind } from '../../types/question';
 import { describe, it, expect } from 'vitest';
 import { buildOinaQuestions, correctValuesFor } from '../questionGenerators/oina';
 import { buildIndexes } from '../indexes';
@@ -6,7 +8,6 @@ import { ALL_STRUCTURES } from '../../data/seed';
 import { isMuscle } from '../../types/structure';
 import type { MuscleStructure } from '../../types/structure';
 import type { FactMastery } from '../../types/attempt';
-import { OINA_PROMPT_KINDS } from '../../types/question';
 import type { OinaPromptKind, OinaSelectQuestion, OinaTypedQuestion } from '../../types/question';
 import {
   actionsConflict,
@@ -20,8 +21,10 @@ const muscles = ALL_STRUCTURES.filter(isMuscle);
 const byId = new Map(muscles.map((m) => [m.id, m]));
 const indexes = buildIndexes(ALL_STRUCTURES);
 
+// These tests are about the four muscle facts; blood supply joined the fact
+// track on 29 Sep 2026 and has its own tests (bloodSupply.test.ts).
 const build = (pool: MuscleStructure[], options = {}, seed = 42) =>
-  buildOinaQuestions(pool, ALL_STRUCTURES, indexes, createRng(seed), options);
+  buildOinaQuestions(pool, ALL_STRUCTURES, indexes, createRng(seed), { promptKinds: MUSCLE_FACT_KINDS, ...options });
 
 const one = (id: string, promptKind: OinaPromptKind, options = {}, seed = 42) => {
   const questions = build([byId.get(id)!], { promptKinds: [promptKind], ...options }, seed);
@@ -88,14 +91,14 @@ describe('every muscle and fact across the dataset', () => {
   it('produces a question for all four facts of every muscle', () => {
     const missing: string[] = [];
     for (const m of muscles) {
-      for (const promptKind of OINA_PROMPT_KINDS) {
+      for (const promptKind of MUSCLE_FACT_KINDS) {
         if (!all.some((q) => q.structureId === m.id && q.promptKind === promptKind)) {
           missing.push(`${m.id}.${promptKind}`);
         }
       }
     }
     expect(missing).toEqual([]);
-    expect(all).toHaveLength(muscles.length * OINA_PROMPT_KINDS.length);
+    expect(all).toHaveLength(muscles.length * MUSCLE_FACT_KINDS.length);
   });
 
   it('never offers a distractor that is also a true answer', () => {
@@ -146,12 +149,16 @@ describe('every muscle and fact across the dataset', () => {
           return canonicalNerveNames(m.nerve);
         case 'action':
           return m.actions.map(humanizeActionTag);
+        default:
+          return [];
       }
     };
 
     const unrelated: string[] = [];
     for (const q of all) {
-      if (q.format !== 'select') continue;
+      // Blood-supply wrong answers are drawn from OTHER areas on purpose (the
+      // lists are not exhaustive — see bloodSupply.ts wrongArteries).
+      if (q.format !== 'select' || isBloodFactKind(q.promptKind)) continue;
       const muscle = byId.get(q.structureId)!;
       const groups = new Set(muscle.groups ?? []);
       const correct = new Set(q.correctIndices.map((i) => q.choices[i]));

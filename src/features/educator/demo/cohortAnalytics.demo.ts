@@ -13,6 +13,51 @@ import {
 import { buildStudentRollup, replayMastery } from '../lib/studentRollup';
 import { buildConfusionStats, buildStudentStats } from '../lib/rollupFromAttempts';
 import { demoAttempts, demoSessionSummaries } from './demoData';
+import type { FactMastery, StructureMastery } from '../../anatomy-revision/types/attempt';
+import { masteryLevel } from '../../anatomy-revision/lib/masteryLevel';
+import { requiredFactKinds } from '../../anatomy-revision/lib/factMastery';
+
+const DEMO_STRUCTURES = new Map(ALL_STRUCTURES.map((s) => [s.id, s]));
+
+/** A stable 0-99 from a string, so the demo reads the same on every load. */
+function demoHash(text: string): number {
+  let h = 2166136261;
+  for (let i = 0; i < text.length; i++) h = Math.imul(h ^ text.charCodeAt(i), 16777619);
+  return (h >>> 0) % 100;
+}
+
+/**
+ * Fact progress for a demo student. The generated history is naming answers
+ * only, and since 29 Sep 2026 Master also needs a structure's facts
+ * (lib/masteryLevel.ts) — without these the demo would show no Master at all.
+ * About seven in ten of the structures a demo student can name unaided get
+ * every fact complete; the rest stop at Advanced with facts outstanding,
+ * which is the spread a real class would show.
+ */
+function demoFacts(uid: string, mastery: readonly StructureMastery[]): FactMastery[] {
+  const facts: FactMastery[] = [];
+  for (const row of mastery) {
+    const structure = DEMO_STRUCTURES.get(row.structureId);
+    if (!structure || masteryLevel(row).level !== 'master') continue;
+    if (demoHash(`${uid}:${row.structureId}`) >= 70) continue;
+    for (const promptKind of requiredFactKinds(structure)) {
+      facts.push({
+        userId: uid,
+        structureId: row.structureId,
+        promptKind,
+        attemptsTotal: 9,
+        attemptsCorrect: 9,
+        streak: 3,
+        missStreak: 0,
+        lastCorrect: true,
+        lastAttemptAt: row.lastAttemptAt,
+        typed: promptKind !== 'blood-supply-rating',
+        bare: promptKind !== 'blood-supply-rating',
+      });
+    }
+  }
+  return facts;
+}
 
 /**
  * Demo-mode stand-in for data/cohortAnalytics.ts (README "Educator demo
@@ -43,7 +88,10 @@ export async function loadCohortAnalytics(
     const attempts = attemptsByUid.get(uid) ?? [];
     return {
       ...buildStudentStats(uid, null, attempts),
-      rollup: buildStudentRollup(replayMastery(uid, attempts), demoSessionSummaries(uid)),
+      rollup: (() => {
+        const mastery = replayMastery(uid, attempts);
+        return buildStudentRollup(mastery, demoSessionSummaries(uid), undefined, undefined, demoFacts(uid, mastery));
+      })(),
     };
   });
   const confusion = buildConfusionStats([...attemptsByUid.values()].flat());

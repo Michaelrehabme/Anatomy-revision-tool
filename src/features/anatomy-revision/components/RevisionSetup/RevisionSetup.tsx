@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import type { AnatomyContent } from '../../hooks/useAnatomyContent';
 import { minutesFor } from '../../lib/sessionCopy';
-import { unbuildableSessionReason } from '../../lib/setupCount';
+import { factCardCount, unbuildableSessionReason } from '../../lib/setupCount';
 import type { OinaPromptKind, QuestionType } from '../../types/question';
 import { OINA_PROMPT_KINDS } from '../../types/question';
 import type { Category } from '../../types/structure';
@@ -32,6 +32,8 @@ const OINA_FACT_LABELS: Record<OinaPromptKind, string> = {
   insertion: 'Insertion',
   nerve: 'Nerve supply',
   action: 'Action',
+  'blood-supply': 'Blood supply',
+  'blood-supply-assisting': 'Other arteries',
 };
 
 /**
@@ -147,10 +149,11 @@ export function RevisionSetup({ access, content, repository, userId, areas, onSt
   // An OINA session covers every fact of every muscle in scope rather than a
   // fixed number of questions — "do the hamstrings" is the unit a student
   // thinks in, and a 20-question cap would leave a group half-learned with no
-  // indication of which half. Exact, not an estimate: validateContent asserts
-  // every muscle yields a question for all four facts.
-  const oinaMuscleCount = content.structures.filter((s) => isMuscle(s) && inPool(s)).length;
-  const oinaQuestionCount = oinaMuscleCount * oinaFacts.length;
+  // indication of which half. Counted fact by fact (factCardCount), since not
+  // every structure has every fact.
+  const oinaCount = factCardCount(content.structures.filter(inPool), oinaFacts);
+  const oinaMuscleCount = oinaCount.structures;
+  const oinaQuestionCount = oinaCount.cards;
   // What this combination can actually build, as opposed to the pool size:
   // Locate over bones has dozens of structures in the pool and no questions,
   // because bones carry no hotspots. generateRevisionSet is pure and
@@ -490,8 +493,8 @@ export function RevisionSetup({ access, content, repository, userId, areas, onSt
                   All {oinaQuestionCount} cards
                 </button>
                 <p className="mt-3.5 text-sm leading-snug" style={{ color: 'var(--ink3)' }}>
-                  {oinaFacts.length} fact{oinaFacts.length === 1 ? '' : 's'} for each of {oinaMuscleCount}{' '}
-                  muscle{oinaMuscleCount === 1 ? '' : 's'}. A shorter session draws at random from those,
+                  Every fact picked, across {oinaMuscleCount}{' '}
+structure{oinaMuscleCount === 1 ? '' : 's'}. A shorter session draws at random from those,
                   so it mixes with the other formats instead of swamping them.
                   {groups.length === 0 && ' Narrow the pool with a muscle group below.'}
                 </p>

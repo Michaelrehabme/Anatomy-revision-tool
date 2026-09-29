@@ -1,6 +1,9 @@
 import { describe, it, expect } from 'vitest';
 import {
   FACT_MASTERY_CONFIG,
+  factComplete,
+  factHints,
+  factStage,
   factMasteryKey,
   pickOinaFormat,
   shouldPrecedeWithLearnCard,
@@ -120,5 +123,54 @@ describe('factMasteryKey', () => {
   it('keys per muscle and fact, not per muscle', () => {
     expect(factMasteryKey('biceps-femoris', 'origin')).toBe('biceps-femoris__origin');
     expect(factMasteryKey('biceps-femoris', 'nerve')).not.toBe(factMasteryKey('biceps-femoris', 'origin'));
+  });
+});
+
+describe('three-stage fact ladder (29 Sep 2026)', () => {
+  it('climbs select → typed with hints → typed without, three right at each stage', () => {
+    expect(factStage(history(true, true))).toBe('select');
+    expect(factStage(history(true, true, true))).toBe('typed-hinted');
+    expect(factStage(history(true, true, true, true, true))).toBe('typed-hinted');
+    expect(factStage(history(true, true, true, true, true, true))).toBe('typed-bare');
+  });
+
+  it('starts the streak again on every change of stage', () => {
+    expect(history(true, true, true).streak).toBe(0);
+    expect(history(true, true, true, true).streak).toBe(1);
+  });
+
+  it('asks with hints at the middle stage and without at the last', () => {
+    expect(factHints(history(true, true, true))).toBe('full');
+    expect(factHints(history(true, true, true, true, true, true))).toBe('none');
+  });
+
+  it('demotes one stage at a time after two misses', () => {
+    const bare = history(true, true, true, true, true, true);
+    expect(factStage(answer(answer(bare, false), false))).toBe('typed-hinted');
+    const hinted = history(true, true, true);
+    expect(factStage(answer(answer(hinted, false), false))).toBe('select');
+  });
+
+  it('reads a typed row from before hints existed as typed without hints', () => {
+    const legacy = { ...history(true, true, true), bare: undefined };
+    expect(factStage(legacy)).toBe('typed-bare');
+  });
+
+  it('never promotes "how rich", and counts it complete at three in a row', () => {
+    const rating = (results: boolean[]) =>
+      results.reduce<FactMastery | undefined>(
+        (acc, correct) =>
+          updateFactMasteryAfterAttempt(acc, { ...INPUT, promptKind: 'blood-supply-rating', correct, now }),
+        undefined,
+      )!;
+    const three = rating([true, true, true]);
+    expect(factStage(three)).toBe('select');
+    expect(factComplete('blood-supply-rating', rating([true, true]))).toBe(false);
+    expect(factComplete('blood-supply-rating', three)).toBe(true);
+  });
+
+  it('counts a fact complete once it reaches typed without hints, and not before', () => {
+    expect(factComplete('origin', history(true, true, true, true, true))).toBe(false);
+    expect(factComplete('origin', history(true, true, true, true, true, true))).toBe(true);
   });
 });

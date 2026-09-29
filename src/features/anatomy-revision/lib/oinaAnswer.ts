@@ -142,7 +142,7 @@ const MAX_UNMATCHED_INPUT_WORDS = 1;
  * token is not — adding "3rd" to an answer about the 2nd metacarpal makes it
  * a different answer, not a more detailed one.
  */
-export function matchesAcceptedValue(input: string, accepted: string): boolean {
+export function matchesAcceptedValue(input: string, accepted: string, strict = false): boolean {
   const inputTokens = gradingTokens(input);
   const acceptedTokens = gradingTokens(accepted);
   if (inputTokens.length === 0 || acceptedTokens.length === 0) return false;
@@ -161,12 +161,17 @@ export function matchesAcceptedValue(input: string, accepted: string): boolean {
   if (matched.length / acceptedWords.length < MIN_WORD_COVERAGE) return false;
 
   const unmatchedInput = inputWords.filter((actual) => !acceptedWords.some((expected) => wordTokensMatch(expected, actual)));
-  return unmatchedInput.length <= MAX_UNMATCHED_INPUT_WORDS;
+  return unmatchedInput.length <= (strict ? 0 : MAX_UNMATCHED_INPUT_WORDS);
 }
 
-/** True when the input matches any of a slot's accepted renderings. */
-export function matchesSlot(input: string, accepted: string[]): boolean {
-  return accepted.some((candidate) => matchesAcceptedValue(input, candidate));
+/**
+ * True when the input matches any of a slot's accepted renderings. `strict`
+ * allows no extra words: an artery's branches are named by adding one word to
+ * it ("radial recurrent", "ulnar collateral"), so the one spare word that lets
+ * a student add the bone to a landmark would let a branch pass for its parent.
+ */
+export function matchesSlot(input: string, accepted: string[], strict = false): boolean {
+  return accepted.some((candidate) => matchesAcceptedValue(input, candidate, strict));
 }
 
 /**
@@ -225,12 +230,55 @@ export function acceptedVariantsFor(promptKind: PromptKind, raw: string): string
       add(swapped.replace(/\s+nerve$/i, ''));
     }
   }
+  if (promptKind === 'blood-supply' || promptKind === 'blood-supply-assisting') {
+    for (const form of arteryForms(raw)) {
+      add(form);
+      const swapped = swapFibularPeroneal(form);
+      if (swapped) add(swapped);
+    }
+  }
   return [...variants];
+}
+
+/**
+ * Standard alternative names for the same artery. Definitional only, as with
+ * ATTACHMENT_SYNONYMS: two names a textbook uses interchangeably.
+ */
+const ARTERY_SYNONYMS: [RegExp, string][] = [
+  [/\bprofunda brachii\b/i, 'deep brachial'],
+  [/\bdeep brachial\b/i, 'profunda brachii'],
+  [/\bprofunda femoris\b/i, 'deep femoral'],
+  [/\bdeep femoral\b/i, 'profunda femoris'],
+];
+
+/**
+ * The ways a student may fairly write one authored artery (29 Sep 2026).
+ * "Thoracoacromial artery (deltoid and acromial branches)" is answered by
+ * "thoracoacromial artery" and by "thoracoacromial"; "Lumbar arteries" by
+ * "lumbar artery". Position words are never loosened — the grader's
+ * POSITION_TOKENS rule still keeps "superior medial genicular" from passing
+ * for "superior lateral genicular".
+ */
+function arteryForms(raw: string): string[] {
+  const plain = raw.replace(/\s*\([^)]*\)/g, '').replace(/\s+/g, ' ').trim();
+  const forms = new Set<string>([plain]);
+  const bare = plain.replace(/\s+arter(y|ies)$/i, '').trim();
+  if (bare && bare !== plain) forms.add(bare);
+  if (/\barteries$/i.test(plain)) forms.add(plain.replace(/arteries$/i, 'artery'));
+  if (/\bartery$/i.test(plain)) forms.add(plain.replace(/artery$/i, 'arteries'));
+  for (const form of [...forms]) {
+    for (const [when, instead] of ARTERY_SYNONYMS) {
+      if (when.test(form)) forms.add(form.replace(when, instead));
+    }
+  }
+  return [...forms];
 }
 
 export interface TypedSlot {
   label: string;
   accepted: string[];
+  /** No extra words allowed (matchesSlot) — set on artery slots. */
+  strict?: boolean;
 }
 
 export interface TypedGradeResult {
@@ -259,7 +307,7 @@ export function gradeTypedSlots(inputs: string[], slots: TypedSlot[]): TypedGrad
     let found: number | null = null;
     for (let i = 0; i < inputs.length; i++) {
       if (usedInput.has(i) || !inputs[i]?.trim()) continue;
-      if (matchesSlot(inputs[i], slot.accepted)) {
+      if (matchesSlot(inputs[i], slot.accepted, slot.strict)) {
         found = i;
         usedInput.add(i);
         break;

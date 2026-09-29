@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { SlotHints, factEyebrow } from '../shared/SlotHints';
 import type { OinaQuestion, OinaSelectQuestion, OinaTypedQuestion } from '../../types/question';
 import type { Confidence } from '../../types/attempt';
 import { scoreMultiSelect } from '../../lib/multiSelectScoring';
@@ -83,7 +84,7 @@ function MobileOinaSelect({
     <div className="flex min-h-0 flex-1 flex-col">
       <div className="flex-1 overflow-y-auto px-6.5 pb-5">
         <div className="mt-4.5" style={eyebrow}>
-          OINA · {total === 1 ? '1 correct' : `${total} correct`}
+          {factEyebrow(question.promptKind)} · {total === 1 ? '1 correct' : `${total} correct`}
         </div>
         <h2
           className="mt-3"
@@ -223,7 +224,7 @@ function MobileOinaTyped({
     <div className="flex min-h-0 flex-1 flex-col">
       <div className="flex-1 overflow-y-auto px-6.5 pb-5">
         <div className="mt-4.5" style={eyebrow}>
-          OINA · from memory
+          {factEyebrow(question.promptKind)} · from memory
         </div>
         <h2
           className="mt-3"
@@ -261,7 +262,8 @@ function MobileOinaTyped({
                     font: '400 16.5px/1.4 var(--font-ui)',
                   }}
                 />
-                {revealing && !slotCorrect && (
+                {!checked && question.hints === 'full' && <SlotHints accepted={slot.accepted} />}
+                  {revealing && !slotCorrect && (
                   <p className="mt-1.5 text-[15px]" style={{ color: 'var(--acc2d)' }}>
                     {slot.accepted[0]}
                   </p>

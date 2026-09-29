@@ -177,7 +177,7 @@ export function Atlas({ access, content, repository, userId, onOpenMuscle, onDri
 
           <div className="min-h-0 flex-1 overflow-auto pb-14">
             {visible.map((s) => {
-              const mastery = atlasMasteryCell(list.masteryById.get(s.id));
+              const mastery = atlasMasteryCell(list.masteryById.get(s.id), { structure: s, factsByKey: list.factsByKey });
               const { columns } = rows.get(s.id)!;
               const cell = (i: 0 | 1 | 2) => (
                 <>

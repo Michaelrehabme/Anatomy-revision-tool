@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { SlotHints, factEyebrow } from '../shared/SlotHints';
 import { FeedbackHeading } from '../shared/FeedbackHeading';
 import type { OinaTypedQuestion } from '../../types/question';
 import type { Confidence } from '../../types/attempt';
@@ -68,7 +69,7 @@ export function OinaTypedSession({ question, onAnswer, onNext, examMode }: OinaT
             className="text-center"
             style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--accd)' }}
           >
-            OINA · from memory
+            {factEyebrow(question.promptKind)} · from memory
           </div>
           <h2
             className="mx-auto mt-6 text-center"
@@ -112,6 +113,7 @@ export function OinaTypedSession({ question, onAnswer, onNext, examMode }: OinaT
                       font: '400 18px/1.4 var(--font-ui)',
                     }}
                   />
+                  {!checked && question.hints === 'full' && <SlotHints accepted={slot.accepted} />}
                   {revealing && !slotCorrect && (
                     <p className="mt-2 text-base" style={{ color: 'var(--acc2d)' }}>
                       {slot.accepted[0]}

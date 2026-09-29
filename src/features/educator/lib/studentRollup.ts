@@ -1,7 +1,11 @@
 import type { RevisionSessionSummary, StructureMastery, UserAttempt } from '../../anatomy-revision/types/attempt';
+import { ALL_STRUCTURES } from '../../anatomy-revision/data/seed';
+
+const STRUCTURES_BY_ID = new Map(ALL_STRUCTURES.map((s) => [s.id, s]));
+import type { FactMastery } from '../../anatomy-revision/types/attempt';
 import type { Region } from '../../anatomy-revision/types/region';
 import { REGIONS } from '../../anatomy-revision/types/region';
-import { MASTERY_LEVELS, masteryLevel, type MasteryLevel } from '../../anatomy-revision/lib/masteryLevel';
+import { MASTERY_LEVELS, factsIndex, masteryLevel, type MasteryLevel } from '../../anatomy-revision/lib/masteryLevel';
 import { markSeen, rungOfQuestion } from '../../anatomy-revision/lib/ladder';
 import { updateMasteryAfterAttempt } from '../../anatomy-revision/lib/mastery';
 import { toDayKey } from '../../anatomy-revision/lib/streak';
@@ -70,14 +74,18 @@ export function buildStudentRollup(
   allSummaries: readonly RevisionSessionSummary[],
   now: Date = new Date(),
   since?: string,
+  facts: readonly FactMastery[] = [],
 ): StudentRollup {
   const rollup = emptyStudentRollup();
+  // Master needs the structure's facts as well as its name (lib/masteryLevel.ts).
+  const factsByKey = factsIndex(facts);
   const sinceMs = since ? Date.parse(since) : -Infinity;
   const summaries = allSummaries.filter((s) => Date.parse(s.startedAt) >= sinceMs);
 
   for (const row of mastery) {
     if (Date.parse(row.lastAttemptAt) < sinceMs) continue;
-    const state = masteryLevel(row, now);
+    const structure = STRUCTURES_BY_ID.get(row.structureId);
+    const state = masteryLevel(row, now, structure ? { structure, factsByKey } : undefined);
     if (state.seen) rollup.levels[row.structureId] = state.level;
   }
 
@@ -197,7 +205,7 @@ export function replayMastery(userId: string, attempts: readonly UserAttempt[]):
           correct: a.correct,
           confidence: a.confidence,
           durationMs: a.durationMs,
-          askedRung: rungOfQuestion(a.questionType, a.hints),
+          askedRung: rungOfQuestion(a.questionType, a.hints, a.promptKind),
         },
         at,
       ),
