@@ -170,6 +170,17 @@ export async function leaveCohort(uid: string): Promise<void> {
   );
 }
 
+/**
+ * When this student joined their current class — users/{uid}.cohortJoinedAt,
+ * on their own document, which they can always read. Null for a member who
+ * joined before the field was written, or who is in no class.
+ */
+export async function getMyCohortJoinedAt(uid: string): Promise<string | null> {
+  const snapshot = await getDoc(doc(getDb(), 'users', uid));
+  const joinedAt = snapshot.exists() ? snapshot.data().cohortJoinedAt : null;
+  return typeof joinedAt === 'string' ? joinedAt : null;
+}
+
 export async function getMyCohort(uid: string): Promise<Cohort | null> {
   const snapshot = await getDoc(doc(getDb(), 'users', uid));
   const cohortId = snapshot.exists() ? (snapshot.data().cohort as string | null) : null;

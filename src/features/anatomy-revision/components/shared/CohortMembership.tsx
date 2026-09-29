@@ -54,6 +54,7 @@ export function CohortMembership({ uid, compact }: CohortMembershipProps) {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [cohort, setCohort] = useState<Cohort | null | 'loading'>('loading');
+  const [joinedAt, setJoinedAt] = useState<string | null>(null);
   const [code, setCode] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -104,6 +105,7 @@ export function CohortMembership({ uid, compact }: CohortMembershipProps) {
       const { acceptInvite } = await import('../../../educator/data/invitesRepository');
       const joined = await acceptInvite(invite, uid);
       setCohort(joined);
+      setJoinedAt(new Date().toISOString());
       setInvites((current) => current.filter((i) => i.id !== invite.id));
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Could not join that class.');
@@ -120,10 +122,12 @@ export function CohortMembership({ uid, compact }: CohortMembershipProps) {
 
   useEffect(() => {
     let cancelled = false;
-    import('../../../educator/data/cohortsRepository').then(({ getMyCohort }) =>
-      getMyCohort(uid)
-        .then((result) => {
-          if (!cancelled) setCohort(result);
+    import('../../../educator/data/cohortsRepository').then(({ getMyCohort, getMyCohortJoinedAt }) =>
+      Promise.all([getMyCohort(uid), getMyCohortJoinedAt(uid).catch(() => null)])
+        .then(([result, joined]) => {
+          if (cancelled) return;
+          setCohort(result);
+          setJoinedAt(joined);
         })
         .catch(() => {
           if (!cancelled) setCohort(null);
@@ -153,6 +157,7 @@ export function CohortMembership({ uid, compact }: CohortMembershipProps) {
       const { joinCohortByCode } = await import('../../../educator/data/cohortsRepository');
       const joined = await joinCohortByCode(uid, code.trim());
       setCohort(joined);
+      setJoinedAt(new Date().toISOString());
       setCode('');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Could not join that cohort.');
@@ -237,12 +242,12 @@ export function CohortMembership({ uid, compact }: CohortMembershipProps) {
           <DiagnosticPrompt
             uid={uid}
             cohortId={cohort.id}
-            // The Cohort a student reads does not carry their own join date —
-            // that lives on the educator-side roster. nextDiagnosticPhase treats
-            // unknown as "offer it" rather than "joined long ago", which is the
-            // right default: a missing timestamp is a gap in our records, not
-            // evidence the student has been revising for months.
-            joinedAt={null}
+            // users/{uid}.cohortJoinedAt, from the student's own document. It
+            // used to be passed as null, which switched off the four-week
+            // baseline window entirely: a student could join, revise for two
+            // months, then sit a "baseline" that understates the class's gain.
+            // Unknown (joined before the field existed) still means "offer it".
+            joinedAt={joinedAt}
             compact={compact}
             onStart={(phase) => navigate(`/diagnostic?phase=${phase}`)}
           />

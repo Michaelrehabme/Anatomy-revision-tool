@@ -72,6 +72,11 @@ export async function leaveCohort(uid: string): Promise<void> {
   membership.delete(uid);
 }
 
+/** The demo keeps no join times; unknown, which the diagnostic prompt treats as "offer the baseline". */
+export async function getMyCohortJoinedAt(_uid: string): Promise<string | null> {
+  return null;
+}
+
 export async function getMyCohort(uid: string): Promise<Cohort | null> {
   const joined = membership.get(uid);
   return joined ? await getCohort(joined) : null;

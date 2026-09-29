@@ -4,6 +4,7 @@ import type { AnatomyRepository } from '../../data/repository';
 import type { AnatomyStructure } from '../../types/structure';
 import type { AnatomyImageAsset } from '../../types/image';
 import { DiagnosticScreen } from './DiagnosticScreen';
+import { nextDiagnosticPhase } from '../../lib/diagnosticPrompt';
 
 /**
  * /diagnostic — resolves what DiagnosticScreen needs and gets out of the way.
@@ -12,6 +13,11 @@ import { DiagnosticScreen } from './DiagnosticScreen';
  * belongs in the screen: which class the student is in, and — for a follow-up —
  * which questions their baseline asked, since a follow-up that asks anything
  * else is not a follow-up.
+ *
+ * It also refuses a sitting that is not due. The prompt only offers what
+ * nextDiagnosticPhase allows, but this route is a URL: without the same check a
+ * student could sit a second baseline, or a "baseline" months after joining,
+ * and either would quietly skew the class's before/after figure.
  *
  * The cohort lookup is a dynamic import, matching CohortMembership: the module
  * pulls the Firebase SDK, and a static import would put it in a bundle that
@@ -46,14 +52,21 @@ export function DiagnosticRoute({ repository, userId, structures, images }: Diag
 
     (async () => {
       try {
-        const { getMyCohort } = await import('../../../educator/data/cohortsRepository');
-        const cohort = await getMyCohort(userId);
+        const { getMyCohort, getMyCohortJoinedAt } = await import('../../../educator/data/cohortsRepository');
+        const [cohort, joinedAt, results] = await Promise.all([
+          getMyCohort(userId),
+          getMyCohortJoinedAt(userId).catch(() => null),
+          repository.listDiagnosticResults(userId),
+        ]);
         if (cancelled) return;
         if (!cohort) { setState({ status: 'unavailable' }); return; }
+        if (nextDiagnosticPhase({ cohortId: cohort.id, joinedAt, results }) !== phase) {
+          setState({ status: 'unavailable' });
+          return;
+        }
 
         let replayIds: string[] | undefined;
         if (phase === 'followUp') {
-          const results = await repository.listDiagnosticResults(userId);
           const baseline = results
             .filter((r) => r.phase === 'baseline' && r.cohortId === cohort.id)
             .sort((a, b) => a.takenAt.localeCompare(b.takenAt))[0];
@@ -77,8 +90,8 @@ export function DiagnosticRoute({ repository, userId, structures, images }: Diag
           Nothing to sit just now
         </h1>
         <p className="mt-3" style={{ font: '400 16px/1.55 var(--font-ui)', color: 'var(--ink2)' }}>
-          This only runs for a class you have joined. Nothing is wrong and nothing was lost — carry
-          on revising.
+          There is no sitting due for you right now. It only runs for a class you have joined, near
+          the start and end of a term. Nothing is wrong and nothing was lost — carry on revising.
         </p>
         <button
           type="button"
