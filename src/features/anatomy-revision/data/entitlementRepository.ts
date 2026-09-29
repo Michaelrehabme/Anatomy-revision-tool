@@ -1,6 +1,6 @@
 import { doc, getDoc } from 'firebase/firestore';
 import { getDb } from './firebase';
-import { resolveEntitlement, type Entitlement, type EntitlementTier, type EntitlementSource } from '../lib/entitlement';
+import { entitlementToShow, type Entitlement, type EntitlementTier, type EntitlementSource } from '../lib/entitlement';
 
 /**
  * Reading the entitlement off users/{uid}. READ ONLY, and permanently so.
@@ -102,9 +102,11 @@ export async function readEntitlement(uid: string): Promise<Entitlement | null> 
 
   // A student can hold both: their own subscription and a seat on their
   // university's licence. resolveEntitlement picks the one that wins rather
-  // than merging them — see lib/entitlement.ts.
+  // than merging them; entitlementToShow falls back to a not-yet-started or
+  // lapsed record so the account and pricing screens can say so — see
+  // lib/entitlement.ts. Gates are unaffected: they ask effectiveTier.
   const licence = await readCohortLicence(uid);
   const all = licence ? [...stored, licence] : stored;
 
-  return all.length > 0 ? resolveEntitlement(all) : null;
+  return all.length > 0 ? entitlementToShow(all) : null;
 }

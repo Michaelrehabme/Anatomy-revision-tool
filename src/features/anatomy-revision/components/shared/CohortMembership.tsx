@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { refreshEntitlementEverywhere } from '../../hooks/useEntitlement';
 import { useAuth } from '../../context/AuthProvider';
 import { useNavigate } from 'react-router-dom';
 import { DiagnosticPrompt } from '../Diagnostic/DiagnosticPrompt';
@@ -106,6 +107,8 @@ export function CohortMembership({ uid, compact }: CohortMembershipProps) {
       const joined = await acceptInvite(invite, uid);
       setCohort(joined);
       setJoinedAt(new Date().toISOString());
+      // A class licence can open every area; every gate should see it now.
+      refreshEntitlementEverywhere();
       setInvites((current) => current.filter((i) => i.id !== invite.id));
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Could not join that class.');
@@ -158,6 +161,8 @@ export function CohortMembership({ uid, compact }: CohortMembershipProps) {
       const joined = await joinCohortByCode(uid, code.trim());
       setCohort(joined);
       setJoinedAt(new Date().toISOString());
+      // A class licence can open every area; every gate should see it now.
+      refreshEntitlementEverywhere();
       setCode('');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Could not join that cohort.');
@@ -172,6 +177,7 @@ export function CohortMembership({ uid, compact }: CohortMembershipProps) {
       const { leaveCohort } = await import('../../../educator/data/cohortsRepository');
       await leaveCohort(uid);
       setCohort(null);
+      refreshEntitlementEverywhere();
     } finally {
       setBusy(false);
     }

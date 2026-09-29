@@ -224,6 +224,34 @@ export function resolveEntitlement(
   })[0];
 }
 
+/**
+ * The entitlement to HAND the app: the active one when there is one, else the
+ * record worth telling the student about — a paid subscription that has not
+ * started yet, or failing that the one that most recently ended.
+ *
+ * resolveEntitlement alone returned FREE for both, so a student who paid with
+ * a delayed start (keeping their 14-day cancellation right) read as free: the
+ * pricing page timed out and offered the plans again, Manage subscription was
+ * hidden for exactly the window in which they may cancel for a refund, and
+ * "your subscription ended" could never show (paywall trace finding 3,
+ * docs/PAYWALL-TRACE-2026-09-29.md). Returning the stored record is safe for
+ * the gates: every one asks effectiveTier, which is free until it starts and
+ * after it ends.
+ */
+export function entitlementToShow(candidates: readonly Entitlement[], now: Date = new Date()): Entitlement {
+  const active = resolveEntitlement(candidates, now);
+  if (active.tier !== 'free') return active;
+  const paid = candidates.filter((e) => e.tier !== 'free');
+  const pending = paid
+    .filter((e) => !hasStarted(e, now))
+    .sort((a, b) => (a.startsAt ?? '').localeCompare(b.startsAt ?? ''))[0];
+  if (pending) return pending;
+  const lapsed = paid
+    .filter((e) => hasExpired(e, now) && e.expiresAt)
+    .sort((a, b) => (b.expiresAt ?? '').localeCompare(a.expiresAt ?? ''))[0];
+  return lapsed ?? FREE_ENTITLEMENT;
+}
+
 /** Whether the free tier reaches this area. */
 export function isFreeArea(area: Area, freeAreas: readonly Area[] = FREE_AREAS): boolean {
   return freeAreas.includes(area);

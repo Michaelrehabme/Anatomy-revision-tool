@@ -6,6 +6,7 @@ import {
   hasStarted,
   effectiveTier,
   resolveEntitlement,
+  entitlementToShow,
   canAccessArea,
   lockedAreas,
   daysUntilExpiry,
@@ -302,5 +303,42 @@ describe('a university licence alongside a personal subscription', () => {
 
   it('opens every area while the licence runs', () => {
     expect(entitledAreas(AREAS, licence, NOW)).toEqual(AREAS);
+  });
+});
+
+/**
+ * Paywall trace finding 3: a paid subscription with a delayed start read as
+ * free everywhere, because the app was only ever handed the ACTIVE record.
+ */
+describe('entitlementToShow', () => {
+  const now = new Date('2026-09-29T12:00:00.000Z');
+  const paid = (over: Partial<Entitlement> = {}): Entitlement =>
+    ({ tier: 'individual', source: 'paddle', expiresAt: '2027-10-15T12:00:00.000Z', ...over }) as Entitlement;
+
+  it('prefers the active entitlement', () => {
+    const active = paid();
+    const pending = paid({ startsAt: '2026-10-13T12:00:00.000Z' });
+    expect(entitlementToShow([pending, active], now)).toBe(active);
+  });
+
+  it('shows a paid subscription that has not started, while every gate stays locked', () => {
+    const pending = paid({ startsAt: '2026-10-13T12:00:00.000Z' });
+    const shown = entitlementToShow([pending], now);
+    expect(shown).toBe(pending);
+    expect(effectiveTier(shown, now)).toBe('free');
+    expect(canAccessArea('knee', shown, now, ['shoulder'])).toBe(false);
+  });
+
+  it('shows the most recently ended one when nothing is active or pending', () => {
+    const older = paid({ expiresAt: '2026-03-01T00:00:00.000Z' });
+    const newer = paid({ expiresAt: '2026-09-01T00:00:00.000Z' });
+    const shown = entitlementToShow([older, newer], now);
+    expect(shown).toBe(newer);
+    expect(effectiveTier(shown, now)).toBe('free');
+  });
+
+  it('is free when there is nothing paid at all', () => {
+    expect(entitlementToShow([FREE_ENTITLEMENT], now)).toEqual(FREE_ENTITLEMENT);
+    expect(entitlementToShow([], now)).toEqual(FREE_ENTITLEMENT);
   });
 });
