@@ -126,7 +126,15 @@ service cloud.firestore {
 
     match /users/{uid} {
       allow read: if isSignedIn() && request.auth.uid == uid;
-      allow create: if isSignedIn() && request.auth.uid == uid && cohortIsProven();
+      // CREATE MUST PIN ENTITLEMENT TOO. Update below keeps `entitlement`
+      // byte-identical, but create had no such check — and owners may delete
+      // their own document — so any signed-in account, anonymous included,
+      // could create (or delete and recreate) it carrying
+      // {tier: 'institutional', expiresAt: null} and unlock everything. Found
+      // by the 29 Sep paywall trace. A new document never carries an
+      // entitlement from the client; only the webhook or an admin sets one.
+      allow create: if isSignedIn() && request.auth.uid == uid && cohortIsProven()
+        && !('entitlement' in request.resource.data);
       // Unchanged is always allowed, so the ordinary profile write on every
       // sign-in (displayName, lastActiveAt) never pays for a cohort lookup.
       //
@@ -316,11 +324,16 @@ service cloud.firestore {
       allow get: if isSignedIn();
       allow list: if isAdmin() || (isSignedIn() && resource.data.get('ownerUid', '') == request.auth.uid);
 
+      // `licensedUntil` is refused at creation for the reason it is pinned on
+      // update below: it opens every region for every member. Without this, an
+      // account could create a class licensed to 2099 and join it with its own
+      // code (29 Sep paywall trace). Only an admin sets a licence.
       allow create: if isSignedIn()
         && request.resource.data.ownerUid == request.auth.uid
         && request.resource.data.joinCode is string
         && request.resource.data.name is string
-        && request.resource.data.name.size() > 0;
+        && request.resource.data.name.size() > 0
+        && !('licensedUntil' in request.resource.data);
 
       // Ownership is pinned on update: a cohort that could be reassigned would
       // hand another account every student who joined it.

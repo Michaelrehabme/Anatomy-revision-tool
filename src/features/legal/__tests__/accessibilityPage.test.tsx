@@ -29,7 +29,7 @@ describe('AccessibilityPage', () => {
 
   it('admits there has been no independent audit', () => {
     renderPage();
-    expect(screen.getByText(/No full audit has been carried out/)).toBeTruthy();
+    expect(screen.getByText(/No independent audit has been carried out/)).toBeTruthy();
   });
 
   it('gives a route to report a problem and an escalation', () => {
