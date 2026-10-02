@@ -4,6 +4,7 @@ import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 import { VitePWA } from 'vite-plugin-pwa';
 import { ANATOMY_CACHE_NAME } from './src/features/pwa/anatomyCache';
+import { isAnatomyImageRequest, offlineAreaPlugin } from './src/features/pwa/offline/swPlugin';
 
 /** Forward slashes even on Windows — Rollup's alias plugin compares and rewrites ids as POSIX-style strings. */
 const demoFile = (name: string) =>
@@ -64,9 +65,11 @@ export const educatorDemoAliases = [
  * It says to precache the app shell — but NOT the 4.2MB of anatomy imagery,
  * which is runtime-cached instead. Precaching every render would make a first
  * visit download the whole atlas before the app is usable, on a phone, on
- * hospital wifi, to answer one question. Images arrive as they are seen, and
- * the explicit per-area download (CR-023 item 4) is how a student takes a
- * region offline on purpose.
+ * hospital wifi, to answer one question. Images arrive as they are seen and
+ * the most recent 400 are kept for a month; the explicit per-area download
+ * (CR-023 item 4, features/pwa/offline/) is how a student takes a region
+ * offline on purpose. Those downloads live in their own caches, outside the
+ * 400 and the month, and are served ahead of this one (offlineAreaPlugin).
  *
  * It also asks for a NetworkFirst Workbox rule over Firestore. That is the
  * wrong tool and is not implemented: Firestore does not speak plain HTTP GET,
@@ -104,7 +107,8 @@ const pwa = (disable: boolean) =>
       cleanupOutdatedCaches: true,
       runtimeCaching: [
         {
-          urlPattern: ({ url }) => url.pathname.startsWith('/anatomy/'),
+          // Every picture except the offline downloader's own fetches (swPlugin.ts).
+          urlPattern: isAnatomyImageRequest,
           handler: 'CacheFirst',
           options: {
             // Versioned: a re-render reuses the filename, so an unversioned
@@ -112,6 +116,9 @@ const pwa = (disable: boolean) =>
             cacheName: ANATOMY_CACHE_NAME,
             expiration: { maxEntries: 400, maxAgeSeconds: 60 * 60 * 24 * 30 },
             cacheableResponse: { statuses: [0, 200] },
+            // A downloaded area's copy is used ahead of this cache. Keep this
+            // key LAST: plugins run in the order written (swPlugin.ts).
+            plugins: [offlineAreaPlugin],
           },
         },
       ],
