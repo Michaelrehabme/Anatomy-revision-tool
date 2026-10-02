@@ -50,3 +50,8 @@ scripts/deriveActionText.report.json
 
 # Claude Code personal settings (permissions etc) — not shared.
 .claude/settings.local.json
+
+# Offline download manifests: sizes and hashes of public/anatomy/ as it is on
+# disk, written by `npm run generate:offline` at the start of every build.
+# Committed copies would describe the renders of the day they were committed.
+/public/offline/
