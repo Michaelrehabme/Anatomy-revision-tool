@@ -47,10 +47,14 @@ ap.add_argument("--backdrop", default="",
                      "skeleton. A frame wide enough to hold a forearm also holds the femur beside it, "
                      "and the composite trims to whatever is opaque, so the far bone survives into the "
                      "panel. Naming the backdrop is the only way to be sure what is in the picture.")
-ap.add_argument("--highlight", default="0.76,0.27,0.25",
-                help="RGB of the highlighted structure, 0-1. Muscle red by default; the bone panels "
-                     "shipped are highlight blue (0.22,0.45,0.72) and stay that way until they are "
-                     "all re-rendered together")
+ap.add_argument("--highlight", default="app",
+                help="'app' (the default) is the app's highlight: the cyan the muscle, ligament and "
+                     "landmark plates pick their answer out in, lifted by a little emission. Or an "
+                     "RGB, 0-1: the panels shipped before 2 Oct 2026 were blue (0.22,0.45,0.72)")
+ap.add_argument("--look", default="studio", choices=["studio", "flat"],
+                help="'studio' is the shared plate look: boneLook's dim world, camera-fixed key and "
+                     "fill, occluded ivory bone and the Workbench line pass the muscle turntables "
+                     "multiply over every frame. 'flat' is the old white-world panel")
 a = ap.parse_args(argv)
 
 mapping = {m["id"]: m for m in json.load(open(a.mapping))["mapping"]}
@@ -65,7 +69,9 @@ backdrop_only = [n for n in a.backdrop.split(",") if n]
 # skeleton is baked before that, and it needs the answer first.
 _one_side = [n for n in frame_on if n.endswith(".l")] or [n for n in frame_on if n.endswith(".r")]
 framed_side = _one_side[0][-2:] if _one_side and len(_one_side) < len(frame_on) else None
-highlight_rgb = tuple(float(v) for v in a.highlight.split(",")) + (1.0,)
+APP_HIGHLIGHT = a.highlight == "app"
+highlight_rgb = (0.0, 0.72, 0.95, 1.0) if APP_HIGHLIGHT else tuple(float(v) for v in a.highlight.split(",")) + (1.0,)
+STUDIO = a.look == "studio"
 
 scene = bpy.data.scenes.new("PanelScene")
 bpy.context.window.scene = scene
@@ -79,26 +85,60 @@ scene.render.film_transparent = True
 scene.render.image_settings.file_format = "PNG"
 scene.render.image_settings.color_mode = "RGBA"
 
-scene.world = bpy.data.worlds.new("PanelWorld")
-scene.world.use_nodes = True
-# Ambient fill. With only the sun, the lateral view falls into shadow and reads
-# much darker than the anterior and posterior ones sitting beside it in the
-# composited strip.
-_bg = scene.world.node_tree.nodes.get("Background")
-if _bg:
-    _bg.inputs[0].default_value = (1.0, 1.0, 1.0, 1.0)
-    _bg.inputs[1].default_value = 0.55
-
 cam_data = bpy.data.cameras.new("panelcam")
 cam_data.type = "ORTHO"
 cam = bpy.data.objects.new("panelcam", cam_data)
 scene.collection.objects.link(cam)
 scene.camera = cam
 
-sun_data = bpy.data.lights.new("panelsun", type="SUN")
-sun_data.energy = 3.0
-sun = bpy.data.objects.new("panelsun", sun_data)
-scene.collection.objects.link(sun)
+# THE PANELS WERE THE LAST FAMILY STILL LIT THE OLD WAY. Every plate a student
+# turns through went over to boneLook and the muscle turntables' line pass in
+# September; the card pictures kept a white world at 0.55, which lights every
+# face from every side, and beside the new plates they read as grey cut-outs.
+# The studio look is the muscle turntables' recipe exactly: the shared world,
+# lights and bone (boneLook.py), the Standard view transform, contact shadow,
+# and a Workbench cavity-and-outline pass multiplied over the lit render.
+fill = None
+if STUDIO:
+    boneLook.setup_world(scene)
+    sun, fill = boneLook.add_lights(scene)
+    scene.view_settings.view_transform = "Standard"
+    scene.view_settings.look = "None"
+    _sh = scene.display.shading
+    _sh.light = "FLAT"
+    _sh.color_type = "SINGLE"
+    _sh.single_color = (1, 1, 1)
+    _sh.show_cavity = True
+    _sh.cavity_type = "BOTH"
+    _sh.cavity_ridge_factor = 0.0
+    _sh.cavity_valley_factor = 2.0
+    _sh.curvature_ridge_factor = 0.0
+    _sh.curvature_valley_factor = 1.6
+    _sh.show_shadows = False
+    _sh.show_object_outline = True
+    _sh.object_outline_color = (0.16, 0.13, 0.11)
+    scene.display.render_aa = "16"
+    for attr, val in (("use_gtao", True), ("gtao_distance", 0.02), ("use_shadows", True),
+                      ("use_fast_gi", True), ("fast_gi_distance", 0.03)):
+        try:
+            setattr(scene.eevee, attr, val)
+        except (AttributeError, TypeError):
+            pass
+else:
+    scene.world = bpy.data.worlds.new("PanelWorld")
+    scene.world.use_nodes = True
+    # Ambient fill. With only the sun, the lateral view falls into shadow and
+    # reads much darker than the anterior and posterior ones sitting beside it
+    # in the composited strip.
+    _bg = scene.world.node_tree.nodes.get("Background")
+    if _bg:
+        _bg.inputs[0].default_value = (1.0, 1.0, 1.0, 1.0)
+        _bg.inputs[1].default_value = 0.55
+    sun_data = bpy.data.lights.new("panelsun", type="SUN")
+    sun_data.energy = 3.0
+    sun = bpy.data.objects.new("panelsun", sun_data)
+    scene.collection.objects.link(sun)
+EEVEE_ENGINE = scene.render.engine
 
 
 def principled(name, colour, roughness=0.5):
@@ -119,7 +159,18 @@ def principled(name, colour, roughness=0.5):
 # intrinsics, the deep spinal series — were hard to pick out at all. Red is
 # what the tissue actually is, and it separates cleanly from bone.
 highlight_mat = principled("panel_highlight", highlight_rgb, roughness=0.45)
-bone_mat = principled("panel_bone", (0.90, 0.88, 0.83, 1.0), roughness=0.6)
+highlight_mat.diffuse_color = highlight_rgb
+if APP_HIGHLIGHT:
+    # The same lift renderMusclePlates.py gives its HILITE_MAT, so a cyan
+    # structure reads as cyan in the shade and not as a dull teal.
+    try:
+        _hb = highlight_mat.node_tree.nodes["Principled BSDF"]
+        _hb.inputs["Emission Color"].default_value = (0.0, 0.85, 1.0, 1)
+        _hb.inputs["Emission Strength"].default_value = 0.35
+    except KeyError:
+        pass
+bone_mat = (boneLook.bone_material("panel_bone") if STUDIO
+            else principled("panel_bone", (0.90, 0.88, 0.83, 1.0), roughness=0.6))
 
 
 def bake_world_mesh(object_names, mesh_name):
@@ -189,15 +240,56 @@ def frame_camera(bbox_min, bbox_max, angle_deg, margin, elevation_deg=0.0):
     cam.location = loc
     cam.rotation_euler = (center - loc).to_track_quat('-Z', 'Y').to_euler()
     cam_data.ortho_scale = size * margin
-    # Keep the key light off the camera axis at any elevation, or a view from
-    # directly below renders flat and unreadable.
-    sun.rotation_euler = mathutils.Euler((0.9 - phi * 0.5, 0.3, 0.6 + theta), 'XYZ')
+    if STUDIO:
+        # Fixed to the camera, so every view is lit from over the viewer's left
+        # shoulder, from below the foot as much as from in front of the hand.
+        boneLook.aim_lights(cam, sun, fill)
+    else:
+        # Keep the key light off the camera axis at any elevation, or a view
+        # from directly below renders flat and unreadable.
+        sun.rotation_euler = mathutils.Euler((0.9 - phi * 0.5, 0.3, 0.6 + theta), 'XYZ')
 
 
 def clear_objects():
     for ob in list(scene.collection.objects):
-        if ob not in (cam, sun):
+        if ob not in (cam, sun, fill):
             scene.collection.objects.unlink(ob)
+
+
+def multiply_lines(path, line_path):
+    """The Workbench line pass multiplied over the lit render, where there is
+    something under it. Same as renderMusclePlates.py."""
+    import numpy as np
+    base = bpy.data.images.load(path)
+    line = bpy.data.images.load(line_path)
+    n = base.size[0] * base.size[1] * 4
+    bpx = np.empty(n, dtype=np.float32); base.pixels.foreach_get(bpx)
+    lpx = np.empty(n, dtype=np.float32); line.pixels.foreach_get(lpx)
+    bpx = bpx.reshape(-1, 4); lpx = lpx.reshape(-1, 4)
+    k = lpx[:, 3:4]
+    bpx[:, :3] *= lpx[:, :3] * k + (1 - k)
+    base.pixels.foreach_set(bpx.ravel())
+    base.filepath_raw = path
+    base.file_format = "PNG"
+    base.save()
+    bpy.data.images.remove(base)
+    bpy.data.images.remove(line)
+    os.remove(line_path)
+
+
+def render_to(path):
+    scene.render.filepath = path
+    bpy.ops.render.render(write_still=True)
+    if not STUDIO:
+        return
+    line_path = path[:-4] + ".lines.png"
+    scene.render.filepath = line_path
+    scene.render.engine = "BLENDER_WORKBENCH"
+    try:
+        bpy.ops.render.render(write_still=True)
+    finally:
+        scene.render.engine = EEVEE_ENGINE
+    multiply_lines(path, line_path)
 
 
 def link(mesh, name, material):
@@ -334,8 +426,7 @@ for mid in wanted:
             parts = [a.out, mid] if elev == 0 else [a.out, mid, f"elev{elev:+03.0f}"]
             path = os.path.abspath(os.path.join(*parts, leaf))
             os.makedirs(os.path.dirname(path), exist_ok=True)
-            scene.render.filepath = path
-            bpy.ops.render.render(write_still=True)
+            render_to(path)
             count += 1
 
     bpy.data.meshes.remove(mesh)

@@ -68,6 +68,21 @@ export const educatorDemoAliases = [
  * the explicit per-area download (CR-023 item 4) is how a student takes a
  * region offline on purpose.
  *
+ * THE CARD PANELS ARE THE ONE EXCEPTION, and are precached. public/anatomy/
+ * panels/ holds one picture per structure card — the bones, joints and
+ * landmarks that have no turntable to stand in for them — so it is the
+ * picture a student meets on opening a card, and a card with a blank where
+ * its picture should be is the first thing seen on a train. The folder is
+ * small enough to carry from install: 61 files, about 8 MB, the largest
+ * about 300 kB, against thousands of turntable frames everywhere else under
+ * anatomy/. And a precached file needs no cache-version bump: Workbox stamps
+ * each entry with a revision hash of its contents, so a re-rendered panel
+ * under the same filename is fetched again with the next service worker,
+ * where the runtime cache below has to be renamed (anatomyCache.ts) to let go
+ * of the old one. Precached URLs are answered by the precache route, which
+ * Workbox registers ahead of runtimeCaching, so a panel never also lands in
+ * the runtime cache or counts against its maxEntries.
+ *
  * It also asks for a NetworkFirst Workbox rule over Firestore. That is the
  * wrong tool and is not implemented: Firestore does not speak plain HTTP GET,
  * it runs a long-lived WebChannel, and putting a Workbox handler in front of
@@ -94,8 +109,12 @@ const pwa = (disable: boolean) =>
       // Shell and fonts only. woff2 is here because self-hosting them was
       // half of why offline works at all — a CDN font request fails with no
       // network and blocks first paint.
-      globPatterns: ['**/*.{js,css,html,svg,woff2}'],
-      globIgnores: ['**/anatomy/**'],
+      globPatterns: ['**/*.{js,css,html,svg,woff2}', 'anatomy/panels/*.webp'],
+      // Everything under anatomy/ stays runtime-only except panels/ — see the
+      // comment above. The first pattern matches no .webp, so naming panels/
+      // in globPatterns is what admits the pictures; this only has to stop
+      // ignoring that one folder.
+      globIgnores: ['**/anatomy/!(panels)/**'],
       navigateFallback: '/index.html',
       // The legal pages must stay reachable, but they are inside the SPA, so
       // the fallback covers them. Firestore and Google endpoints are excluded

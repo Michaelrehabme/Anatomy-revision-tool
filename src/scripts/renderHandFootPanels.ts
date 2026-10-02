@@ -144,7 +144,7 @@ const FOOT = {
  */
 const FAMILIES = [
   { kind: 'muscle', mapping: 'ta2-mapping.resolved.json', highlight: '0.76,0.27,0.25' },
-  { kind: 'skeletal', mapping: 'ta2-mapping-skeletal.resolved.json', highlight: '0.22,0.45,0.72' },
+  { kind: 'skeletal', mapping: 'ta2-mapping-skeletal.resolved.json', highlight: 'app' },
 ] as const;
 
 /** Half a view's width of empty space between the two faces. */
