@@ -1,10 +1,7 @@
 import type { AnatomyImageAsset } from '../../types/image';
 import { MUSCLE_PANELS } from './panels.generated';
-import type { Region, SubRegion } from '../../types/region';
-import { REGION_HOTSPOTS, REGION_PANEL_NAMES } from './hotspots.regions.generated';
 import { JOINT_PANELS } from './jointPanels.generated';
 import { BONE_PLATES } from './bonePlates.generated';
-import { DEEP_PLATES } from './deepPlates.generated';
 import { LANDMARK_PANELS } from './landmarkPanels.generated';
 import { SUBREGION_PLATES } from './subRegionPlates.generated';
 import { LIGAMENT_PLATES } from './ligamentPlates.generated';
@@ -34,12 +31,13 @@ import { MUSCLE_PLATES, layerOfPlate } from './musclePlates.generated';
  *    visibly soft. Note these deliberately show the muscle IN CONTEXT: the
  *    Z-Anatomy isolated renders are sharper still but float the muscle alone
  *    against white, which is worse for learning where it actually sits.
- * 2. 15 Z-Anatomy regional renders (anterior/lateral/posterior x 5 regions).
- *    These carry every hotspot in the app and are what makes locate questions
- *    work. Their hotspots and panel names come from the generated module, not
- *    from this file — see README "Adding hotspots".
+ * 2. (Gone.) The 15 Z-Anatomy regional muscle renders and the 15 deep-layer
+ *    plates were removed on 2 October 2026: every muscle they carried is asked
+ *    from its own turntable plate now, and no question or card was still
+ *    showing them. They were also the last plates drawn before the shared
+ *    bone look, so they read as old next to everything else.
  * 4. Joint locate images, one per joint per view, in /public/anatomy/joints/.
- *    Unlike set 2 these are NOT pre-highlighted: the skeleton is drawn plainly
+ *    Unlike the muscle panels these are NOT pre-highlighted: the skeleton is drawn plainly
  *    and framed on the joint, because a locate question on a panel that picks
  *    its own structure out in blue is answered by looking. The band a student
  *    has to click is the joint LINE — the space between the two articulating
@@ -121,43 +119,6 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
       hotspots: [],
       credit: Z_ANATOMY_CREDIT,
       licence: Z_ANATOMY_LICENCE,
-    }),
-  ),
-
-  // --- Z-Anatomy regional renders (15): 3 views x 5 regions ---
-  // Rendered from the Z-Anatomy 3D model; polygons are traced from the
-  // per-muscle Blender masks by src/scripts/masksToHotspots.ts. Both the
-  // hotspots and the panel names come from the generated module rather than
-  // being typed here, so they cannot drift from the renders they describe.
-  // Each view is one frame of the same turntable, so all three share a camera.
-  ...([
-    ['shoulder-arm', 'shoulder', 'Shoulder and Arm'],
-    ['back-core', 'spine', 'Back and Core'],
-    ['hip-thigh', 'hip', 'Hip and Thigh'],
-    ['lower-leg-foot', 'ankle-foot', 'Lower Leg and Foot'],
-    ['forearm-hand', 'wrist-hand', 'Forearm and Hand'],
-  ] as [Region, SubRegion, string][]).flatMap(([region, subregion, regionTitle]) =>
-    (['anterior', 'lateral', 'posterior'] as const).map((view): AnatomyImageAsset => {
-      const id = `region-${region}-${view}`;
-      return {
-        id,
-        filePath: `/anatomy/regions/${region}-${view}.webp`,
-        slideTitle: `${regionTitle} — ${view[0].toUpperCase()}${view.slice(1)} View`,
-        mode: 'atlas-slide',
-        panelStructureNames: REGION_PANEL_NAMES[id] ?? [],
-        region,
-        subregion,
-        view,
-        layer: 'superficial-muscle',
-        // Required, not decorative: HotspotImage derives its wrapper's
-        // aspect-ratio from these, and without them the rendered box stops
-        // matching the image 1:1 and every click normalises to the wrong point.
-        width: 1400,
-        height: 1400,
-        hotspots: REGION_HOTSPOTS[id] ?? [],
-        credit: Z_ANATOMY_CREDIT,
-        licence: Z_ANATOMY_LICENCE,
-      };
     }),
   ),
 
@@ -315,31 +276,6 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
       subregion: plate.subregion,
       view: plate.view,
       layer: 'skeletal',
-      width: plate.width,
-      height: plate.height,
-      hotspots: [],  // attached by seed/hotspots.ts; see the note there
-      credit: Z_ANATOMY_CREDIT,
-      licence: Z_ANATOMY_LICENCE,
-    };
-  }),
-
-  // --- Deep-muscle plates: the layer under the region plates ---
-  // 48 muscles sit behind something on the region plates, so the depth
-  // subtraction removed them and they never carried a hotspot. These draw only
-  // those muscles on the skeleton: nothing is in front of them because nothing
-  // in front of them is rendered. Rendered by renderDeepPlates.py.
-  ...DEEP_PLATES.map((plate): AnatomyImageAsset => {
-    const id = `deep-${plate.region}-${plate.view}`;
-    return {
-      id,
-      filePath: `/anatomy/deep/${plate.region}-${plate.view}.webp`,
-      slideTitle: `${plate.title} — Deep Layer, ${plate.view[0].toUpperCase()}${plate.view.slice(1)} View`,
-      mode: 'atlas-slide',
-      panelStructureNames: [],
-      region: plate.region,
-      subregion: plate.subregion,
-      view: plate.view,
-      layer: 'deep-muscle',
       width: plate.width,
       height: plate.height,
       hotspots: [],  // attached by seed/hotspots.ts; see the note there

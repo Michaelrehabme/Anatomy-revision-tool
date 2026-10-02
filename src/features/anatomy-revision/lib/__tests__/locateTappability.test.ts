@@ -85,7 +85,8 @@ describe('promptHighlightHotspots', () => {
   });
 
   it('still highlights on an atlas slide', () => {
-    const plate = imagesById.get('region-forearm-hand-anterior')!;
-    expect(promptHighlightHotspots(plate, 'flexor-carpi-radialis').length).toBeGreaterThan(0);
+    const plate = imagesById.get('sub-forearm-a000-plate')!;
+    expect(plate.mode).toBe('atlas-slide');
+    expect(promptHighlightHotspots(plate, 'extensor-carpi-radialis-brevis').length).toBeGreaterThan(0);
   });
 });

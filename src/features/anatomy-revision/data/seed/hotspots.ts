@@ -17,11 +17,6 @@ import { MUSCLE_HOTSPOT_SETS } from './hotspots.muscles.index.generated';
  * arrive with the content, which was always behind a loading state. Nothing is
  * lost offline — every chunk is still precached, just as its own file.
  *
- * THE REGION HOTSPOTS ARE THE EXCEPTION and stay with the images. Their module
- * also exports the region panels' structure names, which the image list is
- * built from, so importing it at all brings the whole module along. At 95 kB
- * it is not worth splitting the generator to separate them.
- *
  * Attaching mutates the image objects rather than copying them, because every
  * caller holds `AnatomyImageAsset` objects by reference — the repositories
  * hand out the same array, and re-creating them would leave a session grading
@@ -30,7 +25,6 @@ import { MUSCLE_HOTSPOT_SETS } from './hotspots.muscles.index.generated';
 const SETS: Record<string, () => Promise<Record<string, HotspotPolygon[]>>> = {
   joints: () => import('./hotspots.joints.generated').then((m) => m.JOINT_HOTSPOTS),
   bones: () => import('./hotspots.bones.generated').then((m) => m.BONE_HOTSPOTS),
-  deep: () => import('./hotspots.deep.generated').then((m) => m.DEEP_HOTSPOTS),
   landmarks: () => import('./hotspots.landmarks.generated').then((m) => m.LANDMARK_HOTSPOTS),
   subregions: () => import('./hotspots.subregions.generated').then((m) => m.SUBREGION_HOTSPOTS),
   // Ligaments come in seven area files: together they are past the 2 MiB a
