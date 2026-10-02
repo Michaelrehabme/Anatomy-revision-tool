@@ -5,6 +5,7 @@ import { Navigate, Route, Routes, useLocation, useNavigate, useParams } from 're
 import { useRepository } from './features/anatomy-revision/hooks/useRepository';
 import { useAuth } from './features/anatomy-revision/context/AuthProvider';
 import { useEntitlement, type UseEntitlement } from './features/anatomy-revision/hooks/useEntitlement';
+import { useOfflineAutoUpdate } from './features/pwa/offline/useOfflineAutoUpdate';
 import { useAnatomyContent, type AnatomyContent } from './features/anatomy-revision/hooks/useAnatomyContent';
 import { useRevisionSession } from './features/anatomy-revision/hooks/useRevisionSession';
 import { useIsDesktop } from './features/anatomy-revision/hooks/useIsDesktop';
@@ -225,6 +226,9 @@ function App() {
    * session rather than once per screen.
    */
   const entitlement = useEntitlement(userId);
+  // Small updates to areas downloaded for offline use are applied once the
+  // entitlement above has settled; larger ones wait behind a button.
+  useOfflineAutoUpdate(entitlement);
   const entitledAreas = entitlement.areas;
 
   // Seeded from onboarding's choice, and written back whenever the picker

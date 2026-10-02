@@ -7,6 +7,7 @@ import type { AreaRecord } from './offlineCache';
  *
  *   not-downloaded     nothing held                          Download
  *   downloading        a download is running now             Cancel
+ *   updating           a small update, applied unasked       (none)
  *   paused             some held, never finished             Resume · Remove
  *   downloaded         complete, and current as far as known Remove
  *   update-available   complete once, manifest since changed Update · Remove
@@ -17,7 +18,7 @@ import type { AreaRecord } from './offlineCache';
  * the pictures it will show, and telling a student on a train that an update
  * exists which they cannot fetch helps nobody.
  */
-export type AreaStatus = 'not-downloaded' | 'downloading' | 'paused' | 'downloaded' | 'update-available';
+export type AreaStatus = 'not-downloaded' | 'downloading' | 'updating' | 'paused' | 'downloaded' | 'update-available';
 
 export interface StatusFacts {
   /** What the device holds, or null for nothing. */
@@ -26,10 +27,12 @@ export interface StatusFacts {
   latestHash: string | null;
   /** Whether a download for this area is running now. */
   downloading: boolean;
+  /** Whether that download is one nobody asked for — a small update applied on start. */
+  quiet?: boolean;
 }
 
-export function areaStatus({ record, latestHash, downloading }: StatusFacts): AreaStatus {
-  if (downloading) return 'downloading';
+export function areaStatus({ record, latestHash, downloading, quiet = false }: StatusFacts): AreaStatus {
+  if (downloading) return quiet ? 'updating' : 'downloading';
   if (!record || Object.keys(record.files).length === 0) return 'not-downloaded';
   if (record.manifestHash === null) return 'paused';
   if (latestHash !== null && record.manifestHash !== latestHash) return 'update-available';
@@ -53,6 +56,10 @@ export function actionsFor(status: AreaStatus, locked: boolean): AreaAction[] {
       return locked ? [] : ['download'];
     case 'downloading':
       return ['cancel'];
+    case 'updating':
+      // A few seconds of work nobody asked for gets no buttons: one that
+      // appeared and vanished under a thumb would be worse than none.
+      return [];
     case 'paused':
       return locked ? ['remove'] : ['resume', 'remove'];
     case 'downloaded':

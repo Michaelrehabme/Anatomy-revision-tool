@@ -1,4 +1,4 @@
-import { render, screen, waitFor, within } from '@testing-library/react';
+import { act, render, screen, waitFor, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { describe, expect, it } from 'vitest';
 import { AREAS, type Area } from '../../../anatomy-revision/types/region';
@@ -82,9 +82,46 @@ describe('OfflineSection', () => {
     // Downloaded: nothing left to fetch, so the only button is the way back.
     expect(within(row('Elbow')).getAllByRole('button').map((b) => b.textContent)).toEqual(['Remove']);
 
-    screen.getByRole('button', { name: 'Remove Elbow' }).click();
+    // Remove asks first, in the row, and "Keep" changes nothing.
+    act(() => screen.getByRole('button', { name: 'Remove Elbow' }).click());
+    expect(within(row('Elbow')).getByText('Remove 10 MB of downloads?')).toBeInTheDocument();
+    const keep = screen.getByRole('button', { name: 'Keep Elbow downloads' });
+    expect(keep).toHaveFocus();
+    act(() => keep.click());
+    expect(fake.caches.has('locusmsk-offline-elbow')).toBe(true);
+    // …and the keyboard is back on the button it came from.
+    expect(screen.getByRole('button', { name: 'Remove Elbow' })).toHaveFocus();
+
+    act(() => screen.getByRole('button', { name: 'Remove Elbow' }).click());
+    act(() => screen.getByRole('button', { name: 'Remove Elbow downloads' }).click());
     await waitFor(() => expect(within(row('Elbow')).getByText(/Not downloaded/)).toBeInTheDocument());
     expect(fake.caches.has('locusmsk-offline-elbow')).toBe(false);
+  });
+
+  it('shows a quiet Updating… with no bar and no buttons while a small update is applied unasked', async () => {
+    let release: () => void = () => undefined;
+    const gate = new Promise<void>((resolve) => (release = resolve));
+    const { controller } = controllerWith({
+      download: async () => {
+        await gate;
+        throw new Error('stopped by the test');
+      },
+    });
+    show({ access: paid, controller });
+    await screen.findByRole('button', { name: 'Download Hip' });
+    const focused = screen.getByRole('button', { name: 'Download Knee' });
+    focused.focus();
+
+    act(() => void controller.download('hip', { quiet: true }));
+    expect(await within(row('Hip')).findByText(/Updating…/)).toBeInTheDocument();
+    expect(within(row('Hip')).queryByRole('progressbar')).toBeNull();
+    expect(within(row('Hip')).queryByRole('button')).toBeNull();
+    // Nothing the student was doing is disturbed.
+    expect(focused).toHaveFocus();
+
+    release();
+    await screen.findByRole('button', { name: 'Download Hip' });
+    expect(within(row('Hip')).queryByRole('alert')).toBeNull();
   });
 
   it('shows progress with a labelled bar while a download runs, and a Cancel button', async () => {

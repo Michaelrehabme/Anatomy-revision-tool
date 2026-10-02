@@ -1,4 +1,4 @@
-import { useEffect, useSyncExternalStore } from 'react';
+import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { Link } from 'react-router-dom';
 import { AREAS, AREA_LABELS, type Area } from '../../anatomy-revision/types/region';
 import type { UseEntitlement } from '../../anatomy-revision/hooks/useEntitlement';
@@ -48,6 +48,8 @@ function statusText(view: AreaView): string {
       return 'Not downloaded';
     case 'downloading':
       return `Downloading ${percentDone(view.doneBytes, view.totalBytes)}%`;
+    case 'updating':
+      return 'Updating…';
     case 'paused':
       return `Paused at ${percentDone(view.doneBytes, view.totalBytes)}%`;
     case 'downloaded':
@@ -67,6 +69,19 @@ interface OfflineSectionProps {
 
 export function OfflineSection({ access, compact = false, controller = offlineController() }: OfflineSectionProps) {
   const snapshot = useSyncExternalStore(controller.subscribe, controller.getSnapshot);
+  /** The area whose Remove has been pressed and is waiting for a yes or no. */
+  const [confirming, setConfirming] = useState<Area | null>(null);
+  const removeButtons = useRef(new Map<Area, HTMLButtonElement>());
+  const returnFocusTo = useRef<Area | null>(null);
+
+  // "Keep" puts the keyboard back where it came from. Only ever after a press
+  // in this row — nothing here moves focus on its own, so an update running in
+  // the background cannot pull it away from what the student is doing.
+  useEffect(() => {
+    if (confirming !== null || returnFocusTo.current === null) return;
+    removeButtons.current.get(returnFocusTo.current)?.focus();
+    returnFocusTo.current = null;
+  }, [confirming]);
 
   useEffect(() => {
     // Sizes, and whether anything held is out of date. Both calls are safe to
@@ -89,9 +104,25 @@ export function OfflineSection({ access, compact = false, controller = offlineCo
 
   const run = (action: AreaAction, area: Area) => {
     if (action === 'cancel') controller.cancel(area);
-    else if (action === 'remove') void controller.remove(area);
+    // Remove asks first, in the row: getting it back costs the student's data.
+    else if (action === 'remove') setConfirming(area);
     else void controller.download(area);
   };
+
+  const keep = (area: Area) => {
+    returnFocusTo.current = area;
+    setConfirming(null);
+  };
+
+  const buttonStyle = (primary: boolean) =>
+    ({
+      font: '500 13px/1 var(--font-ui)',
+      minHeight: compact ? 44 : 36,
+      minWidth: 84,
+      ...(primary
+        ? { background: 'var(--acc-fill)', color: 'var(--onacc)', border: '1.2px solid transparent' }
+        : { background: 'transparent', color: 'var(--ink2)', border: '1.2px solid var(--line)' }),
+    }) as const;
 
   return (
     <div className="mt-3">
@@ -159,28 +190,57 @@ export function OfflineSection({ access, compact = false, controller = offlineCo
                     See the plans
                   </Link>
                 )}
-                {actions.map((action) => {
-                  const primary = PRIMARY.has(action);
-                  return (
+                {confirming === area && actions.includes('remove') ? (
+                  <div role="group" aria-label={`Remove ${label} downloads?`} className="flex flex-wrap items-center gap-2">
+                    <span style={{ font: '400 13px/1.4 var(--font-ui)', color: 'var(--ink2)' }}>
+                      Remove {formatBytes(view.doneBytes)} of downloads?
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setConfirming(null);
+                        void controller.remove(area);
+                      }}
+                      aria-label={`Remove ${label} downloads`}
+                      className="rounded-[3px] px-3.5"
+                      style={buttonStyle(false)}
+                    >
+                      Remove
+                    </button>
+                    {/* Focus lands on the answer that loses nothing. */}
+                    <button
+                      type="button"
+                      autoFocus
+                      onClick={() => keep(area)}
+                      aria-label={`Keep ${label} downloads`}
+                      className="rounded-[3px] px-3.5"
+                      style={buttonStyle(true)}
+                    >
+                      Keep
+                    </button>
+                  </div>
+                ) : (
+                  actions.map((action) => (
                     <button
                       key={action}
                       type="button"
+                      ref={
+                        action === 'remove'
+                          ? (el) => {
+                              if (el) removeButtons.current.set(area, el);
+                              else removeButtons.current.delete(area);
+                            }
+                          : undefined
+                      }
                       onClick={() => run(action, area)}
                       aria-label={`${ACTION_LABELS[action]} ${label}`}
                       className="rounded-[3px] px-3.5"
-                      style={{
-                        font: '500 13px/1 var(--font-ui)',
-                        minHeight: compact ? 44 : 36,
-                        minWidth: 84,
-                        ...(primary
-                          ? { background: 'var(--acc-fill)', color: 'var(--onacc)', border: '1.2px solid transparent' }
-                          : { background: 'transparent', color: 'var(--ink2)', border: '1.2px solid var(--line)' }),
-                      }}
+                      style={buttonStyle(PRIMARY.has(action))}
                     >
                       {ACTION_LABELS[action]}
                     </button>
-                  );
-                })}
+                  ))
+                )}
               </div>
             </li>
           );

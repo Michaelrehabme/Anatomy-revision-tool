@@ -1508,9 +1508,10 @@ export const CHANGE_REQUESTS_SEED: ChangeRequest[] = [
       'against a SHA-256 in a manifest written at build time (npm run generate:offline, run by npm run build, output not ' +
       'committed), and is served by the service worker ahead of the runtime cache. Which files an area needs is asked of the ' +
       'session generators themselves, and a test fails if a session can show a picture its area does not hold. A free account ' +
-      'can download its one free area. NOT DONE: the gate is client-side like the rest of the paywall; an update is offered, ' +
-      'never applied on its own, so a downloaded area shows its old pictures until the student presses Update; and nothing ' +
-      'has been tried on a real iPhone, where Safari may evict storage for a site not on the Home Screen.',
+      'can download its one free area. An update of 5MB or less is applied on start without asking, once the entitlement has ' +
+      'been read and unless the browser is set to save data; anything larger waits behind an Update button, and until it is ' +
+      'pressed that area goes on showing its old pictures. NOT DONE: the gate is client-side like the rest of the paywall, ' +
+      'and nothing has been tried on a real iPhone, where Safari may evict storage for a site not on the Home Screen.',
   },
   {
     ref: 'CR-024',

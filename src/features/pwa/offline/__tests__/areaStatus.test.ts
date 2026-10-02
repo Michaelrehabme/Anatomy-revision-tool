@@ -16,6 +16,11 @@ describe('areaStatus', () => {
     expect(areaStatus({ record: complete, latestHash: '2222222222222222', downloading: true })).toBe('downloading');
   });
 
+  it('is updating, not downloading, when the download is one nobody asked for', () => {
+    expect(areaStatus({ record: complete, latestHash: '2222222222222222', downloading: true, quiet: true })).toBe('updating');
+    expect(actionsFor('updating', false)).toEqual([]);
+  });
+
   it('is paused when some arrived and it never finished', () => {
     expect(areaStatus({ record: partial, latestHash: '1111111111111111', downloading: false })).toBe('paused');
   });

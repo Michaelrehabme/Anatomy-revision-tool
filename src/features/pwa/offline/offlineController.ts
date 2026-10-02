@@ -7,8 +7,9 @@ import {
   downloadArea,
   type DownloadOptions,
 } from './downloadArea';
-import { formatBytes, parseOfflineIndex, type OfflineIndex } from './manifest';
-import { readAllRecords, removeAreaCache, type AreaRecord } from './offlineCache';
+import { autoUpdateDecision } from './autoUpdate';
+import { diffManifest, formatBytes, parseOfflineIndex, type OfflineIndex } from './manifest';
+import { offlineCacheName, readAllRecords, removeAreaCache, writeRecord, type AreaRecord } from './offlineCache';
 import { staticOfflineSource, type OfflineSource } from './offlineSource';
 
 /**
@@ -83,6 +84,10 @@ export class OfflineController {
   /** True once an index has come from the network this session, rather than from the memo. */
   private indexIsFresh = false;
   private active = new Map<Area, AbortController>();
+  /** The running downloads nobody pressed a button for. */
+  private quiet = new Set<Area>();
+  private autoApplying = false;
+  private autoApplyAgain: Parameters<OfflineController['autoApplyUpdates']>[0] | null = null;
   private progress = new Map<Area, number>();
   private errors = new Map<Area, string>();
   private freeBytes: number | null = null;
@@ -154,14 +159,97 @@ export class OfflineController {
     return Object.keys(this.records).length > 0;
   }
 
-  /** Starts, resumes or updates an area. A second call while one is running is ignored. */
-  async download(area: Area): Promise<void> {
+  /**
+   * Brings stale downloads up to date without being asked, where that is
+   * cheap and allowed (autoUpdate.ts has the rule and the reasons). Called
+   * once the entitlement has settled, and again if it changes; an area
+   * already current, or already downloading, is passed over, so repeating it
+   * costs one small request.
+   *
+   * FILES AN AREA NO LONGER INCLUDES ARE DELETED WHATEVER THE DECISION. A
+   * retired plate is never shown again, so holding it is storage spent on
+   * nothing — and deleting needs no download, no data and no entitlement.
+   *
+   * A quiet update that fails says nothing. The area is left as "Update
+   * available" with its button, which is exactly where it would have been had
+   * this never run; an error message about something the student did not ask
+   * for would only read as the app breaking.
+   */
+  async autoApplyUpdates(facts: { canAccess: (area: Area) => boolean; saveData: boolean; online: boolean }): Promise<void> {
+    await this.start();
+    const { storage } = this.deps;
+    if (this.support !== 'ready' || !storage || !this.hasDownloads() || !facts.online) return;
+    // One pass at a time: the entitlement settling twice in quick succession
+    // must not start two diffs over the same record.
+    // The later call is not dropped, though — it carries the newer
+    // entitlement, and runs when this pass is done.
+    if (this.autoApplying) {
+      this.autoApplyAgain = facts;
+      return;
+    }
+    this.autoApplying = true;
+    try {
+      if (!this.indexIsFresh) await this.refreshIndex();
+      for (const area of AREAS) {
+        if (this.snapshot.areas[area].status !== 'update-available') continue;
+        const record = this.records[area];
+        if (!record) continue;
+        let diff;
+        try {
+          diff = diffManifest(await this.deps.source.fetchManifest(area), record.files);
+        } catch {
+          continue;
+        }
+        const decision = autoUpdateDecision({
+          online: facts.online,
+          entitled: facts.canAccess(area),
+          saveData: facts.saveData,
+          fetchBytes: diff.fetchBytes,
+        });
+        if (decision === 'apply') await this.download(area, { quiet: true });
+        else if (diff.toDelete.length > 0) await this.prune(storage, record, diff.toDelete);
+      }
+    } finally {
+      this.autoApplying = false;
+    }
+    const again = this.autoApplyAgain;
+    this.autoApplyAgain = null;
+    if (again) await this.autoApplyUpdates(again);
+  }
+
+  /** Deletes retired files from an area that is otherwise being left as it is. */
+  private async prune(storage: CacheStorage, record: AreaRecord, urls: readonly string[]): Promise<void> {
+    try {
+      const cache = await storage.open(offlineCacheName(record.area));
+      const files = { ...record.files };
+      let bytes = record.bytes;
+      for (const url of urls) {
+        // The record does not keep sizes; the copy being deleted knows its own.
+        const held = await cache.match(url);
+        if (held) bytes -= (await held.arrayBuffer()).byteLength;
+        await cache.delete(url);
+        delete files[url];
+      }
+      await writeRecord(storage, { ...record, files, bytes: Math.max(0, bytes) });
+      this.records = await readAllRecords(storage);
+      this.emit();
+    } catch {
+      // Left for the next start, or for the update itself, to clear.
+    }
+  }
+
+  /**
+   * Starts, resumes or updates an area. A second call while one is running is
+   * ignored. `quiet` is the unasked update: no progress bar, no error text.
+   */
+  async download(area: Area, { quiet = false }: { quiet?: boolean } = {}): Promise<void> {
     await this.start();
     const { storage, storageManager } = this.deps;
     if (this.support !== 'ready' || !storage || this.active.has(area)) return;
 
     const abort = new AbortController();
     this.active.set(area, abort);
+    if (quiet) this.quiet.add(area);
     this.errors.delete(area);
     this.progress.set(area, this.records[area]?.bytes ?? 0);
     this.emit();
@@ -194,9 +282,10 @@ export class OfflineController {
       });
     } catch (error) {
       const message = describeFailure(error);
-      if (message) this.errors.set(area, message);
+      if (message && !quiet) this.errors.set(area, message);
     } finally {
       this.active.delete(area);
+      this.quiet.delete(area);
       this.progress.delete(area);
       // The record on the device is the truth about what arrived, whichever
       // way the download ended.
@@ -253,6 +342,7 @@ export class OfflineController {
           // can only ever say what was current the last time it was online.
           latestHash: this.indexIsFresh ? (this.index?.areas[area].hash ?? null) : null,
           downloading,
+          quiet: this.quiet.has(area),
         }),
         totalBytes: this.index?.areas[area].bytes ?? null,
         doneBytes: downloading ? (this.progress.get(area) ?? 0) : (record?.bytes ?? 0),
@@ -309,8 +399,9 @@ export function offlineController(): OfflineController {
  * "Update available" the moment it is opened rather than after a spinner.
  *
  * It only MARKS. Nothing is fetched beyond the index — a few hundred bytes —
- * because an update can be tens of megabytes and the student may be on mobile
- * data; whether to spend it is theirs to decide.
+ * because at this moment nobody knows yet whether the account may still have
+ * the area: the entitlement is read after sign-in settles. Applying the small
+ * updates is useOfflineAutoUpdate's job, once it does.
  */
 export async function checkOfflineUpdatesOnStart(): Promise<void> {
   const controller = offlineController();
