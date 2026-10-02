@@ -1500,7 +1500,17 @@ export const CHANGE_REQUESTS_SEED: ChangeRequest[] = [
       '~536KB of anatomy seed content, which is static in the bundle deliberately so offline needs no fetch — the point of this ' +
       'whole CR. manualChunks for firebase would change nothing. If first paint needs improving, the real lever is lazy-loading ' +
       'the content itself, which conflicts with offline-first and should be decided rather than assumed.\n\n' +
-      'Icons remain blocked on the logo (CR-028 part 2), which blocks the manifest and therefore installability.',
+      'Icons remain blocked on the logo (CR-028 part 2), which blocks the manifest and therefore installability.\n\n' +
+      'ITEM 4, THE PER-AREA DOWNLOAD, IS BUILT (2 October 2026) — features/pwa/offline/. It had been promised by a comment in ' +
+      'vite.config.ts and by the FAQ for weeks without existing: pictures were only runtime-cached, the most recent 400 for a ' +
+      'month, against 5,130 files and 308MB. The Account screen now lists the nine areas with their size (10MB elbow to 62MB ' +
+      'ankle and foot); a download goes into its own cache per area, outside the 400 and the month, is checked file by file ' +
+      'against a SHA-256 in a manifest written at build time (npm run generate:offline, run by npm run build, output not ' +
+      'committed), and is served by the service worker ahead of the runtime cache. Which files an area needs is asked of the ' +
+      'session generators themselves, and a test fails if a session can show a picture its area does not hold. A free account ' +
+      'can download its one free area. NOT DONE: the gate is client-side like the rest of the paywall; an update is offered, ' +
+      'never applied on its own, so a downloaded area shows its old pictures until the student presses Update; and nothing ' +
+      'has been tried on a real iPhone, where Safari may evict storage for a site not on the Home Screen.',
   },
   {
     ref: 'CR-024',

@@ -15,6 +15,16 @@ import { purgeStaleAnatomyCaches } from './features/pwa/anatomyCache.ts';
 // dropped before the first one is asked for.
 void purgeStaleAnatomyCaches();
 
+// Areas downloaded for offline use are checked against the current deploy, so
+// the Account screen can say "Update available" as soon as it is opened. A
+// dynamic import: the downloader is not in the entry chunk, and the public demo
+// has no service worker to download for.
+if (import.meta.env.VITE_PUBLIC_DEMO !== '1') {
+  void import('./features/pwa/offline/offlineController.ts')
+    .then((m) => m.checkOfflineUpdatesOnStart())
+    .catch(() => undefined);
+}
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>

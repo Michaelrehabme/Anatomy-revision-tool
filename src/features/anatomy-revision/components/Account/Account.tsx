@@ -7,6 +7,7 @@ import { CohortMembership } from '../shared/CohortMembership';
 import { SubscriptionSummary } from '../shared/SubscriptionSummary';
 import { ThemeControls } from '../shared/ThemeControls';
 import { LegalLinks } from '../shared/LegalLinks';
+import { OfflineDownloads } from '../../../pwa/offline/OfflineDownloads';
 import type { UseEntitlement } from '../../hooks/useEntitlement';
 import { AccuracyTrendChart } from '../shared/AccuracyTrendChart';
 import { MyClasses } from './MyClasses';
@@ -171,6 +172,11 @@ export function Account({ access, content, repository, userId, onNavigate }: Acc
             <ThemeControls />
           </div>
         </section>
+
+        {/* Per-device like appearance, and for the same reason outside the
+            signed-in block: a download belongs to this browser, not to an
+            account, and a guest revising on a train needs it as much. */}
+        <OfflineDownloads access={access} headingStyle={heading} className="mt-12" />
 
         {AUTH_ENABLED && user && (
           <section className="mt-12" style={{ maxWidth: 620 }}>

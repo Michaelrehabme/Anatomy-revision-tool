@@ -5,6 +5,7 @@ import { CohortMembership } from '../shared/CohortMembership';
 import { SubscriptionSummary } from '../shared/SubscriptionSummary';
 import { ThemeControls } from '../shared/ThemeControls';
 import { LegalLinks } from '../shared/LegalLinks';
+import { OfflineDownloads } from '../../../pwa/offline/OfflineDownloads';
 import type { UseEntitlement } from '../../hooks/useEntitlement';
 import { AccuracyTrendChart } from '../shared/AccuracyTrendChart';
 import { MyClasses } from '../Account/MyClasses';
@@ -148,6 +149,14 @@ export function MobileAccount({ access, content, repository, userId, onNavigateT
             <ThemeControls compact />
           </div>
         </section>
+
+        {/* Outside the signed-in block — see Account.tsx for why. */}
+        <OfflineDownloads
+          access={access}
+          compact
+          className="mt-9"
+          headingStyle={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 20, letterSpacing: '-.01em', margin: 0 }}
+        />
 
         {AUTH_ENABLED && user && (
           <section className="mt-9">

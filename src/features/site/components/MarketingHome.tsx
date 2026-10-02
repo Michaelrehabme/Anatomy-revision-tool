@@ -57,7 +57,7 @@ const FAQS = [
   },
   {
     q: 'Does it work offline?',
-    a: 'Yes. Sessions and images are cached, so a train journey or a basement dissection room is fine. Your progress syncs when you are back online.',
+    a: 'Yes. Questions work with no signal, and you can download the pictures for an area to your device beforehand, so a train journey or a basement dissection room is fine. Your progress syncs when you are back online.',
   },
   {
     q: 'Can I cancel?',
