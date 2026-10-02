@@ -294,8 +294,8 @@ describe('fact mastery (CR-018)', () => {
       streak: 1,
       typed: false,
     });
-    // OINA still feeds the per-structure SM-2 row as well.
-    expect(await repository.getMasteryForStructure('user-1', 'biceps-femoris')).not.toBeNull();
+    // Facts no longer touch the structure's naming row (2 Oct 2026).
+    expect(await repository.getMasteryForStructure('user-1', 'biceps-femoris')).toBeNull();
   });
 
   it('promotes a fact to typed recall after three correct answers', async () => {
@@ -321,6 +321,20 @@ describe('fact mastery (CR-018)', () => {
     // Promoted to typed WITH hints; the streak starts again for the next stage.
     expect(row.bare).toBe(false);
     expect(row.streak).toBe(0);
+  });
+
+  it('moves only the schedule of the fact, never the naming row of the structure (2 Oct 2026)', async () => {
+    const repository = createMemoryRepository();
+    const question = oinaQuestion();
+    const { result } = renderHook(() => useRevisionSession(repository, 'user-1'));
+    act(() => result.current.start([question], { types: ['oina'], mode: 'practice' }));
+    await act(async () => {
+      await result.current.submitAnswer({ questionId: question.id, structureId: question.structureId, correct: false, confidence: 'hard' });
+    });
+    expect(await repository.getMasteryForStructure('user-1', question.structureId)).toBeNull();
+    const [fact] = await repository.listFactMastery('user-1');
+    expect(fact.dueAt).toBeDefined();
+    expect(fact.intervalDays).toBe(1);
   });
 });
 

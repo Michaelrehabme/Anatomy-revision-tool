@@ -8,6 +8,8 @@ interface HotspotOverlayProps {
   /** Where the student actually clicked, normalized [0,1] — rendered as a marker after answering. */
   clickPoint?: [number, number] | null;
   clickWasCorrect?: boolean;
+  /** Draw a scorable target as rings even with no mark on this frame — the student tapped another angle. Defaults to whether there is a click. */
+  scored?: boolean;
 }
 
 /**
@@ -32,7 +34,7 @@ interface HotspotOverlayProps {
  * vertex. Bands go outermost first and paint over each other, exactly as a
  * target face is printed.
  */
-export function HotspotOverlay({ hotspots, highlightStructureId, clickPoint, clickWasCorrect }: HotspotOverlayProps) {
+export function HotspotOverlay({ hotspots, highlightStructureId, clickPoint, clickWasCorrect, scored }: HotspotOverlayProps) {
   return (
     <svg
       className="pointer-events-none absolute inset-0 h-full w-full"
@@ -54,7 +56,7 @@ export function HotspotOverlay({ hotspots, highlightStructureId, clickPoint, cli
               hotspot={hotspot}
               // A reveal without a click (an MCQ answer, the atlas, the dev
               // editor) is answering "where is it", not "how close were you".
-              scored={Boolean(clickPoint)}
+              scored={scored ?? Boolean(clickPoint)}
             />
           );
         }

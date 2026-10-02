@@ -44,7 +44,7 @@ const MS_PER_DAY = 24 * 60 * 60 * 1000;
  * single lucky first answer reads as 100% mastered and buries the structure,
  * and a single unlucky one pins it to the top of every session for days.
  */
-function smoothedAccuracy(mastery: StructureMastery): number {
+function smoothedAccuracy(mastery: Pick<StructureMastery, 'attemptsTotal' | 'attemptsCorrect'>): number {
   return (mastery.attemptsCorrect + 1) / (mastery.attemptsTotal + 2);
 }
 
@@ -52,7 +52,7 @@ function smoothedAccuracy(mastery: StructureMastery): number {
  * How much the SM-2-lite review schedule wants this structure right now.
  * Returns 1 for a structure with no schedule yet (confidence never rated).
  */
-function dueFactor(mastery: StructureMastery, now: Date): number {
+function dueFactor(mastery: Pick<StructureMastery, 'dueAt' | 'intervalDays'>, now: Date): number {
   if (!mastery.dueAt) return 1;
 
   const dueAt = new Date(mastery.dueAt).getTime();
@@ -74,7 +74,10 @@ function dueFactor(mastery: StructureMastery, now: Date): number {
 }
 
 /** Selection weight for one structure. `undefined` mastery means never attempted. */
-export function structureWeight(mastery: StructureMastery | undefined, now: Date = new Date()): number {
+export function structureWeight(
+  mastery: Pick<StructureMastery, 'attemptsTotal' | 'attemptsCorrect' | 'dueAt' | 'intervalDays'> | undefined,
+  now: Date = new Date(),
+): number {
   if (!mastery || mastery.attemptsTotal <= 0) return UNSEEN_WEIGHT;
 
   const accuracyFactor = 1 + (1 - smoothedAccuracy(mastery)) * ACCURACY_SPREAD;

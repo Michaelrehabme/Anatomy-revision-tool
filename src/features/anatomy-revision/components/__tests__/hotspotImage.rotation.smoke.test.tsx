@@ -95,9 +95,15 @@ describe('HotspotImage with a rotation set', () => {
     expect(result.correct).toBe(false);
   });
 
-  it('locks rotation once answered', () => {
-    render(<HotspotImage image={frames[0]} frames={frames} targetStructureId="target" onAnswer={vi.fn()} />);
+  it('keeps turning after the answer, but takes no second pick', () => {
+    const onAnswer = vi.fn();
+    render(<HotspotImage image={frames[0]} frames={frames} targetStructureId="target" onAnswer={onAnswer} />);
     fireEvent.click(screen.getByRole('button', { name: /Test 0/ }), { clientX: 100, clientY: 100 });
-    expect(screen.getByLabelText('Rotate right')).toBeDisabled();
+    expect(onAnswer).toHaveBeenCalledTimes(1);
+    expect(screen.getByLabelText('Rotate right')).toBeEnabled();
+    fireEvent.click(screen.getByLabelText('Rotate right'));
+    expect((screen.getByRole('img') as HTMLImageElement).src).toContain('/x/270.webp');
+    fireEvent.click(screen.getByRole('group', { name: /Test 270/ }), { clientX: 100, clientY: 100 });
+    expect(onAnswer).toHaveBeenCalledTimes(1);
   });
 });

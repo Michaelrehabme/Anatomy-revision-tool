@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { factsIndex, masteryLevel } from '../masteryLevel';
+import { factLevel, factsIndex, masteryLevel, structureLevel } from '../masteryLevel';
 import { requiredFactKinds } from '../factMastery';
 import { ALL_STRUCTURES } from '../../data/seed';
 import type { FactKind } from '../../types/question';
@@ -73,10 +73,9 @@ describe('masteryLevel', () => {
   });
 });
 
-describe('masteryLevel with facts (29 Sep 2026)', () => {
+describe('structureLevel: the average of the question types met (2 Oct 2026)', () => {
   const structure = ALL_STRUCTURES.find((s) => s.id === 'deltoid')!;
-  const named = row({ rung: 'typed-bare', rungStreak: 3 });
-  const done = (kind: FactKind): FactMastery => ({
+  const fact = (kind: FactKind, overrides: Partial<FactMastery> = {}): FactMastery => ({
     userId: 'u',
     structureId: 'deltoid',
     promptKind: kind,
@@ -88,29 +87,63 @@ describe('masteryLevel with facts (29 Sep 2026)', () => {
     lastAttemptAt: NOW.toISOString(),
     typed: kind !== 'blood-supply-rating',
     bare: kind !== 'blood-supply-rating',
+    ...overrides,
   });
+  const master = row({ rung: 'typed-bare', rungStreak: 3 });
 
-  it('needs the blood supply facts as well as the muscle ones', () => {
-    expect(requiredFactKinds(structure)).toEqual(expect.arrayContaining(['origin', 'blood-supply', 'blood-supply-rating']));
-  });
-
-  it('holds a structure named unaided at Advanced while any fact is outstanding', () => {
-    const kinds = requiredFactKinds(structure);
-    const partial = factsIndex(kinds.slice(1).map(done));
-    const state = masteryLevel(named, NOW, { structure, factsByKey: partial });
+  it('averages only the types met, rounded down, and lists the rest', () => {
+    // Naming Master (4), origin Intermediate (2), insertion Advanced (3): 9 / 3 = 3.
+    const facts = factsIndex([
+      fact('origin', { bare: false, streak: 0 }),
+      fact('insertion', { streak: 1 }),
+    ]);
+    const state = structureLevel(structure, master, facts, NOW);
     expect(state.level).toBe('advanced');
-    expect(state.factsLeft).toEqual([kinds[0]]);
-    expect(state.next).toMatch(/^Recall from memory: /);
+    expect(state.unmet).toContain('nerve');
+    expect(state.unmet).not.toContain('identify');
+    expect(state.next).toMatch(/^Origin: /);
   });
 
-  it('makes it Master once every fact is complete', () => {
-    const all = factsIndex(requiredFactKinds(structure).map(done));
-    expect(masteryLevel(named, NOW, { structure, factsByKey: all })).toMatchObject({ level: 'master', factsLeft: [] });
+  it('rounds down, so one weak type keeps the average under it', () => {
+    // Naming Master (4), origin Novice (1): 5 / 2 = 2.5 → Intermediate.
+    const state = structureLevel(structure, master, factsIndex([fact('origin', { typed: false, bare: false, streak: 0 })]), NOW);
+    expect(state.level).toBe('intermediate');
   });
 
-  it('does not let finished facts lift a structure that cannot yet be named', () => {
-    const all = factsIndex(requiredFactKinds(structure).map(done));
-    expect(masteryLevel(row({ rung: 'mcq' }), NOW, { structure, factsByKey: all }).level).toBe('novice');
+  it('is Master only when every type is met and at Master', () => {
+    const all = requiredFactKinds(structure).map((k) => fact(k));
+    expect(structureLevel(structure, master, factsIndex(all), NOW)).toMatchObject({ level: 'master', unmet: [] });
+    const allButOne = all.slice(1);
+    expect(structureLevel(structure, master, factsIndex(allButOne), NOW).level).toBe('advanced');
+  });
+
+  it('counts a structure met through a fact alone as seen', () => {
+    const state = structureLevel(structure, undefined, factsIndex([fact('origin', { typed: false, bare: false, streak: 1 })]), NOW);
+    expect(state).toMatchObject({ seen: true, level: 'novice' });
+    expect(state.unmet).toContain('identify');
+  });
+
+  it('is an unmet Beginner with nothing answered', () => {
+    expect(structureLevel(structure, undefined, new Map(), NOW)).toMatchObject({ level: 'beginner', seen: false });
+  });
+});
+
+describe('factLevel', () => {
+  const base = { userId: 'u', structureId: 'deltoid', attemptsTotal: 4, attemptsCorrect: 4, missStreak: 0, lastCorrect: true, lastAttemptAt: NOW.toISOString() };
+  it('maps the OINA stages to levels', () => {
+    expect(factLevel('origin', { ...base, promptKind: 'origin', streak: 1, typed: false }, NOW)?.level).toBe('novice');
+    expect(factLevel('origin', { ...base, promptKind: 'origin', streak: 1, typed: true, bare: false }, NOW)?.level).toBe('intermediate');
+    expect(factLevel('origin', { ...base, promptKind: 'origin', streak: 1, typed: true, bare: true }, NOW)?.level).toBe('advanced');
+    expect(factLevel('origin', { ...base, promptKind: 'origin', streak: 3, typed: true, bare: true }, NOW)?.level).toBe('master');
+  });
+
+  it('reads a multiple-choice-only type by its run of right answers', () => {
+    const rating = (streak: number) => factLevel('blood-supply-rating', { ...base, promptKind: 'blood-supply-rating', streak, typed: false }, NOW)?.level;
+    expect([0, 1, 2, 3].map(rating)).toEqual(['novice', 'intermediate', 'advanced', 'master']);
+  });
+
+  it('is null when never answered', () => {
+    expect(factLevel('origin', undefined, NOW)).toBeNull();
   });
 });
 

@@ -2,14 +2,21 @@ import type { FactMastery, StructureMastery } from '../types/attempt';
 import type { AnatomyStructure } from '../types/structure';
 import type { FactKind } from '../types/question';
 import { LADDER_CONFIG, rungFor } from './ladder';
-import { factMasteryKey, outstandingFacts } from './factMastery';
+import {
+  FACT_MASTERY_CONFIG,
+  factDueAt,
+  factIntervalDays,
+  factMasteryKey,
+  factStage,
+  isStagedFactKind,
+  requiredFactKinds,
+} from './factMastery';
 
 /**
- * The level a structure reads as, named for the student — the ladder's rung
- * (lib/ladder.ts) with one step on top:
+ * The level a question type reads as, named for the student:
  *
  *   Beginner      never met, or only shown on a flashcard
- *   Novice        recognised from options (MCQ)
+ *   Novice        recognised from options (MCQ / select)
  *   Intermediate  recalled by typing, with the letter-count and first-letter hints
  *   Advanced      recalled by typing, no hints
  *   Master        the last three typed answers without hints all right
@@ -17,26 +24,15 @@ import { factMasteryKey, outstandingFacts } from './factMastery';
  * Why levels and not a percentage: all-time accuracy keeps every answer the
  * student gave while they were still learning, so a structure they now know
  * cold can sit at 60% for weeks. A level only says what the student can do
- * NOW — each rung is earned by answers at that rung, and two misses in a row
- * take it away again.
+ * NOW — each stage is earned by answers at that stage, and two misses in a
+ * row take it away again.
  *
- * Master needs no stored state of its own. Typed-bare is the top rung, so
- * nothing promotes off it, and promoteOrDemote keeps counting consecutive
- * correct answers there in rungStreak — zeroed on the way in and on any miss.
- * A rungStreak of three on typed-bare IS "the last three typed answers without
- * hints were right".
- *
- * AND THE FACTS (owner, 29 Sep 2026). Naming alone is not mastering a
- * structure: Master also needs every fact it carries at its final stage —
- * a muscle's origin, insertion, nerve and action, and blood supply (the
- * primary and assisting arteries typed without hints, "how rich" right three
- * running). See lib/factMastery.ts requiredFactKinds. The levels below Master
- * still read naming alone.
- *
- * EVERY SCREEN MUST PASS `context`. Without it there is nothing to check the
- * facts against, and the level falls back to naming alone — which would call
- * a structure Master on its name. `context` is optional only so the naming
- * ladder can be tested on its own.
+ * PER QUESTION TYPE (owner, 2 Oct 2026). Naming the deltoid and knowing its
+ * origin are levelled — and scheduled — separately: naming on the structure's
+ * ladder (masteryLevel, lib/ladder.ts), each fact on its own row (factLevel,
+ * lib/factMastery.ts). A STRUCTURE's level is the average of the types the
+ * student has met, rounded down (structureLevel); Master needs every type met
+ * and at Master.
  */
 export type MasteryLevel = 'beginner' | 'novice' | 'intermediate' | 'advanced' | 'master';
 
@@ -62,36 +58,24 @@ export interface MasteryLevelState {
   fading: boolean;
   /** What the next level takes, for the structure card. Null at Master. */
   next: string | null;
-  /** The facts still short of their final stage, when facts were supplied. Empty at Master. */
-  factsLeft: FactKind[];
 }
 
-/** What a level needs to see about the structure's facts. */
-export interface FactContext {
-  structure: AnatomyStructure;
-  /** Every fact row, or just this structure's — keyed with factMasteryKey. */
-  factsByKey: ReadonlyMap<string, FactMastery>;
-}
+/** A question type of a structure: naming, or one of its facts. */
+export type SkillKind = 'identify' | FactKind;
 
-const FACT_WORDS: Record<FactKind, string> = {
-  origin: 'origin',
-  insertion: 'insertion',
-  nerve: 'nerve',
-  action: 'action',
-  'blood-supply': 'primary artery',
-  'blood-supply-assisting': 'other arteries',
-  'blood-supply-rating': 'how rich its supply is',
+export const SKILL_LABELS: Partial<Record<SkillKind, string>> = {
+  identify: 'Naming',
+  origin: 'Origin',
+  insertion: 'Insertion',
+  nerve: 'Nerve supply',
+  action: 'Action',
+  'blood-supply': 'Primary artery',
+  'blood-supply-assisting': 'Other arteries',
+  'blood-supply-rating': 'How rich its supply is',
 };
 
-export function factsLeftText(left: readonly FactKind[]): string {
-  const words = left.map((k) => FACT_WORDS[k]);
-  const list = words.length > 1 ? `${words.slice(0, -1).join(', ')} and ${words[words.length - 1]}` : words[0];
-  return `Recall from memory: ${list}`;
-}
-
-/** Index a list of fact rows for FactContext. */
-export function factsIndex(rows: readonly FactMastery[]): Map<string, FactMastery> {
-  return new Map(rows.map((f) => [factMasteryKey(f.structureId, f.promptKind), f]));
+export function skillLabel(kind: SkillKind): string {
+  return SKILL_LABELS[kind] ?? kind.replace(/-/g, ' ');
 }
 
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -100,18 +84,19 @@ function plural(n: number, one: string, many: string): string {
   return `${n} ${n === 1 ? one : many}`;
 }
 
-export function masteryLevel(
-  mastery: StructureMastery | undefined,
-  now: Date = new Date(),
-  context?: FactContext,
-): MasteryLevelState {
-  const factsLeft = context ? outstandingFacts(context.structure, context.factsByKey) : [];
-  if (!mastery) return { level: 'beginner', seen: false, fading: false, next: 'Meet it in a session', factsLeft };
+function isFading(dueAt: string | undefined, intervalDays: number | undefined, now: Date): boolean {
+  const overdueMs = dueAt ? now.getTime() - new Date(dueAt).getTime() : 0;
+  return overdueMs > (intervalDays ?? 1) * DAY_MS;
+}
+
+/** The NAMING level: the structure's ladder rung, with Master on top. */
+export function masteryLevel(mastery: StructureMastery | undefined, now: Date = new Date()): MasteryLevelState {
+  if (!mastery) return { level: 'beginner', seen: false, fading: false, next: 'Meet it in a session' };
 
   // A flashcard-only row sits on the MCQ rung (markSeen) but has never been
   // answered; it has been shown, not learned.
   if (mastery.attemptsTotal === 0) {
-    return { level: 'beginner', seen: true, fading: false, next: 'Answer it once', factsLeft };
+    return { level: 'beginner', seen: true, fading: false, next: 'Answer it once' };
   }
 
   const streak = mastery.rungStreak ?? 0;
@@ -125,7 +110,6 @@ export function masteryLevel(
         seen: true,
         fading: false,
         next: `${plural(toPromote, 'more right answer', 'more right answers')} in a row`,
-        factsLeft,
       };
     case 'typed-hinted':
       return {
@@ -133,7 +117,6 @@ export function masteryLevel(
         seen: true,
         fading: false,
         next: `${plural(toPromote, 'more typed answer', 'more typed answers')} with hints`,
-        factsLeft,
       };
     case 'typed-bare': {
       if (streak < LADDER_CONFIG.masterStreak) {
@@ -143,18 +126,135 @@ export function masteryLevel(
           seen: true,
           fading: false,
           next: `${plural(toMaster, 'more typed answer', 'more typed answers')} without hints`,
-          factsLeft,
         };
       }
-      // Named unaided, but a fact is still short of its final stage.
-      if (factsLeft.length) {
-        return { level: 'advanced', seen: true, fading: false, next: factsLeftText(factsLeft), factsLeft };
-      }
-      const overdueMs = mastery.dueAt ? now.getTime() - new Date(mastery.dueAt).getTime() : 0;
-      const fading = overdueMs > (mastery.intervalDays ?? 1) * DAY_MS;
-      return { level: 'master', seen: true, fading, next: null, factsLeft };
+      return { level: 'master', seen: true, fading: isFading(mastery.dueAt, mastery.intervalDays, now), next: null };
     }
   }
+}
+
+/**
+ * One fact's level, or null when the student has not met it. The OINA kinds
+ * climb select → typed with hints → typed without; a multiple-choice-only
+ * kind ("how rich") reads its run of right answers, three being Master.
+ */
+export function factLevel(kind: FactKind, fact: FactMastery | undefined, now: Date = new Date()): MasteryLevelState | null {
+  if (!fact || fact.attemptsTotal === 0) return null;
+  const n = FACT_MASTERY_CONFIG.promotionStreak;
+  const toGo = Math.max(1, n - fact.streak);
+  const fading = (level: MasteryLevel) => level === 'master' && isFading(factDueAt(fact), factIntervalDays(fact), now);
+
+  if (!isStagedFactKind(kind)) {
+    const level: MasteryLevel = fact.streak >= n ? 'master' : (['novice', 'intermediate', 'advanced'] as const)[fact.streak];
+    return {
+      level,
+      seen: true,
+      fading: fading(level),
+      next: level === 'master' ? null : `${plural(toGo, 'more right answer', 'more right answers')} in a row`,
+    };
+  }
+  switch (factStage(fact)) {
+    case 'select':
+      return { level: 'novice', seen: true, fading: false, next: `${plural(toGo, 'more right answer', 'more right answers')} in a row` };
+    case 'typed-hinted':
+      return { level: 'intermediate', seen: true, fading: false, next: `${plural(toGo, 'more typed answer', 'more typed answers')} with hints` };
+    case 'typed-bare': {
+      const level: MasteryLevel = fact.streak >= n ? 'master' : 'advanced';
+      return {
+        level,
+        seen: true,
+        fading: fading(level),
+        next: level === 'master' ? null : `${plural(toGo, 'more typed answer', 'more typed answers')} without hints`,
+      };
+    }
+  }
+}
+
+export interface SkillLevel {
+  kind: SkillKind;
+  /** Null when not met yet. */
+  state: MasteryLevelState | null;
+  /** When this type is next due for review, if it is scheduled. */
+  dueAt?: string;
+}
+
+export interface StructureLevelState extends MasteryLevelState {
+  /** Naming and each of the structure's core facts, in that order. */
+  perKind: SkillLevel[];
+  /** The core types the student has not met yet. */
+  unmet: SkillKind[];
+}
+
+/** Index a list of fact rows the way structureLevel looks them up. */
+export function factsIndex(rows: readonly FactMastery[]): Map<string, FactMastery> {
+  return new Map(rows.map((f) => [factMasteryKey(f.structureId, f.promptKind), f]));
+}
+
+/**
+ * A structure's level: the average of the question types the student has
+ * met, rounded down (owner, 2 Oct 2026). Types not met yet don't drag it
+ * down — they are listed in `unmet` instead — but Master needs every type met
+ * and at Master, so a structure named perfectly but never asked its origin
+ * stops at Advanced.
+ *
+ * The types counted are naming plus the structure's core facts
+ * (requiredFactKinds). Clinical and joint questions are scheduled on their
+ * own rows but left out of the average.
+ */
+export function structureLevel(
+  structure: AnatomyStructure,
+  mastery: StructureMastery | undefined,
+  factsByKey: ReadonlyMap<string, FactMastery>,
+  now: Date = new Date(),
+): StructureLevelState {
+  const naming = masteryLevel(mastery, now);
+  const namingMet = !!mastery && mastery.attemptsTotal > 0;
+  const perKind: SkillLevel[] = [
+    { kind: 'identify', state: namingMet ? naming : null, dueAt: mastery?.dueAt },
+    ...requiredFactKinds(structure).map((kind) => {
+      const fact = factsByKey.get(factMasteryKey(structure.id, kind));
+      return { kind, state: factLevel(kind, fact, now), dueAt: fact ? factDueAt(fact) : undefined };
+    }),
+  ];
+  const met = perKind.filter((k) => k.state);
+  const unmet = perKind.filter((k) => !k.state).map((k) => k.kind);
+
+  if (met.length === 0) {
+    return { level: 'beginner', seen: !!mastery, fading: false, next: naming.next, perKind, unmet };
+  }
+
+  const ranks = met.map((k) => masteryLevelRank(k.state!.level));
+  let rank = Math.floor(ranks.reduce((a, b) => a + b, 0) / ranks.length);
+  if (rank === masteryLevelRank('master') && unmet.length) rank = masteryLevelRank('advanced');
+  const level = MASTERY_LEVELS[rank];
+
+  // The next step is the weakest type's; once every met type is at Master,
+  // what is left is meeting the rest.
+  const weakest = met.reduce((a, b) => (masteryLevelRank(b.state!.level) < masteryLevelRank(a.state!.level) ? b : a));
+  const next =
+    weakest.state!.level !== 'master'
+      ? `${skillLabel(weakest.kind)}: ${weakest.state!.next}`
+      : unmet.length
+        ? `Meet ${listText(unmet.map((k) => skillLabel(k).toLowerCase()))}`
+        : null;
+
+  return {
+    level,
+    seen: true,
+    fading: level === 'master' && met.some((k) => k.state!.fading),
+    next,
+    perKind,
+    unmet,
+  };
+}
+
+function listText(words: string[]): string {
+  return words.length > 1 ? `${words.slice(0, -1).join(', ')} and ${words[words.length - 1]}` : words[0];
+}
+
+/** "3 types not met", for the Atlas's secondary line. */
+export function unmetText(unmet: readonly SkillKind[]): string | null {
+  return unmet.length ? `${unmet.length} ${unmet.length === 1 ? 'type' : 'types'} not met` : null;
 }
 
 export function masteryLevelRank(level: MasteryLevel): number {

@@ -4,6 +4,7 @@ import type { AnatomyRepository } from '../../data/repository';
 import { CATEGORY_LABELS, type Category } from '../../types/structure';
 import { ATLAS_COLUMN_LABELS, ATLAS_MIXED_LABELS } from '../../lib/atlasFacts';
 import { accuracyText, atlasMasteryCell, sortById } from '../../lib/atlasList';
+import { unmetText } from '../../lib/masteryLevel';
 import { MasteryLevelBadge } from '../shared/MasteryLevelBadge';
 import { getAtlasPanelOpen, setAtlasPanelOpen } from '../../lib/preferences';
 import { useAtlasList } from '../../hooks/useAtlasList';
@@ -177,7 +178,7 @@ export function Atlas({ access, content, repository, userId, onOpenMuscle, onDri
 
           <div className="min-h-0 flex-1 overflow-auto pb-14">
             {visible.map((s) => {
-              const mastery = atlasMasteryCell(list.masteryById.get(s.id), { structure: s, factsByKey: list.factsByKey });
+              const mastery = atlasMasteryCell(s, list.masteryById.get(s.id), list.factsByKey);
               const { columns } = rows.get(s.id)!;
               const cell = (i: 0 | 1 | 2) => (
                 <>
@@ -213,13 +214,16 @@ export function Atlas({ access, content, repository, userId, onOpenMuscle, onDri
                   {/*
                     The level, not the all-time percentage: the percentage
                     keeps every answer from before the structure was learned
-                    (lib/masteryLevel.ts). It stays, smaller, underneath.
+                    (lib/masteryLevel.ts). The level averages the question
+                    types met; underneath, how many are not met yet, or else
+                    the naming percentage.
                   */}
                   <span className="flex w-[150px] flex-none flex-col gap-1.5">
                     <MasteryLevelBadge state={mastery.level} />
-                    {accuracyText(mastery.accuracy) && (
-                      <span style={{ font: '400 11px/1 var(--font-mono)', color: 'var(--ink3)' }}>{accuracyText(mastery.accuracy)}</span>
-                    )}
+                    {(() => {
+                      const note = mastery.level.seen ? (unmetText(mastery.level.unmet) ?? accuracyText(mastery.accuracy)) : null;
+                      return note && <span style={{ font: '400 11px/1 var(--font-mono)', color: 'var(--ink3)' }}>{note}</span>;
+                    })()}
                   </span>
                 </button>
               );

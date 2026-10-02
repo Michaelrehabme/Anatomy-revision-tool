@@ -4,14 +4,14 @@ import type { Category, Difficulty } from '../types/structure';
 import { emptyCategoryBreakdown, isMuscle } from '../types/structure';
 import type { Area, Region, SubRegion } from '../types/region';
 import { REGIONS } from '../types/region';
-import type { Confidence, FactMastery, RevisionSessionSummary, UserAttempt } from '../types/attempt';
-import type { FactKind, OinaPromptKind, QuestionType } from '../types/question';
+import type { Confidence, FactMastery, RevisionSessionSummary, StructureMastery, UserAttempt } from '../types/attempt';
+import type { OinaPromptKind, QuestionType } from '../types/question';
 import { isOinaQuestion, isTypedIdentifyQuestion } from '../types/question';
 import type { AnatomyRepository } from '../data/repository';
 import { updateMasteryAfterAttempt } from '../lib/mastery';
 import { markSeen, rungOfQuestion } from '../lib/ladder';
-import { factsIndex, masteryLevel, type MasteryLevel } from '../lib/masteryLevel';
-import { updateFactMasteryAfterAttempt } from '../lib/factMastery';
+import { factsIndex, masteryLevel, structureLevel, type MasteryLevel } from '../lib/masteryLevel';
+import { skillOf, updateFactMasteryAfterAttempt } from '../lib/factMastery';
 import { ALL_STRUCTURES } from '../data/seed';
 
 const STRUCTURES_BY_ID = new Map(ALL_STRUCTURES.map((s) => [s.id, s]));
@@ -416,50 +416,56 @@ export function useRevisionSession(repository: AnatomyRepository | null, userId:
             return;
           }
 
+          // One answer moves ONE question type's schedule (owner, 2 Oct 2026):
+          // naming on the structure's row, anything else on that fact's own
+          // row. A missed origin used to drag the whole deltoid back to
+          // tomorrow, and an easy naming answer could be undone by the next
+          // fact question on the same structure.
+          const skill = skillOf(currentQuestion.type, currentQuestion.promptKind);
           const existingMastery = await repository.getMasteryForStructure(userId, record.structureId);
-          const nextMastery = updateMasteryAfterAttempt(existingMastery ?? undefined, {
-            structureId: record.structureId,
-            userId,
-            correct: record.correct,
-            confidence: record.confidence,
-            partialCredit: record.partialCredit,
-            durationMs,
-            // What this question actually demanded, so the ladder only promotes
-            // on answers at the structure's own rung or harder (lib/ladder.ts).
-            // Without it a run of locate taps carried a structure to typed-bare
-            // and the next session asked for its name with no hints.
-            askedRung: rungOfQuestion(
-              currentQuestion.type,
-              isTypedIdentifyQuestion(currentQuestion) ? currentQuestion.hints : undefined,
-              currentQuestion.promptKind,
-            ),
-          });
-          await repository.upsertMastery(nextMastery);
-
-          // Per-(structure, fact) progress: which stage a fact is next asked
-          // at, and — since 29 Sep 2026 — whether the structure can be Master,
-          // which needs its facts as well as its name. Fact questions and "how
-          // rich" both count. Inside the same persist() so the existing retry
-          // banner covers it too.
-          //
           // The rows are read once per session and kept here, not re-read per
-          // answer: a long-standing student has hundreds, and every answer now
+          // answer: a long-standing student has hundreds, and every answer
           // needs them to work out the level.
           if (!factRows.current) factRows.current = await repository.listFactMastery(userId);
           const factsBefore = factRows.current;
-          const factKind: FactKind | null = isOinaQuestion(currentQuestion)
-            ? currentQuestion.promptKind
-            : currentQuestion.promptKind === 'blood-supply-rating'
-              ? 'blood-supply-rating'
-              : null;
+          let nextMastery = existingMastery ?? undefined;
           let factsAfter = factsBefore;
-          if (factKind) {
-            const existingFact = factsBefore.find((f) => f.structureId === record.structureId && f.promptKind === factKind);
+
+          if (skill === 'identify') {
+            nextMastery = updateMasteryAfterAttempt(existingMastery ?? undefined, {
+              structureId: record.structureId,
+              userId,
+              correct: record.correct,
+              confidence: record.confidence,
+              partialCredit: record.partialCredit,
+              durationMs,
+              // What this question actually demanded, so the ladder only promotes
+              // on answers at the structure's own rung or harder (lib/ladder.ts).
+              // Without it a run of locate taps carried a structure to typed-bare
+              // and the next session asked for its name with no hints.
+              askedRung: rungOfQuestion(
+                currentQuestion.type,
+                isTypedIdentifyQuestion(currentQuestion) ? currentQuestion.hints : undefined,
+                currentQuestion.promptKind,
+              ),
+            });
+            await repository.upsertMastery(nextMastery);
+          } else {
+            const existingFact = factsBefore.find((f) => f.structureId === record.structureId && f.promptKind === skill);
             const nextFact = updateFactMasteryAfterAttempt(existingFact, {
               userId,
               structureId: record.structureId,
-              promptKind: factKind,
+              promptKind: skill,
               correct: record.correct,
+              confidence: record.confidence,
+              partialCredit: record.partialCredit,
+              askedStage: isOinaQuestion(currentQuestion)
+                ? currentQuestion.format === 'select'
+                  ? 'select'
+                  : currentQuestion.hints === 'none'
+                    ? 'typed-bare'
+                    : 'typed-hinted'
+                : 'select',
             });
             await repository.upsertFactMastery(nextFact);
             factsAfter = [...factsBefore.filter((f) => f !== existingFact), nextFact];
@@ -467,12 +473,13 @@ export function useRevisionSession(repository: AnatomyRepository | null, userId:
           }
 
           const structure = STRUCTURES_BY_ID.get(record.structureId);
-          const context = (rows: FactMastery[]) => (structure ? { structure, factsByKey: factsIndex(rows) } : undefined);
+          const levelOf = (m: StructureMastery | undefined, rows: FactMastery[]) =>
+            structure ? structureLevel(structure, m, factsIndex(rows)).level : masteryLevel(m).level;
           dispatch({
             type: 'LEVEL',
             structureId: record.structureId,
-            from: masteryLevel(existingMastery ?? undefined, undefined, context(factsBefore)).level,
-            to: masteryLevel(nextMastery, undefined, context(factsAfter)).level,
+            from: levelOf(existingMastery ?? undefined, factsBefore),
+            to: levelOf(nextMastery, factsAfter),
           });
         };
 

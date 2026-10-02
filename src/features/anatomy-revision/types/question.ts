@@ -148,7 +148,13 @@ export type OinaPromptKind = (typeof OINA_PROMPT_KINDS)[number];
  * choice, so it never reaches typed recall; it is still a fact a structure
  * must know to be mastered (lib/masteryLevel.ts).
  */
-export type FactKind = OinaPromptKind | 'blood-supply-rating';
+/**
+ * Every question kind except naming (2 Oct 2026). Each gets its own progress
+ * row and its own review schedule (FactMastery), so knowing the deltoid's
+ * name well and its origin badly are two different things to the scheduler.
+ * Naming stays on StructureMastery.
+ */
+export type FactKind = Exclude<PromptKind, 'identify'>;
 
 export function isBloodFactKind(kind: string): kind is (typeof BLOOD_FACT_KINDS)[number] {
   return (BLOOD_FACT_KINDS as readonly string[]).includes(kind);

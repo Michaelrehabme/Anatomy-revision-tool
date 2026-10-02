@@ -12,7 +12,8 @@ import { LockedAreaPanel } from '../shared/AreaLock';
 import type { UseEntitlement } from '../../hooks/useEntitlement';
 import { PronounceButton } from '../shared/PronounceButton';
 import { MasteryLevelBadge } from '../shared/MasteryLevelBadge';
-import { masteryLevel } from '../../lib/masteryLevel';
+import { structureLevel } from '../../lib/masteryLevel';
+import { SkillBreakdown } from '../shared/SkillBreakdown';
 import { getShowLatin } from '../../lib/preferences';
 import { structureTitle } from '../shared/PageTitle';
 import { AppShell } from '../shell/AppShell';
@@ -53,7 +54,8 @@ export function MuscleCard({
   const mastery = useMuscleHistory(repository, userId, structureId);
   const factsByKey = useFactMastery(repository, userId);
   const cardStructure = content.structuresById.get(structureId);
-  const level = masteryLevel(mastery ?? undefined, undefined, cardStructure ? { structure: cardStructure, factsByKey } : undefined);
+  // The average over this structure's question types, with each listed below it.
+  const level = cardStructure ? structureLevel(cardStructure, mastery ?? undefined, factsByKey) : null;
   const showLatin = getShowLatin();
   const titleName = content.structuresById.get(structureId)?.name;
   useEffect(() => {
@@ -99,27 +101,19 @@ export function MuscleCard({
               <div style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
                 Your history
               </div>
-              <div className="mt-3">
-                <MasteryLevelBadge state={level} />
-                {level.next && (
-                  <div className="mt-2" style={{ font: '400 12px/1.5 var(--font-mono)', color: 'var(--ink3)' }}>
-                    Next: {level.next.toLowerCase()}
+              {level && (
+                <div className="mt-3">
+                  <MasteryLevelBadge state={level} />
+                  {level.next && (
+                    <div className="mt-2" style={{ font: '400 12px/1.5 var(--font-mono)', color: 'var(--ink3)' }}>
+                      Next: {level.next}
+                    </div>
+                  )}
+                  <div className="mt-3">
+                    <SkillBreakdown state={level} />
                   </div>
-                )}
-              </div>
-              <div className="mt-3" style={{ font: '400 13px/1.9 var(--font-mono)', color: 'var(--ink2)' }}>
-                {mastery && mastery.attemptsTotal > 0 ? (
-                  <>
-                    {mastery.attemptsTotal} attempts
-                    <br />
-                    {Math.round((mastery.attemptsCorrect / mastery.attemptsTotal) * 100)}% correct all-time
-                    <br />
-                    {mastery.dueAt ? `due ${new Date(mastery.dueAt).toLocaleDateString()}` : 'not yet due'}
-                  </>
-                ) : (
-                  'No attempts yet'
-                )}
-              </div>
+                </div>
+              )}
               <div className="flex-1" />
               <div style={{ font: '400 11.5px/1.6 var(--font-mono)', color: 'var(--ink3)' }}>
                 J / K to move

@@ -109,6 +109,33 @@ export function deriveImplicitConfidence(
   return durationMs < previousDurationEwmaMs ? 'easy' : 'medium';
 }
 
+/**
+ * One review step on any scheduled row — a structure's naming row or one of
+ * its fact rows — so the two can never drift apart in how they space things.
+ * Lapses and the leech cap included.
+ */
+export function nextSchedule(
+  existing: { intervalDays?: number; easeFactor?: number; lapses?: number } | undefined,
+  correct: boolean,
+  confidence: Confidence,
+  now: Date = new Date(),
+): { intervalDays: number; easeFactor: number; dueAt: string; lapses: number; isLeech: boolean } {
+  // A lapse is a row that had earned a 7+ day interval and was then missed —
+  // checked against the pre-attempt interval, since a miss always resets it.
+  const hadLongInterval = (existing?.intervalDays ?? 0) >= LAPSE_INTERVAL_THRESHOLD_DAYS;
+  const lapses = (existing?.lapses ?? 0) + (hadLongInterval && !correct ? 1 : 0);
+  const isLeech = lapses >= LEECH_THRESHOLD_LAPSES;
+  const { intervalDays, easeFactor, dueAt } = computeNextReview(existing, confidence, now);
+  if (!isLeech || intervalDays <= LEECH_INTERVAL_CAP_DAYS) return { intervalDays, easeFactor, dueAt, lapses, isLeech };
+  return {
+    intervalDays: LEECH_INTERVAL_CAP_DAYS,
+    easeFactor,
+    dueAt: new Date(now.getTime() + LEECH_INTERVAL_CAP_DAYS * 24 * 60 * 60 * 1000).toISOString(),
+    lapses,
+    isLeech,
+  };
+}
+
 export function updateMasteryAfterAttempt(
   existing: StructureMastery | undefined,
   params: {
@@ -136,14 +163,6 @@ export function updateMasteryAfterAttempt(
   const attemptsTotal = (existing?.attemptsTotal ?? 0) + 1;
   const attemptsCorrect = (existing?.attemptsCorrect ?? 0) + (params.correct ? 1 : 0);
 
-  // A lapse is a structure that had earned a 7+ day interval through prior
-  // good performance, then got answered wrong — checked against the
-  // pre-attempt interval, since an incorrect answer always resets the
-  // interval to 1 (so checking the post-attempt interval could never fire).
-  const hadLongInterval = (existing?.intervalDays ?? 0) >= LAPSE_INTERVAL_THRESHOLD_DAYS;
-  const lapses = (existing?.lapses ?? 0) + (hadLongInterval && !params.correct ? 1 : 0);
-  const isLeech = lapses >= LEECH_THRESHOLD_LAPSES;
-
   const resolvedConfidence =
     params.confidence !== undefined
       ? scheduleConfidence(params.correct, params.confidence, params.partialCredit)
@@ -167,20 +186,11 @@ export function updateMasteryAfterAttempt(
     attemptsCorrect,
     lastAttemptAt: now.toISOString(),
     lastConfidence: params.confidence ?? existing?.lastConfidence,
-    lapses,
-    isLeech,
     durationEwmaMs,
     firstSeenAt: existing?.firstSeenAt ?? now.toISOString(),
     recentAccuracy: nextRecentAccuracy(existing, params.correct),
     ...promoteOrDemote(existing, params.correct, params.askedRung),
   };
 
-  const { intervalDays, easeFactor, dueAt } = computeNextReview(existing, resolvedConfidence, now);
-  const cappedIntervalDays = isLeech ? Math.min(intervalDays, LEECH_INTERVAL_CAP_DAYS) : intervalDays;
-  const cappedDueAt =
-    cappedIntervalDays === intervalDays
-      ? dueAt
-      : new Date(now.getTime() + cappedIntervalDays * 24 * 60 * 60 * 1000).toISOString();
-
-  return { ...base, intervalDays: cappedIntervalDays, easeFactor, dueAt: cappedDueAt };
+  return { ...base, ...nextSchedule(existing, params.correct, resolvedConfidence, now) };
 }

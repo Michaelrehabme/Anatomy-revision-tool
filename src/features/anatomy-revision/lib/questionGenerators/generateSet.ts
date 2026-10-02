@@ -7,7 +7,8 @@ import { buildIndexes, filterStructures, type StructureIndexes } from '../indexe
 import { areasOf } from '../../types/structure';
 import { createRng, sample, shuffle, weightedShuffle, type Rng } from '../rng';
 import { selectAdaptiveStructures, pickAdaptiveQuestionType } from '../adaptiveSelection';
-import { buildWeightMap, UNSEEN_WEIGHT } from '../scheduling';
+import { buildWeightMap, structureWeight, UNSEEN_WEIGHT } from '../scheduling';
+import type { ReviewItem } from '../reviewQueue';
 import { LADDER_TYPES, hintsForRung, questionTypeForRung, rungFor } from '../ladder';
 import { buildFlashcardQuestions, buildFieldFlashcard } from './flashcards';
 import { buildMcqQuestions } from './mcq';
@@ -18,7 +19,7 @@ import { buildMultiSelectQuestions } from './multiSelect';
 import { buildBloodSupplyRatingMcqs } from './bloodSupply';
 import { buildClinicalQuestions } from './clinical';
 import { buildOinaQuestions } from './oina';
-import { indexFactMastery, shouldPrecedeWithLearnCard } from '../factMastery';
+import { factDueAt, factIntervalDays, factMasteryKey, indexFactMastery, shouldPrecedeWithLearnCard, skillOf } from '../factMastery';
 import { isOinaQuestion } from '../../types/question';
 
 export interface RevisionSetConfig {
@@ -70,6 +71,15 @@ export interface RevisionSetConfig {
   priorityStructureIds?: string[];
   /** Ceiling on the share of the set drawn from `priorityStructureIds`. Defaults to REVIEW_SHARE. */
   reviewShare?: number;
+  /**
+   * The daily review (2 Oct 2026): question TYPES due or pulled forward, in
+   * order (lib/reviewQueue.ts). Takes precedence over priorityStructureIds.
+   * Each item is answered by a question of that type — a due "deltoid origin"
+   * yields an origin question, not a naming one — and the rest of the session
+   * is new structures only: nothing well known and not due is drawn to fill
+   * it, and a session with too little to ask ends short rather than repeat.
+   */
+  reviewItems?: readonly ReviewItem[];
   /**
    * Most questions one structure may contribute to a capped session. Defaults
    * to MAX_QUESTIONS_PER_STRUCTURE; ignored by an uncapped practice session,
@@ -314,13 +324,68 @@ function blendPriorityWithRest(
 }
 
 /**
+ * The daily review's blend (2 Oct 2026). Due types first, most overdue first,
+ * up to what NEW_SHARE leaves; then new structures; then the weak types
+ * pulled forward; then, if room remains, more due types and more new ones.
+ * Nothing else: a question type the student knows well and is not due is
+ * never drawn to fill the session.
+ */
+function blendReviewItems(
+  ordered: RevisionQuestion[],
+  items: readonly ReviewItem[],
+  count: number,
+  rng: Rng,
+  cap: number,
+  newIds: ReadonlySet<string> | null,
+): RevisionQuestion[] {
+  const byKey = new Map<string, RevisionQuestion[]>();
+  for (const q of ordered) {
+    const key = `${q.structureId}|${skillOf(q.type, q.promptKind)}`;
+    const list = byKey.get(key);
+    if (list) list.push(q);
+    else byKey.set(key, [q]);
+  }
+  const counts = new Map<string, number>();
+  const picked: RevisionQuestion[] = [];
+  const take = (list: readonly ReviewItem[], limit: number) => {
+    for (const item of list) {
+      if (picked.length >= limit) return;
+      if ((counts.get(item.structureId) ?? 0) >= cap) continue;
+      const q = byKey.get(`${item.structureId}|${item.kind}`)?.find((c) => !picked.includes(c));
+      if (!q) continue;
+      picked.push(q);
+      counts.set(item.structureId, (counts.get(item.structureId) ?? 0) + 1);
+    }
+  };
+  const fresh = ordered.filter((q) => newIds?.has(q.structureId) && !items.some((i) => i.structureId === q.structureId));
+  const due = items.filter((i) => i.due);
+  const forward = items.filter((i) => !i.due);
+  const newSlots = Math.min(Math.round(count * NEW_SHARE), fresh.length);
+
+  take(due, count - newSlots);
+  for (const q of takeWithStructureCap(fresh, Math.min(newSlots, count - picked.length), cap, counts)) picked.push(q);
+  take(forward, count);
+  take(due, count);
+  for (const q of takeWithStructureCap(fresh.filter((q) => !picked.includes(q)), count - picked.length, cap, counts)) picked.push(q);
+  return shuffle(picked, rng);
+}
+
+/**
  * The pool's structures with nothing graded yet, for NEW_SHARE. Null without
  * mastery: with no history there is no telling new from known, and every
  * structure is new anyway.
  */
-function newStructureIds(pool: AnatomyStructure[], mastery: readonly StructureMastery[] | undefined): Set<string> | null {
+function newStructureIds(
+  pool: AnatomyStructure[],
+  mastery: readonly StructureMastery[] | undefined,
+  facts: readonly FactMastery[] = [],
+): Set<string> | null {
   if (!mastery) return null;
-  const answered = new Set(mastery.filter((m) => m.attemptsTotal > 0).map((m) => m.structureId));
+  // Answered at all — its name or any fact — is not new.
+  const answered = new Set([
+    ...mastery.filter((m) => m.attemptsTotal > 0).map((m) => m.structureId),
+    ...facts.filter((f) => f.attemptsTotal > 0).map((f) => f.structureId),
+  ]);
   return new Set(pool.filter((s) => !answered.has(s.id)).map((s) => s.id));
 }
 
@@ -543,10 +608,21 @@ export function generateRevisionSet(
     );
   }
 
+  // Weighted per QUESTION TYPE (2 Oct 2026): a naming question by the
+  // structure's naming row, a fact question by that fact's own row — so a
+  // shaky origin is drawn often while the well-known name of the same muscle
+  // is not.
   const weights = config.mastery?.length ? buildWeightMap(config.mastery, config.now) : null;
-  const ordered = weights
-    ? weightedShuffle(generated, (q) => weights.get(q.structureId) ?? UNSEEN_WEIGHT, rng)
-    : shuffle(generated, rng);
+  const factsByKey = config.factMastery?.length ? indexFactMastery(config.factMastery) : null;
+  const weightOf = (q: RevisionQuestion): number => {
+    const skill = skillOf(q.type, q.promptKind);
+    if (skill === 'identify') return weights?.get(q.structureId) ?? UNSEEN_WEIGHT;
+    const fact = factsByKey?.get(factMasteryKey(q.structureId, skill));
+    return fact
+      ? structureWeight({ ...fact, dueAt: factDueAt(fact), intervalDays: factIntervalDays(fact) }, config.now)
+      : UNSEEN_WEIGHT;
+  };
+  const ordered = weights || factsByKey ? weightedShuffle(generated, weightOf, rng) : shuffle(generated, rng);
 
   const count = config.mode === 'assessment' ? (config.count ?? generated.length) : config.count;
   // Only a CAPPED session needs balancing — an uncapped one asks everything it
@@ -555,6 +631,8 @@ export function generateRevisionSet(
   const cap = Math.max(1, config.maxPerStructure ?? MAX_QUESTIONS_PER_STRUCTURE);
   const selected = !count
     ? balanced
+    : config.reviewItems
+      ? blendReviewItems(balanced, config.reviewItems, count, rng, cap, newStructureIds(pool, config.mastery ?? [], config.factMastery))
     : config.priorityStructureIds?.length
       ? blendPriorityWithRest(balanced, config.priorityStructureIds, count, config.reviewShare, rng, cap, newStructureIds(pool, config.mastery))
       : // Breadth over depth here too: the mastery weighting front-loads a weak

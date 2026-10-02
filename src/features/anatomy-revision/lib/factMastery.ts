@@ -1,6 +1,7 @@
-import type { FactMastery } from '../types/attempt';
-import type { FactKind } from '../types/question';
-import { MUSCLE_FACT_KINDS } from '../types/question';
+import type { Confidence, FactMastery } from '../types/attempt';
+import type { FactKind, PromptKind, QuestionType } from '../types/question';
+import { MUSCLE_FACT_KINDS, OINA_PROMPT_KINDS } from '../types/question';
+import { nextSchedule, scheduleConfidence } from './mastery';
 import { isMuscle, type AnatomyStructure } from '../types/structure';
 
 /**
@@ -118,12 +119,51 @@ export interface FactAttemptInput {
   structureId: string;
   promptKind: FactKind;
   correct: boolean;
+  /** The student's rating; absent, a right answer counts as Medium and a wrong one as Hard. */
+  confidence?: Confidence;
+  /** Share of a multi-part answer that was right — softens a near miss (scheduleConfidence). */
+  partialCredit?: number;
+  /**
+   * The stage the question asked at: 'select' for an OINA select or a plain
+   * MCQ on the fact, the typed stages for typed OINA. An answer asked BELOW
+   * the fact's stage schedules it but earns no promotion — the naming
+   * ladder's askedRung rule. Omitted, it is credited at the current stage.
+   */
+  askedStage?: FactStage;
   now?: Date;
 }
 
+const STAGES: readonly FactStage[] = ['select', 'typed-hinted', 'typed-bare'];
+
+/** Kinds with typed forms, which climb select → typed with hints → typed without. The rest are multiple choice only. */
+export function isStagedFactKind(kind: FactKind): boolean {
+  return (OINA_PROMPT_KINDS as readonly string[]).includes(kind);
+}
+
+const DAY_MS = 24 * 60 * 60 * 1000;
+/** How far out a fact row from before facts were scheduled is read as due, by stage. */
+const LEGACY_FACT_INTERVAL_DAYS: Record<FactStage, number> = { select: 1, 'typed-hinted': 4, 'typed-bare': 10 };
+
 /**
- * Folds one OINA answer into a fact's progress, promoting to typed recall or
- * demoting back to recognition as the thresholds above are crossed.
+ * When a fact is next due. A row written before facts had their own schedule
+ * (2 Oct 2026) has none; reading those as due now would put every fact ever
+ * answered into one day's review, so they are spaced from their last answer
+ * by the stage they reached.
+ */
+export function factDueAt(fact: FactMastery): string {
+  if (fact.dueAt) return fact.dueAt;
+  const days = LEGACY_FACT_INTERVAL_DAYS[factStage(fact)];
+  return new Date(new Date(fact.lastAttemptAt).getTime() + days * DAY_MS).toISOString();
+}
+
+/** The interval a fact is on, legacy rows included. */
+export function factIntervalDays(fact: FactMastery): number {
+  return fact.intervalDays ?? LEGACY_FACT_INTERVAL_DAYS[factStage(fact)];
+}
+
+/**
+ * Folds one answer into a fact's progress: its stage (OINA kinds only) and,
+ * since 2 Oct 2026, its own review schedule.
  *
  * Demotion deliberately clears the correct-streak too: a student who has
  * dropped back to recognition should have to earn the promotion again rather
@@ -137,18 +177,22 @@ export function updateFactMasteryAfterAttempt(
   const now = input.now ?? new Date();
   const attemptsTotal = (existing?.attemptsTotal ?? 0) + 1;
   const attemptsCorrect = (existing?.attemptsCorrect ?? 0) + (input.correct ? 1 : 0);
-  let streak = input.correct ? (existing?.streak ?? 0) + 1 : 0;
-  const missStreak = input.correct ? 0 : (existing?.missStreak ?? 0) + 1;
   const accuracy = attemptsCorrect / attemptsTotal;
 
   const before = factStage(existing);
+  const earnsCredit = input.askedStage === undefined || STAGES.indexOf(input.askedStage) >= STAGES.indexOf(before);
+  // Right is right, so a correct easier answer clears the miss streak; it just
+  // doesn't count towards climbing. A miss counts in full either way.
+  let streak = input.correct ? (existing?.streak ?? 0) + (earnsCredit ? 1 : 0) : 0;
+  const missStreak = input.correct ? 0 : (existing?.missStreak ?? 0) + 1;
+
   let stage = before;
-  // "How rich" is multiple choice only: its streak simply counts, and
-  // factComplete reads it. Every other fact climbs the three stages.
-  if (input.promptKind !== 'blood-supply-rating') {
+  // Multiple-choice-only kinds ("how rich", the clinical and joint questions)
+  // just count their streak. The OINA kinds climb the three stages.
+  if (isStagedFactKind(input.promptKind)) {
     if (missStreak >= config.demotionStreak && before !== 'select') {
       stage = before === 'typed-bare' ? 'typed-hinted' : 'select';
-    } else if (input.correct && streak >= config.promotionStreak && before !== 'typed-bare') {
+    } else if (input.correct && earnsCredit && streak >= config.promotionStreak && before !== 'typed-bare') {
       if (before === 'typed-hinted' || accuracy >= config.promotionAccuracy) {
         stage = before === 'select' ? 'typed-hinted' : 'typed-bare';
       }
@@ -157,6 +201,17 @@ export function updateFactMasteryAfterAttempt(
   // A change of stage in either direction starts the streak again: each
   // stage is earned AT that stage, as on the naming ladder.
   if (stage !== before) streak = 0;
+
+  const confidence =
+    input.confidence !== undefined
+      ? scheduleConfidence(input.correct, input.confidence, input.partialCredit)
+      : input.correct
+        ? 'medium'
+        : 'hard';
+  // A legacy row's schedule is read the way factDueAt reads it, so its first
+  // new answer grows from the interval it was already treated as being on.
+  const previous = existing ? { ...existing, intervalDays: factIntervalDays(existing) } : undefined;
+  const { intervalDays, easeFactor, dueAt, lapses } = nextSchedule(previous, input.correct, confidence, now);
 
   return {
     userId: input.userId,
@@ -170,5 +225,22 @@ export function updateFactMasteryAfterAttempt(
     lastAttemptAt: now.toISOString(),
     typed: stage !== 'select',
     bare: stage === 'typed-bare',
+    dueAt,
+    intervalDays,
+    easeFactor,
+    lapses,
+    lastConfidence: input.confidence ?? existing?.lastConfidence,
   };
+}
+
+/**
+ * Which question type an answer belongs to (2 Oct 2026). Naming — a
+ * flashcard, a locate tap, any question asking for the structure itself — is
+ * the structure's own ladder and schedule; every other kind is a fact with
+ * its own row, whatever format asked it, so "the origin of deltoid" as an MCQ
+ * and as OINA move the same origin row.
+ */
+export function skillOf(type: QuestionType, promptKind: PromptKind): 'identify' | FactKind {
+  if (type === 'flashcard' || type === 'locate' || promptKind === 'identify') return 'identify';
+  return promptKind;
 }

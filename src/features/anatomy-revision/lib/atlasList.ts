@@ -1,11 +1,10 @@
 import type { AnatomyStructure, Category } from '../types/structure';
-import type { FactContext } from './masteryLevel';
 import type { FactMastery } from '../types/attempt';
 import { areasOf } from '../types/structure';
 import type { Area } from '../types/region';
 import type { StructureMastery } from '../types/attempt';
 import type { AtlasRow } from './atlasFacts';
-import { masteryLevel, masteryLevelRank, type MasteryLevelState } from './masteryLevel';
+import { masteryLevelRank, structureLevel, type StructureLevelState } from './masteryLevel';
 
 /**
  * How the Atlas list is narrowed and ordered.
@@ -107,16 +106,18 @@ export type AtlasMasteryState =
  * student can do now, the percentage is history.
  */
 export interface AtlasMasteryCell {
-  level: MasteryLevelState;
+  /** The average over the question types met (structureLevel). */
+  level: StructureLevelState;
   accuracy: AtlasMasteryState;
 }
 
 export function atlasMasteryCell(
+  structure: AnatomyStructure,
   mastery: StructureMastery | undefined,
-  context: FactContext,
+  factsByKey: ReadonlyMap<string, FactMastery>,
   now: Date = new Date(),
 ): AtlasMasteryCell {
-  return { level: masteryLevel(mastery, now, context), accuracy: masteryState(mastery) };
+  return { level: structureLevel(structure, mastery, factsByKey, now), accuracy: masteryState(mastery) };
 }
 
 /** An accuracy state as the short text the Atlas prints under the level — nothing for unseen, which the level already says. */
@@ -197,8 +198,8 @@ export function sortAtlas(
         // Never met ranks below a flashcard-only Beginner, so "lowest first"
         // starts on what has not been touched at all.
         const rank = (s: AnatomyStructure) => {
-          const m = masteryById.get(s.id);
-          return m ? masteryLevelRank(masteryLevel(m, undefined, { structure: s, factsByKey }).level) : -1;
+          const state = structureLevel(s, masteryById.get(s.id), factsByKey);
+          return state.seen ? masteryLevelRank(state.level) : -1;
         };
         // Descending by default, like accuracy: the asc label is "highest first".
         return rank(b) - rank(a);

@@ -23,8 +23,6 @@ export interface ImageViewerProps {
   overlay?: (current: AnatomyImageAsset) => ReactNode;
   /** A tap on the picture, in normalised image coordinates. Omit for read-only. */
   onPick?: (point: [number, number], current: AnatomyImageAsset) => void;
-  /** Stops turning and picking — the answer is in. */
-  locked?: boolean;
   /** Zoom and frame reset when this changes; pass the question's id. */
   resetKey?: string;
   className?: string;
@@ -49,7 +47,7 @@ export interface ImageViewerProps {
  * height so the <img> fills it 1:1. That is what keeps those coordinates
  * correct; object-fit: contain would letterbox and corrupt them.
  */
-export function ImageViewer({ image, frames, overlay, onPick, locked, resetKey, className }: ImageViewerProps) {
+export function ImageViewer({ image, frames, overlay, onPick, resetKey, className }: ImageViewerProps) {
   const zoomerRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
 
@@ -73,8 +71,8 @@ export function ImageViewer({ image, frames, overlay, onPick, locked, resetKey, 
   }, [resetKey ?? image.id]);
 
   const current = (tilt === 0 ? ring[ringIndex] : tiltFrames.find((f) => rotationTilt(f.id) === tilt)) ?? image;
-  const canTurn = ring.length > 1 && !locked && tilt === 0;
-  const canTilt = tiltFrames.length > 0 && !locked;
+  const canTurn = ring.length > 1 && tilt === 0;
+  const canTilt = tiltFrames.length > 0;
   const tiltAt = tiltLevels.indexOf(tilt);
 
   const gesture = useRef<null | {
@@ -190,13 +188,13 @@ export function ImageViewer({ image, frames, overlay, onPick, locked, resetKey, 
       return;
     }
     if ((e.target as HTMLElement).closest?.('[data-controls]')) return;
-    if (!onPick || locked || !zoomerRef.current) return;
+    if (!onPick || !zoomerRef.current) return;
     onPick(normalizePointerEvent(e, zoomerRef.current), current);
   };
 
   const zoomed = view.z > 1.001;
   const controlButton = 'rounded bg-sf/90 px-2 py-1 text-xs shadow-sm border border-line hover:bg-sf';
-  const pickable = onPick && !locked;
+  const pickable = !!onPick;
 
   return (
     <figure className={className}>

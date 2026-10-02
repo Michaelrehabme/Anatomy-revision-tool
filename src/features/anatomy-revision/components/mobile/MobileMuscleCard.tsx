@@ -3,14 +3,14 @@ import { useFactMastery } from '../../hooks/useFactMastery';
 import { BloodSupplyFacts } from '../shared/BloodSupplyFacts';
 import type { AnatomyContent } from '../../hooks/useAnatomyContent';
 import { MasteryLevelBadge } from '../shared/MasteryLevelBadge';
-import { masteryLevel } from '../../lib/masteryLevel';
+import { structureLevel } from '../../lib/masteryLevel';
+import { SkillBreakdown } from '../shared/SkillBreakdown';
 import { getShowLatin } from '../../lib/preferences';
 import { structureTitle } from '../shared/PageTitle';
 import type { AnatomyRepository } from '../../data/repository';
 import { areasOf, isMuscle } from '../../types/structure';
 import { REGION_LABELS } from '../../types/region';
 import { useMuscleHistory } from '../../hooks/useMuscleHistory';
-import { relativeDue } from '../../hooks/useTodayData';
 import { AttributionBadge } from '../shared/AttributionBadge';
 import { LockedAreaPanel } from '../shared/AreaLock';
 import type { UseEntitlement } from '../../hooks/useEntitlement';
@@ -42,7 +42,8 @@ export function MobileMuscleCard({ access, structureId, content, repository, use
   const mastery = useMuscleHistory(repository, userId, structureId);
   const factsByKey = useFactMastery(repository, userId);
   const cardStructure = content.structuresById.get(structureId);
-  const level = masteryLevel(mastery ?? undefined, undefined, cardStructure ? { structure: cardStructure, factsByKey } : undefined);
+  // The average over this structure's question types, with each listed below it.
+  const level = cardStructure ? structureLevel(cardStructure, mastery ?? undefined, factsByKey) : null;
   const showLatin = getShowLatin();
   const titleName = content.structuresById.get(structureId)?.name;
   useEffect(() => {
@@ -60,9 +61,6 @@ export function MobileMuscleCard({ access, structureId, content, repository, use
   }
 
   const muscle = isMuscle(structure) ? structure : null;
-  const record = mastery && mastery.attemptsTotal > 0
-    ? `Seen ${mastery.attemptsTotal} time${mastery.attemptsTotal === 1 ? '' : 's'} · ${Math.round((mastery.attemptsCorrect / mastery.attemptsTotal) * 100)}% correct all-time${mastery.dueAt ? ` · next due ${relativeDue(mastery.dueAt, new Date())}` : ''}.`
-    : 'No attempts yet.';
 
   return (
     <main className="flex min-h-screen flex-col px-6.5 pt-4 pb-7.5" style={{ background: 'var(--pg)', color: 'var(--ink)' }}>
@@ -152,17 +150,19 @@ export function MobileMuscleCard({ access, structureId, content, repository, use
       >
         Your record
       </div>
-      <div className="mt-2.5">
-        <MasteryLevelBadge state={level} />
-        {level.next && (
-          <div className="mt-1.5" style={{ font: '400 12px/1.5 var(--font-mono)', color: 'var(--ink3)' }}>
-            Next: {level.next.toLowerCase()}
+      {level && (
+        <div className="mt-2.5">
+          <MasteryLevelBadge state={level} />
+          {level.next && (
+            <div className="mt-1.5" style={{ font: '400 12px/1.5 var(--font-mono)', color: 'var(--ink3)' }}>
+              Next: {level.next}
+            </div>
+          )}
+          <div className="mt-2.5">
+            <SkillBreakdown state={level} />
           </div>
-        )}
-      </div>
-      <p className="mt-2.5 text-[15px] leading-relaxed" style={{ color: 'var(--ink2)' }}>
-        {record}
-      </p>
+        </div>
+      )}
 
       {/* Gated here as well as in the atlas — a card can be reached by a
           typed URL or a stale link. See MuscleCard.tsx. */}

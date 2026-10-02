@@ -40,6 +40,7 @@ function stubRepository(summaries: RevisionSessionSummary[]) {
   const repository = {
     listDueMastery: async () => [],
     listMastery: async () => [],
+    listFactMastery: async () => [],
     listSessionSummaries,
   } as unknown as AnatomyRepository;
   return { repository, listSessionSummaries };

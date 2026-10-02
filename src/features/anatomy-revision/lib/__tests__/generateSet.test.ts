@@ -1053,3 +1053,50 @@ describe('no one structure may take over a capped session', () => {
     expect(worst(all)).toBeGreaterThan(MAX_QUESTIONS_PER_STRUCTURE);
   });
 });
+
+describe('the daily review, per question type (2 Oct 2026)', () => {
+  const NOW = new Date('2026-10-02T09:00:00.000Z');
+  const DAY = 86_400_000;
+  const deltoid = ALL_STRUCTURES.find((s) => s.id === 'deltoid')!;
+  const mastery: StructureMastery[] = [
+    { structureId: 'deltoid', userId: 'u', attemptsTotal: 9, attemptsCorrect: 9, lastAttemptAt: NOW.toISOString(), rung: 'typed-bare', rungStreak: 3, intervalDays: 10, dueAt: new Date(NOW.getTime() + 10 * DAY).toISOString() },
+    { structureId: 'supraspinatus', userId: 'u', attemptsTotal: 4, attemptsCorrect: 2, lastAttemptAt: NOW.toISOString(), rung: 'mcq', intervalDays: 1, dueAt: new Date(NOW.getTime() + DAY).toISOString() },
+  ];
+  const factMastery: FactMastery[] = [
+    { userId: 'u', structureId: 'deltoid', promptKind: 'origin', attemptsTotal: 5, attemptsCorrect: 3, streak: 0, missStreak: 1, lastCorrect: false, lastAttemptAt: NOW.toISOString(), typed: true, bare: false, intervalDays: 1, dueAt: new Date(NOW.getTime() - DAY).toISOString() },
+  ];
+  const build = () =>
+    generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+      entitledAreas: AREAS,
+      areas: areasOf(deltoid),
+      types: ['flashcard', 'mcq', 'locate', 'identify-typed', 'oina'],
+      mode: 'practice',
+      count: 20,
+      seed: 3,
+      mastery,
+      factMastery,
+      now: NOW,
+      reviewItems: [
+        { structureId: 'deltoid', kind: 'origin', dueAt: factMastery[0].dueAt!, due: true },
+        { structureId: 'supraspinatus', kind: 'identify', dueAt: mastery[1].dueAt!, due: false },
+      ],
+    }).filter((q) => !isFlashcardQuestion(q) || q.structureId !== 'deltoid');
+
+  it('asks the due origin, not the well-known name', () => {
+    const deltoidQs = build().filter((q) => q.structureId === 'deltoid');
+    expect(deltoidQs.some((q) => q.promptKind === 'origin')).toBe(true);
+    expect(deltoidQs.some((q) => q.promptKind === 'identify' || q.type === 'locate')).toBe(false);
+  });
+
+  it('pulls the weak naming question forward and fills the rest only with new structures', () => {
+    const questions = build();
+    expect(questions.some((q) => q.structureId === 'supraspinatus')).toBe(true);
+    const known = new Set(['deltoid', 'supraspinatus']);
+    for (const q of questions) {
+      if (known.has(q.structureId)) continue;
+      expect(mastery.some((m) => m.structureId === q.structureId)).toBe(false);
+    }
+    // Learn cards ride along outside the budget (withLearnCards).
+    expect(questions.filter((q) => !isFlashcardQuestion(q)).length).toBeLessThanOrEqual(20);
+  });
+});

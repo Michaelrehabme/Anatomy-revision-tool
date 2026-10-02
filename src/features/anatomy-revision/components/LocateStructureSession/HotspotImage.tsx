@@ -123,16 +123,20 @@ export function HotspotImage({ image, frames, targetStructureId, toleranceMultip
     <ImageViewer
       image={image}
       frames={frames}
-      onPick={grade}
-      locked={!!answer}
+      // Once answered the picture takes no second tap, but it still turns and
+      // zooms: the student should be able to look round the answer (owner,
+      // 2 Oct 2026). The reveal is drawn from each frame's own hotspots, so it
+      // follows the turn; the tap mark belongs to the frame it was made on.
+      onPick={answer ? undefined : grade}
       resetKey={image.id}
       overlay={(current) =>
         answer && !examMode ? (
           <HotspotOverlay
             hotspots={current.hotspots ?? []}
             highlightStructureId={targetStructureId}
-            clickPoint={answer.point}
+            clickPoint={current.id === answer.imageId ? answer.point : undefined}
             clickWasCorrect={answer.correct}
+            scored
           />
         ) : null
       }

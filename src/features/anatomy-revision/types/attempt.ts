@@ -57,14 +57,11 @@ export interface UserAttempt {
 }
 
 /**
- * Per-(muscle, fact) recall progress — the axis StructureMastery deliberately
- * does not have (CR-018). StructureMastery is keyed on structureId alone, so
- * it cannot express "knows the nerve supply of biceps femoris but not its
- * insertion", which is exactly the distinction OINA escalates on.
- *
- * Kept alongside StructureMastery rather than folded into it: SM-2 scheduling
- * is per-structure by design, and one row per (structure, fact) would either
- * quadruple that collection or need an unbounded map on the mastery doc.
+ * Per-(structure, question kind) progress — the axis StructureMastery does
+ * not have (CR-018). It can say "knows the nerve supply of biceps femoris but
+ * not its insertion", and since 2 Oct 2026 each row is also scheduled on its
+ * own: a fact answered easily goes days out, one answered shakily comes back
+ * soon, and neither moves the structure's naming schedule.
  */
 export interface FactMastery {
   userId: string;
@@ -88,9 +85,24 @@ export interface FactMastery {
    * this and reads as true (see factStage).
    */
   bare?: boolean;
+  /**
+   * This fact's own review schedule (2 Oct 2026), the same SM-2-lite steps
+   * as StructureMastery. Absent on rows written before facts had one; see
+   * factDueAt for how those are read.
+   */
+  dueAt?: string;
+  intervalDays?: number;
+  easeFactor?: number;
+  lapses?: number;
+  lastConfidence?: Confidence;
 }
 
-/** SM-2-lite spaced-repetition state for one structure, per user. */
+/**
+ * SM-2-lite spaced-repetition state for one structure, per user. Since
+ * 2 Oct 2026 this is the NAMING skill only — recognising the structure on a
+ * picture or from its name. Every other question kind schedules on its own
+ * FactMastery row.
+ */
 export interface StructureMastery {
   structureId: string;
   userId: string;

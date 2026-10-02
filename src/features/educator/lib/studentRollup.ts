@@ -1,11 +1,12 @@
 import type { RevisionSessionSummary, StructureMastery, UserAttempt } from '../../anatomy-revision/types/attempt';
+import { skillOf } from '../../anatomy-revision/lib/factMastery';
 import { ALL_STRUCTURES } from '../../anatomy-revision/data/seed';
 
 const STRUCTURES_BY_ID = new Map(ALL_STRUCTURES.map((s) => [s.id, s]));
 import type { FactMastery } from '../../anatomy-revision/types/attempt';
 import type { Region } from '../../anatomy-revision/types/region';
 import { REGIONS } from '../../anatomy-revision/types/region';
-import { MASTERY_LEVELS, factsIndex, masteryLevel, type MasteryLevel } from '../../anatomy-revision/lib/masteryLevel';
+import { MASTERY_LEVELS, factsIndex, masteryLevel, structureLevel, type MasteryLevel } from '../../anatomy-revision/lib/masteryLevel';
 import { markSeen, rungOfQuestion } from '../../anatomy-revision/lib/ladder';
 import { updateMasteryAfterAttempt } from '../../anatomy-revision/lib/mastery';
 import { toDayKey } from '../../anatomy-revision/lib/streak';
@@ -77,16 +78,23 @@ export function buildStudentRollup(
   facts: readonly FactMastery[] = [],
 ): StudentRollup {
   const rollup = emptyStudentRollup();
-  // Master needs the structure's facts as well as its name (lib/masteryLevel.ts).
+  // A structure's level averages its question types (lib/masteryLevel.ts), so
+  // the facts count as well as naming — and a structure met only through its
+  // facts is still met.
   const factsByKey = factsIndex(facts);
+  const masteryById = new Map(mastery.map((m) => [m.structureId, m]));
   const sinceMs = since ? Date.parse(since) : -Infinity;
   const summaries = allSummaries.filter((s) => Date.parse(s.startedAt) >= sinceMs);
 
-  for (const row of mastery) {
-    if (Date.parse(row.lastAttemptAt) < sinceMs) continue;
-    const structure = STRUCTURES_BY_ID.get(row.structureId);
-    const state = masteryLevel(row, now, structure ? { structure, factsByKey } : undefined);
-    if (state.seen) rollup.levels[row.structureId] = state.level;
+  const touched = new Set<string>();
+  for (const row of [...mastery, ...facts]) {
+    if (Date.parse(row.lastAttemptAt) >= sinceMs) touched.add(row.structureId);
+  }
+  for (const structureId of touched) {
+    const structure = STRUCTURES_BY_ID.get(structureId);
+    const row = masteryById.get(structureId);
+    const state = structure ? structureLevel(structure, row, factsByKey, now) : masteryLevel(row, now);
+    if (state.seen) rollup.levels[structureId] = state.level;
   }
 
   const days = new Set<string>();
@@ -195,6 +203,8 @@ export function replayMastery(userId: string, attempts: readonly UserAttempt[]):
       if (!existing) rows.set(a.structureId, markSeen(a.structureId, userId, at));
       continue;
     }
+    // Only naming answers move this row; facts have their own (2 Oct 2026).
+    if (skillOf(a.questionType, a.promptKind) !== 'identify') continue;
     rows.set(
       a.structureId,
       updateMasteryAfterAttempt(

@@ -32,7 +32,7 @@ interface TodayProps {
 }
 
 export function Today({ access, repository, userId, content, onStart, onCustomSession, onOpenMuscle, onNavigate }: TodayProps) {
-  const { loading, streak, totalMuscleCount, seenMusclePct, totalStructureCount, seenStructureCount, dueMuscles, allMastery, weakest, comingDue, reviewQueue, weekBuckets, weekMax, dayLabels } =
+  const { loading, streak, totalMuscleCount, seenMusclePct, totalStructureCount, seenStructureCount, allMastery, weakest, comingDue, reviewItems, dueCount, facts, weekBuckets, weekMax, dayLabels } =
     useTodayData(repository, userId, content, access.areas);
   const now = new Date();
   // Nothing attempted yet: the first session is the guided starter, and the
@@ -54,17 +54,17 @@ export function Today({ access, repository, userId, content, onStart, onCustomSe
       // An area with no muscles falls through to an ordinary session.
     }
     // generateSet is repository-free (CR-009), so fact mastery is fetched here.
-    const factMastery = repository && userId ? await repository.listFactMastery(userId) : undefined;
+    const factMastery = facts;
     const learnCardAttempts = getLearnCardAttempts();
     const questions = generateRevisionSet(content.structures, content.images, {
       types: DEFAULT_TYPES,
       mode: 'practice',
       areas,
       entitledAreas: access.areas,
-      // Prioritised, not restricted: the queue fills REVIEW_SHARE of the session
-      // and NEW_SHARE is kept for structures never answered, so every review is
-      // both. Due first, then the soonest upcoming (useTodayData.reviewQueue).
-      priorityStructureIds: reviewQueue.length ? reviewQueue : undefined,
+      // Per question type (lib/reviewQueue.ts): what is due, then weak types
+      // pulled forward, then new structures — never something well known and
+      // not due. Fewer than twenty when there is not that much worth asking.
+      reviewItems,
       count: 20,
       // Without mastery the generator falls back to a uniform shuffle and the
       // scheduler's due/weakness weighting never runs on the daily review.
@@ -110,7 +110,7 @@ export function Today({ access, repository, userId, content, onStart, onCustomSe
               firstRunTitle(preferredAreas)
             ) : (
               <>
-                {loading ? '…' : dueMuscles.length} due
+                {loading ? '…' : dueCount} due
                 <br />
                 for review
               </>
@@ -119,9 +119,9 @@ export function Today({ access, repository, userId, content, onStart, onCustomSe
           <p className="mt-5 text-lg leading-relaxed" style={{ color: 'var(--ink2)' }}>
             {firstRun
               ? `${STARTER_COUNT} questions, about ${minutesFor(STARTER_COUNT)} minutes. Multiple choice and locate-on-the-image, nothing harder yet.`
-              : dueMuscles.length > 0
+              : dueCount > 0
                 ? 'Scheduled from your recent sessions.'
-                : 'All caught up. A review now brings the next ones forward, plus new material.'}
+                : 'All caught up. A review now brings your weaker questions forward, plus new material; anything you know well waits until it is due.'}
           </p>
           <div className="mt-9 flex gap-3.5">
             <Button onClick={handleStart} className="min-w-[180px] min-h-[56px]">

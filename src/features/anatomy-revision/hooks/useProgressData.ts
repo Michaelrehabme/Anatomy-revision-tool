@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import type { FactMastery } from '../types/attempt';
-import { factsIndex } from '../lib/masteryLevel';
-import { masteryLevel, type MasteryLevel } from '../lib/masteryLevel';
+import { factsIndex, structureLevel, type MasteryLevel } from '../lib/masteryLevel';
+import { factDueAt } from '../lib/factMastery';
 import type { AnatomyRepository } from '../data/repository';
 import type { AnatomyContent } from './useAnatomyContent';
 import type { StructureMastery } from '../types/attempt';
@@ -105,7 +105,7 @@ export function useProgressData(repository: AnatomyRepository | null, userId: st
     const levels: LevelCounts = { unmet: 0, beginner: 0, novice: 0, intermediate: 0, advanced: 0, master: 0 };
     for (const s of content.structures) {
       if (s.region !== region) continue;
-      const state = masteryLevel(masteryByStructureId.get(s.id), now, { structure: s, factsByKey });
+      const state = structureLevel(s, masteryByStructureId.get(s.id), factsByKey, now);
       levels[state.seen ? state.level : 'unmet'] += 1;
     }
     return { region, total: regionMuscles.length, seenCount: seen.length, pct, levels };
@@ -114,7 +114,11 @@ export function useProgressData(repository: AnatomyRepository | null, userId: st
   const horizon = lastDays(new Date(now.getFullYear(), now.getMonth(), now.getDate() + FORECAST_DAYS - 1), FORECAST_DAYS);
   const forecast = horizon.map((day) => {
     const key = localDayKey(day);
-    return mastery.filter((m) => m.dueAt && localDayKey(m.dueAt) === key).length;
+    // Naming and every fact are reviewed on their own dates now (2 Oct 2026).
+    return (
+      mastery.filter((m) => m.dueAt && localDayKey(m.dueAt) === key).length +
+      facts.filter((f) => localDayKey(factDueAt(f)) === key).length
+    );
   });
   const forecastMax = Math.max(1, ...forecast);
 

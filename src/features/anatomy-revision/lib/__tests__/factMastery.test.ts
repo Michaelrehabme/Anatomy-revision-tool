@@ -2,6 +2,8 @@ import { describe, it, expect } from 'vitest';
 import {
   FACT_MASTERY_CONFIG,
   factComplete,
+  factDueAt,
+  skillOf,
   factHints,
   factStage,
   factMasteryKey,
@@ -172,5 +174,44 @@ describe('three-stage fact ladder (29 Sep 2026)', () => {
   it('counts a fact complete once it reaches typed without hints, and not before', () => {
     expect(factComplete('origin', history(true, true, true, true, true))).toBe(false);
     expect(factComplete('origin', history(true, true, true, true, true, true))).toBe(true);
+  });
+});
+
+describe('each fact on its own schedule (2 Oct 2026)', () => {
+  const at = (iso: string) => new Date(iso);
+  const DAY = 86_400_000;
+  const days = (f: FactMastery) => Math.round((Date.parse(f.dueAt!) - now.getTime()) / DAY);
+
+  it('goes ten days out on an easy right answer and comes back tomorrow on a miss', () => {
+    expect(days(updateFactMasteryAfterAttempt(undefined, { ...INPUT, correct: true, confidence: 'easy', now }))).toBe(10);
+    expect(days(updateFactMasteryAfterAttempt(undefined, { ...INPUT, correct: false, confidence: 'easy', now }))).toBe(1);
+  });
+
+  it('reads an unrated right answer as Medium', () => {
+    expect(days(updateFactMasteryAfterAttempt(undefined, { ...INPUT, correct: true, now }))).toBe(4);
+  });
+
+  it('schedules an answer asked below the stage, but does not let it promote', () => {
+    const hinted = history(true, true, true);
+    let fact = hinted;
+    for (let i = 0; i < 4; i++) fact = updateFactMasteryAfterAttempt(fact, { ...INPUT, correct: true, askedStage: 'select', now });
+    expect(factStage(fact)).toBe('typed-hinted');
+    expect(fact.dueAt).toBeDefined();
+  });
+
+  it('spaces a fact row from before facts were scheduled by the stage it reached', () => {
+    const legacy: FactMastery = { ...history(true, true, true), dueAt: undefined, intervalDays: undefined, lastAttemptAt: '2026-09-01T10:00:00.000Z' };
+    expect(factDueAt(legacy)).toBe(at('2026-09-05T10:00:00.000Z').toISOString());
+  });
+});
+
+describe('skillOf', () => {
+  it('puts naming on the structure and every other kind on its own row', () => {
+    expect(skillOf('locate', 'identify')).toBe('identify');
+    expect(skillOf('flashcard', 'origin')).toBe('identify');
+    expect(skillOf('mcq', 'identify')).toBe('identify');
+    expect(skillOf('mcq', 'origin')).toBe('origin');
+    expect(skillOf('oina', 'nerve')).toBe('nerve');
+    expect(skillOf('fill-blank', 'attachment')).toBe('attachment');
   });
 });

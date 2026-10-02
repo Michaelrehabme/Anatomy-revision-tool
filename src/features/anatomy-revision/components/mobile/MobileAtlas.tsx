@@ -175,7 +175,7 @@ export function MobileAtlas({
 
         <div className="mt-5 flex flex-col gap-2.5">
           {visible.map((s) => {
-            const mastery = atlasMasteryCell(list.masteryById.get(s.id), { structure: s, factsByKey: list.factsByKey });
+            const mastery = atlasMasteryCell(s, list.masteryById.get(s.id), list.factsByKey);
             const { columns } = rows.get(s.id)!;
             const shown = columns.filter((c) => c.text).slice(0, 2);
             return (
