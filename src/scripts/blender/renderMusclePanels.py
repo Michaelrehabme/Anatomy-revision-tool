@@ -55,9 +55,14 @@ ap.add_argument("--look", default="studio", choices=["studio", "flat"],
                 help="'studio' is the shared plate look: boneLook's dim world, camera-fixed key and "
                      "fill, occluded ivory bone and the Workbench line pass the muscle turntables "
                      "multiply over every frame. 'flat' is the old white-world panel")
+ap.add_argument("--regions", default="",
+                help="a rules file (panel-regions.rules.json): for the ids it names, the highlight is "
+                     "a region grown on the parent bone by landmarkRegions.select_faces, and the "
+                     "mapped objects only frame the shot")
 a = ap.parse_args(argv)
 
 mapping = {m["id"]: m for m in json.load(open(a.mapping))["mapping"]}
+REGIONS = json.load(open(a.regions)) if a.regions else {}
 wanted = a.muscles.split(",")
 views = [int(v) for v in a.views.split(",")]
 elevations = [float(e) for e in a.elevations.split(",")]
@@ -301,6 +306,82 @@ def link(mesh, name, material):
     scene.collection.objects.link(ob)
 
 
+def region_mesh(object_names, rule, mesh_name):
+    """The faces of each named bone that a landmark rule picks, as one mesh.
+
+    THE ATLAS'S MALLEOLUS IS A DISC, NOT A PIECE OF BONE. "Lateral malleolus.l"
+    is a flat marker hung beside the fibula, and painted cyan it reads as a
+    plate floating off the ankle. The malleolus is the END OF THE BONE, so the
+    highlight is grown on the bone's own surface by the landmark pipeline's
+    rules (landmarkRegions.py), exactly as renderLandmarkRegions.py does it:
+    bake to world space, make the normals consistent, subdivide so the edge is
+    not a sawtooth, select, and lift the kept faces 0.4mm so they draw in front
+    of the same bone in the skeleton bake.
+
+    TWO THINGS A CARD PICTURE NEEDS THAT A TAP TARGET DOES NOT. A `cap` is cut
+    face by face, and the long thin triangles of a shaft leave its edge a row
+    of teeth, which a traced hotspot smooths away and a painted picture shows.
+    So the bone is first BISECTED on the cap's own plane and the edge is a
+    clean line. And `medialWidth` keeps only that much of the slab, measured
+    in from its most medial point, toward the midline whichever leg it is: the
+    lowest slab of the tibia is the whole rim of the plafond, and the malleolus
+    is only its medial end. keepIf cannot say that, since its axis is fixed and
+    the two legs' medial sides face opposite ways.
+    """
+    import numpy as np
+    from landmarkRegions import select_faces
+    out = bmesh.new()
+    for n in object_names:
+        src = bpy.data.objects.get(n)
+        if not src or src.type != "MESH" or not src.data.vertices:
+            continue
+        bm = bmesh.new()
+        tmp = src.data.copy()
+        for v in tmp.vertices:
+            v.co = src.matrix_world @ v.co
+        bm.from_mesh(tmp)
+        bpy.data.meshes.remove(tmp)
+        bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+        for _ in range(int(rule.get("subdivide", 2))):
+            bmesh.ops.subdivide_edges(bm, edges=list(bm.edges), cuts=1, use_grid_fill=True)
+        medial_cut = None
+        if rule.get("kind") == "cap" and not isinstance(rule["direction"], str):
+            d = mathutils.Vector(rule["direction"]).normalized()
+            reach = max(v.co.dot(d) for v in bm.verts) - float(rule["depth"])
+            bmesh.ops.bisect_plane(bm, geom=list(bm.verts) + list(bm.edges) + list(bm.faces),
+                                   plane_co=d * reach, plane_no=d, dist=1e-6)
+            if rule.get("medialWidth"):
+                cx = sum(v.co.x for v in bm.verts) / len(bm.verts)
+                m = mathutils.Vector((-1.0 if cx > 0 else 1.0, 0.0, 0.0))
+                edge = max(v.co.dot(m) for v in bm.verts if v.co.dot(d) >= reach) - float(rule["medialWidth"])
+                bmesh.ops.bisect_plane(bm, geom=list(bm.verts) + list(bm.edges) + list(bm.faces),
+                                       plane_co=m * edge, plane_no=m, dist=1e-6)
+                medial_cut = (m, edge)
+        bm.faces.ensure_lookup_table()
+        bm.verts.ensure_lookup_table()
+        faces = list(bm.faces)
+        index = {f: i for i, f in enumerate(faces)}
+        adjacency = [[index[o] for e in f.edges for o in e.link_faces if o is not f] for f in faces]
+        mask, _ = select_faces([v.co.copy() for v in bm.verts], [v.normal.copy() for v in bm.verts],
+                               [f.calc_center_median() for f in faces], [f.normal.copy() for f in faces],
+                               rule, {}, adjacency)
+        if medial_cut:
+            mask &= np.array([f.calc_center_median().dot(medial_cut[0]) >= medial_cut[1] for f in faces])
+        print(f"[region] {mesh_name}: {int(mask.sum())}/{len(faces)} faces on {n}", flush=True)
+        bmesh.ops.delete(bm, geom=[f for i, f in enumerate(faces) if not mask[i]], context="FACES")
+        for v in bm.verts:
+            v.co = v.co + v.normal * 0.0004
+        part = bpy.data.meshes.new(mesh_name + "_part")
+        bm.to_mesh(part)
+        bm.free()
+        out.from_mesh(part)
+        bpy.data.meshes.remove(part)
+    mesh = bpy.data.meshes.new(mesh_name)
+    out.to_mesh(mesh)
+    out.free()
+    return mesh
+
+
 skel = bpy.data.collections.get("1: Skeletal system")
 # Z-Anatomy titles each top-level collection with a text mesh — "Skeletal
 # system.g", "Muscular system.g", "Joints.g" — and it lives INSIDE the
@@ -412,6 +493,21 @@ for mid in wanted:
                 bmin, bmax = smin, smax
                 print(f"[frame] {mid}: framed on one side", flush=True)
         bpy.data.meshes.remove(side_mesh)
+
+    # A region on the bone replaces the atlas's marker as what is PAINTED; the
+    # marker above still frames the shot, so the layout does not move.
+    region = REGIONS.get(mid)
+    if isinstance(region, dict) and region.get("rule"):
+        parents = region["parentObjects"]
+        if framed_side:
+            parents = [o for o in parents if o.endswith(framed_side)] or parents
+        grown = region_mesh(parents, region["rule"], f"panel_{mid}_region")
+        if len(grown.vertices) == 0:
+            print(f"[warn] {mid}: region rule selected nothing, keeping the mapped objects", flush=True)
+            bpy.data.meshes.remove(grown)
+        else:
+            bpy.data.meshes.remove(mesh)
+            mesh = grown
 
     for elev in elevations:
         for frame in views:
