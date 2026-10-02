@@ -1,6 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { HotspotImage } from '../LocateStructureSession/HotspotImage';
+import { HotspotOverlay } from '../LocateStructureSession/HotspotOverlay';
+import { LIGAMENT_HOTSPOTS_PART } from '../../data/seed/hotspots.ligaments.upper.generated';
 import type { AnatomyImageAsset } from '../../types/image';
 
 /**
@@ -105,5 +107,34 @@ describe('HotspotImage with a rotation set', () => {
     expect((screen.getByRole('img') as HTMLImageElement).src).toContain('/x/270.webp');
     fireEvent.click(screen.getByRole('group', { name: /Test 270/ }), { clientX: 100, clientY: 100 });
     expect(onAnswer).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('HotspotOverlay after a wrong tap', () => {
+  it('outlines the structure that was tapped, on a frame without the tap mark', () => {
+    const { container } = render(
+      <HotspotOverlay hotspots={frames[0].hotspots!} highlightStructureId="target" scored tappedStructureId="neighbour" />,
+    );
+    const red = [...container.querySelectorAll('polygon')].filter((p) => p.getAttribute('stroke') === 'var(--ring-red)');
+    expect(red).toHaveLength(1);
+    expect(container.querySelector('circle')).toBeNull();
+  });
+});
+
+describe('a wrong tap on a real turntable', () => {
+  it('outlines the ligament that was tapped on the other angles too', () => {
+    const real = Object.entries(LIGAMENT_HOTSPOTS_PART)
+      .filter(([id]) => id.startsWith('ligament-superior-glenohumeral-ligament-a') && id.endsWith('-context'))
+      .map(([id, hotspots]) => ({ ...frame(0, 0.02), id, filePath: `/x/${id}.webp`, slideTitle: id, hotspots }));
+    const onAnswer = vi.fn();
+    render(<HotspotImage image={real[0]} frames={real} targetStructureId="superior-glenohumeral-ligament" onAnswer={onAnswer} />);
+    // The middle of the coraco-acromial ligament on the 0° frame: 0.45, 0.43 of 400px.
+    fireEvent.click(screen.getByRole('button', { name: real[0].slideTitle }), { clientX: 180, clientY: 172 });
+    expect(onAnswer.mock.calls[0][0]).toMatchObject({ correct: false, structureId: 'coraco-acromial-ligament' });
+    const red = () => document.querySelectorAll('polygon[stroke="var(--ring-red)"]').length;
+    expect(red()).toBeGreaterThan(0);
+    fireEvent.click(screen.getByLabelText('Rotate right'));
+    expect(document.querySelector('circle')).toBeNull();
+    expect(red()).toBeGreaterThan(0);
   });
 });

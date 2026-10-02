@@ -126,7 +126,8 @@ export function HotspotImage({ image, frames, targetStructureId, toleranceMultip
       // Once answered the picture takes no second tap, but it still turns and
       // zooms: the student should be able to look round the answer (owner,
       // 2 Oct 2026). The reveal is drawn from each frame's own hotspots, so it
-      // follows the turn; the tap mark belongs to the frame it was made on.
+      // follows the turn; the tap mark belongs to the frame it was made on,
+      // and on every frame a wrong tap's structure is outlined in red.
       onPick={answer ? undefined : grade}
       resetKey={image.id}
       overlay={(current) =>
@@ -137,6 +138,7 @@ export function HotspotImage({ image, frames, targetStructureId, toleranceMultip
             clickPoint={current.id === answer.imageId ? answer.point : undefined}
             clickWasCorrect={answer.correct}
             scored
+            tappedStructureId={answer.correct ? null : answer.structureId}
           />
         ) : null
       }

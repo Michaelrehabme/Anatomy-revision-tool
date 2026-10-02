@@ -10,6 +10,13 @@ interface HotspotOverlayProps {
   clickWasCorrect?: boolean;
   /** Draw a scorable target as rings even with no mark on this frame — the student tapped another angle. Defaults to whether there is a click. */
   scored?: boolean;
+  /**
+   * The structure a wrong tap landed on, outlined in red on every frame that
+   * shows it (owner, 2 Oct 2026). The tap's exact point only exists on the
+   * frame it was made on — the frames are flat renders with no depth to carry
+   * a point across — but WHAT was tapped carries to every angle.
+   */
+  tappedStructureId?: string | null;
 }
 
 /**
@@ -34,7 +41,7 @@ interface HotspotOverlayProps {
  * vertex. Bands go outermost first and paint over each other, exactly as a
  * target face is printed.
  */
-export function HotspotOverlay({ hotspots, highlightStructureId, clickPoint, clickWasCorrect, scored }: HotspotOverlayProps) {
+export function HotspotOverlay({ hotspots, highlightStructureId, clickPoint, clickWasCorrect, scored, tappedStructureId }: HotspotOverlayProps) {
   return (
     <svg
       className="pointer-events-none absolute inset-0 h-full w-full"
@@ -60,14 +67,16 @@ export function HotspotOverlay({ hotspots, highlightStructureId, clickPoint, cli
             />
           );
         }
+        const isTapped = !isTarget && !!tappedStructureId && hotspot.structureId === tappedStructureId;
         return hotspot.polygons.map((polygon, partIndex) => (
           <polygon
             key={`${hotspot.structureId}-${partIndex}`}
             points={polygon.map(([x, y]) => `${x},${y}`).join(' ')}
-            fill={isTarget ? 'var(--ring-halo)' : 'transparent'}
-            fillOpacity={isTarget ? 0.4 : 0}
-            stroke={isTarget ? 'var(--ring-halo)' : 'transparent'}
-            strokeWidth={0.003}
+            fill={isTarget ? 'var(--ring-halo)' : isTapped ? 'var(--ring-red)' : 'transparent'}
+            fillOpacity={isTarget ? 0.4 : isTapped ? 0.18 : 0}
+            stroke={isTarget ? 'var(--ring-halo)' : isTapped ? 'var(--ring-red)' : 'transparent'}
+            // Screen pixels (non-scaling): a visible line for the tapped outline.
+            strokeWidth={isTapped ? 2 : 0.003}
             vectorEffect="non-scaling-stroke"
           />
         ));
