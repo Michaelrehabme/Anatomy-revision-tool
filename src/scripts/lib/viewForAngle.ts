@@ -20,6 +20,17 @@ import type { ViewType } from '../../features/anatomy-revision/types/image';
  * head face-on; and the deltoid, a lateral muscle, is largest at 270 and not
  * visible at all from 90. Every one of those was labelled the other way round.
  *
+ * TWO FAMILIES DO NOT FRAME THE LEFT COPY, and neither goes through here.
+ * The bone and deep region plates draw both copies of every limb bone and
+ * target both, so at 90 degrees the nearer limb is the RIGHT one and the view
+ * is lateral (platesToHotspots.ts, VIEW_NAMES). The landmark anchors all sit on
+ * the RIGHT copy, so view-06 is lateral and view-18 medial (publishLandmarks.ts).
+ * Checked on the renders, 2 Oct 2026: the head of fibula and lateral malleolus
+ * lie in front of the tibia on the 90-degree bone and landmark plates, the
+ * femoral head shows inside the acetabulum on the greater-trochanter view, and
+ * the sustentaculum-tali view at 270 shows the medial arch. Do not "fix" those
+ * two tables to this rule.
+ *
  * A MIDLINE PLATE HAS NO MEDIAL SIDE. The spine, the neck, the pubic symphysis,
  * a muscle drawn with both sides highlighted: turned 90 degrees either way the
  * camera is looking at the body's side, so both 90 and 270 are lateral views,

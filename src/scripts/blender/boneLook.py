@@ -52,6 +52,13 @@ that draws the skull draws a NOSE on it — a soft, rounded tip sitting on the
 bone, which is the one thing in the picture that is not skeleton. The ear
 cartilages are the same: a skull with ears.
 
+The LARYNX is the same fault one storey down: the thyroid, cricoid, arytenoid
+and corniculate cartilages hang in front of the cervical spine on every plate
+that shows the neck, a box of soft tissue no skeletal atlas draws, and on an
+anterior view it sits over the C4-C6 bodies. renderRegionsWithBones.py had
+already dropped all three groups by name since ad8bb3d; this list now matches
+it, so every renderer draws the same skeleton. The hyoid is bone and stays.
+
 The costal cartilages stay. They are cartilage too, but they complete the rib
 cage, they are where several muscles attach, and a rib that stops in mid-air is
 the fault they fix. So this is a named list, not a rule about the word.
@@ -62,6 +69,11 @@ NOT_BONE = (
     "Lateral process of nasal septal cartilage",
     "Nasal cartilages",
     "Cartilages of ear",
+    "Thyroid cartilage",
+    "Cricoid cartilage",
+    "Arytenoid cartilage",
+    "Corniculate cartilage",
+    "Laryngeal cartilages",
 )
 
 

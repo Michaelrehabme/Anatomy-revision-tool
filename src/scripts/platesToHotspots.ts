@@ -86,6 +86,12 @@ const isAxial = (dirName: string) => dirName.startsWith('back-core');
 
 const VIEW_NAMES: Record<string, string> = {
   'view-00': 'anterior',
+  // LATERAL IS RIGHT HERE, though the turntable rule above calls 90 medial. The
+  // named views belong to the bone and deep plates, which draw BOTH copies of
+  // every limb and target both: at 90 degrees the camera is on the body's right
+  // and the nearer limb is the right one, seen from outside. Checked on the
+  // renders (2 Oct 2026): face to the right of the frame, the fibula in front of
+  // the tibia down to the lateral malleolus on lower-leg-foot-lateral.
   'view-06': 'lateral',
   'view-12': 'posterior',
   // Looking up from below. The sole of a foot is not reachable by spinning:

@@ -173,9 +173,10 @@ def render_to(path, outlines=False):
     bpy.ops.render.render(write_still=True)
 
 
-# The collection's own title is a mesh inside it — see the other renderers.
+# The collection's own title is a mesh inside it, and so are the nasal and ear
+# cartilages, which put a nose on the skull: boneLook.is_bone drops both.
 skel = bpy.data.collections.get("1: Skeletal system")
-skeleton_names = [o.name for o in skel.all_objects if o.type == "MESH" and not o.name.endswith(".g")]
+skeleton_names = [o.name for o in skel.all_objects if o.type == "MESH" and boneLook.is_bone(o.name)]
 print(f"[bones] baking {len(skeleton_names)} meshes...", flush=True)
 skeleton_mesh = boneLook.smooth(bake(skeleton_names, "bone_skeleton"))
 

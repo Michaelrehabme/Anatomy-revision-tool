@@ -30,6 +30,9 @@ Outputs, matching the layout masksToHotspots.ts already reads:
 """
 import bpy, json, sys, os, math, argparse, mathutils, bmesh, time
 
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+import boneLook  # noqa: E402
+
 argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
 ap = argparse.ArgumentParser()
 ap.add_argument("--mapping", required=True)
@@ -202,24 +205,10 @@ def link(mesh, name, material, holdout=False):
 
 # Z-Anatomy files nasal, ear and laryngeal cartilage under the skeletal system.
 # Rendered, they give the skull a nose and ears — a skeleton that could not
-# exist, and the first thing anyone notices. Costal cartilage stays: it joins
-# the ribs to the sternum and is drawn in every skeletal atlas.
-SOFT_CARTILAGE = (
-    "nasal septal cartilage",
-    "nasal cartilages",
-    "major alar cartilage",
-    "cartilages of ear",
-    "thyroid cartilage",
-    "cricoid cartilage",
-    "arytenoid cartilage",
-    "corniculate cartilage",
-    "laryngeal cartilages",
-)
-
-
-def is_soft_cartilage(name):
-    lowered = name.lower()
-    return any(k in lowered for k in SOFT_CARTILAGE)
+# exist, and the first thing anyone notices. This script kept its own list of
+# them; boneLook.NOT_BONE now carries the same names, so every renderer drops
+# the same meshes. Costal cartilage stays: it joins the ribs to the sternum and
+# is drawn in every skeletal atlas.
 
 
 skel = bpy.data.collections.get("1: Skeletal system")
@@ -235,7 +224,7 @@ if skel is None:
 # on brachioradialis, flexor-digitorum-profundus, interspinales, multifidus and
 # rotatores. `.g` is only ever a label, never anatomy.
 all_skel = [o.name for o in skel.all_objects if o.type == "MESH" and not o.name.endswith(".g")]
-bone_names = [n for n in all_skel if not is_soft_cartilage(n)]
+bone_names = [n for n in all_skel if boneLook.is_bone(n)]
 print(f"[bones] baking {len(bone_names)} skeletal meshes "
       f"({len(all_skel) - len(bone_names)} soft cartilage excluded)...", flush=True)
 bone_mesh = bake_world_mesh(bone_names, "baked_bones")

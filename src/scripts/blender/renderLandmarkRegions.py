@@ -17,6 +17,7 @@ import numpy as np
 from mathutils import kdtree
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+import boneLook  # noqa: E402
 from landmarkRegions import select_faces  # noqa: E402
 
 argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
@@ -174,7 +175,7 @@ def render_to(path):
 skel = bpy.data.collections.get("1: Skeletal system")
 context_ob = None
 if skel and a.context:
-    names = [o.name for o in skel.all_objects if o.type == "MESH" and not o.name.endswith(".g")]
+    names = [o.name for o in skel.all_objects if o.type == "MESH" and boneLook.is_bone(o.name)]
     print(f"[context] baking {len(names)} meshes for surroundings...", flush=True)
     context_mesh = bake(names, "region_context_mesh")
     context_mesh.materials.append(CONTEXT_MAT)

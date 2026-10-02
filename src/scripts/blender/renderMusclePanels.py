@@ -19,6 +19,9 @@ panels carry no hotspots (mode: 'single-structure'), so the camera is free.
 """
 import bpy, json, sys, os, math, argparse, mathutils, bmesh, time
 
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+import boneLook  # noqa: E402
+
 argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
 ap = argparse.ArgumentParser()
 ap.add_argument("--mapping", required=True)
@@ -215,7 +218,7 @@ skel = bpy.data.collections.get("1: Skeletal system")
 # framed on the whole body, mirrored on the right, and has been in production
 # on brachioradialis, flexor-digitorum-profundus, interspinales, multifidus and
 # rotatores. `.g` is only ever a label, never anatomy.
-bone_names = [o.name for o in skel.all_objects if o.type == "MESH" and not o.name.endswith(".g")]
+bone_names = [o.name for o in skel.all_objects if o.type == "MESH" and boneLook.is_bone(o.name)]
 # THE FAR LIMB IS NOT CONTEXT. A plantar view of one foot is taken from far
 # enough below the body that the other foot walks into the edge of frame, and
 # the trim that crops the finished panel then keeps it: the subject ends up

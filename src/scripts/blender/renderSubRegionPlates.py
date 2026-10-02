@@ -307,7 +307,7 @@ def render_to(path, outlines=False):
 
 
 skel = bpy.data.collections.get("1: Skeletal system")
-skeleton_names = [o.name for o in skel.all_objects if o.type == "MESH" and not o.name.endswith(".g")]
+skeleton_names = [o.name for o in skel.all_objects if o.type == "MESH" and boneLook.is_bone(o.name)]
 
 t0 = time.time()
 count = 0

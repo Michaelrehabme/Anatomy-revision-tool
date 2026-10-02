@@ -28,7 +28,7 @@ BOTH ends, though, so `zPrefer` in the spec picks which articulation is meant â€
 region grows from that seed. Without it the distal tibiofibular joint resolves
 to the proximal one, silently and plausibly.
 """
-import bpy, json, sys, os, math, argparse, mathutils, bmesh
+import bpy, json, sys, os, re, math, argparse, mathutils, bmesh
 from mathutils import kdtree
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
@@ -351,11 +351,52 @@ skel = bpy.data.collections.get("1: Skeletal system")
 # framed on the whole body, mirrored on the right, and has been in production
 # on brachioradialis, flexor-digitorum-profundus, interspinales, multifidus and
 # rotatores. `.g` is only ever a label, never anatomy.
-skeleton_names = ([o.name for o in skel.all_objects if o.type == "MESH" and not o.name.endswith(".g")]
+skeleton_names = ([o.name for o in skel.all_objects if o.type == "MESH" and boneLook.is_bone(o.name)]
                   if skel else [])
 print(f"[bones] baking {len(skeleton_names)} meshes...", flush=True)
 skeleton_mesh = bake(skeleton_names, "joint_skeleton")
 print(f"[bones] {len(skeleton_mesh.vertices)} verts", flush=True)
+
+# A MEDIAL VIEW LOOKS FROM WHERE THE OTHER LIMB STANDS. A one-sided joint is
+# framed on its left copy, so at 90 degrees the camera is on the body's right
+# and the first thing it meets is the right leg, or for an arm joint the right
+# arm, the trunk and the thighs. Every one-sided joint traced 0px at 90 and had
+# no medial frame at all. The landmark renderer met the same wall at the
+# sustentaculum tali and took the far leg away (medial_context); the reviewer's
+# rule for the arm is the same, "as if it were not there".
+#
+#   a lower-limb joint keeps its own side and the unpaired midline, minus both
+#     arms (the right hand hangs beside the thigh);
+#   an upper-limb joint keeps only its own arm and shoulder girdle, because
+#     from the inside of the arm the trunk and both thighs are in the way too.
+#
+# Only the 90-degree frame is isolated. The obliques either side already trace
+# with the whole skeleton in place, and a frame that shows its neighbours'
+# context is the better picture wherever the joint can be seen at all.
+MEDIAL_FRAMES = {6}
+ARM_BONE = re.compile(
+    r"humerus|radius|ulna|scapula|clavicle|carpal|metacarpal|scaphoid|lunate|triquetr|pisiform"
+    r"|trapezi|capitate|hamate|(phalanx|phalanges).*(thumb|hand)|sesamoid.*(hand|thumb)",
+    re.I,
+)
+MEDIAL_BAKES = {}
+
+
+def medial_names(suffix, upper):
+    other = ".r" if suffix == ".l" else ".l"
+    if upper:
+        return [n for n in skeleton_names if n.endswith(suffix) and ARM_BONE.search(n)]
+    return [n for n in skeleton_names if not n.endswith(other) and not ARM_BONE.search(n)]
+
+
+def medial_skeleton(suffix, upper):
+    key = (suffix, upper)
+    if key not in MEDIAL_BAKES:
+        names = medial_names(suffix, upper)
+        print(f"[bones] baking {len(names)} meshes for medial frames ({'arm' if upper else 'leg'}, {suffix})",
+              flush=True)
+        MEDIAL_BAKES[key] = bake(names, f"joint_skeleton_medial_{'arm' if upper else 'leg'}{suffix}")
+    return MEDIAL_BAKES[key]
 
 by_id = {j["id"]: j for j in spec["joints"]}
 done = 0
@@ -417,6 +458,11 @@ for jid in wanted:
     # two, so they must not hold themselves out.
     own = set(objs_a) | set(objs_b)
     occluders = bake([n for n in skeleton_names if n not in own], f"occ_{jid}")
+    # The medial frame's own context and occluders, only where it has one.
+    medial = suffix is not None and any(f in MEDIAL_FRAMES for f in views)
+    upper = any(ARM_BONE.search(n) for n in objs_a + objs_b)
+    medial_occ = (bake([n for n in medial_names(suffix, upper) if n not in own], f"occ_medial_{jid}")
+                  if medial else None)
 
     # EACH BONE AS THE CAMERA SEES IT.
     #
@@ -447,6 +493,9 @@ for jid in wanted:
     # joints seen laterally through a thicket of ribs.
     skip = set(j.get("skipViews", []))
     for frame in [f for f in views if f not in skip]:
+        isolate = medial and frame in MEDIAL_FRAMES
+        occ = medial_occ if isolate else occluders
+        ctx_mesh = medial_skeleton(suffix, upper) if isolate else skeleton_mesh
         # The joint line, rendered from the 3D contact surfaces rather than
         # recovered from flattened silhouettes. Intersecting two bone
         # silhouettes cannot tell "adjacent" from "one in front of the other",
@@ -456,7 +505,7 @@ for jid in wanted:
         # actually see is not a band they can be asked to click.
         clear()
         frame_camera(lo, hi, frame * 15, margin, frame_size)
-        link(occluders, f"occ_{jid}", BONE_MAT, holdout=True)
+        link(occ, f"occ_{jid}", BONE_MAT, holdout=True)
         link(patch, f"mask_line_{jid}", MASK_MAT)
         render_to(os.path.join(a.out, jid, f"view-{frame:02d}", "line.png"))
 
@@ -464,7 +513,7 @@ for jid in wanted:
         for side, (mesh, partner) in side_meshes.items():
             clear()
             frame_camera(lo, hi, frame * 15, margin, frame_size)
-            link(occluders, f"occ_{jid}", BONE_MAT, holdout=True)
+            link(occ, f"occ_{jid}", BONE_MAT, holdout=True)
             link(partner, f"partner_{side}_{jid}", BONE_MAT, holdout=True)
             link(mesh, f"mask_{side}_{jid}", MASK_MAT)
             render_to(os.path.join(a.out, jid, f"view-{frame:02d}", f"{side}.png"))
@@ -482,7 +531,7 @@ for jid in wanted:
         # on for this render only â€” a drawn line on a MASK would grow the
         # traced band by the width of the line.
         clear()
-        ctx = link(boneLook.smooth(skeleton_mesh), f"ctx_{jid}", CTX_MAT)
+        ctx = link(boneLook.smooth(ctx_mesh), f"ctx_{jid}", CTX_MAT)
         outline_coll.objects.link(ctx)
         scene.collection.objects.unlink(ctx)
         boneLook.aim_lights(cam, key_light, fill_light)
@@ -492,6 +541,8 @@ for jid in wanted:
         outline_coll.objects.unlink(ctx)
 
     bpy.data.meshes.remove(occluders)
+    if medial_occ is not None:
+        bpy.data.meshes.remove(medial_occ)
     done += 1
 
 print(f"[complete] {done} joint(s) -> {a.out}", flush=True)

@@ -33,6 +33,11 @@ const OUT_PANELS = `${ROOT}/src/features/anatomy-revision/data/seed/landmarkPane
 
 const VIEW_NAMES: Record<string, string> = {
   'view-00': 'anterior',
+  // Not lib/viewForAngle.ts's medial: every limb landmark's anchor sits on the
+  // RIGHT copy (x < 0 in renders/landmarks/*/meta.json), so the camera at 90
+  // degrees, on the body's right, sees it from outside. Checked on the renders
+  // (2 Oct 2026): the fibular head overlaps the tibia on head-of-fibula-lateral
+  // and the femoral head shows in the acetabulum on greater-trochanter-lateral.
   'view-06': 'lateral',
   'view-12': 'posterior',
   // Looking straight down. A single vertebra is rendered on its own from

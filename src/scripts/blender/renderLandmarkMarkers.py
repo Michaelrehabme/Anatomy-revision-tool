@@ -56,6 +56,7 @@ ap.add_argument("--look", default="studio", choices=["flat", "studio"],
 a = ap.parse_args(argv)
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+import boneLook  # noqa: E402
 from landmarkRegions import select_faces  # noqa: E402
 
 REGION_RULES = {}
@@ -513,7 +514,7 @@ def build_region(bone_name, rule, anchors):
 # Same exclusion as the other renderers: the collection's own title is a mesh
 # inside it, and baking the skeleton wholesale would bake "SYSTEM" in too.
 skel = bpy.data.collections.get("1: Skeletal system")
-skeleton_names = [o.name for o in skel.all_objects if o.type == "MESH" and not o.name.endswith(".g")]
+skeleton_names = [o.name for o in skel.all_objects if o.type == "MESH" and boneLook.is_bone(o.name)]
 print(f"[bones] baking {len(skeleton_names)} meshes...", flush=True)
 skeleton_mesh = bake(skeleton_names, "landmark_skeleton")
 
