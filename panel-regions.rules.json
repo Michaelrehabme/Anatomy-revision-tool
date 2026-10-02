@@ -1,0 +1,31 @@
+{
+ "_readme": [
+  "Card panels whose highlight is a region grown on the parent bone, not the",
+  "atlas object the mapping names. Read by renderMusclePanels.py --regions.",
+  "Rules are landmarkRegions.py rules (same kinds as landmark-regions.rules.json);",
+  "world frame +Z up, +Y posterior, metres."
+ ],
+ "lateral-malleolus": {
+  "parentObjects": ["Fibula.l", "Fibula.r"],
+  "rule": {
+   "kind": "cap",
+   "direction": [0, 0, -1],
+   "depth": 0.028,
+   "close": 0,
+   "open": 0,
+   "_why": "The lateral malleolus is the distal end of the fibula. The atlas's own 'Lateral malleolus' object is a flat marker disc beside the bone."
+  }
+ },
+ "medial-malleolus": {
+  "parentObjects": ["Tibia.l", "Tibia.r"],
+  "rule": {
+   "kind": "cap",
+   "direction": [0, 0, -1],
+   "depth": 0.016,
+   "medialWidth": 0.020,
+   "close": 0,
+   "open": 0,
+   "_why": "The medial malleolus is the process of the tibia that hangs below the plafond; the lowest slab of the tibia is it."
+  }
+ }
+}
