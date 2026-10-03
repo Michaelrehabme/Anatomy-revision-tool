@@ -4,8 +4,8 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { SourcesPage } from '../SourcesPage';
 import { LEGAL_PATHS } from '../legalPaths';
 import LegalRoutes from '../LegalRoutes';
-import { FAMILIES, WORKS } from '../data/provenance.generated';
-import { CATEGORIES } from '../../anatomy-revision/types/structure';
+import { BLOOD_SUPPLY, FAMILIES, WORKS } from '../data/provenance.generated';
+import { CATEGORIES, CATEGORY_LABELS } from '../../anatomy-revision/types/structure';
 
 /**
  * /sources is the one page whose subject is its own accuracy, so the ways it
@@ -78,6 +78,63 @@ describe('SourcesPage', () => {
 
   it('gives every listed work a citation count, so an unused one is visible', () => {
     for (const work of WORKS) expect(work.citations).toBeGreaterThan(0);
+  });
+});
+
+/**
+ * Blood supply makes two kinds of statement and the section is only honest
+ * while it keeps them apart: the arteries are quoted from a source, the rating
+ * is the owner's judgement. The quiet failure is an edit that merges the two,
+ * or a partial family that reads as a complete one.
+ */
+describe('SourcesPage blood supply', () => {
+  const section = () => screen.getByRole('heading', { name: 'Blood supply' }).closest('section')!;
+
+  it('states how many structures carry one, counted from the content', () => {
+    page();
+    const reviewed = BLOOD_SUPPLY.families.reduce((n, f) => n + f.reviewed, 0);
+    expect(reviewed).toBeGreaterThan(0);
+    expect(section().textContent).toContain(`${reviewed} structures show a blood supply`);
+  });
+
+  it('gives the number for every partly covered family, and never calls it complete', () => {
+    page();
+    const text = section().textContent ?? '';
+    for (const f of BLOOD_SUPPLY.families) {
+      const name = CATEGORY_LABELS[f.category].toLowerCase();
+      if (f.reviewed < f.total) {
+        expect(text).toContain(`${f.reviewed} of ${f.total} ${name}`);
+        expect(text).not.toContain(`All ${f.total} ${name}`);
+      } else {
+        expect(text).toContain(`${f.total} ${name}`);
+      }
+    }
+  });
+
+  it('says the landmarks are left out deliberately', () => {
+    page();
+    expect(section().textContent).toContain(`The ${BLOOD_SUPPLY.landmarksExcluded} bony landmarks are left out on purpose`);
+    expect(BLOOD_SUPPLY.families.some((f) => f.category === 'landmark')).toBe(false);
+  });
+
+  it('says the rating is a student’s judgement and not a quoted fact', () => {
+    page();
+    const text = section().textContent ?? '';
+    expect(text).toMatch(/No source is quoted as saying it/);
+    expect(text).toMatch(/judgement by a sports rehabilitation student, not as a published fact/);
+  });
+
+  it('names at least one work under every family that has a blood supply, and none it will not cite', () => {
+    for (const f of BLOOD_SUPPLY.families) {
+      if (f.reviewed > 0) expect(f.works.length).toBeGreaterThan(0);
+      for (const i of f.works) expect(WORKS[i]).toBeTruthy();
+    }
+  });
+
+  it('repeats the rating caveat in the always-rendered limits section', () => {
+    page();
+    const limits = screen.getByRole('heading', { name: 'What the checking does not cover' }).closest('section')!;
+    expect(limits.textContent).toMatch(/does not cover the Rich,\s+Moderate or Poor rating/);
   });
 });
 
