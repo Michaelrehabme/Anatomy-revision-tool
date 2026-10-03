@@ -73,6 +73,17 @@ describe('OfflineController', () => {
     expect(controller.getSnapshot().support).toBe('ready');
   });
 
+  it('says when the worker in control does not hand out downloads, without hiding the list', async () => {
+    const stale = setup({ servesDownloads: async () => false });
+    await stale.controller.start();
+    expect(stale.controller.getSnapshot().support).toBe('ready');
+    expect(stale.controller.getSnapshot().serving).toBe(false);
+
+    const current = setup({ servesDownloads: async () => true });
+    await current.controller.start();
+    expect(current.controller.getSnapshot().serving).toBe(true);
+  });
+
   it('walks an area from not downloaded, to downloaded, to update available, to removed', async () => {
     const { controller, fake, server } = setup();
     await controller.start();

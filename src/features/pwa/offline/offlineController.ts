@@ -49,6 +49,12 @@ export interface OfflineSnapshot {
   usedBytes: number;
   /** What the browser says is still available to this site, or null when it will not say. */
   freeBytes: number | null;
+  /**
+   * False when the worker running this page does not hand out downloads: it is
+   * not in control yet, or it is the version from before downloads existed and
+   * the new one is waiting. The files are safe; they show after a reload.
+   */
+  serving: boolean;
 }
 
 export interface ControllerDeps {
@@ -59,6 +65,8 @@ export interface ControllerDeps {
   storageManager?: Pick<StorageManager, 'estimate' | 'persist'> | null;
   /** Whether a service worker is there to serve what gets downloaded. */
   hasServiceWorker: () => Promise<boolean>;
+  /** Whether a picture request is really answered from a download. Asked, not assumed: see workerServesDownloads. */
+  servesDownloads?: () => Promise<boolean>;
   download?: (options: DownloadOptions) => Promise<AreaRecord>;
   /** Where the last index is remembered, so sizes still show with no network. */
   memo?: Pick<Storage, 'getItem' | 'setItem'> | null;
@@ -79,6 +87,7 @@ export function describeFailure(error: unknown): string | null {
 
 export class OfflineController {
   private support: OfflineSupport = 'checking';
+  private serving = true;
   private records: Partial<Record<Area, AreaRecord>> = {};
   private index: OfflineIndex | null = null;
   /** True once an index has come from the network this session, rather than from the memo. */
@@ -132,6 +141,8 @@ export class OfflineController {
       this.records = await readAllRecords(storage);
       await this.measureSpace();
       this.support = 'ready';
+      this.emit();
+      this.serving = await (this.deps.servesDownloads?.() ?? Promise.resolve(true)).catch(() => false);
       this.emit();
     })();
     return this.started;
@@ -355,7 +366,7 @@ export class OfflineController {
         error: this.errors.get(area) ?? null,
       };
     }
-    return { support: this.support, areas, usedBytes, freeBytes: this.freeBytes };
+    return { support: this.support, areas, usedBytes, freeBytes: this.freeBytes, serving: this.serving };
   }
 
   private emit(): void {
@@ -389,6 +400,46 @@ async function serviceWorkerRegistered(): Promise<boolean> {
 /** How long to wait for a first service worker to become active before saying there is none. */
 const SERVICE_WORKER_WAIT_MS = 10_000;
 
+const PROBE_CACHE = 'locusmsk-offline-probe';
+const PROBE_URL = '/anatomy/__offline-probe__';
+
+/**
+ * Asks the worker for a picture only a download could supply.
+ *
+ * "A worker is registered" is not "downloads are served". Two cases look
+ * identical from the page and both leave broken images offline: a worker that
+ * is active but not yet in control of this page, and the previous version of
+ * the worker — still in control until the student accepts the Reload prompt —
+ * which has never heard of downloads. So a marker goes into a cache with the
+ * downloads' prefix and is fetched back through the ordinary picture route.
+ * Only a worker that looks in the downloads returns it; anything else answers
+ * with the network's page or fails.
+ */
+async function workerServesDownloads(): Promise<boolean> {
+  if (typeof caches === 'undefined' || !('serviceWorker' in navigator)) return false;
+  if (!navigator.serviceWorker.controller) {
+    // A first worker claims the page a moment after it activates.
+    await Promise.race([
+      new Promise<void>((resolve) =>
+        navigator.serviceWorker.addEventListener('controllerchange', () => resolve(), { once: true }),
+      ),
+      new Promise<void>((resolve) => setTimeout(resolve, 4_000)),
+    ]);
+    if (!navigator.serviceWorker.controller) return false;
+  }
+  const marker = `probe-${Date.now()}`;
+  try {
+    const cache = await caches.open(PROBE_CACHE);
+    await cache.put(PROBE_URL, new Response(marker, { headers: { 'Content-Type': 'text/plain' } }));
+    const response = await fetch(PROBE_URL);
+    return (await response.text()) === marker;
+  } catch {
+    return false;
+  } finally {
+    await caches.delete(PROBE_CACHE).catch(() => false);
+  }
+}
+
 function safeLocalStorage(): Storage | null {
   try {
     return typeof localStorage === 'undefined' ? null : localStorage;
@@ -406,6 +457,7 @@ export function offlineController(): OfflineController {
     storage: typeof caches === 'undefined' ? null : caches,
     storageManager: typeof navigator !== 'undefined' && navigator.storage ? navigator.storage : null,
     hasServiceWorker: serviceWorkerRegistered,
+    servesDownloads: workerServesDownloads,
     memo: safeLocalStorage(),
   });
   return shared;

@@ -67,6 +67,28 @@ interface OfflineSectionProps {
   controller?: OfflineController;
 }
 
+
+/**
+ * Reloads so that the worker which serves downloads is the one in control. If
+ * a newer worker is waiting behind the old one, it is told to take over first —
+ * the same message the "new version" prompt sends — and the reload follows the
+ * handover; otherwise a plain reload is all a claimed-late page needs.
+ */
+async function reloadIntoLatestWorker(): Promise<void> {
+  try {
+    const registration = await navigator.serviceWorker.getRegistration();
+    if (registration?.waiting) {
+      navigator.serviceWorker.addEventListener('controllerchange', () => window.location.reload(), { once: true });
+      registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+      setTimeout(() => window.location.reload(), 3_000);
+      return;
+    }
+  } catch {
+    // Fall through to the plain reload.
+  }
+  window.location.reload();
+}
+
 export function OfflineSection({ access, compact = false, controller = offlineController() }: OfflineSectionProps) {
   const snapshot = useSyncExternalStore(controller.subscribe, controller.getSnapshot);
   /** The area whose Remove has been pressed and is waiting for a yes or no. */
@@ -129,6 +151,18 @@ export function OfflineSection({ access, compact = false, controller = offlineCo
       <p style={{ font: '400 14px/1.55 var(--font-ui)', color: 'var(--ink2)' }}>
         Download an area to keep every picture in it on this device, for revising with no signal.
       </p>
+      {!snapshot.serving && (
+        <div
+          role="status"
+          className="mt-3 flex flex-wrap items-center gap-3 rounded-[3px] px-3 py-2.5"
+          style={{ background: 'var(--accs)', border: '1px solid var(--acc)', font: '400 13.5px/1.5 var(--font-ui)', color: 'var(--ink)' }}
+        >
+          <span className="min-w-0 flex-1">Reload the app once to switch downloads on. Until then, downloaded pictures will not show with no signal.</span>
+          <button type="button" onClick={() => void reloadIntoLatestWorker()} className="shrink-0 rounded-[3px] px-3" style={buttonStyle(true)}>
+            Reload
+          </button>
+        </div>
+      )}
 
       <ul className="mt-4" style={{ listStyle: 'none', margin: 0, padding: 0, borderTop: '1px solid var(--line)' }}>
         {AREAS.map((area) => {

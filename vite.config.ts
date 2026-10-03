@@ -124,6 +124,14 @@ const pwa = (disable: boolean) =>
       // from navigation fallback entirely.
       navigateFallbackDenylist: [/^\/api\//, /^https:\/\//],
       cleanupOutdatedCaches: true,
+      // A FIRST worker takes the open page at once. Without this it installs
+      // and activates but controls nothing until the next launch, so an area
+      // downloaded on a first visit sat in its cache while every picture
+      // request went past the worker to a network that was not there
+      // (reported from an iPhone in aeroplane mode: the download "worked" and
+      // the plates were broken images). It does not make updates silent:
+      // skipWaiting is still off, so a NEW version waits for the Reload prompt.
+      clientsClaim: true,
       runtimeCaching: [
         {
           // Every picture except the offline downloader's own fetches (swPlugin.ts).

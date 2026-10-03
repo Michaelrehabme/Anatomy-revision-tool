@@ -167,6 +167,15 @@ describe('OfflineSection', () => {
     expect(screen.queryByRole('button', { name: /Update Knee|Download Knee/ })).toBeNull();
   });
 
+  it('asks for one reload when the worker in control does not serve downloads yet', async () => {
+    const { controller } = controllerWith({ servesDownloads: async () => false });
+    show({ access: paid, controller });
+
+    expect(await screen.findByText(/Reload the app once to switch downloads on/)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Reload' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Download Knee' })).toBeInTheDocument();
+  });
+
   it('says downloads are unavailable where there is no service worker, and offers no buttons', async () => {
     const { controller } = controllerWith({ hasServiceWorker: async () => false });
     show({ access: paid, controller });
