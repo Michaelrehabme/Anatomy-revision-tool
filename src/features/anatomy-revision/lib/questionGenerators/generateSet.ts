@@ -86,6 +86,8 @@ export interface RevisionSetConfig {
    * which means "ask me everything" and gets it.
    */
   maxPerStructure?: number;
+  /** Share of a `reviewItems` session kept for structures never answered. Defaults to NEW_SHARE. */
+  newShare?: number;
   /** Fixed seed for deterministic/testable generation. Defaults to time-based. */
   seed?: number;
   /**
@@ -337,6 +339,7 @@ function blendReviewItems(
   rng: Rng,
   cap: number,
   newIds: ReadonlySet<string> | null,
+  newShare: number = NEW_SHARE,
 ): RevisionQuestion[] {
   const byKey = new Map<string, RevisionQuestion[]>();
   for (const q of ordered) {
@@ -360,7 +363,7 @@ function blendReviewItems(
   const fresh = ordered.filter((q) => newIds?.has(q.structureId) && !items.some((i) => i.structureId === q.structureId));
   const due = items.filter((i) => i.due);
   const forward = items.filter((i) => !i.due);
-  const newSlots = Math.min(Math.round(count * NEW_SHARE), fresh.length);
+  const newSlots = Math.min(Math.round(count * Math.min(1, Math.max(0, newShare))), fresh.length);
 
   take(due, count - newSlots);
   for (const q of takeWithStructureCap(fresh, Math.min(newSlots, count - picked.length), cap, counts)) picked.push(q);
@@ -632,7 +635,7 @@ export function generateRevisionSet(
   const selected = !count
     ? balanced
     : config.reviewItems
-      ? blendReviewItems(balanced, config.reviewItems, count, rng, cap, newStructureIds(pool, config.mastery ?? [], config.factMastery))
+      ? blendReviewItems(balanced, config.reviewItems, count, rng, cap, newStructureIds(pool, config.mastery ?? [], config.factMastery), config.newShare)
     : config.priorityStructureIds?.length
       ? blendPriorityWithRest(balanced, config.priorityStructureIds, count, config.reviewShare, rng, cap, newStructureIds(pool, config.mastery))
       : // Breadth over depth here too: the mastery weighting front-loads a weak

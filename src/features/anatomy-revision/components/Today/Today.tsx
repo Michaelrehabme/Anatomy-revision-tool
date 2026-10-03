@@ -32,7 +32,7 @@ interface TodayProps {
 }
 
 export function Today({ access, repository, userId, content, onStart, onCustomSession, onOpenMuscle, onNavigate }: TodayProps) {
-  const { loading, streak, totalMuscleCount, seenMusclePct, totalStructureCount, seenStructureCount, allMastery, weakest, comingDue, reviewItems, dueCount, facts, weekBuckets, weekMax, dayLabels } =
+  const { loading, streak, totalMuscleCount, seenMusclePct, totalStructureCount, seenStructureCount, allMastery, weakest, comingDue, reviewItems, spreadItems, dueCount, facts, weekBuckets, weekMax, dayLabels } =
     useTodayData(repository, userId, content, access.areas);
   const now = new Date();
   // Nothing attempted yet: the first session is the guided starter, and the
@@ -44,7 +44,11 @@ export function Today({ access, repository, userId, content, onStart, onCustomSe
   const preferredAreas = getPreferredAreas().filter((a) => access.areas.includes(a));
   const areas = preferredAreas.length ? preferredAreas : undefined;
 
-  const handleStart = async () => {
+  // 'continue' works down the queue oldest first, up to two questions a
+  // structure, so a structure is finished before the review moves on. 'fresh'
+  // is the same queue spread out: one question a structure, the ones answered
+  // longest ago first, and half the session new (owner, 3 Oct 2026).
+  const handleStart = async (style: 'continue' | 'fresh' = 'continue') => {
     if (firstRun) {
       const starter = buildStarterSet(content.structures, content.images, { areas: areas ?? access.areas });
       if (starter.length > 0) {
@@ -64,7 +68,8 @@ export function Today({ access, repository, userId, content, onStart, onCustomSe
       // Per question type (lib/reviewQueue.ts): what is due, then weak types
       // pulled forward, then new structures — never something well known and
       // not due. Fewer than twenty when there is not that much worth asking.
-      reviewItems,
+      reviewItems: style === 'fresh' ? spreadItems : reviewItems,
+      ...(style === 'fresh' ? { maxPerStructure: 1, newShare: 0.5 } : {}),
       count: 20,
       // Without mastery the generator falls back to a uniform shuffle and the
       // scheduler's due/weakness weighting never runs on the daily review.
@@ -120,14 +125,19 @@ export function Today({ access, repository, userId, content, onStart, onCustomSe
             {firstRun
               ? `${STARTER_COUNT} questions, about ${minutesFor(STARTER_COUNT)} minutes. Multiple choice and locate-on-the-image, nothing harder yet.`
               : dueCount > 0
-                ? 'Scheduled from your recent sessions.'
+                ? 'Keep going finishes the structures you are on. New set moves to ones you have not seen lately, with more new material.'
                 : 'All caught up. A review now brings your weaker questions forward, plus new material; anything you know well waits until it is due.'}
           </p>
-          <div className="mt-9 flex gap-3.5">
-            <Button onClick={handleStart} className="min-w-[180px] min-h-[56px]">
-              {firstRun ? 'Start your first session' : 'Start review'}
+          <div className="mt-9 flex flex-wrap gap-3.5">
+            <Button onClick={() => handleStart('continue')} className={firstRun ? 'min-w-[180px] min-h-[56px]' : 'flex-1 whitespace-nowrap min-h-[56px]'}>
+              {firstRun ? 'Start your first session' : 'Keep going'}
             </Button>
-            <Button variant="secondary" onClick={onCustomSession} className="min-w-[150px] min-h-[56px]">
+            {!firstRun && (
+              <Button variant="secondary" onClick={() => handleStart('fresh')} className="flex-1 whitespace-nowrap min-h-[56px]">
+                New set
+              </Button>
+            )}
+            <Button variant="secondary" onClick={onCustomSession} className={firstRun ? 'min-w-[150px] min-h-[56px]' : 'flex-1 whitespace-nowrap min-h-[56px]'}>
               Custom session
             </Button>
           </div>

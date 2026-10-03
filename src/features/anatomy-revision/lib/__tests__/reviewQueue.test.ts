@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { buildReviewQueue } from '../reviewQueue';
+import { buildReviewQueue, spreadReviewItems } from '../reviewQueue';
 import type { FactMastery, StructureMastery } from '../../types/attempt';
 
 const NOW = new Date('2026-10-02T09:00:00.000Z');
@@ -48,5 +48,27 @@ describe('buildReviewQueue', () => {
   it('leaves out structures the account cannot reach', () => {
     const { due } = buildReviewQueue([naming('biceps-brachii', { dueAt: inDays(-2), intervalDays: 1 })], [], ELIGIBLE, NOW);
     expect(due).toEqual([]);
+  });
+});
+
+describe('spreadReviewItems (New set)', () => {
+  const ago = (n: number) => inDays(-n);
+
+  it('puts the structure answered longest ago first, so one asked today goes to the back', () => {
+    const mastery = [
+      naming('deltoid', { dueAt: ago(9), intervalDays: 1, lastAttemptAt: ago(10) }),
+      naming('supraspinatus', { dueAt: ago(2), intervalDays: 1, lastAttemptAt: ago(20) }),
+    ];
+    // The deltoid's origin was answered today: the deltoid as a whole is recent.
+    const facts = [
+      fact('deltoid', 'origin', { dueAt: inDays(4), intervalDays: 4, lastAttemptAt: NOW.toISOString() }),
+      fact('deltoid', 'insertion', { dueAt: ago(8), intervalDays: 1, lastAttemptAt: ago(9) }),
+    ];
+    const { due, forward } = buildReviewQueue(mastery, facts, ELIGIBLE, NOW);
+    expect(due[0].structureId).toBe('deltoid'); // oldest-first: Keep going stays on it
+    const spread = spreadReviewItems([...due, ...forward], mastery, facts);
+    expect(spread[0].structureId).toBe('supraspinatus');
+    expect(spread.map((i) => i.due)).toEqual([true, true, true, false]); // due still before pulled-forward
+    expect(spread).toHaveLength(due.length + forward.length);
   });
 });

@@ -1082,6 +1082,34 @@ describe('the daily review, per question type (2 Oct 2026)', () => {
       ],
     }).filter((q) => !isFlashcardQuestion(q) || q.structureId !== 'deltoid');
 
+  it('a New set asks no structure twice and gives half the session to new ones', () => {
+    const result = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+      entitledAreas: AREAS,
+      areas: areasOf(deltoid),
+      types: ['flashcard', 'mcq', 'locate', 'identify-typed', 'oina'],
+      mode: 'practice',
+      count: 20,
+      seed: 3,
+      mastery,
+      factMastery,
+      now: NOW,
+      maxPerStructure: 1,
+      newShare: 0.5,
+      reviewItems: [
+        { structureId: 'deltoid', kind: 'origin', dueAt: factMastery[0].dueAt!, due: true },
+        { structureId: 'deltoid', kind: 'identify', dueAt: factMastery[0].dueAt!, due: true },
+      ],
+    });
+    // Answerable questions only: a teaching card in front of a fact question
+    // is not a second question on its structure.
+    const perStructure = new Map<string, number>();
+    for (const q of result) if (!isFlashcardQuestion(q)) perStructure.set(q.structureId, (perStructure.get(q.structureId) ?? 0) + 1);
+    expect(Math.max(...perStructure.values())).toBe(1);
+    expect(perStructure.get('deltoid')).toBe(1);
+    const known = new Set(mastery.map((m) => m.structureId));
+    expect(result.filter((q) => !known.has(q.structureId)).length).toBeGreaterThanOrEqual(10);
+  });
+
   it('asks the due origin, not the well-known name', () => {
     const deltoidQs = build().filter((q) => q.structureId === 'deltoid');
     expect(deltoidQs.some((q) => q.promptKind === 'origin')).toBe(true);

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import type { AnatomyRepository } from '../data/repository';
 import type { AnatomyContent } from './useAnatomyContent';
 import type { FactMastery, StructureMastery, RevisionSessionSummary } from '../types/attempt';
-import { buildReviewQueue, type ReviewItem } from '../lib/reviewQueue';
+import { spreadReviewItems, buildReviewQueue, type ReviewItem } from '../lib/reviewQueue';
 import { areasOf, isMuscle } from '../types/structure';
 import type { Area } from '../types/region';
 import { computeStreak } from '../lib/streak';
@@ -29,6 +29,8 @@ export interface TodayData {
    * due ones run out. A type answered easily is left until it is due.
    */
   reviewItems: ReviewItem[];
+  /** The same items in "New set" order — structures answered longest ago first (lib/reviewQueue.ts). */
+  spreadItems: ReviewItem[];
   /** Question types due now, across the muscles this account may reach. */
   dueCount: number;
   /** Every fact row for the user, passed on to the session generator. */
@@ -107,8 +109,12 @@ export function useTodayData(
     .filter((m) => m.dueAt && muscleIds.has(m.structureId) && !dueMuscles.some((d) => d.structureId === m.structureId))
     .sort((a, b) => a.dueAt!.localeCompare(b.dueAt!));
   const comingDue = upcoming.slice(0, 3);
-  const queue = buildReviewQueue(allMastery, facts, muscleIds, new Date());
+  // Every structure the account may reach, not muscles alone (owner, 3 Oct
+  // 2026): a bone or ligament answered and scheduled is as due as a muscle,
+  // and left out of the queue it only ever came back by chance.
+  const queue = buildReviewQueue(allMastery, facts, entitledIds, new Date());
   const reviewItems = [...queue.due, ...queue.forward];
+  const spreadItems = spreadReviewItems(reviewItems, allMastery, facts);
 
   // Seven local calendar days ending today, each labelled with its own
   // weekday, so the axis is right every day of the week and a session at
@@ -130,6 +136,7 @@ export function useTodayData(
     weakest,
     comingDue,
     reviewItems,
+    spreadItems,
     dueCount: queue.due.length,
     facts,
     weekBuckets,

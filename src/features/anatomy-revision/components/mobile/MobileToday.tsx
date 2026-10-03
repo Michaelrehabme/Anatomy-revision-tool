@@ -32,7 +32,7 @@ interface MobileTodayProps {
 
 /** Screen 02 (mobile). Single decision on open: due count, one primary action. */
 export function MobileToday({ access, repository, userId, content, onStart, onCustomSession, onOpenMuscle, onNavigateTab }: MobileTodayProps) {
-  const { loading, streak, allMastery, weakest, reviewItems, dueCount, facts, weekBuckets, weekMax, dayLabels } = useTodayData(repository, userId, content, access.areas);
+  const { loading, streak, allMastery, weakest, reviewItems, spreadItems, dueCount, facts, weekBuckets, weekMax, dayLabels } = useTodayData(repository, userId, content, access.areas);
   const now = new Date();
   // See Today.tsx: the guided starter until something has been attempted.
   const firstRun = !loading && allMastery.length === 0;
@@ -40,7 +40,11 @@ export function MobileToday({ access, repository, userId, content, onStart, onCu
   const preferredAreas = getPreferredAreas().filter((a) => access.areas.includes(a));
   const areas = preferredAreas.length ? preferredAreas : undefined;
 
-  const handleStart = async () => {
+  // 'continue' works down the queue oldest first, up to two questions a
+  // structure, so a structure is finished before the review moves on. 'fresh'
+  // is the same queue spread out: one question a structure, the ones answered
+  // longest ago first, and half the session new (owner, 3 Oct 2026).
+  const handleStart = async (style: 'continue' | 'fresh' = 'continue') => {
     if (firstRun) {
       const starter = buildStarterSet(content.structures, content.images, { areas: areas ?? access.areas });
       if (starter.length > 0) {
@@ -59,7 +63,8 @@ export function MobileToday({ access, repository, userId, content, onStart, onCu
       // Per question type (lib/reviewQueue.ts): what is due, then weak types
       // pulled forward, then new structures — never something well known and
       // not due. Fewer than twenty when there is not that much worth asking.
-      reviewItems,
+      reviewItems: style === 'fresh' ? spreadItems : reviewItems,
+      ...(style === 'fresh' ? { maxPerStructure: 1, newShare: 0.5 } : {}),
       count: 20,
       // Without mastery the generator falls back to a uniform shuffle and the
       // scheduler's due/weakness weighting never runs on the daily review.
@@ -98,25 +103,35 @@ export function MobileToday({ access, repository, userId, content, onStart, onCu
           {firstRun
             ? `${STARTER_COUNT} questions, about ${minutesFor(STARTER_COUNT)} minutes. Multiple choice and locate-on-the-image, nothing harder yet.`
             : dueCount > 0
-              ? 'Scheduled from your recent sessions.'
+              ? 'Keep going finishes the structures you are on. New set moves to ones you have not seen lately, with more new material.'
               : 'All caught up. A review now brings your weaker questions forward, plus new material; anything you know well waits until it is due.'}
         </p>
 
         <button
           type="button"
-          onClick={handleStart}
+          onClick={() => handleStart('continue')}
           className="mt-5.5 w-full rounded-[3px] border-0"
           style={{ minHeight: 54, background: 'var(--acc-fill)', color: 'var(--onacc)', font: '500 17px/1 var(--font-ui)' }}
         >
-          {firstRun ? 'Start your first session' : 'Start review'}
+          {firstRun ? 'Start your first session' : 'Keep going'}
         </button>
+        {!firstRun && (
+          <button
+            type="button"
+            onClick={() => handleStart('fresh')}
+            className="mt-2.5 w-full rounded-[3px]"
+            style={{ minHeight: 50, background: 'none', border: '1.3px solid var(--line)', color: 'var(--ink)', font: '500 15.5px/1 var(--font-ui)' }}
+          >
+            New set
+          </button>
+        )}
         <button
           type="button"
           onClick={onCustomSession}
           className="mt-2.5 w-full rounded-[3px]"
           style={{ minHeight: 50, background: 'none', border: '1.3px solid var(--line)', color: 'var(--ink)', font: '500 15.5px/1 var(--font-ui)' }}
         >
-          Build a custom session
+          Custom session
         </button>
 
         <ClassAssignments access={access} repository={repository} userId={userId} content={content} onStart={onStart} compact />
