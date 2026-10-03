@@ -117,6 +117,11 @@ export class OfflineController {
       if (!supported) {
         this.support = 'unavailable';
         this.emit();
+        // Not remembered: asked again the next time a screen mounts. The first
+        // answer is taken at app start, and a worker that was merely slow to
+        // register must not leave the section saying "not available" until
+        // the app is closed and reopened.
+        this.started = null;
         return;
       }
       try {
@@ -368,8 +373,21 @@ async function serviceWorkerRegistered(): Promise<boolean> {
   if (import.meta.env.VITE_PUBLIC_DEMO === '1') return false;
   if (typeof navigator === 'undefined' || !('serviceWorker' in navigator)) return false;
   if (typeof crypto === 'undefined' || !crypto.subtle) return false;
-  return (await navigator.serviceWorker.getRegistration()) !== undefined;
+  if ((await navigator.serviceWorker.getRegistration()) !== undefined) return true;
+  // ON A FIRST VISIT THE WORKER IS NOT REGISTERED YET. Registration waits for
+  // the window's load event, and this is asked at app start, before it — so a
+  // plain getRegistration() said "no worker" on every first visit to a new
+  // address and the section read "not available in this browser" on an
+  // iPhone that supports all of it. `ready` settles once a worker is active;
+  // it never settles where there will be none, hence the limit.
+  return Promise.race([
+    navigator.serviceWorker.ready.then(() => true),
+    new Promise<boolean>((resolve) => setTimeout(() => resolve(false), SERVICE_WORKER_WAIT_MS)),
+  ]);
 }
+
+/** How long to wait for a first service worker to become active before saying there is none. */
+const SERVICE_WORKER_WAIT_MS = 10_000;
 
 function safeLocalStorage(): Storage | null {
   try {

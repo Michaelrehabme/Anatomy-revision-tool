@@ -62,6 +62,17 @@ describe('OfflineController', () => {
     expect(noCaches.controller.getSnapshot().support).toBe('unavailable');
   });
 
+  it('asks again when the service worker was not there the first time, as on a first visit', async () => {
+    let registered = false;
+    const { controller } = setup({ hasServiceWorker: async () => registered });
+    await controller.start();
+    expect(controller.getSnapshot().support).toBe('unavailable');
+
+    registered = true;
+    await controller.start();
+    expect(controller.getSnapshot().support).toBe('ready');
+  });
+
   it('walks an area from not downloaded, to downloaded, to update available, to removed', async () => {
     const { controller, fake, server } = setup();
     await controller.start();
