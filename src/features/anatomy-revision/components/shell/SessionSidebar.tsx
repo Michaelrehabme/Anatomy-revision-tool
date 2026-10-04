@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { EndSessionControl } from '../shared/EndSessionControl';
 
 interface SessionSidebarProps {
   current: number;
@@ -16,17 +17,25 @@ interface SessionSidebarProps {
   cardsSeen?: number;
   cardsTotal?: number;
   onEnd: () => void;
+  /**
+   * Answers recorded so far, learn cards included. With any, End session asks
+   * before it ends (shared/EndSessionControl). Omitted, it ends at once, which
+   * is right for the one caller with nothing to lose: the empty set.
+   */
+  answered?: number;
+  /** The session is an attempt at a class assignment; the question says what ending forfeits. */
+  assignment?: boolean;
+  /** An exam: answers are recorded as given, with no rating step. Changes one clause of the question. */
+  exam?: boolean;
   hint?: ReactNode;
 }
 
 /** The in-session sidebar (screens 05–08): replaces nav while a question is active. */
-export function SessionSidebar({ current, total, correctCount, wrongCount, cardsSeen = 0, cardsTotal = 0, onEnd, hint }: SessionSidebarProps) {
+export function SessionSidebar({ current, total, correctCount, wrongCount, cardsSeen = 0, cardsTotal = 0, onEnd, answered = 0, assignment = false, exam = false, hint }: SessionSidebarProps) {
   const pct = total > 0 ? (current / total) * 100 : 0;
   return (
     <>
-      <button type="button" onClick={onEnd} className="text-left text-[15px]" style={{ color: 'var(--ink3)' }}>
-        &times; End session
-      </button>
+      <EndSessionControl variant="sidebar" answered={answered} assignment={assignment} exam={exam} onEnd={onEnd} />
 
       <div
         className="mt-11"

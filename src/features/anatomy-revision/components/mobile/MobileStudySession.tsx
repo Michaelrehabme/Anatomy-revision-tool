@@ -20,6 +20,7 @@ import { FillBlankSession } from '../FillBlankSession/FillBlankSession';
 import { PersistErrorBanner } from '../shared/PersistErrorBanner';
 import { useRecoverFocus } from '../shared/useRecoverFocus';
 import { PlateCatalogueProvider } from '../shared/PlateDescription';
+import { EndSessionControl } from '../shared/EndSessionControl';
 
 interface MobileStudySessionProps {
   session: ReturnType<typeof useRevisionSession>;
@@ -104,10 +105,16 @@ export function MobileStudySession({ session, content, onEnd, onBackToSetup, onO
       style={{ background: 'var(--pg)', color: 'var(--ink)' }}
     >
       <div className="flex-none px-6.5 pt-3">
-        <div className="flex items-center gap-3.5">
-          <button type="button" onClick={onEnd} aria-label="End session" className="border-0 bg-transparent p-0 leading-none" style={{ fontSize: 19, color: 'var(--ink3)' }}>
-            &times;
-          </button>
+        {/* Wraps so that End session's question can take the first line to
+            itself, with the progress bar beneath (shared/EndSessionControl). */}
+        <div className="flex flex-wrap items-center gap-x-3.5 gap-y-3">
+          <EndSessionControl
+            variant="bar"
+            answered={session.answers.length}
+            assignment={!!session.setupParams?.assignment}
+            exam={examMode}
+            onEnd={onEnd}
+          />
           <div className="relative h-[3px] flex-1 overflow-hidden rounded-full" style={{ background: 'var(--line)' }}>
             <div className="absolute inset-y-0 left-0 transition-all duration-300" style={{ width: `${progressPct}%`, background: 'var(--acc)' }} />
           </div>
