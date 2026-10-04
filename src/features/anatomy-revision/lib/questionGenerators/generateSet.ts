@@ -440,13 +440,26 @@ function generateOneQuestionForStructure(
   config: RevisionSetConfig,
   names: readonly StructureIndexEntry[],
   vocabulary: DistractorVocabulary | undefined,
+  /** The session's pool: the neighbours a practice question about this structure would be set against. */
+  sessionPool: AnatomyStructure[],
+  /** Every loaded structure the student is entitled to. */
+  entitled: AnatomyStructure[],
 ): RevisionQuestion | null {
+  // ONE STRUCTURE IS ASKED ABOUT; IT IS NOT THE POOL ITS WRONG ANSWERS COME
+  // FROM. Until 4 Oct 2026 the list of one below was handed to the builders as
+  // both, so every adaptive MCQ had nobody to be confused with and came out
+  // with the right answer as its only choice: about six in twenty in a
+  // session seeded from real mastery, where the rest are flashcards and typed.
   const pool = [structure];
   switch (type) {
     case 'flashcard':
       return buildFlashcardQuestions(pool, images)[0] ?? null;
     case 'mcq':
-      return buildMcqQuestions(pool, images, indexes, rng, { vocabulary })[0] ?? buildClinicalQuestions(pool, rng)[0] ?? null;
+      return (
+        buildMcqQuestions(pool, images, indexes, rng, { vocabulary, distractorPool: sessionPool, fallbackPool: entitled })[0] ??
+        buildClinicalQuestions(pool, rng)[0] ??
+        null
+      );
     case 'locate':
       return buildLocateQuestions(pool, images)[0] ?? null;
     case 'fill-blank':
@@ -468,6 +481,7 @@ function generateOneQuestionForStructure(
         factMastery: config.factMastery,
         forceFormat: config.oinaForceFormat,
         vocabulary,
+        neighbours: entitled,
       });
       return sample(questions, 1, rng)[0] ?? null;
     }
@@ -548,6 +562,12 @@ export function generateRevisionSet(
   pool = pool.filter((s) => areasOf(s).some((a) => config.entitledAreas.includes(a)));
 
   const indexes = buildIndexes(structures); // built over every LOADED structure, not the pool, so distractor pools stay rich
+  // Where an MCQ looks for wrong answers when its own pool cannot fill the
+  // choices. Loaded AND entitled: while the seed is bundled `structures` holds
+  // every area, and a free account's knee question must not be topped up with
+  // a shoulder muscle's origin. Once facts are served per area the two are the
+  // same list.
+  const entitled = structures.filter((s) => areasOf(s).some((a) => config.entitledAreas.includes(a)));
   const relevantImages = images.filter((img) => {
     if (img.mode === 'single-structure') return !!img.structureId && pool.some((s) => s.id === img.structureId);
     return (img.hotspots ?? []).some((h) => pool.some((s) => s.id === h.structureId));
@@ -565,7 +585,7 @@ export function generateRevisionSet(
       if (!preferredType) continue;
       const orderedTypes = [preferredType, ...config.types.filter((t) => t !== preferredType)];
       for (const type of orderedTypes) {
-        const question = generateOneQuestionForStructure(structure, type, relevantImages, indexes, rng, config, names, vocabulary);
+        const question = generateOneQuestionForStructure(structure, type, relevantImages, indexes, rng, config, names, vocabulary, pool, entitled);
         if (question) {
           adaptiveQuestions.push(
             question.type === 'identify-typed' ? { ...question, hints: hintsForRung(rungFor(mastery)) } : question,
@@ -591,7 +611,7 @@ export function generateRevisionSet(
   }
   const mcqPool = poolFor('mcq');
   if (mcqPool.length) {
-    generated.push(...buildMcqQuestions(mcqPool, relevantImages, indexes, rng, { vocabulary }));
+    generated.push(...buildMcqQuestions(mcqPool, relevantImages, indexes, rng, { vocabulary, fallbackPool: entitled }));
     // Clinical MCQs (CR-010) are just another mcq promptKind family, gated on the
     // structure actually having the relevant clinical field authored — same
     // convention as buildMcqQuestions itself generating several promptKinds at once.

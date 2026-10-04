@@ -18,6 +18,12 @@ import { questionBase } from './questionBase';
 const MAX_CORRECT = 4;
 const MAX_DISTRACTORS = 3;
 const MIN_ACTION_MATCHES = 3;
+/**
+ * The fewest choices any question here is built with: a hinge joint's two
+ * movements and one that does not belong. Every builder below either reaches
+ * it or emits nothing.
+ */
+export const MULTI_SELECT_MIN_CHOICES = 3;
 
 function slugify(key: string): string {
   return key.replace(/\s+/g, '-').toLowerCase();

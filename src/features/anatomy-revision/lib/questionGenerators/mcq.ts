@@ -21,7 +21,32 @@ export interface McqGenOptions {
    * rather than from the pool it was given; see sources.ts.
    */
   vocabulary?: DistractorVocabulary;
+  /**
+   * The structures wrong answers are drawn from. Defaults to `structures`,
+   * which is right when the caller asks about a whole session's pool at once.
+   * A caller asking about ONE structure must say where its neighbours are:
+   * the adaptive mode builds each question from a list of one, and with the
+   * default every such question came out with the right answer as its only
+   * choice (4 Oct 2026).
+   */
+  distractorPool?: AnatomyStructure[];
+  /**
+   * Somewhere wider to look when `distractorPool` cannot fill the choices: a
+   * drill on one structure, or a ladder session with two structures on the
+   * MCQ rung. Consulted ONLY when the first pool runs short, so a session
+   * whose pool is big enough is built exactly as it was without it. The
+   * caller passes structures the student is entitled to and nothing else.
+   */
+  fallbackPool?: AnatomyStructure[];
 }
+
+/** What an MCQ offers when the pools can fill it, the right answer included. */
+export const MCQ_CHOICE_COUNT = 4;
+/**
+ * Fewer than this and the question is not asked. One choice is not a
+ * question: it is the answer with a button on it.
+ */
+export const MCQ_MIN_CHOICES = 2;
 
 const MUSCLE_KINDS: PromptKind[] = ['identify', 'origin', 'insertion', 'nerve', 'action'];
 // Bones are image/spatial-recognition only for now: no text-only attachment/articulation
@@ -79,7 +104,8 @@ export function buildMcqQuestions(
   rng: Rng,
   options: McqGenOptions = {},
 ): MCQQuestion[] {
-  const { choiceCount = 4 } = options;
+  const { choiceCount = MCQ_CHOICE_COUNT } = options;
+  const all = options.distractorPool ?? structures;
   const distractorCount = choiceCount - 1;
   const questions: MCQQuestion[] = [];
 
@@ -87,17 +113,42 @@ export function buildMcqQuestions(
     if (!structure.eligibility.mcq) continue;
 
     for (const promptKind of kindsFor(structure, options.promptKinds)) {
-      const built = buildOne(structure, structures, images, indexes, promptKind, distractorCount, choiceCount, rng, options.vocabulary);
-      questions.push(...built);
+      const built = buildOne(structure, all, options.fallbackPool, images, indexes, promptKind, distractorCount, choiceCount, rng, options.vocabulary);
+      questions.push(...built.filter((q) => q.choices.length >= MCQ_MIN_CHOICES));
     }
   }
 
   return questions;
 }
 
+/**
+ * Wrong answers from the first pick, then from `more` if it came up short.
+ *
+ * "Short" is counted in answers a student would SEE: distinct, and not the
+ * right answer itself. Two muscles can share an action sentence, and a pick
+ * that returned three values of which one was the right answer again is a
+ * three-choice question that looked full.
+ *
+ * `more` is not called at all when the first pick is enough. That is what
+ * keeps every session that never ran short byte-for-byte what it was: the
+ * top-up draws from the random stream, and a draw nobody needed would move
+ * every question after it.
+ */
+function toppedUp(
+  correctValue: string,
+  first: string[],
+  count: number,
+  more: (missing: number, taken: readonly string[]) => string[],
+): string[] {
+  const distinct = [...new Set(first)].filter((value) => value !== correctValue);
+  if (distinct.length >= count) return first;
+  return [...distinct, ...more(count - distinct.length, distinct)];
+}
+
 function buildOne(
   structure: AnatomyStructure,
   all: AnatomyStructure[],
+  fallback: AnatomyStructure[] | undefined,
   images: AnatomyImageAsset[],
   indexes: StructureIndexes,
   promptKind: PromptKind,
@@ -109,7 +160,22 @@ function buildOne(
   const out: MCQQuestion[] = [];
 
   if (promptKind === 'identify') {
-    const distractors = pickNameDistractors(structure, all, distractorCount, rng);
+    const promptImages = promptImagesFor(structure, images);
+    const firstPick = pickNameDistractors(structure, all, distractorCount, rng);
+    // A bone with no picture yields no identify question at all (below), and
+    // topping up choices for a question that is never asked would only move
+    // the random stream for everything after it.
+    const asked = !isBone(structure) || promptImages.length > 0;
+    const distractors = !asked
+      ? firstPick
+      : toppedUp(structure.name, firstPick, distractorCount, (missing, taken) =>
+          pickNameDistractors(
+            structure,
+            (fallback ?? []).filter((s) => s.name !== structure.name && !taken.includes(s.name)),
+            missing,
+            rng,
+          ),
+        );
 
     // Text-based: clue built from the structure's own facts, answer = name.
     // Bones skip this variant — image/spatial recognition is the priority skill for them,
@@ -127,7 +193,7 @@ function buildOne(
     }
 
     // One per turntable, on the plate framed for this structure (promptImages.ts).
-    for (const image of promptImagesFor(structure, images)) {
+    for (const image of promptImages) {
       const { choices: imgChoices, correctIndex: imgCorrectIndex } = buildChoices(
         structure.name,
         distractors,
@@ -151,13 +217,12 @@ function buildOne(
     if (promptKind === 'origin' || promptKind === 'insertion') {
       const field = promptKind === 'origin' ? structure.origin : structure.insertion;
       const correctValue = field.join('; ');
-      const distractors = pickTextFieldDistractors(
+      const fieldOf = (s: AnatomyStructure) => (isMuscle(s) ? (promptKind === 'origin' ? s.origin : s.insertion) : undefined);
+      const distractors = toppedUp(
         correctValue,
-        structure,
-        all,
-        (s) => (isMuscle(s) ? (promptKind === 'origin' ? s.origin : s.insertion) : undefined),
+        pickTextFieldDistractors(correctValue, structure, all, fieldOf, distractorCount, rng),
         distractorCount,
-        rng,
+        (missing, taken) => pickTextFieldDistractors(correctValue, structure, fallback ?? [], fieldOf, missing, rng, taken),
       );
       const { choices, correctIndex } = buildChoices(correctValue, distractors, choiceCount, rng);
       out.push({
@@ -200,7 +265,11 @@ function buildOne(
         if (isMuscle(s) && s.id !== structure.id) acc.add(s.actionText);
         return acc;
       }, new Set<string>());
-      const otherActionTexts = sample([...otherMuscleActionTexts], distractorCount, rng);
+      const otherActionTexts = toppedUp(correctValue, sample([...otherMuscleActionTexts], distractorCount, rng), distractorCount, (missing, taken) =>
+        // Tiered like the other facts, so the muscle next door is offered
+        // before one from the far end of what the student may reach.
+        pickTextFieldDistractors(correctValue, structure, fallback ?? [], (s) => (isMuscle(s) ? [s.actionText] : undefined), missing, rng, taken),
+      );
       const { choices, correctIndex } = buildChoices(correctValue, otherActionTexts, choiceCount, rng);
       out.push({
         ...baseFields(structure, promptKind),
@@ -219,9 +288,19 @@ function buildOne(
       if (isJoint(s) && s.id !== structure.id) acc.push(JOINT_TYPE_LABELS[s.jointType]);
       return acc;
     }, []);
-    const distractors = sample([...new Set(otherTypes)], distractorCount, rng);
+    const label = JOINT_TYPE_LABELS[structure.jointType];
+    const typesOf = (pool: AnatomyStructure[]) => [
+      ...new Set(pool.filter(isJoint).map((s) => JOINT_TYPE_LABELS[s.jointType])),
+    ].filter((other) => other !== label);
+    const picked = sample([...new Set(otherTypes)], distractorCount, rng);
+    // The session's own joints are the first choice, however few kinds they
+    // offer: two or three choices is this question's normal shape in a small
+    // area. But a pool whose other joints are ALL this joint's type offers
+    // only the right answer, twice over, and used to be asked as a one-choice
+    // question. Then, and only then, the wider pool is asked.
+    const distractors = picked.some((other) => other !== label) ? picked : sample(typesOf(fallback ?? []), distractorCount, rng);
     if (distractors.length > 0) {
-      const { choices, correctIndex } = buildChoices(JOINT_TYPE_LABELS[structure.jointType], distractors, choiceCount, rng);
+      const { choices, correctIndex } = buildChoices(label, distractors, choiceCount, rng);
       out.push({
         ...baseFields(structure, promptKind),
         id: `mcq-${structure.id}-joint-type`,

@@ -38,6 +38,16 @@ export interface OinaGenOptions {
    * for the rest where a pool reached across the whole dataset.
    */
   vocabulary?: DistractorVocabulary;
+  /**
+   * The muscles whose origins, insertions, nerves and actions may be offered
+   * as wrong answers. Defaults to `all`. Narrower than `all` when some loaded
+   * structures are in areas the student has not paid for: an origin is a
+   * sentence of the product, and a locked muscle's origin should not be read
+   * off a wrong answer. Arteries are not narrowed by it. Their wrong answers
+   * come from OUTSIDE the structure's areas on purpose (bloodSupply.ts), and
+   * an artery's bare name is in the bundled vocabulary for everyone.
+   */
+  neighbours?: AnatomyStructure[];
 }
 
 /**
@@ -50,7 +60,8 @@ export interface OinaGenOptions {
 const DISTRACTOR_COUNT = 3;
 const MAX_CHOICES = 7;
 /** Below this a select question is answerable by elimination, so it is not emitted. */
-const MIN_DISTRACTORS = 2;
+export const OINA_MIN_DISTRACTORS = 2;
+const MIN_DISTRACTORS = OINA_MIN_DISTRACTORS;
 
 const FACT_NOUN: Record<OinaPromptKind, string> = {
   origin: 'origin',
@@ -143,6 +154,7 @@ function buildDistractors(
   correctValues: string[],
   rng: Rng,
   vocabulary?: DistractorVocabulary,
+  neighbours: AnatomyStructure[] = all,
 ): string[] {
   if (isBloodFactKind(promptKind)) {
     // The primary is excluded from the wrong answers for the assisting set
@@ -155,7 +167,7 @@ function buildDistractors(
     return pickItemDistractors(
       correctValues,
       muscle,
-      all,
+      neighbours,
       (s) => (isMuscle(s) ? (promptKind === 'origin' ? s.origin : s.insertion) : undefined),
       stripHeadPrefix,
       DISTRACTOR_COUNT,
@@ -172,7 +184,7 @@ function buildDistractors(
     if (!isMuscle(s)) return [];
     return promptKind === 'nerve' ? canonicalNerveNames(s.nerve) : s.actions;
   };
-  const tiered = pickTieredKeyDistractors(correctValues, muscle, all, keysOf, DISTRACTOR_COUNT, rng, reject);
+  const tiered = pickTieredKeyDistractors(correctValues, muscle, neighbours, keysOf, DISTRACTOR_COUNT, rng, reject);
   if (tiered.length >= DISTRACTOR_COUNT) return tiered;
 
   // A muscle whose neighbours all share its nerve can run short — the
@@ -304,7 +316,7 @@ export function buildOinaQuestions(
         continue;
       }
 
-      const distractors = buildDistractors(structure, all, indexes, promptKind, correctValues, rng, options.vocabulary);
+      const distractors = buildDistractors(structure, all, indexes, promptKind, correctValues, rng, options.vocabulary, options.neighbours);
       const question = buildSelect(structure, promptKind, correctValues, distractors, display, rng);
       if (question) questions.push(question);
     }

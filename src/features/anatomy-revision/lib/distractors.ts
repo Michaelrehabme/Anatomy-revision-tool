@@ -70,8 +70,10 @@ export function pickTextFieldDistractors(
   getField: (s: AnatomyStructure) => string[] | undefined,
   count: number,
   rng: Rng,
+  /** Values already chosen, when this call is topping up an earlier one. */
+  exclude: readonly string[] = [],
 ): string[] {
-  const seen = new Set([correctValue]);
+  const seen = new Set([correctValue, ...exclude]);
   const picked: string[] = [];
 
   for (const tier of tieredPool(correct, all)) {
