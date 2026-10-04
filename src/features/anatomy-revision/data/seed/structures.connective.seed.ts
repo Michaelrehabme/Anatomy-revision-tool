@@ -27,9 +27,21 @@ import type { LigamentStructure } from '../../types/structure';
  * for the same reason the ligament citations are not in their seed — nothing
  * renders `notes`, and the quotes were 22 kB of the entry chunk.
  *
- * NO IMAGES YET. imageIds is empty and eligibility.locate is false for all of
- * them: no plate renders these, and a locate question with no hotspot is
- * unanswerable. They are askable by name and description until plates exist.
+ * NO IMAGES YET, for the retinacula, aponeuroses and tendons: imageIds is empty
+ * and eligibility.locate is false, because no plate renders them and a locate
+ * question with no hotspot is unanswerable. They are askable by name and
+ * description until plates exist.
+ *
+ * THE BURIED LIGAMENTS (4 Oct 2026) are the exception, at the foot of the list:
+ * atlas ligaments tranche 2 rendered and could not trace, because they lie
+ * under bone or under other ligaments. They are hand-authored here for the
+ * reason above (a regeneration cannot reach them), they DO have plates
+ * (ligament-buried.spec.json), and their attachments were fetched and quoted
+ * before they were written — the citations are in
+ * ligament-attachment-corrections.json and docs/ligament-attachments-review.md.
+ * Their names are the atlas's own, in its sentence case, like the generated
+ * ligament seed. Descriptions and the one clinical note are drafted, not
+ * source-checked, as /sources says of every ligament.
  */
 export const CONNECTIVE_STRUCTURES: LigamentStructure[] = [
   {
@@ -254,7 +266,10 @@ export const CONNECTIVE_STRUCTURES: LigamentStructure[] = [
     aliases: [],
     attachmentStructureIds: ['transverse-process', 'thoracic-vertebrae', 'lumbar-vertebrae'],
     imageIds: [],
-    eligibility: { flashcard: true, mcq: true, locate: false },
+    // Locate since 4 Oct 2026: the atlas models these as bare edges with a Skin
+    // modifier, which the renderer used to draw as nothing. They were never
+    // buried; see skinned_copy in renderLigamentPlates.py.
+    eligibility: { flashcard: true, mcq: true, locate: true },
     difficulty: 'medium',
     tags: ['ligament'],
     notes: null,
@@ -292,6 +307,155 @@ export const CONNECTIVE_STRUCTURES: LigamentStructure[] = [
     difficulty: 'medium',
     tags: ['ligament'],
     clinical: 'Inflammation here is costochondritis, a common cause of chest pain that is reproduced by pressing on the joint.',
+    notes: null,
+  },
+
+  // --- The buried ligaments (see the file header) ---
+  //
+  // THE FIVE INTEROSSEOUS LIGAMENTS OF THE WRIST ARE TAUGHT AS TWO SETS, by
+  // `groups`: the proximal row (scapholunate, lunotriquetral) and the distal
+  // row (the other three). They sit BETWEEN two carpal bones, so there is no
+  // angle from which the strap itself can be tapped: locate asks for the gap
+  // between its two bones on the bones-only carpal plate (carpal-gaps.spec.json,
+  // publishGapPlates.ts), and identify shows the ligament through ghosted bones.
+  {
+    id: 'scapholunate-interosseous-ligament',
+    name: 'Scapholunate interosseous ligament',
+    category: 'ligament',
+    region: 'forearm-hand',
+    subregion: 'wrist-hand',
+    groups: ['proximal-row-interosseous-ligaments'],
+    description:
+      'Joins the proximal parts of the scaphoid and the lunate inside the wrist, tying the first two bones of the proximal carpal row together. It has dorsal, palmar and membranous portions, and the dorsal portion is the strongest.',
+    aliases: ['Scapholunate ligament', 'SLIL'],
+    abbreviation: 'SLIL',
+    attachmentStructureIds: ['scaphoid', 'lunate'],
+    imageIds: [],
+    eligibility: { flashcard: true, mcq: true, locate: true },
+    difficulty: 'medium',
+    tags: ['ligament'],
+    clinical: 'When it tears the scaphoid and lunate drift apart, which is scapholunate dissociation.',
+    notes: null,
+  },
+  {
+    id: 'lunotriquetral-interosseous-ligament',
+    name: 'Lunotriquetral interosseous ligament',
+    category: 'ligament',
+    region: 'forearm-hand',
+    subregion: 'wrist-hand',
+    groups: ['proximal-row-interosseous-ligaments'],
+    description:
+      'Joins the proximal parts of the lunate and the triquetrum inside the wrist, tying the proximal carpal row together on its ulnar side. It has dorsal, palmar and membranous portions, and here the palmar portion is the strongest.',
+    aliases: ['Lunotriquetral ligament', 'LTIL'],
+    abbreviation: 'LTIL',
+    attachmentStructureIds: ['lunate', 'triquetrum'],
+    imageIds: [],
+    eligibility: { flashcard: true, mcq: true, locate: true },
+    difficulty: 'medium',
+    tags: ['ligament'],
+    notes: null,
+  },
+  {
+    id: 'trapeziotrapezoidal-interosseous-ligament',
+    name: 'Trapeziotrapezoidal interosseous ligament',
+    category: 'ligament',
+    region: 'forearm-hand',
+    subregion: 'wrist-hand',
+    groups: ['distal-row-interosseous-ligaments'],
+    description:
+      'One of the three interosseous ligaments of the distal carpal row, placed between the trapezium and the trapezoid. It is the least constant of the three: Gray describes it as sometimes absent.',
+    aliases: ['Trapeziotrapezoid ligament'],
+    attachmentStructureIds: ['trapezium', 'trapezoid'],
+    imageIds: [],
+    eligibility: { flashcard: true, mcq: true, locate: true },
+    difficulty: 'medium',
+    tags: ['ligament'],
+    notes: null,
+  },
+  {
+    id: 'trapezoideocapitate-interosseous-ligament',
+    name: 'Trapezoideocapitate interosseous ligament',
+    category: 'ligament',
+    region: 'forearm-hand',
+    subregion: 'wrist-hand',
+    groups: ['distal-row-interosseous-ligaments'],
+    description:
+      'One of the three interosseous ligaments of the distal carpal row, placed between the trapezoid and the capitate.',
+    aliases: ['Capitotrapezoid ligament'],
+    attachmentStructureIds: ['trapezoid', 'capitate'],
+    imageIds: [],
+    eligibility: { flashcard: true, mcq: true, locate: true },
+    difficulty: 'medium',
+    tags: ['ligament'],
+    notes: null,
+  },
+  {
+    id: 'capitohamate-interosseous-ligament',
+    name: 'Capitohamate interosseous ligament',
+    category: 'ligament',
+    region: 'forearm-hand',
+    subregion: 'wrist-hand',
+    groups: ['distal-row-interosseous-ligaments'],
+    description:
+      'One of the three interosseous ligaments of the distal carpal row, placed between the capitate and the hamate. It is much the strongest of the three.',
+    aliases: ['Capitohamate ligament'],
+    attachmentStructureIds: ['capitate', 'hamate'],
+    imageIds: [],
+    eligibility: { flashcard: true, mcq: true, locate: true },
+    difficulty: 'medium',
+    tags: ['ligament'],
+    notes: null,
+  },
+  {
+    id: 'palmar-trapezoideocapitate-ligament',
+    name: 'Palmar trapezoideocapitate ligament',
+    category: 'ligament',
+    region: 'forearm-hand',
+    subregion: 'wrist-hand',
+    description:
+      'A short band running transversely across the palmar surfaces of the trapezoid and the capitate, one of the three palmar ligaments that tie the distal carpal row together.',
+    aliases: [],
+    attachmentStructureIds: ['trapezoid', 'capitate'],
+    imageIds: [],
+    eligibility: { flashcard: true, mcq: true, locate: true },
+    difficulty: 'medium',
+    tags: ['ligament'],
+    notes: null,
+  },
+  // THE ANTERIOR ROOTS OF THE MENISCI. They lie flat on the tibial plateau under
+  // the femur, so they are published from above only. The meniscus is listed as
+  // an attachment by the same convention as the transverse ligament of the
+  // knee, which lists both menisci.
+  {
+    id: 'anterior-meniscotibial-ligament-lateral-meniscus',
+    name: 'Anterior meniscotibial ligament (Lateral meniscus)',
+    category: 'ligament',
+    region: 'hip-thigh',
+    subregion: 'knee',
+    description:
+      'The anterior root of the lateral meniscus: it anchors the anterior horn of the meniscus to the tibia in front of the intercondylar eminence, lateral to and behind the anterior cruciate ligament, with which it blends.',
+    aliases: ['Anterior root of the lateral meniscus'],
+    attachmentStructureIds: ['lateral-meniscus', 'tibia'],
+    imageIds: [],
+    eligibility: { flashcard: true, mcq: true, locate: true },
+    difficulty: 'medium',
+    tags: ['ligament'],
+    notes: null,
+  },
+  {
+    id: 'anterior-meniscotibial-ligament-medial-meniscus',
+    name: 'Anterior meniscotibial ligament (Medial meniscus)',
+    category: 'ligament',
+    region: 'hip-thigh',
+    subregion: 'knee',
+    description:
+      'The anterior root of the medial meniscus: it anchors the thin, pointed anterior horn of the meniscus to the anterior intercondylar area of the tibia, in front of the anterior cruciate ligament.',
+    aliases: ['Anterior root of the medial meniscus'],
+    attachmentStructureIds: ['medial-meniscus', 'tibia'],
+    imageIds: [],
+    eligibility: { flashcard: true, mcq: true, locate: true },
+    difficulty: 'medium',
+    tags: ['ligament'],
     notes: null,
   },
 ];

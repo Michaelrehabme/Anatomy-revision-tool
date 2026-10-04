@@ -2468,6 +2468,136 @@
     "triquetrum"
    ],
    "confirmed": true
+  },
+  "scapholunate-interosseous-ligament": {
+   "attachmentStructureIds": [
+    "scaphoid",
+    "lunate"
+   ],
+   "confirmed": true,
+   "pinned": "Hand-authored in structures.connective.seed.ts (buried ligaments, 4 Oct 2026); the ids are pinned here so the decision is on record beside its source.",
+   "grade": "verified",
+   "checked": "2026-10-04",
+   "sources": [
+    "Differences between radial and ulnar deviation of the wrist in the study of the intrinsic intercarpal ligaments - Skeletal Radiology 2010 (open access, PMC). https://pmc.ncbi.nlm.nih.gov/articles/PMC2895879/",
+    "Anatomy, Biomechanics, and Loads of the Wrist Joint - Life (Basel) 2022 (open access, PMC). https://pmc.ncbi.nlm.nih.gov/articles/PMC8880601/"
+   ],
+   "quote": "The SL and LT ligaments are very important for maintaining carpal stability, connecting the proximal aspects of the scaphoid and lunate and the proximal portions of the lunate and triquetrum, respectively",
+   "why": "Scaphoid and lunate both named, matching the mesh contact (both bones touched along the whole mesh). The second work uses the exact name: \"The PCR bones are attached by the scapholunate interosseous ligament (SLIL) and the lunotriquetral interosseous ligament (LTIL).\""
+  },
+  "lunotriquetral-interosseous-ligament": {
+   "attachmentStructureIds": [
+    "lunate",
+    "triquetrum"
+   ],
+   "confirmed": true,
+   "pinned": "Hand-authored in structures.connective.seed.ts (buried ligaments, 4 Oct 2026); the ids are pinned here so the decision is on record beside its source.",
+   "grade": "verified",
+   "checked": "2026-10-04",
+   "sources": [
+    "Differences between radial and ulnar deviation of the wrist in the study of the intrinsic intercarpal ligaments - Skeletal Radiology 2010 (open access, PMC). https://pmc.ncbi.nlm.nih.gov/articles/PMC2895879/",
+    "Intercarpal joints - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Intercarpal_joints",
+    "Anatomy, Biomechanics, and Loads of the Wrist Joint - Life (Basel) 2022 (open access, PMC). https://pmc.ncbi.nlm.nih.gov/articles/PMC8880601/"
+   ],
+   "quote": "The SL and LT ligaments are very important for maintaining carpal stability, connecting the proximal aspects of the scaphoid and lunate and the proximal portions of the lunate and triquetrum, respectively",
+   "why": "Lunate and triquetrum both named. Gray agrees under the older name for the triquetrum: \"The interosseous intercarpal ligaments are two narrow bundles, one connecting the lunate with the scaphoid, the other joining it to the triangular.\""
+  },
+  "trapeziotrapezoidal-interosseous-ligament": {
+   "attachmentStructureIds": [
+    "trapezium",
+    "trapezoid"
+   ],
+   "confirmed": true,
+   "pinned": "Hand-authored in structures.connective.seed.ts (buried ligaments, 4 Oct 2026); the ids are pinned here so the decision is on record beside its source.",
+   "grade": "verified",
+   "checked": "2026-10-04",
+   "sources": [
+    "Differences between radial and ulnar deviation of the wrist in the study of the intrinsic intercarpal ligaments - Skeletal Radiology 2010 (open access, PMC). https://pmc.ncbi.nlm.nih.gov/articles/PMC2895879/",
+    "Intercarpal joints - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Intercarpal_joints"
+   ],
+   "quote": "The intrinsic ligaments of the distal carpal row are the TT, CT and CH ligaments, connecting the trapezium to the trapezoid, the capitate to the trapezoid, and the capitate to the hamate, respectively.",
+   "why": "Trapezium and trapezoid both named; the scaphoid, within 4 mm of part of the mesh, is a neighbour and not an attachment. It is the weakest-attested of the three: Gray says \"The three interosseous ligaments are much thicker than those of the first row; one is placed between the capitate and the hamate, a second between the capitate and the lesser multangular, and a third between the greater and lesser multangulars. The first is much the strongest, and the third is sometimes wanting.\" Gray's older names: greater multangular is the trapezium, lesser multangular the trapezoid. No work uses the atlas's exact form of the name; the modern one is the trapeziotrapezoid ligament, kept as an alias."
+  },
+  "trapezoideocapitate-interosseous-ligament": {
+   "attachmentStructureIds": [
+    "trapezoid",
+    "capitate"
+   ],
+   "confirmed": true,
+   "pinned": "Hand-authored in structures.connective.seed.ts (buried ligaments, 4 Oct 2026); the ids are pinned here so the decision is on record beside its source.",
+   "grade": "verified",
+   "checked": "2026-10-04",
+   "sources": [
+    "Intercarpal joints - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Intercarpal_joints",
+    "Differences between radial and ulnar deviation of the wrist in the study of the intrinsic intercarpal ligaments - Skeletal Radiology 2010 (open access, PMC). https://pmc.ncbi.nlm.nih.gov/articles/PMC2895879/"
+   ],
+   "quote": "The three interosseous ligaments are much thicker than those of the first row; one is placed between the capitate and the hamate, a second between the capitate and the lesser multangular, and a third between the greater and lesser multangulars. The first is much the strongest, and the third is sometimes wanting.",
+   "why": "Trapezoid and capitate both named (\"a second between the capitate and the lesser multangular\"). Gray's older names: greater multangular is the trapezium, lesser multangular the trapezoid. The mesh-contact script credited the trapezoid only; both bones touch along the whole mesh, and the second metacarpal, within 4 mm of part of it, is a neighbour. The modern paper calls it the capitotrapezoid ligament, kept as an alias: \"connecting the trapezium to the trapezoid, the capitate to the trapezoid, and the capitate to the hamate, respectively\"."
+  },
+  "capitohamate-interosseous-ligament": {
+   "attachmentStructureIds": [
+    "capitate",
+    "hamate"
+   ],
+   "confirmed": true,
+   "pinned": "Hand-authored in structures.connective.seed.ts (buried ligaments, 4 Oct 2026); the ids are pinned here so the decision is on record beside its source.",
+   "grade": "verified",
+   "checked": "2026-10-04",
+   "sources": [
+    "Intercarpal joints - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Intercarpal_joints",
+    "Differences between radial and ulnar deviation of the wrist in the study of the intrinsic intercarpal ligaments - Skeletal Radiology 2010 (open access, PMC). https://pmc.ncbi.nlm.nih.gov/articles/PMC2895879/"
+   ],
+   "quote": "The three interosseous ligaments are much thicker than those of the first row; one is placed between the capitate and the hamate, a second between the capitate and the lesser multangular, and a third between the greater and lesser multangulars. The first is much the strongest, and the third is sometimes wanting.",
+   "why": "Capitate and hamate both named (\"one is placed between the capitate and the hamate ... The first is much the strongest\"), and the modern paper agrees (\"the capitate to the hamate\"). One unfetched-in-full secondary source describes a distal extension of its deep part to the third and fourth metacarpal bases; not corroborated, so not seeded."
+  },
+  "palmar-trapezoideocapitate-ligament": {
+   "attachmentStructureIds": [
+    "trapezoid",
+    "capitate"
+   ],
+   "confirmed": true,
+   "pinned": "Hand-authored in structures.connective.seed.ts (buried ligaments, 4 Oct 2026); the ids are pinned here so the decision is on record beside its source.",
+   "grade": "verified",
+   "checked": "2026-10-04",
+   "sources": [
+    "Intercarpal joints - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Intercarpal_joints",
+    "Differences between radial and ulnar deviation of the wrist in the study of the intrinsic intercarpal ligaments - Skeletal Radiology 2010 (open access, PMC). https://pmc.ncbi.nlm.nih.gov/articles/PMC2895879/"
+   ],
+   "quote": "The dorsal ligaments are three in number, extend transversely from one bone to another on the dorsal surface, connecting the greater with the lesser multangular, the lesser multangular with the capitate, and the capitate with the hamate. ... The volar ligaments are also three and have a similar arrangement on the volar surface.",
+   "why": "Trapezoid and capitate, palmar surfaces — read across two adjacent sentences of Gray, which names the pairs for the dorsal ligaments and says the volar (palmar) three are arranged the same way. Gray's older names: greater multangular is the trapezium, lesser multangular the trapezoid. The modern paper supports the arrangement without naming this band: \"The intrinsic ligaments of each carpal row (proximal and distal) consist of dorsal and palmar regions, connect two adjacent bones\". No fetched work uses \"palmar trapezoideocapitate ligament\" as a standalone name; it is the atlas's (Terminologia Anatomica's palmar intercarpal ligaments, named by the pair)."
+  },
+  "anterior-meniscotibial-ligament-lateral-meniscus": {
+   "attachmentStructureIds": [
+    "lateral-meniscus",
+    "tibia"
+   ],
+   "confirmed": true,
+   "pinned": "Hand-authored in structures.connective.seed.ts (buried ligaments, 4 Oct 2026); the ids are pinned here so the decision is on record beside its source.",
+   "grade": "verified",
+   "checked": "2026-10-04",
+   "sources": [
+    "Lateral meniscus - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Lateral_meniscus",
+    "Meniscal Root Tear Repair: Why, When and How? - Orthopedic Reviews 2015 (open access, PMC). https://pmc.ncbi.nlm.nih.gov/articles/PMC4508558/",
+    "Anatomical Tissue Engineering of the Anterior Cruciate Ligament Entheses - International Journal of Molecular Sciences 2023 (open access, PMC). https://pmc.ncbi.nlm.nih.gov/articles/PMC10253789/"
+   ],
+   "quote": "Its anterior end is attached in front of the intercondyloid eminence of the tibia, lateral to, and behind, the anterior cruciate ligament, with which it blends",
+   "why": "Anterior horn of the lateral meniscus to the tibia, both ends named. The mesh-contact script reported the tibia only because it does not test the menisci; the meniscus is listed by the same convention as the transverse ligament of the knee. The modern paper: \"The meniscal roots are 4 strong ligaments ... connecting the meniscal horns to the tibial intercondylar region.\" NAME: clinical writing calls this the anterior root; \"meniscotibial ligament\" more often means the coronary ligament. The atlas name is attested in \"The anterior part of the ACL crosses over the anterior meniscotibial ligament (AMTL) of the lateral meniscus\", and was not confirmed in Terminologia Anatomica."
+  },
+  "anterior-meniscotibial-ligament-medial-meniscus": {
+   "attachmentStructureIds": [
+    "medial-meniscus",
+    "tibia"
+   ],
+   "confirmed": true,
+   "pinned": "Hand-authored in structures.connective.seed.ts (buried ligaments, 4 Oct 2026); the ids are pinned here so the decision is on record beside its source.",
+   "grade": "verified",
+   "checked": "2026-10-04",
+   "sources": [
+    "Medial meniscus - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Medial_meniscus",
+    "Meniscal Root Tear Repair: Why, When and How? - Orthopedic Reviews 2015 (open access, PMC). https://pmc.ncbi.nlm.nih.gov/articles/PMC4508558/"
+   ],
+   "quote": "Its anterior end, thin and pointed, is attached to the anterior intercondyloid fossa of the tibia, in front of the anterior cruciate ligament",
+   "why": "Anterior horn of the medial meniscus to the tibia. The mesh-contact script said femur 60%, tibia 40%: the femur is a touch, not an attachment — every fetched work gives a tibial attachment only (\"connecting the meniscal horns to the tibial intercondylar region\"; \"The anterior medial meniscus root ... inserts along the anterior part of the medial intercondylar eminence, anterior to the apex\"), though none states the negative outright. The transverse ligament of the knee, which touches the mesh along its length, joins the two menisci and is a neighbour. Same naming caveat as the lateral one."
   }
  }
 }

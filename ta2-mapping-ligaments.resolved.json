@@ -320,6 +320,96 @@
     "Ulnotriquetral ligament.l",
     "Ulnotriquetral ligament.r"
    ]
+  },
+  {
+   "id": "intertransverse-ligaments",
+   "name": "Intertransverse ligaments",
+   "category": "ligament",
+   "region": "back-core",
+   "blenderObjects": [
+    "Intertransverse ligaments.l",
+    "Intertransverse ligaments.r"
+   ]
+  },
+  {
+   "id": "scapholunate-interosseous-ligament",
+   "name": "Scapholunate interosseous ligament",
+   "category": "ligament",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Scapholunate interosseous ligament.l",
+    "Scapholunate interosseous ligament.r"
+   ]
+  },
+  {
+   "id": "lunotriquetral-interosseous-ligament",
+   "name": "Lunotriquetral interosseous ligament",
+   "category": "ligament",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Lunotriquetral interosseous ligament.l",
+    "Lunotriquetral interosseous ligament.r"
+   ]
+  },
+  {
+   "id": "trapeziotrapezoidal-interosseous-ligament",
+   "name": "Trapeziotrapezoidal interosseous ligament",
+   "category": "ligament",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Trapeziotrapezoidal interosseous ligament.l",
+    "Trapeziotrapezoidal interosseous ligament.r"
+   ]
+  },
+  {
+   "id": "trapezoideocapitate-interosseous-ligament",
+   "name": "Trapezoideocapitate interosseous ligament",
+   "category": "ligament",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Trapezoideocapitate interosseous ligament.l",
+    "Trapezoideocapitate interosseous ligament.r"
+   ]
+  },
+  {
+   "id": "capitohamate-interosseous-ligament",
+   "name": "Capitohamate interosseous ligament",
+   "category": "ligament",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Capitohamate interosseous ligament.l",
+    "Capitohamate interosseous ligament.r"
+   ]
+  },
+  {
+   "id": "palmar-trapezoideocapitate-ligament",
+   "name": "Palmar trapezoideocapitate ligament",
+   "category": "ligament",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Palmar trapezoideocapitate ligament.l",
+    "Palmar trapezoideocapitate ligament.r"
+   ]
+  },
+  {
+   "id": "anterior-meniscotibial-ligament-lateral-meniscus",
+   "name": "Anterior meniscotibial ligament (Lateral meniscus)",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Anterior meniscotibial ligament (Lateral meniscus).l",
+    "Anterior meniscotibial ligament (Lateral meniscus).r"
+   ]
+  },
+  {
+   "id": "anterior-meniscotibial-ligament-medial-meniscus",
+   "name": "Anterior meniscotibial ligament (Medial meniscus)",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Anterior meniscotibial ligament (Medial meniscus).l",
+    "Anterior meniscotibial ligament (Medial meniscus).r"
+   ]
   }
  ]
 }
