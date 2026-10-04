@@ -135,6 +135,10 @@ function Figure<K extends string>({ bands, labels, selected, locked, onToggle, f
         const color = readOnly ? (fillColor ?? 'transparent') : isSelected ? 'var(--acc)' : 'transparent';
         const tint = (
           <span
+            // Keyed on having a shade, so the tint arrives — and fades in, top of
+            // the figure first (shared/motion.ts) — when the mastery data does.
+            key={readOnly && fillColor ? 'shaded' : 'plain'}
+            data-band={readOnly && fillColor ? Math.round(y * 6) : undefined}
             aria-hidden
             className={readOnly ? 'block' : 'block transition-colors duration-150 group-hover:[background-color:var(--accs)]'}
             style={{

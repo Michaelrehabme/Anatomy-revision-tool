@@ -60,8 +60,40 @@ export function vesselKey(name: string): string {
     .trim();
 }
 
-function words(name: string): Set<string> {
-  return new Set(vesselKey(name).split(' ').filter(Boolean));
+/**
+ * Cached per name, and it has to be. wrongArteries compares every candidate
+ * against every artery of every neighbouring structure, for every structure
+ * in the pool: millions of comparisons, each of which re-ran vesselKey's five
+ * regexes on both names. Building a session spent 35 of its 38 seconds here
+ * and froze the page on "Start review" (measured 3 Oct 2026). There are only
+ * a few hundred distinct names, so each is parsed once. The sets are shared:
+ * read them, never add to them.
+ */
+const WORDS = new Map<string, ReadonlySet<string>>();
+function words(name: string): ReadonlySet<string> {
+  let set = WORDS.get(name);
+  if (!set) {
+    set = new Set(vesselKey(name).split(' ').filter(Boolean));
+    WORDS.set(name, set);
+  }
+  return set;
+}
+
+/** `words` with the bracketed detail counted in rather than dropped. */
+const FULL_WORDS = new Map<string, ReadonlySet<string>>();
+function fullWords(name: string): ReadonlySet<string> {
+  let set = FULL_WORDS.get(name);
+  if (!set) {
+    set = words(name.replace(/[()]/g, ' '));
+    FULL_WORDS.set(name, set);
+  }
+  return set;
+}
+
+function within(a: ReadonlySet<string>, b: ReadonlySet<string>): boolean {
+  if (a.size === 0) return false;
+  for (const w of a) if (!b.has(w)) return false;
+  return true;
 }
 
 /**
@@ -74,14 +106,9 @@ function words(name: string): Set<string> {
  * appears in the other — brackets included — they overlap.
  */
 function overlaps(candidate: string, own: readonly string[]): boolean {
-  const c = words(candidate.replace(/[()]/g, ' '));
+  const c = fullWords(candidate);
   const cKey = words(candidate);
-  return own.some((o) => {
-    const oFull = words(o.replace(/[()]/g, ' '));
-    const oKey = words(o);
-    const within = (a: Set<string>, b: Set<string>) => a.size > 0 && [...a].every((w) => b.has(w));
-    return within(oKey, c) || within(cKey, oFull);
-  });
+  return own.some((o) => within(words(o), c) || within(cKey, fullWords(o)));
 }
 
 /**

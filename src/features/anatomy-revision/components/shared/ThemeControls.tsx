@@ -1,7 +1,13 @@
 import { useId, useState } from 'react';
+import { flushSync } from 'react-dom';
 import { useTheme } from '../../context/ThemeProvider';
 import { getShowLatin, setShowLatin } from '../../lib/preferences';
 import { THEME_PREFERENCES, THEME_PREFERENCE_LABELS } from '../../lib/theme';
+import { withThemeTransition } from './motion';
+
+/** The knob overshoots slightly as it lands; the track fills behind it. */
+const KNOB_TRANSITION = 'left 260ms cubic-bezier(0.34, 1.56, 0.64, 1), background 220ms';
+const TRACK_TRANSITION = 'background 220ms';
 
 /**
  * The appearance controls, shared by Account and MobileAccount — the app
@@ -47,8 +53,9 @@ export function ThemeControls({ compact = false }: { compact?: boolean }) {
               type="button"
               role="radio"
               aria-checked={on}
-              onClick={() => setThemePreference(preference)}
-              className="inline-flex min-h-[44px] flex-1 items-center justify-center rounded-[3px] px-3"
+              // Flushed inside the transition so the browser captures the page either side of the change.
+              onClick={() => withThemeTransition(() => flushSync(() => setThemePreference(preference)))}
+              className="inline-flex min-h-[44px] flex-1 items-center justify-center rounded-[3px] px-3 transition-colors duration-200"
               style={{
                 fontFamily: 'var(--font-display)',
                 fontSize: compact ? 15 : 15.5,
@@ -72,14 +79,14 @@ export function ThemeControls({ compact = false }: { compact?: boolean }) {
           role="switch"
           aria-checked={contrast === 'high'}
           aria-labelledby={contrastLabelId}
-          onClick={() => setContrastPreference(contrast === 'high' ? 'normal' : 'high')}
+          onClick={() => withThemeTransition(() => flushSync(() => setContrastPreference(contrast === 'high' ? 'normal' : 'high')))}
           className="relative flex-none rounded-full"
           style={{
             width: 52,
             height: 31,
             border: '1.2px solid var(--line)',
             background: contrast === 'high' ? 'var(--acc-fill)' : 'transparent',
-            transition: 'background 120ms',
+            transition: TRACK_TRANSITION,
           }}
         >
           <span
@@ -91,7 +98,7 @@ export function ThemeControls({ compact = false }: { compact?: boolean }) {
               left: contrast === 'high' ? 24 : 2,
               background: contrast === 'high' ? 'var(--onacc)' : 'var(--ink3)',
               boxShadow: 'var(--shadow-knob)',
-              transition: 'left 120ms',
+              transition: KNOB_TRANSITION,
             }}
           />
         </button>
@@ -109,7 +116,7 @@ export function ThemeControls({ compact = false }: { compact?: boolean }) {
       {contrastPreference !== 'system' && (
         <button
           type="button"
-          onClick={() => setContrastPreference('system')}
+          onClick={() => withThemeTransition(() => flushSync(() => setContrastPreference('system')))}
           className="mt-2.5 border-0 bg-transparent p-0 underline"
           style={{ fontSize: 13, color: 'var(--accd)' }}
         >
@@ -136,7 +143,7 @@ export function ThemeControls({ compact = false }: { compact?: boolean }) {
             height: 31,
             border: '1.2px solid var(--line)',
             background: showLatin ? 'var(--acc-fill)' : 'transparent',
-            transition: 'background 120ms',
+            transition: TRACK_TRANSITION,
           }}
         >
           <span
@@ -148,7 +155,7 @@ export function ThemeControls({ compact = false }: { compact?: boolean }) {
               left: showLatin ? 24 : 2,
               background: showLatin ? 'var(--onacc)' : 'var(--ink3)',
               boxShadow: 'var(--shadow-knob)',
-              transition: 'left 120ms',
+              transition: KNOB_TRANSITION,
             }}
           />
         </button>

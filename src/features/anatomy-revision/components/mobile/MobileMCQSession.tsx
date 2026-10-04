@@ -102,7 +102,13 @@ export function MobileMCQSession({ question, imagesById, onAnswer, onNext, onFul
             />
         )}
 
-        <div className="mt-6 flex flex-col gap-2.5" role="group" aria-label="Answers" onKeyDown={moveFocusWithArrows}>
+        <div
+          className="mt-6 flex flex-col gap-2.5"
+          role="group"
+          aria-label="Answers"
+          onKeyDown={moveFocusWithArrows}
+          data-fx={checked && !examMode && !isCorrect ? 'shake' : undefined}
+        >
           {question.choices.map((choice, index) => {
             const isSelected = index === selectedIndex;
             const isAnswerCorrect = index === question.correctIndex;
@@ -126,7 +132,8 @@ export function MobileMCQSession({ question, imagesById, onAnswer, onNext, onFul
                 disabled={checked}
                 aria-pressed={isSelected}
                 onClick={() => handleSelect(index)}
-                className="flex min-h-[60px] items-center gap-3.5 rounded-[3px] px-4.5 text-left text-[16.5px] leading-tight disabled:cursor-default"
+                data-fx={revealing && isAnswerCorrect && isCorrect ? 'pulse' : undefined}
+                className="flex min-h-[60px] items-center gap-3.5 rounded-[3px] px-4.5 text-left text-[16.5px] leading-tight transition-colors duration-200 disabled:cursor-default"
                 style={{ border, background, color }}
               >
                 <span className="w-3.5 flex-none" style={{ font: '400 11.5px/1 var(--font-mono)', color: 'var(--ink3)' }}>

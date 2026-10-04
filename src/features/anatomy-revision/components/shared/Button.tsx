@@ -15,7 +15,7 @@ export function Button({ variant = 'primary', className = '', style, ...props }:
   return (
     <button
       {...props}
-      className={`rounded-[3px] font-medium transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-45 ${className}`}
+      className={`rounded-[3px] font-medium transition-[opacity,transform] duration-150 hover:opacity-90 active:scale-[0.97] motion-reduce:active:scale-100 disabled:cursor-not-allowed disabled:opacity-45 ${className}`}
       style={{ fontFamily: 'var(--font-ui)', boxSizing: 'border-box', ...base, ...style }}
     />
   );

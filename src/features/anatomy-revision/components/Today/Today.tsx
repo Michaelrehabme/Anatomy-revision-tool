@@ -32,7 +32,7 @@ interface TodayProps {
 }
 
 export function Today({ access, repository, userId, content, onStart, onCustomSession, onOpenMuscle, onNavigate }: TodayProps) {
-  const { loading, streak, totalMuscleCount, seenMusclePct, totalStructureCount, seenStructureCount, allMastery, weakest, comingDue, reviewItems, dueCount, facts, weekBuckets, weekMax, dayLabels } =
+  const { loading, streak, totalMuscleCount, seenMusclePct, totalStructureCount, seenStructureCount, allMastery, weakest, comingDue, reviewItems, spreadItems, dueCount, facts, weekBuckets, weekMax, dayLabels } =
     useTodayData(repository, userId, content, access.areas);
   const now = new Date();
   // Nothing attempted yet: the first session is the guided starter, and the
@@ -44,7 +44,11 @@ export function Today({ access, repository, userId, content, onStart, onCustomSe
   const preferredAreas = getPreferredAreas().filter((a) => access.areas.includes(a));
   const areas = preferredAreas.length ? preferredAreas : undefined;
 
-  const handleStart = async () => {
+  // 'continue' works down the queue oldest first, up to two questions a
+  // structure, so a structure is finished before the review moves on. 'fresh'
+  // is the same queue spread out: one question a structure, the ones answered
+  // longest ago first, and half the session new (owner, 3 Oct 2026).
+  const handleStart = async (style: 'continue' | 'fresh' = 'continue') => {
     if (firstRun) {
       const starter = buildStarterSet(content.structures, content.images, { areas: areas ?? access.areas });
       if (starter.length > 0) {
@@ -64,7 +68,8 @@ export function Today({ access, repository, userId, content, onStart, onCustomSe
       // Per question type (lib/reviewQueue.ts): what is due, then weak types
       // pulled forward, then new structures — never something well known and
       // not due. Fewer than twenty when there is not that much worth asking.
-      reviewItems,
+      reviewItems: style === 'fresh' ? spreadItems : reviewItems,
+      ...(style === 'fresh' ? { maxPerStructure: 1, newShare: 0.5 } : {}),
       count: 20,
       // Without mastery the generator falls back to a uniform shuffle and the
       // scheduler's due/weakness weighting never runs on the daily review.
@@ -100,34 +105,40 @@ export function Today({ access, repository, userId, content, onStart, onCustomSe
     >
       <div className="flex gap-20 px-16 pt-16 pb-12">
         <div className="w-[440px] flex-none">
-          <div style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
+          <div data-in style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
             {now.toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' })}
           </div>
           <h2
+            data-in
             style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: firstRun ? 64 : 76, lineHeight: 0.98, letterSpacing: '-.032em', margin: '20px 0 0' }}
           >
             {firstRun ? (
               firstRunTitle(preferredAreas)
             ) : (
               <>
-                {loading ? '…' : dueCount} due
+                {loading ? '…' : <span data-count className="inline-block tabular-nums">{dueCount}</span>} due
                 <br />
                 for review
               </>
             )}
           </h2>
-          <p className="mt-5 text-lg leading-relaxed" style={{ color: 'var(--ink2)' }}>
+          <p data-in className="mt-5 text-lg leading-relaxed" style={{ color: 'var(--ink2)' }}>
             {firstRun
               ? `${STARTER_COUNT} questions, about ${minutesFor(STARTER_COUNT)} minutes. Multiple choice and locate-on-the-image, nothing harder yet.`
               : dueCount > 0
-                ? 'Scheduled from your recent sessions.'
+                ? 'Keep going finishes the structures you are on. New set moves to ones you have not seen lately, with more new material.'
                 : 'All caught up. A review now brings your weaker questions forward, plus new material; anything you know well waits until it is due.'}
           </p>
-          <div className="mt-9 flex gap-3.5">
-            <Button onClick={handleStart} className="min-w-[180px] min-h-[56px]">
-              {firstRun ? 'Start your first session' : 'Start review'}
+          <div data-in className="mt-9 flex flex-wrap gap-3.5">
+            <Button onClick={() => handleStart('continue')} className={firstRun ? 'min-w-[180px] min-h-[56px]' : 'flex-1 whitespace-nowrap min-h-[56px]'}>
+              {firstRun ? 'Start your first session' : 'Keep going'}
             </Button>
-            <Button variant="secondary" onClick={onCustomSession} className="min-w-[150px] min-h-[56px]">
+            {!firstRun && (
+              <Button variant="secondary" onClick={() => handleStart('fresh')} className="flex-1 whitespace-nowrap min-h-[56px]">
+                New set
+              </Button>
+            )}
+            <Button variant="secondary" onClick={onCustomSession} className={firstRun ? 'min-w-[150px] min-h-[56px]' : 'flex-1 whitespace-nowrap min-h-[56px]'}>
               Custom session
             </Button>
           </div>
@@ -137,6 +148,7 @@ export function Today({ access, repository, userId, content, onStart, onCustomSe
           {!firstRun && (
             <>
               <div
+                data-in
                 className="mt-14"
                 style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}
               >
@@ -146,6 +158,7 @@ export function Today({ access, repository, userId, content, onStart, onCustomSe
                 {weekBuckets.map((count, i) => (
                   <div
                     key={i}
+                    data-wbar
                     className="flex-1"
                     style={{ height: `${Math.max(8, (count / weekMax) * 100)}%`, background: count > 0 ? 'var(--acc)' : 'var(--accs)' }}
                   />
@@ -163,7 +176,7 @@ export function Today({ access, repository, userId, content, onStart, onCustomSe
         </div>
 
         <div className="flex-1">
-          <div style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
+          <div data-in style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
             Weakest structures
           </div>
           <div className="mt-4 flex flex-col">
@@ -182,7 +195,8 @@ export function Today({ access, repository, userId, content, onStart, onCustomSe
                   key={m.structureId}
                   type="button"
                   onClick={() => onOpenMuscle(m.structureId)}
-                  className="flex items-baseline gap-4 py-4 text-left hover:opacity-70"
+                  data-row
+                  className="flex items-baseline gap-4 py-4 text-left transition-[opacity,transform] duration-200 hover:translate-x-1 hover:opacity-70 motion-reduce:hover:translate-x-0"
                 >
                   <span className="flex-1" style={{ fontFamily: 'var(--font-display)', fontSize: 23, color: 'var(--ink)' }}>
                     {structure?.name ?? m.structureId}
@@ -191,6 +205,8 @@ export function Today({ access, repository, userId, content, onStart, onCustomSe
                     {structure ? REGION_LABELS[structure.region] : ''}
                   </span>
                   <span
+                    data-count
+                    className="tabular-nums"
                     style={{
                       font: '500 13.5px/1 var(--font-mono)',
                       color: pct < 60 ? 'var(--acc2d)' : 'var(--accd)',
@@ -198,7 +214,7 @@ export function Today({ access, repository, userId, content, onStart, onCustomSe
                       textAlign: 'right',
                     }}
                   >
-                    {pct}%
+                    {`${pct}%`}
                   </span>
                 </button>
               );
@@ -208,6 +224,7 @@ export function Today({ access, repository, userId, content, onStart, onCustomSe
           {comingDue.length > 0 && (
             <>
               <div
+                data-in
                 className="mt-14"
                 style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}
               >
@@ -217,7 +234,7 @@ export function Today({ access, repository, userId, content, onStart, onCustomSe
                 {comingDue.map((m) => {
                   const structure = content.structuresById.get(m.structureId);
                   return (
-                    <div key={m.structureId} className="flex items-baseline gap-4 py-3">
+                    <div key={m.structureId} data-row className="flex items-baseline gap-4 py-3">
                       <span className="flex-1" style={{ fontFamily: 'var(--font-display)', fontSize: 19, color: 'var(--ink2)' }}>
                         {structure?.name ?? m.structureId}
                       </span>

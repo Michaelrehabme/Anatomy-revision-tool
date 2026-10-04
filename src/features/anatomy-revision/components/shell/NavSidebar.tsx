@@ -3,6 +3,7 @@ import { useAuth, AUTH_ENABLED } from '../../context/AuthProvider';
 import { AuthScreen } from '../Auth/AuthScreen';
 import { useRepository } from '../../hooks/useRepository';
 import { levelProgress } from '../../lib/levels';
+import { EASE } from '../shared/motion';
 
 export type NavSection = 'today' | 'study' | 'atlas' | 'progress' | 'account';
 
@@ -53,10 +54,10 @@ function LevelProgress() {
     <div className="mt-6" title={`${progress.xpIntoLevel} / ${progress.xpForNextLevel} XP to level ${progress.level + 1}`}>
       <div className="flex items-baseline justify-between">
         <span style={{ font: '500 12px/1 var(--font-mono)', color: 'var(--ink2)' }}>Level {progress.level}</span>
-        <span style={{ font: '400 10.5px/1 var(--font-mono)', color: 'var(--ink3)' }}>{xpTotal} XP</span>
+        <span data-count style={{ font: '400 10.5px/1 var(--font-mono)', color: 'var(--ink3)' }}>{`${xpTotal} XP`}</span>
       </div>
       <div className="mt-1.5 h-1 overflow-hidden rounded-full" style={{ background: 'var(--line)' }}>
-        <div className="h-full" style={{ width: `${progress.pct}%`, background: 'var(--acc)' }} />
+        <div data-xp className="h-full" style={{ width: `${progress.pct}%`, background: 'var(--acc)' }} />
       </div>
     </div>
   );
@@ -113,14 +114,44 @@ function AccountSection() {
   );
 }
 
-/** The standard persistent sidebar: brand mark, 4-item nav, footer slot, account section. */
+/** Each item is this tall and this far from the next, so the highlight can slide between them by index. */
+const NAV_ITEM_HEIGHT = 44;
+const NAV_ITEM_GAP = 2;
+
+/**
+ * Where the highlight last sat. Every screen mounts its own NavSidebar, so the
+ * sidebar that draws a navigation is a new one: it starts the highlight where
+ * the previous screen left it and slides it to its own item.
+ */
+let lastActiveIndex: number | null = null;
+
+/** The standard persistent sidebar: brand mark, 5-item nav, footer slot, account section. */
 export function NavSidebar({ active, onNavigate, footer }: NavSidebarProps) {
+  const activeIndex = NAV_ITEMS.findIndex((item) => item.section === active);
+  const [pillIndex, setPillIndex] = useState(lastActiveIndex ?? activeIndex);
+  useEffect(() => {
+    lastActiveIndex = activeIndex;
+    // A frame later, so the browser has painted the starting position to slide from.
+    const frame = requestAnimationFrame(() => setPillIndex(activeIndex));
+    return () => cancelAnimationFrame(frame);
+  }, [activeIndex]);
+
   return (
     <>
       <div style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 25, letterSpacing: '-0.018em' }}>
         LocusMSK
       </div>
-      <nav aria-label="Main" className="mt-10 flex flex-col gap-0.5">
+      <nav aria-label="Main" className="relative mt-10 flex flex-col" style={{ gap: NAV_ITEM_GAP }}>
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 top-0 rounded-[3px] motion-reduce:transition-none"
+          style={{
+            height: NAV_ITEM_HEIGHT,
+            background: 'var(--accs)',
+            transform: `translateY(${pillIndex * (NAV_ITEM_HEIGHT + NAV_ITEM_GAP)}px)`,
+            transition: `transform 380ms ${EASE}`,
+          }}
+        />
         {NAV_ITEMS.map((item) => {
           const isActive = item.section === active;
           return (
@@ -129,11 +160,11 @@ export function NavSidebar({ active, onNavigate, footer }: NavSidebarProps) {
               type="button"
               onClick={() => onNavigate(item.section)}
               aria-current={isActive ? 'page' : undefined}
-              className="rounded-[3px] px-3.5 py-2.5 text-left transition-colors"
+              className="relative flex items-center rounded-[3px] px-3.5 text-left transition-colors duration-200"
               style={{
+                height: NAV_ITEM_HEIGHT,
                 fontFamily: 'var(--font-display)',
                 fontSize: 18,
-                background: isActive ? 'var(--accs)' : 'transparent',
                 color: isActive ? 'var(--accd)' : 'var(--ink2)',
               }}
             >

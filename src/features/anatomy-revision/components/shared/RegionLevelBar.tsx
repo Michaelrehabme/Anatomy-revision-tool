@@ -32,14 +32,17 @@ export function RegionLevelBar({ levels, height = 8 }: { levels: LevelCounts; he
   const total = MASTERY_LEVELS.reduce((sum, l) => sum + levels[l], levels.unmet);
   if (total === 0) return null;
   return (
-    <div role="img" aria-label={summary(levels)} className="flex w-full overflow-hidden" style={{ height, ...EMPTY_TRACK, gap: 2 }}>
-      {MASTERY_LEVELS.filter((l) => levels[l] > 0).map((l) => (
-        <div
-          key={l}
-          title={`${MASTERY_LEVEL_LABELS[l]}: ${levels[l]}`}
-          style={{ width: `${(levels[l] / total) * 100}%`, background: SHADE[l] }}
-        />
-      ))}
+    <div role="img" aria-label={summary(levels)} className="w-full overflow-hidden" style={{ height, ...EMPTY_TRACK }}>
+      {/* One strip holding every segment, so the bar grows from the left as a whole (shared/motion.ts). */}
+      <div data-rbar className="flex h-full w-full" style={{ gap: 2 }}>
+        {MASTERY_LEVELS.filter((l) => levels[l] > 0).map((l) => (
+          <div
+            key={l}
+            title={`${MASTERY_LEVEL_LABELS[l]}: ${levels[l]}`}
+            style={{ width: `${(levels[l] / total) * 100}%`, background: SHADE[l] }}
+          />
+        ))}
+      </div>
     </div>
   );
 }

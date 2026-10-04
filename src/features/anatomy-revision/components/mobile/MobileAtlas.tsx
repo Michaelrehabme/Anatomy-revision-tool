@@ -90,11 +90,12 @@ export function MobileAtlas({
           &larr; Today
         </button>
         <h1
+          data-in
           style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 30, lineHeight: 1.05, letterSpacing: '-.02em', margin: '2px 0 5px' }}
         >
           Atlas
         </h1>
-        <p aria-live="polite" style={{ fontSize: 13.5, lineHeight: 1.5, color: 'var(--ink3)' }}>
+        <p data-in aria-live="polite" style={{ fontSize: 13.5, lineHeight: 1.5, color: 'var(--ink3)' }}>
           {entitled.length} structures · showing {visible.length}
           {filters.query ? ` matching “${filters.query}”` : ''}
         </p>
@@ -106,6 +107,7 @@ export function MobileAtlas({
           onChange={(e) => list.setQuery(e.target.value)}
           placeholder="Search structures…"
           aria-label="Search structures"
+          data-in
           className="mt-4 w-full rounded-[3px] px-4"
           style={{
             minHeight: 50,
@@ -117,7 +119,7 @@ export function MobileAtlas({
           }}
         />
 
-        <div className="mt-3 flex items-center gap-2.5">
+        <div data-in className="mt-3 flex items-center gap-2.5">
           <button
             ref={triggerRef}
             type="button"
@@ -149,12 +151,12 @@ export function MobileAtlas({
           </span>
         </div>
 
-        <div className="mt-3.5 flex gap-2.5">
+        <div data-in className="mt-3.5 flex gap-2.5">
           <button
             type="button"
             onClick={() => onQuizStructures(contextIds)}
             disabled={contextIds.length === 0}
-            className="flex-1 rounded-[3px] disabled:opacity-50"
+            className="flex-1 rounded-[3px] disabled:opacity-50 transition-transform duration-150 active:scale-[0.97] motion-reduce:active:scale-100"
             style={{ minHeight: 52, background: 'transparent', border: '1.4px solid var(--acc)', color: 'var(--accd)', font: '500 16px/1 var(--font-ui)' }}
           >
             Quiz these
@@ -163,7 +165,7 @@ export function MobileAtlas({
             type="button"
             onClick={() => onDrillOina(muscleIds)}
             disabled={muscleIds.length === 0}
-            className="flex-1 rounded-[3px] border-0 disabled:opacity-50"
+            className="flex-1 rounded-[3px] border-0 disabled:opacity-50 transition-transform duration-150 active:scale-[0.97] motion-reduce:active:scale-100"
             style={{ minHeight: 52, background: 'var(--acc-fill)', color: 'var(--onacc)', font: '500 16px/1 var(--font-ui)' }}
           >
             Drill these facts
@@ -183,7 +185,8 @@ export function MobileAtlas({
                 key={s.id}
                 type="button"
                 onClick={() => onOpenMuscle(s.id, contextIds)}
-                className="w-full rounded-[3px] p-4 text-left"
+                data-row
+                className="w-full rounded-[3px] p-4 text-left transition-transform duration-150 active:scale-[0.99] motion-reduce:active:scale-100"
                 style={{ border: '1.2px solid var(--line)', background: 'var(--sf)' }}
               >
                 <div className="flex items-baseline gap-2.5">

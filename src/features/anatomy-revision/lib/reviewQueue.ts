@@ -72,3 +72,31 @@ export function buildReviewQueue(
     forward: items.filter((i) => !i.due && i.weak).sort(byDate).map(strip),
   };
 }
+
+/**
+ * The same queue reordered for a "New set" review (owner, 3 Oct 2026).
+ *
+ * The queue above is oldest-first, and one structure's types all fall due
+ * together — name, origin, insertion, nerve — so with a backlog a review
+ * stays on the same dozen structures for days, a couple of types at a time.
+ * That is the right thing for finishing a structure off ("Keep going") and
+ * the wrong thing for a student who wants to move on. Here the structures
+ * answered longest ago come first, so anything asked today goes to the back;
+ * asked with one question per structure, each review reaches different ones.
+ * Still only what is due or weak — the order changes, not what qualifies.
+ */
+export function spreadReviewItems(
+  items: readonly ReviewItem[],
+  mastery: readonly StructureMastery[],
+  facts: readonly FactMastery[],
+): ReviewItem[] {
+  const lastAsked = new Map<string, string>();
+  for (const row of [...mastery, ...facts]) {
+    if (row.attemptsTotal === 0) continue;
+    if (row.lastAttemptAt > (lastAsked.get(row.structureId) ?? '')) lastAsked.set(row.structureId, row.lastAttemptAt);
+  }
+  const at = (i: ReviewItem) => lastAsked.get(i.structureId) ?? '';
+  // Due before pulled-forward, as in the queue itself; the sort is stable, so
+  // within a structure the most overdue type is still the one asked.
+  return [...items].sort((a, b) => Number(b.due) - Number(a.due) || at(a).localeCompare(at(b)));
+}

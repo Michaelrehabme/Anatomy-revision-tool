@@ -24,6 +24,7 @@ export function MasteryLevelBadge({
         {MASTERY_LEVELS.map((level, i) => (
           <span
             key={level}
+            data-pip
             style={{
               width: 6,
               height: 6,

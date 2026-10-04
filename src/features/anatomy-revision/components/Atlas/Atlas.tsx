@@ -85,7 +85,7 @@ export function Atlas({ access, content, repository, userId, onOpenMuscle, onDri
         )}
 
         <div className="flex min-h-0 min-w-0 flex-1 flex-col px-10 pt-14">
-          <div className="flex items-end gap-8">
+          <div data-in className="flex items-end gap-8">
             <div className="flex-1">
               <h1
                 style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 44, lineHeight: 1.02, letterSpacing: '-.024em', margin: '0 0 8px' }}
@@ -129,7 +129,7 @@ export function Atlas({ access, content, repository, userId, onOpenMuscle, onDri
             </Button>
           </div>
 
-          <div className="mt-5 flex items-center gap-4">
+          <div data-in className="mt-5 flex items-center gap-4">
             <button
               type="button"
               onClick={togglePanel}
@@ -166,6 +166,7 @@ export function Atlas({ access, content, repository, userId, onOpenMuscle, onDri
           </div>
 
           <div
+            data-in
             className="mt-6 flex gap-5 pb-3"
             style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}
           >
@@ -191,7 +192,8 @@ export function Atlas({ access, content, repository, userId, onOpenMuscle, onDri
                   key={s.id}
                   type="button"
                   onClick={() => onOpenMuscle(s.id, contextIds)}
-                  className="flex w-full items-baseline gap-5 py-3 text-left"
+                  data-row
+                  className="flex w-full items-baseline gap-5 py-3 text-left transition-colors duration-150 hover:bg-[var(--accs)]"
                   style={{ borderTop: '1px solid var(--line)' }}
                 >
                   <span className="w-[190px] flex-none">
