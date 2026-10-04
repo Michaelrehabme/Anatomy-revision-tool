@@ -72,6 +72,18 @@ export function MobileAtlas({
     drawerRef.current?.focus();
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') setDrawerOpen(false);
+      // Keep Tab inside the drawer. The list behind it is inert, but the tab
+      // bar belongs to the shell and was still reachable under the scrim —
+      // a dialog that says aria-modal and lets focus walk out of it.
+      if (e.key !== 'Tab' || !drawerRef.current) return;
+      const stops = [...drawerRef.current.querySelectorAll<HTMLElement>('button:not(:disabled), select, input, a[href]')];
+      if (stops.length === 0) return;
+      const active = document.activeElement;
+      const leaving = e.shiftKey ? active === stops[0] || active === drawerRef.current : active === stops[stops.length - 1];
+      if (leaving || !drawerRef.current.contains(active)) {
+        e.preventDefault();
+        (e.shiftKey ? stops[stops.length - 1] : stops[0]).focus();
+      }
     };
     document.addEventListener('keydown', onKeyDown);
     const previousOverflow = document.body.style.overflow;

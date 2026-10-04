@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import { moveFocusWithArrows } from '../shared/arrowFocus';
+import { choiceRevealNote } from '../shared/choiceReveal';
 import type { MultiSelectQuestion } from '../../types/question';
 import type { Confidence } from '../../types/attempt';
 import { questionLocationLabel } from '../../types/region';
@@ -70,7 +72,7 @@ export function MobileMultiSelectSession({ question, onAnswer, onNext, examMode 
           {question.prompt}
         </h2>
 
-        <div className="mt-6 flex flex-col gap-2.5">
+        <div className="mt-6 flex flex-col gap-2.5" role="group" aria-label="Answers — choose every one that applies" onKeyDown={moveFocusWithArrows}>
           {question.choices.map((choice, index) => {
             const isSelected = selectedIndices.has(index);
             const isCorrectChoice = question.correctIndices.includes(index);
@@ -95,6 +97,7 @@ export function MobileMultiSelectSession({ question, onAnswer, onNext, examMode 
                 key={choice}
                 type="button"
                 disabled={checked}
+                aria-pressed={isSelected}
                 onClick={() => toggleIndex(index)}
                 className="flex min-h-[54px] items-center gap-3 rounded-[3px] px-4 text-left text-[16px] disabled:cursor-default"
                 style={{ border, background, color }}
@@ -103,9 +106,15 @@ export function MobileMultiSelectSession({ question, onAnswer, onNext, examMode 
                   className="flex h-[18px] w-[18px] flex-none items-center justify-center rounded-[3px]"
                   style={{ border: `1.4px solid ${isSelected ? 'var(--acc)' : 'var(--line)'}`, background: isSelected ? 'var(--acc)' : 'transparent' }}
                 >
-                  {isSelected && <span style={{ color: 'var(--onacc)', fontSize: 11 }}>✓</span>}
+                  {/* The tick is decoration: aria-pressed says it, and a glyph in the name would be read as "check mark". */}
+                  {isSelected && <span aria-hidden="true" style={{ color: 'var(--onacc)', fontSize: 11 }}>✓</span>}
                 </span>
-                <span className="flex-1">{choice}</span>
+                <span className="flex-1">
+                  {choice}
+                  {revealing && choiceRevealNote(isCorrectChoice, isSelected) && (
+                    <span className="sr-only"> ({choiceRevealNote(isCorrectChoice, isSelected)})</span>
+                  )}
+                </span>
               </button>
             );
           })}

@@ -71,7 +71,7 @@ describe('HotspotImage with a rotation set', () => {
     render(<HotspotImage image={frames[1]} frames={frames} targetStructureId="target" onAnswer={onAnswer} />);
     fireEvent.click(screen.getByLabelText('Rotate left'));
     // Now on the anterior frame, where the neighbour exists. Click it.
-    fireEvent.click(screen.getByRole('button', { name: /Test 0/ }), { clientX: 300, clientY: 300 });
+    fireEvent.click(screen.getByRole('group', { name: /Test 0/ }), { clientX: 300, clientY: 300 });
     expect(onAnswer).toHaveBeenCalledTimes(1);
     const result = onAnswer.mock.calls[0][0];
     expect(result.correct).toBe(false);
@@ -82,7 +82,7 @@ describe('HotspotImage with a rotation set', () => {
   it('maps a click through zoom and pan', () => {
     const onAnswer = vi.fn();
     render(<HotspotImage image={frames[0]} frames={frames} targetStructureId="target" onAnswer={onAnswer} />);
-    const stage = screen.getByRole('button', { name: /Test 0/ });
+    const stage = screen.getByRole('group', { name: /Test 0/ });
     // Two button zooms, each about the stage centre (200,200): the picture
     // ends up 2.25x, its box running from -250px to 650px. Screen pixel 380
     // is 0.95 of the picture at 1x — empty bone — but (380 + 250) / 900 =
@@ -100,7 +100,7 @@ describe('HotspotImage with a rotation set', () => {
   it('keeps turning after the answer, but takes no second pick', () => {
     const onAnswer = vi.fn();
     render(<HotspotImage image={frames[0]} frames={frames} targetStructureId="target" onAnswer={onAnswer} />);
-    fireEvent.click(screen.getByRole('button', { name: /Test 0/ }), { clientX: 100, clientY: 100 });
+    fireEvent.click(screen.getByRole('group', { name: /Test 0/ }), { clientX: 100, clientY: 100 });
     expect(onAnswer).toHaveBeenCalledTimes(1);
     expect(screen.getByLabelText('Rotate right')).toBeEnabled();
     fireEvent.click(screen.getByLabelText('Rotate right'));
@@ -129,7 +129,7 @@ describe('a wrong tap on a real turntable', () => {
     const onAnswer = vi.fn();
     render(<HotspotImage image={real[0]} frames={real} targetStructureId="superior-glenohumeral-ligament" onAnswer={onAnswer} />);
     // The middle of the coraco-acromial ligament on the 0° frame: 0.45, 0.43 of 400px.
-    fireEvent.click(screen.getByRole('button', { name: real[0].slideTitle }), { clientX: 180, clientY: 172 });
+    fireEvent.click(screen.getByRole('group', { name: real[0].slideTitle }), { clientX: 180, clientY: 172 });
     expect(onAnswer.mock.calls[0][0]).toMatchObject({ correct: false, structureId: 'coraco-acromial-ligament' });
     const red = () => document.querySelectorAll('polygon[stroke="var(--ring-red)"]').length;
     expect(red()).toBeGreaterThan(0);

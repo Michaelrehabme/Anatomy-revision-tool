@@ -7,6 +7,7 @@ import { LevelChangesList } from '../shared/LevelChangesList';
 import { AssignmentResultNote } from '../shared/AssignmentResultNote';
 import { levelProgress } from '../../lib/levels';
 import { Button } from '../shared/Button';
+import { ResultsHeading } from '../shared/ResultsHeading';
 import { AppShell } from '../shell/AppShell';
 import { NavSidebar, type NavSection } from '../shell/NavSidebar';
 import { AchievementToastStack } from '../shared/AchievementToast';
@@ -87,9 +88,9 @@ export function RevisionResults({
       {gamification && <AchievementToastStack achievements={gamification.newAchievements} />}
       <div className="flex gap-[88px] px-16 pt-[72px] pb-12">
         <div className="w-[400px] flex-none">
-          <div style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
+          <ResultsHeading label={`${isExam ? 'Exam results' : 'Session complete'}. ${summary.correctCount} of ${summary.totalQuestions} correct.`}>
             {isExam ? 'Exam results' : 'Session complete'}
-          </div>
+          </ResultsHeading>
           <div className="mt-5 flex items-baseline gap-3.5">
             <span style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 130, lineHeight: 0.82, letterSpacing: '-.05em' }}>
               {summary.correctCount}

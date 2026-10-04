@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import { moveFocusWithArrows } from '../shared/arrowFocus';
+import { choiceRevealNote } from '../shared/choiceReveal';
 import { factEyebrow } from '../shared/SlotHints';
 import { FeedbackHeading } from '../shared/FeedbackHeading';
 import type { OinaSelectQuestion } from '../../types/question';
@@ -91,7 +93,7 @@ export function OinaSelectSession({ question, onAnswer, onNext, examMode }: Oina
             {question.prompt}
           </h2>
 
-          <div className="mt-11 grid grid-cols-2 gap-4">
+          <div className="mt-11 grid grid-cols-2 gap-4" role="group" aria-label="Answers — choose every one that applies" onKeyDown={moveFocusWithArrows}>
             {question.choices.map((choice, index) => {
               const isSelected = selectedIndices.has(index);
               const isCorrectChoice = question.correctIndices.includes(index);
@@ -124,6 +126,7 @@ export function OinaSelectSession({ question, onAnswer, onNext, examMode }: Oina
                   key={`${choice}-${index}`}
                   type="button"
                   disabled={checked}
+                  aria-pressed={isSelected}
                   onClick={() => toggleIndex(index)}
                   className="flex min-h-[64px] items-center gap-3.5 rounded-[3px] px-6 text-left text-lg disabled:cursor-default"
                   style={{ border, background, color }}
@@ -135,9 +138,15 @@ export function OinaSelectSession({ question, onAnswer, onNext, examMode }: Oina
                       background: isSelected ? 'currentColor' : 'transparent',
                     }}
                   >
-                    {isSelected && <span style={{ color: background === 'transparent' ? color : background, fontSize: 13 }}>✓</span>}
+                    {/* The tick is decoration: aria-pressed says it, and a glyph in the name would be read as "check mark". */}
+                  {isSelected && <span aria-hidden="true" style={{ color: background === 'transparent' ? color : background, fontSize: 13 }}>✓</span>}
                   </span>
-                  <span className="flex-1">{choice}</span>
+                  <span className="flex-1">
+                    {choice}
+                    {revealing && choiceRevealNote(isCorrectChoice, isSelected) && (
+                    <span className="sr-only"> ({choiceRevealNote(isCorrectChoice, isSelected)})</span>
+                  )}
+                  </span>
                 </button>
               );
             })}

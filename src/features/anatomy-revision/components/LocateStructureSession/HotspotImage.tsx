@@ -130,6 +130,9 @@ export function HotspotImage({ image, frames, targetStructureId, toleranceMultip
       // and on every frame a wrong tap's structure is outlined in red.
       onPick={answer ? undefined : grade}
       resetKey={image.id}
+      // The prompt names the target; where it lies is the answer until one is given.
+      subjectId={targetStructureId}
+      conceal={answer && !examMode ? undefined : 'place'}
       overlay={(current) =>
         answer && !examMode ? (
           <HotspotOverlay

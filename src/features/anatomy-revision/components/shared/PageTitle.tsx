@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import { useRouteFocus } from './useRouteFocus';
 
 const APP_NAME = 'LocusMSK';
 
@@ -51,5 +52,7 @@ export function PageTitle() {
     const title = titleForPath(pathname);
     if (title) document.title = title;
   }, [pathname]);
+  // The other half of announcing a new page: somewhere for focus to be.
+  useRouteFocus(pathname);
   return null;
 }

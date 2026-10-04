@@ -1,5 +1,6 @@
 import type { AnatomyImageAsset } from '../../types/image';
 import { ImageViewer } from './ImageViewer';
+import type { PlateConceal } from '../../lib/plateLabel';
 
 /**
  * A prompt picture the student can turn and zoom but not answer on.
@@ -13,10 +14,13 @@ import { ImageViewer } from './ImageViewer';
  * `frames` is what makes it turnable; without it the viewer draws no turn
  * controls and this is the flat picture it always was.
  */
-export function AnatomyImageFigure({ image, alt, frames }: {
+export function AnatomyImageFigure({ image, alt, frames, subjectId, conceal }: {
   image: AnatomyImageAsset;
   alt: string;
   frames?: AnatomyImageAsset[];
+  /** Passed to the viewer: the structure shown, and whether its name is still the answer. */
+  subjectId?: string;
+  conceal?: PlateConceal;
 }) {
-  return <ImageViewer image={image} frames={frames} resetKey={`${image.id}|${alt}`} />;
+  return <ImageViewer image={image} frames={frames} resetKey={`${image.id}|${alt}`} subjectId={subjectId} conceal={conceal} />;
 }

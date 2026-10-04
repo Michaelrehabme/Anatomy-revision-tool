@@ -102,6 +102,9 @@ export function MCQSession({ question, imagesById, onAnswer, onNext, examMode }:
               frames={promptHighlightFrames(promptFrames, question.structureId)}
               resetKey={question.id}
               overlay={(current) => <PromptHighlightOverlay image={current} structureId={question.structureId} />}
+              // The name is the answer until it has been checked — and stays so in an exam.
+              subjectId={question.structureId}
+              conceal={checked && !examMode ? undefined : 'name'}
             />
           )}
 

@@ -99,6 +99,8 @@ export function MobileMCQSession({ question, imagesById, onAnswer, onNext, onFul
               frames={promptHighlightFrames(promptFrames, question.structureId)}
               resetKey={question.id}
               overlay={(current) => <PromptHighlightOverlay image={current} structureId={question.structureId} />}
+              subjectId={question.structureId}
+              conceal={checked && !examMode ? undefined : 'name'}
             />
         )}
 

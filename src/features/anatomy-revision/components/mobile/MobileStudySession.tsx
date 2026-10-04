@@ -19,6 +19,7 @@ import { MobileOinaSession } from './MobileOinaSession';
 import { FillBlankSession } from '../FillBlankSession/FillBlankSession';
 import { PersistErrorBanner } from '../shared/PersistErrorBanner';
 import { useRecoverFocus } from '../shared/useRecoverFocus';
+import { PlateCatalogueProvider } from '../shared/PlateDescription';
 
 interface MobileStudySessionProps {
   session: ReturnType<typeof useRevisionSession>;
@@ -104,7 +105,7 @@ export function MobileStudySession({ session, content, onEnd, onBackToSetup, onO
     >
       <div className="flex-none px-6.5 pt-3">
         <div className="flex items-center gap-3.5">
-          <button type="button" onClick={onEnd} className="border-0 bg-transparent p-0 leading-none" style={{ fontSize: 19, color: 'var(--ink3)' }}>
+          <button type="button" onClick={onEnd} aria-label="End session" className="border-0 bg-transparent p-0 leading-none" style={{ fontSize: 19, color: 'var(--ink3)' }}>
             &times;
           </button>
           <div className="relative h-[3px] flex-1 overflow-hidden rounded-full" style={{ background: 'var(--line)' }}>
@@ -115,7 +116,7 @@ export function MobileStudySession({ session, content, onEnd, onBackToSetup, onO
             {cardsTotal > 0 && (
               <>
                 {' '}
-                <span style={{ color: 'var(--ink3)', opacity: 0.7 }}>
+                <span style={{ color: 'var(--ink3)' }}>
                   · {cardsSeen}/{cardsTotal} cards
                 </span>
               </>
@@ -137,6 +138,8 @@ export function MobileStudySession({ session, content, onEnd, onBackToSetup, onO
         />
       )}
 
+      {/* What the pictures' long descriptions are written from — see shared/PlateDescription. */}
+      <PlateCatalogueProvider value={content}>
       {isFlashcardQuestion(question) && (
         <MobileFlashcardSession
           key={question.id}
@@ -207,6 +210,7 @@ export function MobileStudySession({ session, content, onEnd, onBackToSetup, onO
           examMode={examMode}
         />
       )}
+      </PlateCatalogueProvider>
     </main>
   );
 }

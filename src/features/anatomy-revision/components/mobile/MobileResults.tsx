@@ -6,6 +6,7 @@ import { AssignmentResultNote } from '../shared/AssignmentResultNote';
 import { REGION_LABELS } from '../../types/region';
 import { levelProgress } from '../../lib/levels';
 import { AchievementToastStack } from '../shared/AchievementToast';
+import { ResultsHeading } from '../shared/ResultsHeading';
 
 const DUE_TEXT: Record<'hard' | 'medium' | 'easy', string> = { hard: 'tomorrow', medium: '4 days', easy: '10 days' };
 
@@ -58,9 +59,9 @@ export function MobileResults({ summary, answers, levelChanges = [], structuresB
 
   return (
     <main className="flex min-h-screen flex-col px-6.5 pt-5 pb-7.5" style={{ background: 'var(--pg)', color: 'var(--ink)' }}>
-      <div style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
+      <ResultsHeading label={`${isExam ? 'Exam results' : 'Session complete'}. ${summary.correctCount} of ${summary.totalQuestions} correct.`}>
         {isExam ? 'Exam results' : 'Session complete'}
-      </div>
+      </ResultsHeading>
       <div className="mt-3.5 flex items-baseline gap-2.5">
         <span style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 80, lineHeight: 0.86, letterSpacing: '-.04em' }}>
           {summary.correctCount}
