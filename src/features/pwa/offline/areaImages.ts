@@ -118,7 +118,15 @@ export function filePathsByArea(
   const areas = areasByImage(structures, images);
   const paths = Object.fromEntries(AREAS.map((area) => [area, new Set<string>()])) as Record<Area, Set<string>>;
   for (const image of images) {
-    for (const area of areas.get(image.id) ?? []) paths[area].add(image.filePath);
+    for (const area of areas.get(image.id) ?? []) {
+      paths[area].add(image.filePath);
+      // A FRAME'S SECOND RENDER GOES WHEREVER THE FRAME GOES. The viewer's
+      // switch swaps the file under the same frame (types/image.ts,
+      // ImageVariant), so an area that holds one without the other has a
+      // switch that shows a broken picture offline. Taken from the same image
+      // in the same loop, there is no way to list a frame and miss its variant.
+      if (image.variant) paths[area].add(image.variant.filePath);
+    }
   }
   return Object.fromEntries(AREAS.map((area) => [area, [...paths[area]].sort()])) as Record<Area, string[]>;
 }

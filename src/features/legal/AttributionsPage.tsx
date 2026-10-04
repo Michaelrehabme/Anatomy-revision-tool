@@ -26,6 +26,15 @@ interface Group {
   images: typeof ALL_IMAGES;
 }
 
+/**
+ * Every FILE an image puts on screen. A frame rendered a second way (ghosted
+ * and hidden, see-through and solid) is one image in the seed and two files on
+ * disk, and the notice has to cover the file a reader can actually be shown.
+ */
+const filesOf = (image: (typeof ALL_IMAGES)[number]): string[] =>
+  image.variant ? [image.filePath, image.variant.filePath] : [image.filePath];
+const fileCount = (images: typeof ALL_IMAGES): number => images.reduce((n, image) => n + filesOf(image).length, 0);
+
 function groupImages(): Group[] {
   const groups = new Map<string, Group>();
 
@@ -36,7 +45,7 @@ function groupImages(): Group[] {
     else groups.set(key, { credit: image.credit, licence: image.licence, images: [image] });
   }
 
-  return [...groups.values()].sort((a, b) => b.images.length - a.images.length);
+  return [...groups.values()].sort((a, b) => fileCount(b.images) - fileCount(a.images));
 }
 
 export function AttributionsPage() {
@@ -89,20 +98,20 @@ export function AttributionsPage() {
       <section className="mt-9">
         <h2 style={legalHeading}>Every image</h2>
         <p className="mt-2" style={legalProse}>
-          All {ALL_IMAGES.length} images currently shipped, grouped by source.
+          All {fileCount(ALL_IMAGES)} images currently shipped, grouped by source.
         </p>
 
         {groups.map((group) => (
           <div key={`${group.credit}::${group.licence}`} className="mt-6">
             <div style={legalLabel}>
-              {group.images.length} {group.images.length === 1 ? 'image' : 'images'} · {group.licence}
+              {fileCount(group.images)} {fileCount(group.images) === 1 ? 'image' : 'images'} · {group.licence}
             </div>
             <p className="mt-1.5" style={{ ...legalProse, color: 'var(--ink)' }}>
               {group.credit}
             </p>
             <ul className="mt-2 flex list-none flex-col gap-0.5 p-0">
               {group.images
-                .map((image) => image.filePath)
+                .flatMap(filesOf)
                 .sort()
                 .map((filePath) => (
                   <li key={filePath} className="break-all" style={{ font: '400 12px/1.5 var(--font-mono)', color: 'var(--ink3)' }}>

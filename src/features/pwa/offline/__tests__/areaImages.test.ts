@@ -76,11 +76,27 @@ describe('which pictures an area downloads', () => {
         for (const frame of [image, ...rotationFramesFor(image, ALL_IMAGES)]) {
           shown += 1;
           if (!held.has(frame.filePath)) missing.add(frame.filePath);
+          // The viewer's switch can put the frame's second render on screen too.
+          if (frame.variant && !held.has(frame.variant.filePath)) missing.add(frame.variant.filePath);
         }
       }
     }
     expect(shown).toBeGreaterThan(0);
     expect([...missing]).toEqual([]);
+  });
+
+  // A variant is the same frame rendered a second way; the switch that shows
+  // it works offline only if it was downloaded with its frame, everywhere.
+  it('downloads a second render with exactly the areas of its frame', () => {
+    const areas = areasByImage(ALL_STRUCTURES, ALL_IMAGES);
+    const withVariant = ALL_IMAGES.filter((image) => image.variant);
+    expect(withVariant.length).toBeGreaterThan(0);
+    for (const image of withVariant) {
+      const frameAreas = areas.get(image.id) ?? [];
+      expect(frameAreas.length, image.id).toBeGreaterThan(0);
+      const variantAreas = AREAS.filter((area) => paths[area].includes(image.variant!.filePath));
+      expect(variantAreas, image.id).toEqual(frameAreas);
+    }
   });
 
   // The rule this replaced took every plate that TRACES a structure of the
