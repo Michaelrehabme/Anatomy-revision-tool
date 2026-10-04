@@ -428,8 +428,13 @@ export function isHeld(s: AnatomyStructure): boolean {
  * a facet joint) belongs to all three spine areas. Empty only for a structure with
  * no subregion at all, which validateContent treats as an error since such a
  * structure would be unreachable from the area picker.
+ *
+ * Takes the two fields it reads rather than a whole structure, so an index
+ * entry (types/structureIndex.ts) answers it as well as a full one: which
+ * areas a structure is in is what decides which area payloads carry its facts,
+ * and that has to be answerable before any of them has been fetched.
  */
-export function areasOf(s: AnatomyStructure): Area[] {
+export function areasOf(s: Pick<AnatomyStructure, 'areas' | 'subregion'>): Area[] {
   return s.areas ?? areasForSubRegion(s.subregion);
 }
 
@@ -437,6 +442,6 @@ export function areasOf(s: AnatomyStructure): Area[] {
  * The area to stamp on a question when the session did not ask for one in
  * particular — generateSet re-stamps it with the requested area when it did.
  */
-export function primaryAreaOf(s: AnatomyStructure): Area | undefined {
+export function primaryAreaOf(s: Pick<AnatomyStructure, 'areas' | 'subregion'>): Area | undefined {
   return areasOf(s)[0];
 }

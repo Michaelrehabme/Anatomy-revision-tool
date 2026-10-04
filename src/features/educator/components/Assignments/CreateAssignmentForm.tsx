@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
-import { ALL_STRUCTURES } from '../../../anatomy-revision/data/seed';
+import { STRUCTURE_INDEX } from '../../../anatomy-revision/data/structureIndex';
 import { unbuildableSessionReason } from '../../../anatomy-revision/lib/setupCount';
 import { AREAS, AREA_LABELS, type Area } from '../../../anatomy-revision/types/region';
-import { areasOf, isMuscle, MUSCLE_GROUP_LABELS, type Category } from '../../../anatomy-revision/types/structure';
+import { areasOf, MUSCLE_GROUP_LABELS, type Category } from '../../../anatomy-revision/types/structure';
 import type { QuestionType } from '../../../anatomy-revision/types/question';
 import {
   ASSIGNMENT_QUESTION_COUNTS,
@@ -118,8 +118,8 @@ export function CreateAssignmentForm({
   const availableGroups = useMemo(
     () =>
       Object.keys(MUSCLE_GROUP_LABELS).filter((group) =>
-        ALL_STRUCTURES.some((s) => {
-          return isMuscle(s) && (s.groups ?? []).includes(group) && areasOf(s).some((a) => areas.includes(a));
+        STRUCTURE_INDEX.some((s) => {
+          return s.category === 'muscle' && (s.groups ?? []).includes(group) && areasOf(s).some((a) => areas.includes(a));
         }),
       ),
     [areas],

@@ -1,6 +1,6 @@
 import { rotationAngle, rotationSetKey, rotationTilt } from '../rotationFrames';
 import { primaryAreaOf } from '../../types/structure';
-import type { AnatomyStructure } from '../../types/structure';
+import type { StructureIndexEntry } from '../../types/structureIndex';
 import type { AnatomyImageAsset } from '../../types/image';
 import type { LocateQuestion } from '../../types/question';
 import type { HotspotPolygon } from '../../types/image';
@@ -67,7 +67,7 @@ export interface LocateGenOptions {
  * just that the image depicts it.
  */
 export function buildLocateQuestions(
-  structures: AnatomyStructure[],
+  structures: readonly StructureIndexEntry[],
   images: AnatomyImageAsset[],
   options: LocateGenOptions = {},
 ): LocateQuestion[] {
@@ -128,7 +128,7 @@ export function buildLocateQuestions(
    * to aim at on its own plate keeps the neighbours' plates rather than losing
    * locate altogether — the same trade the angle filter makes below.
    */
-  const hasUsableOwnSet = (structure: AnatomyStructure): boolean => {
+  const hasUsableOwnSet = (structure: StructureIndexEntry): boolean => {
     const cached = ownSetCache.get(structure.id);
     if (cached !== undefined) return cached;
     const names = new Set([structure.name, ...structure.aliases].map((n) => n.toLowerCase()));
@@ -150,7 +150,7 @@ export function buildLocateQuestions(
    * the one where the structure traces largest — not every plate it happens to
    * be drawn on. The interspinous ligaments were once asked fifteen times.
    */
-  const fallbackSetFor = (structure: AnatomyStructure): string | undefined => {
+  const fallbackSetFor = (structure: StructureIndexEntry): string | undefined => {
     if (fallbackCache.has(structure.id)) return fallbackCache.get(structure.id);
     let best: string | undefined;
     let bestArea = 0;

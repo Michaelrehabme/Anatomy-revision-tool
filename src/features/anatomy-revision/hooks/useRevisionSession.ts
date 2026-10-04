@@ -1,7 +1,7 @@
 import { useCallback, useReducer, useRef } from 'react';
 import type { RevisionQuestion } from '../types/question';
 import type { Category, Difficulty } from '../types/structure';
-import { emptyCategoryBreakdown, isMuscle } from '../types/structure';
+import { emptyCategoryBreakdown } from '../types/structure';
 import type { Area, Region, SubRegion } from '../types/region';
 import { REGIONS } from '../types/region';
 import type { Confidence, FactMastery, RevisionSessionSummary, StructureMastery, UserAttempt } from '../types/attempt';
@@ -13,6 +13,7 @@ import { markSeen, rungOfQuestion } from '../lib/ladder';
 import { factsIndex, masteryLevel, structureLevel, type MasteryLevel } from '../lib/masteryLevel';
 import { skillOf, updateFactMasteryAfterAttempt } from '../lib/factMastery';
 import { ALL_STRUCTURES } from '../data/seed';
+import { STRUCTURE_INDEX } from '../data/structureIndex';
 
 const STRUCTURES_BY_ID = new Map(ALL_STRUCTURES.map((s) => [s.id, s]));
 import { toDayKey, computeStreak } from '../lib/streak';
@@ -282,12 +283,12 @@ async function computeGamification(
     if (nowMs - Date.parse(m.lastAttemptAt) <= weekMs) structuresMasteredThisWeek += 1;
   }
 
-  const muscleIds = ALL_STRUCTURES.filter(isMuscle).map((s) => s.id);
+  const muscleIds = STRUCTURE_INDEX.filter((s) => s.category === 'muscle').map((s) => s.id);
   const attemptedMuscleCount = muscleIds.filter((id) => masteryByStructureId.has(id)).length;
 
   let completedRegionCount = 0;
   for (const region of REGIONS) {
-    const structuresInRegion = ALL_STRUCTURES.filter((s) => s.region === region);
+    const structuresInRegion = STRUCTURE_INDEX.filter((s) => s.region === region);
     if (structuresInRegion.length === 0) continue;
     const allMastered = structuresInRegion.every(
       (s) => (masteryByStructureId.get(s.id)?.intervalDays ?? 0) >= MASTERED_INTERVAL_THRESHOLD_DAYS,

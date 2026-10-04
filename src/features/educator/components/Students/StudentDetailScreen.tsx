@@ -5,7 +5,7 @@ import { masteryMixByRegion } from '../../lib/rollupAggregation';
 import { MasteryByRegion } from '../shared/MasteryByRegion';
 import { StatTile } from '../../../admin/components/Analytics/StatTile';
 import { REGION_LABELS } from '../../../anatomy-revision/types/region';
-import { ALL_STRUCTURES } from '../../../anatomy-revision/data/seed';
+import { STRUCTURE_INDEX } from '../../../anatomy-revision/data/structureIndex';
 import { accuracyTrendFromDayTallies, DELTA_MIN_SLICE } from '../../../anatomy-revision/lib/accuracyTrend';
 import { AccuracyTrendChart } from '../../../anatomy-revision/components/shared/AccuracyTrendChart';
 import {
@@ -61,8 +61,8 @@ export function EducatorStudentDetailScreen() {
   // Study days come from the student's rollup (lib/studentRollup.ts): day
   // keys only, never session times, which the rules keep from educators.
   const streak = computeStreakFromDayKeys(new Set(stats?.rollup?.sessionDays ?? []));
-  const mastery = stats ? masteryMixByRegion([stats], ALL_STRUCTURES) : null;
-  const weakest = stats ? structureWeaknessForStudentStats(stats, ALL_STRUCTURES).slice(0, WEAKEST_LIMIT) : [];
+  const mastery = stats ? masteryMixByRegion([stats], STRUCTURE_INDEX) : null;
+  const weakest = stats ? structureWeaknessForStudentStats(stats, STRUCTURE_INDEX).slice(0, WEAKEST_LIMIT) : [];
   const trend = stats
     ? accuracyTrendFromDayTallies(stats.dayTallies, mergeDayTallies([...snapshot.statsByUid.values()]))
     : [];

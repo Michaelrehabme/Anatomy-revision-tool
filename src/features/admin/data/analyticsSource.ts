@@ -1,5 +1,5 @@
 import { getRepository } from '../../anatomy-revision/data/repository';
-import { ALL_STRUCTURES } from '../../anatomy-revision/data/seed';
+import { STRUCTURE_INDEX } from '../../anatomy-revision/data/structureIndex';
 import type { UserAttempt, RevisionSessionSummary } from '../../anatomy-revision/types/attempt';
 import {
   aggregateStructureWeakness,
@@ -79,12 +79,12 @@ export class ClientAggregatedAnalytics implements AnalyticsSource {
 
   async getStructureWeakness(filters: AnalyticsFilters = {}, minAttempts?: number): Promise<StructureWeaknessRow[]> {
     const attempts = await this.loadAttempts();
-    return aggregateStructureWeakness(attempts, ALL_STRUCTURES, filters, minAttempts);
+    return aggregateStructureWeakness(attempts, STRUCTURE_INDEX, filters, minAttempts);
   }
 
   async getDistractorAnalysis(): Promise<QuestionDistractorSummary[]> {
     const attempts = await this.loadAttempts();
-    return aggregateDistractors(attempts, ALL_STRUCTURES);
+    return aggregateDistractors(attempts, STRUCTURE_INDEX);
   }
 
   async getConfusionPairs(): Promise<ConfusionPair[]> {
@@ -94,7 +94,7 @@ export class ClientAggregatedAnalytics implements AnalyticsSource {
 
   async getQuestionHealth(): Promise<QuestionHealthFlag[]> {
     const [attempts, reviewed] = await Promise.all([this.loadAttempts(), listReviewedQuestionIds()]);
-    return flagQuestionHealth(attempts, ALL_STRUCTURES).filter((flag) => !reviewed.has(flag.questionId));
+    return flagQuestionHealth(attempts, STRUCTURE_INDEX).filter((flag) => !reviewed.has(flag.questionId));
   }
 
   async getCohortOverview(): Promise<CohortOverview> {

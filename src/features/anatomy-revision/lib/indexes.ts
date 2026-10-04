@@ -2,6 +2,7 @@ import type { AnatomyStructure } from '../types/structure';
 import { isMuscle, areasOf } from '../types/structure';
 import type { Category, Difficulty } from '../types/structure';
 import type { Area, Region, SubRegion } from '../types/region';
+import type { StructureIndexEntry } from '../types/structureIndex';
 
 export interface StructureIndexes {
   /** Nerve name -> muscle ids innervated by it. Mirrors muscles.json's indexes.byNerve. */
@@ -73,18 +74,21 @@ export interface StructureFilter {
   difficulty?: Difficulty;
 }
 
-export function filterStructures(
-  structures: AnatomyStructure[],
-  filter?: StructureFilter,
-): AnatomyStructure[] {
+/**
+ * Generic over what it is given: every field a filter reads is an index field
+ * (types/structureIndex.ts), so scoping a session, counting a pool and
+ * previewing an assignment all work on index entries and get back whatever
+ * they passed in.
+ */
+export function filterStructures<T extends StructureIndexEntry>(structures: T[], filter?: StructureFilter): T[] {
   if (!filter) return structures;
   const regionMatch = (region: Region) =>
     filter.regions?.length ? filter.regions.includes(region) : !filter.region || region === filter.region;
-  const areaMatch = (s: AnatomyStructure) => {
+  const areaMatch = (s: T) => {
     if (!filter.areas?.length) return true;
     return areasOf(s).some((area) => filter.areas!.includes(area));
   };
-  const groupMatch = (s: AnatomyStructure) =>
+  const groupMatch = (s: T) =>
     !filter.groups?.length || (s.groups ?? []).some((g) => filter.groups!.includes(g));
   const categoryMatch = (category: Category) =>
     filter.categories?.length ? filter.categories.includes(category) : !filter.category || category === filter.category;

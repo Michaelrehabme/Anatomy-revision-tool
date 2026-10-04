@@ -1,4 +1,4 @@
-import type { AnatomyStructure } from '../types/structure';
+import type { StructureIndexEntry } from '../types/structureIndex';
 import type { AnatomyImageAsset } from '../types/image';
 
 /**
@@ -34,10 +34,10 @@ function normalize(text: string): string {
  * imageIds populated; any imageIds already present on a structure are kept
  * and de-duplicated against the auto-linked set rather than discarded.
  */
-export function linkImages(
-  structures: AnatomyStructure[],
+export function linkImages<T extends StructureIndexEntry>(
+  structures: T[],
   images: AnatomyImageAsset[],
-): AnatomyStructure[] {
+): T[] {
   const lookup = new Map<string, string[]>(); // normalized name -> structure ids
   for (const s of structures) {
     for (const key of [s.name, s.id, ...s.aliases]) {

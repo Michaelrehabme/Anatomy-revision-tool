@@ -1,5 +1,6 @@
 import { AREAS, AREAS_BY_SUBREGION, REGION_SUBREGIONS, type Area } from '../../anatomy-revision/types/region';
-import { areasOf, type AnatomyStructure } from '../../anatomy-revision/types/structure';
+import { areasOf } from '../../anatomy-revision/types/structure';
+import type { StructureIndexEntry } from '../../anatomy-revision/types/structureIndex';
 import type { AnatomyImageAsset } from '../../anatomy-revision/types/image';
 import { rotationSetKey } from '../../anatomy-revision/lib/rotationFrames';
 import { promptImagesFor } from '../../anatomy-revision/lib/questionGenerators/promptImages';
@@ -56,7 +57,7 @@ function areasFromPlacement(image: AnatomyImageAsset): Area[] {
  * find no picture to open on and the areas come out too small with no error.
  */
 export function areasByImage(
-  structures: readonly AnatomyStructure[],
+  structures: readonly StructureIndexEntry[],
   images: readonly AnatomyImageAsset[],
 ): Map<string, Area[]> {
   const all = [...structures];
@@ -112,7 +113,7 @@ export function areasByImage(
  * the manifest's hash would change when nothing on disk had.
  */
 export function filePathsByArea(
-  structures: readonly AnatomyStructure[],
+  structures: readonly StructureIndexEntry[],
   images: readonly AnatomyImageAsset[],
 ): Record<Area, string[]> {
   const areas = areasByImage(structures, images);

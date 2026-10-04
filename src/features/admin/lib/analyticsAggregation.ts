@@ -1,4 +1,4 @@
-import type { AnatomyStructure } from '../../anatomy-revision/types/structure';
+import type { StructureIndexEntry } from '../../anatomy-revision/types/structureIndex';
 import type { UserAttempt, RevisionSessionSummary } from '../../anatomy-revision/types/attempt';
 import type {
   AnalyticsFilters,
@@ -83,7 +83,7 @@ function toDateKey(iso: string): string {
  */
 export function aggregateStructureWeakness(
   attempts: UserAttempt[],
-  structures: AnatomyStructure[],
+  structures: readonly StructureIndexEntry[],
   filters: AnalyticsFilters = {},
   minAttempts: number = STRUCTURE_WEAKNESS_MIN_ATTEMPTS_DEFAULT,
 ): StructureWeaknessRow[] {
@@ -132,7 +132,7 @@ export function aggregateStructureWeakness(
  */
 export function aggregateDistractors(
   attempts: UserAttempt[],
-  structures: AnatomyStructure[],
+  structures: readonly StructureIndexEntry[],
 ): QuestionDistractorSummary[] {
   const structuresById = new Map(structures.map((s) => [s.id, s] as const));
   const byQuestion = new Map<string, UserAttempt[]>();
@@ -221,7 +221,7 @@ export function aggregateConfusionPairs(attempts: UserAttempt[]): ConfusionPair[
  * Does not know about questionReviews — the caller filters out already-
  * reviewed questionIds, keeping this function a pure statistics pass.
  */
-export function flagQuestionHealth(attempts: UserAttempt[], structures: AnatomyStructure[]): QuestionHealthFlag[] {
+export function flagQuestionHealth(attempts: UserAttempt[], structures: readonly StructureIndexEntry[]): QuestionHealthFlag[] {
   const structuresById = new Map(structures.map((s) => [s.id, s] as const));
   const byQuestion = new Map<string, UserAttempt[]>();
 

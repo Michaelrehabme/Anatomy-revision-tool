@@ -1,4 +1,5 @@
-import type { AnatomyStructure, Category } from '../types/structure';
+import type { Category } from '../types/structure';
+import type { StructureIndexEntry } from '../types/structureIndex';
 import type { Area } from '../types/region';
 import { areasOf } from '../types/structure';
 import { createRng, shuffle } from './rng';
@@ -173,13 +174,13 @@ const CORE_POOL_PER_AREA = 6;
  * A follow-up months later rebuilds exactly the same twenty.
  */
 export function buildDiagnostic(
-  structures: AnatomyStructure[],
+  structures: readonly StructureIndexEntry[],
   cohortId: string,
   size: number = DIAGNOSTIC_SIZE,
 ): DiagnosticSpec {
   const eligible = structures.filter((s) => s.category === 'muscle' || s.category === 'bone');
 
-  const byArea = new Map<Area, AnatomyStructure[]>();
+  const byArea = new Map<Area, StructureIndexEntry[]>();
   for (const structure of eligible) {
     for (const area of areasOf(structure)) {
       const list = byArea.get(area);

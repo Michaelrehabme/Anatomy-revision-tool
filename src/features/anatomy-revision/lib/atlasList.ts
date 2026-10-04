@@ -1,4 +1,5 @@
 import type { AnatomyStructure, Category } from '../types/structure';
+import type { StructureIndexEntry } from '../types/structureIndex';
 import type { FactMastery } from '../types/attempt';
 import { areasOf } from '../types/structure';
 import type { Area } from '../types/region';
@@ -73,7 +74,7 @@ export const AREA_ORDER_SUPERIOR_INFERIOR: Area[] = [
  * structure is a content gap, and floating it to the top of every list would
  * make that gap look like an anatomical claim.
  */
-export function bodyRank(s: AnatomyStructure): number {
+export function bodyRank(s: StructureIndexEntry): number {
   let rank = Number.POSITIVE_INFINITY;
   for (const area of areasOf(s)) {
     const index = AREA_ORDER_SUPERIOR_INFERIOR.indexOf(area);

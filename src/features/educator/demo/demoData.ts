@@ -1,5 +1,6 @@
-import { ALL_STRUCTURES } from '../../anatomy-revision/data/seed';
-import { emptyCategoryBreakdown, type AnatomyStructure } from '../../anatomy-revision/types/structure';
+import { STRUCTURE_INDEX } from '../../anatomy-revision/data/structureIndex';
+import { emptyCategoryBreakdown } from '../../anatomy-revision/types/structure';
+import { hasDescription, type StructureIndexEntry } from '../../anatomy-revision/types/structureIndex';
 import type { QuestionType } from '../../anatomy-revision/types/question';
 import type { Region } from '../../anatomy-revision/types/region';
 import type { RevisionSessionSummary, UserAttempt } from '../../anatomy-revision/types/attempt';
@@ -164,7 +165,7 @@ export function demoStudentsInCohort(cohortId: string): CohortStudent[] {
  * attempts against ineligible structures would put rows in the weakness
  * table that no student could ever have seen.
  */
-const QUIZZABLE: AnatomyStructure[] = ALL_STRUCTURES.filter((s) => s.imageIds.length > 0 || s.description.length > 0);
+const QUIZZABLE: StructureIndexEntry[] = STRUCTURE_INDEX.filter((s) => s.imageIds.length > 0 || hasDescription(s));
 
 /**
  * The mix-ups an MSK educator actually meets in marking. A dashboard whose
@@ -258,7 +259,7 @@ const DIFFICULTY = new Map<string, number>(
 );
 
 /** A stable "looks like this one" partner per structure — the named pairs above first, then same region and category where possible, so every confusion pair an educator sees is at least plausible. */
-const CONFUSED_WITH = new Map<string, AnatomyStructure>();
+const CONFUSED_WITH = new Map<string, StructureIndexEntry>();
 const QUIZZABLE_BY_ID = new Map(QUIZZABLE.map((s) => [s.id, s]));
 for (const [a, b] of NOTORIOUS_PAIRS) {
   const left = QUIZZABLE_BY_ID.get(a);
@@ -277,7 +278,7 @@ for (const [a, b] of NOTORIOUS_PAIRS) {
  * indexing into the pool produced "Sacrum -> Atlas (C1)" — a pair no educator
  * has ever had to mark, on the table the whole demo is meant to sell.
  */
-const BY_REGION_AND_CATEGORY = new Map<string, AnatomyStructure[]>();
+const BY_REGION_AND_CATEGORY = new Map<string, StructureIndexEntry[]>();
 for (const s of QUIZZABLE) {
   const key = `${s.region}::${s.category}`;
   const group = BY_REGION_AND_CATEGORY.get(key);
@@ -302,7 +303,7 @@ interface SessionSpec {
   sessionId: string;
   startedAt: number;
   size: number;
-  structures: AnatomyStructure[];
+  structures: StructureIndexEntry[];
   questionTypes: QuestionType[];
   regionFilter?: Region[];
   /** Added to the student's ability for every question in the session. */
@@ -314,7 +315,7 @@ interface SessionSpec {
    * the ladder to Advanced or Master (lib/masteryLevel.ts). Without it every
    * structure was met two or three times and the demo read "0 advanced".
    */
-  core?: AnatomyStructure[];
+  core?: StructureIndexEntry[];
   /** Chance the session was finished rather than abandoned — drawn after its questions, see buildSession. */
   finishChance: number;
   assignmentId?: string;

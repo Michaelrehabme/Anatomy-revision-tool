@@ -1,4 +1,4 @@
-import type { AnatomyStructure } from '../../anatomy-revision/types/structure';
+import type { StructureIndexEntry } from '../../anatomy-revision/types/structureIndex';
 import type { RevisionSessionSummary } from '../../anatomy-revision/types/attempt';
 import type { DayTally } from '../../anatomy-revision/lib/accuracyTrend';
 import type {
@@ -55,7 +55,7 @@ function accuracyPct(correct: number, total: number): number | null {
  */
 export function structureWeaknessFromStats(
   stats: StudentStatsDoc[],
-  structures: AnatomyStructure[],
+  structures: readonly StructureIndexEntry[],
   minAttempts: number,
 ): StructureWeaknessRow[] {
   const structuresById = new Map(structures.map((s) => [s.id, s] as const));
@@ -127,7 +127,7 @@ export function structureWeaknessFromStats(
 /** One student's weakest structures — the same function scoped to them, with no cohort threshold to clear. */
 export function structureWeaknessForStudentStats(
   student: StudentStatsDoc,
-  structures: AnatomyStructure[],
+  structures: readonly StructureIndexEntry[],
 ): StructureWeaknessRow[] {
   return structureWeaknessFromStats([student], structures, 1);
 }
@@ -135,7 +135,7 @@ export function structureWeaknessForStudentStats(
 /** Accuracy per body region, derived by mapping each structure to its region. */
 export function accuracyByRegionFromStats(
   stats: StudentStatsDoc[],
-  structures: AnatomyStructure[],
+  structures: readonly StructureIndexEntry[],
 ): RegionAccuracyBar[] {
   const regionById = new Map(structures.map((s) => [s.id, s.region] as const));
   const byRegion = new Map<string, { total: number; correct: number }>();
@@ -321,7 +321,7 @@ export function sessionMetricsFromSummaries(summaries: RevisionSessionSummary[])
  */
 export function confusionPairsFromStats(
   docs: ConfusionStatsDoc[],
-  structures: AnatomyStructure[],
+  structures: readonly StructureIndexEntry[],
 ): ConfusionPair[] {
   const idsByName = new Map<string, string[]>();
   for (const s of structures) {
@@ -386,7 +386,7 @@ export interface RegionMasteryMix {
  */
 export function masteryMixByRegion(
   stats: StudentStatsDoc[],
-  structures: AnatomyStructure[],
+  structures: readonly StructureIndexEntry[],
 ): { regions: RegionMasteryMix[]; studentsReporting: number } {
   const reporting = stats.filter((row) => row.rollup);
   const byRegion = new Map<Region, RegionMasteryMix>();

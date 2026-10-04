@@ -1,5 +1,5 @@
 import { getDb } from '../../anatomy-revision/data/firebase';
-import { ALL_STRUCTURES } from '../../anatomy-revision/data/seed';
+import { STRUCTURE_INDEX } from '../../anatomy-revision/data/structureIndex';
 import { STRUCTURE_WEAKNESS_MIN_ATTEMPTS_DEFAULT } from '../../admin/lib/analyticsAggregation';
 import type { CohortOverview, StructureWeaknessRow, ConfusionPair } from '../../admin/types/analytics';
 import { readConfusionStats, readStudentStats, type StudentStatsDoc } from './cohortRollups';
@@ -72,20 +72,20 @@ export async function loadCohortAnalytics(
   const inCohort = stats.filter((row) => roster.has(row.uid));
 
   const sessionMetrics = sessionMetricsFromRollups(inCohort);
-  const mastery = masteryMixByRegion(inCohort, ALL_STRUCTURES);
+  const mastery = masteryMixByRegion(inCohort, STRUCTURE_INDEX);
 
   return {
     overview: {
       activeStudentCount: inCohort.filter((row) => row.attemptsTotal > 0).length,
       activeUsersByDay: activeUsersByDayFromStats(inCohort),
-      accuracyByRegion: accuracyByRegionFromStats(inCohort, ALL_STRUCTURES),
+      accuracyByRegion: accuracyByRegionFromStats(inCohort, STRUCTURE_INDEX),
       retention: retentionFromStats(inCohort),
       meanSessionLengthMinutes: sessionMetrics.meanSessionLengthMinutes,
       completionRatePct: sessionMetrics.completionRatePct,
       totalSessions: sessionMetrics.totalSessions,
     },
-    structureWeakness: structureWeaknessFromStats(inCohort, ALL_STRUCTURES, minAttempts),
-    confusionPairs: confusionPairsFromStats(confusion, ALL_STRUCTURES),
+    structureWeakness: structureWeaknessFromStats(inCohort, STRUCTURE_INDEX, minAttempts),
+    confusionPairs: confusionPairsFromStats(confusion, STRUCTURE_INDEX),
     statsByUid: new Map(inCohort.map((row) => [row.uid, row])),
     masteryByRegion: mastery.regions,
     masteryStudentsReporting: mastery.studentsReporting,

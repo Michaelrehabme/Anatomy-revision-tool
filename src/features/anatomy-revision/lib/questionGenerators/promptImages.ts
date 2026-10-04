@@ -1,5 +1,5 @@
 import type { AnatomyImageAsset } from '../../types/image';
-import type { AnatomyStructure } from '../../types/structure';
+import type { StructureIndexEntry } from '../../types/structureIndex';
 import { rotationSetKey } from '../rotationFrames';
 import { imageDepicts } from './mcq';
 
@@ -21,7 +21,7 @@ import { imageDepicts } from './mcq';
  */
 
 /** Framed for this structure: its plate, or a panel that names it as its subject. */
-function isOwnPlate(image: AnatomyImageAsset, structure: AnatomyStructure): boolean {
+function isOwnPlate(image: AnatomyImageAsset, structure: StructureIndexEntry): boolean {
   if (image.mode === 'single-structure') return image.structureId === structure.id;
   const subject = image.panelStructureNames?.[0]?.toLowerCase();
   if (subject === undefined) return false;
@@ -40,7 +40,7 @@ function areaIn(image: AnatomyImageAsset, structureId: string): number {
  * are: they are their own set.
  */
 export function promptImagesFor(
-  structure: AnatomyStructure,
+  structure: StructureIndexEntry,
   images: readonly AnatomyImageAsset[],
 ): AnatomyImageAsset[] {
   const depicting = images.filter((img) => imageDepicts(img, structure.id));
