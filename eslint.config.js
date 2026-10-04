@@ -10,8 +10,12 @@ export default tseslint.config(
    * walks tools/ — a vendored 2GB Blender install with a bundled Playwright —
    * and reports a thousand errors in vendored JavaScript nobody here wrote,
    * which buries the handful in src/ that matter.
+   *
+   * android/ is the Capacitor trial's native project (docs/native-wrapper-trial.md):
+   * `cap sync` copies the built bundle into it, and linting a minified copy of
+   * dist/ is the same mistake as linting dist/.
    */
-  { ignores: ['dist', 'dist-demo', 'coverage', 'tools', 'atlas', 'renders', 'deploy', 'atlas-panel-exports'] },
+  { ignores: ['dist', 'dist-demo', 'coverage', 'tools', 'atlas', 'renders', 'deploy', 'atlas-panel-exports', 'android', '.content'] },
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ['**/*.{ts,tsx}'],

@@ -61,6 +61,7 @@ export type PlateFamily =
   | 'landmark'
   | 'bone'
   | 'subregion'
+  | 'gap'
   | 'panel'
   | 'other';
 
@@ -88,6 +89,7 @@ export function plateFamily(image: AnatomyImageAsset): PlateFamily {
   if (id.startsWith('landmark-')) return 'landmark';
   if (id.startsWith('bone-')) return 'bone';
   if (id.startsWith('sub-')) return 'subregion';
+  if (id.startsWith('gap-')) return 'gap';
   if (id.startsWith('panel-')) return 'panel';
   return 'other';
 }
@@ -181,8 +183,33 @@ function nameList(ids: string[], structuresById: ReadonlyMap<string, AnatomyStru
   return `${names.slice(0, MAX_LISTED).join(', ')} and ${names.length - MAX_LISTED} more`;
 }
 
+/**
+ * "This view was rendered twice: with the femur ghosted, and with it hidden."
+ *
+ * A frame with a second render (types/image.ts, ImageVariant) is two pictures
+ * through one camera, and the viewer's switch says which is showing. The
+ * description is of the FRAME, so it says what the two are and not which one
+ * is on screen: nothing else in it depends on the choice — the camera, the
+ * hotspots and the subject are the same in both — and the switch announces
+ * its own state as a radio group. It gives nothing away on an open question
+ * either: the switch shows the same word to everyone.
+ */
+function variantSentence(image: AnatomyImageAsset): string {
+  const variant = image.variant;
+  if (!variant) return '';
+  const subject = variant.subject.toLowerCase();
+  const plural = subject.endsWith('s');
+  // The same two words the switch uses (VARIANT_LABELS in shared/ImageViewer.tsx).
+  const [first, second] = variant.kind === 'hidden' ? ['ghosted', 'hidden'] : ['see-through', 'solid'];
+  return `This view was rendered twice, with the ${subject} ${first} and with ${plural ? 'them' : 'it'} ${second}; the switch under the picture chooses between the two.`;
+}
+
 /** What kind of picture this is and how it is drawn — nothing about any one structure. */
 function frameSentences(image: AnatomyImageAsset, family: PlateFamily): string[] {
+  return [...drawnSentences(image, family), variantSentence(image)].filter(Boolean);
+}
+
+function drawnSentences(image: AnatomyImageAsset, family: PlateFamily): string[] {
   const where = `${areaPhrase(image)}${cameraPhrase(image)}`;
   const view = viewPhrase(image);
   switch (family) {
@@ -208,6 +235,14 @@ function frameSentences(image: AnatomyImageAsset, family: PlateFamily): string[]
       return [`${view} of the skeleton of the ${where}.`, 'Every bone is drawn in the same plain bone colour; none is picked out.'];
     case 'subregion':
       return [`Close ${view.toLowerCase()} of the ${where}.`, 'The bones are drawn plainly, with any muscles in view in red, close enough for the small structures to be told apart; none is picked out.'];
+    case 'gap':
+      // Bones only, on purpose (see the gap plates in images.seed.ts): the
+      // ligament asked for lies between two of them and is not drawn, and
+      // which two is the question. So the bones are not named here either.
+      return [
+        `${view} of the ${where}.`,
+        'Only the bones are drawn, in the same plain bone colour, with no ligament over them; what is asked for on this picture is a gap between two neighbouring bones.',
+      ];
     case 'panel':
       // The seed's `view` for a card panel is nominal — a panel is often two
       // or three views side by side — so no view is claimed for one.
@@ -262,6 +297,8 @@ function howMarked(family: PlateFamily): string {
       return 'is the structure in cyan';
     case 'panel':
       return 'is picked out in blue';
+    case 'gap':
+      return 'is not drawn: it lies in the gap between two bones, and that gap is what is described here';
     default:
       return 'is the structure in question';
   }
@@ -330,6 +367,18 @@ export function describePlateSentences({ image, subjectId, conceal, imagesById, 
   // nothing about where any of it is.
   const others = inFrame.filter((s) => s.structureId !== subject?.id).map((s) => s.structureId);
   const inFrameSentence = (ids: string[], lead: string) => (ids.length ? `${lead}: ${nameList(ids, structuresById)}.` : '');
+
+  if (conceal === 'place' && family === 'gap') {
+    // Every other locate picture lists what is in frame, because the names
+    // say nothing about where anything is. Here they would: each of these
+    // ligaments is named after the two bones it joins, and the bones it joins
+    // are the answer. So the gaps are counted and none is named.
+    out.push(
+      `${inFrame.length === 1 ? 'One gap' : `${inFrame.length} gaps`} between the bones can be chosen in this view.`,
+      'Which gap it is, and where, is the question, so neither is described here; a full description is given once you have answered.',
+    );
+    return out.filter(Boolean);
+  }
 
   if (conceal === 'place') {
     out.push(

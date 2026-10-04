@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 import { VitePWA } from 'vite-plugin-pwa';
+import { configDefaults } from 'vitest/config';
 import { ANATOMY_CACHE_NAME } from './src/features/pwa/anatomyCache';
 import { isAnatomyImageRequest, offlineAreaPlugin } from './src/features/pwa/offline/swPlugin';
 import { CONTENT_VERSION_FILE } from './src/scripts/lib/contentPaths';
@@ -186,6 +187,8 @@ const UNWATCHED = [
   '**/*.blend',
   '**/*.blend1',
   '**/docs/**',
+  // The Capacitor trial's native project: Gradle output and a copy of dist/.
+  '**/android/**',
   // The pipeline's data files, all at the repo root. Only src/scripts reads
   // them — the app imports generated .ts seeds instead — but they are
   // rewritten constantly while a render or a publish is running, and each
@@ -245,6 +248,10 @@ export const baseConfig = () => ({
     environment: 'jsdom',
     globals: true,
     setupFiles: './src/test/setup.ts',
+    // android/ is the Capacitor trial's Gradle project. `cap sync` copies the
+    // whole of dist/ into it, and Gradle fills it with build output; none of
+    // that is this app's source, so the test run does not look there.
+    exclude: [...configDefaults.exclude, 'android/**'],
   },
 });
 

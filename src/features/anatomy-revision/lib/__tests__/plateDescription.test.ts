@@ -54,7 +54,7 @@ describe('describePlate', () => {
     }
     // A family the generator does not recognise would be described as "other".
     expect([...families].sort()).toEqual(
-      ['bone', 'joint', 'landmark', 'ligament-context', 'ligament-highlight', 'muscle-context', 'muscle-highlight', 'panel', 'subregion'],
+      ['bone', 'gap', 'joint', 'landmark', 'ligament-context', 'ligament-highlight', 'muscle-context', 'muscle-highlight', 'panel', 'subregion'],
     );
   });
 
@@ -133,7 +133,9 @@ describe('an open question is not answered by the description of its picture', (
       const subjectId = subjectOf(image.id) ?? image.hotspots![0].structureId;
       const described = describePlate({ image, subjectId, conceal: 'place', imagesById, structuresById });
       expect(described, image.id).not.toMatch(/of the picture|to its (left|right)|above it|below it|covering about|It lies/);
-      expect(described, image.id).toContain('In frame:');
+      // A gap plate counts its gaps and names none: there the names ARE the
+      // answer (see 'second renders, gap plates and views from above', below).
+      expect(described, image.id).toContain(plateFamily(image) === 'gap' ? 'gaps between the bones can be chosen' : 'In frame:');
     }
   });
 
@@ -142,5 +144,99 @@ describe('an open question is not answered by the description of its picture', (
     expect(plateLabel(image, 'place')).toBe('Acromion — Anterior View');
     expect(plateLabel(image, 'name')).toBe('Anatomy image — anterior view');
     expect(plateLabel(image)).toBe('Acromion — Anterior View');
+  });
+});
+
+/**
+ * The families that arrived with the buried ligaments (types/image.ts,
+ * ImageVariant; the gap plates in images.seed.ts), which the generator was
+ * written before. Pinned here because each is a way for a description to be
+ * wrong that the older families did not have.
+ */
+describe('second renders, gap plates and views from above', () => {
+  const gapPlates = ALL_IMAGES.filter((i) => i.filePath.startsWith('/anatomy/gaps/'));
+  const withVariant = ALL_IMAGES.filter((i) => i.variant);
+
+  it('has the pictures these tests are about', () => {
+    expect(gapPlates.length).toBeGreaterThan(0);
+    expect(gapPlates.every((i) => plateFamily(i) === 'gap' && (i.hotspots ?? []).length > 0)).toBe(true);
+    expect(new Set(withVariant.map((i) => i.variant!.kind))).toEqual(new Set(['hidden', 'solid']));
+  });
+
+  it('gap plate, question open: names neither the gap asked for, nor any other, nor a bone either side of one', () => {
+    for (const image of gapPlates) {
+      for (const asked of image.hotspots!) {
+        for (const conceal of ['place', 'name'] as const) {
+          const described = describePlate({ image, subjectId: asked.structureId, conceal, imagesById, structuresById });
+          expect(described, image.id).toContain('a full description is given once you have answered');
+          expect(described, image.id).not.toMatch(/of the picture|to its (left|right)|above it|below it|covering about|It lies|attaches/);
+          for (const h of image.hotspots!) {
+            const ligament = structuresById.get(h.structureId)!;
+            expect(described, image.id).not.toContain(ligament.name);
+            if (ligament.category !== 'ligament') continue;
+            for (const boneId of ligament.attachmentStructureIds) {
+              const bone = structuresById.get(boneId)?.name;
+              if (bone) expect(described.toLowerCase(), `${image.id} ${bone}`).not.toContain(bone.toLowerCase());
+            }
+          }
+        }
+      }
+    }
+  });
+
+  it('gap plate: says it is bones only and how many gaps there are; once answered, says which gap and what it joins', () => {
+    const image = imagesById.get('gap-carpal-gaps-a000-plate')!;
+    const open = describePlate({ image, subjectId: 'scapholunate-interosseous-ligament', conceal: 'place', imagesById, structuresById });
+    expect(open).toContain('Anterior view of the wrist and hand.');
+    expect(open).toContain('Only the bones are drawn');
+    expect(open).toContain(`${image.hotspots!.length} gaps between the bones can be chosen in this view.`);
+    const answered = describePlate({ image, subjectId: 'scapholunate-interosseous-ligament', imagesById, structuresById });
+    expect(answered).toContain('Scapholunate interosseous ligament is not drawn: it lies in the gap between two bones');
+    expect(answered).toContain('It attaches to the scaphoid and lunate.');
+    expect(answered).toContain('Also in frame: ');
+  });
+
+  it('a frame with a second render says there are two and what differs, and never which one is showing', () => {
+    for (const image of withVariant) {
+      const subjectId = subjectOf(image.id);
+      for (const conceal of [undefined, 'name', 'place'] as const) {
+        const described = describePlate({ image, subjectId, conceal, imagesById, structuresById });
+        const [first, second] = image.variant!.kind === 'hidden' ? ['ghosted', 'hidden'] : ['see-through', 'solid'];
+        expect(described, image.id).toContain(`with the ${image.variant!.subject.toLowerCase()} ${first} and with`);
+        expect(described, image.id).toContain(`${second}; the switch under the picture chooses between the two.`);
+        expect(described, image.id).not.toMatch(/is showing|currently|now shown|switched/);
+      }
+    }
+    expect(text('ligament-anterior-cruciate-ligament-a000-highlight', 'anterior-cruciate-ligament')).not.toContain('rendered twice');
+  });
+
+  it('the word the switch is named after is not the answer to any picture it appears on', () => {
+    for (const image of withVariant) {
+      const subject = structuresById.get(subjectOf(image.id) ?? '');
+      expect(subject, image.id).toBeDefined();
+      expect(subject!.name.toLowerCase(), image.id).not.toContain(image.variant!.subject.toLowerCase());
+    }
+  });
+
+  it('a view from above says so in the description and in the concealed name, so it is not mistaken for the level frame', () => {
+    const tilted = ALL_IMAGES.filter((i) => /-a\d{3}u\d{3}-/.test(i.id));
+    expect(tilted.length).toBeGreaterThan(0);
+    for (const image of tilted) {
+      expect(describePlate({ image, imagesById, structuresById }), image.id).toMatch(/\d+° above the horizontal/);
+      expect(plateLabel(image, 'name'), image.id).toMatch(/, from \d+° above$/);
+    }
+    const above = imagesById.get('ligament-anterior-meniscotibial-ligament-lateral-meniscus-a000u045-highlight')!;
+    expect(plateLabel(above, 'name')).toBe('Anatomy image — anterior view, from 45° above');
+  });
+
+  it('describes each buried ligament by name once answered, and not before', () => {
+    const buried = [...new Set(withVariant.map((i) => subjectOf(i.id)!))];
+    expect(buried.length).toBeGreaterThanOrEqual(7);
+    for (const id of buried) {
+      const image = ALL_IMAGES.find((i) => subjectOf(i.id) === id && i.id.endsWith('-highlight'))!;
+      const name = structuresById.get(id)!.name;
+      expect(describePlate({ image, subjectId: id, imagesById, structuresById })).toContain(`${name} is the structure in cyan.`);
+      expect(describePlate({ image, subjectId: id, conceal: 'name', imagesById, structuresById })).not.toContain(name);
+    }
   });
 });

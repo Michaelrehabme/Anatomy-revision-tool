@@ -1,5 +1,5 @@
 import type { AnatomyImageAsset } from '../types/image';
-import { rotationAngle } from './rotationFrames';
+import { rotationAngle, rotationTilt } from './rotationFrames';
 
 /**
  * Which half of a picture is the answer to the question it is shown with:
@@ -29,5 +29,8 @@ export function plateLabel(image: AnatomyImageAsset, conceal?: PlateConceal): st
   // A card panel's `view` is nominal (several views sit side by side), so it is not quoted.
   if (image.id.startsWith('panel-')) return 'Anatomy image';
   const angle = rotationAngle(image.id);
-  return `Anatomy image — ${image.view} view${angle ? `, ${angle}°` : ''}`;
+  // A knee seen from above shares its view name and its angle with the level
+  // frame it was tilted from, so the tilt is what tells the two apart.
+  const tilt = rotationTilt(image.id);
+  return `Anatomy image — ${image.view} view${angle ? `, ${angle}°` : ''}${tilt ? `, from ${Math.abs(tilt)}° ${tilt > 0 ? 'above' : 'below'}` : ''}`;
 }
