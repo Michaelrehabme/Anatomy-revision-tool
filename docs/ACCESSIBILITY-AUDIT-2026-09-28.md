@@ -42,6 +42,9 @@ real screen reader was driven, and the phone keyboard pass was not done.
 
 ## Still open
 
+Items 1, 2 and the phone half of 4 were taken up on 4 October 2026 — see
+[ACCESSIBILITY-AUDIT-2026-10-04.md](ACCESSIBILITY-AUDIT-2026-10-04.md).
+
 1. **Locate questions have no non-visual route.** A decision, not a bug: offer an
    alternative question for the same structure, or state the limitation.
 2. **Long descriptions for plates** — none yet.
