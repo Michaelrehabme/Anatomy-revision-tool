@@ -210,3 +210,31 @@ export function getAtlasPanelOpen(): boolean {
 export function setAtlasPanelOpen(open: boolean): void {
   write(ATLAS_PANEL_KEY, String(open));
 }
+
+const IMAGE_VARIANT_KEY = `${PREFIX}imageVariant`;
+
+/**
+ * Whether the SECOND render of a picture is the one to show, per kind of
+ * variant ('hidden': the covering bone gone rather than ghosted; 'solid': the
+ * bones solid rather than see-through). See ImageViewer.
+ *
+ * False — the ghosted render — until the student says otherwise. One key holds
+ * every kind as a small object, and anything unreadable in it reads as "no
+ * choice made" rather than as a choice.
+ */
+function readImageVariants(): Record<string, boolean> {
+  try {
+    const parsed: unknown = JSON.parse(read(IMAGE_VARIANT_KEY) ?? '{}');
+    return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? (parsed as Record<string, boolean>) : {};
+  } catch {
+    return {};
+  }
+}
+
+export function getImageVariantChoice(kind: string): boolean {
+  return readImageVariants()[kind] === true;
+}
+
+export function setImageVariantChoice(kind: string, on: boolean): void {
+  write(IMAGE_VARIANT_KEY, JSON.stringify({ ...readImageVariants(), [kind]: on }));
+}

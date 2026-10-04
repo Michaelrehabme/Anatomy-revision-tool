@@ -88,6 +88,41 @@ export interface HotspotPolygon {
   targetCore?: number[][][];
 }
 
+/**
+ * What a frame's second render does to the picture. The default render of a
+ * buried structure shows what covers it see-through ("ghosted"); the variant
+ * either takes the cover away altogether ('hidden') or draws it solid, as it
+ * is in life ('solid').
+ */
+export type ImageVariantKind = 'hidden' | 'solid';
+
+/**
+ * THE SAME FRAME, RENDERED A SECOND WAY THROUGH THE SAME CAMERA.
+ *
+ * A ligament under the femur is drawn through a ghosted femur by default, and
+ * some students would rather the femur were simply gone; the interosseous
+ * ligaments of the wrist are drawn between see-through carpals, and it helps
+ * to flip to solid bones to see where that is on a real wrist. The viewer
+ * offers a switch wherever a frame carries one of these.
+ *
+ * WHY IT IS A FIELD AND NOT AN IMAGE OF ITS OWN. A variant is not another
+ * picture a question can open on, another frame of the turntable or another
+ * thing to tap: it is this frame. As a field it cannot be picked as a prompt,
+ * cannot split a rotation set, carries no hotspots — a tap is graded against
+ * this image's hotspots whichever render is showing, which is only fair
+ * because the publisher refuses a locate variant whose target has moved — and
+ * cannot be left out of an offline download that includes its frame
+ * (pwa/offline/areaImages.ts lists both files). A list entry would have needed
+ * every one of those to be remembered separately.
+ */
+export interface ImageVariant {
+  kind: ImageVariantKind;
+  /** What changes, as the switch names it: "Femur", "Bones". */
+  subject: string;
+  /** Path under /public; same pixel dimensions as the image it belongs to. */
+  filePath: string;
+}
+
 export interface AnatomyImageAsset {
   id: string;
   /** Path under /public, e.g. "/anatomy/hip-thigh/sartorius-isolated-anterior.png". */
@@ -110,4 +145,6 @@ export interface AnatomyImageAsset {
   /** Natural pixel dimensions. Required for correct hotspot normalization (see HotspotImage.tsx). */
   width?: number;
   height?: number;
+  /** A second render of this same frame, when one was published. See ImageVariant. */
+  variant?: ImageVariant;
 }
