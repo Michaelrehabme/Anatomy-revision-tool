@@ -278,6 +278,26 @@ beginning "We have not yet repeated the keyboard pass on a phone" with:**
 keep the NVDA and VoiceOver session; replace the alt-text paragraph with
 "Descriptions for the pictures on structure cards and in the Atlas."
 
+## Since this audit (5 October 2026, branch `release-next`)
+
+- **End session asks first** (recommendation 2): `5b8d2a1`,
+  `shared/EndSessionControl.tsx`. In the page, focus on "Keep going", Escape
+  keeps the session, focus returns to End session; no question when nothing
+  has been answered. Checked by keyboard in Chromium at 1280 and 390 px.
+- **Unearned achievements** (last row of the findings table): the 45% opacity
+  is gone and the unearned title uses `--ink3`, a measured pair. Re-checked
+  with `npm run check:contrast` and by computed colour in Chromium; axe has
+  **not** been re-run on that screen.
+- **The statement is applied**, dated 5 October 2026, with these differences
+  from the proposal above: End session is under "What works", not "What does
+  not work yet"; the locate paragraph names no option being decided between
+  and promises nothing; "announced" is not used anywhere, since no screen
+  reader has been run; recommendations 3 to 7 are listed as known problems;
+  and "each page has a main heading" is corrected. Today, the area picker,
+  session setup and sign-in open on an `<h2>` with no `<h1>`, which is wider
+  than recommendation 4 says.
+- Still open from this audit: locate (1), and recommendations 3 to 7.
+
 ## Raw output
 
 Not in the repo: the session scratchpad `a11y/` folder — `F-d*.log` and

@@ -16,10 +16,11 @@ function formatRecordValue(def: AchievementDefinition, value: number): string {
 
 function AchievementRow({ def, doc }: { def: AchievementDefinition; doc?: AchievementDoc }) {
   const earned = !!doc;
+  // Not dimmed by opacity: see Achievements.tsx (desktop) for why.
   return (
-    <div className="flex items-center justify-between gap-3 py-3.5" style={{ borderBottom: '1px solid var(--line)', opacity: earned ? 1 : 0.45 }}>
+    <div className="flex items-center justify-between gap-3 py-3.5" style={{ borderBottom: '1px solid var(--line)' }}>
       <div>
-        <div style={{ fontFamily: 'var(--font-display)', fontSize: 17 }}>{def.title}</div>
+        <div style={{ fontFamily: 'var(--font-display)', fontSize: 17, color: earned ? 'var(--ink)' : 'var(--ink3)' }}>{def.title}</div>
         <div className="mt-0.5 text-[12.5px]" style={{ color: 'var(--ink3)' }}>
           {def.description}
         </div>

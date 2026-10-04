@@ -18,13 +18,18 @@ function formatRecordValue(def: AchievementDefinition, value: number): string {
 
 function AchievementRow({ def, doc }: { def: AchievementDefinition; doc?: AchievementDoc }) {
   const earned = !!doc;
+  // NOT DIMMED BY OPACITY. An unearned row used to be drawn at 45% opacity,
+  // which took its muted text from 4.5:1 to well under 3:1: twenty-seven
+  // failures in the scan of 4 Oct 2026 (docs/ACCESSIBILITY-AUDIT-2026-10-04.md).
+  // Opacity also escapes the contrast suite, which measures token pairs and
+  // cannot see a multiplier applied to a whole row. An unearned title is
+  // drawn in the muted ink instead, a measured pair, and the row already
+  // says "not yet" in words, so earned and unearned do not differ by colour
+  // alone.
   return (
-    <div
-      className="flex items-center justify-between gap-4 py-4"
-      style={{ borderBottom: '1px solid var(--line)', opacity: earned ? 1 : 0.45 }}
-    >
+    <div className="flex items-center justify-between gap-4 py-4" style={{ borderBottom: '1px solid var(--line)' }}>
       <div>
-        <div style={{ fontFamily: 'var(--font-display)', fontSize: 19 }}>{def.title}</div>
+        <div style={{ fontFamily: 'var(--font-display)', fontSize: 19, color: earned ? 'var(--ink)' : 'var(--ink3)' }}>{def.title}</div>
         <div className="mt-1 text-[13.5px]" style={{ color: 'var(--ink3)' }}>
           {def.description}
         </div>
