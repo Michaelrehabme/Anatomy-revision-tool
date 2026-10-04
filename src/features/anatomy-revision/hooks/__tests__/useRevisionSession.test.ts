@@ -402,3 +402,78 @@ describe('a flashcard marks the structure seen', () => {
     expect(row?.rung).toBe('mcq');
   });
 });
+
+describe('a locate question answered in words', () => {
+  const locate = {
+    id: 'locate-landmark-acromion',
+    type: 'locate' as const,
+    structureId: 'acromion',
+    region: 'shoulder-arm' as const,
+    category: 'landmark' as const,
+    difficulty: 'easy' as const,
+    promptKind: 'identify' as const,
+    imageId: 'landmark-acromion-anterior',
+    imageMode: 'atlas-slide' as const,
+    targetStructureId: 'acromion',
+    prompt: 'Tap the Acromion.',
+  };
+
+  it('is stored as a described-region answer and moves a row of its own, not the row a tap moves', async () => {
+    const repository = createMemoryRepository();
+    const { result } = renderHook(() => useRevisionSession(repository, 'user-1'));
+    act(() => result.current.start([locate], { types: ['locate'], mode: 'practice' }));
+    await act(async () => {
+      await result.current.submitAnswer({
+        questionId: locate.id,
+        structureId: 'acromion',
+        correct: true,
+        confidence: 'medium',
+        selectedAnswer: 'Part of: Scapula.',
+        correctAnswer: 'Part of: Scapula.',
+        route: 'described-region',
+      });
+    });
+
+    const [attempt] = await repository.listAttempts({ userId: 'user-1' });
+    // What a cohort report reads: never a locate success.
+    expect(attempt.questionType).toBe('mcq');
+    expect(attempt.promptKind).toBe('described-region');
+    expect(attempt.questionId).toBe(locate.id);
+    expect(attempt.correctAnswer).toBe('Part of: Scapula.');
+    expect(attempt.hitDistance).toBeUndefined();
+
+    // The structure's own row — accuracy, schedule, ladder — is untouched.
+    expect(await repository.getMasteryForStructure('user-1', 'acromion')).toBeNull();
+    const facts = await repository.listFactMastery('user-1');
+    expect(facts).toHaveLength(1);
+    expect(facts[0]).toMatchObject({ structureId: 'acromion', promptKind: 'described-region', attemptsTotal: 1, attemptsCorrect: 1 });
+  });
+
+  it('while a tap on the same question is a locate, on the structure\'s row', async () => {
+    const repository = createMemoryRepository();
+    const { result } = renderHook(() => useRevisionSession(repository, 'user-1'));
+    act(() => result.current.start([locate], { types: ['locate'], mode: 'practice' }));
+    await act(async () => {
+      await result.current.submitAnswer({ questionId: locate.id, structureId: 'acromion', correct: true, confidence: 'medium', accuracy: 9 });
+    });
+    const [attempt] = await repository.listAttempts({ userId: 'user-1' });
+    expect(attempt.questionType).toBe('locate');
+    expect(attempt.promptKind).toBe('identify');
+    expect((await repository.getMasteryForStructure('user-1', 'acromion'))?.attemptsTotal).toBe(1);
+    expect(await repository.listFactMastery('user-1')).toEqual([]);
+  });
+
+  it('earns multiple-choice XP, not locate XP, and does not count as having used the locate format', async () => {
+    const repository = createMemoryRepository();
+    const { result } = renderHook(() => useRevisionSession(repository, 'user-1'));
+    act(() => result.current.start([locate], { types: ['locate'], mode: 'practice' }));
+    await act(async () => {
+      await result.current.submitAnswer({ questionId: locate.id, structureId: 'acromion', correct: true, confidence: 'medium', route: 'described-region' });
+    });
+    await act(async () => {
+      await result.current.finish();
+    });
+    const profile = await repository.getGamificationProfile('user-1');
+    expect(profile.questionTypesUsedEver).toEqual(['mcq']);
+  });
+});

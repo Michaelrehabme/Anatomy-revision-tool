@@ -238,3 +238,25 @@ export function getImageVariantChoice(kind: string): boolean {
 export function setImageVariantChoice(kind: string, on: boolean): void {
   write(IMAGE_VARIANT_KEY, JSON.stringify({ ...readImageVariants(), [kind]: on }));
 }
+
+const LOCATE_WITHOUT_PICTURE_KEY = `${PREFIX}locateWithoutPicture`;
+
+/**
+ * Whether locate questions open on the route that needs no picture — the
+ * question asked in words, or a list of names where it cannot be — instead of
+ * on the plate (docs/accessibility-locate.md).
+ *
+ * For someone who cannot see the plate, the plate is a control they have to
+ * get past on every locate question; this saves them pressing "Answer without
+ * the picture" each time. Off unless chosen: the picture is the exercise, and
+ * the words are a different one. It changes only which route a question OPENS
+ * on — the question set is the same either way, and the other route stays one
+ * button away.
+ */
+export function getLocateWithoutPicture(): boolean {
+  return read(LOCATE_WITHOUT_PICTURE_KEY) === 'true';
+}
+
+export function setLocateWithoutPicture(on: boolean): void {
+  write(LOCATE_WITHOUT_PICTURE_KEY, on ? 'true' : 'false');
+}

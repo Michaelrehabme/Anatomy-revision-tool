@@ -12,6 +12,7 @@ import { updateMasteryAfterAttempt } from '../lib/mastery';
 import { markSeen, rungOfQuestion } from '../lib/ladder';
 import { factsIndex, masteryLevel, structureLevel, type MasteryLevel } from '../lib/masteryLevel';
 import { skillOf, updateFactMasteryAfterAttempt } from '../lib/factMastery';
+import { askedAs, type AnswerRoute } from '../lib/answerRoute';
 import { ALL_STRUCTURES } from '../data/seed';
 import { STRUCTURE_INDEX } from '../data/structureIndex';
 
@@ -47,6 +48,12 @@ export interface AnswerRecord {
   selectedAnswer?: string;
   correctAnswer?: string;
   durationMs?: number;
+  /**
+   * Set when the question was answered some other way than it was asked — a
+   * locate question answered in words. It decides what the attempt is
+   * recorded as and what it is credited to (lib/answerRoute.ts).
+   */
+  route?: AnswerRoute;
 }
 
 export interface RevisionSetupParams {
@@ -240,7 +247,7 @@ async function computeGamification(
     const graded = a.graded !== false;
     const isFirstCorrect = graded && a.correct && !seenCorrectStructures.has(a.structureId);
     if (graded && a.correct) seenCorrectStructures.add(a.structureId);
-    return xpForAnswer(a.correct, question.type, isFirstCorrect, {
+    return xpForAnswer(a.correct, askedAs(question, a.route).credited.type, isFirstCorrect, {
       hints: question.type === 'identify-typed' ? question.hints : undefined,
     });
   });
@@ -263,7 +270,7 @@ async function computeGamification(
   const questionTypesUsedEver = new Set(profile.questionTypesUsedEver);
   for (const a of answers) {
     const q = questions.find((qq) => qq.id === a.questionId);
-    if (q) questionTypesUsedEver.add(q.type);
+    if (q) questionTypesUsedEver.add(askedAs(q, a.route).credited.type);
   }
 
   const freezeResult = reconcileStreakFreezes(studiedDayKeys, profile.streakFreeze, now);
@@ -375,6 +382,10 @@ export function useRevisionSession(repository: AnatomyRepository | null, userId:
       dispatch({ type: 'ANSWER', record });
 
       if (repository && userId && currentQuestion) {
+        // A locate question answered in words is recorded as what it was, and
+        // credited where lib/answerRoute.ts says: never, unless the owner
+        // decides otherwise, as a locate success.
+        const { recorded, credited } = askedAs(currentQuestion, record.route);
         const persist = async () => {
           const attemptNumber = await repository.recordQuestionExposure(userId, record.questionId);
           const attempt: UserAttempt = {
@@ -382,9 +393,9 @@ export function useRevisionSession(repository: AnatomyRepository | null, userId:
             userId,
             sessionId: state.sessionId,
             questionId: record.questionId,
-            questionType: currentQuestion.type,
+            questionType: recorded.type,
             structureId: record.structureId,
-            promptKind: currentQuestion.promptKind,
+            promptKind: recorded.promptKind,
             region: currentQuestion.region,
             category: currentQuestion.category,
             correct: record.correct,
@@ -422,7 +433,7 @@ export function useRevisionSession(repository: AnatomyRepository | null, userId:
           // row. A missed origin used to drag the whole deltoid back to
           // tomorrow, and an easy naming answer could be undone by the next
           // fact question on the same structure.
-          const skill = skillOf(currentQuestion.type, currentQuestion.promptKind);
+          const skill = skillOf(credited.type, credited.promptKind);
           const existingMastery = await repository.getMasteryForStructure(userId, record.structureId);
           // The rows are read once per session and kept here, not re-read per
           // answer: a long-standing student has hundreds, and every answer
@@ -445,9 +456,9 @@ export function useRevisionSession(repository: AnatomyRepository | null, userId:
               // Without it a run of locate taps carried a structure to typed-bare
               // and the next session asked for its name with no hints.
               askedRung: rungOfQuestion(
-                currentQuestion.type,
+                credited.type,
                 isTypedIdentifyQuestion(currentQuestion) ? currentQuestion.hints : undefined,
-                currentQuestion.promptKind,
+                credited.promptKind,
               ),
             });
             await repository.upsertMastery(nextMastery);

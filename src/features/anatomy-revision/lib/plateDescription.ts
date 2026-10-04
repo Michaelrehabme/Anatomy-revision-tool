@@ -44,8 +44,12 @@ import type { PlateConceal } from './plateLabel';
  *            either: on multiple choice they are the likeliest distractors,
  *            and naming them would strike them out.
  *   'place'  locate, before answering — the subject is named (the prompt
- *            names it) and everything in frame is listed, which is exactly
- *            what the list route already offers, but not where anything is.
+ *            names it) and everything in frame is listed, but not where
+ *            anything is, nor what the subject attaches to: that is what the
+ *            question asks when it is answered in words instead
+ *            (questionGenerators/describedRegion.ts), in these same labels —
+ *            "Origin: …", "Attaches to …" — so the two say one thing and
+ *            neither says it early.
  *   absent   after answering, and on cards — everything.
  *
  * Loaded with import() by shared/PlateDescription.tsx so none of this is in
@@ -278,6 +282,10 @@ function relationSentences(subject: AnatomyStructure, structuresById: ReadonlyMa
     const out: string[] = [];
     if (bone) out.push(`It is part of the ${bone.toLowerCase()}.`);
     if (subject.attachments.length) out.push(`Attached here: ${subject.attachments.join('; ')}.`);
+    // Left out until the question in words began offering it as part of the
+    // right answer: a description that then said less than the answer just
+    // given would read as contradicting it.
+    if (subject.articulations?.length) out.push(`Articulates: ${subject.articulations.join('; ')}.`);
     return out;
   }
   if (isJoint(subject)) {
@@ -363,8 +371,9 @@ export function describePlateSentences({ image, subjectId, conceal, imagesById, 
   }
 
   // Everything named in the picture. Listed on a locate question too: it says
-  // what there is to choose between, which the list route already shows, and
-  // nothing about where any of it is.
+  // what there is to tap and nothing about where any of it is. The relations
+  // (relationSentences) are NOT given until the question is answered — they
+  // are the right option of the same question asked in words.
   const others = inFrame.filter((s) => s.structureId !== subject?.id).map((s) => s.structureId);
   const inFrameSentence = (ids: string[], lead: string) => (ids.length ? `${lead}: ${nameList(ids, structuresById)}.` : '');
 

@@ -2,33 +2,40 @@ import { useEffect, useState } from 'react';
 import type { LocateQuestion } from '../../types/question';
 import type { AnatomyImageAsset } from '../../types/image';
 import type { AnatomyStructure } from '../../types/structure';
-import type { Confidence } from '../../types/attempt';
-import { HotspotImage, type HotspotAnswerResult } from './HotspotImage';
+import { HotspotImage } from './HotspotImage';
+import { LocateWords } from './LocateWords';
+import { useLocateAnswer, type LocateAnswerParams } from './useLocateAnswer';
 import { ConfidenceButtons } from '../shared/ConfidenceButtons';
 import { Button } from '../shared/Button';
 import { ExamAnswerFooter } from '../shared/ExamAnswerFooter';
 import { recordHintShown, shouldShowHint } from '../../lib/firstTimeHints';
-import { locateFeedback } from './locateFeedback';
 import { questionHeaderLabel } from '../../lib/questionFormats';
-import { moveFocusWithArrows } from '../shared/arrowFocus';
 import { FeedbackHeading } from '../shared/FeedbackHeading';
 
 interface LocateStructureSessionProps {
   question: LocateQuestion;
   imagesById: Map<string, AnatomyImageAsset>;
   structuresById: Map<string, AnatomyStructure>;
-  onAnswer: (params: { structureId: string; correct: boolean; hitDistance?: number; accuracy?: number; confidence?: Confidence }) => void;
+  onAnswer: (params: LocateAnswerParams) => void;
   onNext: () => void;
   /** No color reveal, no self-rating — answer submits and advances silently. See CR-009. */
   examMode?: boolean;
 }
 
 /**
- * Wraps HotspotImage with a keyboard/list-based fallback for students who
- * can't (or don't want to) click precisely on the image — both paths funnel
- * through the same result handling so scoring is identical either way.
- * Zoom and rotation live in HotspotImage itself, so the mobile session has
- * them too and the click maps through them correctly.
+ * A locate question on the desktop: the picture, and the route that needs no
+ * picture.
+ *
+ * THE PICTURE is answered by a click, or from the keyboard — it is a focus
+ * stop, the arrow keys move a crosshair over it and Enter answers where it is
+ * (shared/ImageViewer.tsx). Both are the same exercise and are graded by the
+ * same code. Zoom and rotation live in the viewer, so the phone has them too.
+ *
+ * WITHOUT THE PICTURE the question is asked in words — "which of these
+ * describes where it sits?" — or, for the few structures the seed cannot
+ * describe, from a list of at least four names (LocateWords.tsx). That is for
+ * someone who cannot see the plate; it is a different exercise and is
+ * recorded as one. What is the same on the phone is in useLocateAnswer.
  */
 export function LocateStructureSession({
   question,
@@ -38,9 +45,8 @@ export function LocateStructureSession({
   onNext,
   examMode,
 }: LocateStructureSessionProps) {
-  const [result, setResult] = useState<HotspotAnswerResult | null>(null);
-  const [listMode, setListMode] = useState(false);
-  const [rated, setRated] = useState(false);
+  const locate = useLocateAnswer({ question, imagesById, structuresById, onAnswer, examMode });
+  const { image, frames, routes, result, rated, wordsMode, feedback } = locate;
   // Nothing on screen says the image itself is the answer surface — the
   // crosshair cursor is the only affordance. Said out loud the first couple of times.
   const [showHint] = useState(() => shouldShowHint('locate'));
@@ -48,57 +54,9 @@ export function LocateStructureSession({
     if (showHint) recordHintShown('locate');
   }, [showHint]);
 
-  useEffect(() => {
-    setResult(null);
-    setListMode(false);
-    setRated(false);
-  }, [question.id]);
-
-  const image = imagesById.get(question.imageId);
   if (!image) {
     return <p className="p-6 text-sm" style={{ color: 'var(--acc2d)' }}>Image "{question.imageId}" not found.</p>;
   }
-  // The other angles of a rotation set, if the question has them.
-  const frames = (question.frameImageIds ?? [])
-    .map((id) => imagesById.get(id))
-    .filter((f): f is AnatomyImageAsset => !!f);
-
-  const submitExamAnswer = (r: HotspotAnswerResult) => {
-    onAnswer({ structureId: question.targetStructureId, correct: r.correct, hitDistance: r.hitDistance, accuracy: r.accuracy });
-  };
-  const handleImageAnswer = (r: HotspotAnswerResult) => {
-    setResult(r);
-    if (examMode) submitExamAnswer(r);
-  };
-  const handleListAnswer = (structureId: string) => {
-    if (result) return;
-    // The list fallback names a structure rather than pointing at one, so
-    // there is no tap and no frame of its own — the question's own image is
-    // the honest answer for `imageId`, and [0, 0] the conventional no-point.
-    const r: HotspotAnswerResult = {
-      structureId,
-      correct: structureId === question.targetStructureId,
-      point: [0, 0] as [number, number],
-      imageId: question.imageId,
-    };
-    setResult(r);
-    if (examMode) submitExamAnswer(r);
-  };
-  const handleRate = (confidence: Confidence) => {
-    if (!result) return;
-    setRated(true);
-    onAnswer({ structureId: question.targetStructureId, correct: result.correct, hitDistance: result.hitDistance, accuracy: result.accuracy, confidence });
-  };
-
-  // The list fallback offers every structure visible from any angle.
-  const candidateStructures = [
-    ...new Set([image, ...frames].flatMap((f) => (f.hotspots ?? []).map((h) => h.structureId))),
-  ]
-    .map((id) => structuresById.get(id))
-    .filter((s): s is AnatomyStructure => !!s)
-    // In name order. A plate's hotspots are stored target first, so in the
-    // order they came the right answer was always the first button.
-    .sort((x, y) => x.name.localeCompare(y.name));
 
   return (
     <div className="flex flex-col items-center px-24 pt-14 pb-12">
@@ -110,52 +68,71 @@ export function LocateStructureSession({
       </div>
       <h2
         className="mt-5 text-center"
-        style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 52, lineHeight: 1.05, letterSpacing: '-.024em' }}
+        style={{
+          fontFamily: 'var(--font-display)',
+          fontWeight: 500,
+          // The question in words is a sentence, not three words: at the size
+          // of "Tap the acromion." it ran to four lines.
+          fontSize: wordsMode ? 36 : 52,
+          lineHeight: wordsMode ? 1.15 : 1.05,
+          letterSpacing: '-.024em',
+          maxWidth: wordsMode ? '22em' : undefined,
+          minHeight: '1.05em',
+        }}
       >
-        {question.prompt}
+        {locate.prompt}
       </h2>
-      {showHint && !listMode && (
+      {showHint && !wordsMode && (
         <p className="mt-3 max-w-md text-center text-sm leading-snug" style={{ color: 'var(--ink2)' }}>
           Click where it sits on the image. Your first click is your answer.
         </p>
       )}
 
       <div className="mt-3 flex items-center gap-4" style={{ color: 'var(--ink3)' }}>
-        <span className="text-xs">
-          {frames.length > 1 ? 'Scroll to zoom · drag to turn' : 'Scroll to zoom'}
-        </span>
+        {!wordsMode && (
+          <span className="text-xs">
+            {frames.length > 1 ? 'Scroll to zoom · drag to turn' : 'Scroll to zoom'}
+          </span>
+        )}
         {/*
-          * This toggle is the ONLY way to answer a locate question without a
-          * pointer, which makes it an accessibility route and not merely a
-          * convenience. It used to be labelled "Can't click precisely?", which
-          * describes a shaky hand rather than a keyboard, and left somebody
-          * tabbing through with no indication that an answer was reachable at
-          * all. The visible label now names both, and the accessible name
-          * names the one that matters.
+          * This toggle is the way to answer a locate question WITHOUT THE
+          * PICTURE, which makes it an accessibility route and not merely a
+          * convenience. (Without a pointer is no longer its job: the picture
+          * itself answers to the keyboard.) It used to be labelled "Can't
+          * click precisely?", which describes a shaky hand, and then "Answer
+          * from a list instead", which described one name on a third of
+          * questions. It goes once the question is answered: the other route
+          * would be a second go.
           */}
-        <button
-          type="button"
-          onClick={() => setListMode((v) => !v)}
-          // The accessible name has to BEGIN with the words on the button, or
-          // someone using voice control says what they can read and nothing
-          // happens (WCAG 2.5.3) — the old name put "of names" in the middle.
-          aria-label={listMode ? 'Switch to image click: answer by clicking the image' : 'Answer from a list instead of clicking the image'}
-          className="text-xs underline decoration-dotted"
-        >
-          {listMode ? 'Switch to image click' : 'Answer from a list instead'}
-        </button>
+        {!result && (
+          <button
+            type="button"
+            onClick={locate.toggleWords}
+            // The accessible name has to BEGIN with the words on the button, or
+            // someone using voice control says what they can read and nothing
+            // happens (WCAG 2.5.3).
+            aria-label={
+              wordsMode
+                ? 'Answer on the picture: by clicking it, or with the arrow keys'
+                : 'Answer without the picture: the question is asked in words instead'
+            }
+            className="text-xs underline decoration-dotted"
+          >
+            {wordsMode ? 'Answer on the picture' : 'Answer without the picture'}
+          </button>
+        )}
       </div>
 
-      {!listMode ? (
+      {!wordsMode ? (
         <div className="mt-2 flex min-h-0 flex-1 items-center justify-center">
           <div className="w-full max-w-[560px]">
-            {/* A pointer target carries nothing for a screen reader. Rather
-                than describe an image somebody cannot act on, say plainly
-                that there is another way to answer this question. */}
+            {/* Said plainly to a screen reader before it reaches the picture:
+                what the picture is for, and that there is a way round it. */}
             <p className="sr-only">
-              This question is answered by clicking the anatomical image. If you are not using a
-              pointer, use the &ldquo;Answer from a list instead&rdquo; button above to choose the
-              structure by name.
+              This question is answered on the anatomical image, by clicking it or from the keyboard: focus the image,
+              move the pointer with the arrow keys and press Enter. If you cannot see the image, use the
+              &ldquo;Answer without the picture&rdquo; button above to be asked in words instead. You can make that
+              the default under Accessibility on the Account screen.
             </p>
             <HotspotImage
               key={question.id}
@@ -163,71 +140,45 @@ export function LocateStructureSession({
               frames={frames.length > 1 ? frames : undefined}
               targetStructureId={question.targetStructureId}
               toleranceMultiplier={question.toleranceMultiplier}
-              onAnswer={handleImageAnswer}
+              onAnswer={locate.handleImageAnswer}
               examMode={examMode}
             />
           </div>
         </div>
       ) : (
-        <div
-          role="group"
-          aria-label={`Structures visible on this image — choose ${question.prompt}`}
-          onKeyDown={moveFocusWithArrows}
-          className="mt-6 grid max-w-2xl grid-cols-3 gap-2.5"
-        >
-          {candidateStructures.map((s) => {
-            const isTarget = s.id === question.targetStructureId;
-            const isSelected = result?.structureId === s.id;
-            let style = { border: '1.2px solid var(--line)', background: 'var(--sf)', color: 'var(--ink)' };
-            if (result && !examMode && isTarget) style = { border: '1.4px solid var(--acc)', background: 'var(--accs)', color: 'var(--accd)' };
-            else if (result && !examMode && isSelected) style = { border: '1.4px solid var(--acc2)', background: 'var(--acc2s)', color: 'var(--acc2d)' };
-            return (
-              <button
-                key={s.id}
-                type="button"
-                disabled={!!result}
-                onClick={() => handleListAnswer(s.id)}
-                className="rounded-[3px] p-2.5 text-sm disabled:cursor-default"
-                style={style}
-              >
-                {s.name}
-              </button>
-            );
-          })}
-        </div>
+        routes && (
+          <LocateWords
+            routes={routes}
+            targetStructureId={question.targetStructureId}
+            result={result}
+            chosenDescription={locate.chosenDescription}
+            examMode={examMode}
+            onDescription={locate.handleDescribedAnswer}
+            onName={locate.handleListAnswer}
+          />
+        )
       )}
 
       {result && examMode && <ExamAnswerFooter onNext={onNext} compact />}
 
       {result && !examMode && (
         <div className="mt-8 w-full max-w-[720px] rounded-[3px] p-6" style={{ background: result.correct ? 'var(--accs)' : 'var(--acc2s)' }}>
-          {(() => {
-            const { title, detail } = locateFeedback(
-              result,
-              structuresById.get(question.targetStructureId)?.name ?? question.targetStructureId,
-              result.structureId ? structuresById.get(result.structureId)?.name : undefined,
-            );
-            return (
-              <>
-                {/* Takes focus as it appears: answering from the list disables every
-                    button in it, and focus used to fall to the page body. */}
-                <FeedbackHeading
-                  style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 24, color: result.correct ? 'var(--accd)' : 'var(--acc2d)' }}
-                  label={detail ? `${title}. ${detail}` : title}
-                >
-                  {title}
-                </FeedbackHeading>
-                {detail && (
-                  <p className="mt-1 text-sm" style={{ color: 'var(--ink2)' }}>
-                    {detail}
-                  </p>
-                )}
-              </>
-            );
-          })()}
+          {/* Takes focus as it appears: answering without the picture disables
+              every button that was pressed, and focus used to fall to the page body. */}
+          <FeedbackHeading
+            style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 24, color: result.correct ? 'var(--accd)' : 'var(--acc2d)' }}
+            label={feedback.detail ? `${feedback.title}. ${feedback.detail}` : feedback.title}
+          >
+            {feedback.title}
+          </FeedbackHeading>
+          {feedback.detail && (
+            <p className="mt-1 text-sm" style={{ color: 'var(--ink2)' }}>
+              {feedback.detail}
+            </p>
+          )}
           {!rated ? (
             <div className="mt-4">
-              <ConfidenceButtons onRate={handleRate} />
+              <ConfidenceButtons onRate={locate.handleRate} />
             </div>
           ) : (
             <Button onClick={onNext} className="mt-4 min-w-[180px] min-h-[50px]">

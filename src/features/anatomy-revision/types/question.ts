@@ -25,7 +25,11 @@ export type PromptKind =
   // --- Blood supply (29 Sep 2026) ---
   | 'blood-supply'
   | 'blood-supply-assisting'
-  | 'blood-supply-rating';
+  | 'blood-supply-rating'
+  // --- A locate question answered in words (4 Oct 2026) ---
+  // Never generated into a set: it is what an ANSWER is recorded as when a
+  // locate question is answered by description (lib/answerRoute.ts).
+  | 'described-region';
 
 interface RevisionQuestionBase {
   id: string;

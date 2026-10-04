@@ -1,7 +1,7 @@
 import { useId, useState } from 'react';
 import { flushSync } from 'react-dom';
 import { useTheme } from '../../context/ThemeProvider';
-import { getShowLatin, setShowLatin } from '../../lib/preferences';
+import { getLocateWithoutPicture, getShowLatin, setLocateWithoutPicture, setShowLatin } from '../../lib/preferences';
 import { THEME_PREFERENCES, THEME_PREFERENCE_LABELS } from '../../lib/theme';
 import { withThemeTransition } from './motion';
 
@@ -24,7 +24,9 @@ const TRACK_TRANSITION = 'background 220ms';
 export function ThemeControls({ compact = false }: { compact?: boolean }) {
   const contrastLabelId = useId();
   const latinLabelId = useId();
+  const wordsLabelId = useId();
   const [showLatin, setShowLatinState] = useState(getShowLatin);
+  const [locateInWords, setLocateInWordsState] = useState(getLocateWithoutPicture);
   const {
     themePreference,
     contrastPreference,
@@ -123,6 +125,54 @@ export function ThemeControls({ compact = false }: { compact?: boolean }) {
           Use my device setting
         </button>
       )}
+
+      {/*
+        Under Accessibility, not under a heading of its own: it is for someone
+        who cannot see or cannot point at the plate, and this is where they
+        will look. Off unless chosen — the picture is the exercise.
+      */}
+      <div className="mt-5 flex items-center gap-3.5">
+        <button
+          type="button"
+          role="switch"
+          aria-checked={locateInWords}
+          aria-labelledby={wordsLabelId}
+          onClick={() => {
+            setLocateWithoutPicture(!locateInWords);
+            setLocateInWordsState(!locateInWords);
+          }}
+          className="relative flex-none rounded-full"
+          style={{
+            width: 52,
+            height: 31,
+            border: '1.2px solid var(--line)',
+            background: locateInWords ? 'var(--acc-fill)' : 'transparent',
+            transition: TRACK_TRANSITION,
+          }}
+        >
+          <span
+            className="absolute rounded-full"
+            style={{
+              width: 25,
+              height: 25,
+              top: 2,
+              left: locateInWords ? 24 : 2,
+              background: locateInWords ? 'var(--onacc)' : 'var(--ink3)',
+              boxShadow: 'var(--shadow-knob)',
+              transition: KNOB_TRANSITION,
+            }}
+          />
+        </button>
+        <div className="flex-1">
+          <div id={wordsLabelId} style={{ fontFamily: 'var(--font-display)', fontSize: compact ? 16 : 16.5, color: 'var(--ink)' }}>
+            Answer locate questions without the picture
+          </div>
+          <p className="mt-0.5" style={{ fontSize: 13, lineHeight: 1.5, color: 'var(--ink3)' }}>
+            Locate questions open as a question in words &mdash; which of four descriptions says where the structure
+            sits &mdash; instead of a picture to tap. You can still switch to the picture on any question.
+          </p>
+        </div>
+      </div>
 
       <div className="mt-7" style={label}>
         Names

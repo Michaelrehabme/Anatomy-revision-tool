@@ -82,3 +82,22 @@ describe('preferred-areas preference', () => {
     }
   });
 });
+
+describe('answer locate questions without the picture', () => {
+  beforeEach(() => localStorage.clear());
+
+  it('is off until chosen, round-trips, and reads anything else as off', async () => {
+    const { getLocateWithoutPicture, setLocateWithoutPicture } = await import('../preferences');
+    expect(getLocateWithoutPicture()).toBe(false);
+    setLocateWithoutPicture(true);
+    expect(getLocateWithoutPicture()).toBe(true);
+    expect(localStorage.getItem('anatomy-revision:v1:locateWithoutPicture')).toBe('true');
+    setLocateWithoutPicture(false);
+    expect(getLocateWithoutPicture()).toBe(false);
+    // The picture is the exercise: a stale or hand-edited value must not take it away.
+    for (const junk of ['', '1', 'yes', 'TRUE', '{}']) {
+      localStorage.setItem('anatomy-revision:v1:locateWithoutPicture', junk);
+      expect(getLocateWithoutPicture(), junk).toBe(false);
+    }
+  });
+});
