@@ -22,6 +22,7 @@ import { SessionSidebar } from '../shell/SessionSidebar';
 import { useRecoverFocus } from '../shared/useRecoverFocus';
 import { PersistErrorBanner } from '../shared/PersistErrorBanner';
 import { AnswerAnnouncer } from '../shared/AnswerAnnouncer';
+import { PlateCatalogueProvider } from '../shared/PlateDescription';
 
 interface StudySessionProps {
   session: ReturnType<typeof useRevisionSession>;
@@ -169,6 +170,8 @@ export function StudySession({ session, content, onEnd, onBackToSetup }: StudySe
             onDismiss={session.dismissPersistError}
           />
         )}
+        {/* What the pictures' long descriptions are written from — see shared/PlateDescription. */}
+        <PlateCatalogueProvider value={content}>
         {isFlashcardQuestion(question) && (
           <FlashcardSession
             key={question.id}
@@ -236,6 +239,7 @@ export function StudySession({ session, content, onEnd, onBackToSetup }: StudySe
             examMode={examMode}
           />
         )}
+        </PlateCatalogueProvider>
       </div>
     </AppShell>
   );

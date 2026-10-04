@@ -9,6 +9,7 @@ import { BottomSheet } from '../shared/BottomSheet';
 import { ExamAnswerFooter } from '../shared/ExamAnswerFooter';
 import { recordHintShown, shouldShowHint } from '../../lib/firstTimeHints';
 import { locateFeedback } from '../LocateStructureSession/locateFeedback';
+import { moveFocusWithArrows } from '../shared/arrowFocus';
 
 interface MobileLocateStructureSessionProps {
   question: LocateQuestion;
@@ -98,7 +99,10 @@ export function MobileLocateStructureSession({
     ...new Set([image, ...frames].flatMap((f) => (f.hotspots ?? []).map((h) => h.structureId))),
   ]
     .map((id) => structuresById.get(id))
-    .filter((s): s is AnatomyStructure => !!s);
+    .filter((s): s is AnatomyStructure => !!s)
+    // In name order. A plate's hotspots are stored target first, so in the
+    // order they came the right answer was always the first button.
+    .sort((x, y) => x.name.localeCompare(y.name));
 
   const feedback = result
     ? locateFeedback(
@@ -141,6 +145,10 @@ export function MobileLocateStructureSession({
         {!listMode ? (
           <div className="mt-4 flex justify-center">
             <div className="w-full max-w-xs">
+              <p className="sr-only">
+                This question is answered by tapping the anatomical image. If you are not using a
+                pointer, use the &ldquo;Choose from a list&rdquo; button above to choose the structure by name.
+              </p>
               <HotspotImage
                 key={question.id}
                 image={image}
@@ -153,7 +161,12 @@ export function MobileLocateStructureSession({
             </div>
           </div>
         ) : (
-          <div className="mt-4 grid grid-cols-2 gap-2">
+          <div
+            role="group"
+            aria-label={`Structures visible on this image — choose ${question.prompt}`}
+            onKeyDown={moveFocusWithArrows}
+            className="mt-4 grid grid-cols-2 gap-2"
+          >
             {candidateStructures.map((s) => {
               const isTarget = s.id === question.targetStructureId;
               const isSelected = result?.structureId === s.id;

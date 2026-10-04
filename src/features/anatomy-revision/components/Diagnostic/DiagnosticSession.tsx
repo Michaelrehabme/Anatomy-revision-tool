@@ -166,6 +166,9 @@ export function DiagnosticSession({ questions, imagesById, onSubmit, onCancel }:
           frames={promptHighlightFrames(frames, question.structureId)}
           resetKey={question.id}
           overlay={(current) => <PromptHighlightOverlay image={current} structureId={question.structureId} />}
+          // No feedback until the end, so the picture never names its subject here.
+          subjectId={question.structureId}
+          conceal="name"
         />
       )}
 

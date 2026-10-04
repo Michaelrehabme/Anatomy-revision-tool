@@ -1,5 +1,5 @@
 import {
-  useEffect, useRef, useState,
+  useEffect, useId, useRef, useState,
   type KeyboardEvent as ReactKeyboardEvent, type PointerEvent as ReactPointerEvent, type ReactNode, type WheelEvent,
 } from 'react';
 import type { AnatomyImageAsset, ImageVariantKind } from '../../types/image';
@@ -7,6 +7,8 @@ import { getImageVariantChoice, setImageVariantChoice } from '../../lib/preferen
 import { normalizePointerEvent } from '../../lib/hotspot/normalizeCoordinates';
 import { rotationAngle, rotationTilt } from '../../lib/rotationFrames';
 import { AttributionBadge } from './AttributionBadge';
+import { plateLabel, type PlateConceal } from '../../lib/plateLabel';
+import { PlateDescription } from './PlateDescription';
 
 export const MIN_ZOOM = 1;
 export const MAX_ZOOM = 4;
@@ -27,6 +29,14 @@ export interface ImageViewerProps {
   /** Zoom and frame reset when this changes; pass the question's id. */
   resetKey?: string;
   className?: string;
+  /** The structure the picture is about, for its long description. Defaults to the image's own. */
+  subjectId?: string;
+  /**
+   * Which half of the picture is the answer while a question is open: 'name'
+   * on identify, 'place' on locate. The accessible name and the long
+   * description both leave that half out. See lib/plateLabel.ts.
+   */
+  conceal?: PlateConceal;
 }
 
 /**
@@ -66,7 +76,9 @@ const VARIANT_LABELS: Record<ImageVariantKind, [string, string]> = {
   hidden: ['ghosted', 'hidden'],
   solid: ['see-through', 'solid'],
 };
-export function ImageViewer({ image, frames, overlay, onPick, resetKey, className }: ImageViewerProps) {
+export function ImageViewer({ image, frames, overlay, onPick, resetKey, className, subjectId, conceal }: ImageViewerProps) {
+  const descriptionId = useId();
+  const zoomInRef = useRef<HTMLButtonElement>(null);
   const zoomerRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
 
@@ -284,15 +296,18 @@ export function ImageViewer({ image, frames, overlay, onPick, resetKey, classNam
         // A labelled group, so the name is actually read out. Not role="img":
         // that makes everything inside presentational, hiding the zoom and
         // turn controls from a screen reader (docs/ACCESSIBILITY-AUDIT-2026-09-28.md).
-        role={pickable ? 'button' : 'group'}
-        aria-label={current.slideTitle ?? 'Anatomy image'}
+        // And not role="button" when it takes a tap: it cannot be focused or
+        // pressed from a keyboard, so the role promised something untrue.
+        role="group"
+        aria-label={plateLabel(current, conceal)}
+        aria-describedby={descriptionId}
       >
         <div
           ref={zoomerRef}
           className="absolute inset-0"
           style={{ transform: `translate(${view.tx}px, ${view.ty}px) scale(${view.z})`, transformOrigin: '0 0' }}
         >
-          <img src={shownPath} alt={current.slideTitle ?? 'Anatomy structure'} className="h-full w-full object-cover" draggable={false} />
+          <img src={shownPath} alt={plateLabel(current, conceal)} className="h-full w-full object-cover" draggable={false} />
           {overlay?.(current)}
         </div>
 
@@ -341,9 +356,9 @@ export function ImageViewer({ image, frames, overlay, onPick, resetKey, classNam
         <span className="ml-auto flex items-center gap-x-2">
         <button type="button" className={controlButton} aria-label="Zoom out" onClick={() => { const r = stageRef.current!.getBoundingClientRect(); zoomAt(1 / 1.5, r.width / 2, r.height / 2); }}>−</button>
         <span className="px-0.5 text-[11px] tabular-nums" style={{ color: 'var(--ink3)' }}>{view.z.toFixed(1)}×</span>
-        <button type="button" className={controlButton} aria-label="Zoom in" onClick={() => { const r = stageRef.current!.getBoundingClientRect(); zoomAt(1.5, r.width / 2, r.height / 2); }}>+</button>
+        <button ref={zoomInRef} type="button" className={controlButton} aria-label="Zoom in" onClick={() => { const r = stageRef.current!.getBoundingClientRect(); zoomAt(1.5, r.width / 2, r.height / 2); }}>+</button>
         {zoomed && (
-          <button type="button" className={controlButton} aria-label="Reset zoom" onClick={() => setView({ z: 1, tx: 0, ty: 0 })}>↺</button>
+          <button type="button" className={controlButton} aria-label="Reset zoom" onClick={() => { setView({ z: 1, tx: 0, ty: 0 }); /* This button is about to unmount: keep focus in the viewer. */ zoomInRef.current?.focus(); }}>↺</button>
         )}
         </span>
         {setVariant && (
@@ -360,6 +375,7 @@ export function ImageViewer({ image, frames, overlay, onPick, resetKey, classNam
         )}
       </div>
       <AttributionBadge image={current} />
+      <PlateDescription id={descriptionId} image={current} subjectId={subjectId} conceal={conceal} />
     </figure>
   );
 }

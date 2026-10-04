@@ -47,7 +47,9 @@ export function FillBlankSession({ question, onAnswer, onNext, examMode }: FillB
             onChange={(e) => setAttempt(e.target.value)}
             disabled={!!submitted}
             autoFocus
-            className="min-w-[8rem] flex-1 border-b-2 border-line bg-transparent px-1 py-0.5 text-center focus:border-brand-600 focus:outline-none disabled:bg-sf"
+            // The blank had no name at all, and switched its focus outline off.
+            aria-label="The missing word or phrase"
+            className="min-w-[8rem] flex-1 border-b-2 border-line bg-transparent px-1 py-0.5 text-center disabled:bg-sf"
           />
           {question.after && <span>{question.after}</span>}
         </p>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { FlashcardQuestion } from '../../types/question';
 import type { AnatomyImageAsset } from '../../types/image';
 import { AnatomyImageFigure } from '../shared/AnatomyImageFigure';
@@ -29,6 +29,14 @@ export function FlashcardSession({ question, imagesById, onAnswer, onNext }: Fla
     setRevealed(false);
   }, [question.id]);
 
+  // Revealing removes the button that was pressed. Focus goes to the answer,
+  // so a screen reader reads it and a keyboard carries on to Next from there —
+  // it used to fall back to the question's wrapper and say nothing (WCAG 2.4.3).
+  const answerRef = useRef<HTMLParagraphElement>(null);
+  useEffect(() => {
+    if (revealed) answerRef.current?.focus();
+  }, [revealed]);
+
   const frontImage = question.front.imageId ? imagesById.get(question.front.imageId) : undefined;
   const backImage = question.back.imageId ? imagesById.get(question.back.imageId) : undefined;
   // Every angle of each picture, so a flashcard can be turned as well as read.
@@ -56,7 +64,7 @@ export function FlashcardSession({ question, imagesById, onAnswer, onNext }: Fla
         {!revealed ? (
           <div className="flex h-full flex-col items-center justify-center gap-5 text-center">
             {frontImage ? (
-              <AnatomyImageFigure image={frontImage} frames={frontFrames} alt="Identify this structure" />
+              <AnatomyImageFigure image={frontImage} frames={frontFrames} alt="Identify this structure" subjectId={question.structureId} conceal="name" />
             ) : (
               <p style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 30 }}>{question.front.text}</p>
             )}
@@ -66,13 +74,13 @@ export function FlashcardSession({ question, imagesById, onAnswer, onNext }: Fla
           </div>
         ) : (
           <div className="space-y-4">
-            {backImage && <AnatomyImageFigure image={backImage} frames={backFrames} alt={question.structureId} />}
+            {backImage && <AnatomyImageFigure image={backImage} frames={backFrames} alt={question.structureId} subjectId={question.structureId} />}
             {question.front.text && (
               <p className="text-lg" style={{ color: 'var(--ink3)' }}>
                 {question.front.text}
               </p>
             )}
-            <p className="whitespace-pre-line text-2xl leading-snug" style={{ color: 'var(--ink)' }}>
+            <p ref={answerRef} tabIndex={-1} className="whitespace-pre-line text-2xl leading-snug outline-none" style={{ color: 'var(--ink)' }}>
               {question.back.text}
             </p>
           </div>

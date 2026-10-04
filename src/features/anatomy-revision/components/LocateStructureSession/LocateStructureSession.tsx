@@ -10,6 +10,8 @@ import { ExamAnswerFooter } from '../shared/ExamAnswerFooter';
 import { recordHintShown, shouldShowHint } from '../../lib/firstTimeHints';
 import { locateFeedback } from './locateFeedback';
 import { questionHeaderLabel } from '../../lib/questionFormats';
+import { moveFocusWithArrows } from '../shared/arrowFocus';
+import { FeedbackHeading } from '../shared/FeedbackHeading';
 
 interface LocateStructureSessionProps {
   question: LocateQuestion;
@@ -93,7 +95,10 @@ export function LocateStructureSession({
     ...new Set([image, ...frames].flatMap((f) => (f.hotspots ?? []).map((h) => h.structureId))),
   ]
     .map((id) => structuresById.get(id))
-    .filter((s): s is AnatomyStructure => !!s);
+    .filter((s): s is AnatomyStructure => !!s)
+    // In name order. A plate's hotspots are stored target first, so in the
+    // order they came the right answer was always the first button.
+    .sort((x, y) => x.name.localeCompare(y.name));
 
   return (
     <div className="flex flex-col items-center px-24 pt-14 pb-12">
@@ -131,7 +136,10 @@ export function LocateStructureSession({
         <button
           type="button"
           onClick={() => setListMode((v) => !v)}
-          aria-label={listMode ? 'Answer by clicking the image instead' : 'Answer from a list of names instead of clicking the image'}
+          // The accessible name has to BEGIN with the words on the button, or
+          // someone using voice control says what they can read and nothing
+          // happens (WCAG 2.5.3) — the old name put "of names" in the middle.
+          aria-label={listMode ? 'Switch to image click: answer by clicking the image' : 'Answer from a list instead of clicking the image'}
           className="text-xs underline decoration-dotted"
         >
           {listMode ? 'Switch to image click' : 'Answer from a list instead'}
@@ -164,6 +172,7 @@ export function LocateStructureSession({
         <div
           role="group"
           aria-label={`Structures visible on this image — choose ${question.prompt}`}
+          onKeyDown={moveFocusWithArrows}
           className="mt-6 grid max-w-2xl grid-cols-3 gap-2.5"
         >
           {candidateStructures.map((s) => {
@@ -200,9 +209,14 @@ export function LocateStructureSession({
             );
             return (
               <>
-                <p style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 24, color: result.correct ? 'var(--accd)' : 'var(--acc2d)' }}>
+                {/* Takes focus as it appears: answering from the list disables every
+                    button in it, and focus used to fall to the page body. */}
+                <FeedbackHeading
+                  style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 24, color: result.correct ? 'var(--accd)' : 'var(--acc2d)' }}
+                  label={detail ? `${title}. ${detail}` : title}
+                >
                   {title}
-                </p>
+                </FeedbackHeading>
                 {detail && (
                   <p className="mt-1 text-sm" style={{ color: 'var(--ink2)' }}>
                     {detail}

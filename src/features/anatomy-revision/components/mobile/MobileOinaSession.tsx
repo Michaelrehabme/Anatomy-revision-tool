@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import { moveFocusWithArrows } from '../shared/arrowFocus';
+import { choiceRevealNote } from '../shared/choiceReveal';
 import { SlotHints, factEyebrow } from '../shared/SlotHints';
 import type { OinaQuestion, OinaSelectQuestion, OinaTypedQuestion } from '../../types/question';
 import type { Confidence } from '../../types/attempt';
@@ -18,7 +20,8 @@ interface MobileOinaSessionProps {
 
 const primaryButton = {
   minHeight: 52,
-  background: 'var(--acc)',
+  // --acc-fill, as every other primary button: white on --acc is under 4.5:1 (axe, 4 Oct 2026).
+  background: 'var(--acc-fill)',
   color: 'var(--onacc)',
   font: '500 16.5px/1 var(--font-ui)',
 };
@@ -93,7 +96,7 @@ function MobileOinaSelect({
           {question.prompt}
         </h2>
 
-        <div className="mt-6 flex flex-col gap-2.5">
+        <div className="mt-6 flex flex-col gap-2.5" role="group" aria-label="Answers — choose every one that applies" onKeyDown={moveFocusWithArrows}>
           {question.choices.map((choice, index) => {
             const isSelected = selectedIndices.has(index);
             const isCorrectChoice = question.correctIndices.includes(index);
@@ -118,6 +121,7 @@ function MobileOinaSelect({
                 key={`${choice}-${index}`}
                 type="button"
                 disabled={checked}
+                aria-pressed={isSelected}
                 onClick={() => toggleIndex(index)}
                 className="flex min-h-[54px] items-center gap-3 rounded-[3px] px-4 text-left text-[16px] disabled:cursor-default"
                 style={{ border, background, color: 'var(--ink)' }}
@@ -129,9 +133,15 @@ function MobileOinaSelect({
                     background: isSelected ? 'var(--acc)' : 'transparent',
                   }}
                 >
-                  {isSelected && <span style={{ color: 'var(--onacc)', fontSize: 11 }}>✓</span>}
+                  {/* The tick is decoration: aria-pressed says it, and a glyph in the name would be read as "check mark". */}
+                  {isSelected && <span aria-hidden="true" style={{ color: 'var(--onacc)', fontSize: 11 }}>✓</span>}
                 </span>
-                <span className="flex-1">{choice}</span>
+                <span className="flex-1">
+                  {choice}
+                  {revealing && choiceRevealNote(isCorrectChoice, isSelected) && (
+                    <span className="sr-only"> ({choiceRevealNote(isCorrectChoice, isSelected)})</span>
+                  )}
+                </span>
               </button>
             );
           })}

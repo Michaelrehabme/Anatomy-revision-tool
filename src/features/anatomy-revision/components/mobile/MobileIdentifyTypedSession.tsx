@@ -104,6 +104,8 @@ export function MobileIdentifyTypedSession({ question, imagesById, onAnswer, onN
               frames={promptHighlightFrames(promptFrames, question.structureId)}
               resetKey={question.id}
               overlay={(current) => <PromptHighlightOverlay image={current} structureId={question.structureId} />}
+              subjectId={question.structureId}
+              conceal={submitted && !examMode ? undefined : 'name'}
             />
         )}
 
