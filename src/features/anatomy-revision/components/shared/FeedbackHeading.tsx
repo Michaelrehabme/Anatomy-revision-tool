@@ -30,7 +30,7 @@ export function FeedbackHeading({
     ref.current?.focus();
   }, []);
   return (
-    <h2 ref={ref} tabIndex={-1} aria-label={label} className={className} style={{ margin: 0, outline: 'none', ...style }}>
+    <h2 ref={ref} data-feedback tabIndex={-1} aria-label={label} className={className} style={{ margin: 0, outline: 'none', ...style }}>
       {children}
     </h2>
   );

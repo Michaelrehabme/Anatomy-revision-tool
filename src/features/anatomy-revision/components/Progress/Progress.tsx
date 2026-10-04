@@ -79,19 +79,20 @@ export function Progress({ access, content, repository, userId, onStart, onNavig
     >
       <div className="px-16 pt-[72px] pb-12">
         <h1
+          data-in
           style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 52, lineHeight: 1.02, letterSpacing: '-.026em', margin: '0 0 12px' }}
         >
           Progress
         </h1>
-        <div className="flex items-baseline justify-between">
+        <div data-in className="flex items-baseline justify-between">
           <p className="text-base" style={{ color: 'var(--ink2)' }}>
             {totalStructures} structures · {totalSeen} seen at least once · {muscles.length} muscles, {seenCount} seen, {untouched.length} still untouched
           </p>
         </div>
-        <p className="mt-2" style={{ font: '400 12px/1.6 var(--font-mono)', color: 'var(--ink3)' }}>
+        <p data-in className="mt-2" style={{ font: '400 12px/1.6 var(--font-mono)', color: 'var(--ink3)' }}>
           {CATEGORIES.map((c) => `${seenByCategory[c].seen} / ${seenByCategory[c].total} ${CATEGORY_LABELS[c].toLowerCase()}`).join(' · ')}
         </p>
-        <div>
+        <div data-in>
           <button type="button" onClick={onOpenAchievements} style={{ font: '500 13px/1 var(--font-ui)', color: 'var(--accd)' }}>
             View achievements →
           </button>
@@ -99,17 +100,17 @@ export function Progress({ access, content, repository, userId, onStart, onNavig
 
         <div className="mt-13 flex gap-[88px]">
           <div className="flex-1">
-            <div style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
+            <div data-in style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
               By region
             </div>
-            <div className="mt-3.5">
+            <div data-in className="mt-3.5">
               <RegionLevelLegend />
             </div>
             <div className="mt-5.5 flex flex-col gap-6.5">
               {byRegion.map(({ region, levels }) => {
                 const all = Object.values(levels).reduce((a, b) => a + b, 0);
                 return (
-                <div key={region}>
+                <div key={region} data-row>
                   <div className="flex items-baseline gap-3.5">
                     <span className="flex-1" style={{ fontFamily: 'var(--font-display)', fontSize: 23 }}>
                       {REGION_LABELS[region]}
@@ -118,7 +119,7 @@ export function Progress({ access, content, repository, userId, onStart, onNavig
                       {all - levels.unmet} / {all} met
                     </span>
                     <span style={{ font: '500 13.5px/1 var(--font-mono)', color: 'var(--accd)', minWidth: 40, textAlign: 'right' }}>
-                      {levels.master} mastered
+                      <span data-count>{levels.master}</span> mastered
                     </span>
                   </div>
                   <div className="mt-2.5">
@@ -131,13 +132,14 @@ export function Progress({ access, content, repository, userId, onStart, onNavig
           </div>
 
           <div className="w-[460px] flex-none">
-            <div style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
+            <div data-in style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
               Due over the next fortnight
             </div>
             <div className="mt-5.5 flex h-[180px] items-end gap-2.5">
               {forecast.map((count, i) => (
                 <div
                   key={i}
+                  data-wbar
                   className="flex-1"
                   style={{ height: `${Math.max(4, (count / forecastMax) * 100)}%`, background: i === 0 ? 'var(--accd)' : count > 0 ? 'var(--acc)' : 'var(--accs)' }}
                 />
@@ -150,12 +152,13 @@ export function Progress({ access, content, repository, userId, onStart, onNavig
             </div>
 
             <div
+              data-in
               className="mt-13"
               style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}
             >
               Untouched
             </div>
-            <p className="mt-3.5 text-base leading-relaxed" style={{ color: 'var(--ink2)' }}>
+            <p data-in className="mt-3.5 text-base leading-relaxed" style={{ color: 'var(--ink2)' }}>
               {untouched.length > 0
                 ? `${untouched.length} muscles have never come up. Worth a dedicated session.`
                 : 'Every muscle has come up at least once.'}
@@ -167,12 +170,13 @@ export function Progress({ access, content, repository, userId, onStart, onNavig
             )}
 
             <div
+              data-in
               className="mt-13"
               style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}
             >
               Leeches
             </div>
-            <p className="mt-3.5 text-base leading-relaxed" style={{ color: 'var(--ink2)' }}>
+            <p data-in className="mt-3.5 text-base leading-relaxed" style={{ color: 'var(--ink2)' }}>
               {leeches.length > 0
                 ? `${leeches.length} structures keep coming back wrong. Worth isolating.`
                 : 'No leeches — nothing is stuck.'}

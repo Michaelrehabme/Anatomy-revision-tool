@@ -79,7 +79,7 @@ export function MobileToday({ access, repository, userId, content, onStart, onCu
   return (
     <MobileShell tabs={{ active: 'today', onNavigate: onNavigateTab }}>
       <div className="px-6.5 pt-4.5 pb-7.5">
-        <div className="flex items-baseline justify-between">
+        <div data-in className="flex items-baseline justify-between">
           <div style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
             {now.toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' })}
           </div>
@@ -87,19 +87,20 @@ export function MobileToday({ access, repository, userId, content, onStart, onCu
         </div>
 
         <h2
+          data-in
           style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: firstRun ? 36 : 42, lineHeight: 1.02, letterSpacing: '-.022em', margin: '16px 0 0' }}
         >
           {firstRun ? (
             firstRunTitle(preferredAreas)
           ) : (
             <>
-              {loading ? '…' : dueCount} due
+              {loading ? '…' : <span data-count className="inline-block tabular-nums">{dueCount}</span>} due
               <br />
               for review
             </>
           )}
         </h2>
-        <p className="mt-3 text-[15px] leading-snug" style={{ color: 'var(--ink2)' }}>
+        <p data-in className="mt-3 text-[15px] leading-snug" style={{ color: 'var(--ink2)' }}>
           {firstRun
             ? `${STARTER_COUNT} questions, about ${minutesFor(STARTER_COUNT)} minutes. Multiple choice and locate-on-the-image, nothing harder yet.`
             : dueCount > 0
@@ -110,7 +111,8 @@ export function MobileToday({ access, repository, userId, content, onStart, onCu
         <button
           type="button"
           onClick={() => handleStart('continue')}
-          className="mt-5.5 w-full rounded-[3px] border-0"
+          data-in
+          className="mt-5.5 w-full rounded-[3px] border-0 transition-transform duration-150 active:scale-[0.97] motion-reduce:active:scale-100"
           style={{ minHeight: 54, background: 'var(--acc-fill)', color: 'var(--onacc)', font: '500 17px/1 var(--font-ui)' }}
         >
           {firstRun ? 'Start your first session' : 'Keep going'}
@@ -119,7 +121,8 @@ export function MobileToday({ access, repository, userId, content, onStart, onCu
           <button
             type="button"
             onClick={() => handleStart('fresh')}
-            className="mt-2.5 w-full rounded-[3px]"
+            data-in
+            className="mt-2.5 w-full rounded-[3px] transition-transform duration-150 active:scale-[0.97] motion-reduce:active:scale-100"
             style={{ minHeight: 50, background: 'none', border: '1.3px solid var(--line)', color: 'var(--ink)', font: '500 15.5px/1 var(--font-ui)' }}
           >
             New set
@@ -128,7 +131,8 @@ export function MobileToday({ access, repository, userId, content, onStart, onCu
         <button
           type="button"
           onClick={onCustomSession}
-          className="mt-2.5 w-full rounded-[3px]"
+          data-in
+          className="mt-2.5 w-full rounded-[3px] transition-transform duration-150 active:scale-[0.97] motion-reduce:active:scale-100"
           style={{ minHeight: 50, background: 'none', border: '1.3px solid var(--line)', color: 'var(--ink)', font: '500 15.5px/1 var(--font-ui)' }}
         >
           Custom session
@@ -137,6 +141,7 @@ export function MobileToday({ access, repository, userId, content, onStart, onCu
         <ClassAssignments access={access} repository={repository} userId={userId} content={content} onStart={onStart} compact />
 
         <div
+          data-in
           className="mt-9"
           style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}
         >
@@ -156,6 +161,7 @@ export function MobileToday({ access, repository, userId, content, onStart, onCu
                 key={m.structureId}
                 type="button"
                 onClick={() => onOpenMuscle(m.structureId)}
+                data-row
                 className="flex items-baseline gap-3 border-0 bg-transparent py-3.5 text-left"
               >
                 <span className="flex-1" style={{ fontFamily: 'var(--font-display)', fontSize: 20, lineHeight: 1.2, color: 'var(--ink)' }}>
@@ -165,6 +171,8 @@ export function MobileToday({ access, repository, userId, content, onStart, onCu
                   {structure ? REGION_LABELS[structure.region] : ''}
                 </span>
                 <span
+                  data-count
+                  className="tabular-nums"
                   style={{
                     font: '500 12.5px/1 var(--font-mono)',
                     color: pct < 60 ? 'var(--acc2d)' : 'var(--ink2)',
@@ -172,7 +180,7 @@ export function MobileToday({ access, repository, userId, content, onStart, onCu
                     textAlign: 'right',
                   }}
                 >
-                  {pct}%
+                  {`${pct}%`}
                 </span>
               </button>
             );
@@ -182,6 +190,7 @@ export function MobileToday({ access, repository, userId, content, onStart, onCu
         {!firstRun && (
           <>
             <div
+              data-in
               className="mt-7"
               style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}
             >
@@ -195,6 +204,7 @@ export function MobileToday({ access, repository, userId, content, onStart, onCu
               {weekBuckets.map((count, i) => (
                 <div
                   key={i}
+                  data-wbar
                   className="flex-1 rounded-sm"
                   style={{ height: `${Math.max(4, (count / weekMax) * 100)}%`, background: i === 6 ? 'var(--acc)' : count === 0 ? 'var(--line)' : 'var(--fig-line)' }}
                 />

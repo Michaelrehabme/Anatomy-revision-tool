@@ -33,11 +33,11 @@ interface MobileAccountProps {
 
 function Stat({ label, value, detail }: { label: string; value: string; detail?: string }) {
   return (
-    <div className="flex-1 rounded-[4px] px-3.5 py-3" style={{ background: 'var(--sf)', border: '1px solid var(--line)', minWidth: 140 }}>
+    <div data-in className="flex-1 rounded-[4px] px-3.5 py-3" style={{ background: 'var(--sf)', border: '1px solid var(--line)', minWidth: 140 }}>
       <div style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.12em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
         {label}
       </div>
-      <div className="mt-1.5" style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 24, letterSpacing: '-.01em' }}>
+      <div data-count className="mt-1.5 tabular-nums" style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 24, letterSpacing: '-.01em' }}>
         {value}
       </div>
       {detail && (
@@ -102,10 +102,10 @@ export function MobileAccount({ access, content, repository, userId, onNavigateT
   return (
     <MobileShell tabs={{ active: 'account', onNavigate: onNavigateTab }}>
       <div className="px-6.5 pt-4.5 pb-7.5">
-        <h1 style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 35, lineHeight: 1.04, letterSpacing: '-.022em', margin: 0 }}>
+        <h1 data-in style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 35, lineHeight: 1.04, letterSpacing: '-.022em', margin: 0 }}>
           Account
         </h1>
-        <p className="mt-2 text-[14.5px] leading-relaxed" style={{ color: 'var(--ink3)' }}>
+        <p data-in className="mt-2 text-[14.5px] leading-relaxed" style={{ color: 'var(--ink3)' }}>
           {user?.displayName ?? user?.email ?? 'Signed in'}
           {user?.isAnonymous && ' — this device only, until you create an account.'}
         </p>
@@ -117,7 +117,7 @@ export function MobileAccount({ access, content, repository, userId, onNavigateT
           <Stat label="Seen" value={`${totalSeen} / ${totalStructures}`} detail={seenDetail} />
         </div>
 
-        <section className="mt-9">
+        <section data-in className="mt-9">
           <h3 style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 20, letterSpacing: '-.01em', margin: 0 }}>
             Accuracy over time
           </h3>
@@ -140,7 +140,7 @@ export function MobileAccount({ access, content, repository, userId, onNavigateT
         </section>
 
         {/* Above the signed-in block — see Account.tsx for why. */}
-        <section className="mt-9">
+        <section data-in className="mt-9">
           <h3 style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 20, letterSpacing: '-.01em', margin: 0 }}>
             Appearance
           </h3>
@@ -150,7 +150,7 @@ export function MobileAccount({ access, content, repository, userId, onNavigateT
         </section>
 
         {AUTH_ENABLED && user && (
-          <section className="mt-9">
+          <section data-in className="mt-9">
             <h3 style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 20, letterSpacing: '-.01em', margin: 0 }}>
               Subscription
             </h3>
@@ -179,7 +179,7 @@ export function MobileAccount({ access, content, repository, userId, onNavigateT
           </section>
         )}
 
-        <section className="mt-9">
+        <section data-in className="mt-9">
           <h3 style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 20, letterSpacing: '-.01em', margin: 0 }}>
             About this app
           </h3>

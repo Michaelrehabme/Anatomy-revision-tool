@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react';
+import { EASE } from '../shared/motion';
 
 export type MobileTab = 'today' | 'atlas' | 'progress' | 'account';
 
@@ -26,9 +28,34 @@ interface MobileTabBarProps {
  * a fifth tab: five was tight on a narrow phone, and /admin is a separate
  * route tree that could never be the active tab anyway.
  */
+/** Where the marker last sat — each screen mounts its own tab bar, so the new one slides from here. See NavSidebar. */
+let lastActiveIndex: number | null = null;
+
 export function MobileTabBar({ active, onNavigate }: MobileTabBarProps) {
+  const activeIndex = TABS.findIndex((t) => t.tab === active);
+  const [markerIndex, setMarkerIndex] = useState(lastActiveIndex ?? activeIndex);
+  useEffect(() => {
+    lastActiveIndex = activeIndex;
+    const frame = requestAnimationFrame(() => setMarkerIndex(activeIndex));
+    return () => cancelAnimationFrame(frame);
+  }, [activeIndex]);
+
   return (
-    <nav aria-label="Main" className="flex flex-none px-5 pt-2 pb-6.5" style={{ background: 'var(--sf)' }}>
+    <nav aria-label="Main" className="relative flex flex-none px-5 pt-2 pb-6.5" style={{ background: 'var(--sf)' }}>
+      {/* One marker that slides between the tabs, in the slot each tab leaves for it above its label. */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-x-5 top-2 h-12">
+        <div
+          className="flex h-full justify-center motion-reduce:transition-none"
+          style={{
+            width: `${100 / TABS.length}%`,
+            paddingTop: 9,
+            transform: `translateX(${markerIndex * 100}%)`,
+            transition: `transform 380ms ${EASE}`,
+          }}
+        >
+          <span className="h-0.5 w-5 rounded-full" style={{ background: 'var(--acc)' }} />
+        </div>
+      </div>
       {TABS.map((t) => {
         const isActive = t.tab === active;
         return (
@@ -37,10 +64,10 @@ export function MobileTabBar({ active, onNavigate }: MobileTabBarProps) {
             type="button"
             onClick={() => onNavigate(t.tab)}
             aria-current={isActive ? 'page' : undefined}
-            className="flex min-h-[48px] flex-1 flex-col items-center justify-center gap-1.5 border-0 bg-transparent"
+            className="relative flex min-h-[48px] flex-1 flex-col items-center justify-center gap-1.5 border-0 bg-transparent transition-colors duration-200"
             style={{ fontFamily: 'var(--font-ui)', fontSize: 13.5, color: isActive ? 'var(--accd)' : 'var(--ink3)', fontWeight: isActive ? 600 : 400 }}
           >
-            <span className="h-0.5 w-5 rounded-full" style={{ background: isActive ? 'var(--acc)' : 'transparent' }} />
+            <span className="h-0.5 w-5" />
             {t.label}
           </button>
         );

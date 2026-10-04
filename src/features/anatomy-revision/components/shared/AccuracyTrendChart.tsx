@@ -236,6 +236,7 @@ export function AccuracyTrendChart({
           {segments(points, (p) => p.cohortPct).map((d) => (
             <path
               key={`cohort-${d}`}
+              data-dash
               d={d}
               fill="none"
               stroke="var(--acc2d)"
@@ -249,6 +250,7 @@ export function AccuracyTrendChart({
             segments(secondary.points, (p) => p.studentPct).map((d) => (
               <path
                 key={`secondary-${d}`}
+                data-dash
                 d={d}
                 fill="none"
                 stroke="var(--acc2d)"
@@ -260,6 +262,8 @@ export function AccuracyTrendChart({
           {segments(points, (p) => p.studentPct).map((d) => (
             <path
               key={`student-${d}`}
+              data-line
+              pathLength={1}
               d={d}
               fill="none"
               stroke="var(--acc)"

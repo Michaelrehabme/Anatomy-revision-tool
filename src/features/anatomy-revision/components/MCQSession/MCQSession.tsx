@@ -105,7 +105,13 @@ export function MCQSession({ question, imagesById, onAnswer, onNext, examMode }:
             />
           )}
 
-          <div className="mt-14 grid grid-cols-2 gap-4" role="group" aria-label="Answers" onKeyDown={moveFocusWithArrows}>
+          <div
+            className="mt-14 grid grid-cols-2 gap-4"
+            role="group"
+            aria-label="Answers"
+            onKeyDown={moveFocusWithArrows}
+            data-fx={checked && !examMode && !isCorrect ? 'shake' : undefined}
+          >
             {question.choices.map((choice, index) => {
               const isSelected = index === selectedIndex;
               const isAnswerCorrect = index === question.correctIndex;
@@ -133,7 +139,8 @@ export function MCQSession({ question, imagesById, onAnswer, onNext, examMode }:
                   disabled={examMode ? examSubmitted : checked}
                   aria-pressed={isSelected}
                   onClick={() => handleSelect(index)}
-                  className="flex min-h-[82px] items-center gap-4 rounded-[3px] px-6 text-left text-xl disabled:cursor-default"
+                  data-fx={revealing && isAnswerCorrect && isCorrect ? 'pulse' : undefined}
+                  className="flex min-h-[82px] items-center gap-4 rounded-[3px] px-6 text-left text-xl transition-colors duration-200 disabled:cursor-default"
                   style={{ border, background, color }}
                 >
                   <span className="w-4 flex-none" style={{ font: '400 12.5px/1 var(--font-mono)', color: checked || isSelected ? color : 'var(--ink3)' }}>

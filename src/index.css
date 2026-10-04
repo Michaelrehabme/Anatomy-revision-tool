@@ -375,3 +375,34 @@ body {
     outline-color: Highlight;
   }
 }
+
+/*
+ * Motion (components/shared/motion.ts).
+ *
+ * The entrances are played from script and are skipped outright under reduced
+ * motion; this covers what is written as a CSS transition instead — the
+ * sliding nav highlight, pressed buttons, the switch knob.
+ *
+ * A theme or contrast change cross-fades through a view transition, kept
+ * short: it is a colour change, not a navigation.
+ */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 260ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}

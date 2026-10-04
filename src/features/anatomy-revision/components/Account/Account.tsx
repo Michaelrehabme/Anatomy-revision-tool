@@ -38,9 +38,9 @@ const statLabel = {
 
 function Stat({ label, value, detail }: { label: string; value: string; detail?: string }) {
   return (
-    <div className="rounded-[4px] px-4 py-3" style={{ background: 'var(--sf)', border: '1px solid var(--line)', minWidth: 150 }}>
+    <div data-in className="rounded-[4px] px-4 py-3" style={{ background: 'var(--sf)', border: '1px solid var(--line)', minWidth: 150 }}>
       <div style={statLabel}>{label}</div>
-      <div className="mt-1.5" style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 26, letterSpacing: '-.01em' }}>
+      <div data-count className="mt-1.5 tabular-nums" style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 26, letterSpacing: '-.01em' }}>
         {value}
       </div>
       {detail && (
@@ -125,10 +125,10 @@ export function Account({ access, content, repository, userId, onNavigate }: Acc
       }
     >
       <div className="px-16 pt-[72px] pb-12">
-        <h1 style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 52, lineHeight: 1.02, letterSpacing: '-.026em', margin: '0 0 12px' }}>
+        <h1 data-in style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 52, lineHeight: 1.02, letterSpacing: '-.026em', margin: '0 0 12px' }}>
           Account
         </h1>
-        <p className="text-sm leading-relaxed" style={{ color: 'var(--ink2)', maxWidth: 620 }}>
+        <p data-in className="text-sm leading-relaxed" style={{ color: 'var(--ink2)', maxWidth: 620 }}>
           {user?.displayName ?? user?.email ?? 'Signed in'}
           {user?.isAnonymous && ' — this device only, until you create an account.'}
         </p>
@@ -140,7 +140,7 @@ export function Account({ access, content, repository, userId, onNavigate }: Acc
           <Stat label="Structures seen" value={`${totalSeen} / ${totalStructures}`} detail={seenDetail} />
         </div>
 
-        <section className="mt-12">
+        <section data-in className="mt-12">
           <h3 style={heading}>
             Accuracy over time
             {delta && (
@@ -165,7 +165,7 @@ export function Account({ access, content, repository, userId, onNavigate }: Acc
         {/* Above the signed-in block deliberately: everything below it is
             hidden for an anonymous user, and appearance is not an account
             setting — it is a per-device one. */}
-        <section className="mt-12" style={{ maxWidth: 620 }}>
+        <section data-in className="mt-12" style={{ maxWidth: 620 }}>
           <h3 style={heading}>Appearance</h3>
           <div className="mt-4">
             <ThemeControls />
@@ -173,7 +173,7 @@ export function Account({ access, content, repository, userId, onNavigate }: Acc
         </section>
 
         {AUTH_ENABLED && user && (
-          <section className="mt-12" style={{ maxWidth: 620 }}>
+          <section data-in className="mt-12" style={{ maxWidth: 620 }}>
             <h3 style={heading}>Subscription</h3>
             <SubscriptionSummary access={access} />
 
@@ -206,7 +206,7 @@ export function Account({ access, content, repository, userId, onNavigate }: Acc
           </section>
         )}
 
-        <section className="mt-12" style={{ maxWidth: 620 }}>
+        <section data-in className="mt-12" style={{ maxWidth: 620 }}>
           <h3 style={heading}>About this app</h3>
           <div className="mt-3">
             <LegalLinks />
