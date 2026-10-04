@@ -324,7 +324,12 @@ export function ImageViewer({ image, frames, overlay, onPick, resetKey, classNam
           </>
         )}
 
-        <span className="min-w-0 flex-1 truncate text-[11px] tabular-nums" style={{ color: 'var(--ink3)' }}>
+        {/*
+          On a phone the caption takes a row of its own, under the buttons. With
+          rotate AND tilt in the row there was no room left for it: a knee seen
+          from above was captioned "S" and the zoom-in button wrapped alone.
+        */}
+        <span className="order-last min-w-0 basis-full truncate text-[11px] tabular-nums sm:order-none sm:flex-1 sm:basis-0" style={{ color: 'var(--ink3)' }}>
           {frameList.length > 1
             ? levelFrames.length > 1
               ? `${angleLabel(current)} · ${levelIndex + 1}/${levelFrames.length}`
@@ -333,12 +338,14 @@ export function ImageViewer({ image, frames, overlay, onPick, resetKey, classNam
         </span>
 
         {/* Scroll or pinch does the same; these are for those who prefer buttons. */}
+        <span className="ml-auto flex items-center gap-x-2">
         <button type="button" className={controlButton} aria-label="Zoom out" onClick={() => { const r = stageRef.current!.getBoundingClientRect(); zoomAt(1 / 1.5, r.width / 2, r.height / 2); }}>−</button>
         <span className="px-0.5 text-[11px] tabular-nums" style={{ color: 'var(--ink3)' }}>{view.z.toFixed(1)}×</span>
         <button type="button" className={controlButton} aria-label="Zoom in" onClick={() => { const r = stageRef.current!.getBoundingClientRect(); zoomAt(1.5, r.width / 2, r.height / 2); }}>+</button>
         {zoomed && (
           <button type="button" className={controlButton} aria-label="Reset zoom" onClick={() => setView({ z: 1, tx: 0, ty: 0 })}>↺</button>
         )}
+        </span>
         {setVariant && (
           <VariantSwitch
             subject={setVariant.subject}
@@ -392,7 +399,7 @@ function VariantSwitch({ subject, labels, on, available, onChange }: {
       // A row of its own, under rotate and zoom. Squeezed into theirs it cost
       // the angle caption its room — "Anterior · 0° · 1/6" became "Ant…" on
       // the identify screen, where the picture is 450px wide.
-      className="flex basis-full items-center gap-1.5"
+      className="order-last flex basis-full items-center gap-1.5"
       title={available ? undefined : 'Only one version of this view was rendered'}
     >
       <span className="text-[11px]" style={{ color: 'var(--ink3)' }}>{subject}:</span>

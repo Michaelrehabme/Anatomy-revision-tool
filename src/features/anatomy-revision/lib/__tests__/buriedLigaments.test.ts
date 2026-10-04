@@ -10,6 +10,7 @@ import { buildIdentifyTypedQuestions } from '../questionGenerators/identifyTyped
 import { promptImagesFor } from '../questionGenerators/promptImages';
 import { rotationFramesFor, rotationTilt } from '../rotationFrames';
 import { pointInAnyPolygon } from '../hotspot/pointInPolygon';
+import { polygonsWidth } from '../hotspot/polygonGeometry';
 
 /**
  * The nine ligaments tranche 2 could not publish, over the SHIPPED seed
@@ -29,7 +30,6 @@ const KNEE_PAIR = [
 const ORDINARY = ['intertransverse-ligaments', 'palmar-trapezoideocapitate-ligament'];
 
 const byId = new Map(ALL_STRUCTURES.map((s) => [s.id, s]));
-const imagesById = new Map(ALL_IMAGES.map((i) => [i.id, i]));
 const locate = buildLocateQuestions(ALL_STRUCTURES, ALL_IMAGES);
 const locateFor = (id: string) => locate.filter((q) => q.structureId === id);
 const platesOf = (id: string, kind: 'context' | 'highlight') =>
@@ -93,7 +93,7 @@ describe('the interosseous ligaments of the wrist', () => {
 
   it('have a band that is the seam plus a catch area, the seam inside it', () => {
     const plates = ALL_IMAGES.filter((i) => i.id.startsWith('gap-carpal-gaps-'));
-    expect(plates).toHaveLength(12);
+    expect(plates).toHaveLength(6);
     for (const plate of plates) {
       expect(plate.panelStructureNames, plate.id).toEqual([]);
       for (const h of plate.hotspots ?? []) {
@@ -110,9 +110,24 @@ describe('the interosseous ligaments of the wrist', () => {
     }
   });
 
-  it('never ask the trapezoideocapitate gap from 300 degrees, where it traced as a blob', () => {
-    const plate = imagesById.get('gap-carpal-gaps-a300-plate');
-    expect((plate?.hotspots ?? []).map((h) => h.structureId)).not.toContain('trapezoideocapitate-interosseous-ligament');
+  it('are asked only where the gap is a line: palmar, dorsal and the obliques beside them', () => {
+    // From the side one carpal stands behind the next and the "gap" is two
+    // silhouettes overlapping; those views are not published at all.
+    const angles = ALL_IMAGES.filter((i) => i.id.startsWith('gap-carpal-gaps-')).map((i) => Number(/-a(\d{3})-/.exec(i.id)![1])).sort((a, b) => a - b);
+    expect(angles).toEqual([0, 30, 150, 180, 210, 330]);
+    for (const id of WRIST_FIVE) {
+      const [q] = locateFor(id);
+      expect(q.frameImageIds?.length ?? 1, id).toBeGreaterThanOrEqual(5);
+    }
+  });
+
+  it('have bands a fingertip can find at 1x on a phone', () => {
+    for (const plate of ALL_IMAGES.filter((i) => i.id.startsWith('gap-carpal-gaps-'))) {
+      for (const h of plate.hotspots ?? []) {
+        // Three percent of a 390px screen is 12px, before the tap slack either side.
+        expect(polygonsWidth(h.polygons, h.area), `${plate.id} ${h.structureId}`).toBeGreaterThanOrEqual(0.03);
+      }
+    }
   });
 });
 

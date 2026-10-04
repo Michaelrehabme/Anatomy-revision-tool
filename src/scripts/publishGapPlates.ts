@@ -57,9 +57,21 @@ import { viewForAngle } from './lib/viewForAngle';
  *    a pixel either way and the app's own check allows two hotspots to share
  *    under 1% of what they cover (generateSet.test.ts).
  *
- * A VIEW IS DROPPED BY HAND with `dropViews: [[id, view]]` where a band traces
- * but is not a line. The tracer widens its reach until it finds something, so
- * a gap that is not really in view can come back as a blob.
+ * ONLY THE VIEWS A GAP IS A LINE IN ARE PUBLISHED (`views`). Seen from the
+ * side, one carpal stands behind the next and their silhouettes overlap: the
+ * tracer still finds a seam, and the question still opened there — the
+ * scapholunate gap was first asked from 90 degrees, where it is the edge of
+ * the lunate against a scaphoid hidden behind it. The carpal plate keeps the
+ * palmar and dorsal views and the 30-degree obliques either side of each, six
+ * frames, and locate opens on the largest band among those. `dropViews:
+ * [[id, view]]` drops one gap from one view, for a band that traces as a blob.
+ *
+ * THE FRAME IS 80 MM, not the 150 mm the joint plates use. At 150 the whole
+ * hand and a third of the forearm were in shot and a band was 1.4 to 3.1% of
+ * the frame across; at 80 the picture still holds the ends of the radius and
+ * ulna and the bases of all five metacarpals, which is what makes it a wrist
+ * and not eight pebbles, and the catch margin (16 px here, the same 1.4 mm of
+ * bone as 9 px was at 150) gives bands of 3 to 5%.
  *
  * Writes public/anatomy/gaps/<plate>-aNNN-plate.webp, gapPlates.generated.ts
  * and hotspots.gaps.generated.ts (a lazy chunk of its own: seed/hotspots.ts).
@@ -97,6 +109,8 @@ interface Spec {
   maxDepthGap?: number;
   /** [structure id, view number as renderJointMasks counts it (15 degrees a step)]. */
   dropViews?: [string, number][];
+  /** The views published, by the same numbering. Unset: all twelve. */
+  views?: number[];
   joints: { id: string; name: string; depth?: boolean }[];
 }
 const spec: Spec = JSON.parse(readFileSync(fromRoot(args.spec ?? 'carpal-gaps.spec.json'), 'utf8'));
@@ -140,7 +154,7 @@ const hotspots: Record<string, string[]> = {};
 const report: string[] = [];
 let bandsOut = 0;
 
-const VIEWS = Array.from({ length: 12 }, (_, i) => i * 2);
+const VIEWS = spec.views ?? Array.from({ length: 12 }, (_, i) => i * 2);
 for (const viewNo of VIEWS) {
   const view = `view-${String(viewNo).padStart(2, '0')}`;
   const angle = (viewNo * 15) % 360;

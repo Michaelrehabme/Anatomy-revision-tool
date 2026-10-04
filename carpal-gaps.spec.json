@@ -1,6 +1,6 @@
 {
  "schemaVersion": 1,
- "note": "The five intercarpal gaps the interosseous ligaments of the wrist are located by, all through one camera centred on the carpus (frameOn). Rendered by renderJointMasks.py --views 0,2,4,6,8,10,12,14,16,18,20,22, published by publishGapPlates.ts. Each id is the LIGAMENT the gap is asked as. `depth` renders each bone coloured by distance, so the publisher can report how level the two bones are along each seam; set `maxDepthGap` (metres) to cut a seam by it, which no gap here does.",
+ "note": "The five intercarpal gaps the interosseous ligaments of the wrist are located by, all through one camera centred on the carpus (frameOn). Rendered by renderJointMasks.py --views 0,2,10,12,14,22 (`views`: palmar, dorsal and the 30-degree obliques; side views are not published because the gaps there are overlapping silhouettes), published by publishGapPlates.ts. Each id is the LIGAMENT the gap is asked as. `depth` renders each bone coloured by distance, so the publisher can report how level the two bones are along each seam; set `maxDepthGap` (metres) to cut a seam by it, which no gap here does.",
  "plate": {
   "id": "carpal-gaps",
   "name": "Carpal bones",
@@ -8,13 +8,8 @@
   "subregion": "wrist-hand",
   "side": "left"
  },
- "catchMargin": 9,
- "dropViews": [
-  [
-   "trapezoideocapitate-interosseous-ligament",
-   20
-  ]
- ],
+ "catchMargin": 16,
+ "dropViews": [],
  "joints": [
   {
    "id": "scapholunate-interosseous-ligament",
@@ -31,7 +26,7 @@
      "Lunate bone.l"
     ]
    },
-   "frame": 0.15,
+   "frame": 0.08,
    "frameOn": [
     "Scaphoid bone.l",
     "Lunate bone.l",
@@ -59,7 +54,7 @@
      "Triquetrum bone.l"
     ]
    },
-   "frame": 0.15,
+   "frame": 0.08,
    "frameOn": [
     "Scaphoid bone.l",
     "Lunate bone.l",
@@ -88,7 +83,7 @@
      "Trapezoid bone.l"
     ]
    },
-   "frame": 0.15,
+   "frame": 0.08,
    "frameOn": [
     "Scaphoid bone.l",
     "Lunate bone.l",
@@ -116,7 +111,7 @@
      "Capitate bone.l"
     ]
    },
-   "frame": 0.15,
+   "frame": 0.08,
    "frameOn": [
     "Scaphoid bone.l",
     "Lunate bone.l",
@@ -145,7 +140,7 @@
      "Hamate bone.l"
     ]
    },
-   "frame": 0.15,
+   "frame": 0.08,
    "frameOn": [
     "Scaphoid bone.l",
     "Lunate bone.l",
@@ -158,5 +153,13 @@
    ],
    "depth": true
   }
+ ],
+ "views": [
+  0,
+  2,
+  10,
+  12,
+  14,
+  22
  ]
 }
