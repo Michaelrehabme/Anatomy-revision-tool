@@ -1,0 +1,502 @@
+{
+ "schemaVersion": 1,
+ "note": "The nine ligaments tranche 2 could not publish, with the framing that makes them traceable (3 Oct 2026). Hand-authored: buildLigamentTrancheSpec.ts does not write this file. `publish` and `variant` are read by publishLigamentPlates.ts --spec, not by the renderer: levelAngles false publishes the tilted views only; locateOn names the plate the ligament is located on instead of its own (it then publishes identify pictures only); variant names the second render of the same cameras (ligament-buried.hidden.spec.json, ligament-buried.solid.spec.json) and the word the viewer switch uses for what changes.",
+ "ligaments": [
+  {
+   "key": "intertransverse-ligaments",
+   "name": "Intertransverse ligaments",
+   "subregion": "spine",
+   "objects": [
+    "Intertransverse ligaments.l"
+   ],
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ],
+   "frame": 0.26,
+   "minFrame": 0.14,
+   "keep": [
+    "Atlas (C1)",
+    "Axis (C2)",
+    "Vertebra *",
+    "Sacrum",
+    "Coccyx",
+    "Frontal bone",
+    "Occipital bone",
+    "Parietal bone*",
+    "Temporal bone*",
+    "Sphenoid bone",
+    "Ethmoid bone",
+    "Mandible",
+    "Maxilla.*",
+    "Zygomatic bone*",
+    "Nasal bone.*",
+    "Lacrimal bone.*",
+    "Palatine bone*",
+    "Vomer",
+    "Inferior nasal concha bone.*",
+    "Hyoid bone",
+    "*rib*"
+   ],
+   "targetThickness": 0.0025,
+   "frameBox": [
+    [
+     0.015,
+     0.03,
+     0.974
+    ],
+    [
+     0.052,
+     0.061,
+     1.146
+    ]
+   ]
+  },
+  {
+   "key": "scapholunate-interosseous-ligament",
+   "name": "Scapholunate interosseous ligament",
+   "subregion": "wrist-hand",
+   "objects": [
+    "Scapholunate interosseous ligament.l"
+   ],
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ],
+   "ghost": [
+    "Scaphoid bone.l",
+    "Lunate bone.l"
+   ],
+   "frame": 0.06,
+   "minFrame": 0.06,
+   "keep": [
+    "Radius.*",
+    "Ulna.*",
+    "Humerus.*",
+    "Scaphoid bone.*",
+    "Lunate bone.*",
+    "Triquetrum bone.*",
+    "Pisiform bone.*",
+    "Trapezium bone.*",
+    "Trapezoid bone.*",
+    "Capitate bone.*",
+    "Hamate bone.*",
+    "*metacarpal bone*",
+    "*finger of hand*",
+    "Sesamoid bones of hand.*"
+   ],
+   "targetThickness": 0.002,
+   "solidStraps": [
+    "*nterosseous*"
+   ],
+   "publish": {
+    "locateOn": "carpal-gaps"
+   },
+   "variant": {
+    "kind": "solid",
+    "subject": "Bones"
+   }
+  },
+  {
+   "key": "anterior-meniscotibial-ligament-lateral-meniscus",
+   "name": "Anterior meniscotibial ligament (Lateral meniscus)",
+   "subregion": "knee",
+   "objects": [
+    "Anterior meniscotibial ligament (Lateral meniscus).l"
+   ],
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ],
+   "frame": 0.1,
+   "minFrame": 0.1,
+   "keep": [
+    "Femur.*",
+    "Tibia.*",
+    "Fibula.*",
+    "Patella.*"
+   ],
+   "targetThickness": 0.002,
+   "ghost": [
+    "Femur.l",
+    "Patella.l"
+   ],
+   "tilts": [
+    [
+     0,
+     45
+    ],
+    [
+     45,
+     45
+    ],
+    [
+     90,
+     45
+    ],
+    [
+     180,
+     45
+    ],
+    [
+     270,
+     45
+    ],
+    [
+     315,
+     45
+    ],
+    [
+     0,
+     89
+    ]
+   ],
+   "publish": {
+    "levelAngles": false
+   },
+   "variant": {
+    "kind": "hidden",
+    "subject": "Femur"
+   }
+  },
+  {
+   "key": "anterior-meniscotibial-ligament-medial-meniscus",
+   "name": "Anterior meniscotibial ligament (Medial meniscus)",
+   "subregion": "knee",
+   "objects": [
+    "Anterior meniscotibial ligament (Medial meniscus).l"
+   ],
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ],
+   "frame": 0.1,
+   "minFrame": 0.1,
+   "keep": [
+    "Femur.*",
+    "Tibia.*",
+    "Fibula.*",
+    "Patella.*"
+   ],
+   "targetThickness": 0.002,
+   "ghost": [
+    "Femur.l",
+    "Patella.l"
+   ],
+   "tilts": [
+    [
+     0,
+     45
+    ],
+    [
+     45,
+     45
+    ],
+    [
+     90,
+     45
+    ],
+    [
+     180,
+     45
+    ],
+    [
+     270,
+     45
+    ],
+    [
+     315,
+     45
+    ],
+    [
+     0,
+     89
+    ]
+   ],
+   "publish": {
+    "levelAngles": false
+   },
+   "variant": {
+    "kind": "hidden",
+    "subject": "Femur"
+   }
+  },
+  {
+   "key": "lunotriquetral-interosseous-ligament",
+   "name": "Lunotriquetral interosseous ligament",
+   "subregion": "wrist-hand",
+   "objects": [
+    "Lunotriquetral interosseous ligament.l"
+   ],
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ],
+   "ghost": [
+    "Lunate bone.l",
+    "Triquetrum bone.l"
+   ],
+   "frame": 0.06,
+   "minFrame": 0.06,
+   "keep": [
+    "Radius.*",
+    "Ulna.*",
+    "Humerus.*",
+    "Scaphoid bone.*",
+    "Lunate bone.*",
+    "Triquetrum bone.*",
+    "Pisiform bone.*",
+    "Trapezium bone.*",
+    "Trapezoid bone.*",
+    "Capitate bone.*",
+    "Hamate bone.*",
+    "*metacarpal bone*",
+    "*finger of hand*",
+    "Sesamoid bones of hand.*"
+   ],
+   "targetThickness": 0.002,
+   "solidStraps": [
+    "*nterosseous*"
+   ],
+   "publish": {
+    "locateOn": "carpal-gaps"
+   },
+   "variant": {
+    "kind": "solid",
+    "subject": "Bones"
+   }
+  },
+  {
+   "key": "capitohamate-interosseous-ligament",
+   "name": "Capitohamate interosseous ligament",
+   "subregion": "wrist-hand",
+   "objects": [
+    "Capitohamate interosseous ligament.l"
+   ],
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ],
+   "ghost": [
+    "Capitate bone.l",
+    "Hamate bone.l"
+   ],
+   "frame": 0.06,
+   "minFrame": 0.06,
+   "keep": [
+    "Radius.*",
+    "Ulna.*",
+    "Humerus.*",
+    "Scaphoid bone.*",
+    "Lunate bone.*",
+    "Triquetrum bone.*",
+    "Pisiform bone.*",
+    "Trapezium bone.*",
+    "Trapezoid bone.*",
+    "Capitate bone.*",
+    "Hamate bone.*",
+    "*metacarpal bone*",
+    "*finger of hand*",
+    "Sesamoid bones of hand.*"
+   ],
+   "targetThickness": 0.002,
+   "solidStraps": [
+    "*nterosseous*"
+   ],
+   "publish": {
+    "locateOn": "carpal-gaps"
+   },
+   "variant": {
+    "kind": "solid",
+    "subject": "Bones"
+   }
+  },
+  {
+   "key": "trapeziotrapezoidal-interosseous-ligament",
+   "name": "Trapeziotrapezoidal interosseous ligament",
+   "subregion": "wrist-hand",
+   "objects": [
+    "Trapeziotrapezoidal interosseous ligament.l"
+   ],
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ],
+   "ghost": [
+    "Trapezium bone.l",
+    "Trapezoid bone.l"
+   ],
+   "frame": 0.06,
+   "minFrame": 0.06,
+   "keep": [
+    "Radius.*",
+    "Ulna.*",
+    "Humerus.*",
+    "Scaphoid bone.*",
+    "Lunate bone.*",
+    "Triquetrum bone.*",
+    "Pisiform bone.*",
+    "Trapezium bone.*",
+    "Trapezoid bone.*",
+    "Capitate bone.*",
+    "Hamate bone.*",
+    "*metacarpal bone*",
+    "*finger of hand*",
+    "Sesamoid bones of hand.*"
+   ],
+   "targetThickness": 0.002,
+   "solidStraps": [
+    "*nterosseous*"
+   ],
+   "publish": {
+    "locateOn": "carpal-gaps"
+   },
+   "variant": {
+    "kind": "solid",
+    "subject": "Bones"
+   }
+  },
+  {
+   "key": "trapezoideocapitate-interosseous-ligament",
+   "name": "Trapezoideocapitate interosseous ligament",
+   "subregion": "wrist-hand",
+   "objects": [
+    "Trapezoideocapitate interosseous ligament.l"
+   ],
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ],
+   "ghost": [
+    "Trapezoid bone.l",
+    "Capitate bone.l"
+   ],
+   "frame": 0.06,
+   "minFrame": 0.06,
+   "keep": [
+    "Radius.*",
+    "Ulna.*",
+    "Humerus.*",
+    "Scaphoid bone.*",
+    "Lunate bone.*",
+    "Triquetrum bone.*",
+    "Pisiform bone.*",
+    "Trapezium bone.*",
+    "Trapezoid bone.*",
+    "Capitate bone.*",
+    "Hamate bone.*",
+    "*metacarpal bone*",
+    "*finger of hand*",
+    "Sesamoid bones of hand.*"
+   ],
+   "targetThickness": 0.002,
+   "solidStraps": [
+    "*nterosseous*"
+   ],
+   "publish": {
+    "locateOn": "carpal-gaps"
+   },
+   "variant": {
+    "kind": "solid",
+    "subject": "Bones"
+   }
+  },
+  {
+   "key": "palmar-trapezoideocapitate-ligament",
+   "name": "Palmar trapezoideocapitate ligament",
+   "subregion": "wrist-hand",
+   "objects": [
+    "Palmar trapezoideocapitate ligament.l"
+   ],
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ],
+   "ghost": [
+    "Trapezoid bone.l",
+    "Capitate bone.l"
+   ],
+   "frame": 0.06,
+   "minFrame": 0.06,
+   "keep": [
+    "Radius.*",
+    "Ulna.*",
+    "Humerus.*",
+    "Scaphoid bone.*",
+    "Lunate bone.*",
+    "Triquetrum bone.*",
+    "Pisiform bone.*",
+    "Trapezium bone.*",
+    "Trapezoid bone.*",
+    "Capitate bone.*",
+    "Hamate bone.*",
+    "*metacarpal bone*",
+    "*finger of hand*",
+    "Sesamoid bones of hand.*"
+   ],
+   "targetThickness": 0.002,
+   "solidStraps": [
+    "Palmar *",
+    "*nterosseous*",
+    "Scaphocapitate*",
+    "Scaphotrapezio*",
+    "Triquetro*",
+    "Piso*"
+   ]
+  }
+ ]
+}

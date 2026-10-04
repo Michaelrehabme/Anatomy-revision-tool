@@ -1,0 +1,162 @@
+{
+ "schemaVersion": 1,
+ "note": "The five intercarpal gaps the interosseous ligaments of the wrist are located by, all through one camera centred on the carpus (frameOn). Rendered by renderJointMasks.py --views 0,2,4,6,8,10,12,14,16,18,20,22, published by publishGapPlates.ts. Each id is the LIGAMENT the gap is asked as. `depth` renders each bone coloured by distance, so the publisher can report how level the two bones are along each seam; set `maxDepthGap` (metres) to cut a seam by it, which no gap here does.",
+ "plate": {
+  "id": "carpal-gaps",
+  "name": "Carpal bones",
+  "region": "forearm-hand",
+  "subregion": "wrist-hand",
+  "side": "left"
+ },
+ "catchMargin": 9,
+ "dropViews": [
+  [
+   "trapezoideocapitate-interosseous-ligament",
+   20
+  ]
+ ],
+ "joints": [
+  {
+   "id": "scapholunate-interosseous-ligament",
+   "name": "Scapholunate interosseous ligament",
+   "a": {
+    "id": "scaphoid",
+    "objects": [
+     "Scaphoid bone.l"
+    ]
+   },
+   "b": {
+    "id": "lunate",
+    "objects": [
+     "Lunate bone.l"
+    ]
+   },
+   "frame": 0.15,
+   "frameOn": [
+    "Scaphoid bone.l",
+    "Lunate bone.l",
+    "Triquetrum bone.l",
+    "Pisiform bone.l",
+    "Trapezium bone.l",
+    "Trapezoid bone.l",
+    "Capitate bone.l",
+    "Hamate bone.l"
+   ],
+   "depth": true
+  },
+  {
+   "id": "lunotriquetral-interosseous-ligament",
+   "name": "Lunotriquetral interosseous ligament",
+   "a": {
+    "id": "lunate",
+    "objects": [
+     "Lunate bone.l"
+    ]
+   },
+   "b": {
+    "id": "triquetrum",
+    "objects": [
+     "Triquetrum bone.l"
+    ]
+   },
+   "frame": 0.15,
+   "frameOn": [
+    "Scaphoid bone.l",
+    "Lunate bone.l",
+    "Triquetrum bone.l",
+    "Pisiform bone.l",
+    "Trapezium bone.l",
+    "Trapezoid bone.l",
+    "Capitate bone.l",
+    "Hamate bone.l"
+   ],
+   "band": 0.06,
+   "depth": true
+  },
+  {
+   "id": "trapeziotrapezoidal-interosseous-ligament",
+   "name": "Trapeziotrapezoidal interosseous ligament",
+   "a": {
+    "id": "trapezium",
+    "objects": [
+     "Trapezium bone.l"
+    ]
+   },
+   "b": {
+    "id": "trapezoid",
+    "objects": [
+     "Trapezoid bone.l"
+    ]
+   },
+   "frame": 0.15,
+   "frameOn": [
+    "Scaphoid bone.l",
+    "Lunate bone.l",
+    "Triquetrum bone.l",
+    "Pisiform bone.l",
+    "Trapezium bone.l",
+    "Trapezoid bone.l",
+    "Capitate bone.l",
+    "Hamate bone.l"
+   ],
+   "depth": true
+  },
+  {
+   "id": "trapezoideocapitate-interosseous-ligament",
+   "name": "Trapezoideocapitate interosseous ligament",
+   "a": {
+    "id": "trapezoid",
+    "objects": [
+     "Trapezoid bone.l"
+    ]
+   },
+   "b": {
+    "id": "capitate",
+    "objects": [
+     "Capitate bone.l"
+    ]
+   },
+   "frame": 0.15,
+   "frameOn": [
+    "Scaphoid bone.l",
+    "Lunate bone.l",
+    "Triquetrum bone.l",
+    "Pisiform bone.l",
+    "Trapezium bone.l",
+    "Trapezoid bone.l",
+    "Capitate bone.l",
+    "Hamate bone.l"
+   ],
+   "band": 0.06,
+   "depth": true
+  },
+  {
+   "id": "capitohamate-interosseous-ligament",
+   "name": "Capitohamate interosseous ligament",
+   "a": {
+    "id": "capitate",
+    "objects": [
+     "Capitate bone.l"
+    ]
+   },
+   "b": {
+    "id": "hamate",
+    "objects": [
+     "Hamate bone.l"
+    ]
+   },
+   "frame": 0.15,
+   "frameOn": [
+    "Scaphoid bone.l",
+    "Lunate bone.l",
+    "Triquetrum bone.l",
+    "Pisiform bone.l",
+    "Trapezium bone.l",
+    "Trapezoid bone.l",
+    "Capitate bone.l",
+    "Hamate bone.l"
+   ],
+   "depth": true
+  }
+ ]
+}

@@ -122,6 +122,80 @@ def principled(name, colour, roughness=0.5):
 
 
 MASK_MAT = flat("joint_mask_white", (1, 1, 1, 1))
+
+# HOW FAR AWAY EACH BONE IS, PIXEL BY PIXEL (spec field `depth`, opt-in).
+#
+# Two silhouettes meet on screen in two different ways: at the joint, where the
+# two surfaces really are side by side, and where one bone simply stands in
+# front of the other. The seam tracer cannot tell them apart from flat masks.
+# Rendering each bone again with its distance from the camera as its colour
+# gives it the fact that can: how far apart in depth the two bones are either
+# side of the seam. It was added to settle whether the L-shaped
+# trapeziotrapezoidal band was following a joint or an edge (a joint; see
+# publishGapPlates.ts), and it is evidence to be read, not a filter that runs.
+#
+# The value is linear in distance: 0 at DEPTH_RANGE/2 nearer than the centre of
+# the frame, 1 at DEPTH_RANGE/2 beyond it. Written through the Standard view
+# transform with no dither, as a 16-bit PNG, so a pixel decodes back to a
+# distance (lib/seamBand.ts). Sixteen bits because eight were not enough: the
+# sRGB curve spends its codes on the dark end, and mid-range a step of one was
+# 1.5 mm — half the 3 mm the tracer is asked to tell apart.
+DEPTH_RANGE = 0.256
+
+
+def depth_material():
+    mat = bpy.data.materials.new("joint_depth")
+    mat.use_nodes = True
+    nt = mat.node_tree
+    nt.nodes.clear()
+    out = nt.nodes.new("ShaderNodeOutputMaterial")
+    em = nt.nodes.new("ShaderNodeEmission")
+    geo = nt.nodes.new("ShaderNodeNewGeometry")
+    dot = nt.nodes.new("ShaderNodeVectorMath")
+    dot.operation = "DOT_PRODUCT"
+    dot.name = "depth_dot"
+    sub = nt.nodes.new("ShaderNodeMath")
+    sub.operation = "SUBTRACT"
+    sub.name = "depth_near"
+    div = nt.nodes.new("ShaderNodeMath")
+    div.operation = "DIVIDE"
+    div.use_clamp = True
+    div.inputs[1].default_value = DEPTH_RANGE
+    nt.links.new(geo.outputs["Position"], dot.inputs[0])
+    nt.links.new(dot.outputs["Value"], sub.inputs[0])
+    nt.links.new(sub.outputs[0], div.inputs[0])
+    nt.links.new(div.outputs[0], em.inputs[0])
+    em.inputs[1].default_value = 1.0
+    nt.links.new(em.outputs[0], out.inputs[0])
+    return mat
+
+
+DEPTH_MAT = depth_material()
+
+
+def aim_depth(center):
+    """Point DEPTH_MAT down the current camera's axis, centred on `center`."""
+    fwd = (center - cam.location).normalized()
+    nodes = DEPTH_MAT.node_tree.nodes
+    nodes["depth_dot"].inputs[1].default_value = fwd
+    nodes["depth_near"].inputs[1].default_value = center.dot(fwd) - DEPTH_RANGE / 2
+
+
+def render_depth(path):
+    """render_to, with the colour pipeline switched off so a byte is a distance."""
+    vs = scene.view_settings
+    img = scene.render.image_settings
+    saved = (vs.view_transform, vs.look, vs.exposure, vs.gamma, scene.render.dither_intensity, img.color_depth)
+    vs.view_transform, vs.look, vs.exposure, vs.gamma = "Standard", "None", 0.0, 1.0
+    scene.render.dither_intensity = 0.0
+    img.color_depth = "16"
+    try:
+        render_to(path)
+    finally:
+        (vs.view_transform, vs.look, vs.exposure, vs.gamma,
+         scene.render.dither_intensity, img.color_depth) = saved
+
+
 BONE_MAT = principled("joint_bone", (0.93, 0.92, 0.89, 1), 0.55)
 
 
@@ -527,6 +601,14 @@ for jid in wanted:
             link(partner, f"partner_{side}_{jid}", BONE_MAT, holdout=True)
             link(mesh, f"mask_{side}_{jid}", MASK_MAT)
             render_to(os.path.join(a.out, jid, f"view-{frame:02d}", f"{side}.png"))
+            if j.get("depth"):
+                # The same silhouette again, coloured by distance (see DEPTH_RANGE).
+                clear()
+                link(occ, f"occ_{jid}", BONE_MAT, holdout=True)
+                link(partner, f"partner_{side}_{jid}", BONE_MAT, holdout=True)
+                link(mesh, f"depth_{side}_{jid}", DEPTH_MAT)
+                aim_depth(mathutils.Vector(((lo[0] + hi[0]) / 2, (lo[1] + hi[1]) / 2, (lo[2] + hi[2]) / 2)))
+                render_depth(os.path.join(a.out, jid, f"view-{frame:02d}", f"{side}.depth.png"))
 
         # The image a locate question actually shows: the whole skeleton framed
         # on this joint, lit normally and NOT highlighted — highlighting the

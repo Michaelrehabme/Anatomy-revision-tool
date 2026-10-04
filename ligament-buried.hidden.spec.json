@@ -1,0 +1,114 @@
+{
+ "schemaVersion": 1,
+ "note": "VARIANT of ligament-buried.spec.json: the knee pair with the femur and patella cut away instead of ghosted, on the same tilted cameras. The level a000 frame is rendered only because the renderer needs one; it is never published.",
+ "ligaments": [
+  {
+   "key": "anterior-meniscotibial-ligament-lateral-meniscus",
+   "name": "Anterior meniscotibial ligament (Lateral meniscus)",
+   "subregion": "knee",
+   "objects": [
+    "Anterior meniscotibial ligament (Lateral meniscus).l"
+   ],
+   "angles": [
+    0
+   ],
+   "frame": 0.1,
+   "minFrame": 0.1,
+   "keep": [
+    "Femur.*",
+    "Tibia.*",
+    "Fibula.*",
+    "Patella.*"
+   ],
+   "targetThickness": 0.002,
+   "tilts": [
+    [
+     0,
+     45
+    ],
+    [
+     45,
+     45
+    ],
+    [
+     90,
+     45
+    ],
+    [
+     180,
+     45
+    ],
+    [
+     270,
+     45
+    ],
+    [
+     315,
+     45
+    ],
+    [
+     0,
+     89
+    ]
+   ],
+   "tiltCutaway": [
+    "Femur.l",
+    "Patella.l"
+   ]
+  },
+  {
+   "key": "anterior-meniscotibial-ligament-medial-meniscus",
+   "name": "Anterior meniscotibial ligament (Medial meniscus)",
+   "subregion": "knee",
+   "objects": [
+    "Anterior meniscotibial ligament (Medial meniscus).l"
+   ],
+   "angles": [
+    0
+   ],
+   "frame": 0.1,
+   "minFrame": 0.1,
+   "keep": [
+    "Femur.*",
+    "Tibia.*",
+    "Fibula.*",
+    "Patella.*"
+   ],
+   "targetThickness": 0.002,
+   "tilts": [
+    [
+     0,
+     45
+    ],
+    [
+     45,
+     45
+    ],
+    [
+     90,
+     45
+    ],
+    [
+     180,
+     45
+    ],
+    [
+     270,
+     45
+    ],
+    [
+     315,
+     45
+    ],
+    [
+     0,
+     89
+    ]
+   ],
+   "tiltCutaway": [
+    "Femur.l",
+    "Patella.l"
+   ]
+  }
+ ]
+}

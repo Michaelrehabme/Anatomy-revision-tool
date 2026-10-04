@@ -1,10 +1,10 @@
 import { existsSync, mkdirSync, readdirSync, readFileSync, unlinkSync, writeFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { isAbsolute, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
 import { ALL_STRUCTURES } from '../features/anatomy-revision/data/seed/index';
 import { isLigament } from '../features/anatomy-revision/types/structure';
-import type { ViewType } from '../features/anatomy-revision/types/image';
+import type { ImageVariantKind, ViewType } from '../features/anatomy-revision/types/image';
 import { pointInAnyPolygon } from '../features/anatomy-revision/lib/hotspot/pointInPolygon';
 import { simplifyRing } from '../features/anatomy-revision/lib/hotspot/polygonGeometry';
 import { decodePng } from './lib/png';
@@ -53,6 +53,29 @@ import { LIGAMENT_HOTSPOTS } from '../features/anatomy-revision/data/seed/hotspo
  * every 45 degrees, so 0 is anterior, 270 is lateral, 90 is medial and the
  * obliques fall between. The angle is also kept on the row, because a
  * rotation widget wants the number, not the word.
+ *
+ * --spec FILE reads what the renderer ignores: per-ligament publishing
+ * decisions (see ligament-buried.spec.json).
+ *   publish.levelAngles false   only the tilted views are published. The
+ *                               meniscotibial pair lie flat on the tibial
+ *                               plateau and show nothing from a level camera.
+ *   publish.locateOn            the ligament is LOCATED on another plate (the
+ *                               interosseous ligaments of the wrist, on the
+ *                               carpal gap plate). Only its identify pictures
+ *                               are published here and it gets no hotspot.
+ *   variant {kind, subject}     what its second render is, and the word the
+ *                               viewer switch uses ("Femur", "Bones").
+ *
+ * --variants hidden=DIR;solid=DIR publishes A SECOND RENDER OF THE SAME
+ * CAMERAS beside each frame: the femur cut away instead of ghosted, the
+ * carpal bones solid instead of see-through. It is the same frame, so it is
+ * not a row of its own: it rides on the default row as `variant`, the viewer
+ * offers a switch wherever a frame has one, and locate grades every tap
+ * against the default picture's hotspots whichever is showing. That is only
+ * honest if the target is in the same place in both, so a variant of a locate
+ * picture is published only where its mask matches the default's.
+ * The file is <ligament>-<marker>-<kind>.<variant>.webp: the variant stays out
+ * of the -aNNN- segment so the name still sorts beside its frame.
  */
 
 const ROOT = fileURLToPath(new URL('../..', import.meta.url));
@@ -122,7 +145,42 @@ function parseArgs(argv: string[]): Record<string, string> {
   return out;
 }
 const args = parseArgs(process.argv.slice(2));
-const rendersRoot = join(ROOT, args.renders ?? 'renders/ligaments-tranche1');
+/** Absolute, or relative to the repo: the renders live in the main checkout, a worktree publishes from there. */
+const fromRoot = (p: string) => (isAbsolute(p) ? p : join(ROOT, p));
+const rendersRoot = fromRoot(args.renders ?? 'renders/ligaments-tranche1');
+
+interface SpecEntry {
+  key: string;
+  objects?: string[];
+  publish?: { levelAngles?: boolean; locateOn?: string };
+  variant?: { kind: ImageVariantKind; subject: string };
+}
+const readSpec = (path: string): SpecEntry[] =>
+  existsSync(path) ? (JSON.parse(readFileSync(path, 'utf8')).ligaments ?? []) : [];
+const specByKey = new Map<string, SpecEntry>(args.spec ? readSpec(fromRoot(args.spec)).map((e) => [e.key, e]) : []);
+
+/** variant kind -> the renders root that holds it, from --variants hidden=DIR;solid=DIR. */
+const variantRoots = new Map<ImageVariantKind, string>(
+  (args.variants ?? '').split(';').filter(Boolean).map((pair) => {
+    const at = pair.indexOf('=');
+    return [pair.slice(0, at) as ImageVariantKind, fromRoot(pair.slice(at + 1))];
+  }),
+);
+
+/**
+ * LIGAMENTS LOCATED ON THE GAP PLATE HAVE NO HOTSPOT ANYWHERE ELSE. The five
+ * interosseous ligaments of the wrist are asked by the gap between their two
+ * bones (carpal-gaps.spec.json). If they were also traced as a neighbour on
+ * another ligament's plate, locate would find that hotspot and ask them a
+ * second time there, as a chip seen through a ghosted bone — the question the
+ * gap plate exists to replace. Read from the gap spec rather than --spec, so a
+ * later run that names neither still leaves them alone.
+ */
+const gapLocated = new Set<string>(
+  existsSync(`${ROOT}/carpal-gaps.spec.json`)
+    ? (JSON.parse(readFileSync(`${ROOT}/carpal-gaps.spec.json`, 'utf8')).joints as { id: string }[]).map((j) => j.id)
+    : [],
+);
 const only = args.only ? new Set(args.only.split(',').map((x) => x.trim()).filter(Boolean)) : null;
 const quality = Number(args.quality ?? '82');
 
@@ -140,6 +198,20 @@ const idByMeshName = new Map<string, string>();
     readFileSync(`${ROOT}/ta2-mapping-ligaments.resolved.json`, 'utf8'),
   ).mapping;
   for (const m of mapping) for (const b of m.blenderObjects) idByMeshName.set(b.replace(/\.(o\d?)?[lr]$/, ''), m.id);
+  // The mapping file was last regenerated for the first tranche alone, so it
+  // names 32 ligaments and the other 111 would be scenery on any plate
+  // published now. The render specs say which meshes each ligament is drawn
+  // from, which is the same fact; a spec key that is not a seeded ligament is
+  // ignored, as an unmapped mesh always was.
+  for (const file of ['ligament-tranche1.spec.json', 'ligament-tranche2.spec.json', 'ligament-buried.spec.json']) {
+    for (const e of readSpec(`${ROOT}/${file}`)) {
+      if (!byId.has(e.key)) continue;
+      for (const b of e.objects ?? []) {
+        const base = b.replace(/\.(o\d?)?[lr]$/, '');
+        if (!idByMeshName.has(base)) idByMeshName.set(base, e.key);
+      }
+    }
+  }
 }
 
 interface Hotspot { structureId: string; polygons: number[][][]; area: number; centroid: [number, number] }
@@ -176,6 +248,8 @@ function traceNeighbours(dir: string, targetId: string): IdPass {
     const structureId = idByMeshName.get(meshName.replace(/\.(o\d?)?[lr]$/, ''));
     // A strap that is not a seeded ligament is scenery: drawn, not askable.
     if (!structureId) continue;
+    // Drawn, and deliberately not askable here: see gapLocated.
+    if (gapLocated.has(structureId)) continue;
     structureByIndex.set(k, structureId);
     const mask = new Uint8Array(index.length);
     let n = 0;
@@ -256,9 +330,27 @@ interface Row {
   structureId: string; name: string; region: string; subregion: string;
   view: ViewType; angle: number; elevation?: number; kind: 'context' | 'highlight';
   width: number; height: number; panelStructureNames: string[];
+  /** The second render of this frame, when one was published beside it. */
+  variant?: { kind: ImageVariantKind; subject: string };
 }
+
+/** Share of the two masks' union that both cover: 1 is the same target in the same place. */
+function maskAgreement(a: Uint8Array, b: Uint8Array): number {
+  let both = 0;
+  let either = 0;
+  for (let i = 0; i < a.length; i++) {
+    if (a[i] || b[i]) either++;
+    if (a[i] && b[i]) both++;
+  }
+  return either ? both / either : 1;
+}
+/** Under this a variant's target is not where the default's is, and a tap would be graded against the wrong picture. */
+const MIN_VARIANT_AGREEMENT = 0.9;
+const variantReport: string[] = [];
 const rows: Row[] = [];
 const hotspots: Record<string, Hotspot[]> = {};
+/** Image ids whose hotspots came from the current seed (--only), not from this run's renders. */
+const carried = new Set<string>();
 const skipped: string[] = [];
 const dropped: string[] = [];
 let published = 0;
@@ -280,10 +372,24 @@ for (const ligId of readdirSync(rendersRoot).sort()) {
     const tiltMatch = /([ud])(\d{3})$/.exec(angleDir);
     const elevation = tiltMatch ? (tiltMatch[1] === 'u' ? 1 : -1) * Number(tiltMatch[2]) : 0;
     const foot = lig?.subregion === 'ankle-foot';
-    const view: ViewType | undefined = elevation > 0 ? (foot ? 'dorsal' : 'superior')
-      : elevation < 0 ? (foot ? 'plantar' : 'inferior')
+    // A TILTED VIEW KEEPS ITS COMPASS NAME. Everything tilted used to be called
+    // 'superior', which was true of the one straight-down frame and left the
+    // six 45-degree views of the knee with one name between them: the caption
+    // under the picture read the same whichever way the student had turned.
+    // Only a camera within ten degrees of the pole is the view from above (or
+    // below); anything else is the side it was turned to, and the viewer adds
+    // "tilted up 45°" from the id. The foot keeps dorsal and plantar, which is
+    // what its tilted views are called by everyone who examines one.
+    const steep = Math.abs(elevation) >= 80;
+    const view: ViewType | undefined = elevation > 0 ? (foot ? 'dorsal' : steep ? 'superior' : VIEW_FOR_ANGLE[angle])
+      : elevation < 0 ? (foot ? 'plantar' : steep ? 'inferior' : VIEW_FOR_ANGLE[angle])
       : VIEW_FOR_ANGLE[angle];
     if (!view) { skipped.push(`${ligId} ${angleDir}: no view name for this angle`); continue; }
+    const hints = specByKey.get(ligId);
+    if (hints?.publish?.levelAngles === false && elevation === 0) {
+      skipped.push(`${ligId} ${angleDir}: level angle, and this ligament is published from above only`);
+      continue;
+    }
     if (!['context', 'highlight', 'mask'].every((f) => existsSync(join(dir, `${f}.png`)))) {
       skipped.push(`${ligId} ${angleDir}: render incomplete`);
       continue;
@@ -299,24 +405,59 @@ for (const ligId of readdirSync(rendersRoot).sort()) {
 
     const target: Hotspot = { structureId: ligId, polygons: traced.polygons, area: traced.area, centroid: traced.centroid };
     tracedAreas.push(traced.area);
-    const idPass = traceNeighbours(dir, ligId);
+    // Located on another plate: the identify picture only, and no hotspot.
+    const identifyOnly = !!hints?.publish?.locateOn || gapLocated.has(ligId);
+    const kinds = identifyOnly ? (['highlight'] as const) : (['context', 'highlight'] as const);
+
+    // The second render of this frame, if there is one and it is the same frame.
+    let variant: Row['variant'];
+    const variantRoot = hints?.variant ? variantRoots.get(hints.variant.kind) : undefined;
+    if (hints?.variant && variantRoot) {
+      const vdir = join(variantRoot, ligId, angleDir);
+      if (!kinds.every((k) => existsSync(join(vdir, `${k}.png`)))) {
+        variantReport.push(`${ligId} ${angleDir}: no ${hints.variant.kind} render, switch disabled on this frame`);
+      } else if (!identifyOnly) {
+        const vmask = decodePng(join(vdir, 'mask.png'));
+        const agreement = vmask.width === mask.width && vmask.height === mask.height
+          ? maskAgreement(binariseAlpha(mask.data, mask.width, mask.height), binariseAlpha(vmask.data, vmask.width, vmask.height))
+          : 0;
+        if (agreement < MIN_VARIANT_AGREEMENT) {
+          variantReport.push(`${ligId} ${angleDir}: ${hints.variant.kind} target only ${(agreement * 100).toFixed(0)}% the same as the default's, NOT published`);
+        } else {
+          variant = hints.variant;
+          variantReport.push(`${ligId} ${angleDir}: ${hints.variant.kind} target ${(agreement * 100).toFixed(1)}% the same`);
+        }
+      } else {
+        variant = hints.variant;
+      }
+    }
+    const idPass = identifyOnly ? { neighbours: [], ownerAt: () => '' } : traceNeighbours(dir, ligId);
     const neighbours = makeExclusive(target, idPass.neighbours, idPass.ownerAt);
     if (neighbours.length < idPass.neighbours.length) {
       dropped.push(`${ligId} ${angleDir}: ${idPass.neighbours.length - neighbours.length} neighbour hotspot(s) dropped to keep taps exclusive`);
     }
     const names = [lig.name, ...neighbours.map((n) => byId.get(n.structureId)!.name)];
 
-    for (const kind of ['context', 'highlight'] as const) {
+    for (const kind of kinds) {
       const dest = join(OUT_DIR, `${ligId}-${angleDir}-${kind}.webp`);
       const info = await sharp(join(dir, `${kind}.png`)).flatten({ background: '#ffffff' }).webp({ quality }).toFile(dest);
+      if (variant) {
+        const vdest = join(OUT_DIR, `${ligId}-${angleDir}-${kind}.${variant.kind}.webp`);
+        const vinfo = await sharp(join(variantRoot!, ligId, angleDir, `${kind}.png`)).flatten({ background: '#ffffff' }).webp({ quality }).toFile(vdest);
+        if (vinfo.width !== info.width || vinfo.height !== info.height) {
+          throw new Error(`${ligId} ${angleDir} ${kind}: the ${variant.kind} render is ${vinfo.width}x${vinfo.height}, the default ${info.width}x${info.height}`);
+        }
+        published++;
+      }
       rows.push({
         structureId: ligId, name: lig.name, region: lig.region, subregion: lig.subregion,
         view, angle, ...(elevation ? { elevation } : {}), kind, width: info.width, height: info.height,
         panelStructureNames: kind === 'context' ? names : [lig.name],
+        ...(variant ? { variant } : {}),
       });
       published++;
     }
-    hotspots[`ligament-${ligId}-${angleDir}-context`] = [target, ...neighbours];
+    if (!identifyOnly) hotspots[`ligament-${ligId}-${angleDir}-context`] = [target, ...neighbours];
   }
   if (tracedAreas.length) {
     const pct = (x: number) => `${(x * 100).toFixed(2)}%`;
@@ -335,12 +476,13 @@ if (only) {
   // Carry every other ligament over from the current seed, untouched.
   for (const plate of LIGAMENT_PLATES) {
     if (only.has(plate.structureId)) continue;
-    rows.push({ ...plate, panelStructureNames: [...plate.panelStructureNames] });
+    rows.push({ ...plate, panelStructureNames: [...plate.panelStructureNames], ...(plate.variant ? { variant: { ...plate.variant } } : {}) });
   }
   for (const [imageId, list] of Object.entries(LIGAMENT_HOTSPOTS)) {
     const owner = list[0]?.structureId;
     if (owner && only.has(owner)) continue;
     hotspots[imageId] = list.map((h) => ({ structureId: h.structureId, polygons: h.polygons, area: h.area, centroid: h.centroid }));
+    carried.add(imageId);
   }
   rows.sort((a, b) =>
     a.structureId.localeCompare(b.structureId) || a.angle - b.angle || (a.elevation ?? 0) - (b.elevation ?? 0) || a.kind.localeCompare(b.kind),
@@ -352,7 +494,9 @@ if (only) {
 // it the same ligament's name, region and view repeated on every image, and
 // every ligament in view spelled out on every locate picture. Each ligament's
 // facts are written once, names are a table, every plate is 1600px square,
-// and a row is [ligament, angle, elevation, kind, view, names].
+// and a row is [ligament, angle, elevation, kind, view, names], with a seventh
+// entry — an index into VARIANTS, from 1 — only on a frame that has one.
+const VARIANTS = [...new Set(rows.filter((r) => r.variant).map((r) => JSON.stringify([r.variant!.kind, r.variant!.subject])))].sort();
 const NAMES = [...new Set(rows.flatMap((r) => r.panelStructureNames))].sort();
 const nameIndex = new Map(NAMES.map((n, i) => [n, i]));
 const VIEWS = [...new Set(rows.map((r) => r.view))].sort();
@@ -362,10 +506,13 @@ const sizes = new Set(rows.map((r) => `${r.width}x${r.height}`));
 if (sizes.size > 1) throw new Error(`plates are not all one size: ${[...sizes].join(', ')}`);
 const [W, H] = (rows[0] ? [rows[0].width, rows[0].height] : [1600, 1600]);
 const body = rows
-  .map((r) => JSON.stringify([r.structureId, r.angle, r.elevation ?? 0, r.kind === 'context' ? 0 : 1, VIEWS.indexOf(r.view), r.panelStructureNames.map((n) => nameIndex.get(n))]))
+  .map((r) => JSON.stringify([
+    r.structureId, r.angle, r.elevation ?? 0, r.kind === 'context' ? 0 : 1, VIEWS.indexOf(r.view), r.panelStructureNames.map((n) => nameIndex.get(n)),
+    ...(r.variant ? [VARIANTS.indexOf(JSON.stringify([r.variant.kind, r.variant.subject])) + 1] : []),
+  ]))
   .join(',\n');
 
-writeFileSync(OUT_TS, `import type { ViewType } from '../../types/image';
+writeFileSync(OUT_TS, `import type { ImageVariantKind, ViewType } from '../../types/image';
 import type { Region, SubRegion } from '../../types/region';
 
 /**
@@ -376,7 +523,8 @@ import type { Region, SubRegion } from '../../types/region';
  * angles (and a foot ligament four tilted views) and each view two kinds:
  * 'context' (every ligament at rest; the locate picture, with hotspots) and
  * 'highlight' (the target in cyan; the identify picture, no hotspots). Only
- * views where the target traced are here. Stored compactly — see
+ * views where the target traced are here. A ligament located on another plate
+ * (publish.locateOn in its spec) has highlight rows only. Stored compactly — see
  * publishLigamentPlates.ts — and expanded to LigamentPlate on load.
  */
 export interface LigamentPlate {
@@ -394,6 +542,12 @@ export interface LigamentPlate {
   height: number;
   /** Every seeded ligament visible in the picture, the target first. */
   panelStructureNames: string[];
+  /**
+   * A second render of this frame through the same camera, published beside it
+   * as <ligament>-<marker>-<kind>.<variant>.webp: what it does to the picture,
+   * and the word the viewer switch names it by.
+   */
+  variant?: { kind: ImageVariantKind; subject: string };
 }
 
 const W = ${W};
@@ -401,11 +555,12 @@ const H = ${H};
 const NAMES: string[] = ${JSON.stringify(NAMES)};
 const VIEWS: ViewType[] = ${JSON.stringify(VIEWS)};
 const LIGS: Record<string, [string, Region, SubRegion]> = ${JSON.stringify(ligFacts)};
-const ROWS: [string, number, number, 0 | 1, number, number[]][] = [
+const VARIANTS: [ImageVariantKind, string][] = ${JSON.stringify(VARIANTS.map((v) => JSON.parse(v)))};
+const ROWS: [string, number, number, 0 | 1, number, number[], number?][] = [
 ${body}
 ];
 
-export const LIGAMENT_PLATES: LigamentPlate[] = ROWS.map(([structureId, angle, elevation, kind, view, names]) => {
+export const LIGAMENT_PLATES: LigamentPlate[] = ROWS.map(([structureId, angle, elevation, kind, view, names, variant]) => {
   const [name, region, subregion] = LIGS[structureId];
   return {
     structureId,
@@ -419,6 +574,7 @@ export const LIGAMENT_PLATES: LigamentPlate[] = ROWS.map(([structureId, angle, e
     width: W,
     height: H,
     panelStructureNames: names.map((i) => NAMES[i]),
+    ...(variant ? { variant: { kind: VARIANTS[variant - 1][0], subject: VARIANTS[variant - 1][1] } } : {}),
   };
 });
 `);
@@ -456,9 +612,16 @@ for (const [imageId, list] of Object.entries(hotspots).sort(([a], [b]) => a.loca
   // (the ATFL's plantar view claimed 12% of the leg membrane). makeExclusive
   // checked the detailed outlines, so where the coarse ones overlap, the
   // image keeps its detailed ones.
-  const coarse = list.map((h, i) => roundRings(i === 0 ? h.polygons : coarsen(h.polygons)));
+  // CARRIED OVER MEANS UNTOUCHED. A carried image's outlines were coarsened
+  // when it was published; putting them through the simplifier again shaved a
+  // vertex here and there off every neighbour on every other ligament's plate,
+  // each time any one ligament was re-published with --only (4 Oct 2026: nine
+  // ligaments published, 5,400 lines of other plates' hotspots changed). They
+  // are written back exactly as they were read.
+  const asIs = carried.has(imageId);
+  const coarse = list.map((h, i) => (asIs || i === 0 ? roundRings(h.polygons) : roundRings(coarsen(h.polygons))));
   const fine = list.map((h) => roundRings(h.polygons));
-  const useFine = list.length > 1 && doubledShare(coarse) > 0.008;
+  const useFine = !asIs && list.length > 1 && doubledShare(coarse) > 0.008;
   if (useFine) keptFine++;
   const lines = list.map((h, i) => {
     const polygons = (useFine ? fine : coarse)[i];
@@ -512,11 +675,18 @@ if (skipped.length) {
 // Delete what nothing points at. A file name is <ligament>-a<angle>-<kind>.webp.
 const markerOf = (r: Row) =>
   `a${String(r.angle).padStart(3, '0')}${r.elevation ? `${r.elevation > 0 ? 'u' : 'd'}${String(Math.abs(r.elevation)).padStart(3, '0')}` : ''}`;
-const wanted = new Set(rows.map((r) => `${r.structureId}-${markerOf(r)}-${r.kind}.webp`));
+const wanted = new Set(rows.flatMap((r) => [
+  `${r.structureId}-${markerOf(r)}-${r.kind}.webp`,
+  ...(r.variant ? [`${r.structureId}-${markerOf(r)}-${r.kind}.${r.variant.kind}.webp`] : []),
+]));
 const stale = readdirSync(OUT_DIR).filter((name) => name.endsWith('.webp') && !wanted.has(name));
 for (const name of stale) unlinkSync(join(OUT_DIR, name));
 console.log(`${stale.length} stale image(s) removed from public/anatomy/ligaments`);
 for (const name of stale) console.log(`  ${name}`);
+if (variantReport.length) {
+  console.log('Second renders (variants):');
+  for (const line of variantReport) console.log(`  ${line}`);
+}
 if (areaReport.length) {
   console.log('Target size per ligament published from this run:');
   for (const line of areaReport) console.log(line);

@@ -1,0 +1,206 @@
+{
+ "schemaVersion": 1,
+ "note": "VARIANT of ligament-buried.spec.json: the five interosseous ligaments of the wrist with the carpal bones solid instead of ghosted, same cameras. Identify only; no hotspot is traced from these.",
+ "ligaments": [
+  {
+   "key": "scapholunate-interosseous-ligament",
+   "name": "Scapholunate interosseous ligament",
+   "subregion": "wrist-hand",
+   "objects": [
+    "Scapholunate interosseous ligament.l"
+   ],
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ],
+   "frame": 0.06,
+   "minFrame": 0.06,
+   "keep": [
+    "Radius.*",
+    "Ulna.*",
+    "Humerus.*",
+    "Scaphoid bone.*",
+    "Lunate bone.*",
+    "Triquetrum bone.*",
+    "Pisiform bone.*",
+    "Trapezium bone.*",
+    "Trapezoid bone.*",
+    "Capitate bone.*",
+    "Hamate bone.*",
+    "*metacarpal bone*",
+    "*finger of hand*",
+    "Sesamoid bones of hand.*"
+   ],
+   "targetThickness": 0.002,
+   "solidStraps": [
+    "*nterosseous*"
+   ]
+  },
+  {
+   "key": "lunotriquetral-interosseous-ligament",
+   "name": "Lunotriquetral interosseous ligament",
+   "subregion": "wrist-hand",
+   "objects": [
+    "Lunotriquetral interosseous ligament.l"
+   ],
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ],
+   "frame": 0.06,
+   "minFrame": 0.06,
+   "keep": [
+    "Radius.*",
+    "Ulna.*",
+    "Humerus.*",
+    "Scaphoid bone.*",
+    "Lunate bone.*",
+    "Triquetrum bone.*",
+    "Pisiform bone.*",
+    "Trapezium bone.*",
+    "Trapezoid bone.*",
+    "Capitate bone.*",
+    "Hamate bone.*",
+    "*metacarpal bone*",
+    "*finger of hand*",
+    "Sesamoid bones of hand.*"
+   ],
+   "targetThickness": 0.002,
+   "solidStraps": [
+    "*nterosseous*"
+   ]
+  },
+  {
+   "key": "capitohamate-interosseous-ligament",
+   "name": "Capitohamate interosseous ligament",
+   "subregion": "wrist-hand",
+   "objects": [
+    "Capitohamate interosseous ligament.l"
+   ],
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ],
+   "frame": 0.06,
+   "minFrame": 0.06,
+   "keep": [
+    "Radius.*",
+    "Ulna.*",
+    "Humerus.*",
+    "Scaphoid bone.*",
+    "Lunate bone.*",
+    "Triquetrum bone.*",
+    "Pisiform bone.*",
+    "Trapezium bone.*",
+    "Trapezoid bone.*",
+    "Capitate bone.*",
+    "Hamate bone.*",
+    "*metacarpal bone*",
+    "*finger of hand*",
+    "Sesamoid bones of hand.*"
+   ],
+   "targetThickness": 0.002,
+   "solidStraps": [
+    "*nterosseous*"
+   ]
+  },
+  {
+   "key": "trapeziotrapezoidal-interosseous-ligament",
+   "name": "Trapeziotrapezoidal interosseous ligament",
+   "subregion": "wrist-hand",
+   "objects": [
+    "Trapeziotrapezoidal interosseous ligament.l"
+   ],
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ],
+   "frame": 0.06,
+   "minFrame": 0.06,
+   "keep": [
+    "Radius.*",
+    "Ulna.*",
+    "Humerus.*",
+    "Scaphoid bone.*",
+    "Lunate bone.*",
+    "Triquetrum bone.*",
+    "Pisiform bone.*",
+    "Trapezium bone.*",
+    "Trapezoid bone.*",
+    "Capitate bone.*",
+    "Hamate bone.*",
+    "*metacarpal bone*",
+    "*finger of hand*",
+    "Sesamoid bones of hand.*"
+   ],
+   "targetThickness": 0.002,
+   "solidStraps": [
+    "*nterosseous*"
+   ]
+  },
+  {
+   "key": "trapezoideocapitate-interosseous-ligament",
+   "name": "Trapezoideocapitate interosseous ligament",
+   "subregion": "wrist-hand",
+   "objects": [
+    "Trapezoideocapitate interosseous ligament.l"
+   ],
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ],
+   "frame": 0.06,
+   "minFrame": 0.06,
+   "keep": [
+    "Radius.*",
+    "Ulna.*",
+    "Humerus.*",
+    "Scaphoid bone.*",
+    "Lunate bone.*",
+    "Triquetrum bone.*",
+    "Pisiform bone.*",
+    "Trapezium bone.*",
+    "Trapezoid bone.*",
+    "Capitate bone.*",
+    "Hamate bone.*",
+    "*metacarpal bone*",
+    "*finger of hand*",
+    "Sesamoid bones of hand.*"
+   ],
+   "targetThickness": 0.002,
+   "solidStraps": [
+    "*nterosseous*"
+   ]
+  }
+ ]
+}

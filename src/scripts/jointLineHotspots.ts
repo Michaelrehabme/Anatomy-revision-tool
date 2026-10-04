@@ -50,7 +50,9 @@ import { writeFileSync, mkdirSync, existsSync, readdirSync, readFileSync } from 
 import { join } from 'node:path';
 import { decodePng } from './lib/png';
 import { encodePng } from './lib/pngEncode';
-import { binariseAlpha, maskToPolygons, type BinaryMask } from './lib/maskToPolygons';
+import { maskToPolygons, type BinaryMask } from './lib/maskToPolygons';
+// The seam recipe itself, shared with publishGapPlates.ts.
+import { countSet, dilateBy, loadMask, seamBand } from './lib/seamBand';
 
 /**
  * PER-JOINT OVERRIDES, FROM THE SAME SPEC THE MASKS WERE RENDERED FROM.
@@ -142,32 +144,6 @@ function parseArgs(argv: string[]): Options {
   };
 }
 
-/**
- * Grow by `steps` pixels using a 3x3 element. Repeated 3x3 dilation is a
- * chamfer rather than a true disc, so a diagonal grows by about 1.4x `steps` —
- * irrelevant at the pad sizes used here, and cheaper than a distance transform.
- */
-function dilateBy(mask: BinaryMask, width: number, height: number, steps: number): BinaryMask {
-  let current = mask;
-  for (let s = 0; s < steps; s++) {
-    const next = new Uint8Array(current.length);
-    for (let y = 0; y < height; y++) {
-      for (let x = 0; x < width; x++) {
-        if (current[y * width + x] === 0) continue;
-        for (let dy = -1; dy <= 1; dy++) {
-          for (let dx = -1; dx <= 1; dx++) {
-            const nx = x + dx;
-            const ny = y + dy;
-            if (nx < 0 || ny < 0 || nx >= width || ny >= height) continue;
-            next[ny * width + nx] = 1;
-          }
-        }
-      }
-    }
-    current = next;
-  }
-  return current;
-}
 
 
 
@@ -176,63 +152,6 @@ const angleOfView = (view: string): number => (Number(view.replace('view-', ''))
 
 /** "a090", the segment that makes a set of frames one picture (lib/rotationFrames.ts). */
 const angleSlug = (angle: number): string => `a${String(angle).padStart(3, '0')}`;
-
-function intersect(a: BinaryMask, b: BinaryMask): BinaryMask {
-  const out = new Uint8Array(a.length);
-  for (let i = 0; i < a.length; i++) out[i] = a[i] && b[i] ? 1 : 0;
-  return out;
-}
-
-/**
- * THE SEAM WHERE THE TWO BONES MEET ON SCREEN.
- *
- * A joint reads as a LINE in a picture — the Chopart line runs clean across the
- * foot, the knee line across the knee. Deriving the band from the contact
- * SURFACES gave a line only where the articulation happened to be edge-on: seen
- * face-on, a curved surface projects as a region, and the patellofemoral band
- * came out as the whole back of the patella. 46 of 71 published bands were
- * blobs of that kind.
- *
- * What a student points at is the seam: the pixels where this bone's visible
- * silhouette runs into its partner's. Dilating each silhouette by `seam` and
- * intersecting finds exactly that, and does it in the picture rather than in
- * three dimensions, so it follows whatever the camera can actually see.
- *
- * Two silhouettes can also meet where the bones merely OVERLAP — the earlier 2D
- * attempt drew the whole distal fibula on a lateral ankle for that reason — so
- * the seam is kept only where the contact surface, generously dilated, says the
- * two bones articulate. The surface is the evidence; the seam is the shape.
- */
-function seamBand(
-  a: BinaryMask,
-  b: BinaryMask,
-  contact: BinaryMask,
-  width: number,
-  height: number,
-  seam: number,
-  gate: number,
-): BinaryMask {
-  const touching = intersect(dilateBy(a, width, height, seam), dilateBy(b, width, height, seam));
-  // The gate grows with the reach: a seam that had to span a 70px gap sits
-  // that much further from the surfaces it bridges, and a fixed gate rejected
-  // the whole pubic symphysis for sitting in the middle of its own joint space.
-  return intersect(touching, dilateBy(contact, width, height, gate + seam));
-}
-
-function countSet(mask: BinaryMask): number {
-  let n = 0;
-  for (let i = 0; i < mask.length; i++) n += mask[i];
-  return n;
-}
-
-function loadMask(path: string): { mask: BinaryMask; width: number; height: number } {
-  const png = decodePng(path);
-  return {
-    mask: binariseAlpha(png.data, png.width, png.height),
-    width: png.width,
-    height: png.height,
-  };
-}
 
 /** Bones in bone colour, band in the same blue the panels highlight with. */
 function overlay(contextPath: string, band: BinaryMask): Buffer {
