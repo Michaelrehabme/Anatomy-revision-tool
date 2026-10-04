@@ -39,11 +39,13 @@ function show(imageId: string, subjectId: string, conceal?: 'name' | 'place') {
   );
 }
 
-const stage = () => screen.getByRole('group', { name: /./ });
+// The stage is an application while it takes a tap (the keyboard crosshair), a group otherwise.
+const stage = () => screen.getByRole('img').closest<HTMLElement>('[role="group"], [role="application"]')!;
 const picture = () => screen.getByRole('img') as HTMLImageElement;
 /** The text aria-describedby points at, once the generator's chunk has arrived. */
 async function description(): Promise<string> {
-  const id = stage().getAttribute('aria-describedby')!;
+  // The description first; a picture that takes a tap adds its keyboard instructions after it.
+  const id = stage().getAttribute('aria-describedby')!.split(' ')[0];
   await waitFor(() => expect(document.getElementById(id)?.textContent ?? '').not.toBe(''));
   return document.getElementById(id)!.textContent!;
 }

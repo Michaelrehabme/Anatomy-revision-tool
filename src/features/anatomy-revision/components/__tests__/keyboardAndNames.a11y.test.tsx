@@ -5,7 +5,6 @@ import { MultiSelectSession } from '../MultiSelectSession/MultiSelectSession';
 import { OinaSelectSession } from '../OinaSession/OinaSelectSession';
 import { LocateStructureSession } from '../LocateStructureSession/LocateStructureSession';
 import { FlashcardSession } from '../FlashcardSession/FlashcardSession';
-import { MobileLocateStructureSession } from '../mobile/MobileLocateStructureSession';
 import { MobileMultiSelectSession } from '../mobile/MobileMultiSelectSession';
 import { ImageViewer } from '../shared/ImageViewer';
 import { PlateCatalogueProvider } from '../shared/PlateDescription';
@@ -111,8 +110,14 @@ const card: FlashcardQuestion = {
 
 /** Every string a screen reader could be given for the picture: its name, its alt, its description. */
 function pictureText(): string {
-  const stage = screen.getByRole('img').closest('[role="group"]')!;
-  const described = document.getElementById(stage.getAttribute('aria-describedby')!)?.textContent ?? '';
+  const stage = screen.getByRole('img').closest('[role="group"], [role="application"]')!;
+  // Every element it is described by: the description, and on a picture that
+  // takes a tap, its keyboard instructions.
+  const described = stage
+    .getAttribute('aria-describedby')!
+    .split(' ')
+    .map((id) => document.getElementById(id)?.textContent ?? '')
+    .join(' ');
   return [stage.getAttribute('aria-label'), screen.getByRole('img').getAttribute('alt'), described].join(' | ');
 }
 
@@ -159,10 +164,13 @@ describe('a picture does not name its own answer', () => {
     expect(pictureText()).not.toMatch(/It lies|of the picture/);
   });
 
-  it('the tappable picture does not claim to be a button it cannot be', () => {
+  it('the tappable picture is a keyboard stop that is pointed at, not a button that is pressed', () => {
     render(<LocateStructureSession question={locate} imagesById={imagesById} structuresById={structuresById} onAnswer={vi.fn()} onNext={vi.fn()} />);
-    // Not focusable and not pressable from a keyboard, so not role="button".
-    expect(screen.getByRole('img').closest('[role]')!.getAttribute('role')).toBe('group');
+    // It was role="button" and could not be focused; then a group, honestly
+    // inert. Now it takes the arrow keys and Enter (keyboardCrosshair.parity.test.tsx).
+    const stage = screen.getByRole('img').closest('[role]') as HTMLElement;
+    expect(stage.getAttribute('role')).toBe('application');
+    expect(stage.tabIndex).toBe(0);
   });
 });
 
@@ -211,48 +219,8 @@ describe('select-all options', () => {
   });
 });
 
-describe('locate from the list', () => {
-  it('desktop: the button says what it shows, and the verdict takes focus once answered', () => {
-    render(<LocateStructureSession question={locate} imagesById={imagesById} structuresById={structuresById} onAnswer={vi.fn()} onNext={vi.fn()} />);
-    // Its accessible name begins with its visible words (WCAG 2.5.3).
-    const toggle = screen.getByRole('button', { name: /^Answer from a list instead/ });
-    expect(toggle.textContent).toBe('Answer from a list instead');
-    fireEvent.click(toggle);
-    const group = screen.getByRole('group', { name: /Structures visible on this image/ });
-    const names = within(group).getAllByRole('button');
-    names[0].focus();
-    fireEvent.keyDown(names[0], { key: 'ArrowRight' });
-    expect(document.activeElement).toBe(names[1]);
-    fireEvent.click(within(group).getByRole('button', { name: 'Scapula' }));
-    expect(document.activeElement).toBe(screen.getByRole('heading', { name: /Correct/ }));
-  });
-
-  it('lists the names in name order, so the right one is not always the first button', () => {
-    // A ligament plate stores its hotspots target first.
-    const ligament: LocateQuestion = {
-      ...locate,
-      id: 'locate-2',
-      structureId: 'coracohumeral-ligament',
-      category: 'ligament',
-      imageId: 'ligament-coracohumeral-ligament-a000-context',
-      targetStructureId: 'coracohumeral-ligament',
-      prompt: 'Tap Coracohumeral ligament on the image.',
-    };
-    expect(imagesById.get(ligament.imageId)!.hotspots![0].structureId).toBe('coracohumeral-ligament');
-    render(<LocateStructureSession question={ligament} imagesById={imagesById} structuresById={structuresById} onAnswer={vi.fn()} onNext={vi.fn()} />);
-    fireEvent.click(screen.getByRole('button', { name: /^Answer from a list instead/ }));
-    const names = within(screen.getByRole('group', { name: /Structures visible/ })).getAllByRole('button').map((b) => b.textContent);
-    expect(names).toEqual([...names].sort((a, b) => a!.localeCompare(b!)));
-    expect(names[0]).not.toBe('Coracohumeral ligament');
-  });
-
-  it('phone: the list is a named group, and a reader is told the list exists', () => {
-    render(<MobileLocateStructureSession question={locate} imagesById={imagesById} structuresById={structuresById} onAnswer={vi.fn()} onNext={vi.fn()} onFullCard={vi.fn()} />);
-    expect(screen.getByText(/If you are not using a\s+pointer/)).toBeInTheDocument();
-    fireEvent.click(screen.getByRole('button', { name: /Choose from a list/ }));
-    expect(screen.getByRole('group', { name: /Structures visible on this image/ })).toBeInTheDocument();
-  });
-});
+// Locate without the picture — the question in words, and the list of names
+// it falls back to — has a file of its own: locateWithoutPicture.a11y.test.tsx.
 
 describe('focus is not dropped', () => {
   it('revealing a flashcard moves focus to the answer', () => {

@@ -1,6 +1,7 @@
 import {
   useEffect, useId, useRef, useState,
-  type KeyboardEvent as ReactKeyboardEvent, type PointerEvent as ReactPointerEvent, type ReactNode, type WheelEvent,
+  type FocusEvent as ReactFocusEvent, type KeyboardEvent as ReactKeyboardEvent, type PointerEvent as ReactPointerEvent,
+  type ReactNode, type WheelEvent,
 } from 'react';
 import type { AnatomyImageAsset, ImageVariantKind } from '../../types/image';
 import { getImageVariantChoice, setImageVariantChoice } from '../../lib/preferences';
@@ -9,6 +10,7 @@ import { rotationAngle, rotationTilt } from '../../lib/rotationFrames';
 import { AttributionBadge } from './AttributionBadge';
 import { plateLabel, type PlateConceal } from '../../lib/plateLabel';
 import { PlateDescription } from './PlateDescription';
+import { CROSSHAIR_START, crosshairClientPoint, isCrosshairKey, moveCrosshair, type Crosshair } from '../../lib/hotspot/keyboardCrosshair';
 
 export const MIN_ZOOM = 1;
 export const MAX_ZOOM = 4;
@@ -69,6 +71,18 @@ export interface ImageViewerProps {
  * The default is the ghosted render; the choice is remembered per kind of
  * variant (lib/preferences.ts), because someone who prefers the femur gone
  * prefers it gone on the next knee question too.
+ *
+ * THE KEYBOARD'S POINTER. Where the picture takes a tap, the stage is a focus
+ * stop of its own: the arrow keys move a crosshair over it, Shift moves it
+ * further, plus and minus zoom about it, and Enter or Space taps where it is
+ * (lib/hotspot/keyboardCrosshair.ts). The tap goes through the very function
+ * a click goes through, with the screen point the crosshair marks, so it is
+ * graded identically at any zoom, pan, angle or render. The keys are read
+ * only when the STAGE itself has focus — the rotate, tilt, zoom and render
+ * controls under it are separate stops and keep their own keys — and Tab
+ * leaves it like any other stop, so it is not a trap. The crosshair knows
+ * nothing of the hotspots under it and says nothing: a pointer that named
+ * what it was over would be the answer.
  */
 
 /** What the two states of the switch are called, default first. */
@@ -103,11 +117,20 @@ export function ImageViewer({ image, frames, overlay, onPick, resetKey, classNam
   // so coming back to level still returns to the frame they tilted away from.
   const [tiltAngle, setTiltAngle] = useState<number | null>(() => (rotationTilt(image.id) !== 0 ? rotationAngle(image.id) : null));
   const [view, setView] = useState({ z: 1, tx: 0, ty: 0 });
+  // The keyboard's pointer: where it is in the stage, and whether it is drawn.
+  // It is drawn from the first keyboard focus or arrow key until a pointer
+  // takes over, and stays drawn while focus is on the controls below, so a
+  // student who tabs down to rotate the plate can still see where they were.
+  const [crosshair, setCrosshair] = useState<Crosshair>(CROSSHAIR_START);
+  const [crosshairShown, setCrosshairShown] = useState(false);
+  const hintId = useId();
   useEffect(() => {
     setRingIndex(startRing());
     setTilt(rotationTilt(image.id));
     setTiltAngle(rotationTilt(image.id) !== 0 ? rotationAngle(image.id) : null);
     setView({ z: 1, tx: 0, ty: 0 });
+    setCrosshair(CROSSHAIR_START);
+    setCrosshairShown(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [resetKey ?? image.id]);
 
@@ -207,6 +230,8 @@ export function ImageViewer({ image, frames, overlay, onPick, resetKey, classNam
 
   const handlePointerDown = (e: ReactPointerEvent<HTMLDivElement>) => {
     if ((e.target as HTMLElement).closest('[data-controls]')) return;
+    // A pointer has taken over: its own cursor is the pointer now.
+    setCrosshairShown(false);
     pointers.current.set(e.pointerId, local(e));
     stageRef.current?.setPointerCapture(e.pointerId);
     const pts = [...pointers.current.values()];
@@ -268,8 +293,70 @@ export function ImageViewer({ image, frames, overlay, onPick, resetKey, classNam
       return;
     }
     if ((e.target as HTMLElement).closest?.('[data-controls]')) return;
+    pickAt(e);
+  };
+  /** A tap at a point on screen, however it was made: a click, or Enter with the crosshair there. */
+  const pickAt = (at: { clientX: number; clientY: number }) => {
     if (!onPick || !zoomerRef.current) return;
-    onPick(normalizePointerEvent(e, zoomerRef.current), current);
+    onPick(normalizePointerEvent(at, zoomerRef.current), current);
+  };
+
+  // Read from a ref so a held arrow key, whose repeats can arrive faster than
+  // a render, always steps from where the last one left the crosshair.
+  const pointer = useRef({ crosshair, view });
+  pointer.current = { crosshair, view };
+  /** The crosshair in stage pixels, for zooming about it. */
+  const crosshairPx = (): [number, number] => {
+    const r = stageRef.current!.getBoundingClientRect();
+    return [pointer.current.crosshair.x * r.width, pointer.current.crosshair.y * r.height];
+  };
+  /** Zoom from a button or a key: about the crosshair when it is in use, else about the middle. */
+  const zoomBy = (factor: number) => {
+    const r = stageRef.current!.getBoundingClientRect();
+    const [x, y] = crosshairShown ? crosshairPx() : [r.width / 2, r.height / 2];
+    zoomAt(factor, x, y);
+  };
+  const handleKeyDown = (e: ReactKeyboardEvent<HTMLDivElement>) => {
+    // Only the stage's own keys: the controls under it are other focus stops.
+    if (!onPick || e.target !== e.currentTarget || e.altKey || e.ctrlKey || e.metaKey) return;
+    const stage = stageRef.current;
+    if (!stage) return;
+    if (isCrosshairKey(e.key)) {
+      e.preventDefault();
+      const r = stage.getBoundingClientRect();
+      const next = moveCrosshair(pointer.current.crosshair, pointer.current.view, r, e.key, e.shiftKey);
+      pointer.current = next;
+      setCrosshair(next.crosshair);
+      setView(next.view);
+      setCrosshairShown(true);
+    } else if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      // A stage focused by a click shows no crosshair; the first press shows
+      // it rather than answering at a point the student has not been shown.
+      if (!crosshairShown) setCrosshairShown(true);
+      else if (!e.repeat) pickAt(crosshairClientPoint(pointer.current.crosshair, stage.getBoundingClientRect()));
+    } else if (e.key === '+' || e.key === '=') {
+      e.preventDefault();
+      setCrosshairShown(true);
+      zoomAt(1.5, ...crosshairPx());
+    } else if (e.key === '-' || e.key === '_') {
+      e.preventDefault();
+      setCrosshairShown(true);
+      zoomAt(1 / 1.5, ...crosshairPx());
+    }
+  };
+  const handleFocus = (e: ReactFocusEvent<HTMLDivElement>) => {
+    if (!onPick || e.target !== e.currentTarget) return;
+    // Focus that arrived by keyboard, not by a click on the picture. A browser
+    // too old to say which is taken at its word that it was the keyboard: a
+    // crosshair a mouse user did not need costs them nothing.
+    let byKeyboard = true;
+    try {
+      byKeyboard = e.currentTarget.matches(':focus-visible');
+    } catch {
+      /* selector not supported */
+    }
+    if (byKeyboard) setCrosshairShown(true);
   };
 
   const zoomed = view.z > 1.001;
@@ -286,6 +373,11 @@ export function ImageViewer({ image, frames, overlay, onPick, resetKey, classNam
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
         onPointerCancel={handlePointerUp}
+        onKeyDown={handleKeyDown}
+        onFocus={handleFocus}
+        // A focus stop while it takes a tap. Once answered it is no longer one,
+        // but stays focusable from script so focus that is on it is not dropped.
+        tabIndex={pickable ? 0 : crosshairShown ? -1 : undefined}
         className={`relative w-full overflow-hidden rounded-lg border border-line bg-sf select-none ${
           pickable ? (zoomed ? 'cursor-grab' : 'cursor-crosshair') : zoomed ? 'cursor-grab' : ''
         }`}
@@ -296,11 +388,13 @@ export function ImageViewer({ image, frames, overlay, onPick, resetKey, classNam
         // A labelled group, so the name is actually read out. Not role="img":
         // that makes everything inside presentational, hiding the zoom and
         // turn controls from a screen reader (docs/ACCESSIBILITY-AUDIT-2026-09-28.md).
-        // And not role="button" when it takes a tap: it cannot be focused or
-        // pressed from a keyboard, so the role promised something untrue.
-        role="group"
+        // And not role="button" when it takes a tap: a button is pressed, and
+        // this is pointed at. While it takes a tap it is an application — the
+        // role that tells a screen reader to hand the arrow keys through — and
+        // its instructions are part of its description.
+        role={pickable ? 'application' : 'group'}
         aria-label={plateLabel(current, conceal)}
-        aria-describedby={descriptionId}
+        aria-describedby={pickable ? `${descriptionId} ${hintId}` : descriptionId}
       >
         <div
           ref={zoomerRef}
@@ -310,8 +404,14 @@ export function ImageViewer({ image, frames, overlay, onPick, resetKey, classNam
           <img src={shownPath} alt={plateLabel(current, conceal)} className="h-full w-full object-cover" draggable={false} />
           {overlay?.(current)}
         </div>
-
+        {pickable && crosshairShown && <CrosshairMark at={crosshair} />}
       </div>
+      {pickable && (
+        <p id={hintId} className={crosshairShown ? 'mt-1.5 text-xs' : 'sr-only'} style={{ color: 'var(--ink2)' }} data-crosshair-hint>
+          Arrow keys move the pointer; hold Shift for bigger steps. Enter or Space answers where it is, and your first
+          answer counts. Plus and minus zoom.
+        </p>
+      )}
 
       {/*
         CONTROLS SIT UNDER THE PICTURE, NOT ON IT.
@@ -354,9 +454,9 @@ export function ImageViewer({ image, frames, overlay, onPick, resetKey, classNam
 
         {/* Scroll or pinch does the same; these are for those who prefer buttons. */}
         <span className="ml-auto flex items-center gap-x-2">
-        <button type="button" className={controlButton} aria-label="Zoom out" onClick={() => { const r = stageRef.current!.getBoundingClientRect(); zoomAt(1 / 1.5, r.width / 2, r.height / 2); }}>−</button>
+        <button type="button" className={controlButton} aria-label="Zoom out" onClick={() => zoomBy(1 / 1.5)}>−</button>
         <span className="px-0.5 text-[11px] tabular-nums" style={{ color: 'var(--ink3)' }}>{view.z.toFixed(1)}×</span>
-        <button ref={zoomInRef} type="button" className={controlButton} aria-label="Zoom in" onClick={() => { const r = stageRef.current!.getBoundingClientRect(); zoomAt(1.5, r.width / 2, r.height / 2); }}>+</button>
+        <button ref={zoomInRef} type="button" className={controlButton} aria-label="Zoom in" onClick={() => zoomBy(1.5)}>+</button>
         {zoomed && (
           <button type="button" className={controlButton} aria-label="Reset zoom" onClick={() => { setView({ z: 1, tx: 0, ty: 0 }); /* This button is about to unmount: keep focus in the viewer. */ zoomInRef.current?.focus(); }}>↺</button>
         )}
@@ -377,6 +477,44 @@ export function ImageViewer({ image, frames, overlay, onPick, resetKey, classNam
       <AttributionBadge image={current} />
       <PlateDescription id={descriptionId} image={current} subjectId={subjectId} conceal={conceal} />
     </figure>
+  );
+}
+
+/**
+ * The crosshair itself: a ring with four ticks and an open centre, so the
+ * point being aimed at is not covered by the thing aiming at it.
+ *
+ * Drawn twice, white under black. A plate is bone-coloured in one place and
+ * near-black in the next, and red or cyan where a muscle is; one colour would
+ * vanish against some of it. With both, whichever the picture is behind it,
+ * one of the two strokes stands at least 4.5:1 against it (WCAG 1.4.11 asks
+ * 3:1), in either theme — the mark sits on the picture, not on the page, so
+ * the theme's own colours are not the ones that matter. It opts out of forced
+ * colours for the same reason the scoring rings do: its colours are the
+ * information.
+ */
+function CrosshairMark({ at }: { at: Crosshair }) {
+  const shape = (
+    <>
+      <circle cx="24" cy="24" r="9" />
+      <path d="M24 2v13M24 33v13M2 24h13M33 24h13" />
+    </>
+  );
+  return (
+    <svg
+      aria-hidden="true"
+      data-crosshair
+      width="48"
+      height="48"
+      viewBox="0 0 48 48"
+      className="pointer-events-none absolute"
+      style={{ left: `${at.x * 100}%`, top: `${at.y * 100}%`, transform: 'translate(-50%, -50%)', forcedColorAdjust: 'none' }}
+      fill="none"
+      strokeLinecap="round"
+    >
+      <g stroke="#fff" strokeWidth="5">{shape}</g>
+      <g stroke="#111" strokeWidth="2">{shape}</g>
+    </svg>
   );
 }
 
