@@ -1,4 +1,6 @@
 import { readFileSync } from 'node:fs';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { AUTHORED_STRUCTURES } from '../../../features/anatomy-revision/data/seed';
 import { CONTENT_VERSION } from '../../../features/anatomy-revision/data/content/version';
@@ -133,8 +135,15 @@ describe('where the content is written', () => {
 
   // Committed area files would be the paid content in the repository, and an
   // untracked directory makes `npm run deploy` refuse a dirty tree.
+  //
+  // Read from beside this file, not from the working directory: a test run
+  // started in another checkout reaches this file through its worktree, and
+  // would otherwise be checking that checkout's .gitignore instead.
   it('is git-ignored, both directories', () => {
-    const ignored = readFileSync('.gitignore', 'utf8').split(/\r?\n/);
+    // Through `path`, not `new URL(...)`: under jsdom the global URL is not
+    // Node's, and fileURLToPath refuses an instance of it.
+    const gitignore = resolve(dirname(fileURLToPath(import.meta.url)), '../../../../.gitignore');
+    const ignored = readFileSync(gitignore, 'utf8').split(/\r?\n/);
     expect(ignored).toContain(`/${CONTENT_DIR}/`);
     expect(ignored).toContain(`/${GENERATED_CONTENT_DIR}/`);
   });
