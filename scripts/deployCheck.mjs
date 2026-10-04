@@ -1,4 +1,5 @@
 import { execSync } from 'node:child_process';
+import { lstatSync, realpathSync } from 'node:fs';
 
 /**
  * Refuses to deploy a working tree that doesn't match the remote.
@@ -24,6 +25,38 @@ function fail(message, detail) {
   console.error(`\nRefusing to deploy: ${message}\n`);
   if (detail) console.error(`${detail}\n`);
   process.exit(1);
+}
+
+/**
+ * A linked node_modules ships functions that cannot start.
+ *
+ * Found on 4 Oct 2026 in the production log: the daily renewal-reminders run
+ * died three times with "Cannot find package 'firebase-admin'". The deploy had
+ * been made from a git worktree whose node_modules was a junction to the main
+ * checkout's (the draft-preview recipe). Netlify's function bundler traces
+ * each function's dependencies and copies them into the zip; through a
+ * junction it copies the link and none of the files. The zips came out at
+ * about 62 KB instead of 2.2 MB, for all three functions — the Paddle webhook
+ * and the billing portal with them — and nothing in the deploy said so.
+ *
+ * A junction is fine for a DRAFT of the front end. It must never reach
+ * production, where the functions are the payment chain.
+ */
+let modules;
+try {
+  modules = lstatSync('node_modules');
+} catch {
+  fail('there is no node_modules here.', 'Run `npm ci` in this checkout first.');
+}
+if (modules.isSymbolicLink()) {
+  fail(
+    'node_modules is a link (a junction or symlink), not a real install.',
+    `It points at ${realpathSync('node_modules')}.\n` +
+      'Functions built through a link are deployed WITHOUT their dependencies:\n' +
+      'the Paddle webhook, the billing portal and the renewal reminders would\n' +
+      'all fail on their first call. Deploy from a checkout with its own\n' +
+      '`npm ci`, or let Netlify build from git.',
+  );
 }
 
 const branch = run('git rev-parse --abbrev-ref HEAD');
