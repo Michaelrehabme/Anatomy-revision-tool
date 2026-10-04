@@ -66,6 +66,35 @@ To add a claim: put it in the table with that evidence format, and the check sta
 | Per-family check progress, e.g. "22 of the 34 joints have been checked" | /sources | Derived per family from `provenance.generated.ts` and guarded by `validateProvenance()`. **Deliberately NOT counted keys**: these move with every tranche. They were frozen at 0 on 23 Sep and were stale within a day — the page, which counts rather than states, was right throughout | 2026-09-24 |
 | Works named on /sources are the works actually cited | /sources | `validateProvenance()` fails if any work on the excluded list (`EXCLUDED_WORKS`) still carries a citation. Dropping a name from the page while the record rests on it would make the work-set incomplete | 2026-09-23 |
 
+## Competitor comparison (/compare — DRAFT, unlinked, noindex)
+
+The page is drafted but **not published**: nothing links to it, it carries `noindex` (a meta tag
+and an `X-Robots-Tag` header in netlify.toml), and it says "Draft" at the top. It becomes public
+only when the owner approves it — at which point re-read every row below against the live pages
+first, because these captures are from 28 Sep 2026.
+
+Every row is one entry in `src/features/site/data/comparison.ts`, whose type makes the evidence
+file mandatory. `comparison.test.tsx` fails if a row's screenshot is not on file, if its URL is not
+the one the capture log (the folder's README) records for that file, if the page renders a row
+without its "As of" date, or if a row is missing from this table.
+
+| Claim | Where it appears | Evidence | Last verified |
+|---|---|---|---|
+| TeachMeAnatomy: £25/month; £45 per 3 months; £96 per 12 months; £195 lifetime; a "Basic" column of 4 articles a month and 600 questions; 3D models, dissection atlas, audio lectures and flashcards in the paid column | /compare | `docs/evidence/competitors-2026-09-28/teachmeanatomy-pricing.png` | 2026-09-28 |
+| Kenhub: £25/month; £57 per 3 months; £190 lifetime against a struck-through £300; a "Free" column with atlas, articles and terminology; video tutorials and quizzes in the paid column | /compare | `docs/evidence/competitors-2026-09-28/kenhub-pricing.png` | 2026-09-28 |
+| Complete Anatomy: Student £34.99 first year (annual, struck-through £69.99); Professional £94.99 annual; "Access on all devices" | /compare | `docs/evidence/competitors-2026-09-28/completeanatomy-pricing.png` | 2026-09-28 |
+| Visible Body Suite: Student $34.99/year; Classroom/Professional $199/year, in US dollars | /compare | `docs/evidence/competitors-2026-09-28/visiblebody-pricing.png` | 2026-09-28 |
+| RemNote: Free US$0; Pro US$96 billed yearly; Pro with AI US$216 billed yearly, in US dollars | /compare | `docs/evidence/competitors-2026-09-28/remnote-pricing.png` (Yearly tab only) | 2026-09-28 |
+| LocusMSK's own figures on the page: structure count, region count, prices | /compare | Derived at render time from `provenance.generated.ts`, `AREAS` and `PLANS`; no typed number | 2026-10-04 |
+| "What LocusMSK does not have: free-rotating 3D models, video or audio lectures, articles, dissection images, or any anatomy outside the musculoskeletal system of the limbs and spine" | /compare | A statement against ourselves. True of the app as built: plates are fixed 12-frame turntables, and the five structure families are all musculoskeletal. Revisit if any of those ships | 2026-10-04 |
+
+**What the page deliberately does not say.** No "cheaper than", no ranking, nothing about any
+competitor's quality, accuracy or results — the screenshots show prices and plan contents and
+that is all they can support. Quizlet is absent (its capture is a bot-check page). No
+institutional price is given for anyone (none is shown). The Complete Anatomy "3-day free trial"
+and the money-back guarantees in the folder's README were read from page text and are left off
+the page to keep it to prices.
+
 ## Privacy and security
 
 These are the claims a university's DPO will test, and each names the thing that enforces it.
@@ -93,8 +122,8 @@ The full set lives in docs/DATA-PROCESSING.md; the load-bearing ones are:
 - **Comparative claims about competitors** — prices, features, coverage. These need a dated
   screenshot taken at the time of publishing, and re-checking every quarter, because a competitor
   changing their price turns your true claim into a false one without you touching anything. The
-  comparison page (CR-033 item 17) does not exist yet; it must not ship without its rows added
-  here. The competitor figures in docs/BACKLOG-STORE-MONETISATION.md are dated 8 September 2026
+  comparison page (CR-033 item 17) is drafted at /compare, unlinked and noindexed; its rows are
+  in "Competitor comparison" above, and it must not be linked or indexed with stale ones. The competitor figures in docs/BACKLOG-STORE-MONETISATION.md are dated 8 September 2026
   and are **not** evidence for anything published later than that.
 
   **Evidence on file:** `docs/evidence/competitors-2026-09-28/` — dated full-page captures of the
