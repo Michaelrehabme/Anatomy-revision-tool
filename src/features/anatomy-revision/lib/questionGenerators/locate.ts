@@ -1,10 +1,10 @@
 import { rotationAngle, rotationSetKey, rotationTilt } from '../rotationFrames';
-import { primaryAreaOf } from '../../types/structure';
 import type { StructureIndexEntry } from '../../types/structureIndex';
 import type { AnatomyImageAsset } from '../../types/image';
 import type { LocateQuestion } from '../../types/question';
 import type { HotspotPolygon } from '../../types/image';
 import { polygonsWidth } from '../hotspot/polygonGeometry';
+import { questionBase } from './questionBase';
 
 /**
  * How wide a traced target has to be before it is fair to ask someone to tap
@@ -224,13 +224,7 @@ export function buildLocateQuestions(
       questions.push({
         id: `locate-${frames ? key! : image.id}-${structure.id}`,
         type: 'locate',
-        structureId: structure.id,
-        region: structure.region,
-        subregion: structure.subregion,
-        area: primaryAreaOf(structure),
-        category: structure.category,
-        difficulty: structure.difficulty,
-        promptKind: 'identify',
+        ...questionBase(structure, 'identify'),
         imageId: opening.id,
         imageMode: opening.mode,
         targetStructureId: structure.id,

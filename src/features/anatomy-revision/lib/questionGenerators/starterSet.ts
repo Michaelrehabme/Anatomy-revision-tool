@@ -7,6 +7,7 @@ import { createRng, shuffle } from '../rng';
 import { buildMcqQuestions } from './mcq';
 import { stampRequestedArea } from './generateSet';
 import { buildLocateQuestions } from './locate';
+import { vocabularyWhenPartial, type DistractorSources } from './sources';
 
 /**
  * The two formats a first session uses. Both are self-explanatory on sight;
@@ -39,6 +40,8 @@ export function buildStarterSet(
   structures: AnatomyStructure[],
   images: AnatomyImageAsset[],
   config: StarterSetConfig = {},
+  /** See generateRevisionSet: needed only when `structures` is not every structure. */
+  sources?: DistractorSources,
 ): RevisionQuestion[] {
   const count = Math.max(1, config.count ?? STARTER_COUNT);
   const rng = createRng(config.seed);
@@ -47,8 +50,9 @@ export function buildStarterSet(
   if (pool.length === 0) return [];
   const poolIds = new Set(pool.map((s) => s.id));
 
-  // Built over the full dataset so distractors stay plausible — same as generateSet.
+  // Built over every loaded structure so distractors stay plausible — same as generateSet.
   const indexes = buildIndexes(structures);
+  const vocabulary = vocabularyWhenPartial(structures, sources);
   const relevantImages = images.filter((img) =>
     img.mode === 'single-structure'
       ? !!img.structureId && poolIds.has(img.structureId)
@@ -66,7 +70,7 @@ export function buildStarterSet(
   const locate = onePerStructure(
     buildLocateQuestions(pool, relevantImages).sort((a, b) => areaOfQuestion(b) - areaOfQuestion(a)),
   );
-  const mcq = onePerStructure(shuffle(buildMcqQuestions(pool, relevantImages, indexes, rng), rng));
+  const mcq = onePerStructure(shuffle(buildMcqQuestions(pool, relevantImages, indexes, rng, { vocabulary }), rng));
 
   // Roughly half and half, each side topping the other up when it runs short.
   const locateTarget = Math.min(locate.length, Math.ceil(count / 2));

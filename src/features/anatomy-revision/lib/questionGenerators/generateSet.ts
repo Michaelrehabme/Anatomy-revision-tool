@@ -21,6 +21,9 @@ import { buildClinicalQuestions } from './clinical';
 import { buildOinaQuestions } from './oina';
 import { factDueAt, factIntervalDays, factMasteryKey, indexFactMastery, shouldPrecedeWithLearnCard, skillOf } from '../factMastery';
 import { isOinaQuestion } from '../../types/question';
+import type { StructureIndexEntry } from '../../types/structureIndex';
+import type { DistractorVocabulary } from '../../data/content/vocabulary';
+import { vocabularyWhenPartial, type DistractorSources } from './sources';
 
 export interface RevisionSetConfig {
   types: readonly QuestionType[];
@@ -434,20 +437,22 @@ function generateOneQuestionForStructure(
   images: AnatomyImageAsset[],
   indexes: StructureIndexes,
   rng: Rng,
-  config?: RevisionSetConfig,
+  config: RevisionSetConfig,
+  names: readonly StructureIndexEntry[],
+  vocabulary: DistractorVocabulary | undefined,
 ): RevisionQuestion | null {
   const pool = [structure];
   switch (type) {
     case 'flashcard':
       return buildFlashcardQuestions(pool, images)[0] ?? null;
     case 'mcq':
-      return buildMcqQuestions(pool, images, indexes, rng)[0] ?? buildClinicalQuestions(pool, rng)[0] ?? null;
+      return buildMcqQuestions(pool, images, indexes, rng, { vocabulary })[0] ?? buildClinicalQuestions(pool, rng)[0] ?? null;
     case 'locate':
       return buildLocateQuestions(pool, images)[0] ?? null;
     case 'fill-blank':
       return buildFillBlankQuestions(pool, rng)[0] ?? null;
     case 'identify-typed':
-      return buildIdentifyTypedQuestions(pool, images, [...indexes.byId.values()])[0] ?? null;
+      return buildIdentifyTypedQuestions(pool, images, names)[0] ?? null;
     case 'multi-select':
       // Multi-select is inherently a "compare several structures" question, not a
       // per-structure one — it doesn't fit the adaptive escalation ladder's shape.
@@ -459,9 +464,10 @@ function generateOneQuestionForStructure(
       // of the requested facts, since the ladder wants one question per
       // structure, not four.
       const questions = buildOinaQuestions(pool, [...indexes.byId.values()], indexes, rng, {
-        promptKinds: config?.oinaPromptKinds,
-        factMastery: config?.factMastery,
-        forceFormat: config?.oinaForceFormat,
+        promptKinds: config.oinaPromptKinds,
+        factMastery: config.factMastery,
+        forceFormat: config.oinaForceFormat,
+        vocabulary,
       });
       return sample(questions, 1, rng)[0] ?? null;
     }
@@ -496,13 +502,24 @@ export function stampRequestedArea(
  *
  * Pass `config.mastery` to order by measured correctness rather than uniformly;
  * generation stays deterministic under `config.seed` either way.
+ *
+ * `structures` are the ones whose facts are in hand. While the seed is bundled
+ * that is all of them and `sources` is left out. Once facts are loaded per
+ * area it is the loaded areas only, and `sources` supplies what lies beyond
+ * them: every structure's name, and wrong answers that belong to no structure
+ * (sources.ts). A question is only ever ASKED about a loaded structure — the
+ * pool below is cut from `structures` — so nothing here can state a fact that
+ * was not served.
  */
 export function generateRevisionSet(
   structures: AnatomyStructure[],
   images: AnatomyImageAsset[],
   config: RevisionSetConfig,
+  sources?: DistractorSources,
 ): RevisionQuestion[] {
   const rng = createRng(config.seed);
+  const names = sources?.index ?? structures;
+  const vocabulary = vocabularyWhenPartial(structures, sources);
 
   // The requested areas, narrowed to the entitled ones. An unfiltered request
   // (no `areas`) becomes a request for everything the student may reach —
@@ -530,7 +547,7 @@ export function generateRevisionSet(
   // undefined on a drill, and a structure belongs to several areas.
   pool = pool.filter((s) => areasOf(s).some((a) => config.entitledAreas.includes(a)));
 
-  const indexes = buildIndexes(structures); // built over the FULL dataset so distractor pools stay rich
+  const indexes = buildIndexes(structures); // built over every LOADED structure, not the pool, so distractor pools stay rich
   const relevantImages = images.filter((img) => {
     if (img.mode === 'single-structure') return !!img.structureId && pool.some((s) => s.id === img.structureId);
     return (img.hotspots ?? []).some((h) => pool.some((s) => s.id === h.structureId));
@@ -548,7 +565,7 @@ export function generateRevisionSet(
       if (!preferredType) continue;
       const orderedTypes = [preferredType, ...config.types.filter((t) => t !== preferredType)];
       for (const type of orderedTypes) {
-        const question = generateOneQuestionForStructure(structure, type, relevantImages, indexes, rng, config);
+        const question = generateOneQuestionForStructure(structure, type, relevantImages, indexes, rng, config, names, vocabulary);
         if (question) {
           adaptiveQuestions.push(
             question.type === 'identify-typed' ? { ...question, hints: hintsForRung(rungFor(mastery)) } : question,
@@ -574,7 +591,7 @@ export function generateRevisionSet(
   }
   const mcqPool = poolFor('mcq');
   if (mcqPool.length) {
-    generated.push(...buildMcqQuestions(mcqPool, relevantImages, indexes, rng));
+    generated.push(...buildMcqQuestions(mcqPool, relevantImages, indexes, rng, { vocabulary }));
     // Clinical MCQs (CR-010) are just another mcq promptKind family, gated on the
     // structure actually having the relevant clinical field authored — same
     // convention as buildMcqQuestions itself generating several promptKinds at once.
@@ -593,13 +610,13 @@ export function generateRevisionSet(
   const typedPool = poolFor('identify-typed');
   if (typedPool.length) {
     generated.push(
-      ...buildIdentifyTypedQuestions(typedPool, relevantImages, structures).map((q) =>
+      ...buildIdentifyTypedQuestions(typedPool, relevantImages, names).map((q) =>
         ladder?.bare.has(q.structureId) ? { ...q, hints: 'none' as const } : q,
       ),
     );
   }
   if (config.types.includes('multi-select')) {
-    generated.push(...buildMultiSelectQuestions(pool, indexes, rng));
+    generated.push(...buildMultiSelectQuestions(pool, indexes, rng, names));
   }
   if (config.types.includes('oina')) {
     generated.push(
@@ -607,6 +624,7 @@ export function generateRevisionSet(
         promptKinds: config.oinaPromptKinds,
         factMastery: config.factMastery,
         forceFormat: config.oinaForceFormat,
+        vocabulary,
       }),
     );
   }

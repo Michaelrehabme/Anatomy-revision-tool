@@ -170,7 +170,9 @@ describe('the distractor vocabulary', () => {
     ['jointTypes', vocabulary.jointTypes],
     ['myotomes', vocabulary.myotomes],
     ['specialTests', vocabulary.specialTests],
-    ...Object.entries(vocabulary.arteries).map(([region, names]): [string, string[]] => [`arteries.${region}`, names]),
+    ...Object.entries(vocabulary.arteries).flatMap(([area, byRegion]) =>
+      Object.entries(byRegion).map(([region, names]): [string, string[]] => [`arteries.${area}.${region}`, names]),
+    ),
   ];
 
   it('is flat lists of strings, sorted and without repeats', () => {
@@ -204,8 +206,23 @@ describe('the distractor vocabulary', () => {
       }
       if (s.category === 'joint') expect(vocabulary.jointTypes).toContain(s.jointType);
       for (const artery of [s.bloodSupply?.primary, ...(s.bloodSupply?.assisting ?? [])]) {
-        if (artery) expect(vocabulary.arteries[s.region], `${s.id} artery`).toContain(artery);
+        if (!artery) continue;
+        for (const area of areasOf(s)) expect(vocabulary.arteries[area][s.region], `${s.id} artery`).toContain(artery);
       }
+    }
+  });
+
+  it('lists arteries under every area, and only under areas that have a structure listing them', () => {
+    expect(Object.keys(vocabulary.arteries).sort()).toEqual([...AREAS].sort());
+    for (const area of AREAS) {
+      const listed = new Set(Object.values(vocabulary.arteries[area]).flat());
+      const authored = new Set(
+        AUTHORED_STRUCTURES.filter((s) => areasOf(s).includes(area)).flatMap((s) => [
+          ...(s.bloodSupply?.primary ? [s.bloodSupply.primary] : []),
+          ...(s.bloodSupply?.assisting ?? []),
+        ]),
+      );
+      expect([...listed].sort(), area).toEqual([...authored].sort());
     }
   });
 

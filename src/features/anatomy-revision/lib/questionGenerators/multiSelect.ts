@@ -3,18 +3,17 @@ import {
   isJoint,
   isLigament,
   reviewedAttachmentIds,
-  isBone,
-  isLandmark,
-  primaryAreaOf,
   areasOf,
   EQUIVALENT_MOVEMENT_GROUPS,
   UNIVERSAL_ACCESSORY_MOVEMENTS,
 } from '../../types/structure';
 import type { AnatomyStructure, JointMovement, JointStructure } from '../../types/structure';
+import type { StructureIndexEntry } from '../../types/structureIndex';
 import type { MultiSelectQuestion } from '../../types/question';
 import type { StructureIndexes } from '../indexes';
 import { pickStructureDistractors } from '../distractors';
 import { shuffle, sample, type Rng } from '../rng';
+import { questionBase } from './questionBase';
 
 const MAX_CORRECT = 4;
 const MAX_DISTRACTORS = 3;
@@ -25,16 +24,7 @@ function slugify(key: string): string {
 }
 
 function baseFields(structure: AnatomyStructure, promptKind: MultiSelectQuestion['promptKind']) {
-  return {
-    type: 'multi-select' as const,
-    structureId: structure.id,
-    region: structure.region,
-    subregion: structure.subregion,
-    area: primaryAreaOf(structure),
-    category: structure.category,
-    difficulty: structure.difficulty,
-    promptKind,
-  };
+  return { type: 'multi-select' as const, ...questionBase(structure, promptKind) };
 }
 
 /**
@@ -206,16 +196,22 @@ function attachVerb(name: string): string {
 
 function buildLigamentAttachmentQuestions(
   pool: AnatomyStructure[],
-  indexes: StructureIndexes,
+  names: readonly StructureIndexEntry[],
   rng: Rng,
 ): MultiSelectQuestion[] {
-  // Names AND distractors come from the index, which is built over the whole
-  // dataset. Drawing them from the pool looked right until the app was run: a
+  // Names AND distractors come from every structure there is, not the pool.
+  // Drawing them from the pool looked right until the app was run: a
   // student narrowing a session to ligaments has a pool with no bones in it,
   // so there were no distractors to offer and every attachment question
   // vanished from the one session that is entirely about attachments.
+  //
+  // And from index entries, not loaded structures, for the same reason one
+  // step further out: a bone's name, category, parent and areas are all this
+  // reads, and the bone may be in an area whose facts are not loaded.
+  const byId = new Map(names.map((s) => [s.id, s]));
+  const isBony = (s: StructureIndexEntry) => s.category === 'bone' || s.category === 'landmark';
   const nameOf = (id: string) =>
-    indexes.byId.get(id)?.name ?? id.replace(/-/g, ' ').replace(/^[a-z]/, (c) => c.toUpperCase());
+    byId.get(id)?.name ?? id.replace(/-/g, ' ').replace(/^[a-z]/, (c) => c.toUpperCase());
   const questions: MultiSelectQuestion[] = [];
 
   for (const lig of pool.filter(isLigament)) {
@@ -225,8 +221,8 @@ function buildLigamentAttachmentQuestions(
     // "select all the bones" would teach the wrong category. Such a ligament is
     // still asked its attachments by name, just not by this question.
     const attachments = reviewedAttachmentIds(lig).filter((id) => {
-      const s = indexes.byId.get(id);
-      return !s || isBone(s) || isLandmark(s);
+      const s = byId.get(id);
+      return !s || isBony(s);
     });
     if (!attachments.length) continue;
     const correct = new Set(attachments);
@@ -236,15 +232,15 @@ function buildLigamentAttachmentQuestions(
     // landmark rules out its parent bone and a correct bone rules out every
     // landmark on it, and only whole bones remain as wrong answers.
     const related = new Set<string>();
-    for (const s of indexes.byId.values()) {
-      if (isLandmark(s) && s.parentBoneId) {
+    for (const s of names) {
+      if (s.category === 'landmark' && s.parentBoneId) {
         if (correct.has(s.id)) related.add(s.parentBoneId);
         if (correct.has(s.parentBoneId)) related.add(s.id);
       }
     }
     const ligAreas = areasOf(lig);
-    const distractorPool = [...indexes.byId.values()].filter(
-      (s) => isBone(s) && !correct.has(s.id) && !related.has(s.id) && areasOf(s).some((a) => ligAreas.includes(a)),
+    const distractorPool = names.filter(
+      (s) => s.category === 'bone' && !correct.has(s.id) && !related.has(s.id) && areasOf(s).some((a) => ligAreas.includes(a)),
     );
     const distractors = sample(distractorPool, Math.min(MAX_DISTRACTORS, distractorPool.length), rng);
     if (distractors.length < 2) continue;
@@ -268,11 +264,13 @@ export function buildMultiSelectQuestions(
   pool: AnatomyStructure[],
   indexes: StructureIndexes,
   rng: Rng,
+  /** Every structure, for naming attachments. Defaults to the structures the indexes were built over. */
+  names: readonly StructureIndexEntry[] = [...indexes.byId.values()],
 ): MultiSelectQuestion[] {
   return [
     ...buildNerveQuestions(pool, indexes, rng),
     ...buildActionExclusionQuestions(pool, indexes, rng),
     ...buildJointMovementQuestions(pool, rng),
-    ...buildLigamentAttachmentQuestions(pool, indexes, rng),
+    ...buildLigamentAttachmentQuestions(pool, names, rng),
   ];
 }

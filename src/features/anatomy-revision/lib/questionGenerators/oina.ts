@@ -1,4 +1,4 @@
-import { isMuscle, primaryAreaOf } from '../../types/structure';
+import { isMuscle } from '../../types/structure';
 import type { AnatomyStructure } from '../../types/structure';
 import type { FactMastery } from '../../types/attempt';
 import type { OinaPromptKind, OinaQuestion, OinaSelectQuestion, OinaTypedQuestion } from '../../types/question';
@@ -17,6 +17,8 @@ import {
   stripHeadPrefix,
 } from '../oinaValues';
 import { factHints, factMasteryKey, pickOinaFormat } from '../factMastery';
+import { questionBase } from './questionBase';
+import type { DistractorVocabulary } from '../../data/content/vocabulary';
 
 /**
  * OINA Cards (CR-018): one question per (muscle, fact), asked about each
@@ -30,6 +32,12 @@ export interface OinaGenOptions {
   factMastery?: readonly FactMastery[];
   /** Overrides the escalation entirely — the setup screen's explicit difficulty override. */
   forceFormat?: 'select' | 'typed';
+  /**
+   * Nerves, actions and arteries from structures whose facts are not loaded
+   * (sources.ts). `all` is then only the loaded structures, and this fills in
+   * for the rest where a pool reached across the whole dataset.
+   */
+  vocabulary?: DistractorVocabulary;
 }
 
 /**
@@ -119,16 +127,7 @@ function rawValuesFor(structure: AnatomyStructure, promptKind: OinaPromptKind): 
 }
 
 function baseFields(structure: AnatomyStructure, promptKind: OinaPromptKind) {
-  return {
-    type: 'oina' as const,
-    structureId: structure.id,
-    region: structure.region,
-    subregion: structure.subregion,
-    area: primaryAreaOf(structure),
-    category: structure.category,
-    difficulty: structure.difficulty,
-    promptKind,
-  };
+  return { type: 'oina' as const, ...questionBase(structure, promptKind) };
 }
 
 /** Action tags compare by equivalence group; everything else by wording overlap. */
@@ -143,11 +142,12 @@ function buildDistractors(
   promptKind: OinaPromptKind,
   correctValues: string[],
   rng: Rng,
+  vocabulary?: DistractorVocabulary,
 ): string[] {
   if (isBloodFactKind(promptKind)) {
     // The primary is excluded from the wrong answers for the assisting set
     // too: it does supply the structure. See bloodSupply.ts wrongArteries.
-    return wrongArteries(muscle, all.filter((s) => s.bloodSupply), arteriesOf(muscle), rng);
+    return wrongArteries(muscle, all.filter((s) => s.bloodSupply), arteriesOf(muscle), rng, vocabulary?.arteries);
   }
   const reject = rejectsFor(promptKind);
 
@@ -181,10 +181,12 @@ function buildDistractors(
   // the question; these are the eliminable-by-region ones, so they are a last
   // resort, not the first choice.
   const index = promptKind === 'nerve' ? indexes.byNerve : indexes.byAction;
+  // The index covers the loaded structures; the vocabulary is the same keys
+  // from the rest of the dataset, when there is a rest.
+  const unloaded = (promptKind === 'nerve' ? vocabulary?.nerves : vocabulary?.actions) ?? [];
+  const keys = [...index.keys(), ...unloaded.filter((key) => !index.has(key))];
   const globalKeys = (
-    promptKind === 'nerve'
-      ? [...index.keys()].flatMap((key) => canonicalNerveNames([{ name: key, roots: [] }]))
-      : [...index.keys()]
+    promptKind === 'nerve' ? keys.flatMap((key) => canonicalNerveNames([{ name: key, roots: [] }])) : keys
   ).filter((key) => !tiered.includes(key) && !correctValues.some((correctValue) => reject(correctValue, key)));
   return [...tiered, ...sample([...new Set(globalKeys)], DISTRACTOR_COUNT - tiered.length, rng)];
 }
@@ -302,7 +304,7 @@ export function buildOinaQuestions(
         continue;
       }
 
-      const distractors = buildDistractors(structure, all, indexes, promptKind, correctValues, rng);
+      const distractors = buildDistractors(structure, all, indexes, promptKind, correctValues, rng, options.vocabulary);
       const question = buildSelect(structure, promptKind, correctValues, distractors, display, rng);
       if (question) questions.push(question);
     }

@@ -1,8 +1,9 @@
-import { isMuscle, primaryAreaOf } from '../../types/structure';
+import { isMuscle } from '../../types/structure';
 import type { AnatomyStructure } from '../../types/structure';
 import type { AnatomyImageAsset } from '../../types/image';
 import type { FlashcardQuestion, OinaPromptKind, PromptKind } from '../../types/question';
 import { summarizeStructure } from '../facts';
+import { questionBase } from './questionBase';
 
 export interface FlashcardGenOptions {
   /** Also emit an image-first variant when a single-structure image exists. Default true. */
@@ -12,16 +13,7 @@ export interface FlashcardGenOptions {
 const MUSCLE_FIELD_KINDS: OinaPromptKind[] = ['origin', 'insertion', 'nerve', 'action'];
 
 function baseFields(structure: AnatomyStructure, promptKind: PromptKind) {
-  return {
-    structureId: structure.id,
-    region: structure.region,
-    subregion: structure.subregion,
-    area: primaryAreaOf(structure),
-    category: structure.category,
-    difficulty: structure.difficulty,
-    promptKind,
-    type: 'flashcard' as const,
-  };
+  return { ...questionBase(structure, promptKind), type: 'flashcard' as const };
 }
 
 function fieldBackText(structure: AnatomyStructure, promptKind: PromptKind): string {

@@ -1,10 +1,12 @@
-import { primaryAreaOf, isLigament, reviewedAttachmentIds } from '../../types/structure';
+import { isLigament, reviewedAttachmentIds } from '../../types/structure';
 import { structureNameVariants } from '../nameVariants';
 import type { AnatomyStructure } from '../../types/structure';
+import type { StructureIndexEntry } from '../../types/structureIndex';
 import type { AnatomyImageAsset } from '../../types/image';
 import type { TypedIdentifyQuestion } from '../../types/question';
 import { summarizeStructure } from '../facts';
 import { promptImagesFor } from './promptImages';
+import { questionBase } from './questionBase';
 
 /**
  * Builds a typed-answer counterpart to MCQ's image-based "identify"
@@ -22,8 +24,12 @@ export function buildIdentifyTypedQuestions(
    * no bones in it, so looking an attachment up there finds nothing and the
    * boxes silently vanish — exactly the session where they matter most.
    * Defaults to `structures` for callers that pass the full set anyway.
+   *
+   * Index entries, because only a name and its aliases are read: the bone a
+   * ligament attaches to can sit in an area whose facts are not loaded, and
+   * its name is in the index regardless (sources.ts).
    */
-  allStructures: AnatomyStructure[] = structures,
+  allStructures: readonly StructureIndexEntry[] = structures,
 ): TypedIdentifyQuestion[] {
   const questions: TypedIdentifyQuestion[] = [];
   const byId = new Map(allStructures.map((s) => [s.id, s]));
@@ -44,13 +50,7 @@ export function buildIdentifyTypedQuestions(
     // One per turntable, on the plate framed for this structure (promptImages.ts).
     for (const image of promptImagesFor(structure, images)) {
       questions.push({
-        structureId: structure.id,
-        region: structure.region,
-        subregion: structure.subregion,
-    area: primaryAreaOf(structure),
-        category: structure.category,
-        difficulty: structure.difficulty,
-        promptKind: 'identify',
+        ...questionBase(structure, 'identify'),
         type: 'identify-typed',
         id: `identify-typed-${structure.id}-${image.id}`,
         prompt: image.mode === 'atlas-slide' ? 'Which structure is highlighted?' : 'Which structure is shown?',

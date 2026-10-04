@@ -1,21 +1,12 @@
-import { primaryAreaOf } from '../../types/structure';
 import type { AnatomyStructure } from '../../types/structure';
 import type { MCQQuestion, PromptKind } from '../../types/question';
 import { shuffle, sample, type Rng } from '../rng';
+import { questionBase } from './questionBase';
 
 const CHOICE_COUNT = 4;
 
 function baseFields(structure: AnatomyStructure, promptKind: PromptKind) {
-  return {
-    structureId: structure.id,
-    region: structure.region,
-    subregion: structure.subregion,
-    area: primaryAreaOf(structure),
-    category: structure.category,
-    difficulty: structure.difficulty,
-    promptKind,
-    type: 'mcq' as const,
-  };
+  return { ...questionBase(structure, promptKind), type: 'mcq' as const };
 }
 
 function buildChoices(correctValue: string, distractors: string[], rng: Rng): { choices: string[]; correctIndex: number } {

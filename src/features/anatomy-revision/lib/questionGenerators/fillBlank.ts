@@ -1,20 +1,12 @@
-import { isBone, isLandmark, primaryAreaOf } from '../../types/structure';
+import { isBone, isLandmark } from '../../types/structure';
 import type { AnatomyStructure } from '../../types/structure';
 import type { FillBlankQuestion, PromptKind } from '../../types/question';
 import { parseBlank } from './blankParser';
 import type { Rng } from '../rng';
+import { questionBase } from './questionBase';
 
 function baseFields(structure: AnatomyStructure, promptKind: PromptKind) {
-  return {
-    structureId: structure.id,
-    region: structure.region,
-    subregion: structure.subregion,
-    area: primaryAreaOf(structure),
-    category: structure.category,
-    difficulty: structure.difficulty,
-    promptKind,
-    type: 'fill-blank' as const,
-  };
+  return { ...questionBase(structure, promptKind), type: 'fill-blank' as const };
 }
 
 function buildFor(

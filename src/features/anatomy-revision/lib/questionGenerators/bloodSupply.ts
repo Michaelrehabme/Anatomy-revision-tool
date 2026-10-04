@@ -1,7 +1,10 @@
-import { areasOf, primaryAreaOf } from '../../types/structure';
+import { areasOf } from '../../types/structure';
 import type { AnatomyStructure, BloodSupplyRating } from '../../types/structure';
-import type { MCQQuestion, PromptKind } from '../../types/question';
+import type { MCQQuestion } from '../../types/question';
+import { AREAS } from '../../types/region';
+import type { DistractorVocabulary } from '../../data/content/vocabulary';
 import { shuffle, type Rng } from '../rng';
+import { questionBase } from './questionBase';
 
 /**
  * Blood supply (owner, 29 Sep 2026), from the reviewed `bloodSupply` field
@@ -30,18 +33,6 @@ const RATING_MEANING: Record<BloodSupplyRating, string> = {
   moderate: 'one dominant supply with collaterals, or tissue of middling vascularity',
   poor: 'avascular or diffusion-fed tissue, an end-artery, retrograde flow or a watershed zone',
 };
-
-function base(structure: AnatomyStructure, promptKind: PromptKind) {
-  return {
-    structureId: structure.id,
-    region: structure.region,
-    subregion: structure.subregion,
-    area: primaryAreaOf(structure),
-    category: structure.category,
-    difficulty: structure.difficulty,
-    promptKind,
-  };
-}
 
 /**
  * The vessel a name refers to, for telling synonyms apart from genuinely
@@ -155,20 +146,46 @@ const NOT_A_DISTRACTOR = /penis|clitoris|pudendal|vesical|uterine|rectal|ovarian
  * wrong answers come from outside the structure's own areas — the same region
  * first (the hip, for the ACL), then anywhere — which keeps them plausible and
  * keeps them wrong.
+ *
+ * WITH `vocabulary`, the same rule is applied to the bundled artery lists
+ * instead of to `all` (sources.ts). It is passed when some areas' facts are
+ * not loaded, and then `all` cannot answer either half of the rule: it holds
+ * nothing from outside the structure's areas to offer, and for a structure in
+ * two areas with one loaded it does not hold every neighbour to rule out. The
+ * lists are keyed by area for exactly that: every artery listed in the
+ * structure's own areas is ruled out, loaded or not, and the rest are the
+ * wrong answers.
  */
-export function wrongArteries(structure: AnatomyStructure, all: readonly AnatomyStructure[], own: readonly string[], rng: Rng): string[] {
+export function wrongArteries(
+  structure: AnatomyStructure,
+  all: readonly AnatomyStructure[],
+  own: readonly string[],
+  rng: Rng,
+  vocabulary?: DistractorVocabulary['arteries'],
+): string[] {
   const myAreas = new Set(areasOf(structure));
-  const sharesArea = (s: AnatomyStructure) => areasOf(s).some((a) => myAreas.has(a));
-  // The rule is about the VESSEL, not where the name was found: an artery
-  // any neighbour lists is out, even when it is drawn from a structure
-  // elsewhere that happens to list it too.
-  const nearby = [...own, ...all.filter((s) => s.id !== structure.id && sharesArea(s)).flatMap(arteriesOf)];
-  const others = all.filter((s) => s.id !== structure.id && !sharesArea(s));
-  const tiers = [others.filter((s) => s.region === structure.region), others];
+  let nearby: string[];
+  let tiers: (() => string[])[];
+  if (vocabulary) {
+    const listed = (mine: boolean, sameRegion: boolean) =>
+      AREAS.filter((a) => myAreas.has(a) === mine).flatMap((a) =>
+        sameRegion ? (vocabulary[a][structure.region] ?? []) : Object.values(vocabulary[a]).flat(),
+      );
+    nearby = [...own, ...listed(true, false)];
+    tiers = [() => listed(false, true), () => listed(false, false)];
+  } else {
+    const sharesArea = (s: AnatomyStructure) => areasOf(s).some((a) => myAreas.has(a));
+    // The rule is about the VESSEL, not where the name was found: an artery
+    // any neighbour lists is out, even when it is drawn from a structure
+    // elsewhere that happens to list it too.
+    nearby = [...own, ...all.filter((s) => s.id !== structure.id && sharesArea(s)).flatMap(arteriesOf)];
+    const others = all.filter((s) => s.id !== structure.id && !sharesArea(s));
+    tiers = [() => others.filter((s) => s.region === structure.region).flatMap(arteriesOf), () => others.flatMap(arteriesOf)];
+  }
   const out: string[] = [];
   const seen = new Set<string>();
   for (const tier of tiers) {
-    for (const name of shuffle([...tier.flatMap(arteriesOf)], rng)) {
+    for (const name of shuffle(tier(), rng)) {
       const shown = choiceName(name);
       const key = vesselKey(shown);
       if (!key || seen.has(key) || shown.length > MAX_WRONG_NAME || NOT_A_DISTRACTOR.test(name)) continue;
@@ -192,7 +209,7 @@ export function buildBloodSupplyRatingMcqs(pool: readonly AnatomyStructure[]): M
     const choices = RATING_CHOICES.map((c) => c.label);
     const zone = b.zone ? ` Poorly supplied part: ${sentence(b.zone)}` : '';
     questions.push({
-      ...base(structure, 'blood-supply-rating'),
+      ...questionBase(structure, 'blood-supply-rating'),
       type: 'mcq',
       id: `bloodsupply-${structure.id}-rating`,
       prompt: `How rich is the blood supply of the ${displayName(structure)}?`,

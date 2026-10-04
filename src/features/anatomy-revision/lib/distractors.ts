@@ -134,15 +134,21 @@ export function pickItemDistractors(
  * Picks `count` distractor keys (nerve names / action tags) from a reverse
  * index, excluding the correct answer's own keys. Mirrors quiz.py's
  * distractors_nerve / distractors_action.
+ *
+ * `vocabulary` is the same kind of key from structures whose facts are not
+ * loaded (questionGenerators/sources.ts). The index is built over what is
+ * loaded, and this pool was always "every key in the dataset", so the two
+ * together are that pool again. Omitted when everything is loaded.
  */
 export function pickKeyDistractors(
   correctKeys: string[],
   index: Map<string, string[]>,
   count: number,
   rng: Rng,
+  vocabulary: readonly string[] = [],
 ): string[] {
   const excluded = new Set(correctKeys);
-  const candidates = [...index.keys()].filter((k) => !excluded.has(k));
+  const candidates = [...index.keys(), ...vocabulary.filter((k) => !index.has(k))].filter((k) => !excluded.has(k));
   return sample(candidates, count, rng);
 }
 

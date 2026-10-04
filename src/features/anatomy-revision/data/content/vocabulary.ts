@@ -1,5 +1,5 @@
-import { isJoint, isMuscle, type AnatomyStructure, type JointType } from '../../types/structure';
-import { REGIONS, type Region } from '../../types/region';
+import { areasOf, isJoint, isMuscle, type AnatomyStructure, type JointType } from '../../types/structure';
+import { AREAS, type Area, type Region } from '../../types/region';
 import { arteriesOf } from '../../lib/questionGenerators/bloodSupply';
 
 /**
@@ -20,12 +20,17 @@ import { arteriesOf } from '../../lib/questionGenerators/bloodSupply';
  * a list of nerves. Nothing in it says which muscle a nerve supplies or which
  * bone an artery feeds; the pairing is the fact, and the pairing is not here.
  *
- * The arteries are the one list with any key at all, the body region their
- * structures sit in. bloodSupply.ts prefers a wrong artery from the same
- * region (the hip, for a knee question) because one from the other end of the
- * body is a giveaway, and it cannot keep doing that from a flat list. A region
- * is five buckets over a few hundred vessels; it says the femoral artery is
- * somewhere in the lower limb, which is not something anyone pays to learn.
+ * The arteries are the one list with any key at all: the area and the body
+ * region of the structures that list them. Both are needed to keep a question
+ * TRUE, not merely plausible. bloodSupply.ts never offers as a wrong answer an
+ * artery that any structure sharing an area with the subject lists, because
+ * the reviewed lists name the main vessels and a neighbour's artery may well
+ * feed the subject too — and the femur is a hip structure and a knee one, so
+ * a student holding the knee alone still needs the hip's arteries ruled out.
+ * A flat list cannot say which those are. The region is what lets the wrong
+ * answers come from the next area along rather than the other end of the body.
+ * What the buckets give away is that the genicular arteries are found at the
+ * knee, which is not something anyone pays to learn.
  *
  * Deliberately absent: origins, insertions, attachment and articulation
  * statements, action sentences, descriptions and palpation notes. Those are
@@ -43,8 +48,12 @@ export interface DistractorVocabulary {
   /** Myotome labels as a question shows them: "C5/C6". */
   myotomes: string[];
   specialTests: string[];
-  /** Artery names as authored, bracketed detail included, by the region of the structures that list them. */
-  arteries: Record<Region, string[]>;
+  /**
+   * Artery names as authored, bracketed detail included, by the area and then
+   * the region of the structures that list them. A structure in two areas
+   * lists its arteries under both.
+   */
+  arteries: Record<Area, Partial<Record<Region, string[]>>>;
 }
 
 /** Sorted by code point, not locale: the bytes must not depend on the machine that built them. */
@@ -60,13 +69,19 @@ export function buildVocabulary(structures: readonly AnatomyStructure[]): Distra
     jointTypes: sortedUnique(structures.filter(isJoint).map((j) => j.jointType)),
     myotomes: sortedUnique(structures.flatMap((s) => (s.myotome?.length ? [s.myotome.join('/')] : []))),
     specialTests: sortedUnique(structures.flatMap((s) => (s.specialTests ?? []).map((t) => t.name))),
-    arteries: Object.fromEntries(
-      REGIONS.map((region) => [
-        region,
-        // Landmarks carry no blood supply of their own to ask about (they are
-        // parts of bones), so their lists never reach a question either.
-        sortedUnique(structures.filter((s) => s.region === region && s.category !== 'landmark').flatMap(arteriesOf)),
-      ]),
-    ) as Record<Region, string[]>,
+    arteries: arteriesByArea(structures),
   };
+}
+
+function arteriesByArea(structures: readonly AnatomyStructure[]): DistractorVocabulary['arteries'] {
+  const out = Object.fromEntries(AREAS.map((area) => [area, {}])) as DistractorVocabulary['arteries'];
+  for (const s of structures) {
+    const names = arteriesOf(s);
+    if (!names.length) continue;
+    for (const area of areasOf(s)) (out[area][s.region] ??= []).push(...names);
+  }
+  for (const byRegion of Object.values(out)) {
+    for (const region of Object.keys(byRegion) as Region[]) byRegion[region] = sortedUnique(byRegion[region]!);
+  }
+  return out;
 }

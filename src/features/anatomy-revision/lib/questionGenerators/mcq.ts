@@ -1,4 +1,4 @@
-import { isMuscle, isBone, isJoint, primaryAreaOf, JOINT_TYPE_LABELS } from '../../types/structure';
+import { isMuscle, isBone, isJoint, JOINT_TYPE_LABELS } from '../../types/structure';
 import type { AnatomyStructure } from '../../types/structure';
 import type { AnatomyImageAsset } from '../../types/image';
 import type { MCQQuestion, PromptKind } from '../../types/question';
@@ -7,12 +7,20 @@ import { pickNameDistractors, pickTextFieldDistractors, pickKeyDistractors } fro
 import { buildIdentifyClue, summarizeStructure } from '../facts';
 import { shuffle, sample, type Rng } from '../rng';
 import { promptImagesFor } from './promptImages';
+import { questionBase } from './questionBase';
+import type { DistractorVocabulary } from '../../data/content/vocabulary';
 
 export interface McqGenOptions {
   /** Total choices including the correct answer. Default 4. */
   choiceCount?: number;
   /** Which prompt kinds to generate per category. Omit for all supported kinds. */
   promptKinds?: PromptKind[];
+  /**
+   * Nerve names from structures whose facts are not loaded. The nerve
+   * question is the one MCQ whose wrong answers come from the whole dataset
+   * rather than from the pool it was given; see sources.ts.
+   */
+  vocabulary?: DistractorVocabulary;
 }
 
 const MUSCLE_KINDS: PromptKind[] = ['identify', 'origin', 'insertion', 'nerve', 'action'];
@@ -54,16 +62,7 @@ function buildChoices(
 }
 
 function baseFields(structure: AnatomyStructure, promptKind: PromptKind) {
-  return {
-    structureId: structure.id,
-    region: structure.region,
-    subregion: structure.subregion,
-    area: primaryAreaOf(structure),
-    category: structure.category,
-    difficulty: structure.difficulty,
-    promptKind,
-    type: 'mcq' as const,
-  };
+  return { ...questionBase(structure, promptKind), type: 'mcq' as const };
 }
 
 /**
@@ -88,7 +87,7 @@ export function buildMcqQuestions(
     if (!structure.eligibility.mcq) continue;
 
     for (const promptKind of kindsFor(structure, options.promptKinds)) {
-      const built = buildOne(structure, structures, images, indexes, promptKind, distractorCount, choiceCount, rng);
+      const built = buildOne(structure, structures, images, indexes, promptKind, distractorCount, choiceCount, rng, options.vocabulary);
       questions.push(...built);
     }
   }
@@ -105,6 +104,7 @@ function buildOne(
   distractorCount: number,
   choiceCount: number,
   rng: Rng,
+  vocabulary?: DistractorVocabulary,
 ): MCQQuestion[] {
   const out: MCQQuestion[] = [];
 
@@ -177,6 +177,7 @@ function buildOne(
         indexes.byNerve,
         distractorCount,
         rng,
+        vocabulary?.nerves,
       );
       const { choices, correctIndex } = buildChoices(correctValue, distractors, choiceCount, rng);
       out.push({
