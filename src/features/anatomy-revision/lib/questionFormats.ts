@@ -78,6 +78,7 @@ const PROMPT_KIND_LABELS: Partial<Record<PromptKind, string>> = {
   'blood-supply': 'Blood supply',
   'blood-supply-assisting': 'Blood supply',
   'blood-supply-rating': 'Blood supply',
+  'described-region': 'Where it sits',
 };
 
 /**

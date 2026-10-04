@@ -11,6 +11,15 @@ import { PASS_SCORE, RING_COUNT } from '../../lib/hotspot/accuracy';
  * What actually happened is that they tapped near it rather than on it, and
  * the score is the only thing that says how near.
  */
+/**
+ * What to say after a locate question answered IN WORDS. The right
+ * description is given either way: right, it is worth reading once more as
+ * the answer; wrong, it is the answer.
+ */
+export function describedFeedback(correct: boolean, targetName: string, answer: string): { title: string; detail: string } {
+  return { title: correct ? 'Correct' : 'Not quite', detail: `${targetName} — ${answer}` };
+}
+
 export function locateFeedback(
   { correct, accuracy }: { correct: boolean; accuracy?: number },
   targetName: string,

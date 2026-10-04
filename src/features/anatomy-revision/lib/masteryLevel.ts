@@ -72,6 +72,7 @@ export const SKILL_LABELS: Partial<Record<SkillKind, string>> = {
   'blood-supply': 'Primary artery',
   'blood-supply-assisting': 'Other arteries',
   'blood-supply-rating': 'How rich its supply is',
+  'described-region': 'Where it sits, in words',
 };
 
 export function skillLabel(kind: SkillKind): string {
