@@ -449,6 +449,16 @@ for jid in wanted:
         continue
 
     lo, hi = bbox(contact)
+    # ONE CAMERA FOR SEVERAL SEAMS. The five intercarpal gaps are asked on one
+    # carpal plate, so their masks have to share pixels: framed each on its own
+    # contact region they would be five pictures 15mm apart. `frameOn` names the
+    # meshes the camera centres on instead (with `frame` fixing the width); the
+    # contact region still decides what is traced.
+    if j.get("frameOn"):
+        _on = bake(j["frameOn"], f"frameon_{jid}")
+        if _on.vertices:
+            lo, hi = bbox([v.co for v in _on.vertices])
+        bpy.data.meshes.remove(_on)
     note = "  (relaxed face rule — band will be wide)" if relaxed else ""
     tuned = "" if (band == a.band and margin == a.margin) else f"  [band {band} margin {margin}]"
     print(f"[joint] {jid}: {len(contact)} contact verts, {len(patch.polygons)} faces, "

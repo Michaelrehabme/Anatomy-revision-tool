@@ -467,19 +467,69 @@ def ghost_mat():
 GHOST_MAT = ghost_mat()
 
 
+def ghost_strap_mat():
+    """A strap you can see through, for a ligament under other ligaments.
+
+    Ghosting the carpal bones was not enough for the interosseous ligaments
+    of the wrist: the radiocarpal and radiate straps lie over the whole carpus,
+    hid the target on all eight angles, and as solid neighbours they held it
+    out of its mask too. A spec entry that gives solidStraps keeps only the
+    straps matching those patterns solid; every other strap in the frame is
+    drawn in this material and, like a ghosted bone, cuts nothing from the
+    hotspot and takes no taps of its own.
+    """
+    mat = principled("lig_ghost_strap", REST_MUTED_FILL, 0.6)
+    mat.node_tree.nodes["Principled BSDF"].inputs["Alpha"].default_value = 0.22
+    try:
+        mat.blend_method = "BLEND"
+    except (AttributeError, TypeError):
+        pass
+    try:
+        mat.show_transparent_back = False
+    except AttributeError:
+        pass
+    return mat
+
+
+GHOST_STRAP_MAT = ghost_strap_mat()
+
+
 def smooth(mesh):
     for poly in mesh.polygons:
         poly.use_smooth = True
     return mesh
 
 
-def bake(names, mesh_name):
+def skinned_copy(src):
+    """The mesh a faceless strap's own modifiers make of it.
+
+    The intertransverse ligaments are modelled as 26 bare edges with a Skin
+    modifier: no faces at all until the modifier runs. Copying the raw data, as
+    bake does for everything else, gave an empty picture and a 0.000% mask —
+    the ligament was never buried, it was never drawn. Only a mesh with no
+    faces takes this path, and only when it is the TARGET (skin=True): a
+    faceless neighbour stays undrawn, as it always was, so no published plate
+    changes if it is re-rendered.
+    """
+    was_hidden = src.hide_viewport
+    src.hide_viewport = False
+    scene.collection.objects.link(src)
+    try:
+        deps = bpy.context.evaluated_depsgraph_get()
+        deps.update()
+        return bpy.data.meshes.new_from_object(src.evaluated_get(deps))
+    finally:
+        scene.collection.objects.unlink(src)
+        src.hide_viewport = was_hidden
+
+
+def bake(names, mesh_name, skin=False):
     bm = bmesh.new()
     for n in names:
         src = bpy.data.objects.get(n)
         if not src or src.type != "MESH":
             continue
-        tmp = src.data.copy()
+        tmp = skinned_copy(src) if (skin and not src.data.polygons and src.modifiers) else src.data.copy()
         mat = src.matrix_world
         for v in tmp.vertices:
             v.co = mat @ v.co
@@ -806,11 +856,17 @@ for entry in spec["ligaments"]:
             if not any(fnmatch.fnmatch(n, pat) for n in skeleton_names):
                 print("[warn] " + key + ": keep pattern '" + pat + "' matches no bone", flush=True)
 
-    lig_mesh = bake(lig_names, "lig_" + key)
+    lig_mesh = bake(lig_names, "lig_" + key, skin=True)
     if not lig_mesh.vertices:
         print("[warn] " + key + ": empty bake, skipped", flush=True)
         continue
     lo, hi = mesh_bbox(lig_mesh)
+    # FRAME ON A PART. A ligament that runs the whole spine is its own wrong
+    # ruler: framed on all 565mm of the intertransverse ligaments, each strand
+    # is a hair. frameBox ([[x,y,z],[x,y,z]], metres) frames on one stretch of
+    # it instead; the rest is still drawn and still traced where it is in shot.
+    if entry.get("frameBox"):
+        lo, hi = tuple(entry["frameBox"][0]), tuple(entry["frameBox"][1])
 
     # The bones, minus anything the spec cuts away. The ligament itself is baked
     # separately so it can be recoloured between the three renders.
@@ -819,6 +875,12 @@ for entry in spec["ligaments"]:
                    and (keep is None or n in keep)]
     bones = smooth(bake(solid_names, "ligbones_" + key))
     ghost_mesh = smooth(bake([n for n in ghost if n not in lig_names], "ligghost_" + key)) if ghost else None
+
+    # ghostAlpha (default 0.45, the ACL's) lets one entry thin its ghosted bones:
+    # a 3mm interosseous ligament in the resting colour is close to invisible
+    # through a carpal at 0.45. Set per entry, restored below, so no other
+    # plate's ghost changes.
+    GHOST_MAT.node_tree.nodes["Principled BSDF"].inputs["Alpha"].default_value = entry.get("ghostAlpha", 0.45)
 
     centre = ((lo[0] + hi[0]) / 2, (lo[1] + hi[1]) / 2, (lo[2] + hi[2]) / 2)
     span = max(hi[0] - lo[0], hi[1] - lo[1], hi[2] - lo[2])
@@ -844,7 +906,17 @@ for entry in spec["ligaments"]:
         others = [n for n in others if n not in twins]
         print("[twin] " + key + ": " + ", ".join(twins), flush=True)
         bpy.data.meshes.remove(lig_mesh)
-        lig_mesh = bake(lig_names + twins, "lig_" + key)
+        lig_mesh = bake(lig_names + twins, "lig_" + key, skin=True)
+    # See ghost_strap_mat: with solidStraps, the straps it does not name are
+    # ghosted. They leave `others`, so they are neither holdouts nor tap targets.
+    ghost_strap_mesh = None
+    if entry.get("solidStraps"):
+        import fnmatch
+        see_through = [n for n in others if not any(fnmatch.fnmatch(n, p) for p in entry["solidStraps"])]
+        others = [n for n in others if n not in see_through]
+        if see_through:
+            print("[ghost-straps] " + key + ": " + ", ".join(sorted(see_through)), flush=True)
+            ghost_strap_mesh = smooth(bake(see_through, "ligghoststraps_" + key))
     other_mesh = None  # superseded by the per-view sets below
     if others:
         print("[straps] " + key + ": " + ", ".join(sorted(others)), flush=True)
@@ -927,6 +999,8 @@ for entry in spec["ligaments"]:
           link(m, "ctx_" + n, mat, outlined=True, soften=True)
       if ghost_mesh:
           link(ghost_mesh, "ctx_ghost_" + key, GHOST_MAT, boned=True)
+      if ghost_strap_mesh:
+          link(ghost_strap_mesh, "ctx_ghoststraps_" + key, GHOST_STRAP_MAT, soften=True)
       render_to(os.path.join(leaf_dir, "context.png"))
 
       clear()
@@ -936,6 +1010,8 @@ for entry in spec["ligaments"]:
           link(m, "hl_" + n, muted, outlined=True, soften=True)
       if ghost_mesh:
           link(ghost_mesh, "hl_ghost_" + key, GHOST_MAT, boned=True)
+      if ghost_strap_mesh:
+          link(ghost_strap_mesh, "hl_ghoststraps_" + key, GHOST_STRAP_MAT, soften=True)
       render_to(os.path.join(leaf_dir, "highlight.png"))
 
       # The mask holds the bones out rather than hiding them, so a ligament that
@@ -965,6 +1041,8 @@ for entry in spec["ligaments"]:
     bpy.data.meshes.remove(bones)
     if ghost_mesh:
         bpy.data.meshes.remove(ghost_mesh)
+    if ghost_strap_mesh:
+        bpy.data.meshes.remove(ghost_strap_mesh)
     if other_mesh:
         bpy.data.meshes.remove(other_mesh)
     if other_level:
