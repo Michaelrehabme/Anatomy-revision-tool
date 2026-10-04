@@ -66,6 +66,35 @@ To add a claim: put it in the table with that evidence format, and the check sta
 | Per-family check progress, e.g. "22 of the 34 joints have been checked" | /sources | Derived per family from `provenance.generated.ts` and guarded by `validateProvenance()`. **Deliberately NOT counted keys**: these move with every tranche. They were frozen at 0 on 23 Sep and were stale within a day — the page, which counts rather than states, was right throughout | 2026-09-24 |
 | Works named on /sources are the works actually cited | /sources | `validateProvenance()` fails if any work on the excluded list (`EXCLUDED_WORKS`) still carries a citation. Dropping a name from the page while the record rests on it would make the work-set incomplete | 2026-09-23 |
 
+## Competitor comparison (/compare — DRAFT, unlinked, noindex)
+
+The page is drafted but **not published**: nothing links to it, it carries `noindex` (a meta tag
+and an `X-Robots-Tag` header in netlify.toml), and it says "Draft" at the top. It becomes public
+only when the owner approves it — at which point re-read every row below against the live pages
+first, because these captures are from 28 Sep 2026.
+
+Every row is one entry in `src/features/site/data/comparison.ts`, whose type makes the evidence
+file mandatory. `comparison.test.tsx` fails if a row's screenshot is not on file, if its URL is not
+the one the capture log (the folder's README) records for that file, if the page renders a row
+without its "As of" date, or if a row is missing from this table.
+
+| Claim | Where it appears | Evidence | Last verified |
+|---|---|---|---|
+| TeachMeAnatomy: £25/month; £45 per 3 months; £96 per 12 months; £195 lifetime; a "Basic" column of 4 articles a month and 600 questions; 3D models, dissection atlas, audio lectures and flashcards in the paid column | /compare | `docs/evidence/competitors-2026-09-28/teachmeanatomy-pricing.png` | 2026-09-28 |
+| Kenhub: £25/month; £57 per 3 months; £190 lifetime against a struck-through £300; a "Free" column with atlas, articles and terminology; video tutorials and quizzes in the paid column | /compare | `docs/evidence/competitors-2026-09-28/kenhub-pricing.png` | 2026-09-28 |
+| Complete Anatomy: Student £34.99 first year (annual, struck-through £69.99); Professional £94.99 annual; "Access on all devices" | /compare | `docs/evidence/competitors-2026-09-28/completeanatomy-pricing.png` | 2026-09-28 |
+| Visible Body Suite: Student $34.99/year; Classroom/Professional $199/year, in US dollars | /compare | `docs/evidence/competitors-2026-09-28/visiblebody-pricing.png` | 2026-09-28 |
+| RemNote: Free US$0; Pro US$96 billed yearly; Pro with AI US$216 billed yearly, in US dollars | /compare | `docs/evidence/competitors-2026-09-28/remnote-pricing.png` (Yearly tab only) | 2026-09-28 |
+| LocusMSK's own figures on the page: structure count, region count, prices | /compare | Derived at render time from `provenance.generated.ts`, `AREAS` and `PLANS`; no typed number | 2026-10-04 |
+| "What LocusMSK does not have: free-rotating 3D models, video or audio lectures, articles, dissection images, or any anatomy outside the musculoskeletal system of the limbs and spine" | /compare | A statement against ourselves. True of the app as built: plates are fixed 12-frame turntables, and the five structure families are all musculoskeletal. Revisit if any of those ships | 2026-10-04 |
+
+**What the page deliberately does not say.** No "cheaper than", no ranking, nothing about any
+competitor's quality, accuracy or results — the screenshots show prices and plan contents and
+that is all they can support. Quizlet is absent (its capture is a bot-check page). No
+institutional price is given for anyone (none is shown). The Complete Anatomy "3-day free trial"
+and the money-back guarantees in the folder's README were read from page text and are left off
+the page to keep it to prices.
+
 ## Privacy and security
 
 These are the claims a university's DPO will test, and each names the thing that enforces it.
@@ -83,18 +112,110 @@ The full set lives in docs/DATA-PROCESSING.md; the load-bearing ones are:
 | "reply within one month" | /privacy, /refunds, /accessibility | UK GDPR response window; a commitment you have to meet | 2026-09-20 |
 | WCAG 2.2 AA, "partially compliant", no independent audit; automated scan and desktop keyboard pass on 28–29 Sep | /accessibility | Own testing, stated as such on the page; method, fixes and open items in docs/ACCESSIBILITY-AUDIT-2026-09-28.md; contrast pairs and the accent-as-text rule are asserted in lib/__tests__/contrast.test.ts | 2026-09-29 |
 
+## What a pilot needs before an outcome claim goes public
+
+No outcome figure is public today, and none may be until every line in this section is met. The
+thresholds are **proposed** (4 Oct 2026) and become the rule when the owner accepts them; until
+then the rule is the stricter one above: no outcome claim at all.
+
+**What the measurement is.** Each student in a class sits the same 15 questions twice: a baseline
+within 28 days of joining and a follow-up from 70 days later (`lib/diagnostic.ts`,
+`lib/diagnosticPrompt.ts`). No feedback is given, and it never touches mastery or the class
+counters. Only students with both sittings, on the same questions and version, are counted
+(`pairDiagnostics`). There is no comparison group. That last sentence limits everything below.
+
+**Before a figure is quoted in public**
+
+1. **Size.** At least 20 students with both sittings, in one class. The code's own floor
+   (`MIN_PAIRED = 8`) is for showing a course lead their own class in private; it is too few for
+   a public number.
+2. **Completion.** At least 60% of the students who sat the baseline also sat the follow-up.
+   Below that, the people who finished are mostly the keen ones and the figure describes them,
+   not the class.
+3. **A real class.** Students enrolled on a real module, who joined through a class code. Not
+   the owner, friends, testers or the demo cohort.
+4. **Both ends in window.** Baselines inside the 28 days; at least 70 days between sittings.
+5. **Every figure travels with its counts**: how many joined, how many sat the baseline, how
+   many sat both, and the dates. A percentage without its n is not quotable.
+
+**What the figure may be called.** A change in score on our own 15-question test, among students
+who chose to sit it twice. Say "scored", "answered", "went from … to …". Report it in percentage
+points, with both means.
+
+**What it may not be called.** Anything causal. An uncontrolled before-and-after cannot separate
+the app from the lectures, practicals and other revision that happened in the same ten weeks.
+Two further reasons the number flatters us, which must be stated wherever it appears:
+
+- **Practice effect.** They sat the same 15 questions twice. Some of the gain is from having
+  seen the paper, even without feedback.
+- **Self-selection.** Nobody is made to use the app or to sit the follow-up. Students who do
+  both are likely to be those who revise more anyway.
+
+So never: "improves", "boosts", "because of", "thanks to", "proven", "effective", "learn faster",
+"better grades", "X% improvement" (a percentage of a percentage), or any link to exam or module
+marks. The diagnostic does not measure marks.
+
+**How dose is reported.** As what the class did, next to the score and not as its cause: median
+questions answered per active student and median days used (`scripts/cohortReport.ts`, "USE"),
+with the number of students who never opened the app. Do **not** split the gain by heavy and
+light users in public. The heavier users chose to be, so that split is self-selection drawn as
+a result. `outcomeComparison.ts` makes that split for the admin screen; it stays there.
+
+**Consent and anonymity**
+
+- Students were told, before the baseline, that class-level results may be reported outside
+  their course. **They are not told this today.** The baseline prompt says only that the course
+  leader sees whether the class moved, and /privacy does not mention the diagnostic. Both need
+  a sentence added before a pilot's first baseline; a class that sat it without that sentence
+  cannot be quoted in public.
+- Class totals only. No names, no per-student rows, no quote from a student without their own
+  written permission. Educators see class results only; a public claim cannot show more than
+  an educator can.
+- No figure for any group under 8, and no breakdown (by region, by tutor group) that would let
+  one student be picked out.
+- The university and module are named only with the course lead's written permission. If the
+  university treats publication as research, its ethics process comes first. Ask; do not assume.
+
+**Who signs off.** The owner, and the course lead of that class, both in writing, on the exact
+sentence. Then the sentence, the counts, the date and the `cohortReport` output it came from go
+in a row in this file **before** it is published. One class supports a sentence about that
+class, not about "students" in general.
+
+**Allowed, once all of the above is met** (the numbers here are made up):
+
+- "In one first-year class in autumn 2026, 24 students sat our 15-question test at the start and
+  end of term. Their average score went from 41% to 63%. There was no comparison group, they sat
+  the same questions twice, and they also had a term of teaching, so this does not show the app
+  caused the change."
+- "41 students joined, 34 sat the first test and 24 sat both. Students who used the app answered
+  a median of 310 questions over 12 days."
+
+**Not allowed, whatever the numbers**
+
+- "Students who use LocusMSK score 22 points higher."
+- "LocusMSK improves anatomy scores by 54%."
+- "Proven to help students pass."
+- "The more you use it, the more you improve."
+- "Used at <university>" without written permission.
+
+**Known gap.** `scripts/cohortReport.ts` pairs sittings more loosely than `pairDiagnostics`: it
+does not check the version or that the same questions were asked. It now marks a class under
+the private floor as not quotable, but the figure to quote is the one from `summariseDiagnostics`
+(the admin Outcome screen), not the script's.
+
 ## Claims NOT to make until there is evidence
 
 - **Any outcome claim** — "students who used it scored higher", "learn faster", "X% improvement".
   The baseline/follow-up diagnostic (CR-033 item 14) is what will eventually evidence this, and it
-  needs a real cohort with both sittings completed before a single number goes on a page. This is
+  needs a real cohort with both sittings completed before a single number goes on a page — the
+  conditions are in "What a pilot needs before an outcome claim goes public", above. This is
   the claim most likely to be made carelessly in the February pitch, and the one most likely to be
   challenged.
 - **Comparative claims about competitors** — prices, features, coverage. These need a dated
   screenshot taken at the time of publishing, and re-checking every quarter, because a competitor
   changing their price turns your true claim into a false one without you touching anything. The
-  comparison page (CR-033 item 17) does not exist yet; it must not ship without its rows added
-  here. The competitor figures in docs/BACKLOG-STORE-MONETISATION.md are dated 8 September 2026
+  comparison page (CR-033 item 17) is drafted at /compare, unlinked and noindexed; its rows are
+  in "Competitor comparison" above, and it must not be linked or indexed with stale ones. The competitor figures in docs/BACKLOG-STORE-MONETISATION.md are dated 8 September 2026
   and are **not** evidence for anything published later than that.
 
   **Evidence on file:** `docs/evidence/competitors-2026-09-28/` — dated full-page captures of the

@@ -36,6 +36,14 @@
   to = "/index.html"
   status = 200
 
+# The comparison page is a draft (CR-033 item 17): unlinked, and not to be
+# indexed until the owner approves it. The page sets a robots meta tag too, but
+# only a crawler that runs scripts sees that. Remove this block on approval.
+[[headers]]
+  for = "/compare"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+
 # The public educator demo (CR-028) builds from THIS repository, and the block
 # above would otherwise govern it: a netlify.toml overrides a site's own UI
 # build settings, so a second site pointed at this repo would run

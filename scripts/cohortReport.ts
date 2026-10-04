@@ -158,6 +158,13 @@ async function report(db: Firestore, cohortId: string): Promise<void> {
       process.stdout.write(`  Sat both                  ${paired.length}\n`);
       process.stdout.write(`  Mean before / after       ${before}% → ${after}%  (${after - before >= 0 ? '+' : ''}${after - before} points)\n`);
       process.stdout.write(`  Improved                  ${improved} of ${paired.length}\n`);
+      // MIN_PAIRED in lib/diagnostic.ts. Printed rather than hidden: the course
+      // lead may see a small class's own figure, but nobody may quote it.
+      if (paired.length < 8) {
+        process.stdout.write('  NOT QUOTABLE: under 8 students sat both. See docs/CLAIMS.md.\n');
+      } else {
+        process.stdout.write('  Before quoting any of this, read docs/CLAIMS.md: what a pilot needs.\n');
+      }
     }
   }
 

@@ -1,6 +1,6 @@
 import { lazy, Suspense } from 'react';
 import { Link } from 'react-router-dom';
-import { hasExpired, hasStarted } from '../../lib/entitlement';
+import { freeAreaSwitchDate, hasExpired, hasStarted } from '../../lib/entitlement';
 import { AREAS, AREA_LABELS, type Area } from '../../types/region';
 import type { UseEntitlement } from '../../hooks/useEntitlement';
 
@@ -11,7 +11,8 @@ import type { UseEntitlement } from '../../hooks/useEntitlement';
  * THE FREE-AREA SWAP LIVES HERE because this is the one screen a student
  * already visits to see what they are paying for, and the swap is a
  * consequence of being on the free plan rather than a study setting. It is
- * offered every 30 days — see FREE_AREA_SWITCH_DAYS — and the wait is stated
+ * offered ONCE, from 30 days after the first pick — see FREE_AREA_SWITCH_DAYS
+ * and FREE_AREA_SWITCHES_ALLOWED — and the wait is stated, with its date,
  * rather than hidden behind a disabled control with no explanation.
  *
  * Returns nothing in the public demo, which has no /pricing route. A link
@@ -99,7 +100,7 @@ export function SubscriptionSummary({ access }: { access: UseEntitlement }) {
               ? 'You have used your one change, so this is now your free area. A subscription opens every region.'
               : canSwitchFree
                 ? 'You can change this once. After that it is fixed, and only a subscription opens the rest.'
-                : `You can change this once, 30 days after you picked it — ${daysUntilSwitch} ${daysUntilSwitch === 1 ? 'day' : 'days'} to go.`}
+                : `You can change this once, 30 days after you picked it: from ${freeAreaSwitchDate(freeArea) ?? 'tomorrow'} (${daysUntilSwitch} ${daysUntilSwitch === 1 ? 'day' : 'days'} to go).`}
             {' '}Your progress in every area is kept either way.
           </p>
         </div>

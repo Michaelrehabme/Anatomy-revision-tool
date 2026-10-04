@@ -75,6 +75,13 @@ const EducatorApp = lazy(() => import('./features/educator/EducatorApp'));
  * not sit in the chunk every student downloads to answer a question.
  */
 const LegalRoutes = lazy(() => import('./features/legal/LegalRoutes'));
+/**
+ * The competitor comparison (CR-033 item 17). A DRAFT: reachable only by typed
+ * URL, linked from nowhere and marked noindex until the owner approves it.
+ * Lazy for the same reason as the legal pages.
+ */
+const ComparisonPage = lazy(() => import('./features/site/components/ComparisonPage'));
+const COMPARISON_PATH = '/compare';
 
 /** Dev-only hotspot authoring tool (CR-007) — route only registered in dev, see the /dev/hotspots Route below. */
 const HotspotEditorApp = lazy(() => import('./features/hotspotEditor/HotspotEditorApp'));
@@ -276,6 +283,16 @@ function App() {
     return (
       <Suspense fallback={null}>
         <LegalRoutes />
+      </Suspense>
+    );
+  }
+
+  // Public like the legal pages, and for the same reason: it reads no account
+  // and must not bounce a cold visitor into onboarding.
+  if (location.pathname === COMPARISON_PATH) {
+    return (
+      <Suspense fallback={null}>
+        <ComparisonPage />
       </Suspense>
     );
   }

@@ -7,6 +7,7 @@ import { areasOf, isMuscle } from '../types/structure';
 import type { Area } from '../types/region';
 import { computeStreak } from '../lib/streak';
 import { sessionsPerDay } from '../lib/weekActivity';
+import { syncReviewReminder } from '../../native/nativeShell';
 
 
 export interface TodayData {
@@ -78,6 +79,19 @@ export function useTodayData(
       cancelled = true;
     };
   }, [repository, userId]);
+
+  // Inside the native wrapper, keep the one "reviews are due" notification in
+  // step with what was just loaded. A no-op in a browser — see nativeShell.ts.
+  // Keyed on the loaded rows, so it runs again when Today reloads after a session.
+  const entitledKey = entitledAreas.join(',');
+  useEffect(() => {
+    if (loading) return;
+    const reachable = entitledKey.split(',');
+    const eligible = new Set(
+      content.structures.filter((s) => areasOf(s).some((a) => reachable.includes(a))).map((s) => s.id),
+    );
+    void syncReviewReminder({ mastery: allMastery, facts, eligible });
+  }, [loading, allMastery, facts, entitledKey, content.structures]);
 
   const streak = computeStreak(summaries);
   // Clamped to what this account may reach, which is what makes every number
