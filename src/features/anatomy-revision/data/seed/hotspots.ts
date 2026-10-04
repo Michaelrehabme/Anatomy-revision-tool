@@ -27,6 +27,7 @@ const SETS: Record<string, () => Promise<Record<string, HotspotPolygon[]>>> = {
   bones: () => import('./hotspots.bones.generated').then((m) => m.BONE_HOTSPOTS),
   landmarks: () => import('./hotspots.landmarks.generated').then((m) => m.LANDMARK_HOTSPOTS),
   subregions: () => import('./hotspots.subregions.generated').then((m) => m.SUBREGION_HOTSPOTS),
+  gaps: () => import('./hotspots.gaps.generated').then((m) => m.GAP_HOTSPOTS),
   // Ligaments come in seven area files: together they are past the 2 MiB a
   // service worker will precache (see publishLigamentPlates.ts).
   ligamentsUpper: () => import('./hotspots.ligaments.upper.generated').then((m) => m.LIGAMENT_HOTSPOTS_PART),

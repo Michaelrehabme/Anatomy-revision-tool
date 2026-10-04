@@ -46,5 +46,14 @@ export function locateFeedback(
       detail: `Close, but that is not ${targetName} itself. You needed ${PASS_SCORE} or better.`,
     };
   }
+  // A SCORED PICTURE CAN HOLD SEVERAL TARGETS. The carpal gap plate carries five
+  // seams, each scored by its core, so a miss there is usually a tap on the
+  // NEIGHBOURING gap — and "that is not where it sits" throws away the one
+  // thing the picture knows: which gap it was. Name it, as an outline target's
+  // miss is named. A landmark plate has one target and nothing else to name,
+  // so it keeps the line it always had.
+  if (tappedName && tappedName !== targetName) {
+    return { title: `Not quite — ${score}`, detail: `That was ${tappedName}. ${targetName} is shown in green.` };
+  }
   return { title: `Not quite — ${score}`, detail: `That is not where ${targetName} sits.` };
 }

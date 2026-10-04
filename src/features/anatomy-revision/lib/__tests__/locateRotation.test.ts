@@ -135,7 +135,13 @@ describe('a set framed for another structure', () => {
 });
 
 describe('the shipped ligament plates', () => {
-  const qs = buildLocateQuestions(ALL_STRUCTURES, ALL_IMAGES).filter((q) => q.category === 'ligament');
+  const everyLigament = buildLocateQuestions(ALL_STRUCTURES, ALL_IMAGES).filter((q) => q.category === 'ligament');
+  // The interosseous ligaments of the wrist are not located on a ligament
+  // plate at all: they are asked by the gap between their two bones, on the
+  // bones-only carpal plate (images.seed.ts, "Gap plates"). They are checked
+  // on their own below and in buriedLigaments.test.ts.
+  const onGapPlate = everyLigament.filter((q) => q.imageId.startsWith('gap-'));
+  const qs = everyLigament.filter((q) => !q.imageId.startsWith('gap-'));
   const ownerOf = (imageId: string) =>
     imageId.replace(/^ligament-/, '').replace(/-a\d{3}(?:[ud]\d{3})?-(context|highlight)$/, '');
   // A ligament too thin to tap on every frame of its own plate is asked on ONE
@@ -159,10 +165,22 @@ describe('the shipped ligament plates', () => {
 
   it('asks each ligament once, not once per plate it appears on', () => {
     const perStructure = new Map<string, number>();
-    for (const q of qs) perStructure.set(q.targetStructureId, (perStructure.get(q.targetStructureId) ?? 0) + 1);
+    for (const q of everyLigament) perStructure.set(q.targetStructureId, (perStructure.get(q.targetStructureId) ?? 0) + 1);
     const repeated = [...perStructure.entries()].filter(([, n]) => n > 1);
     expect(repeated).toEqual([]);
-    expect(qs.length).toBe(perStructure.size);
+    expect(everyLigament.length).toBe(perStructure.size);
+  });
+
+  it('locates only the five interosseous ligaments of the wrist on the gap plate, and turns them only within it', () => {
+    expect(onGapPlate.map((q) => q.targetStructureId).sort()).toEqual([
+      'capitohamate-interosseous-ligament',
+      'lunotriquetral-interosseous-ligament',
+      'scapholunate-interosseous-ligament',
+      'trapeziotrapezoidal-interosseous-ligament',
+      'trapezoideocapitate-interosseous-ligament',
+    ]);
+    const strays = onGapPlate.flatMap((q) => (q.frameImageIds ?? []).filter((id) => !id.startsWith('gap-carpal-gaps-')));
+    expect(strays).toEqual([]);
   });
 
   it('only turns through frames of that ligament\u2019s own set', () => {

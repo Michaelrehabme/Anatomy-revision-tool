@@ -5,6 +5,7 @@ import { BONE_PLATES } from './bonePlates.generated';
 import { LANDMARK_PANELS } from './landmarkPanels.generated';
 import { SUBREGION_PLATES } from './subRegionPlates.generated';
 import { LIGAMENT_PLATES } from './ligamentPlates.generated';
+import { GAP_PLATES } from './gapPlates.generated';
 import { MUSCLE_PLATES, layerOfPlate } from './musclePlates.generated';
 
 /**
@@ -171,9 +172,18 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
     const tilt = plate.elevation ?? 0;
     const marker = `a${String(plate.angle).padStart(3, '0')}${tilt ? `${tilt > 0 ? 'u' : 'd'}${String(Math.abs(tilt)).padStart(3, '0')}` : ''}`;
     const id = `ligament-${plate.structureId}-${marker}-${plate.kind}`;
-    const viewLabel = `${plate.view[0].toUpperCase()}${plate.view.slice(1)}`;
+    // A tilted frame that kept its compass name says which way it is tilted;
+    // 'superior', 'dorsal' and the like already do.
+    const tiltedCompass = tilt !== 0 && !['superior', 'inferior', 'dorsal', 'plantar'].includes(plate.view);
+    const viewLabel = `${plate.view[0].toUpperCase()}${plate.view.slice(1)}${tiltedCompass ? (tilt > 0 ? ', From Above' : ', From Below') : ''}`;
+    // The second render of this frame (types/image.ts, ImageVariant): the same
+    // file name with the variant before the extension.
+    const variant = plate.variant
+      ? { variant: { ...plate.variant, filePath: `/anatomy/ligaments/${plate.structureId}-${marker}-${plate.kind}.${plate.variant.kind}.webp` } }
+      : {};
     return plate.kind === 'context'
       ? {
+          ...variant,
           id,
           filePath: `/anatomy/ligaments/${plate.structureId}-${marker}-context.webp`,
           slideTitle: `${plate.name} — ${viewLabel} View`,
@@ -190,6 +200,7 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
           licence: Z_ANATOMY_LICENCE,
         }
       : {
+          ...variant,
           id,
           filePath: `/anatomy/ligaments/${plate.structureId}-${marker}-highlight.webp`,
           slideTitle: `${plate.name} — ${viewLabel} View (highlighted)`,
@@ -205,6 +216,46 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
           credit: Z_ANATOMY_CREDIT,
           licence: Z_ANATOMY_LICENCE,
         };
+  }),
+
+  // --- Gap plates: bones only, and the thing to tap is the space between two ---
+  // The interosseous ligaments of the wrist lie BETWEEN two carpal bones. On
+  // their own plates they are a three-millimetre chip seen through a ghosted
+  // bone, which is fine to name and unfair to aim at, so locate asks for the
+  // gap instead: "tap the scapholunate interosseous ligament" is answered on
+  // the line where the scaphoid meets the lunate, and knowing which two bones
+  // it joins is the question. One turntable carries all five gaps, so a tap on
+  // the neighbouring gap can be named.
+  //
+  // A DELIBERATE EXCEPTION to "draw every ligament of the joint" on a locate
+  // picture. That rule exists so the target is not the only strap in view. Here
+  // the straps would hide the answer — the radiate carpal and radiocarpal
+  // ligaments lie over these seams on the palm, the dorsal radiocarpal and
+  // intercarpal ligaments on the back of the hand — and with no strap drawn at
+  // all there is none to give it away: the neighbouring gaps do that job.
+  //
+  // No subject (panelStructureNames is empty), like the sub-region turntables:
+  // the plate is framed on the carpus, not on any one of the five. Rendered by
+  // renderJointMasks.py from carpal-gaps.spec.json, published by
+  // publishGapPlates.ts.
+  ...GAP_PLATES.map((plate): AnatomyImageAsset => {
+    const slug = `a${String(plate.angle).padStart(3, '0')}`;
+    return {
+      id: `gap-${plate.plateId}-${slug}-plate`,
+      filePath: `/anatomy/gaps/${plate.plateId}-${slug}-plate.webp`,
+      slideTitle: `${plate.name} — ${plate.view[0].toUpperCase()}${plate.view.slice(1)} View (${plate.angle}°)`,
+      mode: 'atlas-slide',
+      panelStructureNames: [],
+      region: plate.region,
+      subregion: plate.subregion,
+      view: plate.view,
+      layer: 'skeletal',
+      width: plate.width,
+      height: plate.height,
+      hotspots: [],  // attached by seed/hotspots.ts; see the note there
+      credit: Z_ANATOMY_CREDIT,
+      licence: Z_ANATOMY_LICENCE,
+    };
   }),
 
   // --- Muscle plates: one muscle in context, twelve angles ---

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { ALL_STRUCTURES } from '../../data/seed';
-import { isJoint, areasOf, EQUIVALENT_MOVEMENT_GROUPS, isLigament } from '../../types/structure';
+import { isJoint, areasOf, EQUIVALENT_MOVEMENT_GROUPS, isBone, isLandmark, isLigament } from '../../types/structure';
 import type { JointMovement } from '../../types/structure';
 import { buildIndexes } from '../indexes';
 import { buildMultiSelectQuestions } from '../questionGenerators/multiSelect';
@@ -23,13 +23,20 @@ describe('buildMultiSelectQuestions', () => {
   it('every question has at least 2 correct indices for nerve-based questions, or exactly 1 for exclusion questions', () => {
     const result = buildMultiSelectQuestions(ALL_STRUCTURES, indexes, createRng(3));
     const ligamentById = new Map(ALL_STRUCTURES.filter(isLigament).map((l) => [l.id, l]));
+    const byId = new Map(ALL_STRUCTURES.map((s) => [s.id, s]));
+    // The question asks for BONES, so a meniscus a ligament also attaches to is
+    // not one of its answers: the meniscotibial ligaments have one, the tibia.
+    const bony = (id: string) => {
+      const s = byId.get(id);
+      return !s || isBone(s) || isLandmark(s);
+    };
     for (const q of result) {
       expect(q.correctIndices.length).toBeGreaterThan(0);
       if (q.id.startsWith('multiselect-nerve-')) {
         expect(q.correctIndices.length).toBeGreaterThanOrEqual(2);
       } else if (q.id.startsWith('multiselect-ligament-attachment-')) {
-        // One correct choice per attachment: a ligament with two bones has two.
-        expect(q.correctIndices.length).toBe(ligamentById.get(q.structureId)!.attachmentStructureIds.length);
+        // One correct choice per bony attachment: a ligament with two bones has two.
+        expect(q.correctIndices.length).toBe(ligamentById.get(q.structureId)!.attachmentStructureIds.filter(bony).length);
       } else {
         expect(q.correctIndices.length).toBe(1);
       }

@@ -43,5 +43,22 @@ describe('locateFeedback', () => {
       const wrong = locateFeedback({ correct: false, accuracy: 0 }, 'Linea Aspera');
       expect(wrong.detail).toBe('That is not where Linea Aspera sits.');
     });
+
+    it('names the neighbouring target when a miss landed on one', () => {
+      // The carpal gap plate: five scored seams on one picture.
+      const wrong = locateFeedback(
+        { correct: false, accuracy: 0 },
+        'Scapholunate interosseous ligament',
+        'Lunotriquetral interosseous ligament',
+      );
+      expect(wrong.title).toBe(`Not quite — 0/${RING_COUNT}`);
+      expect(wrong.detail).toBe(
+        'That was Lunotriquetral interosseous ligament. Scapholunate interosseous ligament is shown in green.',
+      );
+      // …and never tells a student they tapped the thing they were asked for.
+      expect(locateFeedback({ correct: false, accuracy: 0 }, 'Linea Aspera', 'Linea Aspera').detail).toBe(
+        'That is not where Linea Aspera sits.',
+      );
+    });
   });
 });
