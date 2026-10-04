@@ -22,9 +22,13 @@
     "admin:cohort-report": "tsx scripts/cohortReport.ts",
     "deploy:check": "node scripts/deployCheck.mjs && npm run validate-content",
     "deploy": "npm run deploy:check && npm run build && npx netlify deploy --prod --dir=dist",
-    "deploy:rules": "firebase deploy --only firestore:rules"
+    "deploy:rules": "firebase deploy --only firestore:rules",
+    "native:sync": "npm run build && cap sync android"
   },
   "dependencies": {
+    "@capacitor/android": "^8.5.2",
+    "@capacitor/core": "^8.5.2",
+    "@capacitor/local-notifications": "^8.3.1",
     "@paddle/paddle-js": "1.6.5",
     "firebase": "^11.0.0",
     "react": "^19.0.0",
@@ -33,6 +37,7 @@
     "zod": "^3.24.0"
   },
   "devDependencies": {
+    "@capacitor/cli": "^8.5.2",
     "@eslint/js": "^9.17.0",
     "@tailwindcss/vite": "^4.0.0",
     "@testing-library/jest-dom": "^6.6.0",

@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">LocusMSK</string>
+    <string name="title_activity_main">LocusMSK</string>
+    <string name="package_name">uk.rehabme.locusmsk</string>
+    <string name="custom_url_scheme">uk.rehabme.locusmsk</string>
+</resources>
