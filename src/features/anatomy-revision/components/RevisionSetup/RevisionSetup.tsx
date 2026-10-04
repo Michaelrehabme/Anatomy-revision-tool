@@ -6,7 +6,8 @@ import type { OinaPromptKind, QuestionType } from '../../types/question';
 import { OINA_PROMPT_KINDS } from '../../types/question';
 import type { Category } from '../../types/structure';
 import type { Area } from '../../types/region';
-import { AREA_LABELS } from '../../types/region';
+import { AREAS, AREA_LABELS } from '../../types/region';
+import { areasInScope } from '../../lib/entitlement';
 import { areasOf, isMuscle, MUSCLE_GROUP_LABELS } from '../../types/structure';
 import { generateRevisionSet } from '../../lib/questionGenerators/generateSet';
 import { QUESTION_FORMATS } from '../../lib/questionFormats';
@@ -129,18 +130,23 @@ export function RevisionSetup({ access, content, repository, userId, areas, onSt
     setGroups((prev) => (prev.includes(group) ? prev.filter((g) => g !== group) : [...prev, group]));
   };
 
+  // Nothing picked means every area they can reach, which for a free account
+  // is one — see areasInScope.
+  const scope = areasInScope(areas, access.areas);
+  const allAreasLabel = access.areas.length < AREAS.length ? access.areas.map((a) => AREA_LABELS[a]).join(', ') : 'All areas';
+
   // Only groups that actually have muscles in the chosen areas — offering an
   // empty one is the same dead end CR-017 removed from the area picker.
   const availableGroups = Object.keys(MUSCLE_GROUP_LABELS).filter((group) =>
     content.structures.some(
-      (s) => isMuscle(s) && (s.groups ?? []).includes(group) && (areas.size === 0 || areasOf(s).some((a) => areas.has(a))),
+      (s) => isMuscle(s) && (s.groups ?? []).includes(group) && areasOf(s).some((a) => scope.has(a)),
     ),
   );
 
   const areasArray = [...areas];
   const inPool = (s: (typeof content.structures)[number]) => {
     return (
-      (areas.size === 0 || areasOf(s).some((a) => areas.has(a))) &&
+      areasOf(s).some((a) => scope.has(a)) &&
       (categories.length === 0 || categories.includes(s.category)) &&
       (groups.length === 0 || (s.groups ?? []).some((g) => groups.includes(g)))
     );
@@ -232,7 +238,7 @@ export function RevisionSetup({ access, content, repository, userId, areas, onSt
     onStart(questions, params);
   };
 
-  const areaSummary = areasArray.length ? areasArray.map((a) => AREA_LABELS[a]).join(', ') : 'All areas';
+  const areaSummary = areasArray.length ? areasArray.map((a) => AREA_LABELS[a]).join(', ') : allAreasLabel;
 
   return (
     <AppShell

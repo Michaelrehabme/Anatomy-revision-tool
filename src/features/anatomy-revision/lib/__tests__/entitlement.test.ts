@@ -15,6 +15,8 @@ import {
   entitledAreas,
   canSwitchFreeArea,
   daysUntilFreeAreaSwitch,
+  freeAreaSwitchDate,
+  areasInScope,
   hasUsedFreeAreaSwitch,
   FREE_AREA_SWITCH_DAYS,
   type Entitlement,
@@ -210,7 +212,31 @@ describe('daysUntilExpiry', () => {
   });
 });
 
-describe('the free area is chosen, and swappable monthly', () => {
+describe('the free area is chosen, and changeable once after 30 days', () => {
+  it('counts an empty selection as the areas in reach, not the whole body', () => {
+    // The setup screen said "All areas, 479 structures" to a free account.
+    expect([...areasInScope(new Set(), ['knee'])]).toEqual(['knee']);
+    expect([...areasInScope(new Set(), AREAS)]).toEqual(AREAS);
+    // A real selection is left alone; the session builder clamps it.
+    expect([...areasInScope(new Set(['hip'] as const), ['knee'])]).toEqual(['hip']);
+  });
+
+  it('names the day the wait ends, and agrees with the countdown', () => {
+    const chosen = new Date('2026-10-04T10:00:00.000Z');
+    const choice = { area: 'hip' as const, chosenAt: chosen.toISOString(), switches: 0 };
+    expect(freeAreaSwitchDate(choice, chosen)).toBe('3 November 2026');
+    // Still the same date three weeks in: that is the point of stating one.
+    const later = new Date('2026-10-25T10:00:00.000Z');
+    expect(freeAreaSwitchDate(choice, later)).toBe('3 November 2026');
+    expect(daysUntilFreeAreaSwitch(choice, later)).toBe(9);
+    // No wait, no date: the copy must not promise a day that has passed.
+    const after = new Date('2026-11-03T10:00:01.000Z');
+    expect(daysUntilFreeAreaSwitch(choice, after)).toBe(0);
+    expect(freeAreaSwitchDate(choice, after)).toBeNull();
+    expect(freeAreaSwitchDate(null, chosen)).toBeNull();
+    expect(freeAreaSwitchDate({ area: 'hip', chosenAt: 'not a date', switches: 0 }, chosen)).toBeNull();
+  });
+
   const NOW = new Date('2026-09-20T12:00:00.000Z');
 
   it('opens the area that was chosen, not the default', () => {

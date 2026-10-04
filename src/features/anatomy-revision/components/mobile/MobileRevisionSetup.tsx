@@ -5,7 +5,8 @@ import type { AnatomyRepository } from '../../data/repository';
 import type { OinaPromptKind, QuestionType, RevisionQuestion } from '../../types/question';
 import { OINA_PROMPT_KINDS } from '../../types/question';
 import type { Area } from '../../types/region';
-import { AREA_LABELS } from '../../types/region';
+import { AREAS, AREA_LABELS } from '../../types/region';
+import { areasInScope } from '../../lib/entitlement';
 import type { Category } from '../../types/structure';
 import { areasOf, isMuscle, MUSCLE_GROUP_LABELS } from '../../types/structure';
 import { generateRevisionSet } from '../../lib/questionGenerators/generateSet';
@@ -117,16 +118,19 @@ export function MobileRevisionSetup({ access, content, repository, userId, areas
   const toggleGroup = (group: string) => {
     setGroups((prev) => (prev.includes(group) ? prev.filter((g) => g !== group) : [...prev, group]));
   };
+  // See RevisionSetup: nothing picked means every area they can REACH.
+  const scope = areasInScope(areas, access.areas);
+  const allAreasLabel = access.areas.length < AREAS.length ? access.areas.map((a) => AREA_LABELS[a]).join(', ') : 'All areas';
   const availableGroups = Object.keys(MUSCLE_GROUP_LABELS).filter((group) =>
     content.structures.some(
-      (s) => isMuscle(s) && (s.groups ?? []).includes(group) && (areas.size === 0 || areasOf(s).some((a) => areas.has(a))),
+      (s) => isMuscle(s) && (s.groups ?? []).includes(group) && areasOf(s).some((a) => scope.has(a)),
     ),
   );
 
   const areasArray = [...areas];
   const inPool = (s: (typeof content.structures)[number]) => {
     return (
-      (areas.size === 0 || areasOf(s).some((a) => areas.has(a))) &&
+      areasOf(s).some((a) => scope.has(a)) &&
       (categories.length === 0 || categories.includes(s.category)) &&
       (groups.length === 0 || (s.groups ?? []).some((g) => groups.includes(g)))
     );
@@ -206,7 +210,7 @@ export function MobileRevisionSetup({ access, content, repository, userId, areas
   };
 
   const noun = categories.length === 1 ? CATEGORY_OPTIONS.find((o) => o.value === categories[0])!.label : 'structures';
-  const summary = `${areasArray.length ? areasArray.map((a) => AREA_LABELS[a]).join(', ') : 'All areas'} · ${poolSize} ${noun} in the pool.`;
+  const summary = `${areasArray.length ? areasArray.map((a) => AREA_LABELS[a]).join(', ') : allAreasLabel} · ${poolSize} ${noun} in the pool.`;
 
   return (
     <MobileShell>

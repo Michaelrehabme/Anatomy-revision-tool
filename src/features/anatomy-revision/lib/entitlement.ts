@@ -144,6 +144,41 @@ export function daysUntilFreeAreaSwitch(
   return Math.max(0, Math.ceil(FREE_AREA_SWITCH_DAYS - elapsed));
 }
 
+/**
+ * The day the free area becomes changeable, as "3 November 2026" — or null
+ * when there is no wait to state (no choice yet, the wait is over, or the
+ * record is malformed and reads as changeable now).
+ *
+ * A date AND a countdown, not a countdown alone: "23 days to go" is true only
+ * on the day it is read, and a student who sees it on a Monday and comes back
+ * on a Thursday has to do the sum. The date is the same every time they look.
+ * It is the day daysUntilFreeAreaSwitch reaches 0, so the two cannot disagree.
+ */
+export function freeAreaSwitchDate(
+  choice: FreeAreaChoice | null | undefined,
+  now: Date = new Date(),
+): string | null {
+  const days = daysUntilFreeAreaSwitch(choice, now);
+  if (!choice || days === 0) return null;
+  const on = new Date(Date.parse(choice.chosenAt) + FREE_AREA_SWITCH_DAYS * 86400000);
+  return on.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+}
+
+/**
+ * The areas a session-setup screen is really drawing from: what was picked,
+ * or, when nothing was picked, every area this person can REACH.
+ *
+ * "Nothing selected" means "everything" on every picker, and for a free
+ * account everything is one area. The setup screens used to count the whole
+ * body for an empty selection, so a free student was told "All areas, 479
+ * structures in the pool" above a session that could only ever draw from
+ * their 51. The session was clamped correctly; the sentence describing it
+ * was not.
+ */
+export function areasInScope(selected: ReadonlySet<Area>, entitled: readonly Area[]): ReadonlySet<Area> {
+  return selected.size === 0 ? new Set(entitled) : selected;
+}
+
 /** Whether the one permitted change has already been made. */
 export function hasUsedFreeAreaSwitch(choice: FreeAreaChoice | null | undefined): boolean {
   return (choice?.switches ?? 0) >= FREE_AREA_SWITCHES_ALLOWED;

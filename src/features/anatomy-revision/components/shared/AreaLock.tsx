@@ -1,6 +1,14 @@
 import { Link } from 'react-router-dom';
 import { AREA_LABELS, type Area } from '../../types/region';
 import type { UseEntitlement } from '../../hooks/useEntitlement';
+import { freeAreaSwitchDate } from '../../lib/entitlement';
+
+/** "from 3 November 2026 (30 days)": the date first, because it does not go stale. */
+function switchWait(access: UseEntitlement): string {
+  const days = `${access.daysUntilSwitch} ${access.daysUntilSwitch === 1 ? 'day' : 'days'}`;
+  const on = freeAreaSwitchDate(access.freeArea);
+  return on ? `from ${on} (${days})` : `in ${days}`;
+}
 
 /**
  * The paywall's face: the small pieces every picker, list and drill uses to
@@ -52,7 +60,7 @@ export function UnlockNote({ access, className = '' }: { access: UseEntitlement;
       </Link>
       {access.freeArea && access.canSwitchFree && <> — or make your one change of free area, from your account.</>}
       {access.freeArea && !access.canSwitchFree && !access.switchUsed && (
-        <> — or change your free area in {access.daysUntilSwitch} {access.daysUntilSwitch === 1 ? 'day' : 'days'}.</>
+        <> — or change your free area {switchWait(access)}.</>
       )}
     </p>
   );
@@ -108,7 +116,7 @@ export function LockedAreaPanel({
               ? `Use my one change: make ${AREA_LABELS[area]} free instead`
               : access.switchUsed
                 ? 'Your free area is fixed now'
-                : `Changeable in ${access.daysUntilSwitch} ${access.daysUntilSwitch === 1 ? 'day' : 'days'}`}
+                : `Changeable ${switchWait(access)}`}
           </button>
         )}
       </div>
