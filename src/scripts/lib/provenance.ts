@@ -122,9 +122,17 @@ const PUBLISHERS: { pattern: RegExp; title: string; url?: string }[] = [
   { pattern: /human kinetics/i, title: 'Human Kinetics' },
   { pattern: /^TA\d|terminologia/i, title: 'Terminologia Anatomica', url: 'https://ta2viewer.openanatomy.org/' },
   { pattern: /medscape/i, title: 'Medscape', url: 'https://emedicine.medscape.com/' },
+  // StatPearls sits on the NCBI Bookshelf, so before it had its own line it fell
+  // through to the journal-articles entry below. It is a reference work, not a
+  // paper, and the blood supply round leans on it more than on anything else,
+  // so it is named. Must stay above the journals line: its urls contain "ncbi".
+  { pattern: /statpearls|ncbi\.nlm\.nih\.gov\/books/i, title: 'StatPearls (NCBI Bookshelf)', url: 'https://www.ncbi.nlm.nih.gov/books/NBK430685/' },
   // Individual papers collapse into one entry: a reader wants to know that a
   // fact rests on the literature, and the paper itself is in the review file.
-  { pattern: /pmc|pubmed|ncbi|jbjs|viamedica|journal|sciencedirect|doi:|et al|abstract|arthroscopy|cureus|spine j|foot ankle|ajr|clin anat/i, title: 'Peer-reviewed journal articles (open access)' },
+  // This read "(open access)" until the blood supply round, most of whose
+  // papers were read as PubMed abstracts: the label must not claim more
+  // access than the reader will find.
+  { pattern: /pmc|pubmed|ncbi|jbjs|viamedica|journal|sciencedirect|doi:|et al|abstract|arthroscopy|cureus|spine j|foot ankle|ajr|clin anat|actaorthop|nature\.com/i, title: 'Peer-reviewed journal articles' },
   // The excluded works still have to resolve to something, or a row that
   // depends on one would silently vanish from the page instead of failing.
   { pattern: /kenhub/i, title: 'Kenhub', url: 'https://www.kenhub.com/' },
@@ -162,9 +170,179 @@ export function readReviews(root: string, family: string): Record<string, Review
   }
 }
 
+/**
+ * Blood supply is a fact that runs ACROSS the families rather than a family of
+ * its own, and it was reviewed in a separate round with its own file, so it
+ * gets its own record instead of a sixth entry in `families` (which the page
+ * and its test hold to exactly one per structure category).
+ */
+export const BLOOD_SUPPLY_FILE = 'blood-supply-review.json';
+
+/** The families a blood supply can belong to. Never a landmark: see generateBloodSupplySeed.ts. */
+export const BLOOD_SUPPLY_CATEGORIES = ['muscle', 'bone', 'joint', 'ligament'] as const satisfies readonly Category[];
+
+interface BloodQuote {
+  title?: string;
+  url?: string;
+  quote?: string | null;
+}
+
+export interface BloodSupplyRow {
+  id: string;
+  category: string;
+  arteries?: string[];
+  unsupported?: string[];
+  sources?: { title: string; url?: string }[];
+  quotes?: BloodQuote[];
+  zone?: { text?: string; quotes?: BloodQuote[] } | null;
+  review?: { status?: string; by?: string };
+}
+
+export interface BloodSupplyFamily {
+  category: Category;
+  /** Structures in the family. */
+  total: number;
+  /** Of those, how many carry an accepted, sourced blood supply. */
+  reviewed: number;
+  /** Indices into the shared works list. */
+  works: number[];
+}
+
+export interface BloodSupplyProvenance {
+  families: BloodSupplyFamily[];
+  /** Landmarks in the app, none of which carries a blood supply. */
+  landmarksExcluded: number;
+  /** Arteries the draft named that no quoted source backed; dropped from the app. */
+  arteriesWithheld: number;
+  /** Structures whose rating rests on a documented watershed or avascular zone. */
+  zones: number;
+  lastChecked: string | null;
+}
+
+const MONTHS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+
+/**
+ * The acceptance is recorded as prose ("owner, 29 Sep 2026: every high- and
+ * medium-confidence row…"), so the date is read out of it. A row whose
+ * acceptance carries no readable date is a validation failure, not a blank.
+ */
+export function acceptedOn(row: BloodSupplyRow): string | null {
+  const m = row.review?.by?.match(/(\d{1,2}) ([A-Za-z]{3})[a-z]* (\d{4})/);
+  if (!m) return null;
+  const month = MONTHS.indexOf(m[2].toLowerCase());
+  if (month < 0) return null;
+  return `${m[3]}-${String(month + 1).padStart(2, '0')}-${m[1].padStart(2, '0')}`;
+}
+
+/** The rows the app actually ships: accepted by the owner, and never a landmark. */
+export function acceptedBloodRows(rows: BloodSupplyRow[]): BloodSupplyRow[] {
+  return rows.filter((r) => r.review?.status === 'accepted' && r.category !== 'landmark');
+}
+
+/**
+ * The citations a row's blood supply rests on: every source that was fetched
+ * and quoted, for the arteries and for the watershed zone. A source listed on
+ * the row but with no sentence quoted from it is not evidence and is left out.
+ */
+export function bloodCitations(row: BloodSupplyRow): { title: string; url: string }[] {
+  const quoted = [...(row.quotes ?? []), ...(row.zone?.quotes ?? [])];
+  const seen = new Set<string>();
+  const out: { title: string; url: string }[] = [];
+  for (const q of quoted) {
+    if (!q.quote || !q.url || seen.has(q.url)) continue;
+    seen.add(q.url);
+    out.push({ title: q.title ?? '', url: q.url });
+  }
+  return out;
+}
+
+export function readBloodSupply(root: string): BloodSupplyRow[] {
+  try {
+    return JSON.parse(readFileSync(`${root}/${BLOOD_SUPPLY_FILE}`, 'utf8')) as BloodSupplyRow[];
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * Reduce the blood supply review to what /sources states. `intern` is the
+ * shared works interner, so a publisher already named for another family is
+ * the same entry here and its citation count covers both.
+ */
+export function buildBloodSupply(
+  rows: BloodSupplyRow[],
+  totals: Record<Category, number>,
+  intern: (raw: string) => number,
+): BloodSupplyProvenance {
+  const accepted = acceptedBloodRows(rows);
+  let lastChecked: string | null = null;
+  let arteriesWithheld = 0;
+  let zones = 0;
+
+  const families = BLOOD_SUPPLY_CATEGORIES.map((category): BloodSupplyFamily => {
+    const mine = accepted.filter((r) => r.category === category);
+    const works = new Set<number>();
+    for (const row of mine) {
+      for (const c of bloodCitations(row)) works.add(intern(`${c.title} ${c.url}`));
+      arteriesWithheld += (row.unsupported ?? []).length;
+      if (row.zone?.text) zones += 1;
+      const on = acceptedOn(row);
+      if (on && (!lastChecked || on > lastChecked)) lastChecked = on;
+    }
+    return { category, total: totals[category], reviewed: mine.length, works: [...works].sort((a, b) => a - b) };
+  });
+
+  return { families, landmarksExcluded: totals.landmark, arteriesWithheld, zones, lastChecked };
+}
+
+/**
+ * What is wrong with the accepted rows, as messages. Pure, so the rules can be
+ * tested without a review file on disk; validateProvenance.ts fails on each.
+ */
+export function bloodSupplyFaults(rows: BloodSupplyRow[]): string[] {
+  const faults: string[] = [];
+  for (const row of acceptedBloodRows(rows)) {
+    const linked = (row.sources ?? []).filter((s) => s.title && s.url);
+    if (linked.length === 0) {
+      faults.push(`blood supply "${row.id}" is accepted but names no source with a url — it must not ship unsourced`);
+      continue;
+    }
+    const cited = bloodCitations(row);
+    if (cited.length === 0) {
+      faults.push(`blood supply "${row.id}" is accepted but no source is quoted — a source with no quoted sentence is not evidence`);
+      continue;
+    }
+    // Every quoted source being on the excluded list means the row would reach
+    // the page resting on nothing we are willing to name.
+    if (cited.every((c) => excludedWork(c))) {
+      faults.push(
+        `blood supply "${row.id}" rests only on excluded works (${cited.map((c) => excludedWork(c)).join(', ')}) — re-check it against another work`,
+      );
+    }
+    if (!acceptedOn(row)) {
+      faults.push(`blood supply "${row.id}" is accepted with no readable date in review.by — docs/CLAIMS.md requires a date against every claim`);
+    }
+  }
+  return faults;
+}
+
+/**
+ * Accepted rows that state a watershed zone with no quote recorded against the
+ * zone itself. Not a fault: the muscle round quoted each tendon zone
+ * separately, but the bone, joint and ligament rounds wrote the zone from the
+ * row's main quotes, so the evidence may well be there — it is just not
+ * machine-checkable. That is why /sources does not claim every zone is quoted.
+ */
+export function zonesWithoutOwnQuote(rows: BloodSupplyRow[]): string[] {
+  return acceptedBloodRows(rows)
+    .filter((r) => r.zone?.text && !(r.zone.quotes ?? []).some((q) => q.quote && q.url))
+    .map((r) => r.id);
+}
+
 export interface Built {
   families: FamilyProvenance[];
   works: CitedWork[];
+  bloodSupply: BloodSupplyProvenance;
 }
 
 /**
@@ -248,5 +426,9 @@ export function buildProvenance(
     });
   }
 
-  return { families, works };
+  // Last, so the indices the families above hold do not move when a blood
+  // supply row is added.
+  const bloodSupply = buildBloodSupply(readBloodSupply(root), totals, intern);
+
+  return { families, works, bloodSupply };
 }

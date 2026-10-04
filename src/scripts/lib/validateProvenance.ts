@@ -1,6 +1,15 @@
 import { readFileSync } from 'node:fs';
 import type { Category } from '../../features/anatomy-revision/types/structure';
-import { buildProvenance, excludedWork, readReviews, REVIEW_FILES } from './provenance';
+import {
+  bloodSupplyFaults,
+  buildProvenance,
+  excludedWork,
+  readBloodSupply,
+  readReviews,
+  REVIEW_FILES,
+  zonesWithoutOwnQuote,
+  type Built,
+} from './provenance';
 
 /**
  * Checks behind the /sources page. Split out of validateContent.ts because it
@@ -59,6 +68,23 @@ export function validateProvenance(
         );
       }
     }
+  }
+
+  // 1b. The same for blood supply: the page states how many structures in each
+  //     family carry a sourced one, and names the works behind them.
+  for (const fault of staleBloodSupply(generated, built)) fail(fault);
+
+  // 1c. An accepted blood supply with nothing quoted under it must not ship.
+  const bloodRows = readBloodSupply(root);
+  const bloodFaults = bloodSupplyFaults(bloodRows);
+  for (const fault of bloodFaults.slice(0, 5)) fail(fault);
+  if (bloodFaults.length > 5) fail(`…and ${bloodFaults.length - 5} more blood supply rows with a sourcing fault`);
+  const bareZones = zonesWithoutOwnQuote(bloodRows);
+  if (bareZones.length > 0) {
+    warn(
+      `${bareZones.length} accepted blood supply row(s) state a watershed zone with no quote recorded against the zone itself ` +
+        `(${bareZones.slice(0, 3).join(', ')}…). /sources must not say every zone is quoted until they have one`,
+    );
   }
 
   // 2. A work we have decided not to cite must not reach the page. Dropping the
@@ -125,6 +151,57 @@ export function validateProvenance(
   if (outstanding) {
     console.log(`\nSource-check outstanding: ${outstanding}. /sources states this; it is not a build failure.`);
   }
+}
+
+const REGENERATE = 'Run: npm run generate:provenance';
+
+/**
+ * Where the committed summary's blood supply block, or the works list its
+ * indices point into, disagrees with what the review files reduce to. Takes
+ * the file's text so it can be tested against a doctored copy.
+ */
+export function staleBloodSupply(generated: string, built: Pick<Built, 'works' | 'bloodSupply'>): string[] {
+  const faults: string[] = [];
+  const block = generated.match(/export const BLOOD_SUPPLY[\s\S]*?\n\};/)?.[0];
+  if (!block) return [`provenance.generated.ts has no BLOOD_SUPPLY block — /sources cannot state the blood supply. ${REGENERATE}`];
+
+  for (const family of built.bloodSupply.families) {
+    const line = block.match(
+      new RegExp(`category: "${family.category}", total: (\\d+), reviewed: (\\d+), works: \\[([^\\]]*)\\]`),
+    );
+    const want = `total ${family.total}, reviewed ${family.reviewed}, works [${family.works.join(', ')}]`;
+    const got = line ? `total ${line[1]}, reviewed ${line[2]}, works [${line[3]}]` : 'nothing';
+    if (got !== want) {
+      faults.push(
+        `/sources would state ${family.category} blood supply as ${got}, but blood-supply-review.json says ${want}. ${REGENERATE}`,
+      );
+    }
+  }
+
+  for (const field of ['landmarksExcluded', 'arteriesWithheld', 'zones'] as const) {
+    const stated = Number(block.match(new RegExp(`${field}: (\\d+)`))?.[1]);
+    if (stated !== built.bloodSupply[field]) {
+      faults.push(
+        `/sources would state blood supply ${field} = ${stated}, but the content says ${built.bloodSupply[field]}. ${REGENERATE}`,
+      );
+    }
+  }
+
+  const statedDate = block.match(/lastChecked: "([^"]*)"/)?.[1] ?? null;
+  if (statedDate !== built.bloodSupply.lastChecked) {
+    faults.push(
+      `/sources would date the blood supply check ${statedDate}, but blood-supply-review.json says ${built.bloodSupply.lastChecked}. ${REGENERATE}`,
+    );
+  }
+
+  // The works list is shared, so an index in the block has to point at the
+  // work the reducer meant. Titles in order is the whole check.
+  const statedTitles = [...generated.matchAll(/^ {2}\{ title: ("(?:[^"\\]|\\.)*")/gm)].map((m) => JSON.parse(m[1]) as string);
+  if (statedTitles.join('|') !== built.works.map((w) => w.title).join('|')) {
+    faults.push(`provenance.generated.ts lists different works from the review files. ${REGENERATE}`);
+  }
+
+  return faults;
 }
 
 /** The ids a reviewer has not reached yet, for sourceReview.ts --next. */

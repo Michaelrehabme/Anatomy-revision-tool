@@ -30,7 +30,7 @@ const deckSources = ALL_STRUCTURES.filter(isMuscle)
   .map((m) => m.source)
   .filter((s): s is NonNullable<typeof s> => Boolean(s?.deck));
 
-const { families, works } = buildProvenance(root, totals, deckSources);
+const { families, works, bloodSupply } = buildProvenance(root, totals, deckSources);
 
 // JSON.stringify IS the escaping primitive here — a hand-rolled quote escape in a
 // generator that writes TypeScript is how a stray apostrophe becomes a syntax error.
@@ -56,13 +56,21 @@ const workLines = works
   .map((w) => `  { title: ${lit(w.title)}${w.url ? `, url: ${lit(w.url)}` : ''}, citations: ${w.citations} },`)
   .join('\n');
 
+const bloodLines = bloodSupply.families
+  .map(
+    (f) =>
+      `    { category: ${lit(f.category)}, total: ${f.total}, reviewed: ${f.reviewed}, works: [${f.works.join(', ')}] },`,
+  )
+  .join('\n');
+
 const out = `/**
  * GENERATED — do not edit by hand.
  * Regenerate with: npx tsx src/scripts/generateProvenance.ts
  *
  * What /sources states about where each family's content came from, reduced
- * from the root *-source-review JSONs. Counts and distinct works only: the
- * per-fact quotes stay in those files, out of the bundle. See that script.
+ * from the root *-source-review JSONs and blood-supply-review.json. Counts and
+ * distinct works only: the per-fact quotes stay in those files, out of the
+ * bundle. See that script.
  */
 import type { Category } from '../../anatomy-revision/types/structure';
 
@@ -87,6 +95,27 @@ export interface FamilyProvenance {
   works: number[];
 }
 
+/** How far one family's blood supply has been sourced. */
+export interface BloodSupplyFamily {
+  category: Category;
+  total: number;
+  /** Structures carrying a blood supply the owner accepted, with a quoted source. */
+  reviewed: number;
+  /** Indices into WORKS. */
+  works: number[];
+}
+
+export interface BloodSupplyProvenance {
+  families: BloodSupplyFamily[];
+  /** Landmarks in the app. None carries a blood supply, by decision. */
+  landmarksExcluded: number;
+  /** Arteries the draft named that no quoted source backed; not shown in the app. */
+  arteriesWithheld: number;
+  /** Structures whose rating rests on a documented watershed or avascular zone. */
+  zones: number;
+  lastChecked: string | null;
+}
+
 export const FAMILIES: FamilyProvenance[] = [
 ${familyLines}
 ];
@@ -94,10 +123,21 @@ ${familyLines}
 export const WORKS: ProvenanceWork[] = [
 ${workLines}
 ];
+
+export const BLOOD_SUPPLY: BloodSupplyProvenance = {
+  families: [
+${bloodLines}
+  ],
+  landmarksExcluded: ${bloodSupply.landmarksExcluded},
+  arteriesWithheld: ${bloodSupply.arteriesWithheld},
+  zones: ${bloodSupply.zones},
+  lastChecked: ${bloodSupply.lastChecked ? lit(bloodSupply.lastChecked) : 'null'},
+};
 `;
 
 const target = `${root}/src/features/legal/data/provenance.generated.ts`;
 writeFileSync(target, out.replace(/\n/g, '\r\n'));
 const checked = families.reduce((n, f) => n + f.checked, 0);
 const total = families.reduce((n, f) => n + f.total, 0);
+console.log(`Blood supply: ${bloodSupply.families.map((f) => `${f.category} ${f.reviewed}/${f.total}`).join(', ')}`);
 console.log(`Wrote ${families.length} families (${checked}/${total} checked), ${works.length} works to ${target}`);
