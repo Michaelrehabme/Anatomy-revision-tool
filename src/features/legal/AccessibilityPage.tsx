@@ -26,8 +26,8 @@ import { LegalLayout, legalHeading, legalProse } from './LegalLayout';
  *  2. NOTHING IS "ANNOUNCED" OR "READ". No screen reader has been run. The
  *     app marks things up for one; what NVDA or VoiceOver does with that is
  *     not known, and the page says so wherever it would otherwise imply it.
- *  3. LOCATE IS DESCRIBED AS IT IS TODAY. Alternatives are being worked on
- *     and are not promised here. When one ships, describe it then.
+ *  3. LOCATE IS DESCRIBED AS IT IS TODAY (crosshair, words route, list fallback), with what they do not do
+ *     — nothing further is promised.
  *
  * The person who tests this app is the person who builds it: a student, not
  * an accessibility specialist. The page says that too.
@@ -62,8 +62,9 @@ export function AccessibilityPage() {
           <strong style={strong}>Partially compliant, on our own testing only.</strong> Every screen we
           tested can be used with a keyboard. The app is marked up for a screen reader, but we have not
           yet tested it with one, so we cannot tell you what a screen reader will actually say. One
-          question type — locate, where you find a structure on an anatomical image — has no equivalent
-          for someone who cannot see the image. The known problems are listed below rather than
+          question type — locate, where you find a structure on an anatomical image — still has no true
+          equivalent for someone who cannot see the image: it can be answered in words, which is a
+          different exercise. The known problems are listed below rather than
           summarised, because a list you can check is worth more than a grade you cannot.
         </p>
       </Section>
@@ -100,10 +101,14 @@ export function AccessibilityPage() {
           on 4 October 2026.
         </p>
         <p>
-          Locate questions can be answered without a pointer. The{' '}
-          <strong style={strong}>Answer from a list instead</strong> control replaces the image with a
-          list of the structures on it, as ordinary buttons in alphabetical order. For landmarks and
-          joints that list has a single name in it — see below.
+          Locate questions can be answered without a pointer, in two ways. With a keyboard, move focus to
+          the picture and a crosshair appears: the arrow keys move it (hold Shift for larger steps), and
+          Enter answers where it is, marked exactly as a tap there would be. Or choose{' '}
+          <strong style={strong}>Answer without the picture</strong>: the question is asked in words —
+          “Which of these describes where it sits?” — with four descriptions built from the attachments
+          and joints in our data. For the twenty questions where the data cannot support that, a list of
+          at least four names is offered instead. A setting on the Account screen makes the words route
+          the default.
         </p>
         <p>
           Text resizes with the browser. Right and wrong answers are marked in words as well as in
@@ -115,14 +120,15 @@ export function AccessibilityPage() {
       <Section title="What does not work yet">
         <p>
           <strong style={strong}>
-            Locate has no equivalent without sight, and its keyboard route is weaker than it should be.
+            Locate still has no equivalent without sight.
           </strong>{' '}
-          The picture itself cannot be operated from a keyboard; the keyboard route is a list of names.
-          That is a different and easier exercise than finding a structure on an image, because the
-          options are given to you. On landmark and joint pictures — about a third of locate questions —
-          the list contains only the answer, so the question answers itself. A student who cannot see
-          the picture is not offered the same exercise in another form. That is how it is today, and we
-          are not going to describe it as solved before it is.
+          The keyboard crosshair is for someone who can see the picture and cannot use a pointer; it
+          does nothing for someone using a screen reader. Answering in words tests whether you know what
+          a structure attaches to or joins, not whether you can find it on an image, and no text version
+          can test that. It is recorded separately from locate for that reason. About a third of the
+          ligament and joint questions asked in words can be worked out from the structure's name, so
+          they are easier than the tap they replace. None of this has been tried with a screen reader or
+          a switch. We are not going to describe locate as solved before it is.
         </p>
         <p>
           <strong style={strong}>
@@ -188,8 +194,8 @@ export function AccessibilityPage() {
           return.
         </p>
         <p>
-          Locate without sight is being worked on. This page will describe what is built when it is
-          built.
+          Trying the locate routes with a screen reader and with a switch, and changing them on what we
+          find.
         </p>
       </Section>
 

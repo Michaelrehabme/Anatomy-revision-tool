@@ -29,9 +29,9 @@ describe('AccessibilityPage', () => {
 
   it('names the locate list as not equivalent rather than as a solution', () => {
     const text = renderPage();
-    expect(screen.getByText(/Locate has no equivalent without sight/)).toBeTruthy();
-    expect(text).toMatch(/a different and easier exercise than finding a structure on an image/);
-    expect(text).toMatch(/about a third of locate questions — the list contains only the answer/);
+    expect(screen.getByText(/Locate still has no equivalent without sight/)).toBeTruthy();
+    expect(text).toMatch(/not whether you can find it on an image, and no text version\s+can test that/);
+    expect(text).toMatch(/can be worked out from the structure's name/);
   });
 
   it('admits there has been no independent audit', () => {
@@ -87,9 +87,10 @@ describe('AccessibilityPage, as revised on 5 October 2026', () => {
 
   it('describes locate as it is and promises nothing about it', () => {
     const text = renderPage();
-    expect(text).toMatch(/The picture itself cannot be operated from a keyboard/);
-    expect(text).toMatch(/Locate without sight is being worked on\. This page will describe what is built when it is\s+built\./);
-    expect(text).not.toMatch(/crosshair|we will (add|build|ship)|coming soon/i);
+    expect(text).toMatch(/Enter answers where it is, marked exactly as a tap there would be/);
+    expect(text).toMatch(/None of this has been tried with a screen reader or\s+a switch/);
+    expect(text).toMatch(/We are not going to describe locate as solved before it is/);
+    expect(text).not.toMatch(/we will (add|build|ship)|coming soon/i);
   });
 
   it('limits picture descriptions to sessions', () => {
