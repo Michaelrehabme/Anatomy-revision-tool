@@ -32,6 +32,9 @@ export default defineConfig(() => ({
     emptyOutDir: true,
   },
   define: {
+    // The base config's defines are kept: naming `define` here replaces the
+    // spread one above rather than merging with it.
+    ...baseConfig().define,
     // Folds at build time so App.tsx drops the /admin route and Rollup drops
     // the admin chunk with it — the demo is public, and CR-028 asks for those
     // routes absent rather than merely hidden.

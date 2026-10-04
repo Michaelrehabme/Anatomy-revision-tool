@@ -37,12 +37,22 @@ const UNLINKED_STRUCTURES: AnatomyStructure[] = [
 ];
 
 export const ALL_IMAGES = IMAGE_ASSETS;
-// Blood supply is reviewed and generated separately (bloodSupply.generated.ts)
-// and joined here by id, so no family's seed file has to carry it.
-export const ALL_STRUCTURES: AnatomyStructure[] = linkImages(
-  UNLINKED_STRUCTURES.map((s) => (BLOOD_SUPPLY[s.id] ? { ...s, bloodSupply: BLOOD_SUPPLY[s.id] } : s)),
-  ALL_IMAGES,
+/**
+ * Every structure as it is AUTHORED: blood supply joined, pictures not yet
+ * linked. Blood supply is reviewed and generated separately
+ * (bloodSupply.generated.ts) and joined here by id, so no family's seed file
+ * has to carry it.
+ *
+ * Exported for buildContent.ts, which must cut the index from this and not
+ * from ALL_STRUCTURES. Linking gives a muscle the id of every frame of every
+ * turntable it appears on, and an index written after linking came to 1.08 MB
+ * of image ids — the app derives them at load from the images it already has,
+ * and has no use for a second copy in a file.
+ */
+export const AUTHORED_STRUCTURES: AnatomyStructure[] = UNLINKED_STRUCTURES.map((s) =>
+  BLOOD_SUPPLY[s.id] ? { ...s, bloodSupply: BLOOD_SUPPLY[s.id] } : s,
 );
+export const ALL_STRUCTURES: AnatomyStructure[] = linkImages(AUTHORED_STRUCTURES, ALL_IMAGES);
 
 export {
   MUSCLE_STRUCTURES,

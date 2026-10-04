@@ -1,10 +1,12 @@
 import { defineConfig } from 'vite';
+import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 import { VitePWA } from 'vite-plugin-pwa';
 import { ANATOMY_CACHE_NAME } from './src/features/pwa/anatomyCache';
 import { isAnatomyImageRequest, offlineAreaPlugin } from './src/features/pwa/offline/swPlugin';
+import { CONTENT_VERSION_FILE } from './src/scripts/lib/contentPaths';
 
 /** Forward slashes even on Windows — Rollup's alias plugin compares and rewrites ids as POSIX-style strings. */
 const demoFile = (name: string) =>
@@ -202,10 +204,40 @@ const UNWATCHED = [
   '**/subregion-*.json',
   '**/deep-muscles.*.json',
   '**/ta2-*.json',
+  // Written by `npm run generate:content`. Nothing the dev server serves
+  // imports either directory.
+  '**/.content/**',
+  '**/data/content/generated/**',
 ];
+
+/**
+ * The content version buildContent.ts wrote for this build: a hash of every
+ * area's facts (docs/DESIGN-CONTENT-BEHIND-SERVER.md).
+ *
+ * Read from disk here rather than imported by the app, so the version is the
+ * only thing that crosses into the bundle and the file beside it — the facts
+ * — is never in the module graph at all.
+ *
+ * 'dev' when the file is not there: `npm run dev` and `npm test` do not run
+ * the generator, and should not need to. Both builds do (package.json), so a
+ * deployed bundle always carries a real one.
+ */
+function readContentVersion(): string {
+  try {
+    const file = fileURLToPath(new URL(`./${CONTENT_VERSION_FILE}`, import.meta.url));
+    const version: unknown = JSON.parse(readFileSync(file, 'utf8')).version;
+    return typeof version === 'string' && version ? version : 'dev';
+  } catch {
+    return 'dev';
+  }
+}
 
 export const baseConfig = () => ({
   plugins: [react(), tailwindcss()],
+  define: {
+    // Replaced textually wherever it appears; see data/content/version.ts.
+    __CONTENT_VERSION__: JSON.stringify(readContentVersion()),
+  },
   server: {
     watch: { ignored: UNWATCHED },
   },

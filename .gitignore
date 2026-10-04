@@ -55,3 +55,11 @@ scripts/deriveActionText.report.json
 # disk, written by `npm run generate:offline` at the start of every build.
 # Committed copies would describe the renders of the day they were committed.
 /public/offline/
+
+# The paid content, cut from the seed by `npm run generate:content` at the
+# start of every build (src/scripts/buildContent.ts). /.content/ holds the
+# facts of every area for the content function and must never be committed or
+# published; the generated index and vocabulary are for the bundle and are
+# rebuilt with it. See docs/DESIGN-CONTENT-BEHIND-SERVER.md.
+/.content/
+/src/features/anatomy-revision/data/content/generated/

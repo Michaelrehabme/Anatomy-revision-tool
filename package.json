@@ -6,8 +6,8 @@
   "scripts": {
     "dev": "vite",
     "dev:educator-demo": "vite --mode educator-demo",
-    "build": "npm run generate:offline && tsc --noEmit -p tsconfig.app.json && vite build",
-    "build:demo": "tsc --noEmit -p tsconfig.app.json && vite build --config vite.config.demo.ts",
+    "build": "npm run generate:offline && npm run generate:content && tsc --noEmit -p tsconfig.app.json && vite build",
+    "build:demo": "npm run generate:content && tsc --noEmit -p tsconfig.app.json && vite build --config vite.config.demo.ts",
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -16,6 +16,7 @@
     "generate:blood-supply": "tsx src/scripts/generateBloodSupplySeed.ts && npm run generate:provenance",
     "generate:provenance": "tsx src/scripts/generateProvenance.ts",
     "generate:offline": "tsx src/scripts/generateOfflineManifests.ts",
+    "generate:content": "tsx src/scripts/buildContent.ts",
     "check:contrast": "tsx src/scripts/checkContrast.ts",
     "admin:set-claim": "tsx scripts/setAdmin.ts",
     "admin:seed-changes": "tsx scripts/seedChangeRequests.ts",
