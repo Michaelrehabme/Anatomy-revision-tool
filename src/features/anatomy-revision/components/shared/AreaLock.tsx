@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { AREA_LABELS, type Area } from '../../types/region';
+import { areasOf, type AnatomyStructure } from '../../types/structure';
 import type { UseEntitlement } from '../../hooks/useEntitlement';
 import { freeAreaSwitchDate } from '../../lib/entitlement';
 
@@ -119,6 +120,56 @@ export function LockedAreaPanel({
                 : `Changeable ${switchWait(access)}`}
           </button>
         )}
+      </div>
+    </div>
+  );
+}
+
+/**
+ * What a locked structure's own page shows in place of its content
+ * (docs/PAYWALL-TRACE-2026-09-29.md, item 14).
+ *
+ * The Atlas does not list a locked structure, but its page has an address,
+ * and an address can be typed, bookmarked, or followed from an old
+ * achievement. The page used to show everything — picture, origin, insertion,
+ * nerve, action, blood supply, clinical note — and gate only the drill button
+ * at the foot of it, below the fold. That is the content with a locked door
+ * painted on the end.
+ *
+ * So the page for a locked structure is its name, its region and this: one
+ * sentence saying what is being held back and why, then the same panel every
+ * other locked screen uses. The name stays because it is not what is sold:
+ * every structure's name is in the bundled index and in the wrong answers of
+ * anyone's questions.
+ *
+ * WHILE THE ENTITLEMENT IS STILL BEING READ the answer is "free" (see
+ * useEntitlement), and telling a subscriber who opened a bookmark that their
+ * free area is set elsewhere would be wrong for the second it takes. Nothing
+ * is shown until the read settles: not the panel, and not the content either.
+ */
+export function LockedStructureNotice({
+  structure,
+  access,
+}: {
+  structure: Pick<AnatomyStructure, 'name' | 'areas' | 'subregion'>;
+  access: UseEntitlement;
+}) {
+  if (access.loading) {
+    return (
+      <p role="status" style={{ font: '400 14px/1.6 var(--font-ui)', color: 'var(--ink3)' }}>
+        Checking what your account can open…
+      </p>
+    );
+  }
+  const area = areasOf(structure)[0];
+  return (
+    <div>
+      <p style={{ font: '400 15px/1.6 var(--font-ui)', color: 'var(--ink2)' }}>
+        {structure.name} is part of {AREA_LABELS[area]}, which is locked on this account. Its picture, facts and
+        practice open with that area.
+      </p>
+      <div className="mt-4">
+        <LockedAreaPanel area={area} access={access} onSwitchFree={access.chooseFreeArea} />
       </div>
     </div>
   );

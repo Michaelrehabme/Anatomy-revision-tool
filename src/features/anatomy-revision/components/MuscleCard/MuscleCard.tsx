@@ -8,7 +8,7 @@ import { useMuscleHistory } from '../../hooks/useMuscleHistory';
 import { REGION_LABELS } from '../../types/region';
 import { AttributionBadge } from '../shared/AttributionBadge';
 import { Button } from '../shared/Button';
-import { LockedAreaPanel } from '../shared/AreaLock';
+import { LockedStructureNotice } from '../shared/AreaLock';
 import type { UseEntitlement } from '../../hooks/useEntitlement';
 import { PronounceButton } from '../shared/PronounceButton';
 import { MasteryLevelBadge } from '../shared/MasteryLevelBadge';
@@ -20,7 +20,7 @@ import { AppShell } from '../shell/AppShell';
 import { NavSidebar, type NavSection } from '../shell/NavSidebar';
 
 interface MuscleCardProps {
-  /** What this account may reach — a locked muscle's card offers the plans instead of a drill. */
+  /** What this account may reach — a locked structure's card is its name and the way to unlock it (AreaLock.tsx). */
   access: UseEntitlement;
   structureId: string;
   content: AnatomyContent;
@@ -89,6 +89,9 @@ export function MuscleCard({
   }
 
   const muscle = isMuscle(structure) ? structure : null;
+  // A card has an address, so it is gated here as well as in the atlas that
+  // lists it: the whole of it, not just the drill. See LockedStructureNotice.
+  const locked = !areasOf(structure).some((a) => access.areas.includes(a));
 
   return (
     <AppShell
@@ -126,6 +129,7 @@ export function MuscleCard({
       }
     >
       <div className="flex gap-[72px] px-16 py-14">
+        {!locked && (
         <div className="flex w-[480px] flex-none flex-col">
           <div
             className="flex min-h-[420px] flex-1 items-center justify-center overflow-hidden rounded-[3px]"
@@ -139,8 +143,9 @@ export function MuscleCard({
           </div>
           {panelImage && <AttributionBadge image={panelImage} />}
         </div>
+        )}
 
-        <div className="flex-1">
+        <div className={locked ? 'max-w-[640px] flex-1' : 'flex-1'}>
           <button type="button" onClick={onBack} className="text-[15px]" style={{ color: 'var(--ink3)' }}>
             &larr; Atlas
           </button>
@@ -170,6 +175,12 @@ export function MuscleCard({
             </div>
           )}
 
+          {locked ? (
+            <div className="mt-9">
+              <LockedStructureNotice structure={structure} access={access} />
+            </div>
+          ) : (
+          <>
           <div className="mt-9 flex flex-col">
             {muscle &&
               FACT_ROWS.map(({ key, label }) => (
@@ -212,16 +223,12 @@ export function MuscleCard({
           </div>
 
           <div className="mt-6">
-            {/* A card can be reached by a typed URL or a stale link, so the
-                drill is gated here as well as in the atlas that lists it. */}
-            {areasOf(structure).some((a) => access.areas.includes(a)) ? (
-              <Button variant="secondary" onClick={() => onDrill(structure.id)} className="min-w-[180px] min-h-[52px]">
-                Drill this muscle
-              </Button>
-            ) : (
-              <LockedAreaPanel area={areasOf(structure)[0]} access={access} onSwitchFree={access.chooseFreeArea} />
-            )}
+            <Button variant="secondary" onClick={() => onDrill(structure.id)} className="min-w-[180px] min-h-[52px]">
+              Drill this muscle
+            </Button>
           </div>
+          </>
+          )}
         </div>
       </div>
     </AppShell>

@@ -12,7 +12,7 @@ import { areasOf, isMuscle } from '../../types/structure';
 import { REGION_LABELS } from '../../types/region';
 import { useMuscleHistory } from '../../hooks/useMuscleHistory';
 import { AttributionBadge } from '../shared/AttributionBadge';
-import { LockedAreaPanel } from '../shared/AreaLock';
+import { LockedStructureNotice } from '../shared/AreaLock';
 import type { UseEntitlement } from '../../hooks/useEntitlement';
 import { PronounceButton } from '../shared/PronounceButton';
 
@@ -61,6 +61,10 @@ export function MobileMuscleCard({ access, structureId, content, repository, use
   }
 
   const muscle = isMuscle(structure) ? structure : null;
+  // The whole card is gated, not just the drill at the foot of it: on a phone
+  // the lock used to sit three screens below the facts it was locking. See
+  // LockedStructureNotice.
+  const locked = !areasOf(structure).some((a) => access.areas.includes(a));
 
   return (
     <main className="flex min-h-screen flex-col px-6.5 pt-4 pb-7.5" style={{ background: 'var(--pg)', color: 'var(--ink)' }}>
@@ -94,6 +98,12 @@ export function MobileMuscleCard({ access, structureId, content, repository, use
         </p>
       ) : null}
 
+      {locked ? (
+        <div className="mt-5">
+          <LockedStructureNotice structure={structure} access={access} />
+        </div>
+      ) : (
+      <>
       <div className="mt-4 overflow-hidden rounded-[3px]" style={{ background: 'var(--fig-off)', height: 230 }}>
         {panelImage ? (
           <img src={panelImage.filePath} alt={structure.name} className="h-full w-full object-contain" />
@@ -143,9 +153,13 @@ export function MobileMuscleCard({ access, structureId, content, repository, use
           </div>
         )}
       </div>
+      </>
+      )}
 
+      {/* The student's own record stays on a locked card: it is theirs, and a
+          structure revised before the free area was changed has one. */}
       <div
-        className="mt-3.5"
+        className={locked ? 'mt-7' : 'mt-3.5'}
         style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}
       >
         Your record
@@ -164,9 +178,7 @@ export function MobileMuscleCard({ access, structureId, content, repository, use
         </div>
       )}
 
-      {/* Gated here as well as in the atlas — a card can be reached by a
-          typed URL or a stale link. See MuscleCard.tsx. */}
-      {areasOf(structure).some((a) => access.areas.includes(a)) ? (
+      {!locked && (
         <button
           type="button"
           onClick={() => onDrill(structure.id)}
@@ -175,10 +187,6 @@ export function MobileMuscleCard({ access, structureId, content, repository, use
         >
           Drill this muscle
         </button>
-      ) : (
-        <div className="mt-5">
-          <LockedAreaPanel area={areasOf(structure)[0]} access={access} onSwitchFree={access.chooseFreeArea} />
-        </div>
       )}
     </main>
   );
