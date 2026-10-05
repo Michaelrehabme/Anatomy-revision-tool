@@ -28,6 +28,24 @@ import {
   type AuthError,
   type Unsubscribe,
 } from 'firebase/auth';
+import { connectFirestoreEmulator } from 'firebase/firestore';
+import { connectAuthEmulator } from 'firebase/auth';
+
+/**
+ * Whether this page should talk to the Firebase EMULATORS instead of a real
+ * project: built with VITE_FIREBASE_EMULATORS=1 AND being served from this
+ * machine. Both, so that a build made for a local test and then deployed by
+ * mistake talks to the real project its config names (or to nothing, if that
+ * config is the test's fake one) rather than to a visitor's own localhost.
+ *
+ * For exercising the whole chain — sign-in, the free area on the account, the
+ * content function — against `firebase emulators:start`, with no account and
+ * no document in the real project touched (docs/CONTENT-SERVER-STATUS.md).
+ */
+function usingEmulators(): boolean {
+  if (import.meta.env.VITE_FIREBASE_EMULATORS !== '1' || typeof location === 'undefined') return false;
+  return location.hostname === 'localhost' || location.hostname === '127.0.0.1' || location.hostname === '[::1]';
+}
 
 /**
  * Lazily-initialised Firebase singletons. This module is only imported when
@@ -90,12 +108,16 @@ export function getDb(): Firestore {
     firestore = initializeFirestore(getFirebaseApp(), {
       localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }),
     });
+    if (usingEmulators()) connectFirestoreEmulator(firestore, '127.0.0.1', 8085);
   }
   return firestore;
 }
 
 export function getFirebaseAuth(): Auth {
-  if (!auth) auth = getAuth(getFirebaseApp());
+  if (!auth) {
+    auth = getAuth(getFirebaseApp());
+    if (usingEmulators()) connectAuthEmulator(auth, 'http://127.0.0.1:9099', { disableWarnings: true });
+  }
   return auth;
 }
 
