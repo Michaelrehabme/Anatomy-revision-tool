@@ -12,6 +12,7 @@ import {
   type PaddleAdjustmentEvent,
   type PaddleEvent,
   type PaddleTransactionSummary,
+  type WebhookAction,
 } from '../paddleWebhook';
 
 /**
@@ -135,12 +136,13 @@ describe('actionForEvent', () => {
     expect(actionForEvent(event({ status: 'trialing' }, 'subscription.trialing'), NOW_DATE).kind).toBe('grant');
   });
 
-  it('keeps access through a failed renewal while Paddle retries the card', () => {
-    // Cutting somebody off mid-revision because a bank declined once would be
-    // punishing them for the retry schedule.
+  it('does not grant the period a failed renewal has not paid for', () => {
+    // This used to expect the END of the period Paddle reports. While past
+    // due that period is the unpaid one, so it was a free year for as long as
+    // Paddle kept retrying. See "a failed renewal" below.
     const action = actionForEvent(event({ status: 'past_due' }, 'subscription.past_due'), NOW_DATE);
     expect(action.kind).toBe('grant');
-    if (action.kind === 'grant') expect(action.entitlement.expiresAt).toBe('2027-10-15T12:00:00.000Z');
+    if (action.kind === 'grant') expect(action.entitlement.expiresAt).toBe('2026-10-15T12:00:00.000Z');
   });
 
   it('keeps access to the period end after a cancellation is merely scheduled', () => {
@@ -417,5 +419,164 @@ describe('nextEntitlement', () => {
     expect(nextEntitlement(current, grant(), '2026-10-15T12:00:00.000Z')).toBe('stale');
     expect(nextEntitlement(current, grant(), '2026-10-15T12:00:01.000Z')).not.toBe('stale');
     expect(isStale(undefined, '2026-10-15T12:00:00.000Z')).toBe(false);
+  });
+});
+
+/**
+ * FAILED RENEWALS AND CANCELLATIONS. Paywall trace findings 10 and 8.
+ *
+ * The past-due payload is Paddle's documented example
+ * (https://developer.paddle.com/webhooks/subscriptions/subscription-past-due,
+ * read 5 October 2026) with our dates: a monthly subscription started on
+ * 12 April, whose renewal on 12 May failed. The thing to notice in it is that
+ * `current_billing_period` is ALREADY 12 May to 12 June — the period nobody
+ * has paid for.
+ */
+function pastDue(over: Partial<PaddleEvent['data']> = {}, envelope: Partial<PaddleEvent> = {}): PaddleEvent {
+  return {
+    event_id: 'evt_01hv8xby85a4vxfhgx493xvhjd',
+    event_type: 'subscription.past_due',
+    occurred_at: '2026-05-12T10:19:26.014628Z',
+    ...envelope,
+    data: {
+      id: 'sub_123',
+      status: 'past_due',
+      customer_id: 'ctm_01hv6y1jedq4p1n0yqn5ba3ky4',
+      billing_cycle: { interval: 'month', frequency: 1 },
+      started_at: '2026-04-12T10:18:47.635628Z',
+      canceled_at: null,
+      scheduled_change: null,
+      current_billing_period: { starts_at: '2026-05-12T10:18:47.635628Z', ends_at: '2026-06-12T10:18:47.635628Z' },
+      custom_data: { uid: 'user-1' },
+      ...over,
+    },
+  };
+}
+
+describe('a failed renewal', () => {
+  const AFTER = new Date('2026-05-12T10:20:00.000Z');
+
+  it('does not hand out the period that was not paid for', () => {
+    const action = actionForEvent(pastDue(), AFTER);
+    if (action.kind !== 'grant') throw new Error('expected grant');
+    // Paid through the START of the period Paddle reports, not its end.
+    expect(action.entitlement.expiresAt).toBe('2026-05-12T10:18:47.635628Z');
+    expect(Date.parse(action.entitlement.expiresAt!)).toBeLessThanOrEqual(Date.parse('2026-05-12T10:19:26.014628Z'));
+  });
+
+  it('records since when, so the app can say why the regions relocked', () => {
+    const action = actionForEvent(pastDue(), AFTER);
+    if (action.kind !== 'grant') throw new Error('expected grant');
+    expect(action.entitlement.paymentIssueSince).toBe('2026-05-12T10:19:26.014628Z');
+    // Still the same subscription and plan: the portal link and the record of what was bought survive.
+    expect(action.entitlement).toMatchObject({ tier: 'individual', source: 'paddle', externalId: 'sub_123', interval: 'month' });
+    expect(action.customerId).toBe('ctm_01hv6y1jedq4p1n0yqn5ba3ky4');
+  });
+
+  it('is read from the status, so a later subscription.updated while still past due does the same', () => {
+    const action = actionForEvent(pastDue({}, { event_type: 'subscription.updated', occurred_at: '2026-05-20T08:00:00.000000Z' }), new Date('2026-05-20T08:00:05.000Z'));
+    if (action.kind !== 'grant') throw new Error('expected grant');
+    expect(action.entitlement.expiresAt).toBe('2026-05-12T10:18:47.635628Z');
+    expect(action.entitlement.paymentIssueSince).toBe('2026-05-20T08:00:00.000000Z');
+  });
+
+  it('holds at the period end instead, if Paddle had not moved the period on', () => {
+    // Not what the documentation shows, but if the period is still the paid
+    // one — already over when the payment failed — its end is the answer.
+    const action = actionForEvent(pastDue({
+      current_billing_period: { starts_at: '2026-04-12T10:18:47.635628Z', ends_at: '2026-05-12T10:18:47.635628Z' },
+    }), AFTER);
+    if (action.kind !== 'grant') throw new Error('expected grant');
+    expect(action.entitlement.expiresAt).toBe('2026-05-12T10:18:47.635628Z');
+  });
+
+  it('never leaves access running past the moment it was reported, whatever the period says', () => {
+    const action = actionForEvent(pastDue({
+      current_billing_period: { starts_at: '2026-06-01T00:00:00.000000Z', ends_at: '2027-06-01T00:00:00.000000Z' },
+    }), AFTER);
+    if (action.kind !== 'grant') throw new Error('expected grant');
+    expect(action.entitlement.expiresAt).toBe('2026-05-12T10:19:26.014628Z');
+  });
+
+  it('an annual plan does not get a free year either', () => {
+    const action = actionForEvent(pastDue({
+      billing_cycle: { interval: 'year', frequency: 1 },
+      started_at: '2025-05-12T10:18:47.635628Z',
+      current_billing_period: { starts_at: '2026-05-12T10:18:47.635628Z', ends_at: '2027-05-12T10:18:47.635628Z' },
+    }), AFTER);
+    if (action.kind !== 'grant') throw new Error('expected grant');
+    expect(action.entitlement.expiresAt).toBe('2026-05-12T10:18:47.635628Z');
+    expect(action.entitlement.interval).toBe('year');
+  });
+
+  it('when the card then works, the paid period is granted and the flag is gone', () => {
+    // "If payment succeeds, the subscription returns to active and a
+    // subscription.updated event fires."
+    const stored = nextEntitlement(undefined, actionForEvent(pastDue(), AFTER) as Extract<WebhookAction, { kind: 'grant' }>, '2026-05-12T10:19:26.014628Z');
+    const recovered = actionForEvent(pastDue({ status: 'active' }, { event_type: 'subscription.updated', occurred_at: '2026-05-14T09:00:00.000000Z' }), new Date('2026-05-14T09:00:05.000Z'));
+    if (recovered.kind !== 'grant' || stored === 'stale') throw new Error('expected grant');
+    const next = nextEntitlement(stored, recovered, '2026-05-14T09:00:00.000000Z');
+    expect(next).toMatchObject({ expiresAt: '2026-06-12T10:18:47.635628Z' });
+    expect(next).not.toHaveProperty('paymentIssueSince');
+  });
+
+  it('a second past-due event keeps the date of the first', () => {
+    const first = nextEntitlement(undefined, actionForEvent(pastDue(), AFTER) as Extract<WebhookAction, { kind: 'grant' }>, '2026-05-12T10:19:26.014628Z');
+    const again = actionForEvent(pastDue({}, { event_type: 'subscription.updated', occurred_at: '2026-05-20T08:00:00.000000Z' }), new Date('2026-05-20T08:00:05.000Z'));
+    if (again.kind !== 'grant' || first === 'stale') throw new Error('expected grant');
+    expect(nextEntitlement(first, again, '2026-05-20T08:00:00.000000Z')).toMatchObject({
+      paymentIssueSince: '2026-05-12T10:19:26.014628Z',
+      eventAt: '2026-05-20T08:00:00.000000Z',
+    });
+    // But not across subscriptions: a new one that fails is a new problem.
+    expect(nextEntitlement({ ...first, externalId: 'sub_old' }, again, '2026-05-20T08:00:00.000000Z')).toMatchObject({
+      paymentIssueSince: '2026-05-20T08:00:00.000000Z',
+    });
+  });
+
+  it('when Paddle gives up and cancels, the flag goes and access stays ended', () => {
+    const first = nextEntitlement(undefined, actionForEvent(pastDue(), AFTER) as Extract<WebhookAction, { kind: 'grant' }>, '2026-05-12T10:19:26.014628Z');
+    const now = new Date('2026-06-11T10:20:00.000Z');
+    const cancelled = actionForEvent(pastDue(
+      { status: 'canceled', canceled_at: '2026-06-11T10:19:00.000000Z', current_billing_period: null },
+      { event_type: 'subscription.canceled', occurred_at: '2026-06-11T10:19:01.000000Z' },
+    ), now);
+    if (cancelled.kind !== 'grant' || first === 'stale') throw new Error('expected grant');
+    const next = nextEntitlement(first, cancelled, '2026-06-11T10:19:01.000000Z') as Record<string, unknown>;
+    expect(next).not.toHaveProperty('paymentIssueSince');
+    expect(Date.parse(String(next.expiresAt))).toBeLessThanOrEqual(now.getTime());
+    expect(next.cancelAt).toBe('2026-06-11T10:19:00.000000Z');
+  });
+});
+
+describe('a cancellation', () => {
+  // "When customers cancel using the portal, Paddle creates a scheduled change
+  // against the subscription to cancel at the end of the current billing
+  // period." — https://developer.paddle.com/build/subscriptions/cancel-subscriptions
+  const scheduled = { action: 'cancel', effective_at: '2027-10-15T12:00:00.000Z', resume_at: null };
+
+  it('scheduled from the portal keeps the paid period and records when it stops', () => {
+    const action = actionForEvent(event({ status: 'active', scheduled_change: scheduled }, 'subscription.updated'), NOW_DATE);
+    if (action.kind !== 'grant') throw new Error('expected grant');
+    expect(action.entitlement.expiresAt).toBe('2027-10-15T12:00:00.000Z');
+    expect(action.entitlement.cancelAt).toBe('2027-10-15T12:00:00.000Z');
+  });
+
+  it('taken back is a subscription that renews again', () => {
+    const action = actionForEvent(event({ status: 'active', scheduled_change: null }, 'subscription.updated'), NOW_DATE);
+    if (action.kind !== 'grant') throw new Error('expected grant');
+    expect(action.entitlement.cancelAt).toBeUndefined();
+  });
+
+  it('a scheduled pause is not a cancellation', () => {
+    const action = actionForEvent(event({ scheduled_change: { action: 'pause', effective_at: '2027-10-15T12:00:00.000Z' } }, 'subscription.updated'), NOW_DATE);
+    if (action.kind !== 'grant') throw new Error('expected grant');
+    expect(action.entitlement.cancelAt).toBeUndefined();
+  });
+
+  it('that has happened says when', () => {
+    const action = actionForEvent(event({ status: 'canceled', canceled_at: '2026-10-10T12:00:00.000Z', current_billing_period: null }, 'subscription.canceled'), NOW_DATE);
+    if (action.kind !== 'grant') throw new Error('expected grant');
+    expect(action.entitlement.cancelAt).toBe('2026-10-10T12:00:00.000Z');
   });
 });

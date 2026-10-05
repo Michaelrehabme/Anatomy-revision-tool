@@ -11,6 +11,7 @@ import type { RevisionSetupParams } from '../../hooks/useRevisionSession';
 import type { UseEntitlement } from '../../hooks/useEntitlement';
 import { MobileShell } from './MobileShell';
 import { ClassAssignments } from '../shared/ClassAssignments';
+import { PaymentIssue } from '../shared/PaymentIssue';
 import type { MobileTab } from './MobileTabBar';
 
 // OINA is in the default mix because attachments are the thing students come back
@@ -79,6 +80,8 @@ export function MobileToday({ access, repository, userId, content, onStart, onCu
   return (
     <MobileShell tabs={{ active: 'today', onNavigate: onNavigateTab }}>
       <div className="px-6.5 pt-4.5 pb-7.5">
+        {/* A failed renewal — see Today.tsx. */}
+        <PaymentIssue access={access} placement="today" className="mb-5" />
         <div data-in className="flex items-baseline justify-between">
           <div style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
             {now.toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' })}

@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react';
 import { Link } from 'react-router-dom';
-import { freeAreaSwitchDate, hasExpired, hasStarted } from '../../lib/entitlement';
+import { freeAreaSwitchDate, hasExpired, hasStarted, isCancelled, paymentIssueSince } from '../../lib/entitlement';
+import { PaymentIssue } from './PaymentIssue';
 import { AREAS, AREA_LABELS, type Area } from '../../types/region';
 import type { UseEntitlement } from '../../hooks/useEntitlement';
 
@@ -45,8 +46,16 @@ export function SubscriptionSummary({ access }: { access: UseEntitlement }) {
    */
   const lapsed = entitlement.tier !== 'free' && hasExpired(entitlement);
   const free = freeArea?.area ?? 'shoulder';
+  /**
+   * A failed renewal is not a subscription that "ended": it is still there,
+   * waiting for a card that works, and the notice above the line says so.
+   * The line itself then states only the date access stopped.
+   */
+  const unpaid = paymentIssueSince(entitlement) !== null;
   const status = pending && entitlement.startsAt
     ? `Subscribed. Access starts ${formatDate(entitlement.startsAt)}.`
+    : lapsed && entitlement.expiresAt && unpaid
+      ? `Full access stopped on ${formatDate(entitlement.expiresAt)}. Free: ${AREA_LABELS[free].toLowerCase()} only.`
     : lapsed && entitlement.expiresAt
       // A refund ends access before the date the student was first given
       // (the webhook's handleAdjustment). Saying why is the difference
@@ -55,11 +64,20 @@ export function SubscriptionSummary({ access }: { access: UseEntitlement }) {
       : tier === 'free'
         ? `Free: ${AREA_LABELS[free].toLowerCase()} only.`
         : entitlement.expiresAt
-          ? `Full access until ${formatDate(entitlement.expiresAt)}, when it renews.`
+          // "Renews" only of a subscription nothing has cancelled. A cancelled
+          // one keeps what was paid for and then stops, and used to be told it
+          // renewed (finding 8). A licence or a comped year never renews
+          // either, and is not a subscription to cancel.
+          ? isCancelled(entitlement)
+            ? `Full access until ${formatDate(entitlement.expiresAt)}, when it ends. Your subscription is cancelled and will not renew.`
+            : entitlement.source === 'paddle'
+              ? `Full access until ${formatDate(entitlement.expiresAt)}, when it renews.`
+              : `Full access until ${formatDate(entitlement.expiresAt)}.`
           : 'Full access.';
 
   return (
     <div className="mt-4" style={{ font: '400 14px/1.5 var(--font-ui)', color: 'var(--ink2)' }}>
+      <PaymentIssue access={access} placement="account" className="mb-4" />
       <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
         <span data-testid="subscription-status">{status}</span>
         <Link to="/pricing" style={{ color: 'var(--accd)' }}>

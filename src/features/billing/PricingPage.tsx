@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../anatomy-revision/context/AuthProvider';
 import { useEntitlement } from '../anatomy-revision/hooks/useEntitlement';
-import { hasStarted } from '../anatomy-revision/lib/entitlement';
+import { hasStarted, paymentIssueSince } from '../anatomy-revision/lib/entitlement';
+import { PaymentIssueNotice } from './PaymentIssueNotice';
 import { AuthScreen } from '../anatomy-revision/components/Auth/AuthScreen';
 import { CoolingOffWaiver } from '../legal/CoolingOffWaiver';
 import { PLANS, buildCheckoutRequest, readPaddleConfig, renewalTerms, type PlanId } from './lib/checkout';
@@ -68,6 +69,14 @@ export function PricingPage() {
   // this page is in the demo to test.
   const pending = !DEMO && entitlement.tier !== 'free' && !hasStarted(entitlement);
   const subscribed = !DEMO && (tier !== 'free' || pending);
+  /**
+   * A renewal that failed. The subscription still exists in Paddle and is
+   * still trying the card, so the plans are NOT offered: buying one here
+   * would start a second subscription beside the first, and the student
+   * would be charged for both the moment the old card worked. What they need
+   * is the portal, to change the card on the one they have.
+   */
+  const unpaid = !DEMO && !subscribed && paymentIssueSince(entitlement) !== null;
 
   // After checkout the webhook usually lands within a few seconds. Re-read
   // for about half a minute, then stop and let the message below take over.
@@ -150,6 +159,15 @@ export function PricingPage() {
         </div>
       )}
 
+      {!loading && unpaid && (
+        <div className="mt-8">
+          <PaymentIssueNotice entitlement={entitlement} placement="account" />
+          <p className="mt-3" style={{ ...prose, fontSize: 13.5 }}>
+            You do not need to subscribe again. Your subscription is still there, waiting for a card that works.
+          </p>
+        </div>
+      )}
+
       {!DEMO && justPaid && !subscribed && (
         <div className="mt-8 rounded-[4px] px-5 py-4" style={{ background: 'var(--sf)', border: '1px solid var(--line)' }} role="status">
           <div style={{ fontFamily: 'var(--font-display)', fontSize: 20 }}>Payment received</div>
@@ -161,7 +179,7 @@ export function PricingPage() {
         </div>
       )}
 
-      {!subscribed && !justPaid && (
+      {!subscribed && !justPaid && !unpaid && (
         <>
           <div className="mt-8 grid gap-3 sm:grid-cols-2" role="radiogroup" aria-label="Plan">
             {PLANS.map((p) => {

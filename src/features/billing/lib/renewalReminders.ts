@@ -57,6 +57,10 @@ export type ReminderDecision =
 export function reminderDue(entitlement: Entitlement | null | undefined, now: Date): ReminderDecision {
   if (!entitlement || entitlement.tier === 'free') return { due: false, reason: 'no paid entitlement' };
   if (entitlement.source !== 'paddle') return { due: false, reason: `${entitlement.source} does not bill through us` };
+  // Cancelled from the portal: status is still active and the period still
+  // has a week to run, but nothing will be taken at the end of it. A notice
+  // of a payment that is not coming is the wrong email (finding 8).
+  if (entitlement.cancelAt) return { due: false, reason: 'cancelled; it will not renew' };
   if (entitlement.interval === 'year') return { due: false, reason: 'Paddle reminds for periods of six months or more' };
   if (entitlement.interval !== 'month') return { due: false, reason: 'billing interval unknown' };
 

@@ -95,6 +95,14 @@ export interface PaddleSubscription {
   billing_cycle?: { interval?: string; frequency?: number } | null;
   current_billing_period?: { starts_at: string; ends_at: string } | null;
   canceled_at?: string | null;
+  /**
+   * A change Paddle will make later. A cancellation from the customer portal
+   * arrives as `{ action: 'cancel', effective_at: <end of the period> }` on a
+   * `subscription.updated` while the status is still `active`; removing it
+   * sends another update with this null again.
+   * https://developer.paddle.com/build/subscriptions/cancel-subscriptions
+   */
+  scheduled_change?: { action?: string; effective_at?: string | null; resume_at?: string | null } | null;
   custom_data?: Record<string, unknown> | null;
 }
 
@@ -142,9 +150,13 @@ export function isStale(current: Record<string, unknown> | undefined, eventAt: s
  *    turns on cannot be edited by the person disputing it; a renewal event
  *    without it must not erase it;
  *  - customerId, kept even on a cancellation, because a former subscriber
- *    still needs the portal to see their invoices.
- * Nothing else survives — in particular `refundedAt` goes the moment a later
- * subscription event arrives.
+ *    still needs the portal to see their invoices;
+ *  - paymentIssueSince, when the SAME subscription was already past due: the
+ *    message says since when, and a second event during Paddle's retries must
+ *    not move that date forward.
+ * Nothing else survives — in particular `refundedAt`, `cancelAt` and an
+ * earlier `paymentIssueSince` all go the moment an event without them
+ * arrives, which is how "active again" clears them.
  */
 export function nextEntitlement(
   current: Record<string, unknown> | undefined,
@@ -154,8 +166,14 @@ export function nextEntitlement(
   if (isStale(current, eventAt)) return 'stale';
   const consent = action.consent ?? current?.consent;
   const customerId = action.customerId ?? current?.customerId;
+  const since = action.entitlement.paymentIssueSince;
+  const earlier =
+    since && current?.externalId === action.entitlement.externalId && typeof current?.paymentIssueSince === 'string'
+      ? current.paymentIssueSince
+      : undefined;
+  const paymentIssueSince = since && earlier && earlier < since ? earlier : since;
   return Object.fromEntries(
-    Object.entries({ ...action.entitlement, eventAt, consent, customerId }).filter(
+    Object.entries({ ...action.entitlement, paymentIssueSince, eventAt, consent, customerId }).filter(
       ([, v]) => v !== undefined,
     ),
   );
@@ -255,6 +273,26 @@ function billingShape(sub: PaddleSubscription): { interval?: 'month' | 'year'; s
  * subscription is cancelled with an effective time now, and an approved full
  * refund of the latest payment (adjustmentActionForEvent, below).
  *
+ * A FAILED RENEWAL DOES NOT BUY A PERIOD. While `past_due`, Paddle's
+ * `current_billing_period` is already the period that has NOT been paid for:
+ * its documented `subscription.past_due` example is a subscription started
+ * 12 April, past due on 12 May, with a period of 12 May to 12 June
+ * (https://developer.paddle.com/webhooks/subscriptions/subscription-past-due).
+ * Granting to the end of that handed out a month — or a year — nobody had
+ * paid for, for as long as Paddle kept retrying the card (30 days by default,
+ * https://developer.paddle.com/build/retain/configure-payment-recovery-dunning).
+ * So past due is paid THROUGH the last boundary of that period that had
+ * already passed when the payment failed: its start, or its end if Paddle
+ * had not moved it on. Access returns with the next `active` event, which
+ * carries the paid period. `paymentIssueSince` is what lets the app say why.
+ *
+ * THERE IS NO GRACE PERIOD, and that is a product decision nobody has made
+ * yet rather than an oversight: a student whose renewal fails loses the paid
+ * areas at the moment their paid time ends, and gets them back when the card
+ * works. If a few days of grace are wanted while Paddle retries, this is the
+ * one place to add them — and the notice in the app (PaymentIssueNotice.tsx)
+ * states the rule, so change both.
+ *
  * `custom_data.uid` is used to FIND the account and for nothing else. It was
  * set by the browser at checkout, so it is not trusted to say what anybody is
  * entitled to — that comes from the signed event alone. The worst a forged uid
@@ -276,7 +314,8 @@ export function actionForEvent(event: PaddleEvent, now: Date = new Date()): Webh
   const consent = readConsent(sub.custom_data);
   const startsAt = delayedStart(sub, consent);
   const billing = billingShape(sub);
-  const periodEnd = sub.current_billing_period?.ends_at ?? null;
+  const period = sub.current_billing_period ?? null;
+  const periodEnd = period?.ends_at ?? null;
 
   if (sub.status === 'canceled') {
     // Canceled means Paddle has stopped it. For an end-of-period cancellation
@@ -289,7 +328,9 @@ export function actionForEvent(event: PaddleEvent, now: Date = new Date()): Webh
       uid,
       consent,
       customerId: sub.customer_id ?? null,
-      entitlement: { tier: 'individual', source: 'paddle', expiresAt: effective, externalId: sub.id },
+      // cancelAt is what lets the account screen say "ended" and "will not
+      // renew" instead of guessing from a date (finding 8).
+      entitlement: { tier: 'individual', source: 'paddle', expiresAt: effective, externalId: sub.id, cancelAt: effective },
     };
   }
 
@@ -297,10 +338,50 @@ export function actionForEvent(event: PaddleEvent, now: Date = new Date()): Webh
     return { kind: 'ignore', reason: `subscription ${sub.id} has no billing period to grant against` };
   }
 
-  // active, trialing, past_due and paused all keep access to the end of the
-  // period already covered. past_due in particular: Paddle retries the card,
-  // and cutting a student off mid-revision because their bank declined once
-  // would be punishing them for the retry schedule.
+  // By STATUS, not event type: `subscription.updated` also arrives while a
+  // subscription is past due, and must not undo what `subscription.past_due`
+  // wrote.
+  if (sub.status === 'past_due') {
+    const failedAt = event.occurred_at ?? now.toISOString();
+    const failedMs = Date.parse(failedAt);
+    const endedBeforeFailure = Date.parse(periodEnd) <= failedMs;
+    const boundary = endedBeforeFailure ? periodEnd : period?.starts_at;
+    if (!boundary) {
+      return { kind: 'ignore', reason: `past-due subscription ${sub.id} has no period start to hold access at` };
+    }
+    // Whatever Paddle sends, a past-due event never leaves access running
+    // past the moment it was sent. Unparseable reads as "now" for the same
+    // reason.
+    const boundaryMs = Date.parse(boundary);
+    const paidThrough = Number.isNaN(boundaryMs) || boundaryMs > failedMs ? failedAt : boundary;
+    return {
+      kind: 'grant',
+      uid,
+      consent,
+      customerId: sub.customer_id ?? null,
+      entitlement: {
+        tier: 'individual',
+        source: 'paddle',
+        expiresAt: paidThrough,
+        externalId: sub.id,
+        // The cycle Paddle states, never one measured from the unpaid period.
+        ...billing,
+        ...(startsAt ? { startsAt } : {}),
+        paymentIssueSince: failedAt,
+      },
+    };
+  }
+
+  // A cancellation from the portal is SCHEDULED: status stays `active`, the
+  // period is unchanged, and `scheduled_change` says when it stops. Access is
+  // untouched — cancel whenever you like, keep what you paid for — and the
+  // date is kept so the app can say it ends rather than renews.
+  const scheduled = sub.scheduled_change;
+  const cancelAt = scheduled?.action === 'cancel' && typeof scheduled.effective_at === 'string'
+    ? scheduled.effective_at
+    : undefined;
+
+  // active, trialing and paused keep access to the end of the period covered.
   return {
     kind: 'grant',
     uid,
@@ -313,6 +394,7 @@ export function actionForEvent(event: PaddleEvent, now: Date = new Date()): Webh
       externalId: sub.id,
       ...billing,
       ...(startsAt ? { startsAt } : {}),
+      ...(cancelAt ? { cancelAt } : {}),
     },
   };
 }
@@ -494,7 +576,8 @@ export type RefundOutcome =
  * Nothing, when access had already ended by then.
  *
  * `startsAt` is dropped: a delayed-start plan refunded inside its 14 days
- * would otherwise still read as "access starts on…".
+ * would otherwise still read as "access starts on…". So is
+ * `paymentIssueSince`: there is no payment left to chase.
  */
 export function entitlementAfterRefund(
   current: Record<string, unknown> | undefined,
@@ -515,5 +598,6 @@ export function entitlementAfterRefund(
   }
   const kept = { ...current };
   delete kept.startsAt;
+  delete kept.paymentIssueSince;
   return { kind: 'end', entitlement: { ...kept, expiresAt: eventAt, eventAt, refundedAt: eventAt } };
 }

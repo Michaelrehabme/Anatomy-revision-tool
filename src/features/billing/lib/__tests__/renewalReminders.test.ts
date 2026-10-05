@@ -25,6 +25,14 @@ function monthly(over: Partial<Entitlement> = {}): Entitlement {
 }
 
 describe('reminderDue', () => {
+  it('is not due for a subscription cancelled from the portal, though its period is still running', () => {
+    // Status stays active and the date is a week off, but nothing will be
+    // taken on it (paywall trace finding 8).
+    const decision = reminderDue(monthly({ cancelAt: '2027-03-28T12:00:00.000Z' }), NOW);
+    expect(decision.due).toBe(false);
+    if (!decision.due) expect(decision.reason).toMatch(/cancelled/);
+  });
+
   it('is due seven days before the sixth payment', () => {
     const decision = reminderDue(monthly(), NOW);
     expect(decision.due).toBe(true);

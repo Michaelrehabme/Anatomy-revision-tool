@@ -14,7 +14,7 @@
  * demo- project id, so it can never touch the real database.
  */
 import { readFileSync } from 'node:fs';
-import { afterAll, beforeAll, beforeEach, describe, it } from 'vitest';
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import {
   assertFails,
   assertSucceeds,
@@ -24,6 +24,7 @@ import {
 import {
   collection,
   deleteDoc,
+  deleteField,
   doc,
   getDoc,
   getDocs,
@@ -116,6 +117,31 @@ describe('users/{uid}', () => {
       );
       // An ordinary write that leaves it alone still goes through.
       await assertSucceeds(updateDoc(doc(as.student(), 'users', 'student'), { lastActiveAt: 5 }));
+    });
+
+    // The failed-payment flag, the cancellation date and the refund date all
+    // live INSIDE the map (billing/lib/paddleWebhook.ts), so that the same
+    // rule covers them: a student cannot clear "your payment failed", nor
+    // mark a subscription cancelled to get past the deletion check, nor move
+    // the expiry a past-due event set.
+    it('refuses setting or clearing the payment flags the webhook writes', async () => {
+      const stored = {
+        tier: 'individual', source: 'paddle', expiresAt: '2026-05-12T10:18:47.635Z', externalId: 'sub_1',
+        paymentIssueSince: '2026-05-12T10:19:26.014Z',
+      };
+      await env.withSecurityRulesDisabled((ctx) => updateDoc(doc(ctx.firestore(), 'users', 'student'), { entitlement: stored }));
+      const mine = doc(as.student(), 'users', 'student');
+
+      await assertFails(updateDoc(mine, { 'entitlement.paymentIssueSince': deleteField() }));
+      await assertFails(updateDoc(mine, { 'entitlement.expiresAt': '2099-01-01T00:00:00.000Z' }));
+      await assertFails(updateDoc(mine, { 'entitlement.cancelAt': '2026-05-12T10:18:47.635Z' }));
+      await assertFails(updateDoc(mine, { 'entitlement.refundedAt': '2026-05-12T10:18:47.635Z' }));
+      const { paymentIssueSince: _flag, ...cleared } = stored;
+      void _flag;
+      await assertFails(updateDoc(mine, { entitlement: cleared }));
+      // Reading it — which is how the app knows to show the notice — is allowed.
+      const snap = await assertSucceeds(getDoc(mine));
+      expect(snap.data()?.entitlement.paymentIssueSince).toBe('2026-05-12T10:19:26.014Z');
     });
 
     it('does not let an owner delete and recreate the profile with one', async () => {

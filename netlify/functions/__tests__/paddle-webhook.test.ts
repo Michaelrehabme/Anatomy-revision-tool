@@ -545,3 +545,96 @@ describe('a subscription event, unchanged by any of this', () => {
     expect((await handler(new Request('https://example.test/', { method: 'GET' }))).status).toBe(405);
   });
 });
+
+/**
+ * A failed renewal, end to end (paywall trace finding 10). Paddle's
+ * documented `subscription.past_due` example with our ids: the period it
+ * carries is the one that has NOT been paid for.
+ */
+describe('a renewal that fails', () => {
+  const MONTHLY: Row = {
+    tier: 'individual',
+    source: 'paddle',
+    expiresAt: '2026-05-12T10:18:47.635628Z',
+    externalId: SUB,
+    interval: 'month',
+    startedAt: '2026-04-12T10:18:47.635628Z',
+    eventAt: '2026-04-12T10:18:50.000000Z',
+    customerId: CTM,
+  };
+
+  const subscription = (type: string, occurredAt: string, over: Row = {}): Row => ({
+    event_id: `evt_${type}_${occurredAt}`,
+    event_type: type,
+    occurred_at: occurredAt,
+    data: {
+      id: SUB,
+      status: 'past_due',
+      customer_id: CTM,
+      billing_cycle: { interval: 'month', frequency: 1 },
+      started_at: '2026-04-12T10:18:47.635628Z',
+      next_billed_at: '2026-06-12T10:18:47.635628Z',
+      canceled_at: null,
+      scheduled_change: null,
+      current_billing_period: { starts_at: '2026-05-12T10:18:47.635628Z', ends_at: '2026-06-12T10:18:47.635628Z' },
+      custom_data: { uid: UID },
+      ...over,
+    },
+  });
+
+  beforeEach(() => {
+    store.docs.set(`users/${UID}`, { displayName: 'Sam', entitlement: { ...MONTHLY } });
+  });
+
+  it('does not move the expiry forward, and flags the account', async () => {
+    const response = await handler(post(subscription('subscription.past_due', '2026-05-12T10:19:26.014628Z')));
+    expect(response.status).toBe(200);
+    expect(entitlement()).toEqual({
+      ...MONTHLY,
+      eventAt: '2026-05-12T10:19:26.014628Z',
+      paymentIssueSince: '2026-05-12T10:19:26.014628Z',
+    });
+  });
+
+  it('stays flagged from the first failure while Paddle retries', async () => {
+    await handler(post(subscription('subscription.past_due', '2026-05-12T10:19:26.014628Z')));
+    await handler(post(subscription('subscription.updated', '2026-05-15T08:00:00.000000Z')));
+    expect(entitlement()).toMatchObject({
+      expiresAt: '2026-05-12T10:18:47.635628Z',
+      paymentIssueSince: '2026-05-12T10:19:26.014628Z',
+    });
+  });
+
+  it('is cleared, with the paid period granted, when the card works', async () => {
+    await handler(post(subscription('subscription.past_due', '2026-05-12T10:19:26.014628Z')));
+    await handler(post(subscription('subscription.updated', '2026-05-14T09:00:00.000000Z', { status: 'active' })));
+    expect(entitlement()).toEqual({ ...MONTHLY, expiresAt: '2026-06-12T10:18:47.635628Z', eventAt: '2026-05-14T09:00:00.000000Z' });
+  });
+
+  it('is cleared when Paddle gives up and cancels, and access does not come back', async () => {
+    await handler(post(subscription('subscription.past_due', '2026-05-12T10:19:26.014628Z')));
+    await handler(post(subscription('subscription.canceled', '2026-06-11T10:19:01.000000Z', {
+      status: 'canceled', canceled_at: '2026-06-11T10:19:00.000000Z', current_billing_period: null, next_billed_at: null,
+    })));
+    expect(entitlement()?.paymentIssueSince).toBeUndefined();
+    expect(entitlement()?.cancelAt).toBe('2026-06-11T10:19:00.000000Z');
+    expect(Date.parse(String(entitlement()?.expiresAt))).toBeLessThan(Date.now());
+  });
+
+  it('a late past-due event cannot undo the recovery that came after it', async () => {
+    await handler(post(subscription('subscription.updated', '2026-05-14T09:00:00.000000Z', { status: 'active' })));
+    await handler(post(subscription('subscription.past_due', '2026-05-12T10:19:26.014628Z')));
+    expect(entitlement()?.expiresAt).toBe('2026-06-12T10:18:47.635628Z');
+    expect(entitlement()?.paymentIssueSince).toBeUndefined();
+  });
+
+  it('a cancellation scheduled from the portal keeps the period and records that it will not renew', async () => {
+    await handler(post(subscription('subscription.updated', '2026-04-20T09:00:00.000000Z', {
+      status: 'active',
+      next_billed_at: null,
+      scheduled_change: { action: 'cancel', effective_at: '2026-05-12T10:18:47.635628Z', resume_at: null },
+      current_billing_period: { starts_at: '2026-04-12T10:18:47.635628Z', ends_at: '2026-05-12T10:18:47.635628Z' },
+    })));
+    expect(entitlement()).toEqual({ ...MONTHLY, eventAt: '2026-04-20T09:00:00.000000Z', cancelAt: '2026-05-12T10:18:47.635628Z' });
+  });
+});

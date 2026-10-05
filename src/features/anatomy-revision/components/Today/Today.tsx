@@ -11,6 +11,7 @@ import { AppShell } from '../shell/AppShell';
 import { NavSidebar, type NavSection } from '../shell/NavSidebar';
 import { Button } from '../shared/Button';
 import { ClassAssignments } from '../shared/ClassAssignments';
+import { PaymentIssue } from '../shared/PaymentIssue';
 import type { RevisionSetupParams } from '../../hooks/useRevisionSession';
 import type { UseEntitlement } from '../../hooks/useEntitlement';
 
@@ -103,6 +104,9 @@ export function Today({ access, repository, userId, content, onStart, onCustomSe
         />
       }
     >
+      {/* A failed renewal, said once here and dismissible for the session.
+          Renders nothing for everybody else. */}
+      <PaymentIssue access={access} placement="today" className="mx-16 mt-10" />
       <div className="flex gap-20 px-16 pt-16 pb-12">
         <div className="w-[440px] flex-none">
           <div data-in style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>

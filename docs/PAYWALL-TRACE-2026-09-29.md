@@ -17,9 +17,9 @@ plus a probe of the pure functions; no sandbox run yet.
 | 5 | High | Deleting an account never cancels in Paddle; the next renewal's webhook recreates `users/{uid}` (personal data back after erasure); `deleteUser` runs last, so a "requires recent login" error lands after the entitlement is already deleted | **Mitigated 29 Sep** — deletion is refused up front while a Paddle subscription is live or pending, and a stale sign-in is caught before anything is deleted. The webhook no longer recreates a deleted account's doc (update-only; the event goes to `billingFailures`). Still open: no server-side cancel |
 | 6 | High/Med | One entitlement map per user: two subscriptions overwrite each other, and cancelling one revokes the other | Open |
 | 7 | Med | Free area, swap counter and onboarded flag are device-local: a new device or cleared storage gives a fresh free area with unlimited swaps | Open — step 1 of docs/DESIGN-CONTENT-BEHIND-SERVER.md |
-| 8 | Med | No status stored, so a cancelled subscriber is told it "renews", and would be sent a renewal reminder | Open |
+| 8 | Med | No status stored, so a cancelled subscriber is told it "renews", and would be sent a renewal reminder | **Fixed 5 Oct** (branch `release-next`) — the webhook stores `cancelAt` from `scheduled_change` (a portal cancellation) or `canceled_at`; the account line says "when it ends … cancelled and will not renew", and `reminderDue` declines. Accounts cancelled before this ships have no `cancelAt` until their next event |
 | 9 | Med | Refund and chargeback events are not handled: access runs to period end | **Partly fixed 5 Oct** (branch `release-next`) — see "Refunds" below. An approved full refund of a subscription's latest payment ends access; everything uncertain changes nothing and is written to `billingFailures`. **Nothing arrives until the owner ticks `adjustment.created` and `adjustment.updated` on the webhook destination in Paddle.** Chargebacks are recorded, not acted on |
-| 10 | Med | `past_due` may grant the unpaid period; `subscription.paused` is not handled; no "payment failed" message | Open — sandbox to confirm |
+| 10 | Med | `past_due` may grant the unpaid period; `subscription.paused` is not handled; no "payment failed" message | **Partly fixed 5 Oct** (branch `release-next`) — see "Failed renewals" below. Past due no longer grants the unpaid period, and the app says the payment failed. `subscription.paused` is still not handled; no email; sandbox still to confirm |
 | 11 | Med | A class assignment in a locked area says "no questions any more"; a partly locked one runs only the free subset as a scored attempt the educator counts | Open |
 | 12 | Med | Renewal reminders: the 6-month notice is off by one against the code's own comment (legal call on cadence); `.limit(200)` without paging; dry runs mark reminders sent | Open |
 | 13 | Low/Med | Webhook and admin script write with `merge: true` inside the map, so stale `startsAt` and Paddle fields survive | **Fixed in the webhook 29 Sep** — the map is replaced, carrying consent and customer id over; `scripts/accountData.ts` still merges |
@@ -87,6 +87,67 @@ Read the rows with `npx tsx scripts/accountData.ts failures`.
    subscription's next event.
 7. The webhook reads the last `h1` in the signature header. Paddle says more
    than one may be sent during secret rotation; rotate with care.
+
+## Failed renewals (finding 10) and cancellations (finding 8) — 5 October 2026
+
+From Paddle's documentation as read that day:
+[subscription.past_due](https://developer.paddle.com/webhooks/subscriptions/subscription-past-due),
+[subscription.updated](https://developer.paddle.com/webhooks/subscriptions/subscription-updated),
+[subscription.canceled](https://developer.paddle.com/webhooks/subscriptions/subscription-canceled),
+[cancel subscriptions](https://developer.paddle.com/build/subscriptions/cancel-subscriptions),
+[payment recovery](https://developer.paddle.com/build/retain/configure-payment-recovery-dunning).
+
+**The fault.** Paddle's own `subscription.past_due` example is a subscription
+started 12 April, past due on 12 May, whose `current_billing_period` is
+already 12 May to 12 June — the unpaid period. The webhook granted to the end
+of whatever period it was sent, so a failed renewal handed out a month (or a
+year) nobody had paid for, for as long as Paddle retried: 30 days by default.
+
+| Event | What the webhook stores |
+|---|---|
+| Any subscription event with `status: past_due` | `expiresAt` = the start of the period Paddle reports (its end, if that had already passed when the payment failed), and never later than the event itself. `paymentIssueSince` = the event time, or the earlier one already stored for the same subscription |
+| Then `status: active` (the card worked) | `expiresAt` = the end of the period; `paymentIssueSince` gone |
+| Then `status: canceled` (Paddle gave up) | `expiresAt` = `canceled_at`, never later than now; `cancelAt` set; `paymentIssueSince` gone |
+| `subscription.updated`, `status: active`, `scheduled_change.action: cancel` | `expiresAt` unchanged (the period end); `cancelAt` = `scheduled_change.effective_at` |
+| The same with `scheduled_change: null` (cancellation taken back) | `cancelAt` gone |
+| `status: canceled` | as before, plus `cancelAt` |
+
+**There is no grace period.** A student whose renewal fails loses the paid
+areas when their paid time ends and gets them back when the card works. The
+earlier code's comment — do not cut somebody off because their bank declined
+once — was a reasonable wish implemented by accident as a free period.
+Whether to allow a few days while Paddle retries is the owner's decision; it
+is one line in `actionForEvent`, and the notice's wording must change with it.
+
+**In the app.** While `paymentIssueSince` is stored, the Subscription section
+of the account screen and (once, dismissible for the session) Today show
+"Your last payment did not go through", the date full access stopped, and an
+"Update your card" button that opens the same Paddle portal as "Manage or
+cancel your subscription". The flag is inside the entitlement map, which
+`firestore.rules` makes read-only to clients; `rules-tests` has a case for it.
+
+**What remains:**
+
+1. **Not run against the sandbox** (checklist items 2 and 3). The handling is
+   built from documented payloads. In particular it is not confirmed that
+   Paddle sends no `status: active` event carrying the new period *before*
+   the `past_due` one; if it does, the later past-due event still pulls the
+   expiry back, so the exposure is seconds, not a month.
+2. **`subscription.paused` is still not handled.** If payment recovery is
+   set to pause instead of cancel, the pause arrives as an unhandled event.
+   The account then stays as the past-due event left it: no access, flag
+   still showing. Nothing is granted.
+3. **No email.** Paddle sends its own recovery emails if payment recovery is
+   on; the app sends none.
+4. **Existing subscribers.** Anyone already past due when this ships keeps
+   whatever the old code stored until Paddle's next event for them.
+5. **The destination must be sending `subscription.past_due`,
+   `subscription.updated` and `subscription.canceled`.** The webhook has
+   handled all three since it was written, so they are probably ticked
+   already; check, because the flag is only ever set and cleared by them.
+6. **`/pricing` no longer offers the plans to somebody past due** — it shows
+   the notice instead, because buying again would start a second
+   subscription beside the first (finding 6).
 
 ## Tests
 

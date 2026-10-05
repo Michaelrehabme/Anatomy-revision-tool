@@ -17,7 +17,13 @@ import { useState } from 'react';
  * data layer, so the public demo bundle never gains the SDK through this file.
  */
 
-export function ManageSubscription() {
+/**
+ * Opening the portal, for anything that offers it: the link below, and the
+ * "Update your card" button on the failed-payment notice
+ * (PaymentIssueNotice.tsx). One implementation, so the two cannot come to
+ * disagree about how the caller is proved to be the account holder.
+ */
+export function useBillingPortal(): { open: () => Promise<void>; loading: boolean; error: string | null } {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -49,6 +55,12 @@ export function ManageSubscription() {
       setLoading(false);
     }
   }
+
+  return { open, loading, error };
+}
+
+export function ManageSubscription() {
+  const { open, loading, error } = useBillingPortal();
 
   return (
     <div className="mt-3">

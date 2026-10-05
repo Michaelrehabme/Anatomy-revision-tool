@@ -66,6 +66,25 @@ describe('the subscription line on the account screen', () => {
     );
   });
 
+  // Paywall trace finding 8: a cancelled subscriber was told it "renews".
+  it('one cancelled from the portal ends on that date, and is not said to renew', () => {
+    expect(statusLine({ ...paid, cancelAt: '2027-10-01T09:00:00.000Z' })).toBe(
+      'Full access until 1 October 2027, when it ends. Your subscription is cancelled and will not renew.',
+    );
+  });
+
+  it('a licence with an end date is not said to renew either', () => {
+    expect(statusLine({ tier: 'institutional', source: 'licence', expiresAt: '2027-07-31T00:00:00.000Z' })).toBe(
+      'Full access until 31 July 2027.',
+    );
+  });
+
+  it('one whose renewal failed: access stopped, the subscription has not "ended"', () => {
+    expect(statusLine({ ...paid, expiresAt: '2026-10-12T09:00:00.000Z', paymentIssueSince: '2026-10-12T09:00:30.000Z' })).toBe(
+      'Full access stopped on 12 October 2026. Free: knee only.',
+    );
+  });
+
   it('one bought with a delayed start', () => {
     expect(statusLine({ ...paid, startsAt: '2026-10-15T09:00:00.000Z' })).toBe('Subscribed. Access starts 15 October 2026.');
   });

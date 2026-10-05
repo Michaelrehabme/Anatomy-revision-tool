@@ -76,6 +76,27 @@ export interface Entitlement {
    * student was first given: "ended" with no reason reads as a fault.
    */
   refundedAt?: string;
+  /**
+   * ISO, since when Paddle has reported this subscription's payment overdue.
+   *
+   * Set by the payment webhook while the subscription is `past_due` and gone
+   * with the next event that says otherwise — active again, cancelled, or
+   * refunded. It decides nothing about access, which is `expiresAt`'s job as
+   * always; it exists so the app can say "your last payment did not go
+   * through" instead of leaving a student to wonder why the regions relocked.
+   */
+  paymentIssueSince?: string;
+  /**
+   * ISO, when a cancelled subscription stops — the end of the paid period for
+   * a cancellation scheduled from the portal, or the moment Paddle cancelled
+   * it. Present means it WILL NOT RENEW; absent means nothing has said so.
+   *
+   * Without it the account screen told every subscriber their plan "renews"
+   * on its expiry date, including the ones who had cancelled (paywall trace
+   * finding 8), and a cancelled student could not delete their account until
+   * the paid time ran out.
+   */
+  cancelAt?: string;
 }
 
 /** What every account has before anyone pays anything. */
@@ -204,6 +225,23 @@ export function canSwitchFreeArea(
 }
 
 const TIER_RANK: Record<EntitlementTier, number> = { free: 0, individual: 1, institutional: 2 };
+
+/**
+ * Since when a Paddle subscription's payment has been overdue, or null.
+ *
+ * Only ever true of a subscription bought through Paddle: a stray field on a
+ * licence or a complimentary grant — left behind by a merge, say — must not
+ * tell somebody who pays nothing that their payment failed.
+ */
+export function paymentIssueSince(entitlement: Entitlement | null | undefined): string | null {
+  if (!entitlement || entitlement.source !== 'paddle' || entitlement.tier === 'free') return null;
+  return entitlement.paymentIssueSince ?? null;
+}
+
+/** Whether a Paddle subscription has been cancelled, now or from a date to come. It will not charge again. */
+export function isCancelled(entitlement: Entitlement | null | undefined): boolean {
+  return !!entitlement && entitlement.source === 'paddle' && typeof entitlement.cancelAt === 'string';
+}
 
 /** Whether an entitlement has run out. A null expiry never expires. */
 export function hasExpired(entitlement: Entitlement, now: Date = new Date()): boolean {
