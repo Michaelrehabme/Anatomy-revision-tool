@@ -1,5 +1,5 @@
 import { createHmac, timingSafeEqual } from 'node:crypto';
-import type { Entitlement } from '../../anatomy-revision/lib/entitlement';
+import { PAYMENT_GRACE_DAYS, type Entitlement } from '../../anatomy-revision/lib/entitlement';
 
 /**
  * Paddle webhooks: prove the call came from Paddle, then turn it into an
@@ -154,14 +154,19 @@ export function isStale(current: Record<string, unknown> | undefined, eventAt: s
  *  - paymentIssueSince, when the SAME subscription was already past due: the
  *    message says since when, and a second event during Paddle's retries must
  *    not move that date forward;
- *  - expiresAt, on a past-due event only, when the SAME subscription's
- *    stored expiry is earlier than the one this event works out. A past-due
- *    event may pull an expiry back and may never push one forward: whatever
- *    period Paddle reports while the payment is outstanding, it has not been
- *    paid for. (Without this, an event arriving after the unpaid period had
- *    itself run out would have moved the date to the end of it — still in
- *    the past, so no access, but the date on the account screen would have
- *    been wrong.)
+ *  - expiresAt, on a past-due event only, for the SAME subscription, so
+ *    that the grace is given once and from the right place:
+ *      already flagged past due -> the stored date stands if it is earlier.
+ *        The grace was set by the first failure; an event a month into
+ *        Paddle's retries, by when the unpaid period has itself run out,
+ *        would otherwise work out a later "paid-for end" and grant three
+ *        fresh days.
+ *      not yet flagged, stored expiry earlier than this event's date -> no
+ *        later than the stored expiry plus the grace. The stored expiry is
+ *        what earlier, paid events said was paid for; a first past-due event
+ *        that arrives late gets the same bound as one that arrives on time.
+ *    A past-due event may always pull a date BACK — as when an `active`
+ *    event carrying the unpaid period got in first.
  * Nothing else survives — in particular `refundedAt`, `cancelAt` and an
  * earlier `paymentIssueSince` all go the moment an event without them
  * arrives, which is how "active again" clears them.
@@ -183,10 +188,12 @@ export function nextEntitlement(
   const sameSubscription = current?.source === 'paddle' && current?.externalId === action.entitlement.externalId;
   const storedExpiry = typeof current?.expiresAt === 'string' ? Date.parse(current.expiresAt) : NaN;
   const nextExpiry = action.entitlement.expiresAt ? Date.parse(action.entitlement.expiresAt) : NaN;
-  const expiresAt =
-    since && sameSubscription && !Number.isNaN(storedExpiry) && !Number.isNaN(nextExpiry) && storedExpiry < nextExpiry
-      ? (current?.expiresAt as string)
-      : action.entitlement.expiresAt;
+  let expiresAt = action.entitlement.expiresAt;
+  if (since && sameSubscription && !Number.isNaN(storedExpiry) && !Number.isNaN(nextExpiry) && storedExpiry < nextExpiry) {
+    const alreadyFlagged = typeof current?.paymentIssueSince === 'string';
+    const bound = alreadyFlagged ? storedExpiry : Date.parse(graceEnd(storedExpiry));
+    if (bound < nextExpiry) expiresAt = alreadyFlagged ? (current?.expiresAt as string) : graceEnd(storedExpiry);
+  }
   return Object.fromEntries(
     Object.entries({ ...action.entitlement, expiresAt, paymentIssueSince, eventAt, consent, customerId }).filter(
       ([, v]) => v !== undefined,
@@ -225,6 +232,11 @@ function delayedStart(sub: PaddleSubscription, consent: ConsentRecord | null): s
   const at = from ? Date.parse(from) : NaN;
   if (Number.isNaN(at)) return undefined;
   return new Date(at + COOLING_OFF_DAYS * 24 * 60 * 60 * 1000).toISOString();
+}
+
+/** When the grace after a failed renewal runs out, given when the paid time did. */
+export function graceEnd(paidToMs: number): string {
+  return new Date(paidToMs + PAYMENT_GRACE_DAYS * 24 * 60 * 60 * 1000).toISOString();
 }
 
 const HANDLED = new Set([
@@ -296,17 +308,29 @@ function billingShape(sub: PaddleSubscription): { interval?: 'month' | 'year'; s
  * Granting to the end of that handed out a month — or a year — nobody had
  * paid for, for as long as Paddle kept retrying the card (30 days by default,
  * https://developer.paddle.com/build/retain/configure-payment-recovery-dunning).
- * So past due is paid THROUGH the last boundary of that period that had
- * already passed when the payment failed: its start, or its end if Paddle
- * had not moved it on. Access returns with the next `active` event, which
- * carries the paid period. `paymentIssueSince` is what lets the app say why.
  *
- * THERE IS NO GRACE PERIOD, and that is a product decision nobody has made
- * yet rather than an oversight: a student whose renewal fails loses the paid
- * areas at the moment their paid time ends, and gets them back when the card
- * works. If a few days of grace are wanted while Paddle retries, this is the
- * one place to add them — and the notice in the app (PaymentIssueNotice.tsx)
- * states the rule, so change both.
+ * THE RULE (owner, 5 October 2026): a failed renewal keeps full access for
+ * PAYMENT_GRACE_DAYS after the end of the time that was paid for, and not a
+ * day longer. `expiresAt` = paid-for end + grace.
+ *
+ * WHICH FIELD IS "THE END OF THE TIME PAID FOR". Paddle does not state it
+ * while past due, so it is read from `current_billing_period` against the
+ * time of the event:
+ *   - the period contains the event (the documented shape: Paddle has already
+ *     moved on to the unpaid period) -> its `starts_at`, which is where the
+ *     paid period ended;
+ *   - the period ended at or before the event (Paddle had not moved it on)
+ *     -> its `ends_at`.
+ * Never the event's own time, so a second or tenth past-due event works out
+ * the same date and cannot start the three days again; and never the unpaid
+ * period's end. (A period wholly in the future fits neither shape; the event
+ * time is then the only anchor there is.) nextEntitlement adds the bound
+ * that needs the stored map: once an account is flagged, no later past-due
+ * event moves its date forward at all.
+ *
+ * Access beyond the grace returns with the next `active` event, which
+ * carries the paid period and replaces all of this. `paymentIssueSince` is
+ * what lets the app say why (PaymentIssueNotice.tsx).
  *
  * `custom_data.uid` is used to FIND the account and for nothing else. It was
  * set by the browser at checkout, so it is not trusted to say what anybody is
@@ -364,11 +388,17 @@ export function actionForEvent(event: PaddleEvent, now: Date = new Date()): Webh
     if (!boundary) {
       return { kind: 'ignore', reason: `past-due subscription ${sub.id} has no period start to hold access at` };
     }
-    // Whatever Paddle sends, a past-due event never leaves access running
-    // past the moment it was sent. Unparseable reads as "now" for the same
-    // reason.
+    // A boundary still ahead of the event, or unreadable, is not a date
+    // anything was paid up to; the failure itself is then the anchor.
     const boundaryMs = Date.parse(boundary);
-    const paidThrough = Number.isNaN(boundaryMs) || boundaryMs > failedMs ? failedAt : boundary;
+    const paidToMs = Number.isNaN(boundaryMs) || boundaryMs > failedMs ? failedMs : boundaryMs;
+    const paidThrough = graceEnd(paidToMs);
+    // Cancelled from the portal while the payment is outstanding: still
+    // recorded, so the account screen and the deletion rule know it will not
+    // charge again.
+    const scheduledCancel = sub.scheduled_change?.action === 'cancel' && typeof sub.scheduled_change.effective_at === 'string'
+      ? sub.scheduled_change.effective_at
+      : undefined;
     return {
       kind: 'grant',
       uid,
@@ -383,6 +413,7 @@ export function actionForEvent(event: PaddleEvent, now: Date = new Date()): Webh
         ...billing,
         ...(startsAt ? { startsAt } : {}),
         paymentIssueSince: failedAt,
+        ...(scheduledCancel ? { cancelAt: scheduledCancel } : {}),
       },
     };
   }

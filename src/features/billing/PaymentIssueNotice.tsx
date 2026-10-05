@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { hasExpired, paymentIssueSince, type Entitlement } from '../anatomy-revision/lib/entitlement';
+import { hasExpired, paymentIssueSince, PAYMENT_GRACE_DAYS, type Entitlement } from '../anatomy-revision/lib/entitlement';
 import { Button } from '../anatomy-revision/components/shared/Button';
 import { useBillingPortal } from './ManageSubscription';
 
@@ -21,11 +21,13 @@ import { useBillingPortal } from './ManageSubscription';
  *  - What to do is Paddle's customer portal, where a card is changed — the
  *    same link "Manage or cancel your subscription" opens.
  *  - What has happened to access is the stored `expiresAt` and no other
- *    rule. While past due, the webhook holds it at the end of the last
- *    period that was paid for (billing/lib/paddleWebhook.ts), so this
- *    normally reads "stopped on". It never promises a grace period, because
- *    the code gives none, and never says when Paddle will try the card again
- *    or give up, because the app is not told.
+ *    rule. While past due, the webhook sets it to the end of the time that
+ *    was paid for plus PAYMENT_GRACE_DAYS (billing/lib/paddleWebhook.ts).
+ *    So there are two phases and the date tells them apart: before it,
+ *    full access CONTINUES UNTIL that date; after it, full access STOPPED
+ *    ON it. The number of days in the sentence is the same constant the
+ *    webhook adds, so the two cannot disagree. It never says when Paddle
+ *    will try the card again or give up, because the app is not told.
  *
  * CALM, NOT AN ALARM. `role="status"`, not "alert": a declined card is worth
  * knowing about and is not an emergency, and an assertive announcement on
@@ -50,12 +52,21 @@ function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
 }
 
+const GRACE = `${PAYMENT_GRACE_DAYS} ${PAYMENT_GRACE_DAYS === 1 ? 'day' : 'days'}`;
+
 /** The sentence about access: only ever what the stored expiry says. */
 export function accessSentence(entitlement: Entitlement, now: Date = new Date()): string {
   if (!entitlement.expiresAt) return '';
   return hasExpired(entitlement, now)
-    ? `Full access stopped on ${formatDate(entitlement.expiresAt)}, the end of the time you had paid for.`
-    : `Full access runs until ${formatDate(entitlement.expiresAt)}.`;
+    ? `Full access stopped on ${formatDate(entitlement.expiresAt)}, ${GRACE} after the time you had paid for ran out.`
+    : `Full access continues until ${formatDate(entitlement.expiresAt)}, ${GRACE} after the time you had paid for ran out.`;
+}
+
+/** What updating the card does, in each phase. */
+export function remedySentence(entitlement: Entitlement, now: Date = new Date()): string {
+  return hasExpired(entitlement, now)
+    ? 'Update your card and full access returns once the payment goes through.'
+    : 'Update your card and it carries on once the payment goes through.';
 }
 
 export interface PaymentIssueNoticeProps {
@@ -101,7 +112,7 @@ export function PaymentIssueNotice({ entitlement, placement, className = '' }: P
       </p>
       <p className="mt-1.5" style={{ font: '400 14px/1.55 var(--font-ui)', color: 'var(--ink2)', margin: '6px 0 0' }}>
         {access && `${access} `}
-        Update your card and full access returns once the payment goes through. Your progress is kept.
+        {remedySentence(entitlement)} Your progress is kept.
       </p>
       <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2">
         <Button

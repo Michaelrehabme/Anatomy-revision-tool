@@ -105,23 +105,48 @@ year) nobody had paid for, for as long as Paddle retried: 30 days by default.
 
 | Event | What the webhook stores |
 |---|---|
-| Any subscription event with `status: past_due` | `expiresAt` = the start of the period Paddle reports (its end, if that had already passed when the payment failed), and never later than the event itself. `paymentIssueSince` = the event time, or the earlier one already stored for the same subscription |
-| Then `status: active` (the card worked) | `expiresAt` = the end of the period; `paymentIssueSince` gone |
-| Then `status: canceled` (Paddle gave up) | `expiresAt` = `canceled_at`, never later than now; `cancelAt` set; `paymentIssueSince` gone |
+| Any subscription event with `status: past_due` | `expiresAt` = the end of the time paid for **+ 3 days** (`PAYMENT_GRACE_DAYS`). `paymentIssueSince` = the event time, or the earlier one already stored for the same subscription. `cancelAt` too, if a cancellation is scheduled |
+| A second, third, tenth past-due event for an account already flagged | `expiresAt` cannot move later than the stored one; the grace is given once |
+| A first past-due event arriving late, on an account whose stored expiry is earlier | `expiresAt` no later than the stored expiry + 3 days |
+| Then `status: active` (the card worked) | `expiresAt` = the end of the paid period, replacing the grace; `paymentIssueSince` gone |
+| Then `status: canceled` (Paddle gave up, or an immediate cancellation during the grace) | `expiresAt` = `canceled_at`, never later than now; `cancelAt` set; `paymentIssueSince` gone |
 | `subscription.updated`, `status: active`, `scheduled_change.action: cancel` | `expiresAt` unchanged (the period end); `cancelAt` = `scheduled_change.effective_at` |
 | The same with `scheduled_change: null` (cancellation taken back) | `cancelAt` gone |
 | `status: canceled` | as before, plus `cancelAt` |
 
-**There is no grace period.** A student whose renewal fails loses the paid
-areas when their paid time ends and gets them back when the card works. The
-earlier code's comment — do not cut somebody off because their bank declined
-once — was a reasonable wish implemented by accident as a free period.
-Whether to allow a few days while Paddle retries is the owner's decision; it
-is one line in `actionForEvent`, and the notice's wording must change with it.
+**Three days of grace — the owner's decision, 5 October 2026.** A failed
+renewal keeps full access for `PAYMENT_GRACE_DAYS` (3) after the end of the
+time that was paid for, then stops it until the card works. The constant is
+in `lib/entitlement.ts`; the webhook adds it and the notice states it, so the
+two cannot drift.
+
+*Which field is "the end of the time paid for".* Paddle does not state it
+while past due, so it is read from `current_billing_period` against the
+event's `occurred_at`:
+
+- the period contains the event — the documented shape, where Paddle has
+  already moved on to the unpaid period — its **`starts_at`**;
+- the period ended at or before the event — Paddle had not moved it on — its
+  **`ends_at`**.
+
+Both give the same moment for a renewal, and both shapes are tested. Never
+the event's own time (so repeated events work out the same date), and never
+the unpaid period's end. A period wholly in the future fits neither; the
+event time is then the anchor. On top of that, using the stored map: an
+account already flagged cannot have its date moved later by any past-due
+event, and a first past-due event cannot set it later than the stored expiry
+plus three days.
+
+*Elsewhere during the grace.* Renewal reminders decline (the expiry is not a
+charge date). Account deletion is still refused, in the grace and after it,
+because Paddle is still trying the card; cancelling in the portal lifts
+that. `/pricing` shows the notice in place of both the plans and the "You
+have full access, paid up to…" box.
 
 **In the app.** While `paymentIssueSince` is stored, the Subscription section
 of the account screen and (once, dismissible for the session) Today show
-"Your last payment did not go through", the date full access stopped, and an
+"Your last payment did not go through", the date — full access "continues until" it
+during the three days, "stopped on" it after — and an
 "Update your card" button that opens the same Paddle portal as "Manage or
 cancel your subscription". The flag is inside the entitlement map, which
 `firestore.rules` makes read-only to clients; `rules-tests` has a case for it.
@@ -145,9 +170,15 @@ cancel your subscription". The flag is inside the entitlement map, which
    `subscription.updated` and `subscription.canceled`.** The webhook has
    handled all three since it was written, so they are probably ticked
    already; check, because the flag is only ever set and cleared by them.
-6. **`/pricing` no longer offers the plans to somebody past due** — it shows
-   the notice instead, because buying again would start a second
-   subscription beside the first (finding 6).
+6. **`/pricing` no longer offers the plans to somebody past due**, in the
+   grace or after it — it shows the notice instead, because buying again
+   would start a second subscription beside the first (finding 6).
+7. **A failure that is not a renewal** (none exists in this product today)
+   would be read as shape 1 and anchored on the start of its period, which
+   is in the past: access would stop at once, with no grace.
+8. **No published page says what happens when a payment fails.** Terms,
+   refunds, pricing and the home page FAQ were searched; none mentions it,
+   so none contradicts the three days — and none promises them either.
 
 ## Tests
 

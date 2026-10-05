@@ -79,9 +79,15 @@ describe('the subscription line on the account screen', () => {
     );
   });
 
-  it('one whose renewal failed: access stopped, the subscription has not "ended"', () => {
-    expect(statusLine({ ...paid, expiresAt: '2026-10-12T09:00:00.000Z', paymentIssueSince: '2026-10-12T09:00:30.000Z' })).toBe(
+  it('one whose renewal failed, after the days of grace: access stopped, the subscription has not "ended"', () => {
+    expect(statusLine({ ...paid, expiresAt: '2026-10-12T09:00:00.000Z', paymentIssueSince: '2026-10-09T09:00:30.000Z' })).toBe(
       'Full access stopped on 12 October 2026. Free: knee only.',
+    );
+  });
+
+  it('one whose renewal failed, during the days of grace: access until that date, and not "when it renews"', () => {
+    expect(statusLine({ ...paid, expiresAt: '2026-10-16T09:00:00.000Z', paymentIssueSince: '2026-10-13T09:00:30.000Z' })).toBe(
+      'Full access until 16 October 2026. Your last payment did not go through.',
     );
   });
 

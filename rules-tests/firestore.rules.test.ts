@@ -125,8 +125,10 @@ describe('users/{uid}', () => {
     // mark a subscription cancelled to get past the deletion check, nor move
     // the expiry a past-due event set.
     it('refuses setting or clearing the payment flags the webhook writes', async () => {
+      // As the webhook leaves a failed renewal: the expiry is the end of the
+      // three days of grace (PAYMENT_GRACE_DAYS), and the flag says why.
       const stored = {
-        tier: 'individual', source: 'paddle', expiresAt: '2026-05-12T10:18:47.635Z', externalId: 'sub_1',
+        tier: 'individual', source: 'paddle', expiresAt: '2026-05-15T10:18:47.635Z', externalId: 'sub_1',
         paymentIssueSince: '2026-05-12T10:19:26.014Z',
       };
       await env.withSecurityRulesDisabled((ctx) => updateDoc(doc(ctx.firestore(), 'users', 'student'), { entitlement: stored }));
@@ -134,6 +136,9 @@ describe('users/{uid}', () => {
 
       await assertFails(updateDoc(mine, { 'entitlement.paymentIssueSince': deleteField() }));
       await assertFails(updateDoc(mine, { 'entitlement.expiresAt': '2099-01-01T00:00:00.000Z' }));
+      // Not even by a day: the grace is the webhook's to give, once.
+      await assertFails(updateDoc(mine, { 'entitlement.expiresAt': '2026-05-16T10:18:47.635Z' }));
+      await assertFails(updateDoc(mine, { 'entitlement.paymentIssueSince': '2026-05-14T10:19:26.014Z' }));
       await assertFails(updateDoc(mine, { 'entitlement.cancelAt': '2026-05-12T10:18:47.635Z' }));
       await assertFails(updateDoc(mine, { 'entitlement.refundedAt': '2026-05-12T10:18:47.635Z' }));
       const { paymentIssueSince: _flag, ...cleared } = stored;

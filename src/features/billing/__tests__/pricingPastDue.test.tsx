@@ -31,9 +31,13 @@ vi.mock('../../anatomy-revision/data/firebase', () => ({ getFirebaseAuth: () => 
 
 import { PricingPage } from '../PricingPage';
 
-afterEach(cleanup);
+afterEach(() => {
+  cleanup();
+  vi.useRealTimers();
+});
 
-const lapsed: Entitlement = { tier: 'individual', source: 'paddle', expiresAt: '2026-05-12T10:18:47.635Z', externalId: 'sub_1' };
+/** The grace ran out on 15 May: three days after the paid month ended. */
+const lapsed: Entitlement = { tier: 'individual', source: 'paddle', expiresAt: '2026-05-15T10:18:47.635Z', externalId: 'sub_1' };
 
 function show(entitlement: Entitlement) {
   state.entitlement = entitlement;
@@ -47,6 +51,22 @@ describe('/pricing', () => {
     expect(screen.getByRole('button', { name: 'Update your card' })).toBeTruthy();
     expect(screen.getByText(/You do not need to subscribe again/)).toBeTruthy();
     expect(screen.queryByRole('radiogroup', { name: 'Plan' })).toBeNull();
+  });
+
+  it('during the days of grace too: the notice, not "You have full access, paid up to…", and no plans', () => {
+    vi.useFakeTimers({ toFake: ['Date'] });
+    vi.setSystemTime(new Date('2026-05-14T12:00:00.000Z'));
+    show({ ...lapsed, paymentIssueSince: '2026-05-12T10:19:26.014Z' });
+    expect(screen.getByRole('status').textContent).toMatch(/Full access continues until 15 May 2026/);
+    expect(screen.queryByText('You have full access')).toBeNull();
+    expect(screen.queryByText(/Paid up to/)).toBeNull();
+    expect(screen.queryByRole('radiogroup', { name: 'Plan' })).toBeNull();
+    expect(screen.getByText(/You do not need to subscribe again/)).toBeTruthy();
+  });
+
+  it('a paid-up subscriber still sees that they have full access', () => {
+    show({ ...lapsed, expiresAt: '2099-01-01T00:00:00.000Z' });
+    expect(screen.getByText('You have full access')).toBeTruthy();
   });
 
   it('still offers them to somebody whose subscription simply ended', () => {

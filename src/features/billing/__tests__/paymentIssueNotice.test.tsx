@@ -3,18 +3,19 @@ import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/re
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { MemoryRouter } from 'react-router-dom';
-import { PaymentIssueNotice, accessSentence } from '../PaymentIssueNotice';
+import { PaymentIssueNotice, accessSentence, remedySentence } from '../PaymentIssueNotice';
 import { PaymentIssue } from '../../anatomy-revision/components/shared/PaymentIssue';
 import { SubscriptionSummary } from '../../anatomy-revision/components/shared/SubscriptionSummary';
-import { effectiveTier, type Entitlement } from '../../anatomy-revision/lib/entitlement';
+import { effectiveTier, PAYMENT_GRACE_DAYS, type Entitlement } from '../../anatomy-revision/lib/entitlement';
 import type { UseEntitlement } from '../../anatomy-revision/hooks/useEntitlement';
 
 /**
  * The failed-payment notice (paywall trace finding 10).
  *
  * What is pinned is the wording, because every sentence is a claim about what
- * the code does: access is described by the stored expiry and by nothing
- * else, and no grace period is promised because none is given. And the
+ * the code does. There are two phases, and the stored expiry tells them
+ * apart: for PAYMENT_GRACE_DAYS after the paid time ran out full access
+ * CONTINUES UNTIL that date; after it, full access STOPPED ON it. And the
  * behaviour that keeps it from nagging: on Today it can be put away for the
  * session; on the account screen it stays.
  */
@@ -26,13 +27,19 @@ vi.mock('../../anatomy-revision/data/firebase', () => ({
   getFirebaseAuth: () => ({ currentUser: null }),
 }));
 
-const NOW = '2026-05-14T12:00:00.000Z';
+/** Two days into the three of grace. */
+const IN_GRACE = '2026-05-14T12:00:00.000Z';
+/** The day after it ran out. Most tests sit here. */
+const NOW = '2026-05-16T12:00:00.000Z';
 
-/** What the webhook leaves on a monthly subscriber whose 12 May renewal failed. */
+/**
+ * What the webhook leaves on a monthly subscriber whose 12 May renewal
+ * failed: the expiry is the end of the grace, three days after the paid month.
+ */
 const pastDue: Entitlement = {
   tier: 'individual',
   source: 'paddle',
-  expiresAt: '2026-05-12T10:18:47.635Z',
+  expiresAt: '2026-05-15T10:18:47.635Z',
   externalId: 'sub_1',
   interval: 'month',
   paymentIssueSince: '2026-05-12T10:19:26.014Z',
@@ -69,30 +76,49 @@ afterEach(() => {
 });
 
 describe('the failed-payment notice', () => {
-  it('says what happened, what has happened to access, and what to do', () => {
+  it('during the grace: the payment failed, full access continues until the date, update your card', () => {
+    vi.setSystemTime(new Date(IN_GRACE));
     render(<PaymentIssueNotice entitlement={pastDue} placement="account" />);
-    const notice = screen.getByRole('status');
-    expect(notice.textContent).toBe(
+    expect(screen.getByRole('status').textContent).toBe(
       'Your last payment did not go through' +
-      'Full access stopped on 12 May 2026, the end of the time you had paid for. ' +
-      'Update your card and full access returns once the payment goes through. Your progress is kept.' +
+      'Full access continues until 15 May 2026, 3 days after the time you had paid for ran out. ' +
+      'Update your card and it carries on once the payment goes through. Your progress is kept.' +
       'Update your card',
     );
     expect(screen.getByRole('button', { name: 'Update your card' })).toBeTruthy();
   });
 
-  it('describes access by the stored expiry alone', () => {
-    const at = new Date(NOW);
-    expect(accessSentence(pastDue, at)).toBe('Full access stopped on 12 May 2026, the end of the time you had paid for.');
-    // If the stored expiry were still ahead, it would say so — never a grace period of its own.
-    expect(accessSentence({ ...pastDue, expiresAt: '2026-05-20T10:00:00.000Z' }, at)).toBe('Full access runs until 20 May 2026.');
-    expect(accessSentence({ ...pastDue, expiresAt: null }, at)).toBe('');
+  it('after the grace: full access stopped on that date, update your card and it returns', () => {
+    render(<PaymentIssueNotice entitlement={pastDue} placement="account" />);
+    expect(screen.getByRole('status').textContent).toBe(
+      'Your last payment did not go through' +
+      'Full access stopped on 15 May 2026, 3 days after the time you had paid for ran out. ' +
+      'Update your card and full access returns once the payment goes through. Your progress is kept.' +
+      'Update your card',
+    );
+  });
+
+  it('describes access by the stored expiry alone, and names the days from the constant the webhook adds', () => {
+    expect(PAYMENT_GRACE_DAYS).toBe(3);
+    const days = `${PAYMENT_GRACE_DAYS} days`;
+    expect(accessSentence(pastDue, new Date(IN_GRACE))).toBe(`Full access continues until 15 May 2026, ${days} after the time you had paid for ran out.`);
+    expect(accessSentence(pastDue, new Date(NOW))).toBe(`Full access stopped on 15 May 2026, ${days} after the time you had paid for ran out.`);
+    // The moment it runs out is "stopped", not "continues".
+    expect(accessSentence(pastDue, new Date(pastDue.expiresAt!))).toMatch(/^Full access stopped on/);
+    expect(accessSentence({ ...pastDue, expiresAt: null }, new Date(NOW))).toBe('');
+    expect(remedySentence(pastDue, new Date(IN_GRACE))).toBe('Update your card and it carries on once the payment goes through.');
+    expect(remedySentence(pastDue, new Date(NOW))).toBe('Update your card and full access returns once the payment goes through.');
   });
 
   it('promises nothing the code does not do', () => {
     render(<PaymentIssueNotice entitlement={pastDue} placement="today" />);
     const text = screen.getByRole('status').textContent ?? '';
-    expect(text).not.toMatch(/grace|days? left|try again|retry|we will|cancel/i);
+    expect(text).not.toMatch(/days? left|try again|retry|we will|cancel/i);
+    vi.setSystemTime(new Date(IN_GRACE));
+    cleanup();
+    render(<PaymentIssueNotice entitlement={pastDue} placement="today" />);
+    // In grace it must not say access has stopped, nor that the date is a renewal.
+    expect(screen.getByRole('status').textContent).not.toMatch(/stopped|renews|days? left|retry|cancel/i);
   });
 
   it('is a polite status, not an alert, and every control is a real button', () => {
@@ -173,11 +199,23 @@ describe('where the notice is mounted', () => {
     const { container } = render(<MemoryRouter><SubscriptionSummary access={accessWith(pastDue)} /></MemoryRouter>);
     expect(await screen.findByRole('status')).toBeTruthy();
     expect(container.querySelector('[data-testid="subscription-status"]')?.textContent).toBe(
-      'Full access stopped on 12 May 2026. Free: knee only.',
+      'Full access stopped on 15 May 2026. Free: knee only.',
     );
     // The way to fix it is offered twice over: the button, and the standing portal link.
     expect(screen.getByRole('button', { name: 'Update your card' })).toBeTruthy();
     expect(await screen.findByRole('button', { name: 'Manage or cancel your subscription' })).toBeTruthy();
+  });
+
+  it('on the account screen during the grace: still full access, and not said to renew on that date', async () => {
+    vi.setSystemTime(new Date(IN_GRACE));
+    const { container } = render(<MemoryRouter><SubscriptionSummary access={accessWith(pastDue)} /></MemoryRouter>);
+    expect((await screen.findByRole('status')).textContent).toMatch(/Full access continues until 15 May 2026/);
+    expect(container.querySelector('[data-testid="subscription-status"]')?.textContent).toBe(
+      'Full access until 15 May 2026. Your last payment did not go through.',
+    );
+    expect(container.textContent).not.toMatch(/renews/);
+    // Still a paying-tier account for these three days: no free-area picker.
+    expect(screen.queryByLabelText('Your free area')).toBeNull();
   });
 
   // The desktop and the phone are separate components, and each has to mount

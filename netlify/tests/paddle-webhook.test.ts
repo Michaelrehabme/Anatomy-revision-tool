@@ -569,10 +569,13 @@ describe('a subscription event, unchanged by any of this', () => {
  * carries is the one that has NOT been paid for.
  */
 describe('a renewal that fails', () => {
+  const PAID_TO = '2026-05-12T10:18:47.635628Z';
+  /** PAYMENT_GRACE_DAYS (three) after the paid month ended. */
+  const GRACE_END = '2026-05-15T10:18:47.635Z';
   const MONTHLY: Row = {
     tier: 'individual',
     source: 'paddle',
-    expiresAt: '2026-05-12T10:18:47.635628Z',
+    expiresAt: PAID_TO,
     externalId: SUB,
     interval: 'month',
     startedAt: '2026-04-12T10:18:47.635628Z',
@@ -593,7 +596,7 @@ describe('a renewal that fails', () => {
       next_billed_at: '2026-06-12T10:18:47.635628Z',
       canceled_at: null,
       scheduled_change: null,
-      current_billing_period: { starts_at: '2026-05-12T10:18:47.635628Z', ends_at: '2026-06-12T10:18:47.635628Z' },
+      current_billing_period: { starts_at: PAID_TO, ends_at: '2026-06-12T10:18:47.635628Z' },
       custom_data: { uid: UID },
       ...over,
     },
@@ -603,26 +606,48 @@ describe('a renewal that fails', () => {
     store.docs.set(`users/${UID}`, { displayName: 'Sam', entitlement: { ...MONTHLY } });
   });
 
-  it('does not move the expiry forward, and flags the account', async () => {
+  it('gives three days past the paid time, not the unpaid month, and flags the account', async () => {
     const response = await handler(post(subscription('subscription.past_due', '2026-05-12T10:19:26.014628Z')));
     expect(response.status).toBe(200);
     expect(entitlement()).toEqual({
       ...MONTHLY,
+      expiresAt: GRACE_END,
       eventAt: '2026-05-12T10:19:26.014628Z',
       paymentIssueSince: '2026-05-12T10:19:26.014628Z',
     });
   });
 
-  it('stays flagged from the first failure while Paddle retries', async () => {
+  it('however many events arrive while Paddle retries, the grace ends on the same day', async () => {
     await handler(post(subscription('subscription.past_due', '2026-05-12T10:19:26.014628Z')));
     await handler(post(subscription('subscription.updated', '2026-05-15T08:00:00.000000Z')));
+    await handler(post(subscription('subscription.updated', '2026-05-28T08:00:00.000000Z')));
+    // Past the end of the unpaid period, and with the period rolled on again.
+    await handler(post(subscription('subscription.updated', '2026-06-13T08:00:00.000000Z')));
+    await handler(post(subscription('subscription.updated', '2026-06-14T08:00:00.000000Z', {
+      current_billing_period: { starts_at: '2026-06-12T10:18:47.635628Z', ends_at: '2026-07-12T10:18:47.635628Z' },
+    })));
     expect(entitlement()).toMatchObject({
-      expiresAt: '2026-05-12T10:18:47.635628Z',
+      expiresAt: GRACE_END,
       paymentIssueSince: '2026-05-12T10:19:26.014628Z',
+      eventAt: '2026-06-14T08:00:00.000000Z',
     });
   });
 
-  it('is cleared, with the paid period granted, when the card works', async () => {
+  it('delivered twice: the same', async () => {
+    await handler(post(subscription('subscription.past_due', '2026-05-12T10:19:26.014628Z')));
+    const once = structuredClone(entitlement());
+    await handler(post(subscription('subscription.past_due', '2026-05-12T10:19:26.014628Z')));
+    expect(entitlement()).toEqual(once);
+  });
+
+  it('the same date whichever way Paddle reports the period', async () => {
+    await handler(post(subscription('subscription.past_due', '2026-05-12T10:19:26.014628Z', {
+      current_billing_period: { starts_at: '2026-04-12T10:18:47.635628Z', ends_at: PAID_TO },
+    })));
+    expect(entitlement()?.expiresAt).toBe(GRACE_END);
+  });
+
+  it('is cleared, with the paid period replacing the grace, when the card works', async () => {
     await handler(post(subscription('subscription.past_due', '2026-05-12T10:19:26.014628Z')));
     await handler(post(subscription('subscription.updated', '2026-05-14T09:00:00.000000Z', { status: 'active' })));
     expect(entitlement()).toEqual({ ...MONTHLY, expiresAt: '2026-06-12T10:18:47.635628Z', eventAt: '2026-05-14T09:00:00.000000Z' });
@@ -645,13 +670,28 @@ describe('a renewal that fails', () => {
     expect(entitlement()?.paymentIssueSince).toBeUndefined();
   });
 
+  it('pulls the date back if an active event carrying the unpaid month got in first', async () => {
+    await handler(post(subscription('subscription.updated', '2026-05-12T10:19:00.000000Z', { status: 'active' })));
+    expect(entitlement()?.expiresAt).toBe('2026-06-12T10:18:47.635628Z');
+    await handler(post(subscription('subscription.past_due', '2026-05-12T10:19:26.014628Z')));
+    expect(entitlement()?.expiresAt).toBe(GRACE_END);
+  });
+
+  it('in the dry run nothing is written', async () => {
+    process.env.PADDLE_WEBHOOK_DRY_RUN = '1';
+    const response = await handler(post(subscription('subscription.past_due', '2026-05-12T10:19:26.014628Z')));
+    expect(await response.text()).toBe('ok (dry run)');
+    expect(entitlement()).toEqual(MONTHLY);
+    expect(store.touched).toEqual([]);
+  });
+
   it('a cancellation scheduled from the portal keeps the period and records that it will not renew', async () => {
     await handler(post(subscription('subscription.updated', '2026-04-20T09:00:00.000000Z', {
       status: 'active',
       next_billed_at: null,
-      scheduled_change: { action: 'cancel', effective_at: '2026-05-12T10:18:47.635628Z', resume_at: null },
-      current_billing_period: { starts_at: '2026-04-12T10:18:47.635628Z', ends_at: '2026-05-12T10:18:47.635628Z' },
+      scheduled_change: { action: 'cancel', effective_at: PAID_TO, resume_at: null },
+      current_billing_period: { starts_at: '2026-04-12T10:18:47.635628Z', ends_at: PAID_TO },
     })));
-    expect(entitlement()).toEqual({ ...MONTHLY, eventAt: '2026-04-20T09:00:00.000000Z', cancelAt: '2026-05-12T10:18:47.635628Z' });
+    expect(entitlement()).toEqual({ ...MONTHLY, eventAt: '2026-04-20T09:00:00.000000Z', cancelAt: PAID_TO });
   });
 });

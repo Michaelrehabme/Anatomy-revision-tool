@@ -75,8 +75,13 @@ export function PricingPage() {
    * would start a second subscription beside the first, and the student
    * would be charged for both the moment the old card worked. What they need
    * is the portal, to change the card on the one they have.
+   *
+   * True in both phases — during the days of grace, when they still have
+   * full access, and after. In the first the "You have full access, paid up
+   * to…" box would be untrue (that date is the end of the grace, and nothing
+   * is paid up to it), so the notice replaces that too.
    */
-  const unpaid = !DEMO && !subscribed && paymentIssueSince(entitlement) !== null;
+  const unpaid = !DEMO && paymentIssueSince(entitlement) !== null;
 
   // After checkout the webhook usually lands within a few seconds. Re-read
   // for about half a minute, then stop and let the message below take over.
@@ -143,7 +148,7 @@ export function PricingPage() {
         </div>
       )}
 
-      {!loading && subscribed && (
+      {!loading && subscribed && !unpaid && (
         <div className="mt-8 rounded-[4px] px-5 py-4" style={{ background: 'var(--accs)', border: '1px solid var(--line)' }}>
           <div style={{ fontFamily: 'var(--font-display)', fontSize: 20 }}>
             {pending ? 'Your subscription is set up' : 'You have full access'}

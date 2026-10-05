@@ -1,6 +1,7 @@
-import { describe, it, expect } from 'vitest';
+import { beforeAll, describe, it, expect } from 'vitest';
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
+import { hasLiveSubscription, SUBSCRIPTION_STILL_RENEWS } from '../../lib/subscriptionLiveness';
 
 /**
  * The failure this guards against is silent and legal, not technical.
@@ -59,8 +60,21 @@ function erasureList(): Set<string> {
 }
 
 describe('account erasure covers every per-user subcollection', () => {
+  /**
+   * THE SCAN IS DONE ONCE, IN A HOOK WITH ITS OWN TIME LIMIT. It reads every
+   * source file in the app — over a thousand, some of them megabytes of
+   * generated data — and it used to do so inside each test, twice over. Alone
+   * that is about a second. In a full run on a cold disk, with every other
+   * test file competing for it, it overran the limit meant for a unit test.
+   * Reading the tree is this test's whole job, so it is given the time that
+   * takes rather than fewer files to read.
+   */
+  let referenced: Set<string>;
+  beforeAll(() => {
+    referenced = referencedSubcollections();
+  }, 120_000);
+
   it('deletes everything the app writes under users/{uid}', () => {
-    const referenced = referencedSubcollections();
     const deleted = erasureList();
 
     expect(referenced.size).toBeGreaterThan(0);
@@ -76,7 +90,6 @@ describe('account erasure covers every per-user subcollection', () => {
   it('does not claim to delete a subcollection that no longer exists', () => {
     // A stale name is harmless at runtime but means the list has stopped
     // describing the app, which is how the first kind of drift starts.
-    const referenced = referencedSubcollections();
     const stale = [...erasureList()].filter((name) => !referenced.has(name)).sort();
     expect(stale, `Listed for deletion but nothing writes them: ${stale.join(', ')}`).toEqual([]);
   });
@@ -89,14 +102,26 @@ describe('deleting an account with a subscription still charging', () => {
   // The privacy policy says deletion is the student's at any time. It was not:
   // somebody who had cancelled was made to wait out the paid period.
   it('is allowed as soon as the subscription is cancelled, with paid time still to run', async () => {
-    const { hasLiveSubscription } = await import('../accountLifecycle');
     expect(hasLiveSubscription({ ...running, cancelAt: '2026-10-29T12:00:00.000Z' }, now)).toBe(false);
     // And when Paddle has already cancelled it.
     expect(hasLiveSubscription({ ...running, expiresAt: '2026-09-20T12:00:00.000Z', cancelAt: '2026-09-20T12:00:00.000Z' }, now)).toBe(false);
   });
 
+  it('the rule loads no Firebase, so testing it cannot wait on the SDK', () => {
+    const source = readFileSync(join(SRC, 'features/anatomy-revision/lib/subscriptionLiveness.ts'), 'utf8');
+    expect(source).not.toMatch(/^import /m);
+  });
+
+  it('is refused during the days of grace after a failed renewal, and after them: Paddle is still trying the card', () => {
+    // Access runs three days past the paid time; the subscription is still there.
+    const inGrace = { ...running, expiresAt: '2026-10-01T12:00:00.000Z', paymentIssueSince: '2026-09-28T12:00:30.000Z' };
+    expect(hasLiveSubscription(inGrace, now)).toBe(true);
+    expect(hasLiveSubscription(inGrace, new Date('2026-10-05T12:00:00.000Z'))).toBe(true);
+    // Cancelled in the portal while in grace: nothing more will be taken.
+    expect(hasLiveSubscription({ ...inGrace, cancelAt: '2026-10-01T12:00:00.000Z' }, now)).toBe(false);
+  });
+
   it('is refused while it would still renew — including when access has stopped but the subscription has not', async () => {
-    const { hasLiveSubscription } = await import('../accountLifecycle');
     expect(hasLiveSubscription(running, now)).toBe(true);
     // A failed renewal: no access, but Paddle is still trying the card.
     expect(hasLiveSubscription({ ...running, expiresAt: '2026-09-28T12:00:00.000Z', paymentIssueSince: '2026-09-28T12:00:30.000Z' }, now)).toBe(true);
@@ -107,19 +132,16 @@ describe('deleting an account with a subscription still charging', () => {
   });
 
   it('says what to do in the words on the account screen, and that there is no wait afterwards', async () => {
-    const { SUBSCRIPTION_STILL_RENEWS } = await import('../accountLifecycle');
     expect(SUBSCRIPTION_STILL_RENEWS).toBe(
       'Your subscription is still set to renew, and would keep charging after your account is gone. ' +
       'Cancel it first, under "Manage or cancel your subscription". You can then delete your account ' +
       'straight away, without waiting for the time you have paid for to run out.',
     );
     // The control it names is the one that exists.
-    const { readFileSync } = await import('node:fs');
     expect(readFileSync('src/features/billing/ManageSubscription.tsx', 'utf8')).toContain('Manage or cancel your subscription');
   });
 
   it('is preceded by a warning that unused paid time goes with the account, and the policy says the same', async () => {
-    const { readFileSync } = await import('node:fs');
     expect(readFileSync('src/features/anatomy-revision/components/shared/AccountDataControls.tsx', 'utf8')).toContain(
       'If you have paid for time you have not used yet, you give that up too.',
     );
@@ -129,7 +151,6 @@ describe('deleting an account with a subscription still charging', () => {
   });
 
   it('is refused while a Paddle subscription is live or has not started', async () => {
-    const { hasLiveSubscription } = await import('../accountLifecycle');
     const now = new Date('2026-09-29T12:00:00.000Z');
     expect(hasLiveSubscription({ tier: 'individual', source: 'paddle', expiresAt: '2026-10-29T12:00:00.000Z' }, now)).toBe(true);
     expect(hasLiveSubscription({ tier: 'individual', source: 'paddle', expiresAt: null }, now)).toBe(true);
@@ -139,7 +160,6 @@ describe('deleting an account with a subscription still charging', () => {
   });
 
   it('is allowed once it has ended, for a class licence or a complimentary grant, and with nothing bought', async () => {
-    const { hasLiveSubscription } = await import('../accountLifecycle');
     const now = new Date('2026-09-29T12:00:00.000Z');
     expect(hasLiveSubscription({ tier: 'individual', source: 'paddle', expiresAt: '2026-09-01T00:00:00.000Z' }, now)).toBe(false);
     expect(hasLiveSubscription({ tier: 'institutional', source: 'licence', expiresAt: null }, now)).toBe(false);

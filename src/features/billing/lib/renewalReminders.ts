@@ -61,6 +61,11 @@ export function reminderDue(entitlement: Entitlement | null | undefined, now: Da
   // has a week to run, but nothing will be taken at the end of it. A notice
   // of a payment that is not coming is the wrong email (finding 8).
   if (entitlement.cancelAt) return { due: false, reason: 'cancelled; it will not renew' };
+  // In the days of grace after a failed renewal `expiresAt` is the end of the
+  // grace, not a date anything will be charged on. "Your subscription renews
+  // on" that date would be untrue, and the student is already being told the
+  // payment failed.
+  if (entitlement.paymentIssueSince) return { due: false, reason: 'payment overdue; expiry is the end of the grace, not a charge date' };
   if (entitlement.interval === 'year') return { due: false, reason: 'Paddle reminds for periods of six months or more' };
   if (entitlement.interval !== 'month') return { due: false, reason: 'billing interval unknown' };
 

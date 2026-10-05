@@ -5,6 +5,7 @@ import {
   actionForEvent,
   adjustmentActionForEvent,
   entitlementAfterRefund,
+  graceEnd,
   isLatestPayment,
   isStale,
   nextEntitlement,
@@ -12,8 +13,8 @@ import {
   type PaddleAdjustmentEvent,
   type PaddleEvent,
   type PaddleTransactionSummary,
-  type WebhookAction,
 } from '../paddleWebhook';
+import { PAYMENT_GRACE_DAYS } from '../../../anatomy-revision/lib/entitlement';
 
 /**
  * This is the only code in the product that grants paid access, so the tests
@@ -136,13 +137,13 @@ describe('actionForEvent', () => {
     expect(actionForEvent(event({ status: 'trialing' }, 'subscription.trialing'), NOW_DATE).kind).toBe('grant');
   });
 
-  it('does not grant the period a failed renewal has not paid for', () => {
+  it('gives a failed renewal three days, not the period it has not paid for', () => {
     // This used to expect the END of the period Paddle reports. While past
     // due that period is the unpaid one, so it was a free year for as long as
     // Paddle kept retrying. See "a failed renewal" below.
     const action = actionForEvent(event({ status: 'past_due' }, 'subscription.past_due'), NOW_DATE);
     expect(action.kind).toBe('grant');
-    if (action.kind === 'grant') expect(action.entitlement.expiresAt).toBe('2026-10-15T12:00:00.000Z');
+    if (action.kind === 'grant') expect(action.entitlement.expiresAt).toBe('2026-10-18T12:00:00.000Z');
   });
 
   it('keeps access to the period end after a cancellation is merely scheduled', () => {
@@ -455,77 +456,94 @@ function pastDue(over: Partial<PaddleEvent['data']> = {}, envelope: Partial<Padd
 
 describe('a failed renewal', () => {
   const AFTER = new Date('2026-05-12T10:20:00.000Z');
-
-  it('does not hand out the period that was not paid for', () => {
-    const action = actionForEvent(pastDue(), AFTER);
+  /** The paid month ended on 12 May at 10:18:47; three days on is the 15th. */
+  const PAID_TO = '2026-05-12T10:18:47.635628Z';
+  const GRACE_END = '2026-05-15T10:18:47.635Z';
+  const granted = (e: PaddleEvent, now: Date = AFTER) => {
+    const action = actionForEvent(e, now);
     if (action.kind !== 'grant') throw new Error('expected grant');
-    // Paid through the START of the period Paddle reports, not its end.
-    expect(action.entitlement.expiresAt).toBe('2026-05-12T10:18:47.635628Z');
-    expect(Date.parse(action.entitlement.expiresAt!)).toBeLessThanOrEqual(Date.parse('2026-05-12T10:19:26.014628Z'));
+    return action;
+  };
+
+  it('keeps full access for three days past the time that was paid for, and no longer', () => {
+    expect(PAYMENT_GRACE_DAYS).toBe(3);
+    const { entitlement } = granted(pastDue());
+    expect(entitlement.expiresAt).toBe(GRACE_END);
+    expect(Date.parse(entitlement.expiresAt!) - Date.parse(PAID_TO)).toBe(PAYMENT_GRACE_DAYS * 86_400_000);
+    // Nowhere near the end of the unpaid period Paddle reports.
+    expect(Date.parse(entitlement.expiresAt!)).toBeLessThan(Date.parse('2026-06-12T10:18:47.635628Z') - 27 * 86_400_000);
   });
 
-  it('records since when, so the app can say why the regions relocked', () => {
-    const action = actionForEvent(pastDue(), AFTER);
-    if (action.kind !== 'grant') throw new Error('expected grant');
+  it('the grace follows the constant, so the webhook and the wording cannot give different numbers', () => {
+    expect(graceEnd(Date.parse(PAID_TO))).toBe(new Date(Date.parse(PAID_TO) + PAYMENT_GRACE_DAYS * 86_400_000).toISOString());
+  });
+
+  it('records since when, so the app can say why', () => {
+    const action = granted(pastDue());
     expect(action.entitlement.paymentIssueSince).toBe('2026-05-12T10:19:26.014628Z');
     // Still the same subscription and plan: the portal link and the record of what was bought survive.
     expect(action.entitlement).toMatchObject({ tier: 'individual', source: 'paddle', externalId: 'sub_123', interval: 'month' });
     expect(action.customerId).toBe('ctm_01hv6y1jedq4p1n0yqn5ba3ky4');
   });
 
-  it('is read from the status, so a later subscription.updated while still past due does the same', () => {
-    const action = actionForEvent(pastDue({}, { event_type: 'subscription.updated', occurred_at: '2026-05-20T08:00:00.000000Z' }), new Date('2026-05-20T08:00:05.000Z'));
-    if (action.kind !== 'grant') throw new Error('expected grant');
-    expect(action.entitlement.expiresAt).toBe('2026-05-12T10:18:47.635628Z');
-    expect(action.entitlement.paymentIssueSince).toBe('2026-05-20T08:00:00.000000Z');
+  // THE TWO SHAPES. Paddle does not say "paid up to" while past due, so it is
+  // read from the period against the time of the event.
+  it('shape 1, as documented — the period is already the unpaid one: anchored on its START', () => {
+    const { entitlement } = granted(pastDue({
+      current_billing_period: { starts_at: PAID_TO, ends_at: '2026-06-12T10:18:47.635628Z' },
+    }));
+    expect(entitlement.expiresAt).toBe(GRACE_END);
   });
 
-  it('holds at the period end instead, if Paddle had not moved the period on', () => {
-    // Not what the documentation shows, but if the period is still the paid
-    // one — already over when the payment failed — its end is the answer.
-    const action = actionForEvent(pastDue({
-      current_billing_period: { starts_at: '2026-04-12T10:18:47.635628Z', ends_at: '2026-05-12T10:18:47.635628Z' },
-    }), AFTER);
-    if (action.kind !== 'grant') throw new Error('expected grant');
-    expect(action.entitlement.expiresAt).toBe('2026-05-12T10:18:47.635628Z');
+  it('shape 2 — Paddle had not moved the period on: anchored on its END, which is the same moment', () => {
+    const { entitlement } = granted(pastDue({
+      current_billing_period: { starts_at: '2026-04-12T10:18:47.635628Z', ends_at: PAID_TO },
+    }));
+    expect(entitlement.expiresAt).toBe(GRACE_END);
   });
 
-  it('never leaves access running past the moment it was reported, whatever the period says', () => {
-    const action = actionForEvent(pastDue({
+  it('is anchored on the paid time, not on the event: a later event works out the same date', () => {
+    for (const occurredAt of ['2026-05-13T00:00:00.000000Z', '2026-05-20T08:00:00.000000Z', '2026-06-11T08:00:00.000000Z']) {
+      const { entitlement } = granted(pastDue({}, { event_type: 'subscription.updated', occurred_at: occurredAt }), new Date(Date.parse(occurredAt) + 5000));
+      expect(entitlement.expiresAt).toBe(GRACE_END);
+    }
+  });
+
+  it('a period wholly in the future fits neither shape: the failure itself is the anchor, never that period', () => {
+    const { entitlement } = granted(pastDue({
       current_billing_period: { starts_at: '2026-06-01T00:00:00.000000Z', ends_at: '2027-06-01T00:00:00.000000Z' },
-    }), AFTER);
-    if (action.kind !== 'grant') throw new Error('expected grant');
-    expect(action.entitlement.expiresAt).toBe('2026-05-12T10:19:26.014628Z');
+    }));
+    expect(entitlement.expiresAt).toBe('2026-05-15T10:19:26.014Z');
   });
 
-  it('an annual plan does not get a free year either', () => {
-    const action = actionForEvent(pastDue({
+  it('an annual plan gets three days, not a year', () => {
+    const { entitlement } = granted(pastDue({
       billing_cycle: { interval: 'year', frequency: 1 },
       started_at: '2025-05-12T10:18:47.635628Z',
-      current_billing_period: { starts_at: '2026-05-12T10:18:47.635628Z', ends_at: '2027-05-12T10:18:47.635628Z' },
-    }), AFTER);
-    if (action.kind !== 'grant') throw new Error('expected grant');
-    expect(action.entitlement.expiresAt).toBe('2026-05-12T10:18:47.635628Z');
-    expect(action.entitlement.interval).toBe('year');
+      current_billing_period: { starts_at: PAID_TO, ends_at: '2027-05-12T10:18:47.635628Z' },
+    }));
+    expect(entitlement.expiresAt).toBe(GRACE_END);
+    expect(entitlement.interval).toBe('year');
   });
 
-  it('when the card then works, the paid period is granted and the flag is gone', () => {
+  it('when the card then works, the paid period replaces the grace and the flag is gone', () => {
     // "If payment succeeds, the subscription returns to active and a
     // subscription.updated event fires."
-    const stored = nextEntitlement(undefined, actionForEvent(pastDue(), AFTER) as Extract<WebhookAction, { kind: 'grant' }>, '2026-05-12T10:19:26.014628Z');
-    const recovered = actionForEvent(pastDue({ status: 'active' }, { event_type: 'subscription.updated', occurred_at: '2026-05-14T09:00:00.000000Z' }), new Date('2026-05-14T09:00:05.000Z'));
-    if (recovered.kind !== 'grant' || stored === 'stale') throw new Error('expected grant');
+    const stored = nextEntitlement(undefined, granted(pastDue()), '2026-05-12T10:19:26.014628Z');
+    const recovered = granted(pastDue({ status: 'active' }, { event_type: 'subscription.updated', occurred_at: '2026-05-14T09:00:00.000000Z' }), new Date('2026-05-14T09:00:05.000Z'));
+    if (stored === 'stale') throw new Error('expected a write');
     const next = nextEntitlement(stored, recovered, '2026-05-14T09:00:00.000000Z');
     expect(next).toMatchObject({ expiresAt: '2026-06-12T10:18:47.635628Z' });
     expect(next).not.toHaveProperty('paymentIssueSince');
   });
 
-  it('a second past-due event keeps the date of the first', () => {
-    const first = nextEntitlement(undefined, actionForEvent(pastDue(), AFTER) as Extract<WebhookAction, { kind: 'grant' }>, '2026-05-12T10:19:26.014628Z');
-    const again = actionForEvent(pastDue({}, { event_type: 'subscription.updated', occurred_at: '2026-05-20T08:00:00.000000Z' }), new Date('2026-05-20T08:00:05.000Z'));
-    if (again.kind !== 'grant' || first === 'stale') throw new Error('expected grant');
+  it('a second past-due event keeps the date of the first failure, and the same end to the grace', () => {
+    const first = nextEntitlement(undefined, granted(pastDue()), '2026-05-12T10:19:26.014628Z');
+    const again = granted(pastDue({}, { event_type: 'subscription.updated', occurred_at: '2026-05-20T08:00:00.000000Z' }), new Date('2026-05-20T08:00:05.000Z'));
+    if (first === 'stale') throw new Error('expected a write');
     expect(nextEntitlement(first, again, '2026-05-20T08:00:00.000000Z')).toMatchObject({
       paymentIssueSince: '2026-05-12T10:19:26.014628Z',
+      expiresAt: GRACE_END,
       eventAt: '2026-05-20T08:00:00.000000Z',
     });
     // But not across subscriptions: a new one that fails is a new problem.
@@ -534,41 +552,75 @@ describe('a failed renewal', () => {
     });
   });
 
-  it('can pull a stored expiry back, and can never push one forward', () => {
-    const paidTo = '2026-05-12T10:18:47.635628Z';
-    const stored = { tier: 'individual', source: 'paddle', externalId: 'sub_123', expiresAt: paidTo, eventAt: '2026-04-12T10:19:00.000000Z' };
+  it('the grace is given once: no later past-due event can extend it', () => {
+    const flagged = nextEntitlement(
+      { tier: 'individual', source: 'paddle', externalId: 'sub_123', expiresAt: PAID_TO, eventAt: '2026-04-12T10:19:00.000000Z' },
+      granted(pastDue()),
+      '2026-05-12T10:19:26.014628Z',
+    );
+    if (flagged === 'stale') throw new Error('expected a write');
+    expect(flagged.expiresAt).toBe(GRACE_END);
 
-    // A month into Paddle's retries the unpaid period has itself run out, and
-    // an event then would work out ITS end. The stored date does not move.
-    const late = actionForEvent(pastDue({}, { event_type: 'subscription.updated', occurred_at: '2026-06-13T08:00:00.000000Z' }), new Date('2026-06-13T08:00:05.000Z'));
-    if (late.kind !== 'grant') throw new Error('expected grant');
-    expect(late.entitlement.expiresAt).toBe('2026-06-12T10:18:47.635628Z');
-    expect(nextEntitlement(stored, late, '2026-06-13T08:00:00.000000Z')).toMatchObject({ expiresAt: paidTo });
+    // A month into the retries the unpaid period has itself run out. Read
+    // alone, such an event would anchor on THAT period's end and grant three
+    // fresh days in the middle of June.
+    const late = granted(pastDue({}, { event_type: 'subscription.updated', occurred_at: '2026-06-13T08:00:00.000000Z' }), new Date('2026-06-13T08:00:05.000Z'));
+    expect(late.entitlement.expiresAt).toBe('2026-06-15T10:18:47.635Z');
+    expect(nextEntitlement(flagged, late, '2026-06-13T08:00:00.000000Z')).toMatchObject({ expiresAt: GRACE_END });
 
-    // If an `active` event carrying the unpaid period got in first, past due pulls it back.
-    const granted = { ...stored, expiresAt: '2026-06-12T10:18:47.635628Z', eventAt: '2026-05-12T10:19:00.000000Z' };
-    const failed = actionForEvent(pastDue(), new Date('2026-05-12T10:20:00.000Z'));
-    if (failed.kind !== 'grant') throw new Error('expected grant');
-    expect(nextEntitlement(granted, failed, '2026-05-12T10:19:26.014628Z')).toMatchObject({ expiresAt: paidTo });
+    // And if Paddle had rolled the period again by then, the same.
+    const rolled = granted(pastDue(
+      { current_billing_period: { starts_at: '2026-06-12T10:18:47.635628Z', ends_at: '2026-07-12T10:18:47.635628Z' } },
+      { event_type: 'subscription.updated', occurred_at: '2026-06-13T08:00:00.000000Z' },
+    ), new Date('2026-06-13T08:00:05.000Z'));
+    expect(nextEntitlement(flagged, rolled, '2026-06-13T08:00:00.000000Z')).toMatchObject({ expiresAt: GRACE_END });
+  });
 
-    // Only a past-due event is held like this: a paid renewal moves it forward as it always did.
-    const renewed = actionForEvent(pastDue({ status: 'active' }, { event_type: 'subscription.updated', occurred_at: '2026-05-14T09:00:00.000000Z' }), new Date('2026-05-14T09:00:05.000Z'));
-    if (renewed.kind !== 'grant') throw new Error('expected grant');
+  it('a first past-due event that arrives late is bounded by what was stored as paid for', () => {
+    // The earlier event was lost; all that is stored is the paid period.
+    const stored = { tier: 'individual', source: 'paddle', externalId: 'sub_123', expiresAt: PAID_TO, eventAt: '2026-04-12T10:19:00.000000Z' };
+    const late = granted(pastDue({}, { occurred_at: '2026-06-13T08:00:00.000000Z' }), new Date('2026-06-13T08:00:05.000Z'));
+    expect(nextEntitlement(stored, late, '2026-06-13T08:00:00.000000Z')).toMatchObject({ expiresAt: GRACE_END });
+  });
+
+  it('pulls back an expiry that an earlier event had set to the end of the unpaid period', () => {
+    const unpaidGranted = { tier: 'individual', source: 'paddle', externalId: 'sub_123', expiresAt: '2026-06-12T10:18:47.635628Z', eventAt: '2026-05-12T10:19:00.000000Z' };
+    expect(nextEntitlement(unpaidGranted, granted(pastDue()), '2026-05-12T10:19:26.014628Z')).toMatchObject({ expiresAt: GRACE_END });
+  });
+
+  it('only a past-due event is bounded like this: a paid renewal moves the date forward as it always did', () => {
+    const stored = { tier: 'individual', source: 'paddle', externalId: 'sub_123', expiresAt: PAID_TO, eventAt: '2026-04-12T10:19:00.000000Z' };
+    const renewed = granted(pastDue({ status: 'active' }, { event_type: 'subscription.updated', occurred_at: '2026-05-14T09:00:00.000000Z' }), new Date('2026-05-14T09:00:05.000Z'));
     expect(nextEntitlement(stored, renewed, '2026-05-14T09:00:00.000000Z')).toMatchObject({ expiresAt: '2026-06-12T10:18:47.635628Z' });
   });
 
+  it('cancelled from the portal while in grace: the grace stands and it is recorded as not renewing', () => {
+    const { entitlement } = granted(pastDue({ scheduled_change: { action: 'cancel', effective_at: '2026-06-12T10:18:47.635628Z', resume_at: null } }));
+    expect(entitlement.expiresAt).toBe(GRACE_END);
+    expect(entitlement.cancelAt).toBe('2026-06-12T10:18:47.635628Z');
+  });
+
   it('when Paddle gives up and cancels, the flag goes and access stays ended', () => {
-    const first = nextEntitlement(undefined, actionForEvent(pastDue(), AFTER) as Extract<WebhookAction, { kind: 'grant' }>, '2026-05-12T10:19:26.014628Z');
+    const first = nextEntitlement(undefined, granted(pastDue()), '2026-05-12T10:19:26.014628Z');
     const now = new Date('2026-06-11T10:20:00.000Z');
-    const cancelled = actionForEvent(pastDue(
+    const cancelled = granted(pastDue(
       { status: 'canceled', canceled_at: '2026-06-11T10:19:00.000000Z', current_billing_period: null },
       { event_type: 'subscription.canceled', occurred_at: '2026-06-11T10:19:01.000000Z' },
     ), now);
-    if (cancelled.kind !== 'grant' || first === 'stale') throw new Error('expected grant');
+    if (first === 'stale') throw new Error('expected a write');
     const next = nextEntitlement(first, cancelled, '2026-06-11T10:19:01.000000Z') as Record<string, unknown>;
     expect(next).not.toHaveProperty('paymentIssueSince');
     expect(Date.parse(String(next.expiresAt))).toBeLessThanOrEqual(now.getTime());
     expect(next.cancelAt).toBe('2026-06-11T10:19:00.000000Z');
+  });
+
+  it('cancelled outright DURING the grace ends it then, as any immediate cancellation does', () => {
+    const now = new Date('2026-05-13T12:00:05.000Z');
+    const cancelled = granted(pastDue(
+      { status: 'canceled', canceled_at: '2026-05-13T12:00:00.000000Z', current_billing_period: null },
+      { event_type: 'subscription.canceled', occurred_at: '2026-05-13T12:00:01.000000Z' },
+    ), now);
+    expect(cancelled.entitlement.expiresAt).toBe('2026-05-13T12:00:00.000000Z');
   });
 });
 

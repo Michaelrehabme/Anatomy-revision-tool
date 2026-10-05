@@ -49,7 +49,9 @@ export function SubscriptionSummary({ access }: { access: UseEntitlement }) {
   /**
    * A failed renewal is not a subscription that "ended": it is still there,
    * waiting for a card that works, and the notice above the line says so.
-   * The line itself then states only the date access stopped.
+   * The line then states only the date: until it, during the days of grace
+   * (PAYMENT_GRACE_DAYS); stopped on it, after. And it does not say "renews"
+   * on a date that is the end of a grace, not a charge.
    */
   const unpaid = paymentIssueSince(entitlement) !== null;
   const status = pending && entitlement.startsAt
@@ -63,6 +65,8 @@ export function SubscriptionSummary({ access }: { access: UseEntitlement }) {
       ? `Your subscription ${entitlement.refundedAt ? 'was refunded and ended' : 'ended'} on ${formatDate(entitlement.expiresAt)}. Free: ${AREA_LABELS[free].toLowerCase()} only.`
       : tier === 'free'
         ? `Free: ${AREA_LABELS[free].toLowerCase()} only.`
+        : entitlement.expiresAt && unpaid
+          ? `Full access until ${formatDate(entitlement.expiresAt)}. Your last payment did not go through.`
         : entitlement.expiresAt
           // "Renews" only of a subscription nothing has cancelled. A cancelled
           // one keeps what was paid for and then stops, and used to be told it

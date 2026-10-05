@@ -25,6 +25,13 @@ function monthly(over: Partial<Entitlement> = {}): Entitlement {
 }
 
 describe('reminderDue', () => {
+  it('is not due during the grace after a failed payment: that date is not a charge date', () => {
+    // expiresAt is then the end of the three days, and "renews on" it would be untrue.
+    const decision = reminderDue(monthly({ paymentIssueSince: '2027-03-25T12:00:30.000Z' }), NOW);
+    expect(decision.due).toBe(false);
+    if (!decision.due) expect(decision.reason).toMatch(/payment overdue/);
+  });
+
   it('is not due for a subscription cancelled from the portal, though its period is still running', () => {
     // Status stays active and the date is a week off, but nothing will be
     // taken on it (paywall trace finding 8).

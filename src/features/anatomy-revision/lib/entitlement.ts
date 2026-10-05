@@ -84,6 +84,10 @@ export interface Entitlement {
    * refunded. It decides nothing about access, which is `expiresAt`'s job as
    * always; it exists so the app can say "your last payment did not go
    * through" instead of leaving a student to wonder why the regions relocked.
+   *
+   * While it is set, `expiresAt` is the end of the GRACE: the end of the time
+   * that was paid for plus PAYMENT_GRACE_DAYS. Before that date access
+   * continues; after it, it has stopped. Nothing else is stored about it.
    */
   paymentIssueSince?: string;
   /**
@@ -98,6 +102,23 @@ export interface Entitlement {
    */
   cancelAt?: string;
 }
+
+/**
+ * How long full access carries on after a renewal payment fails.
+ *
+ * THE OWNER'S DECISION, 5 October 2026: three days. A card declined once is
+ * usually a card that works on the second try, and locking a student out of
+ * their revision the instant a bank says no punishes them for something they
+ * may not know has happened yet. Three days is long enough to see the notice
+ * and change a card, and short enough that it is not a free week every month
+ * for a card that will never work.
+ *
+ * ONE NUMBER, TWO READERS. The payment webhook adds it to the end of the time
+ * that was paid for (billing/lib/paddleWebhook.ts), and the notice and the
+ * terms say it in words (billing/PaymentIssueNotice.tsx). Both import this,
+ * so the app cannot promise a different number of days from the one it gives.
+ */
+export const PAYMENT_GRACE_DAYS: number = 3;
 
 /** What every account has before anyone pays anything. */
 export const FREE_ENTITLEMENT: Entitlement = { tier: 'free', source: null, expiresAt: null };
