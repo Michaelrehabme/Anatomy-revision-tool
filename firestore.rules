@@ -178,7 +178,16 @@ service cloud.firestore {
       // DOCUMENT above (displayName, cohort, lastActiveAt), and the dashboard's
       // figures come from cohorts/{id}/studentStats, aggregated on the
       // student's own device. See educator/data/cohortRollups.ts.
-      match /{document=**} {
+      //
+      // `/{sub}/{document=**}`, NOT `/{document=**}`. Under rules_version 2 a
+      // recursive wildcard matches ZERO or more segments, so the bare form
+      // also matched users/{uid} itself — and because rules OR together, its
+      // unconditional owner write overrode every check on the document above:
+      // any account could grant itself an entitlement or join any cohort
+      // uninvited. Found 30 Sep by rules-tests/firestore.rules.test.ts, the
+      // first time these rules were run rather than read. The {sub} segment
+      // makes this match subcollections only.
+      match /{sub}/{document=**} {
         allow read, write: if isSignedIn() && request.auth.uid == uid;
         allow read: if isAdmin();
       }

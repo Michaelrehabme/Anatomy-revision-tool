@@ -251,7 +251,8 @@ export const baseConfig = () => ({
     // android/ is the Capacitor trial's Gradle project. `cap sync` copies the
     // whole of dist/ into it, and Gradle fills it with build output; none of
     // that is this app's source, so the test run does not look there.
-    exclude: [...configDefaults.exclude, 'android/**'],
+    // rules-tests/ need the Firestore emulator — `npm run test:rules`.
+    exclude: [...configDefaults.exclude, 'android/**', 'rules-tests/**'],
   },
 });
 
