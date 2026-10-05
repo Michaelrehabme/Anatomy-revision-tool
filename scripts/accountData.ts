@@ -12,7 +12,7 @@
  *   npx tsx scripts/accountData.ts move <from-uid> <to-uid>          # dry run
  *   npx tsx scripts/accountData.ts move <from-uid> <to-uid> --apply  # do it
  *   npx tsx scripts/accountData.ts grant <uid> [tier] --apply        # permanent free access
- *   npx tsx scripts/accountData.ts failures                          # payments that did not land
+ *   npx tsx scripts/accountData.ts failures                          # payments that did not land, refunds not applied
  *   npx tsx scripts/accountData.ts licence <cohortId> <YYYY-MM-DD|none> --apply
  *
  * DRY RUN BY DEFAULT, like deleteDormantAccounts.ts, and for the same reason:
@@ -194,9 +194,15 @@ async function grant(db: Firestore, uid: string, tier: string): Promise<void> {
 }
 
 /**
- * Payments that verified but could not be written — each one is somebody who
- * has paid and has nothing. Run it weekly: this is the only place they
- * surface, since the webhook's own log is not somewhere anybody looks.
+ * Events that verified and did not do what they should. Two kinds:
+ *  - a payment that could not be written — somebody who has paid and has
+ *    nothing;
+ *  - a refund or chargeback the webhook would not act on by itself — no
+ *    account matched, it was not the latest payment, or Paddle could not be
+ *    asked (netlify/functions/paddle-webhook.ts, handleAdjustment). Access
+ *    was left exactly as it was, and somebody has to decide.
+ * Run it weekly: this is the only place they surface, since the webhook's own
+ * log is not somewhere anybody looks.
  */
 async function failures(db: Firestore): Promise<void> {
   const snap = await db.collection('billingFailures').orderBy('eventAt', 'desc').limit(50).get();
@@ -205,15 +211,23 @@ async function failures(db: Firestore): Promise<void> {
     return;
   }
 
-  process.stdout.write(`${snap.size} failed payment write(s) — each one is somebody who paid:\n\n`);
+  process.stdout.write(`${snap.size} billing event(s) that need a person:\n\n`);
   for (const d of snap.docs) {
     const f = d.data();
     process.stdout.write(`${f.eventAt}  ${f.eventType}  ${f.uid}\n`);
-    process.stdout.write(`  ${await describe(String(f.uid))}\n`);
-    process.stdout.write(`  should have had: ${JSON.stringify(f.entitlement)}\n`);
+    // A refund that matched no account has no uid to look up.
+    if (f.uid && f.uid !== 'unknown') process.stdout.write(`  ${await describe(String(f.uid))}\n`);
+    if (f.entitlement) process.stdout.write(`  should have had: ${JSON.stringify(f.entitlement)}\n`);
+    if (f.adjustmentId) {
+      process.stdout.write(`  adjustment ${f.adjustmentId}  transaction ${f.transactionId}  subscription ${f.subscriptionId ?? 'none'}  customer ${f.customerId ?? 'unknown'}\n`);
+    }
     process.stdout.write(`  error: ${f.error}\n\n`);
   }
-  process.stdout.write('Fix by granting what the entitlement says, or by replaying the event from Paddle.\n');
+  process.stdout.write(
+    'A payment: grant what the entitlement says, or replay the event from Paddle.\n' +
+    'A refund or chargeback: access was NOT changed. Look the ids up in Paddle; to end access, cancel the\n' +
+    'subscription there with immediate effect, which the webhook does act on.\n',
+  );
 }
 
 /**

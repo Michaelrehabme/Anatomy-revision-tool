@@ -3,8 +3,15 @@ import { createHmac } from 'node:crypto';
 import {
   verifyPaddleSignature,
   actionForEvent,
+  adjustmentActionForEvent,
+  entitlementAfterRefund,
+  isLatestPayment,
+  isStale,
+  nextEntitlement,
   SIGNATURE_TOLERANCE_SECONDS,
+  type PaddleAdjustmentEvent,
   type PaddleEvent,
+  type PaddleTransactionSummary,
 } from '../paddleWebhook';
 
 /**
@@ -225,5 +232,190 @@ describe('actionForEvent', () => {
     const action = actionForEvent(event({ custom_data: { uid: 'u', coolingOffWaived: false } }), NOW_DATE);
     if (action.kind !== 'grant') throw new Error('expected grant');
     expect(action.consent?.coolingOffWaived).toBe(false);
+  });
+});
+
+/**
+ * REFUNDS. Paywall trace finding 9. Payload fields and values are Paddle's
+ * documented ones (https://developer.paddle.com/webhooks/adjustments/adjustment-created,
+ * .../adjustment-updated, read 5 October 2026). The webhook as a whole —
+ * which account, duplicates, a deleted account, the dry run — is tested in
+ * netlify/functions/__tests__/paddle-webhook.test.ts.
+ */
+function refund(over: Partial<PaddleAdjustmentEvent['data']> = {}, type = 'adjustment.updated'): PaddleAdjustmentEvent {
+  return {
+    event_id: 'evt_01hvgfdfepj8eaevsjh5g4swbe',
+    event_type: type,
+    occurred_at: '2026-10-05T08:54:10.646377Z',
+    data: {
+      id: 'adj_01hvgf2s84dr6reszzg29zbvcm',
+      action: 'refund',
+      type: 'full',
+      status: 'approved',
+      reason: 'error',
+      transaction_id: 'txn_01hvcc93znj3mpqt1tenkjb04y',
+      subscription_id: 'sub_123',
+      customer_id: 'ctm_01hv6y1jedq4p1n0yqn5ba3ky4',
+      ...over,
+    },
+  };
+}
+
+describe('adjustmentActionForEvent', () => {
+  it('a full refund, approved, on a subscription is the one thing that may end access', () => {
+    expect(adjustmentActionForEvent(refund())).toEqual({
+      kind: 'refund',
+      adjustmentId: 'adj_01hvgf2s84dr6reszzg29zbvcm',
+      transactionId: 'txn_01hvcc93znj3mpqt1tenkjb04y',
+      subscriptionId: 'sub_123',
+      customerId: 'ctm_01hv6y1jedq4p1n0yqn5ba3ky4',
+    });
+    expect(adjustmentActionForEvent(refund({}, 'adjustment.created')).kind).toBe('refund');
+  });
+
+  it.each(['pending_approval', 'rejected', 'reversed'])('a %s refund changes nothing', (status) => {
+    const action = adjustmentActionForEvent(refund({ status }));
+    expect(action.kind).toBe('ignore');
+  });
+
+  it('a partial refund changes nothing, and neither does one whose type is not stated', () => {
+    expect(adjustmentActionForEvent(refund({ type: 'partial' })).kind).toBe('ignore');
+    expect(adjustmentActionForEvent(refund({ type: null })).kind).toBe('ignore');
+  });
+
+  it.each(['credit', 'credit_reverse', 'chargeback_reverse', 'chargeback_warning_reverse'])('a %s is not a refund', (action) => {
+    expect(adjustmentActionForEvent(refund({ action })).kind).toBe('ignore');
+  });
+
+  it.each(['chargeback', 'chargeback_warning'])('a %s is for a person to decide', (action) => {
+    const decided = adjustmentActionForEvent(refund({ action }));
+    expect(decided.kind).toBe('review');
+  });
+
+  it('a full refund with no subscription is recorded, never matched by guesswork', () => {
+    const action = adjustmentActionForEvent(refund({ subscription_id: null }));
+    expect(action.kind).toBe('review');
+    if (action.kind === 'review') expect(action.subscriptionId).toBeNull();
+  });
+
+  it('is not fooled by another event carrying the same shape', () => {
+    expect(adjustmentActionForEvent(refund({}, 'transaction.completed')).kind).toBe('ignore');
+  });
+});
+
+describe('isLatestPayment', () => {
+  const txn = (id: string, billedAt: string | null, over: Partial<PaddleTransactionSummary> = {}): PaddleTransactionSummary => ({
+    id, status: 'completed', origin: 'subscription_recurring', subscription_id: 'sub_123', billed_at: billedAt, ...over,
+  });
+
+  it('the only payment is the latest', () => {
+    expect(isLatestPayment([txn('a', '2026-10-01T09:00:00Z', { origin: 'web' })], 'a', 'sub_123')).toBe('latest');
+  });
+
+  it('the newest of several is the latest, whatever order they arrive in', () => {
+    const list = [txn('a', '2026-08-01T09:00:00Z'), txn('c', '2026-10-01T09:00:00Z'), txn('b', '2026-09-01T09:00:00Z')];
+    expect(isLatestPayment(list, 'c', 'sub_123')).toBe('latest');
+    expect(isLatestPayment(list, 'b', 'sub_123')).toBe('older');
+  });
+
+  it('a payment taken but not yet processed counts as a payment', () => {
+    const list = [txn('a', '2026-09-01T09:00:00Z'), txn('b', '2026-10-01T09:00:00Z', { status: 'paid' })];
+    expect(isLatestPayment(list, 'a', 'sub_123')).toBe('older');
+  });
+
+  it('a renewal that failed, and a card change, are not payments', () => {
+    const list = [
+      txn('a', '2026-09-01T09:00:00Z'),
+      txn('unpaid', '2026-10-01T09:00:00Z', { status: 'past_due' }),
+      txn('card', '2026-10-02T09:00:00Z', { origin: 'subscription_payment_method_change' }),
+    ];
+    expect(isLatestPayment(list, 'a', 'sub_123')).toBe('latest');
+  });
+
+  it('says so when it cannot tell', () => {
+    // Not in the list at all.
+    expect(isLatestPayment([txn('a', '2026-10-01T09:00:00Z')], 'z', 'sub_123')).toBe('unknown');
+    expect(isLatestPayment([], 'a', 'sub_123')).toBe('unknown');
+    // A payment with no date could be either side of it.
+    expect(isLatestPayment([txn('a', '2026-10-01T09:00:00Z'), txn('b', null)], 'a', 'sub_123')).toBe('unknown');
+    // The transactions of another subscription settle nothing about this one.
+    expect(isLatestPayment([txn('a', '2026-10-01T09:00:00Z', { subscription_id: 'sub_other' })], 'a', 'sub_123')).toBe('unknown');
+  });
+
+  it('two payments at the same instant: not provably the latest, so not treated as it', () => {
+    expect(isLatestPayment([txn('a', '2026-10-01T09:00:00Z'), txn('b', '2026-10-01T09:00:00Z')], 'a', 'sub_123')).toBe('older');
+  });
+});
+
+describe('entitlementAfterRefund', () => {
+  const AT = '2026-10-05T08:54:10.646377Z';
+  const stored = {
+    tier: 'individual', source: 'paddle', expiresAt: '2027-10-01T09:00:00.000Z', externalId: 'sub_123',
+    eventAt: '2026-10-01T09:00:05.000Z', customerId: 'ctm_1', consent: { coolingOffWaived: true },
+  };
+
+  it('ends access at the time of the event and keeps the record of what was bought', () => {
+    expect(entitlementAfterRefund(stored, 'sub_123', AT)).toEqual({
+      kind: 'end',
+      entitlement: { ...stored, expiresAt: AT, eventAt: AT, refundedAt: AT },
+    });
+  });
+
+  it('never ends complimentary access, even though the old subscription id is still in the map', () => {
+    const comped = { ...stored, source: 'complimentary', expiresAt: null };
+    expect(entitlementAfterRefund(comped, 'sub_123', AT).kind).toBe('skip');
+  });
+
+  it('never ends a different subscription', () => {
+    expect(entitlementAfterRefund({ ...stored, externalId: 'sub_new' }, 'sub_123', AT).kind).toBe('skip');
+  });
+
+  it('gives way to a newer event already stored', () => {
+    expect(entitlementAfterRefund({ ...stored, eventAt: '2026-10-06T00:00:00.000Z' }, 'sub_123', AT).kind).toBe('skip');
+  });
+
+  it('does nothing twice, and nothing to access that had already ended', () => {
+    const once = entitlementAfterRefund(stored, 'sub_123', AT);
+    if (once.kind !== 'end') throw new Error('expected end');
+    expect(entitlementAfterRefund(once.entitlement, 'sub_123', AT).kind).toBe('skip');
+    expect(entitlementAfterRefund({ ...stored, expiresAt: '2026-09-01T00:00:00.000Z' }, 'sub_123', AT).kind).toBe('skip');
+  });
+
+  it('does nothing to an account with no entitlement', () => {
+    expect(entitlementAfterRefund(undefined, 'sub_123', AT).kind).toBe('skip');
+  });
+
+  it('drops a start date still in the future', () => {
+    const outcome = entitlementAfterRefund({ ...stored, startsAt: '2026-10-15T09:00:00.000Z' }, 'sub_123', AT);
+    if (outcome.kind !== 'end') throw new Error('expected end');
+    expect(outcome.entitlement.startsAt).toBeUndefined();
+  });
+});
+
+describe('nextEntitlement', () => {
+  const grant = () => {
+    const action = actionForEvent(event({ customer_id: 'ctm_new' }), NOW_DATE);
+    if (action.kind !== 'grant') throw new Error('expected grant');
+    return action;
+  };
+
+  it('replaces the map, carrying over only consent and the customer id', () => {
+    const current = {
+      tier: 'individual', source: 'paddle', expiresAt: '2026-10-15T12:00:00.000Z', externalId: 'sub_old',
+      startsAt: '2099-01-01T00:00:00.000Z', refundedAt: '2026-10-01T00:00:00.000Z',
+      eventAt: '2026-10-01T00:00:00.000Z', customerId: 'ctm_old', consent: { coolingOffWaived: false },
+    };
+    const next = nextEntitlement(current, { ...grant(), customerId: null }, '2026-10-15T12:00:01.000Z');
+    expect(next).toEqual({
+      tier: 'individual', source: 'paddle', expiresAt: '2027-10-15T12:00:00.000Z', externalId: 'sub_123', interval: 'year',
+      eventAt: '2026-10-15T12:00:01.000Z', customerId: 'ctm_old', consent: { coolingOffWaived: false },
+    });
+  });
+
+  it('refuses an event older than the one stored, and applies the same event twice', () => {
+    const current = { eventAt: '2026-10-15T12:00:01.000Z' };
+    expect(nextEntitlement(current, grant(), '2026-10-15T12:00:00.000Z')).toBe('stale');
+    expect(nextEntitlement(current, grant(), '2026-10-15T12:00:01.000Z')).not.toBe('stale');
+    expect(isStale(undefined, '2026-10-15T12:00:00.000Z')).toBe(false);
   });
 });

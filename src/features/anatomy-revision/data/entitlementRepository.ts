@@ -42,6 +42,7 @@ function parse(raw: unknown): Entitlement | null {
     ...(typeof r.startsAt === 'string' ? { startsAt: r.startsAt } : {}),
     ...(typeof r.seatId === 'string' ? { seatId: r.seatId } : {}),
     ...(typeof r.externalId === 'string' ? { externalId: r.externalId } : {}),
+    ...(typeof r.refundedAt === 'string' ? { refundedAt: r.refundedAt } : {}),
   };
 }
 

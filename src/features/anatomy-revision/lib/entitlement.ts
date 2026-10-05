@@ -67,6 +67,15 @@ export interface Entitlement {
   seatId?: string;
   /** The provider's own id, for reconciling a support question against their dashboard. */
   externalId?: string;
+  /**
+   * ISO, when an approved full refund ended this access early.
+   *
+   * Written by the payment webhook alone (billing/lib/paddleWebhook.ts), and
+   * gone again the moment a later subscription event replaces the map. It is
+   * here so the account screen can say why access stopped before the date a
+   * student was first given: "ended" with no reason reads as a fault.
+   */
+  refundedAt?: string;
 }
 
 /** What every account has before anyone pays anything. */

@@ -48,7 +48,10 @@ export function SubscriptionSummary({ access }: { access: UseEntitlement }) {
   const status = pending && entitlement.startsAt
     ? `Subscribed. Access starts ${formatDate(entitlement.startsAt)}.`
     : lapsed && entitlement.expiresAt
-      ? `Your subscription ended on ${formatDate(entitlement.expiresAt)}. Free: ${AREA_LABELS[free].toLowerCase()} only.`
+      // A refund ends access before the date the student was first given
+      // (the webhook's handleAdjustment). Saying why is the difference
+      // between "that is right" and "the app has lost my subscription".
+      ? `Your subscription ${entitlement.refundedAt ? 'was refunded and ended' : 'ended'} on ${formatDate(entitlement.expiresAt)}. Free: ${AREA_LABELS[free].toLowerCase()} only.`
       : tier === 'free'
         ? `Free: ${AREA_LABELS[free].toLowerCase()} only.`
         : entitlement.expiresAt
@@ -58,7 +61,7 @@ export function SubscriptionSummary({ access }: { access: UseEntitlement }) {
   return (
     <div className="mt-4" style={{ font: '400 14px/1.5 var(--font-ui)', color: 'var(--ink2)' }}>
       <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-        <span>{status}</span>
+        <span data-testid="subscription-status">{status}</span>
         <Link to="/pricing" style={{ color: 'var(--accd)' }}>
           {tier === 'free' && !pending ? 'Unlock every region' : 'Plan details'}
         </Link>

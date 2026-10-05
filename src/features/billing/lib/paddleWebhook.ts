@@ -13,12 +13,14 @@ import type { Entitlement } from '../../anatomy-revision/lib/entitlement';
  * of access for the price of a curl command. The signature is the entire
  * difference between a payment integration and an open door.
  *
- * Header format checked against Paddle Billing's documentation at the time of
- * writing: `Paddle-Signature: ts=<unix seconds>;h1=<hex HMAC-SHA256>`, signed
- * over `${ts}:${rawBody}` with the notification destination's secret key.
- * Re-check it against their current docs when wiring the sandbox — if the
- * format has changed, every real webhook will fail verification, which is
- * the safe way for this to be wrong.
+ * Header format re-checked against Paddle's documentation on 5 October 2026
+ * (https://developer.paddle.com/webhooks/signature-verification):
+ * `Paddle-Signature: ts=<unix seconds>;h1=<hex HMAC-SHA256>`, signed over
+ * `${ts}:${rawBody}` with the notification destination's secret key. The
+ * same page warns that "during secret rotation, more than one `h1` is
+ * returned"; this reads the last one, so a rotation needs testing first. If
+ * the format changes, every real webhook fails verification, which is the
+ * safe way for this to be wrong.
  */
 
 /** Reject signatures older than this. Stops a captured request being replayed later. */
@@ -107,6 +109,57 @@ export interface PaddleEvent {
 export type WebhookAction =
   | { kind: 'grant'; uid: string; entitlement: Entitlement; consent: ConsentRecord | null; customerId: string | null }
   | { kind: 'ignore'; reason: string };
+
+/**
+ * Whether an event already stored is NEWER than the one in hand.
+ *
+ * Paddle does not promise ordering — "We can't guarantee the order of
+ * delivery for webhooks" — and tells integrators to "store and check the
+ * `occurred_at` date against a webhook before making changes"
+ * (https://developer.paddle.com/webhooks/respond-to-webhooks). Retries make
+ * it worse: 60 over three days on a live destination. An old
+ * `subscription.updated` can land after the `subscription.canceled` that
+ * superseded it, and would silently hand a cancelled student another year.
+ *
+ * Only strictly newer counts. The same event delivered twice has the same
+ * time, is applied again, and writes the same thing.
+ */
+export function isStale(current: Record<string, unknown> | undefined, eventAt: string): boolean {
+  const storedAt = typeof current?.eventAt === 'string' ? current.eventAt : null;
+  return storedAt !== null && storedAt > eventAt;
+}
+
+/**
+ * The entitlement map a subscription event leaves on the account, or 'stale'
+ * when a newer event has already been applied.
+ *
+ * The map is REPLACED, not merged into. A merge kept whatever the new event
+ * did not mention — a refunded delayed-start plan's future `startsAt` would
+ * then lock the next, immediate one (finding 13). Fields are carried over on
+ * purpose when this event lacks them:
+ *  - consent rides INSIDE the entitlement map because firestore.rules makes
+ *    the whole map immutable to clients, so the evidence a disputed refund
+ *    turns on cannot be edited by the person disputing it; a renewal event
+ *    without it must not erase it;
+ *  - customerId, kept even on a cancellation, because a former subscriber
+ *    still needs the portal to see their invoices.
+ * Nothing else survives — in particular `refundedAt` goes the moment a later
+ * subscription event arrives.
+ */
+export function nextEntitlement(
+  current: Record<string, unknown> | undefined,
+  action: Extract<WebhookAction, { kind: 'grant' }>,
+  eventAt: string,
+): 'stale' | Record<string, unknown> {
+  if (isStale(current, eventAt)) return 'stale';
+  const consent = action.consent ?? current?.consent;
+  const customerId = action.customerId ?? current?.customerId;
+  return Object.fromEntries(
+    Object.entries({ ...action.entitlement, eventAt, consent, customerId }).filter(
+      ([, v]) => v !== undefined,
+    ),
+  );
+}
 
 /**
  * The cooling-off consent taken at checkout. Stored beside the entitlement,
@@ -198,9 +251,9 @@ function billingShape(sub: PaddleSubscription): { interval?: 'month' | 'year'; s
  * was always going to end it. Nothing here ever cuts somebody off early for
  * cancelling.
  *
- * The only thing that ends access immediately is Paddle itself saying the
- * subscription is cancelled with an effective time now — a refund, or a
- * cancellation somebody asked to take effect at once.
+ * The only things that end access early are Paddle itself saying the
+ * subscription is cancelled with an effective time now, and an approved full
+ * refund of the latest payment (adjustmentActionForEvent, below).
  *
  * `custom_data.uid` is used to FIND the account and for nothing else. It was
  * set by the browser at checkout, so it is not trusted to say what anybody is
@@ -262,4 +315,205 @@ export function actionForEvent(event: PaddleEvent, now: Date = new Date()): Webh
       ...(startsAt ? { startsAt } : {}),
     },
   };
+}
+
+// ---------------------------------------------------------------------------
+// Refunds
+// ---------------------------------------------------------------------------
+
+/**
+ * The slice of a Paddle adjustment this integration reads. Field names and
+ * values from https://developer.paddle.com/webhooks/adjustments/adjustment-created
+ * and .../adjustment-updated, read on 5 October 2026.
+ *
+ * AN ADJUSTMENT CARRIES NO custom_data. A subscription event names the
+ * account in `custom_data.uid`; an adjustment names only Paddle's own ids —
+ * the transaction, the subscription (null for a one-off sale) and the
+ * customer. The account is therefore found by the subscription id the
+ * webhook stored as `entitlement.externalId`, and by nothing looser.
+ */
+export interface PaddleAdjustment {
+  id: string;
+  /** credit | refund | chargeback | chargeback_reverse | chargeback_warning | chargeback_warning_reverse | credit_reverse */
+  action: string;
+  /** `full`: "Grand total for the related transaction is adjusted". `partial`: some of it. */
+  type?: 'full' | 'partial' | string | null;
+  /** pending_approval | approved | rejected | reversed */
+  status: string;
+  transaction_id: string;
+  subscription_id?: string | null;
+  customer_id?: string | null;
+  reason?: string | null;
+}
+
+export interface PaddleAdjustmentEvent {
+  event_type: string;
+  event_id?: string;
+  occurred_at?: string;
+  data: PaddleAdjustment;
+}
+
+/**
+ * `adjustment.created` fires when a refund is asked for; "most refunds for
+ * live accounts require Paddle approval and are created as pending_approval",
+ * and `adjustment.updated` fires when one moves to `approved` or `rejected`.
+ * Small refunds on a verified account can be approved at creation, so both
+ * events are read the same way and only the status decides.
+ */
+export const ADJUSTMENT_EVENTS: ReadonlySet<string> = new Set(['adjustment.created', 'adjustment.updated']);
+
+export interface AdjustmentIds {
+  adjustmentId: string;
+  transactionId: string;
+  subscriptionId: string | null;
+  customerId: string | null;
+}
+
+export type AdjustmentAction =
+  /** Nothing to do, and nothing anybody needs to look at. */
+  | { kind: 'ignore'; reason: string }
+  /** A full, approved refund of a subscription payment: end access IF it was the latest payment. */
+  | ({ kind: 'refund'; subscriptionId: string } & Omit<AdjustmentIds, 'subscriptionId'>)
+  /** Money has moved and this code will not decide what it means: put it in front of the owner. */
+  | ({ kind: 'review'; reason: string } & AdjustmentIds);
+
+/**
+ * Decide what a verified adjustment event means, without a database.
+ *
+ * THE RULE: access ends when a FULL refund is APPROVED. /refunds promises an
+ * annual plan refunded in full within 14 days, and somebody who has their
+ * money back should not also keep the year (paywall trace finding 9: a refund
+ * alone used to leave access in place until the period ran out).
+ *
+ * Everything short of that changes nothing:
+ *  - `pending_approval` — Paddle has not agreed to it yet;
+ *  - `rejected` or `reversed` — it did not happen, or was undone;
+ *  - `partial` — a goodwill part-refund is not the student giving the
+ *    subscription back;
+ *  - `credit` — a credit against a later bill, not money returned.
+ *
+ * A CHARGEBACK IS NOT DECIDED HERE. It is a dispute, it can be reversed, and
+ * cutting off a student whose bank made a mistake is not this code's call. It
+ * is recorded for the owner instead.
+ */
+export function adjustmentActionForEvent(event: PaddleAdjustmentEvent): AdjustmentAction {
+  if (!ADJUSTMENT_EVENTS.has(event.event_type)) {
+    return { kind: 'ignore', reason: `unhandled event ${event.event_type}` };
+  }
+  const adj = event.data;
+  if (!adj || typeof adj.id !== 'string' || typeof adj.transaction_id !== 'string') {
+    return { kind: 'ignore', reason: 'adjustment without an id or a transaction' };
+  }
+  const ids: AdjustmentIds = {
+    adjustmentId: adj.id,
+    transactionId: adj.transaction_id,
+    subscriptionId: typeof adj.subscription_id === 'string' && adj.subscription_id ? adj.subscription_id : null,
+    customerId: typeof adj.customer_id === 'string' ? adj.customer_id : null,
+  };
+
+  if (adj.action === 'chargeback' || adj.action === 'chargeback_warning') {
+    return { kind: 'review', reason: `${adj.action} (${adj.status}): a payment is disputed. Nothing was changed; decide by hand.`, ...ids };
+  }
+  if (adj.action !== 'refund') return { kind: 'ignore', reason: `adjustment ${adj.id} is a ${adj.action}, not a refund` };
+  if (adj.status !== 'approved') return { kind: 'ignore', reason: `refund ${adj.id} is ${adj.status}, not approved` };
+  if (adj.type !== 'full') return { kind: 'ignore', reason: `refund ${adj.id} is ${adj.type ?? 'of unstated type'}, not full` };
+
+  if (!ids.subscriptionId) {
+    return { kind: 'review', reason: 'full refund approved for a transaction with no subscription: no account can be matched to it.', ...ids };
+  }
+  return { kind: 'refund', ...ids, subscriptionId: ids.subscriptionId };
+}
+
+/** The slice of a Paddle transaction read to tell which payment is the latest. */
+export interface PaddleTransactionSummary {
+  id: string;
+  /** draft | ready | billed | paid | completed | canceled | past_due */
+  status?: string | null;
+  /** api | subscription_charge | subscription_payment_method_change | subscription_recurring | subscription_update | web */
+  origin?: string | null;
+  subscription_id?: string | null;
+  billed_at?: string | null;
+}
+
+/**
+ * Whether `transactionId` is the most recent PAYMENT on the subscription.
+ *
+ * A full refund of last March's payment, issued in October as goodwill, must
+ * not end the month the student paid for last week. The adjustment says which
+ * transaction was refunded and nothing about where it sits in the
+ * subscription's history, so the webhook asks Paddle for the subscription's
+ * transactions (https://developer.paddle.com/api-reference/transactions/list-transactions)
+ * and this decides.
+ *
+ * A payment is a transaction that took money: `completed`, or `paid` ("fully
+ * paid, but has not yet been processed internally"). A card change creates a
+ * transaction too (`subscription_payment_method_change`) and is not one.
+ *
+ * 'unknown' whenever it cannot be shown either way — the refunded transaction
+ * is not in the list, or a date is missing. The caller treats that as "do
+ * nothing and tell the owner".
+ */
+export function isLatestPayment(
+  transactions: readonly PaddleTransactionSummary[],
+  transactionId: string,
+  subscriptionId: string,
+): 'latest' | 'older' | 'unknown' {
+  const payments = transactions.filter(
+    (t) =>
+      t.subscription_id === subscriptionId &&
+      (t.status === 'completed' || t.status === 'paid') &&
+      t.origin !== 'subscription_payment_method_change',
+  );
+  const refunded = payments.find((t) => t.id === transactionId);
+  if (!refunded) return 'unknown';
+  if (payments.some((t) => typeof t.billed_at !== 'string' || Number.isNaN(Date.parse(t.billed_at)))) return 'unknown';
+  const refundedAt = Date.parse(refunded.billed_at as string);
+  return payments.some((t) => t.id !== transactionId && Date.parse(t.billed_at as string) >= refundedAt)
+    ? 'older'
+    : 'latest';
+}
+
+export type RefundOutcome =
+  | { kind: 'skip'; reason: string }
+  | { kind: 'end'; entitlement: Record<string, unknown> };
+
+/**
+ * What an approved full refund of the latest payment does to the stored
+ * entitlement: ends it at the time of the event, or nothing.
+ *
+ * Nothing, when the entitlement on the account is not the subscription that
+ * was refunded. That is what protects a hand-granted complimentary account:
+ * `scripts/accountData.ts grant` leaves the old subscription's id in the map
+ * beside `source: 'complimentary'`, and a late refund for that subscription
+ * must not take away what the owner gave. Both the source and the id have to
+ * match.
+ *
+ * Nothing, when a newer event is already stored (isStale) — a renewal or a
+ * re-subscription after the refund wins, as it would over any older event.
+ *
+ * Nothing, when access had already ended by then.
+ *
+ * `startsAt` is dropped: a delayed-start plan refunded inside its 14 days
+ * would otherwise still read as "access starts on…".
+ */
+export function entitlementAfterRefund(
+  current: Record<string, unknown> | undefined,
+  subscriptionId: string,
+  eventAt: string,
+): RefundOutcome {
+  if (!current) return { kind: 'skip', reason: 'the account holds no entitlement' };
+  if (current.source !== 'paddle') {
+    return { kind: 'skip', reason: `the account's access is ${String(current.source)}, not this subscription` };
+  }
+  if (current.externalId !== subscriptionId) {
+    return { kind: 'skip', reason: 'the account is on a different subscription' };
+  }
+  if (isStale(current, eventAt)) return { kind: 'skip', reason: 'a newer event is already stored' };
+  const expires = typeof current.expiresAt === 'string' ? Date.parse(current.expiresAt) : NaN;
+  if (!Number.isNaN(expires) && expires <= Date.parse(eventAt)) {
+    return { kind: 'skip', reason: 'access had already ended' };
+  }
+  const kept = { ...current };
+  delete kept.startsAt;
+  return { kind: 'end', entitlement: { ...kept, expiresAt: eventAt, eventAt, refundedAt: eventAt } };
 }
