@@ -31,4 +31,55 @@ export default tseslint.config(
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
     },
   },
+  /*
+   * STRUCTURE FACTS ARE IMPORTED IN ONE PLACE
+   * (docs/DESIGN-CONTENT-BEHIND-SERVER.md, step 7).
+   *
+   * A build made with VITE_CONTENT_SOURCE=server carries no facts: the app
+   * fetches them per area for whoever is entitled. That holds only while the
+   * app reaches the seed through data/content/bundledContent.ts, which such a
+   * build swaps for a file that imports none of it. One stray
+   * `import { ALL_STRUCTURES } from '../data/seed'` in a component puts every
+   * origin and nerve back in the bundle, and nothing would fail.
+   *
+   * NOT ALL OF data/seed, which is what the design first said: the pictures,
+   * the plates and the hotspot polygons live there too and are public. What
+   * is banned is the seed's index (which pulls in every structure), the
+   * structure files themselves, the generated blood supply, and the raw
+   * muscle source.
+   *
+   * Tests, the build scripts and the seed's own files may import it; so may
+   * bundledContent.ts, which is the one place. The build check
+   * (src/scripts/checkBundleForFacts.ts) is the second line: it reads the
+   * built chunks of a server build and fails if a fact is in any of them.
+   */
+  {
+    files: ['src/**/*.{ts,tsx}'],
+    ignores: [
+      'src/**/__tests__/**',
+      'src/**/*.test.{ts,tsx}',
+      'src/test/**',
+      'src/scripts/**',
+      'src/features/anatomy-revision/data/seed/**',
+      'src/features/anatomy-revision/data/content/bundledContent.ts',
+    ],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              regex: '(^|/)seed(/index)?$',
+              message:
+                'This imports every structure\'s facts. Use STRUCTURE_INDEX (data/structureIndex) for names, the content hook for facts, or data/images for pictures.',
+            },
+            {
+              regex: '/seed/structures\\.[^/]*seed$|/seed/bloodSupply\\.generated$|/source/[^/]*\\.raw\\.json$',
+              message: 'Structure facts may only be imported by data/content/bundledContent.ts.',
+            },
+          ],
+        },
+      ],
+    },
+  },
 );
