@@ -124,6 +124,79 @@ service cloud.firestore {
         || joinedWithInvite(request.resource.data.get('cohort', null));
     }
 
+    // ---------------------------------------------------------------------
+    // users/{uid}.freeArea — which ONE area the free tier opens
+    // (docs/DESIGN-CONTENT-BEHIND-SERVER.md, step 1).
+    //
+    // It used to live on the device, where clearing storage bought a fresh
+    // choice and unlimited changes (paywall trace finding 7), and where the
+    // content function could not see it at all. Here the rule the app has
+    // always stated is the rule the database keeps:
+    //
+    //   - chosen once;
+    //   - changed once, no sooner than 30 days after it was chosen;
+    //   - nothing else, ever. Not removed, not re-timed, not re-counted.
+    //
+    // Stored as { area, chosenAt, switches }.
+    //
+    // `chosenAt` MUST BE THE SERVER'S CLOCK (request.time, which is what a
+    // client's serverTimestamp() becomes). A client that could write its own
+    // date would backdate the first pick by a month and change area the same
+    // minute. That is also why moving a device's old choice up here cannot
+    // carry its old date: the wait restarts on the day it is moved. The honest
+    // student waits a little longer; the dishonest one gains nothing.
+    //
+    // `switches` may START at 1. A device whose one change was already used
+    // moves up as used. Starting at 1 only ever takes a change away, so there
+    // is nothing to gain by claiming it.
+    //
+    // The area list is repeated from types/region.ts AREAS because rules can
+    // import nothing; freeAreaRules.test.ts fails if the two drift, and so
+    // does the 30 against FREE_AREA_SWITCH_DAYS.
+    //
+    // WHAT THIS DOES NOT STOP: deleting the profile and creating it again
+    // (the owner may delete, for erasure), or simply opening a second
+    // account. Both give a fresh choice. See docs/CONTENT-SERVER-STATUS.md.
+    // ---------------------------------------------------------------------
+    function isArea(area) {
+      return area in ['shoulder', 'elbow', 'wrist-hand', 'hip', 'knee', 'ankle-foot',
+        'cervical-spine', 'thoracic-spine', 'lumbar-spine'];
+    }
+
+    /** A well-formed choice, stamped with the server's time of this very write. */
+    function isFreshFreeArea(choice) {
+      return choice is map
+        && choice.keys().hasOnly(['area', 'chosenAt', 'switches'])
+        && choice.keys().hasAll(['area', 'chosenAt', 'switches'])
+        && isArea(choice.area)
+        && choice.chosenAt == request.time
+        && choice.switches is int;
+    }
+
+    /** The first pick: nothing stored before, and no change claimed beyond the one allowed. */
+    function isFirstFreeArea(choice) {
+      return isFreshFreeArea(choice) && (choice.switches == 0 || choice.switches == 1);
+    }
+
+    /** The one change: a different area, the count going 0 -> 1, thirty days on. */
+    function isFreeAreaSwitch(before, after) {
+      return isFreshFreeArea(after)
+        && before is map
+        && before.get('switches', -1) == 0
+        && after.switches == 1
+        && after.area != before.get('area', '')
+        && before.get('chosenAt', null) is timestamp
+        && request.time >= before.chosenAt + duration.value(30, 'd');
+    }
+
+    function freeAreaWriteIsAllowed() {
+      let before = resource.data.get('freeArea', null);
+      let after = request.resource.data.get('freeArea', null);
+      return after == before
+        || (before == null && isFirstFreeArea(after))
+        || (before != null && isFreeAreaSwitch(before, after));
+    }
+
     match /users/{uid} {
       allow read: if isSignedIn() && request.auth.uid == uid;
       // CREATE MUST PIN ENTITLEMENT TOO. Update below keeps `entitlement`
@@ -133,8 +206,14 @@ service cloud.firestore {
       // {tier: 'institutional', expiresAt: null} and unlock everything. Found
       // by the 29 Sep paywall trace. A new document never carries an
       // entitlement from the client; only the webhook or an admin sets one.
+      //
+      // A free area may arrive with the new document (a guest who picks at
+      // onboarding before any profile exists), held to the same first-pick
+      // rule as one added later.
       allow create: if isSignedIn() && request.auth.uid == uid && cohortIsProven()
-        && !('entitlement' in request.resource.data);
+        && !('entitlement' in request.resource.data)
+        && !('contentFetch' in request.resource.data)
+        && (!('freeArea' in request.resource.data) || isFirstFreeArea(request.resource.data.freeArea));
       // Unchanged is always allowed, so the ordinary profile write on every
       // sign-in (displayName, lastActiveAt) never pays for a cohort lookup.
       //
@@ -148,8 +227,15 @@ service cloud.firestore {
       //
       // Absent on both sides compares equal, so this costs an account that has
       // never bought anything nothing at all.
+      //
+      // `freeArea` follows its own rule above. `contentFetch` is the content
+      // function's count of how many areas this account has fetched in the
+      // last hour (netlify/functions/content-area.ts), written through the
+      // Admin SDK; a client that could reset it would have no limit.
       allow update: if isSignedIn() && request.auth.uid == uid
         && request.resource.data.get('entitlement', null) == resource.data.get('entitlement', null)
+        && request.resource.data.get('contentFetch', null) == resource.data.get('contentFetch', null)
+        && freeAreaWriteIsAllowed()
         && (
           request.resource.data.get('cohort', null) == resource.data.get('cohort', null)
           || cohortIsProven()

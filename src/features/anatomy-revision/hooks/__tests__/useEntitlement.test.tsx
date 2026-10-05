@@ -8,7 +8,8 @@ const FREE: Entitlement = { tier: 'free', source: null, expiresAt: null };
 
 let next: () => Promise<Entitlement | null> = async () => FREE;
 vi.mock('../../data/entitlementRepository', () => ({
-  readEntitlement: () => next(),
+  readAccess: async () => ({ entitlement: await next(), freeArea: null }),
+  saveFreeArea: async () => { throw new Error('not in this test'); },
 }));
 
 /**

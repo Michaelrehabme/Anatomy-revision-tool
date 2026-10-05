@@ -29,7 +29,9 @@ import {
   getDoc,
   getDocs,
   query,
+  serverTimestamp,
   setDoc,
+  Timestamp,
   updateDoc,
   where,
 } from 'firebase/firestore';
@@ -152,6 +154,153 @@ describe('users/{uid}', () => {
     it('does not let an owner delete and recreate the profile with one', async () => {
       await assertSucceeds(deleteDoc(doc(as.student(), 'users', 'student')));
       await assertFails(setDoc(doc(as.student(), 'users', 'student'), { entitlement: { tier: 'institutional' } }));
+    });
+  });
+
+  /**
+   * The free area (docs/DESIGN-CONTENT-BEHIND-SERVER.md, step 1). The content
+   * function serves a free account exactly the area stored here, so every way
+   * of getting a second one out of this field is a way round the paywall.
+   * Each test below is one thing a client that skips the app might try.
+   */
+  describe('freeArea: chosen once, changed once after 30 days, nothing else', () => {
+    const DAY = 86400000;
+    const daysAgo = (days: number) => Timestamp.fromMillis(Date.now() - days * DAY);
+    const mine = () => doc(as.stranger(), 'users', 'stranger');
+    const pick = (area: unknown, switches: unknown = 0, chosenAt: unknown = serverTimestamp()) => ({
+      freeArea: { area, chosenAt, switches },
+    });
+    /** As the server would hold a choice made `days` ago. */
+    const stored = (area: string, days: number, switches = 0) =>
+      env.withSecurityRulesDisabled((ctx) =>
+        updateDoc(doc(ctx.firestore(), 'users', 'stranger'), {
+          freeArea: { area, chosenAt: daysAgo(days), switches },
+        }),
+      );
+
+    it('lets an account choose its free area, stamped by the server', async () => {
+      await assertSucceeds(updateDoc(mine(), pick('knee')));
+      const snap = await getDoc(mine());
+      expect(snap.data()?.freeArea.area).toBe('knee');
+      expect(snap.data()?.freeArea.switches).toBe(0);
+      expect(Math.abs(snap.data()?.freeArea.chosenAt.toMillis() - Date.now())).toBeLessThan(60_000);
+    });
+
+    it('lets a brand-new profile arrive with its choice (a guest at onboarding)', async () => {
+      const db = env.authenticatedContext('guest').firestore();
+      await assertSucceeds(setDoc(doc(db, 'users', 'guest'), { cohort: null, ...pick('hip') }));
+    });
+
+    it('lets a choice already used on the device move up as used', async () => {
+      await assertSucceeds(updateDoc(mine(), pick('knee', 1)));
+    });
+
+    it('lets ordinary profile writes through once a choice is stored', async () => {
+      await stored('knee', 3);
+      await assertSucceeds(updateDoc(mine(), { lastActiveAt: 5 }));
+      await assertSucceeds(setDoc(mine(), { displayName: 'Stef again' }, { merge: true }));
+    });
+
+    it('refuses choosing twice', async () => {
+      await assertSucceeds(updateDoc(mine(), pick('knee')));
+      await assertFails(updateDoc(mine(), pick('hip')));
+      await assertFails(updateDoc(mine(), pick('knee')));
+    });
+
+    it('refuses a change before 30 days are up, and allows it after', async () => {
+      await stored('knee', 29);
+      await assertFails(updateDoc(mine(), pick('hip', 1)));
+      await stored('knee', 31);
+      await assertSucceeds(updateDoc(mine(), pick('hip', 1)));
+      expect((await getDoc(mine())).data()?.freeArea).toMatchObject({ area: 'hip', switches: 1 });
+    });
+
+    it('refuses a second change, however long is waited', async () => {
+      await stored('hip', 400, 1);
+      await assertFails(updateDoc(mine(), pick('knee', 1)));
+      await assertFails(updateDoc(mine(), pick('knee', 2)));
+      await assertFails(updateDoc(mine(), pick('knee', 0)));
+    });
+
+    it('refuses a change that does not count itself, or counts backwards', async () => {
+      await stored('knee', 31);
+      await assertFails(updateDoc(mine(), pick('hip', 0)));
+      await assertFails(updateDoc(mine(), pick('hip', -1)));
+      await assertFails(updateDoc(mine(), pick('hip', 2)));
+    });
+
+    it('refuses a backdated choice, on the first pick and on the change', async () => {
+      await assertFails(updateDoc(mine(), pick('knee', 0, daysAgo(31))));
+      await assertFails(updateDoc(mine(), pick('knee', 0, '2020-01-01T00:00:00.000Z')));
+      await assertFails(updateDoc(mine(), pick('knee', 0, Timestamp.fromMillis(Date.now() + 5 * DAY))));
+      await stored('knee', 31);
+      await assertFails(updateDoc(mine(), pick('hip', 1, daysAgo(31))));
+    });
+
+    it('refuses re-timing or re-counting a stored choice without changing it', async () => {
+      await stored('knee', 10);
+      await assertFails(updateDoc(mine(), { 'freeArea.chosenAt': daysAgo(40) }));
+      await assertFails(updateDoc(mine(), { 'freeArea.chosenAt': serverTimestamp() }));
+      await assertFails(updateDoc(mine(), { 'freeArea.switches': -5 }));
+      await assertFails(updateDoc(mine(), { 'freeArea.area': 'hip' }));
+    });
+
+    it('refuses removing the choice, which would make the next one a first pick again', async () => {
+      await stored('knee', 10);
+      await assertFails(updateDoc(mine(), { freeArea: deleteField() }));
+      await assertFails(setDoc(mine(), { displayName: 'Stef', cohort: null }));
+      await assertFails(updateDoc(mine(), { freeArea: null }));
+    });
+
+    it('refuses anything that is not one of the nine areas, or not this shape', async () => {
+      await assertFails(updateDoc(mine(), pick('everything')));
+      await assertFails(updateDoc(mine(), pick(['knee', 'hip'])));
+      await assertFails(updateDoc(mine(), pick('')));
+      await assertFails(updateDoc(mine(), pick('knee', '0')));
+      await assertFails(updateDoc(mine(), pick('knee', 0.5)));
+      await assertFails(updateDoc(mine(), pick('knee', 7)));
+      await assertFails(updateDoc(mine(), { freeArea: 'knee' }));
+      await assertFails(updateDoc(mine(), { freeArea: { area: 'knee', chosenAt: serverTimestamp() } }));
+      await assertFails(
+        updateDoc(mine(), { freeArea: { area: 'knee', chosenAt: serverTimestamp(), switches: 0, also: 'hip' } }),
+      );
+    });
+
+    it("refuses writing another account's choice", async () => {
+      await assertFails(updateDoc(doc(as.student(), 'users', 'stranger'), pick('knee')));
+      await assertFails(updateDoc(doc(as.educator(), 'users', 'student'), pick('knee')));
+      await assertFails(updateDoc(doc(as.claimAdmin(), 'users', 'student'), pick('knee')));
+    });
+
+    it('still refuses an entitlement slipped in beside a valid choice', async () => {
+      await assertFails(updateDoc(mine(), { ...pick('knee'), entitlement: { tier: 'individual', expiresAt: null } }));
+    });
+
+    // NOT A PROMISE THE RULES KEEP, and written down so nobody assumes it is.
+    // The owner may delete their profile (erasure), and a new profile may
+    // carry a first pick. See the note above isArea() in firestore.rules.
+    it('KNOWN LIMIT: deleting the profile and creating it again gives a fresh choice', async () => {
+      await stored('hip', 400, 1);
+      await assertSucceeds(deleteDoc(mine()));
+      await assertSucceeds(setDoc(mine(), { cohort: null, ...pick('knee') }));
+    });
+  });
+
+  describe("contentFetch, the content function's own count, is never client-writable", () => {
+    it('refuses it on a new profile and on an existing one', async () => {
+      const db = env.authenticatedContext('fresh').firestore();
+      await assertFails(setDoc(doc(db, 'users', 'fresh'), { contentFetch: { count: 0 } }));
+      await assertFails(updateDoc(doc(as.student(), 'users', 'student'), { contentFetch: { count: 0 } }));
+    });
+
+    it('refuses resetting or removing a stored count, and leaves other writes alone', async () => {
+      await env.withSecurityRulesDisabled((ctx) =>
+        updateDoc(doc(ctx.firestore(), 'users', 'student'), { contentFetch: { windowStart: 1, count: 30 } }),
+      );
+      const mine = doc(as.student(), 'users', 'student');
+      await assertFails(updateDoc(mine, { 'contentFetch.count': 0 }));
+      await assertFails(updateDoc(mine, { contentFetch: deleteField() }));
+      await assertSucceeds(updateDoc(mine, { lastActiveAt: 6 }));
     });
   });
 

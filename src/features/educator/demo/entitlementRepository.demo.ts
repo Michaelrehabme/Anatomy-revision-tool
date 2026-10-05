@@ -1,4 +1,6 @@
-import type { Entitlement } from '../../anatomy-revision/lib/entitlement';
+import type { Entitlement, FreeAreaChoice } from '../../anatomy-revision/lib/entitlement';
+import type { Area } from '../../anatomy-revision/types/region';
+import type { StoredAccess } from '../../anatomy-revision/lib/entitlementRecord';
 
 /**
  * Demo stand-in for anatomy-revision/data/entitlementRepository.
@@ -26,4 +28,14 @@ const DEMO_ENTITLEMENT: Entitlement = {
 
 export async function readEntitlement(): Promise<Entitlement> {
   return DEMO_ENTITLEMENT;
+}
+
+/** No stored free area: the demo is local-persistence, where the choice stays on the device. */
+export async function readAccess(): Promise<StoredAccess> {
+  return { entitlement: DEMO_ENTITLEMENT, freeArea: null };
+}
+
+/** Never reached — useEntitlement keeps the choice on the device in a local-persistence build. */
+export async function saveFreeArea(_uid: string, area: Area, switches: 0 | 1): Promise<FreeAreaChoice> {
+  return { area, chosenAt: new Date().toISOString(), switches };
 }

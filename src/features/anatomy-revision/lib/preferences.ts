@@ -101,11 +101,17 @@ const FREE_AREA_KEY = `${PREFIX}freeArea`;
 /**
  * Which area this device's free tier opens, and when it was chosen.
  *
- * Client-side, like every other preference here, and deliberately so: it is a
- * CHOICE, not a grant. The grant is the entitlement, which only the server
- * writes (see lib/entitlement.ts). Someone who edits this key swaps which one
- * area is free, which is the same thing the app offers them every 30 days
- * anyway — they cannot give themselves a second one.
+ * WHERE THE CHOICE LIVES DEPENDS ON THE BUILD. With accounts
+ * (VITE_PERSISTENCE=firestore) it lives on users/{uid}.freeArea, where
+ * firestore.rules holds it to one choice and one change, and this key is a
+ * COPY of it: there so the first paint and an offline start show the right
+ * area, and — for a choice made before the move — the value that is moved up
+ * on the next load (hooks/useEntitlement.ts). Editing the copy changes what
+ * this device draws until the account is next read; it changes nothing the
+ * server will serve.
+ *
+ * Without accounts (the demo, the tests, a dev server with no Firebase
+ * project) this key is the choice itself, as it always was.
  */
 export function getFreeAreaChoice(): FreeAreaChoice | null {
   const raw = read(FREE_AREA_KEY);
@@ -129,6 +135,11 @@ export function getFreeAreaChoice(): FreeAreaChoice | null {
 
 export function setFreeAreaChoice(area: Area, switches: number, now: Date = new Date()): void {
   write(FREE_AREA_KEY, JSON.stringify({ area, chosenAt: now.toISOString(), switches }));
+}
+
+/** Keeps a copy of the choice as the account holds it, date and count included. */
+export function storeFreeAreaChoice(choice: FreeAreaChoice): void {
+  write(FREE_AREA_KEY, JSON.stringify({ area: choice.area, chosenAt: choice.chosenAt, switches: choice.switches }));
 }
 
 /**
