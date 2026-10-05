@@ -14,7 +14,9 @@ interface OnboardingAreaListProps {
 /** The area checklist for onboarding step one, on both breakpoints. Counts every category, as the pickers do (CR-017). */
 export function OnboardingAreaList({ content, selected, onToggle, columns = 1 }: OnboardingAreaListProps) {
   const countByArea = new Map<Area, number>();
-  for (const s of content.structures) {
+  // The index: at onboarding no area's facts have been fetched yet, and the
+  // counts are what a student chooses their free area by.
+  for (const s of content.index) {
     // A structure spanning several areas counts under each of them (CR-032).
     for (const area of areasOf(s)) countByArea.set(area, (countByArea.get(area) ?? 0) + 1);
   }

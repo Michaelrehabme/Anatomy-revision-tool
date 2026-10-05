@@ -1,5 +1,4 @@
-import { ALL_STRUCTURES } from '../../anatomy-revision/data/seed';
-import { STRUCTURE_INDEX } from '../../anatomy-revision/data/structureIndex';
+import { STRUCTURE_INDEX, STRUCTURE_INDEX_BY_ID } from '../../anatomy-revision/data/structureIndex';
 import { STRUCTURE_WEAKNESS_MIN_ATTEMPTS_DEFAULT } from '../../admin/lib/analyticsAggregation';
 import type { CohortAnalyticsSnapshot } from '../data/cohortAnalytics';
 import {
@@ -18,7 +17,7 @@ import type { FactMastery, StructureMastery } from '../../anatomy-revision/types
 import { masteryLevel } from '../../anatomy-revision/lib/masteryLevel';
 import { requiredFactKinds } from '../../anatomy-revision/lib/factMastery';
 
-const DEMO_STRUCTURES = new Map(ALL_STRUCTURES.map((s) => [s.id, s]));
+const DEMO_STRUCTURES = STRUCTURE_INDEX_BY_ID;
 
 /** A stable 0-99 from a string, so the demo reads the same on every load. */
 function demoHash(text: string): number {

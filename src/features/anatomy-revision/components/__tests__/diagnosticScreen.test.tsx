@@ -4,6 +4,7 @@ import { DiagnosticScreen } from '../Diagnostic/DiagnosticScreen';
 import { createMemoryRepository } from '../../data/memoryRepository';
 import { ALL_STRUCTURES, ALL_IMAGES } from '../../data/seed';
 import { DIAGNOSTIC_SIZE } from '../../lib/diagnostic';
+import { anatomyContentFrom } from '../../hooks/useAnatomyContent';
 
 /**
  * End to end over the real dataset: a cohort id in, a stored result out.
@@ -26,8 +27,7 @@ function setup(phase: 'baseline' | 'followUp' = 'baseline') {
       userId="u1"
       cohortId="y2-physio-2026"
       phase={phase}
-      structures={ALL_STRUCTURES}
-      images={ALL_IMAGES}
+      content={anatomyContentFrom(ALL_STRUCTURES, ALL_IMAGES)}
       onDone={onDone}
     />,
   );

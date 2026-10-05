@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import { createHash } from 'node:crypto';
 import { writeFileSync } from 'node:fs';
 import { ALL_IMAGES, ALL_STRUCTURES } from '../../data/seed';
@@ -72,6 +72,16 @@ function syntheticFactMastery(): FactMastery[] {
 }
 
 describe.skipIf(!OUT)('question dump', () => {
+  // THE CLOCK IS FIXED. Several generators read the time when a config gives
+  // none (whether a fact is due decides its format and its learn card), and
+  // two dumps taken an hour apart differed in exactly those sessions until
+  // this was added. With it, a dump is a function of the code and the seed.
+  beforeAll(() => {
+    vi.useFakeTimers({ toFake: ['Date'] });
+    vi.setSystemTime(NOW);
+  });
+  afterAll(() => vi.useRealTimers());
+
   it('writes every question of every fixed configuration', () => {
     const mastery = syntheticMastery();
     const factMastery = syntheticFactMastery();
@@ -124,13 +134,15 @@ describe.skipIf(!OUT)('question dump', () => {
       questions += set.length;
       dump[`diagnostic ${cohortId}`] = { spec, set };
     }
+    // Only the two numbers: the preview has since gained fields that say how
+    // it was counted, which are not part of what a student is asked.
     dump['assignment previews'] = [
       previewAssignment({ areas: ['shoulder'] }, ['mcq']),
       previewAssignment({ areas: ['hip', 'knee'], category: 'muscle' }, ['mcq', 'oina']),
       previewAssignment({ areas: [...AREAS] }, ['mcq', 'identify-typed', 'multi-select', 'locate', 'oina']),
       previewAssignment({ areas: ['hip'], groups: ['hip-flexors'] }, ['oina']),
       previewAssignment({ areas: ['wrist-hand'], category: 'ligament' }, ['identify-typed', 'locate']),
-    ];
+    ].map(({ poolSize, available }) => ({ poolSize, available }));
 
     const text = JSON.stringify(dump);
     const hash = createHash('sha256').update(text).digest('hex');

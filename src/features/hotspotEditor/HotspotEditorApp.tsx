@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
-import { ALL_IMAGES, ALL_STRUCTURES } from '../anatomy-revision/data/seed';
+import { ALL_IMAGES } from '../anatomy-revision/data/images';
+import { STRUCTURE_INDEX, STRUCTURE_INDEX_BY_ID } from '../anatomy-revision/data/structureIndex';
 import type { HotspotPolygon } from '../anatomy-revision/types/image';
 import { ImagePicker } from './components/ImagePicker';
 import { CanvasEditor } from './components/CanvasEditor';
@@ -7,7 +8,7 @@ import { loadDrafts, saveDrafts, type DraftsByImageId } from './lib/draftStore';
 import { useHotspotsReady } from '../anatomy-revision/hooks/useHotspotsReady';
 import { buildHotspotsFile } from './lib/exportHotspots';
 
-const structuresById = new Map(ALL_STRUCTURES.map((s) => [s.id, s]));
+const structuresById = STRUCTURE_INDEX_BY_ID;
 
 /**
  * Dev-only hotspot authoring tool (CR-007) — never routed to in production,
@@ -81,7 +82,7 @@ function HotspotEditor() {
               key={selectedImage.id}
               image={selectedImage}
               hotspots={drafts[selectedImage.id] ?? []}
-              structures={ALL_STRUCTURES}
+              structures={STRUCTURE_INDEX}
               onChange={(next) => updateHotspots(selectedImage.id, next)}
             />
           ) : (

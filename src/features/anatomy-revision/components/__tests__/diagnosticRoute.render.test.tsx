@@ -4,6 +4,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { DiagnosticRoute } from '../Diagnostic/DiagnosticRoute';
 import { createMemoryRepository } from '../../data/memoryRepository';
 import { DIAGNOSTIC_VERSION } from '../../lib/diagnostic';
+import { anatomyContentFrom } from '../../hooks/useAnatomyContent';
 
 const DAY = 86_400_000;
 let joinedAt: string | null = null;
@@ -20,7 +21,7 @@ vi.mock('../Diagnostic/DiagnosticScreen', () => ({
 function open(phase: 'baseline' | 'followUp', repository = createMemoryRepository()) {
   return render(
     <MemoryRouter initialEntries={[`/diagnostic?phase=${phase}`]}>
-      <DiagnosticRoute repository={repository} userId="u1" structures={[]} images={[]} />
+      <DiagnosticRoute repository={repository} userId="u1" content={anatomyContentFrom([], [])} />
     </MemoryRouter>,
   );
 }

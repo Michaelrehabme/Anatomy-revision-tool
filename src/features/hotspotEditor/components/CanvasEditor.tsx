@@ -8,7 +8,7 @@ import {
   type WheelEvent as ReactWheelEvent,
 } from 'react';
 import type { AnatomyImageAsset, HotspotPolygon } from '../../anatomy-revision/types/image';
-import type { AnatomyStructure } from '../../anatomy-revision/types/structure';
+import type { StructureIndexEntry } from '../../anatomy-revision/types/structureIndex';
 import { hitTest } from '../../anatomy-revision/lib/hotspot/pointInPolygon';
 import { normalizePointerEvent } from '../../anatomy-revision/lib/hotspot/normalizeCoordinates';
 import { HotspotOverlay } from '../../anatomy-revision/components/LocateStructureSession/HotspotOverlay';
@@ -18,7 +18,7 @@ import { StructureSelect } from './StructureSelect';
 interface CanvasEditorProps {
   image: AnatomyImageAsset;
   hotspots: HotspotPolygon[];
-  structures: AnatomyStructure[];
+  structures: readonly StructureIndexEntry[];
   onChange: (next: HotspotPolygon[]) => void;
 }
 

@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 import type { User } from 'firebase/auth';
 import type { LinkInput } from '../data/firebase';
+import { BUNDLED_CONTENT } from '../data/content/bundledContent';
 
 /** Account UI only makes sense once there's a real Firebase project to sign into — local dev stays a plain anonymous id with no dead buttons. */
 export const AUTH_ENABLED = (import.meta.env.VITE_PERSISTENCE ?? 'local') === 'firestore';
@@ -83,6 +84,13 @@ const FIRESTORE_ACTIONS: Omit<AuthContextValue, keyof AuthState> = {
   },
   signOut: async () => {
     const { signOutUser } = await import('../data/firebase');
+    // The areas saved on this device were granted to the account that is
+    // leaving, and the next person to open this browser is not that account.
+    // Deleted BEFORE signing out, so a failure to sign out cannot leave them
+    // behind; the loader also drops any other account's copies on the next
+    // load, which covers a sign-out that never reached this line. Only a
+    // build that fetches facts has anything saved (data/contentCache.ts).
+    await BUNDLED_CONTENT.loader?.purgeAll();
     await signOutUser();
   },
   linkAnonymousAccount: async (input) => {

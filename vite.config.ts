@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import react from '@vitejs/plugin-react';
@@ -60,6 +60,59 @@ export const educatorDemoAliases = [
   // Local mode disables auth, which would hide the account screen's Classes section.
   { find: /^.*\/context\/AuthProvider$/, replacement: demoFile('authDemo.ts') },
 ];
+
+/**
+ * WHERE THIS BUILD GETS ITS FACTS FROM
+ * (src/features/anatomy-revision/data/content/contentSource.ts).
+ *
+ *   VITE_CONTENT_SOURCE   bundled (the default) | server | fixture
+ *
+ * `bundled` puts every structure's facts in the bundle, as production does
+ * today. `server` puts none in: the app fetches each area from the content
+ * function for whoever is entitled to it. `fixture` bundles two areas and
+ * fetches nothing.
+ *
+ * THE DEFAULT IS `bundled` AND STAYS SO until the owner switches production
+ * over (docs/CONTENT-SERVER-STATUS.md, "Rollout"). Setting the variable in
+ * Netlify and redeploying is the whole of the switch; unsetting it and
+ * redeploying is the whole of the rollback.
+ *
+ * A SERVER BUILD WITH NO ACCOUNTS IS A FIXTURE BUILD. The content function
+ * needs a Firebase ID token, and a build made with VITE_PERSISTENCE=local has
+ * no Firebase at all — nobody to ask as. Rather than ship an app that can
+ * only ever report every area as unreachable, such a build is given the two
+ * bundled areas.
+ *
+ * UNDER THE TEST RUNNER IT IS ALWAYS `bundled`, whatever a developer's .env
+ * says: the suite is written against the seed, and the server and fixture
+ * modules are tested by importing them by name.
+ */
+export type ContentVariant = 'bundled' | 'server' | 'fixture';
+
+export function contentVariant(env: Record<string, string | undefined>): ContentVariant {
+  if (process.env.VITEST) return 'bundled';
+  const source = env.VITE_CONTENT_SOURCE;
+  if (source === 'fixture') return 'fixture';
+  if (source !== 'server') return 'bundled';
+  return (env.VITE_PERSISTENCE ?? 'local') === 'firestore' ? 'server' : 'fixture';
+}
+
+const contentFile = (name: string) =>
+  fileURLToPath(new URL(`./src/features/anatomy-revision/data/content/${name}`, import.meta.url)).replace(/\\/g, '/');
+
+/**
+ * The alias that makes the choice. Every importer writes `…/bundledContent`
+ * with no extension (bundledContentImports.test.ts holds them to it), and for
+ * a server or fixture build that name is pointed at the other file. With no
+ * alias it resolves to bundledContent.ts, which imports the seed.
+ *
+ * An alias and not a runtime `if`, so that a server build's module graph
+ * does not contain the seed at all — see contentSource.ts.
+ */
+export const contentAliases = (variant: ContentVariant) =>
+  variant === 'bundled'
+    ? []
+    : [{ find: /^.*\/bundledContent$/, replacement: contentFile(`bundledContent.${variant}.ts`) }];
 
 /**
  * Service worker config (CR-023 item 3).
@@ -275,6 +328,9 @@ export default defineConfig(({ command, mode }) => {
   const demo = command === 'serve' && (mode === 'educator-demo' || process.env.VITE_EDUCATOR_DEMO === '1');
 
   const base = baseConfig();
+  const env = { ...loadEnv(mode, process.cwd(), 'VITE_'), ...process.env };
+  const content = contentVariant(env);
+  if (content !== 'bundled') console.log(`content source: ${content}`);
 
   return {
     ...base,
@@ -283,6 +339,6 @@ export default defineConfig(({ command, mode }) => {
     // once; a stale cached copy served to a course leader is a worse failure
     // than no offline support on a page nobody revises from.
     plugins: [...base.plugins, pwa(demo)],
-    resolve: demo ? { alias: educatorDemoAliases } : {},
+    resolve: { alias: [...(demo ? educatorDemoAliases : []), ...contentAliases(content)] },
   };
 });

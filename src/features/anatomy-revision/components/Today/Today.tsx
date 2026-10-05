@@ -51,7 +51,7 @@ export function Today({ access, repository, userId, content, onStart, onCustomSe
   // longest ago first, and half the session new (owner, 3 Oct 2026).
   const handleStart = async (style: 'continue' | 'fresh' = 'continue') => {
     if (firstRun) {
-      const starter = buildStarterSet(content.structures, content.images, { areas: areas ?? access.areas });
+      const starter = buildStarterSet(content.structures, content.images, { areas: areas ?? access.areas }, content.sources);
       if (starter.length > 0) {
         onStart(starter, { types: STARTER_TYPES, mode: 'practice', areas });
         return;
@@ -78,7 +78,7 @@ export function Today({ access, repository, userId, content, onStart, onCustomSe
       now: new Date(),
       factMastery,
       learnCardAttempts,
-    });
+    }, content.sources);
     onStart(questions, { types: DEFAULT_TYPES, mode: 'practice', areas, learnCardAttempts });
   };
 
@@ -192,7 +192,7 @@ export function Today({ access, repository, userId, content, onStart, onCustomSe
               </p>
             )}
             {weakest.map((m) => {
-              const structure = content.structuresById.get(m.structureId);
+              const structure = content.indexById.get(m.structureId);
               const pct = Math.round((m.attemptsCorrect / m.attemptsTotal) * 100);
               return (
                 <button
@@ -236,7 +236,7 @@ export function Today({ access, repository, userId, content, onStart, onCustomSe
               </div>
               <div className="mt-4 flex flex-col">
                 {comingDue.map((m) => {
-                  const structure = content.structuresById.get(m.structureId);
+                  const structure = content.indexById.get(m.structureId);
                   return (
                     <div key={m.structureId} data-row className="flex items-baseline gap-4 py-3">
                       <span className="flex-1" style={{ fontFamily: 'var(--font-display)', fontSize: 19, color: 'var(--ink2)' }}>

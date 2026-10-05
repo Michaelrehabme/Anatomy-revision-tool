@@ -1,5 +1,6 @@
 import { useMemo, useRef, useState } from 'react';
-import { ALL_IMAGES, ALL_STRUCTURES } from '../anatomy-revision/data/seed';
+import { ALL_IMAGES } from '../anatomy-revision/data/images';
+import { STRUCTURE_INDEX } from '../anatomy-revision/data/structureIndex';
 import type { AnatomyImageAsset, HotspotPolygon } from '../anatomy-revision/types/image';
 import { normalizePointerEvent } from '../anatomy-revision/lib/hotspot/normalizeCoordinates';
 import {
@@ -32,7 +33,7 @@ function HotspotAuthoringTool() {
   const draft = drafts.find((d) => d.structureId === structureId);
 
   const structures = useMemo(
-    () => [...ALL_STRUCTURES].sort((a, b) => a.name.localeCompare(b.name)),
+    () => [...STRUCTURE_INDEX].sort((a, b) => a.name.localeCompare(b.name)),
     [],
   );
 

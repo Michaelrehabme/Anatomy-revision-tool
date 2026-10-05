@@ -148,11 +148,14 @@ describe('the free area, kept on the account', () => {
 
 describe('the free area in a local-persistence build', () => {
   beforeEach(() => {
+    // Stated, not assumed: a developer's .env may say firestore.
+    vi.stubEnv('VITE_PERSISTENCE', 'local');
     localStorage.clear();
     onAccount = { area: 'knee', chosenAt: SERVER_NOW, switches: 1 };
     reachable = true;
     saves.length = 0;
   });
+  afterEach(() => vi.unstubAllEnvs());
 
   it('stays on the device and never writes to an account', async () => {
     setFreeAreaChoice('hip', 0, LONG_AGO);

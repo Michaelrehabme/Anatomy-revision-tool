@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useRepository } from '../../anatomy-revision/hooks/useRepository';
-import { useAnatomyContent } from '../../anatomy-revision/hooks/useAnatomyContent';
+import { STRUCTURE_INDEX_BY_ID } from '../../anatomy-revision/data/structureIndex';
 import { computeStreak } from '../../anatomy-revision/lib/streak';
 import { REGIONS } from '../../anatomy-revision/types/region';
 import { getUserProfile } from '../data/usersRepository';
@@ -10,7 +10,6 @@ const WEAKEST_COUNT = 10;
 
 export function useAdminUserDetail(uid: string) {
   const { repository } = useRepository();
-  const content = useAnatomyContent(repository);
   const [detail, setDetail] = useState<AdminUserDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -53,7 +52,7 @@ export function useAdminUserDetail(uid: string) {
           .slice(0, WEAKEST_COUNT)
           .map((m) => ({
             structureId: m.structureId,
-            name: content.structuresById.get(m.structureId)?.name ?? m.structureId,
+            name: STRUCTURE_INDEX_BY_ID.get(m.structureId)?.name ?? m.structureId,
             attemptsTotal: m.attemptsTotal,
             accuracyPct: Math.round((m.attemptsCorrect / m.attemptsTotal) * 100),
           }));
@@ -79,7 +78,7 @@ export function useAdminUserDetail(uid: string) {
     return () => {
       cancelled = true;
     };
-  }, [repository, uid, content.structuresById]);
+  }, [repository, uid]);
 
   return { detail, loading, error };
 }

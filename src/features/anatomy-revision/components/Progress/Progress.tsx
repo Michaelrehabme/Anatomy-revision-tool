@@ -46,7 +46,7 @@ export function Progress({ access, content, repository, userId, onStart, onNavig
       entitledAreas: access.areas,
       factMastery,
       learnCardAttempts,
-    });
+    }, content.sources);
     onStart(questions, { types, mode: 'practice', learnCardAttempts });
   };
 
@@ -63,7 +63,7 @@ export function Progress({ access, content, repository, userId, onStart, onNavig
       entitledAreas: access.areas,
       factMastery,
       learnCardAttempts,
-    });
+    }, content.sources);
     onStart(questions, { types, mode: 'practice', learnCardAttempts });
   };
 

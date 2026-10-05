@@ -5,7 +5,8 @@ import { factDueAt } from '../lib/factMastery';
 import type { AnatomyRepository } from '../data/repository';
 import type { AnatomyContent } from './useAnatomyContent';
 import type { StructureMastery } from '../types/attempt';
-import { CATEGORIES, isMuscle, type Category, type MuscleStructure } from '../types/structure';
+import { CATEGORIES, type Category } from '../types/structure';
+import type { StructureIndexEntry } from '../types/structureIndex';
 import type { Region } from '../types/region';
 import { REGIONS } from '../types/region';
 import { computeStreak } from '../lib/streak';
@@ -36,7 +37,12 @@ export interface CategoryCoverage {
 
 export interface ProgressData {
   streak: number;
-  muscles: MuscleStructure[];
+  /**
+   * Index entries, not full structures: progress is counted over the whole
+   * body, including areas whose facts are not on the device — a free account
+   * sees how much there is, and a lapsed subscriber keeps their history.
+   */
+  muscles: StructureIndexEntry[];
   /** Every kind, not only muscles — the content has five and a student studies all of them. */
   seenByCategory: Record<Category, CategoryCoverage>;
   totalStructures: number;
@@ -44,8 +50,8 @@ export interface ProgressData {
   totalSeen: number;
   masteryByStructureId: Map<string, StructureMastery>;
   seenCount: number;
-  untouched: MuscleStructure[];
-  leeches: MuscleStructure[];
+  untouched: StructureIndexEntry[];
+  leeches: StructureIndexEntry[];
   byRegion: RegionProgress[];
   forecast: number[];
   forecastMax: number;
@@ -73,7 +79,9 @@ export function useProgressData(repository: AnatomyRepository | null, userId: st
     };
   }, [repository, userId]);
 
-  const muscles = useMemo(() => content.structures.filter(isMuscle), [content.structures]);
+  // Everything below reads content.index. A level needs the KINDS of fact a
+  // structure has, which the index carries (factKinds), not the facts.
+  const muscles = useMemo(() => content.index.filter((s) => s.category === 'muscle'), [content.index]);
   const masteryByStructureId = useMemo(() => new Map(mastery.map((m) => [m.structureId, m])), [mastery]);
   const factsByKey = useMemo(() => factsIndex(facts), [facts]);
   // "Seen" means a mastery row exists: a structure the student has been
@@ -84,12 +92,12 @@ export function useProgressData(repository: AnatomyRepository | null, userId: st
   const seenCount = muscles.filter((m) => seenIds.has(m.id)).length;
   const seenByCategory = Object.fromEntries(
     CATEGORIES.map((category) => {
-      const ofKind = content.structures.filter((s) => s.category === category);
+      const ofKind = content.index.filter((s) => s.category === category);
       return [category, { seen: ofKind.filter((s) => seenIds.has(s.id)).length, total: ofKind.length }];
     }),
   ) as Record<Category, CategoryCoverage>;
-  const totalStructures = content.structures.length;
-  const totalSeen = content.structures.filter((s) => seenIds.has(s.id)).length;
+  const totalStructures = content.index.length;
+  const totalSeen = content.index.filter((s) => seenIds.has(s.id)).length;
   const untouched = muscles.filter((m) => !seenIds.has(m.id));
   const leeches = muscles.filter((m) => masteryByStructureId.get(m.id)?.isLeech);
 
@@ -103,7 +111,7 @@ export function useProgressData(repository: AnatomyRepository | null, userId: st
     }, 0);
     const pct = regionMuscles.length > 0 ? Math.round((correct / regionMuscles.length) * 100) : 0;
     const levels: LevelCounts = { unmet: 0, beginner: 0, novice: 0, intermediate: 0, advanced: 0, master: 0 };
-    for (const s of content.structures) {
+    for (const s of content.index) {
       if (s.region !== region) continue;
       const state = structureLevel(s, masteryByStructureId.get(s.id), factsByKey, now);
       levels[state.seen ? state.level : 'unmet'] += 1;

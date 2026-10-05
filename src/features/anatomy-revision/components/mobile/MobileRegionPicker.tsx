@@ -27,7 +27,8 @@ export function MobileRegionPicker({ access, content, selected, onChange, onCont
   const entitled: ReadonlySet<Area> = new Set(access.areas);
   // Counts every category, not just muscles — matching the desktop picker (CR-017).
   const countByArea = new Map<Area, number>();
-  for (const s of content.structures) {
+  // The index, not the loaded facts: a locked area still shows its count.
+  for (const s of content.index) {
     // A structure spanning several areas counts under each of them (CR-032).
     for (const area of areasOf(s)) countByArea.set(area, (countByArea.get(area) ?? 0) + 1);
   }
@@ -42,7 +43,7 @@ export function MobileRegionPicker({ access, content, selected, onChange, onCont
 
   // "Nothing selected" means every area they can reach, not every area.
   const effective = selected.size === 0 ? entitled : selected;
-  const poolSize = content.structures.filter((s) => areasOf(s).some((area) => effective.has(area))).length;
+  const poolSize = content.index.filter((s) => areasOf(s).some((area) => effective.has(area))).length;
 
   return (
     <MobileShell>

@@ -13,6 +13,7 @@ import { REGION_LABELS } from '../../types/region';
 import { useMuscleHistory } from '../../hooks/useMuscleHistory';
 import { AttributionBadge } from '../shared/AttributionBadge';
 import { LockedStructureNotice } from '../shared/AreaLock';
+import { StructureFactsUnavailable } from '../shared/AreaFactsNotice';
 import type { UseEntitlement } from '../../hooks/useEntitlement';
 import { PronounceButton } from '../shared/PronounceButton';
 
@@ -41,15 +42,17 @@ const FACT_ROWS = [
 export function MobileMuscleCard({ access, structureId, content, repository, userId, onBack, onDrill }: MobileMuscleCardProps) {
   const mastery = useMuscleHistory(repository, userId, structureId);
   const factsByKey = useFactMastery(repository, userId);
-  const cardStructure = content.structuresById.get(structureId);
+  const cardStructure = content.indexById.get(structureId);
   // The average over this structure's question types, with each listed below it.
   const level = cardStructure ? structureLevel(cardStructure, mastery ?? undefined, factsByKey) : null;
   const showLatin = getShowLatin();
-  const titleName = content.structuresById.get(structureId)?.name;
+  const titleName = content.indexById.get(structureId)?.name;
   useEffect(() => {
     if (titleName) document.title = structureTitle(titleName);
   }, [titleName]);
-  const structure = content.structuresById.get(structureId);
+  // The heading from the index, the body from the facts in hand: see MuscleCard.tsx.
+  const structure = content.indexById.get(structureId);
+  const facts = content.structuresById.get(structureId);
   const panelImage = content.images.find((img) => img.mode === 'single-structure' && img.structureId === structureId);
 
   if (!structure) {
@@ -60,11 +63,12 @@ export function MobileMuscleCard({ access, structureId, content, repository, use
     );
   }
 
-  const muscle = isMuscle(structure) ? structure : null;
+  const muscle = facts && isMuscle(facts) ? facts : null;
   // The whole card is gated, not just the drill at the foot of it: on a phone
   // the lock used to sit three screens below the facts it was locking. See
   // LockedStructureNotice.
   const locked = !areasOf(structure).some((a) => access.areas.includes(a));
+  const ownArea = areasOf(structure).find((a) => access.areas.includes(a)) ?? areasOf(structure)[0];
 
   return (
     <main className="flex min-h-screen flex-col px-6.5 pt-4 pb-7.5" style={{ background: 'var(--pg)', color: 'var(--ink)' }}>
@@ -115,6 +119,11 @@ export function MobileMuscleCard({ access, structureId, content, repository, use
       </div>
       {panelImage && <AttributionBadge image={panelImage} />}
 
+      {!facts && (
+        <div className="mt-4">
+          <StructureFactsUnavailable area={ownArea} facts={content.facts} />
+        </div>
+      )}
       <div className="mt-2 flex flex-col">
         {muscle &&
           FACT_ROWS.map(({ key, label }) => (
@@ -141,14 +150,14 @@ export function MobileMuscleCard({ access, structureId, content, repository, use
             <div className="mt-1.5 text-base leading-relaxed">{muscle.actionText}</div>
           </div>
         )}
-        <BloodSupplyFacts structure={structure} compact />
-        {structure.clinical && (
+        {facts && <BloodSupplyFacts structure={facts} compact />}
+        {facts?.clinical && (
           <div className="py-3.5">
             <div style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
               Clinical note
             </div>
             <p className="mt-1.5 text-[15px] leading-relaxed" style={{ color: 'var(--ink2)' }}>
-              {structure.clinical}
+              {facts.clinical}
             </p>
           </div>
         )}
@@ -178,7 +187,7 @@ export function MobileMuscleCard({ access, structureId, content, repository, use
         </div>
       )}
 
-      {!locked && (
+      {!locked && facts && (
         <button
           type="button"
           onClick={() => onDrill(structure.id)}

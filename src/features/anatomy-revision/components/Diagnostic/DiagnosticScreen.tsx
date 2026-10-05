@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
 import type { AnatomyRepository } from '../../data/repository';
-import type { AnatomyStructure } from '../../types/structure';
-import type { AnatomyImageAsset } from '../../types/image';
+import type { AnatomyContent } from '../../hooks/useAnatomyContent';
 import type { MCQQuestion } from '../../types/question';
 import { generateRevisionSet } from '../../lib/questionGenerators/generateSet';
+import { buildPictureNameQuestions } from '../../lib/questionGenerators/pictureName';
+import { createRng } from '../../lib/rng';
 import { AREAS } from '../../types/region';
 import {
   buildDiagnostic,
@@ -35,8 +36,7 @@ interface DiagnosticScreenProps {
   userId: string;
   cohortId: string;
   phase: 'baseline' | 'followUp';
-  structures: AnatomyStructure[];
-  images: AnatomyImageAsset[];
+  content: AnatomyContent;
   /** Question ids from the baseline, when this is the follow-up. */
   replayIds?: string[];
   onDone: () => void;
@@ -46,18 +46,25 @@ const wrap = 'mx-auto w-full max-w-[680px] px-6 py-12';
 const display = { fontFamily: 'var(--font-display)', fontWeight: 500 as const, letterSpacing: '-.015em' };
 
 export function DiagnosticScreen({
-  repository, userId, cohortId, phase, structures, images, replayIds, onDone,
+  repository, userId, cohortId, phase, content, replayIds, onDone,
 }: DiagnosticScreenProps) {
+  const { index, structures, images, sources } = content;
+  // Whether this device holds the facts of the whole body. Always true with
+  // the seed bundled; in a build that fetches facts per area, true only for
+  // an account that may reach every area and has them all in hand.
+  const everyAreaInHand = content.facts.missing(AREAS).length === 0;
   const [stage, setStage] = useState<'intro' | 'sitting' | 'done'>('intro');
   const [score, setScore] = useState<{ correct: number; total: number } | null>(null);
   const [saveFailed, setSaveFailed] = useState(false);
 
-  const imagesById = useMemo(() => new Map(images.map((i) => [i.id, i])), [images]);
+  const imagesById = content.imagesById;
 
   // Built once. Re-running the generator mid-sitting would renumber the paper
   // under the student's feet.
   const questions = useMemo(() => {
-    const spec = buildDiagnostic(structures, cohortId);
+    // The fifteen structures are chosen from the INDEX, so every student in a
+    // class is asked about the same fifteen whatever each of them holds.
+    const spec = buildDiagnostic(index, cohortId);
     // DELIBERATELY UNGATED, and the only caller that passes AREAS.
     //
     // The diagnostic measures what a student already knows across the whole
@@ -65,11 +72,23 @@ export function DiagnosticScreen({
     // would make the cohort's baseline depend on who had paid, which is not a
     // baseline. Nothing here is revision: no attempt is recorded and no answer
     // is shown (see the note above), so it teaches nothing that was paid for.
-    const pool = generateRevisionSet(structures, images, {
-      types: ['mcq'], mode: 'practice', seed: 1, entitledAreas: AREAS,
-    }).filter((q): q is MCQQuestion => q.type === 'mcq');
+    //
+    // WHEN THE WHOLE BODY IS NOT IN HAND (owner's default, 5 Oct 2026 —
+    // docs/CONTENT-SERVER-STATUS.md, decision 7). The paper mixes kinds of
+    // question: name this picture, and what is this muscle's nerve. The second
+    // kind states a fact, and a student holding one area has no facts for the
+    // other eight to be asked from. Their paper is therefore built entirely
+    // of picture-to-name questions, from the index: the same fifteen
+    // structures, each asked the one way that needs no facts. It is NOT the
+    // same paper as a classmate's who holds every area, and a class whose
+    // students differ in what they hold is being measured on two papers.
+    const pool = everyAreaInHand
+      ? generateRevisionSet(structures, images, {
+          types: ['mcq'], mode: 'practice', seed: 1, entitledAreas: AREAS,
+        }, sources).filter((q): q is MCQQuestion => q.type === 'mcq')
+      : buildPictureNameQuestions(index, images, createRng(1));
     return shuffleForSitting(buildDiagnosticQuestions(spec, pool, replayIds));
-  }, [structures, images, cohortId, replayIds]);
+  }, [index, structures, images, sources, everyAreaInHand, cohortId, replayIds]);
 
   useEffect(() => { window.scrollTo(0, 0); }, [stage]);
 
@@ -121,7 +140,7 @@ export function DiagnosticScreen({
           setStage('done');
 
           const result: DiagnosticResult = {
-            userId, cohortId, version: buildDiagnostic(structures, cohortId).version,
+            userId, cohortId, version: buildDiagnostic(index, cohortId).version,
             phase, correct, total, takenAt: new Date().toISOString(), durationMs, questionIds,
           };
           try {

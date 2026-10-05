@@ -3,7 +3,7 @@ import type { AnatomyRepository } from '../data/repository';
 import type { AnatomyContent } from './useAnatomyContent';
 import type { FactMastery, StructureMastery, RevisionSessionSummary } from '../types/attempt';
 import { spreadReviewItems, buildReviewQueue, type ReviewItem } from '../lib/reviewQueue';
-import { areasOf, isMuscle } from '../types/structure';
+import { areasOf } from '../types/structure';
 import type { Area } from '../types/region';
 import { computeStreak } from '../lib/streak';
 import { sessionsPerDay } from '../lib/weekActivity';
@@ -88,10 +88,10 @@ export function useTodayData(
     if (loading) return;
     const reachable = entitledKey.split(',');
     const eligible = new Set(
-      content.structures.filter((s) => areasOf(s).some((a) => reachable.includes(a))).map((s) => s.id),
+      content.index.filter((s) => areasOf(s).some((a) => reachable.includes(a))).map((s) => s.id),
     );
     void syncReviewReminder({ mastery: allMastery, facts, eligible });
-  }, [loading, allMastery, facts, entitledKey, content.structures]);
+  }, [loading, allMastery, facts, entitledKey, content.index]);
 
   const streak = computeStreak(summaries);
   // Clamped to what this account may reach, which is what makes every number
@@ -99,9 +99,14 @@ export function useTodayData(
   // percentage. A free student's Today is about their region — offering a
   // locked muscle as "due" would be offering something they cannot answer.
   // Their mastery history is untouched; it simply is not listed here.
+  //
+  // COUNTED FROM THE INDEX, so the totals are of what the account may reach
+  // and do not shrink when an area's facts are not on the device (offline,
+  // with no saved copy). What can be ASKED is narrower, and is `askable`
+  // below.
   const muscleIds = new Set(
-    content.structures
-      .filter((s) => isMuscle(s) && areasOf(s).some((a) => entitledAreas.includes(a)))
+    content.index
+      .filter((s) => s.category === 'muscle' && areasOf(s).some((a) => entitledAreas.includes(a)))
       .map((s) => s.id),
   );
   const totalMuscleCount = muscleIds.size;
@@ -109,8 +114,12 @@ export function useTodayData(
   const seenMusclePct = totalMuscleCount > 0 ? Math.round((seenCount / totalMuscleCount) * 100) : 0;
   const dueMuscles = due.filter((m) => muscleIds.has(m.structureId));
   const entitledIds = new Set(
-    content.structures.filter((s) => areasOf(s).some((a) => entitledAreas.includes(a))).map((s) => s.id),
+    content.index.filter((s) => areasOf(s).some((a) => entitledAreas.includes(a))).map((s) => s.id),
   );
+  // The review queue is of questions, and a question needs facts: only a
+  // structure that is both reachable and in hand goes into it. With the seed
+  // bundled that is every reachable structure, as before.
+  const askable = new Set([...entitledIds].filter((id) => content.structuresById.has(id)));
   const totalStructureCount = entitledIds.size;
   const seenStructureCount = allMastery.filter((m) => entitledIds.has(m.structureId)).length;
 
@@ -126,7 +135,7 @@ export function useTodayData(
   // Every structure the account may reach, not muscles alone (owner, 3 Oct
   // 2026): a bone or ligament answered and scheduled is as due as a muscle,
   // and left out of the queue it only ever came back by chance.
-  const queue = buildReviewQueue(allMastery, facts, entitledIds, new Date());
+  const queue = buildReviewQueue(allMastery, facts, askable, new Date());
   const reviewItems = [...queue.due, ...queue.forward];
   const spreadItems = spreadReviewItems(reviewItems, allMastery, facts);
 

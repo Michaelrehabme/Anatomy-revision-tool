@@ -1,9 +1,9 @@
 import { useMemo, useState } from 'react';
-import type { AnatomyStructure } from '../../anatomy-revision/types/structure';
+import type { StructureIndexEntry } from '../../anatomy-revision/types/structureIndex';
 import type { Region } from '../../anatomy-revision/types/region';
 
 interface StructureSelectProps {
-  structures: AnatomyStructure[];
+  structures: readonly StructureIndexEntry[];
   imageRegion: Region;
   value: string | null;
   onChange: (structureId: string) => void;

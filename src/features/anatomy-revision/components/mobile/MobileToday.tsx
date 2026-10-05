@@ -47,7 +47,7 @@ export function MobileToday({ access, repository, userId, content, onStart, onCu
   // longest ago first, and half the session new (owner, 3 Oct 2026).
   const handleStart = async (style: 'continue' | 'fresh' = 'continue') => {
     if (firstRun) {
-      const starter = buildStarterSet(content.structures, content.images, { areas: areas ?? access.areas });
+      const starter = buildStarterSet(content.structures, content.images, { areas: areas ?? access.areas }, content.sources);
       if (starter.length > 0) {
         onStart(starter, { types: STARTER_TYPES, mode: 'practice', areas });
         return;
@@ -73,7 +73,7 @@ export function MobileToday({ access, repository, userId, content, onStart, onCu
       now: new Date(),
       factMastery,
       learnCardAttempts,
-    });
+    }, content.sources);
     onStart(questions, { types: DEFAULT_TYPES, mode: 'practice', areas, learnCardAttempts });
   };
 
@@ -157,7 +157,7 @@ export function MobileToday({ access, repository, userId, content, onStart, onCu
             </p>
           )}
           {weakest.slice(0, 3).map((m) => {
-            const structure = content.structuresById.get(m.structureId);
+            const structure = content.indexById.get(m.structureId);
             const pct = Math.round((m.attemptsCorrect / m.attemptsTotal) * 100);
             return (
               <button

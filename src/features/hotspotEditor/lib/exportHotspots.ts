@@ -1,4 +1,4 @@
-import type { AnatomyStructure } from '../../anatomy-revision/types/structure';
+import type { StructureIndexEntry } from '../../anatomy-revision/types/structureIndex';
 import type { DraftsByImageId } from './draftStore';
 
 interface HotspotsFileEntry {
@@ -22,7 +22,7 @@ export interface HotspotsFile {
  */
 export function buildHotspotsFile(
   drafts: DraftsByImageId,
-  structuresById: Map<string, AnatomyStructure>,
+  structuresById: ReadonlyMap<string, StructureIndexEntry>,
 ): HotspotsFile {
   const hotspots: Record<string, Record<string, HotspotsFileEntry>> = {};
 

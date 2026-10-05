@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import type { AnatomyImageAsset } from '../../types/image';
 import type { AnatomyStructure } from '../../types/structure';
+import type { StructureIndexEntry } from '../../types/structureIndex';
 import type { PlateConceal } from '../../lib/plateLabel';
 
 /**
@@ -12,6 +13,8 @@ import type { PlateConceal } from '../../lib/plateLabel';
 export interface PlateCatalogue {
   imagesById: ReadonlyMap<string, AnatomyImageAsset>;
   structuresById: ReadonlyMap<string, AnatomyStructure>;
+  /** Every structure, for names — see PlateDescriptionInput.indexById. */
+  indexById?: ReadonlyMap<string, StructureIndexEntry>;
 }
 
 const PlateCatalogueContext = createContext<PlateCatalogue | null>(null);
@@ -56,7 +59,14 @@ export function PlateDescription({
     };
   }, [catalogue]);
 
-  const text = catalogue && describe ? describe({ image, subjectId, conceal, ...catalogue }) : '';
+  const text = catalogue && describe ? describe({
+          image,
+          subjectId,
+          conceal,
+          imagesById: catalogue.imagesById,
+          structuresById: catalogue.structuresById,
+          indexById: catalogue.indexById,
+        }) : '';
   // Always in the DOM so the viewer's aria-describedby never points at nothing.
   return (
     <figcaption id={id} className="sr-only" data-plate-description>

@@ -5,17 +5,9 @@ import { createMemoryRepository } from '../../data/memoryRepository';
 import { ALL_STRUCTURES, ALL_IMAGES } from '../../data/seed';
 import { CATEGORIES, isBone, isLigament, isMuscle } from '../../types/structure';
 import type { StructureMastery } from '../../types/attempt';
-import type { AnatomyContent } from '../useAnatomyContent';
+import { anatomyContentFrom, type AnatomyContent } from '../useAnatomyContent';
 
-const content: AnatomyContent = {
-  structures: ALL_STRUCTURES,
-  images: ALL_IMAGES,
-  structuresById: new Map(ALL_STRUCTURES.map((s) => [s.id, s])),
-  imagesById: new Map(ALL_IMAGES.map((i) => [i.id, i])),
-  loading: false,
-  error: null,
-  retry: () => {},
-};
+const content: AnatomyContent = anatomyContentFrom(ALL_STRUCTURES, ALL_IMAGES);
 
 function row(structureId: string, correct: number, total: number): StructureMastery {
   return {

@@ -4,7 +4,8 @@ import { INITIAL_GAMIFICATION_PROFILE } from './repository';
 import type { UserAttempt, StructureMastery, FactMastery, RevisionSessionSummary } from '../types/attempt';
 import type { StructureFilter } from '../lib/indexes';
 import { filterStructures } from '../lib/indexes';
-import { ALL_STRUCTURES, ALL_IMAGES } from './seed';
+import { BUNDLED_CONTENT } from './content/bundledContent';
+import { ALL_IMAGES } from './images';
 import { attachHotspots } from './seed/hotspots';
 import type { AchievementDoc } from '../lib/achievements';
 
@@ -29,11 +30,15 @@ export function createMemoryRepository(): AnatomyRepository {
 
   return {
     async listStructures(filter?: StructureFilter) {
-      return filterStructures(ALL_STRUCTURES, filter);
+      // The structures whose facts are IN THIS BUNDLE: all of them in a bundled
+      // build, none in one that fetches facts per area. The app reads content
+      // through hooks/useAnatomyContent, which knows the difference; this is
+      // kept for the scripts and tests that want the bundled list as it is.
+      return filterStructures([...BUNDLED_CONTENT.structures], filter);
     },
 
     async getStructure(id: string) {
-      return ALL_STRUCTURES.find((s) => s.id === id) ?? null;
+      return BUNDLED_CONTENT.structures.find((s) => s.id === id) ?? null;
     },
 
     async listImageAssets(filter?: ImageAssetFilter) {

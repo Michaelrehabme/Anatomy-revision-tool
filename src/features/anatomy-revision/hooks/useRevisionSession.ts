@@ -13,10 +13,9 @@ import { markSeen, rungOfQuestion } from '../lib/ladder';
 import { factsIndex, masteryLevel, structureLevel, type MasteryLevel } from '../lib/masteryLevel';
 import { skillOf, updateFactMasteryAfterAttempt } from '../lib/factMastery';
 import { askedAs, type AnswerRoute } from '../lib/answerRoute';
-import { ALL_STRUCTURES } from '../data/seed';
+import { STRUCTURE_INDEX_BY_ID } from '../data/structureIndex';
 import { STRUCTURE_INDEX } from '../data/structureIndex';
 
-const STRUCTURES_BY_ID = new Map(ALL_STRUCTURES.map((s) => [s.id, s]));
 import { toDayKey, computeStreak } from '../lib/streak';
 import { reconcileStreakFreezes } from '../lib/streakFreeze';
 import { xpForAnswer, computeSessionXp } from '../lib/xp';
@@ -484,7 +483,10 @@ export function useRevisionSession(repository: AnatomyRepository | null, userId:
             factRows.current = factsAfter;
           }
 
-          const structure = STRUCTURES_BY_ID.get(record.structureId);
+          // From the index: a level needs to know which KINDS of fact a
+          // structure has, not the facts, and must come out the same whether
+          // or not this structure's area is on the device.
+          const structure = STRUCTURE_INDEX_BY_ID.get(record.structureId);
           const levelOf = (m: StructureMastery | undefined, rows: FactMastery[]) =>
             structure ? structureLevel(structure, m, factsIndex(rows)).level : masteryLevel(m).level;
           dispatch({

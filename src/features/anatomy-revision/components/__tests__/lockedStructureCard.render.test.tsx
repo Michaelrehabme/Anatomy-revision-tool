@@ -8,7 +8,7 @@ import { FREE_ENTITLEMENT, type Entitlement, type FreeAreaChoice } from '../../l
 import { AREAS, type Area } from '../../types/region';
 import { areasOf, isMuscle, type MuscleStructure } from '../../types/structure';
 import type { UseEntitlement } from '../../hooks/useEntitlement';
-import type { AnatomyContent } from '../../hooks/useAnatomyContent';
+import { anatomyContentFrom, type AnatomyContent } from '../../hooks/useAnatomyContent';
 
 /**
  * A locked structure's card, reached by its address
@@ -23,15 +23,7 @@ import type { AnatomyContent } from '../../hooks/useAnatomyContent';
 
 afterEach(cleanup);
 
-const content: AnatomyContent = {
-  structures: ALL_STRUCTURES,
-  images: ALL_IMAGES,
-  structuresById: new Map(ALL_STRUCTURES.map((s) => [s.id, s])),
-  imagesById: new Map(ALL_IMAGES.map((i) => [i.id, i])),
-  loading: false,
-  error: null,
-  retry: () => {},
-};
+const content: AnatomyContent = anatomyContentFrom(ALL_STRUCTURES, ALL_IMAGES);
 
 /** A muscle in this area and no other, with a reviewed blood supply to withhold. */
 const muscleIn = (area: Area): MuscleStructure => {

@@ -1,6 +1,6 @@
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
-import { baseConfig, educatorDemoAliases } from './vite.config';
+import { baseConfig, contentAliases, educatorDemoAliases } from './vite.config';
 
 /**
  * Public demo build (`npm run build:demo`) — the seeded educator dashboard
@@ -16,7 +16,22 @@ import { baseConfig, educatorDemoAliases } from './vite.config';
  * The demo is therefore reachable only by naming this file on the command
  * line, which no Netlify environment variable can do.
  */
-export default defineConfig(() => ({
+/**
+ * The demo's facts. It has no accounts, so it can never ask the content
+ * function: asked for anything but `bundled`, it is built from the two-area
+ * fixture (data/content/bundledContent.fixture.ts).
+ *
+ * `bundled` IS STILL THE DEFAULT, which means the public demo carries every
+ * area's facts in its bundle exactly as it does today. Building it with
+ * VITE_CONTENT_SOURCE=fixture is what stops that; it is the owner's call
+ * (docs/CONTENT-SERVER-STATUS.md, decision 11).
+ */
+const demoContent = (mode: string) => {
+  const source = { ...loadEnv(mode, process.cwd(), 'VITE_'), ...process.env }.VITE_CONTENT_SOURCE;
+  return source === 'fixture' || source === 'server' ? ('fixture' as const) : ('bundled' as const);
+};
+
+export default defineConfig(({ mode }) => ({
   ...baseConfig(),
   // Disabled, but present: the app imports virtual:pwa-register/react, which
   // only exists while the plugin is in the list. A demo is a link someone
@@ -24,7 +39,7 @@ export default defineConfig(() => ({
   // build is a worse failure than no offline support on a page nobody revises
   // from.
   plugins: [...baseConfig().plugins, VitePWA({ disable: true })],
-  resolve: { alias: educatorDemoAliases },
+  resolve: { alias: [...educatorDemoAliases, ...contentAliases(demoContent(mode))] },
   build: {
     // Its own directory so a demo build can never be mistaken for dist/, which
     // is what netlify.toml publishes for the real site.

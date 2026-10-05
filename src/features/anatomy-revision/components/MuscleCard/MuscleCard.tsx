@@ -9,6 +9,7 @@ import { REGION_LABELS } from '../../types/region';
 import { AttributionBadge } from '../shared/AttributionBadge';
 import { Button } from '../shared/Button';
 import { LockedStructureNotice } from '../shared/AreaLock';
+import { StructureFactsUnavailable } from '../shared/AreaFactsNotice';
 import type { UseEntitlement } from '../../hooks/useEntitlement';
 import { PronounceButton } from '../shared/PronounceButton';
 import { MasteryLevelBadge } from '../shared/MasteryLevelBadge';
@@ -53,11 +54,11 @@ export function MuscleCard({
 }: MuscleCardProps) {
   const mastery = useMuscleHistory(repository, userId, structureId);
   const factsByKey = useFactMastery(repository, userId);
-  const cardStructure = content.structuresById.get(structureId);
+  const cardStructure = content.indexById.get(structureId);
   // The average over this structure's question types, with each listed below it.
   const level = cardStructure ? structureLevel(cardStructure, mastery ?? undefined, factsByKey) : null;
   const showLatin = getShowLatin();
-  const titleName = content.structuresById.get(structureId)?.name;
+  const titleName = content.indexById.get(structureId)?.name;
   useEffect(() => {
     if (titleName) document.title = structureTitle(titleName);
   }, [titleName]);
@@ -75,7 +76,15 @@ export function MuscleCard({
     return () => window.removeEventListener('keydown', handler);
   }, [contextIds, structureId, onNavigateStructure]);
 
-  const structure = content.structuresById.get(structureId);
+  // TWO LOOKUPS. The index entry is the card's heading: name, region, Latin,
+  // the student's level — there for every structure, whatever the account
+  // holds. The facts are the card's body, and are there only when the
+  // structure's area is on the device. A locked structure has no facts here
+  // at all in a build that fetches them per area, and must still get its name
+  // and its lock; one the account may reach but which is not loaded gets its
+  // name, its picture and an honest reason (AreaFactsNotice.tsx).
+  const structure = content.indexById.get(structureId);
+  const facts = content.structuresById.get(structureId);
   const panelImage = content.images.find(
     (img) => img.mode === 'single-structure' && img.structureId === structureId,
   );
@@ -88,10 +97,13 @@ export function MuscleCard({
     );
   }
 
-  const muscle = isMuscle(structure) ? structure : null;
+  const muscle = facts && isMuscle(facts) ? facts : null;
   // A card has an address, so it is gated here as well as in the atlas that
   // lists it: the whole of it, not just the drill. See LockedStructureNotice.
   const locked = !areasOf(structure).some((a) => access.areas.includes(a));
+  // The area to name when the facts are not in hand: the first one the
+  // account may reach, which is the one that would bring them.
+  const ownArea = areasOf(structure).find((a) => access.areas.includes(a)) ?? areasOf(structure)[0];
 
   return (
     <AppShell
@@ -179,6 +191,10 @@ export function MuscleCard({
             <div className="mt-9">
               <LockedStructureNotice structure={structure} access={access} />
             </div>
+          ) : !facts ? (
+            <div className="mt-9">
+              <StructureFactsUnavailable area={ownArea} facts={content.facts} />
+            </div>
           ) : (
           <>
           <div className="mt-9 flex flex-col">
@@ -209,14 +225,14 @@ export function MuscleCard({
                 </div>
               </div>
             )}
-            <BloodSupplyFacts structure={structure} />
-            {structure.clinical && (
+            <BloodSupplyFacts structure={facts} />
+            {facts.clinical && (
               <div className="py-4.5">
                 <div style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
                   Clinical note
                 </div>
                 <p className="mt-2 max-w-[48ch] text-base leading-relaxed" style={{ color: 'var(--ink2)' }}>
-                  {structure.clinical}
+                  {facts.clinical}
                 </p>
               </div>
             )}

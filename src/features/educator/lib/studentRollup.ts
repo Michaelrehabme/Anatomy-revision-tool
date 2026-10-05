@@ -1,8 +1,6 @@
 import type { RevisionSessionSummary, StructureMastery, UserAttempt } from '../../anatomy-revision/types/attempt';
 import { skillOf } from '../../anatomy-revision/lib/factMastery';
-import { ALL_STRUCTURES } from '../../anatomy-revision/data/seed';
-
-const STRUCTURES_BY_ID = new Map(ALL_STRUCTURES.map((s) => [s.id, s]));
+import { STRUCTURE_INDEX_BY_ID } from '../../anatomy-revision/data/structureIndex';
 import type { FactMastery } from '../../anatomy-revision/types/attempt';
 import type { Region } from '../../anatomy-revision/types/region';
 import { REGIONS } from '../../anatomy-revision/types/region';
@@ -91,7 +89,10 @@ export function buildStudentRollup(
     if (Date.parse(row.lastAttemptAt) >= sinceMs) touched.add(row.structureId);
   }
   for (const structureId of touched) {
-    const structure = STRUCTURES_BY_ID.get(structureId);
+    // The index, not the loaded facts: this runs over every structure the
+    // student has EVER touched, including areas they no longer hold, and a
+    // level worked out without knowing a muscle has four facts reads too high.
+    const structure = STRUCTURE_INDEX_BY_ID.get(structureId);
     const row = masteryById.get(structureId);
     const state = structure ? structureLevel(structure, row, factsByKey, now) : masteryLevel(row, now);
     if (state.seen) rollup.levels[structureId] = state.level;

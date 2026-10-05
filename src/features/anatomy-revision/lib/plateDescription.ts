@@ -1,3 +1,4 @@
+import type { StructureIndexEntry } from '../types/structureIndex';
 import type { AnatomyImageAsset, HotspotPolygon } from '../types/image';
 import { SUBREGION_LABELS, REGION_LABELS } from '../types/region';
 import {
@@ -75,7 +76,14 @@ export interface PlateDescriptionInput {
   subjectId?: string;
   conceal?: PlateConceal;
   imagesById: ReadonlyMap<string, AnatomyImageAsset>;
+  /** The structures whose facts are in hand. What is said ABOUT the subject comes from here. */
   structuresById: ReadonlyMap<string, AnatomyStructure>;
+  /**
+   * Every structure, for names: a plate shows neighbours from areas whose
+   * facts may not be on the device, and they still have to be named. Left
+   * out, `structuresById` is taken to be everything.
+   */
+  indexById?: ReadonlyMap<string, StructureIndexEntry>;
 }
 
 /** How many structures a description names before it says "and N more". */
@@ -177,11 +185,11 @@ function structuresInFrame(hotspots: HotspotPolygon[]): { structureId: string; a
 }
 
 /** A structure's name without the seed's bookkeeping suffix: "Carpals (grouped)" is the carpals. */
-function plainName(s: AnatomyStructure | undefined): string | undefined {
+function plainName(s: StructureIndexEntry | undefined): string | undefined {
   return s?.name.replace(/ \(grouped\)$/, '');
 }
 
-function nameList(ids: string[], structuresById: ReadonlyMap<string, AnatomyStructure>): string {
+function nameList(ids: string[], structuresById: ReadonlyMap<string, StructureIndexEntry>): string {
   const names = ids.map((id) => plainName(structuresById.get(id))).filter((n): n is string => !!n);
   if (names.length <= MAX_LISTED) return list(names);
   return `${names.slice(0, MAX_LISTED).join(', ')} and ${names.length - MAX_LISTED} more`;
@@ -261,7 +269,7 @@ function drawnSentences(image: AnatomyImageAsset, family: PlateFamily): string[]
 }
 
 /** What the seed says the subject is joined to — the "named neighbours" that are anatomy rather than picture. */
-function relationSentences(subject: AnatomyStructure, structuresById: ReadonlyMap<string, AnatomyStructure>): string[] {
+function relationSentences(subject: AnatomyStructure, structuresById: ReadonlyMap<string, StructureIndexEntry>): string[] {
   const names = (ids: string[]) => ids.map((id) => plainName(structuresById.get(id))).filter((n): n is string => !!n);
   if (isMuscle(subject)) {
     const out: string[] = [];
@@ -314,11 +322,11 @@ function howMarked(family: PlateFamily): string {
 
 /** Where the subject sits in the picture and what is next to it there. */
 function placeSentences(
-  subject: AnatomyStructure,
+  subject: StructureIndexEntry,
   family: PlateFamily,
   inFrame: ReturnType<typeof structuresInFrame>,
   hotspots: HotspotPolygon[],
-  structuresById: ReadonlyMap<string, AnatomyStructure>,
+  structuresById: ReadonlyMap<string, StructureIndexEntry>,
 ): string[] {
   const own = inFrame.find((s) => s.structureId === subject.id);
   if (!own) return [`${plainName(subject)} ${howMarked(family)}.`];
@@ -353,11 +361,16 @@ function placeSentences(
  * The whole description, as sentences. Kept as a list so a caller can render
  * them as separate paragraphs; describePlate joins them.
  */
-export function describePlateSentences({ image, subjectId, conceal, imagesById, structuresById }: PlateDescriptionInput): string[] {
+export function describePlateSentences({ image, subjectId, conceal, imagesById, structuresById, indexById }: PlateDescriptionInput): string[] {
   const family = plateFamily(image);
   const hotspots = hotspotsFor(image, imagesById);
   const inFrame = structuresInFrame(hotspots);
-  const subject = structuresById.get(subjectId ?? image.structureId ?? '');
+  // Two lookups, because they answer different questions. WHERE a structure
+  // is in the picture and what it is called need only the index. What it
+  // attaches to is a fact, and is said only when that fact is in hand.
+  const names: ReadonlyMap<string, StructureIndexEntry> = indexById ?? structuresById;
+  const subject = names.get(subjectId ?? image.structureId ?? '');
+  const subjectFacts = subject ? structuresById.get(subject.id) : undefined;
   const out = frameSentences(image, family);
 
   if (conceal === 'name') {
@@ -375,7 +388,7 @@ export function describePlateSentences({ image, subjectId, conceal, imagesById, 
   // (relationSentences) are NOT given until the question is answered — they
   // are the right option of the same question asked in words.
   const others = inFrame.filter((s) => s.structureId !== subject?.id).map((s) => s.structureId);
-  const inFrameSentence = (ids: string[], lead: string) => (ids.length ? `${lead}: ${nameList(ids, structuresById)}.` : '');
+  const inFrameSentence = (ids: string[], lead: string) => (ids.length ? `${lead}: ${nameList(ids, names)}.` : '');
 
   if (conceal === 'place' && family === 'gap') {
     // Every other locate picture lists what is in frame, because the names
@@ -400,8 +413,8 @@ export function describePlateSentences({ image, subjectId, conceal, imagesById, 
   }
 
   if (subject) {
-    out.push(...placeSentences(subject, family, inFrame, hotspots, structuresById));
-    out.push(...relationSentences(subject, structuresById));
+    out.push(...placeSentences(subject, family, inFrame, hotspots, names));
+    if (subjectFacts) out.push(...relationSentences(subjectFacts, names));
     out.push(inFrameSentence(others, 'Also in frame'));
   } else {
     out.push(inFrameSentence(inFrame.map((s) => s.structureId), 'In frame'));

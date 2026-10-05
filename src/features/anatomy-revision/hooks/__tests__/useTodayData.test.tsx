@@ -6,17 +6,9 @@ import { ALL_STRUCTURES, ALL_IMAGES } from '../../data/seed';
 import { AREAS } from '../../types/region';
 import { emptyCategoryBreakdown } from '../../types/structure';
 import type { RevisionSessionSummary } from '../../types/attempt';
-import type { AnatomyContent } from '../useAnatomyContent';
+import { anatomyContentFrom, type AnatomyContent } from '../useAnatomyContent';
 
-const content: AnatomyContent = {
-  structures: ALL_STRUCTURES,
-  images: ALL_IMAGES,
-  structuresById: new Map(ALL_STRUCTURES.map((s) => [s.id, s])),
-  imagesById: new Map(ALL_IMAGES.map((i) => [i.id, i])),
-  loading: false,
-  error: null,
-  retry: () => {},
-};
+const content: AnatomyContent = anatomyContentFrom(ALL_STRUCTURES, ALL_IMAGES);
 
 /** A session started at a LOCAL wall-clock time, as the student saw it. */
 function sessionAt(y: number, m: number, d: number, hour: number, minute = 0): RevisionSessionSummary {

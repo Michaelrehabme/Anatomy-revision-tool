@@ -30,6 +30,7 @@ import { Atlas } from './features/anatomy-revision/components/Atlas/Atlas';
 import { MobileAtlas } from './features/anatomy-revision/components/mobile/MobileAtlas';
 import { Progress } from './features/anatomy-revision/components/Progress/Progress';
 import { DiagnosticRoute } from './features/anatomy-revision/components/Diagnostic/DiagnosticRoute';
+import { AreaFactsNotice } from './features/anatomy-revision/components/shared/AreaFactsNotice';
 import { Achievements } from './features/anatomy-revision/components/Achievements/Achievements';
 import { MobileAchievements } from './features/anatomy-revision/components/mobile/MobileAchievements';
 import type { NavSection } from './features/anatomy-revision/components/shell/NavSidebar';
@@ -184,9 +185,26 @@ function StructureRoute({ access, content, repository, userId, isDesktop, onNavi
  */
 function App() {
   const { repository, loading: repoLoading, error: repoError, retry: retryRepository } = useRepository();
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const userId = user?.uid ?? null;
-  const content = useAnatomyContent(repository);
+  /**
+   * What this account may reach (CR-027). Read once here and passed down, so
+   * every screen gates on the same answer and the entitlement is read once per
+   * session rather than once per screen.
+   *
+   * Above the content on purpose: in a build that fetches facts per area
+   * (data/content/contentSource.ts) the entitlement is what says WHICH areas
+   * to fetch, and nothing is asked for until it has settled.
+   */
+  const entitlement = useEntitlement(userId);
+  const content = useAnatomyContent(repository, {
+    uid: userId,
+    areas: entitlement.areas,
+    // Sign-in still settling counts as not knowing yet, so a load is not
+    // started (and abandoned) for an account that is about to change.
+    loading: authLoading || entitlement.loading,
+    known: entitlement.known ?? false,
+  });
   const session = useRevisionSession(repository, userId);
   const isDesktop = useIsDesktop();
   const navigate = useNavigate();
@@ -227,12 +245,6 @@ function App() {
       cancelled = true;
     };
   }, []);
-  /**
-   * What this account may reach (CR-027). Read once here and passed down, so
-   * every screen gates on the same answer and the entitlement is read once per
-   * session rather than once per screen.
-   */
-  const entitlement = useEntitlement(userId);
   // Small updates to areas downloaded for offline use are applied once the
   // entitlement above has settled; larger ones wait behind a button.
   useOfflineAutoUpdate(entitlement);
@@ -417,7 +429,7 @@ function App() {
       entitledAreas,
       factMastery,
       learnCardAttempts,
-    });
+    }, content.sources);
     session.start(questions, { types, mode: 'practice', learnCardAttempts });
   };
 
@@ -438,7 +450,7 @@ function App() {
       // currently listed, the same as an OINA session from setup.
       factMastery,
       learnCardAttempts,
-    });
+    }, content.sources);
     session.start(questions, { types, mode: 'practice', learnCardAttempts });
   };
 
@@ -460,7 +472,7 @@ function App() {
       mastery,
       now: new Date(),
       learnCardAttempts: 0,
-    });
+    }, content.sources);
     session.start(questions, { types, mode: 'practice', learnCardAttempts: 0 });
   };
 
@@ -471,6 +483,10 @@ function App() {
           <DemoBanner />
         </Suspense>
       )}
+      {/* An area the account may have that is not on the device: said once,
+          here, above every screen — so no screen has to leave a student to
+          guess why a region is missing. Never rendered with the seed bundled. */}
+      {!entitlement.loading && <AreaFactsNotice facts={content.facts} entitled={entitledAreas} />}
       <Routes>
         <Route
           path="/onboarding"
@@ -623,7 +639,7 @@ function App() {
                     entitledAreas,
                     factMastery,
                     mastery,
-                  });
+                  }, content.sources);
                   session.start(retryQuestions, params);
                 }}
               />
@@ -652,7 +668,7 @@ function App() {
                     entitledAreas,
                     factMastery,
                     mastery,
-                  });
+                  }, content.sources);
                   session.start(nextQuestions, params);
                 }}
               />
@@ -750,8 +766,7 @@ function App() {
             <DiagnosticRoute
               repository={repository}
               userId={userId}
-              structures={content.structures}
-              images={content.images}
+              content={content}
             />
           }
         />

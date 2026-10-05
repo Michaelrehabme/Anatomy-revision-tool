@@ -177,8 +177,8 @@ export function RevisionSetup({ access, content, repository, userId, areas, onSt
         categories: categories.length ? categories : undefined,
         mode: 'practice',
         seed: 1,
-      }).length,
-    [content.structures, content.images, types, areas, access.areas, groups, oinaSelected, oinaFacts, categories],
+      }, content.sources).length,
+    [content.structures, content.images, content.sources, types, areas, access.areas, groups, oinaSelected, oinaFacts, categories],
   );
   // Undefined caps nothing; generateRevisionSet then emits every eligible
   // question. Only reachable from the All chip, which only OINA sessions show.
@@ -234,7 +234,7 @@ export function RevisionSetup({ access, content, repository, userId, areas, onSt
       priorityStructureIds: dueStructureIds,
       mastery,
       factMastery,
-    });
+    }, content.sources);
     onStart(questions, params);
   };
 

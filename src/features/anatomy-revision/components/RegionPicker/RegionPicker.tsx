@@ -41,7 +41,8 @@ const COUNTED_CATEGORIES: { category: Category; singular: string; plural: string
 export function RegionPicker({ access, content, selected, onChange, onContinue, onNavigate }: RegionPickerProps) {
   const entitled: ReadonlySet<Area> = new Set(access.areas);
   const byArea = new Map<Area, Map<Category, string[]>>();
-  for (const s of content.structures) {
+  // The index, not the loaded facts: a locked area still shows what it holds.
+  for (const s of content.index) {
     // A structure spanning several areas is counted under each of them (CR-032): a
     // pedicle really is studied in a cervical, a thoracic and a lumbar session.
     for (const area of areasOf(s)) {
@@ -80,7 +81,7 @@ export function RegionPicker({ access, content, selected, onChange, onContinue, 
 
   // "Nothing selected" means every area they can reach, not every area.
   const effective = selected.size === 0 ? entitled : selected;
-  const poolSize = content.structures.filter((s) => areasOf(s).some((area) => effective.has(area))).length;
+  const poolSize = content.index.filter((s) => areasOf(s).some((area) => effective.has(area))).length;
 
   return (
     <AppShell

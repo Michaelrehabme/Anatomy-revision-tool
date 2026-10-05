@@ -140,12 +140,15 @@ export function CreateAssignmentForm({
     [areas, category, activeGroups],
   );
 
-  const { poolSize, available } = useMemo(() => previewAssignment(scope, types), [scope, types]);
+  const { poolSize, available, exact } = useMemo(() => previewAssignment(scope, types), [scope, types]);
 
   const targetPct = Number(target);
   const targetValid = Number.isInteger(targetPct) && targetPct >= 1 && targetPct <= 100;
   const unbuildable = areas.length > 0 ? unbuildableSessionReason({ types, poolSize, available }) : null;
-  const attemptLength = Math.min(count, available);
+  // When the questions could not be counted here (this device does not hold
+  // these areas' content — see previewAssignment), the length asked for
+  // stands, and each student's device builds as many as the scope allows.
+  const attemptLength = exact ? Math.min(count, available) : count;
   const canCreate =
     !creating && !!title.trim() && !!dueAt && areas.length > 0 && types.length > 0 && available > 0 && targetValid;
 
@@ -237,10 +240,10 @@ export function CreateAssignmentForm({
     const noun = scope.groups || category === 'muscle' ? 'muscle' : 'structure';
     preview = (
       <>
-        {describeAssignmentScope(scope)} — each attempt is {attemptLength} question{attemptLength === 1 ? '' : 's'} from{' '}
+        {describeAssignmentScope(scope)} — each attempt is {exact ? '' : 'up to '}{attemptLength} question{attemptLength === 1 ? '' : 's'} from{' '}
         {poolSize} {noun}
         {poolSize === 1 ? '' : 's'}
-        {available < count && `, all this scope can build`}. Exam style: no feedback until the end
+        {exact && available < count && `, all this scope can build`}. Exam style: no feedback until the end
         {targetValid && `, pass at ${targetPct}%`}.
       </>
     );

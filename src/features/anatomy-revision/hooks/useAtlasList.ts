@@ -90,8 +90,8 @@ export function useAtlasList({ access, content, repository, userId }: UseAtlasLi
   );
 
   const rows = useMemo(
-    () => new Map(entitled.map((s) => [s.id, atlasRow(s, content.structuresById)])),
-    [entitled, content.structuresById],
+    () => new Map(entitled.map((s) => [s.id, atlasRow(s, content.indexById)])),
+    [entitled, content.indexById],
   );
 
   const visible = useMemo(() => {

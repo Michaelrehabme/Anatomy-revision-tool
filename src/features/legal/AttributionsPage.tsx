@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ALL_IMAGES } from '../anatomy-revision/data/seed';
+import { ALL_IMAGES } from '../anatomy-revision/data/images';
 import { LegalLayout, legalHeading, legalLabel, legalProse } from './LegalLayout';
 import { OSS_LICENCES } from './data/ossLicences.generated';
 

@@ -153,8 +153,8 @@ export function MobileRevisionSetup({ access, content, repository, userId, areas
         categories: categories.length ? categories : undefined,
         mode: 'practice',
         seed: 1,
-      }).length,
-    [content.structures, content.images, types, areas, access.areas, groups, oinaSelected, oinaFacts, categories],
+      }, content.sources).length,
+    [content.structures, content.images, content.sources, types, areas, access.areas, groups, oinaSelected, oinaFacts, categories],
   );
   // The Begin label used to say "15 questions" under an OINA panel promising
   // hundreds; this is the number the session will actually contain.
@@ -205,7 +205,7 @@ export function MobileRevisionSetup({ access, content, repository, userId, areas
       priorityStructureIds: dueStructureIds,
       mastery,
       factMastery,
-    });
+    }, content.sources);
     onStart(questions, params);
   };
 

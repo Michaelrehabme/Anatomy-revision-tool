@@ -8,6 +8,7 @@ import {
   type AnatomyStructure,
   type Category,
 } from '../types/structure';
+import type { StructureIndexEntry } from '../types/structureIndex';
 
 /**
  * What the Atlas shows about a structure, whatever kind it is.
@@ -59,13 +60,18 @@ export function firstSentence(text: string): string {
   return end === -1 ? trimmed : trimmed.slice(0, end + 1);
 }
 
-function nameOf(id: string, byId: ReadonlyMap<string, AnatomyStructure>): string {
+function nameOf(id: string, byId: ReadonlyMap<string, StructureIndexEntry>): string {
   return byId.get(id)?.name ?? id.replace(/-/g, ' ');
 }
 
 const join = (parts: readonly string[]) => parts.filter(Boolean).join('; ');
 
-export function atlasRow(s: AnatomyStructure, byId: ReadonlyMap<string, AnatomyStructure>): AtlasRow {
+/**
+ * `byId` is for NAMING the structures a row refers to — the bones a ligament
+ * joins, the joint it belongs to — and those may be in areas whose facts are
+ * not on the device, so it takes the index.
+ */
+export function atlasRow(s: AnatomyStructure, byId: ReadonlyMap<string, StructureIndexEntry>): AtlasRow {
   const [l1, l2, l3] = ATLAS_COLUMN_LABELS[s.category];
   let columns: [AtlasColumn, AtlasColumn, AtlasColumn];
 

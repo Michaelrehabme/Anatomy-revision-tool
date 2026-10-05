@@ -1,4 +1,5 @@
 import type { AnatomyStructure } from '../types/structure';
+import type { StructureIndexEntry } from '../types/structureIndex';
 import { sample, type Rng } from './rng';
 
 /**
@@ -15,11 +16,11 @@ import { sample, type Rng } from './rng';
  * grounds that it belongs to the arm. Tier one is still narrower — same
  * subregion AND a shared group — so the closest neighbours are preferred.
  */
-function tieredPool(correct: AnatomyStructure, all: AnatomyStructure[]): AnatomyStructure[][] {
+function tieredPool<T extends StructureIndexEntry>(correct: StructureIndexEntry, all: T[]): T[][] {
   const others = all.filter((s) => s.id !== correct.id);
   const correctGroups = new Set(correct.groups ?? []);
 
-  const sharesGroup = (s: AnatomyStructure) => (s.groups ?? []).some((g) => correctGroups.has(g));
+  const sharesGroup = (s: T) => (s.groups ?? []).some((g) => correctGroups.has(g));
   const sameSubregionAndGroup = others.filter((s) => s.subregion === correct.subregion && sharesGroup(s));
   const sameGroup = others.filter(sharesGroup);
   const sameRegionAndCategory = others.filter(
@@ -30,14 +31,21 @@ function tieredPool(correct: AnatomyStructure, all: AnatomyStructure[]): Anatomy
   return [sameSubregionAndGroup, sameGroup, sameRegionAndCategory, sameCategory, others];
 }
 
-/** Picks `count` distractor structures (not values) for "which structure is X" questions. */
-export function pickStructureDistractors(
-  correct: AnatomyStructure,
-  all: AnatomyStructure[],
+/**
+ * Picks `count` distractor structures (not values) for "which structure is X" questions.
+ *
+ * Generic over what it is handed: the tiers read a structure's region, kind
+ * and groups, all of which an index entry has, so a question that only needs
+ * NAMES can be built for structures whose facts are not on the device
+ * (questionGenerators/pictureName.ts).
+ */
+export function pickStructureDistractors<T extends StructureIndexEntry>(
+  correct: StructureIndexEntry,
+  all: T[],
   count: number,
   rng: Rng,
-): AnatomyStructure[] {
-  const picked = new Map<string, AnatomyStructure>();
+): T[] {
+  const picked = new Map<string, T>();
   for (const tier of tieredPool(correct, all)) {
     if (picked.size >= count) break;
     const candidates = tier.filter((s) => !picked.has(s.id));
@@ -50,8 +58,8 @@ export function pickStructureDistractors(
 
 /** Picks `count` distractor name strings, convenience wrapper over pickStructureDistractors. */
 export function pickNameDistractors(
-  correct: AnatomyStructure,
-  all: AnatomyStructure[],
+  correct: StructureIndexEntry,
+  all: StructureIndexEntry[],
   count: number,
   rng: Rng,
 ): string[] {

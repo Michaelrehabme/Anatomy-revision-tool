@@ -95,7 +95,7 @@ export function ClassAssignments({ access, repository, userId, content, onStart,
       // here — it decides whether each OINA fact is asked as select or typed.
       const factMastery =
         assignment.questionTypes.includes('oina') && repository && userId ? await repository.listFactMastery(userId) : undefined;
-      const questions = generateRevisionSet(content.structures, content.images, { ...assignmentSetConfig(assignment, access.areas), factMastery });
+      const questions = generateRevisionSet(content.structures, content.images, { ...assignmentSetConfig(assignment, access.areas), factMastery }, content.sources);
       if (questions.length === 0) {
         setError('This assignment has no questions any more — let your educator know.');
         return;

@@ -8,6 +8,7 @@ import type { HotspotAnswerResult } from './HotspotImage';
 import { describedFeedback, locateFeedback } from './locateFeedback';
 import { useLocateRoutes } from '../../hooks/useLocateRoutes';
 import { getLocateWithoutPicture } from '../../lib/preferences';
+import { STRUCTURE_INDEX_BY_ID } from '../../data/structureIndex';
 
 export interface LocateAnswerParams {
   structureId: string;
@@ -119,12 +120,15 @@ export function useLocateAnswer({
     onAnswer({ ...(chosenDescription !== null ? inWords(chosenDescription) : located(result)), confidence });
   };
 
-  const targetName = structuresById.get(question.targetStructureId)?.name ?? question.targetStructureId;
+  // Names from the index: the structure tapped by mistake can be a neighbour
+  // from an area whose facts are not on the device, and it still has a name.
+  const nameOf = (id: string) => structuresById.get(id)?.name ?? STRUCTURE_INDEX_BY_ID.get(id)?.name;
+  const targetName = nameOf(question.targetStructureId) ?? question.targetStructureId;
   const feedback: { title: string; detail?: string } = !result
     ? { title: '' }
     : chosenDescription !== null && routes?.describedAnswer
       ? describedFeedback(result.correct, targetName, routes.describedAnswer)
-      : locateFeedback(result, targetName, result.structureId ? structuresById.get(result.structureId)?.name : undefined);
+      : locateFeedback(result, targetName, result.structureId ? nameOf(result.structureId) : undefined);
 
   return {
     image,

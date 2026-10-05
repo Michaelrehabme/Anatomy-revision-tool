@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import type { AnatomyRepository } from '../../data/repository';
-import type { AnatomyStructure } from '../../types/structure';
-import type { AnatomyImageAsset } from '../../types/image';
+import type { AnatomyContent } from '../../hooks/useAnatomyContent';
 import { DiagnosticScreen } from './DiagnosticScreen';
 import { nextDiagnosticPhase } from '../../lib/diagnosticPrompt';
 
@@ -29,8 +28,8 @@ interface DiagnosticRouteProps {
   repository: AnatomyRepository | null;
   /** Null before sign-in has settled. */
   userId: string | null;
-  structures: AnatomyStructure[];
-  images: AnatomyImageAsset[];
+  /** The index, the facts in hand, and which areas those cover. */
+  content: AnatomyContent;
 }
 
 type State =
@@ -38,7 +37,7 @@ type State =
   | { status: 'ready'; cohortId: string; replayIds?: string[] }
   | { status: 'unavailable' };
 
-export function DiagnosticRoute({ repository, userId, structures, images }: DiagnosticRouteProps) {
+export function DiagnosticRoute({ repository, userId, content }: DiagnosticRouteProps) {
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const phase = params.get('phase') === 'followUp' ? 'followUp' : 'baseline';
@@ -113,8 +112,7 @@ export function DiagnosticRoute({ repository, userId, structures, images }: Diag
       userId={userId}
       cohortId={state.cohortId}
       phase={phase}
-      structures={structures}
-      images={images}
+      content={content}
       replayIds={state.replayIds}
       onDone={() => navigate('/account')}
     />
