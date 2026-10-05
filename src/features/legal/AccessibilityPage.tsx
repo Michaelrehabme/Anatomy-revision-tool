@@ -125,9 +125,13 @@ export function AccessibilityPage() {
           The keyboard crosshair is for someone who can see the picture and cannot use a pointer; it
           does nothing for someone using a screen reader. Answering in words tests whether you know what
           a structure attaches to or joins, not whether you can find it on an image, and no text version
-          can test that. It is recorded separately from locate for that reason. About a third of the
-          ligament and joint questions asked in words can be worked out from the structure's name, so
-          they are easier than the tap they replace. None of this has been tried with a screen reader or
+          can test that. It is a different exercise, and the app counts it toward the same level all
+          the same: a right answer in words moves your level for that structure exactly as a tap on the
+          picture would, so that nobody is held back for want of a route we have not built. A locate
+          level reached in words therefore does not show that you can find the structure on a picture.
+          Each answer is stored with how it was given, so a report can tell the two apart. About a
+          third of the ligament and joint questions asked in words can be worked out from the
+          structure's name, so they are easier than the tap they replace. None of this has been tried with a screen reader or
           a switch. We are not going to describe locate as solved before it is.
         </p>
         <p>

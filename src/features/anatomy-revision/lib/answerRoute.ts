@@ -16,24 +16,28 @@ export type AnswerRoute = 'described-region';
 
 /**
  * Whether a described-region answer is credited as the locate question it
- * replaced. THE OWNER HAS NOT DECIDED (docs/accessibility-locate.md), so the
- * two are kept apart and this is the one switch:
+ * replaced. THE OWNER DECIDED IT IS (5 October 2026): a student who cannot see
+ * the picture, or cannot point at it, must not be held at a lower level than
+ * one who can for want of a route the app does not give them.
  *
- *   false  it is a question of its own. Its progress and review schedule live
- *          on a 'described-region' fact row for the structure, like any other
- *          fact asked as multiple choice; the structure's own row — which a
- *          tap on the picture moves — is untouched. It earns multiple-choice
- *          XP. A student who answers every locate question in words is never
- *          shown as having located anything.
- *   true   it moves the structure's row and earns locate XP exactly as a tap
- *          would, so a student who cannot see is not held back by it.
+ *   true   it moves the structure's own row and earns locate XP exactly as a
+ *          tap would, and is re-asked on the schedule a tap would set.
+ *   false  (the earlier default, still tested) it is a question of its own.
+ *          Its progress and review schedule live on a 'described-region' fact
+ *          row for the structure; the structure's own row is untouched; it
+ *          earns multiple-choice XP. A student who answers every locate
+ *          question in words is then never shown as having located anything.
  *
- * Either way the stored ATTEMPT says what happened — questionType 'mcq',
- * promptKind 'described-region' — so a report comparing locate accuracy
- * across students can always tell the two apart, and flipping this later
- * loses nothing already recorded.
+ * It is still a DIFFERENT EXERCISE — knowing what a structure attaches to is
+ * not finding it on a picture — and crediting it does not make it the same
+ * one. So either way the stored ATTEMPT says what happened — questionType
+ * 'mcq', promptKind 'described-region' — and a report comparing locate
+ * accuracy across students can always tell the two apart. Flipping this back
+ * loses nothing already recorded. The accessibility statement says all of
+ * this in plain words (features/legal/AccessibilityPage.tsx); keep the two in
+ * step.
  */
-export const DESCRIBED_REGION_COUNTS_AS_LOCATE = false;
+export const DESCRIBED_REGION_COUNTS_AS_LOCATE = true;
 
 export interface AskedAs {
   /** What the attempt row says was asked. */

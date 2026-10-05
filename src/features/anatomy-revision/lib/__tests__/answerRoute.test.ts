@@ -9,12 +9,13 @@ import { setLocateWithoutPicture } from '../preferences';
 import { AREAS } from '../../types/region';
 
 /**
- * A LOCATE QUESTION ANSWERED IN WORDS IS NOT A LOCATE.
+ * A LOCATE QUESTION ANSWERED IN WORDS IS CREDITED AS A LOCATE, AND RECORDED AS
+ * WHAT IT WAS.
  *
- * The owner has not decided whether it should count as one
- * (docs/accessibility-locate.md), so the default keeps them apart and one
- * constant joins them. Both settings are pinned here, so whichever is chosen
- * the other is known to work.
+ * The owner decided on 5 October 2026 that it counts toward the locate level
+ * (docs/accessibility-locate.md). One constant says so. Both settings are
+ * pinned here, so the one not chosen is still known to work if the decision
+ * is ever reversed.
  */
 const locate = { type: 'locate', promptKind: 'identify' } as const;
 
@@ -23,31 +24,33 @@ describe('what an answer is recorded and credited as', () => {
     expect(askedAs(locate, undefined)).toEqual({ recorded: locate, credited: locate });
   });
 
-  it('a description is recorded as its own kind, and by default credited as its own kind', () => {
-    expect(DESCRIBED_REGION_COUNTS_AS_LOCATE).toBe(false);
-    const words = { type: 'mcq', promptKind: 'described-region' };
-    expect(askedAs(locate, 'described-region')).toEqual({ recorded: words, credited: words });
+  it('a description is recorded as its own kind, and by default credited as the locate it answered', () => {
+    expect(DESCRIBED_REGION_COUNTS_AS_LOCATE).toBe(true);
+    const { recorded, credited } = askedAs(locate, 'described-region');
+    // The attempt row still says what was done...
+    expect(recorded).toEqual({ type: 'mcq', promptKind: 'described-region' });
+    // ...and the credit goes where a tap's would.
+    expect(credited).toEqual(locate);
   });
 
-  it('so by default it moves a fact row of its own, never the row a tap moves, and never the naming ladder', () => {
+  it('so by default it moves the row a tap moves, and never the naming ladder', () => {
     const { credited } = askedAs(locate, 'described-region');
-    // A tap goes to the structure's own row...
-    expect(skillOf(locate.type, locate.promptKind)).toBe('identify');
-    // ...a description to a row nothing else writes.
+    expect(skillOf(credited.type, credited.promptKind)).toBe(skillOf(locate.type, locate.promptKind));
+    expect(skillOf(credited.type, credited.promptKind)).toBe('identify');
+    // Locate is outside the naming ladder, so words cannot promote a structure to typed answers.
+    expect(rungOfQuestion(credited.type, undefined, credited.promptKind)).toBeNull();
+  });
+
+  it('with the switch off, it is credited as its own kind, on a fact row nothing else writes', () => {
+    const words = { type: 'mcq', promptKind: 'described-region' };
+    const { recorded, credited } = askedAs(locate, 'described-region', false);
+    expect(recorded).toEqual(words);
+    expect(credited).toEqual(words);
     expect(skillOf(credited.type, credited.promptKind)).toBe('described-region');
   });
 
-  it('and that row is not one a structure needs for its level, so answering in words cannot lower or raise it', () => {
+  it('and that row is not one a structure needs for its level, so with the switch off words cannot lower or raise it', () => {
     for (const s of ALL_STRUCTURES) expect(requiredFactKinds(s)).not.toContain('described-region');
-  });
-
-  it('with the switch on, it is credited exactly as the tap would be — and still recorded as what it was', () => {
-    const { recorded, credited } = askedAs(locate, 'described-region', true);
-    expect(recorded).toEqual({ type: 'mcq', promptKind: 'described-region' });
-    expect(credited).toEqual(locate);
-    expect(skillOf(credited.type, credited.promptKind)).toBe('identify');
-    // Locate is outside the naming ladder either way.
-    expect(rungOfQuestion(credited.type, undefined, credited.promptKind)).toBeNull();
   });
 
   it('other questions are untouched', () => {

@@ -383,8 +383,8 @@ export function useRevisionSession(repository: AnatomyRepository | null, userId:
 
       if (repository && userId && currentQuestion) {
         // A locate question answered in words is recorded as what it was, and
-        // credited where lib/answerRoute.ts says: never, unless the owner
-        // decides otherwise, as a locate success.
+        // credited where lib/answerRoute.ts says — since the owner's decision
+        // of 5 October 2026, as the locate question it answered.
         const { recorded, credited } = askedAs(currentQuestion, record.route);
         const persist = async () => {
           const attemptNumber = await repository.recordQuestionExposure(userId, record.questionId);

@@ -142,32 +142,37 @@ Off by default; stored on the device with the other preferences
 answered and never which questions are asked: the same seeds build the same
 sets, byte for byte, with it on or off.
 
-### How an answer in words is recorded
+### How an answer in words is recorded, and what it is credited as
 
-`lib/answerRoute.ts`. **It is never recorded as a locate success.**
+`lib/answerRoute.ts`. **Decided by the owner on 5 October 2026: an answer in
+words to a locate question counts toward the locate level.**
+(`DESCRIBED_REGION_COUNTS_AS_LOCATE = true`.) A student who cannot see the
+picture, or cannot point at it, is not held at a lower level than one who can.
 
-- The stored attempt has `questionType: 'mcq'`, `promptKind:
-  'described-region'`, with the description chosen and the right one. A cohort
-  report can always tell it from a tap.
-- Its progress and review schedule are a fact row of its own
-  (`described-region`), like any other fact asked as multiple choice. The
-  structure's own row — which a tap moves — is untouched, and the row is not
-  one a structure's level is computed from. It earns multiple-choice XP.
+- **Credited as the locate question.** It moves the structure's own row — the
+  row a tap moves — with the same accuracy, streak and review date a tap would
+  give, and earns locate XP. A student who only ever answers in words is
+  credited, and re-asked, exactly as one who taps.
+- **Recorded as what it was.** The stored attempt still has `questionType:
+  'mcq'`, `promptKind: 'described-region'`, with the description chosen and the
+  right one. A cohort report can always tell it from a tap, and must: the
+  level no longer does.
 - A tap by crosshair, and a name from the list, are recorded as the locate
   question, as before.
 
-**The owner has not decided whether it should count.** To make it count, set
-`DESCRIBED_REGION_COUNTS_AS_LOCATE = true` in `lib/answerRoute.ts`: it is then
-credited exactly as a tap is (the structure's row, locate XP), and the attempt
-row still says what it was, so nothing recorded before or after the change is
-lost. Both settings are tested.
+Until that decision the two were kept apart: an answer in words moved a
+`described-region` fact row of its own and earned multiple-choice XP. That had
+one odd consequence, now gone — the row had a review date the Progress
+forecast counted, while session building weighted the locate question by the
+structure's own row, so a words-only student was re-asked on a schedule their
+answers never moved. With the credit on, no `described-region` row is written;
+there is one row and one schedule. (The earlier build was never deployed, so
+no student has such a row.)
 
-One consequence of keeping them apart: a `described-region` row has a review
-date like any fact row, and the Progress forecast counts it, but session
-building weights a locate question by the structure's own row. A student who
-only ever answers in words is therefore re-asked locate questions on the
-structure's schedule, not on the schedule of their answers in words. Counting
-it as a locate removes that.
+Both settings are tested: `answerRoute.test.ts` pins the function both ways,
+`useRevisionSession.test.ts` runs a session with the credit on, and
+`useRevisionSession.wordsApart.test.ts` runs one with it off. Setting the
+constant back to `false` loses nothing already recorded.
 
 ### The long descriptions
 
@@ -180,10 +185,13 @@ every locate question.
 
 ## What is still not equivalent
 
-- **B is a different exercise.** It tests whether a student knows where a
-  structure is as a set of relations — what it joins, lies on, sits between.
-  It does not test finding it on a picture, and no text version can. It is
-  recorded apart for that reason. The statement should go on saying so.
+- **B is a different exercise, and the app credits it toward the same level
+  anyway.** It tests whether a student knows where a structure is as a set of
+  relations — what it joins, lies on, sits between. It does not test finding
+  it on a picture, and no text version can. So a locate level reached in words
+  does not show that a student can find the structure on a picture. Each
+  answer is stored with the route it took, for that reason. The statement
+  says all of this and should go on saying it.
 - **About a third of ligament and joint questions in words can be read off
   the name.** The anterior talofibular ligament attaches to the talus and the
   fibula. The name rule catches a whole word, not a Latin root, and for 47 of
@@ -218,8 +226,9 @@ every locate question.
 What the accessibility statement can now say: every locate question can be
 answered on the picture from the keyboard; a student who cannot see the
 picture is asked where the structure is in words, or — for twenty questions
-the app's data cannot describe — chooses its name from at least four. What it
-cannot say: that the words and the picture are the same test.
+the app's data cannot describe — chooses its name from at least four; an
+answer in words counts toward the same level as a tap. What it cannot say:
+that the words and the picture are the same test.
 
 ---
 

@@ -34,6 +34,19 @@ describe('AccessibilityPage', () => {
     expect(text).toMatch(/can be worked out from the structure's name/);
   });
 
+  // Owner's decision, 5 October 2026 (lib/answerRoute.ts): words count toward
+  // the locate level. The page must say both halves — that it is credited,
+  // and that it is still not the same exercise — and must no longer say the
+  // two are kept apart, which stopped being true.
+  it('says an answer in words is a different exercise that is credited toward the same level', () => {
+    const text = renderPage();
+    expect(text).toMatch(/It is a different exercise, and the app counts it toward the same level/);
+    expect(text).toMatch(/moves your level for that structure exactly as a tap on the\s+picture would/);
+    expect(text).toMatch(/does not show that you can find the structure on a picture/);
+    expect(text).toMatch(/Each answer is stored with how it was given/);
+    expect(text).not.toMatch(/recorded separately from locate/);
+  });
+
   it('admits there has been no independent audit', () => {
     renderPage();
     expect(screen.getByText(/No independent audit has been carried out/)).toBeTruthy();
