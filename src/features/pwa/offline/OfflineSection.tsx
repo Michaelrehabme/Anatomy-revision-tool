@@ -5,6 +5,7 @@ import type { UseEntitlement } from '../../anatomy-revision/hooks/useEntitlement
 import { LockPill } from '../../anatomy-revision/components/shared/AreaLock';
 import { actionsFor, percentDone, type AreaAction } from './areaStatus';
 import { formatBytes } from './manifest';
+import { downloadPromise } from './areaFactsPrefetch';
 import { offlineController, type AreaView, type OfflineController } from './offlineController';
 
 /**
@@ -149,7 +150,7 @@ export function OfflineSection({ access, compact = false, controller = offlineCo
   return (
     <div className="mt-3">
       <p style={{ font: '400 14px/1.55 var(--font-ui)', color: 'var(--ink2)' }}>
-        Download an area to keep every picture in it on this device, for revising with no signal.
+        {downloadPromise()}
       </p>
       {!snapshot.serving && (
         <div

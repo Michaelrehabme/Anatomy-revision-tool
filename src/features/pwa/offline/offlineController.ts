@@ -8,6 +8,7 @@ import {
   type DownloadOptions,
 } from './downloadArea';
 import { autoUpdateDecision } from './autoUpdate';
+import { prefetchFactsForDownload, type FactsPrefetch } from './areaFactsPrefetch';
 import { diffManifest, formatBytes, parseOfflineIndex, type OfflineIndex } from './manifest';
 import { offlineCacheName, readAllRecords, removeAreaCache, writeRecord, type AreaRecord } from './offlineCache';
 import { staticOfflineSource, type OfflineSource } from './offlineSource';
@@ -68,15 +69,30 @@ export interface ControllerDeps {
   /** Whether a picture request is really answered from a download. Asked, not assumed: see workerServesDownloads. */
   servesDownloads?: () => Promise<boolean>;
   download?: (options: DownloadOptions) => Promise<AreaRecord>;
+  /** Fetches and keeps the area's facts, where this build fetches facts at all (areaFactsPrefetch.ts). */
+  prefetchFacts?: (area: Area) => Promise<FactsPrefetch>;
   /** Where the last index is remembered, so sizes still show with no network. */
   memo?: Pick<Storage, 'getItem' | 'setItem'> | null;
 }
 
 const INDEX_MEMO_KEY = 'locusmsk:offline:index';
 
+/** The server said this account may not have this area's facts, so nothing was downloaded. */
+export class FactsRefused extends Error {
+  constructor() {
+    super('This account cannot download this area.');
+    this.name = 'FactsRefused';
+  }
+}
+
+/** Shown beside an area whose pictures are saved and whose facts could not be fetched. */
+export const FACTS_PENDING =
+  'The pictures are saved, but this area’s facts could not be fetched. Open the app with a connection once to finish.';
+
 /** What a failed download says. Short, and each one names what to do next. */
 export function describeFailure(error: unknown): string | null {
   if (error instanceof DownloadCancelled) return null;
+  if (error instanceof FactsRefused) return 'This area is not open on your account, so it was not downloaded.';
   if (error instanceof NotEnoughSpace) {
     const free = error.freeBytes === null ? '' : `, and ${formatBytes(error.freeBytes)} is free`;
     return `Not enough space. This needs ${formatBytes(error.neededBytes)}${free}.`;
@@ -278,7 +294,17 @@ export class OfflineController {
     void storageManager?.persist?.().catch(() => false);
 
     let lastEmit = 0;
+    // Set when the pictures arrive but the facts did not: said after, not instead.
+    let factsPending = false;
     try {
+      // THE FACTS FIRST, and before a byte of picture: they are small, they are
+      // what the server can refuse, and an area downloaded without them is
+      // pictures with nothing to ask. A refusal ends the download here. No
+      // answer does not — the pictures are still worth having, and the facts
+      // arrive when the app is next opened online.
+      const facts = await (this.deps.prefetchFacts ?? prefetchFactsForDownload)(area);
+      if (facts === 'refused') throw new FactsRefused();
+      factsPending = facts === 'unavailable';
       await (this.deps.download ?? downloadArea)({
         area,
         source: this.deps.source,
@@ -296,6 +322,7 @@ export class OfflineController {
           }
         },
       });
+      if (factsPending && !quiet) this.errors.set(area, FACTS_PENDING);
     } catch (error) {
       const message = describeFailure(error);
       if (message && !quiet) this.errors.set(area, message);

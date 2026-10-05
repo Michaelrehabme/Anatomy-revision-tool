@@ -3,7 +3,8 @@ import { AREAS, type Area } from '../../../anatomy-revision/types/region';
 import { DownloadCancelled, DownloadIncomplete, NotEnoughSpace } from '../downloadArea';
 import type { AreaManifest, OfflineIndex } from '../manifest';
 import { offlineCacheName } from '../offlineCache';
-import { OfflineController, describeFailure, type ControllerDeps } from '../offlineController';
+import { FACTS_PENDING, FactsRefused, OfflineController, describeFailure, type ControllerDeps } from '../offlineController';
+import { downloadPromise } from '../areaFactsPrefetch';
 import type { OfflineSource } from '../offlineSource';
 import { fakeStorage } from './fakeCaches';
 
@@ -177,5 +178,63 @@ describe('describeFailure', () => {
       'Not enough space. This needs 62 MB, and 5.0 MB is free.',
     );
     expect(describeFailure(new NotEnoughSpace(62_000_000, null))).toBe('Not enough space. This needs 62 MB.');
+  });
+});
+
+/**
+ * In a build that fetches facts per area, a download is pictures AND facts
+ * (areaFactsPrefetch.ts), and the facts are what the server can refuse.
+ */
+describe('a download fetches the area\u2019s facts first', () => {
+  it('asks for the facts before any picture, and downloads when they are saved', async () => {
+    const order: string[] = [];
+    const { controller } = setup({
+      prefetchFacts: async (area) => {
+        order.push(`facts ${area}`);
+        return 'saved';
+      },
+      download: async ({ area }) => {
+        order.push(`pictures ${area}`);
+        return { version: 1, area, files: {}, bytes: 0, manifestHash: 'x', completedAt: null };
+      },
+    });
+    await controller.download('knee');
+    expect(order).toEqual(['facts knee', 'pictures knee']);
+    expect(controller.getSnapshot().areas.knee.error).toBeNull();
+  });
+
+  it('downloads nothing when the server refuses the facts, and says why', async () => {
+    let pictures = 0;
+    const { controller, fake } = setup({
+      prefetchFacts: async () => 'refused',
+      download: async ({ area }) => {
+        pictures += 1;
+        return { version: 1, area, files: {}, bytes: 0, manifestHash: 'x', completedAt: null };
+      },
+    });
+    await controller.download('hip');
+    expect(pictures).toBe(0);
+    expect(fake.caches.size).toBe(0);
+    expect(controller.getSnapshot().areas.hip.error).toBe('This area is not open on your account, so it was not downloaded.');
+  });
+
+  it('still saves the pictures when the facts could not be fetched, and says the download is not finished', async () => {
+    const { controller, fake } = setup({ prefetchFacts: async () => 'unavailable' });
+    await controller.download('elbow');
+    expect(fake.caches.has(offlineCacheName('elbow'))).toBe(true);
+    expect(controller.getSnapshot().areas.elbow.error).toBe(FACTS_PENDING);
+  });
+
+  it('says nothing extra in a build whose facts are bundled', async () => {
+    const { controller } = setup({ prefetchFacts: async () => 'none' });
+    await controller.download('elbow');
+    expect(controller.getSnapshot().areas.elbow.error).toBeNull();
+  });
+
+  it('promises only what the build delivers', () => {
+    expect(downloadPromise(false)).toBe('Download an area to keep every picture in it on this device, for revising with no signal.');
+    expect(downloadPromise(true)).toContain('and its facts');
+    expect(downloadPromise(true)).toContain('14 days without a connection');
+    expect(describeFailure(new FactsRefused())).toContain('not open on your account');
   });
 });
