@@ -242,7 +242,7 @@ describe('actionForEvent', () => {
  * documented ones (https://developer.paddle.com/webhooks/adjustments/adjustment-created,
  * .../adjustment-updated, read 5 October 2026). The webhook as a whole —
  * which account, duplicates, a deleted account, the dry run — is tested in
- * netlify/functions/__tests__/paddle-webhook.test.ts.
+ * netlify/tests/paddle-webhook.test.ts.
  */
 function refund(over: Partial<PaddleAdjustmentEvent['data']> = {}, type = 'adjustment.updated'): PaddleAdjustmentEvent {
   return {

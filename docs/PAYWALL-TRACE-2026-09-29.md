@@ -152,7 +152,7 @@ cancel your subscription". The flag is inside the entitlement map, which
 ## Tests
 
 Tested: `entitlement.test.ts`, `checkout.test.ts`, `paddleWebhook.test.ts`
-(pure functions), `netlify/functions/__tests__/paddle-webhook.test.ts` (the
+(pure functions), `netlify/tests/paddle-webhook.test.ts` (the
 webhook as a whole against an in-memory database: refunds, duplicates,
 ordering, a deleted account, the dry run — added 5 Oct), `renewalReminders.test.ts`, `serverOnly.test.ts`,
 `accountLifecycle.test.ts`, `refunds.test.tsx`, `demoIsolation.test.ts`, and

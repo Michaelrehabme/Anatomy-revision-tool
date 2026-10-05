@@ -3,5 +3,5 @@
   "compilerOptions": {
     "lib": ["ES2022", "DOM"]
   },
-  "include": ["netlify/functions", "src/features/billing/lib"]
+  "include": ["netlify/functions", "netlify/tests", "src/features/billing/lib"]
 }

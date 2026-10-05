@@ -18,6 +18,10 @@ import { createHmac } from 'node:crypto';
  *   https://developer.paddle.com/webhooks/subscriptions/subscription-past-due
  *   https://developer.paddle.com/webhooks/subscriptions/subscription-canceled
  * (read 5 October 2026). Nothing here reaches Paddle or Firebase.
+ *
+ * NOT UNDER netlify/functions, deliberately. Netlify deploys what it finds in
+ * that directory as functions, and a test file there is one bundler change
+ * away from being published as an endpoint.
  */
 
 type Row = Record<string, unknown>;
@@ -79,7 +83,7 @@ vi.mock('firebase-admin/firestore', () => {
   return { getFirestore: () => db, FieldValue: { serverTimestamp: () => 'SERVER_TIME' } };
 });
 
-import handler from '../paddle-webhook';
+import handler from '../functions/paddle-webhook';
 
 const SECRET = 'pdl_ntfset_test_secret';
 const SUB = 'sub_01hvccbx32q2gb40sqx7n42430';
