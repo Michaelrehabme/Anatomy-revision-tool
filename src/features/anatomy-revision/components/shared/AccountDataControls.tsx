@@ -128,6 +128,13 @@ export function AccountDataControls({ uid, onDeleted, compact }: AccountDataCont
             This deletes your account, every answer you have given, your progress and streaks, and removes you from
             your class. It cannot be undone.
           </p>
+          {/* Deleting is allowed once a subscription is cancelled, without
+              waiting out the paid period (accountLifecycle.ts) — so somebody
+              may be about to throw away time they paid for. Said to everyone,
+              because this component does not know who has any. */}
+          <p className="mt-2" style={{ font: `400 ${font}px/1.5 var(--font-ui)`, color: 'var(--ink2)', margin: '8px 0 0' }}>
+            If you have paid for time you have not used yet, you give that up too.
+          </p>
           <p className="mt-2" style={{ font: `400 ${font}px/1.5 var(--font-ui)`, color: 'var(--ink2)', margin: '8px 0 0' }}>
             Download your data first if you want to keep it. Type <strong>{CONFIRM_WORD}</strong> to confirm.
           </p>

@@ -527,6 +527,19 @@ describe('a subscription event, unchanged by any of this', () => {
     expect(failures()).toHaveLength(1);
   });
 
+  it('a cancellation taking effect on a deleted account is not an alarm: nothing to cancel', async () => {
+    // Somebody cancelled, deleted their account, and the paid period then ran out.
+    const response = await handler(post({
+      event_id: 'evt_cancel_after_delete',
+      event_type: 'subscription.canceled',
+      occurred_at: '2026-11-01T09:00:01.000000Z',
+      data: { id: SUB, status: 'canceled', canceled_at: '2026-11-01T09:00:00.000000Z', current_billing_period: null, custom_data: { uid: UID } },
+    }));
+    expect(await response.text()).toBe('ok (no account)');
+    expect(user()).toBeUndefined();
+    expect(failures()).toEqual([]);
+  });
+
   it('skips an event older than the one stored', async () => {
     store.docs.set(`users/${UID}`, { entitlement: { ...PAID, eventAt: '2026-10-09T00:00:00.000000Z' } });
     await handler(post(activated('2026-10-08T00:00:00.000000Z', '2099-01-01T00:00:00.000000Z')));

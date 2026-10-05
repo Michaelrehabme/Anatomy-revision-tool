@@ -36,6 +36,13 @@ interface DiagnosticSessionProps {
   /** Called once, on submit. `questionIds` is what makes a follow-up replayable. */
   onSubmit: (result: { correct: number; total: number; questionIds: string[]; durationMs: number }) => void;
   onCancel?: () => void;
+  /**
+   * Which sitting this is, for the label over the review page. It said
+   * "Baseline" on both, so a student sitting the follow-up at the end of term
+   * was told, on the last screen before submitting, that they were sitting
+   * the first one.
+   */
+  phase?: 'baseline' | 'followUp';
 }
 
 const LETTERS = ['A', 'B', 'C', 'D', 'E', 'F'];
@@ -47,7 +54,7 @@ const label = {
   color: 'var(--ink3)',
 };
 
-export function DiagnosticSession({ questions, imagesById, onSubmit, onCancel }: DiagnosticSessionProps) {
+export function DiagnosticSession({ questions, imagesById, onSubmit, onCancel, phase = 'baseline' }: DiagnosticSessionProps) {
   const [answers, setAnswers] = useState<(number | null)[]>(() => questions.map(() => null));
   const [at, setAt] = useState(0);
   const [reviewing, setReviewing] = useState(false);
@@ -84,7 +91,7 @@ export function DiagnosticSession({ questions, imagesById, onSubmit, onCancel }:
   if (reviewing) {
     return (
       <div className="mx-auto w-full max-w-[720px] px-6 py-12">
-        <div style={label}>Baseline</div>
+        <div style={label}>{phase === 'followUp' ? 'Follow-up' : 'Baseline'}</div>
         <h2 className="mt-4" style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 38, lineHeight: 1.15 }}>
           Check before you submit
         </h2>

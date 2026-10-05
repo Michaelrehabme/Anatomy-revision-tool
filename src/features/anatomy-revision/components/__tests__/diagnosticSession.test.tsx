@@ -45,6 +45,21 @@ function answerAndAdvance(choice: string, next: 'Next' | 'Review answers' = 'Nex
 }
 
 describe('DiagnosticSession', () => {
+  it('labels the review page with the sitting it is', () => {
+    const review = (phase?: 'baseline' | 'followUp') => {
+      const { unmount } = render(<DiagnosticSession questions={[q(1)]} imagesById={new Map()} onSubmit={vi.fn()} phase={phase} />);
+      fireEvent.click(screen.getByRole('button', { name: '1-right' }));
+      fireEvent.click(screen.getByRole('button', { name: 'Review answers' }));
+      const label = screen.getByRole('heading', { name: 'Check before you submit' }).previousElementSibling?.textContent;
+      unmount();
+      return label;
+    };
+    expect(review('baseline')).toBe('Baseline');
+    expect(review()).toBe('Baseline');
+    // It said "Baseline" here too.
+    expect(review('followUp')).toBe('Follow-up');
+  });
+
   it('never reveals whether an answer was right', () => {
     setup();
     fireEvent.click(screen.getByRole('button', { name: '1-right' }));

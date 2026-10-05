@@ -83,6 +83,51 @@ describe('account erasure covers every per-user subcollection', () => {
 });
 
 describe('deleting an account with a subscription still charging', () => {
+  const now = new Date('2026-09-29T12:00:00.000Z');
+  const running = { tier: 'individual', source: 'paddle', expiresAt: '2026-10-29T12:00:00.000Z' };
+
+  // The privacy policy says deletion is the student's at any time. It was not:
+  // somebody who had cancelled was made to wait out the paid period.
+  it('is allowed as soon as the subscription is cancelled, with paid time still to run', async () => {
+    const { hasLiveSubscription } = await import('../accountLifecycle');
+    expect(hasLiveSubscription({ ...running, cancelAt: '2026-10-29T12:00:00.000Z' }, now)).toBe(false);
+    // And when Paddle has already cancelled it.
+    expect(hasLiveSubscription({ ...running, expiresAt: '2026-09-20T12:00:00.000Z', cancelAt: '2026-09-20T12:00:00.000Z' }, now)).toBe(false);
+  });
+
+  it('is refused while it would still renew — including when access has stopped but the subscription has not', async () => {
+    const { hasLiveSubscription } = await import('../accountLifecycle');
+    expect(hasLiveSubscription(running, now)).toBe(true);
+    // A failed renewal: no access, but Paddle is still trying the card.
+    expect(hasLiveSubscription({ ...running, expiresAt: '2026-09-28T12:00:00.000Z', paymentIssueSince: '2026-09-28T12:00:30.000Z' }, now)).toBe(true);
+    // A refund: access ended, the subscription runs on to its next renewal unless cancelled.
+    expect(hasLiveSubscription({ ...running, expiresAt: '2026-09-28T12:00:00.000Z', refundedAt: '2026-09-28T12:00:00.000Z' }, now)).toBe(true);
+    // Either, once cancelled, is not.
+    expect(hasLiveSubscription({ ...running, expiresAt: '2026-09-28T12:00:00.000Z', refundedAt: '2026-09-28T12:00:00.000Z', cancelAt: '2026-09-28T13:00:00.000Z' }, now)).toBe(false);
+  });
+
+  it('says what to do in the words on the account screen, and that there is no wait afterwards', async () => {
+    const { SUBSCRIPTION_STILL_RENEWS } = await import('../accountLifecycle');
+    expect(SUBSCRIPTION_STILL_RENEWS).toBe(
+      'Your subscription is still set to renew, and would keep charging after your account is gone. ' +
+      'Cancel it first, under "Manage or cancel your subscription". You can then delete your account ' +
+      'straight away, without waiting for the time you have paid for to run out.',
+    );
+    // The control it names is the one that exists.
+    const { readFileSync } = await import('node:fs');
+    expect(readFileSync('src/features/billing/ManageSubscription.tsx', 'utf8')).toContain('Manage or cancel your subscription');
+  });
+
+  it('is preceded by a warning that unused paid time goes with the account, and the policy says the same', async () => {
+    const { readFileSync } = await import('node:fs');
+    expect(readFileSync('src/features/anatomy-revision/components/shared/AccountDataControls.tsx', 'utf8')).toContain(
+      'If you have paid for time you have not used yet, you give that up too.',
+    );
+    const privacy = readFileSync('src/features/legal/PrivacyPage.tsx', 'utf8').replace(/\s+/g, ' ');
+    expect(privacy).toContain('if you have a subscription that is still set to renew: cancel it');
+    expect(privacy).toContain('Once it is cancelled you can delete straight away');
+  });
+
   it('is refused while a Paddle subscription is live or has not started', async () => {
     const { hasLiveSubscription } = await import('../accountLifecycle');
     const now = new Date('2026-09-29T12:00:00.000Z');

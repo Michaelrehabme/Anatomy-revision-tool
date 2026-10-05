@@ -182,6 +182,15 @@ export default async function handler(req: Request): Promise<Response> {
     return new Response('Retry', { status: 500 });
   }
 
+  if (noAccount && action.entitlement.cancelAt) {
+    // A student who cancels may now delete their account without waiting out
+    // the paid period (accountLifecycle.ts). The cancellation then takes
+    // effect, weeks later, on an account that is rightly gone — and this
+    // event IS the subscription stopping. Nothing to cancel, nobody to tell.
+    console.info(`paddle-webhook: ${event.event_type} for ${action.uid}: cancelled, and the account is already deleted`);
+    return new Response('ok (no account)', { status: 200 });
+  }
+
   if (noAccount) {
     console.error(`paddle-webhook: ${event.event_type} for ${action.uid}, whose account no longer exists`);
     // Findable tomorrow, like a failed write — most likely a deleted account

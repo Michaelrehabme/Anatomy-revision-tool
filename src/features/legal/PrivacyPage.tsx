@@ -54,7 +54,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 
 export function PrivacyPage() {
   return (
-    <LegalLayout title="Privacy policy" updated="28 September 2026">
+    <LegalLayout title="Privacy policy" updated="5 October 2026">
       <p className="mt-4" style={legalProse}>
         LocusMSK is an anatomy revision app for musculoskeletal students. This policy explains what it collects, why,
         how long it keeps it, and what you can do about it.
@@ -157,6 +157,12 @@ export function PrivacyPage() {
           Delete your account at any time from your account screen and all of it goes immediately — your answers, your
           progress, your streaks, and the summary your class owner sees. There is no waiting period and no need to ask
           us.
+        </p>
+        <p>
+          One thing has to come first if you have a subscription that is still set to renew: cancel it, on the same
+          screen. We ask because deleting your account does not stop the payments, and you would have no account left
+          to stop them from. Once it is cancelled you can delete straight away — you do not have to wait for the time
+          you have paid for to run out, though deleting does give that time up.
         </p>
       </Section>
 

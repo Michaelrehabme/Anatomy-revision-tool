@@ -150,23 +150,51 @@ export interface DeletionProgress {
  * two steps, before anything slow happens.
  */
 /**
- * Whether the stored entitlement is a Paddle subscription still live or yet to
- * start — one that will keep charging after the account is gone.
+ * Whether the stored entitlement is a Paddle subscription that WILL CHARGE
+ * AGAIN — the one thing that makes deleting an account unsafe.
  *
  * Deleting then was the paywall trace's finding 5: nothing cancels in Paddle,
- * so the renewal still charges, and its webhook writes users/{uid} straight
- * back — personal data returning after an erasure, on an account the student
- * can no longer sign in to and cancel from.
+ * so the renewal still charges, and the account that could have cancelled it
+ * is gone.
+ *
+ * THE QUESTION IS "WILL IT CHARGE", NOT "IS THERE PAID TIME LEFT". It used to
+ * be the second, and that kept a student who had already cancelled waiting
+ * out the rest of the period before they could delete their data — while the
+ * privacy policy told them deletion was theirs at any time. A cancelled
+ * subscription charges nothing more, so there is nothing to protect them
+ * from; they lose the paid time they chose to walk away from, which the
+ * confirmation says.
+ *
+ *  - `cancelAt` present: cancelled, by them or by Paddle. Never live.
+ *  - otherwise, time still to run or yet to start: it renews. Live.
+ *  - otherwise, `paymentIssueSince` or `refundedAt`: access has stopped but
+ *    the subscription has not — Paddle is still retrying the card, or a
+ *    refund left it running to its next renewal. Live.
+ *  - otherwise it ran out and nothing says it is coming back. Not live.
+ *
+ * These fields are written by the payment webhook
+ * (billing/lib/paddleWebhook.ts) and cannot be written by the student
+ * (firestore.rules), so marking oneself "cancelled" to get past this is not
+ * available. A subscription cancelled before `cancelAt` existed has none
+ * until Paddle's next event for it, and is treated as it always was.
  */
 export function hasLiveSubscription(rawEntitlement: unknown, now: Date = new Date()): boolean {
   const entries = Array.isArray(rawEntitlement) ? rawEntitlement : [rawEntitlement];
   return entries.some((e) => {
     if (!e || typeof e !== 'object') return false;
-    const { source, tier, expiresAt } = e as Record<string, unknown>;
+    const { source, tier, expiresAt, cancelAt, paymentIssueSince, refundedAt } = e as Record<string, unknown>;
     if (source !== 'paddle' || tier === 'free') return false;
-    return expiresAt == null || (typeof expiresAt === 'string' && Date.parse(expiresAt) > now.getTime());
+    if (typeof cancelAt === 'string') return false;
+    if (expiresAt == null || (typeof expiresAt === 'string' && Date.parse(expiresAt) > now.getTime())) return true;
+    return typeof paymentIssueSince === 'string' || typeof refundedAt === 'string';
   });
 }
+
+/** Said when deletion is refused. Names the control as the account screen labels it. */
+export const SUBSCRIPTION_STILL_RENEWS =
+  'Your subscription is still set to renew, and would keep charging after your account is gone. ' +
+  'Cancel it first, under "Manage or cancel your subscription". You can then delete your account ' +
+  'straight away, without waiting for the time you have paid for to run out.';
 
 /** Firebase refuses to delete an Auth user signed in longer ago than this. */
 const RECENT_SIGN_IN_MS = 5 * 60 * 1000;
@@ -188,11 +216,7 @@ export async function deleteAccountData(
   // already gone — leaving a paying student half-deleted and reading as free.
   const profileSnap = await getDoc(doc(db, 'users', uid));
   if (profileSnap.exists() && hasLiveSubscription(profileSnap.data().entitlement)) {
-    throw refusal(
-      'subscription-active',
-      'You still have a subscription. Cancel it under Manage subscription first — otherwise it keeps ' +
-        'charging after your account is gone — then delete your account.',
-    );
+    throw refusal('subscription-active', SUBSCRIPTION_STILL_RENEWS);
   }
   const current: User | null = getFirebaseAuth().currentUser;
   // Anonymous accounts cannot sign in again, so the check would strand them;

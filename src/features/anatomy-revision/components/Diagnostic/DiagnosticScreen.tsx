@@ -114,6 +114,7 @@ export function DiagnosticScreen({
       <DiagnosticSession
         questions={questions}
         imagesById={imagesById}
+        phase={phase}
         onCancel={onDone}
         onSubmit={async ({ correct, total, questionIds, durationMs }) => {
           setScore({ correct, total });
