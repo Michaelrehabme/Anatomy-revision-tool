@@ -1,5 +1,5 @@
-import { initializeApp, cert, getApps, type App } from 'firebase-admin/app';
-import { getFirestore, FieldValue, type Firestore } from 'firebase-admin/firestore';
+import { FieldValue, type Firestore } from 'firebase-admin/firestore';
+import { adminDb } from './lib/firebaseAdmin';
 import {
   verifyPaddleSignature,
   actionForEvent,
@@ -57,14 +57,6 @@ const PADDLE_API = {
 
 /** Paddle wants an answer "within five seconds"; this leaves room for the write after it. */
 const PADDLE_API_TIMEOUT_MS = 3000;
-
-function adminApp(): App {
-  const existing = getApps();
-  if (existing.length > 0) return existing[0];
-  const raw = process.env.FIREBASE_SERVICE_ACCOUNT;
-  if (!raw) throw new Error('FIREBASE_SERVICE_ACCOUNT is not set');
-  return initializeApp({ credential: cert(JSON.parse(raw)) });
-}
 
 /**
  * A durable record of an event that verified and did not do what it should,
@@ -136,7 +128,7 @@ export default async function handler(req: Request): Promise<Response> {
     return new Response('ok (dry run)', { status: 200 });
   }
 
-  const db = getFirestore(adminApp());
+  const db = adminDb();
   const ref = db.doc(`users/${action.uid}`);
   const eventAt = event.occurred_at ?? new Date().toISOString();
 
@@ -309,7 +301,7 @@ async function handleAdjustment(event: PaddleAdjustmentEvent): Promise<Response>
     return new Response('ok (dry run)', { status: 200 });
   }
 
-  const db = getFirestore(adminApp());
+  const db = adminDb();
   const failureId = event.event_id ?? `${action.adjustmentId}-${eventAt}`;
   const fail = (uid: string, error: string) =>
     recordFailure(db, failureId, {

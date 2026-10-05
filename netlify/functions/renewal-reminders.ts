@@ -1,5 +1,5 @@
-import { initializeApp, cert, getApps, type App } from 'firebase-admin/app';
-import { getFirestore, FieldValue } from 'firebase-admin/firestore';
+import { FieldValue } from 'firebase-admin/firestore';
+import { adminDb } from './lib/firebaseAdmin';
 import { reminderDue, reminderEmail, type ReminderDue } from '../../src/features/billing/lib/renewalReminders';
 import type { Entitlement } from '../../src/features/anatomy-revision/lib/entitlement';
 
@@ -41,14 +41,6 @@ const MONTHLY_PRICE = '£4.99';
 /** One run handles at most this many accounts. Netlify stops a scheduled function at 30 seconds. */
 const BATCH = 200;
 
-function adminApp(): App {
-  const existing = getApps();
-  if (existing.length > 0) return existing[0];
-  const raw = process.env.FIREBASE_SERVICE_ACCOUNT;
-  if (!raw) throw new Error('FIREBASE_SERVICE_ACCOUNT is not set');
-  return initializeApp({ credential: cert(JSON.parse(raw)) });
-}
-
 async function send(to: string, reminder: ReminderDue): Promise<'sent' | 'dry-run'> {
   const key = process.env.RESEND_API_KEY;
   const { subject, text } = reminderEmail(reminder, { price: MONTHLY_PRICE, manageUrl: MANAGE_URL });
@@ -68,7 +60,7 @@ async function send(to: string, reminder: ReminderDue): Promise<'sent' | 'dry-ru
 }
 
 export default async function handler(): Promise<Response> {
-  const db = getFirestore(adminApp());
+  const db = adminDb();
   const now = new Date();
 
   // Only Paddle subscribers can be due one of ours. Licensed and

@@ -1,5 +1,5 @@
-import { initializeApp, cert, getApps, type App } from 'firebase-admin/app';
-import { getFirestore } from 'firebase-admin/firestore';
+import { adminDb } from './lib/firebaseAdmin';
+import { bearerToken, uidForToken } from './lib/idToken';
 
 /**
  * POST /.netlify/functions/paddle-portal
@@ -18,13 +18,8 @@ import { getFirestore } from 'firebase-admin/firestore';
  * their invoices, their subscription to cancel. The uid in a request body
  * proves nothing; a signed token from Firebase does.
  *
- * WHY THE TOKEN IS CHECKED OVER HTTP rather than with firebase-admin/auth.
- * That module pulls in jwks-rsa, which `require()`s the ESM-only `jose`, and
- * the two cannot load together in the bundled function runtime — it fails at
- * import with ERR_REQUIRE_ESM, so every request 502s. Google's identity
- * toolkit answers the same question over a plain fetch with no dependency at
- * all: hand it the token, get back the account, or get back an error. The web
- * API key it takes is the public one the browser already ships.
+ * How the token is checked, and why over HTTP rather than with
+ * firebase-admin/auth, is lib/idToken.ts — shared with the content function.
  *
  * REQUIRED ENVIRONMENT (set in Netlify, never committed):
  *   PADDLE_API_KEY            live or sandbox API key, matching the site
@@ -40,37 +35,6 @@ const PADDLE_API = {
   sandbox: 'https://sandbox-api.paddle.com',
 };
 
-function adminApp(): App {
-  const existing = getApps();
-  if (existing.length > 0) return existing[0];
-  const raw = process.env.FIREBASE_SERVICE_ACCOUNT;
-  if (!raw) throw new Error('FIREBASE_SERVICE_ACCOUNT is not set');
-  return initializeApp({ credential: cert(JSON.parse(raw)) });
-}
-
-/**
- * The account a Firebase ID token belongs to, or null if the token is not
- * valid — expired, tampered with, or from another project. Google does the
- * verifying; a bad token comes back as an error, never as an account.
- */
-async function uidForToken(idToken: string): Promise<string | null> {
-  const apiKey = process.env.VITE_FIREBASE_API_KEY ?? process.env.FIREBASE_API_KEY;
-  if (!apiKey) {
-    console.error('paddle-portal: no Firebase web API key to verify tokens with');
-    return null;
-  }
-
-  const response = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${apiKey}`, {
-    method: 'POST',
-    headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({ idToken }),
-  });
-  if (!response.ok) return null;
-
-  const body = (await response.json()) as { users?: { localId?: string }[] };
-  return body.users?.[0]?.localId ?? null;
-}
-
 export default async function handler(req: Request): Promise<Response> {
   if (req.method !== 'POST') return new Response('Method not allowed', { status: 405 });
 
@@ -84,17 +48,16 @@ export default async function handler(req: Request): Promise<Response> {
   // same fail-safe direction readPaddleConfig takes in the browser.
   const base = apiKey.startsWith('pdl_live_') ? PADDLE_API.production : PADDLE_API.sandbox;
 
-  const authorization = req.headers.get('authorization') ?? '';
-  const idToken = authorization.startsWith('Bearer ') ? authorization.slice(7) : null;
+  const idToken = bearerToken(req);
   if (!idToken) return new Response('Unauthorized', { status: 401 });
 
-  const uid = await uidForToken(idToken);
+  const uid = await uidForToken(idToken, 'paddle-portal');
   if (!uid) {
     console.warn('paddle-portal: rejected an unverifiable ID token');
     return new Response('Unauthorized', { status: 401 });
   }
 
-  const snapshot = await getFirestore(adminApp()).doc(`users/${uid}`).get();
+  const snapshot = await adminDb().doc(`users/${uid}`).get();
   const entitlement = snapshot.data()?.entitlement as Record<string, unknown> | undefined;
   const customerId = typeof entitlement?.customerId === 'string' ? entitlement.customerId : null;
   if (!customerId) {

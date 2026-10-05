@@ -1,7 +1,8 @@
 {
   "extends": "./tsconfig.scripts.json",
   "compilerOptions": {
-    "lib": ["ES2022", "DOM"]
+    "lib": ["ES2022", "DOM"],
+    "resolveJsonModule": true
   },
   "include": ["netlify/functions", "netlify/tests", "src/features/billing/lib"]
 }
