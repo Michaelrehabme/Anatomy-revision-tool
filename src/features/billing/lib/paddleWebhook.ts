@@ -153,7 +153,15 @@ export function isStale(current: Record<string, unknown> | undefined, eventAt: s
  *    still needs the portal to see their invoices;
  *  - paymentIssueSince, when the SAME subscription was already past due: the
  *    message says since when, and a second event during Paddle's retries must
- *    not move that date forward.
+ *    not move that date forward;
+ *  - expiresAt, on a past-due event only, when the SAME subscription's
+ *    stored expiry is earlier than the one this event works out. A past-due
+ *    event may pull an expiry back and may never push one forward: whatever
+ *    period Paddle reports while the payment is outstanding, it has not been
+ *    paid for. (Without this, an event arriving after the unpaid period had
+ *    itself run out would have moved the date to the end of it — still in
+ *    the past, so no access, but the date on the account screen would have
+ *    been wrong.)
  * Nothing else survives — in particular `refundedAt`, `cancelAt` and an
  * earlier `paymentIssueSince` all go the moment an event without them
  * arrives, which is how "active again" clears them.
@@ -172,8 +180,15 @@ export function nextEntitlement(
       ? current.paymentIssueSince
       : undefined;
   const paymentIssueSince = since && earlier && earlier < since ? earlier : since;
+  const sameSubscription = current?.source === 'paddle' && current?.externalId === action.entitlement.externalId;
+  const storedExpiry = typeof current?.expiresAt === 'string' ? Date.parse(current.expiresAt) : NaN;
+  const nextExpiry = action.entitlement.expiresAt ? Date.parse(action.entitlement.expiresAt) : NaN;
+  const expiresAt =
+    since && sameSubscription && !Number.isNaN(storedExpiry) && !Number.isNaN(nextExpiry) && storedExpiry < nextExpiry
+      ? (current?.expiresAt as string)
+      : action.entitlement.expiresAt;
   return Object.fromEntries(
-    Object.entries({ ...action.entitlement, paymentIssueSince, eventAt, consent, customerId }).filter(
+    Object.entries({ ...action.entitlement, expiresAt, paymentIssueSince, eventAt, consent, customerId }).filter(
       ([, v]) => v !== undefined,
     ),
   );

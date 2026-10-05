@@ -534,6 +534,29 @@ describe('a failed renewal', () => {
     });
   });
 
+  it('can pull a stored expiry back, and can never push one forward', () => {
+    const paidTo = '2026-05-12T10:18:47.635628Z';
+    const stored = { tier: 'individual', source: 'paddle', externalId: 'sub_123', expiresAt: paidTo, eventAt: '2026-04-12T10:19:00.000000Z' };
+
+    // A month into Paddle's retries the unpaid period has itself run out, and
+    // an event then would work out ITS end. The stored date does not move.
+    const late = actionForEvent(pastDue({}, { event_type: 'subscription.updated', occurred_at: '2026-06-13T08:00:00.000000Z' }), new Date('2026-06-13T08:00:05.000Z'));
+    if (late.kind !== 'grant') throw new Error('expected grant');
+    expect(late.entitlement.expiresAt).toBe('2026-06-12T10:18:47.635628Z');
+    expect(nextEntitlement(stored, late, '2026-06-13T08:00:00.000000Z')).toMatchObject({ expiresAt: paidTo });
+
+    // If an `active` event carrying the unpaid period got in first, past due pulls it back.
+    const granted = { ...stored, expiresAt: '2026-06-12T10:18:47.635628Z', eventAt: '2026-05-12T10:19:00.000000Z' };
+    const failed = actionForEvent(pastDue(), new Date('2026-05-12T10:20:00.000Z'));
+    if (failed.kind !== 'grant') throw new Error('expected grant');
+    expect(nextEntitlement(granted, failed, '2026-05-12T10:19:26.014628Z')).toMatchObject({ expiresAt: paidTo });
+
+    // Only a past-due event is held like this: a paid renewal moves it forward as it always did.
+    const renewed = actionForEvent(pastDue({ status: 'active' }, { event_type: 'subscription.updated', occurred_at: '2026-05-14T09:00:00.000000Z' }), new Date('2026-05-14T09:00:05.000Z'));
+    if (renewed.kind !== 'grant') throw new Error('expected grant');
+    expect(nextEntitlement(stored, renewed, '2026-05-14T09:00:00.000000Z')).toMatchObject({ expiresAt: '2026-06-12T10:18:47.635628Z' });
+  });
+
   it('when Paddle gives up and cancels, the flag goes and access stays ended', () => {
     const first = nextEntitlement(undefined, actionForEvent(pastDue(), AFTER) as Extract<WebhookAction, { kind: 'grant' }>, '2026-05-12T10:19:26.014628Z');
     const now = new Date('2026-06-11T10:20:00.000Z');
