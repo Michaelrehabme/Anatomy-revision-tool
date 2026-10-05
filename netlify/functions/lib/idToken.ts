@@ -56,7 +56,8 @@ function lookupUrl(apiKey: string): string {
  */
 export async function uidForToken(idToken: string, caller: string): Promise<string | null> {
   const emulated = isLoopback(process.env.FIREBASE_AUTH_EMULATOR_HOST);
-  const apiKey = process.env.VITE_FIREBASE_API_KEY ?? process.env.FIREBASE_API_KEY ?? (emulated ? 'emulator' : '');
+  // `||`, not `??`: a variable set to nothing (an .env template) is not a key.
+  const apiKey = process.env.VITE_FIREBASE_API_KEY || process.env.FIREBASE_API_KEY || (emulated ? 'emulator' : '');
   if (!apiKey) {
     console.error(`${caller}: no Firebase web API key to verify tokens with`);
     return null;

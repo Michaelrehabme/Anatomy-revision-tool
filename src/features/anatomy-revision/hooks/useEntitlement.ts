@@ -255,11 +255,20 @@ export function useEntitlement(uid: string | null): UseEntitlement {
 
   const free = freeAreasFor(freeArea);
 
+  // An account whose first read has not finished is still loading, FROM THE
+  // RENDER IT ARRIVES IN. The effect above sets `loading` a moment later, and
+  // for that one render in between the hook used to report a settled answer
+  // of "free" for an account nobody had asked about yet. Harmless while gates
+  // only drew from it; not harmless once something FETCHES on a settled
+  // answer — the content loader asked the server for the free area of an
+  // account before its entitlement had been read, then asked again.
+  const unread = uid !== null && settledFor.current !== uid;
+
   return {
     entitlement,
     tier: effectiveTier(entitlement),
-    loading,
-    known,
+    loading: loading || unread,
+    known: known && !unread,
     canAccess: (area) => canAccessArea(area, entitlement, new Date(), free),
     locked: (allAreas) => lockedAreas(allAreas, entitlement, new Date(), free),
     areas: entitledAreas(AREAS, entitlement, new Date(), free),

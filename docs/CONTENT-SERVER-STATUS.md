@@ -1,299 +1,258 @@
 # Status: paid content behind the server
 
-Companion to `DESIGN-CONTENT-BEHIND-SERVER.md`. Written 4 Oct 2026 on the
-`content-server` branch (from 3abd1d9, 487 structures). Steps 2, 3 and 4 of the
-design's seven are done. Steps 1, 5, 6 and 7 are not started. **The seed is
-still bundled and the paywall is still enforced only in the browser** — nothing
-here protects anything yet. What is done is the part that could be done
-without changing what a student sees.
+Companion to `DESIGN-CONTENT-BEHIND-SERVER.md`. Rewritten 5 Oct 2026 on branch
+`content-server-2` (from `581dfe1`, what was live that day; 487 structures).
 
-## What is done
+**All seven steps are built. Production is NOT switched over.** The default
+build is still `bundled`: every fact ships in the bundle and the paywall is
+still drawn by the browser. Nothing here protects anything until the owner
+sets `VITE_CONTENT_SOURCE=server` and redeploys — see "Rollout".
 
-### Step 2 — a structure type with no facts
+## What exists
 
-- `types/structureIndex.ts`: `StructureIndexEntry`, and the two lists that say
-  which side of the split every field is on, `STRUCTURE_INDEX_FIELDS` and
-  `STRUCTURE_FACT_FIELDS`. They are the only place that decides it. Three
-  type-level checks at the foot of the file stop a new field on
-  `AnatomyStructure` compiling until it is in exactly one list.
-- `data/structureIndex.ts`: `STRUCTURE_INDEX`, the one import for code that
-  needs no facts. Today it is the seed seen through the narrower type.
-- Narrowed to the index type: `admin/lib/analyticsAggregation.ts`,
-  `educator/lib/rollupAggregation.ts`, `CreateAssignmentForm`, `demoData`, the
-  achievement tallies in `useRevisionSession`, `buildDiagnostic`,
-  `filterStructures`, `linkImages`, `promptImagesFor`, `buildLocateQuestions`,
-  `bodyRank`, `areasOf`/`primaryAreaOf`, and `pwa/offline/areaImages.ts`.
-- **Not narrowed, because they read facts:** see "Mastery" below.
-
-### Step 3 — the cut, at build time
-
-- `npm run generate:content` (`src/scripts/buildContent.ts`) runs at the start
-  of `build` and `build:demo`, after `generate:offline`. It reads the seed and
-  writes, all git-ignored:
-  - `src/features/anatomy-revision/data/content/generated/structureIndex.json`
-    and `vocabulary.json` — for the bundle;
-  - `.content/areas/<area>.json` — `{ area, structures, version }`, the facts;
-  - `.content/version.json` — the version and a per-area hash, size and count.
-- `vite.config.ts` reads the version file and defines `__CONTENT_VERSION__`
-  (`'dev'` when the file is absent). `data/content/version.ts` exports it as
-  `CONTENT_VERSION`. Nothing imports it yet, so it is not in the bundle.
-- `data/content/split.ts`: `toIndexEntry`, `toFacts`, `joinFacts`,
-  `buildAreaFacts`, `joinLoadedAreas`. Pure and Node-free: the build cuts with
-  it and the app will join with it.
-- The seed files stay the source of truth. `validate-content`,
-  `generate:provenance`, `generate:offline` and the authoring tools read
-  nothing written here.
-
-Sizes (487 structures):
-
-| File | Raw | Gzipped |
+| Step | What | Where |
 | --- | --- | --- |
-| `structureIndex.json` | 172.6 kB | 13.6 kB |
-| `vocabulary.json` | 12.5 kB | 2.7 kB |
-| shoulder | 40.9 kB | 9.2 kB |
-| elbow | 17.2 kB | 4.7 kB |
-| wrist-hand | 64.1 kB | 12.0 kB |
-| hip | 33.9 kB | 7.6 kB |
-| knee | 30.0 kB | 6.7 kB |
-| ankle-foot | 60.1 kB | 11.4 kB |
-| cervical-spine | 34.2 kB | 7.6 kB |
-| thoracic-spine | 32.1 kB | 7.7 kB |
-| lumbar-spine | 30.1 kB | 6.6 kB |
-| all nine areas | 342.7 kB | 73.5 kB |
+| 1 | The free area lives on the account, held to one choice and one change by the rules | `firestore.rules`, `rules-tests/`, `hooks/useEntitlement.ts`, `data/entitlementRepository.ts`, `lib/freeAreaRecord.ts` |
+| 2 | A structure type with no facts | `types/structureIndex.ts`, `data/structureIndex.ts` |
+| 3 | The cut, generated without being asked | `src/scripts/buildContent.ts`, `src/scripts/lib/ensureContent.ts` |
+| 4 | Distractors that survive one area | `lib/questionGenerators/sources.ts` |
+| 5 | The content function | `netlify/functions/content-area.ts`, `netlify/functions/lib/`, `netlify/tests/content-area.test.ts`, `lib/entitlementRecord.ts` |
+| 6 | The app runs with only some areas in hand | `data/content/` (`contentSource.ts`, `bundledContent*.ts`, `areaFacts.ts`, `serverLoader.ts`, `lease.ts`), `data/contentCache.ts`, `hooks/useAnatomyContent.ts`, `components/shared/AreaFactsNotice.tsx`, `pwa/offline/areaFactsPrefetch.ts` |
+| 7 | The guards, and the demo fixture | `eslint.config.js`, `src/scripts/checkBundleForFacts.ts`, `data/content/bundledContent.fixture.ts` |
 
-### Step 4 — distractors that survive one area
+### The switch
 
-- `lib/questionGenerators/sources.ts`: `DistractorSources { index, vocabulary }`,
-  an optional fourth argument to `generateRevisionSet` and `buildStarterSet`.
-  The first argument is now "the structures whose facts are loaded". No caller
-  passes sources yet, so every session is built exactly as before.
-- Names come from the index: ligament attachment boxes (`identifyTyped.ts`)
-  and select-all attachment questions (`multiSelect.ts`).
-- The vocabulary fills in where a pool reached across the whole dataset: the
-  nerve MCQ, the OINA nerve and action top-up, and every blood-supply wrong
-  answer. It is consulted **only** when the index holds structures that are not
-  loaded (`vocabularyWhenPartial`).
-- `lib/questionGenerators/questionBase.ts`: the question header, shared. Seven
-  copies became one, which is what kept the entry chunk from growing.
-- `lib/__tests__/singleAreaGeneration.test.ts` builds each of the nine areas
-  from its payload alone and checks counts, leaks and truth (below).
+`VITE_CONTENT_SOURCE` = `bundled` (default) | `server` | `fixture`, read by
+`vite.config.ts` at build time. It is an **alias**, not a runtime branch:
+everything imports `data/content/bundledContent`, and the config points that
+name at `bundledContent.ts` (the seed), `.server.ts` (index + vocabulary, no
+facts, a loader) or `.fixture.ts` (two areas). A server build's module graph
+does not contain the seed.
 
-### Proof that nothing changed
+- A `server` build with `VITE_PERSISTENCE=local` has nobody to ask as, and is
+  given the fixture.
+- The test runner is always `bundled`, whatever `.env` says.
+- `npm run build` ends with `check:bundle`, which fails a server or fixture
+  build if a structure's description is in any built file.
+- Not added to `.env.example` or `vite-env.d.ts`: another session had both
+  open. Add `VITE_CONTENT_SOURCE` and `VITE_FIREBASE_EMULATORS` there.
 
-85 fixed configurations (every area × three seeds, every type, practice,
-assessment, adaptive, mastery-weighted, priority, the starter set, the
-diagnostic, assignment previews), 22,989 questions, dumped before the work and
-after each step: **byte-identical**, same hash every time. There are no
-differences to justify.
+### The free area (step 1)
 
-With one area loaded, against the same area with everything loaded: the same
-6,200 questions are built in all nine areas — every count equal, not merely
-within 10%. 5,189 have the same choices. 1,011 have different wrong answers,
-all of the kinds expected: OINA facts (origin, insertion, nerve, action, both
-blood-supply kinds), the nerve MCQ, and nine select-all questions whose
-sampling order moved.
+`users/{uid}.freeArea = { area, chosenAt, switches }`, `chosenAt` a server
+timestamp. The rules allow: a first write (switches 0 or 1, `chosenAt ==
+request.time`); one change, `switches` 0 → 1, a different area, thirty days
+after the stored `chosenAt`; nothing else. Refused, each with a rules test:
+choosing twice; changing early; changing twice; a change that does not count
+itself or counts backwards; a backdated or future `chosenAt`; re-timing or
+re-counting without changing; removing the field; anything not one of the
+nine areas or not this shape; another account's document; an entitlement
+slipped in beside a valid choice.
 
-Entry chunk: 1,921,275 B before, 1,920,958 B after (limit 2,097,152 B).
+A device's old choice is **moved up once, dated the day it is moved.** A
+student who picked three weeks ago waits thirty days from the move, not nine.
+Accepting the device's date would make "migration" a way to backdate.
 
-## What the design got wrong, or predates
+**Not stopped** (tested as a known limit): the owner may delete their profile
+(erasure) and a new profile may carry a first pick — so delete-and-recreate
+gives a fresh choice. So does a second account. See "Risks".
 
-1. **Fields it did not list.** Index: `audioUrl`. Facts: `bloodSupply`,
-   `needsReview`, `palpability`, `dermatomeRelation`, `referredPainPattern`,
-   `functionalContext`. `needsReview` is a fact because it only qualifies
-   `attachmentStructureIds`.
-2. **`imageIds` cannot be written into the index after linking.** Linked, the
-   index was 1.08 MB of turntable frame ids. It is cut from
-   `AUTHORED_STRUCTURES` (new export of `data/seed/index.ts`) and the app must
-   run `linkImages` over it at load, as it does over the seed today.
-3. **"70–80% of seed bytes are facts, ~300 kB freed."** Measured as JSON: facts
-   are about 280 kB of 452 kB, 62%. The index is 173 kB. Expect the entry chunk
-   to fall by rather less than 280 kB, and the muscles' two raw JSON imports
-   (`data/source/*.raw.json`) leave with the seed.
-4. **The vocabulary list.** The clinical generators (myotome, special test,
-   palpation, injury, functional) and the joint-type MCQ take their wrong
-   answers from the session's own pool, never from the dataset, so one area
-   loaded changes nothing for them. The vocabulary carries `jointTypes`,
-   `myotomes` and `specialTests` as the design asks, but **nothing reads
-   them**. Origins, insertions and action sentences are not in it at all and
-   are not needed: the counts hold without them.
-5. **Arteries were not in the design** (blood supply landed after it), and they
-   are the one place the vocabulary is essential: wrong arteries come from
-   OUTSIDE the structure's areas by rule. A flat or region-keyed list would
-   have broken the rule that keeps the question true — a neighbour's artery
-   must never be offered as wrong — for a structure in two areas with one
-   loaded. So `vocabulary.arteries` is keyed by area, then region. See the
-   decisions below.
-6. **"The per-area image download (`pwa/anatomyCache.ts`)".** That file is the
-   runtime image cache. The per-area download is `features/pwa/offline/`.
-7. **"A lint rule bans importing `data/seed` from app code."** Too broad:
-   `images.seed.ts`, every `*.generated.ts` plate file and the hotspot chunks
-   live in `data/seed` and stay bundled. The rule must ban the structure seeds
-   and `bloodSupply.generated.ts` (in practice: `data/seed` index and
-   `structures.*.seed`), or the images move to their own directory first.
-8. **`educator/lib/assignmentScope.ts` "must count from the index".** Half
-   right: `poolSize` can, `available` is a count of generated questions and
-   needs facts for every area. See the decisions.
-9. **The content version** is a hash of the facts only, not of the index. A
-   deploy that changes a picture or an alias must not send every device back
-   for nine areas.
+### The content function (step 5)
 
-## Next steps
+`GET /.netlify/functions/content-area?area=<area>&v=<version>` + `Authorization:
+Bearer <Firebase ID token>`.
 
-### Step 1 — free area to Firestore (blocked on the rules work)
+| Answer | When |
+| --- | --- |
+| 405 | not GET (OPTIONS included: no preflight is ever answered) |
+| 403 | an `Origin` that is not this site's (or one in `CONTENT_ALLOWED_ORIGINS`) |
+| 401 | no token; a token Google will not vouch for; a deleted account; no API key configured |
+| 400 | not one of the nine areas (before the token is checked) |
+| 429 | over 30 an hour (`data/content/fetchLimit.ts`), with `Retry-After` |
+| 503 | the account could not be read (includes a missing service account) |
+| 403 | the account may not have this area |
+| 200 | `{ version, area, leaseUntil, structures }` |
 
-`firestore.rules`, `rules-tests/`, `firebase.json` and `vitest.rules.config.ts`
-have uncommitted changes in the main checkout (the wildcard-hole fix). Step 1
-must be built on top of that once it is committed, not beside it.
+Every answer is `Cache-Control: private, no-store`; no CORS header is ever
+sent. The decision is `lib/entitlementRecord.areaAccess`, built from the
+app's own `resolveEntitlement`, `freeAreasFor`, `canAccessArea`. No admin
+bypass, as in the app. The count is kept on `users/{uid}.contentFetch`
+(pinned in the rules; `update` only, so a deleted profile is not recreated)
+and in the instance's memory, which refuses without a database read.
 
-- `lib/preferences.ts` `getFreeAreaChoice` / `setFreeAreaChoice`
-  (`FREE_AREA_KEY`): becomes the local-mode fallback and the migration source.
-- `hooks/useEntitlement.ts`: reads and writes the choice; `chooseFreeArea`.
-- `lib/entitlement.ts`: `freeAreasFor`, `canSwitchFreeArea`,
-  `FREE_AREA_SWITCH_DAYS` (30), `FREE_AREA_SWITCHES_ALLOWED` (1). Already pure;
-  the function will import them.
-- `data/entitlementRepository.ts` (and its `.demo.ts` alias): add
-  read/write of `users/{uid}.freeArea = { area, chosenAt, switches }`.
-- Rules: create once; one update, only when `switches` goes 0 → 1 and
-  `request.time` is 30 days past the stored `chosenAt`; `chosenAt` must equal
-  `request.time`. Rules tests for each refusal.
-- Migrate the stored value on first sign-in. `data/accountLifecycle.ts` and
-  `scripts/accountData.ts` export and delete the user doc and need the field.
+### Leases and the device copy (step 6)
 
-### Step 5 — the content function
+- Lease: `min(entitlement expiry, now + 14 days)`; 14 days for the free area.
+- A copy inside its lease is used without asking. Under half the lease left →
+  renewed when online, at most once a day. Version changed → refetched.
+- 403 → the copy is deleted. No answer → the copy stands while its lease
+  runs; once it is over the copy is deleted and the area reads as not on the
+  device.
+- Another account's copies are deleted on load; sign-out clears all; an area
+  the account lost is deleted only if the entitlement was actually **read**
+  (`UseEntitlement.known`), never when the read failed.
+- IndexedDB `locusmsk-content`, store `areas`, key `uid:area:version`.
 
-- New `netlify/functions/content-area.ts`. Move `adminApp()` and the
-  `accounts:lookup` token check out of `paddle-portal.ts` into
-  `netlify/functions/lib/`.
-- Import `.content/areas/*.json` and `.content/version.json` statically so
-  esbuild bundles them. `tsconfig.functions.json` needs `resolveJsonModule` and
-  `src/features/anatomy-revision/lib/entitlement.ts` in `include`.
-- Entitlement: `resolveEntitlement` / `canAccessArea` from `lib/entitlement.ts`;
-  the cohort lookup mirrors `entitlementRepository.ts` (`users/{uid}.cohort` →
-  `cohorts/{id}.licensedUntil`); the free area comes from step 1.
-- Respond `{ version, area, leaseUntil, structures }`, `Cache-Control: private,
-  no-store`. Allow/deny matrix tests: no token, bad token, unknown area, free
-  user on and off their area, active, expired, not yet started, cohort member
-  licensed and lapsed.
-- `scripts/deployCheck.mjs` should fail when `.content/version.json` is
-  missing, since a CLI deploy bundles functions from the working tree.
-- The service worker must not cache the response: check `runtimeCaching` and
-  `navigateFallbackDenylist` in `vite.config.ts` cover `/.netlify/functions/`.
+## Sizes
 
-### Step 6 — the repository split
+Measured 5 Oct 2026. Entry chunk limit 2,097,152 B.
 
-- `data/structureIndex.ts` becomes
-  `linkImages(structureIndex.json, IMAGE_ASSETS)`. Its importers do not change.
-- New `loadAreaFacts(areas)` and `data/contentCache.ts` (IndexedDB, keyed
-  `uid:area:version`, with the lease). `joinLoadedAreas` in `split.ts` already
-  turns payloads into structures.
-- `hooks/useAnatomyContent.ts` must return three things, not one: the index
-  (every structure), `structures` (loaded only) and `sources`. Then every
-  generator call passes `content.sources`: `App.tsx` (5), `RevisionSetup` (2),
-  `MobileRevisionSetup` (2), `Today`, `MobileToday`, `Progress` (2),
-  `ClassAssignments`, `DiagnosticScreen`, and both `buildStarterSet` calls.
-- `listStructures` / `getStructure` in `localRepository.ts`,
-  `memoryRepository.ts` and `firestoreRepository.ts` read `ALL_STRUCTURES`.
-- Screens that list structures have to choose: the Atlas and Progress
-  (`useAtlasList`, `useProgressData`) currently walk `content.structures` and
-  would silently shrink to the loaded areas.
-- Side-by-side check: the test "nine areas joined from their payloads build
-  what the seed builds" is the model — the flag can run the same comparison in
-  the browser.
+See the hand-over report for the entry chunk in each mode; payloads as
+generated (`notes` and `source` no longer served):
 
-### Step 7 — remove the seed
+| File | Raw |
+| --- | --- |
+| `structureIndex.json` (now with `factKinds`) | 197.4 kB |
+| `vocabulary.json` | 12.0 kB |
+| `demoFixture.json` (hip + wrist & hand) | 79.1 kB |
+| shoulder | 35.9 kB |
+| elbow | 15.6 kB |
+| wrist-hand | 50.9 kB |
+| hip | 28.2 kB |
+| knee | 25.2 kB |
+| ankle-foot | 46.5 kB |
+| cervical-spine | 29.4 kB |
+| thoracic-spine | 26.8 kB |
+| lumbar-spine | 25.7 kB |
 
-- Still importing structure seeds in app code: the three repositories,
-  `useRevisionSession.ts` and `educator/lib/studentRollup.ts`
-  (`STRUCTURES_BY_ID`, for mastery levels), `educator/lib/assignmentScope.ts`,
-  `educator/demo/cohortAnalytics.demo.ts`, `hotspotEditor/HotspotEditorApp.tsx`
-  and `dev/HotspotAuthoring.tsx` (names only — move to `STRUCTURE_INDEX`).
-- The build check must scan **every** chunk in `dist/assets`, not the entry
-  alone: the admin, educator and legal chunks are public too. Use descriptions
-  as the canary, not origins — "Ischial tuberosity" is an origin and a
-  landmark's name.
-- The diagnostic change, the lint rule (see 7 above), the demo fixture.
+## Proof that `bundled` did not change
 
-## Newer features the design predates
+`lib/__tests__/questionDump.test.ts` (skipped unless `QUESTION_DUMP` is set)
+writes every question of 69 fixed configurations — 26,695 questions — with
+the clock fixed. Run at `581dfe1` in a clean checkout and at this branch:
+**byte-identical**, sha256 `629965d3…9a06bb`.
 
-**Offline downloads (`features/pwa/offline/`).** `areaImages.ts` now needs
-only the index, so manifests can still be generated and matched after step 7.
-The gate is `access.canAccess(area)` in `OfflineSection.tsx` and
-`useOfflineAutoUpdate.ts`. The comment on `offlineSource.ts` promises signed
-manifests; the design does not protect images at all, so the server check that
-matters is the facts fetch. In step 6 `downloadArea.ts` /
-`offlineController.ts` should call `loadAreaFacts([area])` as part of a
-download and treat a 403 as "the source said no", which they already handle.
-A content-version change must mark a downloaded area stale the way a manifest
-hash change does (`areaStatus.ts`, `autoUpdate.ts`). The 14-day lease is the
-open question: a downloaded area whose lease lapses offline has pictures and no
-facts.
+    QUESTION_DUMP=/path/out.json npx vitest run --exclude ".claude/**" \
+      src/features/anatomy-revision/lib/__tests__/questionDump.test.ts
 
-**Blood supply.** `bloodSupply` is a fact field and is in the area payloads;
-`bloodSupply.generated.ts` leaves the bundle with the seed. `/sources`
-(`legal/data/provenance.generated.ts`) holds counts and works only, no
-per-structure fact, and is unaffected. The "how rich" MCQ has no distractors to
-source. Artery wrong answers are covered above.
+(An earlier pair of dumps differed in three OINA sessions. That was the
+clock: whether a fact is due decides its format, and the runs were an hour
+apart. The dump now fixes the time.)
 
-**The eight buried ligaments.** They are ordinary structures in the seed and
-are in the index and the payloads with the rest; the tests run over all 487.
-Their second renders, the variant switch and the gap plate are image-side and
-stay public. `needsReview` travels with the facts. Do not run
-`generateLigamentSeed.ts` (it would delete 111 ligaments).
+## The eleven decisions — defaults taken, none confirmed by the owner
 
-**Mastery levels and fact mastery.** `structureLevel` calls
-`requiredFactKinds(structure)`, which reads facts: whether a structure is a
-muscle, has a primary artery, has assisting arteries. It is called for
-structures that may not be loaded — `studentRollup.ts` (every structure the
-student has touched, sent to their educator), `useRevisionSession.ts`,
-`useProgressData.ts`, `atlasList.ts`, both muscle cards. A lapsed subscriber's
-levels would be computed without the fact kinds and come out wrong. The fix is
-a derived index field, `factKinds`, written by `toIndexEntry` like
-`hasDescription`. Not done: it is a decision (below).
+Each is one constant or one small module.
 
-**The public demo (`build:demo`).** It runs `generate:content` now, and
-`.content/` does not reach `dist-demo/`. After step 7 it has no function to
-call (local persistence, no auth), so it needs a bundled fixture of two areas
-behind an alias in `educatorDemoAliases`, as the design says.
-`cohortAnalytics.demo.ts` uses `requiredFactKinds` over the whole seed and
-needs `factKinds` too.
+| # | Decision | Default taken | Change it at |
+| --- | --- | --- | --- |
+| 1 | Artery lists keyed by area | kept | `data/content/vocabulary.ts` |
+| 2 | `factKinds` in the index | added | `types/structureIndex.ts`, `split.ts toIndexEntry` |
+| 3 | `jointId` / `parentBoneId` in the index | kept | `STRUCTURE_INDEX_FIELDS` |
+| 4 | `notes` / `source` in payloads | left out (nothing renders them) | `STRUCTURE_FACT_FIELDS_NOT_SERVED` |
+| 5 | Unread vocabulary lists | dropped | `data/content/vocabulary.ts` |
+| 6 | Generated files | git-ignored, regenerated by `vite.config.ts` when missing or stale | `src/scripts/lib/ensureContent.ts` |
+| 7 | Diagnostic | picture-to-name only when the sitter does not hold every area | `components/Diagnostic/DiagnosticScreen.tsx` |
+| 8 | Assignment preview | pool from the index; questions exact where in hand, else "up to N" | `educator/lib/assignmentScope.ts` |
+| 9 | Guests / local builds | a guest is an account and is served its free area; local builds get the fixture | `vite.config.ts contentVariant` |
+| 10 | Offline lease | 14 days | `CONTENT_LEASE_DAYS` in `data/content/lease.ts` |
+| 11 | Demo fixture areas | hip and wrist & hand (most-answered by the demo class) | `data/content/demoFixtureAreas.ts` |
 
-## Decisions for the owner
+**What decision 7 means for a class.** With the seed bundled, nothing changes.
+In a server build the fifteen structures are still the same for everyone in
+the class (they are chosen from the index). A student holding every area —
+any member of a licensed class — sits the paper as now, mixing picture and
+fact questions. A student who does not (a free account in an unlicensed
+class) sits fifteen picture-to-name questions about the same structures.
+Those are two different papers, and a class mixing both kinds of student is
+measured on both. A picture-only baseline replays exactly later; a mixed
+baseline replayed by a student who has since lost access drops its fact
+questions and is shorter.
 
-1. **Artery lists keyed by area.** Bundled, so readable by anyone: which
-   arteries are listed at the knee, at the hip, and so on — not which structure
-   each supplies. The alternative is a flat list, and then a structure in two
-   areas can be offered a true artery as a wrong answer. Recommended: keep.
-2. **`factKinds` in the index.** Reveals which structures have blood-supply
-   facts and which of those have assisting arteries. Needed for correct mastery
-   levels outside the loaded areas.
-3. **`jointId` and `parentBoneId` in the index** (the design's choice, kept).
-   They are relations, so arguably facts; the pictures already show them.
-4. **`notes` and `source` in the payloads.** 38 kB and 14 kB of roughly 280 kB.
-   Nothing in the app renders either. Leaving them out makes the payloads a
-   fifth smaller and stops authoring notes being served to students.
-5. **The unread vocabulary lists** (`jointTypes`, `myotomes`, `specialTests`):
-   drop them, or use them to top up thin clinical pools — which would add
-   questions to today's sessions and is a behaviour change.
-6. **Generated index: git-ignored or committed?** Ignored today, like the
-   offline manifests. Once step 6 imports it, a fresh checkout cannot run
-   `npm run dev` or `npm test` until `generate:content` has run. Either add it
-   to `predev`/`pretest`, or commit the two bundle-side files and let
-   `validate-content` fail when they are stale, as it does for provenance.
-7. **The diagnostic** asks across all nine areas ungated. Picture-to-name
-   only, or a small fixed bundled sample (the design leaves it open).
-8. **Assignment preview** (`previewAssignment`) counts questions over every
-   area for an educator who may hold one. Serve educators every area, or ship
-   a per-structure question-count table in the index.
-9. **Signed-out and local-mode users.** The function needs an ID token. Decide
-   what `VITE_PERSISTENCE=local` builds and signed-out visitors load.
-10. **Offline lease.** `min(expiresAt, now + 14 days)` means two weeks offline
-    ends a paid download. Longer for downloaded areas, or accept it.
-11. **Which two areas the public demo carries**, since they become public.
+**What decision 8 means for an educator.** An educator's own account is
+usually free: the class licence opens areas for members, and the owner is not
+a member. In a server build such an educator's device holds one area, so the
+form says "up to 20 questions" for scopes outside it and cannot say "all this
+scope can build". They also cannot sit their own assignments outside their
+free area. Serving educators every area is the alternative.
+
+**What decision 11 costs.** Two of the demo's three set assignments are on
+the shoulder and the ankle & foot. Built from the fixture, a visitor who
+tries to sit those is told the area is not part of the demo. `hip` +
+`shoulder` is the pair to pick if that matters more than dashboard density.
+The demo's default is still `bundled`.
+
+## Rollout — recommended order
+
+Nothing below has been done. Each step is safe on its own and can stop there.
+
+1. **Rules.** `npm run deploy:rules`. Additive: old clients write no
+   `freeArea` and are unaffected. Nothing else may ship first — a client that
+   writes `freeArea` before the rules know it is still accepted (the old
+   rules allow any field), but unconstrained.
+2. **Client and functions, still `bundled`.** Deploy this branch as it is.
+   Students notice nothing except: their free area is moved to their account
+   on first load, and the thirty-day clock restarts that day. The content
+   function is live and unused. Watch `billingFailures` and the function log
+   for a day; confirm the three billing functions answer as before.
+3. **Test `server` on a draft.** Build with `VITE_CONTENT_SOURCE=server` and
+   deploy without `--prod`. A draft shares production's Firebase and
+   functions environment, so sign in with a real free account and a real
+   paid one: free sees one area; paid sees nine; offline reload works;
+   `/structure/<locked>` shows the lock. Check the function log lines.
+4. **Decide the eleven.** At least 7, 8, 10 before students are switched.
+5. **Switch.** Set `VITE_CONTENT_SOURCE=server` in Netlify and redeploy.
+   Existing installs keep the old bundle until they accept the update prompt
+   (`registerType: 'prompt'`), so the two modes coexist for days; both work.
+6. **Rollback** is unsetting the variable and redeploying. The seed is still
+   in the repository and a bundled build is the default. Device copies become
+   unused, not harmful.
+7. **The demo** (`build:demo`) separately: `VITE_CONTENT_SOURCE=fixture` on
+   the demo site once decision 11 is made.
+
+Only after step 5 has held: remove the seed from a bundled build's reach
+entirely, if ever. Keeping it is what makes rollback one variable.
+
+## Risks to paying users
+
+1. **The thirty-day clock restarts on migration** for every free student
+   (not a paying-user risk, but the one visible change at step 2).
+2. **A paying student offline for more than 14 days** opens the app to
+   pictures without facts. Decision 10.
+3. **At the renewal instant**, between Paddle charging and the webhook
+   landing, the entitlement reads as expired (as today, paywall trace finding
+   14). In a server build the app then also asks the function, is refused,
+   and deletes the saved copies; they are refetched once the webhook lands.
+   A student who goes offline in exactly that gap has no facts until they
+   reconnect. A grace on `expiresAt` for the lease would close it.
+4. **First load needs the function.** A cold start is 300–800 ms per area,
+   nine in parallel for a subscriber, behind the "Loading anatomy content…"
+   screen. If the function is down, nobody without a saved copy can revise.
+   Today a broken function breaks billing only.
+5. **The function reads Firestore**: one read per fetch (two for a class
+   member) and one write per grant, against Spark's daily allowance. Nine per
+   subscriber per week at steady state; a release that changes facts costs
+   nine per active device.
+6. **Entitlement read fails → free → paid areas not loaded.** As today the
+   gates lock on a failed first read; the saved copies are kept (not purged)
+   and return on the next successful read.
+7. **A stale bundle and a newer function** is handled (`askedWith`); a newer
+   bundle and an older function cannot happen within one deploy.
+8. **The service worker** does not cache the function's answers (only
+   `/anatomy/` images are runtime-cached; the response is `no-store`).
+9. **App Check**, when it is switched on, does not cover this function: it
+   verifies an ID token, not an App Check token.
+
+## What this still does not stop
+
+- **Nine free accounts are nine areas.** A guest is an account, any account
+  may choose its free area, and sign-up is free. The design's "someone who
+  paid for at least a month" is not the bar; "someone prepared to script nine
+  sign-ups" is. The same goes for delete-and-recreate. Closing it means
+  either not letting the free area be chosen, or App Check on the function,
+  or a per-IP limit — none built.
+- A paying account saving its own areas; content already on a device; the
+  public pictures and hotspot polygons.
+- The index gives away each structure's name, areas, relations (`jointId`,
+  `parentBoneId`) and which kinds of fact it has.
 
 ## Found on the way, not fixed
 
-Adaptive mode builds each MCQ from a pool of one structure
-(`generateOneQuestionForStructure`), so its name distractors have nothing to
-draw from: an adaptive MCQ comes out with a single choice, the right answer.
-Six of twenty questions in the mastery-seeded adaptive sets above. It predates
-this work and fixing it changes behaviour, so it is left and reported.
+- Adaptive mode builds each MCQ from a pool of one structure, so its name
+  distractors have nothing to draw from (from the earlier status note; still
+  true).
+- `tsc -p tsconfig.node.json` fails on `caches` in `pwa/anatomyCache.ts` and
+  `offline/swPlugin.ts`; it did before this work.
+- `eslint .` reports 21 errors in `src/scripts/` (explicit `any`); none in
+  files this work touched.
+- `HotspotEditorApp` is lazy-loaded without a build-time guard, unlike
+  `DevRoutes`; it no longer imports the seed, so it carries no facts either way.
