@@ -105,10 +105,8 @@ const vocabularyStrings = new Set<string>([
   ...vocabulary.nerves.flatMap((name) => canonicalNerveNames([{ name, roots: [] }])),
   ...vocabulary.actions,
   ...vocabulary.actions.map(humanizeActionTag),
-  ...vocabulary.jointTypes.map((t) => JOINT_TYPE_LABELS[t]),
+  // Not a list of facts: the closed set of movements a joint question offers.
   ...JOINT_MOVEMENTS,
-  ...vocabulary.myotomes,
-  ...vocabulary.specialTests,
   ...Object.values(vocabulary.arteries).flatMap((byRegion) => Object.values(byRegion).flat()).flatMap((a) => [a, choiceName(a)]),
 ]);
 const names = new Set(index.map((e) => e.name));

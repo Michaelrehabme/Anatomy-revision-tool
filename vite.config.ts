@@ -8,6 +8,7 @@ import { configDefaults } from 'vitest/config';
 import { ANATOMY_CACHE_NAME } from './src/features/pwa/anatomyCache';
 import { isAnatomyImageRequest, offlineAreaPlugin } from './src/features/pwa/offline/swPlugin';
 import { CONTENT_VERSION_FILE } from './src/scripts/lib/contentPaths';
+import { ensureGeneratedContent } from './src/scripts/lib/ensureContent';
 
 /** Forward slashes even on Windows — Rollup's alias plugin compares and rewrites ids as POSIX-style strings. */
 const demoFile = (name: string) =>
@@ -221,9 +222,10 @@ const UNWATCHED = [
  * only thing that crosses into the bundle and the file beside it — the facts
  * — is never in the module graph at all.
  *
- * 'dev' when the file is not there: `npm run dev` and `npm test` do not run
- * the generator, and should not need to. Both builds do (package.json), so a
- * deployed bundle always carries a real one.
+ * The file is always there by the time this runs: baseConfig() regenerates the
+ * content first when it is missing or stale (ensureContent.ts). 'dev' is what
+ * is left if that somehow failed, so a broken generator shows up as an
+ * obviously wrong version rather than as a crash in the config.
  */
 function readContentVersion(): string {
   try {
@@ -235,7 +237,15 @@ function readContentVersion(): string {
   }
 }
 
-export const baseConfig = () => ({
+export const baseConfig = () => {
+  // Before anything reads the version or imports the generated files: a fresh
+  // checkout, or one whose seed has changed, gets its content cut here — for
+  // the dev server, the tests and both builds alike.
+  ensureGeneratedContent();
+  return baseConfigAfterContent();
+};
+
+const baseConfigAfterContent = () => ({
   plugins: [react(), tailwindcss()],
   define: {
     // Replaced textually wherever it appears; see data/content/version.ts.

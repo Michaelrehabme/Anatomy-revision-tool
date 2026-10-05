@@ -14,6 +14,11 @@
  *       For the bundle. Index entries hold no facts; the vocabulary holds
  *       wrong answers that belong to no structure (data/content/vocabulary.ts).
  *
+ *   src/features/anatomy-revision/data/content/generated/demoFixture.json
+ *       The facts of two areas, for the public demo to bundle in place of the
+ *       whole seed (data/content/demoFixtureAreas.ts). Imported only by a
+ *       build that asks for the fixture; the real app never reaches it.
+ *
  *   .content/areas/<area>.json
  *       The facts, for the content function to import. Under the repo root and
  *       NOT under public/, which is the whole point of the directory: Vite
@@ -31,10 +36,15 @@
  * truth for validate-content, /sources, the offline manifests and the
  * authoring tools, none of which read anything written here.
  *
- * NOTHING IN THE APP READS THESE YET. The seed is still bundled; the content
- * function, the fetch and the cache are later steps of the design
- * (docs/CONTENT-SERVER-STATUS.md). What this step buys is that the cut exists,
- * is tested to lose nothing, and is reproducible byte for byte.
+ * WHO READS THEM. The content function imports the area files and the version
+ * (netlify/functions/content-area.ts). A build made with
+ * VITE_CONTENT_SOURCE=server imports the index and the vocabulary in place of
+ * the seed (data/content/bundledContent.server.ts). The default build still
+ * bundles the seed and reads only the version.
+ *
+ * NOBODY HAS TO REMEMBER TO RUN THIS: vite.config.ts regenerates when the
+ * output is missing or older than the seed (src/scripts/lib/ensureContent.ts),
+ * which covers the dev server, the tests and both builds.
  */
 import { gzipSync } from 'node:zlib';
 import { mkdirSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
@@ -78,6 +88,8 @@ writeFileSync(join(generatedDir, 'structureIndex.json'), built.index);
 report('generated/structureIndex.json', built.index);
 writeFileSync(join(generatedDir, 'vocabulary.json'), built.vocabulary);
 report('generated/vocabulary.json', built.vocabulary);
+writeFileSync(join(generatedDir, 'demoFixture.json'), built.demoFixture);
+report('generated/demoFixture.json', built.demoFixture);
 
 for (const area of AREAS) {
   writeFileSync(join(areaDir, `${area}.json`), built.areas[area]);

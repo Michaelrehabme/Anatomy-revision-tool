@@ -1,11 +1,13 @@
 import { areasOf, type AnatomyStructure } from '../../types/structure';
 import { AREAS, type Area } from '../../types/region';
 import {
-  STRUCTURE_FACT_FIELDS,
+  DERIVED_INDEX_FIELDS,
+  SERVED_FACT_FIELDS,
   STRUCTURE_INDEX_FIELDS,
   type StructureFacts,
   type StructureIndexEntry,
 } from '../../types/structureIndex';
+import { requiredFactKinds } from '../../lib/factMastery';
 
 /**
  * Cutting a structure into the part that is bundled and the part that is
@@ -34,17 +36,26 @@ function pick(source: object, fields: readonly string[]): Record<string, unknown
   return out;
 }
 
-/** The index entry for one structure: its index fields and the `hasDescription` flag, no facts. */
+/**
+ * The index entry for one structure: its index fields, and the two stand-ins
+ * for facts that are elsewhere — whether it has a description, and which
+ * kinds of fact it must be mastered on. No facts.
+ */
 export function toIndexEntry(structure: AnatomyStructure): StructureIndexEntry {
   return {
     ...(pick(structure, STRUCTURE_INDEX_FIELDS) as unknown as StructureIndexEntry),
     hasDescription: structure.description.length > 0,
+    factKinds: requiredFactKinds(structure),
   };
 }
 
-/** One structure's facts, keyed by its id so they can be joined back. */
+/**
+ * One structure's facts as they are served, keyed by its id so they can be
+ * joined back. Every fact field except the ones that are served to nobody
+ * (STRUCTURE_FACT_FIELDS_NOT_SERVED: the author's notes and the source record).
+ */
 export function toFacts(structure: AnatomyStructure): StructureFacts {
-  return { id: structure.id, ...pick(structure, STRUCTURE_FACT_FIELDS) };
+  return { id: structure.id, ...pick(structure, SERVED_FACT_FIELDS) };
 }
 
 /**
@@ -60,8 +71,10 @@ export function joinFacts(entry: StructureIndexEntry, facts: StructureFacts): An
     throw new Error(`joinFacts: index entry "${entry.id}" was given the facts of "${facts.id}"`);
   }
   const joined: Record<string, unknown> = { ...entry, ...facts };
-  // The flag stood in for the description while it was away.
-  delete joined.hasDescription;
+  // They stood in for the facts while the facts were away. Left on, a joined
+  // structure would answer "which facts must I know" from the stand-in rather
+  // than from what it now holds, and would no longer equal the seed's.
+  for (const field of DERIVED_INDEX_FIELDS) delete joined[field];
   return joined as unknown as AnatomyStructure;
 }
 

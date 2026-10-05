@@ -1,5 +1,6 @@
 import type { AnatomyStructure, Category, Difficulty, QuestionEligibility } from './structure';
 import type { Area, Region, SubRegion } from './region';
+import type { FactKind } from './question';
 
 /**
  * THE SPLIT BETWEEN WHAT SHIPS TO EVERYONE AND WHAT IS PAID FOR
@@ -88,8 +89,34 @@ export const STRUCTURE_FACT_FIELDS = [
   'functionalContext',
 ] as const;
 
+/**
+ * FACT FIELDS THAT ARE NOT SERVED AT ALL — on neither side of the paywall.
+ *
+ * `notes` is the author's working notes and `source` the provenance record
+ * (deck, slides, works cited). No screen renders either: /sources is built
+ * from its own generated summary, and nothing asks a question from them. They
+ * were a fifth of every area payload, and authoring notes are not something
+ * to hand a student because they happen to sit on the same object.
+ *
+ * THE OWNER HAS NOT RULED ON THIS (docs/CONTENT-SERVER-STATUS.md, decision 4);
+ * leaving them out is the conservative default. To serve them, empty this
+ * list — nothing else needs to change.
+ *
+ * One thing would make that necessary: isHeld() (types/structure.ts) reads
+ * `source.grade`, and a structure graded 'held' must be kept out of questions.
+ * None is held today and nothing calls isHeld; split.test.ts fails the day a
+ * held structure appears, so that it cannot be asked about by a build that
+ * was never told.
+ */
+export const STRUCTURE_FACT_FIELDS_NOT_SERVED: readonly (typeof STRUCTURE_FACT_FIELDS)[number][] = ['notes', 'source'];
+
 export type StructureIndexField = (typeof STRUCTURE_INDEX_FIELDS)[number];
 export type StructureFactField = (typeof STRUCTURE_FACT_FIELDS)[number];
+
+/** The fact fields an area payload carries: all of them, less the ones above. */
+export const SERVED_FACT_FIELDS: readonly StructureFactField[] = STRUCTURE_FACT_FIELDS.filter(
+  (field) => !STRUCTURE_FACT_FIELDS_NOT_SERVED.includes(field),
+);
 
 /**
  * A structure without its facts: every STRUCTURE_INDEX_FIELDS field, flattened
@@ -137,6 +164,24 @@ export interface StructureIndexEntry {
    * the description itself — read it through hasDescription(), never directly.
    */
   hasDescription?: boolean;
+  /**
+   * Which kinds of fact this structure has to be mastered on: origin,
+   * insertion, nerve and action for a muscle, and whichever of the three
+   * blood-supply kinds it has (lib/factMastery.ts requiredFactKinds).
+   *
+   * In the index because a student's LEVEL on a structure is worked out from
+   * it, and levels are shown for structures whose facts are not on the device
+   * — the whole body on the progress screen of a free account, every
+   * structure a lapsed subscriber ever studied, every row a student's device
+   * sums for their educator. Without it those levels would be computed as if
+   * the structure had no facts to know, and read higher than they are.
+   *
+   * What it gives away is the KIND of fact a structure has — that the scaphoid
+   * has a named primary artery, not which artery. Written by buildContent.ts;
+   * absent on a full structure, where the facts themselves answer. Read it
+   * through requiredFactKinds(), never directly.
+   */
+  factKinds?: FactKind[];
 }
 
 /**
@@ -146,6 +191,9 @@ export interface StructureIndexEntry {
  * (data/content/split.ts), and the join is where the type is restored.
  */
 export type StructureFacts = { id: string } & { [K in StructureFactField]?: unknown };
+
+/** The fields the index adds that no structure is authored with: stand-ins for facts that are elsewhere. */
+export const DERIVED_INDEX_FIELDS = ['hasDescription', 'factKinds'] as const;
 
 /** True when a structure has a description, whether or not its facts are here. */
 export function hasDescription(s: StructureIndexEntry): boolean {
@@ -167,7 +215,7 @@ type InBoth = StructureIndexField & StructureFactField;
 /** An index field the entry type forgot, or an entry field that is not in the list. Must be `never`. */
 type EntryDrift =
   | Exclude<StructureIndexField, keyof StructureIndexEntry>
-  | Exclude<keyof StructureIndexEntry, StructureIndexField | 'hasDescription'>;
+  | Exclude<keyof StructureIndexEntry, StructureIndexField | 'hasDescription' | 'factKinds'>;
 
 // If one of these fails to compile, a field was added to a structure type
 // without being added to a list above (or was added to both). Decide which

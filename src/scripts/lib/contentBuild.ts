@@ -3,6 +3,7 @@ import type { AnatomyStructure } from '../../features/anatomy-revision/types/str
 import { AREAS, type Area } from '../../features/anatomy-revision/types/region';
 import { buildAreaFacts, buildStructureIndex } from '../../features/anatomy-revision/data/content/split';
 import { buildVocabulary } from '../../features/anatomy-revision/data/content/vocabulary';
+import { DEMO_FIXTURE_AREAS } from '../../features/anatomy-revision/data/content/demoFixtureAreas';
 
 /**
  * The seed, cut into what buildContent.ts writes to disk: the bundled index,
@@ -22,6 +23,12 @@ export interface ContentBuild {
   vocabulary: string;
   /** Per area: JSON `{ area, structures, version }`. */
   areas: Record<Area, string>;
+  /**
+   * JSON `{ version, areas: [{ area, structures }] }` for DEMO_FIXTURE_AREAS
+   * only: the facts the public demo bundles when it is built from the fixture.
+   * Bundle-side, so PUBLIC — which is why it is two areas and not nine.
+   */
+  demoFixture: string;
   /** JSON ContentVersionFile. */
   versionFile: string;
   version: string;
@@ -95,6 +102,7 @@ export function buildContent(structures: readonly AnatomyStructure[]): ContentBu
     areas: Object.fromEntries(
       AREAS.map((area) => [area, canonicalJson({ area, structures: facts[area].structures, version })]),
     ) as Record<Area, string>,
+    demoFixture: canonicalJson({ version, areas: DEMO_FIXTURE_AREAS.map((area) => facts[area]) }),
     versionFile: canonicalJson(versionFile),
     version,
   };

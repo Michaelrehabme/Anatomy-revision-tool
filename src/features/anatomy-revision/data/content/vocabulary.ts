@@ -1,4 +1,4 @@
-import { areasOf, isJoint, isMuscle, type AnatomyStructure, type JointType } from '../../types/structure';
+import { areasOf, isMuscle, type AnatomyStructure } from '../../types/structure';
 import { AREAS, type Area, type Region } from '../../types/region';
 import { arteriesOf } from '../../lib/questionGenerators/bloodSupply';
 
@@ -14,9 +14,12 @@ import { arteriesOf } from '../../lib/questionGenerators/bloodSupply';
  * well supply the ACL too), and a student with the knee alone has nothing
  * outside the knee.
  *
- * This is what fills the gap: every nerve name, action tag, joint type,
- * myotome label, special-test name and artery name in the dataset, as bare
- * sorted lists. It is bundled, so anyone can read it — and what they read is
+ * This is what fills the gap: every nerve name, action tag and artery name in
+ * the dataset, as bare sorted lists. (The design also asked for joint types,
+ * myotome labels and special-test names. They were built and nothing read
+ * them — those questions take their wrong answers from the session's own
+ * pool, so one area loaded changes nothing for them — and a bundled list
+ * nobody reads is a list given away for nothing. Dropped 5 Oct 2026.) It is bundled, so anyone can read it — and what they read is
  * a list of nerves. Nothing in it says which muscle a nerve supplies or which
  * bone an artery feeds; the pairing is the fact, and the pairing is not here.
  *
@@ -43,11 +46,6 @@ export interface DistractorVocabulary {
   nerves: string[];
   /** Kebab-case action tags, the same strings indexes.byAction is keyed by. */
   actions: string[];
-  /** The joint classifications in use. Shown through JOINT_TYPE_LABELS. */
-  jointTypes: JointType[];
-  /** Myotome labels as a question shows them: "C5/C6". */
-  myotomes: string[];
-  specialTests: string[];
   /**
    * Artery names as authored, bracketed detail included, by the area and then
    * the region of the structures that list them. A structure in two areas
@@ -66,9 +64,6 @@ export function buildVocabulary(structures: readonly AnatomyStructure[]): Distra
   return {
     nerves: sortedUnique(muscles.flatMap((m) => m.nerve.map((n) => n.name))),
     actions: sortedUnique(muscles.flatMap((m) => m.actions)),
-    jointTypes: sortedUnique(structures.filter(isJoint).map((j) => j.jointType)),
-    myotomes: sortedUnique(structures.flatMap((s) => (s.myotome?.length ? [s.myotome.join('/')] : []))),
-    specialTests: sortedUnique(structures.flatMap((s) => (s.specialTests ?? []).map((t) => t.name))),
     arteries: arteriesByArea(structures),
   };
 }

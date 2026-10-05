@@ -8,6 +8,8 @@ import { AREAS } from '../../../features/anatomy-revision/types/region';
 import type { AnatomyStructure } from '../../../features/anatomy-revision/types/structure';
 import { buildContent, canonicalJson, CONTENT_VERSION_LENGTH, type ContentVersionFile } from '../contentBuild';
 import { CONTENT_DIR, CONTENT_VERSION_FILE, GENERATED_CONTENT_DIR, isPublishedPath, PUBLISHED_DIRS } from '../contentPaths';
+import { contentIsStale, generatedContentFiles } from '../ensureContent';
+import { DEMO_FIXTURE_AREAS } from '../../../features/anatomy-revision/data/content/demoFixtureAreas';
 
 /**
  * What buildContent.ts writes, as bytes. The split itself is tested beside it
@@ -60,7 +62,7 @@ describe('the built content is deterministic', () => {
   });
 
   it('has no timestamp, path or machine detail in any file', () => {
-    const everything = [built.index, built.vocabulary, built.versionFile, ...Object.values(built.areas)].join('\n');
+    const everything = [built.index, built.vocabulary, built.versionFile, built.demoFixture, ...Object.values(built.areas)].join('\n');
     expect(everything).not.toMatch(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/);
     expect(everything).not.toMatch(/[A-Z]:\\\\|\/Users\/|\/home\//);
   });
@@ -113,6 +115,51 @@ describe('the content version', () => {
       const payload = JSON.parse(built.areas[area]) as { structures: unknown[] };
       expect(file.areas[area].structures).toBe(payload.structures.length);
       expect(file.areas[area].bytes).toBeGreaterThan(0);
+    }
+  });
+});
+
+/**
+ * The public demo's facts, when it is built from the fixture. Whatever is in
+ * this file is in a bundle anyone can open, so the test that matters is that
+ * it holds the two areas it says and not a structure more.
+ */
+describe('the demo fixture', () => {
+  const fixture = JSON.parse(built.demoFixture) as { version: string; areas: { area: string; structures: { id: string }[] }[] };
+
+  it('holds exactly the chosen areas, as their payloads hold them', () => {
+    expect(DEMO_FIXTURE_AREAS).toHaveLength(2);
+    expect(fixture.areas.map((a) => a.area)).toEqual([...DEMO_FIXTURE_AREAS]);
+    expect(fixture.version).toBe(built.version);
+    for (const held of fixture.areas) {
+      const payload = JSON.parse(built.areas[held.area as (typeof AREAS)[number]]) as { structures: unknown[] };
+      expect(held.structures).toEqual(payload.structures);
+    }
+  });
+
+  it('holds the facts of no structure outside those areas', () => {
+    const allowed = new Set(
+      DEMO_FIXTURE_AREAS.flatMap((area) => (JSON.parse(built.areas[area]) as { structures: { id: string }[] }).structures.map((s) => s.id)),
+    );
+    const held = fixture.areas.flatMap((a) => a.structures.map((s) => s.id));
+    expect(held.filter((id) => !allowed.has(id))).toEqual([]);
+    expect(allowed.size).toBeLessThan(AUTHORED_STRUCTURES.length / 2);
+  });
+});
+
+/**
+ * vite.config.ts regenerates the content when it is missing or stale, so a
+ * fresh checkout can run its dev server and tests. That same config is what
+ * is running this test, so by now the content must be current.
+ */
+describe('generated content is kept current without anyone running a command', () => {
+  it('is present and not older than the seed by the time a test runs', () => {
+    expect(contentIsStale()).toBeNull();
+  });
+
+  it('writes only to the two git-ignored directories', () => {
+    for (const file of generatedContentFiles()) {
+      expect(file.startsWith(`${CONTENT_DIR}/`) || file.startsWith(`${GENERATED_CONTENT_DIR}/`), file).toBe(true);
     }
   });
 });

@@ -2,7 +2,8 @@ import type { Confidence, FactMastery } from '../types/attempt';
 import type { FactKind, PromptKind, QuestionType } from '../types/question';
 import { MUSCLE_FACT_KINDS, OINA_PROMPT_KINDS } from '../types/question';
 import { nextSchedule, scheduleConfidence } from './mastery';
-import { isMuscle, type AnatomyStructure } from '../types/structure';
+import type { BloodSupply } from '../types/structure';
+import type { StructureIndexEntry } from '../types/structureIndex';
 
 /**
  * All OINA escalation tuning in one place, matching the convention
@@ -70,9 +71,14 @@ export function factHints(fact: FactMastery | undefined): 'full' | 'none' {
  * its blood supply: the primary artery where one is named, the assisting
  * arteries where there are any, and how rich the supply is.
  */
-export function requiredFactKinds(structure: AnatomyStructure): FactKind[] {
-  const kinds: FactKind[] = isMuscle(structure) ? [...MUSCLE_FACT_KINDS] : [];
-  const b = structure.category === 'landmark' ? undefined : structure.bloodSupply;
+export function requiredFactKinds(structure: StructureIndexEntry): FactKind[] {
+  // An index entry whose facts are not on the device carries the answer,
+  // worked out by this same function when the index was cut (split.ts). A full
+  // structure has no such field and is read from its facts, below.
+  if (structure.factKinds) return [...structure.factKinds];
+  const kinds: FactKind[] = structure.category === 'muscle' ? [...MUSCLE_FACT_KINDS] : [];
+  const supply = (structure as { bloodSupply?: BloodSupply }).bloodSupply;
+  const b = structure.category === 'landmark' ? undefined : supply;
   if (b) {
     if (b.primary) kinds.push('blood-supply');
     if (b.primary && b.assisting.length) kinds.push('blood-supply-assisting');
@@ -90,7 +96,7 @@ export function factComplete(kind: FactKind, fact: FactMastery | undefined, conf
 
 /** The required facts not yet at their final stage. */
 export function outstandingFacts(
-  structure: AnatomyStructure,
+  structure: StructureIndexEntry,
   factsByKey: ReadonlyMap<string, FactMastery>,
 ): FactKind[] {
   return requiredFactKinds(structure).filter((k) => !factComplete(k, factsByKey.get(factMasteryKey(structure.id, k))));

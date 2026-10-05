@@ -1,5 +1,5 @@
 import type { FactMastery, StructureMastery } from '../types/attempt';
-import type { AnatomyStructure } from '../types/structure';
+import type { StructureIndexEntry } from '../types/structureIndex';
 import type { FactKind } from '../types/question';
 import { LADDER_CONFIG, rungFor } from './ladder';
 import {
@@ -203,7 +203,7 @@ export function factsIndex(rows: readonly FactMastery[]): Map<string, FactMaster
  * own rows but left out of the average.
  */
 export function structureLevel(
-  structure: AnatomyStructure,
+  structure: StructureIndexEntry,
   mastery: StructureMastery | undefined,
   factsByKey: ReadonlyMap<string, FactMastery>,
   now: Date = new Date(),

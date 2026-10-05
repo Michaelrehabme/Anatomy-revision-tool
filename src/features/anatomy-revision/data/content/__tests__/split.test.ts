@@ -1,9 +1,16 @@
 import { describe, it, expect } from 'vitest';
 import { ALL_IMAGES, ALL_STRUCTURES, AUTHORED_STRUCTURES } from '../../seed';
 import { linkImages } from '../../../lib/linkImages';
-import { areasOf } from '../../../types/structure';
 import { AREAS } from '../../../types/region';
-import { STRUCTURE_FACT_FIELDS, STRUCTURE_INDEX_FIELDS } from '../../../types/structureIndex';
+import { areasOf, isHeld } from '../../../types/structure';
+import {
+  DERIVED_INDEX_FIELDS,
+  SERVED_FACT_FIELDS,
+  STRUCTURE_FACT_FIELDS,
+  STRUCTURE_FACT_FIELDS_NOT_SERVED,
+  STRUCTURE_INDEX_FIELDS,
+} from '../../../types/structureIndex';
+import { requiredFactKinds } from '../../../lib/factMastery';
 import { buildAreaFacts, buildStructureIndex, joinFacts, joinLoadedAreas, toFacts, toIndexEntry } from '../split';
 import { buildVocabulary } from '../vocabulary';
 
@@ -25,6 +32,13 @@ const areas = buildAreaFacts(AUTHORED_STRUCTURES);
 /** JSON's view of a value: what survives being written to a file and read back. */
 const wire = <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T;
 
+/** A structure as the app can ever hold it once facts are served: without the fields served to nobody. */
+function asServed<T extends object>(structure: T): T {
+  const copy = { ...structure } as Record<string, unknown>;
+  for (const field of STRUCTURE_FACT_FIELDS_NOT_SERVED) delete copy[field];
+  return copy as T;
+}
+
 describe('the bundled index', () => {
   it('holds every structure once, in seed order', () => {
     expect(index.map((e) => e.id)).toEqual(AUTHORED_STRUCTURES.map((s) => s.id));
@@ -32,7 +46,7 @@ describe('the bundled index', () => {
   });
 
   it('carries no fact field on any entry', () => {
-    const allowed = new Set<string>([...STRUCTURE_INDEX_FIELDS, 'hasDescription']);
+    const allowed = new Set<string>([...STRUCTURE_INDEX_FIELDS, ...DERIVED_INDEX_FIELDS]);
     const facts = new Set<string>(STRUCTURE_FACT_FIELDS);
     for (const entry of index) {
       const keys = Object.keys(entry);
@@ -67,6 +81,29 @@ describe('the bundled index', () => {
     }
   });
 
+  // Mastery levels are worked out for structures whose facts are not on the
+  // device (a free account's progress screen, a lapsed subscriber's history,
+  // the summary sent to an educator). The index must answer for them exactly
+  // as the facts would, or those levels are silently wrong.
+  it('says which kinds of fact each structure must be mastered on, exactly as its facts would', () => {
+    let withKinds = 0;
+    for (const [i, structure] of AUTHORED_STRUCTURES.entries()) {
+      const fromFacts = requiredFactKinds(structure);
+      expect(index[i].factKinds, structure.id).toEqual(fromFacts);
+      // Read back off the entry alone — no facts anywhere near it.
+      expect(requiredFactKinds(wire(index[i])), structure.id).toEqual(fromFacts);
+      if (fromFacts.length) withKinds += 1;
+    }
+    expect(withKinds).toBeGreaterThan(200);
+  });
+
+  it('names kinds of fact and never a fact: no artery, nerve or origin text', () => {
+    const kinds = new Set(index.flatMap((e) => e.factKinds ?? []));
+    expect([...kinds].sort()).toEqual(
+      ['action', 'blood-supply', 'blood-supply-assisting', 'blood-supply-rating', 'insertion', 'nerve', 'origin'].sort(),
+    );
+  });
+
   it('is cut before the pictures are linked, and links to exactly what the app has today', () => {
     // Linked image ids are derived from the images at load; written into the
     // index they were a megabyte. So the index holds the authored ids only...
@@ -99,13 +136,13 @@ describe('the area payloads', () => {
     }
   });
 
-  it('carry every fact field of every structure, unchanged, in each of its areas', () => {
+  it('carry every served fact field of every structure, unchanged, in each of its areas', () => {
     let checked = 0;
     for (const structure of AUTHORED_STRUCTURES) {
       const source = structure as unknown as Record<string, unknown>;
       for (const area of areasOf(structure)) {
         const facts = areas[area].structures.find((f) => f.id === structure.id) as Record<string, unknown>;
-        for (const field of STRUCTURE_FACT_FIELDS) {
+        for (const field of SERVED_FACT_FIELDS) {
           expect(facts[field], `${area}/${structure.id}.${field}`).toEqual(source[field]);
           if (source[field] !== undefined) checked += 1;
         }
@@ -115,8 +152,32 @@ describe('the area payloads', () => {
     expect(checked).toBeGreaterThan(AUTHORED_STRUCTURES.length * 3);
   });
 
-  it('carry nothing but the id and fact fields', () => {
-    const allowed = new Set<string>(['id', ...STRUCTURE_FACT_FIELDS]);
+  // Decision 4 (docs/CONTENT-SERVER-STATUS.md): the author's notes and the
+  // source record are served to nobody, because no screen shows them.
+  it('carry no authoring notes and no source record', () => {
+    expect([...STRUCTURE_FACT_FIELDS_NOT_SERVED].sort()).toEqual(['notes', 'source']);
+    expect(SERVED_FACT_FIELDS.length).toBe(STRUCTURE_FACT_FIELDS.length - STRUCTURE_FACT_FIELDS_NOT_SERVED.length);
+    const authored = AUTHORED_STRUCTURES.filter((s) => s.notes || s.source).length;
+    expect(authored).toBeGreaterThan(100);
+    for (const area of AREAS) {
+      for (const facts of areas[area].structures) {
+        expect('notes' in facts || 'source' in facts, `${area}/${facts.id}`).toBe(false);
+      }
+    }
+  });
+
+  // `source.grade` is the one thing in those two fields that could ever
+  // decide what is asked: a structure graded 'held' must be kept out of
+  // questions (isHeld). None is, and nothing calls isHeld. If one appears,
+  // a build that loads facts per area would not know — so serve `source`
+  // (empty STRUCTURE_FACT_FIELDS_NOT_SERVED) or carry the grade in the index
+  // before this is made to pass.
+  it('leave out nothing that decides a question: no structure is held', () => {
+    expect(AUTHORED_STRUCTURES.filter(isHeld).map((s) => s.id)).toEqual([]);
+  });
+
+  it('carry nothing but the id and served fact fields', () => {
+    const allowed = new Set<string>(['id', ...SERVED_FACT_FIELDS]);
     for (const area of AREAS) {
       for (const facts of areas[area].structures) {
         expect(Object.keys(facts).filter((k) => !allowed.has(k)), `${area}/${facts.id}`).toEqual([]);
@@ -130,11 +191,17 @@ describe('the area payloads', () => {
 });
 
 describe('joining an entry back to its facts', () => {
-  it('gives back every seed structure exactly, after a trip through JSON', () => {
+  it('gives back every seed structure exactly, less the fields served to nobody, after a trip through JSON', () => {
     for (const structure of AUTHORED_STRUCTURES) {
       const joined = joinFacts(wire(toIndexEntry(structure)), wire(toFacts(structure)));
-      expect(joined, structure.id).toEqual(wire(structure));
+      expect(joined, structure.id).toEqual(wire(asServed(structure)));
     }
+  });
+
+  it('leaves no stand-in field on a joined structure', () => {
+    const joined = joinFacts(wire(toIndexEntry(AUTHORED_STRUCTURES[0])), wire(toFacts(AUTHORED_STRUCTURES[0])));
+    for (const field of DERIVED_INDEX_FIELDS) expect(field in joined, field).toBe(false);
+    expect(requiredFactKinds(joined)).toEqual(requiredFactKinds(AUTHORED_STRUCTURES[0]));
   });
 
   it('refuses facts that belong to another structure', () => {
@@ -144,7 +211,7 @@ describe('joining an entry back to its facts', () => {
 
   it('rebuilds the whole seed from the index and all nine areas', () => {
     const joined = joinLoadedAreas(wire(index), wire(AREAS.map((area) => areas[area])));
-    expect(joined).toEqual(wire(AUTHORED_STRUCTURES));
+    expect(joined).toEqual(wire(AUTHORED_STRUCTURES.map(asServed)));
   });
 
   it('gives only the structures of the areas that are loaded, in index order', () => {
@@ -167,9 +234,6 @@ describe('the distractor vocabulary', () => {
   const lists: [string, string[]][] = [
     ['nerves', vocabulary.nerves],
     ['actions', vocabulary.actions],
-    ['jointTypes', vocabulary.jointTypes],
-    ['myotomes', vocabulary.myotomes],
-    ['specialTests', vocabulary.specialTests],
     ...Object.entries(vocabulary.arteries).flatMap(([area, byRegion]) =>
       Object.entries(byRegion).map(([region, names]): [string, string[]] => [`arteries.${area}.${region}`, names]),
     ),
@@ -204,7 +268,6 @@ describe('the distractor vocabulary', () => {
         for (const n of s.nerve) expect(nerves.has(n.name), `${s.id} nerve`).toBe(true);
         for (const a of s.actions) expect(actionTags.has(a), `${s.id} action`).toBe(true);
       }
-      if (s.category === 'joint') expect(vocabulary.jointTypes).toContain(s.jointType);
       for (const artery of [s.bloodSupply?.primary, ...(s.bloodSupply?.assisting ?? [])]) {
         if (!artery) continue;
         for (const area of areasOf(s)) expect(vocabulary.arteries[area][s.region], `${s.id} artery`).toContain(artery);
@@ -224,6 +287,11 @@ describe('the distractor vocabulary', () => {
       );
       expect([...listed].sort(), area).toEqual([...authored].sort());
     }
+  });
+
+  // Decision 5: three lists the design asked for were built and never read.
+  it('holds only the lists a generator reads', () => {
+    expect(Object.keys(vocabulary).sort()).toEqual(['actions', 'arteries', 'nerves']);
   });
 
   it('holds no origin, insertion or description', () => {
