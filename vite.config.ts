@@ -1,4 +1,5 @@
 import { defineConfig } from 'vite';
+import { configDefaults } from 'vitest/config';
 import { fileURLToPath } from 'node:url';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
@@ -198,6 +199,8 @@ export const baseConfig = () => ({
     environment: 'jsdom',
     globals: true,
     setupFiles: './src/test/setup.ts',
+    // Need the Firestore emulator — `npm run test:rules`.
+    exclude: [...configDefaults.exclude, 'rules-tests/**'],
   },
 });
 
