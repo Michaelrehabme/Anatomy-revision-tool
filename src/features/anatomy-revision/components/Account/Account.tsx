@@ -184,7 +184,7 @@ export function Account({ access, content, repository, userId, onNavigate }: Acc
             <SubscriptionSummary access={access} />
 
             <h3 className="mt-10" style={heading}>Classes</h3>
-            <CohortMembership uid={user.uid} />
+            <CohortMembership uid={user.uid} sitting={{ areas: access.areas, missing: content.facts.missing }} />
             <MyClasses uid={user.uid} />
             <AdminSection />
 

@@ -104,9 +104,10 @@ export interface AnatomyRepository {
    *
    * Stored under the STUDENT, not the cohort, and that placement is the
    * feature. The sitting tells a student their course leader never sees this
-   * score, only whether the class as a whole moved, and firestore.rules is
-   * what keeps that: a cohort owner has no read on a student's subcollections.
-   * An admin does, which is how the February comparison is computed.
+   * score, and firestore.rules is what keeps that: a cohort owner has no read
+   * on a student's subcollections. An admin does, which is how a class's
+   * overall figure is worked out (scripts/cohortReport.ts) — per paper, since
+   * a class can sit more than one (lib/diagnostic.ts PaperFigures).
    *
    * One document per sitting rather than one per phase, so a retake never
    * overwrites the first baseline -- pairDiagnostics measures from the

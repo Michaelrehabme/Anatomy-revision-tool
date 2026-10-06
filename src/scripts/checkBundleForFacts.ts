@@ -25,14 +25,12 @@
  *   server    nothing.
  *   fixture   the two demo areas' structures, and no others.
  *
- * AND, IN EVERY KIND, THE DIAGNOSTIC'S FIXED PAPER
- * (features/anatomy-revision/lib/diagnosticSample.ts): fifteen questions that
- * are public on purpose, some of whose choices are descriptions. They are
- * allowed where the paper is and as often as the paper prints them, and not
- * otherwise — lib/bundleFacts.ts has the rule and its test. The papers are
- * read from data/diagnostic/ here, so a new version of the paper is covered
- * without this file being touched, and nothing else can be added to the
- * exception without adding it to a paper every student is handed.
+ * NOTHING IS EXEMPT. The diagnostic's papers are in every build
+ * (data/diagnostic/papers.v3.json) and hold no facts: they name structures,
+ * and the questions are built at the sitting from what the sitter holds
+ * (features/anatomy-revision/lib/diagnosticPapers.ts). An earlier, public
+ * paper of finished questions needed an allowance here; it never shipped,
+ * and the allowance went with it.
  */
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
@@ -40,8 +38,7 @@ import { loadEnv } from 'vite';
 import { AUTHORED_STRUCTURES } from '../features/anatomy-revision/data/seed';
 import { DEMO_FIXTURE_AREAS } from '../features/anatomy-revision/data/content/demoFixtureAreas';
 import { areasOf } from '../features/anatomy-revision/types/structure';
-import type { FixedSampleFile } from '../features/anatomy-revision/lib/diagnosticSample';
-import { descriptionCanaries, findLeaks, type BuiltFile, type PublishedPaper } from './lib/bundleFacts';
+import { descriptionCanaries, findLeaks, type BuiltFile } from './lib/bundleFacts';
 
 /** Shorter than this and a description could be a phrase that turns up elsewhere by chance. */
 const MIN_CANARY_LENGTH = 40;
@@ -82,12 +79,6 @@ const allowed = new Set(
 );
 const canaries = descriptionCanaries(AUTHORED_STRUCTURES.filter((s) => !allowed.has(s.id)), MIN_CANARY_LENGTH);
 
-const PAPER_DIR = 'src/features/anatomy-revision/data/diagnostic';
-const papers: PublishedPaper[] = readdirSync(PAPER_DIR)
-  .filter((name) => /^fixedSample\.v\d+\.json$/.test(name))
-  .map((name) => JSON.parse(readFileSync(join(PAPER_DIR, name), 'utf8')) as FixedSampleFile)
-  .map((paper) => ({ marker: paper.sample, choices: paper.questions.flatMap((q) => q.question.choices) }));
-
 let files = 0;
 function* built(): Generator<BuiltFile> {
   for (const path of scripts(dir)) {
@@ -95,7 +86,7 @@ function* built(): Generator<BuiltFile> {
     yield { path, text: readFileSync(path, 'utf8') };
   }
 }
-const leaks = findLeaks(built(), canaries, papers);
+const leaks = findLeaks(built(), canaries);
 
 if (files === 0) {
   console.error(`check:bundle — no built files found in ${dir}. Build first.`);
@@ -109,15 +100,12 @@ if (leaks.size > 0) {
   }
   console.error(
     '\nSomething imports the structure seed outside data/content/bundledContent.ts, or reaches\n' +
-      'bundledContent by a specifier the alias in vite.config.ts does not rewrite.\n' +
-      "(The diagnostic's fixed paper is allowed its own choices, in the file that carries it, as\n" +
-      'often as it prints them. A structure listed here is over that.)\n',
+      'bundledContent by a specifier the alias in vite.config.ts does not rewrite.\n',
   );
   process.exit(1);
 }
 
 console.log(
   `check:bundle — ${dir} is a ${kind} build: ${files} files read, ${canaries.length} structures' descriptions looked for, none found` +
-    (kind === 'fixture' ? ` (the ${allowed.size} structures of ${DEMO_FIXTURE_AREAS.join(' and ')} are allowed).` : '.') +
-    ` The diagnostic's fixed paper (${papers.map((p) => p.marker).join(', ')}) is allowed its own choices where it is carried.`,
+    (kind === 'fixture' ? ` (the ${allowed.size} structures of ${DEMO_FIXTURE_AREAS.join(' and ')} are allowed).` : '.'),
 );

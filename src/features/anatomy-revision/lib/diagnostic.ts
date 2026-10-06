@@ -63,15 +63,19 @@ export const DIAGNOSTIC_SIZE = 15;
  *
  *   1  each class drew its own fifteen from the whole dataset, on the device
  *      (`buildDiagnostic` below). Live until October 2026.
- *   2  one fixed paper for everyone, shipped as a file
- *      (lib/diagnosticSample.ts). Owner's decision, 6 Oct 2026: once facts are
- *      served per area, a paper built on the device depends on what the
- *      sitter has paid for, and a class must sit one paper.
+ *   2  one public paper of fifteen finished questions. Built on a branch,
+ *      never shipped: no real sitting carries it. The number is skipped so
+ *      nothing sat under it can ever be read as one of the papers below.
+ *   3  ten written papers — the whole body, and one for each area
+ *      (lib/diagnosticPapers.ts). Owner's decision, 6 Oct 2026: a student
+ *      with every area sits the whole-body paper, a student on a free
+ *      account sits the paper for their free area. A sitting records WHICH
+ *      paper beside the version (`paperId`).
  *
  * This is the version a NEW BASELINE is stamped with. A follow-up carries its
- * baseline's version, not this one — see `resolveDiagnosticPaper`.
+ * baseline's version and paper, not this one — see `resolveDiagnosticPaper`.
  */
-export const DIAGNOSTIC_VERSION = 2;
+export const DIAGNOSTIC_VERSION = 3;
 
 /**
  * The version whose papers were drawn per class. Baselines sat under it are
@@ -100,6 +104,12 @@ export interface DiagnosticResult {
   userId: string;
   cohortId: string;
   version: number;
+  /**
+   * Which of a version's papers was sat: 'whole-body', or an area. Absent on
+   * version 1, where a class had one paper and it was the class's own.
+   * Two sittings pair only on the same paper (`pairDiagnostics`).
+   */
+  paperId?: string;
   /** 'baseline' is the sitting on joining; 'followUp' the one at the end of term. */
   phase: 'baseline' | 'followUp';
   correct: number;
@@ -182,13 +192,12 @@ const CORE_POOL_PER_AREA = 6;
 /**
  * The cohort's fixed item set, AS VERSION 1 DREW IT.
  *
- * No new baseline is built from this: version 2 hands everyone one written
- * paper (lib/diagnosticSample.ts). It stays for two callers. A follow-up to a
- * version-1 baseline that recorded no question ids is rebuilt from it; and
- * the script that wrote version 2's paper used it, under one fixed name, so
- * the new paper is chosen the way the old ones were. It must go on returning
- * exactly what it returned while version 1 was live, which is why its seed
- * is tied to COHORT_DRAWN_VERSION and not to the current version.
+ * No new baseline is built from this: a baseline is now one of the written
+ * papers (lib/diagnosticPapers.ts). It stays for one caller: a follow-up to a
+ * version-1 baseline, sat on the live site before October 2026, is rebuilt
+ * from it. It must go on returning exactly what it returned while version 1
+ * was live, which is why its seed is tied to COHORT_DRAWN_VERSION and not to
+ * the current version.
  *
  * Spread across areas on purpose: a diagnostic drawn at random from the whole
  * dataset would, at 20 items, quite often miss a region entirely, and a student
@@ -301,6 +310,8 @@ export function pairDiagnostics(results: DiagnosticResult[]): DiagnosticGain[] {
     const after = followUps[0];
     if (!before || !after) continue;
     if (before.version !== after.version) continue;
+    // Nor is the knee paper a follow-up to the whole-body one.
+    if (paperKey(before) !== paperKey(after)) continue;
     // A follow-up that asked different questions is not a follow-up.
     if (!sameQuestions(before, after)) continue;
 
@@ -322,6 +333,15 @@ export function pairDiagnostics(results: DiagnosticResult[]): DiagnosticGain[] {
   return gains.sort((a, b) => b.gainPoints - a.gainPoints);
 }
 
+/**
+ * Which paper a sitting was on, as one comparable value: the version and the
+ * paper within it. Version-1 sittings carry no paper id — a class had one
+ * paper — so they all share a key within their class.
+ */
+export function paperKey(result: Pick<DiagnosticResult, 'version' | 'paperId'>): string {
+  return `${result.version}:${result.paperId ?? ''}`;
+}
+
 /** Below this many paired students, a mean gain is not worth quoting. */
 export const MIN_PAIRED = 8;
 
@@ -335,6 +355,91 @@ export interface DiagnosticSummary {
   reportable: boolean;
 }
 
+/**
+ * A class's figures on ONE paper.
+ *
+ * WHY THERE IS NO FIGURE FOR A WHOLE CLASS ANY MORE. A class can sit more
+ * than one paper: three members with every area sit the whole-body paper
+ * while two on free accounts sit the knee's. A score out of fifteen on one
+ * and a score out of fifteen on the other are scores on two tests, and a
+ * mean over both is a number about nothing. So every figure — who sat a
+ * baseline, the mean, the pairs, whether it may be quoted — is worked out per
+ * paper, and MIN_PAIRED is asked of each paper on its own.
+ */
+export interface PaperFigures {
+  /** `paperKey` of the sittings counted here. */
+  key: string;
+  version: number;
+  /** Absent for version 1 (the class's own drawn paper). */
+  paperId?: string;
+  /** Students whose first baseline was on this paper. */
+  baselines: number;
+  meanBaselinePct: number | null;
+  /** Of those, the students with a follow-up on the same paper and questions. */
+  paired: number;
+  meanPairedBaselinePct: number | null;
+  meanFollowUpPct: number | null;
+  meanGainPoints: number | null;
+  improved: number;
+  /**
+   * Students with a baseline here and a follow-up that could not be paired
+   * with it (another paper, another version, other questions).
+   */
+  unpairable: number;
+  reportable: boolean;
+}
+
+/**
+ * The class's sittings, one row per paper, the most-sat paper first.
+ *
+ * A student belongs to the paper of their FIRST baseline: that is the sitting
+ * `pairDiagnostics` measures from.
+ */
+export function summariseDiagnosticsByPaper(results: DiagnosticResult[]): PaperFigures[] {
+  const mean = (values: number[]) =>
+    values.length > 0 ? values.reduce((a, b) => a + b, 0) / values.length : null;
+
+  const firstBaseline = new Map<string, DiagnosticResult>();
+  for (const r of results) {
+    if (r.phase !== 'baseline' || !(r.total > 0)) continue;
+    const held = firstBaseline.get(r.userId);
+    if (!held || r.takenAt < held.takenAt) firstBaseline.set(r.userId, r);
+  }
+  const followedUp = new Set(results.filter((r) => r.phase === 'followUp').map((r) => r.userId));
+  const gains = new Map(pairDiagnostics(results).map((g) => [g.userId, g]));
+
+  const byPaper = new Map<string, DiagnosticResult[]>();
+  for (const baseline of firstBaseline.values()) {
+    const key = paperKey(baseline);
+    byPaper.set(key, [...(byPaper.get(key) ?? []), baseline]);
+  }
+
+  return [...byPaper.entries()]
+    .map(([key, baselines]) => {
+      const paired = baselines.map((b) => gains.get(b.userId)).filter((g): g is DiagnosticGain => !!g);
+      return {
+        key,
+        version: baselines[0].version,
+        ...(baselines[0].paperId ? { paperId: baselines[0].paperId } : {}),
+        baselines: baselines.length,
+        meanBaselinePct: mean(baselines.map((b) => (b.correct / b.total) * 100)),
+        paired: paired.length,
+        meanPairedBaselinePct: mean(paired.map((g) => g.baselinePct)),
+        meanFollowUpPct: mean(paired.map((g) => g.followUpPct)),
+        meanGainPoints: mean(paired.map((g) => g.gainPoints)),
+        improved: paired.filter((g) => g.gainPoints > 0).length,
+        unpairable: baselines.filter((b) => followedUp.has(b.userId) && !gains.has(b.userId)).length,
+        reportable: paired.length >= MIN_PAIRED,
+      };
+    })
+    .sort((a, b) => b.baselines - a.baselines || a.key.localeCompare(b.key));
+}
+
+/**
+ * Every pair in one figure. Only meaningful when the sittings handed in are
+ * all on ONE paper — a caller holding a whole class's sittings must use
+ * `summariseDiagnosticsByPaper` instead.
+ */
 export function summariseDiagnostics(results: DiagnosticResult[]): DiagnosticSummary {
   const gains = pairDiagnostics(results);
   const mean = (values: number[]) =>

@@ -24,12 +24,8 @@
  */
 import { getFirestore, type Firestore } from 'firebase-admin/firestore';
 import { getAdminApp } from './firebaseAdmin';
-import {
-  COHORT_DRAWN_VERSION,
-  MIN_PAIRED,
-  pairDiagnostics,
-  type DiagnosticResult,
-} from '../src/features/anatomy-revision/lib/diagnostic';
+import { type DiagnosticResult } from '../src/features/anatomy-revision/lib/diagnostic';
+import { diagnosticReportLines } from '../src/features/anatomy-revision/lib/diagnosticReport';
 
 const DAY_MS = 86_400_000;
 
@@ -119,15 +115,13 @@ async function report(db: Firestore, cohortId: string): Promise<void> {
   process.stdout.write(`  Class accuracy            ${pct(gradedCorrect, gradedTotal)}\n\n`);
 
   // The diagnostic is the only before-and-after in the product, and the only
-  // figure that speaks to whether anybody learned anything. Paired: a student
-  // who sat one and not the other tells you nothing about change.
+  // figure that speaks to whether anybody learned anything.
   //
-  // Paired by `pairDiagnostics`, the rule the admin Outcome screen uses, and
-  // not by a looser one of this script's own: the same student, the same
-  // version of the paper, the same questions. That matters most across
-  // October 2026, when the paper changed from one drawn per class (version 1)
-  // to one fixed paper for everyone (version 2): a baseline on one and a
-  // follow-up on the other are two scores on two tests, and are not a pair.
+  // ONE PAPER, ONE FIGURE. A class can sit more than one paper — members with
+  // every area sit the whole-body paper, members on free accounts sit their
+  // free area's — and a mean across two papers is a number about nothing. So
+  // the section below is written per paper (lib/diagnosticReport.ts), and the
+  // floor for quoting a figure is asked of each paper on its own.
   const sittings: DiagnosticResult[] = [];
   for (const m of roll) {
     const snap = await db.collection(`users/${m.uid}/diagnostics`).get();
@@ -137,52 +131,8 @@ async function report(db: Firestore, cohortId: string): Promise<void> {
     }
   }
 
-  const firstBaselines = new Map<string, DiagnosticResult>();
-  for (const s of sittings) {
-    if (s.phase !== 'baseline' || !(s.total > 0)) continue;
-    const held = firstBaselines.get(s.userId);
-    if (!held || s.takenAt < held.takenAt) firstBaselines.set(s.userId, s);
-  }
-  const baselines = [...firstBaselines.values()].map((s) => (s.correct / s.total) * 100);
-  const onClassPaper = [...firstBaselines.values()].filter((s) => s.version === COHORT_DRAWN_VERSION).length;
-  const paired = pairDiagnostics(sittings).map((g) => ({ before: g.baselinePct, after: g.followUpPct }));
-  const followedUp = new Set(sittings.filter((s) => s.phase === 'followUp').map((s) => s.userId));
-  const unpairable = [...followedUp].filter((uid) => firstBaselines.has(uid)).length - paired.length;
-
   process.stdout.write('DIAGNOSTIC\n');
-  if (baselines.length === 0) {
-    process.stdout.write('  Nobody has sat one yet.\n');
-  } else {
-    const mean = (xs: number[]) => Math.round(xs.reduce((a, b) => a + b, 0) / xs.length);
-    process.stdout.write(`  Sat the baseline          ${baselines.length}\n`);
-    process.stdout.write(`  Mean baseline score       ${mean(baselines)}%\n`);
-    if (onClassPaper > 0 && onClassPaper < baselines.length) {
-      process.stdout.write(
-        `  TWO PAPERS: ${onClassPaper} sat the class's own paper (version 1), ${baselines.length - onClassPaper} the fixed one.\n`
-        + '  The mean above mixes them. Each student is paired only on the paper they sat.\n',
-      );
-    }
-    if (unpairable > 0) {
-      process.stdout.write(`  Sat both, NOT COUNTED     ${unpairable} — the follow-up was a different paper from the baseline\n`);
-    }
-    if (paired.length === 0) {
-      process.stdout.write('  Follow-ups                none yet — the before-and-after needs both sittings\n');
-    } else {
-      const before = mean(paired.map((p) => p.before));
-      const after = mean(paired.map((p) => p.after));
-      const improved = paired.filter((p) => p.after > p.before).length;
-      process.stdout.write(`  Sat both                  ${paired.length}\n`);
-      process.stdout.write(`  Mean before / after       ${before}% → ${after}%  (${after - before >= 0 ? '+' : ''}${after - before} points)\n`);
-      process.stdout.write(`  Improved                  ${improved} of ${paired.length}\n`);
-      // MIN_PAIRED in lib/diagnostic.ts. Printed rather than hidden: the course
-      // lead may see a small class's own figure, but nobody may quote it.
-      if (paired.length < MIN_PAIRED) {
-        process.stdout.write(`  NOT QUOTABLE: under ${MIN_PAIRED} students sat both. See docs/CLAIMS.md.\n`);
-      } else {
-        process.stdout.write('  Before quoting any of this, read docs/CLAIMS.md: what a pilot needs.\n');
-      }
-    }
-  }
+  for (const line of diagnosticReportLines(sittings)) process.stdout.write(`  ${line}\n`);
 
   if (roll.length > 0 && started.length === 0) {
     process.stdout.write('\nNobody has answered anything. Worth asking the course lead whether the\njoin code reached the students, before reading anything into the silence.\n');

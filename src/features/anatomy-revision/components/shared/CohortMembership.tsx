@@ -2,12 +2,18 @@ import { useEffect, useState } from 'react';
 import { refreshEntitlementEverywhere } from '../../hooks/useEntitlement';
 import { useAuth } from '../../context/AuthProvider';
 import { useNavigate } from 'react-router-dom';
-import { DiagnosticPrompt } from '../Diagnostic/DiagnosticPrompt';
+import { DiagnosticPrompt, type SittingMeans } from '../Diagnostic/DiagnosticPrompt';
 import type { CohortInvite } from '../../../educator/data/invitesRepository';
 import type { Cohort } from '../../../educator/types/cohort';
 
 interface CohortMembershipProps {
   uid: string;
+  /**
+   * What this device can sit today — the account's areas and which of their
+   * facts are in hand — so the diagnostic is only offered when its paper can
+   * be built here (see DiagnosticPrompt).
+   */
+  sitting: SittingMeans;
   /** Mobile uses a larger type scale than desktop's sidebar — kept as one component rather than two near-duplicates. */
   compact?: boolean;
 }
@@ -51,7 +57,7 @@ interface CohortMembershipProps {
  * attemptEvents, it is a false privacy notice — which is worse than the weak
  * one it replaced. Check firestore.rules before touching it.
  */
-export function CohortMembership({ uid, compact }: CohortMembershipProps) {
+export function CohortMembership({ uid, sitting, compact }: CohortMembershipProps) {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [cohort, setCohort] = useState<Cohort | null | 'loading'>('loading');
@@ -254,6 +260,7 @@ export function CohortMembership({ uid, compact }: CohortMembershipProps) {
             // months, then sit a "baseline" that understates the class's gain.
             // Unknown (joined before the field existed) still means "offer it".
             joinedAt={joinedAt}
+            sitting={sitting}
             compact={compact}
             onStart={(phase) => navigate(`/diagnostic?phase=${phase}`)}
           />

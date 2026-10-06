@@ -2,18 +2,21 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import type { AnatomyRepository } from '../../data/repository';
 import type { AnatomyContent } from '../../hooks/useAnatomyContent';
+import type { Area } from '../../types/region';
 import { DiagnosticScreen } from './DiagnosticScreen';
 import { nextDiagnosticPhase } from '../../lib/diagnosticPrompt';
-import { resolveDiagnosticPaper, type DiagnosticPaper } from '../../lib/diagnosticSample';
+import { resolveDiagnosticPaper, type DiagnosticPaper } from '../../lib/diagnosticPapers';
 
 /**
  * /diagnostic — resolves what DiagnosticScreen needs and gets out of the way.
  *
  * Two things have to be looked up before a sitting can start, and neither
  * belongs in the screen: which class the student is in, and which paper they
- * are to sit. A baseline is the current fixed paper. A follow-up is whatever
- * its baseline was — that version, those questions — since a follow-up that
- * asks anything else is not a follow-up (lib/diagnosticSample.ts).
+ * are to sit. A baseline is the paper for what they hold: every area, the
+ * whole-body paper; a free account, its free area's. A follow-up is whatever
+ * its baseline was — that version, that paper, those questions — since a
+ * follow-up that asks anything else is not a follow-up
+ * (lib/diagnosticPapers.ts).
  *
  * It also refuses a sitting that is not due. The prompt only offers what
  * nextDiagnosticPhase allows, but this route is a URL: without the same check a
@@ -32,6 +35,8 @@ interface DiagnosticRouteProps {
   userId: string | null;
   /** The index, the facts in hand, and which areas those cover. */
   content: AnatomyContent;
+  /** The areas this account may reach: what decides a baseline's paper. */
+  sitterAreas: readonly Area[];
 }
 
 type State =
@@ -39,11 +44,14 @@ type State =
   | { status: 'ready'; cohortId: string; paper: DiagnosticPaper }
   | { status: 'unavailable' };
 
-export function DiagnosticRoute({ repository, userId, content }: DiagnosticRouteProps) {
+export function DiagnosticRoute({ repository, userId, content, sitterAreas }: DiagnosticRouteProps) {
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const phase = params.get('phase') === 'followUp' ? 'followUp' : 'baseline';
   const [state, setState] = useState<State>({ status: 'loading' });
+  // As a string, so a new array with the same areas does not look up again
+  // and swap the paper under a sitting that has started.
+  const areasKey = sitterAreas.join(',');
 
   useEffect(() => {
     let cancelled = false;
@@ -71,7 +79,7 @@ export function DiagnosticRoute({ repository, userId, content }: DiagnosticRoute
               .filter((r) => r.phase === 'baseline' && r.cohortId === cohort.id)
               .sort((a, b) => a.takenAt.localeCompare(b.takenAt))[0]
           : undefined;
-        const paper = await resolveDiagnosticPaper(phase, baseline);
+        const paper = await resolveDiagnosticPaper(phase, baseline, areasKey ? (areasKey.split(',') as Area[]) : []);
         if (!cancelled) setState({ status: 'ready', cohortId: cohort.id, paper });
       } catch {
         if (!cancelled) setState({ status: 'unavailable' });
@@ -79,7 +87,7 @@ export function DiagnosticRoute({ repository, userId, content }: DiagnosticRoute
     })();
 
     return () => { cancelled = true; };
-  }, [repository, userId, phase]);
+  }, [repository, userId, phase, areasKey]);
 
   if (state.status === 'loading') return null;
 
@@ -115,6 +123,7 @@ export function DiagnosticRoute({ repository, userId, content }: DiagnosticRoute
       phase={phase}
       content={content}
       paper={state.paper}
+      sitterAreas={sitterAreas}
       onDone={() => navigate('/account')}
     />
   );

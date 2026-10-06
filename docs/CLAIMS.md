@@ -118,25 +118,39 @@ No outcome figure is public today, and none may be until every line in this sect
 thresholds are **proposed** (4 Oct 2026) and become the rule when the owner accepts them; until
 then the rule is the stricter one above: no outcome claim at all.
 
-**What the measurement is.** Each student in a class sits the same 15 questions twice: a baseline
-within 28 days of joining and a follow-up from 70 days later (`lib/diagnostic.ts`,
+**What the measurement is.** Each student in a class sits 15 questions twice: a baseline within
+28 days of joining and a follow-up from 70 days later (`lib/diagnostic.ts`,
 `lib/diagnosticPrompt.ts`). No feedback is given, and it never touches mastery or the class
-counters. Only students with both sittings, on the same questions and version, are counted
+counters. Only students with both sittings, on the same paper, questions and version, are counted
 (`pairDiagnostics`). There is no comparison group. That last sentence limits everything below.
 
-**Which 15.** Until October 2026 each class drew its own fifteen from the whole dataset
-(version 1). From version 2 there is one fixed paper, the same for every class and every student
-whatever they have paid for, shipped in the app as `data/diagnostic/fixedSample.v2.json`
-(`lib/diagnosticSample.ts`; docs/CONTENT-SERVER-STATUS.md, decision 7, lists the questions). Two
-consequences for a claim. A class that started under version 1 and gained members under version 2
-sat **two papers**: quote each student's change only on the paper they sat twice, and say so if
-both are in one figure. And the fixed paper and its answers are public in the app's files, and
-are the same every year: a figure from a later class cannot rule out that the paper was seen
-beforehand, which is one more reason the number may flatter us.
+**Which 15: a class can sit more than one paper.** Until October 2026 each class drew its own
+fifteen from the whole dataset (version 1). From version 3 there are ten written papers
+(`lib/diagnosticPapers.ts`; the questions are listed in docs/DIAGNOSTIC-PAPERS.md), and which one
+a student sits depends on what their account holds: **a student with every area sits the
+whole-body paper; a student on a free account sits the paper for their free area.** The
+follow-up is always the paper the baseline was. (Version 2, one public paper, was never
+released.) So one class can hold a whole-body group and several single-area groups, and those are
+different tests.
+
+**A quotable figure needs ONE paper.** Scores on different papers are never averaged together:
+`scripts/cohortReport.ts` reports each paper on its own ("3 students sat the whole-body paper,
+2 sat the knee paper"), has no line for the class as a whole, and asks its floor (`MIN_PAIRED`)
+of each paper separately. Every threshold below is counted **on one paper**. In practice that
+means a **licensed class**: its members all hold every area, so they all sit the whole-body
+paper, and the class is one group. An unlicensed class of free accounts is as many small groups
+as its students chose free areas, and is unlikely to reach a quotable number on any of them. A
+class that started under version 1 and gained members later sat the class's own paper and a
+written one: quote each only on its own.
+
+The papers hold no answers and publish no facts, but they are fixed: every class that sits the
+whole-body paper sits the same fifteen, every year, until the paper is replaced by a new version.
+A figure from a later class cannot rule out that the questions were passed on, which is one more
+reason the number may flatter us.
 
 **Before a figure is quoted in public**
 
-1. **Size.** At least 20 students with both sittings, in one class. The code's own floor
+1. **Size.** At least 20 students with both sittings, in one class **and on one paper**. The code's own floor
    (`MIN_PAIRED = 8`) is for showing a course lead their own class in private; it is too few for
    a public number.
 2. **Completion.** At least 60% of the students who sat the baseline also sat the follow-up.
@@ -174,10 +188,13 @@ a result. `outcomeComparison.ts` makes that split for the admin screen; it stays
 **Consent and anonymity**
 
 - Students were told, before the baseline, that class-level results may be reported outside
-  their course. **They are not told this today.** The baseline prompt says only that the course
-  leader sees whether the class moved, and /privacy does not mention the diagnostic. Both need
-  a sentence added before a pilot's first baseline; a class that sat it without that sentence
-  cannot be quoted in public.
+  their course. **They are not told this today.** The baseline prompt says that the course
+  leader never sees their score and that one overall figure for the class "may be shared with
+  your course leader" — which is what happens, by `cohortReport`, and no more (6 Oct 2026: it
+  used to say the course leader "sees whether the class as a whole moved", and no educator
+  screen shows that). It does not mention anyone outside the course, and /privacy does not
+  mention the diagnostic. Both need a sentence added before a pilot's first baseline; a class
+  that sat it without that sentence cannot be quoted in public.
 - Class totals only. No names, no per-student rows, no quote from a student without their own
   written permission. Educators see class results only; a public claim cannot show more than
   an educator can.
@@ -208,11 +225,12 @@ class, not about "students" in general.
 - "The more you use it, the more you improve."
 - "Used at <university>" without written permission.
 
-**Closed gap (6 Oct 2026).** `scripts/cohortReport.ts` used to pair sittings more loosely than
+**Closed gaps (6 Oct 2026).** `scripts/cohortReport.ts` used to pair sittings more loosely than
 `pairDiagnostics`: it did not check the version or that the same questions were asked. It now
-pairs with `pairDiagnostics` itself, says when a class sat two papers, and counts the students
-who sat both sittings but on different papers and so are not in the figure. It still marks a
-class under the private floor as not quotable.
+pairs with `pairDiagnostics` itself. And it used to print one mean for the class; it now prints
+each paper on its own, counts the students who sat both sittings but on different papers and so
+are not in any figure, and marks a paper under the private floor as not quotable however many
+sat the class's other papers.
 
 ## Claims NOT to make until there is evidence
 

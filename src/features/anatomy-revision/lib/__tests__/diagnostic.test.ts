@@ -4,6 +4,8 @@ import {
   sameQuestions,
   pairDiagnostics,
   summariseDiagnostics,
+  summariseDiagnosticsByPaper,
+  paperKey,
   scoreDiagnostic,
   DIAGNOSTIC_SIZE,
   DIAGNOSTIC_VERSION,
@@ -13,6 +15,7 @@ import {
 } from '../diagnostic';
 import { ALL_STRUCTURES } from '../../data/seed';
 import { buildDiagnosticQuestions, shuffleForSitting } from '../diagnostic';
+import { diagnosticReportLines, whoSatWhat } from '../diagnosticReport';
 
 /**
  * Two properties carry the whole design: the same cohort must get the same
@@ -201,6 +204,129 @@ describe('summariseDiagnostics', () => {
     expect(out.paired).toBe(0);
     expect(out.meanGainPoints).toBeNull();
     expect(out.reportable).toBe(false);
+  });
+});
+
+/**
+ * A class can sit more than one paper: members with every area sit the
+ * whole-body paper, members on free accounts sit their free area's. Two
+ * papers are two tests, and no figure may run across them.
+ */
+describe('papers are never mixed', () => {
+  function group(paperId: string | undefined, n: number, before: number, after: number | null, version = DIAGNOSTIC_VERSION) {
+    const rows: DiagnosticResult[] = [];
+    for (let i = 0; i < n; i++) {
+      const userId = `${paperId ?? 'v1'}-${i}`;
+      rows.push(result({ userId, phase: 'baseline', version, paperId, correct: before, total: 15, takenAt: '2026-10-01T09:00:00.000Z' }));
+      if (after !== null) {
+        rows.push(result({ userId, phase: 'followUp', version, paperId, correct: after, total: 15, takenAt: '2026-12-15T09:00:00.000Z' }));
+      }
+    }
+    return rows;
+  }
+
+  it('does not pair a knee baseline with a whole-body follow-up', () => {
+    expect(pairDiagnostics([
+      result({ userId: 'u1', phase: 'baseline', paperId: 'knee' }),
+      result({ userId: 'u1', phase: 'followUp', paperId: 'whole-body', correct: 18 }),
+    ])).toEqual([]);
+  });
+
+  it('pairs two sittings of the same paper', () => {
+    expect(pairDiagnostics([
+      result({ userId: 'u1', phase: 'baseline', paperId: 'knee', correct: 5 }),
+      result({ userId: 'u1', phase: 'followUp', paperId: 'knee', correct: 15 }),
+    ])).toHaveLength(1);
+  });
+
+  it('gives each paper its own figures, the most-sat first', () => {
+    const papers = summariseDiagnosticsByPaper([...group('knee', 2, 3, 9), ...group('whole-body', 3, 6, 12)]);
+    expect(papers.map((p) => [p.paperId, p.baselines, p.paired])).toEqual([['whole-body', 3, 3], ['knee', 2, 2]]);
+    expect(papers[0].meanBaselinePct).toBe(40);
+    expect(papers[0].meanFollowUpPct).toBe(80);
+    expect(papers[1].meanBaselinePct).toBe(20);
+    expect(papers[1].meanFollowUpPct).toBe(60);
+    // Nothing in the answer is an average over both.
+    expect(JSON.stringify(papers)).not.toContain('32');
+  });
+
+  it('asks the floor of each paper on its own: ten students on two papers are not ten', () => {
+    const papers = summariseDiagnosticsByPaper([...group('knee', 5, 3, 9), ...group('whole-body', 5, 6, 12)]);
+    expect(papers.map((p) => p.paired)).toEqual([5, 5]);
+    expect(papers.map((p) => p.reportable)).toEqual([false, false]);
+    // …though together they would have cleared it.
+    expect(5 + 5).toBeGreaterThanOrEqual(MIN_PAIRED);
+  });
+
+  it('calls a paper reportable when enough students sat THAT paper twice', () => {
+    const papers = summariseDiagnosticsByPaper([...group('whole-body', MIN_PAIRED, 6, 12), ...group('knee', 2, 3, 9)]);
+    expect(papers.find((p) => p.paperId === 'whole-body')!.reportable).toBe(true);
+    expect(papers.find((p) => p.paperId === 'knee')!.reportable).toBe(false);
+  });
+
+  it('counts a student whose follow-up was on another paper as sat-both-but-not-counted', () => {
+    const rows = [
+      ...group('knee', 2, 3, 9),
+      result({ userId: 'x', phase: 'baseline', paperId: 'knee', correct: 3, total: 15 }),
+      result({ userId: 'x', phase: 'followUp', paperId: 'whole-body', correct: 9, total: 15, takenAt: '2026-12-15T09:00:00.000Z' }),
+    ];
+    const [knee] = summariseDiagnosticsByPaper(rows);
+    expect([knee.baselines, knee.paired, knee.unpairable]).toEqual([3, 2, 1]);
+  });
+
+  it("keeps a class's own version-1 paper apart from the written ones", () => {
+    const papers = summariseDiagnosticsByPaper([
+      ...group(undefined, 3, 6, 12, COHORT_DRAWN_VERSION),
+      ...group('whole-body', 2, 6, 12),
+    ]);
+    expect(papers.map((p) => [p.version, p.paperId, p.baselines])).toEqual([
+      [COHORT_DRAWN_VERSION, undefined, 3],
+      [DIAGNOSTIC_VERSION, 'whole-body', 2],
+    ]);
+  });
+
+  it('gives one key to a paper and different keys to different papers', () => {
+    expect(paperKey({ version: 3, paperId: 'knee' })).toBe(paperKey({ version: 3, paperId: 'knee' }));
+    expect(paperKey({ version: 3, paperId: 'knee' })).not.toBe(paperKey({ version: 3, paperId: 'hip' }));
+    expect(paperKey({ version: 3, paperId: 'knee' })).not.toBe(paperKey({ version: 4, paperId: 'knee' }));
+  });
+
+  describe('the report', () => {
+    it('says who sat what, in a sentence', () => {
+      const papers = summariseDiagnosticsByPaper([...group('knee', 2, 3, null), ...group('whole-body', 3, 6, null)]);
+      expect(whoSatWhat(papers)).toBe('3 students sat the whole-body paper, 2 sat the knee paper.');
+    });
+
+    it('reports each paper on its own and no figure for the class', () => {
+      const lines = diagnosticReportLines([...group('knee', 2, 3, 9), ...group('whole-body', 3, 6, 12)]);
+      expect(lines[0]).toBe('3 students sat the whole-body paper, 2 sat the knee paper.');
+      expect(lines[1]).toContain('different tests');
+      const text = lines.join('\n');
+      expect(text).toContain('The whole-body paper');
+      expect(text).toContain('Mean before / after       40% → 80%  (+40 points)');
+      expect(text).toContain('The knee paper');
+      expect(text).toContain('Mean before / after       20% → 60%  (+40 points)');
+      // Five baselines in the class; the only counts printed are per paper.
+      expect(text).not.toMatch(/Sat the baseline\s+5/);
+      // Neither paper has enough pairs, and each says so for itself.
+      expect(text.match(/NOT QUOTABLE: under 8 students sat this paper twice/g)).toHaveLength(2);
+    });
+
+    it('says one student in the singular, and nothing about different tests for one paper', () => {
+      const lines = diagnosticReportLines(group('hip', 1, 3, null));
+      expect(lines[0]).toBe('1 student sat the hip paper.');
+      expect(lines.join('\n')).not.toContain('different tests');
+      expect(lines.join('\n')).toContain('none yet');
+    });
+
+    it('names a version-1 paper for what it was', () => {
+      expect(diagnosticReportLines(group(undefined, 2, 6, 12, COHORT_DRAWN_VERSION))[0])
+        .toBe("2 students sat the class's own paper (version 1).");
+    });
+
+    it('says so when nobody has sat one', () => {
+      expect(diagnosticReportLines([])).toEqual(['Nobody has sat one yet.']);
+    });
   });
 });
 

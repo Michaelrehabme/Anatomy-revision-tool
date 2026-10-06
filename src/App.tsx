@@ -771,6 +771,7 @@ function App() {
               repository={repository}
               userId={userId}
               content={content}
+              sitterAreas={entitledAreas}
             />
           }
         />

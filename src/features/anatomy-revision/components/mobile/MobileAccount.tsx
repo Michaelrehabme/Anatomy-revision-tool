@@ -168,7 +168,7 @@ export function MobileAccount({ access, content, repository, userId, onNavigateT
             <h3 className="mt-9" style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 20, letterSpacing: '-.01em', margin: 0 }}>
               Classes
             </h3>
-            <CohortMembership uid={user.uid} compact />
+            <CohortMembership uid={user.uid} sitting={{ areas: access.areas, missing: content.facts.missing }} compact />
             <MyClasses uid={user.uid} compact />
             <AdminSection compact />
 

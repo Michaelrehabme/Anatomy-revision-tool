@@ -87,6 +87,16 @@ export function nextDiagnosticPhase(input: DiagnosticPromptInput): 'baseline' | 
  * How the offer is worded. The baseline and the follow-up are the same fifteen
  * questions and a different proposition, and saying "take the diagnostic" for
  * both would waste the only moment a student is paying attention to it.
+ *
+ * WHAT IT SAYS ABOUT WHO SEES THE SCORE IS WHAT HAPPENS, AND NO MORE. It used
+ * to say the course leader sees "only whether the class as a whole moved",
+ * and the follow-up called it "the number your course leader sees". No
+ * educator screen shows either: a sitting is stored under the student, where
+ * firestore.rules gives a class owner no read at all, and the only thing
+ * that ever adds a class up is scripts/cohortReport.ts, run by LocusMSK. So
+ * the copy now says that: the course leader never sees the score (true, and
+ * enforced by the rules), and one figure for the class is worked out by us
+ * and MAY be shared with them. Nothing is promised to appear anywhere.
  */
 export function promptCopy(phase: 'baseline' | 'followUp'): { title: string; body: string; cta: string } {
   return phase === 'baseline'
@@ -94,16 +104,17 @@ export function promptCopy(phase: 'baseline' | 'followUp'): { title: string; bod
         title: 'Before you start revising',
         body:
           'Fifteen questions, about six minutes. It does not count for anything, and your course '
-          + 'leader never sees your score — only whether the class as a whole moved. You will sit '
-          + 'the same fifteen again at the end of term.',
+          + 'leader never sees your score. We work out one overall figure for the class from the '
+          + 'students who sit it twice, and only that figure may be shared with your course leader. '
+          + 'You will sit the same fifteen again at the end of term.',
         cta: 'Take the baseline',
       }
     : {
         title: 'The same fifteen questions, ten weeks on',
         body:
-          'You sat these when you joined. Sitting them again is the only way to show what a term '
-          + 'of revision actually did — and it is the number your course leader sees, about the '
-          + 'class rather than about you.',
+          'You sat these when you joined. Sitting them again is the only way to see what has '
+          + 'changed over the term. Your course leader never sees your score: only one overall '
+          + 'figure for the class may be shared with them.',
         cta: 'Take the follow-up',
       };
 }

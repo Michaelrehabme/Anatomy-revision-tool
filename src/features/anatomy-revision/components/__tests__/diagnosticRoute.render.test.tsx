@@ -4,8 +4,9 @@ import { MemoryRouter } from 'react-router-dom';
 import { DiagnosticRoute } from '../Diagnostic/DiagnosticRoute';
 import { createMemoryRepository } from '../../data/memoryRepository';
 import { COHORT_DRAWN_VERSION, DIAGNOSTIC_SIZE, DIAGNOSTIC_VERSION } from '../../lib/diagnostic';
-import { resolveDiagnosticPaper, type DiagnosticPaper } from '../../lib/diagnosticSample';
+import { WHOLE_BODY_PAPER, loadPapers, type DiagnosticPaper } from '../../lib/diagnosticPapers';
 import { anatomyContentFrom } from '../../hooks/useAnatomyContent';
+import { AREAS, type Area } from '../../types/region';
 
 const DAY = 86_400_000;
 let joinedAt: string | null = null;
@@ -21,16 +22,18 @@ vi.mock('../Diagnostic/DiagnosticScreen', () => ({
       <p>sitting: {phase}</p>
       <p>
         {`paper: ${paper.kind} v${paper.version}, `}
-        {paper.kind === 'fixed' ? `${paper.questions.length} questions` : `replays ${(paper.replayIds ?? []).join('+')}`}
+        {paper.kind === 'paper'
+          ? `${paper.paper.id}, ${paper.paper.questions.length} questions`
+          : paper.kind === 'cohortDrawn' ? `replays ${(paper.replayIds ?? []).join('+')}` : 'nothing'}
       </p>
     </>
   ),
 }));
 
-function open(phase: 'baseline' | 'followUp', repository = createMemoryRepository()) {
+function open(phase: 'baseline' | 'followUp', repository = createMemoryRepository(), sitterAreas: readonly Area[] = AREAS) {
   return render(
     <MemoryRouter initialEntries={[`/diagnostic?phase=${phase}`]}>
-      <DiagnosticRoute repository={repository} userId="u1" content={anatomyContentFrom([], [])} />
+      <DiagnosticRoute repository={repository} userId="u1" content={anatomyContentFrom([], [])} sitterAreas={sitterAreas} />
     </MemoryRouter>,
   );
 }
@@ -76,28 +79,41 @@ describe('/diagnostic only runs a sitting that is due', () => {
 });
 
 /**
- * Which paper the route hands the screen. A baseline is the fixed paper. A
- * follow-up is whatever its baseline was, so a class that was mid-diagnostic
- * when the fixed paper arrived is not orphaned.
+ * Which paper the route hands the screen. A baseline is the paper for what
+ * the sitter holds. A follow-up is whatever its baseline was, whatever they
+ * hold now, so nobody mid-diagnostic is orphaned or handed a different test.
  */
 describe('/diagnostic hands over the right paper', () => {
   const longAgo = new Date(Date.now() - 80 * DAY).toISOString();
 
-  async function withBaseline(version: number, questionIds: string[]) {
+  async function withBaseline(version: number, questionIds: string[], paperId?: string) {
     const repository = createMemoryRepository();
     await repository.saveDiagnosticResult({
-      userId: 'u1', cohortId: 'c1', version, phase: 'baseline', correct: 5, total: 15, takenAt: longAgo, questionIds,
+      userId: 'u1', cohortId: 'c1', version, ...(paperId ? { paperId } : {}),
+      phase: 'baseline', correct: 5, total: 15, takenAt: longAgo, questionIds,
     });
     return repository;
   }
+  const idsOf = async (paperId: string) =>
+    (await loadPapers(DIAGNOSTIC_VERSION))!.papers.find((p) => p.id === paperId)!.questions.map((q) => q.id);
 
   beforeEach(() => {
     joinedAt = new Date(Date.now() - 3 * DAY).toISOString();
   });
 
-  it('a baseline: the fixed paper, current version', async () => {
+  it('a baseline for a student with every area: the whole-body paper', async () => {
     open('baseline');
-    expect(await screen.findByText(`paper: fixed v${DIAGNOSTIC_VERSION}, ${DIAGNOSTIC_SIZE} questions`)).toBeTruthy();
+    expect(await screen.findByText(`paper: paper v${DIAGNOSTIC_VERSION}, ${WHOLE_BODY_PAPER}, ${DIAGNOSTIC_SIZE} questions`)).toBeTruthy();
+  });
+
+  it("a baseline for a free student: their free area's paper", async () => {
+    open('baseline', createMemoryRepository(), ['ankle-foot']);
+    expect(await screen.findByText(`paper: paper v${DIAGNOSTIC_VERSION}, ankle-foot, ${DIAGNOSTIC_SIZE} questions`)).toBeTruthy();
+  });
+
+  it('a baseline for a free account that has not chosen an area: nothing to ask', async () => {
+    open('baseline', createMemoryRepository(), []);
+    expect(await screen.findByText(`paper: unknown v${DIAGNOSTIC_VERSION}, nothing`)).toBeTruthy();
   });
 
   it("a follow-up to a version-1 baseline: that class's own paper, replayed", async () => {
@@ -106,11 +122,21 @@ describe('/diagnostic hands over the right paper', () => {
     expect(await screen.findByText(`paper: cohortDrawn v${COHORT_DRAWN_VERSION}, replays mcq-a+mcq-b`)).toBeTruthy();
   });
 
-  it('a follow-up to a fixed-paper baseline: the fixed paper again', async () => {
+  it("a follow-up to a knee baseline is the knee paper, though the student's free area is now the hip", async () => {
     joinedAt = longAgo;
-    const paper = await resolveDiagnosticPaper('baseline');
-    const ids = paper.kind === 'fixed' ? paper.questions.map((q) => q.id) : [];
-    open('followUp', await withBaseline(DIAGNOSTIC_VERSION, ids));
-    expect(await screen.findByText(`paper: fixed v${DIAGNOSTIC_VERSION}, ${DIAGNOSTIC_SIZE} questions`)).toBeTruthy();
+    open('followUp', await withBaseline(DIAGNOSTIC_VERSION, await idsOf('knee'), 'knee'), ['hip']);
+    expect(await screen.findByText(`paper: paper v${DIAGNOSTIC_VERSION}, knee, ${DIAGNOSTIC_SIZE} questions`)).toBeTruthy();
+  });
+
+  it('a follow-up to a knee baseline is the knee paper, though the student now holds every area', async () => {
+    joinedAt = longAgo;
+    open('followUp', await withBaseline(DIAGNOSTIC_VERSION, await idsOf('knee'), 'knee'), AREAS);
+    expect(await screen.findByText(`paper: paper v${DIAGNOSTIC_VERSION}, knee, ${DIAGNOSTIC_SIZE} questions`)).toBeTruthy();
+  });
+
+  it('a follow-up to a whole-body baseline is the whole-body paper, though the subscription has lapsed', async () => {
+    joinedAt = longAgo;
+    open('followUp', await withBaseline(DIAGNOSTIC_VERSION, await idsOf(WHOLE_BODY_PAPER), WHOLE_BODY_PAPER), ['shoulder']);
+    expect(await screen.findByText(`paper: paper v${DIAGNOSTIC_VERSION}, ${WHOLE_BODY_PAPER}, ${DIAGNOSTIC_SIZE} questions`)).toBeTruthy();
   });
 });

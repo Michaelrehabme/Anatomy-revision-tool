@@ -1,0 +1,1660 @@
+{
+  "version": 3,
+  "papers": [
+    {
+      "id": "whole-body",
+      "questions": [
+        {
+          "id": "dx3.whole-body.latissimus-dorsi.functional",
+          "structureId": "latissimus-dorsi",
+          "kind": "functional",
+          "distractors": [
+            "pectoralis-major",
+            "deltoid",
+            "infraspinatus"
+          ]
+        },
+        {
+          "id": "dx3.whole-body.supraspinatus.action",
+          "structureId": "supraspinatus",
+          "kind": "action",
+          "distractors": [
+            "deltoid",
+            "coracobrachialis",
+            "teres-major"
+          ]
+        },
+        {
+          "id": "dx3.whole-body.triceps-brachii.nerve",
+          "structureId": "triceps-brachii",
+          "kind": "nerve",
+          "distractors": [
+            "biceps-brachii",
+            {
+              "nerve": "Median nerve"
+            },
+            {
+              "nerve": "Ulnar nerve"
+            }
+          ]
+        },
+        {
+          "id": "dx3.whole-body.flexor-digitorum-superficialis.insertion",
+          "structureId": "flexor-digitorum-superficialis",
+          "kind": "insertion",
+          "distractors": [
+            "flexor-digitorum-profundus",
+            "flexor-pollicis-longus",
+            "palmaris-longus"
+          ]
+        },
+        {
+          "id": "dx3.whole-body.carpometacarpal-joint-thumb.identify",
+          "structureId": "carpometacarpal-joint-thumb",
+          "kind": "identify",
+          "imageId": "joint-carpometacarpal-joint-thumb-a000-plate",
+          "distractors": [
+            "metacarpophalangeal-joint",
+            "radiocarpal-joint",
+            "carpometacarpal-joint-2"
+          ]
+        },
+        {
+          "id": "dx3.whole-body.gluteus-maximus.nerve",
+          "structureId": "gluteus-maximus",
+          "kind": "nerve",
+          "distractors": [
+            "gluteus-medius",
+            "iliacus",
+            "gracilis"
+          ]
+        },
+        {
+          "id": "dx3.whole-body.sartorius.origin",
+          "structureId": "sartorius",
+          "kind": "origin",
+          "distractors": [
+            "gracilis",
+            "piriformis",
+            "quadratus-femoris"
+          ]
+        },
+        {
+          "id": "dx3.whole-body.anterior-cruciate-ligament.identify",
+          "structureId": "anterior-cruciate-ligament",
+          "kind": "identify",
+          "imageId": "ligament-anterior-cruciate-ligament-a000-highlight",
+          "distractors": [
+            "posterior-cruciate-ligament",
+            "transverse-ligament-of-knee",
+            "oblique-popliteal-ligament"
+          ]
+        },
+        {
+          "id": "dx3.whole-body.rectus-femoris.origin",
+          "structureId": "rectus-femoris",
+          "kind": "origin",
+          "distractors": [
+            "vastus-lateralis",
+            "semitendinosus",
+            "popliteus"
+          ]
+        },
+        {
+          "id": "dx3.whole-body.gastrocnemius.action",
+          "structureId": "gastrocnemius",
+          "kind": "action",
+          "distractors": [
+            "plantaris",
+            "tibialis-posterior",
+            "flexor-hallucis-longus"
+          ]
+        },
+        {
+          "id": "dx3.whole-body.anterior-talofibular-ligament.identify",
+          "structureId": "anterior-talofibular-ligament",
+          "kind": "identify",
+          "imageId": "ligament-anterior-talofibular-ligament-a000-highlight",
+          "distractors": [
+            "posterior-talofibular-ligament",
+            "calcaneofibular-ligament",
+            "anterior-tibiofibular-ligament"
+          ]
+        },
+        {
+          "id": "dx3.whole-body.atlas-c1.identify",
+          "structureId": "atlas-c1",
+          "kind": "identify",
+          "imageId": "panel-atlas-c1",
+          "distractors": [
+            "axis-c2",
+            "c7-vertebra",
+            "occipital-bone"
+          ]
+        },
+        {
+          "id": "dx3.whole-body.diaphragm.nerve",
+          "structureId": "diaphragm",
+          "kind": "nerve",
+          "distractors": [
+            "external-intercostals",
+            "longissimus",
+            {
+              "nerve": "Long thoracic nerve"
+            }
+          ]
+        },
+        {
+          "id": "dx3.whole-body.intervertebral-disc.identify",
+          "structureId": "intervertebral-disc",
+          "kind": "identify",
+          "imageId": "panel-intervertebral-disc",
+          "distractors": [
+            "vertebral-body",
+            "intervertebral-foramen",
+            "vertebral-foramen"
+          ]
+        },
+        {
+          "id": "dx3.whole-body.quadratus-lumborum.insertion",
+          "structureId": "quadratus-lumborum",
+          "kind": "insertion",
+          "distractors": [
+            "rectus-abdominis",
+            "internal-oblique",
+            "spinalis"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "shoulder",
+      "questions": [
+        {
+          "id": "dx3.shoulder.deltoid.nerve",
+          "structureId": "deltoid",
+          "kind": "nerve",
+          "distractors": [
+            "supraspinatus",
+            "coracobrachialis",
+            "latissimus-dorsi"
+          ]
+        },
+        {
+          "id": "dx3.shoulder.supraspinatus.action",
+          "structureId": "supraspinatus",
+          "kind": "action",
+          "distractors": [
+            "deltoid",
+            "coracobrachialis",
+            "teres-major"
+          ]
+        },
+        {
+          "id": "dx3.shoulder.infraspinatus.insertion",
+          "structureId": "infraspinatus",
+          "kind": "insertion",
+          "distractors": [
+            "subscapularis",
+            "teres-major",
+            "deltoid"
+          ]
+        },
+        {
+          "id": "dx3.shoulder.subscapularis.action",
+          "structureId": "subscapularis",
+          "kind": "action",
+          "distractors": [
+            "pectoralis-minor",
+            "coracobrachialis",
+            "deltoid"
+          ]
+        },
+        {
+          "id": "dx3.shoulder.trapezius.identify",
+          "structureId": "trapezius",
+          "kind": "identify",
+          "imageId": "muscle-trapezius-a180-highlight",
+          "distractors": [
+            "latissimus-dorsi",
+            "rhomboid-major",
+            "levator-scapulae"
+          ]
+        },
+        {
+          "id": "dx3.shoulder.serratus-anterior.nerve",
+          "structureId": "serratus-anterior",
+          "kind": "nerve",
+          "distractors": [
+            "latissimus-dorsi",
+            "rhomboid-minor",
+            "pectoralis-minor"
+          ]
+        },
+        {
+          "id": "dx3.shoulder.pectoralis-major.origin",
+          "structureId": "pectoralis-major",
+          "kind": "origin",
+          "distractors": [
+            "pectoralis-minor",
+            "deltoid",
+            "latissimus-dorsi"
+          ]
+        },
+        {
+          "id": "dx3.shoulder.latissimus-dorsi.functional",
+          "structureId": "latissimus-dorsi",
+          "kind": "functional",
+          "distractors": [
+            "pectoralis-major",
+            "deltoid",
+            "infraspinatus"
+          ]
+        },
+        {
+          "id": "dx3.shoulder.rhomboid-major.origin",
+          "structureId": "rhomboid-major",
+          "kind": "origin",
+          "distractors": [
+            "levator-scapulae",
+            "trapezius",
+            "serratus-anterior"
+          ]
+        },
+        {
+          "id": "dx3.shoulder.acromion.identify",
+          "structureId": "acromion",
+          "kind": "identify",
+          "imageId": "landmark-acromion-anterior",
+          "distractors": [
+            "coracoid-process",
+            "spine-of-scapula",
+            "superior-angle-scapula"
+          ]
+        },
+        {
+          "id": "dx3.shoulder.coracoid-process.identify",
+          "structureId": "coracoid-process",
+          "kind": "identify",
+          "imageId": "landmark-coracoid-process-anterior",
+          "distractors": [
+            "acromion",
+            "glenoid-cavity",
+            "inferior-angle-scapula"
+          ]
+        },
+        {
+          "id": "dx3.shoulder.greater-tubercle-humerus.identify",
+          "structureId": "greater-tubercle-humerus",
+          "kind": "identify",
+          "imageId": "landmark-greater-tubercle-humerus-anterior",
+          "distractors": [
+            "lesser-tubercle-humerus",
+            "deltoid-tuberosity",
+            "surgical-neck-humerus"
+          ]
+        },
+        {
+          "id": "dx3.shoulder.glenohumeral-joint.injury",
+          "structureId": "glenohumeral-joint",
+          "kind": "injury",
+          "injury": 0,
+          "distractors": [
+            "acromioclavicular-joint",
+            "sternoclavicular-joint",
+            "pectoralis-major"
+          ]
+        },
+        {
+          "id": "dx3.shoulder.acromioclavicular-ligament.identify",
+          "structureId": "acromioclavicular-ligament",
+          "kind": "identify",
+          "imageId": "ligament-acromioclavicular-ligament-a000-highlight",
+          "distractors": [
+            "coraco-acromial-ligament",
+            "conoid-ligament",
+            "coracohumeral-ligament"
+          ]
+        },
+        {
+          "id": "dx3.shoulder.glenoid-labrum.identify",
+          "structureId": "glenoid-labrum",
+          "kind": "identify",
+          "imageId": "ligament-glenoid-labrum-a000-highlight",
+          "distractors": [
+            "superior-glenohumeral-ligament",
+            "transverse-humeral-ligament",
+            "coraco-acromial-ligament"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "elbow",
+      "questions": [
+        {
+          "id": "dx3.elbow.biceps-brachii.insertion",
+          "structureId": "biceps-brachii",
+          "kind": "insertion",
+          "distractors": [
+            "brachialis",
+            "triceps-brachii",
+            "brachioradialis"
+          ]
+        },
+        {
+          "id": "dx3.elbow.brachialis.action",
+          "structureId": "brachialis",
+          "kind": "action",
+          "distractors": [
+            "biceps-brachii",
+            "triceps-brachii",
+            "brachioradialis"
+          ]
+        },
+        {
+          "id": "dx3.elbow.triceps-brachii.nerve",
+          "structureId": "triceps-brachii",
+          "kind": "nerve",
+          "distractors": [
+            "biceps-brachii",
+            {
+              "nerve": "Median nerve"
+            },
+            {
+              "nerve": "Ulnar nerve"
+            }
+          ]
+        },
+        {
+          "id": "dx3.elbow.brachioradialis.origin",
+          "structureId": "brachioradialis",
+          "kind": "origin",
+          "distractors": [
+            "brachialis",
+            "triceps-brachii",
+            "anconeus"
+          ]
+        },
+        {
+          "id": "dx3.elbow.olecranon.identify",
+          "structureId": "olecranon",
+          "kind": "identify",
+          "imageId": "landmark-olecranon-lateral",
+          "distractors": [
+            "coronoid-process-ulna",
+            "head-of-radius",
+            "trochlear-notch"
+          ]
+        },
+        {
+          "id": "dx3.elbow.medial-epicondyle-humerus.identify",
+          "structureId": "medial-epicondyle-humerus",
+          "kind": "identify",
+          "imageId": "landmark-medial-epicondyle-humerus-anterior",
+          "distractors": [
+            "lateral-epicondyle-humerus",
+            "olecranon",
+            "coronoid-process-ulna"
+          ]
+        },
+        {
+          "id": "dx3.elbow.lateral-epicondyle-humerus.identify",
+          "structureId": "lateral-epicondyle-humerus",
+          "kind": "identify",
+          "imageId": "landmark-lateral-epicondyle-humerus-anterior",
+          "distractors": [
+            "medial-epicondyle-humerus",
+            "head-of-radius",
+            "radial-tuberosity"
+          ]
+        },
+        {
+          "id": "dx3.elbow.head-of-radius.identify",
+          "structureId": "head-of-radius",
+          "kind": "identify",
+          "imageId": "landmark-head-of-radius-anterior",
+          "distractors": [
+            "radial-tuberosity",
+            "olecranon",
+            "coronoid-process-ulna"
+          ]
+        },
+        {
+          "id": "dx3.elbow.radial-tuberosity.identify",
+          "structureId": "radial-tuberosity",
+          "kind": "identify",
+          "imageId": "landmark-radial-tuberosity-anterior",
+          "distractors": [
+            "head-of-radius",
+            "coronoid-process-ulna",
+            "lateral-epicondyle-humerus"
+          ]
+        },
+        {
+          "id": "dx3.elbow.coronoid-process-ulna.identify",
+          "structureId": "coronoid-process-ulna",
+          "kind": "identify",
+          "imageId": "landmark-coronoid-process-ulna-anterior",
+          "distractors": [
+            "olecranon",
+            "trochlear-notch",
+            "radial-tuberosity"
+          ]
+        },
+        {
+          "id": "dx3.elbow.humeroulnar-joint.injury",
+          "structureId": "humeroulnar-joint",
+          "kind": "injury",
+          "injury": 0,
+          "distractors": [
+            "proximal-radioulnar-joint",
+            "biceps-brachii",
+            "triceps-brachii"
+          ]
+        },
+        {
+          "id": "dx3.elbow.proximal-radioulnar-joint.injury",
+          "structureId": "proximal-radioulnar-joint",
+          "kind": "injury",
+          "injury": 1,
+          "distractors": [
+            "humeroulnar-joint",
+            "biceps-brachii",
+            "triceps-brachii"
+          ]
+        },
+        {
+          "id": "dx3.elbow.ulnar-collateral-ligament.identify",
+          "structureId": "ulnar-collateral-ligament",
+          "kind": "identify",
+          "imageId": "ligament-ulnar-collateral-ligament-a000-highlight",
+          "distractors": [
+            "radial-collateral-ligament",
+            "annular-ligament-of-radius",
+            "quadrate-ligament"
+          ]
+        },
+        {
+          "id": "dx3.elbow.radial-collateral-ligament.identify",
+          "structureId": "radial-collateral-ligament",
+          "kind": "identify",
+          "imageId": "ligament-radial-collateral-ligament-a000-highlight",
+          "distractors": [
+            "ulnar-collateral-ligament",
+            "annular-ligament-of-radius",
+            "interosseous-membrane-of-forearm"
+          ]
+        },
+        {
+          "id": "dx3.elbow.annular-ligament-of-radius.identify",
+          "structureId": "annular-ligament-of-radius",
+          "kind": "identify",
+          "imageId": "ligament-annular-ligament-of-radius-a000-highlight",
+          "distractors": [
+            "quadrate-ligament",
+            "radial-collateral-ligament",
+            "interosseous-membrane-of-forearm"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wrist-hand",
+      "questions": [
+        {
+          "id": "dx3.wrist-hand.flexor-digitorum-superficialis.insertion",
+          "structureId": "flexor-digitorum-superficialis",
+          "kind": "insertion",
+          "distractors": [
+            "flexor-digitorum-profundus",
+            "flexor-pollicis-longus",
+            "palmaris-longus"
+          ]
+        },
+        {
+          "id": "dx3.wrist-hand.flexor-digitorum-profundus.action",
+          "structureId": "flexor-digitorum-profundus",
+          "kind": "action",
+          "distractors": [
+            "flexor-digitorum-superficialis",
+            "flexor-carpi-ulnaris",
+            "flexor-pollicis-longus"
+          ]
+        },
+        {
+          "id": "dx3.wrist-hand.flexor-carpi-ulnaris.nerve",
+          "structureId": "flexor-carpi-ulnaris",
+          "kind": "nerve",
+          "distractors": [
+            "flexor-carpi-radialis",
+            "extensor-carpi-ulnaris",
+            "extensor-carpi-radialis-longus"
+          ]
+        },
+        {
+          "id": "dx3.wrist-hand.extensor-digitorum.origin",
+          "structureId": "extensor-digitorum",
+          "kind": "origin",
+          "distractors": [
+            "flexor-carpi-radialis",
+            "extensor-carpi-radialis-longus",
+            "pronator-quadratus"
+          ]
+        },
+        {
+          "id": "dx3.wrist-hand.pronator-teres.origin",
+          "structureId": "pronator-teres",
+          "kind": "origin",
+          "distractors": [
+            "supinator",
+            "pronator-quadratus",
+            "flexor-pollicis-longus"
+          ]
+        },
+        {
+          "id": "dx3.wrist-hand.abductor-pollicis-brevis.nerve",
+          "structureId": "abductor-pollicis-brevis",
+          "kind": "nerve",
+          "distractors": [
+            "adductor-pollicis",
+            "abductor-pollicis-longus",
+            "extensor-carpi-radialis-longus"
+          ]
+        },
+        {
+          "id": "dx3.wrist-hand.lumbricals-hand.action",
+          "structureId": "lumbricals-hand",
+          "kind": "action",
+          "distractors": [
+            "palmar-interossei",
+            "dorsal-interossei-hand",
+            "opponens-pollicis"
+          ]
+        },
+        {
+          "id": "dx3.wrist-hand.supinator.identify",
+          "structureId": "supinator",
+          "kind": "identify",
+          "imageId": "muscle-supinator-a210-highlight",
+          "distractors": [
+            "pronator-teres",
+            "extensor-digitorum",
+            "extensor-carpi-radialis-longus"
+          ]
+        },
+        {
+          "id": "dx3.wrist-hand.flexor-carpi-radialis.insertion",
+          "structureId": "flexor-carpi-radialis",
+          "kind": "insertion",
+          "distractors": [
+            "flexor-carpi-ulnaris",
+            "extensor-carpi-ulnaris",
+            "palmaris-longus"
+          ]
+        },
+        {
+          "id": "dx3.wrist-hand.metacarpals.identify",
+          "structureId": "metacarpals",
+          "kind": "identify",
+          "imageId": "panel-metacarpals",
+          "distractors": [
+            "carpals",
+            "phalanges-proximal-hand",
+            "phalanges-distal-hand"
+          ]
+        },
+        {
+          "id": "dx3.wrist-hand.scaphoid.identify",
+          "structureId": "scaphoid",
+          "kind": "identify",
+          "imageId": "panel-scaphoid",
+          "distractors": [
+            "lunate",
+            "trapezium",
+            "capitate"
+          ]
+        },
+        {
+          "id": "dx3.wrist-hand.radial-styloid-process.identify",
+          "structureId": "radial-styloid-process",
+          "kind": "identify",
+          "imageId": "landmark-radial-styloid-process-anterior",
+          "distractors": [
+            "ulnar-styloid-process",
+            "pisiform",
+            "scaphoid"
+          ]
+        },
+        {
+          "id": "dx3.wrist-hand.radiocarpal-joint.identify",
+          "structureId": "radiocarpal-joint",
+          "kind": "identify",
+          "imageId": "joint-radiocarpal-joint-a000-plate",
+          "distractors": [
+            "midcarpal-joint",
+            "distal-radioulnar-joint",
+            "carpometacarpal-joint-thumb"
+          ]
+        },
+        {
+          "id": "dx3.wrist-hand.carpometacarpal-joint-thumb.identify",
+          "structureId": "carpometacarpal-joint-thumb",
+          "kind": "identify",
+          "imageId": "joint-carpometacarpal-joint-thumb-a000-plate",
+          "distractors": [
+            "metacarpophalangeal-joint",
+            "radiocarpal-joint",
+            "carpometacarpal-joint-2"
+          ]
+        },
+        {
+          "id": "dx3.wrist-hand.scapholunate-interosseous-ligament.identify",
+          "structureId": "scapholunate-interosseous-ligament",
+          "kind": "identify",
+          "imageId": "ligament-scapholunate-interosseous-ligament-a000-highlight",
+          "distractors": [
+            "lunotriquetral-interosseous-ligament",
+            "capitohamate-interosseous-ligament",
+            "dorsal-radiocarpal-ligament"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hip",
+      "questions": [
+        {
+          "id": "dx3.hip.gluteus-maximus.nerve",
+          "structureId": "gluteus-maximus",
+          "kind": "nerve",
+          "distractors": [
+            "gluteus-medius",
+            "iliacus",
+            "gracilis"
+          ]
+        },
+        {
+          "id": "dx3.hip.gluteus-medius.action",
+          "structureId": "gluteus-medius",
+          "kind": "action",
+          "distractors": [
+            "gluteus-maximus",
+            "adductor-longus",
+            "piriformis"
+          ]
+        },
+        {
+          "id": "dx3.hip.psoas-major.insertion",
+          "structureId": "psoas-major",
+          "kind": "insertion",
+          "distractors": [
+            "gluteus-maximus",
+            "adductor-longus",
+            "piriformis"
+          ]
+        },
+        {
+          "id": "dx3.hip.sartorius.origin",
+          "structureId": "sartorius",
+          "kind": "origin",
+          "distractors": [
+            "gracilis",
+            "piriformis",
+            "quadratus-femoris"
+          ]
+        },
+        {
+          "id": "dx3.hip.adductor-longus.nerve",
+          "structureId": "adductor-longus",
+          "kind": "nerve",
+          "distractors": [
+            "iliacus",
+            "gluteus-minimus",
+            "piriformis"
+          ]
+        },
+        {
+          "id": "dx3.hip.piriformis.identify",
+          "structureId": "piriformis",
+          "kind": "identify",
+          "imageId": "muscle-piriformis-a180-highlight",
+          "distractors": [
+            "gluteus-medius",
+            "quadratus-femoris",
+            "obturator-internus"
+          ]
+        },
+        {
+          "id": "dx3.hip.tensor-fasciae-latae.action",
+          "structureId": "tensor-fasciae-latae",
+          "kind": "action",
+          "distractors": [
+            "gluteus-maximus",
+            "pectineus",
+            "obturator-externus"
+          ]
+        },
+        {
+          "id": "dx3.hip.iliacus.origin",
+          "structureId": "iliacus",
+          "kind": "origin",
+          "distractors": [
+            "psoas-major",
+            "gluteus-maximus",
+            "pectineus"
+          ]
+        },
+        {
+          "id": "dx3.hip.adductor-magnus.insertion",
+          "structureId": "adductor-magnus",
+          "kind": "insertion",
+          "distractors": [
+            "pectineus",
+            "gracilis",
+            "obturator-externus"
+          ]
+        },
+        {
+          "id": "dx3.hip.greater-trochanter.identify",
+          "structureId": "greater-trochanter",
+          "kind": "identify",
+          "imageId": "landmark-greater-trochanter-anterior",
+          "distractors": [
+            "lesser-trochanter",
+            "femoral-head",
+            "femoral-neck"
+          ]
+        },
+        {
+          "id": "dx3.hip.asis.identify",
+          "structureId": "asis",
+          "kind": "identify",
+          "imageId": "landmark-asis-anterior",
+          "distractors": [
+            "aiis",
+            "psis",
+            "pubic-tubercle"
+          ]
+        },
+        {
+          "id": "dx3.hip.ischial-tuberosity.identify",
+          "structureId": "ischial-tuberosity",
+          "kind": "identify",
+          "imageId": "landmark-ischial-tuberosity-anterior",
+          "distractors": [
+            "pubic-tubercle",
+            "psis",
+            "acetabulum"
+          ]
+        },
+        {
+          "id": "dx3.hip.iliac-crest.identify",
+          "structureId": "iliac-crest",
+          "kind": "identify",
+          "imageId": "landmark-iliac-crest-anterior",
+          "distractors": [
+            "ilium",
+            "pubis",
+            "ischium"
+          ]
+        },
+        {
+          "id": "dx3.hip.ischiofemoral-ligament.identify",
+          "structureId": "ischiofemoral-ligament",
+          "kind": "identify",
+          "imageId": "ligament-ischiofemoral-ligament-a000-highlight",
+          "distractors": [
+            "pubofemoral-ligament",
+            "descending-part-of-iliofemoral-ligament",
+            "sacrospinous-ligament"
+          ]
+        },
+        {
+          "id": "dx3.hip.acetabular-labrum.identify",
+          "structureId": "acetabular-labrum",
+          "kind": "identify",
+          "imageId": "ligament-acetabular-labrum-a000-highlight",
+          "distractors": [
+            "transverse-acetabular-ligament",
+            "ligament-of-head-of-femur",
+            "obturator-membrane"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "knee",
+      "questions": [
+        {
+          "id": "dx3.knee.rectus-femoris.origin",
+          "structureId": "rectus-femoris",
+          "kind": "origin",
+          "distractors": [
+            "vastus-lateralis",
+            "semitendinosus",
+            "popliteus"
+          ]
+        },
+        {
+          "id": "dx3.knee.vastus-lateralis.identify",
+          "structureId": "vastus-lateralis",
+          "kind": "identify",
+          "imageId": "muscle-vastus-lateralis-a270-highlight",
+          "distractors": [
+            "vastus-medialis",
+            "rectus-femoris",
+            "biceps-femoris"
+          ]
+        },
+        {
+          "id": "dx3.knee.vastus-medialis.action",
+          "structureId": "vastus-medialis",
+          "kind": "action",
+          "distractors": [
+            "rectus-femoris",
+            "semimembranosus",
+            "popliteus"
+          ]
+        },
+        {
+          "id": "dx3.knee.vastus-intermedius.origin",
+          "structureId": "vastus-intermedius",
+          "kind": "origin",
+          "distractors": [
+            "vastus-medialis",
+            "biceps-femoris",
+            "popliteus"
+          ]
+        },
+        {
+          "id": "dx3.knee.semimembranosus.nerve",
+          "structureId": "semimembranosus",
+          "kind": "nerve",
+          "distractors": [
+            "vastus-lateralis",
+            {
+              "nerve": "Obturator nerve"
+            },
+            {
+              "nerve": "Superior gluteal nerve"
+            }
+          ]
+        },
+        {
+          "id": "dx3.knee.biceps-femoris.insertion",
+          "structureId": "biceps-femoris",
+          "kind": "insertion",
+          "distractors": [
+            "semimembranosus",
+            "semitendinosus",
+            "rectus-femoris"
+          ]
+        },
+        {
+          "id": "dx3.knee.semitendinosus.action",
+          "structureId": "semitendinosus",
+          "kind": "action",
+          "distractors": [
+            "biceps-femoris",
+            "rectus-femoris",
+            "vastus-lateralis"
+          ]
+        },
+        {
+          "id": "dx3.knee.popliteus.insertion",
+          "structureId": "popliteus",
+          "kind": "insertion",
+          "distractors": [
+            "biceps-femoris",
+            "semimembranosus",
+            "vastus-medialis"
+          ]
+        },
+        {
+          "id": "dx3.knee.tibial-tuberosity.identify",
+          "structureId": "tibial-tuberosity",
+          "kind": "identify",
+          "imageId": "landmark-tibial-tuberosity-anterior",
+          "distractors": [
+            "tibial-plateau",
+            "tibial-crest",
+            "intercondylar-eminence-tibia"
+          ]
+        },
+        {
+          "id": "dx3.knee.medial-condyle-femur.identify",
+          "structureId": "medial-condyle-femur",
+          "kind": "identify",
+          "imageId": "landmark-medial-condyle-femur-anterior",
+          "distractors": [
+            "lateral-condyle-femur",
+            "medial-epicondyle-femur",
+            "adductor-tubercle"
+          ]
+        },
+        {
+          "id": "dx3.knee.head-of-fibula.identify",
+          "structureId": "head-of-fibula",
+          "kind": "identify",
+          "imageId": "landmark-head-of-fibula-anterior",
+          "distractors": [
+            "neck-of-fibula",
+            "lateral-condyle-tibia",
+            "tibial-tuberosity"
+          ]
+        },
+        {
+          "id": "dx3.knee.anterior-cruciate-ligament.identify",
+          "structureId": "anterior-cruciate-ligament",
+          "kind": "identify",
+          "imageId": "ligament-anterior-cruciate-ligament-a000-highlight",
+          "distractors": [
+            "posterior-cruciate-ligament",
+            "transverse-ligament-of-knee",
+            "oblique-popliteal-ligament"
+          ]
+        },
+        {
+          "id": "dx3.knee.medial-meniscus.identify",
+          "structureId": "medial-meniscus",
+          "kind": "identify",
+          "imageId": "ligament-medial-meniscus-a000-highlight",
+          "distractors": [
+            "lateral-meniscus",
+            "transverse-ligament-of-knee",
+            "posterior-cruciate-ligament"
+          ]
+        },
+        {
+          "id": "dx3.knee.fibular-collateral-ligament.identify",
+          "structureId": "fibular-collateral-ligament",
+          "kind": "identify",
+          "imageId": "ligament-fibular-collateral-ligament-a000-highlight",
+          "distractors": [
+            "superficial-part-of-tibial-collateral-ligament",
+            "popliteofibular-ligament",
+            "arcuate-popliteal-ligament"
+          ]
+        },
+        {
+          "id": "dx3.knee.superficial-part-of-tibial-collateral-ligament.identify",
+          "structureId": "superficial-part-of-tibial-collateral-ligament",
+          "kind": "identify",
+          "imageId": "ligament-superficial-part-of-tibial-collateral-ligament-a000-highlight",
+          "distractors": [
+            "fibular-collateral-ligament",
+            "oblique-popliteal-ligament",
+            "anterior-cruciate-ligament"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ankle-foot",
+      "questions": [
+        {
+          "id": "dx3.ankle-foot.tibialis-anterior.nerve",
+          "structureId": "tibialis-anterior",
+          "kind": "nerve",
+          "distractors": [
+            "peroneus-brevis",
+            "tibialis-posterior",
+            "flexor-digitorum-brevis"
+          ]
+        },
+        {
+          "id": "dx3.ankle-foot.gastrocnemius.action",
+          "structureId": "gastrocnemius",
+          "kind": "action",
+          "distractors": [
+            "plantaris",
+            "tibialis-posterior",
+            "flexor-hallucis-longus"
+          ]
+        },
+        {
+          "id": "dx3.ankle-foot.soleus.origin",
+          "structureId": "soleus",
+          "kind": "origin",
+          "distractors": [
+            "gastrocnemius",
+            "plantaris",
+            "flexor-digitorum-longus"
+          ]
+        },
+        {
+          "id": "dx3.ankle-foot.peroneus-longus.nerve",
+          "structureId": "peroneus-longus",
+          "kind": "nerve",
+          "distractors": [
+            "extensor-digitorum-longus",
+            "flexor-digitorum-longus",
+            "abductor-hallucis"
+          ]
+        },
+        {
+          "id": "dx3.ankle-foot.peroneus-brevis.insertion",
+          "structureId": "peroneus-brevis",
+          "kind": "insertion",
+          "distractors": [
+            "peroneus-longus",
+            "tibialis-posterior",
+            "extensor-digitorum-longus"
+          ]
+        },
+        {
+          "id": "dx3.ankle-foot.tibialis-posterior.action",
+          "structureId": "tibialis-posterior",
+          "kind": "action",
+          "distractors": [
+            "tibialis-anterior",
+            "peroneus-brevis",
+            "extensor-digitorum-longus"
+          ]
+        },
+        {
+          "id": "dx3.ankle-foot.flexor-hallucis-longus.origin",
+          "structureId": "flexor-hallucis-longus",
+          "kind": "origin",
+          "distractors": [
+            "flexor-digitorum-longus",
+            "tibialis-anterior",
+            "peroneus-brevis"
+          ]
+        },
+        {
+          "id": "dx3.ankle-foot.extensor-hallucis-longus.identify",
+          "structureId": "extensor-hallucis-longus",
+          "kind": "identify",
+          "imageId": "muscle-extensor-hallucis-longus-a000-highlight",
+          "distractors": [
+            "extensor-digitorum-longus",
+            "tibialis-anterior",
+            "peroneus-tertius"
+          ]
+        },
+        {
+          "id": "dx3.ankle-foot.metatarsals.identify",
+          "structureId": "metatarsals",
+          "kind": "identify",
+          "imageId": "panel-metatarsals",
+          "distractors": [
+            "tarsals",
+            "phalanges-proximal-foot",
+            "phalanges-distal-foot"
+          ]
+        },
+        {
+          "id": "dx3.ankle-foot.lateral-malleolus.identify",
+          "structureId": "lateral-malleolus",
+          "kind": "identify",
+          "imageId": "panel-lateral-malleolus",
+          "distractors": [
+            "medial-malleolus",
+            "calcaneus",
+            "cuboid"
+          ]
+        },
+        {
+          "id": "dx3.ankle-foot.talus.identify",
+          "structureId": "talus",
+          "kind": "identify",
+          "imageId": "panel-talus",
+          "distractors": [
+            "calcaneus",
+            "navicular",
+            "cuboid"
+          ]
+        },
+        {
+          "id": "dx3.ankle-foot.calcaneus.identify",
+          "structureId": "calcaneus",
+          "kind": "identify",
+          "imageId": "panel-calcaneus",
+          "distractors": [
+            "talus",
+            "cuboid",
+            "sustentaculum-tali"
+          ]
+        },
+        {
+          "id": "dx3.ankle-foot.talocrural-joint.identify",
+          "structureId": "talocrural-joint",
+          "kind": "identify",
+          "imageId": "joint-talocrural-joint-a000-plate",
+          "distractors": [
+            "subtalar-joint",
+            "distal-tibiofibular-joint",
+            "transverse-tarsal-joint"
+          ]
+        },
+        {
+          "id": "dx3.ankle-foot.anterior-talofibular-ligament.identify",
+          "structureId": "anterior-talofibular-ligament",
+          "kind": "identify",
+          "imageId": "ligament-anterior-talofibular-ligament-a000-highlight",
+          "distractors": [
+            "posterior-talofibular-ligament",
+            "calcaneofibular-ligament",
+            "anterior-tibiofibular-ligament"
+          ]
+        },
+        {
+          "id": "dx3.ankle-foot.plantar-calcaneonavicular-ligament.identify",
+          "structureId": "plantar-calcaneonavicular-ligament",
+          "kind": "identify",
+          "imageId": "ligament-plantar-calcaneonavicular-ligament-a000d090-highlight",
+          "distractors": [
+            "long-plantar-ligament",
+            "plantar-calcaneocuboid-ligament",
+            "tibionavicular-ligament"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cervical-spine",
+      "questions": [
+        {
+          "id": "dx3.cervical-spine.sternocleidomastoid.nerve",
+          "structureId": "sternocleidomastoid",
+          "kind": "nerve",
+          "distractors": [
+            "scalene-anterior",
+            {
+              "nerve": "Dorsal scapular nerve"
+            },
+            {
+              "nerve": "Phrenic nerve"
+            }
+          ]
+        },
+        {
+          "id": "dx3.cervical-spine.scalene-anterior.insertion",
+          "structureId": "scalene-anterior",
+          "kind": "insertion",
+          "distractors": [
+            "scalene-posterior",
+            "sternocleidomastoid",
+            "longus-capitis"
+          ]
+        },
+        {
+          "id": "dx3.cervical-spine.scalene-middle.origin",
+          "structureId": "scalene-middle",
+          "kind": "origin",
+          "distractors": [
+            "splenius-capitis",
+            "sternocleidomastoid",
+            "longus-colli"
+          ]
+        },
+        {
+          "id": "dx3.cervical-spine.splenius-capitis.identify",
+          "structureId": "splenius-capitis",
+          "kind": "identify",
+          "imageId": "muscle-splenius-capitis-a180-highlight",
+          "distractors": [
+            "sternocleidomastoid",
+            "scalene-posterior",
+            "longus-capitis"
+          ]
+        },
+        {
+          "id": "dx3.cervical-spine.longus-colli.action",
+          "structureId": "longus-colli",
+          "kind": "action",
+          "distractors": [
+            "splenius-cervicis",
+            "scalene-posterior",
+            "intertransversarii"
+          ]
+        },
+        {
+          "id": "dx3.cervical-spine.semispinalis.action",
+          "structureId": "semispinalis",
+          "kind": "action",
+          "distractors": [
+            "longus-capitis",
+            "intertransversarii",
+            "sternocleidomastoid"
+          ]
+        },
+        {
+          "id": "dx3.cervical-spine.atlas-c1.identify",
+          "structureId": "atlas-c1",
+          "kind": "identify",
+          "imageId": "panel-atlas-c1",
+          "distractors": [
+            "axis-c2",
+            "c7-vertebra",
+            "occipital-bone"
+          ]
+        },
+        {
+          "id": "dx3.cervical-spine.axis-c2.identify",
+          "structureId": "axis-c2",
+          "kind": "identify",
+          "imageId": "panel-axis-c2",
+          "distractors": [
+            "atlas-c1",
+            "c7-vertebra",
+            "cervical-vertebrae"
+          ]
+        },
+        {
+          "id": "dx3.cervical-spine.dens-odontoid-process.identify",
+          "structureId": "dens-odontoid-process",
+          "kind": "identify",
+          "imageId": "landmark-dens-odontoid-process-anterior",
+          "distractors": [
+            "anterior-arch-atlas",
+            "lateral-mass-atlas",
+            "spinous-process"
+          ]
+        },
+        {
+          "id": "dx3.cervical-spine.spinous-process.identify",
+          "structureId": "spinous-process",
+          "kind": "identify",
+          "imageId": "landmark-spinous-process-lateral",
+          "distractors": [
+            "transverse-process",
+            "lamina",
+            "pedicle"
+          ]
+        },
+        {
+          "id": "dx3.cervical-spine.vertebral-body.identify",
+          "structureId": "vertebral-body",
+          "kind": "identify",
+          "imageId": "landmark-vertebral-body-lateral",
+          "distractors": [
+            "intervertebral-disc",
+            "vertebral-foramen",
+            "superior-articular-process"
+          ]
+        },
+        {
+          "id": "dx3.cervical-spine.atlantoaxial-joint.identify",
+          "structureId": "atlantoaxial-joint",
+          "kind": "identify",
+          "imageId": "joint-atlantoaxial-joint-a060-plate",
+          "distractors": [
+            "atlanto-occipital-joint",
+            "facet-joint",
+            "intervertebral-joint"
+          ]
+        },
+        {
+          "id": "dx3.cervical-spine.atlanto-occipital-joint.identify",
+          "structureId": "atlanto-occipital-joint",
+          "kind": "identify",
+          "imageId": "joint-atlanto-occipital-joint-a060-plate",
+          "distractors": [
+            "atlantoaxial-joint",
+            "facet-joint",
+            "intervertebral-joint"
+          ]
+        },
+        {
+          "id": "dx3.cervical-spine.nuchal-ligament.identify",
+          "structureId": "nuchal-ligament",
+          "kind": "identify",
+          "imageId": "ligament-nuchal-ligament-a045-highlight",
+          "distractors": [
+            "supraspinous-ligament",
+            "interspinous-ligaments",
+            "ligamenta-flava"
+          ]
+        },
+        {
+          "id": "dx3.cervical-spine.anterior-longitudinal-ligament.identify",
+          "structureId": "anterior-longitudinal-ligament",
+          "kind": "identify",
+          "imageId": "ligament-anterior-longitudinal-ligament-a000-highlight",
+          "distractors": [
+            "posterior-longitudinal-ligament",
+            "ligamenta-flava",
+            "nuchal-ligament"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "thoracic-spine",
+      "questions": [
+        {
+          "id": "dx3.thoracic-spine.diaphragm.nerve",
+          "structureId": "diaphragm",
+          "kind": "nerve",
+          "distractors": [
+            "external-intercostals",
+            "longissimus",
+            {
+              "nerve": "Long thoracic nerve"
+            }
+          ]
+        },
+        {
+          "id": "dx3.thoracic-spine.external-intercostals.identify",
+          "structureId": "external-intercostals",
+          "kind": "identify",
+          "imageId": "muscle-external-intercostals-a060-highlight",
+          "distractors": [
+            "diaphragm",
+            "iliocostalis",
+            "longissimus"
+          ]
+        },
+        {
+          "id": "dx3.thoracic-spine.internal-intercostals.action",
+          "structureId": "internal-intercostals",
+          "kind": "action",
+          "distractors": [
+            "external-intercostals",
+            "diaphragm",
+            "longissimus"
+          ]
+        },
+        {
+          "id": "dx3.thoracic-spine.iliocostalis.insertion",
+          "structureId": "iliocostalis",
+          "kind": "insertion",
+          "distractors": [
+            "diaphragm",
+            "spinalis",
+            "rotatores"
+          ]
+        },
+        {
+          "id": "dx3.thoracic-spine.longissimus.origin",
+          "structureId": "longissimus",
+          "kind": "origin",
+          "distractors": [
+            "diaphragm",
+            "rotatores",
+            "external-intercostals"
+          ]
+        },
+        {
+          "id": "dx3.thoracic-spine.spinalis.action",
+          "structureId": "spinalis",
+          "kind": "action",
+          "distractors": [
+            "diaphragm",
+            "rotatores",
+            "intertransversarii"
+          ]
+        },
+        {
+          "id": "dx3.thoracic-spine.manubrium.identify",
+          "structureId": "manubrium",
+          "kind": "identify",
+          "imageId": "landmark-manubrium-anterior",
+          "distractors": [
+            "sternal-body",
+            "xiphoid-process",
+            "first-rib"
+          ]
+        },
+        {
+          "id": "dx3.thoracic-spine.xiphoid-process.identify",
+          "structureId": "xiphoid-process",
+          "kind": "identify",
+          "imageId": "panel-xiphoid-process",
+          "distractors": [
+            "manubrium",
+            "sternal-body",
+            "twelfth-rib"
+          ]
+        },
+        {
+          "id": "dx3.thoracic-spine.sternal-angle.identify",
+          "structureId": "sternal-angle",
+          "kind": "identify",
+          "imageId": "landmark-sternal-angle-anterior",
+          "distractors": [
+            "jugular-notch",
+            "costal-margin",
+            "xiphoid-process"
+          ]
+        },
+        {
+          "id": "dx3.thoracic-spine.transverse-process.identify",
+          "structureId": "transverse-process",
+          "kind": "identify",
+          "imageId": "landmark-transverse-process-lateral",
+          "distractors": [
+            "spinous-process",
+            "pedicle",
+            "superior-articular-process"
+          ]
+        },
+        {
+          "id": "dx3.thoracic-spine.costovertebral-joint.identify",
+          "structureId": "costovertebral-joint",
+          "kind": "identify",
+          "imageId": "joint-costovertebral-joint-a000-plate",
+          "distractors": [
+            "sternocostal-joint",
+            "facet-joint",
+            "intervertebral-joint"
+          ]
+        },
+        {
+          "id": "dx3.thoracic-spine.facet-joint.identify",
+          "structureId": "facet-joint",
+          "kind": "identify",
+          "imageId": "joint-facet-joint-a000-plate",
+          "distractors": [
+            "costovertebral-joint",
+            "intervertebral-joint",
+            "sternocostal-joint"
+          ]
+        },
+        {
+          "id": "dx3.thoracic-spine.supraspinous-ligament.identify",
+          "structureId": "supraspinous-ligament",
+          "kind": "identify",
+          "imageId": "ligament-supraspinous-ligament-a045-highlight",
+          "distractors": [
+            "interspinous-ligaments",
+            "ligamenta-flava",
+            "posterior-longitudinal-ligament"
+          ]
+        },
+        {
+          "id": "dx3.thoracic-spine.radiate-ligament-of-head-of-rib.identify",
+          "structureId": "radiate-ligament-of-head-of-rib",
+          "kind": "identify",
+          "imageId": "ligament-radiate-ligament-of-head-of-rib-a000-highlight",
+          "distractors": [
+            "costotransverse-ligament",
+            "intra-articular-ligament-of-head-of-rib",
+            "intertransverse-ligaments"
+          ]
+        },
+        {
+          "id": "dx3.thoracic-spine.costotransverse-ligament.identify",
+          "structureId": "costotransverse-ligament",
+          "kind": "identify",
+          "imageId": "ligament-costotransverse-ligament-a000-highlight",
+          "distractors": [
+            "radiate-ligament-of-head-of-rib",
+            "intertransverse-ligaments",
+            "external-intercostal-membrane"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "lumbar-spine",
+      "questions": [
+        {
+          "id": "dx3.lumbar-spine.internal-oblique.origin",
+          "structureId": "internal-oblique",
+          "kind": "origin",
+          "distractors": [
+            "rectus-abdominis",
+            "external-oblique",
+            "quadratus-lumborum"
+          ]
+        },
+        {
+          "id": "dx3.lumbar-spine.rectus-abdominis.action",
+          "structureId": "rectus-abdominis",
+          "kind": "action",
+          "distractors": [
+            "quadratus-lumborum",
+            "intertransversarii",
+            "semispinalis"
+          ]
+        },
+        {
+          "id": "dx3.lumbar-spine.quadratus-lumborum.insertion",
+          "structureId": "quadratus-lumborum",
+          "kind": "insertion",
+          "distractors": [
+            "rectus-abdominis",
+            "internal-oblique",
+            "spinalis"
+          ]
+        },
+        {
+          "id": "dx3.lumbar-spine.external-oblique.identify",
+          "structureId": "external-oblique",
+          "kind": "identify",
+          "imageId": "muscle-external-oblique-a000-highlight",
+          "distractors": [
+            "internal-oblique",
+            "rectus-abdominis",
+            "quadratus-lumborum"
+          ]
+        },
+        {
+          "id": "dx3.lumbar-spine.multifidus.action",
+          "structureId": "multifidus",
+          "kind": "action",
+          "distractors": [
+            "quadratus-lumborum",
+            "intertransversarii",
+            "external-oblique"
+          ]
+        },
+        {
+          "id": "dx3.lumbar-spine.longissimus.nerve",
+          "structureId": "longissimus",
+          "kind": "nerve",
+          "distractors": [
+            "quadratus-lumborum",
+            "rectus-abdominis",
+            {
+              "nerve": "Phrenic nerve"
+            }
+          ]
+        },
+        {
+          "id": "dx3.lumbar-spine.pars-interarticularis.identify",
+          "structureId": "pars-interarticularis",
+          "kind": "identify",
+          "imageId": "landmark-pars-interarticularis-lateral",
+          "distractors": [
+            "pedicle",
+            "lamina",
+            "superior-articular-process"
+          ]
+        },
+        {
+          "id": "dx3.lumbar-spine.intervertebral-disc.identify",
+          "structureId": "intervertebral-disc",
+          "kind": "identify",
+          "imageId": "panel-intervertebral-disc",
+          "distractors": [
+            "vertebral-body",
+            "intervertebral-foramen",
+            "vertebral-foramen"
+          ]
+        },
+        {
+          "id": "dx3.lumbar-spine.sacral-promontory.identify",
+          "structureId": "sacral-promontory",
+          "kind": "identify",
+          "imageId": "landmark-sacral-promontory-anterior",
+          "distractors": [
+            "sacral-ala",
+            "sacral-apex",
+            "sacral-base"
+          ]
+        },
+        {
+          "id": "dx3.lumbar-spine.pedicle.identify",
+          "structureId": "pedicle",
+          "kind": "identify",
+          "imageId": "landmark-pedicle-superior",
+          "distractors": [
+            "lamina",
+            "transverse-process",
+            "spinous-process"
+          ]
+        },
+        {
+          "id": "dx3.lumbar-spine.lamina.identify",
+          "structureId": "lamina",
+          "kind": "identify",
+          "imageId": "landmark-lamina-posterior",
+          "distractors": [
+            "pedicle",
+            "pars-interarticularis",
+            "superior-articular-process"
+          ]
+        },
+        {
+          "id": "dx3.lumbar-spine.transverse-process.identify",
+          "structureId": "transverse-process",
+          "kind": "identify",
+          "imageId": "landmark-transverse-process-lateral",
+          "distractors": [
+            "spinous-process",
+            "superior-articular-process",
+            "pedicle"
+          ]
+        },
+        {
+          "id": "dx3.lumbar-spine.ligamenta-flava.identify",
+          "structureId": "ligamenta-flava",
+          "kind": "identify",
+          "imageId": "ligament-ligamenta-flava-a045-highlight",
+          "distractors": [
+            "interspinous-ligaments",
+            "supraspinous-ligament",
+            "posterior-longitudinal-ligament"
+          ]
+        },
+        {
+          "id": "dx3.lumbar-spine.interspinous-ligaments.identify",
+          "structureId": "interspinous-ligaments",
+          "kind": "identify",
+          "imageId": "ligament-interspinous-ligaments-a045-highlight",
+          "distractors": [
+            "supraspinous-ligament",
+            "ligamenta-flava",
+            "intertransverse-ligaments"
+          ]
+        },
+        {
+          "id": "dx3.lumbar-spine.posterior-longitudinal-ligament.identify",
+          "structureId": "posterior-longitudinal-ligament",
+          "kind": "identify",
+          "imageId": "ligament-posterior-longitudinal-ligament-a045-highlight",
+          "distractors": [
+            "anterior-longitudinal-ligament",
+            "ligamenta-flava",
+            "supraspinous-ligament"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -87,6 +87,17 @@ describe('promptCopy', () => {
     const b = promptCopy('followUp');
     expect(b.title).not.toBe(a.title);
     expect(b.cta).not.toBe(a.cta);
-    expect(b.body).toContain('a term of revision actually did');
+    expect(b.body).toContain('what has changed over the term');
+  });
+
+  // No educator screen shows a class's diagnostic figure: the only thing that
+  // adds a class up is a script LocusMSK runs. The copy must not say otherwise.
+  it('promises nothing a course leader will be shown, in either sitting', () => {
+    for (const phase of ['baseline', 'followUp'] as const) {
+      const { body } = promptCopy(phase);
+      expect(body).toContain('never sees your score');
+      expect(body).toContain('may be shared');
+      expect(body).not.toMatch(/class as a whole moved|number your course leader sees|will see/);
+    }
   });
 });

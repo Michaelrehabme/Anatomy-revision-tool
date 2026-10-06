@@ -4,8 +4,15 @@
  * that they should not.
  *
  * Apart from the script so it can be tested without a build
- * (__tests__/bundleFacts.test.ts) — above all the one thing that must not
- * rot: that the diagnostic's public paper is let through and nothing else is.
+ * (__tests__/bundleFacts.test.ts).
+ *
+ * THERE IS NO EXCEPTION. For one evening there was: a diagnostic paper of
+ * finished questions that shipped in every build, some of whose choices were
+ * structures' descriptions, and this check was taught to let that file
+ * through. That paper never shipped. The diagnostic's papers now hold no
+ * sentence at all — they name structures and are built from the facts the
+ * sitter holds (features/anatomy-revision/lib/diagnosticPapers.ts) — so a
+ * build that should carry no facts carries none, and anything found is a leak.
  */
 
 /** One structure's tell-tale: its description, in each spelling a built file may hold it in. */
@@ -19,56 +26,11 @@ export interface BuiltFile {
   text: string;
 }
 
-/**
- * THE ONE EXCEPTION: the diagnostic's fixed paper
- * (features/anatomy-revision/lib/diagnosticSample.ts).
- *
- * That paper ships in every build on purpose, and three of its questions ask
- * a muscle's action — whose answer, and whose wrong answers, are other
- * muscles' action sentences, which in this dataset are their descriptions.
- * So a handful of the canaries below are, legitimately, in a server build.
- *
- * The allowance is as narrow as that fact: a sentence the paper prints may
- * appear ONLY in a built file that carries the paper (found by the marker the
- * paper's file holds), and only AS MANY TIMES as the paper prints it. The
- * same sentence in any other file, or once more in that one, is a leak like
- * any other: it is how the seed arriving beside the paper would look. Every
- * other structure's description is looked for exactly as before.
- */
-export interface PublishedPaper {
-  /** A string the paper's file holds and nothing else does. */
-  marker: string;
-  /** Every choice the paper prints, repeats included. */
-  choices: string[];
-}
-
-function occurrences(text: string, needle: string): number {
-  let count = 0;
-  for (let at = text.indexOf(needle); at !== -1; at = text.indexOf(needle, at + needle.length)) count += 1;
-  return count;
-}
-
 /** Built file -> the structures whose facts it holds and may not. Empty when the build is clean. */
-export function findLeaks(
-  files: Iterable<BuiltFile>,
-  canaries: readonly Canary[],
-  papers: readonly PublishedPaper[] = [],
-): Map<string, string[]> {
+export function findLeaks(files: Iterable<BuiltFile>, canaries: readonly Canary[]): Map<string, string[]> {
   const leaks = new Map<string, string[]>();
   for (const file of files) {
-    const carried = papers.filter((p) => file.text.includes(p.marker));
-    const found: string[] = [];
-    for (const canary of canaries) {
-      // The spellings are alternatives for one sentence, and are often the
-      // same string: the count is the most any one of them is seen.
-      const seen = Math.max(0, ...[...new Set(canary.texts)].map((t) => occurrences(file.text, t)));
-      if (seen === 0) continue;
-      const allowed = carried.reduce(
-        (sum, paper) => sum + paper.choices.filter((choice) => canary.texts.includes(choice)).length,
-        0,
-      );
-      if (seen > allowed) found.push(canary.id);
-    }
+    const found = canaries.filter((c) => c.texts.some((t) => file.text.includes(t))).map((c) => c.id);
     if (found.length) leaks.set(file.path, found);
   }
   return leaks;
