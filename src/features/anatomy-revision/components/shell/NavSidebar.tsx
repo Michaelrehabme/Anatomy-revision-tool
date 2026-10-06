@@ -39,9 +39,17 @@ function LevelProgress() {
   useEffect(() => {
     if (!repository || !userId) return;
     let cancelled = false;
-    repository.getGamificationProfile(userId).then((profile) => {
-      if (!cancelled) setXpTotal(profile.xpTotal);
-    });
+    repository
+      .getGamificationProfile(userId)
+      .then((profile) => {
+        if (!cancelled) setXpTotal(profile.xpTotal);
+      })
+      // Offline with nothing cached, this read has no answer to give and
+      // rejects ("Failed to get document because the client is offline").
+      // With no handler that was an uncaught error on every desktop screen,
+      // since every one of them mounts this sidebar. Not knowing the level is
+      // already a state this draws — nothing — so there is nothing to add.
+      .catch(() => {});
     return () => {
       cancelled = true;
     };

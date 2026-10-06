@@ -543,9 +543,12 @@ educator (decision 8).
    user they ended with, and it takes it up when it is the same account seen
    differently. The profile document (`isAnonymous`, `email`) is refreshed at
    the same moment; before, it too waited for a reload.
-4. *Not fixed; the same on main.* Offline with nothing cached, one Firestore
-   read rejects with no handler ("Failed to get document because the client
-   is offline" as an uncaught error). Nothing visibly breaks.
+4. *Fixed after this pass (6 Oct); the same on main, so live today.* Offline
+   with nothing cached, one Firestore read rejected with no handler ("Failed
+   to get document because the client is offline" as an uncaught error). It
+   was the desktop sidebar's level bar (`NavSidebar` `LevelProgress`), which
+   every desktop screen mounts. It now draws no level when it cannot read
+   one, which is what it already did while waiting.
 
 **A draft of the default build**, deployed from this branch (never to
 production): `https://content-server--mskanatomyrevision.netlify.app`, entry
