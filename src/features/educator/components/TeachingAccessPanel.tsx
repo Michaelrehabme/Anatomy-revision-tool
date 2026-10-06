@@ -66,7 +66,7 @@ export function TeachingAccessPanel({ classNames = [], guest = false, compact = 
         style={
           compact
             ? { font: `600 ${size + 1}px/1.35 var(--font-ui)`, color: 'var(--ink)', margin: 0 }
-            : { fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 34, letterSpacing: '-.02em', margin: 0, color: 'var(--ink)' }
+            : { fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 34, lineHeight: 1.12, letterSpacing: '-.02em', margin: 0, color: 'var(--ink)' }
         }
       >
         Teaching tools need full access

@@ -151,6 +151,21 @@ export function useOnboardingFlow({ access, initialAreas, only, onDone }: Onboar
     else setIndex((i) => i + 1);
   }, [current.kind, accountMade, access.guest, access.loading, access.freeAreaSaving, access.freeArea, access.tier]);
 
+  // AN ACCOUNT THAT HAS ALREADY CHOSEN IS NOT ASKED AGAIN. Onboarding can be
+  // met a second time by an account that is signed in (the device's
+  // "onboarded" flag was cleared and the sign-in was not). Its free area is
+  // on the account; asking "pick your free area" would either be ignored or,
+  // thirty days on, quietly spend its one change. The step is passed over
+  // with the area it has. Never while the choice is being made HERE: the
+  // account is given nothing until the last step is done.
+  const settled = single && freeAreaIsOnTheAccount() && !access.guest && !access.loading ? (access.freeArea?.area ?? null) : null;
+  useEffect(() => {
+    if (current.kind !== 'areas' || !settled) return;
+    setSelected(new Set([settled]));
+    if (index >= kinds.length - 1) done.current([settled]);
+    else setIndex((i) => i + 1);
+  }, [current.kind, settled, index, kinds.length]);
+
   return {
     steps,
     index,

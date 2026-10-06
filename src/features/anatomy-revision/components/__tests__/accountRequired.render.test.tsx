@@ -276,6 +276,22 @@ describe('choosing the free area', () => {
     expect(onDone).toHaveBeenCalledWith(['ankle-foot']);
   });
 
+  // The device's "onboarded" flag can be cleared while the sign-in is not.
+  // Asked again, the account's answer would be ignored — or, thirty days on,
+  // would quietly spend its one change.
+  it('is not asked again of an account that has already chosen', async () => {
+    const onDone = vi.fn();
+    const chooseFreeArea = vi.fn();
+    const has = access({ freeArea: chosen('hip'), areas: ['hip'], canAccess: (a) => a === 'hip', chooseFreeArea });
+    render(<MemoryRouter><Onboarding access={has} content={content} onDone={onDone} /></MemoryRouter>);
+    expect(await screen.findByRole('heading', { level: 1, name: 'Answer honestly, not correctly' })).toBeTruthy();
+    expect(screen.queryByRole('heading', { name: 'Pick your free area' })).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: 'Understood' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Start learning' }));
+    expect(onDone).toHaveBeenCalledWith(['hip']);
+    expect(chooseFreeArea).not.toHaveBeenCalled();
+  });
+
   it('is several choices, and skippable, for an account with every area', () => {
     const onDone = vi.fn();
     const paid = access({ entitlement: PAID, tier: 'individual', areas: [...AREAS], canAccess: () => true });

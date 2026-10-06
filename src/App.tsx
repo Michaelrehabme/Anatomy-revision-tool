@@ -424,7 +424,9 @@ function App() {
     const free = entitlement.tier === 'free';
     // One free area, so one area: a free account's sessions can draw on nothing else.
     const chosen = free ? areas.slice(0, 1) : areas;
-    if (free && chosen.length > 0) entitlement.chooseFreeArea(chosen[0]);
+    // Only a FIRST choice is made here. An account that already has a free
+    // area keeps it: choosing again from onboarding would be its one change.
+    if (free && chosen.length > 0 && !entitlement.freeArea) entitlement.chooseFreeArea(chosen[0]);
     setSelectedAreas(new Set(chosen));
     setPreferredAreas(chosen);
   };

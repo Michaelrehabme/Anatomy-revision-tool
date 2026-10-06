@@ -26,6 +26,7 @@ import { getFirestore, type Firestore } from 'firebase-admin/firestore';
 import { getAdminApp } from './firebaseAdmin';
 import { type DiagnosticResult } from '../src/features/anatomy-revision/lib/diagnostic';
 import { diagnosticReportLines } from '../src/features/anatomy-revision/lib/diagnosticReport';
+import { cohortIsLicensed, ownFullAccess } from '../src/features/educator/lib/teachingAccess';
 
 const DAY_MS = 86_400_000;
 
@@ -77,8 +78,16 @@ async function overview(db: Firestore): Promise<void> {
     const c = d.data();
     const count = (await db.collection('users').where('cohort', '==', d.id).count().get()).data().count;
     const licence = c.licensedUntil ? `licensed to ${String(c.licensedUntil).slice(0, 10)}` : 'not licensed';
+    // Teaching needs full access on the owner's own account (firestore.rules
+    // mayTeach). Shown per class so that, before those rules are deployed,
+    // one run says whether any existing class belongs to an account that
+    // would lose its teaching tools.
+    const owner = c.ownerUid ? (await db.doc(`users/${String(c.ownerUid)}`).get()).data() : undefined;
+    const teaching = ownFullAccess(owner)
+      ? 'owner has full access'
+      : cohortIsLicensed(c) ? 'owner: none, class licensed' : 'OWNER HAS NO FULL ACCESS';
     process.stdout.write(
-      `${d.id}  ${String(count).padStart(3)} members  ${licence.padEnd(24)} ${c.name}${c.institution ? ` — ${c.institution}` : ''}\n`,
+      `${d.id}  ${String(count).padStart(3)} members  ${licence.padEnd(24)} ${teaching.padEnd(28)} ${c.name}${c.institution ? ` — ${c.institution}` : ''}\n`,
     );
   }
   process.stdout.write('\nRun with a cohort id for the full report.\n');

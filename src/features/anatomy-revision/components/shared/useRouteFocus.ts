@@ -30,6 +30,9 @@ export function useRouteFocus(pathname: string): void {
     }
     let frame = 0;
     let id = requestAnimationFrame(function look() {
+      // A redirect as the app opens (a new visitor sent to onboarding) is a
+      // change of address nobody pressed anything for: still a first load.
+      if (!pressedSomething) return;
       const active = document.activeElement;
       if (active && active !== document.body) return;
       const heading = document.querySelector<HTMLElement>('main h1, h1');
@@ -67,7 +70,8 @@ export function focusHeadingIfLost(heading: HTMLElement | null | undefined): voi
 }
 
 /**
- * Whether anybody has pressed anything on this page yet: a pointer or a key.
+ * Whether anybody has pressed anything on this page yet: a pointer, a key, or
+ * a click however it was made.
  * Listened for rather than asked of the browser (`navigator.userActivation`),
  * which answers "yes" for a page that was merely opened by a script and is
  * not there at all in older browsers.
@@ -75,6 +79,7 @@ export function focusHeadingIfLost(heading: HTMLElement | null | undefined): voi
 let pressedSomething = false;
 if (typeof document !== 'undefined') {
   const pressed = () => { pressedSomething = true; };
-  document.addEventListener('pointerdown', pressed, { capture: true, once: true });
-  document.addEventListener('keydown', pressed, { capture: true, once: true });
+  for (const event of ['pointerdown', 'keydown', 'click']) {
+    document.addEventListener(event, pressed, { capture: true, once: true });
+  }
 }
