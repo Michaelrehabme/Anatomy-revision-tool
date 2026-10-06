@@ -24,6 +24,7 @@ import type { DiagnosticResult } from '../lib/diagnostic';
 import { getDb, getFirebaseAuth } from './firebase';
 import type { AchievementDoc } from '../lib/achievements';
 import { factMasteryKey } from '../lib/factMastery';
+import { questionDocId } from '../lib/documentIds';
 
 /**
  * Firestore layout: top-level attemptEvents/{attemptId} (queryable by userId
@@ -180,7 +181,7 @@ export async function createFirestoreRepository(): Promise<AnatomyRepository> {
     },
 
     async recordQuestionExposure(userId: string, questionId: string) {
-      const ref = doc(db, 'users', userId, 'questionExposure', questionId);
+      const ref = doc(db, 'users', userId, 'questionExposure', questionDocId(questionId));
       return runTransaction(db, async (tx) => {
         const snap = await tx.get(ref);
         const count = ((snap.data()?.count as number | undefined) ?? 0) + 1;
