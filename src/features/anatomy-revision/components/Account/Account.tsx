@@ -122,6 +122,8 @@ export function Account({ access, content, repository, userId, onNavigate }: Acc
         <NavSidebar
           active="account"
           onNavigate={onNavigate}
+          // A guest is offered the account in the page itself, below.
+          hideAccount={access.guest}
           footer={<div style={{ font: '500 11.5px/1 var(--font-mono)', color: 'var(--acc2d)' }}>{streak}-day streak</div>}
         />
       }

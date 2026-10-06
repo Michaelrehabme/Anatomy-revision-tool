@@ -165,6 +165,43 @@ describe('the free area, kept on the account', () => {
       expect(result.current.needsFreeArea).toBe(false);
     });
 
+    // Seen in a browser (6 Oct 2026): between becoming an account and the
+    // write that moves the choice up, the hook reported a settled answer
+    // holding the area. The content loader asked the server for it, and the
+    // server — which had no free area for this account yet — refused.
+    it('is never reported as settled and holding their area before it has reached the account', async () => {
+      setFreeAreaChoice('hip', 0, LONG_AGO);
+      let land!: () => void;
+      inFlight = new Promise<void>((resolve) => { land = resolve; });
+      const seen: { loading: boolean; saving: boolean; areas: string }[] = [];
+      const { result, rerender } = renderHook(
+        ({ guest }) => {
+          const access = useEntitlement('g1', { guest });
+          seen.push({ loading: access.loading, saving: access.freeAreaSaving ?? false, areas: access.areas.join(',') });
+          return access;
+        },
+        { initialProps: { guest: true } },
+      );
+      await waitFor(() => expect(result.current.known).toBe(true));
+      seen.length = 0;
+
+      rerender({ guest: false });
+      // From its very first render as an account it is loading again.
+      expect(seen[0]).toMatchObject({ loading: true });
+      await waitFor(() => expect(saves).toEqual([{ area: 'hip', switches: 0 }]));
+      await waitFor(() => expect(result.current.loading).toBe(false));
+      // The write has set off and not landed: anything asking the server must wait.
+      expect(onAccount).toBeNull();
+      expect(result.current.freeAreaSaving).toBe(true);
+      // At no point was it "not loading, not saving, and holding the hip".
+      expect(seen.filter((s) => !s.loading && !s.saving && s.areas === 'hip')).toEqual([]);
+
+      await act(async () => { land(); });
+      await waitFor(() => expect(result.current.freeAreaSaving).toBe(false));
+      expect(result.current.areas).toEqual(['hip']);
+      expect(result.current.freeAreaSaves).toBe(1);
+    });
+
     it('is asked to choose after creating an account if they never had a choice', async () => {
       const { result, rerender } = renderHook(({ guest }) => useEntitlement('g1', { guest }), { initialProps: { guest: true } });
       await waitFor(() => expect(result.current.known).toBe(true));

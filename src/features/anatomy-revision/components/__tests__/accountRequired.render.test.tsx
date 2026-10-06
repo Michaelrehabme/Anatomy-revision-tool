@@ -96,7 +96,10 @@ describe('what an existing guest meets in place of revision', () => {
     expect(document.body.textContent).not.toMatch(/locked|expired|blocked|lost your|no longer/i);
   });
 
-  it('moves focus to the heading, so a screen reader starts at the top of the new page', () => {
+  // Somebody who pressed something to get here (a link in the navigation,
+  // "Start learning") has lost the button they pressed.
+  it('moves focus to the heading for someone who pressed something to get here', () => {
+    fireEvent.pointerDown(document.body);
     open();
     expect(document.activeElement).toBe(screen.getByRole('heading', { level: 1 }));
   });

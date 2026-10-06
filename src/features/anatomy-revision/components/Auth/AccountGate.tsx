@@ -6,6 +6,7 @@ import { MobileShell } from '../mobile/MobileShell';
 import type { MobileTab } from '../mobile/MobileTabBar';
 import { AREA_LABELS, type Area } from '../../types/region';
 import { AccountForm } from './AccountForm';
+import { focusHeadingIfLost } from '../shared/useRouteFocus';
 
 interface AccountGateProps {
   isDesktop: boolean;
@@ -53,7 +54,9 @@ interface AccountGateProps {
 export default function AccountGate({ isDesktop, active, onNavigate, onNavigateTab, freeArea }: AccountGateProps) {
   const heading = useRef<HTMLHeadingElement>(null);
   useEffect(() => {
-    heading.current?.focus();
+    // When they pressed something to get here and it is gone; not on a first
+    // load, where nothing was pressed (shared/useRouteFocus.ts).
+    focusHeadingIfLost(heading.current);
   }, []);
 
   const [online, setOnline] = useState(() => typeof navigator === 'undefined' || navigator.onLine !== false);

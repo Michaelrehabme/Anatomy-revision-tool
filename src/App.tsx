@@ -31,6 +31,7 @@ import { MobileAtlas } from './features/anatomy-revision/components/mobile/Mobil
 import { Progress } from './features/anatomy-revision/components/Progress/Progress';
 import { DiagnosticRoute } from './features/anatomy-revision/components/Diagnostic/DiagnosticRoute';
 import { AreaFactsNotice } from './features/anatomy-revision/components/shared/AreaFactsNotice';
+import { focusHeadingIfLost } from './features/anatomy-revision/components/shared/useRouteFocus';
 import { Achievements } from './features/anatomy-revision/components/Achievements/Achievements';
 import { MobileAchievements } from './features/anatomy-revision/components/mobile/MobileAchievements';
 import type { NavSection } from './features/anatomy-revision/components/shell/NavSidebar';
@@ -307,6 +308,26 @@ function App() {
     if (session.phase === 'in-progress') navigate('/session');
     else if (session.phase === 'results') navigate('/session/results');
   }, [session.phase, navigate]);
+
+  // When what stood in for a screen gives way to it — the guest has made an
+  // account, the account has chosen its area — the button that was pressed is
+  // gone and the address has not changed, so the route-focus hook does not
+  // run. The new screen's heading takes the focus that was lost.
+  //
+  // The same when one stand-in gives way to the other: a guest with no free
+  // area on the device makes an account and is asked to choose one. And a
+  // screen with no heading of its own (Today) takes it on its main region.
+  const standingIn = isGuest ? 'account' : entitlement.needsFreeArea ? 'area' : null;
+  const stoodIn = useRef(standingIn);
+  useEffect(() => {
+    const was = stoodIn.current;
+    stoodIn.current = standingIn;
+    if (was === null || was === standingIn) return;
+    const id = requestAnimationFrame(() =>
+      focusHeadingIfLost(document.querySelector<HTMLElement>('main h1, h1') ?? document.querySelector<HTMLElement>('main')),
+    );
+    return () => cancelAnimationFrame(id);
+  }, [standingIn]);
 
   // Above every other gate, for the same reason as /dev below but with a
   // compliance edge: a legal notice nobody can reach without an account is not

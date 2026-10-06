@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { cleanup, render, screen, waitFor } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import type { Cohort } from '../../types/cohort';
 
@@ -78,7 +78,8 @@ describe('creating a class', () => {
     expect(screen.queryByText(/kept exactly as/)).toBeNull();
   });
 
-  it('takes focus on its heading', async () => {
+  it('takes focus on its heading, for someone who pressed something to get here', async () => {
+    fireEvent.pointerDown(document.body);
     at('/educator/new');
     const heading = await panel();
     expect(document.activeElement).toBe(heading);

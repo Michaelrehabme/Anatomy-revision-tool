@@ -26,7 +26,10 @@ export function MobileOnboarding({ access, content, initialAreas = [], only, onD
   const onAccountStep = current.kind === 'account';
 
   const heading = useRef<HTMLHeadingElement>(null);
+  const opened = useRef(false);
   useEffect(() => {
+    // Not as the screen opens — see Onboarding.tsx.
+    if (!opened.current) { opened.current = true; return; }
     heading.current?.focus();
     window.scrollTo(0, 0);
   }, [flow.index]);

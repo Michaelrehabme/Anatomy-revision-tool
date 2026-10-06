@@ -46,12 +46,23 @@ function median(values: number[]): number {
   return sorted.length % 2 === 0 ? Math.round((sorted[middle - 1] + sorted[middle]) / 2) : sorted[middle];
 }
 
+/**
+ * users/{uid}.lastActiveAt is a Firestore timestamp (the app writes it with
+ * serverTimestamp()), not a string. Read as a string it never parsed, and
+ * "Active in the last 7 days" was 0 for a class that was in the app today.
+ */
+function isoOf(value: unknown): string | null {
+  if (typeof value === 'string') return value;
+  const date = (value as { toDate?: () => Date } | null)?.toDate?.();
+  return date instanceof Date && !Number.isNaN(date.getTime()) ? date.toISOString() : null;
+}
+
 async function members(db: Firestore, cohortId: string): Promise<Member[]> {
   const snap = await db.collection('users').where('cohort', '==', cohortId).get();
   return snap.docs.map((d) => ({
     uid: d.id,
     joinedAt: (d.data().cohortJoinedAt as string | null) ?? null,
-    lastActiveAt: (d.data().lastActiveAt as string | null) ?? null,
+    lastActiveAt: isoOf(d.data().lastActiveAt),
   }));
 }
 

@@ -45,3 +45,36 @@ export function useRouteFocus(pathname: string): void {
     return () => cancelAnimationFrame(id);
   }, [pathname]);
 }
+
+/**
+ * The same move for a page that changes WITHOUT a navigation: a screen that
+ * stands in for another and then gives way (the account screen a guest sees,
+ * the panel an educator sees), or a step of onboarding replacing the last.
+ * The address does not change, so the hook above never runs.
+ *
+ * Under the same two conditions. Only when focus has been LOST — the button
+ * that was pressed is gone and focus fell to the page body. And never before
+ * anybody has pressed anything: on a first load nothing was lost, and a
+ * heading that takes focus by itself is drawn with a focus ring nobody asked
+ * for.
+ */
+export function focusHeadingIfLost(heading: HTMLElement | null | undefined): void {
+  if (!heading || !pressedSomething) return;
+  const active = document.activeElement;
+  if (active && active !== document.body) return;
+  if (!heading.hasAttribute('tabindex')) heading.setAttribute('tabindex', '-1');
+  heading.focus();
+}
+
+/**
+ * Whether anybody has pressed anything on this page yet: a pointer or a key.
+ * Listened for rather than asked of the browser (`navigator.userActivation`),
+ * which answers "yes" for a page that was merely opened by a script and is
+ * not there at all in older browsers.
+ */
+let pressedSomething = false;
+if (typeof document !== 'undefined') {
+  const pressed = () => { pressedSomething = true; };
+  document.addEventListener('pointerdown', pressed, { capture: true, once: true });
+  document.addEventListener('keydown', pressed, { capture: true, once: true });
+}

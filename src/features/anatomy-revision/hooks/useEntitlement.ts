@@ -193,7 +193,18 @@ export function useEntitlement(uid: string | null, options: EntitlementOptions =
   const [loading, setLoading] = useState(true);
   const [known, setKnown] = useState(false);
   const [readCount, setReadCount] = useState(0);
+  /**
+   * Who the last finished read was for: the account, AND whether it was read
+   * as a guest. A guest who creates an account keeps their uid, so the uid
+   * alone would call that account "already read" — and for the moment
+   * between becoming an account and the read that moves their free area up,
+   * the hook reported a settled answer holding an area the account did not
+   * have on the server yet. The content loader asked for it and was refused
+   * (seen in a browser, 6 Oct 2026: 403, then 200 once the write landed).
+   * Read as a different reader, the first render after linking is loading.
+   */
   const settledFor = useRef<string | null>(null);
+  const reader = uid === null ? null : `${uid}:${guest ? 'guest' : 'account'}`;
   const [saving, setSaving] = useState(false);
   const [saves, setSaves] = useState(0);
   const savingTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -258,7 +269,7 @@ export function useEntitlement(uid: string | null, options: EntitlementOptions =
     // Only the first read for an account shows as loading. A re-read keeps
     // the current answer on screen until the new one arrives, so a refresh
     // never flickers a gate.
-    const firstRead = settledFor.current !== uid;
+    const firstRead = settledFor.current !== reader;
     if (firstRead) {
       setLoading(true);
       setKnown(false);
@@ -313,12 +324,12 @@ export function useEntitlement(uid: string | null, options: EntitlementOptions =
       })
       .finally(() => {
         if (cancelled) return;
-        settledFor.current = uid;
+        settledFor.current = reader;
         setLoading(false);
       });
 
     return () => { cancelled = true; };
-  }, [uid, guest, readCount, setFreeArea, beginSave, endSave]);
+  }, [uid, guest, reader, readCount, setFreeArea, beginSave, endSave]);
 
   const refresh = useCallback(() => refreshEntitlementEverywhere(), []);
 
@@ -379,7 +390,7 @@ export function useEntitlement(uid: string | null, options: EntitlementOptions =
   // only drew from it; not harmless once something FETCHES on a settled
   // answer — the content loader asked the server for the free area of an
   // account before its entitlement had been read, then asked again.
-  const unread = uid !== null && settledFor.current !== uid;
+  const unread = reader !== null && settledFor.current !== reader;
 
   const tier = effectiveTier(inForce);
   const stillLoading = loading || unread;

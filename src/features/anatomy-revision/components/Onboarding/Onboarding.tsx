@@ -25,7 +25,7 @@ interface OnboardingProps {
  * new visitor, create an account, pick the free area, learn the confidence
  * rating, learn the rhythm.
  *
- * The heading takes focus as each step arrives, so a keyboard or screen
+ * The heading takes focus as each NEXT step arrives, so a keyboard or screen
  * reader user is told the page changed and starts reading from its top
  * rather than from a button that is no longer there.
  */
@@ -36,7 +36,11 @@ export function Onboarding({ access, content, initialAreas = [], only, onDone }:
   const onAccountStep = current.kind === 'account';
 
   const heading = useRef<HTMLHeadingElement>(null);
+  const opened = useRef(false);
   useEffect(() => {
+    // Not as the screen opens: nobody has pressed anything, nothing was lost,
+    // and a heading that takes focus by itself wears a focus ring for no reason.
+    if (!opened.current) { opened.current = true; return; }
     heading.current?.focus();
   }, [flow.index]);
 

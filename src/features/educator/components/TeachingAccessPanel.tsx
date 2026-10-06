@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { focusHeadingIfLost } from '../../anatomy-revision/components/shared/useRouteFocus';
 
 interface TeachingAccessPanelProps {
   /** The classes this account already owns, by name. Empty for someone who has never made one. */
@@ -31,7 +32,7 @@ interface TeachingAccessPanelProps {
 export function TeachingAccessPanel({ classNames = [], guest = false, compact = false, failed = false }: TeachingAccessPanelProps) {
   const heading = useRef<HTMLHeadingElement>(null);
   useEffect(() => {
-    if (!compact) heading.current?.focus();
+    if (!compact) focusHeadingIfLost(heading.current);
   }, [compact]);
 
   const size = compact ? 13.5 : 15;

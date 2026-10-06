@@ -140,7 +140,11 @@ export async function listStudentsInCohort(cohortId: string): Promise<CohortStud
       displayName: (data.displayName as string | null) ?? null,
       email: (data.email as string | null) ?? null,
       joinedAt: (data.cohortJoinedAt as string | null) ?? null,
-      lastActiveAt: (data.lastActiveAt as string | null) ?? null,
+      // A Firestore timestamp (touchUserProfile writes serverTimestamp()), not
+      // a string: handed on as one, the Students screens printed "Invalid Date".
+      lastActiveAt: typeof data.lastActiveAt === 'string'
+        ? data.lastActiveAt
+        : ((data.lastActiveAt as { toDate?: () => Date } | null)?.toDate?.().toISOString() ?? null),
     };
   });
 }
