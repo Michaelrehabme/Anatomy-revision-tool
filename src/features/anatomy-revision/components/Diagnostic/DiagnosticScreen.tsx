@@ -65,34 +65,43 @@ export function DiagnosticScreen({
   const everyAreaInHand = content.facts.missing(AREAS).length === 0;
   const cannotRebuild = needsEveryArea && !everyAreaInHand;
 
-  // Built once. Re-running the generator mid-sitting would renumber the paper
-  // under the student's feet.
-  const questions = useMemo(() => {
-    // THE FIXED PAPER — every baseline, and every follow-up to one. The
-    // questions arrive finished, from a file every build carries, so what
-    // this account has paid for and which areas this device holds have no
-    // way to change them: a class sits one paper.
-    //
-    // DELIBERATELY UNGATED. The diagnostic measures what a student already
-    // knows across the whole body, for their course lead. Clamping it to a
-    // free student's one area would make the cohort's baseline depend on who
-    // had paid, which is not a baseline. Nothing here is revision: no attempt
-    // is recorded and no answer is shown (see the note above), so it teaches
-    // nothing that was paid for.
-    if (paper.kind === 'fixed') return shuffleForSitting(paper.questions);
+  // THE FIXED PAPER: every baseline, and every follow-up to one. The
+  // questions arrive finished, from a file every build carries, so what this
+  // account has paid for and which areas this device holds have no way to
+  // change them: a class sits one paper.
+  //
+  // DELIBERATELY UNGATED. The diagnostic measures what a student already
+  // knows across the whole body, for their course lead. Clamping it to a
+  // free student's one area would make the cohort's baseline depend on who
+  // had paid, which is not a baseline. Nothing here is revision: no attempt
+  // is recorded and no answer is shown (see the note above), so it teaches
+  // nothing that was paid for.
+  //
+  // Shuffled ONCE, and on nothing but the paper. The sitting keeps answers by
+  // position, and in a build that fetches facts the content can change while
+  // a student is half way through (an area arriving, a lease renewed): if
+  // that reshuffled the paper, their answers would be marked against other
+  // questions.
+  const fixed = useMemo(
+    () => (paper.kind === 'fixed' ? shuffleForSitting(paper.questions) : null),
+    [paper],
+  );
 
-    // A FOLLOW-UP TO A VERSION-1 BASELINE: the class's own paper, rebuilt as
-    // it was built then — over the whole dataset, then the questions the
-    // baseline recorded. Without every area's facts it cannot be rebuilt, and
-    // a shorter paper or a different one would not pair with the baseline
-    // (`pairDiagnostics`), so nothing is asked and the screen says why.
-    if (cannotRebuild) return [];
+  // A FOLLOW-UP TO A VERSION-1 BASELINE: the class's own paper, rebuilt as it
+  // was built then, over the whole dataset, then the questions the baseline
+  // recorded. Without every area's facts it cannot be rebuilt, and a shorter
+  // paper or a different one would not pair with the baseline
+  // (`pairDiagnostics`), so nothing is asked and the screen says why.
+  const rebuilt = useMemo(() => {
+    if (paper.kind !== 'cohortDrawn' || cannotRebuild) return [];
     const spec = buildDiagnostic(index, cohortId);
     const pool = generateRevisionSet(structures, images, {
       types: ['mcq'], mode: 'practice', seed: 1, entitledAreas: AREAS,
     }, sources).filter((q): q is MCQQuestion => q.type === 'mcq');
     return shuffleForSitting(buildDiagnosticQuestions(spec, pool, paper.replayIds));
   }, [paper, index, structures, images, sources, cannotRebuild, cohortId]);
+
+  const questions = fixed ?? rebuilt;
 
   useEffect(() => { window.scrollTo(0, 0); }, [stage]);
 

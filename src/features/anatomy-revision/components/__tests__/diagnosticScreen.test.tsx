@@ -186,6 +186,28 @@ describe('DiagnosticScreen', () => {
     expect((await repository.listDiagnosticResults('u1'))[0].version).toBe(DIAGNOSTIC_VERSION);
   });
 
+  // In a build that fetches facts, the content changes under a running app:
+  // an area arrives, a lease is renewed. The sitting keeps answers by
+  // position, so the paper must not be reshuffled when that happens.
+  it('does not reshuffle the paper when the content changes mid-sitting', () => {
+    const repository = createMemoryRepository();
+    const props = { repository, userId: 'u1', cohortId: 'c1', phase: 'baseline' as const, paper: fixedPaper, onDone: () => {} };
+    const view = render(<DiagnosticScreen {...props} content={holdingOnly('knee')} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Take the baseline' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Next' }));
+    const second = screen.getByRole('heading', { level: 2 }).textContent;
+    const choices = () => screen.getAllByRole('button').filter((b) => b.getAttribute('aria-pressed') !== null).map((b) => b.textContent);
+    const shown = choices();
+
+    for (let i = 0; i < 6; i++) {
+      // A new content object each time, as the hook hands over when an area lands.
+      view.rerender(<DiagnosticScreen {...props} content={i % 2 ? holdingOnly('knee') : anatomyContentFrom([...ALL_STRUCTURES], ALL_IMAGES)} />);
+      expect(screen.getByText(`Question 2 of ${DIAGNOSTIC_SIZE}`)).toBeTruthy();
+      expect(screen.getByRole('heading', { level: 2 }).textContent).toBe(second);
+      expect(choices()).toEqual(shown);
+    }
+  });
+
   it('asks the follow-up in different words', () => {
     setup('followUp');
     expect(screen.getByText('The same fifteen questions, ten weeks on')).toBeTruthy();
