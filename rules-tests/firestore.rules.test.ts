@@ -222,6 +222,39 @@ describe('users/{uid}', () => {
       await assertFails(updateDoc(mine(), pick('knee', 0)));
     });
 
+    // The whole life of a choice, written by the client alone from start to
+    // finish — the tests above each start from a state the server was handed.
+    it('allows exactly one change in a row: the one after it is refused, whatever it claims', async () => {
+      await stored('knee', 31);
+      await assertSucceeds(updateDoc(mine(), pick('hip', 1)));
+      await assertFails(updateDoc(mine(), pick('elbow', 1)));
+      await assertFails(updateDoc(mine(), pick('elbow', 2)));
+      await assertFails(updateDoc(mine(), pick('knee', 0)));
+      expect((await getDoc(mine())).data()?.freeArea).toMatchObject({ area: 'hip', switches: 1 });
+    });
+
+    // Moving a device's old choice up is an ordinary first pick as far as the
+    // rules can tell, so it must buy nothing a first pick does not.
+    it('gives a choice moved up from a device no extra change, moved as unused or as used', async () => {
+      // Moved up as unused: dated now, so the one change is thirty days off,
+      // and "moving it up" a second time is choosing twice.
+      await assertSucceeds(updateDoc(mine(), pick('knee', 0)));
+      await assertFails(updateDoc(mine(), pick('hip', 1)));
+      await assertFails(updateDoc(mine(), pick('hip', 0)));
+      await assertFails(updateDoc(mine(), pick('knee', 1)));
+
+      // Moved up as used: there is no change left to make, now or later.
+      const other = doc(as.student(), 'users', 'student');
+      await assertSucceeds(updateDoc(other, pick('knee', 1)));
+      await assertFails(updateDoc(other, pick('hip', 1)));
+      await assertFails(updateDoc(other, pick('hip', 0)));
+      await env.withSecurityRulesDisabled((ctx) =>
+        updateDoc(doc(ctx.firestore(), 'users', 'student'), { 'freeArea.chosenAt': daysAgo(400) }),
+      );
+      await assertFails(updateDoc(other, pick('hip', 1)));
+      await assertFails(updateDoc(other, pick('hip', 2)));
+    });
+
     it('refuses a change that does not count itself, or counts backwards', async () => {
       await stored('knee', 31);
       await assertFails(updateDoc(mine(), pick('hip', 0)));
