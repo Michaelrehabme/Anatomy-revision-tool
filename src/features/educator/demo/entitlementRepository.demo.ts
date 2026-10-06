@@ -30,6 +30,14 @@ export async function readEntitlement(): Promise<Entitlement> {
   return DEMO_ENTITLEMENT;
 }
 
+/**
+ * The demo's educator holds a licence, so the teaching tools are open: a demo
+ * that showed "teaching tools need full access" would be a demo of nothing.
+ */
+export async function readOwnFullAccess(): Promise<boolean> {
+  return true;
+}
+
 /** No stored free area: the demo is local-persistence, where the choice stays on the device. */
 export async function readAccess(): Promise<StoredAccess> {
   return { entitlement: DEMO_ENTITLEMENT, freeArea: null };

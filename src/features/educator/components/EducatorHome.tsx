@@ -5,8 +5,8 @@ import { CreateClassScreen } from './CreateClass/CreateClassScreen';
 /**
  * /educator index — the create form for someone with no classes, straight
  * into the class for someone with exactly one, and a list for anyone with
- * more. There is no "you don't have access" state: owning a class is the
- * access, so the answer to having none is to make one.
+ * more. An account that may not teach never gets this far: TeachingGate
+ * shows it the panel instead (lib/teachingAccess.ts).
  *
  * The list exists because this screen used to send everyone to cohorts[0].
  * With two classes that silently picked one and left the other reachable only

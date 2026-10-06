@@ -7,7 +7,9 @@ import { useCohorts } from '../CohortsProvider';
 /**
  * Create a class and get its join code. No approval step and no admin: the
  * person who creates a class owns it, and owning it is what lets them see the
- * students who join with the code.
+ * students who join with the code. It needs full access on the account
+ * (lib/teachingAccess.ts); an account without it is shown the panel by
+ * TeachingGate and never reaches this form, and the rules refuse the write.
  *
  * Institution is optional. It is the field most likely to be wrong or awkward
  * for a private tutor or a placement educator, and nothing depends on it.

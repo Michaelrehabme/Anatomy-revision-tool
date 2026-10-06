@@ -16,13 +16,13 @@ export function useEducatorSession(): EducatorSession {
 }
 
 /**
- * Route guard for /educator/* — signed in is the whole requirement.
+ * Route guard for /educator/* — signed in is what THIS guard asks.
  *
- * There is deliberately no educator role to hold: teaching is self-service,
- * so anyone can create a class and thereby become its owner (see
- * firestore.rules). Someone who owns no class gets the create form rather
- * than a redirect, because "you are not an educator" is not a thing this app
- * can know about a person — only whether they have made a class yet.
+ * There is deliberately no educator role to hold: whoever creates a class
+ * owns it (see firestore.rules). What creating one needs, since 6 Oct 2026,
+ * is full access on the account, and that is asked one layer in, by
+ * TeachingGate inside the shell — so an account without it keeps the frame
+ * and reads why, rather than being bounced to the app with no explanation.
  *
  * The security boundary is firestore.rules, which grants student data by
  * cohort ownership. A signed-in stranger reaching these screens sees their

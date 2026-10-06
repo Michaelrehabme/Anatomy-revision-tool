@@ -3,6 +3,7 @@ import { getDb } from './firebase';
 import type { Area } from '../types/region';
 import type { Entitlement, FreeAreaChoice } from '../lib/entitlement';
 import { accessRecord, cohortIdOf, entitlementForDisplay, type StoredAccess } from '../lib/entitlementRecord';
+import { ownFullAccess } from '../../educator/lib/teachingAccess';
 import { parseStoredFreeArea } from '../lib/freeAreaRecord';
 
 /**
@@ -50,6 +51,19 @@ export async function readAccess(uid: string): Promise<StoredAccess> {
 
   const record = accessRecord(user, cohort);
   return { entitlement: entitlementForDisplay(record), freeArea: record.freeArea };
+}
+
+/**
+ * Whether the entitlement stored ON THIS ACCOUNT is in force: what teaching
+ * needs (educator/lib/teachingAccess.ts). Not the same question as
+ * readAccess answers — a member of a licensed class holds every area through
+ * the class, and nothing on their own account.
+ *
+ * Throws on a failed read, for the same reason readAccess does.
+ */
+export async function readOwnFullAccess(uid: string): Promise<boolean> {
+  const snapshot = await getDoc(doc(getDb(), 'users', uid));
+  return snapshot.exists() && ownFullAccess(snapshot.data() as Record<string, unknown>);
 }
 
 /** The entitlement in force for this user, or null when they have none. */
