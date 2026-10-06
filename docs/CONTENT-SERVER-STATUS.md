@@ -2,6 +2,10 @@
 
 Companion to `DESIGN-CONTENT-BEHIND-SERVER.md`. Rewritten 5 Oct 2026 on branch
 `content-server-2` (from `581dfe1`, what was live that day; 487 structures).
+Checked end to end on 6 Oct 2026 by a second pass that did not write it: see
+"Verified on 6 Oct 2026" for what was run, what it found and what it could not
+run. Where that section and the rest of this file disagree, that section is
+the one that was measured.
 
 **All seven steps are built. Production is NOT switched over.** The default
 build is still `bundled`: every fact ships in the bundle and the paywall is
@@ -66,8 +70,9 @@ Bearer <Firebase ID token>`.
 | --- | --- |
 | 405 | not GET (OPTIONS included: no preflight is ever answered) |
 | 403 | an `Origin` that is not this site's (or one in `CONTENT_ALLOWED_ORIGINS`) |
-| 401 | no token; a token Google will not vouch for; a deleted account; no API key configured |
-| 400 | not one of the nine areas (before the token is checked) |
+| 401 | no token at all (checked first, so an unknown area with no token is also 401) |
+| 400 | not one of the nine areas (before the token is sent to Google) |
+| 401 | a token Google will not vouch for; a deleted account; no API key configured |
 | 429 | over 30 an hour (`data/content/fetchLimit.ts`), with `Retry-After` |
 | 503 | the account could not be read (includes a missing service account) |
 | 403 | the account may not have this area |
@@ -79,6 +84,18 @@ app's own `resolveEntitlement`, `freeAreasFor`, `canAccessArea`. No admin
 bypass, as in the app. The count is kept on `users/{uid}.contentFetch`
 (pinned in the rules; `update` only, so a deleted profile is not recreated)
 and in the instance's memory, which refuses without a database read.
+
+Two limits of that count, both measured: grants to an account that has **no
+profile document** (a guest before its first profile write) are not counted on
+the account, because there is nothing to update — only the instance's memory
+bounds them, and what such an account can be given is the default area and
+nothing else. And refusals are bounded only by the instance's memory, so a
+cold instance starts from nothing.
+
+An account that has never chosen is given the **default free area, the
+shoulder** — as in the app. So a new visitor's device fetches the shoulder on
+first load and then the area they pick at onboarding: two areas per new guest,
+not one. The shoulder copy is deleted from the device once the pick is known.
 
 ### Leases and the device copy (step 6)
 
@@ -97,8 +114,19 @@ and in the instance's memory, which refuses without a database read.
 
 Measured 5 Oct 2026. Entry chunk limit 2,097,152 B.
 
-See the hand-over report for the entry chunk in each mode; payloads as
-generated (`notes` and `source` no longer served):
+Entry chunk, built on 6 Oct 2026:
+
+| Build | Entry chunk | Under the limit by |
+| --- | --- | --- |
+| production today (`index-BCjoSWbO.js`, for comparison) | 1,971,523 B | 125,629 B |
+| `bundled` (the default), production's `.env` | 1,981,548 B | 115,604 B |
+| `server` | 1,760,848 B | 336,304 B |
+| `build:demo` (bundled, the demo's default) | 1,390,882 B | 706,270 B |
+
+Moving the facts out frees about 221 kB of entry chunk, not the 300 kB the
+design estimated: the index and the vocabulary stay.
+
+Payloads as generated (`notes` and `source` no longer served):
 
 | File | Raw |
 | --- | --- |
@@ -174,6 +202,12 @@ The demo's default is still `bundled`.
 ## Rollout — recommended order
 
 Nothing below has been done. Each step is safe on its own and can stop there.
+Each has its own way back: step 1, redeploy the previous `firestore.rules`
+(`git show 581dfe1:firestore.rules`) — free areas already written stay on the
+accounts and are simply no longer policed; step 2, publish the previous
+deploy from Netlify's deploy list (the content function goes with it; nothing
+calls it); step 3 is a draft and is deleted or ignored; step 5, unset the
+variable and redeploy, or publish the previous deploy.
 
 1. **Rules.** `npm run deploy:rules`. Additive: old clients write no
    `freeArea` and are unaffected. Nothing else may ship first — a client that
@@ -232,6 +266,20 @@ entirely, if ever. Keeping it is what makes rollback one variable.
 9. **App Check**, when it is switched on, does not cover this function: it
    verifies an ID token, not an App Check token.
 
+10. **A slow connection at the moment a free area is chosen** used to end in
+    a refusal (fixed 6 Oct, `1dc7dbb`). What is left of it: if the write to
+    the account takes longer than eight seconds the app asks anyway, may be
+    refused once, and asks again by itself when the write lands.
+11. **Whoever signs in on a device inherits that device's free-area copy** if
+    their own account has none: the copy is moved up as that account's first
+    pick. Seen when a new admin account signed in on a browser a guest had
+    used. For a paying account it costs nothing; for a second free student on
+    a shared computer it spends their choice for them.
+12. **Someone offline at the first load after the switch has no facts**: none
+    were ever saved on the device, because a bundled build saves none. They
+    see the names, the pictures and "connect to load this area" until they
+    are next online. Measured; see below.
+
 ## What this still does not stop
 
 - **Nine free accounts are nine areas.** A guest is an account, any account
@@ -244,6 +292,127 @@ entirely, if ever. Keeping it is what makes rollback one variable.
   public pictures and hotspot polygons.
 - The index gives away each structure's name, areas, relations (`jointId`,
   `parentBoneId`) and which kinds of fact it has.
+
+## Verified on 6 Oct 2026
+
+On `content-server-2` at `5a1420d` (three commits past the hand-over at `0eccb7a`:
+`e8158ca` rules tests, `1dc7dbb` the free-area race, `5a1420d` a slash in a
+document id). Everything ran against the Firebase emulators (Firestore and
+Auth, project `demo-locusmsk`) and a local `netlify dev`; nothing touched the
+real project, and nothing was deployed to production.
+
+**Checks.** `vitest`: 1,999 passed, 1 skipped (the question dump), 160 files
+— main had 1,836. `test:rules`: 63 passed — main had 44. `tsc` on the app and
+on the functions: clean. `eslint` on the 102 files changed since main: no
+errors, 3 fast-refresh warnings. `validate-content`: 0 errors.
+
+**Bundled did not change.** The dump was run on `581dfe1`'s source and on
+this branch: 69 configurations, 26,695 questions, sha256
+`629965d3…9a06bb` both times, the files byte-identical.
+
+**A server build carries no facts.** An independent scan (not `check:bundle`)
+took every fact string of 28 characters or more out of the nine payloads that
+is not also in the public index or vocabulary — 1,225 of them — and looked in
+every non-picture file of `dist/`. The same scan finds all 1,225 in a bundled
+build's entry chunk. In the server build it finds four, all in the admin
+chunk: sentences in the change-request log that quote a fact as an example
+(`changeRequests.seed.ts`), not the seed. `.content/` is not in `dist/`.
+
+**The function, over real HTTP with emulator-minted tokens.** Every row
+behaved as the table above says: no token 401; a forged token 401; a guest on
+its own area 200 and on the other eight 403; a guest with no profile, the
+shoulder only; free, and free with the change used; paid, all nine; past due
+inside the three days, all nine, and after them the free area only;
+cancelled before the period ends, all nine, and after, the free area;
+refunded, the free area; a delayed start not begun, the free area, and begun,
+all nine; a member of a licensed class, all nine; of a lapsed or unlicensed
+one, the free area; an admin with no entitlement, the free area (no bypass);
+an unknown area 400; a deleted account 401; POST and OPTIONS 405; another
+site's `Origin` 403. Every answer `Cache-Control: private, no-store`, never a
+CORS header. Each of the nine payloads identical to its generated file, no
+structure from outside its area, no `notes` or `source`. A stale `v`, or none,
+is answered with the deploy's version. The lease was 14 days, and 2.000 days
+inside a two-day grace. The 31st grant in an hour was 429 with `Retry-After`
+and the stored count stopped at 30.
+*Not observable locally:* the in-memory cut-off for refusals — `netlify dev`
+reloads the function on every call — which the unit test
+`bounds refusals too` covers instead.
+
+**The rules, in the emulator.** Create once; not twice; not before thirty days
+by the server's clock; once after; not twice; no backdated or future date; not
+a non-area; not another account's; a choice moved up from a device buys no
+extra change, moved as unused or as used; entitlement, payment flags and
+`contentFetch` not client-writable. All in `rules-tests/firestore.rules.test.ts`;
+two tests were added for the sequences a client could attempt in a row.
+
+**In a browser** (Chromium, fresh profile, no reload, 1280 px and 390 px, a
+server build): a guest picks the knee at onboarding and its cards and first
+session show facts; a shoulder card shows the lock, the function answers that
+guest 403, and no script the page loaded contains another area's facts; the
+account made a subscriber in the emulator loads all nine; a twenty-question
+mixed session with locate questions, the answer-in-words route and the long
+description runs to its results; Progress, Atlas and Study with one area and
+with nine; an area downloaded, the network cut, the page reloaded — facts and
+pictures there, nothing asked; every lease forced into the past — "connect to
+load this area" on every screen, no crash, the copies deleted; reconnecting
+and Try again brings them back; sign-out deletes every saved copy; the
+educator screens (a class created, all five tabs) and the six admin pages
+open. No console errors beyond the network's own while offline.
+*Not browser-tested:* iOS Safari and an installed PWA; a real update prompt
+from the live bundle to this one; a stale-version client (unit-tested);
+`visibilitychange` renewal after days in a background tab (unit-tested); the
+browser's own `online` event (Playwright does not fire it; sent by hand); the
+diagnostic for a mixed class (decision 7) and the assignment form for a free
+educator (decision 8).
+
+**Existing users, first load after an update**, in both modes:
+
+| Who | `bundled` | `server` |
+| --- | --- | --- |
+| Free, area only on the device (chosen 21 days ago) | moved to the account dated today, changeable in 30 days; facts as before; function not called | the same, then one fetch, 200, no refusal |
+| …who had used their one change, or whose record predates the count | moved up as used | the same |
+| …who then edits the device copy | overwritten by the account's on the next load | the same |
+| Paying | everything as before; function not called; entitlement untouched | nine fetches, all 200 |
+| A guest | as a free user | as a free user |
+| Offline at that moment | everything works (facts are in the bundle); the move waits and lands on reconnect | names and pictures, "connect to load" for the facts; loads by itself on reconnect |
+
+**Defects found.**
+
+1. *Fixed, `1dc7dbb`.* A server build asked the function for a free area that
+   had been picked on the device but not yet written to the account, and was
+   refused: onboarding ended on "Knee could not be opened for this account".
+   Reproduced by slowing the account write; the loader now waits for it.
+2. *Fixed, `5a1420d`; the same on main, so live today.* The question for
+   "Proximal biceps tendinopathy/tear" has a slash in its id, the id is a
+   Firestore document id, and every answer to it failed to save.
+3. *Not fixed; the same on main.* After "Create account" the screen goes on
+   saying "this device only" until the page is reloaded: linking an account
+   does not fire the sign-in listener the app waits on.
+4. *Not fixed; the same on main.* Offline with nothing cached, one Firestore
+   read rejects with no handler ("Failed to get document because the client
+   is offline" as an uncaught error). Nothing visibly breaks.
+
+**A draft of the default build**, deployed from this branch (never to
+production): `https://content-server--mskanatomyrevision.netlify.app`, entry
+chunk 1,981,548 B. On it: `paddle-portal` 405, `paddle-webhook` 405,
+`renewal-reminders` 403, `content-area` with no token 401 (`private,
+no-store`), with a token Google rejects 401, an unknown area 400, POST 405,
+another site's `Origin` 403. Production served `assets/index-BCjoSWbO.js`
+before and after. *Not run there:* a granted request — that would read the
+real database, which this pass was not to touch. It is rollout step 3.
+
+**To run it again.** `firebase emulators:start --only firestore,auth --project
+demo-locusmsk`; `netlify dev --offline` with `FIRESTORE_EMULATOR_HOST=127.0.0.1:8085`,
+`FIREBASE_AUTH_EMULATOR_HOST=127.0.0.1:9099` and `METADATA_SERVER_DETECTION=none`
+(without the last, every call waits three seconds on a metadata lookup); a
+build made with `VITE_CONTENT_SOURCE=server VITE_PERSISTENCE=firestore
+VITE_FIREBASE_EMULATORS=1`, any non-empty `VITE_FIREBASE_API_KEY`, and
+`VITE_FIREBASE_PROJECT_ID=demo-locusmsk`. On Windows `netlify dev` answers 403
+for every static file in a subdirectory, so the build has to be served by
+something else that passes `/.netlify/functions/*` through to it. `netlify
+dev` in a worktree also reads the main checkout's `.env`. And Chromium's Cache
+Storage fails outright when the browser profile's path is very long, which
+looks exactly like "downloads are not available in this browser".
 
 ## Found on the way, not fixed
 
