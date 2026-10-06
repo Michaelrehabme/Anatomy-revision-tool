@@ -7,6 +7,7 @@ import {
   scoreDiagnostic,
   DIAGNOSTIC_SIZE,
   DIAGNOSTIC_VERSION,
+  COHORT_DRAWN_VERSION,
   MIN_PAIRED,
   type DiagnosticResult,
 } from '../diagnostic';
@@ -56,8 +57,22 @@ describe('buildDiagnostic', () => {
     expect(new Set(spec.items.map((i) => i.area)).size).toBeGreaterThanOrEqual(7);
   });
 
-  it('stamps the version, because a follow-up under different rules is not a follow-up', () => {
-    expect(buildDiagnostic(ALL_STRUCTURES, 'c1').version).toBe(DIAGNOSTIC_VERSION);
+  it('stamps the version it draws for, which is no longer the current one', () => {
+    expect(buildDiagnostic(ALL_STRUCTURES, 'c1').version).toBe(COHORT_DRAWN_VERSION);
+    expect(COHORT_DRAWN_VERSION).toBe(1);
+    expect(DIAGNOSTIC_VERSION).toBeGreaterThan(COHORT_DRAWN_VERSION);
+  });
+
+  // Baselines sat under version 1 are still open, and one that recorded no
+  // question ids is followed up by drawing its class's paper again. The draw
+  // was seeded with the version, so bumping the version must not move it:
+  // this is the paper 'cohort-a' drew while version 1 was live.
+  it('still draws a class the paper it drew under version 1', () => {
+    expect(buildDiagnostic(ALL_STRUCTURES, 'cohort-a').items.map((i) => i.structureId)).toEqual([
+      'vastus-intermedius', 'anconeus', 'internal-intercostals', 'multifidus', 'scalene-posterior',
+      'flexor-digitorum-longus', 'trapezius', 'adductor-magnus', 'lumbricals-hand', 'popliteus',
+      'biceps-brachii', 'external-intercostals', 'internal-oblique', 'rotatores', 'flexor-digitorum-brevis',
+    ]);
   });
 });
 

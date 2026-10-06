@@ -36,8 +36,7 @@ function tieredPool<T extends StructureIndexEntry>(correct: StructureIndexEntry,
  *
  * Generic over what it is handed: the tiers read a structure's region, kind
  * and groups, all of which an index entry has, so a question that only needs
- * NAMES can be built for structures whose facts are not on the device
- * (questionGenerators/pictureName.ts).
+ * NAMES can be built for structures whose facts are not on the device.
  */
 export function pickStructureDistractors<T extends StructureIndexEntry>(
   correct: StructureIndexEntry,

@@ -24,6 +24,15 @@
  *   bundled   everything. Nothing to check; it says so and passes.
  *   server    nothing.
  *   fixture   the two demo areas' structures, and no others.
+ *
+ * AND, IN EVERY KIND, THE DIAGNOSTIC'S FIXED PAPER
+ * (features/anatomy-revision/lib/diagnosticSample.ts): fifteen questions that
+ * are public on purpose, some of whose choices are descriptions. They are
+ * allowed where the paper is and as often as the paper prints them, and not
+ * otherwise — lib/bundleFacts.ts has the rule and its test. The papers are
+ * read from data/diagnostic/ here, so a new version of the paper is covered
+ * without this file being touched, and nothing else can be added to the
+ * exception without adding it to a paper every student is handed.
  */
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
@@ -31,6 +40,8 @@ import { loadEnv } from 'vite';
 import { AUTHORED_STRUCTURES } from '../features/anatomy-revision/data/seed';
 import { DEMO_FIXTURE_AREAS } from '../features/anatomy-revision/data/content/demoFixtureAreas';
 import { areasOf } from '../features/anatomy-revision/types/structure';
+import type { FixedSampleFile } from '../features/anatomy-revision/lib/diagnosticSample';
+import { descriptionCanaries, findLeaks, type BuiltFile, type PublishedPaper } from './lib/bundleFacts';
 
 /** Shorter than this and a description could be a phrase that turns up elsewhere by chance. */
 const MIN_CANARY_LENGTH = 40;
@@ -69,20 +80,22 @@ const allowed = new Set(
     ? AUTHORED_STRUCTURES.filter((s) => areasOf(s).some((a) => DEMO_FIXTURE_AREAS.includes(a))).map((s) => s.id)
     : [],
 );
-// As they appear inside a JavaScript or JSON string: with their quotes escaped.
-const canaries = AUTHORED_STRUCTURES.filter((s) => s.description.length >= MIN_CANARY_LENGTH && !allowed.has(s.id)).map((s) => ({
-  id: s.id,
-  texts: [s.description, JSON.stringify(s.description).slice(1, -1)],
-}));
+const canaries = descriptionCanaries(AUTHORED_STRUCTURES.filter((s) => !allowed.has(s.id)), MIN_CANARY_LENGTH);
 
-const leaks = new Map<string, string[]>();
+const PAPER_DIR = 'src/features/anatomy-revision/data/diagnostic';
+const papers: PublishedPaper[] = readdirSync(PAPER_DIR)
+  .filter((name) => /^fixedSample\.v\d+\.json$/.test(name))
+  .map((name) => JSON.parse(readFileSync(join(PAPER_DIR, name), 'utf8')) as FixedSampleFile)
+  .map((paper) => ({ marker: paper.sample, choices: paper.questions.flatMap((q) => q.question.choices) }));
+
 let files = 0;
-for (const file of scripts(dir)) {
-  files += 1;
-  const text = readFileSync(file, 'utf8');
-  const found = canaries.filter((c) => c.texts.some((t) => text.includes(t))).map((c) => c.id);
-  if (found.length) leaks.set(file, found);
+function* built(): Generator<BuiltFile> {
+  for (const path of scripts(dir)) {
+    files += 1;
+    yield { path, text: readFileSync(path, 'utf8') };
+  }
 }
+const leaks = findLeaks(built(), canaries, papers);
 
 if (files === 0) {
   console.error(`check:bundle — no built files found in ${dir}. Build first.`);
@@ -96,12 +109,15 @@ if (leaks.size > 0) {
   }
   console.error(
     '\nSomething imports the structure seed outside data/content/bundledContent.ts, or reaches\n' +
-      'bundledContent by a specifier the alias in vite.config.ts does not rewrite.\n',
+      'bundledContent by a specifier the alias in vite.config.ts does not rewrite.\n' +
+      "(The diagnostic's fixed paper is allowed its own choices, in the file that carries it, as\n" +
+      'often as it prints them. A structure listed here is over that.)\n',
   );
   process.exit(1);
 }
 
 console.log(
   `check:bundle — ${dir} is a ${kind} build: ${files} files read, ${canaries.length} structures' descriptions looked for, none found` +
-    (kind === 'fixture' ? ` (the ${allowed.size} structures of ${DEMO_FIXTURE_AREAS.join(' and ')} are allowed).` : '.'),
+    (kind === 'fixture' ? ` (the ${allowed.size} structures of ${DEMO_FIXTURE_AREAS.join(' and ')} are allowed).` : '.') +
+    ` The diagnostic's fixed paper (${papers.map((p) => p.marker).join(', ')}) is allowed its own choices where it is carried.`,
 );

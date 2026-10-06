@@ -67,7 +67,8 @@ vocabulary (nerve names, action tags, joint types, myotome labels,
 special-test names) as the fallback. Add a test that every generator still
 produces its usual count, ±10%, from a single area. The diagnostic asks across
 all nine areas ungated: limit it to picture-to-name questions, or bundle a
-small fixed sample.
+small fixed sample. (The owner chose the fixed sample on 6 Oct 2026; what it
+is and what it publishes is in CONTENT-SERVER-STATUS.md, decision 7.)
 
 ## Build
 

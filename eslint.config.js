@@ -52,6 +52,17 @@ export default tseslint.config(
    * bundledContent.ts, which is the one place. The build check
    * (src/scripts/checkBundleForFacts.ts) is the second line: it reads the
    * built chunks of a server build and fails if a fact is in any of them.
+   *
+   * ONE FILE OF FACTS IS MEANT TO BE IN EVERY BUILD, and this rule does not
+   * and must not catch it: data/diagnostic/fixedSample.v<N>.json, the
+   * diagnostic's fixed paper — fifteen finished questions, public by the
+   * owner's decision (lib/diagnosticSample.ts lists what it publishes). It is
+   * not the seed and imports nothing from it; it was written from the seed
+   * once, by a script. The build check is where the exception is policed:
+   * the paper's strings are allowed in the built file that carries the paper
+   * and nowhere else (src/scripts/lib/bundleFacts.ts). Do not add a second
+   * such file by analogy. A fact that should be public goes in that paper, as
+   * a question, under a new version.
    */
   {
     files: ['src/**/*.{ts,tsx}'],

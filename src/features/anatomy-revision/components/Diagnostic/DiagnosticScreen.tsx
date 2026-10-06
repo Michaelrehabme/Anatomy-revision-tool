@@ -3,8 +3,6 @@ import type { AnatomyRepository } from '../../data/repository';
 import type { AnatomyContent } from '../../hooks/useAnatomyContent';
 import type { MCQQuestion } from '../../types/question';
 import { generateRevisionSet } from '../../lib/questionGenerators/generateSet';
-import { buildPictureNameQuestions } from '../../lib/questionGenerators/pictureName';
-import { createRng } from '../../lib/rng';
 import { AREAS } from '../../types/region';
 import {
   buildDiagnostic,
@@ -12,6 +10,7 @@ import {
   shuffleForSitting,
   type DiagnosticResult,
 } from '../../lib/diagnostic';
+import type { DiagnosticPaper } from '../../lib/diagnosticSample';
 import { promptCopy } from '../../lib/diagnosticPrompt';
 import { DiagnosticSession } from './DiagnosticSession';
 import { Button } from '../shared/Button';
@@ -37,8 +36,12 @@ interface DiagnosticScreenProps {
   cohortId: string;
   phase: 'baseline' | 'followUp';
   content: AnatomyContent;
-  /** Question ids from the baseline, when this is the follow-up. */
-  replayIds?: string[];
+  /**
+   * What to ask (lib/diagnosticSample.ts `resolveDiagnosticPaper`): the fixed
+   * paper's questions, or — only for a follow-up to a baseline sat before the
+   * fixed paper existed — the instruction to rebuild that class's own.
+   */
+  paper: DiagnosticPaper;
   onDone: () => void;
 }
 
@@ -46,49 +49,50 @@ const wrap = 'mx-auto w-full max-w-[680px] px-6 py-12';
 const display = { fontFamily: 'var(--font-display)', fontWeight: 500 as const, letterSpacing: '-.015em' };
 
 export function DiagnosticScreen({
-  repository, userId, cohortId, phase, content, replayIds, onDone,
+  repository, userId, cohortId, phase, content, paper, onDone,
 }: DiagnosticScreenProps) {
   const { index, structures, images, sources } = content;
-  // Whether this device holds the facts of the whole body. Always true with
-  // the seed bundled; in a build that fetches facts per area, true only for
-  // an account that may reach every area and has them all in hand.
-  const everyAreaInHand = content.facts.missing(AREAS).length === 0;
   const [stage, setStage] = useState<'intro' | 'sitting' | 'done'>('intro');
   const [score, setScore] = useState<{ correct: number; total: number } | null>(null);
   const [saveFailed, setSaveFailed] = useState(false);
 
   const imagesById = content.imagesById;
 
+  // A paper that was drawn per class is rebuilt from every area's facts. They
+  // are always in hand with the seed bundled; in a build that fetches facts
+  // per area, only for an account that may reach all nine.
+  const needsEveryArea = paper.kind === 'cohortDrawn';
+  const everyAreaInHand = content.facts.missing(AREAS).length === 0;
+  const cannotRebuild = needsEveryArea && !everyAreaInHand;
+
   // Built once. Re-running the generator mid-sitting would renumber the paper
   // under the student's feet.
   const questions = useMemo(() => {
-    // The fifteen structures are chosen from the INDEX, so every student in a
-    // class is asked about the same fifteen whatever each of them holds.
+    // THE FIXED PAPER — every baseline, and every follow-up to one. The
+    // questions arrive finished, from a file every build carries, so what
+    // this account has paid for and which areas this device holds have no
+    // way to change them: a class sits one paper.
+    //
+    // DELIBERATELY UNGATED. The diagnostic measures what a student already
+    // knows across the whole body, for their course lead. Clamping it to a
+    // free student's one area would make the cohort's baseline depend on who
+    // had paid, which is not a baseline. Nothing here is revision: no attempt
+    // is recorded and no answer is shown (see the note above), so it teaches
+    // nothing that was paid for.
+    if (paper.kind === 'fixed') return shuffleForSitting(paper.questions);
+
+    // A FOLLOW-UP TO A VERSION-1 BASELINE: the class's own paper, rebuilt as
+    // it was built then — over the whole dataset, then the questions the
+    // baseline recorded. Without every area's facts it cannot be rebuilt, and
+    // a shorter paper or a different one would not pair with the baseline
+    // (`pairDiagnostics`), so nothing is asked and the screen says why.
+    if (cannotRebuild) return [];
     const spec = buildDiagnostic(index, cohortId);
-    // DELIBERATELY UNGATED, and the only caller that passes AREAS.
-    //
-    // The diagnostic measures what a student already knows across the whole
-    // body, for their course lead. Clamping it to a free student's one area
-    // would make the cohort's baseline depend on who had paid, which is not a
-    // baseline. Nothing here is revision: no attempt is recorded and no answer
-    // is shown (see the note above), so it teaches nothing that was paid for.
-    //
-    // WHEN THE WHOLE BODY IS NOT IN HAND (owner's default, 5 Oct 2026 —
-    // docs/CONTENT-SERVER-STATUS.md, decision 7). The paper mixes kinds of
-    // question: name this picture, and what is this muscle's nerve. The second
-    // kind states a fact, and a student holding one area has no facts for the
-    // other eight to be asked from. Their paper is therefore built entirely
-    // of picture-to-name questions, from the index: the same fifteen
-    // structures, each asked the one way that needs no facts. It is NOT the
-    // same paper as a classmate's who holds every area, and a class whose
-    // students differ in what they hold is being measured on two papers.
-    const pool = everyAreaInHand
-      ? generateRevisionSet(structures, images, {
-          types: ['mcq'], mode: 'practice', seed: 1, entitledAreas: AREAS,
-        }, sources).filter((q): q is MCQQuestion => q.type === 'mcq')
-      : buildPictureNameQuestions(index, images, createRng(1));
-    return shuffleForSitting(buildDiagnosticQuestions(spec, pool, replayIds));
-  }, [index, structures, images, sources, everyAreaInHand, cohortId, replayIds]);
+    const pool = generateRevisionSet(structures, images, {
+      types: ['mcq'], mode: 'practice', seed: 1, entitledAreas: AREAS,
+    }, sources).filter((q): q is MCQQuestion => q.type === 'mcq');
+    return shuffleForSitting(buildDiagnosticQuestions(spec, pool, paper.replayIds));
+  }, [paper, index, structures, images, sources, cannotRebuild, cohortId]);
 
   useEffect(() => { window.scrollTo(0, 0); }, [stage]);
 
@@ -110,7 +114,11 @@ export function DiagnosticScreen({
 
         {questions.length === 0 ? (
           <p className="mt-8" style={{ font: '400 15px/1.5 var(--font-ui)', color: 'var(--acc2d)' }}>
-            This one cannot be set up right now. Nothing is lost — carry on revising and try again later.
+            {cannotRebuild
+              ? 'This one cannot be set up on this account. It repeats the questions you sat when you joined, '
+                + 'which were drawn from every area, and this account does not have every area. '
+                + 'Nothing is lost — carry on revising.'
+              : 'This one cannot be set up right now. Nothing is lost — carry on revising and try again later.'}
           </p>
         ) : (
           <div className="mt-8 flex flex-wrap items-center gap-4">
@@ -140,7 +148,7 @@ export function DiagnosticScreen({
           setStage('done');
 
           const result: DiagnosticResult = {
-            userId, cohortId, version: buildDiagnostic(index, cohortId).version,
+            userId, cohortId, version: paper.version,
             phase, correct, total, takenAt: new Date().toISOString(), durationMs, questionIds,
           };
           try {

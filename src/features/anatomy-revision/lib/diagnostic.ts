@@ -57,11 +57,28 @@ import { createRng, shuffle } from './rng';
 export const DIAGNOSTIC_SIZE = 15;
 
 /**
- * The version of the item-selection rules. It is stamped on every result, and
- * a follow-up is only comparable with a baseline that carries the same value:
- * change how items are chosen and every open baseline stops being a baseline.
+ * The version of the paper. It is stamped on every result, and a follow-up is
+ * only comparable with a baseline that carries the same value: change what is
+ * asked and every open baseline stops being a baseline.
+ *
+ *   1  each class drew its own fifteen from the whole dataset, on the device
+ *      (`buildDiagnostic` below). Live until October 2026.
+ *   2  one fixed paper for everyone, shipped as a file
+ *      (lib/diagnosticSample.ts). Owner's decision, 6 Oct 2026: once facts are
+ *      served per area, a paper built on the device depends on what the
+ *      sitter has paid for, and a class must sit one paper.
+ *
+ * This is the version a NEW BASELINE is stamped with. A follow-up carries its
+ * baseline's version, not this one — see `resolveDiagnosticPaper`.
  */
-export const DIAGNOSTIC_VERSION = 1;
+export const DIAGNOSTIC_VERSION = 2;
+
+/**
+ * The version whose papers were drawn per class. Baselines sat under it are
+ * still open on the live site, so the rule that drew them is kept, exactly,
+ * for their follow-ups — and for nothing else.
+ */
+export const COHORT_DRAWN_VERSION = 1;
 
 /** One item: a structure to be named, and which cohort-fixed slot it fills. */
 export interface DiagnosticItem {
@@ -163,7 +180,15 @@ function seedFrom(cohortId: string): number {
 const CORE_POOL_PER_AREA = 6;
 
 /**
- * The cohort's fixed item set.
+ * The cohort's fixed item set, AS VERSION 1 DREW IT.
+ *
+ * No new baseline is built from this: version 2 hands everyone one written
+ * paper (lib/diagnosticSample.ts). It stays for two callers. A follow-up to a
+ * version-1 baseline that recorded no question ids is rebuilt from it; and
+ * the script that wrote version 2's paper used it, under one fixed name, so
+ * the new paper is chosen the way the old ones were. It must go on returning
+ * exactly what it returned while version 1 was live, which is why its seed
+ * is tied to COHORT_DRAWN_VERSION and not to the current version.
  *
  * Spread across areas on purpose: a diagnostic drawn at random from the whole
  * dataset would, at 20 items, quite often miss a region entirely, and a student
@@ -199,7 +224,7 @@ export function buildDiagnostic(
     byArea.set(area, ranked.slice(0, CORE_POOL_PER_AREA));
   }
 
-  const rng = createRng(seedFrom(cohortId) + DIAGNOSTIC_VERSION);
+  const rng = createRng(seedFrom(cohortId) + COHORT_DRAWN_VERSION);
   // Areas in a fixed order, then shuffled by the cohort's own seed: the order
   // must not depend on Map insertion, which depends on dataset ordering.
   const areas = shuffle([...byArea.keys()].sort(), rng);
@@ -222,7 +247,7 @@ export function buildDiagnostic(
     }
   }
 
-  return { cohortId, version: DIAGNOSTIC_VERSION, items: picked };
+  return { cohortId, version: COHORT_DRAWN_VERSION, items: picked };
 }
 
 export function scoreDiagnostic(answers: boolean[]): { correct: number; total: number } {

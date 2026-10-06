@@ -4,14 +4,16 @@ import type { AnatomyRepository } from '../../data/repository';
 import type { AnatomyContent } from '../../hooks/useAnatomyContent';
 import { DiagnosticScreen } from './DiagnosticScreen';
 import { nextDiagnosticPhase } from '../../lib/diagnosticPrompt';
+import { resolveDiagnosticPaper, type DiagnosticPaper } from '../../lib/diagnosticSample';
 
 /**
  * /diagnostic — resolves what DiagnosticScreen needs and gets out of the way.
  *
  * Two things have to be looked up before a sitting can start, and neither
- * belongs in the screen: which class the student is in, and — for a follow-up —
- * which questions their baseline asked, since a follow-up that asks anything
- * else is not a follow-up.
+ * belongs in the screen: which class the student is in, and which paper they
+ * are to sit. A baseline is the current fixed paper. A follow-up is whatever
+ * its baseline was — that version, those questions — since a follow-up that
+ * asks anything else is not a follow-up (lib/diagnosticSample.ts).
  *
  * It also refuses a sitting that is not due. The prompt only offers what
  * nextDiagnosticPhase allows, but this route is a URL: without the same check a
@@ -34,7 +36,7 @@ interface DiagnosticRouteProps {
 
 type State =
   | { status: 'loading' }
-  | { status: 'ready'; cohortId: string; replayIds?: string[] }
+  | { status: 'ready'; cohortId: string; paper: DiagnosticPaper }
   | { status: 'unavailable' };
 
 export function DiagnosticRoute({ repository, userId, content }: DiagnosticRouteProps) {
@@ -64,14 +66,13 @@ export function DiagnosticRoute({ repository, userId, content }: DiagnosticRoute
           return;
         }
 
-        let replayIds: string[] | undefined;
-        if (phase === 'followUp') {
-          const baseline = results
-            .filter((r) => r.phase === 'baseline' && r.cohortId === cohort.id)
-            .sort((a, b) => a.takenAt.localeCompare(b.takenAt))[0];
-          replayIds = baseline?.questionIds;
-        }
-        if (!cancelled) setState({ status: 'ready', cohortId: cohort.id, replayIds });
+        const baseline = phase === 'followUp'
+          ? results
+              .filter((r) => r.phase === 'baseline' && r.cohortId === cohort.id)
+              .sort((a, b) => a.takenAt.localeCompare(b.takenAt))[0]
+          : undefined;
+        const paper = await resolveDiagnosticPaper(phase, baseline);
+        if (!cancelled) setState({ status: 'ready', cohortId: cohort.id, paper });
       } catch {
         if (!cancelled) setState({ status: 'unavailable' });
       }
@@ -113,7 +114,7 @@ export function DiagnosticRoute({ repository, userId, content }: DiagnosticRoute
       cohortId={state.cohortId}
       phase={phase}
       content={content}
-      replayIds={state.replayIds}
+      paper={state.paper}
       onDone={() => navigate('/account')}
     />
   );

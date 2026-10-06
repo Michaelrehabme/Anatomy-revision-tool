@@ -124,6 +124,16 @@ within 28 days of joining and a follow-up from 70 days later (`lib/diagnostic.ts
 counters. Only students with both sittings, on the same questions and version, are counted
 (`pairDiagnostics`). There is no comparison group. That last sentence limits everything below.
 
+**Which 15.** Until October 2026 each class drew its own fifteen from the whole dataset
+(version 1). From version 2 there is one fixed paper, the same for every class and every student
+whatever they have paid for, shipped in the app as `data/diagnostic/fixedSample.v2.json`
+(`lib/diagnosticSample.ts`; docs/CONTENT-SERVER-STATUS.md, decision 7, lists the questions). Two
+consequences for a claim. A class that started under version 1 and gained members under version 2
+sat **two papers**: quote each student's change only on the paper they sat twice, and say so if
+both are in one figure. And the fixed paper and its answers are public in the app's files, and
+are the same every year: a figure from a later class cannot rule out that the paper was seen
+beforehand, which is one more reason the number may flatter us.
+
 **Before a figure is quoted in public**
 
 1. **Size.** At least 20 students with both sittings, in one class. The code's own floor
@@ -198,10 +208,11 @@ class, not about "students" in general.
 - "The more you use it, the more you improve."
 - "Used at <university>" without written permission.
 
-**Known gap.** `scripts/cohortReport.ts` pairs sittings more loosely than `pairDiagnostics`: it
-does not check the version or that the same questions were asked. It now marks a class under
-the private floor as not quotable, but the figure to quote is the one from `summariseDiagnostics`
-(the admin Outcome screen), not the script's.
+**Closed gap (6 Oct 2026).** `scripts/cohortReport.ts` used to pair sittings more loosely than
+`pairDiagnostics`: it did not check the version or that the same questions were asked. It now
+pairs with `pairDiagnostics` itself, says when a class sat two papers, and counts the students
+who sat both sittings but on different papers and so are not in the figure. It still marks a
+class under the private floor as not quotable.
 
 ## Claims NOT to make until there is evidence
 
