@@ -21,6 +21,13 @@ interface AccountFormProps {
   guestHasProgress?: boolean;
   /** Told when the form switches between creating and signing in, for a heading that follows it. */
   onModeChange?: (mode: AccountFormMode) => void;
+  /**
+   * Told, at once, when an existing account was signed in to instead of a new
+   * one being made, with the sentence that says so. For a caller that will
+   * not be on screen to show the form's own message: the screen a guest sees
+   * is replaced the moment they are an account, and the message went with it.
+   */
+  onRecovered?: (message: string) => void;
 }
 
 export function friendlyAuthError(error: unknown): string {
@@ -77,7 +84,7 @@ const fieldLabel = { font: '500 12.5px/1 var(--font-ui)', color: 'var(--ink2)' }
  * free tier therefore costs one made-up address per extra area
  * (docs/CONTENT-SERVER-STATUS.md).
  */
-export function AccountForm({ initialMode = 'sign-up', onDone, guestHasProgress = false, onModeChange }: AccountFormProps) {
+export function AccountForm({ initialMode = 'sign-up', onDone, guestHasProgress = false, onModeChange, onRecovered }: AccountFormProps) {
   const { signInWithGoogle, signInWithEmail, signUpWithEmail } = useAuth();
   const [mode, setMode] = useState<AccountFormMode>(initialMode);
   const [email, setEmail] = useState('');
@@ -105,8 +112,10 @@ export function AccountForm({ initialMode = 'sign-up', onDone, guestHasProgress 
   const finish = (recovered: boolean, message: string) => {
     // An existing account was signed in to instead of a new one being made:
     // said, and acknowledged, before anything moves on.
-    if (recovered) setConflictMessage(message);
-    else onDone({ recovered: false });
+    if (recovered) {
+      onRecovered?.(message);
+      setConflictMessage(message);
+    } else onDone({ recovered: false });
   };
 
   const handleGoogle = async () => {

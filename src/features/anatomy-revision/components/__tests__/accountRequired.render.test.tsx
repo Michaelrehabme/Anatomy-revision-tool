@@ -123,6 +123,17 @@ describe('what an existing guest meets in place of revision', () => {
     await waitFor(() => expect(auth.signUpWithEmail).toHaveBeenCalledWith('sam@example.com', 'password123'));
   });
 
+  // The gate is replaced the moment they are an account, so the form's own
+  // message would never be read: the app is handed the sentence at once.
+  it('tells the app at once when the sign-up turned out to be an account that already existed', async () => {
+    auth.signUpWithEmail.mockResolvedValue({ recoveredExistingAccount: true });
+    const onRecovered = vi.fn();
+    open({ onRecovered });
+    fillAndSubmit();
+    await waitFor(() => expect(onRecovered).toHaveBeenCalledTimes(1));
+    expect(onRecovered.mock.calls[0][0]).toMatch(/already existed.*could not be merged/);
+  });
+
   it('warns before they sign in to another account that their guest progress stays behind', () => {
     open();
     fireEvent.click(screen.getByRole('button', { name: 'Already have an account? Sign in' }));

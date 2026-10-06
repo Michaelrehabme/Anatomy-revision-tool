@@ -317,6 +317,14 @@ function App() {
   // The same when one stand-in gives way to the other: a guest with no free
   // area on the device makes an account and is asked to choose one. And a
   // screen with no heading of its own (Today) takes it on its main region.
+  /**
+   * Said once, above whatever screen follows: a guest who "created" an
+   * account with a sign-in that already had one was signed in to THAT
+   * account, and what they did on this device as a guest stayed behind. The
+   * form says so itself, but the screen it is on is replaced the moment they
+   * are an account.
+   */
+  const [accountNotice, setAccountNotice] = useState<string | null>(null);
   const standingIn = isGuest ? 'account' : entitlement.needsFreeArea ? 'area' : null;
   const stoodIn = useRef(standingIn);
   useEffect(() => {
@@ -568,6 +576,7 @@ function App() {
             onNavigate={onNavigateSection}
             onNavigateTab={mobileNavigate}
             freeArea={entitlement.freeArea?.area ?? null}
+            onRecovered={setAccountNotice}
           />
         </Suspense>
       );
@@ -592,6 +601,23 @@ function App() {
           here, above every screen — so no screen has to leave a student to
           guess why a region is missing. Never rendered with the seed bundled. */}
       {!entitlement.loading && <AreaFactsNotice facts={content.facts} entitled={entitledAreas} />}
+      {accountNotice && !isGuest && (
+        <div
+          role="status"
+          className="flex items-start justify-between gap-4 px-5 py-3"
+          style={{ background: 'var(--acc2s)', color: 'var(--acc2d)', font: '400 14px/1.5 var(--font-ui)' }}
+        >
+          <span>{accountNotice}</span>
+          <button
+            type="button"
+            onClick={() => setAccountNotice(null)}
+            className="min-h-[32px] flex-none"
+            style={{ font: '500 13.5px/1 var(--font-ui)', color: 'var(--acc2d)', textDecoration: 'underline' }}
+          >
+            Dismiss
+          </button>
+        </div>
+      )}
       <Routes>
         <Route
           path="/onboarding"

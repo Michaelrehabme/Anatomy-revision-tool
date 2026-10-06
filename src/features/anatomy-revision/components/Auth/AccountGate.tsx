@@ -16,6 +16,12 @@ interface AccountGateProps {
   onNavigateTab: (tab: MobileTab) => void;
   /** The free area this guest chose before guests were closed, if they chose one. */
   freeArea: Area | null;
+  /**
+   * They were signed in to an account that already existed, so what they did
+   * here as a guest was not moved across. This screen is gone by the time
+   * that could be said on it; the app says it instead.
+   */
+  onRecovered?: (message: string) => void;
 }
 
 /**
@@ -51,7 +57,7 @@ interface AccountGateProps {
  * the form's own message says so. The line at the top of the form says it
  * before they type.
  */
-export default function AccountGate({ isDesktop, active, onNavigate, onNavigateTab, freeArea }: AccountGateProps) {
+export default function AccountGate({ isDesktop, active, onNavigate, onNavigateTab, freeArea, onRecovered }: AccountGateProps) {
   const heading = useRef<HTMLHeadingElement>(null);
   useEffect(() => {
     // When they pressed something to get here and it is gone; not on a first
@@ -107,7 +113,7 @@ export default function AccountGate({ isDesktop, active, onNavigate, onNavigateT
               device, and will be here when you are back online.
             </p>
           )}
-          <AccountForm guestHasProgress onDone={() => { /* The app sees the account and shows the screen asked for. */ }} />
+          <AccountForm guestHasProgress onRecovered={onRecovered} onDone={() => { /* The app sees the account and shows the screen asked for. */ }} />
         </div>
 
         <p className="mt-6" style={{ font: '400 13.5px/1.6 var(--font-ui)', color: 'var(--ink3)' }}>
