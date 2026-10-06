@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
+import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
 import type { User } from 'firebase/auth';
 import type { LinkInput } from '../data/firebase';
 import { BUNDLED_CONTENT } from '../data/content/bundledContent';
@@ -66,20 +66,45 @@ function toAuthUser(user: User): AuthUser {
   return { uid: user.uid, displayName: user.displayName, email: user.email, isAnonymous: user.isAnonymous };
 }
 
+/**
+ * WHO IS TOLD WHEN A GUEST BECOMES AN ACCOUNT.
+ *
+ * "Create account" from a guest LINKS the new sign-in to the guest's
+ * session: the uid is kept, which is what carries their progress over. And
+ * because the uid is kept, Firebase does not count it as a change of user:
+ * `onAuthStateChanged` — the one thing this provider listened to — fires for
+ * sign-in and sign-out and says nothing about a link. So the account was
+ * made, and every screen went on being told `isAnonymous: true` until the
+ * page was reloaded: Account kept "this device only, until you create an
+ * account", the sidebar kept offering "Create account", and the profile
+ * document kept `isAnonymous: true` and no email for an educator to see.
+ *
+ * Each action below therefore hands the user it ended with to whichever
+ * provider is mounted, which takes it up when it is the SAME account seen
+ * differently (see `adopt` in AuthProvider). A different account arrives by
+ * the listener as it always did.
+ */
+const linkedUserListeners = new Set<(user: User) => void>();
+
+function announce<T extends { user: User }>(result: T): T {
+  for (const listener of linkedUserListeners) listener(result.user);
+  return result;
+}
+
 const FIRESTORE_ACTIONS: Omit<AuthContextValue, keyof AuthState> = {
   signInWithGoogle: async () => {
     const { signInWithGoogle } = await import('../data/firebase');
-    const result = await signInWithGoogle();
+    const result = announce(await signInWithGoogle());
     return { recoveredExistingAccount: result.recoveredExistingAccount };
   },
   signInWithEmail: async (email, password) => {
     const { signInWithEmail } = await import('../data/firebase');
-    const result = await signInWithEmail(email, password);
+    const result = announce(await signInWithEmail(email, password));
     return { recoveredExistingAccount: result.recoveredExistingAccount };
   },
   signUpWithEmail: async (email, password) => {
     const { signUpWithEmail } = await import('../data/firebase');
-    const result = await signUpWithEmail(email, password);
+    const result = announce(await signUpWithEmail(email, password));
     return { recoveredExistingAccount: result.recoveredExistingAccount };
   },
   signOut: async () => {
@@ -95,7 +120,7 @@ const FIRESTORE_ACTIONS: Omit<AuthContextValue, keyof AuthState> = {
   },
   linkAnonymousAccount: async (input) => {
     const { linkAnonymousAccount } = await import('../data/firebase');
-    const result = await linkAnonymousAccount(input);
+    const result = announce(await linkAnonymousAccount(input));
     return { recoveredExistingAccount: result.recoveredExistingAccount };
   },
 };
@@ -116,6 +141,10 @@ const FIRESTORE_ACTIONS: Omit<AuthContextValue, keyof AuthState> = {
  */
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<AuthState>({ user: null, loading: true });
+  // What the screens were last told, for `adopt` to compare with: read when
+  // an action finishes, which is not when this component renders.
+  const told = useRef<AuthUser | null>(null);
+  told.current = state.user;
 
   useEffect(() => {
     let cancelled = false;
@@ -130,6 +159,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     let unsubscribe: (() => void) | undefined;
+
+    /**
+     * Takes up the user an action ended with — but only when it is the
+     * account the screens already have, now seen differently: a guest that
+     * has just been linked. A DIFFERENT uid is a sign-in, the listener below
+     * is about to report it, and taking it here as well would write the
+     * profile twice. The same account unchanged is nothing to do.
+     */
+    const adopt = (user: User) => {
+      const before = told.current;
+      if (cancelled || !before || before.uid !== user.uid) return;
+      const after = toAuthUser(user);
+      if (
+        before.isAnonymous === after.isAnonymous
+        && before.email === after.email
+        && before.displayName === after.displayName
+      ) return;
+      told.current = after;
+      setState({ user: after, loading: false });
+      // The profile says who this is to an educator and to the account
+      // scripts. A reload would have refreshed it; so must this.
+      import('../data/firebase')
+        .then(({ touchUserProfile }) => touchUserProfile(user))
+        .catch((error) => console.error('Failed to write user profile:', error));
+    };
+    linkedUserListeners.add(adopt);
 
     import('../data/firebase').then(({ subscribeToAuthState, ensureAnonymousUser, touchUserProfile }) => {
       if (cancelled) return;
@@ -150,6 +205,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     return () => {
       cancelled = true;
+      linkedUserListeners.delete(adopt);
       unsubscribe?.();
     };
   }, []);

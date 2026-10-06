@@ -535,9 +535,14 @@ educator (decision 8).
 2. *Fixed, `5a1420d`; the same on main, so live today.* The question for
    "Proximal biceps tendinopathy/tear" has a slash in its id, the id is a
    Firestore document id, and every answer to it failed to save.
-3. *Not fixed; the same on main.* After "Create account" the screen goes on
-   saying "this device only" until the page is reloaded: linking an account
-   does not fire the sign-in listener the app waits on.
+3. *Fixed after this pass (6 Oct); the same on main, so live today.* After
+   "Create account" the screen went on saying "this device only" until the
+   page was reloaded: linking keeps the uid, so Firebase's
+   `onAuthStateChanged` does not fire, and it was the only thing
+   `AuthProvider` listened to. The sign-in actions now hand the provider the
+   user they ended with, and it takes it up when it is the same account seen
+   differently. The profile document (`isAnonymous`, `email`) is refreshed at
+   the same moment; before, it too waited for a reload.
 4. *Not fixed; the same on main.* Offline with nothing cached, one Firestore
    read rejects with no handler ("Failed to get document because the client
    is offline" as an uncaught error). Nothing visibly breaks.
