@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { AppShell } from '../shell/AppShell';
 import { NavSidebar, type NavSection } from '../shell/NavSidebar';
 import { AuthScreen } from '../Auth/AuthScreen';
+import { GuestAccountPanel } from '../Auth/GuestAccountPanel';
 import { CohortMembership } from '../shared/CohortMembership';
 import { SubscriptionSummary } from '../shared/SubscriptionSummary';
 import { ThemeControls } from '../shared/ThemeControls';
@@ -79,7 +80,7 @@ export function Account({ access, content, repository, userId, onNavigate }: Acc
   const { streak, seenByCategory, totalSeen, totalStructures } = useProgressData(repository, userId, content);
   const seenDetail = CATEGORIES.map((c) => `${seenByCategory[c].seen}/${seenByCategory[c].total} ${CATEGORY_LABELS[c].toLowerCase()}`).join(' · ');
   const [attempts, setAttempts] = useState<UserAttempt[] | null>(null);
-  const [showAuthScreen, setShowAuthScreen] = useState(false);
+  const [showAuthScreen, setShowAuthScreen] = useState<false | 'sign-up' | 'sign-in'>(false);
 
   useEffect(() => {
     if (!repository || !userId) return;
@@ -174,11 +175,26 @@ export function Account({ access, content, repository, userId, onNavigate }: Acc
         </section>
 
         {/* Per-device like appearance, and for the same reason outside the
-            signed-in block: a download belongs to this browser, not to an
-            account, and a guest revising on a train needs it as much. */}
-        <OfflineDownloads access={access} headingStyle={heading} className="mt-12" />
+            signed-in block: a download belongs to this browser. Not offered
+            to a guest, who holds no area to download. */}
+        {!access.guest && <OfflineDownloads access={access} headingStyle={heading} className="mt-12" />}
 
-        {AUTH_ENABLED && user && (
+        {/* A guest: the way to an account, in place of the sections below,
+            none of which a guest can use. */}
+        {AUTH_ENABLED && access.guest && (
+          <section data-in className="mt-12" style={{ maxWidth: 620 }}>
+            <h3 style={heading}>Create a free account</h3>
+            <div className="mt-4">
+              <GuestAccountPanel
+                freeArea={access.freeArea?.area ?? null}
+                onCreate={() => setShowAuthScreen('sign-up')}
+                onSignIn={() => setShowAuthScreen('sign-in')}
+              />
+            </div>
+          </section>
+        )}
+
+        {AUTH_ENABLED && user && !access.guest && (
           <section data-in className="mt-12" style={{ maxWidth: 620 }}>
             <h3 style={heading}>Subscription</h3>
             <SubscriptionSummary access={access} />
@@ -189,26 +205,12 @@ export function Account({ access, content, repository, userId, onNavigate }: Acc
             <AdminSection />
 
             <div className="mt-6 border-t pt-4" style={{ borderColor: 'var(--line)' }}>
-              {user.isAnonymous ? (
-                <button
-                  type="button"
-                  onClick={() => setShowAuthScreen(true)}
-                  className="rounded-[3px] px-3.5 py-2"
-                  style={{ font: '500 13.5px/1 var(--font-ui)', background: 'var(--accs)', color: 'var(--accd)' }}
-                >
-                  Create account
-                </button>
-              ) : (
-                <button type="button" onClick={() => signOut()} style={{ font: '400 13px/1 var(--font-ui)', color: 'var(--ink3)' }}>
-                  Sign out
-                </button>
-              )}
+              <button type="button" onClick={() => signOut()} style={{ font: '400 13px/1 var(--font-ui)', color: 'var(--ink3)' }}>
+                Sign out
+              </button>
             </div>
 
-            {/* Anonymous users have nothing to export and nothing to erase that
-                outlives the browser, so the controls appear once there is a
-                real account behind them. */}
-            {!user.isAnonymous && <AccountDataControls uid={user.uid} onDeleted={() => signOut()} />}
+            <AccountDataControls uid={user.uid} onDeleted={() => signOut()} />
           </section>
         )}
 
@@ -219,7 +221,7 @@ export function Account({ access, content, repository, userId, onNavigate }: Acc
           </div>
         </section>
 
-        {showAuthScreen &&<AuthScreen onClose={() => setShowAuthScreen(false)} />}
+        {showAuthScreen && <AuthScreen initialMode={showAuthScreen} onClose={() => setShowAuthScreen(false)} />}
       </div>
     </AppShell>
   );

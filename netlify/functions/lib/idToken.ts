@@ -55,6 +55,27 @@ function lookupUrl(apiKey: string): string {
  * `caller` names the function in the log line, so a missing key is traceable.
  */
 export async function uidForToken(idToken: string, caller: string): Promise<string | null> {
+  return (await accountForToken(idToken, caller))?.uid ?? null;
+}
+
+/** Who a token belongs to, and whether that is an account or a guest. */
+export interface TokenAccount {
+  uid: string;
+  /**
+   * A GUEST: the anonymous sign-in the app gives every visitor. Google's
+   * lookup lists the ways an account can sign in (`providerUserInfo`: a
+   * password, Google, …); a guest has none. Linking a sign-in to a guest
+   * keeps the uid and adds one, so the same uid stops being a guest the
+   * moment it becomes an account.
+   */
+  anonymous: boolean;
+}
+
+/**
+ * The same check as `uidForToken`, also saying whether the account is a
+ * guest. Null for a token that is not valid, exactly as there.
+ */
+export async function accountForToken(idToken: string, caller: string): Promise<TokenAccount | null> {
   const emulated = isLoopback(process.env.FIREBASE_AUTH_EMULATOR_HOST);
   // `||`, not `??`: a variable set to nothing (an .env template) is not a key.
   const apiKey = process.env.VITE_FIREBASE_API_KEY || process.env.FIREBASE_API_KEY || (emulated ? 'emulator' : '');
@@ -70,6 +91,9 @@ export async function uidForToken(idToken: string, caller: string): Promise<stri
   });
   if (!response.ok) return null;
 
-  const body = (await response.json()) as { users?: { localId?: string }[] };
-  return body.users?.[0]?.localId ?? null;
+  const body = (await response.json()) as { users?: { localId?: string; providerUserInfo?: unknown[] }[] };
+  const found = body.users?.[0];
+  if (!found?.localId) return null;
+  const providers = Array.isArray(found.providerUserInfo) ? found.providerUserInfo : [];
+  return { uid: found.localId, anonymous: providers.length === 0 };
 }

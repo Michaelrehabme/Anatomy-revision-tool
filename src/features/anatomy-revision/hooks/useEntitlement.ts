@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { AREAS, type Area } from '../types/region';
-import { getFreeAreaChoice, setFreeAreaChoice, storeFreeAreaChoice } from '../lib/preferences';
+import { freeAreaChoiceFor, getFreeAreaChoice, setFreeAreaChoice, storeFreeAreaChoice } from '../lib/preferences';
 import {
   FREE_ENTITLEMENT,
   canAccessArea,
@@ -50,8 +50,31 @@ import { switchesToMigrate } from '../lib/freeAreaRecord';
  *
  * A LOCAL-PERSISTENCE BUILD (the demo, the tests, `npm run dev` with no
  * Firebase project) has no account to keep it on, and keeps the device store
- * exactly as it was.
+ * exactly as it was — including the old default: with no choice made, the
+ * free area there is the shoulder.
+ *
+ * THE FREE AREA NEEDS A REAL ACCOUNT (owner's decision, 6 Oct 2026), in a
+ * build that has accounts. Two things follow, and both are in this hook so
+ * that every gate inherits them:
+ *
+ *   - A GUEST HOLDS NOTHING. The app signs every visitor in anonymously, and
+ *     a guest used to pick a free area with no sign-up: nine wiped browsers
+ *     were nine areas. Told it is reading for a guest (`guest`), this hook
+ *     answers "no area at all" — whatever the device says, and whatever the
+ *     guest's document says — so no session can be built, no card opens and,
+ *     in a build that fetches facts, nothing is asked of the server (which
+ *     would refuse). The guest's choice and progress are not touched: the
+ *     choice is still reported in `freeArea`, for the screen that asks them
+ *     to create an account to say "your free area comes with you", and it is
+ *     moved up to the account the moment they have one.
+ *
+ *   - THERE IS NO DEFAULT. An account that has not chosen used to be given
+ *     the shoulder. It is now given nothing until it chooses
+ *     (`needsFreeArea`), which is also what the content function does. The
+ *     default made a new student's device fetch the shoulder and then the
+ *     area they actually picked — two areas for every free account.
  */
+
 
 /** Whether this build keeps the free area on the account. Read per call, so a test can set the mode. */
 export function freeAreaIsOnTheAccount(): boolean {
@@ -78,8 +101,24 @@ export interface UseEntitlement {
    * picker or drill to — see entitledAreas in lib/entitlement.ts.
    */
   areas: Area[];
-  /** Which single area the free tier opens, and when it was picked. Null until they pick. */
+  /**
+   * Which single area the free tier opens, and when it was picked. Null until
+   * they pick. For a guest it is the choice they made before guests were
+   * closed, which opens nothing until they create an account.
+   */
   freeArea: FreeAreaChoice | null;
+  /**
+   * This is a guest in a build with accounts: signed in anonymously, holding
+   * no area. The app shows them the way to an account in place of every
+   * screen that revises (components/Auth/AccountGate.tsx).
+   */
+  guest?: boolean;
+  /**
+   * An account on the free tier that has not chosen its free area, so holds
+   * none. The app asks them to choose before anything else.
+   */
+  needsFreeArea?: boolean;
+
   /** Records the free area. Ignored if the 30 days are not up — the caller should check first. */
   chooseFreeArea: (area: Area) => void;
   /** Whether the free area may be changed now, and how long until it can be. */
@@ -137,7 +176,18 @@ export const FREE_AREA_SAVE_WAIT_MS = 8000;
 /** Coming back to the app re-reads, but not more than once a minute. */
 const VISIBLE_REREAD_MS = 60_000;
 
-export function useEntitlement(uid: string | null): UseEntitlement {
+export interface EntitlementOptions {
+  /**
+   * The signed-in user is anonymous (context/AuthProvider `isAnonymous`).
+   * Only means anything in a build with accounts; a local build has none and
+   * its one synthetic user is treated as it always was.
+   */
+  guest?: boolean;
+}
+
+export function useEntitlement(uid: string | null, options: EntitlementOptions = {}): UseEntitlement {
+  const guest = (options.guest ?? false) && freeAreaIsOnTheAccount();
+
   const [entitlement, setEntitlement] = useState<Entitlement>(FREE_ENTITLEMENT);
   const [freeArea, setFreeAreaState] = useState<FreeAreaChoice | null>(() => getFreeAreaChoice());
   const [loading, setLoading] = useState(true);
@@ -224,7 +274,7 @@ export function useEntitlement(uid: string | null): UseEntitlement {
         if (!freeAreaIsOnTheAccount()) return;
         if (stored.freeArea) {
           setFreeArea(stored.freeArea);
-          storeFreeAreaChoice(stored.freeArea);
+          storeFreeAreaChoice(stored.freeArea, uid);
           return;
         }
         // Nothing on the account. If this device holds a choice it is moved
@@ -232,13 +282,19 @@ export function useEntitlement(uid: string | null): UseEntitlement {
         // until it can ask, and the gates must not wait on that. Until it
         // lands the device copy stands, which is what this account has had
         // all along.
-        const onDevice = getFreeAreaChoice();
+        //
+        // Only a copy that is THIS account's (lib/preferences.ts
+        // freeAreaChoiceFor), and never for a guest: the rules refuse a
+        // guest's free area, so theirs waits on the device until they create
+        // an account — at which point this effect runs again, for the same
+        // uid now seen as an account, and moves it up then.
+        const onDevice = freeAreaChoiceFor(uid);
         setFreeArea(onDevice);
-        if (!onDevice) return;
+        if (!onDevice || guest) return;
         beginSave();
         saveFreeArea(uid, onDevice.area, switchesToMigrate(onDevice))
           .then((moved) => {
-            storeFreeAreaChoice(moved);
+            storeFreeAreaChoice(moved, uid);
             if (!cancelled) setFreeArea(moved);
             endSave(true);
           })
@@ -262,11 +318,13 @@ export function useEntitlement(uid: string | null): UseEntitlement {
       });
 
     return () => { cancelled = true; };
-  }, [uid, readCount, setFreeArea, beginSave, endSave]);
+  }, [uid, guest, readCount, setFreeArea, beginSave, endSave]);
 
   const refresh = useCallback(() => refreshEntitlementEverywhere(), []);
 
   const chooseFreeArea = useCallback((area: Area) => {
+    // A guest holds no free area: choosing one is what an account is for.
+    if (guest) return;
     const current = freeAreaRef.current;
     if (!canSwitchFreeArea(current)) return;
     // The first pick is not a switch; every later one is, and there is only
@@ -276,7 +334,7 @@ export function useEntitlement(uid: string | null): UseEntitlement {
     // Shown at once either way. On the account the device copy is only a
     // copy, and the rules have the last word: if they refuse the write, the
     // re-read below puts the account's own answer back on screen.
-    setFreeAreaChoice(area, switches);
+    setFreeAreaChoice(area, switches, new Date(), freeAreaIsOnTheAccount() && uid ? uid : undefined);
     setFreeArea(getFreeAreaChoice());
 
     if (freeAreaIsOnTheAccount() && uid) {
@@ -284,7 +342,7 @@ export function useEntitlement(uid: string | null): UseEntitlement {
       import('../data/entitlementRepository')
         .then(({ saveFreeArea }) => saveFreeArea(uid, area, switches >= 1 ? 1 : 0))
         .then((saved) => {
-          storeFreeAreaChoice(saved);
+          storeFreeAreaChoice(saved, uid);
           setFreeArea(saved);
           endSave(true);
         })
@@ -300,9 +358,19 @@ export function useEntitlement(uid: string | null): UseEntitlement {
     }
     // Every other screen's copy picks up the new free area too.
     queueMicrotask(refreshEntitlementEverywhere);
-  }, [uid, setFreeArea, beginSave, endSave]);
+  }, [uid, guest, setFreeArea, beginSave, endSave]);
 
-  const free = freeAreasFor(freeArea);
+  // What the free tier opens. With accounts: the chosen area or nothing, and
+  // for a guest nothing whatever was chosen. Without accounts: as it was,
+  // the chosen area or the default.
+  const onAccount = freeAreaIsOnTheAccount();
+  const free: readonly Area[] = !onAccount ? freeAreasFor(freeArea) : guest || !freeArea ? [] : [freeArea.area];
+  // A guest's stored entitlement opens nothing either. They cannot have paid
+  // (checkout asks for an account first); the one way a guest holds one is a
+  // licensed class joined before guests were closed, and that waits for the
+  // account like everything else.
+  const inForce = guest ? FREE_ENTITLEMENT : entitlement;
+
 
   // An account whose first read has not finished is still loading, FROM THE
   // RENDER IT ARRIVES IN. The effect above sets `loading` a moment later, and
@@ -313,15 +381,22 @@ export function useEntitlement(uid: string | null): UseEntitlement {
   // account before its entitlement had been read, then asked again.
   const unread = uid !== null && settledFor.current !== uid;
 
+  const tier = effectiveTier(inForce);
+  const stillLoading = loading || unread;
+
   return {
     entitlement,
-    tier: effectiveTier(entitlement),
-    loading: loading || unread,
+    tier,
+    loading: stillLoading,
     known: known && !unread,
-    canAccess: (area) => canAccessArea(area, entitlement, new Date(), free),
-    locked: (allAreas) => lockedAreas(allAreas, entitlement, new Date(), free),
-    areas: entitledAreas(AREAS, entitlement, new Date(), free),
+    canAccess: (area) => canAccessArea(area, inForce, new Date(), free),
+    locked: (allAreas) => lockedAreas(allAreas, inForce, new Date(), free),
+    areas: entitledAreas(AREAS, inForce, new Date(), free),
     freeArea,
+    guest,
+    // Not while the read is in flight (the answer may be "you already chose"),
+    // and not while a choice just made is on its way to the account.
+    needsFreeArea: onAccount && !guest && uid !== null && !stillLoading && tier === 'free' && !freeArea,
     chooseFreeArea,
     canSwitchFree: canSwitchFreeArea(freeArea),
     daysUntilSwitch: daysUntilFreeAreaSwitch(freeArea),

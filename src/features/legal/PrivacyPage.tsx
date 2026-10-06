@@ -54,7 +54,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 
 export function PrivacyPage() {
   return (
-    <LegalLayout title="Privacy policy" updated="5 October 2026">
+    <LegalLayout title="Privacy policy" updated="6 October 2026">
       <p className="mt-4" style={legalProse}>
         LocusMSK is an anatomy revision app for musculoskeletal students. This policy explains what it collects, why,
         how long it keeps it, and what you can do about it.
@@ -78,8 +78,8 @@ export function PrivacyPage() {
       <Section title="What is collected">
         <p>
           <strong style={{ color: 'var(--ink)' }}>Account details.</strong> Your email address and display name, from
-          the sign-in method you choose (Google, or email and password). If you use the app without an account, a
-          random identifier is stored on your device instead and no email is collected.
+          the sign-in method you choose (Google, or email and password). Until you create an account, a random
+          identifier is stored on your device instead and no email is collected; revising needs an account.
         </p>
         <p>
           <strong style={{ color: 'var(--ink)' }}>Revision activity.</strong> Every question you answer: which

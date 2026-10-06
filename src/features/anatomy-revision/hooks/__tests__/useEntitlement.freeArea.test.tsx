@@ -79,12 +79,146 @@ describe('the free area, kept on the account', () => {
     await waitFor(() => expect(saves).toEqual([{ area: 'elbow', switches: 1 }]));
   });
 
-  it('writes nothing when neither the account nor the device has a choice', async () => {
+  // There is no default any more. An account that has not chosen used to be
+  // given the shoulder, and in a build that fetches facts its device fetched
+  // the shoulder and then the area it went on to pick.
+  it('gives an account that has not chosen NO area, and says it needs to choose', async () => {
     const { result } = renderHook(() => useEntitlement('u1'));
     await waitFor(() => expect(result.current.known).toBe(true));
     expect(result.current.freeArea).toBeNull();
-    expect(result.current.areas).toEqual(['shoulder']);
+    expect(result.current.areas).toEqual([]);
+    expect(result.current.canAccess('shoulder')).toBe(false);
+    expect(result.current.needsFreeArea).toBe(true);
     expect(saves).toEqual([]);
+  });
+
+  it('stops asking once the account has chosen', async () => {
+    const { result } = renderHook(() => useEntitlement('u1'));
+    await waitFor(() => expect(result.current.needsFreeArea).toBe(true));
+    act(() => result.current.chooseFreeArea('knee'));
+    expect(result.current.needsFreeArea).toBe(false);
+    await waitFor(() => expect(result.current.areas).toEqual(['knee']));
+  });
+
+  it('does not ask while the first read is still out', () => {
+    const { result } = renderHook(() => useEntitlement('u1'));
+    expect(result.current.loading).toBe(true);
+    expect(result.current.needsFreeArea).toBe(false);
+  });
+
+  /**
+   * The free area needs a real account (owner's decision, 6 Oct 2026). A
+   * guest — the anonymous sign-in every visitor is given — holds nothing,
+   * and keeps everything for the account they have not made yet.
+   */
+  describe('a guest', () => {
+    it('holds no area, whatever the device says, and nothing is written for them', async () => {
+      setFreeAreaChoice('hip', 0, LONG_AGO);
+      const { result } = renderHook(() => useEntitlement('g1', { guest: true }));
+      await waitFor(() => expect(result.current.known).toBe(true));
+
+      expect(result.current.guest).toBe(true);
+      expect(result.current.areas).toEqual([]);
+      expect(result.current.canAccess('hip')).toBe(false);
+      expect(result.current.tier).toBe('free');
+      // The rules would refuse a guest's free area; it is not attempted.
+      expect(saves).toEqual([]);
+      // …and it is not a "choose your area" case either: the answer is an account.
+      expect(result.current.needsFreeArea).toBe(false);
+    });
+
+    it('still knows which area they chose, to say it comes with them', async () => {
+      setFreeAreaChoice('hip', 0, LONG_AGO);
+      const { result } = renderHook(() => useEntitlement('g1', { guest: true }));
+      await waitFor(() => expect(result.current.known).toBe(true));
+      expect(result.current.freeArea?.area).toBe('hip');
+      expect(getFreeAreaChoice()?.area).toBe('hip');
+    });
+
+    it("holds no area even when the guest's own document has one from before guests were closed", async () => {
+      onAccount = { area: 'knee', chosenAt: '2026-09-20T08:00:00.000Z', switches: 0 };
+      const { result } = renderHook(() => useEntitlement('g1', { guest: true }));
+      await waitFor(() => expect(result.current.freeArea?.area).toBe('knee'));
+      expect(result.current.areas).toEqual([]);
+    });
+
+    it('cannot choose a free area', async () => {
+      const { result } = renderHook(() => useEntitlement('g1', { guest: true }));
+      await waitFor(() => expect(result.current.known).toBe(true));
+      act(() => result.current.chooseFreeArea('knee'));
+      expect(result.current.freeArea).toBeNull();
+      expect(saves).toEqual([]);
+    });
+
+    // Creating an account LINKS it to the guest: the uid does not change.
+    // The same hook, the same uid, now told it is an account.
+    it('has their device choice moved up, and their area opened, the moment they are an account', async () => {
+      setFreeAreaChoice('hip', 0, LONG_AGO);
+      const { result, rerender } = renderHook(({ guest }) => useEntitlement('g1', { guest }), { initialProps: { guest: true } });
+      await waitFor(() => expect(result.current.known).toBe(true));
+      expect(result.current.areas).toEqual([]);
+
+      rerender({ guest: false });
+      await waitFor(() => expect(onAccount?.area).toBe('hip'));
+      await waitFor(() => expect(result.current.areas).toEqual(['hip']));
+      expect(saves).toEqual([{ area: 'hip', switches: 0 }]);
+      expect(result.current.needsFreeArea).toBe(false);
+    });
+
+    it('is asked to choose after creating an account if they never had a choice', async () => {
+      const { result, rerender } = renderHook(({ guest }) => useEntitlement('g1', { guest }), { initialProps: { guest: true } });
+      await waitFor(() => expect(result.current.known).toBe(true));
+      rerender({ guest: false });
+      await waitFor(() => expect(result.current.needsFreeArea).toBe(true));
+    });
+  });
+
+  /**
+   * The copy on the device belongs to whoever chose it. It used to belong to
+   * the device, and the next account to sign in there, with no free area of
+   * its own, had it moved up as ITS first pick.
+   */
+  describe("the device's copy is one account's", () => {
+    it('is not inherited by a different account signing in on the same device', async () => {
+      setFreeAreaChoice('hip', 0, LONG_AGO, 'someone-else');
+      const { result } = renderHook(() => useEntitlement('u1'));
+      await waitFor(() => expect(result.current.known).toBe(true));
+
+      expect(result.current.freeArea).toBeNull();
+      expect(result.current.areas).toEqual([]);
+      expect(result.current.needsFreeArea).toBe(true);
+      // Their one choice was not spent for them.
+      expect(saves).toEqual([]);
+    });
+
+    it('is moved up for the account it was written for', async () => {
+      setFreeAreaChoice('hip', 0, LONG_AGO, 'u1');
+      renderHook(() => useEntitlement('u1'));
+      await waitFor(() => expect(saves).toEqual([{ area: 'hip', switches: 0 }]));
+    });
+
+    // The live site wrote the copy with no owner. It is taken to be whoever
+    // is signed in when the app first looks, and is theirs from then on.
+    it('claims a copy written before copies had an owner, for the first account to look', async () => {
+      setFreeAreaChoice('hip', 0, LONG_AGO);
+      const first = renderHook(() => useEntitlement('g1', { guest: true }));
+      await waitFor(() => expect(first.result.current.freeArea?.area).toBe('hip'));
+      expect(JSON.parse(localStorage.getItem('anatomy-revision:v1:freeArea')!).uid).toBe('g1');
+      first.unmount();
+
+      // The next person to sign in on this device does not get it.
+      const second = renderHook(() => useEntitlement('u2'));
+      await waitFor(() => expect(second.result.current.known).toBe(true));
+      expect(second.result.current.freeArea).toBeNull();
+      expect(saves).toEqual([]);
+    });
+
+    it("stamps the account's own choice on the device when it is read", async () => {
+      onAccount = { area: 'knee', chosenAt: '2026-09-20T08:00:00.000Z', switches: 0 };
+      renderHook(() => useEntitlement('u1'));
+      await waitFor(() => expect(getFreeAreaChoice()?.area).toBe('knee'));
+      expect(JSON.parse(localStorage.getItem('anatomy-revision:v1:freeArea')!).uid).toBe('u1');
+    });
   });
 
   it('keeps the device copy when the account cannot be read, and says the answer is not known', async () => {

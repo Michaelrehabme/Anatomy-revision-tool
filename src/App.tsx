@@ -1,9 +1,9 @@
-import { lazy, Suspense, useEffect, useRef, useState } from 'react';
+import { lazy, Suspense, useEffect, useRef, useState, type ReactElement } from 'react';
 import { MarketingHome } from './features/site/components/MarketingHome';
 import { cachedSiteSettings, fetchSiteSettings } from './features/site/data/siteSettings';
 import { Navigate, Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useRepository } from './features/anatomy-revision/hooks/useRepository';
-import { useAuth } from './features/anatomy-revision/context/AuthProvider';
+import { AUTH_ENABLED, useAuth } from './features/anatomy-revision/context/AuthProvider';
 import { useEntitlement, type UseEntitlement } from './features/anatomy-revision/hooks/useEntitlement';
 import { useOfflineAutoUpdate } from './features/pwa/offline/useOfflineAutoUpdate';
 import { useAnatomyContent, type AnatomyContent } from './features/anatomy-revision/hooks/useAnatomyContent';
@@ -83,6 +83,14 @@ const LegalRoutes = lazy(() => import('./features/legal/LegalRoutes'));
  */
 const ComparisonPage = lazy(() => import('./features/site/components/ComparisonPage'));
 const COMPARISON_PATH = '/compare';
+
+/**
+ * What a guest sees in place of every screen that revises (the free area and
+ * every session need a real account). Lazy: only a guest who has already been
+ * through onboarding ever loads it, and the entry chunk is within a few per
+ * cent of the size the offline precache allows.
+ */
+const AccountGate = lazy(() => import('./features/anatomy-revision/components/Auth/AccountGate'));
 
 /** Dev-only hotspot authoring tool (CR-007) — route only registered in dev, see the /dev/hotspots Route below. */
 const HotspotEditorApp = lazy(() => import('./features/hotspotEditor/HotspotEditorApp'));
@@ -188,6 +196,15 @@ function App() {
   const { user, loading: authLoading } = useAuth();
   const userId = user?.uid ?? null;
   /**
+   * A GUEST: a build with accounts, and no real account signed in — the
+   * anonymous sign-in every visitor is given, or no sign-in at all (a first
+   * visit with no network). A guest may look at what is public and nothing
+   * else: the free area, every card's facts and every session need an account
+   * (owner's decision, 6 Oct 2026). Never true in a local-persistence build
+   * or the demo, which have no accounts and work as they always did.
+   */
+  const isGuest = AUTH_ENABLED && (!user || user.isAnonymous);
+  /**
    * What this account may reach (CR-027). Read once here and passed down, so
    * every screen gates on the same answer and the entitlement is read once per
    * session rather than once per screen.
@@ -196,7 +213,7 @@ function App() {
    * (data/content/contentSource.ts) the entitlement is what says WHICH areas
    * to fetch, and nothing is asked for until it has settled.
    */
-  const entitlement = useEntitlement(userId);
+  const entitlement = useEntitlement(userId, { guest: isGuest });
   const content = useAnatomyContent(repository, {
     uid: userId,
     areas: entitlement.areas,
@@ -345,7 +362,11 @@ function App() {
     );
   }
 
-  if (repoLoading || content.loading) {
+  // Sign-in is waited for too, in a build with accounts: whether this is a
+  // guest decides which screens exist, and onboarding decides its steps as it
+  // opens. Shown a moment early, a guest would be walked past the account
+  // step and on to a choice the rules refuse.
+  if (repoLoading || content.loading || (AUTH_ENABLED && authLoading)) {
     return (
       <div className="flex min-h-screen items-center justify-center text-sm" style={{ color: 'var(--ink3)' }}>
         Loading anatomy content…
@@ -368,12 +389,29 @@ function App() {
     return <Navigate to="/onboarding" replace />;
   }
 
-  const handleOnboardingDone = (areas: Area[]) => {
-    // The first area they picked becomes the free one (CR-027). Recorded
-    // before the areas are saved, so chooseAreas below clamps against the
-    // choice just made rather than the default.
-    if (areas.length > 0) entitlement.chooseFreeArea(areas[0]);
-    chooseAreas(new Set(areas));
+  /**
+   * Records what was chosen: the free area, for an account on the free tier,
+   * and the areas every session starts from.
+   *
+   * The preference is saved from what was CHOSEN, not clamped through
+   * `chooseAreas`: that clamps to the areas this render believes the account
+   * holds, which until the choice below lands is none — so the area just
+   * picked was filtered out of the student's own preferences (paywall trace
+   * finding 14, "onboarding saves preferred areas against the old default").
+   */
+  const recordChoice = (areas: Area[]) => {
+    const free = entitlement.tier === 'free';
+    // One free area, so one area: a free account's sessions can draw on nothing else.
+    const chosen = free ? areas.slice(0, 1) : areas;
+    if (free && chosen.length > 0) entitlement.chooseFreeArea(chosen[0]);
+    setSelectedAreas(new Set(chosen));
+    setPreferredAreas(chosen);
+  };
+
+  const handleOnboardingDone = (areas: Area[] | null) => {
+    // null: they signed in, at the account step, to an account that is
+    // already set up. Nothing to choose; straight in.
+    if (areas !== null) recordChoice(areas);
     localStorage.setItem(ONBOARDED_KEY, 'true');
     setOnboarded(true);
     navigate('/', { replace: true });
@@ -480,6 +518,46 @@ function App() {
     session.start(questions, { types, mode: 'practice', learnCardAttempts: 0 });
   };
 
+  /**
+   * A screen that revises, or what stands in for it.
+   *
+   * A GUEST gets the way to an account (AccountGate): the free area, a
+   * card's facts and every session need one. Their progress and their choice
+   * of free area are untouched, and are the account's the moment it exists —
+   * creating one links it to the guest they already are, the app sees the
+   * same user as an account, and this renders the screen that was asked for.
+   *
+   * AN ACCOUNT WITH NO FREE AREA YET is asked to choose it first: there is no
+   * default any more, so until it chooses it holds no area and every screen
+   * below would be empty. (Onboarding asks a new student this already; this
+   * is for an account that got past it when skipping still gave the shoulder.)
+   *
+   * The account screen, the prices, the legal pages and the educator and
+   * admin areas are not wrapped: a guest must be able to reach all of them.
+   */
+  const gated = (section: NavSection, screen: ReactElement): ReactElement => {
+    if (isGuest) {
+      return (
+        <Suspense fallback={null}>
+          <AccountGate
+            isDesktop={isDesktop}
+            active={section}
+            onNavigate={onNavigateSection}
+            onNavigateTab={mobileNavigate}
+            freeArea={entitlement.freeArea?.area ?? null}
+          />
+        </Suspense>
+      );
+    }
+    if (entitlement.needsFreeArea) {
+      const choose = (areas: Area[] | null) => { if (areas) recordChoice(areas); };
+      return isDesktop
+        ? <Onboarding content={content} access={entitlement} only={['areas']} onDone={choose} />
+        : <MobileOnboarding content={content} access={entitlement} only={['areas']} onDone={choose} />;
+    }
+    return screen;
+  };
+
   return (
     <>
       {DemoBanner && (
@@ -507,6 +585,7 @@ function App() {
         <Route
           path="/"
           element={
+            gated('today',
             isDesktop ? (
               <Today
                 access={entitlement}
@@ -529,12 +608,14 @@ function App() {
                 onOpenMuscle={(id) => openMuscle(id, [])}
                 onNavigateTab={mobileNavigate}
               />
+            ),
             )
           }
         />
         <Route
           path="/study"
           element={
+            gated('study',
             isDesktop ? (
               <RegionPicker
                 access={entitlement}
@@ -553,12 +634,14 @@ function App() {
                 onContinue={() => navigate('/study/setup')}
                 onBack={() => mobileNavigate('today')}
               />
+            ),
             )
           }
         />
         <Route
           path="/study/setup"
           element={
+            gated('study',
             isDesktop ? (
               <RevisionSetup
                 access={entitlement}
@@ -580,12 +663,14 @@ function App() {
                 onStart={session.start}
                 onBack={() => navigate('/study')}
               />
+            ),
             )
           }
         />
         <Route
           path="/session"
           element={
+            gated('today',
             session.phase !== 'in-progress' ? (
               <Navigate to="/" replace />
             ) : isDesktop ? (
@@ -598,12 +683,14 @@ function App() {
                 onBackToSetup={backToSetup}
                 onOpenMuscle={openMuscle}
               />
+            ),
             )
           }
         />
         <Route
           path="/session/results"
           element={
+            gated('today',
             session.phase !== 'results' || !session.summary ? (
               <Navigate to="/" replace />
             ) : isDesktop ? (
@@ -676,12 +763,14 @@ function App() {
                   session.start(nextQuestions, params);
                 }}
               />
+            ),
             )
           }
         />
         <Route
           path="/atlas"
           element={
+            gated('atlas',
             isDesktop ? (
               <Atlas
                 access={entitlement}
@@ -705,12 +794,14 @@ function App() {
                 onBack={() => mobileNavigate('today')}
                 onNavigateTab={mobileNavigate}
               />
+            ),
             )
           }
         />
         <Route
           path="/structure/:id"
           element={
+            gated('atlas',
             <StructureRoute
               access={entitlement}
               content={content}
@@ -719,12 +810,14 @@ function App() {
               isDesktop={isDesktop}
               onNavigateSection={onNavigateSection}
               onDrill={drillStructure}
-            />
+            />,
+            )
           }
         />
         <Route
           path="/progress"
           element={
+            gated('progress',
             isDesktop ? (
               <Progress
                 access={entitlement}
@@ -743,6 +836,7 @@ function App() {
                 onNavigateTab={mobileNavigate}
                 onOpenAchievements={() => navigate('/achievements')}
               />
+            ),
             )
           }
         />
@@ -767,21 +861,25 @@ function App() {
         <Route
           path="/diagnostic"
           element={
+            gated('account',
             <DiagnosticRoute
               repository={repository}
               userId={userId}
               content={content}
               sitterAreas={entitledAreas}
-            />
+            />,
+            )
           }
         />
         <Route
           path="/achievements"
           element={
+            gated('progress',
             isDesktop ? (
               <Achievements repository={repository} userId={userId} onNavigate={onNavigateSection} />
             ) : (
               <MobileAchievements repository={repository} userId={userId} onBack={() => navigate('/progress')} />
+            ),
             )
           }
         />

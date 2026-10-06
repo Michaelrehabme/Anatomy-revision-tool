@@ -45,7 +45,15 @@ export function SubscriptionSummary({ access }: { access: UseEntitlement }) {
    * renewal date, and warning about that would be a false alarm every month.
    */
   const lapsed = entitlement.tier !== 'free' && hasExpired(entitlement);
+  /**
+   * An account that has not chosen its free area holds none: there is no
+   * default any more (hooks/useEntitlement.ts). The line below used to say
+   * "Free: shoulder only" to an account that had never picked the shoulder.
+   * A build with no accounts still defaults, and still says so.
+   */
+  const unchosen = access.needsFreeArea === true;
   const free = freeArea?.area ?? 'shoulder';
+  const freeOnly = unchosen ? 'Free: you have not chosen your area yet.' : `Free: ${AREA_LABELS[free].toLowerCase()} only.`;
   /**
    * A failed renewal is not a subscription that "ended": it is still there,
    * waiting for a card that works, and the notice above the line says so.
@@ -57,14 +65,14 @@ export function SubscriptionSummary({ access }: { access: UseEntitlement }) {
   const status = pending && entitlement.startsAt
     ? `Subscribed. Access starts ${formatDate(entitlement.startsAt)}.`
     : lapsed && entitlement.expiresAt && unpaid
-      ? `Full access stopped on ${formatDate(entitlement.expiresAt)}. Free: ${AREA_LABELS[free].toLowerCase()} only.`
+      ? `Full access stopped on ${formatDate(entitlement.expiresAt)}. ${freeOnly}`
     : lapsed && entitlement.expiresAt
       // A refund ends access before the date the student was first given
       // (the webhook's handleAdjustment). Saying why is the difference
       // between "that is right" and "the app has lost my subscription".
-      ? `Your subscription ${entitlement.refundedAt ? 'was refunded and ended' : 'ended'} on ${formatDate(entitlement.expiresAt)}. Free: ${AREA_LABELS[free].toLowerCase()} only.`
+      ? `Your subscription ${entitlement.refundedAt ? 'was refunded and ended' : 'ended'} on ${formatDate(entitlement.expiresAt)}. ${freeOnly}`
       : tier === 'free'
-        ? `Free: ${AREA_LABELS[free].toLowerCase()} only.`
+        ? freeOnly
         : entitlement.expiresAt && unpaid
           ? `Full access until ${formatDate(entitlement.expiresAt)}. Your last payment did not go through.`
         : entitlement.expiresAt
@@ -108,12 +116,13 @@ export function SubscriptionSummary({ access }: { access: UseEntitlement }) {
           </label>
           <select
             id="free-area"
-            value={free}
+            value={unchosen ? '' : free}
             disabled={!canSwitchFree}
-            onChange={(e) => chooseFreeArea(e.target.value as Area)}
+            onChange={(e) => { if (e.target.value) chooseFreeArea(e.target.value as Area); }}
             className="mt-2 rounded-[3px] px-3 py-2.5 disabled:opacity-60"
             style={{ font: '400 14px/1 var(--font-ui)', border: '1.2px solid var(--line)', background: 'var(--sf)', color: 'var(--ink)' }}
           >
+            {unchosen && <option value="">Choose an area…</option>}
             {AREAS.map((area) => (
               <option key={area} value={area}>
                 {AREA_LABELS[area]}
@@ -121,7 +130,9 @@ export function SubscriptionSummary({ access }: { access: UseEntitlement }) {
             ))}
           </select>
           <p className="mt-2" style={{ font: '400 12.5px/1.5 var(--font-ui)', color: 'var(--ink3)' }}>
-            {switchUsed
+            {unchosen
+              ? 'Pick the one area that stays free. You can change it once, 30 days later.'
+              : switchUsed
               ? 'You have used your one change, so this is now your free area. A subscription opens every region.'
               : canSwitchFree
                 ? 'You can change this once. After that it is fixed, and only a subscription opens the rest.'

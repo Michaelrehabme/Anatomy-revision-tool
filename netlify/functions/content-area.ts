@@ -1,6 +1,6 @@
 import type { DocumentReference } from 'firebase-admin/firestore';
 import { adminDb } from './lib/firebaseAdmin';
-import { bearerToken, uidForToken } from './lib/idToken';
+import { accountForToken, bearerToken } from './lib/idToken';
 import { countRequest, rememberWindow } from './lib/recentRequests';
 import { accessRecord, areaAccess, cohortIdOf } from '../../src/features/anatomy-revision/lib/entitlementRecord';
 import { leaseUntil } from '../../src/features/anatomy-revision/data/content/lease';
@@ -51,9 +51,20 @@ import lumbarSpine from '../../.content/areas/lumbar-spine.json';
  * role opens screens and not areas. The admin and educator screens work from
  * the bundled index and need no facts.
  *
- * A GUEST IS AN ACCOUNT. Firebase gives a visitor who has not signed up an
- * anonymous account with a real ID token, and that account has a free area
- * like any other.
+ * A GUEST IS NOT AN ACCOUNT, AND IS SERVED NOTHING (owner's decision, 6 Oct
+ * 2026). Firebase gives a visitor who has not signed up an anonymous sign-in
+ * with a real ID token, and this function used to treat it like any other
+ * account with a free area: nine wiped browsers were nine areas. A guest's
+ * token is now answered 403 for every area, whatever their document says.
+ * Creating an account links a sign-in to the same uid, and the next request
+ * is from an account.
+ *
+ * AND THERE IS NO DEFAULT AREA. An account that has not chosen its free area
+ * used to be served the shoulder; a new student's device then held the
+ * shoulder AND the area they went on to pick. Not chosen is now not served
+ * (lib/entitlementRecord.areaAccess). That also closes the one case where a
+ * grant could not be counted against the account — a caller with no profile
+ * document to count on — because such a caller is no longer granted anything.
  *
  * WHAT A GRANT CARRIES. `{ version, area, leaseUntil, structures }`. The
  * version is this deploy's, whatever `v` the client sent — a client on an
@@ -61,8 +72,9 @@ import lumbarSpine from '../../.content/areas/lumbar-spine.json';
  * device may keep them without asking again (data/content/lease.ts).
  *
  * WHAT THIS DOES NOT STOP, said plainly. A paying account can save its own
- * areas. Any account, guests included, may have one area free, so nine
- * accounts can have nine. The limit below slows a script and puts a number
+ * areas. Any ACCOUNT may have one area free, so nine accounts can have nine
+ * — and an email-and-password account needs no verified email, so nine are
+ * nine made-up addresses. The limit below slows a script and puts a number
  * in the log; it is not a wall. The bar moves from "anyone with devtools" to
  * "someone prepared to script sign-ups", and the log line is how that would
  * be noticed.
@@ -162,11 +174,12 @@ export default async function handler(req: Request): Promise<Response> {
   if (!isArea(area)) return text(400, 'Unknown area');
   const asked = (params.get('v') ?? '').slice(0, 40);
 
-  const uid = await uidForToken(idToken, 'content-area');
-  if (!uid) {
+  const caller = await accountForToken(idToken, 'content-area');
+  if (!caller) {
     console.warn('content-area: rejected an unverifiable ID token');
     return text(401, 'Unauthorized');
   }
+  const { uid } = caller;
 
   const now = new Date();
   // From this instance's memory first: a refusal that costs no database read.
@@ -174,6 +187,14 @@ export default async function handler(req: Request): Promise<Response> {
   if (seenHere.limited) {
     console.warn(`content-area: ${uid} is over ${CONTENT_FETCHES_PER_HOUR} requests an hour (refused from memory)`);
     return tooMany(seenHere.window, now);
+  }
+
+  // A guest is refused here, for every area, before anything is read: there
+  // is nothing in a guest's documents that could change the answer. After
+  // the count above, so a script hammering as a guest is still slowed.
+  if (caller.anonymous) {
+    console.info(`content-area: refused ${area} to ${uid}: a guest, not an account`);
+    return text(403, 'An account is needed for this area');
   }
 
   let user: Record<string, unknown> | undefined;

@@ -11,7 +11,7 @@ import { AccuracyTrendChart } from '../shared/AccuracyTrendChart';
 import { MyClasses } from '../Account/MyClasses';
 import { AdminSection } from '../Account/AdminSection';
 import { AuthScreen } from '../Auth/AuthScreen';
-import { Button } from '../shared/Button';
+import { GuestAccountPanel } from '../Auth/GuestAccountPanel';
 import { useAuth, AUTH_ENABLED } from '../../context/AuthProvider';
 import { useProgressData } from '../../hooks/useProgressData';
 import { CATEGORIES, CATEGORY_LABELS } from '../../types/structure';
@@ -64,7 +64,7 @@ export function MobileAccount({ access, content, repository, userId, onNavigateT
   const { streak, seenByCategory, totalSeen, totalStructures } = useProgressData(repository, userId, content);
   const seenDetail = CATEGORIES.map((c) => `${seenByCategory[c].seen}/${seenByCategory[c].total} ${CATEGORY_LABELS[c].toLowerCase()}`).join(' · ');
   const [attempts, setAttempts] = useState<UserAttempt[] | null>(null);
-  const [showAuthScreen, setShowAuthScreen] = useState(false);
+  const [showAuthScreen, setShowAuthScreen] = useState<false | 'sign-up' | 'sign-in'>(false);
 
   useEffect(() => {
     if (!repository || !userId) return;
@@ -150,15 +150,34 @@ export function MobileAccount({ access, content, repository, userId, onNavigateT
           </div>
         </section>
 
-        {/* Outside the signed-in block — see Account.tsx for why. */}
-        <OfflineDownloads
-          access={access}
-          compact
-          className="mt-9"
-          headingStyle={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 20, letterSpacing: '-.01em', margin: 0 }}
-        />
+        {/* Outside the signed-in block, and not for a guest — see Account.tsx for why. */}
+        {!access.guest && (
+          <OfflineDownloads
+            access={access}
+            compact
+            className="mt-9"
+            headingStyle={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 20, letterSpacing: '-.01em', margin: 0 }}
+          />
+        )}
 
-        {AUTH_ENABLED && user && (
+        {/* A guest: the way to an account, in place of the sections below — see Account.tsx. */}
+        {AUTH_ENABLED && access.guest && (
+          <section data-in className="mt-9">
+            <h3 style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 20, letterSpacing: '-.01em', margin: 0 }}>
+              Create a free account
+            </h3>
+            <div className="mt-3.5">
+              <GuestAccountPanel
+                compact
+                freeArea={access.freeArea?.area ?? null}
+                onCreate={() => setShowAuthScreen('sign-up')}
+                onSignIn={() => setShowAuthScreen('sign-in')}
+              />
+            </div>
+          </section>
+        )}
+
+        {AUTH_ENABLED && user && !access.guest && (
           <section data-in className="mt-9">
             <h3 style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 20, letterSpacing: '-.01em', margin: 0 }}>
               Subscription
@@ -173,18 +192,12 @@ export function MobileAccount({ access, content, repository, userId, onNavigateT
             <AdminSection compact />
 
             <div className="mt-6 border-t pt-5" style={{ borderColor: 'var(--line)' }}>
-              {user.isAnonymous ? (
-                <Button variant="secondary" onClick={() => setShowAuthScreen(true)} className="min-h-[46px] w-full">
-                  Create account
-                </Button>
-              ) : (
-                <button type="button" onClick={() => signOut()} className="min-h-[44px] text-[13.5px]" style={{ color: 'var(--ink3)' }}>
-                  Sign out
-                </button>
-              )}
+              <button type="button" onClick={() => signOut()} className="min-h-[44px] text-[13.5px]" style={{ color: 'var(--ink3)' }}>
+                Sign out
+              </button>
             </div>
 
-            {!user.isAnonymous && <AccountDataControls uid={user.uid} onDeleted={() => signOut()} compact />}
+            <AccountDataControls uid={user.uid} onDeleted={() => signOut()} compact />
           </section>
         )}
 
@@ -197,7 +210,7 @@ export function MobileAccount({ access, content, repository, userId, onNavigateT
           </div>
         </section>
 
-        {showAuthScreen &&<AuthScreen onClose={() => setShowAuthScreen(false)} />}
+        {showAuthScreen && <AuthScreen initialMode={showAuthScreen} onClose={() => setShowAuthScreen(false)} />}
       </div>
     </MobileShell>
   );

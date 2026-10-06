@@ -1,114 +1,59 @@
-import { useState, type FormEvent } from 'react';
-import { useAuth } from '../../context/AuthProvider';
-import { Button } from '../shared/Button';
-
-type Mode = 'sign-in' | 'sign-up';
+import { useEffect, useId, useRef, useState } from 'react';
+import { AccountForm, type AccountFormMode } from './AccountForm';
 
 interface AuthScreenProps {
-  initialMode?: Mode;
+  initialMode?: AccountFormMode;
   onClose: () => void;
 }
 
-function friendlyError(error: unknown): string {
-  const code = typeof error === 'object' && error !== null && 'code' in error ? (error as { code?: string }).code : undefined;
-  switch (code) {
-    case 'auth/invalid-credential':
-    case 'auth/wrong-password':
-      return 'Incorrect email or password.';
-    case 'auth/user-not-found':
-      return 'No account found with that email — try creating one instead.';
-    case 'auth/email-already-in-use':
-      return 'An account with this email already exists — try signing in instead.';
-    case 'auth/weak-password':
-      return 'Password should be at least 6 characters.';
-    case 'auth/invalid-email':
-      return "That doesn't look like a valid email address.";
-    case 'auth/popup-closed-by-user':
-    case 'auth/cancelled-popup-request':
-      return '';
-    default:
-      return 'Something went wrong. Please try again.';
-  }
-}
-
 /**
- * Full-screen sign-in/sign-up overlay (Onboarding-style, not a login wall —
- * anonymous visitors can always dismiss this and keep using the app). When
- * an anonymous session exists, signing up here links it so the same uid
- * (and all users/{uid}/** data) carries straight over.
+ * The sign-in / sign-up form as an overlay, for the places that offer it as
+ * a button: the sidebar, the account screen, the pricing page.
+ *
+ * It can be dismissed, because where it is offered it is a choice. Where an
+ * account is REQUIRED — the first step of onboarding, and the screen a guest
+ * meets in place of revision — the same form is in the page itself with no
+ * way round it (Onboarding, AccountGate). The form is components/Auth/AccountForm.
+ *
+ * A dialog: named by its heading, focus moved into it when it opens and back
+ * to whatever opened it when it closes, Escape closes it.
  */
 export function AuthScreen({ initialMode = 'sign-up', onClose }: AuthScreenProps) {
-  const { signInWithGoogle, signInWithEmail, signUpWithEmail } = useAuth();
-  const [mode, setMode] = useState<Mode>(initialMode);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [conflictMessage, setConflictMessage] = useState<string | null>(null);
-  /*
-   * AGE CONFIRMATION (CR-025 item 6). Under-16s in the UK bring the GDPR
-   * children's provisions and Google Play's Families policy with them, and
-   * this app is built for degree-level students — so the floor is declared
-   * and enforced rather than assumed. It gates Google as well as email:
-   * Google sign-in is one tap, and a gate only the slower route respects is
-   * not a gate.
-   *
-   * A self-declared checkbox, not a date of birth. Collecting a birth date to
-   * check one boolean would mean storing a new piece of personal data about
-   * every student for no further purpose, which is the opposite of data
-   * minimisation.
-   */
-  const [ageConfirmed, setAgeConfirmed] = useState(false);
-  const blockedByAge = mode === 'sign-up' && !ageConfirmed;
+  const [mode, setMode] = useState<AccountFormMode>(initialMode);
+  const titleId = useId();
+  const panel = useRef<HTMLDivElement>(null);
+  // Callers hand over a new function on every render. Held in a ref so the
+  // effect below runs once: run again, it would pull focus out of the field
+  // being typed in each time the screen behind re-rendered.
+  const close = useRef(onClose);
+  close.current = onClose;
 
-  const handleGoogle = async () => {
-    setError(null);
-    setSubmitting(true);
-    try {
-      const result = await signInWithGoogle();
-      if (result.recoveredExistingAccount) {
-        setConflictMessage(
-          "We found an existing account for that Google sign-in and switched you into it. Progress saved only on this device could not be merged into it.",
-        );
-      } else {
-        onClose();
-      }
-    } catch (err) {
-      const message = friendlyError(err);
-      if (message) setError(message);
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    setError(null);
-    setSubmitting(true);
-    try {
-      const result = mode === 'sign-up' ? await signUpWithEmail(email, password) : await signInWithEmail(email, password);
-      if (result.recoveredExistingAccount) {
-        setConflictMessage(
-          'An account with this email already existed, so we signed you into it. Progress saved only on this device could not be merged into it.',
-        );
-      } else {
-        onClose();
-      }
-    } catch (err) {
-      setError(friendlyError(err));
-    } finally {
-      setSubmitting(false);
-    }
-  };
+  useEffect(() => {
+    const opener = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    panel.current?.focus();
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') close.current();
+    };
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      opener?.focus();
+    };
+  }, []);
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-6"
+      className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto p-6"
       style={{ background: 'color-mix(in srgb, var(--ink) 55%, transparent)' }}
       onClick={onClose}
     >
       <div
-        className="w-full max-w-sm rounded-[3px] p-8"
+        ref={panel}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
+        tabIndex={-1}
+        className="w-full max-w-sm rounded-[3px] p-8 outline-none"
         style={{ background: 'var(--sf)', boxShadow: 'var(--shadow-card)' }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -135,108 +80,14 @@ export function AuthScreen({ initialMode = 'sign-up', onClose }: AuthScreenProps
         </div>
 
         <h2
+          id={titleId}
           className="mt-2 mb-6"
           style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 28, letterSpacing: '-.02em', color: 'var(--ink)' }}
         >
-          {mode === 'sign-up' ? 'Save your progress' : 'Sign in'}
+          {mode === 'sign-up' ? 'Create a free account' : 'Sign in'}
         </h2>
 
-        {conflictMessage ? (
-          <div>
-            <div
-              className="rounded-[3px] p-4 text-sm leading-relaxed"
-              style={{ background: 'var(--acc2s)', color: 'var(--acc2d)' }}
-            >
-              {conflictMessage}
-            </div>
-            <Button onClick={onClose} className="mt-5 min-h-[46px] w-full">
-              Continue
-            </Button>
-          </div>
-        ) : (
-          <>
-            {mode === 'sign-up' && (
-              <label className="mb-4 flex cursor-pointer items-start gap-2.5" style={{ font: '400 13px/1.5 var(--font-ui)', color: 'var(--ink2)' }}>
-                <input
-                  type="checkbox"
-                  checked={ageConfirmed}
-                  onChange={(e) => setAgeConfirmed(e.target.checked)}
-                  className="mt-0.5 min-h-[18px] min-w-[18px]"
-                />
-                <span>
-                  I am 16 or over, and I agree to the{' '}
-                  <a href="/terms" target="_blank" rel="noreferrer" style={{ color: 'var(--accd)' }}>terms</a>{' '}
-                  and{' '}
-                  <a href="/privacy" target="_blank" rel="noreferrer" style={{ color: 'var(--accd)' }}>privacy policy</a>.
-                </span>
-              </label>
-            )}
-
-            <Button
-              type="button"
-              variant="secondary"
-              onClick={handleGoogle}
-              disabled={submitting || blockedByAge}
-              className="min-h-[46px] w-full"
-            >
-              Continue with Google
-            </Button>
-
-            <div className="my-5 flex items-center gap-3">
-              <div className="h-px flex-1" style={{ background: 'var(--line)' }} />
-              <span style={{ font: '400 11px/1 var(--font-mono)', color: 'var(--ink3)' }}>or</span>
-              <div className="h-px flex-1" style={{ background: 'var(--line)' }} />
-            </div>
-
-            <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-              <input
-                type="email"
-                required
-                autoComplete="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="rounded-[3px] px-3.5 py-3"
-                style={{ border: '1.2px solid var(--line)', background: 'var(--pg)', color: 'var(--ink)', fontFamily: 'var(--font-ui)' }}
-              />
-              <input
-                type="password"
-                required
-                minLength={6}
-                autoComplete={mode === 'sign-up' ? 'new-password' : 'current-password'}
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="rounded-[3px] px-3.5 py-3"
-                style={{ border: '1.2px solid var(--line)', background: 'var(--pg)', color: 'var(--ink)', fontFamily: 'var(--font-ui)' }}
-              />
-
-              {error && (
-                <div className="text-sm" style={{ color: 'var(--acc2d)' }}>
-                  {error}
-                </div>
-              )}
-
-              <Button type="submit" disabled={submitting || blockedByAge} className="mt-1 min-h-[46px] w-full">
-                {mode === 'sign-up' ? 'Create account' : 'Sign in'}
-              </Button>
-            </form>
-
-            <button
-              type="button"
-              onClick={() => {
-                setMode(mode === 'sign-up' ? 'sign-in' : 'sign-up');
-                setError(null);
-                // Switching away and back must not carry a stale confirmation.
-                setAgeConfirmed(false);
-              }}
-              className="mt-5 text-sm"
-              style={{ color: 'var(--ink3)' }}
-            >
-              {mode === 'sign-up' ? 'Already have an account? Sign in' : "Need an account? Sign up"}
-            </button>
-          </>
-        )}
+        <AccountForm initialMode={initialMode} onModeChange={setMode} onDone={onClose} />
       </div>
     </div>
   );

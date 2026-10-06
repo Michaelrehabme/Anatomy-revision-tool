@@ -57,7 +57,7 @@ vi.mock('firebase-admin/firestore', () => {
 import handler from '../functions/content-area';
 import { forgetRecentRequests } from '../functions/lib/recentRequests';
 import { AREAS, type Area } from '../../src/features/anatomy-revision/types/region';
-import { entitledAreas, freeAreasFor, resolveEntitlement, PAYMENT_GRACE_DAYS } from '../../src/features/anatomy-revision/lib/entitlement';
+import { entitledAreas, resolveEntitlement, PAYMENT_GRACE_DAYS } from '../../src/features/anatomy-revision/lib/entitlement';
 import { accessRecord } from '../../src/features/anatomy-revision/lib/entitlementRecord';
 import { CONTENT_LEASE_DAYS } from '../../src/features/anatomy-revision/data/content/lease';
 import { CONTENT_FETCHES_PER_HOUR } from '../../src/features/anatomy-revision/data/content/fetchLimit';
@@ -77,10 +77,13 @@ const URL_BASE = `${ORIGIN}/.netlify/functions/content-area`;
 
 /** token -> uid. A token not in here is one Google does not recognise. */
 const TOKENS = new Map<string, string>();
+/** The uids that are GUESTS: signed in anonymously, with no way of signing in again. */
+const GUESTS = new Set<string>();
 
-function user(uid: string, doc: Row | null): string {
+function user(uid: string, doc: Row | null, kind: 'account' | 'guest' = 'account'): string {
   const token = `token-of-${uid}`;
   TOKENS.set(token, uid);
+  if (kind === 'guest') GUESTS.add(uid);
   if (doc) store.docs.set(`users/${uid}`, doc);
   return token;
 }
@@ -109,12 +112,17 @@ async function served(token: string): Promise<Area[]> {
   return out;
 }
 
-/** What the APP would open for the same stored documents (hooks/useEntitlement.ts does exactly this). */
+/**
+ * What the APP would open for the same stored documents, in a build with
+ * accounts (hooks/useEntitlement.ts does exactly this): nothing for a guest,
+ * and for an account its entitlement and the free area it chose — no default.
+ */
 function appWouldOpen(uid: string): Area[] {
+  if (GUESTS.has(uid)) return [];
   const doc = store.docs.get(`users/${uid}`);
   const cohortId = typeof doc?.cohort === 'string' ? doc.cohort : null;
   const record = accessRecord(doc, cohortId ? store.docs.get(`cohorts/${cohortId}`) : undefined, NOW);
-  return entitledAreas(AREAS, resolveEntitlement(record.candidates, NOW), NOW, freeAreasFor(record.freeArea));
+  return entitledAreas(AREAS, resolveEntitlement(record.candidates, NOW), NOW, record.freeArea ? [record.freeArea.area] : []);
 }
 
 const PADDLE: Row = { tier: 'individual', source: 'paddle', externalId: 'sub_1', customerId: 'ctm_1', interval: 'month' };
@@ -129,6 +137,7 @@ beforeEach(() => {
   store.failReads = false;
   store.failWrites = false;
   TOKENS.clear();
+  GUESTS.clear();
   forgetRecentRequests();
   process.env.FIREBASE_SERVICE_ACCOUNT = '{}';
   process.env.VITE_FIREBASE_API_KEY = 'web-api-key';
@@ -150,7 +159,9 @@ beforeEach(() => {
       // Google answers 400 for a token it will not vouch for — a forgery, an
       // expired one, or one whose account has been deleted.
       if (!uid) return new Response(JSON.stringify({ error: { message: 'INVALID_ID_TOKEN' } }), { status: 400 });
-      return new Response(JSON.stringify({ users: [{ localId: uid }] }), { status: 200 });
+      // As Google answers: an account lists the ways it can sign in, a guest lists none.
+      const providerUserInfo = GUESTS.has(uid) ? undefined : [{ providerId: 'password', email: `${uid}@uni.ac.uk` }];
+      return new Response(JSON.stringify({ users: [{ localId: uid, ...(providerUserInfo ? { providerUserInfo } : {}) }] }), { status: 200 });
     }),
   );
 });
@@ -166,11 +177,26 @@ afterEach(() => {
  * be refused with 403.
  */
 const ALL = AREAS;
-const matrix: { who: string; doc: Row | null; cohort?: [string, Row]; areas: readonly Area[] }[] = [
+const NONE: readonly Area[] = [];
+const matrix: { who: string; doc: Row | null; guest?: true; cohort?: [string, Row]; areas: readonly Area[] }[] = [
   { who: 'a free account, on the area it chose', doc: { freeArea: FREE_KNEE }, areas: ['knee'] },
-  { who: 'a free account that has not chosen: the default free area', doc: { displayName: 'New' }, areas: ['shoulder'] },
-  { who: 'a guest (an anonymous Firebase account) with a chosen area', doc: { isAnonymous: true, freeArea: { area: 'hip', chosenAt: stamp(-1), switches: 0 } }, areas: ['hip'] },
-  { who: 'a guest whose profile has not been written yet', doc: null, areas: ['shoulder'] },
+  // No default: an account that has not chosen its free area holds none.
+  { who: 'a free account that has not chosen its free area', doc: { displayName: 'New' }, areas: NONE },
+  { who: 'an account whose profile has not been written yet', doc: null, areas: NONE },
+  // A guest is not an account. Nothing, whatever its document says.
+  { who: 'a guest with no profile yet', doc: null, guest: true, areas: NONE },
+  { who: 'a guest with a profile and no free area', doc: { isAnonymous: true }, guest: true, areas: NONE },
+  { who: 'a guest whose document holds a free area from before guests were closed', doc: { isAnonymous: true, freeArea: { area: 'hip', chosenAt: stamp(-1), switches: 0 } }, guest: true, areas: NONE },
+  {
+    who: 'a guest who joined a licensed class before guests were closed',
+    doc: { isAnonymous: true, cohort: 'c-licensed', freeArea: FREE_KNEE },
+    guest: true,
+    cohort: ['c-licensed', { ownerUid: 'educator', licensedUntil: at(200) }],
+    areas: NONE,
+  },
+  { who: 'a guest whose document somehow holds an entitlement', doc: { isAnonymous: true, entitlement: { ...PADDLE, expiresAt: at(20) } }, guest: true, areas: NONE },
+  // The same documents once the guest has created an account: the uid is kept, and it is an account.
+  { who: 'that guest after creating an account: the free area comes with them', doc: { isAnonymous: false, freeArea: { area: 'hip', chosenAt: stamp(-1), switches: 0 } }, areas: ['hip'] },
   { who: 'a free account that has used its one change', doc: { freeArea: { area: 'elbow', chosenAt: stamp(-2), switches: 1 } }, areas: ['elbow'] },
   { who: 'a paying subscriber', doc: { entitlement: { ...PADDLE, expiresAt: at(20) }, freeArea: FREE_KNEE }, areas: ALL },
   {
@@ -243,13 +269,13 @@ const matrix: { who: string; doc: Row | null; cohort?: [string, Row]; areas: rea
   { who: 'an admin with no entitlement of their own', doc: { email: 'admin@locusmsk.co.uk', freeArea: FREE_KNEE }, areas: ['knee'] },
   { who: 'an admin holding a complimentary grant', doc: { email: 'admin@locusmsk.co.uk', entitlement: { tier: 'institutional', source: 'complimentary', expiresAt: null } }, areas: ALL },
   { who: 'an account whose stored tier this build has never heard of', doc: { entitlement: { tier: 'platinum', expiresAt: null }, freeArea: FREE_KNEE }, areas: ['knee'] },
-  { who: 'an account whose stored free area is not an area', doc: { freeArea: { area: 'everything', chosenAt: stamp(-1), switches: 0 } }, areas: ['shoulder'] },
+  { who: 'an account whose stored free area is not an area', doc: { freeArea: { area: 'everything', chosenAt: stamp(-1), switches: 0 } }, areas: NONE },
 ];
 
 describe('who is given which area', () => {
-  it.each(matrix)('$who', async ({ doc, cohort, areas }) => {
+  it.each(matrix)('$who', async ({ doc, cohort, areas, guest }) => {
     if (cohort) store.docs.set(`cohorts/${cohort[0]}`, cohort[1]);
-    const token = user('u1', doc);
+    const token = user('u1', doc, guest ? 'guest' : 'account');
 
     const given = await served(token);
     expect(given).toEqual(areas);
@@ -259,7 +285,27 @@ describe('who is given which area', () => {
 
   it('covers every kind of account the task names', () => {
     // A guard on the matrix itself: a row deleted in a refactor fails here.
-    expect(matrix.length).toBeGreaterThanOrEqual(22);
+    expect(matrix.length).toBeGreaterThanOrEqual(28);
+    expect(matrix.filter((row) => row.guest).length).toBeGreaterThanOrEqual(5);
+  });
+
+  it('refuses a guest before reading anything about them, and tells the log why', async () => {
+    const token = user('g1', { isAnonymous: true, freeArea: FREE_KNEE }, 'guest');
+    const response = await ask('knee', token);
+    expect(response.status).toBe(403);
+    expect(response.headers.get('cache-control')).toBe('private, no-store');
+    expect(store.reads).toEqual([]);
+    expect(store.writes).toEqual([]);
+    expect(console.info).toHaveBeenCalledWith(expect.stringContaining('a guest, not an account'));
+  });
+
+  it('serves the same uid once it is an account: linking keeps the uid and its free area', async () => {
+    const token = user('g1', { isAnonymous: true, freeArea: FREE_KNEE }, 'guest');
+    expect((await ask('knee', token)).status).toBe(403);
+    // The guest creates an account. Same uid, same document, a sign-in method now listed.
+    GUESTS.delete('g1');
+    expect((await ask('knee', token)).status).toBe(200);
+    expect((await ask('hip', token)).status).toBe(403);
   });
 });
 
@@ -283,9 +329,9 @@ describe('who is refused outright', () => {
     expect(store.reads).toEqual([]);
   });
 
-  it('an account whose profile was erased while its sign-in survives: the default free area, nothing more', async () => {
+  it('an account whose profile was erased while its sign-in survives: nothing, and no profile back', async () => {
     const token = user('erased', null);
-    expect(await served(token)).toEqual(['shoulder']);
+    expect(await served(token)).toEqual([]);
     // And it is not given a profile back by asking.
     expect(store.docs.has('users/erased')).toBe(false);
     expect(store.writes).toEqual([]);

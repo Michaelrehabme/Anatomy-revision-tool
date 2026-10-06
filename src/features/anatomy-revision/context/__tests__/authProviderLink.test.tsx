@@ -112,9 +112,9 @@ describe('a guest creates an account', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Create account' }));
     fireEvent.click(screen.getByRole('checkbox'));
-    fireEvent.change(screen.getByPlaceholderText('Email'), { target: { value: 'sam@example.com' } });
-    fireEvent.change(screen.getByPlaceholderText('Password'), { target: { value: 'password123' } });
-    const form = screen.getByPlaceholderText('Email').closest('form')!;
+    fireEvent.change(screen.getByLabelText('Email'), { target: { value: 'sam@example.com' } });
+    fireEvent.change(screen.getByLabelText(/^Password/), { target: { value: 'password123' } });
+    const form = screen.getByLabelText('Email').closest('form')!;
     fireEvent.submit(form);
 
     await waitFor(() => expect(screen.getByTestId('account-line').textContent).toBe('sam@example.com'));
@@ -135,9 +135,9 @@ describe('a guest creates an account', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Create account' }));
     fireEvent.click(screen.getByRole('checkbox'));
-    fireEvent.change(screen.getByPlaceholderText('Email'), { target: { value: 'sam@example.com' } });
-    fireEvent.change(screen.getByPlaceholderText('Password'), { target: { value: 'password123' } });
-    fireEvent.submit(screen.getByPlaceholderText('Email').closest('form')!);
+    fireEvent.change(screen.getByLabelText('Email'), { target: { value: 'sam@example.com' } });
+    fireEvent.change(screen.getByLabelText(/^Password/), { target: { value: 'password123' } });
+    fireEvent.submit(screen.getByLabelText('Email').closest('form')!);
 
     await waitFor(() => expect(firebase.touchUserProfile).toHaveBeenCalledTimes(1));
     expect(firebase.touchUserProfile).toHaveBeenCalledWith(linked);

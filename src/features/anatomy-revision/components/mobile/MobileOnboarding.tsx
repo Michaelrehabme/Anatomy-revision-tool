@@ -1,44 +1,35 @@
-import { useState } from 'react';
+import { useEffect, useRef } from 'react';
 import type { AnatomyContent } from '../../hooks/useAnatomyContent';
 import type { Area } from '../../types/region';
-import { AREA_LABELS } from '../../types/region';
 import type { UseEntitlement } from '../../hooks/useEntitlement';
 import { BodyFigure } from '../shared/BodyFigure';
+import { AccountForm } from '../Auth/AccountForm';
 import { OnboardingAreaList } from '../Onboarding/OnboardingAreaList';
-import { ONBOARDING_STEPS } from '../Onboarding/onboardingSteps';
+import { useOnboardingFlow, type OnboardingStepKind } from '../Onboarding/onboardingSteps';
 
 interface MobileOnboardingProps {
   /** What this account may reach — see Onboarding.tsx. */
   access: UseEntitlement;
   content: AnatomyContent;
   initialAreas?: readonly Area[];
-  /** Called with the chosen areas; empty means "every area" (Skip). */
-  onDone: (areas: Area[]) => void;
+  /** Show only these steps. Left out: every step this visitor needs. */
+  only?: readonly OnboardingStepKind[];
+  /** Called with the chosen areas, or null for an account that turned out to be set up already. */
+  onDone: (areas: Area[] | null) => void;
 }
 
-/** Screen 01 (mobile). Three steps; the first is the real area picker — see onboardingSteps.ts. */
-export function MobileOnboarding({ access, content, initialAreas = [], onDone }: MobileOnboardingProps) {
-  const [step, setStep] = useState(0);
-  const [selected, setSelected] = useState<Set<Area>>(() => new Set(initialAreas));
-  const current = ONBOARDING_STEPS[step];
-  const onAreaStep = step === 0;
-  // See Onboarding.tsx: insertion order makes this the first area they tapped.
-  const [firstPick] = [...selected];
-  const canContinue = !onAreaStep || selected.size > 0;
+/** Screen 01 (mobile). The same steps as desktop — see onboardingSteps.ts and Onboarding.tsx. */
+export function MobileOnboarding({ access, content, initialAreas = [], only, onDone }: MobileOnboardingProps) {
+  const flow = useOnboardingFlow({ access, initialAreas, only, onDone });
+  const { current, selected } = flow;
+  const onAreaStep = current.kind === 'areas';
+  const onAccountStep = current.kind === 'account';
 
-  const toggle = (area: Area) => {
-    setSelected((prev) => {
-      const next = new Set(prev);
-      if (next.has(area)) next.delete(area);
-      else next.add(area);
-      return next;
-    });
-  };
-
-  const handleNext = () => {
-    if (step >= ONBOARDING_STEPS.length - 1) onDone([...selected]);
-    else setStep((s) => s + 1);
-  };
+  const heading = useRef<HTMLHeadingElement>(null);
+  useEffect(() => {
+    heading.current?.focus();
+    window.scrollTo(0, 0);
+  }, [flow.index]);
 
   return (
     <main className="flex min-h-screen flex-col px-6.5 pt-6 pb-9" style={{ background: 'var(--pg)', color: 'var(--ink)', boxSizing: 'border-box' }}>
@@ -46,7 +37,9 @@ export function MobileOnboarding({ access, content, initialAreas = [], onDone }:
         {current.kicker}
       </div>
       <h1
-        className="mt-3.5 mb-3"
+        ref={heading}
+        tabIndex={-1}
+        className="mt-3.5 mb-3 outline-none"
         style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 34, lineHeight: 1.06, letterSpacing: '-.018em' }}
       >
         {current.title}
@@ -55,15 +48,25 @@ export function MobileOnboarding({ access, content, initialAreas = [], onDone }:
         {current.body}
       </p>
 
-      {onAreaStep ? (
+      {onAccountStep ? (
+        <div className="flex-1 pt-6">
+          {flow.settingUp ? (
+            <p role="status" style={{ font: '400 15px/1.5 var(--font-ui)', color: 'var(--ink2)' }}>
+              Setting up your account…
+            </p>
+          ) : (
+            <AccountForm onDone={flow.onAccountMade} />
+          )}
+        </div>
+      ) : onAreaStep ? (
         <div className="flex-1 py-3">
           <div className="flex justify-center">
             <div style={{ width: 104 }}>
-              <BodyFigure selected={selected} onToggle={toggle} />
+              <BodyFigure selected={selected} onToggle={flow.toggle} />
             </div>
           </div>
           <div className="mt-1">
-            <OnboardingAreaList content={content} selected={selected} onToggle={toggle} columns={2} />
+            <OnboardingAreaList content={content} selected={selected} onToggle={flow.toggle} columns={2} single={flow.single} />
           </div>
         </div>
       ) : (
@@ -74,37 +77,37 @@ export function MobileOnboarding({ access, content, initialAreas = [], onDone }:
         </div>
       )}
 
-      <div className="mb-4.5 flex gap-1.5">
-        {ONBOARDING_STEPS.map((_, i) => (
-          <span key={i} className="h-0.5 w-6.5 rounded-full" style={{ background: i === step ? 'var(--ink)' : 'var(--line)' }} />
-        ))}
-      </div>
+      {flow.steps.length > 1 && (
+        <div className="mb-4.5 flex gap-1.5" aria-hidden="true">
+          {flow.steps.map((_, i) => (
+            <span key={i} className="h-0.5 w-6.5 rounded-full" style={{ background: i === flow.index ? 'var(--ink)' : 'var(--line)' }} />
+          ))}
+        </div>
+      )}
 
-      <div className="flex items-center gap-3">
-        <button
-          type="button"
-          onClick={handleNext}
-          disabled={!canContinue}
-          className="flex-1 rounded-[3px] border-0 disabled:opacity-45"
-          style={{ minHeight: 50, background: 'var(--acc-fill)', color: 'var(--onacc)', font: '500 16.5px/1 var(--font-ui)' }}
-        >
-          {onAreaStep && selected.size === 0 ? 'Choose at least one area' : current.cta}
-        </button>
-        <button type="button" onClick={() => onDone([])} className="border-0 bg-transparent px-1.5" style={{ fontSize: 15, color: 'var(--ink3)' }}>
-          Skip
-        </button>
-      </div>
-      <div className="px-6.5 pb-4">
-        {onAreaStep && (
-          <p style={{ font: '400 12.5px/1.5 var(--font-ui)', color: 'var(--ink3)' }}>
-            {access.tier === 'free'
-              ? firstPick
-                ? `${AREA_LABELS[firstPick]} will be your free area. Skip to keep the shoulder instead.`
-                : 'Skip keeps the shoulder as your free area.'
-              : 'Skip keeps every area in play.'}
-          </p>
-        )}
-      </div>
+      {!onAccountStep && (
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={flow.next}
+            disabled={!flow.canContinue}
+            className="flex-1 rounded-[3px] border-0 disabled:opacity-45"
+            style={{ minHeight: 50, background: 'var(--acc-fill)', color: 'var(--onacc)', font: '500 16.5px/1 var(--font-ui)' }}
+          >
+            {onAreaStep && selected.size === 0 ? (flow.single ? 'Choose an area' : 'Choose at least one area') : current.cta}
+          </button>
+          {flow.canSkip && (
+            <button type="button" onClick={flow.skip} className="border-0 bg-transparent px-1.5" style={{ minHeight: 44, fontSize: 15, color: 'var(--ink3)' }}>
+              Skip
+            </button>
+          )}
+        </div>
+      )}
+      {flow.areaNote && (
+        <p className="pt-3" aria-live="polite" style={{ font: '400 12.5px/1.5 var(--font-ui)', color: 'var(--ink3)' }}>
+          {flow.areaNote}
+        </p>
+      )}
     </main>
   );
 }

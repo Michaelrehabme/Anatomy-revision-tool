@@ -49,7 +49,7 @@ const ANSWER = 'B';
 const FAQS = [
   {
     q: 'What do I actually get for free?',
-    a: 'One full body area of your choosing — every muscle in it, all three question branches, streaks and scheduling. Not a trial: it does not expire, and we do not ask for a card. You pick the area when you start, and can change it once after 30 days.',
+    a: 'One full body area of your choosing — every muscle in it, all three question branches, streaks and scheduling. Not a trial: it does not expire, and we do not ask for a card. You create a free account, pick the area when you start, and can change it once after 30 days.',
   },
   {
     q: 'Which muscles are covered?',

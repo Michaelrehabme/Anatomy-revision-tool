@@ -133,13 +133,62 @@ export function getFreeAreaChoice(): FreeAreaChoice | null {
   }
 }
 
-export function setFreeAreaChoice(area: Area, switches: number, now: Date = new Date()): void {
-  write(FREE_AREA_KEY, JSON.stringify({ area, chosenAt: now.toISOString(), switches }));
+/**
+ * `uid` is whose choice the copy is, in a build with accounts. See
+ * `freeAreaChoiceFor`. Left out where there are none.
+ */
+export function setFreeAreaChoice(area: Area, switches: number, now: Date = new Date(), uid?: string): void {
+  write(FREE_AREA_KEY, JSON.stringify({ area, chosenAt: now.toISOString(), switches, ...(uid ? { uid } : {}) }));
 }
 
 /** Keeps a copy of the choice as the account holds it, date and count included. */
-export function storeFreeAreaChoice(choice: FreeAreaChoice): void {
-  write(FREE_AREA_KEY, JSON.stringify({ area: choice.area, chosenAt: choice.chosenAt, switches: choice.switches }));
+export function storeFreeAreaChoice(choice: FreeAreaChoice, uid?: string): void {
+  write(
+    FREE_AREA_KEY,
+    JSON.stringify({ area: choice.area, chosenAt: choice.chosenAt, switches: choice.switches, ...(uid ? { uid } : {}) }),
+  );
+}
+
+/** The account the device's copy belongs to, or null when it has never been tied to one. */
+function freeAreaOwner(): string | null {
+  const raw = read(FREE_AREA_KEY);
+  if (raw === null) return null;
+  try {
+    const uid = (JSON.parse(raw) as { uid?: unknown }).uid;
+    return typeof uid === 'string' && uid ? uid : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * The device's copy of the free area, IF IT IS THIS ACCOUNT'S.
+ *
+ * The copy used to belong to the device and nobody in particular, and
+ * whoever signed in on that browser next — with no free area of their own
+ * yet — had it moved up as THEIR first pick: a second student on a shared
+ * computer had their one choice spent for them by the first, and a new
+ * account signing in on a browser a guest had used inherited the guest's
+ * area. Now a copy carries the uid it was written for, and a different
+ * account simply does not see it.
+ *
+ * A copy with no uid was written before this (the live site keeps the free
+ * area on the device with no owner). It is taken to belong to whoever is
+ * signed in on this device the first time the app looks — they are the one
+ * who has been using it — and is stamped as theirs from then on, so the NEXT
+ * account to sign in here does not inherit it. If the first look after the
+ * update happens to be by someone else, they get it; that cannot be told
+ * apart from here, and docs/CONTENT-SERVER-STATUS.md says so.
+ */
+export function freeAreaChoiceFor(uid: string): FreeAreaChoice | null {
+  const choice = getFreeAreaChoice();
+  if (!choice) return null;
+  const owner = freeAreaOwner();
+  if (owner === null) {
+    storeFreeAreaChoice(choice, uid);
+    return choice;
+  }
+  return owner === uid ? choice : null;
 }
 
 /**

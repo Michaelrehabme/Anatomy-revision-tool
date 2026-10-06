@@ -1,8 +1,8 @@
 import type { Area } from '../types/region';
 import {
+  FREE_ENTITLEMENT,
   canAccessArea,
   entitlementToShow,
-  freeAreasFor,
   resolveEntitlement,
   type Entitlement,
   type EntitlementSource,
@@ -150,11 +150,32 @@ export interface AreaAccess {
  * rule changed there (the three days of payment grace, a cancellation date, a
  * refund, a delayed start, a licence) changes here in the same commit, without
  * anyone remembering that the server has a copy. It does not have a copy.
+ *
+ * TWO THINGS THE SERVER SAYS NO TO, both decided on 6 Oct 2026, both also
+ * what the app's own hook now reports (hooks/useEntitlement.ts):
+ *
+ *   - A GUEST HAS NOTHING (`guest`). The anonymous sign-in every visitor
+ *     gets is not an account, and the free area needs one. Whatever a
+ *     guest's document holds — a free area written before this rule, a
+ *     class's licence — the answer is no until they create an account, at
+ *     which point the same uid, with everything it had, is asked about again.
+ *
+ *   - THERE IS NO DEFAULT FREE AREA. An account that has not chosen used to
+ *     be served the shoulder, which is how a new student's device came to
+ *     hold two areas: the shoulder on first load, then the one they picked.
+ *     Not chosen now means not served. (A build with no accounts keeps the
+ *     default, in the hook; it never asks this function anything.)
  */
-export function areaAccess(area: Area, record: AccessRecord, now: Date = new Date()): AreaAccess {
+export function areaAccess(
+  area: Area,
+  record: AccessRecord,
+  now: Date = new Date(),
+  who: { guest?: boolean } = {},
+): AreaAccess {
+  if (who.guest) return { allowed: false, entitlement: FREE_ENTITLEMENT };
   const entitlement = resolveEntitlement(record.candidates, now);
   return {
-    allowed: canAccessArea(area, entitlement, now, freeAreasFor(record.freeArea)),
+    allowed: canAccessArea(area, entitlement, now, record.freeArea ? [record.freeArea.area] : []),
     entitlement,
   };
 }

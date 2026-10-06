@@ -20,6 +20,12 @@ interface NavSidebarProps {
   onNavigate: (section: NavSection) => void;
   /** Streak pill / muscle count footer, or any other per-screen sidebar footer content. */
   footer?: ReactNode;
+  /**
+   * Leave out the account block. For the one screen whose whole body is the
+   * way to an account (Auth/AccountGate): a second "Create account" button
+   * beside the form would be two answers to one question.
+   */
+  hideAccount?: boolean;
 }
 
 /**
@@ -88,7 +94,7 @@ function AccountSection() {
       {user.isAnonymous ? (
         <>
           <div style={{ font: '400 12px/1.5 var(--font-mono)', color: 'var(--ink3)' }}>
-            Create an account to save your progress across devices.
+            Create a free account to revise. Your progress comes with you.
           </div>
           <button
             type="button"
@@ -134,7 +140,7 @@ const NAV_ITEM_GAP = 2;
 let lastActiveIndex: number | null = null;
 
 /** The standard persistent sidebar: brand mark, 5-item nav, footer slot, account section. */
-export function NavSidebar({ active, onNavigate, footer }: NavSidebarProps) {
+export function NavSidebar({ active, onNavigate, footer, hideAccount = false }: NavSidebarProps) {
   const activeIndex = NAV_ITEMS.findIndex((item) => item.section === active);
   const [pillIndex, setPillIndex] = useState(lastActiveIndex ?? activeIndex);
   useEffect(() => {
@@ -184,7 +190,7 @@ export function NavSidebar({ active, onNavigate, footer }: NavSidebarProps) {
       <div className="flex-1" />
       <LevelProgress />
       {footer}
-      {AUTH_ENABLED && <AccountSection />}
+      {AUTH_ENABLED && !hideAccount && <AccountSection />}
     </>
   );
 }
