@@ -6,11 +6,21 @@ service cloud.firestore {
     // ---------------------------------------------------------------------
     // Authorisation model
     //
-    // TEACHING is self-service and needs no grant. Anyone signed in can
-    // create a cohort; creating it makes them its owner, and owning it is
+    // TEACHING NEEDS FULL ACCESS, AND NOTHING ELSE (owner's decision, 6 Oct
+    // 2026). There is still no "educator" role to be granted: an account
+    // creates a class, creating it makes them its owner, and owning it is
     // what lets them see their students — the Kahoot/Google Classroom shape.
-    // Nobody has to be promoted to "educator" first, which is what made every
-    // previous model need an admin, a script, or both.
+    // What changed is who may create one. It used to be anyone signed in.
+    // Now the account's OWN entitlement must be in force at the moment of
+    // the write: a paid subscription that has started and not run out (the
+    // days of grace after a failed payment included, since they are part of
+    // the stored expiry), a complimentary or institutional grant, or admin.
+    // See mayTeach() and mayRunCohort() below.
+    //
+    // NOTHING IS TAKEN FROM AN EDUCATOR WHOSE ACCESS LAPSES. They keep their
+    // classes and may read everything in them as before, and may delete
+    // them; students stay members. What stops is the teaching: creating a
+    // class, renaming or archiving one, setting an assignment, inviting.
     //
     // The privacy line that makes that safe is the student's own choice: an
     // educator sees a student only once that student has joined — by typing
@@ -65,6 +75,101 @@ service cloud.firestore {
       return isSignedIn() && cohortId is string && cohortId != ''
         && exists(/databases/$(database)/documents/cohorts/$(cohortId))
         && get(/databases/$(database)/documents/cohorts/$(cohortId)).data.get('ownerUid', '') == request.auth.uid;
+    }
+
+    // ---------------------------------------------------------------------
+    // A REAL ACCOUNT, as opposed to a guest.
+    //
+    // The app signs every visitor in anonymously so that a guest has a uid
+    // for these rules to check. A guest may browse; what a guest may NOT do
+    // is hold a free area (below) — nine wiped browsers were nine free areas.
+    // Linking a sign-in to the guest (email and password, Google) keeps the
+    // uid and changes this claim, so everything the guest had comes with them.
+    //
+    // Email is not required to be verified: the owner has not asked for it.
+    // An unverified email-and-password account is therefore the remaining
+    // cheap way to a second free area. See docs/CONTENT-SERVER-STATUS.md.
+    // ---------------------------------------------------------------------
+    function isRealAccount() {
+      return isSignedIn() && request.auth.token.firebase.sign_in_provider != 'anonymous';
+    }
+
+    // ---------------------------------------------------------------------
+    // FULL ACCESS, read the way lib/entitlement.ts reads it.
+    //
+    // users/{uid}.entitlement is written only by the payment webhook and the
+    // admin script (it is pinned against its own account below). It holds
+    // { tier, source, expiresAt, startsAt?, ... } with the dates as ISO
+    // strings, which is what resolveEntitlement in the app reads:
+    //
+    //     in force  =  tier is not free
+    //                  AND it has started   (no startsAt, or startsAt <= now)
+    //                  AND it has not ended (no expiresAt, or expiresAt > now)
+    //
+    // and that is what entitlementIsLive() says, against request.time. The
+    // three days after a failed payment need nothing here: the webhook adds
+    // them to expiresAt. A refund needs nothing either: the webhook moves
+    // expiresAt to the moment of the refund. A delayed start (the 14-day
+    // cancellation right kept) is startsAt.
+    //
+    // WHERE THIS DIFFERS FROM THE APP, all three on the strict side:
+    //
+    //   1. A date this cannot read DENIES. The app treats an unparseable
+    //      expiry as "not expired", so that a malformed record never locks out
+    //      someone who paid for the content. Here a malformed record only
+    //      stops a class being created until it is put right.
+    //   2. Dates are read as UTC from their first nineteen characters
+    //      ("2026-11-05T12:34:56"), or ten for a date alone ("2027-06-30").
+    //      Paddle and the scripts write UTC. Fractions of a second are dropped,
+    //      so an entitlement ends up to a second early here.
+    //   3. Only a single entitlement map is read. The app also accepts a list
+    //      of them; nothing writes one today.
+    //
+    // A class licence is not on the account at all: it is licensedUntil on the
+    // cohort, and gives the class's MEMBERS every area. It does not make a
+    // member an educator. It does let the class's OWNER go on running that
+    // class (cohortIsLicensed, in mayRunCohort) — the licence is granted to
+    // the class by the owner's admin script, for exactly that teaching.
+    // ---------------------------------------------------------------------
+    function isoTime(s) {
+      return s.size() >= 19
+        ? timestamp.date(int(s[0:4]), int(s[5:7]), int(s[8:10]))
+            + duration.time(int(s[11:13]), int(s[14:16]), int(s[17:19]), 0)
+        : timestamp.date(int(s[0:4]), int(s[5:7]), int(s[8:10]));
+    }
+
+    function entitlementIsLive(e) {
+      return e is map
+        && e.get('tier', 'free') in ['individual', 'institutional']
+        && (!(e.get('startsAt', null) is string) || isoTime(e.startsAt) <= request.time)
+        && (!(e.get('expiresAt', null) is string) || isoTime(e.expiresAt) > request.time);
+    }
+
+    function hasOwnFullAccess() {
+      return isSignedIn()
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && entitlementIsLive(
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.get('entitlement', null));
+    }
+
+    /** May start teaching: create a class, and claim the join code for it. */
+    function mayTeach() {
+      return hasOwnFullAccess() || isAdmin();
+    }
+
+    /** The class exists and its licence, set by an admin, is still running. */
+    function cohortIsLicensed(cohortId) {
+      let until = get(/databases/$(database)/documents/cohorts/$(cohortId)).data.get('licensedUntil', null);
+      return until is string && isoTime(until) > request.time;
+    }
+
+    /**
+     * May go on teaching a class they own: set work, invite, rename, archive.
+     * ownsCohort first, so the licence is only ever read for a class that
+     * exists and is theirs.
+     */
+    function mayRunCohort(cohortId) {
+      return ownsCohort(cohortId) && (hasOwnFullAccess() || cohortIsLicensed(cohortId) || isAdmin());
     }
 
     // roles/{uid} — admin grants only. Readable by its owner (the route guard
@@ -154,9 +259,18 @@ service cloud.firestore {
     // import nothing; freeAreaRules.test.ts fails if the two drift, and so
     // does the 30 against FREE_AREA_SWITCH_DAYS.
     //
+    // ONLY A REAL ACCOUNT MAY CHOOSE OR CHANGE IT (owner's decision, 6 Oct
+    // 2026). A guest — the anonymous sign-in every visitor gets — could once
+    // pick a free area with no sign-up, and nine wiped browsers were nine
+    // areas. A guest's write that leaves freeArea as it is still goes
+    // through, so a guest who was given one before this rule keeps it, and
+    // their ordinary profile writes are not refused; and once they link a
+    // sign-in the same uid is a real account and may choose.
+    //
     // WHAT THIS DOES NOT STOP: deleting the profile and creating it again
     // (the owner may delete, for erasure), or simply opening a second
-    // account. Both give a fresh choice. See docs/CONTENT-SERVER-STATUS.md.
+    // account — and an email-and-password account needs no verified email.
+    // Both give a fresh choice. See docs/CONTENT-SERVER-STATUS.md.
     // ---------------------------------------------------------------------
     function isArea(area) {
       return area in ['shoulder', 'elbow', 'wrist-hand', 'hip', 'knee', 'ankle-foot',
@@ -193,8 +307,10 @@ service cloud.firestore {
       let before = resource.data.get('freeArea', null);
       let after = request.resource.data.get('freeArea', null);
       return after == before
-        || (before == null && isFirstFreeArea(after))
-        || (before != null && isFreeAreaSwitch(before, after));
+        || (isRealAccount() && (
+          (before == null && isFirstFreeArea(after))
+          || (before != null && isFreeAreaSwitch(before, after))
+        ));
     }
 
     match /users/{uid} {
@@ -207,13 +323,15 @@ service cloud.firestore {
       // by the 29 Sep paywall trace. A new document never carries an
       // entitlement from the client; only the webhook or an admin sets one.
       //
-      // A free area may arrive with the new document (a guest who picks at
-      // onboarding before any profile exists), held to the same first-pick
-      // rule as one added later.
+      // A free area may arrive with the new document (an account whose first
+      // profile write is its choice), held to the same first-pick rule as one
+      // added later — and, like every free-area write, only from a real
+      // account, never a guest's.
       allow create: if isSignedIn() && request.auth.uid == uid && cohortIsProven()
         && !('entitlement' in request.resource.data)
         && !('contentFetch' in request.resource.data)
-        && (!('freeArea' in request.resource.data) || isFirstFreeArea(request.resource.data.freeArea));
+        && (!('freeArea' in request.resource.data)
+          || (isRealAccount() && isFirstFreeArea(request.resource.data.freeArea)));
       // Unchanged is always allowed, so the ordinary profile write on every
       // sign-in (displayName, lastActiveAt) never pays for a cohort lookup.
       //
@@ -334,7 +452,11 @@ service cloud.firestore {
       // Only the owner of the named cohort may offer membership of it, and
       // only for a cohort they own — checked against the request's own data
       // so a cohort id cannot be swapped in after the fact.
-      allow create: if ownsCohort(request.resource.data.cohortId)
+      //
+      // Inviting is a teaching action, so it needs what teaching needs
+      // (mayRunCohort). Revoking below does not: an educator whose access has
+      // lapsed can always take an offer back.
+      allow create: if mayRunCohort(request.resource.data.cohortId)
         && request.resource.data.email is string
         && request.resource.data.email.size() > 0;
       // Revoked by the educator, declined or accepted by the invitee.
@@ -364,13 +486,15 @@ service cloud.firestore {
     match /joinCodes/{code} {
       allow get: if isSignedIn();
       allow list: if isAdmin();
-      allow create: if isSignedIn() && request.resource.data.ownerUid == request.auth.uid;
+      // A code is claimed as the first step of creating a class, so it asks
+      // what creating a class asks.
+      allow create: if mayTeach() && request.resource.data.ownerUid == request.auth.uid;
       allow delete: if isSignedIn() && (resource.data.get('ownerUid', '') == request.auth.uid || isAdmin());
       allow update: if false;
     }
 
-    // cohorts/{cohortId} — anyone signed in can create one and thereby own
-    // it. `get` is open to any signed-in user because a student needs to read
+    // cohorts/{cohortId} — an account with full access can create one and
+    // thereby own it (mayTeach, above). `get` is open to any signed-in user because a student needs to read
     // the cohort they have joined, and the id is an unguessable uuid reached
     // only through a join code they were given. `list` is restricted to your
     // own cohorts (or an admin's), so the collection cannot be enumerated.
@@ -423,7 +547,7 @@ service cloud.firestore {
       // update below: it opens every region for every member. Without this, an
       // account could create a class licensed to 2099 and join it with its own
       // code (29 Sep paywall trace). Only an admin sets a licence.
-      allow create: if isSignedIn()
+      allow create: if mayTeach()
         && request.resource.data.ownerUid == request.auth.uid
         && request.resource.data.joinCode is string
         && request.resource.data.name is string
@@ -438,17 +562,23 @@ service cloud.firestore {
       // course lead who could set it on their own cohort could licence their
       // whole university for nothing. Only an admin, through the Admin SDK,
       // writes it — see scripts/accountData.ts licence.
-      allow update: if (ownsCohort(cohortId)
+      //
+      // Renaming and archiving are teaching actions (mayRunCohort). DELETE is
+      // not: an educator whose access has lapsed keeps their classes, and
+      // keeps the right to remove them.
+      allow update: if (mayRunCohort(cohortId)
           && request.resource.data.ownerUid == resource.data.ownerUid
           && request.resource.data.get('licensedUntil', null) == resource.data.get('licensedUntil', null))
         || isAdmin();
       allow delete: if ownsCohort(cohortId) || isAdmin();
 
       // Assignments: visible to any signed-in user (so a student could in
-      // principle see what is set), writable only by the cohort's owner.
+      // principle see what is set). Setting or changing one is a teaching
+      // action; taking one down is always the owner's to do.
       match /assignments/{assignmentId} {
         allow read: if isSignedIn();
-        allow write: if ownsCohort(cohortId) || isAdmin();
+        allow create, update: if mayRunCohort(cohortId) || isAdmin();
+        allow delete: if ownsCohort(cohortId) || isAdmin();
       }
     }
 

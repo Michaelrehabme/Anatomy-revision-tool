@@ -52,7 +52,20 @@ const as = {
   claimAdmin: () => env.authenticatedContext('claimAdmin', { admin: true }).firestore(),
   roleAdmin: () => env.authenticatedContext('roleAdmin').firestore(),
   anon: () => env.unauthenticatedContext().firestore(),
+  /**
+   * A GUEST: the anonymous sign-in every visitor is given. Signed in, with a
+   * uid, and not an account. Firebase marks its token this way.
+   */
+  guest: (uid = 'guest') => env.authenticatedContext(uid, ANONYMOUS).firestore(),
+  /** The same uid after the guest linked an email and password to it. */
+  linked: (uid = 'guest') =>
+    env.authenticatedContext(uid, { email: `${uid}@uni.ac.uk`, firebase: { sign_in_provider: 'password', identities: {} } }).firestore(),
 };
+
+const ANONYMOUS = { firebase: { sign_in_provider: 'anonymous', identities: {} } };
+
+/** An entitlement as the admin script grants it: every area, no end date. */
+const FULL_ACCESS = { tier: 'individual', source: 'complimentary', expiresAt: null };
 
 beforeAll(async () => {
   env = await initializeTestEnvironment({
@@ -79,6 +92,9 @@ beforeEach(async () => {
     await setDoc(doc(db, 'users', 'student'), { displayName: 'Sam', cohort: COHORT });
     await setDoc(doc(db, 'users', 'classmate'), { displayName: 'Cam', cohort: COHORT });
     await setDoc(doc(db, 'users', 'stranger'), { displayName: 'Stef', cohort: null });
+    // Teaching needs full access: the two educators of the story hold it.
+    await setDoc(doc(db, 'users', 'educator'), { displayName: 'Ed', cohort: null, entitlement: FULL_ACCESS });
+    await setDoc(doc(db, 'users', 'otherEducator'), { displayName: 'Od', cohort: null, entitlement: FULL_ACCESS });
     await setDoc(doc(db, 'users', 'student', 'sessions', 's1'), { missedStructureIds: ['x'], startedAt: 1 });
     await setDoc(doc(db, 'attemptEvents', 'a1'), { userId: 'student', selectedAnswer: 'x', correctAnswer: 'y' });
     await setDoc(doc(db, 'roles', 'roleAdmin'), { admin: true });
@@ -186,9 +202,81 @@ describe('users/{uid}', () => {
       expect(Math.abs(snap.data()?.freeArea.chosenAt.toMillis() - Date.now())).toBeLessThan(60_000);
     });
 
-    it('lets a brand-new profile arrive with its choice (a guest at onboarding)', async () => {
-      const db = env.authenticatedContext('guest').firestore();
-      await assertSucceeds(setDoc(doc(db, 'users', 'guest'), { cohort: null, ...pick('hip') }));
+    it('lets a brand-new profile arrive with its choice, from an account', async () => {
+      const db = env.authenticatedContext('fresh', { email: 'fresh@uni.ac.uk' }).firestore();
+      await assertSucceeds(setDoc(doc(db, 'users', 'fresh'), { cohort: null, ...pick('hip') }));
+    });
+
+    /**
+     * The free area needs a real account (owner's decision, 6 Oct 2026). A
+     * guest could once pick one with no sign-up, and nine wiped browsers
+     * were nine areas.
+     */
+    describe('only a real account may choose or change it', () => {
+      const guestDoc = () => doc(as.guest(), 'users', 'guest');
+      const linkedDoc = () => doc(as.linked(), 'users', 'guest');
+      /** The guest's profile as the app writes it on first sight. */
+      const profile = () =>
+        env.withSecurityRulesDisabled((ctx) =>
+          setDoc(doc(ctx.firestore(), 'users', 'guest'), { displayName: null, isAnonymous: true, cohort: null }),
+        );
+
+      it('refuses a guest a new profile that carries a choice', async () => {
+        await assertFails(setDoc(guestDoc(), { cohort: null, ...pick('hip') }));
+        // The profile alone is still theirs to create.
+        await assertSucceeds(setDoc(guestDoc(), { displayName: null, isAnonymous: true, cohort: null }));
+      });
+
+      it('refuses a guest a first choice on an existing profile, used or unused', async () => {
+        await profile();
+        await assertFails(updateDoc(guestDoc(), pick('knee')));
+        await assertFails(updateDoc(guestDoc(), pick('knee', 1)));
+        await assertFails(setDoc(guestDoc(), pick('knee'), { merge: true }));
+      });
+
+      it('refuses a guest the change, even thirty days on', async () => {
+        await env.withSecurityRulesDisabled((ctx) =>
+          setDoc(doc(ctx.firestore(), 'users', 'guest'), { cohort: null, freeArea: { area: 'knee', chosenAt: daysAgo(40), switches: 0 } }),
+        );
+        await assertFails(updateDoc(guestDoc(), pick('hip', 1)));
+        await assertFails(updateDoc(guestDoc(), { freeArea: deleteField() }));
+      });
+
+      // A guest given a free area before this rule keeps it, and nothing else
+      // they write is refused because of it.
+      it("leaves a guest's stored choice, and their other writes, alone", async () => {
+        await env.withSecurityRulesDisabled((ctx) =>
+          setDoc(doc(ctx.firestore(), 'users', 'guest'), { cohort: null, freeArea: { area: 'knee', chosenAt: daysAgo(3), switches: 0 } }),
+        );
+        await assertSucceeds(updateDoc(guestDoc(), { lastActiveAt: serverTimestamp(), isAnonymous: true }));
+        await assertSucceeds(setDoc(doc(as.guest(), 'users', 'guest', 'mastery', 'deltoid'), { level: 2 }));
+        expect((await getDoc(guestDoc())).data()?.freeArea.area).toBe('knee');
+      });
+
+      // Linking keeps the uid. The same document, the same person, now an account.
+      it('lets the same uid choose once it has linked a sign-in', async () => {
+        await profile();
+        await assertFails(updateDoc(guestDoc(), pick('knee')));
+        await assertSucceeds(updateDoc(linkedDoc(), pick('knee')));
+        expect((await getDoc(linkedDoc())).data()?.freeArea.area).toBe('knee');
+        // …and it is then held to one choice like any other account.
+        await assertFails(updateDoc(linkedDoc(), pick('hip')));
+      });
+
+      it('lets a linked account make its one change to a choice it was given as a guest', async () => {
+        await env.withSecurityRulesDisabled((ctx) =>
+          setDoc(doc(ctx.firestore(), 'users', 'guest'), { cohort: null, freeArea: { area: 'knee', chosenAt: daysAgo(31), switches: 0 } }),
+        );
+        await assertFails(updateDoc(guestDoc(), pick('hip', 1)));
+        await assertSucceeds(updateDoc(linkedDoc(), pick('hip', 1)));
+      });
+
+      it('counts Google and any other provider as an account', async () => {
+        const google = env
+          .authenticatedContext('g1', { email: 'g1@gmail.com', firebase: { sign_in_provider: 'google.com', identities: {} } })
+          .firestore();
+        await assertSucceeds(setDoc(doc(google, 'users', 'g1'), { cohort: null, ...pick('elbow') }));
+      });
     });
 
     it('lets a choice already used on the device move up as used', async () => {
@@ -446,19 +534,20 @@ describe('attemptEvents', () => {
 });
 
 describe('cohorts', () => {
-  it('lets anyone signed in create a cohort they own', async () => {
+  it('lets an account with full access create a cohort it owns, and only one it owns', async () => {
     await assertSucceeds(
-      setDoc(doc(as.stranger(), 'cohorts', 'new'), { ownerUid: 'stranger', joinCode: 'NEW123', name: 'Mine' }),
+      setDoc(doc(as.educator(), 'cohorts', 'new'), { ownerUid: 'educator', joinCode: 'NEW123', name: 'Mine' }),
     );
     await assertFails(
-      setDoc(doc(as.stranger(), 'cohorts', 'new2'), { ownerUid: 'educator', joinCode: 'NEW124', name: 'Theirs' }),
+      setDoc(doc(as.educator(), 'cohorts', 'new2'), { ownerUid: 'otherEducator', joinCode: 'NEW124', name: 'Theirs' }),
     );
   });
 
   it('refuses a self-issued licence, at creation or later', async () => {
+    // From an account that MAY create a class, so it is the licence being refused.
     await assertFails(
-      setDoc(doc(as.stranger(), 'cohorts', 'new'), {
-        ownerUid: 'stranger',
+      setDoc(doc(as.educator(), 'cohorts', 'new'), {
+        ownerUid: 'educator',
         joinCode: 'NEW123',
         name: 'Mine',
         licensedUntil: 4102444800000,
@@ -538,6 +627,229 @@ describe('joinCodes', () => {
 
   it("cannot be claimed in someone else's name", async () => {
     await assertFails(setDoc(doc(as.stranger(), 'joinCodes', 'ZZZ999'), { cohortId: COHORT, ownerUid: 'educator' }));
+  });
+});
+
+/**
+ * TEACHING NEEDS FULL ACCESS (owner's decision, 6 Oct 2026).
+ *
+ * Creating a class used to be open to anyone signed in. It now needs the
+ * account's own entitlement to be in force when the write arrives, read the
+ * way lib/entitlement.ts reads it. Each case below is one line of that
+ * reading, as `teacher` with a different stored entitlement.
+ */
+describe('teaching needs full access', () => {
+  const DAY = 86400000;
+  const iso = (days: number) => new Date(Date.now() + days * DAY).toISOString();
+  const teacher = () => env.authenticatedContext('teacher', { email: 'teacher@uni.ac.uk' }).firestore();
+  const withEntitlement = (entitlement: unknown) =>
+    env.withSecurityRulesDisabled((ctx) =>
+      setDoc(doc(ctx.firestore(), 'users', 'teacher'), {
+        displayName: 'Tee',
+        cohort: null,
+        ...(entitlement === undefined ? {} : { entitlement }),
+      }),
+    );
+  let n = 0;
+  /** What creating a class does: claim the code, then write the class (educator/data/cohortsRepository.ts). */
+  const createClass = async (db = teacher(), owner = 'teacher') => {
+    n += 1;
+    await setDoc(doc(db, 'joinCodes', `CODE${n}`), { cohortId: `class-${n}`, ownerUid: owner, createdAt: iso(0) });
+    await setDoc(doc(db, 'cohorts', `class-${n}`), { ownerUid: owner, joinCode: `CODE${n}`, name: 'A class', institution: '', archivedAt: null });
+  };
+  /** Each half on its own, so a refusal is known to be of both. */
+  const refusesBoth = async (db = teacher(), owner = 'teacher') => {
+    n += 1;
+    await assertFails(setDoc(doc(db, 'joinCodes', `CODE${n}`), { cohortId: `class-${n}`, ownerUid: owner, createdAt: iso(0) }));
+    await assertFails(setDoc(doc(db, 'cohorts', `class-${n}`), { ownerUid: owner, joinCode: `CODE${n}`, name: 'A class' }));
+  };
+
+  describe('creating a class', () => {
+    it('refuses a free account: no entitlement, a free one, or no profile at all', async () => {
+      await refusesBoth(as.stranger(), 'stranger');
+      await withEntitlement({ tier: 'free', source: null, expiresAt: null });
+      await refusesBoth();
+      await refusesBoth(env.authenticatedContext('nobody').firestore(), 'nobody');
+    });
+
+    it('refuses a guest', async () => {
+      await refusesBoth(as.guest(), 'guest');
+    });
+
+    it('allows a paid subscription that has not run out', async () => {
+      await withEntitlement({ tier: 'individual', source: 'paddle', expiresAt: iso(20), interval: 'month', externalId: 'sub_1' });
+      await assertSucceeds(createClass());
+    });
+
+    it('refuses a subscription that ran out, a minute ago or a year ago', async () => {
+      await withEntitlement({ tier: 'individual', source: 'paddle', expiresAt: iso(-1 / 1440) });
+      await refusesBoth();
+      await withEntitlement({ tier: 'individual', source: 'paddle', expiresAt: iso(-365) });
+      await refusesBoth();
+    });
+
+    // A failed renewal: the webhook stores the end of the paid time plus the
+    // three days of grace as the expiry, and flags it.
+    it('allows the days of grace after a failed payment, and refuses once they are over', async () => {
+      await withEntitlement({ tier: 'individual', source: 'paddle', expiresAt: iso(2), paymentIssueSince: iso(-1) });
+      await assertSucceeds(createClass());
+      await withEntitlement({ tier: 'individual', source: 'paddle', expiresAt: iso(-1), paymentIssueSince: iso(-4) });
+      await refusesBoth();
+    });
+
+    it('allows a complimentary grant and an institutional one, with no end date', async () => {
+      await withEntitlement({ tier: 'individual', source: 'complimentary', expiresAt: null });
+      await assertSucceeds(createClass());
+      await withEntitlement({ tier: 'institutional', source: 'licence', expiresAt: null, seatId: 'seat-1' });
+      await assertSucceeds(createClass());
+    });
+
+    // Paid for, cancellation right kept: access begins fourteen days later.
+    it('refuses a delayed start that has not begun, and allows it once it has', async () => {
+      await withEntitlement({ tier: 'individual', source: 'paddle', expiresAt: iso(40), startsAt: iso(10) });
+      await refusesBoth();
+      await withEntitlement({ tier: 'individual', source: 'paddle', expiresAt: iso(40), startsAt: iso(-1) });
+      await assertSucceeds(createClass());
+    });
+
+    // The webhook ends a refunded subscription by moving its expiry to the refund.
+    it('refuses a refunded subscription', async () => {
+      await withEntitlement({ tier: 'individual', source: 'paddle', expiresAt: iso(-2), refundedAt: iso(-2) });
+      await refusesBoth();
+    });
+
+    it('allows a cancelled subscription until the paid time ends', async () => {
+      await withEntitlement({ tier: 'individual', source: 'paddle', expiresAt: iso(9), cancelAt: iso(9) });
+      await assertSucceeds(createClass());
+    });
+
+    it('allows an admin with no entitlement, by claim and by role document', async () => {
+      await assertSucceeds(createClass(as.claimAdmin(), 'claimAdmin'));
+      await assertSucceeds(createClass(as.roleAdmin(), 'roleAdmin'));
+    });
+
+    it('reads a date with no time as the start of that day, UTC', async () => {
+      const day = (days: number) => iso(days).slice(0, 10);
+      await withEntitlement({ tier: 'individual', source: 'complimentary', expiresAt: day(3) });
+      await assertSucceeds(createClass());
+      await withEntitlement({ tier: 'individual', source: 'complimentary', expiresAt: day(-3) });
+      await refusesBoth();
+    });
+
+    // The app reads an unparseable expiry as "not expired", so a malformed
+    // record never locks out someone who paid. Here it refuses: the cost is
+    // a class not created until the record is put right.
+    it('KNOWN DIFFERENCE: refuses when a date cannot be read, where the app would allow', async () => {
+      await withEntitlement({ tier: 'individual', source: 'paddle', expiresAt: 'next spring' });
+      await refusesBoth();
+    });
+
+    it('does not count a member of a licensed class as an educator', async () => {
+      await env.withSecurityRulesDisabled(async (ctx) => {
+        await updateDoc(doc(ctx.firestore(), 'cohorts', COHORT), { licensedUntil: iso(200) });
+      });
+      // `student` is a member of that class and so holds every area — as a student.
+      await refusesBoth(as.student(), 'student');
+    });
+
+    it('cannot be granted to oneself: the entitlement is not client-writable', async () => {
+      await withEntitlement(undefined);
+      await assertFails(updateDoc(doc(teacher(), 'users', 'teacher'), { entitlement: FULL_ACCESS }));
+      await refusesBoth();
+    });
+  });
+
+  /**
+   * An educator whose access lapses keeps everything they have. What stops
+   * is the teaching; what stays is their classes, their students and their
+   * right to read and to remove.
+   */
+  describe('an educator whose access has lapsed', () => {
+    const lapse = () =>
+      env.withSecurityRulesDisabled(async (ctx) => {
+        const db = ctx.firestore();
+        await setDoc(doc(db, 'users', 'educator'), {
+          displayName: 'Ed', cohort: null,
+          entitlement: { tier: 'individual', source: 'paddle', expiresAt: iso(-5) },
+        });
+        await setDoc(doc(db, 'cohorts', COHORT, 'assignments', 'a1'), { title: 'Week 1', cohortId: COHORT });
+        await setDoc(doc(db, 'cohorts', COHORT, 'studentStats', 'student'), { gradedTotal: 4 });
+      });
+
+    it('still reads their class, its students, its figures, its assignments and its invitations', async () => {
+      await lapse();
+      const db = as.educator();
+      await assertSucceeds(getDoc(doc(db, 'cohorts', COHORT)));
+      await assertSucceeds(getDocs(query(collection(db, 'cohorts'), where('ownerUid', '==', 'educator'))));
+      await assertSucceeds(getDocs(query(collection(db, 'users'), where('cohort', '==', COHORT))));
+      await assertSucceeds(getDocs(collection(db, 'cohorts', COHORT, 'studentStats')));
+      await assertSucceeds(getDocs(collection(db, 'cohorts', COHORT, 'assignments')));
+      await assertSucceeds(getDoc(doc(db, 'invites', 'stranger@uni.ac.uk__cohort-a')));
+    });
+
+    it('cannot create a class, set or change an assignment, invite, rename or archive', async () => {
+      await lapse();
+      const db = as.educator();
+      await refusesBoth(db, 'educator');
+      await assertFails(setDoc(doc(db, 'cohorts', COHORT, 'assignments', 'a2'), { title: 'Week 2', cohortId: COHORT }));
+      await assertFails(updateDoc(doc(db, 'cohorts', COHORT, 'assignments', 'a1'), { title: 'Week 1, changed' }));
+      await assertFails(setDoc(doc(db, 'invites', 'new@uni.ac.uk__cohort-a'), { email: 'new@uni.ac.uk', cohortId: COHORT }));
+      await assertFails(updateDoc(doc(db, 'cohorts', COHORT), { name: 'Renamed' }));
+      await assertFails(updateDoc(doc(db, 'cohorts', COHORT), { archivedAt: iso(0) }));
+    });
+
+    it('may still take things down: an assignment, an invitation, the class itself', async () => {
+      await lapse();
+      const db = as.educator();
+      await assertSucceeds(deleteDoc(doc(db, 'cohorts', COHORT, 'assignments', 'a1')));
+      await assertSucceeds(deleteDoc(doc(db, 'invites', 'stranger@uni.ac.uk__cohort-a')));
+      await assertSucceeds(deleteDoc(doc(db, 'cohorts', COHORT)));
+    });
+
+    it("leaves students' membership and their own writes untouched", async () => {
+      await lapse();
+      expect((await getDoc(doc(as.student(), 'users', 'student'))).data()?.cohort).toBe(COHORT);
+      await assertSucceeds(setDoc(doc(as.student(), 'cohorts', COHORT, 'studentStats', 'student'), { gradedTotal: 5 }));
+      await assertSucceeds(getDocs(collection(as.student(), 'cohorts', COHORT, 'assignments')));
+      // A new student can still join with the code, and anyone can still leave.
+      await assertSucceeds(updateDoc(doc(as.stranger(), 'users', 'stranger'), { cohort: COHORT, cohortJoinCode: CODE }));
+      await assertSucceeds(updateDoc(doc(as.student(), 'users', 'student'), { cohort: null }));
+    });
+
+    // The licence is granted to the class, by the owner's admin script, for
+    // this teaching. It carries the class's owner while it runs.
+    it('may go on running a class that is itself licensed, but not start another', async () => {
+      await lapse();
+      await env.withSecurityRulesDisabled((ctx) =>
+        updateDoc(doc(ctx.firestore(), 'cohorts', COHORT), { licensedUntil: iso(100).slice(0, 10) }),
+      );
+      const db = as.educator();
+      await assertSucceeds(setDoc(doc(db, 'cohorts', COHORT, 'assignments', 'a2'), { title: 'Week 2', cohortId: COHORT }));
+      await assertSucceeds(setDoc(doc(db, 'invites', 'new@uni.ac.uk__cohort-a'), { email: 'new@uni.ac.uk', cohortId: COHORT }));
+      await assertSucceeds(updateDoc(doc(db, 'cohorts', COHORT), { name: 'Renamed' }));
+      // The licence is still not theirs to change, and is no licence to create.
+      await assertFails(updateDoc(doc(db, 'cohorts', COHORT), { licensedUntil: iso(900) }));
+      await refusesBoth(db, 'educator');
+    });
+
+    it('…and not once that licence has run out', async () => {
+      await lapse();
+      await env.withSecurityRulesDisabled((ctx) =>
+        updateDoc(doc(ctx.firestore(), 'cohorts', COHORT), { licensedUntil: iso(-1) }),
+      );
+      await assertFails(setDoc(doc(as.educator(), 'cohorts', COHORT, 'assignments', 'a2'), { title: 'Week 2', cohortId: COHORT }));
+    });
+  });
+
+  it('lets an admin set work in any class, as before', async () => {
+    await assertSucceeds(setDoc(doc(as.claimAdmin(), 'cohorts', COHORT, 'assignments', 'a9'), { title: 'From admin', cohortId: COHORT }));
+  });
+
+  it('still keeps teaching to the owner: full access is not a key to someone else\'s class', async () => {
+    const db = as.otherEducator();
+    await assertFails(setDoc(doc(db, 'cohorts', COHORT, 'assignments', 'a3'), { title: 'x', cohortId: COHORT }));
+    await assertFails(setDoc(doc(db, 'invites', 'z@uni.ac.uk__cohort-a'), { email: 'z@uni.ac.uk', cohortId: COHORT }));
+    await assertFails(updateDoc(doc(db, 'cohorts', COHORT), { name: 'Theirs now' }));
   });
 });
 
