@@ -124,6 +124,11 @@ Entry chunk, built on 6 Oct 2026:
 | `server` | 1,760,848 B | 336,304 B |
 | `build:demo` (bundled, the demo's default) | 1,390,882 B | 706,270 B |
 
+After the fixed diagnostic paper and the two fixes of 6 Oct (evening):
+`bundled` 1,982,439 B (114,713 B under the limit), `server` 1,761,730 B. The
+paper is not in the entry chunk: it is its own file, 7,926 B, precached with
+the rest.
+
 Moving the facts out frees about 221 kB of entry chunk, not the 300 kB the
 design estimated: the index and the vocabulary stay.
 
@@ -571,6 +576,56 @@ something else that passes `/.netlify/functions/*` through to it. `netlify
 dev` in a worktree also reads the main checkout's `.env`. And Chromium's Cache
 Storage fails outright when the browser profile's path is very long, which
 looks exactly like "downloads are not available in this browser".
+
+## After the owner's answers, 6 Oct 2026 (evening)
+
+Four commits on top of the pass above: the fixed diagnostic paper
+(decision 7), the same paper held in one order for a whole sitting, and
+defects 3 and 4. Emulators only; nothing deployed to production.
+
+**Checks.** `vitest`: 2,035 passed, 1 skipped, 163 files. `test:rules`: 63.
+`tsc` on the app and the functions: clean. `eslint` on the files touched: no
+errors. `validate-content`: 0 errors. The question dump is still
+`629965d3…9a06bb`: the version-1 draw and every ordinary session are
+byte-identical to `581dfe1`. A `server` build passes `check:bundle` with the
+paper in it (69 files, 462 descriptions looked for).
+
+**In a browser** (Chromium, fresh profile, a server build, 1280 px and
+390 px, the Firestore and Auth emulators): a guest picks the knee, creates an
+account — and with no reload the Account screen drops "this device only",
+shows the email, offers no "Create account", and the profile document reads
+`isAnonymous: false`; joins an unlicensed class by its code, so stays free
+and holds one area; sits the baseline end to end: fifteen questions, each
+with its prompt and four choices, the three pictures drawn, no "connect to
+load" and no facts notice, no area asked for during the sitting; the stored
+sitting is version 2 with the paper's fifteen ids and the words on screen are
+the committed file's. With `takenAt` moved back 75 days the follow-up is
+offered and asks the same fifteen (prompt, choices, picture), stored as
+version 2; nothing is offered after it. Then the network cut and `/`,
+`/account`, `/progress` reloaded: nothing thrown uncaught. The same script
+against the build from before these commits fails on the label (four checks)
+and on the offline reload (the uncaught error, three times).
+*Not browser-tested:* a follow-up to a version-1 baseline (unit-tested, in
+both the can and the cannot case); iOS Safari and an installed PWA; Google
+sign-in (the emulator has no popup; unit-tested).
+
+**The draft** was redeployed from this state (default build, never to
+production): `https://content-server--mskanatomyrevision.netlify.app`, entry
+`index-DxpO7SDg.js`, the paper at `assets/fixedSample.v2-hPHW3veh.js`.
+`paddle-portal` 405, `paddle-webhook` 405, `renewal-reminders` 403,
+`content-area` with no token 401 `private,no-store`. Production still serves
+`assets/index-BCjoSWbO.js`.
+
+**Left open by this.**
+
+- A student with a version-1 baseline who cannot be given their follow-up (a
+  server build, not every area) is still shown the offer on the Account
+  screen each visit; it leads to the screen that says why. The offer does not
+  know what the device holds.
+- The fifteen were drawn by rule, not chosen by a teacher. They are the
+  owner's to change before the first version-2 baseline is sat
+  (`buildDiagnosticSample.ts --force`); after that, only as version 3.
+- Decision 8.
 
 ## Found on the way, not fixed
 
