@@ -16,14 +16,14 @@ plus a probe of the pure functions; no sandbox run yet.
 | 4 | High | After paying, the app stays locked until a reload: App reads the entitlement once per uid; the pricing page polls its own copy. Same for joining or leaving a licensed class, and renewals while the app stays open | **Fixed 29 Sep** — a refresh anywhere re-reads in every screen (`refreshEntitlementEverywhere`), also after joining/leaving a class and on returning to the app; a failed re-read keeps the last good answer |
 | 5 | High | Deleting an account never cancels in Paddle; the next renewal's webhook recreates `users/{uid}` (personal data back after erasure); `deleteUser` runs last, so a "requires recent login" error lands after the entitlement is already deleted | **Mitigated 29 Sep** — deletion is refused up front while a Paddle subscription is live or pending, and a stale sign-in is caught before anything is deleted. The webhook no longer recreates a deleted account's doc (update-only; the event goes to `billingFailures`). Still open: no server-side cancel. **5 Oct** (branch `release-next`): the refusal now asks whether the subscription will charge again, not whether paid time is left, so a student who has cancelled can delete at once; one past due or refunded-but-not-cancelled is still refused |
 | 6 | High/Med | One entitlement map per user: two subscriptions overwrite each other, and cancelling one revokes the other | Open |
-| 7 | Med | Free area, swap counter and onboarded flag are device-local: a new device or cleared storage gives a fresh free area with unlimited swaps | **Fixed on branch `content-server-2` (5 Oct), not deployed** — the free area and its change counter live on `users/{uid}.freeArea`, held to one choice and one change by `firestore.rules` (needs `npm run deploy:rules`). A device's old choice is moved up once, dated the day it moves. The onboarded flag is still device-local. Deleting the profile and recreating it, or a second account, still gives a fresh choice — see docs/CONTENT-SERVER-STATUS.md |
+| 7 | Med | Free area, swap counter and onboarded flag are device-local: a new device or cleared storage gives a fresh free area with unlimited swaps | **Fixed on branch `content-server-2` (5 Oct), not deployed** — the free area and its change counter live on `users/{uid}.freeArea`, held to one choice and one change by `firestore.rules` (needs `npm run deploy:rules`). A device's old choice is moved up once, dated the day it moves. The onboarded flag is still device-local. Deleting the profile and recreating it, or a second account, still gives a fresh choice — see docs/CONTENT-SERVER-STATUS.md. **6 Oct (same branch):** a guest (the anonymous sign-in every visitor gets) can no longer hold a free area at all: the rules refuse a guest's `freeArea`, the content function answers a guest 403, and the app asks for a free account before the free area, a card's facts or a session. The device's copy now carries the uid it was written for, so a second account on a shared computer no longer inherits it. Email is not verified, so a made-up address is still a second free area |
 | 8 | Med | No status stored, so a cancelled subscriber is told it "renews", and would be sent a renewal reminder | **Fixed 5 Oct** (branch `release-next`) — the webhook stores `cancelAt` from `scheduled_change` (a portal cancellation) or `canceled_at`; the account line says "when it ends … cancelled and will not renew", and `reminderDue` declines. Accounts cancelled before this ships have no `cancelAt` until their next event |
 | 9 | Med | Refund and chargeback events are not handled: access runs to period end | **Partly fixed 5 Oct** (branch `release-next`) — see "Refunds" below. An approved full refund of a subscription's latest payment ends access; everything uncertain changes nothing and is written to `billingFailures`. **Nothing arrives until the owner ticks `adjustment.created` and `adjustment.updated` on the webhook destination in Paddle.** Chargebacks are recorded, not acted on |
 | 10 | Med | `past_due` may grant the unpaid period; `subscription.paused` is not handled; no "payment failed" message | **Partly fixed 5 Oct** (branch `release-next`) — see "Failed renewals" below. Past due no longer grants the unpaid period, and the app says the payment failed. `subscription.paused` is still not handled; no email; sandbox still to confirm |
 | 11 | Med | A class assignment in a locked area says "no questions any more"; a partly locked one runs only the free subset as a scored attempt the educator counts | Open |
 | 12 | Med | Renewal reminders: the 6-month notice is off by one against the code's own comment (legal call on cadence); `.limit(200)` without paging; dry runs mark reminders sent | Open |
 | 13 | Low/Med | Webhook and admin script write with `merge: true` inside the map, so stale `startsAt` and Paddle fields survive | **Fixed in the webhook 29 Sep** — the map is replaced, carrying consent and customer id over; `scripts/accountData.ts` still merges |
-| 14 | Low | Structure card by URL shows a locked structure's facts; onboarding saves preferred areas against the old default; history hidden after expiry; renewal lands just after `expiresAt` (suggest 48 h grace); a failed licence read makes a paid student free; month-end "next charge" date wrong; delayed-start monthly charges a full month for ~16 days; licences have no seat limit | **Structure card: Fixed 4 Oct** (`ec5cd7a`, branch `release-next`) — a locked structure's card is its region, name and the lock panel under the name; picture, facts, blood supply and drill are not rendered, on both layouts. Still the browser deciding what to draw: the facts stay in the bundle until the content-behind-the-server work lands. **The other seven: Open** |
+| 14 | Low | Structure card by URL shows a locked structure's facts; onboarding saves preferred areas against the old default; history hidden after expiry; renewal lands just after `expiresAt` (suggest 48 h grace); a failed licence read makes a paid student free; month-end "next charge" date wrong; delayed-start monthly charges a full month for ~16 days; licences have no seat limit | **Onboarding's preferred areas: Fixed 6 Oct** (branch `content-server-2`) — the areas chosen at onboarding were saved through a filter that allowed only the areas held BEFORE the choice, so the area just picked was dropped; they are saved as chosen, and there is no default free area for the choice to be compared with any more. **Structure card: Fixed 4 Oct** (`ec5cd7a`, branch `release-next`) — a locked structure's card is its region, name and the lock panel under the name; picture, facts, blood supply and drill are not rendered, on both layouts. Still the browser deciding what to draw: the facts stay in the bundle until the content-behind-the-server work lands. **The other six: Open** |
 
 ## Refunds (finding 9) — what the webhook does, 5 October 2026
 
@@ -179,6 +179,47 @@ cancel your subscription". The flag is inside the entitlement map, which
 8. **No published page says what happens when a payment fails.** Terms,
    refunds, pricing and the home page FAQ were searched; none mentions it,
    so none contradicts the three days — and none promises them either.
+
+## Who may hold a free area, and who may teach — 6 October 2026
+
+Two owner decisions, built on branch `content-server-2` and not deployed.
+Both are enforced in `firestore.rules` (tested in `rules-tests/`), not only
+drawn by the app. docs/CONTENT-SERVER-STATUS.md has the detail and the order
+to release them in.
+
+**The free area needs a real account.** Until now "Start free" made an
+anonymous sign-in and that was enough: a guest picked a free area and studied,
+and nine wiped browsers were nine areas.
+
+| Who | What they hold |
+|---|---|
+| A guest (anonymous sign-in, or no sign-in at all) | Nothing. May read the landing page, the prices, the legal and sources pages, and their own account screen. The rules refuse a guest's `freeArea`; the content function answers 403 for every area |
+| An account that has not chosen its free area | Nothing, and is asked to choose. There is no default: it used to be the shoulder |
+| An account that has chosen | That area, as before: one choice, one change after 30 days |
+| A guest from before this, with a free area and progress | Nothing is lost. They are asked to create an account; creating it links to the same uid, so their progress and their choice are the account's |
+
+Email addresses are not verified. An unverified email-and-password account
+is therefore the remaining cheap way to a second free area.
+
+**Teaching needs full access.** Creating a class used to be open to any
+signed-in account, guests included.
+
+| Account | Create a class | Run a class they own (set work, invite, rename) | Read a class they own |
+|---|---|---|---|
+| Free | No | No | Yes |
+| Paid, in date (the three days of grace included) | Yes | Yes | Yes |
+| Paid, expired or refunded; delayed start not yet begun | No | No | Yes |
+| Complimentary or institutional grant | Yes | Yes | Yes |
+| Admin | Yes | Yes | Yes |
+| Owner of a class that is itself licensed, with no entitlement of their own | No | That class: yes | Yes |
+| Member of a licensed class | No | — | — |
+
+An educator whose access lapses keeps their classes, their students'
+membership and every figure, and may still delete any of it. They are shown
+"Teaching tools need full access" in place of the educator screens.
+
+`scripts/cohortReport.ts`, run with no argument, now says for each class
+whether its owner has full access: run it before the rules are deployed.
 
 ## Tests
 

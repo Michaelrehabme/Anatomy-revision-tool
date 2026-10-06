@@ -67,8 +67,12 @@ vocabulary (nerve names, action tags, joint types, myotome labels,
 special-test names) as the fallback. Add a test that every generator still
 produces its usual count, ±10%, from a single area. The diagnostic asks across
 all nine areas ungated: limit it to picture-to-name questions, or bundle a
-small fixed sample. (The owner chose the fixed sample on 6 Oct 2026; what it
-is and what it publishes is in CONTENT-SERVER-STATUS.md, decision 7.)
+small fixed sample. (Neither, in the end. The owner's answer of 6 Oct 2026 is
+ten papers — the whole body for a student holding every area, one area for a
+student on a free account — each a list of what to ask, built at the sitting
+from the facts the sitter holds, so nothing is bundled. And a guest is no
+longer served a free area: it needs a real account. Both are in
+CONTENT-SERVER-STATUS.md, decisions 7 and 9.)
 
 ## Build
 

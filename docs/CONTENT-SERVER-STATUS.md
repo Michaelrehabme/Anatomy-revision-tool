@@ -7,6 +7,19 @@ Checked end to end on 6 Oct 2026 by a second pass that did not write it: see
 run. Where that section and the rest of this file disagree, that section is
 the one that was measured.
 
+**Three owner decisions were built on the night of 6 Oct 2026**: the
+diagnostic's papers follow what a student holds (decision 7), the free area
+needs a real account (decision 9), and teaching needs full access (decision
+8). What was measured is in "Three owner decisions, 6 Oct 2026 (night)" near
+the end. The sections dated before it say what was true when they were
+written; where one of them disagrees with that section, the later one is the
+one that was measured.
+
+**The rules on this branch are stricter than production's**, for guests and
+for creating a class. "Rollout" says exactly what an installed copy of the
+live bundle experiences once they are deployed: nothing, for a guest or a
+student.
+
 **All seven steps are built. Production is NOT switched over.** The default
 build is still `bundled`: every fact ships in the bundle and the paywall is
 still drawn by the browser. Nothing here protects anything until the owner
@@ -23,7 +36,9 @@ sets `VITE_CONTENT_SOURCE=server` and redeploys — see "Rollout".
 | 5 | The content function | `netlify/functions/content-area.ts`, `netlify/functions/lib/`, `netlify/tests/content-area.test.ts`, `lib/entitlementRecord.ts` |
 | 6 | The app runs with only some areas in hand | `data/content/` (`contentSource.ts`, `bundledContent*.ts`, `areaFacts.ts`, `serverLoader.ts`, `lease.ts`), `data/contentCache.ts`, `hooks/useAnatomyContent.ts`, `components/shared/AreaFactsNotice.tsx`, `pwa/offline/areaFactsPrefetch.ts` |
 | 7 | The guards, and the demo fixture | `eslint.config.js`, `src/scripts/checkBundleForFacts.ts`, `src/scripts/lib/bundleFacts.ts`, `data/content/bundledContent.fixture.ts` |
-| — | The diagnostic's fixed paper (decision 7) | `data/diagnostic/fixedSample.v2.json`, `lib/diagnosticSample.ts`, `src/scripts/buildDiagnosticSample.ts` |
+| — | The diagnostic's ten papers (decision 7) | `data/diagnostic/papers.v3.json` and its lock, `lib/diagnosticPapers.ts`, `lib/diagnosticReport.ts`, `src/scripts/diagnosticPapers.ts`, `src/scripts/lib/paperLock.ts`, docs/DIAGNOSTIC-PAPERS.md |
+| — | A real account for the free area (decision 9) | `firestore.rules` `isRealAccount`, `hooks/useEntitlement.ts` (`guest`, `needsFreeArea`), `lib/entitlementRecord.areaAccess`, `netlify/functions/lib/idToken.ts`, `components/Auth/` (`AccountForm`, `AccountGate`, `GuestAccountPanel`), `components/Onboarding/onboardingSteps.ts`, the `gated` wrapper in `App.tsx` |
+| — | Full access for teaching (decision 8) | `firestore.rules` `mayTeach` / `mayRunCohort`, `educator/lib/teachingAccess.ts`, `educator/hooks/useTeachingAccess.ts`, `educator/components/TeachingGate.tsx`, `TeachingAccessPanel.tsx`, `Account/MyClasses.tsx` |
 
 ### The switch
 
@@ -45,7 +60,9 @@ does not contain the seed.
 ### The free area (step 1)
 
 `users/{uid}.freeArea = { area, chosenAt, switches }`, `chosenAt` a server
-timestamp. The rules allow: a first write (switches 0 or 1, `chosenAt ==
+timestamp. **Only a real account may write it** (6 Oct, night): a guest's
+token — `firebase.sign_in_provider == 'anonymous'` — may leave it as it is
+and nothing more. From an account, the rules allow: a first write (switches 0 or 1, `chosenAt ==
 request.time`); one change, `switches` 0 → 1, a different area, thirty days
 after the stored `chosenAt`; nothing else. Refused, each with a rules test:
 choosing twice; changing early; changing twice; a change that does not count
@@ -58,9 +75,22 @@ A device's old choice is **moved up once, dated the day it is moved.** A
 student who picked three weeks ago waits thirty days from the move, not nine.
 Accepting the device's date would make "migration" a way to backdate.
 
+**The device's copy belongs to one account** (6 Oct, night). It carries the
+uid it was written for, and a different account signing in on that device
+does not see it. A copy with no uid — everything the live bundle wrote — is
+taken to be whoever is signed in the first time this build looks, and
+stamped as theirs. A guest's copy is not moved up while they are a guest
+(the rules would refuse it); it is moved up the moment they create an
+account, which keeps their uid.
+
+**No default.** An account with no free area holds no area, in the app and
+in the function, and is asked to choose. (A build with no accounts still
+defaults to the shoulder.)
+
 **Not stopped** (tested as a known limit): the owner may delete their profile
 (erasure) and a new profile may carry a first pick — so delete-and-recreate
-gives a fresh choice. So does a second account. See "Risks".
+gives a fresh choice. So does a second account, and an email-and-password
+account needs no verified address (decision 9). See "Risks".
 
 ### The content function (step 5)
 
@@ -75,8 +105,9 @@ Bearer <Firebase ID token>`.
 | 400 | not one of the nine areas (before the token is sent to Google) |
 | 401 | a token Google will not vouch for; a deleted account; no API key configured |
 | 429 | over 30 an hour (`data/content/fetchLimit.ts`), with `Retry-After` |
+| 403 | **a guest** (an anonymous token), for every area, before anything is read about them |
 | 503 | the account could not be read (includes a missing service account) |
-| 403 | the account may not have this area |
+| 403 | the account may not have this area — which includes every area, for an account that has not chosen its free area |
 | 200 | `{ version, area, leaseUntil, structures }` |
 
 Every answer is `Cache-Control: private, no-store`; no CORS header is ever
@@ -86,17 +117,18 @@ bypass, as in the app. The count is kept on `users/{uid}.contentFetch`
 (pinned in the rules; `update` only, so a deleted profile is not recreated)
 and in the instance's memory, which refuses without a database read.
 
-Two limits of that count, both measured: grants to an account that has **no
-profile document** (a guest before its first profile write) are not counted on
-the account, because there is nothing to update — only the instance's memory
-bounds them, and what such an account can be given is the default area and
-nothing else. And refusals are bounded only by the instance's memory, so a
-cold instance starts from nothing.
+One limit of that count, measured: refusals are bounded only by the
+instance's memory, so a cold instance starts from nothing. (The other limit
+the evening found — grants to a caller with no profile document could not be
+counted on the account — is gone: such a caller is no longer granted
+anything.)
 
-An account that has never chosen is given the **default free area, the
-shoulder** — as in the app. So a new visitor's device fetches the shoulder on
-first load and then the area they pick at onboarding: two areas per new guest,
-not one. The shoulder copy is deleted from the device once the pick is known.
+**A guest is served nothing, and there is no default area** (6 Oct, night).
+Google's lookup lists the ways an account can sign in; a guest has none, and
+is answered 403 for every area whatever their document says. An account
+that has not chosen its free area is refused every area too: it used to be
+served the shoulder, so a new visitor's device fetched the shoulder on first
+load and then the area they picked. Now it fetches one.
 
 ### Leases and the device copy (step 6)
 
@@ -128,6 +160,14 @@ After the fixed diagnostic paper and the two fixes of 6 Oct (evening):
 `bundled` 1,982,439 B (114,713 B under the limit), `server` 1,761,730 B. The
 paper is not in the entry chunk: it is its own file, 7,926 B, precached with
 the rest.
+
+After the three owner decisions (6 Oct, night): `bundled` 2,000,555 B
+(96,597 B under the limit), `server` 1,779,830 B,
+`build:demo` 1,407,741 B. The ten papers are one chunk of
+30,943 B holding no facts; the screen a guest sees is its own
+chunk too. The growth in the entry chunk is the account form now being part
+of onboarding, the builder that puts a paper together, and the teaching
+panel on the account screen.
 
 Moving the facts out frees about 221 kB of entry chunk, not the 300 kB the
 design estimated: the index and the vocabulary stay.
@@ -165,12 +205,14 @@ apart. The dump now fixes the time.)
 
 ## The eleven decisions
 
-**Confirmed by the owner on 6 Oct 2026: 7 and 10.** Decision 7 was answered
-differently from the default first taken, and has been rebuilt: the
-diagnostic is a small fixed sample that everyone can see (below). Decision 10
-stands as built: the lease is 14 days. **Decision 8 is pending an owner
-answer** — see "What decision 8 means". The other eight are defaults taken and
-not yet confirmed.
+**The owner's, as of 6 Oct 2026 (night): 7, 8, 9 and 10.** Decision 7 has
+been answered twice and rebuilt twice: first "a small fixed sample that
+everyone can see" (that evening; built, never released), then "choose your
+own, based on region if on a free account" — ten papers, built from the
+sitter's own facts (below). Decision 8 is resolved by a rule the owner set:
+educator features need full access. Decision 9's default is reversed: a
+guest is not an account. Decision 10 stands as built: the lease is 14 days.
+The other seven are defaults taken and not yet confirmed.
 
 Each is one constant or one small module.
 
@@ -182,169 +224,263 @@ Each is one constant or one small module.
 | 4 | `notes` / `source` in payloads | left out (nothing renders them) | `STRUCTURE_FACT_FIELDS_NOT_SERVED` |
 | 5 | Unread vocabulary lists | dropped | `data/content/vocabulary.ts` |
 | 6 | Generated files | git-ignored, regenerated by `vite.config.ts` when missing or stale | `src/scripts/lib/ensureContent.ts` |
-| 7 | Diagnostic | **owner, 6 Oct:** one fixed paper of fifteen questions, public, the same for every sitter | `lib/diagnosticSample.ts`, `data/diagnostic/` |
-| 8 | Assignment preview | pool from the index; questions exact where in hand, else "up to N" — **pending the owner** | `educator/lib/assignmentScope.ts` |
-| 9 | Guests / local builds | a guest is an account and is served its free area; local builds get the fixture | `vite.config.ts contentVariant` |
+| 7 | Diagnostic | **owner, 6 Oct (night):** ten papers; every area held → the whole-body paper, a free account → its free area's paper; built at the sitting from the sitter's facts, nothing public | `lib/diagnosticPapers.ts`, `data/diagnostic/papers.v3.json` |
+| 8 | Assignment preview | **resolved, owner, 6 Oct (night):** teaching needs full access, so an educator holds every area and the count is exact; "up to N" remains only for a device without the facts | `educator/lib/teachingAccess.ts`, `firestore.rules` `mayTeach` |
+| 9 | Guests / local builds | **owner, 6 Oct (night):** a guest is NOT an account and is served nothing; the free area needs a real account. Local builds get the fixture | `firestore.rules` `isRealAccount`, `hooks/useEntitlement.ts`, `netlify/functions/content-area.ts` |
 | 10 | Offline lease | 14 days — **owner, 6 Oct: stays** | `CONTENT_LEASE_DAYS` in `data/content/lease.ts` |
 | 11 | Demo fixture areas | hip and wrist & hand (most-answered by the demo class) | `data/content/demoFixtureAreas.ts` |
 
-### Decision 7: the diagnostic is one fixed paper
+### Decision 7: ten papers, and which one depends on what the student holds
 
-The before/after diagnostic is a whole-body baseline for a class. The default
-first taken on this branch gave a student who did not hold every area a paper
-of picture-to-name questions only — a different paper from a classmate's. The
-owner's answer (6 Oct 2026) is the other option in the design: **a small fixed
-sample that everyone can see**, so a whole class sits the same paper whatever
-each student has paid for. The picture-only branch and its generator
-(`questionGenerators/pictureName.ts`) are removed.
+**Owner, 6 Oct 2026 (night): "choose your own, based on region if on a free
+account."** This replaces the answer of that evening (one public paper of
+finished questions, version 2), which was built and never released. No
+sitting carries version 2 outside test data; its file, its script and its
+allowance in the built-file check are gone, and the number is skipped.
 
-**How it works now.** The paper is not generated on the device. It is fifteen
-finished questions in a committed file, `data/diagnostic/fixedSample.v2.json`,
-which every build carries — `bundled`, `server` and `fixture` alike — as its
-own small chunk (7.9 kB), loaded when a sitting starts. Nothing about the
-sitter goes into choosing it: not their areas, not their entitlement, not
-their class. A baseline is that paper; a follow-up is the paper its baseline
-was. The order is still shuffled per sitting. **One behaviour in both modes:**
-a `bundled` build uses the fixed paper too.
+**Who sits what.**
 
-**How the fifteen were chosen.** By the rule the live diagnostic used to draw
-a class's paper (`buildDiagnostic` + `buildDiagnosticQuestions`: the six
-most-pictured muscles and bones of each area, every area once and then round
-again, kinds of question spread), run once under the fixed name
-`locus-fixed-sample-2` in place of a class id
-(`src/scripts/buildDiagnosticSample.ts`). Nobody typed a list, and the paper
-has the character the live ones had. All nine areas are covered: six twice,
-elbow, thoracic and lumbar spine once.
-
-| # | Covers | Structure | Kind | Asks |
-| --- | --- | --- | --- | --- |
-| 1 | cervical spine | Multifidus | action | What is the action of Multifidus? |
-| 2 | hip | Psoas Major | identify | Which structure is shown? (picture) |
-| 3 | shoulder | Levator Scapulae | insertion | What is the insertion of Levator Scapulae? |
-| 4 | wrist & hand | Opponens Digiti Minimi (Hand) | nerve | What nerve innervates …? |
-| 5 | ankle & foot | Flexor Digitorum Longus | origin | What is the origin of …? |
-| 6 | knee | Popliteus | action | What is the action of Popliteus? |
-| 7 | thoracic spine | Iliocostalis | identify | Which structure is shown? (picture) |
-| 8 | elbow | Brachioradialis | insertion | What is the insertion of …? |
-| 9 | lumbar spine | External Oblique | nerve | What nerve innervates …? |
-| 10 | cervical spine | Longissimus | origin | What is the origin of …? |
-| 11 | hip | Obturator Internus | action | What is the action of …? |
-| 12 | shoulder | Latissimus Dorsi | functional | … is most responsible for which of these? |
-| 13 | wrist & hand | Flexor Digitorum Profundus | identify | Which structure is shown? (picture) |
-| 14 | ankle & foot | Flexor Digiti Minimi Brevis (Foot) | insertion | What is the insertion of …? |
-| 15 | knee | Vastus Intermedius | nerve | What nerve innervates …? |
-
-**The kinds of question are the kinds the live diagnostic asks**: multiple
-choice, four choices, mixing name-the-picture with origin, insertion, nerve,
-action and the clinical "functional" kind. No kind had to be dropped: a
-finished question is a prompt and four strings, and any kind can be written
-down. (The live papers also sometimes drew an "injury mechanism" question;
-this draw did not.)
-
-**Exactly what this makes public.** The file holds, per question, the prompt,
-the picture's id, the four choices and which is right. No explanation is
-stored (the generator's explanation is the structure's whole card) and no
-other field of any structure. Names, areas and pictures were public already.
-New to the public, in a build that otherwise carries no fact:
-
-*Twelve facts, each attributed to its muscle by the question that asks it:*
-
-| Structure | Field | The string |
-| --- | --- | --- |
-| multifidus | `actionText` (= `description`) | Stabilises and extends the spine; rotates the trunk. |
-| popliteus | `actionText` (= `description`) | Unlocks the extended knee by laterally rotating the femur on a fixed tibia, then assists knee flexion. |
-| obturator-internus | `actionText` (= `description`) | Externally rotates and stabilises the hip; arises from the obturator membrane. |
-| flexor-digitorum-longus | `origin` | Posterior tibia |
-| longissimus | `origin` | Sacrum; Iliac crest; Lumbar transverse processes |
-| levator-scapulae | `insertion` | Superior angle & medial border of scapula |
-| brachioradialis | `insertion` | Styloid process of radius |
-| flexor-digiti-minimi-brevis-foot | `insertion` | Base of proximal phalanx of 5th toe |
-| opponens-digiti-minimi-hand | `nerve` | Ulnar nerve |
-| external-oblique | `nerve` | Thoracoabdominal nerves; Subcostal nerve |
-| vastus-intermedius | `nerve` | Femoral nerve |
-| latissimus-dorsi | `functionalContext` (clinical layer) | Powerful shoulder extension and adduction, e.g. a pull-up, swimming's freestyle pull, or climbing. |
-
-*Twenty-seven wrong answers, printed beside them with no structure named.*
-They are other structures' facts of the same kind, and anyone who knows the
-anatomy can say whose:
-
-- action sentences (9), which are those muscles' `description`: gracilis,
-  abductor pollicis brevis, tensor fasciae latae; opponens digiti minimi
-  (hand), intertransversarii, vastus lateralis; dorsal interossei (foot),
-  biceps brachii, gluteus medius.
-- origins (6): popliteus, tibialis posterior, flexor hallucis longus;
-  spinalis, quadratus lumborum, iliocostalis.
-- insertions (9): serratus anterior, pectoralis minor, trapezius; flexor/
-  extensor carpi ulnaris ("Base of 5th metacarpal"), brachialis, biceps
-  brachii; adductor hallucis, quadratus plantae, plantar interossei.
-- functional sentences (3): triceps brachii, glenohumeral joint, pectoralis
-  major.
-
-The nine wrong answers to the three nerve questions are nerve names, which
-the public vocabulary already held. The three picture questions offer names
-only. **The right answers are in the file** (`correctIndex`): a student with
-devtools can read the key. That is no worse than today, when the bundle holds
-every answer to everything, and nothing rides on the diagnostic for the
-student — but it is a key that every class shares now, where before each
-class drew its own paper.
-
-**The guards know this is the exception.** The lint rule is unchanged: the
-paper is not the seed and is not reached through it. The built-file check
-looks for every structure's description exactly as before, and nine of the
-sentences above are descriptions — so the check is told about the paper
-rather than loosened: a sentence the paper prints may appear **only in the
-built file that carries the paper** (found by the marker
-`locusmsk-diagnostic-fixed-sample-v2`) and **only as often as the paper
-prints it**. The same sentence in any other file, or once more in that one,
-fails the build like any other leak (`src/scripts/lib/bundleFacts.ts`, eight
-tests, run against the real seed and the real paper). The papers are read
-from `data/diagnostic/`, so the only way to widen the exception is to put a
-string in a paper every student is handed. `diagnosticSample.test.ts` holds
-the file to the list above and fails if a right answer on the paper stops
-being what the seed says.
-
-**Versions, and the classes already mid-diagnostic.** Every sitting stores
-its `version` and the ids of the questions it asked. The live site is
-version 1: each class drew its own fifteen on the device (seeded by the class
-id) from the whole dataset. The fixed paper is **version 2**
-(`DIAGNOSTIC_VERSION`). So:
-
-| Student | What they see |
+| Sitter | Paper |
 | --- | --- |
-| Joins a class after this ships | Baseline: the fixed paper, stamped v2. Follow-up ten weeks on: the same fifteen, stamped v2. Any build, any areas. |
-| Sat a baseline on the live site (v1), follow-up due, `bundled` build | **The paper they sat before**: their class's own fifteen, rebuilt by the version-1 rule from the question ids their baseline stored, stamped **v1** so the two pair. Nothing is orphaned. This is the reason `buildDiagnostic` is kept, with its seed pinned to version 1; a test pins a version-1 draw. |
-| …the same student, `server` build, holding every area (a paying student, or a member of a licensed class) | The same: their own v1 paper, rebuilt from the facts the function served. |
-| …the same student, `server` build, **not** holding every area (a free account in an unlicensed or lapsed class) | **No follow-up.** Their v1 paper asked for facts across the body that this device may no longer be given, so it cannot be rebuilt; the fixed paper would be a different test and would not pair. The screen says "This one cannot be set up on this account… this account does not have every area", and nothing is stored. Their baseline stays an unpaired baseline and is left out of the class figure. |
-| Sat a v1 baseline and somehow a v2 follow-up | Not paired. `pairDiagnostics` still requires the same version and the same questions; tested. |
+| Holds every area: a subscriber, a member of a licensed class, a complimentary account, a subscriber inside the three days of grace | the **whole-body** paper: fifteen questions across all nine areas |
+| A free account | the paper for **their free area**: fifteen questions from that one area. Nine such papers |
+| A free account that has not chosen its area | none: nothing is offered until it has chosen |
 
-The class report mixes nothing: a v1 pair and a v2 pair are each a
-before/after on one paper, and both are percentage-point gains. But **a class
-that straddles the change sat two papers**, and its mean baseline mixes them;
-`scripts/cohortReport.ts` now says so when it happens, pairs by
-`pairDiagnostics` (it used a looser rule of its own), and counts the students
-who sat both but could not be paired.
+**A paper is a list of what to ask, not of answers.**
+`data/diagnostic/papers.v3.json` holds, for each question, a structure's id,
+the kind of question, the picture's id if it is a picture question, and the
+ids of the three structures whose own answers are the wrong choices. No
+origin, insertion, action or sentence of any kind. The question — its
+wording, the right answer, the wrong ones — is built at the sitting from the
+facts the sitter's device holds (`lib/diagnosticPapers.ts`
+`buildPaperQuestions`). So the papers put **no fact in any build**, and
+`check:bundle` allows nothing again: a server build passes with 462
+descriptions looked for and none found, no exception.
 
-**What was given up.** Under version 1 two classes drew different papers,
-"which limits how far an answer key can travel between year groups". A fixed
-public paper cannot do that without publishing more facts: every class, every
-year, now sits the same fifteen until the paper is deliberately replaced by a
-version 3. And the paper no longer follows the dataset: if one of its twelve
-facts is corrected in the seed, the test above fails and a new version has to
-be cut (`buildDiagnosticSample.ts`; never edit a published file).
+The one thing in the file that is not an id is a **nerve's name**, on five
+area-paper questions (two of them repeated on the whole-body paper), where an area has too few nerves of its own to offer four (the
+elbow has two). Those names are in the public vocabulary every server build
+already carries, and say nothing of which muscle a nerve supplies. What the
+file does give away, said plainly: which fifteen structures each paper asks
+about and in which way, and that structure A's answer is not structure B's.
 
-**What decision 8 means for an educator.** An educator's own account is
-usually free: the class licence opens areas for members, and the owner is not
-a member. In a server build such an educator's device holds one area, so the
-form says "up to 20 questions" for scopes outside it and cannot say "all this
-scope can build". They also cannot sit their own assignments outside their
-free area. Serving educators every area is the alternative.
+**Everyone who sits a paper gets the same paper.** The wrong answers are
+named in the file and the order of the four choices comes from the
+question's own id, so nothing depends on what else is loaded. Tested for
+every paper: byte-identical on a bundled build, on a server build holding
+only that paper's area, and on one holding all nine; and a follow-up
+byte-identical to its baseline.
 
-**Pending (6 Oct 2026).** The owner intends educator features to need a
-full-access account, which would dissolve this decision rather than answer it
-— an educator would hold every area. **That rule is not built**, and nothing
-on this branch enforces or assumes it. Before it can be, the owner has to say
-what happens to the classes that already exist and are owned by free accounts.
-Until then decision 8 is as built above.
+**An area paper uses that area and nothing else**, because a free student
+holds nothing else. The structure asked about and every structure a wrong
+answer comes from sit in the paper's area; a paper that reached outside
+would build nothing rather than a shorter test.
+
+**How the 150 were chosen.** By hand, not by rule: what a first- or
+second-year sports therapy or physiotherapy student is commonly taught and
+examined on in that area (shoulder: deltoid, supraspinatus, the rotator
+cuff's attachments, the acromion, the glenohumeral joint…), spread across the
+kinds of structure the area has and the kinds of question the diagnostic
+already asked. **docs/DIAGNOSTIC-PAPERS.md lists every question with its
+right answer as the seed states it**, for the owner to change before a
+paper's first sitting; how to swap one is at the top of
+`src/scripts/diagnosticPapers.ts`. The whole-body paper is fifteen of the
+area papers' questions, word for word, so the two relate.
+
+| Paper | Muscle facts (origin / insertion / nerve / action) | Clinical | Pictures | Of which bones, landmarks, joints, ligaments |
+| --- | --- | --- | --- | --- |
+| Whole body | 9 | 1 functional | 5 | 1 bone, 1 landmark, 1 joint, 2 ligaments |
+| Shoulder | 7 | 1 functional, 1 injury vignette | 6 | 3 landmarks, 2 ligaments, 1 muscle |
+| Elbow | 4 | 2 injury vignettes | 9 | 6 landmarks, 3 ligaments |
+| Wrist & hand | 8 | — | 7 | 1 bone, 2 landmarks, 2 joints, 1 ligament, 1 muscle |
+| Hip | 8 | — | 7 | 4 landmarks, 2 ligaments, 1 muscle |
+| Knee | 7 | — | 8 | 3 landmarks, 4 ligaments, 1 muscle |
+| Ankle & foot | 7 | — | 8 | 1 bone, 3 landmarks, 1 joint, 2 ligaments, 1 muscle |
+| Cervical spine | 5 | — | 10 | 2 bones, 3 landmarks, 2 joints, 2 ligaments, 1 muscle |
+| Thoracic spine | 5 | — | 10 | 4 landmarks, 2 joints, 3 ligaments, 1 muscle |
+| Lumbar spine | 5 | — | 10 | 6 landmarks, 3 ligaments, 1 muscle |
+
+**What could not be filled well, and why.**
+
+- **A picture's choices are always the same kind of thing as the answer**
+  (a bone among three ligaments is not a choice). So a kind with fewer than
+  four members in an area cannot be asked by picture there: **bones** in the
+  shoulder, elbow, hip, knee, thoracic and lumbar spine (two or three each),
+  and **joints** in the shoulder, elbow, hip, knee and lumbar spine. The
+  shoulder and elbow papers ask their joints by clinical vignette instead;
+  the hip, knee and lumbar papers have no joint question, and six papers
+  have no bone question.
+- **The clinical layer exists only for the shoulder and elbow**, so only
+  those two papers (and the whole-body one) have a functional or injury
+  question.
+- **The three spine papers are ten pictures in fifteen.** Their muscles are
+  mostly the deep back muscles the three areas share, with vague or
+  near-identical facts ("Dorsal rami of spinal nerves"); the clean fact
+  questions there are few.
+- **The elbow has 22 structures and four askable muscles**: nine of its
+  fifteen are pictures, two are vignettes about its two joints with the same
+  four choices.
+- Only reviewed data is used: no structure on any paper is flagged
+  `needsReview`, and blood supply is not asked.
+
+**Versions.** The papers are version 3 (`DIAGNOSTIC_VERSION`), and a sitting
+stores which paper it was (`paperId`) beside the version and the ids of the
+questions asked. **A published paper is never edited.**
+`papers.v3.lock.json` holds a fingerprint of every question as first built,
+and `diagnosticPapers.test.ts` fails — printing which question, and that a
+new version must be cut — if a structure is renamed or removed, or a fact a
+question prints (right or wrong) is corrected. `npm run papers:check` says
+the same from the command line.
+
+**The follow-up is always the baseline's paper**, whatever the student holds
+by then. Whether it can be built is a separate question, and the answer is
+the facts in hand: always, in a bundled build; in a server build, only if
+the account still holds what the paper is built from.
+
+| Between sittings | `bundled` | `server` |
+| --- | --- | --- |
+| Nothing changed | the same fifteen | the same fifteen |
+| A free student used their one change of free area (knee then, hip now) | sits the knee paper again: the facts are in the bundle | **cannot be set up**: "It repeats the questions you sat when you joined, which were about the knee, and this account does not have that area now." Nothing stored |
+| A free student subscribed, or joined a licensed class | still their area paper, not the whole-body one | the same |
+| A subscriber lapsed to free | sits the whole-body paper again | **cannot be set up**: "…drawn from every area, and this account does not have every area." |
+| A version-1 baseline from the live site (a class's own drawn paper) | that class's fifteen, rebuilt from the stored ids, stamped version 1 | the same for an account holding every area; otherwise cannot be set up, as before |
+| A baseline of a version this build does not have (version 2) | nothing is asked | nothing is asked |
+
+**The card is only offered when the paper can be sat.** The account screen
+used to offer "Take the follow-up" to a student whose follow-up could never
+be set up, on every visit. It now asks both questions — is a sitting due,
+and can its paper be built on this device — and shows nothing otherwise.
+
+**Two papers are never one figure.** `pairDiagnostics` pairs only sittings
+of the same version, paper and questions. `scripts/cohortReport.ts` reports
+each paper on its own ("3 students sat the knee paper, 1 sat the whole-body
+paper"), prints no figure for the class as a whole, and asks `MIN_PAIRED` of
+each paper separately. docs/CLAIMS.md says what follows: **a quotable figure
+needs one paper, which in practice means a licensed class**, where everyone
+sits the whole-body paper.
+
+**What students are told.** The baseline card said the course leader sees
+"only whether the class as a whole moved". No educator screen shows that; a
+sitting is stored under the student, where the rules give a class owner no
+read, and the only thing that adds a class up is the report script. The card
+now says what happens: "your course leader never sees your score. We work
+out one overall figure for the class from the students who sit it twice, and
+only that figure may be shared with your course leader."
+
+**What was given up.** A free student is measured on one area, not the whole
+body, so an unlicensed class is as many small groups as its students chose
+areas. And each paper is fixed: every class that sits it sits the same
+fifteen until it is replaced by a new version.
+
+### Decision 8: resolved — an educator holds every area
+
+**Owner, 6 Oct 2026 (night): educator features need full access.** Creating
+a class, and the educator screens, need the educator's own account to hold a
+subscription that has started and not run out (the days of grace included),
+a complimentary or institutional grant, or admin — in `firestore.rules`, not
+only in the app (`mayTeach`, `mayRunCohort`; `educator/lib/teachingAccess.ts`).
+An educator therefore holds every area, the facts of every area are on their
+device, and the assignment form counts real questions: seen in a browser, a
+paid educator in a server build holds nine areas and the form does not say
+"up to N".
+
+**The "up to N questions" fallback is kept**, because it is still reachable:
+when the educator's device does not have an area's facts at that moment
+(offline, a lease that ran out), and for the one educator who does not hold
+every area — the owner of a class that is itself licensed, whose own account
+has no entitlement (below). It is no longer the normal case.
+
+**Chosen: a licensed class carries its owner, for that class.** The licence
+is granted to the class by the owner of LocusMSK, through the admin script,
+for exactly that teaching. So while it runs, the class's owner may see its
+screens, set work and invite even with no entitlement of their own. It does
+not let them create another class (the rules cannot ask "does this account
+own some licensed class" without a query, and a new class has no licence
+yet). A **member** of a licensed class holds every area as a student and is
+not thereby an educator.
+
+**An educator whose access lapses keeps everything.** The rules still let
+them read their classes, students, figures, assignments and invitations, and
+delete any of them; students stay members and can still join and leave. In
+place of the screens they see "Teaching tools need full access", which says
+first that their classes are kept and their students are still in them.
+
+**Where the rules read the entitlement differently from the app** (all on
+the strict side, and noted in the rules file): dates are ISO strings, which
+rules cannot parse, so they are read from their first nineteen characters as
+UTC (ten for a date alone); a date that cannot be read **refuses** there and
+reads as "not expired" in the app; only a single entitlement map is read,
+where the app also accepts a list (nothing writes one).
+
+### Decision 9, changed: a guest is not an account
+
+**Owner, 6 Oct 2026 (night): the free area needs a real account.** The
+default taken was "a guest is an account and is served its free area". A
+guest — the anonymous sign-in every visitor gets — could pick a free area
+with no sign-up, and nine wiped browsers were nine areas.
+
+| Who | What they can reach |
+| --- | --- |
+| A guest | The landing page, the prices, the legal and sources pages, the comparison page, onboarding, and their own account screen (their numbers, appearance, the way to an account). **Not** Today, Study, a session, the Atlas, a structure's card, Progress, the diagnostic or achievements. They cannot join or create a class |
+| An account that has not chosen its free area | Asked to choose before anything else. No default: it used to be the shoulder |
+| An account | As before |
+
+The Atlas was considered as something a guest might browse by name. It lists
+entitled structures with their facts and is where drills start, so a
+names-only version would be a second screen to build; a guest is shown the
+way to an account there too.
+
+- **Rules.** `users/{uid}.freeArea` may be created or changed only by a
+  token whose `firebase.sign_in_provider` is not `anonymous`. A write that
+  leaves it unchanged still goes through, so a guest holding one from before
+  keeps it and their other writes are not refused. Linking a sign-in keeps
+  the uid, so the same document can be chosen for from that moment.
+- **Function.** A guest's token is answered 403 for every area, before
+  anything is read about them, whatever their document holds. And there is
+  no default area: not chosen is not served.
+- **App.** `useEntitlement` is told when it is reading for a guest and
+  answers "no area". The gate is one wrapper in `App.tsx` round every route
+  that revises (`Auth/AccountGate.tsx`).
+- **Joining a class** is closed to a guest by the app only (the account
+  screen offers a guest the account, not the join-code field). The rules
+  still accept a guest's join: the live bundle lets guests join, and an
+  installed copy must go on working. A guest who joined before stays a
+  member; their class's licence opens nothing until they have an account.
+- **Bundled mode.** The same gate, but there it is the app declining to show
+  facts that are in the downloaded files. Server mode is where it is
+  enforced.
+- **Builds with no accounts** (`VITE_PERSISTENCE=local`: the demo, a dev
+  server with no Firebase project) are unchanged: nobody is a guest there,
+  and the free area still defaults to the shoulder.
+
+**New visitor.** Landing → Start free → create account (email and password,
+or Google, with the age and terms tick) → pick your free area → how it works
+(two short steps) → Today. Four steps where there were three. Someone who
+signs in at step one to an account that is already set up goes straight in.
+
+**Existing guests lose nothing.** On their next load they see "Create a free
+account to keep going — Your progress and your free area come with you."
+Creating the account **links** it to the guest they already are: same uid,
+so everything stored under it is theirs, and the free area kept on their
+device is moved up to the account at that moment. Seen in a browser against
+the emulators with a guest seeded the way the live site stores one (an
+anonymous account, the choice on the device only, progress in Firestore):
+after creating the account, the same uid, the area on the account, six
+mastery rows, twelve answers and 180 XP all intact, and one fetch of their
+area. **Offline**, the gate opens (from the service worker's cache) and says
+"You are offline. Creating an account needs a connection. Everything you
+have done is still on this device"; the account screen still opens; nothing
+revises until they are back online and have an account.
+
+**Email is not verified, and that is the remaining cheap route to several
+free areas**: an email-and-password account needs only an address that looks
+like one. To require it: send the verification email on sign-up
+(`sendEmailVerification`), refuse `freeArea` in the rules unless
+`request.auth.token.email_verified == true` (Google accounts arrive
+verified), have the function refuse an unverified account, and add a "check
+your inbox" step between creating the account and picking the area, with a
+resend. A day's work, and a real cost in first-use friction; the owner has
+not asked for it.
 
 **What decision 11 costs.** Two of the demo's three set assignments are on
 the shoulder and the ankle & foot. Built from the fixture, a visitor who
@@ -355,36 +491,93 @@ The demo's default is still `bundled`.
 ## Rollout — recommended order
 
 Nothing below has been done. Each step is safe on its own and can stop there.
-Each has its own way back: step 1, redeploy the previous `firestore.rules`
-(`git show 581dfe1:firestore.rules`) — free areas already written stay on the
-accounts and are simply no longer policed; step 2, publish the previous
-deploy from Netlify's deploy list (the content function goes with it; nothing
-calls it); step 3 is a draft and is deleted or ignored; step 5, unset the
-variable and redeploy, or publish the previous deploy.
 
-1. **Rules.** `npm run deploy:rules`. Additive: old clients write no
-   `freeArea` and are unaffected. Nothing else may ship first — a client that
-   writes `freeArea` before the rules know it is still accepted (the old
-   rules allow any field), but unconstrained.
+**The rules on this branch are stricter than production's in two places**: a
+guest may not hold a free area, and creating a class needs full access. Rules
+deploy in an instant; the app does not — an installed copy keeps the bundle
+it has until the student accepts the update prompt (`registerType:
+'prompt'`), which can be days. So for days **the old bundle talks to the new
+rules**. What that does to each kind of person was tested by replaying the
+writes the live code makes (`581dfe1`, what production served on 6 Oct)
+against these rules in the emulator (`rules-tests/oldClient.rules.test.ts`,
+nine tests):
+
+| On the OLD bundle, once these rules are deployed | What they experience |
+| --- | --- |
+| An existing guest | **Nothing changes.** They can still study: the live bundle carries every fact and never asks a server. Every write it makes is accepted: the profile write on each load, each answer, the question counter, mastery, the session summary, XP, achievements. They can still join a class by its code, write the class counters, sit a baseline and leave. Nothing errors |
+| A guest who creates an account from the old screen | Carries on as that account; every write accepted |
+| A signed-in student | Nothing changes, in or out of a class; can still delete their account |
+| A paying educator | Nothing changes: creates classes, sets work, invites |
+| A **free** account that tries to create a class | **Refused, which is the rule.** The old screen tries eight join codes, is refused eight times and says "Could not allocate a join code. Please try again." Nothing is half-written. The owner says no class is owned by a free account, so this is someone trying for the first time |
+
+**Why nothing breaks for guests:** the live client keeps the free area on
+the device and **never writes `users/{uid}.freeArea`**, so the one guest
+write the new rules refuse is one it does not make. (Shown refused in the
+same test file, so that sentence has something under it.) The only clients
+that ever wrote a guest's free area were test visitors to this branch's
+earlier draft; such a guest keeps what was stored and simply cannot change
+it.
+
+So **rules first is still the right order**, and no tolerant transition rule
+is needed. The other order also works — the new app never writes a free area
+for a guest and shows the panel in place of the class form whatever the
+rules say — but it leaves both rules unenforced in the meantime.
+
+Each step has its own way back: step 1, redeploy the previous
+`firestore.rules` (`git show 581dfe1:firestore.rules`) — free areas already
+written stay on the accounts and are simply no longer policed, and nothing
+written under the new rules is invalid under the old; step 2, publish the
+previous deploy from Netlify's deploy list (the content function goes with
+it; nothing calls it) — an existing guest who created an account stays one,
+which the old bundle handles as it always did; step 3 is a draft and is
+deleted or ignored; step 5, unset the variable and redeploy, or publish the
+previous deploy.
+
+0. **Before step 1, one check.** `npx tsx scripts/cohortReport.ts` (no
+   argument) now prints, for every class, whether its owner has full access.
+   The owner says none is owned by a free account; this is the run that
+   confirms it. For any line reading `OWNER HAS NO FULL ACCESS`, grant that
+   account access (`accountData.ts grant`) or licence the class before
+   deploying, or its owner meets the panel.
+1. **Rules.** `npm run deploy:rules`. Safe for every installed copy, as
+   above. From this moment: no guest can be given a free area, by any
+   client; only an account with full access can create a class.
 2. **Client and functions, still `bundled`.** Deploy this branch as it is.
-   Students notice nothing except: their free area is moved to their account
-   on first load, and the thirty-day clock restarts that day. The content
-   function is live and unused. Watch `billingFailures` and the function log
-   for a day; confirm the three billing functions answer as before.
+   What people notice, as each accepts the update:
+   - **A new visitor** creates a free account before anything else.
+   - **An existing guest** sees "Create a free account to keep going"; their
+     progress and their free area come with them.
+   - **A free student with an account** has their free area moved to their
+     account on first load, and the thirty-day clock restarts that day. One
+     who never chose (they skipped, and were given the shoulder) is asked to
+     choose.
+   - **A paying student** notices nothing.
+   - **An educator** with full access notices nothing; one without sees the
+     panel.
+   - **A class mid-diagnostic** carries on: version-1 follow-ups are as they
+     were, and new baselines are the new papers.
+
+   The content function is live and unused. Watch `billingFailures` and the
+   function log for a day; confirm the three billing functions answer as
+   before.
 3. **Test `server` on a draft.** Build with `VITE_CONTENT_SOURCE=server` and
    deploy without `--prod`. A draft shares production's Firebase and
    functions environment, so sign in with a real free account and a real
-   paid one: free sees one area; paid sees nine; offline reload works;
-   `/structure/<locked>` shows the lock. Check the function log lines.
-4. **Decide the eleven.** At least 7, 8, 10 before students are switched.
+   paid one: free sees one area; paid sees nine; a guest is refused;
+   offline reload works; `/structure/<locked>` shows the lock. Check the
+   function log lines.
+4. **Decide what is left of the eleven**: 1 to 6 and 11 are defaults still
+   unconfirmed. 7, 8, 9 and 10 are the owner's.
 5. **Switch.** Set `VITE_CONTENT_SOURCE=server` in Netlify and redeploy.
-   Existing installs keep the old bundle until they accept the update prompt
-   (`registerType: 'prompt'`), so the two modes coexist for days; both work.
+   Existing installs keep the old bundle until they accept the update
+   prompt, so the two modes coexist for days; both work.
 6. **Rollback** is unsetting the variable and redeploying. The seed is still
    in the repository and a bundled build is the default. Device copies become
    unused, not harmful.
 7. **The demo** (`build:demo`) separately: `VITE_CONTENT_SOURCE=fixture` on
-   the demo site once decision 11 is made.
+   the demo site once decision 11 is made. (With the fixture the demo's
+   educator holds two areas, so the whole-body diagnostic cannot be built
+   there; the demo has no class to sit one in.)
 
 Only after step 5 has held: remove the seed from a bundled build's reach
 entirely, if ever. Keeping it is what makes rollback one variable.
@@ -423,32 +616,50 @@ entirely, if ever. Keeping it is what makes rollback one variable.
     a refusal (fixed 6 Oct, `1dc7dbb`). What is left of it: if the write to
     the account takes longer than eight seconds the app asks anyway, may be
     refused once, and asks again by itself when the write lands.
-11. **Whoever signs in on a device inherits that device's free-area copy** if
-    their own account has none: the copy is moved up as that account's first
-    pick. Seen when a new admin account signed in on a browser a guest had
-    used. For a paying account it costs nothing; for a second free student on
-    a shared computer it spends their choice for them.
+11. **Whoever signs in on a device inherited that device's free-area copy**
+    if their own account had none. Fixed (6 Oct, night) for copies written
+    from now on, which carry their owner's uid. What is left: a copy the
+    live bundle wrote has no owner, and goes to whoever is signed in on that
+    device the first time this build looks.
 12. **Someone offline at the first load after the switch has no facts**: none
     were ever saved on the device, because a bundled build saves none. They
     see the names, the pictures and "connect to load this area" until they
     are next online. Measured; see below.
+13. **An educator whose subscription lapses loses the teaching tools the
+    same moment as the areas** — at the renewal instant too (risk 3): until
+    the webhook lands they see "Teaching tools need full access" and cannot
+    set work. Their classes and students are untouched, and it clears when
+    the entitlement does. The three days of grace cover a failed payment.
+14. **A free student who was mid-diagnostic and changes their free area**
+    cannot sit their follow-up once facts are fetched per area, and is left
+    out of the class figure. They are told why.
+15. **Existing guests must create an account to carry on.** Nothing of
+    theirs is lost and the uid is kept, but it is a step some will not take.
+    How many guests there are is not something this branch can count.
 
 ## What this still does not stop
 
-- **Nine free accounts are nine areas.** A guest is an account, any account
-  may choose its free area, and sign-up is free. The design's "someone who
-  paid for at least a month" is not the bar; "someone prepared to script nine
-  sign-ups" is. The same goes for delete-and-recreate. Closing it means
-  either not letting the free area be chosen, or App Check on the function,
-  or a per-IP limit — none built.
+- **Nine free accounts are nine areas.** A guest can no longer hold one
+  (6 Oct, night): it takes an account. But sign-up is free and an
+  email-and-password account needs no verified address, so the bar is
+  "someone prepared to make up nine email addresses", not "someone who paid
+  for at least a month" — and delete-and-recreate still gives a fresh
+  choice. Closing it means verifying email (decision 9 says what that
+  takes), App Check on the function, or a per-IP limit. None is built.
 - A paying account saving its own areas; content already on a device; the
   public pictures and hotspot polygons.
 - The index gives away each structure's name, areas, relations (`jointId`,
   `parentBoneId`) and which kinds of fact it has.
-- The diagnostic's fixed paper gives away twelve facts and its own answer
-  key, on purpose (decision 7 lists them).
+- The diagnostic's papers give away which fifteen structures each asks
+  about and in which way, and no fact (decision 7).
+- In a `bundled` build, everything: the guest gate and the paywall are the
+  app declining to show what is in the downloaded files.
 
 ## Verified on 6 Oct 2026
+
+*Superseded in part that night: a guest is now refused every area, an
+account that has not chosen is served none, and the diagnostic is ten
+papers. What follows is what was measured at the time.*
 
 On `content-server-2` at `5a1420d` (three commits past the hand-over at `0eccb7a`:
 `e8158ca` rules tests, `1dc7dbb` the free-area race, `5a1420d` a slash in a
@@ -579,6 +790,9 @@ looks exactly like "downloads are not available in this browser".
 
 ## After the owner's answers, 6 Oct 2026 (evening)
 
+*The fixed public paper described here (version 2) was replaced the same
+night and never released; see decision 7. Defects 3 and 4 stand.*
+
 Four commits on top of the pass above: the fixed diagnostic paper
 (decision 7), the same paper held in one order for a whole sitting, and
 defects 3 and 4. Emulators only; nothing deployed to production.
@@ -627,6 +841,201 @@ production): `https://content-server--mskanatomyrevision.netlify.app`, entry
   (`buildDiagnosticSample.ts --force`); after that, only as version 3.
 - Decision 8.
 
+## Three owner decisions, 6 Oct 2026 (night)
+
+Built on top of the evening's pass: papers by access (decision 7), a real
+account for the free area (decision 9), full access for teaching (decision
+8). Emulators only; nothing deployed to production; no rules deployed.
+
+**Checks.** `vitest`: 2,232 passed, 1 skipped (the question dump),
+166 files — the evening had 2,035. `test:rules`: 101 passed, in
+two files — the evening had 63. `tsc` on the app and the functions: clean.
+`eslint` on the files touched: no errors (three fast-refresh warnings).
+`validate-content`: 0 errors. `npm run papers:check`: 10 papers, 150
+questions, all as published. `check:bundle` on a `server` build: 70
+files read, 462 descriptions looked for, none found — **with no exception
+for the diagnostic**. The question dump is still `629965d3…9a06bb`: ordinary
+sessions and the version-1 draw are byte-identical to `581dfe1`.
+
+**Sizes.** Entry chunk, limit 2,097,152 B: `bundled` with production's
+`.env` 2,000,555 B (96,597 B under; the evening was
+1,982,439), `server` 1,779,830 B, `build:demo` 1,407,741 B. The
+papers are their own chunk (30,943 B), and so is the screen a guest
+sees (2,480 B); neither is in the entry chunk.
+
+**The function, over real HTTP with emulator-minted tokens** (the evening's
+matrix with these rows changed or added; 54 rows, the same ten "failures" as
+before, all of them the script's own: nine payload checks that read a field
+the index does not have, verified separately as identical to the generated
+files, and the in-memory refusal count, which `netlify dev` resets on every
+call):
+
+| Caller | Answer |
+| --- | --- |
+| A guest with no profile | 403, every area |
+| A guest with a profile and no free area | 403, every area |
+| A guest whose document holds a free area from before | 403, every area, that one included |
+| A guest who joined a licensed class before | 403, every area |
+| A guest whose document holds an entitlement | 403, every area |
+| That guest after creating an account (linked, same uid) | their free area 200, the other eight 403 |
+| An account that has not chosen its free area | 403, every area (no default) |
+| An account with no profile document | 403, every area |
+| A guest asking 31 times in a row | 403 each time; nothing read, nothing counted on their document |
+| Every other row | as the evening measured |
+
+**The rules, in the emulator** (`rules-tests/`): a guest refused a free area
+on a new profile, on an existing one, and the change; a guest's stored
+choice and other writes left alone; the same uid allowed once linked; Google
+and other providers counted as accounts. Creating a class: free refused
+(no entitlement, a stored free tier, no profile, a guest); paid allowed;
+expired refused; the days of grace allowed and refused once over;
+complimentary and institutional allowed; a delayed start refused until it
+begins; refunded refused; cancelled allowed until the paid time ends; admin
+allowed by claim and by role document; a member of a licensed class refused;
+a date with no time read as the start of that day; an unreadable date
+refused. A lapsed educator: reads everything, may delete, cannot create,
+set, invite, rename or archive; students' membership and writes untouched;
+the owner of a licensed class may run it and not start another. And the nine
+replays of the live bundle's writes (see "Rollout").
+
+**In a browser** (Chromium, a fresh profile each time, no reload first, 1280
+px and 390 px, the Firestore and Auth emulators), on a `server` build and
+again on a `bundled` one:
+
+- *A new visitor.* Lands on "Create your free account", step one of four,
+  with no Skip. As a guest, every address that revises (`/`, `/study`,
+  `/study/setup`, `/session`, `/atlas`, `/structure/…`, `/progress`,
+  `/diagnostic`, `/achievements`) returns them there with no fact on screen;
+  the app asks the server for nothing; asked directly with the guest's
+  token, the function answers 403. The prices stay open. A refused sign-up
+  is said in the alert region and the form stays. Account made: the same
+  uid, "Pick your free area", no Skip, the button waits. Picks the knee,
+  reads the two notes, starts: on the account `freeArea` is the knee, unused,
+  and the profile is an account. **Exactly one area is fetched — the knee —
+  and no default** (the evening's "a brand-new guest is sent two areas" is
+  gone). A knee card shows its facts; the first session starts.
+- *An existing guest*, seeded the way the live site stores one (an anonymous
+  account; the free area on the device only, with no owner; six mastery
+  rows, twelve answers, a session, 180 XP). Next load: "Create a free
+  account to keep going", "Your progress and your free area come with you.
+  Your free area is Knee." Every address that revises shows it; nothing is
+  asked of the server; nothing is written for them. The account screen shows
+  their twelve answers and the way to an account, and no class field,
+  subscription block or downloads. They create the account **with no
+  reload**: the gate is gone, the same uid, the knee on the account as an
+  unused first pick, the profile an account, all six mastery rows, twelve
+  answers and 180 XP still there, one fetch of the knee, Progress showing
+  their work.
+- *An offline guest.* The gate opens from the cache and says an account
+  needs a connection and that nothing on the device is lost; trying anyway
+  is answered "You seem to be offline…"; the account screen opens; nothing
+  thrown.
+- *A free account tries to create a class.* The account screen's Teaching
+  block and `/educator` and `/educator/new` all show "Teaching tools need
+  full access" with the way to the plans; no class is created.
+- *A class.* An account made a subscriber in the emulator signs in at step
+  one and goes straight in, holding nine areas; creates a class; the
+  assignment form counts real questions (no "up to N"). A free student
+  (new visitor → account → knee) joins by the code, is offered the baseline
+  with the new copy, and sits **the knee paper** end to end: fifteen
+  questions, four different choices each, eight pictures drawn, no area
+  asked for during the sitting, and the words and the order of the choices
+  on screen exactly the paper built from the seed; stored as version 3,
+  paper `knee`. A paid student sits **the whole-body paper** the same way;
+  stored as paper `whole-body`.
+- *Follow-ups*, with `takenAt` moved back 75 days: each asked exactly what
+  its baseline asked and is stored on the same paper; nothing is offered
+  after. A subscriber whose access lapsed in between is not offered the
+  whole-body follow-up in a server build, and its address says why; in a
+  bundled build it is offered. A free student whose area changed (knee →
+  hip) is not offered the knee follow-up in a server build, its address
+  says "…which were about the knee, and this account does not have that
+  area now", and nothing is stored; in a bundled build they sit the knee
+  paper. A free student who has since subscribed sits the knee paper, not
+  the whole-body one.
+- *The educator's access lapses.* `/educator`, the class, its students, its
+  assignments and `/educator/new` all show the panel with "Your class, …, is
+  kept exactly as it is, and your students are still in it"; the account
+  screen still lists the class; the four members and the class document are
+  untouched.
+- *The class report*, the real `scripts/cohortReport.ts` run against the
+  emulator: "3 students sat the knee paper, 1 sat the whole-body paper.
+  These are different tests. Each is reported on its own below; no figure
+  covers the class as a whole." and then each paper with its own counts and
+  its own "NOT QUOTABLE: under 8 students sat this paper twice".
+
+All twelve runs (three journeys, two widths, two builds) were repeated on
+the last commit. No console errors beyond the refusals the scripts
+themselves asked for, with one exception: in both runs of the class journey
+on the bundled build the Firestore emulator answered one `Listen/channel`
+request with 400, once on the paid student's screen and once on the
+educator's. Nothing on screen or in the stored data was affected, and the
+same journey on the server build was clean. It is recorded as unexplained
+rather than dismissed: it was not chased further.
+
+*Not browser-tested:* Google sign-in (the emulator has no popup;
+unit-tested); iOS Safari and an installed PWA; a real update prompt from the
+live bundle to this one; a follow-up to a version-1 baseline (unit-tested);
+"no focus on first load" under a real pointer (Playwright counts a scripted
+load as untouched, which is the case that was checked).
+
+**Found and fixed on the way** (all in the night's commits):
+
+1. A guest who creates an account keeps their uid, and the entitlement hook
+   called that account "already read". For a moment it reported a settled
+   answer holding an area the account did not yet have on the server, and
+   the area was fetched twice.
+2. Headings took focus as their screen opened, drawing a focus ring on a
+   first load. The app's route-focus hook did the same on the redirect a new
+   visitor gets to onboarding; that is fixed with it.
+3. Onboarding saved the chosen areas through a filter of the areas held
+   before the choice (paywall trace finding 14).
+4. `lastActiveAt` is a Firestore timestamp and was read as a string: the
+   class report counted nobody as active, and the educator's student list
+   could not print the date.
+5. Creating a class told a refused account "Could not allocate a join code.
+   Please try again."
+
+**The two "defect 5" items of the evening, re-evaluated.**
+
+- *"A brand-new guest is sent two areas"*: gone. A guest is sent none, and
+  an account that has not chosen is sent none; a new student's device
+  fetches one area, the one they pick (seen in the browser).
+- *"An account with no free area inherits the device's stored choice on a
+  shared computer"*: fixed for every copy written from now on, which
+  carries the uid it was written for; a different account does not see it.
+  **What remains:** a copy written by the live bundle has no owner, and is
+  taken to belong to whoever is signed in on that device the first time
+  this build looks. That is right for the person who has been using the
+  device, and wrong only if somebody else signs in on it first after the
+  update.
+
+**The draft** was redeployed from this state in `bundled` mode (never to
+production): `https://content-server--mskanatomyrevision.netlify.app`, entry
+`assets/index-DlKKpuSG.js`. `paddle-portal` 405, `paddle-webhook` 405,
+`renewal-reminders` 403, `content-area` with no token 401.
+Production served `assets/index-BCjoSWbO.js` before and after. **The draft
+shares production's Firebase project and production's rules, which are the
+OLD rules:** on the draft the app's own gates apply (a guest is asked for an
+account, a free account sees the teaching panel), but nothing is enforced by
+the database until step 1 of the rollout.
+
+**Left open by this.**
+
+- The 150 questions are the owner's to review (docs/DIAGNOSTIC-PAPERS.md)
+  before the first sitting of each paper. After that, only as a new version.
+- Email is not verified (decision 9).
+- A free student in an unlicensed class is measured on one area, and such a
+  class is unlikely to reach a quotable figure on any paper (docs/CLAIMS.md).
+- /privacy still does not mention the diagnostic, and students are not told
+  class-level figures may be reported outside their course (docs/CLAIMS.md);
+  both are needed before a pilot's first baseline.
+- Today has no heading, so after a guest creates an account focus goes to
+  the page's main region rather than to a title.
+- The owner of a licensed class with no entitlement of their own can run
+  that class but not create another, and the app reads "see the plans" to
+  them at `/educator/new`. If that case is real, grant the account access.
+
 ## Found on the way, not fixed
 
 - Adaptive mode builds each MCQ from a pool of one structure, so its name
@@ -636,5 +1045,9 @@ production): `https://content-server--mskanatomyrevision.netlify.app`, entry
   `offline/swPlugin.ts`; it did before this work.
 - `eslint .` reports 21 errors in `src/scripts/` (explicit `any`); none in
   files this work touched.
+- Today has no `<h1>`, so the route-focus hook has nothing to land on
+  there (it now falls back to the main region when a stand-in gives way).
+- The educator sidebar still offers "+ New class" to an account that will
+  be shown the panel.
 - `HotspotEditorApp` is lazy-loaded without a build-time guard, unlike
   `DevRoutes`; it no longer imports the seed, so it carries no facts either way.
