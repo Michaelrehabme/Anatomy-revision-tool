@@ -75,6 +75,13 @@ export interface ContentAccess {
   loading: boolean;
   /** The entitlement was read, not assumed. See AreaLoadRequest.known. */
   known: boolean;
+  /**
+   * Changes when what the SERVER would say about this account has changed
+   * without `areas` changing — a free area that was shown from the device and
+   * has now landed on the account. The areas are asked for again: one refused
+   * while the write was in flight is granted now.
+   */
+  revision?: number;
 }
 
 const everyArea = (status: AreaFactsStatus) =>
@@ -178,6 +185,7 @@ export function useAnatomyContent(repository: AnatomyRepository | null, access?:
   const areasKey = (access?.areas ?? []).join(',');
   const accessLoading = access?.loading ?? false;
   const known = access?.known ?? false;
+  const revision = access?.revision ?? 0;
 
   const [loads, setLoads] = useState<{ uid: string | null; areas: AreaLoad[] }>({ uid: null, areas: [] });
   const [settled, setSettled] = useState(!loader || !access);
@@ -221,7 +229,7 @@ export function useAnatomyContent(repository: AnatomyRepository | null, access?:
     return () => {
       cancelled = true;
     };
-  }, [loader, access === undefined, uid, areasKey, accessLoading, known, factsAttempt]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [loader, access === undefined, uid, areasKey, accessLoading, known, revision, factsAttempt]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // A lease can run out, or come due for renewal, while the app sits in a
   // background tab for a week. Looked at when the student comes back to it.

@@ -88,6 +88,18 @@ export interface UseEntitlement {
   /** True once the single permitted change has been used: only a subscription opens more. */
   switchUsed: boolean;
   /**
+   * The free area shown is on its way to the account and has not landed yet.
+   * The gates do not wait on it — the device shows the choice at once — but
+   * anything that asks the SERVER about it must: the content function reads
+   * the account, and until the write lands the account still says the old
+   * area (or none), so asking now is asking to be refused. Goes false when
+   * the write lands, is refused, or has taken longer than a connection would
+   * (FREE_AREA_SAVE_WAIT_MS), so an offline device is not left waiting.
+   */
+  freeAreaSaving?: boolean;
+  /** Counts free-area writes that have landed on the account. A change means: what the server will say has changed. */
+  freeAreaSaves?: number;
+  /**
    * Read again. For the pricing page after checkout: the webhook writes the
    * entitlement a few seconds after Paddle takes the payment, so the first read
    * usually finds nothing yet.
@@ -115,6 +127,13 @@ export function refreshEntitlementEverywhere(): void {
   refreshSignal.dispatchEvent(new Event('refresh'));
 }
 
+/**
+ * How long a free-area write may hold back questions to the server before it
+ * is treated as not arriving for now. Offline, Firestore keeps the write and
+ * never answers; this is what stops that being an endless "Loading…".
+ */
+export const FREE_AREA_SAVE_WAIT_MS = 8000;
+
 /** Coming back to the app re-reads, but not more than once a minute. */
 const VISIBLE_REREAD_MS = 60_000;
 
@@ -125,6 +144,28 @@ export function useEntitlement(uid: string | null): UseEntitlement {
   const [known, setKnown] = useState(false);
   const [readCount, setReadCount] = useState(0);
   const settledFor = useRef<string | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [saves, setSaves] = useState(0);
+  const savingTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  /** A free-area write has set off for the account. See UseEntitlement.freeAreaSaving. */
+  const beginSave = useCallback(() => {
+    if (savingTimer.current) clearTimeout(savingTimer.current);
+    setSaving(true);
+    savingTimer.current = setTimeout(() => setSaving(false), FREE_AREA_SAVE_WAIT_MS);
+  }, []);
+  /** It landed, or was refused. Landing is counted even after the wait ran out: that is when the server's answer changes. */
+  const endSave = useCallback((landed: boolean) => {
+    if (savingTimer.current) clearTimeout(savingTimer.current);
+    savingTimer.current = null;
+    setSaving(false);
+    if (landed) setSaves((n) => n + 1);
+  }, []);
+  useEffect(
+    () => () => {
+      if (savingTimer.current) clearTimeout(savingTimer.current);
+    },
+    [],
+  );
 
   // The current choice, for chooseFreeArea to read without being rebuilt on
   // every change (it is handed to buttons as a prop).
@@ -194,14 +235,17 @@ export function useEntitlement(uid: string | null): UseEntitlement {
         const onDevice = getFreeAreaChoice();
         setFreeArea(onDevice);
         if (!onDevice) return;
+        beginSave();
         saveFreeArea(uid, onDevice.area, switchesToMigrate(onDevice))
           .then((moved) => {
             storeFreeAreaChoice(moved);
             if (!cancelled) setFreeArea(moved);
+            endSave(true);
           })
           .catch(() => {
             // Refused (another device moved a choice up first) or unreachable.
             // The next read says which, and brings the account's answer back.
+            endSave(false);
           });
       })
       .catch(() => {
@@ -218,7 +262,7 @@ export function useEntitlement(uid: string | null): UseEntitlement {
       });
 
     return () => { cancelled = true; };
-  }, [uid, readCount, setFreeArea]);
+  }, [uid, readCount, setFreeArea, beginSave, endSave]);
 
   const refresh = useCallback(() => refreshEntitlementEverywhere(), []);
 
@@ -236,13 +280,18 @@ export function useEntitlement(uid: string | null): UseEntitlement {
     setFreeArea(getFreeAreaChoice());
 
     if (freeAreaIsOnTheAccount() && uid) {
+      beginSave();
       import('../data/entitlementRepository')
         .then(({ saveFreeArea }) => saveFreeArea(uid, area, switches >= 1 ? 1 : 0))
         .then((saved) => {
           storeFreeAreaChoice(saved);
           setFreeArea(saved);
+          endSave(true);
         })
-        .catch((error) => console.error('The free area was not saved to the account:', error))
+        .catch((error) => {
+          endSave(false);
+          console.error('The free area was not saved to the account:', error);
+        })
         // Every other screen's copy picks it up once the account has it. Not
         // before: a re-read racing the write would find the old choice and
         // flick the screen back to it.
@@ -251,7 +300,7 @@ export function useEntitlement(uid: string | null): UseEntitlement {
     }
     // Every other screen's copy picks up the new free area too.
     queueMicrotask(refreshEntitlementEverywhere);
-  }, [uid, setFreeArea]);
+  }, [uid, setFreeArea, beginSave, endSave]);
 
   const free = freeAreasFor(freeArea);
 
@@ -277,6 +326,8 @@ export function useEntitlement(uid: string | null): UseEntitlement {
     canSwitchFree: canSwitchFreeArea(freeArea),
     daysUntilSwitch: daysUntilFreeAreaSwitch(freeArea),
     switchUsed: hasUsedFreeAreaSwitch(freeArea),
+    freeAreaSaving: saving,
+    freeAreaSaves: saves,
     refresh,
   };
 }

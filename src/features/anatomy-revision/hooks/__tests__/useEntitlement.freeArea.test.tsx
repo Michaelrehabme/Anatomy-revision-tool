@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { act, renderHook, waitFor } from '@testing-library/react';
-import { useEntitlement } from '../useEntitlement';
+import { FREE_AREA_SAVE_WAIT_MS, useEntitlement } from '../useEntitlement';
 import type { FreeAreaChoice } from '../../lib/entitlement';
 import type { StoredAccess } from '../../lib/entitlementRecord';
 import { getFreeAreaChoice, setFreeAreaChoice } from '../../lib/preferences';
@@ -14,6 +14,8 @@ import { getFreeAreaChoice, setFreeAreaChoice } from '../../lib/preferences';
 
 let onAccount: FreeAreaChoice | null = null;
 let reachable = true;
+/** When set, a save does not land until this resolves: a write still on its way to the account. */
+let inFlight: Promise<void> | null = null;
 const saves: { area: string; switches: number }[] = [];
 const SERVER_NOW = '2026-10-05T12:00:00.000Z';
 
@@ -24,6 +26,7 @@ vi.mock('../../data/entitlementRepository', () => ({
   },
   saveFreeArea: async (_uid: string, area: FreeAreaChoice['area'], switches: 0 | 1): Promise<FreeAreaChoice> => {
     saves.push({ area, switches });
+    if (inFlight) await inFlight;
     if (!reachable) throw new Error('offline');
     if (onAccount && !(onAccount.switches === 0 && switches === 1)) throw new Error('permission-denied');
     onAccount = { area, chosenAt: SERVER_NOW, switches };
@@ -39,6 +42,7 @@ describe('the free area, kept on the account', () => {
     localStorage.clear();
     onAccount = null;
     reachable = true;
+    inFlight = null;
     saves.length = 0;
   });
   afterEach(() => vi.unstubAllEnvs());
@@ -103,6 +107,62 @@ describe('the free area, kept on the account', () => {
     expect(result.current.freeArea?.area).toBe('wrist-hand');
     await waitFor(() => expect(onAccount).toEqual({ area: 'wrist-hand', chosenAt: SERVER_NOW, switches: 0 }));
     await waitFor(() => expect(result.current.freeArea?.chosenAt).toBe(SERVER_NOW));
+  });
+
+  // The content function reads the account. Asked about a free area that has
+  // only been picked on the device, it refuses it — so whoever asks the
+  // server must be able to tell that a pick is still on its way.
+  it('says a pick is still on its way to the account until it lands, then counts it', async () => {
+    const { result } = renderHook(() => useEntitlement('u1'));
+    await waitFor(() => expect(result.current.known).toBe(true));
+    expect(result.current.freeAreaSaving).toBe(false);
+    expect(result.current.freeAreaSaves).toBe(0);
+
+    let land = () => {};
+    inFlight = new Promise<void>((resolve) => (land = resolve));
+    act(() => result.current.chooseFreeArea('knee'));
+    // Shown at once, and flagged as not yet the account's.
+    expect(result.current.areas).toEqual(['knee']);
+    expect(result.current.freeAreaSaving).toBe(true);
+    expect(onAccount).toBeNull();
+
+    await act(async () => land());
+    await waitFor(() => expect(result.current.freeAreaSaving).toBe(false));
+    expect(result.current.freeAreaSaves).toBe(1);
+    expect(onAccount?.area).toBe('knee');
+  });
+
+  it("says the same of a device's choice being moved up", async () => {
+    setFreeAreaChoice('hip', 0, LONG_AGO);
+    let land = () => {};
+    inFlight = new Promise<void>((resolve) => (land = resolve));
+
+    const { result } = renderHook(() => useEntitlement('u1'));
+    await waitFor(() => expect(result.current.known).toBe(true));
+    expect(result.current.areas).toEqual(['hip']);
+    expect(result.current.freeAreaSaving).toBe(true);
+
+    await act(async () => land());
+    await waitFor(() => expect(result.current.freeAreaSaving).toBe(false));
+    expect(result.current.freeAreaSaves).toBe(1);
+  });
+
+  it('stops waiting for a write that does not land, and counts nothing for one that is refused', async () => {
+    const { result } = renderHook(() => useEntitlement('u1'));
+    await waitFor(() => expect(result.current.known).toBe(true));
+
+    vi.useFakeTimers();
+    try {
+      // Offline: Firestore keeps the write and never answers.
+      inFlight = new Promise<void>(() => {});
+      act(() => result.current.chooseFreeArea('knee'));
+      expect(result.current.freeAreaSaving).toBe(true);
+      act(() => void vi.advanceTimersByTime(FREE_AREA_SAVE_WAIT_MS + 1));
+      expect(result.current.freeAreaSaving).toBe(false);
+      expect(result.current.freeAreaSaves).toBe(0);
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it('saves the one change as a change', async () => {

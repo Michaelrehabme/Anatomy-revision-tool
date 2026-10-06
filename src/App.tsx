@@ -201,9 +201,13 @@ function App() {
     uid: userId,
     areas: entitlement.areas,
     // Sign-in still settling counts as not knowing yet, so a load is not
-    // started (and abandoned) for an account that is about to change.
-    loading: authLoading || entitlement.loading,
+    // started (and abandoned) for an account that is about to change. So does
+    // a free area that has been picked on this device and has not reached the
+    // account: the content function reads the account, and asked before the
+    // write lands it refuses the very area the student has just chosen.
+    loading: authLoading || entitlement.loading || (entitlement.freeAreaSaving ?? false),
     known: entitlement.known ?? false,
+    revision: entitlement.freeAreaSaves ?? 0,
   });
   const session = useRevisionSession(repository, userId);
   const isDesktop = useIsDesktop();
