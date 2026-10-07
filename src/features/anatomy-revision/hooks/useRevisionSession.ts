@@ -407,7 +407,11 @@ export function useRevisionSession(repository: AnatomyRepository | null, userId:
             timestamp: new Date().toISOString(),
             durationMs,
             graded: record.graded,
-            hints: isTypedIdentifyQuestion(currentQuestion) ? (currentQuestion.hints ?? 'full') : undefined,
+            hints: isTypedIdentifyQuestion(currentQuestion)
+              ? (currentQuestion.hints ?? 'full')
+              : isOinaQuestion(currentQuestion) && currentQuestion.format === 'typed'
+                ? (currentQuestion.hints ?? 'none')
+                : undefined,
           };
           await repository.recordAttempt(attempt);
 

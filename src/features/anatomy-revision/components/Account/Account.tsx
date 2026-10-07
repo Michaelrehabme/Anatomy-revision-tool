@@ -1,5 +1,5 @@
 import { AccountDataControls } from '../shared/AccountDataControls';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { AppShell } from '../shell/AppShell';
 import { NavSidebar, type NavSection } from '../shell/NavSidebar';
 import { AuthScreen } from '../Auth/AuthScreen';
@@ -11,12 +11,14 @@ import { LegalLinks } from '../shared/LegalLinks';
 import { OfflineDownloads } from '../../../pwa/offline/OfflineDownloads';
 import type { UseEntitlement } from '../../hooks/useEntitlement';
 import { AccuracyTrendChart } from '../shared/AccuracyTrendChart';
+import { AccuracyFilters } from '../shared/AccuracyFilters';
 import { MyClasses } from './MyClasses';
 import { AdminSection } from './AdminSection';
 import { useAuth, AUTH_ENABLED } from '../../context/AuthProvider';
 import { useProgressData } from '../../hooks/useProgressData';
 import { CATEGORIES, CATEGORY_LABELS } from '../../types/structure';
-import { accuracyDeltaByAttempts, accuracyTrendSplit, gradedAttempts } from '../../lib/accuracyTrend';
+import { gradedAttempts } from '../../lib/accuracyTrend';
+import { useAccuracyFilter } from '../../hooks/useAccuracyFilter';
 import type { UserAttempt } from '../../types/attempt';
 import type { AnatomyContent } from '../../hooks/useAnatomyContent';
 import type { AnatomyRepository } from '../../data/repository';
@@ -100,21 +102,21 @@ export function Account({ access, content, repository, userId, onNavigate }: Acc
 
   // Graded answers only: a flashcard learn card is recorded as an attempt
   // but carries no judgement, and was inflating both the tile and the line.
-  const answered = gradedAttempts(attempts ?? []);
+  const answered = useMemo(() => gradedAttempts(attempts ?? []), [attempts]);
   const correct = answered.filter((a) => a.correct).length;
   const accuracyPct = answered.length > 0 ? Math.round((correct / answered.length) * 100) : null;
   // Two lines for one person: structures met for the first time, and
   // structures seen before. No cohort series — a student cannot read their
   // classmates' attempts.
-  const split = accuracyTrendSplit(answered);
-  // A line too sparse for a weekly window is widened rather than dropped, so
-  // the chart has to say which window each one is over (accuracyTrend.ts).
-  const windowNote = split.seenBeforeWindowDays === split.firstSightWindowDays
-    ? `${split.seenBeforeWindowDays}-day rolling accuracy`
-    : `rolling accuracy: ${split.seenBeforeWindowDays} days seen before, ${split.firstSightWindowDays} days first sight`;
-  // The headline number is about revision, so it reads the seen-before
-  // attempts; a student with too few of those falls back to everything.
-  const delta = accuracyDeltaByAttempts(split.seenBefore) ?? accuracyDeltaByAttempts(answered);
+  // Both are narrowed by the filters above the chart (lib/attemptFilter.ts);
+  // the tiles at the top stay on everything.
+  const accuracy = useAccuracyFilter(answered, content);
+  const { trend, delta } = accuracy.result;
+  // Each line averages its own last few answers, and the two can differ in
+  // how many, so the chart says which (accuracyTrend.ts).
+  const windowNote = trend.seenBeforeWindow === trend.firstSightWindow
+    ? `each point is the last ${trend.seenBeforeWindow} answers of its kind`
+    : `each point is the last ${trend.seenBeforeWindow} seen-before answers, or the last ${trend.firstSightWindow} first sights`;
 
   return (
     <AppShell
@@ -158,11 +160,13 @@ export function Account({ access, content, repository, userId, onNavigate }: Acc
               </span>
             )}
           </h3>
+          <AccuracyFilters accuracy={accuracy} />
           <AccuracyTrendChart
-            points={split.seenBeforeTrend}
+            points={trend.seenBeforeTrend}
             studentName="Seen before"
-            secondary={{ label: 'First sight', points: split.firstSightTrend }}
+            secondary={{ label: 'First sight', points: trend.firstSightTrend }}
             windowNote={windowNote}
+            emptyNote="Too few answers here to draw a line yet — each line needs five of its kind. The figures above still count every one."
           />
         </section>
 

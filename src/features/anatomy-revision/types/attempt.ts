@@ -52,6 +52,8 @@ export interface UserAttempt {
    * Identify-typed only: whether the letter-count and first-letter hints were
    * shown. The same question type asks at two rungs (lib/ladder.ts), and
    * without this a stored attempt cannot say which one it was answered at.
+   * Since 7 Oct 2026 a typed fact card records it too, so the account page
+   * can filter by it (lib/attemptFilter.ts).
    */
   hints?: 'full' | 'none';
 }

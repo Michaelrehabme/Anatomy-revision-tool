@@ -65,6 +65,7 @@ export function AccuracyTrendChart({
   studentName,
   secondary,
   windowNote,
+  emptyNote,
 }: {
   points: AccuracyTrendPoint[];
   studentName: string;
@@ -76,6 +77,8 @@ export function AccuracyTrendChart({
   secondary?: { label: string; points: AccuracyTrendPoint[] };
   /** "Averaged over 7 days" and so on — each line can be over a different window. */
   windowNote?: string;
+  /** What to say when no line can be drawn, where the day-window wording below does not apply. */
+  emptyNote?: string;
 }) {
   const [hover, setHover] = useState<number | null>(null);
 
@@ -89,9 +92,13 @@ export function AccuracyTrendChart({
         className="mt-4 text-sm leading-relaxed"
         style={{ color: "var(--ink3)", maxWidth: 560 }}
       >
-        Not enough attempts yet to show a trend — this needs at least{" "}
-        {ACCURACY_WINDOW_DAYS_DEFAULT} days with enough answers in them to be
-        worth plotting. The accuracy figure above still counts every attempt.
+        {emptyNote ?? (
+          <>
+            Not enough attempts yet to show a trend — this needs at least{" "}
+            {ACCURACY_WINDOW_DAYS_DEFAULT} days with enough answers in them to be
+            worth plotting. The accuracy figure above still counts every attempt.
+          </>
+        )}
       </div>
     );
   }
@@ -349,7 +356,7 @@ export function AccuracyTrendChart({
           </>
         ) : (
           <span style={{ color: "var(--ink3)" }}>
-            Hover the chart for a day-by-day reading.
+            Hover the chart for a point-by-point reading.
           </span>
         )}
       </div>

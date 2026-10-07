@@ -1,6 +1,13 @@
 import { describe, it, expect } from 'vitest';
 import type { UserAttempt } from '../../types/attempt';
-import { accuracyTrend, accuracyDeltaByAttempts, accuracyTrendSplit, gradedAttempts, splitByFirstExposure } from '../accuracyTrend';
+import {
+  accuracyTrend,
+  accuracyDeltaByAttempts,
+  accuracyTrendByAnswer,
+  gradedAttempts,
+  rollingWindowSize,
+  splitByFirstExposure,
+} from '../accuracyTrend';
 
 function attempt(overrides: Partial<UserAttempt> & { userId: string; timestamp: string }): UserAttempt {
   return {
@@ -133,70 +140,51 @@ describe('splitByFirstExposure', () => {
   });
 });
 
-describe('accuracyTrendSplit', () => {
-  it('draws both lines over the same days', () => {
-    const attempts = [
-      ...day('s1', '2026-08-01', 10, 5).map((a, i) => ({ ...a, structureId: `new-${i}` })),
-      ...day('s1', '2026-08-05', 10, 9).map((a, i) => ({ ...a, structureId: `new-${i}` })),
-    ];
-    const split = accuracyTrendSplit(attempts);
-    expect(split.firstSight).toHaveLength(10);
-    expect(split.seenBefore).toHaveLength(10);
-    const dates = split.firstSightTrend.map((p) => p.date);
-    expect(dates).toEqual(split.seenBeforeTrend.map((p) => p.date));
-    expect(dates[0]).toBe('2026-08-01');
-    expect(dates[dates.length - 1]).toBe('2026-08-05');
-    // First sight was the 1st, seen-before the 5th: each line only has data where it happened.
-    expect(split.firstSightTrend[0].studentPct).toBe(50);
-    expect(split.seenBeforeTrend[0].studentPct).toBeNull();
-    expect(split.seenBeforeTrend[4].studentPct).toBe(90);
+describe('accuracyTrendByAnswer', () => {
+  const structures = (attempts: UserAttempt[], prefix: string) => attempts.map((a, i) => ({ ...a, structureId: `${prefix}${i}` }));
+
+  it('draws one point per answer, both lines index-aligned', () => {
+    const attempts = [...day('s1', '2026-08-01', 12, 9), ...day('s1', '2026-08-02', 12, 6)];
+    const trend = accuracyTrendByAnswer(splitByFirstExposure(attempts));
+    expect(trend.seenBeforeTrend).toHaveLength(24);
+    expect(trend.firstSightTrend).toHaveLength(24);
+    expect(trend.seenBeforeTrend[0].date).toBe('2026-08-01');
+    expect(trend.seenBeforeTrend[23].date).toBe('2026-08-02');
   });
 
-  it('is empty for no attempts', () => {
-    const split = accuracyTrendSplit([]);
-    expect(split.firstSightTrend).toEqual([]);
-    expect(split.seenBeforeTrend).toEqual([]);
+  it('has no holes once a line has begun, however long the other kind runs', () => {
+    // Six first sights, then forty repeats of one of them: the first-sight
+    // line holds its last value through all forty rather than stopping.
+    const first = structures(day('s1', '2026-08-01', 6, 3), 'new-');
+    const repeats = day('s1', '2026-08-20', 40, 30).map((a) => ({ ...a, structureId: 'new-0' }));
+    const trend = accuracyTrendByAnswer(splitByFirstExposure([...first, ...repeats]));
+    const firstSight = trend.firstSightTrend.map((p) => p.studentPct);
+    expect(firstSight.slice(0, 4)).toEqual([null, null, null, null]);
+    // Its window is five: the last five of three right then three wrong.
+    expect(firstSight.slice(5).every((pct) => pct === 40)).toBe(true);
+    const begun = trend.seenBeforeTrend.findIndex((p) => p.studentPct !== null);
+    expect(trend.seenBeforeTrend.slice(begun).every((p) => p.studentPct !== null)).toBe(true);
   });
 
-  it('draws first sight from the few attempts a student can actually produce', () => {
-    // A realistic month: plenty of revision, and new structures met a couple at
-    // a time. Under the revision line's rule (5 in 7 days) the new-content line
-    // was computed and never drawn once — the chart showed one line and
-    // described two.
-    const attempts = [
-      ...day('s1', '2026-08-03', 2, 1).map((a, i) => ({ ...a, structureId: `new-a${i}` })),
-      ...day('s1', '2026-08-11', 2, 2).map((a, i) => ({ ...a, structureId: `new-b${i}` })),
-      ...day('s1', '2026-08-18', 2, 1).map((a, i) => ({ ...a, structureId: `new-c${i}` })),
-      ...day('s1', '2026-08-20', 12, 10).map((a, i) => ({ ...a, structureId: `new-a${i % 2}` })),
-    ];
-    const split = accuracyTrendSplit(attempts);
-    expect(split.firstSight).toHaveLength(6);
-    const drawn = split.firstSightTrend.filter((p) => p.studentPct !== null);
-    expect(drawn.length).toBeGreaterThan(1);
-    // Still refuses to draw a point from one lonely answer.
-    const sparse = accuracyTrendSplit(day('s1', '2026-08-03', 1, 1).map((a) => ({ ...a, structureId: 'only-one' })));
-    expect(sparse.firstSightTrend.every((p) => p.studentPct === null)).toBe(true);
+  it('averages a quarter of the answers, between five and twenty', () => {
+    expect(rollingWindowSize(8)).toBe(5);
+    expect(rollingWindowSize(50)).toBe(10);
+    expect(rollingWindowSize(2000)).toBe(50);
   });
-});
 
-describe('a sparse line is widened, not dropped', () => {
-  it('draws seen-before accuracy for a student who mostly meets new structures', () => {
-    // The complaint this came from: nearly every answer is a first encounter,
-    // so repeats never reach five inside a week and the revision line — the
-    // one the page leads with — was the one that never appeared.
-    const attempts = [
-      ...day('s1', '2026-08-02', 20, 15).map((a, i) => ({ ...a, structureId: `new-${i}` })),
-      ...day('s1', '2026-08-09', 20, 16).map((a, i) => ({ ...a, structureId: `later-${i}` })),
-      // A handful of repeats, spread out: two, then two.
-      ...day('s1', '2026-08-10', 2, 2).map((a, i) => ({ ...a, structureId: `new-${i}` })),
-      ...day('s1', '2026-08-14', 2, 1).map((a, i) => ({ ...a, structureId: `new-${i}` })),
-      ...day('s1', '2026-08-19', 2, 2).map((a, i) => ({ ...a, structureId: `new-${i}` })),
-    ];
-    const split = accuracyTrendSplit(attempts);
-    expect(split.seenBefore).toHaveLength(6);
-    expect(split.seenBeforeTrend.filter((p) => p.studentPct !== null).length).toBeGreaterThan(1);
-    // And it says it took three weeks of answers to make those points.
-    expect(split.seenBeforeWindowDays).toBe(21);
-    expect(split.firstSightWindowDays).toBe(7);
+  it('starts a short range at its left edge, using the answers before it', () => {
+    const attempts = day('s1', '2026-08-01', 40, 30).map((a) => ({ ...a, structureId: 'same' }));
+    const whole = splitByFirstExposure(attempts);
+    const shown = { firstSight: [], seenBefore: whole.seenBefore.slice(-10) };
+    const trend = accuracyTrendByAnswer(whole, shown);
+    expect(trend.seenBeforeTrend).toHaveLength(10);
+    expect(trend.seenBeforeTrend[0].studentPct).not.toBeNull();
+    expect(trend.seenBeforeWindow).toBe(5);
+  });
+
+  it('is empty for no answers', () => {
+    const trend = accuracyTrendByAnswer(splitByFirstExposure([]));
+    expect(trend.seenBeforeTrend).toEqual([]);
+    expect(trend.firstSightTrend).toEqual([]);
   });
 });
