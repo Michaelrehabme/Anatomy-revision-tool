@@ -216,87 +216,86 @@ export function splitByFirstExposure(attempts: readonly UserAttempt[]): Exposure
   return { firstSight, seenBefore };
 }
 
-export interface AccuracyTrendSplit extends ExposureSplit {
-  /** Both drawn over the same days, so they can share one axis. */
-  firstSightTrend: AccuracyTrendPoint[];
+/**
+ * THE ACCOUNT CHART RUNS OVER ANSWERS, NOT DAYS (7 Oct 2026).
+ *
+ * It used to be the day-windowed line above, split in two, and it drew with
+ * holes in it: a week without enough first sights had no point, so the line
+ * stopped and started, and the owner read the chart as broken rather than as
+ * honest. Widening the window for the sparse line made fewer holes, not none.
+ *
+ * So each point is now one answer, and each line is the accuracy of the last
+ * `window` answers OF ITS OWN KIND up to that answer. That is defined at every
+ * answer once a line has begun, so nothing is interpolated and nothing is
+ * missing: between two first sights the first-sight line stays where it was,
+ * because the student's last twenty first sights have not changed. A quiet
+ * fortnight takes no width at all, which is also what a "last 50 answers"
+ * filter needs — fifty answers given in one evening have no days to plot.
+ *
+ * The class chart an educator sees keeps the day windows: it compares a
+ * student with a class on the same dates, which only a date axis can do.
+ */
+export const ROLLING_ANSWERS_MAX = 50;
+/** Fewer answers than this of one kind and its percentage is noise, so its line has not begun. */
+export const ROLLING_ANSWERS_MIN = 5;
+
+/**
+ * How many answers each point averages: a fifth of what is shown, between
+ * five and fifty. A short range needs a short average or it is one flat line;
+ * a long history needs a long one, because twenty answers over a thousand
+ * points is a seismograph — every miss is a five-point drop — and nobody can
+ * read a direction off it.
+ */
+export function rollingWindowSize(count: number): number {
+  return Math.min(ROLLING_ANSWERS_MAX, Math.max(ROLLING_ANSWERS_MIN, Math.floor(count / 5)));
+}
+
+export interface AnswerTrend {
+  /** One point per answer of either kind, in time order; the two are index-aligned. */
   seenBeforeTrend: AccuracyTrendPoint[];
-  /** How many days each line's trailing window covers, so the chart can say so. */
-  firstSightWindowDays: number;
-  seenBeforeWindowDays: number;
+  firstSightTrend: AccuracyTrendPoint[];
+  /** How many answers each line's points average, so the chart can say so. */
+  seenBeforeWindow: number;
+  firstSightWindow: number;
 }
 
 /**
- * FIRST SIGHT IS A RARER EVENT, AND NEEDS A WIDER NET.
- *
- * A structure can only be met for the first time once, so these attempts
- * arrive at a few a week and dry up as a student works through an area. Under
- * the revision line's rule — five attempts inside seven days — the new-content
- * line was computed and then never drawn: the series existed, every point fell
- * below the bar, and the legend disappeared with the line. The chart claimed
- * to show two things and showed one.
- *
- * So it gets a window three times as long and a lower floor. That is not a
- * looser standard for the same measurement: three first sights in a fortnight
- * is as much evidence about new material as fifteen answers in a week is about
- * revised material, because the student cannot produce more of it.
+ * `shown` is the part of `split` to draw — its most recent answers, when a
+ * "last 50" range is on. The averages still run over all of `split`, so the
+ * first point drawn already has the answers before it behind it and both
+ * lines start at the left edge; computed over the fifty alone, each line
+ * would spend its first few answers warming up and the chart would open on a
+ * blank. The window is sized by what is shown, since that is what it has to
+ * be readable against.
  */
-/** The wider net a sparse line falls back to: three weeks, three answers. */
-export const WIDE_WINDOW_DAYS = 21;
-export const WIDE_MIN_ATTEMPTS = 3;
+export function accuracyTrendByAnswer(split: ExposureSplit, shown: ExposureSplit = split): AnswerTrend {
+  const seenBeforeWindow = rollingWindowSize(shown.seenBefore.length);
+  const firstSightWindow = rollingWindowSize(shown.firstSight.length);
+  const firstSight = new Set(split.firstSight);
+  const chronological = [...split.firstSight, ...split.seenBefore].sort((a, b) => a.timestamp.localeCompare(b.timestamp));
 
-/**
- * THE SAME RESCUE FOR EITHER LINE, BECAUSE EITHER CAN BE THE SPARSE ONE.
- *
- * Splitting the attempts splits the evidence, and which half goes thin depends
- * on how the student works. Someone meeting a lot of new material has almost
- * no repeats, so it was the SEEN BEFORE line that never drew — the opposite of
- * what the split was built for, and the same silent disappearance.
- *
- * So a series that cannot be drawn under the ordinary rule is computed again
- * over a longer window with a lower floor, and the chart says which window it
- * used. Widening beats interpolating: every point still comes from attempts
- * that happened, it just takes three weeks of them to make one.
- */
-function trendOrWider(
-  byDay: Map<string, DayTally>,
-  span: { first: string; last: string },
-  windowDays: number,
-  minAttempts: number,
-): { points: AccuracyTrendPoint[]; windowDays: number } {
-  const none = new Map<string, DayTally>();
-  const points = accuracyTrendFromDayTallies(byDay, none, windowDays, minAttempts, span);
-  if (points.filter((p) => p.studentPct !== null).length >= 2) return { points, windowDays };
-  return {
-    points: accuracyTrendFromDayTallies(byDay, none, WIDE_WINDOW_DAYS, WIDE_MIN_ATTEMPTS, span),
-    windowDays: WIDE_WINDOW_DAYS,
+  const seenSoFar: boolean[] = [];
+  const firstSoFar: boolean[] = [];
+  const seenBeforeTrend: AccuracyTrendPoint[] = [];
+  const firstSightTrend: AccuracyTrendPoint[] = [];
+  const point = (date: string, results: boolean[], window: number): AccuracyTrendPoint => {
+    const recent = results.slice(-window);
+    const studentPct =
+      results.length >= ROLLING_ANSWERS_MIN ? Math.round((recent.filter(Boolean).length / recent.length) * 100) : null;
+    return { date, studentPct, cohortPct: null, studentAttempts: recent.length, cohortAttempts: 0 };
   };
-}
 
-/** The two-line version of accuracyTrend, for a student's own page (no cohort series). */
-export function accuracyTrendSplit(
-  attempts: readonly UserAttempt[],
-  windowDays: number = ACCURACY_WINDOW_DAYS_DEFAULT,
-  minAttempts: number = ACCURACY_MIN_ATTEMPTS_DEFAULT,
-): AccuracyTrendSplit {
-  const split = splitByFirstExposure(attempts);
-  if (attempts.length === 0) {
-    return {
-      ...split,
-      firstSightTrend: [],
-      seenBeforeTrend: [],
-      firstSightWindowDays: windowDays,
-      seenBeforeWindowDays: windowDays,
-    };
+  for (const attempt of chronological) {
+    (firstSight.has(attempt) ? firstSoFar : seenSoFar).push(attempt.correct);
+    const date = toDateKey(attempt.timestamp);
+    seenBeforeTrend.push(point(date, seenSoFar, seenBeforeWindow));
+    firstSightTrend.push(point(date, firstSoFar, firstSightWindow));
   }
-  const days = attempts.map((a) => toDateKey(a.timestamp)).sort();
-  const span = { first: days[0], last: days[days.length - 1] };
-  const first = trendOrWider(tallyByDay(split.firstSight), span, windowDays, minAttempts);
-  const seen = trendOrWider(tallyByDay(split.seenBefore), span, windowDays, minAttempts);
+  const from = chronological.length - (shown.seenBefore.length + shown.firstSight.length);
   return {
-    ...split,
-    firstSightTrend: first.points,
-    seenBeforeTrend: seen.points,
-    firstSightWindowDays: first.windowDays,
-    seenBeforeWindowDays: seen.windowDays,
+    seenBeforeTrend: seenBeforeTrend.slice(from),
+    firstSightTrend: firstSightTrend.slice(from),
+    seenBeforeWindow,
+    firstSightWindow,
   };
 }
