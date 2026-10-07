@@ -198,6 +198,10 @@ function table(file: DiagnosticPapersFile): string {
     'The right answer is printed here as the seed states it. This file is in the repository and',
     'is not part of any build: the papers themselves hold no answers.',
     '',
+    'Every right answer below is held, by a test, to be word for word what the Atlas shows for',
+    'that structure and fact (the Atlas table and the card of the structure), in a bundled build and',
+    'in one that fetches its facts: `components/__tests__/diagnosticPapersAtlas.test.tsx`.',
+    '',
   ];
   for (const paper of file.papers) {
     const built = buildFromScope(paper, ALL_STRUCTURES, ALL_IMAGES);

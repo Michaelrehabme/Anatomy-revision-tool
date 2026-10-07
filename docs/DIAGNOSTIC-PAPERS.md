@@ -12,6 +12,10 @@ it, only as a new version. How to swap one is at the top of `src/scripts/diagnos
 The right answer is printed here as the seed states it. This file is in the repository and
 is not part of any build: the papers themselves hold no answers.
 
+Every right answer below is held, by a test, to be word for word what the Atlas shows for
+that structure and fact (the Atlas table and the card of the structure), in a bundled build and
+in one that fetches its facts: `components/__tests__/diagnosticPapersAtlas.test.tsx`.
+
 ## Whole body
 
 Sat by anyone holding every area. Built from all nine areas.

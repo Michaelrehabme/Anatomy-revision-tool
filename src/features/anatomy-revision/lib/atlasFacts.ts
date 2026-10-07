@@ -7,6 +7,7 @@ import {
   isMuscle,
   type AnatomyStructure,
   type Category,
+  type MuscleStructure,
 } from '../types/structure';
 import type { StructureIndexEntry } from '../types/structureIndex';
 
@@ -113,6 +114,51 @@ export function atlasRow(s: AnatomyStructure, byId: ReadonlyMap<string, Structur
     .join(' ')
     .toLowerCase();
   return { columns, searchText };
+}
+
+/**
+ * A muscle's four facts as its CARD prints them (MuscleCard, MobileMuscleCard).
+ *
+ * In one place because three things must say the same words: the two cards,
+ * the Atlas table above (origin, insertion and action are its three columns),
+ * and the diagnostic papers, whose right answers the owner approved on the
+ * condition that they are what the Atlas shows
+ * (lib/__tests__/diagnosticPapersAtlas.test.ts holds that, question by
+ * question). The cards used to join a muscle's nerves with a comma where
+ * every question joins them with a semicolon, so sternocleidomastoid read
+ * "…(CN XI), C2–C3 (sensory)" on its card and "…(CN XI); C2–C3 (sensory)" as
+ * an answer. Lists are joined one way now: the way origins and insertions
+ * always were.
+ */
+export interface MuscleCardFacts {
+  origin: string;
+  insertion: string;
+  action: string;
+  /** Empty when the muscle has no nerve recorded; the card then prints no row. */
+  nerve: string;
+}
+
+export function muscleCardFacts(m: MuscleStructure): MuscleCardFacts {
+  return {
+    origin: join(m.origin),
+    insertion: join(m.insertion),
+    action: m.actionText,
+    nerve: join(m.nerve.map((n) => n.name)),
+  };
+}
+
+/** The card's heading for the row below. */
+export const FUNCTIONAL_ROLE_LABEL = 'Functional role';
+
+/**
+ * What a structure is used for in everyday or sporting movement, where the
+ * dataset says (the shoulder and elbow, so far). Sessions and the diagnostic
+ * ask "X is most responsible for which of these?" with this sentence as the
+ * right answer, and until October 2026 no card printed it: a student could be
+ * marked on a line they had nowhere to read.
+ */
+export function functionalRole(s: AnatomyStructure): string | null {
+  return s.functionalContext?.trim() || null;
 }
 
 /** Kind filter values in picker order. */

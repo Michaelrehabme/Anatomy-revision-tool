@@ -9,6 +9,7 @@ import { getShowLatin } from '../../lib/preferences';
 import { structureTitle } from '../shared/PageTitle';
 import type { AnatomyRepository } from '../../data/repository';
 import { areasOf, isMuscle } from '../../types/structure';
+import { FUNCTIONAL_ROLE_LABEL, functionalRole, muscleCardFacts } from '../../lib/atlasFacts';
 import { REGION_LABELS } from '../../types/region';
 import { useMuscleHistory } from '../../hooks/useMuscleHistory';
 import { AttributionBadge } from '../shared/AttributionBadge';
@@ -63,7 +64,10 @@ export function MobileMuscleCard({ access, structureId, content, repository, use
     );
   }
 
-  const muscle = facts && isMuscle(facts) ? facts : null;
+  // The words come from lib/atlasFacts: one wording for both cards, the Atlas
+  // table and the diagnostic papers.
+  const muscle = facts && isMuscle(facts) ? muscleCardFacts(facts) : null;
+  const role = facts ? functionalRole(facts) : null;
   // The whole card is gated, not just the drill at the foot of it: on a phone
   // the lock used to sit three screens below the facts it was locking. See
   // LockedStructureNotice.
@@ -131,15 +135,15 @@ export function MobileMuscleCard({ access, structureId, content, repository, use
               <div style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
                 {label}
               </div>
-              <div className="mt-1.5 text-base leading-relaxed">{muscle[key].join('; ')}</div>
+              <div className="mt-1.5 text-base leading-relaxed">{muscle[key]}</div>
             </div>
           ))}
-        {muscle && muscle.nerve.length > 0 && (
+        {muscle && muscle.nerve && (
           <div className="py-3.5">
             <div style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
               Innervation
             </div>
-            <div className="mt-1.5 text-base leading-relaxed">{muscle.nerve.map((n) => n.name).join(', ')}</div>
+            <div className="mt-1.5 text-base leading-relaxed">{muscle.nerve}</div>
           </div>
         )}
         {muscle && (
@@ -147,7 +151,15 @@ export function MobileMuscleCard({ access, structureId, content, repository, use
             <div style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
               Action
             </div>
-            <div className="mt-1.5 text-base leading-relaxed">{muscle.actionText}</div>
+            <div className="mt-1.5 text-base leading-relaxed">{muscle.action}</div>
+          </div>
+        )}
+        {role && (
+          <div className="py-3.5">
+            <div style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
+              {FUNCTIONAL_ROLE_LABEL}
+            </div>
+            <div className="mt-1.5 text-base leading-relaxed">{role}</div>
           </div>
         )}
         {facts && <BloodSupplyFacts structure={facts} compact />}

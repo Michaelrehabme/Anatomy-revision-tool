@@ -4,6 +4,7 @@ import { BloodSupplyFacts } from '../shared/BloodSupplyFacts';
 import type { AnatomyContent } from '../../hooks/useAnatomyContent';
 import type { AnatomyRepository } from '../../data/repository';
 import { areasOf, isMuscle } from '../../types/structure';
+import { FUNCTIONAL_ROLE_LABEL, functionalRole, muscleCardFacts } from '../../lib/atlasFacts';
 import { useMuscleHistory } from '../../hooks/useMuscleHistory';
 import { REGION_LABELS } from '../../types/region';
 import { AttributionBadge } from '../shared/AttributionBadge';
@@ -97,7 +98,10 @@ export function MuscleCard({
     );
   }
 
-  const muscle = facts && isMuscle(facts) ? facts : null;
+  // The words come from lib/atlasFacts, so the card, the Atlas table and the
+  // diagnostic papers cannot drift apart.
+  const muscle = facts && isMuscle(facts) ? muscleCardFacts(facts) : null;
+  const role = facts ? functionalRole(facts) : null;
   // A card has an address, so it is gated here as well as in the atlas that
   // lists it: the whole of it, not just the drill. See LockedStructureNotice.
   const locked = !areasOf(structure).some((a) => access.areas.includes(a));
@@ -204,7 +208,7 @@ export function MuscleCard({
                   <div style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
                     {label}
                   </div>
-                  <div className="mt-2 text-lg leading-relaxed">{muscle[key].join('; ')}</div>
+                  <div className="mt-2 text-lg leading-relaxed">{muscle[key]}</div>
                 </div>
               ))}
             {muscle && (
@@ -212,17 +216,23 @@ export function MuscleCard({
                 <div style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
                   Action
                 </div>
-                <div className="mt-2 text-lg leading-relaxed">{muscle.actionText}</div>
+                <div className="mt-2 text-lg leading-relaxed">{muscle.action}</div>
               </div>
             )}
-            {muscle && muscle.nerve.length > 0 && (
+            {muscle && muscle.nerve && (
               <div className="py-4.5">
                 <div style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
                   Innervation
                 </div>
-                <div className="mt-2 text-lg leading-relaxed">
-                  {muscle.nerve.map((n) => n.name).join(', ')}
+                <div className="mt-2 text-lg leading-relaxed">{muscle.nerve}</div>
+              </div>
+            )}
+            {role && (
+              <div className="py-4.5">
+                <div style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
+                  {FUNCTIONAL_ROLE_LABEL}
                 </div>
+                <div className="mt-2 text-lg leading-relaxed">{role}</div>
               </div>
             )}
             <BloodSupplyFacts structure={facts} />
