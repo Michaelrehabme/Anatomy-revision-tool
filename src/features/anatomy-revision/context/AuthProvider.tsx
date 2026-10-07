@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useRef, useState, type ReactNode 
 import type { User } from 'firebase/auth';
 import type { LinkInput } from '../data/firebase';
 import { BUNDLED_CONTENT } from '../data/content/bundledContent';
+import { clearConfirmationRecord, markConfirmationRequired, recordConfirmationSent } from '../lib/emailVerification';
 
 /** Account UI only makes sense once there's a real Firebase project to sign into — local dev stays a plain anonymous id with no dead buttons. */
 export const AUTH_ENABLED = (import.meta.env.VITE_PERSISTENCE ?? 'local') === 'firestore';
@@ -10,7 +11,17 @@ export interface AuthUser {
   uid: string;
   displayName: string | null;
   email: string | null;
+  /**
+   * A guest: the anonymous sign-in every visitor gets, or an account whose
+   * only sign-in has been taken off again (data/firebase.ts isGuestUser).
+   */
   isAnonymous: boolean;
+  /**
+   * The account's email address is confirmed: it signed in with Google, or
+   * followed the link it was emailed. The free area needs it
+   * (lib/emailVerification.ts). Always true where there are no accounts.
+   */
+  emailVerified: boolean;
 }
 
 export interface AuthActionResult {
@@ -29,6 +40,23 @@ interface AuthContextValue extends AuthState {
   signUpWithEmail: (email: string, password: string) => Promise<AuthActionResult>;
   signOut: () => Promise<void>;
   linkAnonymousAccount: (input: LinkInput) => Promise<AuthActionResult>;
+  /**
+   * Emails the signed-in account the link that confirms its address. Rejects
+   * with Firebase's own error when it cannot (offline, or Firebase's limit on
+   * emails to one address).
+   */
+  sendConfirmationEmail: () => Promise<void>;
+  /**
+   * Asks whether the address has been confirmed since this page last heard,
+   * and tells every screen if it has. Resolves true when it is confirmed.
+   */
+  checkEmailConfirmed: () => Promise<boolean>;
+  /**
+   * "Use a different email": takes the unconfirmed sign-in off the account,
+   * leaving a guest with the same uid and everything stored under it, so the
+   * account can be made again with another address.
+   */
+  removeUnconfirmedEmail: () => Promise<void>;
 }
 
 const NOT_AVAILABLE_LOCALLY = async (): Promise<never> => {
@@ -44,6 +72,9 @@ const LOCAL_ACTIONS: Omit<AuthContextValue, keyof AuthState> = {
   signUpWithEmail: NOT_AVAILABLE_LOCALLY,
   linkAnonymousAccount: NOT_AVAILABLE_LOCALLY,
   signOut: async () => {},
+  sendConfirmationEmail: NOT_AVAILABLE_LOCALLY,
+  checkEmailConfirmed: async () => true,
+  removeUnconfirmedEmail: NOT_AVAILABLE_LOCALLY,
 };
 
 const AuthContext = createContext<AuthContextValue>({
@@ -62,8 +93,22 @@ function getOrCreateLocalUserId(): string {
   return generated;
 }
 
+/** `isGuestUser` without importing data/firebase statically: this file must not pull the SDK into a build with no accounts. */
+function isGuest(user: User): boolean {
+  return user.isAnonymous || (Array.isArray(user.providerData) && user.providerData.length === 0);
+}
+
 function toAuthUser(user: User): AuthUser {
-  return { uid: user.uid, displayName: user.displayName, email: user.email, isAnonymous: user.isAnonymous };
+  const guest = isGuest(user);
+  return {
+    uid: user.uid,
+    displayName: user.displayName,
+    // An account that has taken its sign-in off again has no address either,
+    // whatever Firebase still remembers of the old one.
+    email: guest ? null : user.email,
+    isAnonymous: guest,
+    emailVerified: !guest && user.emailVerified === true,
+  };
 }
 
 /**
@@ -83,6 +128,10 @@ function toAuthUser(user: User): AuthUser {
  * provider is mounted, which takes it up when it is the SAME account seen
  * differently (see `adopt` in AuthProvider). A different account arrives by
  * the listener as it always did.
+ *
+ * CONFIRMING AN EMAIL ADDRESS is the same kind of change and is told the same
+ * way: the uid is kept, Firebase's listener says nothing, and the screen that
+ * is waiting for it ("Check your inbox") must be told by whoever found out.
  */
 const linkedUserListeners = new Set<(user: User) => void>();
 
@@ -104,7 +153,24 @@ const FIRESTORE_ACTIONS: Omit<AuthContextValue, keyof AuthState> = {
   },
   signUpWithEmail: async (email, password) => {
     const { signUpWithEmail } = await import('../data/firebase');
-    const result = announce(await signUpWithEmail(email, password));
+    const result = await signUpWithEmail(email, password);
+    // A NEW account, made here: it confirms its address before its free area
+    // (lib/emailVerification.ts), and the link is on its way before the
+    // screen that asks for it is even drawn. Noted BEFORE the screens are
+    // told there is an account, so the first thing they see is the truth.
+    // If the email cannot be sent the account still exists: the screen that
+    // asks for the confirmation says it was not sent and offers to send it.
+    if (!result.recoveredExistingAccount && !result.user.emailVerified) {
+      markConfirmationRequired(result.user.uid, result.user.email);
+      try {
+        const { sendConfirmationEmail } = await import('../data/emailConfirmation');
+        await sendConfirmationEmail();
+        recordConfirmationSent(result.user.uid, result.user.email);
+      } catch (error) {
+        console.warn('The confirmation email was not sent:', error);
+      }
+    }
+    announce(result);
     return { recoveredExistingAccount: result.recoveredExistingAccount };
   },
   signOut: async () => {
@@ -122,6 +188,25 @@ const FIRESTORE_ACTIONS: Omit<AuthContextValue, keyof AuthState> = {
     const { linkAnonymousAccount } = await import('../data/firebase');
     const result = announce(await linkAnonymousAccount(input));
     return { recoveredExistingAccount: result.recoveredExistingAccount };
+  },
+  sendConfirmationEmail: async () => {
+    const { sendConfirmationEmail } = await import('../data/emailConfirmation');
+    const { uid, email } = await sendConfirmationEmail();
+    recordConfirmationSent(uid, email);
+  },
+  checkEmailConfirmed: async () => {
+    const { reloadSignedInUser } = await import('../data/emailConfirmation');
+    const user = await reloadSignedInUser();
+    if (!user) return false;
+    announce({ user });
+    return user.emailVerified;
+  },
+  removeUnconfirmedEmail: async () => {
+    const { removeEmailSignIn } = await import('../data/emailConfirmation');
+    const user = await removeEmailSignIn();
+    if (!user) return;
+    clearConfirmationRecord(user.uid);
+    announce({ user });
   },
 };
 
@@ -152,7 +237,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     if (mode !== 'firestore') {
       setState({
-        user: { uid: getOrCreateLocalUserId(), displayName: null, email: null, isAnonymous: true },
+        // No accounts in this build, so nothing to confirm: see lib/emailVerification.ts.
+        user: { uid: getOrCreateLocalUserId(), displayName: null, email: null, isAnonymous: true, emailVerified: true },
         loading: false,
       });
       return;
@@ -175,7 +261,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         before.isAnonymous === after.isAnonymous
         && before.email === after.email
         && before.displayName === after.displayName
+        && before.emailVerified === after.emailVerified
       ) return;
+      // Confirmed: there is nothing left for this device to remember about
+      // the email that asked for it.
+      if (after.emailVerified) clearConfirmationRecord(after.uid);
       told.current = after;
       setState({ user: after, loading: false });
       // The profile says who this is to an educator and to the account
@@ -188,11 +278,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     import('../data/firebase').then(({ subscribeToAuthState, ensureAnonymousUser, touchUserProfile }) => {
       if (cancelled) return;
+      // Which report from Firebase is the latest: settling a confirmed
+      // address takes a moment, and an older report must not land on top of
+      // a newer one.
+      let latest = 0;
       unsubscribe = subscribeToAuthState((user) => {
         if (cancelled) return;
+        const mine = ++latest;
         if (user) {
           touchUserProfile(user).catch((error) => console.error('Failed to write user profile:', error));
-          setState({ user: toAuthUser(user), loading: false });
+          // A confirmed address is only reported once the token the database
+          // reads says so too (data/firebase.ts confirmedForRules): the first
+          // thing a confirmed account does may be to choose its free area.
+          const tell = () => {
+            if (cancelled || mine !== latest) return;
+            const next = toAuthUser(user);
+            if (next.emailVerified) clearConfirmationRecord(next.uid);
+            setState({ user: next, loading: false });
+          };
+          if (user.emailVerified) {
+            import('../data/emailConfirmation').then(({ confirmedForRules }) => confirmedForRules(user)).then(tell, tell);
+          } else tell();
         } else {
           setState({ user: null, loading: true });
           ensureAnonymousUser().catch((error) => {

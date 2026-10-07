@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { lazy, Suspense, useEffect, useRef } from 'react';
 import type { AnatomyContent } from '../../hooks/useAnatomyContent';
 import type { Area } from '../../types/region';
 import { BodyFigure } from '../shared/BodyFigure';
@@ -7,6 +7,12 @@ import { Button } from '../shared/Button';
 import { AccountForm } from '../Auth/AccountForm';
 import { OnboardingAreaList } from './OnboardingAreaList';
 import { useOnboardingFlow, type OnboardingStepKind } from './onboardingSteps';
+
+/**
+ * "Check your inbox": loaded when an account has to confirm its address,
+ * which a Google sign-up and a returning student never do.
+ */
+const EmailConfirmPanel = lazy(() => import('../Auth/EmailConfirmPanel'));
 
 interface OnboardingProps {
   /** What this account may reach. Onboarding is where a free account picks which one area that is. */
@@ -32,8 +38,10 @@ interface OnboardingProps {
 export function Onboarding({ access, content, initialAreas = [], only, onDone }: OnboardingProps) {
   const flow = useOnboardingFlow({ access, initialAreas, only, onDone });
   const { current, selected } = flow;
-  const onAreaStep = current.kind === 'areas';
-  const onAccountStep = current.kind === 'account';
+  // The step's own content is on screen, not the form or the confirmation standing in for it.
+  const onAreaStep = current.kind === 'areas' && flow.stage === 'step';
+  const onAccountStep = flow.stage !== 'step';
+  const confirming = flow.stage === 'confirm';
 
   const heading = useRef<HTMLHeadingElement>(null);
   const opened = useRef(false);
@@ -42,7 +50,8 @@ export function Onboarding({ access, content, initialAreas = [], only, onDone }:
     // and a heading that takes focus by itself wears a focus ring for no reason.
     if (!opened.current) { opened.current = true; return; }
     heading.current?.focus();
-  }, [flow.index]);
+    // "Check your inbox" arriving, or giving way, is a new page too.
+  }, [flow.index, confirming]);
 
   return (
     <main
@@ -108,7 +117,11 @@ export function Onboarding({ access, content, initialAreas = [], only, onDone }:
 
         {onAccountStep ? (
           <div className="w-[380px] flex-none rounded-[3px] p-8" style={{ background: 'var(--sf)', boxShadow: 'var(--shadow-card)' }}>
-            {flow.settingUp ? (
+            {confirming ? (
+              <Suspense fallback={<p role="status" style={{ font: '400 15px/1.5 var(--font-ui)', color: 'var(--ink2)' }}>One moment…</p>}>
+                <EmailConfirmPanel purpose="free-area" onDifferentEmail={flow.onDifferentEmail} />
+              </Suspense>
+            ) : flow.stage === 'setting-up' ? (
               <p role="status" style={{ font: '400 15px/1.5 var(--font-ui)', color: 'var(--ink2)' }}>
                 Setting up your account…
               </p>

@@ -16,6 +16,7 @@ import {
   type FreeAreaChoice,
 } from '../lib/entitlement';
 import { switchesToMigrate } from '../lib/freeAreaRecord';
+import { readConfirmationRecord, rememberPredates, rememberedPredates } from '../lib/emailVerification';
 
 /**
  * The one hook every gate uses. CR-027 item 1.
@@ -73,6 +74,36 @@ import { switchesToMigrate } from '../lib/freeAreaRecord';
  *     (`needsFreeArea`), which is also what the content function does. The
  *     default made a new student's device fetch the shoulder and then the
  *     area they actually picked — two areas for every free account.
+ *
+ * AND THE FREE AREA NEEDS A CONFIRMED EMAIL ADDRESS (owner's decision, 7 Oct
+ * 2026; lib/emailVerification.ts has the rule and the reasons). In this hook:
+ *
+ *   - A free account whose address is NOT confirmed holds no area and is
+ *     shown "Check your inbox" in place of every screen that revises
+ *     (`needsEmailConfirmation`). Nothing is written to the account for it
+ *     and nothing is asked of the server, which would refuse both.
+ *
+ *   - FULL ACCESS IS NEVER HELD BACK. A subscriber, a complimentary account,
+ *     a member of a licensed class: `needsEmailConfirmation` is false and
+ *     every area is theirs, confirmed or not.
+ *
+ *   - AN ACCOUNT FROM BEFORE THE RULE keeps the one area it has, unconfirmed
+ *     (nobody was ever sent a confirmation email before it). Its device's
+ *     choice is moved up to the account as before. What it cannot do
+ *     unconfirmed is CHANGE its area (`switchNeedsConfirmation`).
+ *
+ *   - "From before the rule" is the profile's `createdAt`, read with the
+ *     entitlement and remembered on the device for an offline start. WHEN IT
+ *     CANNOT BE FOUND OUT — the read failed and nothing is remembered — the
+ *     account is given the benefit of the doubt, like every other gate here
+ *     that has to choose between locking out a student in a tunnel and
+ *     showing what is in the downloaded files anyway. The server does not
+ *     guess: it reads the profile itself.
+ *
+ *   - An account this app has just CREATED is asked to confirm even when its
+ *     profile is old: a guest from before the rule who makes an account now
+ *     is a new sign-up. The app remembers that it made the account
+ *     (`markConfirmationRequired`).
  */
 
 
@@ -118,6 +149,22 @@ export interface UseEntitlement {
    * none. The app asks them to choose before anything else.
    */
   needsFreeArea?: boolean;
+  /**
+   * A free account whose email address is not confirmed, and which was not
+   * here before a confirmed address was asked for: it holds no area until it
+   * follows the link it was emailed. The app shows "Check your inbox" in
+   * place of every screen that revises. Never true for an account with full
+   * access, a guest (who is asked for an account first), or a build with no
+   * accounts.
+   */
+  needsEmailConfirmation?: boolean;
+  /**
+   * The account may not CHANGE its free area until its address is confirmed.
+   * True for an unconfirmed account from before the rule, which keeps the
+   * area it has; the account screen offers the confirmation instead of the
+   * change.
+   */
+  switchNeedsConfirmation?: boolean;
 
   /** Records the free area. Ignored if the 30 days are not up — the caller should check first. */
   chooseFreeArea: (area: Area) => void;
@@ -183,10 +230,38 @@ export interface EntitlementOptions {
    * its one synthetic user is treated as it always was.
    */
   guest?: boolean;
+  /**
+   * The signed-in account's email address is confirmed (context/AuthProvider
+   * `emailVerified`). Left out: confirmed, which is what a build with no
+   * accounts and every caller from before the rule mean.
+   */
+  emailVerified?: boolean;
 }
 
 export function useEntitlement(uid: string | null, options: EntitlementOptions = {}): UseEntitlement {
   const guest = (options.guest ?? false) && freeAreaIsOnTheAccount();
+  /** An account, in a build with accounts, whose address is not confirmed. */
+  const unconfirmed = freeAreaIsOnTheAccount() && !guest && uid !== null && options.emailVerified === false;
+  /**
+   * Whether this account's profile predates the rule: true, false, or null
+   * when it has not been found out (lib/emailVerification.ts). Starts from
+   * what this device remembers, so an offline start does not have to guess.
+   */
+  const [predates, setPredates] = useState<{ uid: string | null; value: boolean | null }>(() => ({
+    uid,
+    value: uid ? rememberedPredates(uid) : null,
+  }));
+  const predatesNow = predates.uid === uid ? predates.value : uid ? rememberedPredates(uid) : null;
+  // This app made the account, after the rule: it confirms, however old its
+  // profile. Read as the screen draws: it is written the moment the account
+  // is made, just before the screens are told there is one.
+  const mustConfirm = unconfirmed && uid !== null && (readConfirmationRecord(uid)?.required ?? false);
+  /**
+   * The free area is held back until the address is confirmed. Not for an
+   * account from before the rule; and not when that cannot be told (null),
+   * unless this app knows it made the account.
+   */
+  const heldBack = unconfirmed && (mustConfirm || predatesNow === false);
 
   const [entitlement, setEntitlement] = useState<Entitlement>(FREE_ENTITLEMENT);
   const [freeArea, setFreeAreaState] = useState<FreeAreaChoice | null>(() => getFreeAreaChoice());
@@ -204,7 +279,9 @@ export function useEntitlement(uid: string | null, options: EntitlementOptions =
    * Read as a different reader, the first render after linking is loading.
    */
   const settledFor = useRef<string | null>(null);
-  const reader = uid === null ? null : `${uid}:${guest ? 'guest' : 'account'}`;
+  // …and whether its address was confirmed. Confirming keeps the uid too,
+  // and is the moment a choice waiting on the device may be moved up.
+  const reader = uid === null ? null : `${uid}:${guest ? 'guest' : 'account'}:${unconfirmed ? 'unconfirmed' : 'confirmed'}`;
   const [saving, setSaving] = useState(false);
   const [saves, setSaves] = useState(0);
   const savingTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -283,6 +360,11 @@ export function useEntitlement(uid: string | null, options: EntitlementOptions =
         setKnown(true);
 
         if (!freeAreaIsOnTheAccount()) return;
+        // Whether the profile predates the confirmed-address rule: learned
+        // here, remembered for the next offline start.
+        const old = stored.predatesVerification === true;
+        rememberPredates(uid, old);
+        setPredates({ uid, value: old });
         if (stored.freeArea) {
           setFreeArea(stored.freeArea);
           storeFreeAreaChoice(stored.freeArea, uid);
@@ -299,9 +381,14 @@ export function useEntitlement(uid: string | null, options: EntitlementOptions =
         // guest's free area, so theirs waits on the device until they create
         // an account — at which point this effect runs again, for the same
         // uid now seen as an account, and moves it up then.
+        //
+        // And not for an account that must confirm its address first: the
+        // rules refuse it the same way. It waits on the device, and this
+        // effect runs again the moment the address is confirmed.
         const onDevice = freeAreaChoiceFor(uid);
         setFreeArea(onDevice);
         if (!onDevice || guest) return;
+        if (unconfirmed && ((readConfirmationRecord(uid)?.required ?? false) || !old)) return;
         beginSave();
         saveFreeArea(uid, onDevice.area, switchesToMigrate(onDevice))
           .then((moved) => {
@@ -329,7 +416,7 @@ export function useEntitlement(uid: string | null, options: EntitlementOptions =
       });
 
     return () => { cancelled = true; };
-  }, [uid, guest, reader, readCount, setFreeArea, beginSave, endSave]);
+  }, [uid, guest, unconfirmed, reader, readCount, setFreeArea, beginSave, endSave]);
 
   const refresh = useCallback(() => refreshEntitlementEverywhere(), []);
 
@@ -337,6 +424,9 @@ export function useEntitlement(uid: string | null, options: EntitlementOptions =
     // A guest holds no free area: choosing one is what an account is for.
     if (guest) return;
     const current = freeAreaRef.current;
+    // An unconfirmed address: no first choice while the area is held back,
+    // and never a change. The rules refuse both; nothing is shown as chosen.
+    if (heldBack || (unconfirmed && current)) return;
     if (!canSwitchFreeArea(current)) return;
     // The first pick is not a switch; every later one is, and there is only
     // one of those — see FREE_AREA_SWITCHES_ALLOWED.
@@ -369,13 +459,14 @@ export function useEntitlement(uid: string | null, options: EntitlementOptions =
     }
     // Every other screen's copy picks up the new free area too.
     queueMicrotask(refreshEntitlementEverywhere);
-  }, [uid, guest, setFreeArea, beginSave, endSave]);
+  }, [uid, guest, heldBack, unconfirmed, setFreeArea, beginSave, endSave]);
 
   // What the free tier opens. With accounts: the chosen area or nothing, and
   // for a guest nothing whatever was chosen. Without accounts: as it was,
   // the chosen area or the default.
   const onAccount = freeAreaIsOnTheAccount();
-  const free: readonly Area[] = !onAccount ? freeAreasFor(freeArea) : guest || !freeArea ? [] : [freeArea.area];
+  // …and nothing while the address must be confirmed first.
+  const free: readonly Area[] = !onAccount ? freeAreasFor(freeArea) : guest || heldBack || !freeArea ? [] : [freeArea.area];
   // A guest's stored entitlement opens nothing either. They cannot have paid
   // (checkout asks for an account first); the one way a guest holds one is a
   // licensed class joined before guests were closed, and that waits for the
@@ -407,9 +498,14 @@ export function useEntitlement(uid: string | null, options: EntitlementOptions =
     guest,
     // Not while the read is in flight (the answer may be "you already chose"),
     // and not while a choice just made is on its way to the account.
-    needsFreeArea: onAccount && !guest && uid !== null && !stillLoading && tier === 'free' && !freeArea,
+    needsFreeArea: onAccount && !guest && uid !== null && !stillLoading && tier === 'free' && !freeArea && !heldBack,
+    // Only once the entitlement has been read: an account with full access
+    // is never asked, and that is not known until then.
+    needsEmailConfirmation: heldBack && !stillLoading && tier === 'free',
+    switchNeedsConfirmation: unconfirmed && tier === 'free',
     chooseFreeArea,
-    canSwitchFree: canSwitchFreeArea(freeArea),
+    // An unconfirmed account may not change its area, whatever the calendar says.
+    canSwitchFree: canSwitchFreeArea(freeArea) && !(unconfirmed && freeArea !== null),
     daysUntilSwitch: daysUntilFreeAreaSwitch(freeArea),
     switchUsed: hasUsedFreeAreaSwitch(freeArea),
     freeAreaSaving: saving,

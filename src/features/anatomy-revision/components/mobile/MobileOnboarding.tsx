@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { lazy, Suspense, useEffect, useRef } from 'react';
 import type { AnatomyContent } from '../../hooks/useAnatomyContent';
 import type { Area } from '../../types/region';
 import type { UseEntitlement } from '../../hooks/useEntitlement';
@@ -6,6 +6,9 @@ import { BodyFigure } from '../shared/BodyFigure';
 import { AccountForm } from '../Auth/AccountForm';
 import { OnboardingAreaList } from '../Onboarding/OnboardingAreaList';
 import { useOnboardingFlow, type OnboardingStepKind } from '../Onboarding/onboardingSteps';
+
+/** "Check your inbox" — see Onboarding.tsx. */
+const EmailConfirmPanel = lazy(() => import('../Auth/EmailConfirmPanel'));
 
 interface MobileOnboardingProps {
   /** What this account may reach — see Onboarding.tsx. */
@@ -22,8 +25,10 @@ interface MobileOnboardingProps {
 export function MobileOnboarding({ access, content, initialAreas = [], only, onDone }: MobileOnboardingProps) {
   const flow = useOnboardingFlow({ access, initialAreas, only, onDone });
   const { current, selected } = flow;
-  const onAreaStep = current.kind === 'areas';
-  const onAccountStep = current.kind === 'account';
+  // See Onboarding.tsx: the form or the confirmation may be standing in for the step.
+  const onAreaStep = current.kind === 'areas' && flow.stage === 'step';
+  const onAccountStep = flow.stage !== 'step';
+  const confirming = flow.stage === 'confirm';
 
   const heading = useRef<HTMLHeadingElement>(null);
   const opened = useRef(false);
@@ -32,7 +37,7 @@ export function MobileOnboarding({ access, content, initialAreas = [], only, onD
     if (!opened.current) { opened.current = true; return; }
     heading.current?.focus();
     window.scrollTo(0, 0);
-  }, [flow.index]);
+  }, [flow.index, confirming]);
 
   return (
     <main className="flex min-h-screen flex-col px-6.5 pt-6 pb-9" style={{ background: 'var(--pg)', color: 'var(--ink)', boxSizing: 'border-box' }}>
@@ -53,7 +58,11 @@ export function MobileOnboarding({ access, content, initialAreas = [], only, onD
 
       {onAccountStep ? (
         <div className="flex-1 pt-6">
-          {flow.settingUp ? (
+          {confirming ? (
+            <Suspense fallback={<p role="status" style={{ font: '400 15px/1.5 var(--font-ui)', color: 'var(--ink2)' }}>One moment…</p>}>
+              <EmailConfirmPanel purpose="free-area" onDifferentEmail={flow.onDifferentEmail} />
+            </Suspense>
+          ) : flow.stage === 'setting-up' ? (
             <p role="status" style={{ font: '400 15px/1.5 var(--font-ui)', color: 'var(--ink2)' }}>
               Setting up your account…
             </p>

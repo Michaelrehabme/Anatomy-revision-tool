@@ -4,7 +4,7 @@ import { cachedSiteSettings, fetchSiteSettings } from './features/site/data/site
 import { Navigate, Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useRepository } from './features/anatomy-revision/hooks/useRepository';
 import { AUTH_ENABLED, useAuth } from './features/anatomy-revision/context/AuthProvider';
-import { useEntitlement, type UseEntitlement } from './features/anatomy-revision/hooks/useEntitlement';
+import { freeAreaIsOnTheAccount, useEntitlement, type UseEntitlement } from './features/anatomy-revision/hooks/useEntitlement';
 import { useOfflineAutoUpdate } from './features/pwa/offline/useOfflineAutoUpdate';
 import { useAnatomyContent, type AnatomyContent } from './features/anatomy-revision/hooks/useAnatomyContent';
 import { useRevisionSession } from './features/anatomy-revision/hooks/useRevisionSession';
@@ -29,11 +29,8 @@ import { MuscleCard } from './features/anatomy-revision/components/MuscleCard/Mu
 import { Atlas } from './features/anatomy-revision/components/Atlas/Atlas';
 import { MobileAtlas } from './features/anatomy-revision/components/mobile/MobileAtlas';
 import { Progress } from './features/anatomy-revision/components/Progress/Progress';
-import { DiagnosticRoute } from './features/anatomy-revision/components/Diagnostic/DiagnosticRoute';
 import { AreaFactsNotice } from './features/anatomy-revision/components/shared/AreaFactsNotice';
 import { focusHeadingIfLost } from './features/anatomy-revision/components/shared/useRouteFocus';
-import { Achievements } from './features/anatomy-revision/components/Achievements/Achievements';
-import { MobileAchievements } from './features/anatomy-revision/components/mobile/MobileAchievements';
 import type { NavSection } from './features/anatomy-revision/components/shell/NavSidebar';
 import { Account } from './features/anatomy-revision/components/Account/Account';
 import { MobileAccount } from './features/anatomy-revision/components/mobile/MobileAccount';
@@ -70,6 +67,23 @@ const DemoBanner = PUBLIC_DEMO ? lazy(() => import('./features/educator/demo/Dem
  * refuses a live checkout in that build.
  */
 const PricingPage = lazy(() => import('./features/billing/PricingPage'));
+/**
+ * Three screens almost no page view needs, loaded when they are opened: the
+ * diagnostic (sat twice a term, by a member of a class) and the two
+ * achievements screens. Moved out on 7 Oct 2026 to win back what the
+ * confirmed-address step added to the entry chunk, which must stay under the
+ * 2 MiB a service worker will precache. Each is its own precached file, so
+ * nothing is lost offline.
+ */
+const DiagnosticRoute = lazy(() =>
+  import('./features/anatomy-revision/components/Diagnostic/DiagnosticRoute').then((m) => ({ default: m.DiagnosticRoute })),
+);
+const Achievements = lazy(() =>
+  import('./features/anatomy-revision/components/Achievements/Achievements').then((m) => ({ default: m.Achievements })),
+);
+const MobileAchievements = lazy(() =>
+  import('./features/anatomy-revision/components/mobile/MobileAchievements').then((m) => ({ default: m.MobileAchievements })),
+);
 /** Code-split so students never download the educator bundle — see src/features/educator/EducatorApp.tsx. */
 const EducatorApp = lazy(() => import('./features/educator/EducatorApp'));
 /**
@@ -92,6 +106,12 @@ const COMPARISON_PATH = '/compare';
  * cent of the size the offline precache allows.
  */
 const AccountGate = lazy(() => import('./features/anatomy-revision/components/Auth/AccountGate'));
+/**
+ * "Check your inbox": what an account that has not confirmed its email
+ * address sees in place of every screen that revises (owner's decision,
+ * 7 Oct 2026). Lazy for the same reason as the guest's screen.
+ */
+const EmailConfirmGate = lazy(() => import('./features/anatomy-revision/components/Auth/EmailConfirmGate'));
 
 /** Dev-only hotspot authoring tool (CR-007) — route only registered in dev, see the /dev/hotspots Route below. */
 const HotspotEditorApp = lazy(() => import('./features/hotspotEditor/HotspotEditorApp'));
@@ -214,7 +234,7 @@ function App() {
    * (data/content/contentSource.ts) the entitlement is what says WHICH areas
    * to fetch, and nothing is asked for until it has settled.
    */
-  const entitlement = useEntitlement(userId, { guest: isGuest });
+  const entitlement = useEntitlement(userId, { guest: isGuest, emailVerified: user?.emailVerified ?? true });
   const content = useAnatomyContent(repository, {
     uid: userId,
     areas: entitlement.areas,
@@ -325,7 +345,27 @@ function App() {
    * are an account.
    */
   const [accountNotice, setAccountNotice] = useState<string | null>(null);
-  const standingIn = isGuest ? 'account' : entitlement.needsFreeArea ? 'area' : null;
+  /**
+   * THE WAY BACK FROM THE CONFIRMATION EMAIL. The link in it is Firebase's;
+   * once the address is confirmed their page offers "Continue" to this app
+   * with `?emailConfirmed=1` (data/firebase.ts confirmationContinueUrl). It
+   * may open in the browser the account was made in — in which case the
+   * account is already confirmed here and the app simply carries on — or
+   * somewhere it was not: a phone's mail app, another browser, where nobody
+   * is signed in. Either way they are told the confirmation worked, and in
+   * the second case where to go next, rather than left on a sign-up form
+   * wondering whether it did.
+   */
+  // Only where accounts are real: the demo presents a pretend account, and
+  // has no address to have confirmed.
+  const [confirmedNotice, setConfirmedNotice] = useState(
+    () => freeAreaIsOnTheAccount() && new URLSearchParams(window.location.search).has('emailConfirmed'),
+  );
+  useEffect(() => {
+    if (!new URLSearchParams(location.search).has('emailConfirmed')) return;
+    navigate({ pathname: location.pathname, search: '' }, { replace: true });
+  }, [location.pathname, location.search, navigate]);
+  const standingIn = isGuest ? 'account' : entitlement.needsEmailConfirmation ? 'confirm' : entitlement.needsFreeArea ? 'area' : null;
   const stoodIn = useRef(standingIn);
   useEffect(() => {
     const was = stoodIn.current;
@@ -581,6 +621,24 @@ function App() {
         </Suspense>
       );
     }
+    // AN ACCOUNT THAT HAS NOT CONFIRMED ITS EMAIL ADDRESS is asked to: the
+    // free area needs it (lib/emailVerification.ts). Never an account with
+    // full access, and never one that was here before the rule — the hook
+    // says which. Their progress, and a free area waiting on this device,
+    // are untouched and are theirs the moment the address is confirmed.
+    if (entitlement.needsEmailConfirmation) {
+      return (
+        <Suspense fallback={null}>
+          <EmailConfirmGate
+            isDesktop={isDesktop}
+            active={section}
+            onNavigate={onNavigateSection}
+            onNavigateTab={mobileNavigate}
+            freeArea={entitlement.freeArea?.area ?? null}
+          />
+        </Suspense>
+      );
+    }
     if (entitlement.needsFreeArea) {
       const choose = (areas: Area[] | null) => { if (areas) recordChoice(areas); };
       return isDesktop
@@ -601,6 +659,27 @@ function App() {
           here, above every screen — so no screen has to leave a student to
           guess why a region is missing. Never rendered with the seed bundled. */}
       {!entitlement.loading && <AreaFactsNotice facts={content.facts} entitled={entitledAreas} />}
+      {confirmedNotice && !authLoading && (
+        <div
+          role="status"
+          className="flex items-start justify-between gap-4 px-5 py-3"
+          style={{ background: 'var(--accs)', color: 'var(--accd)', font: '400 14px/1.5 var(--font-ui)' }}
+        >
+          <span>
+            {user && !isGuest && user.emailVerified
+              ? 'Your email address is confirmed.'
+              : 'Your email address is confirmed. Go back to the app or the tab where you created your account and choose “I’ve confirmed — continue”, or sign in here.'}
+          </span>
+          <button
+            type="button"
+            onClick={() => setConfirmedNotice(false)}
+            className="min-h-[32px] flex-none"
+            style={{ font: '500 13.5px/1 var(--font-ui)', color: 'var(--accd)', textDecoration: 'underline' }}
+          >
+            Dismiss
+          </button>
+        </div>
+      )}
       {accountNotice && !isGuest && (
         <div
           role="status"
@@ -911,12 +990,14 @@ function App() {
           path="/diagnostic"
           element={
             gated('account',
-            <DiagnosticRoute
-              repository={repository}
-              userId={userId}
-              content={content}
-              sitterAreas={entitledAreas}
-            />,
+            <Suspense fallback={null}>
+              <DiagnosticRoute
+                repository={repository}
+                userId={userId}
+                content={content}
+                sitterAreas={entitledAreas}
+              />
+            </Suspense>,
             )
           }
         />
@@ -924,11 +1005,13 @@ function App() {
           path="/achievements"
           element={
             gated('progress',
-            isDesktop ? (
-              <Achievements repository={repository} userId={userId} onNavigate={onNavigateSection} />
-            ) : (
-              <MobileAchievements repository={repository} userId={userId} onBack={() => navigate('/progress')} />
-            ),
+            <Suspense fallback={null}>
+              {isDesktop ? (
+                <Achievements repository={repository} userId={userId} onNavigate={onNavigateSection} />
+              ) : (
+                <MobileAchievements repository={repository} userId={userId} onBack={() => navigate('/progress')} />
+              )}
+            </Suspense>,
             )
           }
         />

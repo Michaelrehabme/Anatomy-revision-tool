@@ -172,7 +172,7 @@ export async function touchUserProfile(user: User): Promise<void> {
     uid: user.uid,
     displayName: user.displayName,
     email: user.email,
-    isAnonymous: user.isAnonymous,
+    isAnonymous: isGuestUser(user),
     lastActiveAt: serverTimestamp(),
   };
 
@@ -181,6 +181,19 @@ export async function touchUserProfile(user: User): Promise<void> {
   } else {
     await setDoc(ref, { ...fields, createdAt: serverTimestamp(), cohort: null });
   }
+}
+
+/**
+ * A GUEST: the anonymous sign-in every visitor is given — or an account whose
+ * only way of signing in has been taken off again, which is what "Use a
+ * different email" does (removeEmailSignIn, below). Firebase goes on calling
+ * the second kind "not anonymous", because it was an account once; it has no
+ * sign-in method, cannot be signed in to again, and is a guest in every way
+ * that matters here. The content function reads it the same way
+ * (netlify/functions/lib/idToken.ts: no providers, so a guest).
+ */
+export function isGuestUser(user: Pick<User, 'isAnonymous' | 'providerData'>): boolean {
+  return user.isAnonymous || (Array.isArray(user.providerData) && user.providerData.length === 0);
 }
 
 export interface LinkResult {
@@ -214,7 +227,7 @@ function errorCode(error: unknown): string | undefined {
 export async function linkAnonymousCredential(authInstance: Auth, credential: AuthCredential): Promise<LinkResult> {
   const currentUser = authInstance.currentUser;
 
-  if (!currentUser || !currentUser.isAnonymous) {
+  if (!currentUser || !isGuestUser(currentUser)) {
     const result = await signInWithCredential(authInstance, credential);
     return { user: result.user, recoveredExistingAccount: false };
   }
@@ -244,7 +257,7 @@ export async function linkAnonymousWithGoogle(authInstance: Auth): Promise<LinkR
   const provider = new GoogleAuthProvider();
   const currentUser = authInstance.currentUser;
 
-  if (!currentUser || !currentUser.isAnonymous) {
+  if (!currentUser || !isGuestUser(currentUser)) {
     const result = await signInWithPopup(authInstance, provider);
     return { user: result.user, recoveredExistingAccount: false };
   }
@@ -281,7 +294,7 @@ export function linkAnonymousAccount(input: LinkInput): Promise<LinkResult> {
 /** Signs in with Google, linking the current anonymous session if there is one so uid/data carry over. */
 export function signInWithGoogle(): Promise<LinkResult> {
   const authInstance = getFirebaseAuth();
-  if (authInstance.currentUser?.isAnonymous) return linkAnonymousWithGoogle(authInstance);
+  if (authInstance.currentUser && isGuestUser(authInstance.currentUser)) return linkAnonymousWithGoogle(authInstance);
   return signInWithPopup(authInstance, new GoogleAuthProvider()).then((result) => ({
     user: result.user,
     recoveredExistingAccount: false,
@@ -291,7 +304,7 @@ export function signInWithGoogle(): Promise<LinkResult> {
 /** Creates a new email/password account, linking the current anonymous session if there is one so uid/data carry over. */
 export function signUpWithEmail(email: string, password: string): Promise<LinkResult> {
   const authInstance = getFirebaseAuth();
-  if (authInstance.currentUser?.isAnonymous) return linkAnonymousWithEmail(authInstance, email, password);
+  if (authInstance.currentUser && isGuestUser(authInstance.currentUser)) return linkAnonymousWithEmail(authInstance, email, password);
   return createUserWithEmailAndPassword(authInstance, email, password).then((result) => ({
     user: result.user,
     recoveredExistingAccount: false,

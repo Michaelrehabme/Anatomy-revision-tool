@@ -41,6 +41,9 @@ const KNOWN: Record<string, string> = {
   'features/anatomy-revision/data/accountLifecycle.ts': 'Aliased: accountLifecycle.demo.ts',
   'features/anatomy-revision/data/entitlementRepository.ts': 'Aliased: entitlementRepository.demo.ts',
   'features/anatomy-revision/data/__tests__/authLinking.test.ts': 'A test; never bundled.',
+  'features/anatomy-revision/data/emailConfirmation.ts':
+    'Confirming an email address. Reached only by dynamic import from AuthProvider, in the branch a build with no accounts drops. Checked in dist-demo on 7 Oct 2026: no file there contains it.',
+  'features/anatomy-revision/data/__tests__/emailConfirmation.test.ts': 'A test; never bundled.',
   'features/educator/data/cohortsRepository.ts': 'Aliased: cohortsRepository.demo.ts',
   'features/educator/data/assignmentsRepository.ts': 'Aliased: assignmentsRepository.demo.ts',
   'features/educator/data/assignmentTemplatesRepository.ts': 'Aliased: assignmentTemplatesRepository.demo.ts',

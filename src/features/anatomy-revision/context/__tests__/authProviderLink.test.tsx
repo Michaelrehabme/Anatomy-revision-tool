@@ -45,6 +45,11 @@ vi.mock('../../data/firebase', () => ({
   linkAnonymousAccount: firebase.linkAnonymousAccount,
   signOutUser: vi.fn(async () => {}),
 }));
+// Confirming an email address has its own file (authProviderConfirm.test.tsx).
+vi.mock('../../data/emailConfirmation', () => ({
+  confirmedForRules: vi.fn(async (user: { emailVerified?: boolean }) => user.emailVerified === true),
+  sendConfirmationEmail: vi.fn(async () => ({ uid: 'guest-1', email: 'sam@example.com' })),
+}));
 
 vi.stubEnv('VITE_PERSISTENCE', 'firestore');
 

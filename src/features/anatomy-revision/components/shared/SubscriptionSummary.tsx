@@ -29,6 +29,13 @@ const PUBLIC_DEMO = import.meta.env.VITE_PUBLIC_DEMO === '1';
  */
 const ManageSubscription = PUBLIC_DEMO ? null : lazy(() => import('../../../billing/ManageSubscription'));
 
+/**
+ * The buttons that confirm an email address (Auth/EmailConfirmPanel). Lazy,
+ * and null in the demo, which has no accounts: only an account whose address
+ * is not confirmed ever sees them.
+ */
+const EmailConfirmPanel = PUBLIC_DEMO ? null : lazy(() => import('../Auth/EmailConfirmPanel'));
+
 function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
 }
@@ -51,9 +58,26 @@ export function SubscriptionSummary({ access }: { access: UseEntitlement }) {
    * "Free: shoulder only" to an account that had never picked the shoulder.
    * A build with no accounts still defaults, and still says so.
    */
-  const unchosen = access.needsFreeArea === true;
+  /**
+   * A CONFIRMED EMAIL ADDRESS (owner's decision, 7 Oct 2026;
+   * lib/emailVerification.ts). Two states, and neither is ever true of an
+   * account with full access:
+   *
+   *   mustConfirm      a free account that holds no area until it confirms.
+   *                    It is told so here, in place of a picker the database
+   *                    would refuse.
+   *   confirmToChange  an account from before the rule: it keeps its area,
+   *                    and confirms only to CHANGE it.
+   */
+  const mustConfirm = access.needsEmailConfirmation === true;
+  const confirmToChange = access.switchNeedsConfirmation === true && !mustConfirm && freeArea !== null && !switchUsed;
+  const unchosen = access.needsFreeArea === true || (mustConfirm && !freeArea);
   const free = freeArea?.area ?? 'shoulder';
-  const freeOnly = unchosen ? 'Free: you have not chosen your area yet.' : `Free: ${AREA_LABELS[free].toLowerCase()} only.`;
+  const freeOnly = mustConfirm
+    ? 'Free: confirm your email address to open your free area.'
+    : unchosen
+      ? 'Free: you have not chosen your area yet.'
+      : `Free: ${AREA_LABELS[free].toLowerCase()} only.`;
   /**
    * A failed renewal is not a subscription that "ended": it is still there,
    * waiting for a card that works, and the notice above the line says so.
@@ -105,7 +129,15 @@ export function SubscriptionSummary({ access }: { access: UseEntitlement }) {
         </Suspense>
       )}
 
-      {tier === 'free' && !pending && (
+      {tier === 'free' && !pending && mustConfirm && EmailConfirmPanel && (
+        <div className="mt-4 mb-8 rounded-[3px] p-5" style={{ background: 'var(--sf)', border: '1px solid var(--line)', maxWidth: 400 }}>
+          <Suspense fallback={null}>
+            <EmailConfirmPanel purpose="free-area" />
+          </Suspense>
+        </div>
+      )}
+
+      {tier === 'free' && !pending && !mustConfirm && (
         <div className="mt-3">
           <label
             htmlFor="free-area"
@@ -132,6 +164,8 @@ export function SubscriptionSummary({ access }: { access: UseEntitlement }) {
           <p className="mt-2" style={{ font: '400 12.5px/1.5 var(--font-ui)', color: 'var(--ink3)' }}>
             {unchosen
               ? 'Pick the one area that stays free. You can change it once, 30 days later.'
+              : confirmToChange
+              ? 'This is your free area, and it stays yours. To change it — once, 30 days after you picked it — confirm your email address first.'
               : switchUsed
               ? 'You have used your one change, so this is now your free area. A subscription opens every region.'
               : canSwitchFree
@@ -139,6 +173,13 @@ export function SubscriptionSummary({ access }: { access: UseEntitlement }) {
                 : `You can change this once, 30 days after you picked it: from ${freeAreaSwitchDate(freeArea) ?? 'tomorrow'} (${daysUntilSwitch} ${daysUntilSwitch === 1 ? 'day' : 'days'} to go).`}
             {' '}Your progress in every area is kept either way.
           </p>
+          {confirmToChange && EmailConfirmPanel && (
+            <div className="mt-3 mb-8 rounded-[3px] p-5" style={{ background: 'var(--sf)', border: '1px solid var(--line)', maxWidth: 400 }}>
+              <Suspense fallback={null}>
+                <EmailConfirmPanel purpose="change-area" />
+              </Suspense>
+            </div>
+          )}
         </div>
       )}
     </div>

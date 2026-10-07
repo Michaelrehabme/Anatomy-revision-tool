@@ -80,9 +80,11 @@ const fieldLabel = { font: '500 12.5px/1 var(--font-ui)', color: 'var(--ink2)' }
  * an account that already exists replaces the guest, and what the guest did
  * on this device stays with the guest.
  *
- * Email addresses are not verified. The owner has not asked for it, and the
- * free tier therefore costs one made-up address per extra area
- * (docs/CONTENT-SERVER-STATUS.md).
+ * AN EMAIL-AND-PASSWORD ACCOUNT THEN CONFIRMS ITS ADDRESS before its free
+ * area (owner's decision, 7 Oct 2026). The link is emailed as the account is
+ * made (context/AuthProvider signUpWithEmail), and whoever is showing this
+ * form shows "Check your inbox" next (Auth/EmailConfirmPanel). Google's
+ * sign-in arrives confirmed and goes straight on.
  */
 export function AccountForm({ initialMode = 'sign-up', onDone, guestHasProgress = false, onModeChange, onRecovered }: AccountFormProps) {
   const { signInWithGoogle, signInWithEmail, signUpWithEmail } = useAuth();

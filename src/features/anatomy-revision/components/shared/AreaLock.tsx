@@ -60,7 +60,13 @@ export function UnlockNote({ access, className = '' }: { access: UseEntitlement;
         Unlock every region
       </Link>
       {access.freeArea && access.canSwitchFree && <> — or make your one change of free area, from your account.</>}
-      {access.freeArea && !access.canSwitchFree && !access.switchUsed && (
+      {/* An account from before a confirmed address was asked for keeps its
+          area and confirms only to change it (lib/emailVerification.ts). The
+          wait is not what is in its way, so the wait is not what is said. */}
+      {access.freeArea && !access.canSwitchFree && !access.switchUsed && access.switchNeedsConfirmation && (
+        <> — or confirm your email address, from your account, to change your free area.</>
+      )}
+      {access.freeArea && !access.canSwitchFree && !access.switchUsed && !access.switchNeedsConfirmation && (
         <> — or change your free area {switchWait(access)}.</>
       )}
     </p>
@@ -117,7 +123,9 @@ export function LockedAreaPanel({
               ? `Use my one change: make ${AREA_LABELS[area]} free instead`
               : access.switchUsed
                 ? 'Your free area is fixed now'
-                : `Changeable ${switchWait(access)}`}
+                : access.switchNeedsConfirmation
+                  ? 'Confirm your email address, from your account, to change your free area'
+                  : `Changeable ${switchWait(access)}`}
           </button>
         )}
       </div>
