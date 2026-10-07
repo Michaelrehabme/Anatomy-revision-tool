@@ -1,8 +1,8 @@
 import { STRUCTURE_INDEX } from '../../anatomy-revision/data/structureIndex';
-import { emptyCategoryBreakdown } from '../../anatomy-revision/types/structure';
+import { areasOf, emptyCategoryBreakdown } from '../../anatomy-revision/types/structure';
 import { hasDescription, type StructureIndexEntry } from '../../anatomy-revision/types/structureIndex';
 import type { QuestionType } from '../../anatomy-revision/types/question';
-import type { Region } from '../../anatomy-revision/types/region';
+import type { Area, Region } from '../../anatomy-revision/types/region';
 import type { RevisionSessionSummary, UserAttempt } from '../../anatomy-revision/types/attempt';
 import { filterStructures } from '../../anatomy-revision/lib/indexes';
 import { isScopedAssignment, type Assignment, type Cohort, type CohortStudent } from '../types/cohort';
@@ -41,8 +41,14 @@ const intBetween = (rand: () => number, min: number, max: number) => Math.floor(
 
 export const DEMO_EDUCATOR_UID = 'demo-educator';
 
-/** The generated student whose history the demo's own signed-in account borrows — see repositoryDemo.ts. */
-export const DEMO_ACCOUNT_PERSONA = 'demo-physio-y2-06';
+/**
+ * Whose history the demo's own signed-in account borrows — see
+ * repositoryDemo.ts. Since 7 Oct 2026 this is the regular user generated at
+ * the foot of this file, not a member of either class: a class member has 45
+ * days and a few dozen answers, which is too thin to show an account page
+ * that filters by question type and area.
+ */
+export const DEMO_ACCOUNT_PERSONA = 'demo-regular';
 
 export const DEMO_COHORTS: Cohort[] = [
   {
@@ -544,11 +550,91 @@ function activity(): Map<string, GeneratedActivity> {
 }
 
 export function demoAttempts(uid: string): UserAttempt[] {
+  if (uid === DEMO_ACCOUNT_PERSONA) return regularActivity().attempts;
   return activity().get(uid)?.attempts ?? [];
 }
 
 export function demoSessionSummaries(uid: string): RevisionSessionSummary[] {
+  if (uid === DEMO_ACCOUNT_PERSONA) return regularActivity().summaries;
   return activity().get(uid)?.summaries ?? [];
+}
+
+/**
+ * Someone who uses the app most days, for the demo's own account page.
+ *
+ * Twelve weeks, about five sessions a week and none missed in the last one,
+ * working down the limbs an area a fortnight while still revising the areas
+ * already covered — so every area chip and every question type on the account
+ * page has enough behind it to draw a line, and the two lines differ: new
+ * areas keep arriving as first sights while the old ones are seen before.
+ *
+ * Kept out of DEMO_STUDENTS and out of activity() on purpose. Both feed the
+ * class dashboards, whose figures are tuned to the seeded class as it stands;
+ * this person is in no class and has a generator of their own.
+ */
+const REGULAR_DAYS = 84;
+const REGULAR_BLOCK_DAYS = 14;
+const REGULAR_AREAS: Area[] = ['shoulder', 'elbow', 'wrist-hand', 'hip', 'knee', 'ankle-foot'];
+/** No flashcards: they carry no judgement, and this history exists to be read as accuracy. */
+const REGULAR_QUESTION_TYPES: QuestionType[] = ['mcq', 'mcq', 'mcq', 'locate', 'locate', 'identify-typed', 'identify-typed', 'fill-blank'];
+
+let regularCache: GeneratedActivity | null = null;
+
+function regularActivity(): GeneratedActivity {
+  if (regularCache) return regularCache;
+
+  const student: DemoStudent = {
+    uid: DEMO_ACCOUNT_PERSONA,
+    displayName: 'Demo regular',
+    email: 'demo.regular@example.com',
+    joinedAt: new Date(NOW - REGULAR_DAYS * DAY_MS).toISOString(),
+    lastActiveAt: new Date(NOW).toISOString(),
+    cohortId: '',
+    ability: 0.68,
+    lastActiveDaysAgo: 0,
+    attemptCount: 0,
+  };
+  const rand = makeRandom(31_337);
+  const exposure = new Map<string, number>();
+  const pools = REGULAR_AREAS.map((area) => QUIZZABLE.filter((s) => areasOf(s).includes(area)));
+  const cores = pools.map((pool, i) => {
+    const coreRand = makeRandom(31_337 + 100 * (i + 1));
+    return [...pool].sort(() => coreRand() - 0.5).slice(0, 8);
+  });
+  const attempts: UserAttempt[] = [];
+  const summaries: RevisionSessionSummary[] = [];
+
+  for (let daysAgo = REGULAR_DAYS - 1; daysAgo >= 0; daysAgo--) {
+    // About two days off a week, but an unbroken last week so the streak reads as one.
+    const dayOff = rand() < 0.27;
+    if (dayOff && daysAgo > 6) continue;
+
+    const day = REGULAR_DAYS - 1 - daysAgo;
+    const block = Math.min(REGULAR_AREAS.length - 1, Math.floor(day / REGULAR_BLOCK_DAYS));
+    // Two sessions in three are the area being learned; the third revises
+    // everything met so far, which is what keeps the earlier areas' lines going.
+    const revising = block > 0 && rand() < 0.34;
+    const structures = revising ? pools.slice(0, block + 1).flat() : pools[block];
+    if (structures.length === 0) continue;
+
+    const session = buildSession(student, rand, exposure, {
+      sessionId: `${student.uid}-s${day}`,
+      // Morning or evening, never the future: today's session is always before now.
+      startedAt: NOW - daysAgo * DAY_MS - intBetween(rand, 1, 10) * 3_600_000,
+      size: intBetween(rand, 14, 26),
+      structures,
+      questionTypes: REGULAR_QUESTION_TYPES,
+      core: revising ? cores.slice(0, block + 1).flat() : cores[block],
+      // A steady climb over the twelve weeks, a little higher on revision days.
+      bonus: (day / REGULAR_DAYS) * 0.2 + (revising ? 0.05 : 0),
+      finishChance: 0.95,
+    });
+    attempts.push(...session.attempts);
+    summaries.push(session.summary);
+  }
+
+  regularCache = { attempts, summaries };
+  return regularCache;
 }
 
 /**
