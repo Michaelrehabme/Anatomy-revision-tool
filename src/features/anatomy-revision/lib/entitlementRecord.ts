@@ -10,6 +10,7 @@ import {
   type FreeAreaChoice,
 } from './entitlement';
 import { parseStoredFreeArea } from './freeAreaRecord';
+import { mayHoldFreeArea, predatesVerification } from './emailVerification';
 
 /**
  * From the two documents that say what an account may reach — users/{uid} and,
@@ -105,6 +106,12 @@ export interface StoredAccess {
   entitlement: Entitlement | null;
   /** The free area stored on the account, or null when none has been chosen there yet. */
   freeArea: FreeAreaChoice | null;
+  /**
+   * The profile was first written before a confirmed email address was asked
+   * for (lib/emailVerification.ts). Left out by a caller that did not look:
+   * a profile that does not exist is not an old one.
+   */
+  predatesVerification?: boolean;
 }
 
 /** Everything the two documents say, before anything is decided from it. */
@@ -113,6 +120,8 @@ export interface AccessRecord {
   candidates: Entitlement[];
   /** The free area stored on the account, or null when none has been chosen there. */
   freeArea: FreeAreaChoice | null;
+  /** The profile's `createdAt` is before the day a confirmed address was first asked for. */
+  predatesVerification: boolean;
 }
 
 /**
@@ -124,7 +133,11 @@ export function accessRecord(user: Fields, cohort: Fields, now: Date = new Date(
   const cohortId = cohortIdOf(user);
   const licence = cohortId && cohort ? licenceEntitlement(cohortId, cohort) : null;
   if (licence) candidates.push(licence);
-  return { candidates, freeArea: parseStoredFreeArea(user?.freeArea, now) };
+  return {
+    candidates,
+    freeArea: parseStoredFreeArea(user?.freeArea, now),
+    predatesVerification: predatesVerification(user?.createdAt),
+  };
 }
 
 /**
@@ -140,6 +153,12 @@ export interface AreaAccess {
   allowed: boolean;
   /** The entitlement in force. `free` for an account reaching its free area. */
   entitlement: Entitlement;
+  /**
+   * Why not, where the reason is something the caller can put right:
+   * `guest` (create an account) or `unconfirmed` (confirm the email address).
+   * Absent for a plain "this account does not hold that area".
+   */
+  reason?: 'guest' | 'unconfirmed';
 }
 
 /**
@@ -165,17 +184,36 @@ export interface AreaAccess {
  *     hold two areas: the shoulder on first load, then the one they picked.
  *     Not chosen now means not served. (A build with no accounts keeps the
  *     default, in the hook; it never asks this function anything.)
+ *
+ * AND A THIRD, decided on 7 Oct 2026: THE FREE AREA NEEDS A CONFIRMED EMAIL
+ * ADDRESS (`who.emailVerified`), unless the account was here before that was
+ * asked for. Full access never does. See lib/emailVerification.ts.
  */
 export function areaAccess(
   area: Area,
   record: AccessRecord,
   now: Date = new Date(),
-  who: { guest?: boolean } = {},
+  who: { guest?: boolean; emailVerified?: boolean } = {},
 ): AreaAccess {
-  if (who.guest) return { allowed: false, entitlement: FREE_ENTITLEMENT };
+  if (who.guest) return { allowed: false, entitlement: FREE_ENTITLEMENT, reason: 'guest' };
   const entitlement = resolveEntitlement(record.candidates, now);
-  return {
-    allowed: canAccessArea(area, entitlement, now, record.freeArea ? [record.freeArea.area] : []),
-    entitlement,
-  };
+  const allowed = canAccessArea(area, entitlement, now, record.freeArea ? [record.freeArea.area] : []);
+  // THE FREE AREA NEEDS A CONFIRMED EMAIL ADDRESS (lib/emailVerification.ts).
+  // Only the free area: an account whose entitlement is in force is served
+  // what it holds whether its address is confirmed or not, so nobody is
+  // ever kept from what they paid for by this. And not an account that was
+  // here before the rule, which keeps the one area it has.
+  //
+  // `emailVerified` left out means the caller did not say, and nothing is
+  // held back: the app's own gates decide this in the hook, where they also
+  // know what the device remembers.
+  if (
+    allowed
+    && entitlement.tier === 'free'
+    && who.emailVerified === false
+    && !mayHoldFreeArea({ emailVerified: false, predatesVerification: record.predatesVerification })
+  ) {
+    return { allowed: false, entitlement, reason: 'unconfirmed' };
+  }
+  return { allowed, entitlement };
 }

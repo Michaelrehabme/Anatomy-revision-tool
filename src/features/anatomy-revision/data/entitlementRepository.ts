@@ -36,7 +36,9 @@ import { parseStoredFreeArea } from '../lib/freeAreaRecord';
  */
 export async function readAccess(uid: string): Promise<StoredAccess> {
   const snapshot = await getDoc(doc(getDb(), 'users', uid));
-  if (!snapshot.exists()) return { entitlement: null, freeArea: null };
+  // No profile yet: nothing held, and not an account from before a confirmed
+  // address was asked for (lib/emailVerification.ts).
+  if (!snapshot.exists()) return { entitlement: null, freeArea: null, predatesVerification: false };
 
   // 'estimate' so a choice written a moment ago, and not yet confirmed by the
   // server, reads with a date rather than with none.
@@ -50,7 +52,7 @@ export async function readAccess(uid: string): Promise<StoredAccess> {
   const cohort = cohortSnap?.exists() ? (cohortSnap.data() as Record<string, unknown>) : null;
 
   const record = accessRecord(user, cohort);
-  return { entitlement: entitlementForDisplay(record), freeArea: record.freeArea };
+  return { entitlement: entitlementForDisplay(record), freeArea: record.freeArea, predatesVerification: record.predatesVerification };
 }
 
 /**

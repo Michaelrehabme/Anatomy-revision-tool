@@ -1,16 +1,21 @@
 /**
  * THE LIVE BUNDLE, AGAINST THESE RULES.
  *
- * The rules on this branch are stricter than the ones in production in two
- * places: a guest may no longer hold a free area, and creating a class needs
- * full access. Rules deploy in an instant; the app does not — an installed
+ * The rules on this branch are stricter than the ones in production in four
+ * places: a guest may no longer hold a free area; creating a class needs
+ * full access; a free area needs a CONFIRMED EMAIL ADDRESS (7 Oct 2026); and
+ * a profile's `createdAt` may only be the server's time, because it is what
+ * says whether an account was here before that rule. Rules deploy in an instant; the app does not — an installed
  * copy keeps the bundle it has until the student accepts the update prompt,
  * which can be days. So for days the OLD client talks to the NEW rules, and
  * what matters is whether anything it does is now refused.
  *
  * This file replays the writes the live code makes (commit 581dfe1, what
  * production served on 6 Oct 2026), document for document and field for
- * field, as the people who make them: a guest, a guest who then creates an
+ * field. (Production moved on during 7 Oct to main at 9566d21, the accuracy
+ * filter. Its two commits change one thing a client writes: an answer record
+ * may now carry `hints`. That is replayed below too; nothing else these rules
+ * look at differs.) The writes are made as the people who make them: a guest, a guest who then creates an
  * account, a student in a class, a paying educator, and a free account that
  * tries to create a class. Each write is named for the function in the live
  * code that makes it.
@@ -21,6 +26,14 @@
  * refused. The one thing that is refused is a FREE account creating a class,
  * which is the rule being introduced; the old screen shows it as "Could not
  * allocate a join code. Please try again."
+ *
+ * AND FOR THE CONFIRMED-ADDRESS RULE: every account below signs in with an
+ * email and password and has NOT confirmed its address (`email_verified:
+ * false`), because the live app never sent anybody a confirmation email. Not
+ * one of their writes is refused, paying or free. The live app writes
+ * `createdAt` exactly once, as the server's time, on a profile's first
+ * write, which is what the pin allows; the one way it writes it twice (two
+ * tabs opening at the same moment) is replayed below and goes through too.
  *
  *   npm run test:rules
  */
@@ -219,6 +232,82 @@ describe('an existing guest on the live bundle, once these rules are deployed', 
     await touchUserProfile(db, 'g1', { email: null, isAnonymous: true });
     await assertFails(setDoc(doc(db, 'users', 'g1'), { freeArea: { area: 'knee', chosenAt: serverTimestamp(), switches: 0 } }, { merge: true }));
     expect((await getDoc(doc(db, 'users', 'g1'))).data()?.freeArea).toBeUndefined();
+  });
+});
+
+describe("the confirmed-address rule, and the live bundle's unconfirmed accounts", () => {
+  // Two tabs opened at once both find no profile and both write a first
+  // one: the second arrives as an UPDATE carrying createdAt as the server's
+  // time. A pin that only allowed "unchanged" would have refused it.
+  it("accepts the profile's first write from two tabs at once", async () => {
+    const db = guest('twin');
+    const first = { uid: 'twin', displayName: null, email: null, isAnonymous: true, lastActiveAt: serverTimestamp(), createdAt: serverTimestamp(), cohort: null };
+    await assertSucceeds(setDoc(doc(db, 'users', 'twin'), first));
+    await assertSucceeds(setDoc(doc(db, 'users', 'twin'), first));
+  });
+
+  it('accepts every load of a profile that already carries its date, from long before the rule', async () => {
+    await env.withSecurityRulesDisabled((ctx) =>
+      setDoc(doc(ctx.firestore(), 'users', 's-old'), {
+        uid: 's-old', displayName: 'Sam', email: 's-old@uni.ac.uk', isAnonymous: false, cohort: null,
+        createdAt: new Date('2026-05-01T09:00:00Z'), lastActiveAt: new Date('2026-10-01T09:00:00Z'),
+      }),
+    );
+    const db = account('s-old');
+    await assertSucceeds(touchUserProfile(db, 's-old', { email: 's-old@uni.ac.uk', isAnonymous: false, displayName: 'Sam' }));
+    await assertSucceeds(answerAQuestion(db, 's-old', 0));
+    await assertSucceeds(finishASession(db, 's-old'));
+    // The date it was first written is untouched by any of it.
+    const stored = (await getDoc(doc(db, 'users', 's-old'))).data()?.createdAt as { toDate: () => Date };
+    expect(stored.toDate().toISOString()).toBe('2026-05-01T09:00:00.000Z');
+  });
+
+  it('accepts a profile written before the app stamped a date at all', async () => {
+    await env.withSecurityRulesDisabled((ctx) =>
+      setDoc(doc(ctx.firestore(), 'users', 's-undated'), { uid: 's-undated', displayName: null, email: 's-undated@uni.ac.uk', isAnonymous: false, cohort: null }),
+    );
+    const db = account('s-undated');
+    await assertSucceeds(touchUserProfile(db, 's-undated', { email: 's-undated@uni.ac.uk', isAnonymous: false }));
+    await assertSucceeds(answerAQuestion(db, 's-undated', 0));
+  });
+
+  // A paying educator on the live bundle has never confirmed anything.
+  it('refuses nothing to a paying, unconfirmed account: the profile, answers, a class, an assignment', async () => {
+    const db = account('paidEducator', 'pat@uni.ac.uk');
+    await assertSucceeds(touchUserProfile(db, 'paidEducator', { email: 'pat@uni.ac.uk', isAnonymous: false, displayName: 'Pat' }));
+    await assertSucceeds(answerAQuestion(db, 'paidEducator', 0));
+    await assertSucceeds(finishASession(db, 'paidEducator'));
+    await assertSucceeds(createCohort(db, 'paidEducator', 'class-two', 'TWO222'));
+    await assertSucceeds(setDoc(doc(db, 'cohorts', COHORT, 'assignments', 'a2'), {
+      id: 'a2', cohortId: COHORT, title: 'Week 2', scope: { areas: ['knee'] }, questionTypes: ['mcq'], questionCount: 10, createdAt: NOW(),
+    }));
+    // Its entitlement is exactly as the webhook left it.
+    expect((await getDoc(doc(db, 'users', 'paidEducator'))).data()?.entitlement.tier).toBe('individual');
+  });
+
+  // The live bundle keeps the free area on the device and never writes it.
+  // Shown refused for a NEW unconfirmed account, as it is for a guest above,
+  // so that "the old client is unaffected" has something under it here too.
+  it('never writes a free area, which is the one write these rules refuse an unconfirmed new account', async () => {
+    const db = account('s-new');
+    await touchUserProfile(db, 's-new', { email: 's-new@uni.ac.uk', isAnonymous: false });
+    await assertFails(setDoc(doc(db, 'users', 's-new'), { freeArea: { area: 'knee', chosenAt: serverTimestamp(), switches: 0 } }, { merge: true }));
+    await assertSucceeds(answerAQuestion(db, 's-new', 0));
+  });
+});
+
+describe('the bundle released on 7 Oct 2026 (main at 9566d21)', () => {
+  // lib/attemptFilter.ts: a typed fact card now records whether its hints
+  // were shown, so the account page can filter by it. One more optional
+  // field on a document whose only rule is "it is yours".
+  it('records `hints` on an answer, for a guest and for an unconfirmed account, and it is accepted', async () => {
+    for (const [db, uid] of [[guest('g7'), 'g7'], [account('s7'), 's7']] as const) {
+      await assertSucceeds(touchUserProfile(db, uid, { email: uid === 'g7' ? null : `${uid}@uni.ac.uk`, isAnonymous: uid === 'g7' }));
+      await assertSucceeds(setDoc(doc(db, 'attemptEvents', `${uid}-typed-1`), {
+        id: `${uid}-typed-1`, userId: uid, questionId: 'oina-deltoid-nerve', questionType: 'oina', structureId: 'deltoid', promptKind: 'nerve',
+        correct: true, selectedAnswer: 'axillary nerve', timestamp: NOW(), durationMs: 5100, sessionId: `${uid}-s1`, hints: 'none',
+      }));
+    }
   });
 });
 

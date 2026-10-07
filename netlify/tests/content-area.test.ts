@@ -59,6 +59,7 @@ import { forgetRecentRequests } from '../functions/lib/recentRequests';
 import { AREAS, type Area } from '../../src/features/anatomy-revision/types/region';
 import { entitledAreas, resolveEntitlement, PAYMENT_GRACE_DAYS } from '../../src/features/anatomy-revision/lib/entitlement';
 import { accessRecord } from '../../src/features/anatomy-revision/lib/entitlementRecord';
+import { VERIFICATION_STARTS, mayHoldFreeArea } from '../../src/features/anatomy-revision/lib/emailVerification';
 import { CONTENT_LEASE_DAYS } from '../../src/features/anatomy-revision/data/content/lease';
 import { CONTENT_FETCHES_PER_HOUR } from '../../src/features/anatomy-revision/data/content/fetchLimit';
 import { STRUCTURE_FACT_FIELDS_NOT_SERVED } from '../../src/features/anatomy-revision/types/structureIndex';
@@ -79,11 +80,17 @@ const URL_BASE = `${ORIGIN}/.netlify/functions/content-area`;
 const TOKENS = new Map<string, string>();
 /** The uids that are GUESTS: signed in anonymously, with no way of signing in again. */
 const GUESTS = new Set<string>();
+/** The uids whose email address is NOT confirmed: they signed up with a password and have not followed the link. */
+const UNCONFIRMED = new Set<string>();
+/** The uids that signed in with Google, which hands over a confirmed address. */
+const GOOGLE = new Set<string>();
 
-function user(uid: string, doc: Row | null, kind: 'account' | 'guest' = 'account'): string {
+function user(uid: string, doc: Row | null, kind: 'account' | 'guest' | 'unconfirmed' | 'google' = 'account'): string {
   const token = `token-of-${uid}`;
   TOKENS.set(token, uid);
   if (kind === 'guest') GUESTS.add(uid);
+  if (kind === 'unconfirmed') UNCONFIRMED.add(uid);
+  if (kind === 'google') GOOGLE.add(uid);
   if (doc) store.docs.set(`users/${uid}`, doc);
   return token;
 }
@@ -122,7 +129,11 @@ function appWouldOpen(uid: string): Area[] {
   const doc = store.docs.get(`users/${uid}`);
   const cohortId = typeof doc?.cohort === 'string' ? doc.cohort : null;
   const record = accessRecord(doc, cohortId ? store.docs.get(`cohorts/${cohortId}`) : undefined, NOW);
-  return entitledAreas(AREAS, resolveEntitlement(record.candidates, NOW), NOW, record.freeArea ? [record.freeArea.area] : []);
+  const entitlement = resolveEntitlement(record.candidates, NOW);
+  // The free area needs a confirmed address, unless the account predates
+  // that being asked for; full access never does (hooks/useEntitlement.ts).
+  const holdsFreeArea = mayHoldFreeArea({ emailVerified: !UNCONFIRMED.has(uid), predatesVerification: record.predatesVerification });
+  return entitledAreas(AREAS, entitlement, NOW, record.freeArea && holdsFreeArea ? [record.freeArea.area] : []);
 }
 
 const PADDLE: Row = { tier: 'individual', source: 'paddle', externalId: 'sub_1', customerId: 'ctm_1', interval: 'month' };
@@ -138,6 +149,8 @@ beforeEach(() => {
   store.failWrites = false;
   TOKENS.clear();
   GUESTS.clear();
+  UNCONFIRMED.clear();
+  GOOGLE.clear();
   forgetRecentRequests();
   process.env.FIREBASE_SERVICE_ACCOUNT = '{}';
   process.env.VITE_FIREBASE_API_KEY = 'web-api-key';
@@ -160,8 +173,15 @@ beforeEach(() => {
       // expired one, or one whose account has been deleted.
       if (!uid) return new Response(JSON.stringify({ error: { message: 'INVALID_ID_TOKEN' } }), { status: 400 });
       // As Google answers: an account lists the ways it can sign in, a guest lists none.
-      const providerUserInfo = GUESTS.has(uid) ? undefined : [{ providerId: 'password', email: `${uid}@uni.ac.uk` }];
-      return new Response(JSON.stringify({ users: [{ localId: uid, ...(providerUserInfo ? { providerUserInfo } : {}) }] }), { status: 200 });
+      const providerUserInfo = GUESTS.has(uid)
+        ? undefined
+        : [GOOGLE.has(uid) ? { providerId: 'google.com', email: `${uid}@gmail.com` } : { providerId: 'password', email: `${uid}@uni.ac.uk` }];
+      // …and says whether its address is confirmed. A guest has none, and Google says nothing of one.
+      const emailVerified = GUESTS.has(uid) ? undefined : !UNCONFIRMED.has(uid);
+      return new Response(
+        JSON.stringify({ users: [{ localId: uid, ...(providerUserInfo ? { providerUserInfo } : {}), ...(emailVerified === undefined ? {} : { emailVerified }) }] }),
+        { status: 200 },
+      );
     }),
   );
 });
@@ -178,7 +198,45 @@ afterEach(() => {
  */
 const ALL = AREAS;
 const NONE: readonly Area[] = [];
-const matrix: { who: string; doc: Row | null; guest?: true; cohort?: [string, Row]; areas: readonly Area[] }[] = [
+/** A profile first written before a confirmed address was asked for, and one written after. */
+const OLD_PROFILE = { toMillis: () => Date.parse(VERIFICATION_STARTS) - 60 * DAY };
+const NEW_PROFILE = { toMillis: () => Date.parse(VERIFICATION_STARTS) + 2 * DAY };
+
+const matrix: { who: string; doc: Row | null; guest?: true; kind?: 'unconfirmed' | 'google'; cohort?: [string, Row]; areas: readonly Area[] }[] = [
+  // ---- A confirmed email address before the free area (7 Oct 2026) ----
+  // New since the rule, password, link not followed: nothing, its chosen area included.
+  { who: 'an unconfirmed email-and-password account, on the area its document names', doc: { createdAt: NEW_PROFILE, freeArea: FREE_KNEE }, kind: 'unconfirmed', areas: NONE },
+  { who: 'an unconfirmed account that has not chosen', doc: { createdAt: NEW_PROFILE }, kind: 'unconfirmed', areas: NONE },
+  { who: 'an unconfirmed account whose profile carries no date at all', doc: { freeArea: FREE_KNEE }, kind: 'unconfirmed', areas: NONE },
+  { who: 'an unconfirmed account with no profile document', doc: null, kind: 'unconfirmed', areas: NONE },
+  // The same account once the link is followed.
+  { who: 'that account once its address is confirmed', doc: { createdAt: NEW_PROFILE, freeArea: FREE_KNEE }, areas: ['knee'] },
+  { who: 'a Google account, which arrives confirmed', doc: { createdAt: NEW_PROFILE, freeArea: { area: 'hip', chosenAt: stamp(-1), switches: 0 } }, kind: 'google', areas: ['hip'] },
+  // Here before the rule: never sent a confirmation email, keeps the one area it has.
+  { who: 'an unconfirmed account from before the rule, on its free area', doc: { createdAt: OLD_PROFILE, freeArea: FREE_KNEE }, kind: 'unconfirmed', areas: ['knee'] },
+  { who: 'an unconfirmed account from before the rule that has not chosen', doc: { createdAt: OLD_PROFILE }, kind: 'unconfirmed', areas: NONE },
+  // A confirmed account that then changed its address: unconfirmed again, and refused until it confirms the new one.
+  { who: 'an account that confirmed, chose, then changed its address', doc: { createdAt: NEW_PROFILE, email: 'made-up@example.com', freeArea: FREE_KNEE }, kind: 'unconfirmed', areas: NONE },
+  // FULL ACCESS IS NEVER HELD BACK BY IT.
+  { who: 'a paying subscriber whose address is not confirmed', doc: { createdAt: NEW_PROFILE, entitlement: { ...PADDLE, expiresAt: at(20) } }, kind: 'unconfirmed', areas: ALL },
+  {
+    who: 'an unconfirmed subscriber inside the days of grace',
+    doc: { createdAt: NEW_PROFILE, entitlement: { ...PADDLE, expiresAt: at(PAYMENT_GRACE_DAYS - 1), paymentIssueSince: at(-1) } },
+    kind: 'unconfirmed',
+    areas: ALL,
+  },
+  { who: 'an unconfirmed complimentary account', doc: { createdAt: NEW_PROFILE, entitlement: { tier: 'institutional', source: 'complimentary', expiresAt: null } }, kind: 'unconfirmed', areas: ALL },
+  {
+    who: 'an unconfirmed member of a licensed class',
+    doc: { createdAt: NEW_PROFILE, cohort: 'c-licensed' },
+    kind: 'unconfirmed',
+    cohort: ['c-licensed', { ownerUid: 'educator', licensedUntil: at(200) }],
+    areas: ALL,
+  },
+  // …and once the paid time is over, an unconfirmed account is a free account like any other.
+  { who: 'an unconfirmed subscriber whose subscription has ended', doc: { createdAt: NEW_PROFILE, entitlement: { ...PADDLE, expiresAt: at(-1) }, freeArea: FREE_KNEE }, kind: 'unconfirmed', areas: NONE },
+  { who: 'an unconfirmed subscriber from before the rule whose subscription has ended', doc: { createdAt: OLD_PROFILE, entitlement: { ...PADDLE, expiresAt: at(-1) }, freeArea: FREE_KNEE }, kind: 'unconfirmed', areas: ['knee'] },
+  // ---- Everything below is a confirmed account unless it is a guest ----
   { who: 'a free account, on the area it chose', doc: { freeArea: FREE_KNEE }, areas: ['knee'] },
   // No default: an account that has not chosen its free area holds none.
   { who: 'a free account that has not chosen its free area', doc: { displayName: 'New' }, areas: NONE },
@@ -273,9 +331,9 @@ const matrix: { who: string; doc: Row | null; guest?: true; cohort?: [string, Ro
 ];
 
 describe('who is given which area', () => {
-  it.each(matrix)('$who', async ({ doc, cohort, areas, guest }) => {
+  it.each(matrix)('$who', async ({ doc, cohort, areas, guest, kind }) => {
     if (cohort) store.docs.set(`cohorts/${cohort[0]}`, cohort[1]);
-    const token = user('u1', doc, guest ? 'guest' : 'account');
+    const token = user('u1', doc, guest ? 'guest' : (kind ?? 'account'));
 
     const given = await served(token);
     expect(given).toEqual(areas);
@@ -285,8 +343,52 @@ describe('who is given which area', () => {
 
   it('covers every kind of account the task names', () => {
     // A guard on the matrix itself: a row deleted in a refactor fails here.
-    expect(matrix.length).toBeGreaterThanOrEqual(28);
+    expect(matrix.length).toBeGreaterThanOrEqual(43);
     expect(matrix.filter((row) => row.guest).length).toBeGreaterThanOrEqual(5);
+    expect(matrix.filter((row) => row.kind === 'unconfirmed').length).toBeGreaterThanOrEqual(12);
+    // Full access held by an unconfirmed account: served everything, every time.
+    expect(matrix.filter((row) => row.kind === 'unconfirmed' && row.areas.length === AREAS.length).length).toBeGreaterThanOrEqual(4);
+  });
+
+  it('tells an unconfirmed account what to do, in the answer and in the log, and hands it nothing', async () => {
+    const token = user('n1', { createdAt: NEW_PROFILE, freeArea: FREE_KNEE }, 'unconfirmed');
+    const response = await ask('knee', token);
+    expect(response.status).toBe(403);
+    expect(await response.text()).toBe('Confirm your email address to open your free area');
+    expect(response.headers.get('cache-control')).toBe('private, no-store');
+    expect(store.writes).toEqual([]);
+    expect(console.info).toHaveBeenCalledWith(expect.stringContaining('its email address is not confirmed'));
+    // An area it never chose is a plain refusal: confirming would not open it.
+    expect(await (await ask('hip', token)).text()).toBe('Not entitled to this area');
+  });
+
+  it('serves the same uid the moment the address is confirmed, whatever its token was minted as', async () => {
+    const token = user('n1', { createdAt: NEW_PROFILE, freeArea: FREE_KNEE }, 'unconfirmed');
+    expect((await ask('knee', token)).status).toBe(403);
+    // The link is followed. The token in the student's hand is the same one;
+    // Google's answer about the account is what has changed.
+    UNCONFIRMED.delete('n1');
+    expect((await ask('knee', token)).status).toBe(200);
+    expect(await served(token)).toEqual(['knee']);
+  });
+
+  it('does not take a lookup that says nothing about the address as a confirmation', async () => {
+    const token = user('n1', { createdAt: NEW_PROFILE, freeArea: FREE_KNEE });
+    vi.stubGlobal('fetch', vi.fn(async () => new Response(
+      JSON.stringify({ users: [{ localId: 'n1', providerUserInfo: [{ providerId: 'password' }] }] }), { status: 200 },
+    )));
+    expect((await ask('knee', token)).status).toBe(403);
+  });
+
+  it('never refuses full access for an unconfirmed address, and counts and leases it as for anyone', async () => {
+    const token = user('p1', { createdAt: NEW_PROFILE, entitlement: { ...PADDLE, expiresAt: at(20) } }, 'unconfirmed');
+    for (const area of AREAS) {
+      const response = await ask(area, token);
+      expect(response.status, area).toBe(200);
+      expect(((await response.json()) as { structures: unknown[] }).structures.length).toBeGreaterThan(0);
+    }
+    expect((store.docs.get('users/p1')?.contentFetch as { count: number }).count).toBe(AREAS.length);
+    expect(console.info).not.toHaveBeenCalledWith(expect.stringContaining('not confirmed'));
   });
 
   it('refuses a guest before reading anything about them, and tells the log why', async () => {

@@ -46,7 +46,9 @@ const CODE = 'JOIN42';
 const as = {
   student: () => env.authenticatedContext('student', { email: 'student@uni.ac.uk', email_verified: true }).firestore(),
   classmate: () => env.authenticatedContext('classmate').firestore(),
-  stranger: () => env.authenticatedContext('stranger', { email: 'stranger@uni.ac.uk' }).firestore(),
+  // Confirmed, like `student`: the free-area tests below are about what a
+  // confirmed account may do. What an UNCONFIRMED one may do has its own block.
+  stranger: () => env.authenticatedContext('stranger', { email: 'stranger@uni.ac.uk', email_verified: true }).firestore(),
   educator: () => env.authenticatedContext('educator').firestore(),
   otherEducator: () => env.authenticatedContext('otherEducator').firestore(),
   claimAdmin: () => env.authenticatedContext('claimAdmin', { admin: true }).firestore(),
@@ -57,9 +59,18 @@ const as = {
    * uid, and not an account. Firebase marks its token this way.
    */
   guest: (uid = 'guest') => env.authenticatedContext(uid, ANONYMOUS).firestore(),
-  /** The same uid after the guest linked an email and password to it. */
+  /** The same uid after the guest linked an email and password to it, and confirmed the address. */
   linked: (uid = 'guest') =>
-    env.authenticatedContext(uid, { email: `${uid}@uni.ac.uk`, firebase: { sign_in_provider: 'password', identities: {} } }).firestore(),
+    env.authenticatedContext(uid, { email: `${uid}@uni.ac.uk`, email_verified: true, firebase: { sign_in_provider: 'password', identities: {} } }).firestore(),
+  /** An email-and-password account that has NOT followed the link it was emailed. */
+  unconfirmed: (uid: string) =>
+    env.authenticatedContext(uid, { email: `${uid}@uni.ac.uk`, email_verified: false, firebase: { sign_in_provider: 'password', identities: {} } }).firestore(),
+  /** The same account once it has. */
+  confirmed: (uid: string, email = `${uid}@uni.ac.uk`) =>
+    env.authenticatedContext(uid, { email, email_verified: true, firebase: { sign_in_provider: 'password', identities: {} } }).firestore(),
+  /** Google hands over an address it has already confirmed. */
+  google: (uid: string) =>
+    env.authenticatedContext(uid, { email: `${uid}@gmail.com`, email_verified: true, firebase: { sign_in_provider: 'google.com', identities: {} } }).firestore(),
 };
 
 const ANONYMOUS = { firebase: { sign_in_provider: 'anonymous', identities: {} } };
@@ -203,7 +214,7 @@ describe('users/{uid}', () => {
     });
 
     it('lets a brand-new profile arrive with its choice, from an account', async () => {
-      const db = env.authenticatedContext('fresh', { email: 'fresh@uni.ac.uk' }).firestore();
+      const db = as.confirmed('fresh');
       await assertSucceeds(setDoc(doc(db, 'users', 'fresh'), { cohort: null, ...pick('hip') }));
     });
 
@@ -272,10 +283,198 @@ describe('users/{uid}', () => {
       });
 
       it('counts Google and any other provider as an account', async () => {
-        const google = env
-          .authenticatedContext('g1', { email: 'g1@gmail.com', firebase: { sign_in_provider: 'google.com', identities: {} } })
-          .firestore();
-        await assertSucceeds(setDoc(doc(google, 'users', 'g1'), { cohort: null, ...pick('elbow') }));
+        await assertSucceeds(setDoc(doc(as.google('g1'), 'users', 'g1'), { cohort: null, ...pick('elbow') }));
+      });
+    });
+
+    /**
+     * A CONFIRMED EMAIL ADDRESS BEFORE THE FREE AREA (owner's decision, 7 Oct
+     * 2026). An email-and-password account needed only an address that
+     * looked like one, so nine made-up addresses were nine free areas.
+     *
+     * The date the rule starts is in the rules (verificationStarts) and in
+     * lib/emailVerification.ts; a profile first written before it belongs to
+     * somebody who was never sent a confirmation email.
+     */
+    describe('only an account with a confirmed email address may choose or change it', () => {
+      /** Well before the rule started, and well after: the two sides of the line. */
+      const BEFORE_THE_RULE = Timestamp.fromDate(new Date('2026-08-01T09:00:00Z'));
+      const AFTER_THE_RULE = Timestamp.fromDate(new Date('2026-10-20T09:00:00Z'));
+      /** A profile as the server holds it, first written on `createdAt`. */
+      const profileOf = (uid: string, createdAt: Timestamp | null, extra: Record<string, unknown> = {}) =>
+        env.withSecurityRulesDisabled((ctx) =>
+          setDoc(doc(ctx.firestore(), 'users', uid), {
+            uid, displayName: null, email: `${uid}@uni.ac.uk`, isAnonymous: false, cohort: null,
+            ...(createdAt ? { createdAt } : {}),
+            ...extra,
+          }),
+        );
+      const at = (db: ReturnType<typeof as.student>, uid: string) => doc(db, 'users', uid);
+
+      it('refuses an unconfirmed email-and-password account its first choice', async () => {
+        await profileOf('new1', AFTER_THE_RULE);
+        await assertFails(updateDoc(at(as.unconfirmed('new1'), 'new1'), pick('knee')));
+        await assertFails(updateDoc(at(as.unconfirmed('new1'), 'new1'), pick('knee', 1)));
+        await assertFails(setDoc(at(as.unconfirmed('new1'), 'new1'), pick('knee'), { merge: true }));
+        // Everything else it writes is untouched: the profile, an answer, a session.
+        await assertSucceeds(updateDoc(at(as.unconfirmed('new1'), 'new1'), { lastActiveAt: serverTimestamp() }));
+        await assertSucceeds(setDoc(doc(as.unconfirmed('new1'), 'users', 'new1', 'mastery', 'deltoid'), { level: 1 }));
+      });
+
+      it('refuses an unconfirmed account a new profile that arrives with a choice', async () => {
+        await assertFails(setDoc(at(as.unconfirmed('new2'), 'new2'), { cohort: null, createdAt: serverTimestamp(), ...pick('hip') }));
+        await assertSucceeds(setDoc(at(as.unconfirmed('new2'), 'new2'), { cohort: null, createdAt: serverTimestamp() }));
+      });
+
+      it('allows it the moment the address is confirmed: the same uid, the same document', async () => {
+        await profileOf('new1', AFTER_THE_RULE);
+        await assertFails(updateDoc(at(as.unconfirmed('new1'), 'new1'), pick('knee')));
+        await assertSucceeds(updateDoc(at(as.confirmed('new1'), 'new1'), pick('knee')));
+        expect((await getDoc(at(as.confirmed('new1'), 'new1'))).data()?.freeArea.area).toBe('knee');
+      });
+
+      it('allows a Google account, which arrives confirmed, with no email step', async () => {
+        await assertSucceeds(setDoc(at(as.google('g2'), 'g2'), { cohort: null, createdAt: serverTimestamp(), ...pick('elbow') }));
+      });
+
+      it('refuses a guest, confirmed or not: a guest has no address to confirm', async () => {
+        await profileOf('guest', BEFORE_THE_RULE, { isAnonymous: true, email: null });
+        await assertFails(updateDoc(at(as.guest(), 'guest'), pick('knee')));
+      });
+
+      it('refuses a token that claims an address without saying it is confirmed', async () => {
+        await profileOf('new3', AFTER_THE_RULE);
+        const noClaim = env.authenticatedContext('new3', { email: 'new3@uni.ac.uk', firebase: { sign_in_provider: 'password', identities: {} } }).firestore();
+        await assertFails(updateDoc(at(noClaim, 'new3'), pick('knee')));
+      });
+
+      // A verified account that changes its address is unconfirmed again
+      // until it follows the link sent to the new one. Were it not, one real
+      // address could confirm account after account: confirm, choose, move
+      // the account to a made-up address, and use the real one again.
+      it('holds an account that confirmed and then changed its address to the same rule', async () => {
+        await profileOf('mover', AFTER_THE_RULE);
+        await assertSucceeds(updateDoc(at(as.confirmed('mover'), 'mover'), pick('knee')));
+        await env.withSecurityRulesDisabled((ctx) => updateDoc(doc(ctx.firestore(), 'users', 'mover'), { 'freeArea.chosenAt': daysAgo(31) }));
+        // The address changed: the token no longer says confirmed.
+        const moved = env.authenticatedContext('mover', { email: 'somewhere-else@example.com', email_verified: false, firebase: { sign_in_provider: 'password', identities: {} } }).firestore();
+        await assertFails(updateDoc(at(moved, 'mover'), pick('hip', 1)));
+        // Its stored choice stands, and its other writes go through.
+        await assertSucceeds(updateDoc(at(moved, 'mover'), { email: 'somewhere-else@example.com', lastActiveAt: serverTimestamp() }));
+        expect((await getDoc(at(moved, 'mover'))).data()?.freeArea.area).toBe('knee');
+        // Confirmed again at the new address: the one change is theirs to make.
+        await assertSucceeds(updateDoc(at(as.confirmed('mover', 'somewhere-else@example.com'), 'mover'), pick('hip', 1)));
+      });
+
+      describe('an account that was here before the rule', () => {
+        // The live app kept the free area on the device. The first time the
+        // new app runs, it writes that choice to the account: for the
+        // database, this account's first choice. It was never sent a
+        // confirmation email, and is not locked out for that.
+        it('may have its one free area moved up to the account unconfirmed, used or unused', async () => {
+          await profileOf('old1', BEFORE_THE_RULE);
+          await assertSucceeds(setDoc(at(as.unconfirmed('old1'), 'old1'), pick('knee'), { merge: true }));
+          await profileOf('old2', BEFORE_THE_RULE);
+          await assertSucceeds(setDoc(at(as.unconfirmed('old2'), 'old2'), pick('hip', 1), { merge: true }));
+        });
+
+        it('keeps what it has, and its other writes, without confirming', async () => {
+          await profileOf('old1', BEFORE_THE_RULE, { freeArea: { area: 'knee', chosenAt: daysAgo(3), switches: 0 } });
+          const db = as.unconfirmed('old1');
+          await assertSucceeds(updateDoc(at(db, 'old1'), { lastActiveAt: serverTimestamp(), isAnonymous: false }));
+          await assertSucceeds(setDoc(doc(db, 'users', 'old1', 'sessions', 's1'), { correct: 5 }));
+          expect((await getDoc(at(db, 'old1'))).data()?.freeArea.area).toBe('knee');
+        });
+
+        it('must confirm before it can CHANGE its area, even thirty days on', async () => {
+          await profileOf('old1', BEFORE_THE_RULE, { freeArea: { area: 'knee', chosenAt: daysAgo(40), switches: 0 } });
+          await assertFails(updateDoc(at(as.unconfirmed('old1'), 'old1'), pick('hip', 1)));
+          await assertSucceeds(updateDoc(at(as.confirmed('old1'), 'old1'), pick('hip', 1)));
+        });
+
+        it('is still held to one choice: a second "first" choice is refused', async () => {
+          await profileOf('old1', BEFORE_THE_RULE);
+          await assertSucceeds(updateDoc(at(as.unconfirmed('old1'), 'old1'), pick('knee')));
+          await assertFails(updateDoc(at(as.unconfirmed('old1'), 'old1'), pick('hip')));
+          await assertFails(updateDoc(at(as.unconfirmed('old1'), 'old1'), { freeArea: deleteField() }));
+        });
+      });
+
+      describe('nobody can make themselves an account from before the rule', () => {
+        it('refuses a new profile with a date of its own choosing', async () => {
+          const db = as.unconfirmed('faker');
+          await assertFails(setDoc(at(db, 'faker'), { cohort: null, createdAt: BEFORE_THE_RULE }));
+          await assertFails(setDoc(at(db, 'faker'), { cohort: null, createdAt: '2026-01-01T00:00:00.000Z' }));
+          await assertSucceeds(setDoc(at(db, 'faker'), { cohort: null, createdAt: serverTimestamp() }));
+        });
+
+        it('refuses moving the date back on an existing profile, or adding an old one', async () => {
+          await profileOf('new1', AFTER_THE_RULE);
+          await assertFails(updateDoc(at(as.unconfirmed('new1'), 'new1'), { createdAt: BEFORE_THE_RULE }));
+          await assertFails(updateDoc(at(as.unconfirmed('new1'), 'new1'), { createdAt: deleteField() }));
+          await profileOf('undated', null);
+          await assertFails(updateDoc(at(as.unconfirmed('undated'), 'undated'), { createdAt: BEFORE_THE_RULE }));
+          // …and not in the same write as the choice it is meant to unlock.
+          await assertFails(updateDoc(at(as.unconfirmed('undated'), 'undated'), { createdAt: BEFORE_THE_RULE, ...pick('knee') }));
+        });
+
+        it('treats a profile with no date, or a date that is not a date, as new', async () => {
+          await profileOf('undated', null);
+          await assertFails(updateDoc(at(as.unconfirmed('undated'), 'undated'), pick('knee')));
+          await profileOf('texty', null, { createdAt: '2026-01-01T00:00:00.000Z' });
+          await assertFails(updateDoc(at(as.unconfirmed('texty'), 'texty'), pick('knee')));
+        });
+
+        it('treats a profile deleted and made again as new', async () => {
+          await profileOf('old1', BEFORE_THE_RULE);
+          const db = as.unconfirmed('old1');
+          await assertSucceeds(deleteDoc(at(db, 'old1')));
+          await assertSucceeds(setDoc(at(db, 'old1'), { cohort: null, createdAt: serverTimestamp() }));
+          await assertFails(updateDoc(at(db, 'old1'), pick('knee')));
+        });
+
+        // Moving the date to NOW is allowed: it only ever makes a profile
+        // newer. (Two tabs opening at once both write a first profile; the
+        // second arrives as an update carrying the server's time.)
+        it('lets the date be set to the server\'s time, which gains nothing', async () => {
+          await profileOf('old1', BEFORE_THE_RULE);
+          const db = as.unconfirmed('old1');
+          await assertSucceeds(setDoc(at(db, 'old1'), { uid: 'old1', cohort: null, createdAt: serverTimestamp() }));
+          await assertFails(updateDoc(at(db, 'old1'), pick('knee')));
+        });
+      });
+
+      // Confirmation gates the FREE area and nothing else. A paying account
+      // never writes a free area to reach what it paid for, and nothing it
+      // does write asks whether its address is confirmed.
+      describe('full access is never held back by it', () => {
+        const PAID = { tier: 'individual', source: 'paddle', expiresAt: new Date(Date.now() + 20 * DAY).toISOString(), externalId: 'sub_9' };
+
+        it('a paying, unconfirmed account writes everything it writes: profile, answers, a class', async () => {
+          await profileOf('payer', AFTER_THE_RULE, { entitlement: PAID });
+          const db = as.unconfirmed('payer');
+          await assertSucceeds(updateDoc(at(db, 'payer'), { lastActiveAt: serverTimestamp() }));
+          await assertSucceeds(setDoc(doc(db, 'users', 'payer', 'mastery', 'deltoid'), { level: 3 }));
+          await assertSucceeds(setDoc(doc(db, 'attemptEvents', 'payer-1'), { userId: 'payer', correct: true }));
+          await assertSucceeds(updateDoc(at(db, 'payer'), { cohort: COHORT, cohortJoinCode: CODE }));
+          // Teaching needs full access, not a confirmed address.
+          await assertSucceeds(setDoc(doc(db, 'joinCodes', 'PAY001'), { cohortId: 'c-pay', ownerUid: 'payer' }));
+          await assertSucceeds(setDoc(doc(db, 'cohorts', 'c-pay'), { ownerUid: 'payer', joinCode: 'PAY001', name: 'Paid class' }));
+          expect((await getDoc(at(db, 'payer'))).data()?.entitlement.tier).toBe('individual');
+        });
+
+        it('a paying account from before the rule has its device\'s area moved up like anyone else', async () => {
+          await profileOf('oldpayer', BEFORE_THE_RULE, { entitlement: PAID });
+          await assertSucceeds(setDoc(at(as.unconfirmed('oldpayer'), 'oldpayer'), pick('knee'), { merge: true }));
+        });
+
+        it('a member of a licensed class, unconfirmed, reads and writes as a member', async () => {
+          await env.withSecurityRulesDisabled((ctx) => updateDoc(doc(ctx.firestore(), 'cohorts', COHORT), { licensedUntil: new Date(Date.now() + 90 * DAY).toISOString() }));
+          await profileOf('member', AFTER_THE_RULE, { cohort: COHORT });
+          const db = as.unconfirmed('member');
+          await assertSucceeds(getDoc(doc(db, 'cohorts', COHORT)));
+          await assertSucceeds(setDoc(doc(db, 'cohorts', COHORT, 'studentStats', 'member'), { uid: 'member', attemptsTotal: 1 }));
+        });
       });
     });
 

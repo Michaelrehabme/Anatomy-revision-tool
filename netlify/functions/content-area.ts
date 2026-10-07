@@ -66,18 +66,37 @@ import lumbarSpine from '../../.content/areas/lumbar-spine.json';
  * grant could not be counted against the account — a caller with no profile
  * document to count on — because such a caller is no longer granted anything.
  *
+ * THE FREE AREA NEEDS A CONFIRMED EMAIL ADDRESS (owner's decision, 7 Oct
+ * 2026). An email-and-password account needed only an address that looked
+ * like one, so nine made-up addresses were nine free areas. An account
+ * whose address is not confirmed is now refused its free area — 403, for
+ * every area, since the free area is all a free account has — until it
+ * follows the link it was emailed. Two kinds of account are NOT held to it,
+ * and lib/emailVerification.ts says why at length:
+ *
+ *   - FULL ACCESS: a subscriber, a complimentary or institutional account, a
+ *     member of a licensed class. They are served what they hold, confirmed
+ *     or not. Nobody is kept from what they paid for by this.
+ *   - AN ACCOUNT FROM BEFORE THE RULE (its profile's `createdAt` is earlier
+ *     than VERIFICATION_STARTS). Nobody was ever sent a confirmation email
+ *     before it; such an account keeps being served the one area it has.
+ *
+ * The decision is areaAccess's, like every other: this file only tells it
+ * whether the caller's address is confirmed. A refused account's device
+ * deletes its saved copy of the area, as on any other 403; the app does not
+ * ask in the first place while it is showing "Check your inbox".
+ *
  * WHAT A GRANT CARRIES. `{ version, area, leaseUntil, structures }`. The
  * version is this deploy's, whatever `v` the client sent — a client on an
  * older bundle is given current facts and told so. The lease is how long the
  * device may keep them without asking again (data/content/lease.ts).
  *
  * WHAT THIS DOES NOT STOP, said plainly. A paying account can save its own
- * areas. Any ACCOUNT may have one area free, so nine accounts can have nine
- * — and an email-and-password account needs no verified email, so nine are
- * nine made-up addresses. The limit below slows a script and puts a number
- * in the log; it is not a wall. The bar moves from "anyone with devtools" to
- * "someone prepared to script sign-ups", and the log line is how that would
- * be noticed.
+ * areas. Any CONFIRMED account may have one area free, so nine addresses that
+ * really receive email are nine areas. The limit below slows a script and
+ * puts a number in the log; it is not a wall. The bar moves from "anyone
+ * with devtools" to "someone prepared to set up nine working mailboxes", and
+ * the log line is how that would be noticed.
  *
  * REQUIRED ENVIRONMENT (set in Netlify, never committed):
  *   FIREBASE_SERVICE_ACCOUNT  the service account key JSON, as one string
@@ -227,8 +246,15 @@ export default async function handler(req: Request): Promise<Response> {
   }
 
   const record = accessRecord(user, cohort, now);
-  const access = areaAccess(area, record, now);
+  const access = areaAccess(area, record, now, { emailVerified: caller.emailVerified });
   if (!access.allowed) {
+    // Said apart from a plain refusal, in the answer and in the log: it is
+    // the one refusal the student can put right in a minute, and a run of
+    // them from new accounts is what a script making up addresses looks like.
+    if (access.reason === 'unconfirmed') {
+      console.info(`content-area: refused ${area} to ${uid}: its email address is not confirmed (free area ${record.freeArea?.area ?? 'not chosen'})`);
+      return text(403, 'Confirm your email address to open your free area');
+    }
     console.info(
       `content-area: refused ${area} to ${uid} (tier ${access.entitlement.tier}, free area ${record.freeArea?.area ?? 'not chosen'})`,
     );

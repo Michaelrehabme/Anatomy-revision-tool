@@ -69,6 +69,16 @@ export interface TokenAccount {
    * moment it becomes an account.
    */
   anonymous: boolean;
+  /**
+   * The account's email address is CONFIRMED: it followed the link it was
+   * emailed, or signed in with Google, which hands over an address it has
+   * already confirmed. Read from the ACCOUNT as Google holds it now, not
+   * from the token's claim, which was fixed when the token was minted: a
+   * student who confirmed a minute ago is confirmed here at once, and an
+   * account whose address has since been changed is unconfirmed here at
+   * once. Always false for a guest, who has no address.
+   */
+  emailVerified: boolean;
 }
 
 /**
@@ -91,9 +101,13 @@ export async function accountForToken(idToken: string, caller: string): Promise<
   });
   if (!response.ok) return null;
 
-  const body = (await response.json()) as { users?: { localId?: string; providerUserInfo?: unknown[] }[] };
+  const body = (await response.json()) as {
+    users?: { localId?: string; providerUserInfo?: unknown[]; emailVerified?: boolean }[];
+  };
   const found = body.users?.[0];
   if (!found?.localId) return null;
   const providers = Array.isArray(found.providerUserInfo) ? found.providerUserInfo : [];
-  return { uid: found.localId, anonymous: providers.length === 0 };
+  const anonymous = providers.length === 0;
+  // Strictly `true`: a lookup that does not say is not a confirmation.
+  return { uid: found.localId, anonymous, emailVerified: !anonymous && found.emailVerified === true };
 }

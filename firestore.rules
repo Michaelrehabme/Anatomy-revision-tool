@@ -86,12 +86,76 @@ service cloud.firestore {
     // Linking a sign-in to the guest (email and password, Google) keeps the
     // uid and changes this claim, so everything the guest had comes with them.
     //
-    // Email is not required to be verified: the owner has not asked for it.
-    // An unverified email-and-password account is therefore the remaining
-    // cheap way to a second free area. See docs/CONTENT-SERVER-STATUS.md.
+    // Being an account is not enough for the free area any more: its email
+    // address must also be CONFIRMED (below).
     // ---------------------------------------------------------------------
     function isRealAccount() {
       return isSignedIn() && request.auth.token.firebase.sign_in_provider != 'anonymous';
+    }
+
+    // ---------------------------------------------------------------------
+    // A CONFIRMED EMAIL ADDRESS (owner's decision, 7 Oct 2026).
+    //
+    // An email-and-password account used to need only an address that looked
+    // like one, so nine made-up addresses were nine free areas. Choosing or
+    // changing the free area now needs `email_verified` on the token: the
+    // student followed the link Firebase emailed them, or signed in with
+    // Google, which arrives confirmed. The app refreshes the token after the
+    // link is followed, so the claim is there by the time it writes.
+    //
+    // ONE EXCEPTION, for the people who were here first. Nobody was sent a
+    // confirmation email before this, so every email-and-password account on
+    // the live site is unconfirmed through no doing of its own — and its free
+    // area was kept on the DEVICE by the live app, so the first time the new
+    // app runs it writes that choice here. Refusing that write would lock out
+    // a student who has done nothing but open the app. So a profile first
+    // written BEFORE verificationStarts() may make its FIRST choice
+    // unconfirmed. Never a CHANGE: that always needs a confirmed address.
+    //
+    // "First written before" is `createdAt` on users/{uid}, which the profile
+    // write stamps with the server's time and which is pinned below: it can
+    // be left alone or moved to NOW, never to a date of the client's choosing.
+    // So no profile can be given an old date after the fact, a profile that
+    // is deleted and made again is new, and the set of accounts the exception
+    // covers is closed on the day this is deployed.
+    //
+    // WHAT IT CANNOT TELL APART: a guest whose profile is that old and who
+    // creates an account after the rule. The database treats them as an
+    // existing account (one free area, unconfirmed); the app asks them to
+    // confirm like any new sign-up. See lib/emailVerification.ts.
+    //
+    // FULL ACCESS IS NOT TOUCHED BY ANY OF THIS. Nothing here is consulted
+    // for an entitlement, a class, an answer or any other write: a paying
+    // account with an unconfirmed address loses nothing.
+    //
+    // The date is repeated from lib/emailVerification.ts VERIFICATION_STARTS
+    // because rules can import nothing; emailVerification.test.ts fails if
+    // the two drift. It may be moved LATER (to the day the new app ships) and
+    // must never be in the future on the day it is deployed.
+    // ---------------------------------------------------------------------
+    function verificationStarts() {
+      return timestamp.date(2026, 10, 7);
+    }
+
+    function emailIsConfirmed() {
+      return isSignedIn() && request.auth.token.get('email_verified', false) == true;
+    }
+
+    /** The profile being updated was first written before a confirmed address was asked for. */
+    function profilePredatesVerification() {
+      return resource != null
+        && resource.data.get('createdAt', null) is timestamp
+        && resource.data.createdAt < verificationStarts();
+    }
+
+    /**
+     * `createdAt` may be left as it is, or set to the server's time of this
+     * write. Moving it to now only ever makes a profile NEWER, which gains
+     * nothing; what must not be possible is choosing an old date.
+     */
+    function createdAtIsHonest() {
+      return request.resource.data.get('createdAt', null) == resource.data.get('createdAt', null)
+        || request.resource.data.get('createdAt', null) == request.time;
     }
 
     // ---------------------------------------------------------------------
@@ -267,10 +331,14 @@ service cloud.firestore {
     // their ordinary profile writes are not refused; and once they link a
     // sign-in the same uid is a real account and may choose.
     //
+    // AND ONLY ONE WHOSE EMAIL ADDRESS IS CONFIRMED (owner's decision, 7 Oct
+    // 2026), with the one exception for a profile from before that was asked
+    // for making its first choice — see emailIsConfirmed() above.
+    //
     // WHAT THIS DOES NOT STOP: deleting the profile and creating it again
-    // (the owner may delete, for erasure), or simply opening a second
-    // account — and an email-and-password account needs no verified email.
-    // Both give a fresh choice. See docs/CONTENT-SERVER-STATUS.md.
+    // (the owner may delete, for erasure), or opening a second account with
+    // a second address that really receives email. Both give a fresh choice.
+    // See docs/CONTENT-SERVER-STATUS.md.
     // ---------------------------------------------------------------------
     function isArea(area) {
       return area in ['shoulder', 'elbow', 'wrist-hand', 'hip', 'knee', 'ankle-foot',
@@ -308,8 +376,8 @@ service cloud.firestore {
       let after = request.resource.data.get('freeArea', null);
       return after == before
         || (isRealAccount() && (
-          (before == null && isFirstFreeArea(after))
-          || (before != null && isFreeAreaSwitch(before, after))
+          (before == null && isFirstFreeArea(after) && (emailIsConfirmed() || profilePredatesVerification()))
+          || (before != null && isFreeAreaSwitch(before, after) && emailIsConfirmed())
         ));
     }
 
@@ -326,12 +394,19 @@ service cloud.firestore {
       // A free area may arrive with the new document (an account whose first
       // profile write is its choice), held to the same first-pick rule as one
       // added later — and, like every free-area write, only from a real
-      // account, never a guest's.
+      // account, never a guest's, and only with a confirmed email address: a
+      // profile being created now is by definition not one from before that
+      // was asked for.
+      //
+      // `createdAt`, if it is written, is the server's time. It is what says
+      // whether a profile predates the confirmed-address rule, so it cannot
+      // be a date the client chose.
       allow create: if isSignedIn() && request.auth.uid == uid && cohortIsProven()
         && !('entitlement' in request.resource.data)
         && !('contentFetch' in request.resource.data)
+        && (!('createdAt' in request.resource.data) || request.resource.data.createdAt == request.time)
         && (!('freeArea' in request.resource.data)
-          || (isRealAccount() && isFirstFreeArea(request.resource.data.freeArea)));
+          || (isRealAccount() && emailIsConfirmed() && isFirstFreeArea(request.resource.data.freeArea)));
       // Unchanged is always allowed, so the ordinary profile write on every
       // sign-in (displayName, lastActiveAt) never pays for a cohort lookup.
       //
@@ -353,6 +428,7 @@ service cloud.firestore {
       allow update: if isSignedIn() && request.auth.uid == uid
         && request.resource.data.get('entitlement', null) == resource.data.get('entitlement', null)
         && request.resource.data.get('contentFetch', null) == resource.data.get('contentFetch', null)
+        && createdAtIsHonest()
         && freeAreaWriteIsAllowed()
         && (
           request.resource.data.get('cohort', null) == resource.data.get('cohort', null)
