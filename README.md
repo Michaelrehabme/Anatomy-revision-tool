@@ -639,6 +639,7 @@ scripts/                                # Node-only, run via tsx — NOT part of
   seedChangeRequests.ts                # npm run admin:seed-changes
   accountData.ts                       # list/show/move/grant/failures/licence — see "Running a pilot"
   cohortReport.ts                      # npm run admin:cohort-report — take-up, use, diagnostic
+  verificationReport.ts                # npm run admin:verification-report — read-only: who will be asked to confirm their email
   firebaseAdmin.ts                     # shared firebase-admin bootstrap for the scripts above
 ```
 
