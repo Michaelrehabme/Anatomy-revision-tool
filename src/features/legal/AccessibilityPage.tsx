@@ -167,6 +167,12 @@ export function AccessibilityPage() {
           questions are not offered in any session at present.
         </p>
         <p>
+          <strong style={strong}>One screen is newer than those checks.</strong> The step that asks a new
+          account to confirm its email address was added on 7 October 2026. We went through it with the
+          keyboard in a test browser at both widths, and its messages are marked up as status and alert messages, but
+          it has not been used with a screen reader and was not part of the passes above.
+        </p>
+        <p>
           <strong style={strong}>Smaller keyboard problems we know about.</strong> The theme and plan
           choices are presented to a screen reader as radio buttons but are separate Tab stops and do
           not answer to the arrow keys. On Today, the area picker, session setup and sign-in the top heading

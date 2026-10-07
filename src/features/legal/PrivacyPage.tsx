@@ -82,6 +82,14 @@ export function PrivacyPage() {
           identifier is stored on your device instead and no email is collected; revising needs an account.
         </p>
         <p>
+          <strong style={{ color: 'var(--ink)' }}>Whether your email address is confirmed.</strong> The free area
+          needs an email address that is confirmed to be yours. If you sign up with an email and password, we email
+          that address a link to confirm it, and again only if you ask for it or sign in on another device before
+          you have confirmed; a Google sign-in arrives already confirmed. Whether the address is confirmed is
+          recorded with your sign-in. The email is sent for this purpose and no other: it is not a subscription to
+          anything.
+        </p>
+        <p>
           <strong style={{ color: 'var(--ink)' }}>Revision activity.</strong> Every question you answer: which
           structure, which question type, whether you were right, the answer you gave, how long you took, and when. This
           is what the app is for — the scheduling that decides what you see next is computed from it.
@@ -140,7 +148,8 @@ export function PrivacyPage() {
       <Section title="Who else processes it">
         <p>
           <strong style={{ color: 'var(--ink)' }}>Google Firebase</strong> (Google Ireland Limited) provides
-          authentication and the database. <strong style={{ color: 'var(--ink)' }}>Netlify</strong> hosts the site. Both
+          authentication and the database, and sends the email that confirms your address.{' '}
+          <strong style={{ color: 'var(--ink)' }}>Netlify</strong> hosts the site. Both
           act as processors on documented terms and use your data only to provide those services. Data may be
           transferred outside the UK under the safeguards those providers operate.
         </p>
