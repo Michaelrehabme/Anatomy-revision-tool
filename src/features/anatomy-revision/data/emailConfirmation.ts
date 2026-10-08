@@ -12,11 +12,6 @@ import { getFirebaseAuth } from './firebase';
  * ever runs a line of this.
  */
 
-function errorCode(error: unknown): string | undefined {
-  return typeof error === 'object' && error !== null && 'code' in error
-    ? (error as { code?: string }).code
-    : undefined;
-}
 
 /**
  * Where the link in the email leads once Firebase has confirmed the address:
@@ -33,26 +28,30 @@ export function confirmationContinueUrl(): string {
 /**
  * Emails the signed-in account a link that confirms its address.
  *
- * If the project does not allow this origin as somewhere to continue to, the
- * email is sent WITHOUT the way back rather than not at all: the link still
- * confirms the address, and the screen that is waiting notices when the
- * student returns to it.
+ * ONE REQUEST, AND NO LINK BACK TO THE APP. This used to ask for the email
+ * with a "Continue" address on this origin and, if Firebase refused that
+ * address, ask again at once without it. On the real service that second
+ * request can never succeed: Firebase limits how often one account may ask,
+ * a refused request counts, and the retry a few milliseconds later answers
+ * TOO_MANY_ATTEMPTS_TRY_LATER. Every sign-up from an origin Firebase did not
+ * list — which on 8 Oct 2026 included locusmsk.co.uk itself — ended on "Too
+ * many emails have been sent to this address" with no email sent at all. The
+ * Auth emulator has no such limit, so every test passed.
  *
- * Rejects with Firebase's error otherwise — `auth/too-many-requests` when
- * Firebase's own limit on emails to one address has been reached, which the
- * screen says in words.
+ * So the email is asked for plainly. Firebase's own page confirms the
+ * address, and the screen that is waiting notices when the student comes back
+ * to it (it re-reads the account when the tab regains focus), which is all
+ * the "Continue" link ever added. `confirmationContinueUrl` is kept for the
+ * address a later version may send once the project's authorised domains are
+ * known to be right; App.tsx still understands that address if it arrives.
+ *
+ * Rejects with Firebase's error — `auth/too-many-requests` when its own limit
+ * has really been reached, which the screen says in words.
  */
 export async function sendConfirmationEmail(): Promise<{ uid: string; email: string | null }> {
   const user = getFirebaseAuth().currentUser;
   if (!user) throw new Error('Nobody is signed in.');
-  try {
-    await sendEmailVerification(user, { url: confirmationContinueUrl(), handleCodeInApp: false });
-  } catch (error) {
-    const code = errorCode(error);
-    if (code !== 'auth/unauthorized-continue-uri' && code !== 'auth/invalid-continue-uri' && code !== 'auth/missing-continue-uri') throw error;
-    console.warn('The confirmation email was sent without a link back to the app: this origin is not an authorised domain of the Firebase project.');
-    await sendEmailVerification(user);
-  }
+  await sendEmailVerification(user);
   return { uid: user.uid, email: user.email };
 }
 

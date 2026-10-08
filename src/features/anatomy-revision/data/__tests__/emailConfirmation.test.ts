@@ -52,29 +52,26 @@ beforeEach(() => {
 afterEach(() => vi.restoreAllMocks());
 
 describe('the confirmation email', () => {
-  it('leads back to this app, on the origin it is being used from', async () => {
+  it('is asked for once, plainly, with no address to come back to', async () => {
     const u = user();
     sdk.current = u;
     expect(confirmationContinueUrl()).toBe(`${location.origin}/onboarding?emailConfirmed=1`);
     expect(await sendConfirmationEmail()).toEqual({ uid: 'u1', email: 'sam@example.com' });
     expect(sdk.sendEmailVerification).toHaveBeenCalledTimes(1);
-    expect(sdk.sendEmailVerification).toHaveBeenCalledWith(u, { url: `${location.origin}/onboarding?emailConfirmed=1`, handleCodeInApp: false });
+    expect(sdk.sendEmailVerification).toHaveBeenCalledWith(u);
   });
 
-  // The Firebase console lists the domains a link may come back to. If this
-  // origin is not on it, the email goes without the way back rather than not
-  // at all: the link still confirms the address.
-  it.each(['auth/unauthorized-continue-uri', 'auth/invalid-continue-uri', 'auth/missing-continue-uri'])(
-    'is still sent, without the way back, when Firebase refuses the address to come back to (%s)',
+  // Firebase limits how often one account may ask, and a refused request
+  // counts. A second request straight after a refusal is itself refused, so
+  // there must never be one: on the real service that retry was what turned
+  // every sign-up into "Too many emails" with nothing sent (8 Oct 2026).
+  it.each(['auth/unauthorized-continue-uri', 'auth/invalid-continue-uri', 'auth/too-many-requests'])(
+    'never asks a second time after a refusal (%s)',
     async (code) => {
-      const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
-      const u = user();
-      sdk.current = u;
+      sdk.current = user();
       sdk.sendEmailVerification.mockRejectedValueOnce(authError(code));
-      await expect(sendConfirmationEmail()).resolves.toEqual({ uid: 'u1', email: 'sam@example.com' });
-      expect(sdk.sendEmailVerification).toHaveBeenCalledTimes(2);
-      expect(sdk.sendEmailVerification).toHaveBeenLastCalledWith(u);
-      expect(warn).toHaveBeenCalledWith(expect.stringContaining('not an authorised domain'));
+      await expect(sendConfirmationEmail()).rejects.toMatchObject({ code });
+      expect(sdk.sendEmailVerification).toHaveBeenCalledTimes(1);
     },
   );
 
