@@ -6,8 +6,8 @@
   "scripts": {
     "dev": "vite",
     "dev:educator-demo": "vite --mode educator-demo",
-    "build": "npm run generate:offline && npm run generate:content && tsc --noEmit -p tsconfig.app.json && vite build && npm run check:bundle",
-    "build:demo": "npm run generate:content && tsc --noEmit -p tsconfig.app.json && vite build --config vite.config.demo.ts && npm run check:bundle -- dist-demo",
+    "build": "npm run generate:offline && npm run generate:content && tsc --noEmit -p tsconfig.app.json && vite build && npm run check:bundle && npm run check:checkout",
+    "build:demo": "npm run generate:content && tsc --noEmit -p tsconfig.app.json && vite build --config vite.config.demo.ts && npm run check:bundle -- dist-demo && npm run check:checkout -- dist-demo",
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -19,6 +19,7 @@
     "generate:offline": "tsx src/scripts/generateOfflineManifests.ts",
     "generate:content": "tsx src/scripts/buildContent.ts",
     "check:bundle": "tsx src/scripts/checkBundleForFacts.ts",
+    "check:checkout": "tsx src/scripts/checkCheckoutConfig.ts",
     "papers:check": "tsx src/scripts/diagnosticPapers.ts",
     "papers:publish": "tsx src/scripts/diagnosticPapers.ts --publish",
     "check:contrast": "tsx src/scripts/checkContrast.ts",
