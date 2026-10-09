@@ -245,6 +245,10 @@ describe('the wider pool is only a top-up', () => {
       // joint among joints all of its own type used to be asked with one
       // choice, and such an area would not be "a pool that can fill its own".
       const comparable = (qs: typeof without) => JSON.stringify(qs.filter((q) => q.promptKind !== 'joint-type'));
+      // Nor is an area that cannot fill a question on its own: the elbow has
+      // too few muscles to offer three actions that are not also true of
+      // biceps, and its top-up moves the random stream for all that follows.
+      if (without.some((q) => q.promptKind !== 'joint-type' && q.choices.length < MCQ_CHOICE_COUNT)) continue;
       expect(comparable(withFallback), area).toBe(comparable(without));
     }
   });

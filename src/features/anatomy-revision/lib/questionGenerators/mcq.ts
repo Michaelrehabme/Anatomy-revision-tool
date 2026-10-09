@@ -1,10 +1,11 @@
-import { isMuscle, isBone, isJoint, JOINT_TYPE_LABELS } from '../../types/structure';
+import { isMuscle, isBone, isJoint, isLigament, JOINT_TYPE_LABELS } from '../../types/structure';
 import type { AnatomyStructure } from '../../types/structure';
 import type { AnatomyImageAsset } from '../../types/image';
 import type { MCQQuestion, PromptKind } from '../../types/question';
 import type { StructureIndexes } from '../indexes';
-import { pickNameDistractors, pickTextFieldDistractors, pickKeyDistractors } from '../distractors';
-import { buildIdentifyClue, summarizeStructure } from '../facts';
+import { pickNameDistractors, pickTextFieldDistractors } from '../distractors';
+import { canonicalNerveNames, conflictsWith, stripHeadPrefix } from '../oinaValues';
+import { buildIdentifyClue, clueAlsoFits, ligamentCourse, summarizeStructure } from '../facts';
 import { shuffle, sample, type Rng } from '../rng';
 import { promptImagesFor } from './promptImages';
 import { questionBase } from './questionBase';
@@ -180,8 +181,34 @@ function buildOne(
     // Text-based: clue built from the structure's own facts, answer = name.
     // Bones skip this variant — image/spatial recognition is the priority skill for them,
     // not recalling a structure from a text clue.
-    if (!isBone(structure)) {
-      const { choices, correctIndex } = buildChoices(structure.name, distractors, choiceCount, rng);
+    // A ligament with nothing to go on but its bones, where a neighbour reaches
+    // the same ones, is not asked by clue at all. Taking the neighbours out
+    // left "attaches to: pelvis" beside two muscles and a trochanter, which is
+    // fair and teaches nothing; its pictures still ask about it.
+    const boneListOnly = isLigament(structure) && !ligamentCourse(structure);
+    const sharedBoneList = boneListOnly && all.some((s) => s.id !== structure.id && clueAlsoFits(structure, s));
+    // The same for anything else whose clue a neighbour shares word for word,
+    // where a picture can ask instead: two plane joints that both glide.
+    const sharedClue = promptImages.length > 0 && all.some((s) => s.id !== structure.id && clueAlsoFits(structure, s));
+    if (!isBone(structure) && !sharedBoneList && !sharedClue) {
+      // A wrong answer the clue describes just as well is a second right
+      // answer: "attaches to: pelvis" beside four more ligaments of the pelvis
+      // (8 Oct 2026). The picture questions below keep the first pick — there
+      // the near neighbour is the wrong answer worth offering — and so does
+      // every clue question that never drew one, so nothing else moves.
+      const fair = (s: AnatomyStructure) => !clueAlsoFits(structure, s);
+      const unfair = new Set(all.filter((s) => s.id !== structure.id && !fair(s)).map((s) => s.name));
+      const clueDistractors = !distractors.some((name) => unfair.has(name))
+        ? distractors
+        : toppedUp(structure.name, pickNameDistractors(structure, all.filter(fair), distractorCount, rng), distractorCount, (missing, taken) =>
+            pickNameDistractors(
+              structure,
+              (fallback ?? []).filter((s) => fair(s) && s.name !== structure.name && !taken.includes(s.name)),
+              missing,
+              rng,
+            ),
+          );
+      const { choices, correctIndex } = buildChoices(structure.name, clueDistractors, choiceCount, rng);
       out.push({
         ...baseFields(structure, promptKind),
         id: `mcq-${structure.id}-identify-text`,
@@ -217,7 +244,18 @@ function buildOne(
     if (promptKind === 'origin' || promptKind === 'insertion') {
       const field = promptKind === 'origin' ? structure.origin : structure.insertion;
       const correctValue = field.join('; ');
-      const fieldOf = (s: AnatomyStructure) => (isMuscle(s) ? (promptKind === 'origin' ? s.origin : s.insertion) : undefined);
+      const sites = field.map(stripHeadPrefix);
+      // A neighbour whose answer names one of this muscle's own sites is not a
+      // wrong answer: "Linea aspera of the femur" was offered against adductor
+      // magnus, which inserts there, and "Inferior ramus of pubis" against
+      // "Inferior ramus of the pubis" (8 Oct 2026). The fact cards have
+      // refused these since CR-018 (oinaValues.conflictsWith); this question
+      // predates them and never did.
+      const fieldOf = (s: AnatomyStructure) => {
+        if (!isMuscle(s)) return undefined;
+        const theirs = promptKind === 'origin' ? s.origin : s.insertion;
+        return theirs.some((value) => sites.some((site) => conflictsWith(site, stripHeadPrefix(value)))) ? undefined : theirs;
+      };
       const distractors = toppedUp(
         correctValue,
         pickTextFieldDistractors(correctValue, structure, all, fieldOf, distractorCount, rng),
@@ -236,16 +274,20 @@ function buildOne(
     }
 
     if (promptKind === 'nerve') {
-      const correctValue = structure.nerve.map((n) => n.name).join('; ');
-      const distractors = pickKeyDistractors(
-        structure.nerve.map((n) => n.name),
-        indexes.byNerve,
-        distractorCount,
-        rng,
-        vocabulary?.nerves,
-      );
+      // The nerve, not which half of the muscle it reaches: "Tibial nerve
+      // (long head)" was offered beside "Tibial nerve", and as a wrong answer
+      // to a muscle the tibial nerve supplies. Named as the fact cards name
+      // them, on both sides of the question.
+      const nerves = canonicalNerveNames(structure.nerve);
+      const correctValue = nerves.join('; ');
+      const others = [...indexes.byNerve.keys(), ...(vocabulary?.nerves ?? [])]
+        .flatMap((name) => canonicalNerveNames([{ name, roots: [] }]))
+        // Nor one the muscle is authored with at all, hedged or not: pectineus
+        // is "sometimes" the obturator nerve's, which is not a wrong answer.
+        .filter((name) => ![...nerves, ...structure.nerve.map((n) => n.name)].some((nerve) => conflictsWith(name, nerve)));
+      const distractors = sample([...new Set(others)], distractorCount, rng);
       const { choices, correctIndex } = buildChoices(correctValue, distractors, choiceCount, rng);
-      out.push({
+      if (nerves.length) out.push({
         ...baseFields(structure, promptKind),
         id: `mcq-${structure.id}-nerve`,
         prompt: `What nerve innervates ${structure.name}?`,
@@ -261,14 +303,19 @@ function buildOne(
       // and teres minor are both "External rotation of the shoulder; stabilises
       // the humeral head." — and sampling a flat list could draw the same
       // string twice and render it as two separate choices (CR-018).
+      // A muscle that does nothing this one does not also do describes this
+      // one too: "Externally rotates the hip." is true of the gemelli, whose
+      // own sentence only says more.
+      const mine = new Set(structure.actions);
+      const alsoTrue = (s: AnatomyStructure) => isMuscle(s) && s.actions.length > 0 && s.actions.every((a) => mine.has(a));
       const otherMuscleActionTexts = all.reduce<Set<string>>((acc, s) => {
-        if (isMuscle(s) && s.id !== structure.id) acc.add(s.actionText);
+        if (isMuscle(s) && s.id !== structure.id && !alsoTrue(s)) acc.add(s.actionText);
         return acc;
       }, new Set<string>());
       const otherActionTexts = toppedUp(correctValue, sample([...otherMuscleActionTexts], distractorCount, rng), distractorCount, (missing, taken) =>
         // Tiered like the other facts, so the muscle next door is offered
         // before one from the far end of what the student may reach.
-        pickTextFieldDistractors(correctValue, structure, fallback ?? [], (s) => (isMuscle(s) ? [s.actionText] : undefined), missing, rng, taken),
+        pickTextFieldDistractors(correctValue, structure, fallback ?? [], (s) => (isMuscle(s) && !alsoTrue(s) ? [s.actionText] : undefined), missing, rng, taken),
       );
       const { choices, correctIndex } = buildChoices(correctValue, otherActionTexts, choiceCount, rng);
       out.push({

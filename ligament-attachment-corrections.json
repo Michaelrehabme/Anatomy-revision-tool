@@ -46,7 +46,8 @@
    "sources": [
     "Plantar ligaments - Wikipedia. https://en.wikipedia.org/wiki/Plantar_ligaments"
    ],
-   "quote": "Plantar plates, fibrocartilaginous structures in the metatarsophalangeal and interphalangeal joints of the toes."
+   "quote": "Plantar plates, fibrocartilaginous structures in the metatarsophalangeal and interphalangeal joints of the toes.",
+   "description": "Thick, dense fibrous plates on the sole side of the joints between the metatarsal heads and the toes, attached loosely to the metatarsals and very firmly to the bases of the proximal phalanges. They bear body weight under the metatarsal heads and limit dorsiflexion of the toes."
   },
   "collateral-metacarpophalangeal-ligaments": {
    "confirmed": true,
@@ -62,7 +63,8 @@
    "sources": [
     "Collateral ligaments of metacarpophalangeal joints - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Collateral_ligaments_of_metacarpophalangeal_joints"
    ],
-   "quote": "The collateral ligaments originate on depressions on each side of the metacarpal heads dorsal to axis of rotation. From there, they extend obliquely and distally to their insertions onto tubercles at the base of the proximal phalanx."
+   "quote": "The collateral ligaments originate on depressions on each side of the metacarpal heads dorsal to axis of rotation. From there, they extend obliquely and distally to their insertions onto tubercles at the base of the proximal phalanx.",
+   "description": "Paired cords flanking each knuckle joint of the hand, running obliquely from a depression on the side of the metacarpal head to a tubercle at the base of the proximal phalanx. They are taut in flexion and slack in extension, so the fingers spread when the hand is open but not in a fist."
   },
   "palmar-interphalangeal-ligaments": {
    "confirmed": true,
@@ -79,7 +81,8 @@
    "sources": [
     "Netter lateral inset, which draws the plate at the interphalangeal joint between middle and distal phalanx"
    ],
-   "quote": "Confirmed by the project owner, a sports rehabilitation student, on the ligament review page."
+   "quote": "Confirmed by the project owner, a sports rehabilitation student, on the ligament review page.",
+   "description": "Thick fibrocartilaginous plates across the front of each hinge joint within the fingers, fixed to the palmar base of the phalanx beyond the joint and becoming thinner and more flexible towards the phalanx behind it. They stop the finger joints being forced back into hyperextension."
   },
   "acromioclavicular-ligament": {
    "confirmed": true,
@@ -95,7 +98,8 @@
     "Acromioclavicular ligament - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Acromioclavicular_ligament"
    ],
    "quote": "extending between the upper part of the lateral end of the clavicle and the adjoining part of the upper surface of the acromion",
-   "why": "Acromion (scapula) and clavicle both confirmed."
+   "why": "Acromion (scapula) and clavicle both confirmed.",
+   "description": "A quadrilateral band covering the top of the joint between the clavicle and the scapula, running from the upper part of the lateral end of the clavicle to the adjoining upper surface of the acromion. It gives the joint horizontal stability, and its fibres interlace with the aponeuroses of trapezius and deltoid."
   },
   "anterior-cruciate-ligament": {
    "confirmed": true,
@@ -111,7 +115,8 @@
     "Anterior cruciate ligament - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Anterior_cruciate_ligament"
    ],
    "quote": "The ACL originates from deep within the notch of the distal femur ... The ACL attaches in front of the intercondyloid eminence of the tibia.",
-   "why": "Femur and tibia both confirmed; the seed pair stands."
+   "why": "Femur and tibia both confirmed; the seed pair stands.",
+   "description": "One of the two crossed ligaments inside the knee, running from the depression in front of the intercondylar eminence of the tibia upwards, backwards and laterally to the medial and back part of the lateral condyle of the femur. It resists forward slide and internal rotation of the tibia on the femur."
   },
   "anterior-sternoclavicular-ligament": {
    "confirmed": true,
@@ -127,7 +132,8 @@
     "Sternoclavicular joint - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Sternoclavicular_joint"
    ],
    "quote": "Anterior sternoclavicular ligament (intrinsic) ... Posterior sternoclavicular ligament (intrinsic)",
-   "why": "NOT SETTLED. The joint article names this ligament as an intrinsic stabiliser of the sternoclavicular joint, which confirms it spans clavicle and sternum, but gives no attachment detail of its own. Needs its own work. Graded 27 Sep 2026: the owner personally confirmed this row on the review page. The owner is a sports rehabilitation STUDENT, not a qualified therapist: this is a dated, attributable check by someone studying the subject, which is real evidence but not expert sign-off. Where a published work disagrees, the work wins."
+   "why": "NOT SETTLED. The joint article names this ligament as an intrinsic stabiliser of the sternoclavicular joint, which confirms it spans clavicle and sternum, but gives no attachment detail of its own. Needs its own work. Graded 27 Sep 2026: the owner personally confirmed this row on the review page. The owner is a sports rehabilitation STUDENT, not a qualified therapist: this is a dated, attributable check by someone studying the subject, which is real evidence but not expert sign-off. Where a published work disagrees, the work wins.",
+   "description": "A broad band covering the front of the joint between the clavicle and the sternum, running obliquely downwards and medially from the sternal end of the clavicle to the upper front of the manubrium and the first costal cartilage. It stabilises the joint and limits upward displacement of the clavicle."
   },
   "anterior-tibiofibular-ligament": {
    "confirmed": true,
@@ -143,7 +149,8 @@
     "Anterior tibiofibular ligament - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Anterior_tibiofibular_ligament"
    ],
    "quote": "extends obliquely downward and lateralward between the adjacent margins of the tibia and fibula, on the front aspect of the syndesmosis",
-   "why": "Both bones of the seed pair confirmed. The work gives the course rather than precise attachment sites."
+   "why": "Both bones of the seed pair confirmed. The work gives the course rather than precise attachment sites.",
+   "description": "A flat band on the front of the distal syndesmosis, running obliquely downwards and laterally from the anterior tubercle of the distal tibia to the anterior tubercle of the distal fibula. It holds the fibula to the tibia at the ankle and is the first to be stressed when the fibula is forced into external rotation."
   },
   "coracohumeral-ligament": {
    "confirmed": true,
@@ -159,7 +166,8 @@
     "Coracohumeral ligament - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Coracohumeral_ligament"
    ],
    "quote": "It attaches to the coracoid process at one end, and to the greater and lesser tubercles of the humerus at the other (as two discrete bands).",
-   "why": "Coracoid process (scapula) and humerus both confirmed."
+   "why": "Coracoid process (scapula) and humerus both confirmed.",
+   "description": "A broad band lying above the head of the humerus, running from the lateral border and base of the coracoid process of the scapula downwards and laterally to the greater and lesser tubercles. It strengthens the upper part of the shoulder joint capsule and becomes taut in external rotation."
   },
   "interclavicular-ligament": {
    "confirmed": true,
@@ -175,7 +183,8 @@
     "Interclavicular ligament - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Interclavicular_ligament"
    ],
    "quote": "it passes in a curved direction from the upper part of the sternal end of one clavicle to that of the other, and is also attached to the upper margin of the sternum.",
-   "why": "Both clavicles and the sternum confirmed."
+   "why": "Both clavicles and the sternum confirmed.",
+   "description": "A flattened curved band running from the upper part of the sternal end of one clavicle to that of the other, attached on the way to the upper margin of the sternum. It ties the two clavicles together across the midline and adds to the stability of the joints between clavicle and sternum."
   },
   "interosseous-membrane-of-forearm": {
    "confirmed": true,
@@ -191,7 +200,8 @@
     "Interosseous membrane of forearm - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Interosseous_membrane_of_forearm"
    ],
    "quote": "a fibrous sheet that connects the interosseous margins of the radius and the ulna",
-   "why": "Radius and ulna both confirmed."
+   "why": "Radius and ulna both confirmed.",
+   "description": "A fibrous sheet that connects the interosseous borders of the radius and the ulna, with its fibres running obliquely between the two bones. It transfers load from the radius to the ulna, gives attachment to forearm muscles and separates the anterior and posterior compartments."
   },
   "interosseous-membrane-of-leg": {
    "confirmed": true,
@@ -207,7 +217,8 @@
     "Interosseous membrane of leg - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Interosseous_membrane_of_leg"
    ],
    "quote": "a fibrous membrane which extends between the interosseous crests of the tibia and fibula",
-   "why": "Tibia and fibula both confirmed."
+   "why": "Tibia and fibula both confirmed.",
+   "description": "A thin aponeurotic sheet stretched between the interosseous crests of the tibia and fibula, its fibres running mostly downwards and laterally. It binds the two bones together and separates the muscles on the front of the leg from those on the back."
   },
   "medial-meniscus": {
    "confirmed": true,
@@ -223,23 +234,27 @@
     "Medial meniscus - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Medial_meniscus"
    ],
    "quote": "Its anterior end, thin and pointed, is attached to the anterior intercondyloid fossa of the tibia, in front of the anterior cruciate ligament ... Its posterior end is fixed to the posterior intercondyloid fossa of the tibia",
-   "why": "NOT SETTLED. Both tibial horns confirmed. The seed also lists the FEMUR, and this work gives no direct femoral attachment — only fusion with the tibial collateral ligament. An unsupported half of a pair. Graded 27 Sep 2026: the owner personally confirmed this row on the review page. The owner is a sports rehabilitation STUDENT, not a qualified therapist: this is a dated, attributable check by someone studying the subject, which is real evidence but not expert sign-off. Where a published work disagrees, the work wins."
+   "why": "NOT SETTLED. Both tibial horns confirmed. The seed also lists the FEMUR, and this work gives no direct femoral attachment — only fusion with the tibial collateral ligament. An unsupported half of a pair. Graded 27 Sep 2026: the owner personally confirmed this row on the review page. The owner is a sports rehabilitation STUDENT, not a qualified therapist: this is a dated, attributable check by someone studying the subject, which is real evidence but not expert sign-off. Where a published work disagrees, the work wins.",
+   "description": "A nearly semicircular plate of fibrocartilage between the medial condyles of the femur and tibia, fixed by its ends to the anterior and posterior intercondylar areas of the tibia and fused with the tibial collateral ligament. It spreads load and absorbs shock, and is far less mobile than its lateral partner."
   },
   "nuchal-ligament": {
    "confirmed": true,
-   "source": "User review on the review page, 13 Sept 2026",
-   "why": "NOT SETTLED. The cervical vertebrae are confirmed, but the work names the OCCIPITAL BONE as the upper attachment, which the seed omits — and occipital-bone now exists as a structure. The work also names the atlas (C1), not the axis (C2) which the seed lists. Both need settling before the pair is right. Graded 27 Sep 2026: the owner personally confirmed this row on the review page. The owner is a sports rehabilitation STUDENT, not a qualified therapist: this is a dated, attributable check by someone studying the subject, which is real evidence but not expert sign-off. Where a published work disagrees, the work wins.",
+   "source": "Source check, 8 Oct 2026: fetched and quoted from the work cited",
+   "why": "Settled 8 Oct 2026. The work names the occipital bone (external occipital protuberance) and the spinous process of C7 as the two ends, with a deep sheet to the posterior tubercle of the atlas and the cervical spinous processes; the occipital bone is now a structure, so all five are carried. The axis is covered by \"the spinous processes of the cervical vertebrae\". This replaces the row the owner confirmed on 13 Sept 2026, when the app had no occipital bone to point at.",
    "attachmentStructureIds": [
+    "occipital-bone",
+    "atlas-c1",
+    "axis-c2",
     "cervical-vertebrae",
-    "axis-c2"
+    "c7-vertebra"
    ],
-   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision.",
-   "checked": "2026-09-24",
-   "grade": "verified (owner review)",
+   "checked": "2026-10-08",
+   "grade": "verified",
    "sources": [
     "Nuchal ligament - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Nuchal_ligament"
    ],
-   "quote": "The nuchal ligament extends from the external occipital protuberance on the skull and median nuchal line to the spinous process of the seventh cervical vertebra in the lower part of the neck."
+   "quote": "The nuchal ligament extends from the external occipital protuberance on the skull and median nuchal line to the spinous process of the seventh cervical vertebra in the lower part of the neck. [...] This is attached to the posterior tubercle of the atlas, and to the spinous processes of the cervical vertebrae, and forms a septum between the muscles on either side of the neck.",
+   "description": "A midline fibrous band at the back of the neck running from the external occipital protuberance to the spinous process of the seventh cervical vertebra, with a deep sheet to the posterior tubercle of the atlas and the cervical spinous processes. It tightens to limit forward bending of the head and neck."
   },
   "obturator-membrane": {
    "confirmed": true,
@@ -254,7 +269,8 @@
    "sources": [
     "Obturator membrane - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Obturator_membrane"
    ],
-   "quote": "The membrane is attached to the sharp margin of the obturator foramen except at its lower lateral angle, where it is fixed to the pelvic surface of the inferior ramus of the ischium"
+   "quote": "The membrane is attached to the sharp margin of the obturator foramen except at its lower lateral angle, where it is fixed to the pelvic surface of the inferior ramus of the ischium",
+   "description": "A thin fibrous sheet that almost completely closes the obturator foramen of the hip bone, attached to the sharp margin of the foramen and to the pelvic surface of the ischial ramus. It gives attachment to both obturator muscles and completes the obturator canal for the obturator nerve and vessels."
   },
   "palmar-radio-ulnar-ligament": {
    "confirmed": true,
@@ -270,7 +286,8 @@
     "Distal radioulnar articulation - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Distal_radioulnar_articulation"
    ],
    "quote": "The articulation is reinforced by the palmar radioulnar ligament, and dorsal radioulnar ligament",
-   "why": "NOT SETTLED. The work names this ligament as a reinforcement of the radioulnar articulation, which implies the seed pair, but gives no attachment detail of its own. Confirming a pair from the ligament's own name is not a source check. Graded 27 Sep 2026: the owner personally confirmed this row on the review page. The owner is a sports rehabilitation STUDENT, not a qualified therapist: this is a dated, attributable check by someone studying the subject, which is real evidence but not expert sign-off. Where a published work disagrees, the work wins."
+   "why": "NOT SETTLED. The work names this ligament as a reinforcement of the radioulnar articulation, which implies the seed pair, but gives no attachment detail of its own. Confirming a pair from the ligament's own name is not a source check. Graded 27 Sep 2026: the owner personally confirmed this row on the review page. The owner is a sports rehabilitation STUDENT, not a qualified therapist: this is a dated, attributable check by someone studying the subject, which is real evidence but not expert sign-off. Where a published work disagrees, the work wins.",
+   "description": "A narrow band on the front of the distal joint between the two forearm bones, running from the anterior margin of the ulnar notch of the radius to the front of the head of the ulna. With its dorsal partner it is a primary stabiliser of that joint against palmar and dorsal displacement."
   },
   "pubofemoral-ligament": {
    "confirmed": true,
@@ -286,7 +303,8 @@
     "Pubofemoral ligament - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Pubofemoral_ligament"
    ],
    "quote": "The ligament attaches superiorly at the superior ramus of pubis, and the iliopubic eminence; it attaches inferiorly at the inferior portion of the intertrochanteric line.",
-   "why": "Pelvis (superior pubic ramus) and femur (intertrochanteric line) both confirmed."
+   "why": "Pelvis (superior pubic ramus) and femur (intertrochanteric line) both confirmed.",
+   "description": "The capsular ligament on the front and underside of the hip, running from the superior ramus of the pubis and the iliopubic eminence down to the lower part of the intertrochanteric line of the femur. It limits excessive abduction of the hip."
   },
   "radial-collateral-ligament": {
    "confirmed": true,
@@ -302,7 +320,8 @@
     "Radial collateral ligament of elbow joint - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Radial_collateral_ligament_of_elbow_joint"
    ],
    "quote": "from the lateral epicondyle to the annular ligament deep to the common extensor tendon",
-   "why": "NOT SETTLED. The humerus (lateral epicondyle) is confirmed. The seed also lists the RADIUS, but this work attaches the ligament to the ANNULAR LIGAMENT, not to the radius itself — a real distinction, and the reason this ligament does not restrain the radial head directly. Graded 27 Sep 2026: the owner personally confirmed this row on the review page. The owner is a sports rehabilitation STUDENT, not a qualified therapist: this is a dated, attributable check by someone studying the subject, which is real evidence but not expert sign-off. Where a published work disagrees, the work wins."
+   "why": "NOT SETTLED. The humerus (lateral epicondyle) is confirmed. The seed also lists the RADIUS, but this work attaches the ligament to the ANNULAR LIGAMENT, not to the radius itself — a real distinction, and the reason this ligament does not restrain the radial head directly. Graded 27 Sep 2026: the owner personally confirmed this row on the review page. The owner is a sports rehabilitation STUDENT, not a qualified therapist: this is a dated, attributable check by someone studying the subject, which is real evidence but not expert sign-off. Where a published work disagrees, the work wins.",
+   "description": "A band on the lateral side of the elbow, running deep to the common extensor tendon from the lateral epicondyle of the humerus to the annular ligament around the head of the radius. It steadies the radial head and helps the elbow resist varus stress."
   },
   "sacrotuberous-ligament": {
    "confirmed": true,
@@ -318,7 +337,8 @@
     "Sacrotuberous ligament - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Sacrotuberous_ligament"
    ],
    "quote": "It runs from the sacrum (the lower transverse sacral tubercles, the inferior margins sacrum and the upper coccyx) to the tuberosity of the ischium.",
-   "why": "Sacrum and the ischial tuberosity (on the pelvis) both confirmed. The work also names the upper coccyx and the posterior superior iliac spine, which the seed omits — candidate additions, not applied."
+   "why": "Sacrum and the ischial tuberosity (on the pelvis) both confirmed. The work also names the upper coccyx and the posterior superior iliac spine, which the seed omits — candidate additions, not applied.",
+   "description": "A flat triangular ligament at the lower back of the pelvis, running from the posterior ilium, the lower lateral margin of the sacrum and the coccyx downwards, forwards and laterally to the inner margin of the ischial tuberosity. It checks the upward tilt of the lower sacrum under body weight."
   },
   "superior-pubic-ligament": {
    "confirmed": true,
@@ -333,7 +353,8 @@
    "sources": [
     "Superior pubic ligament - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Superior_pubic_ligament"
    ],
-   "quote": "The superior pubic ligament connects together the two pubic bones superiorly, extending laterally as far as the pubic tubercles."
+   "quote": "The superior pubic ligament connects together the two pubic bones superiorly, extending laterally as far as the pubic tubercles.",
+   "description": "A band across the top of the pubic symphysis, joining the two pubic bones above and extending laterally as far as the pubic tubercles. It reinforces the symphysis from above and helps resist separation of the two hip bones."
   },
   "transverse-humeral-ligament": {
    "confirmed": true,
@@ -348,7 +369,8 @@
    "sources": [
     "Transverse humeral ligament - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Transverse_humeral_ligament"
    ],
-   "quote": "The transverse humeral ligament (Brodie's ligament) forms a broad band bridging the lesser and greater tubercle of the humerus."
+   "quote": "The transverse humeral ligament (Brodie's ligament) forms a broad band bridging the lesser and greater tubercle of the humerus.",
+   "description": "A broad band bridging the lesser and greater tubercles of the humerus above the epiphysial line, roofing over the intertubercular groove. It holds the tendon of the long head of biceps in the groove, although it may be tendon fibres rather than a true ligament."
   },
   "transverse-ligament-of-knee": {
    "confirmed": true,
@@ -383,7 +405,8 @@
    "sources": [
     "Ulnar collateral ligament of elbow joint - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Ulnar_collateral_ligament_of_elbow_joint"
    ],
-   "quote": "attached, above, by its apex, to the front part of the medial epicondyle of the humerus ... below, by its broad base to the medial margin of the coronoid process of the ulna ... below, to the medial margin of the olecranon"
+   "quote": "attached, above, by its apex, to the front part of the medial epicondyle of the humerus ... below, by its broad base to the medial margin of the coronoid process of the ulna ... below, to the medial margin of the olecranon",
+   "description": "A thick triangular band on the medial side of the elbow, running from the medial epicondyle of the humerus to the coronoid process and the olecranon of the ulna. It is the main restraint against valgus stress, which is why overhead throwing puts it at risk."
   },
   "ulnocapitate-ligament": {
    "confirmed": true,
@@ -400,7 +423,8 @@
    "sources": [
     "User review on the review page, 13 Sept 2026"
    ],
-   "quote": "Confirmed by the project owner, a sports rehabilitation student, on the ligament review page."
+   "quote": "Confirmed by the project owner, a sports rehabilitation student, on the ligament review page.",
+   "description": "The most superficial of the palmar bands passing from the ulnar side of the forearm to the carpus, running from the palmar part of the fovea of the ulna across the lunate to the capitate. At the capitate it meets fibres of the radioscaphocapitate ligament to form the inverted V of the arcuate ligament."
   },
   "ulnopisiform-ligament": {
    "confirmed": true,
@@ -432,7 +456,8 @@
     "Palmar radiocarpal ligament - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Palmar_radiocarpal_ligament"
    ],
    "quote": "there is a rounded fasciculus, superficial to the rest, which reaches from the base of the styloid process of the ulna to the lunate and triangular bones",
-   "why": "Ulnar styloid to the triangular (triquetral) bone, confirming the seed pair. 'Triangular bone' is the older name for the triquetrum."
+   "why": "Ulnar styloid to the triangular (triquetral) bone, confirming the seed pair. 'Triangular bone' is the older name for the triquetrum.",
+   "description": "A palmar band on the ulnar side of the wrist arising from the base of the ulnar styloid and the adjacent radio-ulnar ligament and disc, running obliquely to the proximal and ulnar surfaces of the triquetrum. It forms the palmar wall of the triangular fibrocartilage complex and resists dorsal migration of the distal ulna."
   },
   "ulnolunate-ligament": {
    "attachmentStructureIds": [
@@ -1516,6 +1541,8 @@
   },
   "ligament-of-head-of-femur": {
    "attachmentStructureIds": [
+    "femoral-head",
+    "acetabulum",
     "pelvis",
     "femur"
    ],
@@ -2379,15 +2406,6 @@
    ],
    "quote": "It attaches superiorly at the inferior portion of the anterior inferior iliac spine and adjacent portion of the margin of the acetabulum; it attaches inferiorly at the intertrochanteric line.",
    "why": "AIIS and intertrochanteric line both named."
-  },
-  "ligamentum-teres-femoris": {
-   "grade": "verified",
-   "checked": "2026-09-26",
-   "sources": [
-    "Ligament of head of femur - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Ligamentum_teres_femoris"
-   ],
-   "quote": "The ligament is implanted by its apex into the anterosuperior part of the fovea capitis femoris and its base is attached by two bands, one into either side of the acetabular notch.",
-   "why": "Femoral head fovea and acetabular notch both named."
   },
   "alar-ligaments": {
    "grade": "verified",

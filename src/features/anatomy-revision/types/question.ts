@@ -97,6 +97,22 @@ export interface FillBlankQuestion extends RevisionQuestionBase {
   answer: string;
   /** The original, unblanked statement — shown as feedback after answering. */
   fullStatement: string;
+  /**
+   * The bone or landmark the statement was authored on, shown above it. The
+   * statements are notes ON a structure ("Rectus femoris origin", on the
+   * AIIS), and with the name left off 204 of the 308 read "____ origin" and
+   * nothing else (found 8 Oct 2026). Optional only for questions built
+   * before it existed.
+   */
+  subject?: string;
+  /**
+   * The separate things that fill the blank, one text box each, when there is
+   * more than one: "____ insertion" on the greater trochanter is gluteus
+   * medius, gluteus minimus and piriformis, and "Gluteus medius/minimus" is
+   * two muscles however it was authored. Graded in any order; all of them
+   * make the question right. Absent means one box, taking `answer`.
+   */
+  answers?: string[];
 }
 
 export interface TypedIdentifyQuestion extends RevisionQuestionBase {

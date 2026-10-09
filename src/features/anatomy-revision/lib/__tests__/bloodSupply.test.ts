@@ -47,8 +47,8 @@ function bloodQuestions(factMastery: FactMastery[] = []): OinaQuestion[] {
 }
 
 describe('the reviewed blood supply in the seed', () => {
-  it('covers the 234 accepted structures and never a landmark', () => {
-    expect(supplied.length).toBe(234);
+  it('covers the 233 accepted structures and never a landmark', () => {
+    expect(supplied.length).toBe(233);
     expect(supplied.filter((s) => s.category === 'landmark')).toEqual([]);
   });
 
@@ -162,7 +162,7 @@ describe('"How rich" stays multiple choice', () => {
   const ratings = buildBloodSupplyRatingMcqs(supplied);
 
   it('is asked for every reviewed structure on a fixed Rich/Moderate/Poor scale', () => {
-    expect(ratings).toHaveLength(234);
+    expect(ratings).toHaveLength(233);
     for (const q of ratings) {
       expect(q.choices).toEqual(['Rich', 'Moderate', 'Poor']);
       expect(RATING_CHOICES[q.correctIndex].rating).toBe(byId.get(q.structureId)!.bloodSupply!.rating);

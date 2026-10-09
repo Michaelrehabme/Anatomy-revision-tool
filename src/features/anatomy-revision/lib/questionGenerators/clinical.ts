@@ -73,7 +73,10 @@ function buildSpecialTestQuestions(structures: AnatomyStructure[], rng: Rng): MC
 
   for (const structure of withTests) {
     for (const test of structure.specialTests!) {
-      const otherNames = allTestNames.filter((n) => n !== test.name);
+      // Not this structure's other tests: Drop Arm is a right answer to
+      // "which test assesses supraspinatus" whichever one is being asked.
+      const own = new Set(structure.specialTests!.map((t) => t.name));
+      const otherNames = allTestNames.filter((n) => !own.has(n));
       const distractors = sample([...new Set(otherNames)], CHOICE_COUNT - 1, rng);
       if (distractors.length < 1) continue;
 

@@ -316,7 +316,7 @@ describe('described-region questions: from one area\'s facts', () => {
     // than with everything loaded — an area with two bones cannot supply three
     // wrong descriptions of a bone — and those fall back to the list.
     expect(total).toBe(661);
-    expect(covered).toBe(489);
+    expect(covered).toBe(488);
   });
 
   it('names a bone from another area through the index, with no facts loaded for it', () => {

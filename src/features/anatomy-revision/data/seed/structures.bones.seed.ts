@@ -705,7 +705,7 @@ export const BONE_STRUCTURES: BoneStructure[] = [
   },
   {
     id: 'phalanges-proximal-hand',
-    name: 'Proximal Phalanges of the Hand (grouped)',
+    name: 'Proximal Phalanges of Hand (grouped)',
     category: 'bone',
     region: 'forearm-hand',
     subregion: 'wrist-hand',
@@ -726,7 +726,7 @@ export const BONE_STRUCTURES: BoneStructure[] = [
   },
   {
     id: 'phalanges-middle-hand',
-    name: 'Middle Phalanges of the Hand (grouped)',
+    name: 'Middle Phalanges of Hand (grouped)',
     category: 'bone',
     region: 'forearm-hand',
     subregion: 'wrist-hand',
@@ -748,7 +748,7 @@ export const BONE_STRUCTURES: BoneStructure[] = [
   },
   {
     id: 'phalanges-distal-hand',
-    name: 'Distal Phalanges of the Hand (grouped)',
+    name: 'Distal Phalanges of Hand (grouped)',
     category: 'bone',
     region: 'forearm-hand',
     subregion: 'wrist-hand',
@@ -766,7 +766,7 @@ export const BONE_STRUCTURES: BoneStructure[] = [
   },
   {
     id: 'phalanges-proximal-foot',
-    name: 'Proximal Phalanges of the Foot (grouped)',
+    name: 'Proximal Phalanges of Foot (grouped)',
     category: 'bone',
     region: 'lower-leg-foot',
     subregion: 'ankle-foot',
@@ -787,7 +787,7 @@ export const BONE_STRUCTURES: BoneStructure[] = [
   },
   {
     id: 'phalanges-middle-foot',
-    name: 'Middle Phalanges of the Foot (grouped)',
+    name: 'Middle Phalanges of Foot (grouped)',
     category: 'bone',
     region: 'lower-leg-foot',
     subregion: 'ankle-foot',
@@ -812,7 +812,7 @@ export const BONE_STRUCTURES: BoneStructure[] = [
     // hallux sesamoids and has no other bony attachment: without them its
     // attachments were empty. The atlas holds both as one mesh a side.
     id: 'sesamoids-foot',
-    name: 'Sesamoid Bones of the Hallux (grouped)',
+    name: 'Sesamoid Bones of Hallux (grouped)',
     category: 'bone',
     region: 'lower-leg-foot',
     subregion: 'ankle-foot',
@@ -834,7 +834,7 @@ export const BONE_STRUCTURES: BoneStructure[] = [
   },
   {
     id: 'phalanges-distal-foot',
-    name: 'Distal Phalanges of the Foot (grouped)',
+    name: 'Distal Phalanges of Foot (grouped)',
     category: 'bone',
     region: 'lower-leg-foot',
     subregion: 'ankle-foot',

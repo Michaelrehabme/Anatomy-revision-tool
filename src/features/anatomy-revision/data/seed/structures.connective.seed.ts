@@ -46,7 +46,7 @@ import type { LigamentStructure } from '../../types/structure';
 export const CONNECTIVE_STRUCTURES: LigamentStructure[] = [
   {
     id: 'flexor-retinaculum',
-    name: 'Flexor Retinaculum',
+    name: 'Flexor retinaculum',
     category: 'ligament',
     region: 'forearm-hand',
     subregion: 'wrist-hand',
@@ -63,7 +63,7 @@ export const CONNECTIVE_STRUCTURES: LigamentStructure[] = [
   },
   {
     id: 'extensor-retinaculum-hand',
-    name: 'Extensor Retinaculum of the Hand',
+    name: 'Extensor retinaculum of hand',
     category: 'ligament',
     region: 'forearm-hand',
     subregion: 'wrist-hand',
@@ -79,7 +79,7 @@ export const CONNECTIVE_STRUCTURES: LigamentStructure[] = [
   },
   {
     id: 'triangular-fibrocartilage-complex',
-    name: 'Triangular Fibrocartilage Complex',
+    name: 'Triangular fibrocartilage complex',
     category: 'ligament',
     region: 'forearm-hand',
     subregion: 'wrist-hand',
@@ -98,7 +98,7 @@ export const CONNECTIVE_STRUCTURES: LigamentStructure[] = [
   },
   {
     id: 'iliotibial-band',
-    name: 'Iliotibial Band',
+    name: 'Iliotibial band',
     category: 'ligament',
     region: 'hip-thigh',
     subregion: 'knee',
@@ -116,7 +116,7 @@ export const CONNECTIVE_STRUCTURES: LigamentStructure[] = [
   },
   {
     id: 'patellar-ligament',
-    name: 'Patellar Ligament',
+    name: 'Patellar ligament',
     category: 'ligament',
     region: 'hip-thigh',
     subregion: 'knee',
@@ -134,7 +134,7 @@ export const CONNECTIVE_STRUCTURES: LigamentStructure[] = [
   },
   {
     id: 'plantar-fascia',
-    name: 'Plantar Fascia',
+    name: 'Plantar fascia',
     category: 'ligament',
     region: 'lower-leg-foot',
     subregion: 'ankle-foot',
@@ -151,7 +151,7 @@ export const CONNECTIVE_STRUCTURES: LigamentStructure[] = [
   },
   {
     id: 'achilles-tendon',
-    name: 'Achilles Tendon',
+    name: 'Achilles tendon',
     category: 'ligament',
     region: 'lower-leg-foot',
     subregion: 'ankle-foot',
@@ -168,7 +168,7 @@ export const CONNECTIVE_STRUCTURES: LigamentStructure[] = [
   },
   {
     id: 'inguinal-ligament',
-    name: 'Inguinal Ligament',
+    name: 'Inguinal ligament',
     category: 'ligament',
     region: 'hip-thigh',
     subregion: 'hip',
@@ -185,7 +185,7 @@ export const CONNECTIVE_STRUCTURES: LigamentStructure[] = [
   },
   {
     id: 'iliofemoral-ligament',
-    name: 'Iliofemoral Ligament',
+    name: 'Iliofemoral ligament',
     category: 'ligament',
     region: 'hip-thigh',
     subregion: 'hip',
@@ -202,26 +202,8 @@ export const CONNECTIVE_STRUCTURES: LigamentStructure[] = [
     notes: null,
   },
   {
-    id: 'ligamentum-teres-femoris',
-    name: 'Ligament of the Head of the Femur',
-    category: 'ligament',
-    region: 'hip-thigh',
-    subregion: 'hip',
-    description:
-      'Implanted by its apex into the anterosuperior part of the fovea capitis of the femoral head, with its base attached by two bands either side of the acetabular notch. It carries a small artery to the femoral head.',
-    aliases: ['Ligamentum Teres', 'Round Ligament of the Femur'],
-    attachmentStructureIds: ['femoral-head', 'acetabulum', 'pelvis', 'femur'],
-    jointId: 'hip-joint',
-    imageIds: [],
-    eligibility: { flashcard: true, mcq: true, locate: false },
-    difficulty: 'medium',
-    tags: ['ligament'],
-    clinical: 'Its artery is the main blood supply to the femoral head in childhood, which is why a hip that loses it can go on to avascular necrosis.',
-    notes: null,
-  },
-  {
     id: 'alar-ligaments',
-    name: 'Alar Ligaments',
+    name: 'Alar ligaments',
     category: 'ligament',
     region: 'back-core',
     subregion: 'neck',
@@ -239,7 +221,7 @@ export const CONNECTIVE_STRUCTURES: LigamentStructure[] = [
   },
   {
     id: 'transverse-ligament-of-atlas',
-    name: 'Transverse Ligament of the Atlas',
+    name: 'Transverse ligament of atlas',
     category: 'ligament',
     region: 'back-core',
     subregion: 'neck',
@@ -257,7 +239,7 @@ export const CONNECTIVE_STRUCTURES: LigamentStructure[] = [
   },
   {
     id: 'intertransverse-ligaments',
-    name: 'Intertransverse Ligaments',
+    name: 'Intertransverse ligaments',
     category: 'ligament',
     region: 'back-core',
     subregion: 'spine',
@@ -276,7 +258,7 @@ export const CONNECTIVE_STRUCTURES: LigamentStructure[] = [
   },
   {
     id: 'linea-alba',
-    name: 'Linea Alba',
+    name: 'Linea alba',
     category: 'ligament',
     region: 'back-core',
     subregion: 'torso',
@@ -293,7 +275,7 @@ export const CONNECTIVE_STRUCTURES: LigamentStructure[] = [
   },
   {
     id: 'costal-cartilage',
-    name: 'Costal Cartilage',
+    name: 'Costal cartilage',
     category: 'ligament',
     region: 'back-core',
     subregion: 'torso',

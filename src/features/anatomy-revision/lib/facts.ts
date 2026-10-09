@@ -1,5 +1,5 @@
 import { isMuscle, isBone, isLandmark, isJoint, isLigament, reviewedAttachmentIds, areasOf, JOINT_TYPE_LABELS } from '../types/structure';
-import type { AnatomyStructure } from '../types/structure';
+import type { AnatomyStructure, LigamentStructure } from '../types/structure';
 import { REGION_LABELS, SUBREGION_LABELS, AREA_LABELS } from '../types/region';
 import type { OinaPromptKind } from '../types/question';
 
@@ -99,6 +99,39 @@ export function describeFact(s: AnatomyStructure, promptKind: OinaPromptKind): s
 }
 
 /**
+ * The generator's stand-in for a description nobody has written yet
+ * (generateLigamentSeed.ts): "Ligament of the hip." or "Ligament of the knee,
+ * running between the tibia and the femur." It says less than the attachment
+ * list does, and two ligaments can share one word for word.
+ */
+const PLACEHOLDER_DESCRIPTION = /^Ligament of the [^,.]+(?:, running between .+)?\.$/;
+
+/** Lower case, no punctuation, and none of the small words a name may or may not carry. */
+const plain = (text: string) =>
+  text
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, ' ')
+    .replace(/\b(?:the|of|ligaments?)\b/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+/**
+ * The opening sentence of a ligament's authored description, which is where
+ * every one of them says what it runs from and to. Undefined when there is
+ * no authored description, or when the sentence gives the answer away: the
+ * ligament of the head of the femur runs "to the fovea on the head of the
+ * femur".
+ */
+export function ligamentCourse(s: LigamentStructure): string | undefined {
+  if (PLACEHOLDER_DESCRIPTION.test(s.description)) return undefined;
+  const sentence = s.description.split(/(?<=\.)\s+(?=[A-Z])/)[0]?.trim();
+  if (!sentence || ` ${plain(sentence)} `.includes(` ${plain(s.name)} `)) return undefined;
+  return sentence;
+}
+
+const attachmentClue = (ids: string[]) => `attaches to: ${ids.map((id) => id.replace(/-/g, ' ')).join('; ')}`;
+
+/**
  * A short text "clue" built from a structure's own facts, used as the
  * fallback prompt for text-only identify questions (mirrors quiz.py's
  * gen_identify fallback for when no image is available). Must never return
@@ -112,13 +145,39 @@ export function buildIdentifyClue(s: AnatomyStructure): string {
   if (isMuscle(s)) return `${s.origin.join('; ')} — ${s.actionText}`;
   if (isJoint(s)) return `${JOINT_TYPE_LABELS[s.jointType]} — ${s.movements.join('; ')}`;
   if (isLigament(s)) {
-    // Its attachments, by id rather than name: facts.ts has no structure
-    // lookup, and "attaches to: talus; fibula" reads fine from the ids.
+    // Where it runs, in the description's words. The bones alone were the clue
+    // until 8 Oct 2026, and "attaches to: pelvis" is true of five hip
+    // ligaments: 110 of 166 shared their bone list with a neighbour.
+    const course = ligamentCourse(s);
+    if (course) return course;
+    // By id rather than name: facts.ts has no structure lookup, and "attaches
+    // to: talus; fibula" reads fine from the ids. Not a clue that picks one
+    // ligament out — clueAlsoFits below is what keeps its question fair.
     const attachments = reviewedAttachmentIds(s);
-    if (attachments.length) return `attaches to: ${attachments.map((id) => id.replace(/-/g, ' ')).join('; ')}`;
+    if (attachments.length) return attachmentClue(attachments);
     return s.description;
   }
   if (s.attachments.length) return s.attachments.join('; ');
   if (s.articulations?.length) return s.articulations.join('; ');
   return s.description;
+}
+
+/**
+ * Whether the clue written for `correct` is just as true of `other`, which
+ * would make `other` a second right answer if it were offered as a wrong one.
+ *
+ * Two structures can produce the same clue outright (two plane joints that
+ * both glide). And a ligament still on its bone list is matched by every
+ * ligament reaching all of those bones, in whatever order they are listed and
+ * whatever else it reaches: "attaches to: pelvis" fits the sacrotuberous
+ * ligament too.
+ */
+export function clueAlsoFits(correct: AnatomyStructure, other: AnatomyStructure): boolean {
+  const clue = buildIdentifyClue(correct);
+  if (buildIdentifyClue(other) === clue) return true;
+  if (!isLigament(correct) || !isLigament(other)) return false;
+  const bones = reviewedAttachmentIds(correct);
+  if (!bones.length || clue !== attachmentClue(bones)) return false;
+  const reached = new Set(reviewedAttachmentIds(other));
+  return bones.every((id) => reached.has(id));
 }

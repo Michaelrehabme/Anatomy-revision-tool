@@ -12,6 +12,7 @@ import type { StructureIndexEntry } from '../../types/structureIndex';
 import type { MultiSelectQuestion } from '../../types/question';
 import type { StructureIndexes } from '../indexes';
 import { pickStructureDistractors } from '../distractors';
+import { canonicalNerveNames, conflictsWith } from '../oinaValues';
 import { shuffle, sample, type Rng } from '../rng';
 import { questionBase } from './questionBase';
 
@@ -42,12 +43,27 @@ function buildNerveQuestions(pool: AnatomyStructure[], indexes: StructureIndexes
   const poolById = new Map(pool.map((s) => [s.id, s]));
   const questions: MultiSelectQuestion[] = [];
 
-  for (const [nerveName, muscleIds] of indexes.byNerve) {
+  // By the nerve, not by how it was written down. The index keys on the
+  // authored string, so "Tibial nerve (long head)" was a different nerve from
+  // "Tibial nerve" and biceps femoris was marked wrong for it; the same for
+  // the lumbricals, adductor magnus and "Deep fibular (peroneal) nerve"
+  // (8 Oct 2026).
+  const byCanonicalNerve = new Map<string, string[]>();
+  for (const s of indexes.byId.values()) {
+    if (!isMuscle(s)) continue;
+    for (const name of canonicalNerveNames(s.nerve)) byCanonicalNerve.set(name, [...(byCanonicalNerve.get(name) ?? []), s.id]);
+  }
+
+  for (const [nerveName, muscleIds] of byCanonicalNerve) {
     const innervated = new Set(muscleIds);
     const correctInPool = muscleIds.map((id) => poolById.get(id)).filter((s): s is AnatomyStructure => !!s);
     if (correctInPool.length < 2) continue;
 
-    const distractorPool = pool.filter((s) => isMuscle(s) && !innervated.has(s.id));
+    // Nor a muscle the nerve reaches only sometimes, or under a longer name:
+    // not a right answer, and not a fair wrong one.
+    const distractorPool = pool.filter(
+      (s) => isMuscle(s) && !innervated.has(s.id) && !s.nerve.some((n) => conflictsWith(nerveName, n.name)),
+    );
     if (distractorPool.length < 2) continue;
 
     const chosenCorrect = sample(correctInPool, Math.min(MAX_CORRECT, correctInPool.length), rng);
