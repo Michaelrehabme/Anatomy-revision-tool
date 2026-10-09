@@ -1,6 +1,6 @@
 import { FieldValue } from 'firebase-admin/firestore';
 import { adminDb } from './lib/firebaseAdmin';
-import { reminderDue, reminderEmail, type ReminderDue } from '../../src/features/billing/lib/renewalReminders';
+import { reminderDue, reminderMessage, reminderWasSent, type ReminderDue } from '../../src/features/billing/lib/renewalReminders';
 import type { Entitlement } from '../../src/features/anatomy-revision/lib/entitlement';
 
 /**
@@ -33,6 +33,9 @@ import type { Entitlement } from '../../src/features/anatomy-revision/lib/entitl
  *                             against real subscriptions before it can email
  *                             anybody.
  *   REMINDER_FROM             the From address, e.g. "LocusMSK <hello@locusmsk.co.uk>"
+ *   REMINDER_REPLY_TO         where a reply goes. Optional; defaults to the
+ *                             owner's mailbox, because locusmsk.co.uk has no
+ *                             mailbox of its own and a reply to From bounces.
  */
 
 const MANAGE_URL = 'https://locusmsk.co.uk/account';
@@ -43,13 +46,18 @@ const BATCH = 200;
 
 async function send(to: string, reminder: ReminderDue): Promise<'sent' | 'dry-run'> {
   const key = process.env.RESEND_API_KEY;
-  const { subject, text } = reminderEmail(reminder, { price: MONTHLY_PRICE, manageUrl: MANAGE_URL });
   if (!key) return 'dry-run';
+  const message = reminderMessage(to, reminder, {
+    price: MONTHLY_PRICE,
+    manageUrl: MANAGE_URL,
+    from: process.env.REMINDER_FROM ?? 'LocusMSK <hello@locusmsk.co.uk>',
+    replyTo: process.env.REMINDER_REPLY_TO ?? 'michael@rehabme.uk',
+  });
 
   const response = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ from: process.env.REMINDER_FROM ?? 'LocusMSK <hello@locusmsk.co.uk>', to, subject, text }),
+    body: JSON.stringify(message),
   });
   if (!response.ok) {
     // Thrown so the caller leaves no record, and tomorrow's run tries again.
@@ -79,7 +87,9 @@ export default async function handler(): Promise<Response> {
     due += 1;
 
     const { reminder } = decision;
-    if (data.billingReminders?.[reminder.key]) {
+    // Only a real send counts. A rehearsal run (no sending key) leaves a
+    // record too, and treating that as sent would lose the reminder for good.
+    if (reminderWasSent(data.billingReminders?.[reminder.key])) {
       skipped += 1;
       continue;
     }

@@ -132,3 +132,35 @@ export function reminderEmail(reminder: ReminderDue, opts: { price: string; mana
     ].join('\n'),
   };
 }
+
+/**
+ * Whether a stored `billingReminders.<key>` record means the student was
+ * actually told.
+ *
+ * A run without the sending key is a rehearsal: it works out who is due and
+ * records `outcome: 'dry-run'`. That record used to count as "already sent",
+ * so a subscriber who came due while the key was missing was never sent that
+ * reminder, even once the key was set the next day (paywall trace, finding
+ * 12). Only a real send counts. A rehearsal's record is kept as evidence the
+ * run happened, and is replaced by the real one when the email goes out.
+ */
+export function reminderWasSent(record: unknown): boolean {
+  if (typeof record !== 'object' || record === null) return false;
+  return (record as { outcome?: unknown }).outcome === 'sent';
+}
+
+/**
+ * The message as the email service takes it.
+ *
+ * `reply_to` is there because locusmsk.co.uk sends mail and receives none: a
+ * student who answers a reminder to ask about their renewal has to reach a
+ * person, and a reply to the From address would bounce.
+ */
+export function reminderMessage(
+  to: string,
+  reminder: ReminderDue,
+  opts: { price: string; manageUrl: string; from: string; replyTo: string },
+): { from: string; to: string; reply_to: string; subject: string; text: string } {
+  const { subject, text } = reminderEmail(reminder, { price: opts.price, manageUrl: opts.manageUrl });
+  return { from: opts.from, to, reply_to: opts.replyTo, subject, text };
+}

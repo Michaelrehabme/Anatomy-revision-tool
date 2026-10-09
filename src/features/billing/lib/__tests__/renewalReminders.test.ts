@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { reminderDue, reminderEmail, REMINDER_EVERY, REMINDER_LEAD_DAYS } from '../renewalReminders';
+import { reminderDue, reminderEmail, reminderMessage, reminderWasSent, REMINDER_EVERY, REMINDER_LEAD_DAYS } from '../renewalReminders';
 import type { Entitlement } from '../../../anatomy-revision/lib/entitlement';
 
 /**
@@ -129,5 +129,32 @@ describe('reminderEmail', () => {
     expect(text).toContain('https://locusmsk.co.uk/account');
     // It must not read as a demand for payment.
     expect(text).toContain('This is a reminder, not a bill.');
+  });
+});
+
+describe('reminderWasSent', () => {
+  it('counts only a real send, so a rehearsal never uses a reminder up', () => {
+    expect(reminderWasSent({ at: 'x', outcome: 'sent' })).toBe(true);
+    // A run made before the sending key was set records a dry run. The
+    // student was told nothing, so the reminder is still owed.
+    expect(reminderWasSent({ at: 'x', outcome: 'dry-run' })).toBe(false);
+    expect(reminderWasSent(undefined)).toBe(false);
+    expect(reminderWasSent(null)).toBe(false);
+    expect(reminderWasSent({ at: 'x' })).toBe(false);
+  });
+});
+
+describe('reminderMessage', () => {
+  it('sends replies to a mailbox that exists, not back to the From address', () => {
+    const message = reminderMessage(
+      'student@example.com',
+      { key: 'sub_1:6', paymentNumber: 6, chargeAt: '2027-03-28T12:00:00.000Z' },
+      { price: '£4.99', manageUrl: 'https://locusmsk.co.uk/account', from: 'LocusMSK <hello@locusmsk.co.uk>', replyTo: 'owner@example.com' },
+    );
+    expect(message.to).toBe('student@example.com');
+    expect(message.from).toBe('LocusMSK <hello@locusmsk.co.uk>');
+    expect(message.reply_to).toBe('owner@example.com');
+    expect(message.subject).toContain('28 March 2027');
+    expect(message.text).toContain('This is a reminder, not a bill.');
   });
 });
