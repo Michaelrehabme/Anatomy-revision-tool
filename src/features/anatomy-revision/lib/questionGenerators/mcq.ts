@@ -5,7 +5,7 @@ import type { MCQQuestion, PromptKind } from '../../types/question';
 import type { StructureIndexes } from '../indexes';
 import { pickNameDistractors, pickTextFieldDistractors } from '../distractors';
 import { canonicalNerveNames, conflictsWith, stripHeadPrefix } from '../oinaValues';
-import { buildIdentifyClue, clueAlsoFits, ligamentCourse, summarizeStructure } from '../facts';
+import { buildIdentifyClue, clueAlsoFits, ligamentCourse, summarizeStructure, type SiteLookup } from '../facts';
 import { shuffle, sample, type Rng } from '../rng';
 import { promptImagesFor } from './promptImages';
 import { questionBase } from './questionBase';
@@ -39,6 +39,15 @@ export interface McqGenOptions {
    * caller passes structures the student is entitled to and nothing else.
    */
   fallbackPool?: AnatomyStructure[];
+  /**
+   * Every structure by id, for naming a ligament's attachments in an
+   * explanation as "Greater Trochanter of the femur" (attachmentSites.ts).
+   * Defaults to the structures whose facts are loaded. A caller that holds
+   * the index passes it: the bone a wrist ligament attaches to is an elbow
+   * bone, and a student holding the wrist alone was told "radius" where one
+   * holding everything was told "Radius".
+   */
+  sites?: SiteLookup;
 }
 
 /** What an MCQ offers when the pools can fill it, the right answer included. */
@@ -114,7 +123,7 @@ export function buildMcqQuestions(
     if (!structure.eligibility.mcq) continue;
 
     for (const promptKind of kindsFor(structure, options.promptKinds)) {
-      const built = buildOne(structure, all, options.fallbackPool, images, indexes, promptKind, distractorCount, choiceCount, rng, options.vocabulary);
+      const built = buildOne(structure, all, options.fallbackPool, images, indexes, promptKind, distractorCount, choiceCount, rng, options.vocabulary, options.sites ?? indexes.byId);
       questions.push(...built.filter((q) => q.choices.length >= MCQ_MIN_CHOICES));
     }
   }
@@ -156,7 +165,8 @@ function buildOne(
   distractorCount: number,
   choiceCount: number,
   rng: Rng,
-  vocabulary?: DistractorVocabulary,
+  vocabulary: DistractorVocabulary | undefined,
+  siteLookup: SiteLookup,
 ): MCQQuestion[] {
   const out: MCQQuestion[] = [];
 
@@ -215,7 +225,7 @@ function buildOne(
         prompt: `Name the structure: ${buildIdentifyClue(structure)}`,
         choices,
         correctIndex,
-        explanation: summarizeStructure(structure, indexes.byId),
+        explanation: summarizeStructure(structure, siteLookup),
       });
     }
 
@@ -234,7 +244,7 @@ function buildOne(
         promptImageId: image.id,
         choices: imgChoices,
         correctIndex: imgCorrectIndex,
-        explanation: summarizeStructure(structure, indexes.byId),
+        explanation: summarizeStructure(structure, siteLookup),
       });
     }
     return out;
@@ -269,7 +279,7 @@ function buildOne(
         prompt: `What is the ${promptKind} of ${structure.name}?`,
         choices,
         correctIndex,
-        explanation: summarizeStructure(structure, indexes.byId),
+        explanation: summarizeStructure(structure, siteLookup),
       });
     }
 
@@ -293,7 +303,7 @@ function buildOne(
         prompt: `What nerve innervates ${structure.name}?`,
         choices,
         correctIndex,
-        explanation: summarizeStructure(structure, indexes.byId),
+        explanation: summarizeStructure(structure, siteLookup),
       });
     }
 
@@ -324,7 +334,7 @@ function buildOne(
         prompt: `What is the action of ${structure.name}?`,
         choices,
         correctIndex,
-        explanation: summarizeStructure(structure, indexes.byId),
+        explanation: summarizeStructure(structure, siteLookup),
       });
     }
     return out;
@@ -354,7 +364,7 @@ function buildOne(
         prompt: `What type of joint is the ${structure.name}?`,
         choices,
         correctIndex,
-        explanation: summarizeStructure(structure, indexes.byId),
+        explanation: summarizeStructure(structure, siteLookup),
       });
     }
   }

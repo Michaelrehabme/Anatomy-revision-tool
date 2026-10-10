@@ -26,6 +26,12 @@ describe('atlasRow', () => {
     }
     expect(row.columns[0].text).not.toMatch(/-/);
 
+    // A part of a bone is named with its bone, as the questions name it
+    // (attachmentSites.ts): the Atlas is where a student checks an answer.
+    const ischiofemoral = atlasRow(ALL_STRUCTURES.find((s) => s.id === 'ischiofemoral-ligament')!, byId);
+    expect(ischiofemoral.columns[0].text.split('; ').sort()).toEqual(['Greater Trochanter of the femur', 'Ischium']);
+    expect(ischiofemoral.searchText).toContain('femur');
+
     const joint = ALL_STRUCTURES.filter(isJoint).find((j) => j.articulatingStructureIds.length > 0)!;
     const jointRow = atlasRow(joint, byId);
     for (const id of joint.articulatingStructureIds) {

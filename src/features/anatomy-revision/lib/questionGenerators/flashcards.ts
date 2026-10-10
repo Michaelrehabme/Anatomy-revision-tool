@@ -2,12 +2,21 @@ import { isMuscle } from '../../types/structure';
 import type { AnatomyStructure } from '../../types/structure';
 import type { AnatomyImageAsset } from '../../types/image';
 import type { FlashcardQuestion, OinaPromptKind, PromptKind } from '../../types/question';
-import { summarizeStructure } from '../facts';
+import { summarizeStructure, type SiteLookup } from '../facts';
 import { questionBase } from './questionBase';
 
 export interface FlashcardGenOptions {
   /** Also emit an image-first variant when a single-structure image exists. Default true. */
   imageFirstWhenAvailable?: boolean;
+  /**
+   * Every structure by id, for naming a ligament's attachments on the back of
+   * its card as "Greater Trochanter of the femur" (attachmentSites.ts).
+   * Defaults to the structures handed in, which is wrong whenever they are a
+   * narrowed pool: a session of ligaments alone has no bone in it to look up,
+   * and its cards read "greater trochanter; ischium" (found at the merge,
+   * 10 Oct 2026). A caller that holds the index passes it.
+   */
+  sites?: SiteLookup;
 }
 
 const MUSCLE_FIELD_KINDS: OinaPromptKind[] = ['origin', 'insertion', 'nerve', 'action'];
@@ -53,7 +62,7 @@ export function buildFlashcardQuestions(
 ): FlashcardQuestion[] {
   const { imageFirstWhenAvailable = true } = options;
   const questions: FlashcardQuestion[] = [];
-  const byId = new Map(structures.map((s) => [s.id, s]));
+  const byId: SiteLookup = options.sites ?? new Map(structures.map((s) => [s.id, s]));
 
   for (const structure of structures) {
     if (!structure.eligibility.flashcard) continue;

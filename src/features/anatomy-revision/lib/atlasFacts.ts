@@ -1,3 +1,4 @@
+import { siteLabel } from './attachmentSites';
 import {
   CATEGORIES,
   JOINT_TYPE_LABELS,
@@ -65,6 +66,17 @@ function nameOf(id: string, byId: ReadonlyMap<string, StructureIndexEntry>): str
   return byId.get(id)?.name ?? id.replace(/-/g, ' ');
 }
 
+/**
+ * Where a ligament attaches, as the questions print it: "Greater Trochanter
+ * of the femur" (attachmentSites.ts, 10 Oct 2026). The Atlas is where a
+ * student looks an answer up, so it names a site the way the feedback that
+ * sent them here did.
+ */
+function siteOf(id: string, byId: ReadonlyMap<string, StructureIndexEntry>): string {
+  const site = byId.get(id);
+  return site ? siteLabel(site, byId) : id.replace(/-/g, ' ');
+}
+
 const join = (parts: readonly string[]) => parts.filter(Boolean).join('; ');
 
 /**
@@ -104,7 +116,7 @@ export function atlasRow(s: AnatomyStructure, byId: ReadonlyMap<string, Structur
   } else {
     columns = [
       // Unchecked attachments are not stated as fact (reviewedAttachmentIds).
-      { label: l1, text: s.needsReview ? 'Being checked' : join(s.attachmentStructureIds.map((id) => nameOf(id, byId))) },
+      { label: l1, text: s.needsReview ? 'Being checked' : join(s.attachmentStructureIds.map((id) => siteOf(id, byId))) },
       { label: l2, text: s.jointId ? nameOf(s.jointId, byId) : '' },
       { label: l3, text: firstSentence(s.description) },
     ];

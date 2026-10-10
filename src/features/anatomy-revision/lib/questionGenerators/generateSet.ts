@@ -395,6 +395,19 @@ function newStructureIds(
   return new Set(pool.filter((s) => !answered.has(s.id)).map((s) => s.id));
 }
 
+
+/**
+ * The index by id, for naming a ligament's attachments ("Greater Trochanter
+ * of the femur"). Kept per index array: the adaptive mode builds one question
+ * at a time and would otherwise rebuild the map for each.
+ */
+const SITE_LOOKUPS = new WeakMap<readonly StructureIndexEntry[], ReadonlyMap<string, StructureIndexEntry>>();
+function siteLookup(names: readonly StructureIndexEntry[]): ReadonlyMap<string, StructureIndexEntry> {
+  let lookup = SITE_LOOKUPS.get(names);
+  if (!lookup) SITE_LOOKUPS.set(names, (lookup = new Map(names.map((s) => [s.id, s]))));
+  return lookup;
+}
+
 /**
  * Which name-recall format each structure is asked in a practice session
  * that knows the student: its rung on the difficulty ladder (lib/ladder.ts).
@@ -453,10 +466,10 @@ function generateOneQuestionForStructure(
   const pool = [structure];
   switch (type) {
     case 'flashcard':
-      return buildFlashcardQuestions(pool, images)[0] ?? null;
+      return buildFlashcardQuestions(pool, images, { sites: siteLookup(names) })[0] ?? null;
     case 'mcq':
       return (
-        buildMcqQuestions(pool, images, indexes, rng, { vocabulary, distractorPool: sessionPool, fallbackPool: entitled })[0] ??
+        buildMcqQuestions(pool, images, indexes, rng, { vocabulary, distractorPool: sessionPool, fallbackPool: entitled, sites: siteLookup(names) })[0] ??
         buildClinicalQuestions(pool, rng)[0] ??
         null
       );
@@ -607,11 +620,11 @@ export function generateRevisionSet(
 
   const flashcardPool = poolFor('flashcard');
   if (flashcardPool.length) {
-    generated.push(...buildFlashcardQuestions(flashcardPool, relevantImages));
+    generated.push(...buildFlashcardQuestions(flashcardPool, relevantImages, { sites: siteLookup(names) }));
   }
   const mcqPool = poolFor('mcq');
   if (mcqPool.length) {
-    generated.push(...buildMcqQuestions(mcqPool, relevantImages, indexes, rng, { vocabulary, fallbackPool: entitled }));
+    generated.push(...buildMcqQuestions(mcqPool, relevantImages, indexes, rng, { vocabulary, fallbackPool: entitled, sites: siteLookup(names) }));
     // Clinical MCQs (CR-010) are just another mcq promptKind family, gated on the
     // structure actually having the relevant clinical field authored — same
     // convention as buildMcqQuestions itself generating several promptKinds at once.
