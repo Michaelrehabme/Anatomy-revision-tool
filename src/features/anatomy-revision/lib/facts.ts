@@ -1,14 +1,19 @@
 import { isMuscle, isBone, isLandmark, isJoint, isLigament, reviewedAttachmentIds, areasOf, JOINT_TYPE_LABELS } from '../types/structure';
-import type { AnatomyStructure } from '../types/structure';
+import type { AnatomyStructure, LigamentStructure } from '../types/structure';
 import { REGION_LABELS, SUBREGION_LABELS, AREA_LABELS } from '../types/region';
 import type { OinaPromptKind } from '../types/question';
+import type { StructureIndexEntry } from '../types/structureIndex';
+import { siteLabel } from './attachmentSites';
+
+/** Every structure by id, for naming a ligament's attachments as "landmark of bone". */
+export type SiteLookup = ReadonlyMap<string, StructureIndexEntry>;
 
 /**
  * Shared fact-line builder used by flashcards, MCQ explanations, and
  * StructureFactsPanel — one place that knows how to turn any category of
  * AnatomyStructure into readable prose lines.
  */
-export function describeStructure(s: AnatomyStructure): string[] {
+export function describeStructure(s: AnatomyStructure, sites?: SiteLookup): string[] {
   // Leads with the area, since that is what the user filtered by (CR-017). A
   // structure can sit in several — a pedicle revises under all three spine levels —
   // so they are all named. The finer subregion is kept in brackets where it adds
@@ -40,7 +45,13 @@ export function describeStructure(s: AnatomyStructure): string[] {
   } else if (isLigament(s)) {
     const attachments = reviewedAttachmentIds(s);
     if (attachments.length) {
-      lines.push(`Attaches to: ${attachments.map((id) => id.replace(/-/g, ' ')).join('; ')}`);
+      // "Greater Trochanter of the femur" where the caller can look the site
+      // up; the id as words where it cannot.
+      const named = attachments.map((id) => {
+        const site = sites?.get(id);
+        return site ? siteLabel(site, sites!) : siteName(id);
+      });
+      lines.push(`Attaches to: ${named.join('; ')}`);
     }
     if (s.jointId) lines.push(`Stabilises: ${s.jointId.replace(/-/g, ' ')}`);
   } else if (isJoint(s)) {
@@ -59,8 +70,8 @@ export function describeStructure(s: AnatomyStructure): string[] {
   return lines;
 }
 
-export function summarizeStructure(s: AnatomyStructure): string {
-  return [s.description, ...describeStructure(s)].join('\n');
+export function summarizeStructure(s: AnatomyStructure, sites?: SiteLookup): string {
+  return [s.description, ...describeStructure(s, sites)].join('\n');
 }
 
 /**
@@ -99,6 +110,42 @@ export function describeFact(s: AnatomyStructure, promptKind: OinaPromptKind): s
 }
 
 /**
+ * The generator's stand-in for a description nobody has written yet
+ * (generateLigamentSeed.ts): "Ligament of the hip." or "Ligament of the knee,
+ * running between the tibia and the femur." It says less than the attachment
+ * list does, and two ligaments can share one word for word.
+ */
+const PLACEHOLDER_DESCRIPTION = /^Ligament of the [^,.]+(?:, running between .+)?\.$/;
+
+/** Lower case, no punctuation, and none of the small words a name may or may not carry. */
+const plain = (text: string) =>
+  text
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, ' ')
+    .replace(/\b(?:the|of|ligaments?)\b/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+/**
+ * The opening sentence of a ligament's authored description, which is where
+ * every one of them says what it runs from and to. Undefined when there is
+ * no authored description, or when the sentence gives the answer away: the
+ * ligament of the head of the femur runs "to the fovea on the head of the
+ * femur".
+ */
+export function ligamentCourse(s: LigamentStructure): string | undefined {
+  if (PLACEHOLDER_DESCRIPTION.test(s.description)) return undefined;
+  const sentence = s.description.split(/(?<=\.)\s+(?=[A-Z])/)[0]?.trim();
+  if (!sentence || ` ${plain(sentence)} `.includes(` ${plain(s.name)} `)) return undefined;
+  return sentence;
+}
+
+/** An attachment's id as words: "ischial tuberosity", and "AIIS" for the three spines known by their initials. */
+const siteName = (id: string) => (/^(?:aiis|asis|psis)$/.test(id) ? id.toUpperCase() : id.replace(/-/g, ' '));
+
+const attachmentClue = (ids: string[]) => `attaches to: ${ids.map(siteName).join('; ')}`;
+
+/**
  * A short text "clue" built from a structure's own facts, used as the
  * fallback prompt for text-only identify questions (mirrors quiz.py's
  * gen_identify fallback for when no image is available). Must never return
@@ -112,13 +159,39 @@ export function buildIdentifyClue(s: AnatomyStructure): string {
   if (isMuscle(s)) return `${s.origin.join('; ')} — ${s.actionText}`;
   if (isJoint(s)) return `${JOINT_TYPE_LABELS[s.jointType]} — ${s.movements.join('; ')}`;
   if (isLigament(s)) {
-    // Its attachments, by id rather than name: facts.ts has no structure
-    // lookup, and "attaches to: talus; fibula" reads fine from the ids.
+    // Where it runs, in the description's words. The bones alone were the clue
+    // until 8 Oct 2026, and "attaches to: pelvis" is true of five hip
+    // ligaments: 110 of 166 shared their bone list with a neighbour.
+    const course = ligamentCourse(s);
+    if (course) return course;
+    // By id rather than name: facts.ts has no structure lookup, and "attaches
+    // to: talus; fibula" reads fine from the ids. Not a clue that picks one
+    // ligament out — clueAlsoFits below is what keeps its question fair.
     const attachments = reviewedAttachmentIds(s);
-    if (attachments.length) return `attaches to: ${attachments.map((id) => id.replace(/-/g, ' ')).join('; ')}`;
+    if (attachments.length) return attachmentClue(attachments);
     return s.description;
   }
   if (s.attachments.length) return s.attachments.join('; ');
   if (s.articulations?.length) return s.articulations.join('; ');
   return s.description;
+}
+
+/**
+ * Whether the clue written for `correct` is just as true of `other`, which
+ * would make `other` a second right answer if it were offered as a wrong one.
+ *
+ * Two structures can produce the same clue outright (two plane joints that
+ * both glide). And a ligament still on its bone list is matched by every
+ * ligament reaching all of those bones, in whatever order they are listed and
+ * whatever else it reaches: "attaches to: pelvis" fits the sacrotuberous
+ * ligament too.
+ */
+export function clueAlsoFits(correct: AnatomyStructure, other: AnatomyStructure): boolean {
+  const clue = buildIdentifyClue(correct);
+  if (buildIdentifyClue(other) === clue) return true;
+  if (!isLigament(correct) || !isLigament(other)) return false;
+  const bones = reviewedAttachmentIds(correct);
+  if (!bones.length || clue !== attachmentClue(bones)) return false;
+  const reached = new Set(reviewedAttachmentIds(other));
+  return bones.every((id) => reached.has(id));
 }

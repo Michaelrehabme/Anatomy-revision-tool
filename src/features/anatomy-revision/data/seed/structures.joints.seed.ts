@@ -491,7 +491,7 @@ export const JOINT_STRUCTURES: JointStructure[] = [
   // row at that level of the hand.
   {
     id: 'proximal-interphalangeal-joint-hand',
-    name: 'Proximal Interphalangeal Joint of the Hand',
+    name: 'Proximal Interphalangeal Joint of Hand',
     category: 'joint',
     region: 'forearm-hand',
     subregion: 'wrist-hand',
@@ -514,7 +514,7 @@ export const JOINT_STRUCTURES: JointStructure[] = [
   },
   {
     id: 'distal-interphalangeal-joint-hand',
-    name: 'Distal Interphalangeal Joint of the Hand',
+    name: 'Distal Interphalangeal Joint of Hand',
     category: 'joint',
     region: 'forearm-hand',
     subregion: 'wrist-hand',

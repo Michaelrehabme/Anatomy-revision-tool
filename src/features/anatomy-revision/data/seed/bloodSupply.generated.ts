@@ -195,7 +195,6 @@ export const BLOOD_SUPPLY: Record<string, BloodSupply> = {
   "superficial-part-of-tibial-collateral-ligament": {"primary":"superior genicular arteries","assisting":["inferior genicular arteries"],"rating":"moderate"},
   "iliotibial-band": {"primary":"lateral circumflex femoral artery (ascending branch)","assisting":["superior gluteal artery"],"rating":"moderate"},
   "patellar-ligament": {"primary":"inferior lateral genicular artery","assisting":["inferior medial genicular artery","anterior tibial recurrent artery"],"rating":"poor","zone":"Proximal (patellar) and distal (tibial) ends are relatively hypovascular compared with the midsubstance."},
-  "ligamentum-teres-femoris": {"primary":"artery of the ligamentum teres (foveal branch of the obturator artery)","assisting":[],"rating":"poor"},
   "anterior-talofibular-ligament": {"primary":"Perforating (anterior) branch of peroneal artery","assisting":["Lateral tarsal artery"],"rating":"moderate"},
   "anterior-tibiofibular-ligament": {"primary":"Perforating (anterior) branch of peroneal artery","assisting":["Anterior lateral malleolar artery"],"rating":"moderate"},
   "calcaneofibular-ligament": {"primary":"Perforating (anterior) branch of peroneal artery","assisting":["Posterior branch of peroneal artery"],"rating":"moderate"},

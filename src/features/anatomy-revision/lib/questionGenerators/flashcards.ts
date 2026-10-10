@@ -53,11 +53,12 @@ export function buildFlashcardQuestions(
 ): FlashcardQuestion[] {
   const { imageFirstWhenAvailable = true } = options;
   const questions: FlashcardQuestion[] = [];
+  const byId = new Map(structures.map((s) => [s.id, s]));
 
   for (const structure of structures) {
     if (!structure.eligibility.flashcard) continue;
 
-    const backText = summarizeStructure(structure);
+    const backText = summarizeStructure(structure, byId);
     const image = images.find(
       (img) => img.mode === 'single-structure' && img.structureId === structure.id,
     );

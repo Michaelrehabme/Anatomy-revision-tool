@@ -82,7 +82,7 @@ describe('describePlate', () => {
 
   it('states the attachments and joint of a ligament, and the bone of a landmark', () => {
     const ligament = text('ligament-coracohumeral-ligament-a000-context', 'coracohumeral-ligament');
-    expect(ligament).toContain('It attaches to the humerus and scapula.');
+    expect(ligament).toContain('It attaches to the coracoid process of the scapula, greater tubercle of humerus and lesser tubercle of humerus.');
     expect(ligament).toContain('It belongs to the Glenohumeral Joint.');
     expect(text('landmark-acromion-anterior')).toContain('It is part of the scapula.');
     expect(text('joint-glenohumeral-joint-a000-plate')).toContain(

@@ -133,6 +133,6 @@ describe('the two routes together', () => {
       }
       expect(routes.list.length, q.id).toBeGreaterThanOrEqual(MIN_LIST_NAMES);
     }
-    expect(inWords).toBe(575);
+    expect(inWords).toBe(574);
   });
 });

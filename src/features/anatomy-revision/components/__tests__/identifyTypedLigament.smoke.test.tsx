@@ -21,7 +21,7 @@ describe('IdentifyTypedSession for a ligament', () => {
     expect(question!.attachmentSlots!.map((s) => s.accepted[0]).sort()).toEqual(['Fibula', 'Tibia']);
   });
 
-  it('is correct only when the name and both attachments are, in any order', () => {
+  it('takes the attachments in any order', () => {
     const imagesById = new Map(ALL_IMAGES.map((i) => [i.id, i]));
     const onAnswer = vi.fn();
     render(<IdentifyTypedSession question={question!} imagesById={imagesById} onAnswer={onAnswer} onNext={vi.fn()} examMode />);
@@ -37,13 +37,26 @@ describe('IdentifyTypedSession for a ligament', () => {
     expect(onAnswer.mock.calls[0][0].correctAnswer).toMatch(/attaches to/);
   });
 
-  it('is wrong when an attachment is missing, even with the name right', () => {
+  it('is right on the name alone: a missed attachment is a missed bonus, not a wrong answer', () => {
     const imagesById = new Map(ALL_IMAGES.map((i) => [i.id, i]));
     const onAnswer = vi.fn();
     render(<IdentifyTypedSession question={question!} imagesById={imagesById} onAnswer={onAnswer} onNext={vi.fn()} examMode />);
 
     fireEvent.change(screen.getByPlaceholderText("Type the structure's name…"), { target: { value: 'anterior tibiofibular ligament' } });
     fireEvent.change(screen.getByLabelText('Attaches to 1'), { target: { value: 'tibia' } });
+    fireEvent.click(screen.getByText('Submit'));
+
+    expect(onAnswer.mock.calls[0][0].correct).toBe(true);
+  });
+
+  it('is wrong when the name is, whatever the attachments', () => {
+    const imagesById = new Map(ALL_IMAGES.map((i) => [i.id, i]));
+    const onAnswer = vi.fn();
+    render(<IdentifyTypedSession question={question!} imagesById={imagesById} onAnswer={onAnswer} onNext={vi.fn()} examMode />);
+
+    fireEvent.change(screen.getByPlaceholderText("Type the structure's name…"), { target: { value: 'deltoid ligament' } });
+    fireEvent.change(screen.getByLabelText('Attaches to 1'), { target: { value: 'tibia' } });
+    fireEvent.change(screen.getByLabelText('Attaches to 2'), { target: { value: 'fibula' } });
     fireEvent.click(screen.getByText('Submit'));
 
     expect(onAnswer.mock.calls[0][0].correct).toBe(false);

@@ -131,7 +131,14 @@ export function pickItemDistractors(
         if (value && usable(value)) candidates.add(value);
       }
     }
-    for (const value of sample([...candidates], count - picked.length, rng)) {
+    // The whole tier in a random order, taken until the count is met, so a
+    // candidate passed over leaves its place to a neighbour and not to a
+    // muscle from a tier further out.
+    for (const value of sample([...candidates], candidates.size, rng)) {
+      if (picked.length >= count) break;
+      // Not the same site twice among the wrong answers: one answer on two
+      // buttons is not two wrong answers.
+      if (picked.some((earlier) => reject(earlier, value))) continue;
       picked.push(value);
       seen.add(value);
     }

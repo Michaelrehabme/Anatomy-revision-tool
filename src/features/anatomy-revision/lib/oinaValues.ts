@@ -247,6 +247,11 @@ export function conflictsWith(correct: string, candidate: string): boolean {
   const a = contentTokens(correct);
   const b = contentTokens(candidate);
   if (a.length === 0 || b.length === 0) return true;
+  // The same words under two different bracketed notes are one place:
+  // "Iliotibial band (ITB)" and "Iliotibial band (inserting into the lateral
+  // tibial condyle)" share no token of their notes and were two buttons.
+  const unbracketed = (value: string) => contentTokens(value.replace(/\([^)]*\)/g, ' ')).join(' ');
+  if (unbracketed(correct) && unbracketed(correct) === unbracketed(candidate)) return true;
   const setA = new Set(a);
   const setB = new Set(b);
   return a.every((t) => setB.has(t)) || b.every((t) => setA.has(t));

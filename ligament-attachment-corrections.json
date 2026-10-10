@@ -46,7 +46,8 @@
    "sources": [
     "Plantar ligaments - Wikipedia. https://en.wikipedia.org/wiki/Plantar_ligaments"
    ],
-   "quote": "Plantar plates, fibrocartilaginous structures in the metatarsophalangeal and interphalangeal joints of the toes."
+   "quote": "Plantar plates, fibrocartilaginous structures in the metatarsophalangeal and interphalangeal joints of the toes.",
+   "description": "Thick, dense fibrous plates on the sole side of the joints between the metatarsal heads and the toes, attached loosely to the metatarsals and very firmly to the bases of the proximal phalanges. They bear body weight under the metatarsal heads and limit dorsiflexion of the toes."
   },
   "collateral-metacarpophalangeal-ligaments": {
    "confirmed": true,
@@ -62,7 +63,8 @@
    "sources": [
     "Collateral ligaments of metacarpophalangeal joints - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Collateral_ligaments_of_metacarpophalangeal_joints"
    ],
-   "quote": "The collateral ligaments originate on depressions on each side of the metacarpal heads dorsal to axis of rotation. From there, they extend obliquely and distally to their insertions onto tubercles at the base of the proximal phalanx."
+   "quote": "The collateral ligaments originate on depressions on each side of the metacarpal heads dorsal to axis of rotation. From there, they extend obliquely and distally to their insertions onto tubercles at the base of the proximal phalanx.",
+   "description": "Paired cords flanking each knuckle joint of the hand, running obliquely from a depression on the side of the metacarpal head to a tubercle at the base of the proximal phalanx. They are taut in flexion and slack in extension, so the fingers spread when the hand is open but not in a fist."
   },
   "palmar-interphalangeal-ligaments": {
    "confirmed": true,
@@ -79,13 +81,14 @@
    "sources": [
     "Netter lateral inset, which draws the plate at the interphalangeal joint between middle and distal phalanx"
    ],
-   "quote": "Confirmed by the project owner, a sports rehabilitation student, on the ligament review page."
+   "quote": "Confirmed by the project owner, a sports rehabilitation student, on the ligament review page.",
+   "description": "Thick fibrocartilaginous plates across the front of each hinge joint within the fingers, fixed to the palmar base of the phalanx beyond the joint and becoming thinner and more flexible towards the phalanx behind it. They stop the finger joints being forced back into hyperextension."
   },
   "acromioclavicular-ligament": {
    "confirmed": true,
    "source": "User review on the review page, 13 Sept 2026",
    "attachmentStructureIds": [
-    "scapula",
+    "acromion",
     "clavicle"
    ],
    "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision.",
@@ -95,14 +98,16 @@
     "Acromioclavicular ligament - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Acromioclavicular_ligament"
    ],
    "quote": "extending between the upper part of the lateral end of the clavicle and the adjoining part of the upper surface of the acromion",
-   "why": "Acromion (scapula) and clavicle both confirmed."
+   "why": "Acromion (scapula) and clavicle both confirmed.",
+   "description": "A quadrilateral band covering the top of the joint between the clavicle and the scapula, running from the upper part of the lateral end of the clavicle to the adjoining upper surface of the acromion. It gives the joint horizontal stability, and its fibres interlace with the aponeuroses of trapezius and deltoid.",
+   "sites": "Named by the part of the bone where the work quoted here or the description names one and the app holds it as a structure: 10 Oct 2026. An end with no such structure keeps the whole bone."
   },
   "anterior-cruciate-ligament": {
    "confirmed": true,
    "source": "User review on the review page, 13 Sept 2026",
    "attachmentStructureIds": [
     "tibia",
-    "femur"
+    "lateral-condyle-femur"
    ],
    "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision.",
    "checked": "2026-09-24",
@@ -111,14 +116,16 @@
     "Anterior cruciate ligament - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Anterior_cruciate_ligament"
    ],
    "quote": "The ACL originates from deep within the notch of the distal femur ... The ACL attaches in front of the intercondyloid eminence of the tibia.",
-   "why": "Femur and tibia both confirmed; the seed pair stands."
+   "why": "Femur and tibia both confirmed; the seed pair stands.",
+   "description": "One of the two crossed ligaments inside the knee, running from the depression in front of the intercondylar eminence of the tibia upwards, backwards and laterally to the medial and back part of the lateral condyle of the femur. It resists forward slide and internal rotation of the tibia on the femur.",
+   "sites": "Named by the part of the bone where the work quoted here or the description names one and the app holds it as a structure: 10 Oct 2026. An end with no such structure keeps the whole bone."
   },
   "anterior-sternoclavicular-ligament": {
    "confirmed": true,
    "source": "User review on the review page, 13 Sept 2026",
    "attachmentStructureIds": [
     "clavicle",
-    "sternum"
+    "manubrium"
    ],
    "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision.",
    "checked": "2026-09-24",
@@ -127,7 +134,9 @@
     "Sternoclavicular joint - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Sternoclavicular_joint"
    ],
    "quote": "Anterior sternoclavicular ligament (intrinsic) ... Posterior sternoclavicular ligament (intrinsic)",
-   "why": "NOT SETTLED. The joint article names this ligament as an intrinsic stabiliser of the sternoclavicular joint, which confirms it spans clavicle and sternum, but gives no attachment detail of its own. Needs its own work. Graded 27 Sep 2026: the owner personally confirmed this row on the review page. The owner is a sports rehabilitation STUDENT, not a qualified therapist: this is a dated, attributable check by someone studying the subject, which is real evidence but not expert sign-off. Where a published work disagrees, the work wins."
+   "why": "NOT SETTLED. The joint article names this ligament as an intrinsic stabiliser of the sternoclavicular joint, which confirms it spans clavicle and sternum, but gives no attachment detail of its own. Needs its own work. Graded 27 Sep 2026: the owner personally confirmed this row on the review page. The owner is a sports rehabilitation STUDENT, not a qualified therapist: this is a dated, attributable check by someone studying the subject, which is real evidence but not expert sign-off. Where a published work disagrees, the work wins.",
+   "description": "A broad band covering the front of the joint between the clavicle and the sternum, running obliquely downwards and medially from the sternal end of the clavicle to the upper front of the manubrium and the first costal cartilage. It stabilises the joint and limits upward displacement of the clavicle.",
+   "sites": "Named by the part of the bone where the work quoted here or the description names one and the app holds it as a structure: 10 Oct 2026. An end with no such structure keeps the whole bone."
   },
   "anterior-tibiofibular-ligament": {
    "confirmed": true,
@@ -143,14 +152,16 @@
     "Anterior tibiofibular ligament - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Anterior_tibiofibular_ligament"
    ],
    "quote": "extends obliquely downward and lateralward between the adjacent margins of the tibia and fibula, on the front aspect of the syndesmosis",
-   "why": "Both bones of the seed pair confirmed. The work gives the course rather than precise attachment sites."
+   "why": "Both bones of the seed pair confirmed. The work gives the course rather than precise attachment sites.",
+   "description": "A flat band on the front of the distal syndesmosis, running obliquely downwards and laterally from the anterior tubercle of the distal tibia to the anterior tubercle of the distal fibula. It holds the fibula to the tibia at the ankle and is the first to be stressed when the fibula is forced into external rotation."
   },
   "coracohumeral-ligament": {
    "confirmed": true,
    "source": "User review on the review page, 13 Sept 2026",
    "attachmentStructureIds": [
-    "humerus",
-    "scapula"
+    "coracoid-process",
+    "greater-tubercle-humerus",
+    "lesser-tubercle-humerus"
    ],
    "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision.",
    "checked": "2026-09-24",
@@ -159,7 +170,9 @@
     "Coracohumeral ligament - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Coracohumeral_ligament"
    ],
    "quote": "It attaches to the coracoid process at one end, and to the greater and lesser tubercles of the humerus at the other (as two discrete bands).",
-   "why": "Coracoid process (scapula) and humerus both confirmed."
+   "why": "Coracoid process (scapula) and humerus both confirmed.",
+   "description": "A broad band lying above the head of the humerus, running from the lateral border and base of the coracoid process of the scapula downwards and laterally to the greater and lesser tubercles. It strengthens the upper part of the shoulder joint capsule and becomes taut in external rotation.",
+   "sites": "Named by the part of the bone where the work quoted here or the description names one and the app holds it as a structure: 10 Oct 2026. An end with no such structure keeps the whole bone."
   },
   "interclavicular-ligament": {
    "confirmed": true,
@@ -175,7 +188,8 @@
     "Interclavicular ligament - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Interclavicular_ligament"
    ],
    "quote": "it passes in a curved direction from the upper part of the sternal end of one clavicle to that of the other, and is also attached to the upper margin of the sternum.",
-   "why": "Both clavicles and the sternum confirmed."
+   "why": "Both clavicles and the sternum confirmed.",
+   "description": "A flattened curved band running from the upper part of the sternal end of one clavicle to that of the other, attached on the way to the upper margin of the sternum. It ties the two clavicles together across the midline and adds to the stability of the joints between clavicle and sternum."
   },
   "interosseous-membrane-of-forearm": {
    "confirmed": true,
@@ -191,7 +205,8 @@
     "Interosseous membrane of forearm - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Interosseous_membrane_of_forearm"
    ],
    "quote": "a fibrous sheet that connects the interosseous margins of the radius and the ulna",
-   "why": "Radius and ulna both confirmed."
+   "why": "Radius and ulna both confirmed.",
+   "description": "A fibrous sheet that connects the interosseous borders of the radius and the ulna, with its fibres running obliquely between the two bones. It transfers load from the radius to the ulna, gives attachment to forearm muscles and separates the anterior and posterior compartments."
   },
   "interosseous-membrane-of-leg": {
    "confirmed": true,
@@ -207,7 +222,8 @@
     "Interosseous membrane of leg - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Interosseous_membrane_of_leg"
    ],
    "quote": "a fibrous membrane which extends between the interosseous crests of the tibia and fibula",
-   "why": "Tibia and fibula both confirmed."
+   "why": "Tibia and fibula both confirmed.",
+   "description": "A thin aponeurotic sheet stretched between the interosseous crests of the tibia and fibula, its fibres running mostly downwards and laterally. It binds the two bones together and separates the muscles on the front of the leg from those on the back."
   },
   "medial-meniscus": {
    "confirmed": true,
@@ -223,30 +239,36 @@
     "Medial meniscus - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Medial_meniscus"
    ],
    "quote": "Its anterior end, thin and pointed, is attached to the anterior intercondyloid fossa of the tibia, in front of the anterior cruciate ligament ... Its posterior end is fixed to the posterior intercondyloid fossa of the tibia",
-   "why": "NOT SETTLED. Both tibial horns confirmed. The seed also lists the FEMUR, and this work gives no direct femoral attachment — only fusion with the tibial collateral ligament. An unsupported half of a pair. Graded 27 Sep 2026: the owner personally confirmed this row on the review page. The owner is a sports rehabilitation STUDENT, not a qualified therapist: this is a dated, attributable check by someone studying the subject, which is real evidence but not expert sign-off. Where a published work disagrees, the work wins."
+   "why": "NOT SETTLED. Both tibial horns confirmed. The seed also lists the FEMUR, and this work gives no direct femoral attachment — only fusion with the tibial collateral ligament. An unsupported half of a pair. Graded 27 Sep 2026: the owner personally confirmed this row on the review page. The owner is a sports rehabilitation STUDENT, not a qualified therapist: this is a dated, attributable check by someone studying the subject, which is real evidence but not expert sign-off. Where a published work disagrees, the work wins.",
+   "description": "A nearly semicircular plate of fibrocartilage between the medial condyles of the femur and tibia, fixed by its ends to the anterior and posterior intercondylar areas of the tibia and fused with the tibial collateral ligament. It spreads load and absorbs shock, and is far less mobile than its lateral partner."
   },
   "nuchal-ligament": {
    "confirmed": true,
-   "source": "User review on the review page, 13 Sept 2026",
-   "why": "NOT SETTLED. The cervical vertebrae are confirmed, but the work names the OCCIPITAL BONE as the upper attachment, which the seed omits — and occipital-bone now exists as a structure. The work also names the atlas (C1), not the axis (C2) which the seed lists. Both need settling before the pair is right. Graded 27 Sep 2026: the owner personally confirmed this row on the review page. The owner is a sports rehabilitation STUDENT, not a qualified therapist: this is a dated, attributable check by someone studying the subject, which is real evidence but not expert sign-off. Where a published work disagrees, the work wins.",
+   "source": "Source check, 8 Oct 2026: fetched and quoted from the work cited",
+   "why": "Settled 8 Oct 2026. The work names the occipital bone (external occipital protuberance) and the spinous process of C7 as the two ends, with a deep sheet to the posterior tubercle of the atlas and the cervical spinous processes; the occipital bone is now a structure, so all five are carried. The axis is covered by \"the spinous processes of the cervical vertebrae\". This replaces the row the owner confirmed on 13 Sept 2026, when the app had no occipital bone to point at.",
    "attachmentStructureIds": [
+    "occipital-bone",
+    "posterior-arch-atlas",
+    "axis-c2",
     "cervical-vertebrae",
-    "axis-c2"
+    "c7-spinous-process"
    ],
-   "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision.",
-   "checked": "2026-09-24",
-   "grade": "verified (owner review)",
+   "checked": "2026-10-08",
+   "grade": "verified",
    "sources": [
     "Nuchal ligament - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Nuchal_ligament"
    ],
-   "quote": "The nuchal ligament extends from the external occipital protuberance on the skull and median nuchal line to the spinous process of the seventh cervical vertebra in the lower part of the neck."
+   "quote": "The nuchal ligament extends from the external occipital protuberance on the skull and median nuchal line to the spinous process of the seventh cervical vertebra in the lower part of the neck. [...] This is attached to the posterior tubercle of the atlas, and to the spinous processes of the cervical vertebrae, and forms a septum between the muscles on either side of the neck.",
+   "description": "A midline fibrous band at the back of the neck running from the external occipital protuberance to the spinous process of the seventh cervical vertebra, with a deep sheet to the posterior tubercle of the atlas and the cervical spinous processes. It tightens to limit forward bending of the head and neck.",
+   "sites": "Named by the part of the bone where the work quoted here or the description names one and the app holds it as a structure: 10 Oct 2026. An end with no such structure keeps the whole bone."
   },
   "obturator-membrane": {
    "confirmed": true,
    "source": "User review on the review page, 13 Sept 2026",
    "why": "Both named sites are on the pelvis, which is the seed's single attachment.",
    "attachmentStructureIds": [
-    "pelvis"
+    "obturator-foramen",
+    "ischium"
    ],
    "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision.",
    "checked": "2026-09-24",
@@ -254,7 +276,9 @@
    "sources": [
     "Obturator membrane - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Obturator_membrane"
    ],
-   "quote": "The membrane is attached to the sharp margin of the obturator foramen except at its lower lateral angle, where it is fixed to the pelvic surface of the inferior ramus of the ischium"
+   "quote": "The membrane is attached to the sharp margin of the obturator foramen except at its lower lateral angle, where it is fixed to the pelvic surface of the inferior ramus of the ischium",
+   "description": "A thin fibrous sheet that almost completely closes the obturator foramen of the hip bone, attached to the sharp margin of the foramen and to the pelvic surface of the ischial ramus. It gives attachment to both obturator muscles and completes the obturator canal for the obturator nerve and vessels.",
+   "sites": "Named by the part of the bone, not the bone: 10 Oct 2026, from the sentence already quoted here. \"Pelvis\" is three bones and says nothing a student can be marked on."
   },
   "palmar-radio-ulnar-ligament": {
    "confirmed": true,
@@ -270,14 +294,15 @@
     "Distal radioulnar articulation - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Distal_radioulnar_articulation"
    ],
    "quote": "The articulation is reinforced by the palmar radioulnar ligament, and dorsal radioulnar ligament",
-   "why": "NOT SETTLED. The work names this ligament as a reinforcement of the radioulnar articulation, which implies the seed pair, but gives no attachment detail of its own. Confirming a pair from the ligament's own name is not a source check. Graded 27 Sep 2026: the owner personally confirmed this row on the review page. The owner is a sports rehabilitation STUDENT, not a qualified therapist: this is a dated, attributable check by someone studying the subject, which is real evidence but not expert sign-off. Where a published work disagrees, the work wins."
+   "why": "NOT SETTLED. The work names this ligament as a reinforcement of the radioulnar articulation, which implies the seed pair, but gives no attachment detail of its own. Confirming a pair from the ligament's own name is not a source check. Graded 27 Sep 2026: the owner personally confirmed this row on the review page. The owner is a sports rehabilitation STUDENT, not a qualified therapist: this is a dated, attributable check by someone studying the subject, which is real evidence but not expert sign-off. Where a published work disagrees, the work wins.",
+   "description": "A narrow band on the front of the distal joint between the two forearm bones, running from the anterior margin of the ulnar notch of the radius to the front of the head of the ulna. With its dorsal partner it is a primary stabiliser of that joint against palmar and dorsal displacement."
   },
   "pubofemoral-ligament": {
    "confirmed": true,
    "source": "User review on the review page, 13 Sept 2026",
    "attachmentStructureIds": [
-    "pelvis",
-    "femur"
+    "pubis",
+    "intertrochanteric-line"
    ],
    "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision.",
    "checked": "2026-09-24",
@@ -286,14 +311,16 @@
     "Pubofemoral ligament - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Pubofemoral_ligament"
    ],
    "quote": "The ligament attaches superiorly at the superior ramus of pubis, and the iliopubic eminence; it attaches inferiorly at the inferior portion of the intertrochanteric line.",
-   "why": "Pelvis (superior pubic ramus) and femur (intertrochanteric line) both confirmed."
+   "why": "Pelvis (superior pubic ramus) and femur (intertrochanteric line) both confirmed.",
+   "description": "The capsular ligament on the front and underside of the hip, running from the superior ramus of the pubis and the iliopubic eminence down to the lower part of the intertrochanteric line of the femur. It limits excessive abduction of the hip.",
+   "sites": "Named by the part of the bone, not the bone: 10 Oct 2026, from the sentence already quoted here. \"Pelvis\" is three bones and says nothing a student can be marked on."
   },
   "radial-collateral-ligament": {
    "confirmed": true,
    "source": "User review on the review page, 13 Sept 2026",
    "attachmentStructureIds": [
     "radius",
-    "humerus"
+    "lateral-epicondyle-humerus"
    ],
    "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision.",
    "checked": "2026-09-24",
@@ -302,14 +329,17 @@
     "Radial collateral ligament of elbow joint - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Radial_collateral_ligament_of_elbow_joint"
    ],
    "quote": "from the lateral epicondyle to the annular ligament deep to the common extensor tendon",
-   "why": "NOT SETTLED. The humerus (lateral epicondyle) is confirmed. The seed also lists the RADIUS, but this work attaches the ligament to the ANNULAR LIGAMENT, not to the radius itself — a real distinction, and the reason this ligament does not restrain the radial head directly. Graded 27 Sep 2026: the owner personally confirmed this row on the review page. The owner is a sports rehabilitation STUDENT, not a qualified therapist: this is a dated, attributable check by someone studying the subject, which is real evidence but not expert sign-off. Where a published work disagrees, the work wins."
+   "why": "NOT SETTLED. The humerus (lateral epicondyle) is confirmed. The seed also lists the RADIUS, but this work attaches the ligament to the ANNULAR LIGAMENT, not to the radius itself — a real distinction, and the reason this ligament does not restrain the radial head directly. Graded 27 Sep 2026: the owner personally confirmed this row on the review page. The owner is a sports rehabilitation STUDENT, not a qualified therapist: this is a dated, attributable check by someone studying the subject, which is real evidence but not expert sign-off. Where a published work disagrees, the work wins.",
+   "description": "A band on the lateral side of the elbow, running deep to the common extensor tendon from the lateral epicondyle of the humerus to the annular ligament around the head of the radius. It steadies the radial head and helps the elbow resist varus stress.",
+   "sites": "Named by the part of the bone where the work quoted here or the description names one and the app holds it as a structure: 10 Oct 2026. An end with no such structure keeps the whole bone."
   },
   "sacrotuberous-ligament": {
    "confirmed": true,
    "source": "User review on the review page, 13 Sept 2026",
    "attachmentStructureIds": [
     "sacrum",
-    "pelvis"
+    "coccyx",
+    "ischial-tuberosity"
    ],
    "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision.",
    "checked": "2026-09-24",
@@ -318,14 +348,17 @@
     "Sacrotuberous ligament - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Sacrotuberous_ligament"
    ],
    "quote": "It runs from the sacrum (the lower transverse sacral tubercles, the inferior margins sacrum and the upper coccyx) to the tuberosity of the ischium.",
-   "why": "Sacrum and the ischial tuberosity (on the pelvis) both confirmed. The work also names the upper coccyx and the posterior superior iliac spine, which the seed omits — candidate additions, not applied."
+   "why": "Sacrum and the ischial tuberosity (on the pelvis) both confirmed. The work also names the upper coccyx and the posterior superior iliac spine, which the seed omits — candidate additions, not applied.",
+   "description": "A flat triangular ligament at the lower back of the pelvis, running from the posterior ilium, the lower lateral margin of the sacrum and the coccyx downwards, forwards and laterally to the inner margin of the ischial tuberosity. It checks the upward tilt of the lower sacrum under body weight.",
+   "sites": "Named by the part of the bone where the work quoted here or the description names one and the app holds it as a structure: 10 Oct 2026. An end with no such structure keeps the whole bone."
   },
   "superior-pubic-ligament": {
    "confirmed": true,
    "source": "User review on the review page, 13 Sept 2026",
    "why": "Both ends are on the pelvis, which is the seed's single attachment.",
    "attachmentStructureIds": [
-    "pelvis"
+    "pubis",
+    "pubic-tubercle"
    ],
    "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision.",
    "checked": "2026-09-24",
@@ -333,14 +366,17 @@
    "sources": [
     "Superior pubic ligament - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Superior_pubic_ligament"
    ],
-   "quote": "The superior pubic ligament connects together the two pubic bones superiorly, extending laterally as far as the pubic tubercles."
+   "quote": "The superior pubic ligament connects together the two pubic bones superiorly, extending laterally as far as the pubic tubercles.",
+   "description": "A band across the top of the pubic symphysis, joining the two pubic bones above and extending laterally as far as the pubic tubercles. It reinforces the symphysis from above and helps resist separation of the two hip bones.",
+   "sites": "Named by the part of the bone, not the bone: 10 Oct 2026, from the sentence already quoted here. \"Pelvis\" is three bones and says nothing a student can be marked on."
   },
   "transverse-humeral-ligament": {
    "confirmed": true,
    "source": "User review on the review page, 13 Sept 2026",
    "why": "Humerus only, which is exactly what the seed says — both ends are on the same bone.",
    "attachmentStructureIds": [
-    "humerus"
+    "greater-tubercle-humerus",
+    "lesser-tubercle-humerus"
    ],
    "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision.",
    "checked": "2026-09-24",
@@ -348,7 +384,9 @@
    "sources": [
     "Transverse humeral ligament - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Transverse_humeral_ligament"
    ],
-   "quote": "The transverse humeral ligament (Brodie's ligament) forms a broad band bridging the lesser and greater tubercle of the humerus."
+   "quote": "The transverse humeral ligament (Brodie's ligament) forms a broad band bridging the lesser and greater tubercle of the humerus.",
+   "description": "A broad band bridging the lesser and greater tubercles of the humerus above the epiphysial line, roofing over the intertubercular groove. It holds the tendon of the long head of biceps in the groove, although it may be tendon fibres rather than a true ligament.",
+   "sites": "Named by the part of the bone where the work quoted here or the description names one and the app holds it as a structure: 10 Oct 2026. An end with no such structure keeps the whole bone."
   },
   "transverse-ligament-of-knee": {
    "confirmed": true,
@@ -373,9 +411,9 @@
    "source": "User review on the review page, 13 Sept 2026",
    "why": "NOT SETTLED. Humerus and ulna both confirmed precisely. The seed also lists the RADIUS, which this work does not mention at all — an unsupported third attachment. Graded 27 Sep 2026: the owner personally confirmed this row on the review page. The owner is a sports rehabilitation STUDENT, not a qualified therapist: this is a dated, attributable check by someone studying the subject, which is real evidence but not expert sign-off. Where a published work disagrees, the work wins.",
    "attachmentStructureIds": [
-    "ulna",
-    "radius",
-    "humerus"
+    "medial-epicondyle-humerus",
+    "coronoid-process-ulna",
+    "olecranon"
    ],
    "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision.",
    "checked": "2026-09-24",
@@ -383,7 +421,9 @@
    "sources": [
     "Ulnar collateral ligament of elbow joint - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Ulnar_collateral_ligament_of_elbow_joint"
    ],
-   "quote": "attached, above, by its apex, to the front part of the medial epicondyle of the humerus ... below, by its broad base to the medial margin of the coronoid process of the ulna ... below, to the medial margin of the olecranon"
+   "quote": "attached, above, by its apex, to the front part of the medial epicondyle of the humerus ... below, by its broad base to the medial margin of the coronoid process of the ulna ... below, to the medial margin of the olecranon",
+   "description": "A thick triangular band on the medial side of the elbow, running from the medial epicondyle of the humerus to the coronoid process and the olecranon of the ulna. It is the main restraint against valgus stress, which is why overhead throwing puts it at risk.",
+   "sites": "Named by the part of the bone where the work quoted here or the description names one and the app holds it as a structure: 10 Oct 2026. An end with no such structure keeps the whole bone."
   },
   "ulnocapitate-ligament": {
    "confirmed": true,
@@ -400,7 +440,8 @@
    "sources": [
     "User review on the review page, 13 Sept 2026"
    ],
-   "quote": "Confirmed by the project owner, a sports rehabilitation student, on the ligament review page."
+   "quote": "Confirmed by the project owner, a sports rehabilitation student, on the ligament review page.",
+   "description": "The most superficial of the palmar bands passing from the ulnar side of the forearm to the carpus, running from the palmar part of the fovea of the ulna across the lunate to the capitate. At the capitate it meets fibres of the radioscaphocapitate ligament to form the inverted V of the arcuate ligament."
   },
   "ulnopisiform-ligament": {
    "confirmed": true,
@@ -422,7 +463,7 @@
    "confirmed": true,
    "source": "User review on the review page, 13 Sept 2026",
    "attachmentStructureIds": [
-    "ulna",
+    "ulnar-styloid-process",
     "triquetrum"
    ],
    "pinned": "Confirmed as derived; the ids are pinned here so a later change to the mesh mapping cannot rewrite the decision.",
@@ -432,11 +473,13 @@
     "Palmar radiocarpal ligament - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Palmar_radiocarpal_ligament"
    ],
    "quote": "there is a rounded fasciculus, superficial to the rest, which reaches from the base of the styloid process of the ulna to the lunate and triangular bones",
-   "why": "Ulnar styloid to the triangular (triquetral) bone, confirming the seed pair. 'Triangular bone' is the older name for the triquetrum."
+   "why": "Ulnar styloid to the triangular (triquetral) bone, confirming the seed pair. 'Triangular bone' is the older name for the triquetrum.",
+   "description": "A palmar band on the ulnar side of the wrist arising from the base of the ulnar styloid and the adjacent radio-ulnar ligament and disc, running obliquely to the proximal and ulnar surfaces of the triquetrum. It forms the palmar wall of the triangular fibrocartilage complex and resists dorsal migration of the distal ulna.",
+   "sites": "Named by the part of the bone where the work quoted here or the description names one and the app holds it as a structure: 10 Oct 2026. An end with no such structure keeps the whole bone."
   },
   "ulnolunate-ligament": {
    "attachmentStructureIds": [
-    "ulna",
+    "ulnar-styloid-process",
     "lunate"
    ],
    "description": "A palmar ulnocarpal ligament running from the ulna, by way of the palmar radioulnar ligament and the triangular fibrocartilage, to the lunate.",
@@ -448,11 +491,12 @@
    "sources": [
     "Palmar radiocarpal ligament - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Palmar_radiocarpal_ligament"
    ],
-   "quote": "there is a rounded fasciculus, superficial to the rest, which reaches from the base of the styloid process of the ulna to the lunate and triangular bones"
+   "quote": "there is a rounded fasciculus, superficial to the rest, which reaches from the base of the styloid process of the ulna to the lunate and triangular bones",
+   "sites": "Named by the part of the bone where the work quoted here or the description names one and the app holds it as a structure: 10 Oct 2026. An end with no such structure keeps the whole bone."
   },
   "popliteofibular-ligament": {
    "attachmentStructureIds": [
-    "fibula"
+    "head-of-fibula"
    ],
    "description": "A deep posterolateral band running from the popliteus tendon to the styloid process of the fibular head, resisting external rotation of the tibia.",
    "confirmed": true,
@@ -463,11 +507,12 @@
    "sources": [
     "Popliteofibular ligament - Wikipedia. https://en.wikipedia.org/wiki/Popliteofibular_ligament"
    ],
-   "quote": "The popliteofibular ligament (PFL) connects the popliteus muscle at the musculotendinous junction to the posterior and medial portion of the fibular styloid."
+   "quote": "The popliteofibular ligament (PFL) connects the popliteus muscle at the musculotendinous junction to the posterior and medial portion of the fibular styloid.",
+   "sites": "Named by the part of the bone where the work quoted here or the description names one and the app holds it as a structure: 10 Oct 2026. An end with no such structure keeps the whole bone."
   },
   "posterior-meniscotibial-ligament-medial-meniscus": {
    "attachmentStructureIds": [
-    "tibia"
+    "tibial-plateau"
    ],
    "description": "The posterior part of the coronary ligament of the medial meniscus, anchoring the meniscal rim to the margin of the tibial plateau.",
    "confirmed": true,
@@ -478,7 +523,8 @@
    "sources": [
     "Review page, confirmed 13 Sept 2026"
    ],
-   "quote": "Confirmed by the project owner, a sports rehabilitation student, on the ligament review page."
+   "quote": "Confirmed by the project owner, a sports rehabilitation student, on the ligament review page.",
+   "sites": "Named by the part of the bone where the work quoted here or the description names one and the app holds it as a structure: 10 Oct 2026. An end with no such structure keeps the whole bone."
   },
   "external-intercostal-membrane": {
    "attachmentStructureIds": [],
@@ -495,7 +541,7 @@
   },
   "posterior-meniscotibial-ligament-lateral-meniscus": {
    "attachmentStructureIds": [
-    "tibia"
+    "tibial-plateau"
    ],
    "description": "The posterior part of the coronary ligament of the lateral meniscus, anchoring the meniscal rim to the margin of the tibial plateau.",
    "confirmed": true,
@@ -506,7 +552,8 @@
    "sources": [
     "Review page, marked corrected with no attachment change, 13 Sept 2026"
    ],
-   "quote": "Confirmed by the project owner, a sports rehabilitation student, on the ligament review page."
+   "quote": "Confirmed by the project owner, a sports rehabilitation student, on the ligament review page.",
+   "sites": "Named by the part of the bone where the work quoted here or the description names one and the app holds it as a structure: 10 Oct 2026. An end with no such structure keeps the whole bone."
   },
   "tibionavicular-ligament": {
    "attachmentStructureIds": [
@@ -558,7 +605,7 @@
   },
   "acetabular-labrum": {
    "attachmentStructureIds": [
-    "pelvis"
+    "acetabulum"
    ],
    "description": "A fibrocartilaginous ring attached to the bony rim of the acetabulum and, across the acetabular notch, to the transverse acetabular ligament. It deepens the socket and seals it; the femoral head sits within it but the labrum does not attach to the femur.",
    "confirmed": true,
@@ -569,11 +616,12 @@
     "TA98 A03.6.07.008"
    ],
    "why": "Articular contact with the femoral head was read as an attachment.",
-   "checked": "2026-09-22"
+   "checked": "2026-09-22",
+   "sites": "Named by the part of the bone, not the bone: 10 Oct 2026, from the sentence already quoted here. \"Pelvis\" is three bones and says nothing a student can be marked on."
   },
   "glenoid-labrum": {
    "attachmentStructureIds": [
-    "scapula"
+    "glenoid-cavity"
    ],
    "description": "A fibrocartilaginous rim attached around the circumference of the glenoid cavity of the scapula, deepening the socket and anchoring the long head of biceps at its superior pole. The humeral head articulates against it.",
    "confirmed": true,
@@ -584,7 +632,8 @@
     "TA98 A03.5.08.002"
    ],
    "why": "Articular contact with the humeral head was read as an attachment.",
-   "checked": "2026-09-22"
+   "checked": "2026-09-22",
+   "sites": "Named by the part of the bone where the work quoted here or the description names one and the app holds it as a structure: 10 Oct 2026. An end with no such structure keeps the whole bone."
   },
   "annular-ligament-of-radius": {
    "attachmentStructureIds": [
@@ -632,7 +681,7 @@
   },
   "interspinous-ligaments": {
    "attachmentStructureIds": [
-    "c7-vertebra",
+    "c7-spinous-process",
     "thoracic-vertebrae",
     "lumbar-vertebrae",
     "sacrum"
@@ -647,7 +696,8 @@
     "Anatomy Standard, Ligg. inter et supraspinalia"
    ],
    "why": "Nothing was derived: the mesh reaches no mapped bone. The lumbar and lower thoracic levels are the defensible core, and the description says so.",
-   "checked": "2026-09-22"
+   "checked": "2026-09-22",
+   "sites": "Named by the part of the bone where the work quoted here or the description names one and the app holds it as a structure: 10 Oct 2026. An end with no such structure keeps the whole bone."
   },
   "costotransverse-ligament": {
    "attachmentStructureIds": [
@@ -668,7 +718,7 @@
   },
   "supraspinous-ligament": {
    "attachmentStructureIds": [
-    "c7-vertebra",
+    "c7-spinous-process",
     "thoracic-vertebrae",
     "lumbar-vertebrae",
     "sacrum"
@@ -683,7 +733,8 @@
     "TA98 A03.2.01.005"
    ],
    "why": "The lumbar levels were missing from the seed. The description carries the real extent as well as the classical line, so a student is not taught a sacral attachment that is usually not there.",
-   "checked": "2026-09-22"
+   "checked": "2026-09-22",
+   "sites": "Named by the part of the bone where the work quoted here or the description names one and the app holds it as a structure: 10 Oct 2026. An end with no such structure keeps the whole bone."
   },
   "ligamenta-flava": {
    "attachmentStructureIds": [
@@ -706,7 +757,7 @@
   },
   "anterior-longitudinal-ligament": {
    "attachmentStructureIds": [
-    "atlas-c1",
+    "anterior-arch-atlas",
     "cervical-vertebrae",
     "c7-vertebra",
     "thoracic-vertebrae",
@@ -722,7 +773,8 @@
     "Human Kinetics, Ligaments of the vertebral column"
    ],
    "why": "The seed named the cervical spine and sacrum only.",
-   "checked": "2026-09-22"
+   "checked": "2026-09-22",
+   "sites": "Named by the part of the bone where the work quoted here or the description names one and the app holds it as a structure: 10 Oct 2026. An end with no such structure keeps the whole bone."
   },
   "posterior-longitudinal-ligament": {
    "attachmentStructureIds": [
@@ -763,7 +815,7 @@
   },
   "transverse-acetabular-ligament": {
    "attachmentStructureIds": [
-    "pelvis"
+    "acetabulum"
    ],
    "description": "Bridges the acetabular notch, completing the rim of the socket across the gap at its lower edge; the labrum is continuous with it at both ends. Vessels to the head of the femur pass beneath it.",
    "confirmed": true,
@@ -773,7 +825,8 @@
     "Biomechanics, anatomy and pathology of the acetabular labrum, ScienceDirect"
    ],
    "why": "It spans a gap in the hip bone and does not attach to the femur; the femoral contact is articular.",
-   "checked": "2026-09-22"
+   "checked": "2026-09-22",
+   "sites": "Named by the part of the bone, not the bone: 10 Oct 2026, from the sentence already quoted here. \"Pelvis\" is three bones and says nothing a student can be marked on."
   },
   "dorsal-scaphotriquetral-ligament": {
    "attachmentStructureIds": [
@@ -812,7 +865,7 @@
   "anterior-talofibular-ligament": {
    "attachmentStructureIds": [
     "talus",
-    "fibula"
+    "lateral-malleolus"
    ],
    "description": "Runs from the anterior margin of the lateral malleolus of the fibula forwards to the lateral side of the neck of the talus. It resists inversion and plantarflexion and is the ligament most often torn in an ankle sprain.",
    "confirmed": true,
@@ -823,7 +876,8 @@
    ],
    "quote": "It passes from the anterior margin of the fibular malleolus, passing anteromedially to insert at the lateral aspect of the talus at the talar neck, in front of its lateral articular facet.",
    "why": "Seed pair is right; the fibular end is specifically the lateral malleolus, which the seed covers with the whole fibula.",
-   "checked": "2026-09-23"
+   "checked": "2026-09-23",
+   "sites": "Named by the part of the bone where the work quoted here or the description names one and the app holds it as a structure: 10 Oct 2026. An end with no such structure keeps the whole bone."
   },
   "calcaneocuboid-ligament": {
    "attachmentStructureIds": [
@@ -845,7 +899,7 @@
   "calcaneofibular-ligament": {
    "attachmentStructureIds": [
     "calcaneus",
-    "fibula"
+    "lateral-malleolus"
    ],
    "description": "Runs from the depression just in front of the tip of the lateral malleolus of the fibula downwards and slightly backwards to a tubercle on the lateral surface of the calcaneus. It resists inversion and stabilises both the ankle and subtalar joints.",
    "confirmed": true,
@@ -856,7 +910,8 @@
    ],
    "quote": "it extends from the depression located anterior to the apex of the lateral malleolus of the fibula to the tubercle on the lateral calcaneal surface.",
    "why": "Seed pair is right; the fibular end is the lateral malleolus, covered by the whole fibula in the seed.",
-   "checked": "2026-09-22"
+   "checked": "2026-09-22",
+   "sites": "Named by the part of the bone where the work quoted here or the description names one and the app holds it as a structure: 10 Oct 2026. An end with no such structure keeps the whole bone."
   },
   "calcaneonavicular-ligament": {
    "attachmentStructureIds": [
@@ -1293,7 +1348,7 @@
   "posterior-talofibular-ligament": {
    "attachmentStructureIds": [
     "talus",
-    "fibula"
+    "lateral-malleolus"
    ],
    "description": "A strong horizontal band running from the malleolar fossa on the inner side of the lateral malleolus to the lateral tubercle of the posterior process of the talus. It is the deepest and strongest of the lateral ankle ligaments and resists posterior talar translation.",
    "confirmed": true,
@@ -1304,12 +1359,13 @@
    ],
    "quote": "It runs almost horizontally from the malleolar fossa of the lateral malleolus of the fibula to the lateral tubercle on the posterior surface of the talus.",
    "why": "Seed pair is right; both ends are true bony attachments, fibula at the malleolar fossa and talus at the posterior process.",
-   "checked": "2026-09-23"
+   "checked": "2026-09-23",
+   "sites": "Named by the part of the bone where the work quoted here or the description names one and the app holds it as a structure: 10 Oct 2026. An end with no such structure keeps the whole bone."
   },
   "posterior-tibiofibular-ligament": {
    "attachmentStructureIds": [
     "tibia",
-    "fibula"
+    "lateral-malleolus"
    ],
    "description": "Runs obliquely downwards and laterally from the posterolateral tubercle of the distal tibia to the posterior tubercle of the lateral malleolus. It is part of the distal tibiofibular syndesmosis and holds the ankle mortise together against fibular rotation.",
    "confirmed": true,
@@ -1320,11 +1376,12 @@
    ],
    "quote": "proximal origin from the posterolateral tubercle of tibia (Volkmann)",
    "why": "Seed pair confirmed; Radiopaedia gives the matching distal end as \"distally converging insertion at the small posterior fibular tubercle\".",
-   "checked": "2026-09-22"
+   "checked": "2026-09-22",
+   "sites": "Named by the part of the bone where the work quoted here or the description names one and the app holds it as a structure: 10 Oct 2026. An end with no such structure keeps the whole bone."
   },
   "posterior-tibiotalar-ligament": {
    "attachmentStructureIds": [
-    "tibia",
+    "medial-malleolus",
     "talus"
    ],
    "description": "The deep posterior part of the deltoid ligament, running from the medial malleolus of the tibia to the non-articular posterior part of the medial surface of the talus. It is the strongest deltoid component and resists lateral talar shift.",
@@ -1336,7 +1393,8 @@
    ],
    "quote": "posterior tibiotalar from the posterior colliculus of the medial malleolus to the posteromedial surface of the talus",
    "why": "Seed pair is right: the talar end is quoted directly and the tibial end follows from the deltoid's single proximal attachment on the medial malleolus.",
-   "checked": "2026-09-23"
+   "checked": "2026-09-23",
+   "sites": "Named by the part of the bone where the work quoted here or the description names one and the app holds it as a structure: 10 Oct 2026. An end with no such structure keeps the whole bone."
   },
   "talocalcaneal-interosseous-ligament": {
    "attachmentStructureIds": [
@@ -1372,8 +1430,8 @@
   },
   "tibiocalcaneal-ligament": {
    "attachmentStructureIds": [
-    "tibia",
-    "calcaneus"
+    "medial-malleolus",
+    "sustentaculum-tali"
    ],
    "description": "The middle superficial part of the deltoid ligament, passing almost vertically from the medial malleolus of the tibia down to the sustentaculum tali of the calcaneus. It resists eversion of the hindfoot.",
    "confirmed": true,
@@ -1384,12 +1442,13 @@
    ],
    "quote": "tibiocalcaneal descend almost perpendicularly to be inserted into the whole length of the sustentaculum tali of the calcaneus",
    "why": "Seed pair confirmed; the sustentaculum tali is part of the calcaneus, so the whole-bone ids used elsewhere in the seed are the right level here.",
-   "checked": "2026-09-23"
+   "checked": "2026-09-23",
+   "sites": "Named by the part of the bone where the work quoted here or the description names one and the app holds it as a structure: 10 Oct 2026. An end with no such structure keeps the whole bone."
   },
   "transverse-tibiofibular-ligament": {
    "attachmentStructureIds": [
     "tibia",
-    "fibula"
+    "lateral-malleolus"
    ],
    "description": "A deep band of the distal tibiofibular syndesmosis running from the posterior margin of the lower tibia to the posterior edge of the lateral malleolus of the fibula. It deepens the back of the ankle mortise and helps stop the talus sliding backwards.",
    "confirmed": true,
@@ -1400,7 +1459,8 @@
    ],
    "quote": "extends transversely from the posterior edge of the tibia to the posterior margin of the lateral malleolus of the fibula",
    "why": "Seed pair is right: both ends are bony, the tibia posteriorly and the fibular malleolar fossa laterally; Radiopaedia gives the same two attachments as 'medial attachment at the posterior distal margin of the tibial plafond' and 'lateral attachment at the proximal edge of the fibular malleolar fossa'.",
-   "checked": "2026-09-22"
+   "checked": "2026-09-22",
+   "sites": "Named by the part of the bone where the work quoted here or the description names one and the app holds it as a structure: 10 Oct 2026. An end with no such structure keeps the whole bone."
   },
   "quadrate-ligament": {
    "attachmentStructureIds": [
@@ -1421,7 +1481,7 @@
   "anterior-sacro-iliac-ligament": {
    "attachmentStructureIds": [
     "sacrum",
-    "pelvis"
+    "ilium"
    ],
    "description": "A broad sheet on the front of the sacro-iliac joint running from the pelvic surface of the sacrum to the adjoining ala of the ilium. It is the thinnest of the sacro-iliac ligaments and resists separation of the joint anteriorly.",
    "confirmed": true,
@@ -1432,12 +1492,14 @@
    ],
    "quote": "spanning from the anterior surface of the lateral part of the sacrum to the margin of the auricular surface of the ilium and to the preauricular sulcus.",
    "why": "Sacrum and hip bone are the two attachments, matching the seed.",
-   "checked": "2026-09-23"
+   "checked": "2026-09-23",
+   "sites": "Named by the part of the bone, not the bone: 10 Oct 2026, from the sentence already quoted here. \"Pelvis\" is three bones and says nothing a student can be marked on."
   },
   "descending-part-of-iliofemoral-ligament": {
    "attachmentStructureIds": [
-    "femur",
-    "pelvis"
+    "aiis",
+    "acetabulum",
+    "intertrochanteric-line"
    ],
    "description": "The medial, vertically running limb of the Y-shaped iliofemoral ligament, passing from the anterior inferior iliac spine and acetabular rim down to the lower end of the intertrochanteric line of the femur. It checks hip extension and helps hold the joint in upright standing.",
    "confirmed": true,
@@ -1448,11 +1510,12 @@
    ],
    "quote": "It attaches superiorly at the inferior portion of the anterior inferior iliac spine and adjacent portion of the margin of the acetabulum; it attaches inferiorly at the intertrochanteric line.",
    "why": "Both parts of the iliofemoral ligament share the same hip bone origin and differ only in where they meet the intertrochanteric line, so femur plus hip bone is right; Kenhub places the descending part at 'the distal end of the intertrochanteric line'.",
-   "checked": "2026-09-22"
+   "checked": "2026-09-22",
+   "sites": "Named by the part of the bone, not the bone: 10 Oct 2026, from the sentence already quoted here. \"Pelvis\" is three bones and says nothing a student can be marked on."
   },
   "iliolumbar-ligament": {
    "attachmentStructureIds": [
-    "pelvis",
+    "iliac-crest",
     "l5-vertebra"
    ],
    "description": "A strong fan-shaped ligament running from the tip and lower front of the transverse process of the fifth lumbar vertebra out to the iliac crest and iliac tuberosity. It anchors L5 to the pelvis and limits lumbosacral side-bending and forward slip.",
@@ -1465,11 +1528,12 @@
    ],
    "quote": "A great fan-shaped, composite ligament outspreads laterally from the lower anterior portion and the tip of the fifth lumbar vertebra (L5) transverse process to get inserted into the top of the iliac crest",
    "why": "Seed listed L4 as an attachment, but L4 is a variable finding rather than a standard one, so L4 is dropped and the row keeps the hip bone and L5. Disputed: Whether the ligament also attaches to L4: Pool-Goudzwaard and colleagues found no L4 part, while the cited cadaveric study found the anterior portion reaching the L4 body in about 30% of specimens; the constant attachment is L5.",
-   "checked": "2026-09-22"
+   "checked": "2026-09-22",
+   "sites": "Named by the part of the bone, not the bone: 10 Oct 2026, from the sentence already quoted here. \"Pelvis\" is three bones and says nothing a student can be marked on."
   },
   "inferior-pubic-ligament": {
    "attachmentStructureIds": [
-    "pelvis"
+    "pubis"
    ],
    "description": "Also called the arcuate pubic ligament, a thick triangular arch of fibres slung between the inferior pubic rami of the two hip bones below the pubic symphysis. It blends with the interpubic disc and forms the upper boundary of the pubic arch.",
    "confirmed": true,
@@ -1480,11 +1544,12 @@
    ],
    "quote": "laterally, it is attached to the inferior rami of the pubic bones; below, it is free, and is separated from the fascia of the urogenital diaphragm by an opening through which the deep dorsal vein of the penis passes into the pelvis.",
    "why": "It spans the left and right pubic bones, which the app models as the single hip bone id, so the one-bone seed is correct by design.",
-   "checked": "2026-09-22"
+   "checked": "2026-09-22",
+   "sites": "Named by the part of the bone, not the bone: 10 Oct 2026, from the sentence already quoted here. \"Pelvis\" is three bones and says nothing a student can be marked on."
   },
   "interosseous-sacro-iliac-ligament": {
    "attachmentStructureIds": [
-    "pelvis",
+    "ilium",
     "sacrum"
    ],
    "description": "A short, very strong ligament filling the gap behind the sacro-iliac joint, running between the roughened tuberosities of the sacrum and the ilium just behind their auricular surfaces. It is the main suspensory tie that keeps the sacrum wedged between the hip bones.",
@@ -1496,12 +1561,13 @@
    ],
    "quote": "The interosseous sacroiliac ligament consists of a series of short, strong fibers connecting the tuberosities of the sacrum and ilium.",
    "why": "Sacrum and hip bone, as seeded; the 50/50 mesh contact matches the true two-bone span here.",
-   "checked": "2026-09-23"
+   "checked": "2026-09-23",
+   "sites": "Named by the part of the bone, not the bone: 10 Oct 2026, from the sentence already quoted here. \"Pelvis\" is three bones and says nothing a student can be marked on."
   },
   "ischiofemoral-ligament": {
    "attachmentStructureIds": [
-    "femur",
-    "pelvis"
+    "ischium",
+    "greater-trochanter"
    ],
    "description": "The posterior capsular ligament of the hip, running from the ischial part of the hip bone below the acetabulum, spiralling upwards and laterally behind the femoral neck to the base of the greater trochanter. It limits internal rotation and extension of the hip.",
    "confirmed": true,
@@ -1512,12 +1578,13 @@
    ],
    "quote": "It is attached medially to the ischial bone below the acetabulum. It runs superolaterally around the capsule and posterior to the femoral neck to attach to the base of the greater trochanter.",
    "why": "Both ends are bony, ischium and greater trochanter, so the femur and hip bone seed is right despite the heavily femur-weighted mesh contact.",
-   "checked": "2026-09-22"
+   "checked": "2026-09-22",
+   "sites": "Named by the part of the bone, not the bone: 10 Oct 2026, from the sentence already quoted here. \"Pelvis\" is three bones and says nothing a student can be marked on."
   },
   "ligament-of-head-of-femur": {
    "attachmentStructureIds": [
-    "pelvis",
-    "femur"
+    "femoral-head",
+    "acetabulum"
    ],
    "description": "A flat intracapsular band running from the acetabular notch and transverse acetabular ligament to the fovea on the head of the femur. It carries a small artery to the femoral head and contributes little to joint stability.",
    "confirmed": true,
@@ -1528,12 +1595,13 @@
    ],
    "quote": "The ligament is implanted by its apex into the anterosuperior part of the fovea capitis femoris and its base is attached by two bands, one into either side of the acetabular notch, and between these bony attachments it blends with the transverse ligament.",
    "why": "Hip bone at the acetabular notch and femur at the fovea, exactly the seeded pair.",
-   "checked": "2026-09-22"
+   "checked": "2026-09-22",
+   "sites": "Named by the part of the bone, not the bone: 10 Oct 2026, from the sentence already quoted here. \"Pelvis\" is three bones and says nothing a student can be marked on."
   },
   "posterior-sacro-iliac-ligament": {
    "attachmentStructureIds": [
     "sacrum",
-    "pelvis"
+    "ilium"
    ],
    "description": "A set of fibres behind the sacro-iliac joint running from the back of the sacrum to the posterior superior iliac spine and adjacent ilium. It resists downward movement of the sacrum between the hip bones during weight bearing.",
    "confirmed": true,
@@ -1544,13 +1612,14 @@
    ],
    "quote": "pass from the first and second transverse tubercles on the back of the sacrum to the tuberosity of the ilium.",
    "why": "Sacrum and hip bone as seeded.",
-   "checked": "2026-09-23"
+   "checked": "2026-09-23",
+   "sites": "Named by the part of the bone, not the bone: 10 Oct 2026, from the sentence already quoted here. \"Pelvis\" is three bones and says nothing a student can be marked on."
   },
   "sacrospinous-ligament": {
    "attachmentStructureIds": [
     "sacrum",
     "coccyx",
-    "pelvis"
+    "ischium"
    ],
    "description": "A triangular ligament with its broad base on the side of the lower sacrum and upper coccyx and its apex on the ischial spine. It converts the greater sciatic notch into a foramen and resists upward tilting of the sacral apex.",
    "confirmed": true,
@@ -1561,12 +1630,14 @@
    ],
    "quote": "The sacrospinous ligament is a triangular-shaped structure with its base attached to the anterior sacrum (S2-S4) and coccyx, and its apex attached to the ischial spine.",
    "why": "Seed missed the coccygeal part of the base, which both sources give; the ischial spine itself is not modelled, so the hip bone id stands in for the apex. The app does not model Ischial spine; the nearest structure stands in.",
-   "checked": "2026-09-22"
+   "checked": "2026-09-22",
+   "sites": "Named by the part of the bone, not the bone: 10 Oct 2026, from the sentence already quoted here. \"Pelvis\" is three bones and says nothing a student can be marked on."
   },
   "transverse-part-of-iliofemoral-ligament": {
    "attachmentStructureIds": [
-    "femur",
-    "pelvis"
+    "aiis",
+    "acetabulum",
+    "intertrochanteric-line"
    ],
    "description": "The lateral, obliquely running limb of the Y-shaped iliofemoral ligament, passing from the anterior inferior iliac spine and acetabular rim to the upper end of the intertrochanteric line near the greater trochanter. It runs parallel to the femoral neck and restrains hip extension and external rotation.",
    "confirmed": true,
@@ -1577,12 +1648,13 @@
    ],
    "quote": "It attaches superiorly at the inferior portion of the anterior inferior iliac spine and adjacent portion of the margin of the acetabulum; it attaches inferiorly at the intertrochanteric line.",
    "why": "Same two bones as the descending part; Kenhub puts this band at 'the proximal end of the intertrochanteric line', so the femur and hip bone seed holds.",
-   "checked": "2026-09-22"
+   "checked": "2026-09-22",
+   "sites": "Named by the part of the bone, not the bone: 10 Oct 2026, from the sentence already quoted here. \"Pelvis\" is three bones and says nothing a student can be marked on."
   },
   "anterior-ligament-of-fibular-head": {
    "attachmentStructureIds": [
-    "fibula",
-    "tibia"
+    "head-of-fibula",
+    "lateral-condyle-tibia"
    ],
    "description": "Runs obliquely upwards and medially from the front of the head of the fibula to the anterior surface of the lateral condyle of the tibia. It reinforces the front of the superior tibiofibular joint and limits translation between the two bones.",
    "confirmed": true,
@@ -1593,12 +1665,13 @@
    ],
    "quote": "The fascicles then take an oblique, superomedial, course and attach to the anterior surface of the lateral tibial condyle.",
    "why": "Seed is right: both sources put it on the fibular head and the lateral condyle of the tibia, matching the mesh contacts.",
-   "checked": "2026-09-22"
+   "checked": "2026-09-22",
+   "sites": "Named by the part of the bone where the work quoted here or the description names one and the app holds it as a structure: 10 Oct 2026. An end with no such structure keeps the whole bone."
   },
   "arcuate-popliteal-ligament": {
    "attachmentStructureIds": [
-    "femur",
-    "fibula",
+    "lateral-epicondyle-femur",
+    "head-of-fibula",
     "tibia"
    ],
    "description": "A Y-shaped band that rises from the back of the head of the fibula, arches over the popliteus tendon and divides, one limb reaching the posterior intercondylar area of the tibia and the other the lateral epicondyle of the femur. It reinforces the posterolateral corner of the capsule and helps resist hyperextension.",
@@ -1611,12 +1684,13 @@
    ],
    "quote": "It is Y-shaped and is attached to the head of the fibula. From there it goes to its two insertions; one goes over popliteus muscle and attaches to the intercondylar area of the tibia, the other to the lateral epicondyle of the femur and blends there with the lateral head of gastrocnemius muscle.",
    "why": "Seed kept: the dominant anatomical description names all three bones, though the femoral and tibial limbs are blended with capsule and are described only as capsular in some sources. Disputed: Gray's-derived accounts (IMAIOS, Wikipedia) give it bony limbs on the tibia and femur, while Kenhub and Wheeless describe it as running from the fibular head into the posterior joint capsule and the lateral head of gastrocnemius without naming bony tibial or femoral attachments; some posterolateral-corner literature doubts it is a discrete ligament at all.",
-   "checked": "2026-09-22"
+   "checked": "2026-09-22",
+   "sites": "Named by the part of the bone where the work quoted here or the description names one and the app holds it as a structure: 10 Oct 2026. An end with no such structure keeps the whole bone."
   },
   "deep-part-of-tibial-collateral-ligament": {
    "attachmentStructureIds": [
-    "tibia",
-    "femur"
+    "medial-condyle-tibia",
+    "medial-epicondyle-femur"
    ],
    "description": "A capsular thickening lying deep to the superficial band, running from the distal femur to the proximal tibia by way of the medial meniscus, to which it is firmly bound. Its meniscofemoral and meniscotibial parts anchor the medial meniscus and steady the medial side of the knee.",
    "confirmed": true,
@@ -1627,12 +1701,13 @@
    ],
    "quote": "It is attached proximally to the medial epicondyle of the femur, immediately below the adductor tubercle; below to the medial condyle of the tibia and medial surface of its body.",
    "why": "Bony ends confirmed as femur and tibia; its middle attachment is the medial meniscus, which the app does not model. The app does not model Medial meniscus; the nearest structure stands in.",
-   "checked": "2026-09-23"
+   "checked": "2026-09-23",
+   "sites": "Named by the part of the bone where the work quoted here or the description names one and the app holds it as a structure: 10 Oct 2026. An end with no such structure keeps the whole bone."
   },
   "fibular-collateral-ligament": {
    "attachmentStructureIds": [
-    "femur",
-    "fibula"
+    "lateral-epicondyle-femur",
+    "head-of-fibula"
    ],
    "description": "A cord-like band running from the lateral epicondyle of the femur down to the lateral aspect of the head of the fibula, separate from the joint capsule and the lateral meniscus. It is the main restraint to varus (bow-legged) stress at the knee.",
    "confirmed": true,
@@ -1643,7 +1718,8 @@
    ],
    "quote": "Its superior attachment is at the lateral epicondyle of the femur (superoposterior to the popliteal groove); its inferior attachment is at the lateral aspect of the head of fibula (anterior to the apex).",
    "why": "Seed is right: femur and fibula only, with no tibial attachment, which matches the mesh contacts.",
-   "checked": "2026-09-22"
+   "checked": "2026-09-22",
+   "sites": "Named by the part of the bone where the work quoted here or the description names one and the app holds it as a structure: 10 Oct 2026. An end with no such structure keeps the whole bone."
   },
   "lateral-meniscus": {
    "attachmentStructureIds": [
@@ -1662,8 +1738,9 @@
   },
   "oblique-popliteal-ligament": {
    "attachmentStructureIds": [
-    "femur",
-    "tibia"
+    "lateral-condyle-femur",
+    "intercondylar-fossa-femur",
+    "medial-condyle-tibia"
    ],
    "description": "A broad expansion of the semimembranosus tendon that passes upwards and laterally from behind the medial condyle of the tibia to the lateral condyle of the femur and the posterior capsule. It strengthens the back of the knee and helps check hyperextension.",
    "confirmed": true,
@@ -1674,12 +1751,13 @@
    ],
    "quote": "The ligament extends superolaterally from the semimembranosus tendon to attach onto the intercondylar fossa and lateral condyle of the femur.",
    "why": "Seed is right: tibia below and femur above, with no fibular attachment.",
-   "checked": "2026-09-23"
+   "checked": "2026-09-23",
+   "sites": "Named by the part of the bone where the work quoted here or the description names one and the app holds it as a structure: 10 Oct 2026. An end with no such structure keeps the whole bone."
   },
   "posterior-cruciate-ligament": {
    "attachmentStructureIds": [
     "tibia",
-    "femur"
+    "medial-condyle-femur"
    ],
    "description": "Runs from the posterior intercondylar area of the tibia upwards and medially to the lateral surface of the medial femoral condyle, inside the joint but outside the synovium. It stops the tibia sliding backwards on the femur and is the main restraint in a flexed, loaded knee.",
    "confirmed": true,
@@ -1690,12 +1768,13 @@
    ],
    "quote": "arises from the posterior intercondylar area of the tibia and extends anteromedially and proximally to attach on the anterior part of the lateral surface of the medial femoral condyle.",
    "why": "Seed is right: tibia and femur, as both sources state.",
-   "checked": "2026-09-22"
+   "checked": "2026-09-22",
+   "sites": "Named by the part of the bone where the work quoted here or the description names one and the app holds it as a structure: 10 Oct 2026. An end with no such structure keeps the whole bone."
   },
   "posterior-ligament-of-fibular-head": {
    "attachmentStructureIds": [
-    "fibula",
-    "tibia"
+    "head-of-fibula",
+    "lateral-condyle-tibia"
    ],
    "description": "Passes obliquely upwards and medially from the back of the head of the fibula to the posterior aspect of the lateral condyle of the tibia. It reinforces the back of the superior tibiofibular joint and limits movement between the two bones.",
    "confirmed": true,
@@ -1706,12 +1785,13 @@
    ],
    "quote": "passes obliquely in a superomedially direction, to attach to the posterior aspect of the lateral tibial condyle.",
    "why": "Seed is right: fibular head to lateral tibial condyle, confirmed by two sources.",
-   "checked": "2026-09-22"
+   "checked": "2026-09-22",
+   "sites": "Named by the part of the bone where the work quoted here or the description names one and the app holds it as a structure: 10 Oct 2026. An end with no such structure keeps the whole bone."
   },
   "superficial-part-of-tibial-collateral-ligament": {
    "attachmentStructureIds": [
-    "femur",
-    "tibia"
+    "medial-epicondyle-femur",
+    "medial-condyle-tibia"
    ],
    "description": "A long flat band from just above the medial epicondyle of the femur down to the medial condyle and medial shaft of the tibia, well below the joint line. It is the main restraint to valgus (knock-kneed) stress at the knee.",
    "confirmed": true,
@@ -1722,11 +1802,12 @@
    ],
    "quote": "It is attached proximally to the medial epicondyle of the femur, immediately below the adductor tubercle; below to the medial condyle of the tibia and medial surface of its body.",
    "why": "Seed is right: femur above, tibia below, with no meniscal attachment for the superficial part.",
-   "checked": "2026-09-23"
+   "checked": "2026-09-23",
+   "sites": "Named by the part of the bone where the work quoted here or the description names one and the app holds it as a structure: 10 Oct 2026. An end with no such structure keeps the whole bone."
   },
   "conoid-ligament": {
    "attachmentStructureIds": [
-    "scapula",
+    "coracoid-process",
     "clavicle"
    ],
    "description": "The cone-shaped posteromedial half of the coracoclavicular ligament, running from the base of the coracoid process of the scapula up to the conoid tubercle on the underside of the clavicle. It suspends the scapula from the clavicle and resists vertical separation at the acromioclavicular joint.",
@@ -1738,11 +1819,13 @@
    ],
    "quote": "It is attached by its apex to a rough impression at the base of the coracoid process on the scapula, medial to the trapezoid ligament; above, by its expanded base, to the conoid tubercle on the under surface of the clavicle, and to a line proceeding medialward from it for 1.25 cm.",
    "why": "Seed is right: coracoid process of the scapula to the conoid tubercle of the clavicle.",
-   "checked": "2026-09-22"
+   "checked": "2026-09-22",
+   "sites": "Named by the part of the bone where the work quoted here or the description names one and the app holds it as a structure: 10 Oct 2026. An end with no such structure keeps the whole bone."
   },
   "coraco-acromial-ligament": {
    "attachmentStructureIds": [
-    "scapula"
+    "coracoid-process",
+    "acromion"
    ],
    "description": "A strong triangular band that spans from the lateral border of the coracoid process to the acromion, both parts of the same scapula. With those two processes it forms the coracoacromial arch, which roofs the humeral head and stops it riding upwards.",
    "confirmed": true,
@@ -1753,12 +1836,13 @@
    ],
    "quote": "It attaches between the lateral border of the coracoid process and the apex of the acromion of the scapula.",
    "why": "Seed is right: both ends are on the scapula, so one bone is correct rather than an omission.",
-   "checked": "2026-09-22"
+   "checked": "2026-09-22",
+   "sites": "Named by the part of the bone where the work quoted here or the description names one and the app holds it as a structure: 10 Oct 2026. An end with no such structure keeps the whole bone."
   },
   "inferior-glenohumeral-ligament": {
    "attachmentStructureIds": [
     "humerus",
-    "scapula"
+    "glenoid-cavity"
    ],
    "description": "A sling of capsular fibres running from the lower rim of the glenoid and its labrum on the scapula to the inferior part of the neck of the humerus. It is the strongest glenohumeral ligament and the main check on anterior and inferior dislocation with the arm abducted.",
    "confirmed": true,
@@ -1769,11 +1853,13 @@
    ],
    "quote": "The inferior glenohumeral ligament is a sling-like ligament extending between the glenoid labrum and the inferomedial part of the humeral neck.",
    "why": "Seed is right: humerus and scapula, its scapular end being the glenoid rim and labrum (Gray's: \"from the under edge of the glenoid cavity to the under part of the anatomical neck of the humerus\").",
-   "checked": "2026-09-22"
+   "checked": "2026-09-22",
+   "sites": "Named by the part of the bone where the work quoted here or the description names one and the app holds it as a structure: 10 Oct 2026. An end with no such structure keeps the whole bone."
   },
   "inferior-transverse-scapular-ligament": {
    "attachmentStructureIds": [
-    "scapula"
+    "spine-of-scapula",
+    "glenoid-cavity"
    ],
    "description": "A short band on the back of the scapula running from the lateral edge of the spine of the scapula to the rim of the glenoid cavity, so both ends are on the same bone. It roofs the spinoglenoid notch, forming the tunnel through which the suprascapular nerve and vessels pass to infraspinatus.",
    "confirmed": true,
@@ -1785,12 +1871,13 @@
    ],
    "quote": "The inferior transverse scapular ligament runs from the lateral scapular spine to the posterior glenoid, forming a foramen (with the scapular body anteriorly as the floor and the ligament posteriorly as the roof) through which the inferior branch of suprascapular nerve (supplying infraspinatus muscle) and artery pass.",
    "why": "Seed is right: both attachments (scapular spine and glenoid margin) lie on the scapula, so it is a genuine one-bone ligament.",
-   "checked": "2026-09-22"
+   "checked": "2026-09-22",
+   "sites": "Named by the part of the bone where the work quoted here or the description names one and the app holds it as a structure: 10 Oct 2026. An end with no such structure keeps the whole bone."
   },
   "middle-glenohumeral-ligament": {
    "attachmentStructureIds": [
-    "humerus",
-    "scapula"
+    "lesser-tubercle-humerus",
+    "glenoid-cavity"
    ],
    "description": "Runs from the anterosuperior rim of the glenoid cavity of the scapula to the front of the proximal humerus at the base of the lesser tubercle. It thickens the front of the shoulder capsule and checks lateral rotation when the arm is in mid-abduction.",
    "confirmed": true,
@@ -1801,7 +1888,8 @@
    ],
    "quote": "runs from the anterosuperior glenoid, arising just inferior to the superior GHL, to the anterior proximal humerus below the superior GHL attachment at the base of the lesser tubercle",
    "why": "Seed is right: glenoid (scapula) to lesser tubercle (humerus).",
-   "checked": "2026-09-22"
+   "checked": "2026-09-22",
+   "sites": "Named by the part of the bone where the work quoted here or the description names one and the app holds it as a structure: 10 Oct 2026. An end with no such structure keeps the whole bone."
   },
   "posterior-sternoclavicular-ligament": {
    "attachmentStructureIds": [
@@ -1821,8 +1909,9 @@
   },
   "superior-glenohumeral-ligament": {
    "attachmentStructureIds": [
-    "humerus",
-    "scapula"
+    "lesser-tubercle-humerus",
+    "glenoid-cavity",
+    "coracoid-process"
    ],
    "description": "Runs from the upper rim of the glenoid cavity of the scapula, near the supraglenoid tubercle, to a small depression above the lesser tubercle of the humerus. It helps suspend the hanging arm and limits inferior translation of the humeral head.",
    "confirmed": true,
@@ -1833,11 +1922,12 @@
    ],
    "quote": "runs from the superior aspect of the glenoid and coracoid process to the superior part of the lesser tubercle of the humerus",
    "why": "Seed is right; the glenoid origin varies between supraglenoid tubercle, superior labrum and the biceps tendon, but all sit on the scapula, so the bone pair is unaffected.",
-   "checked": "2026-09-22"
+   "checked": "2026-09-22",
+   "sites": "Named by the part of the bone where the work quoted here or the description names one and the app holds it as a structure: 10 Oct 2026. An end with no such structure keeps the whole bone."
   },
   "superior-transverse-scapular-ligament": {
    "attachmentStructureIds": [
-    "scapula"
+    "coracoid-process"
    ],
    "description": "A thin flat band that bridges the suprascapular notch of the scapula, running from the base of the coracoid process to the medial edge of the notch. It converts the notch into a foramen, so the suprascapular nerve passes beneath it while the vessels pass above.",
    "confirmed": true,
@@ -1849,11 +1939,12 @@
    ],
    "quote": "It is a thin and flat fascicle, narrower at the middle than at the extremities, attached by one end to the base of the coracoid process and by the other to the medial end of the scapular notch.",
    "why": "Seed is right: both ends are on the scapula, either side of the suprascapular notch.",
-   "checked": "2026-09-22"
+   "checked": "2026-09-22",
+   "sites": "Named by the part of the bone where the work quoted here or the description names one and the app holds it as a structure: 10 Oct 2026. An end with no such structure keeps the whole bone."
   },
   "trapezoid-ligament": {
    "attachmentStructureIds": [
-    "scapula",
+    "coracoid-process",
     "clavicle"
    ],
    "description": "The flat lateral part of the coracoclavicular ligament, running from the upper surface of the coracoid process of the scapula to the trapezoid line on the underside of the clavicle. It resists compression of the scapula towards the clavicle and helps suspend the scapula from the clavicle.",
@@ -1865,12 +1956,13 @@
    ],
    "quote": "The trapezoid ligament is a ligament connecting the coracoid process of the scapula (the shoulder blade) to the trapezoid line of the clavicle (collarbone).",
    "why": "Seed is right: coracoid process of scapula to trapezoid line of clavicle.",
-   "checked": "2026-09-22"
+   "checked": "2026-09-22",
+   "sites": "Named by the part of the bone where the work quoted here or the description names one and the app holds it as a structure: 10 Oct 2026. An end with no such structure keeps the whole bone."
   },
   "intercornual-ligament": {
    "attachmentStructureIds": [
-    "coccyx",
-    "sacrum"
+    "coccygeal-cornua",
+    "sacral-cornua"
    ],
    "description": "A short paired band joining the sacral cornua to the coccygeal cornua on either side of the sacral hiatus. It completes the foramen for the fifth sacral nerve and steadies the sacrococcygeal junction.",
    "confirmed": true,
@@ -1881,7 +1973,8 @@
    ],
    "quote": "The interarticular or intercornual sacrococcygeal ligaments stretches from the cornu of the sacrum to the cornu of the coccyx.",
    "why": "Seed is right at bone level; the precise attachments are the sacral and coccygeal cornua, which the app also models as landmarks.",
-   "checked": "2026-09-23"
+   "checked": "2026-09-23",
+   "sites": "Named by the part of the bone where the work quoted here or the description names one and the app holds it as a structure: 10 Oct 2026. An end with no such structure keeps the whole bone."
   },
   "intra-articular-ligament-of-head-of-rib": {
    "attachmentStructureIds": [
@@ -2036,7 +2129,7 @@
   },
   "dorsal-ulnocarpal-ligament": {
    "attachmentStructureIds": [
-    "ulna",
+    "ulnar-styloid-process",
     "triquetrum"
    ],
    "description": "A capsular band on the ulnar side of the back of the wrist running from the styloid process of the ulna down to the triquetrum. It reinforces the dorsal capsule of the radiocarpal joint and helps steady the carpus on the ulna during forearm rotation.",
@@ -2048,7 +2141,8 @@
    ],
    "quote": "It is a fibrous band passing from the styloid process of the ulna to the dorsal aspect of the carpal bones.",
    "why": "The seed added the lunate and scaphoid, which belong to the palmar ulnocarpal complex rather than the dorsal band. Disputed: IMAIOS treats it as part of a wider ulnocarpal complex with ulnocapitate, ulnolunate and ulnotriquetral components; the classic dorsal band itself is described as ulna to triquetrum only.",
-   "checked": "2026-09-23"
+   "checked": "2026-09-23",
+   "sites": "Named by the part of the bone where the work quoted here or the description names one and the app holds it as a structure: 10 Oct 2026. An end with no such structure keeps the whole bone."
   },
   "interosseous-metacarpal-ligaments": {
    "attachmentStructureIds": [
@@ -2184,7 +2278,7 @@
   },
   "radial-collateral-ligament-of-wrist-joint": {
    "attachmentStructureIds": [
-    "radius",
+    "radial-styloid-process",
     "scaphoid",
     "trapezium"
    ],
@@ -2197,11 +2291,12 @@
    ],
    "quote": "The radial collateral ligament (external lateral ligament, radial carpal collateral ligament) extends from the tip of the styloid process of the radius and attaches to the radial side of the scaphoid (formerly navicular bone of the hand), immediately adjacent to its proximal articular surface and some fibres extend to the lateral side of the trapezium (greater multangular bone).",
    "why": "Seed is right; the radial attachment is specifically the radial styloid process, which the app models only as part of the radius here.",
-   "checked": "2026-09-22"
+   "checked": "2026-09-22",
+   "sites": "Named by the part of the bone where the work quoted here or the description names one and the app holds it as a structure: 10 Oct 2026. An end with no such structure keeps the whole bone."
   },
   "radiocapitate-ligament": {
    "attachmentStructureIds": [
-    "radius",
+    "radial-styloid-process",
     "capitate"
    ],
    "description": "A palmar wrist ligament running from the radial styloid process obliquely across the wrist to the palmar surface of the capitate. It helps hold the carpus against the radius and resists ulnar translation of the carpal bones.",
@@ -2213,11 +2308,12 @@
    ],
    "quote": "a palmar (volar) extrinsic radiocarpal ligament that originates from the radial styloid process and courses distally and ulnarly to insert onto the palmar aspect of the capitate",
    "why": "Seed is right on attachments; the only question in the literature is whether this is a distinct ligament rather than part of the radioscaphocapitate. Disputed: Whether the radiocapitate ligament is a separate ligament at all: Terminologia Anatomica 2 lists it as an inconstant term, and several authors treat it as a portion or variant of the radioscaphocapitate ligament. Its radius-to-capitate course is not in doubt.",
-   "checked": "2026-09-22"
+   "checked": "2026-09-22",
+   "sites": "Named by the part of the bone where the work quoted here or the description names one and the app holds it as a structure: 10 Oct 2026. An end with no such structure keeps the whole bone."
   },
   "radioscaphocapitate-ligament": {
    "attachmentStructureIds": [
-    "radius",
+    "radial-styloid-process",
     "scaphoid",
     "capitate"
    ],
@@ -2230,7 +2326,8 @@
    ],
    "quote": "Inserts on distal aspect of scaphoid, proximal capitate",
    "why": "Seed is right: all three bones carry fibres, even though the scaphoid share is partly a wrap rather than a firm insertion. Disputed: How much of the ligament truly inserts into the scaphoid is debated; some authors describe the scaphoid contact as mainly a sling over the waist with only a minor bony insertion into the capitate body.",
-   "checked": "2026-09-22"
+   "checked": "2026-09-22",
+   "sites": "Named by the part of the bone where the work quoted here or the description names one and the app holds it as a structure: 10 Oct 2026. An end with no such structure keeps the whole bone."
   },
   "scaphocapitate-ligament": {
    "attachmentStructureIds": [
@@ -2301,7 +2398,7 @@
   },
   "ulnar-collateral-ligament-of-wrist-joint": {
    "attachmentStructureIds": [
-    "ulna",
+    "ulnar-styloid-process",
     "triquetrum",
     "pisiform"
    ],
@@ -2315,7 +2412,8 @@
    ],
    "quote": "The ulnar collateral ligament is a rounded cord, attached above to the end of the styloid process of the ulna, and dividing below into two fasciculi, one of which is attached to the medial side of the triquetral bone, the other to the pisiform and flexor retinaculum.",
    "why": "Seed wrongly included the lunate, which the mesh only grazes at 8 per cent; the classical description lists only the ulnar styloid, triquetrum and pisiform (plus the flexor retinaculum, which the app does not model). Disputed: Nomenclature only: Kenhub and some modern texts treat this ligament as the ulnotriquetral division of the palmar ulnocarpal ligament rather than a true collateral ligament. No source gives it a lunate attachment.",
-   "checked": "2026-09-22"
+   "checked": "2026-09-22",
+   "sites": "Named by the part of the bone where the work quoted here or the description names one and the app holds it as a structure: 10 Oct 2026. An end with no such structure keeps the whole bone."
   },
   "flexor-retinaculum": {
    "grade": "verified",
@@ -2379,15 +2477,6 @@
    ],
    "quote": "It attaches superiorly at the inferior portion of the anterior inferior iliac spine and adjacent portion of the margin of the acetabulum; it attaches inferiorly at the intertrochanteric line.",
    "why": "AIIS and intertrochanteric line both named."
-  },
-  "ligamentum-teres-femoris": {
-   "grade": "verified",
-   "checked": "2026-09-26",
-   "sources": [
-    "Ligament of head of femur - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Ligamentum_teres_femoris"
-   ],
-   "quote": "The ligament is implanted by its apex into the anterosuperior part of the fovea capitis femoris and its base is attached by two bands, one into either side of the acetabular notch.",
-   "why": "Femoral head fovea and acetabular notch both named."
   },
   "alar-ligaments": {
    "grade": "verified",
