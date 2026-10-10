@@ -2,6 +2,7 @@ import { collection, deleteField, doc, getDoc, getDocs, query, setDoc, where } f
 import { getDb } from '../../anatomy-revision/data/firebase';
 import { generateJoinCode } from '../lib/joinCode';
 import type { Cohort, CohortStudent } from '../types/cohort';
+import { forgetCachedCohort } from './cohortRollups';
 
 /**
  * cohorts/{cohortId} lives outside users/{uid} and outside AnatomyRepository
@@ -174,6 +175,12 @@ export async function joinCohortByCode(uid: string, joinCode: string): Promise<C
     },
     { merge: true },
   );
+  // The rollup remembers which class an account is in for as long as the app
+  // stays open. It asked when the app started, before this join, and was told
+  // "none" — so without this, everything the student answers until they next
+  // reload reaches no class at all, and their teacher sees a student who
+  // joined and did nothing. Found on the first live class check, 10 Oct 2026.
+  forgetCachedCohort(uid);
   return cohort;
 }
 
@@ -191,6 +198,9 @@ export async function leaveCohort(uid: string): Promise<void> {
     },
     { merge: true },
   );
+  // And the other way round: a student who has left must stop being counted
+  // into the class they left, at once and not at the next reload.
+  forgetCachedCohort(uid);
 }
 
 /**

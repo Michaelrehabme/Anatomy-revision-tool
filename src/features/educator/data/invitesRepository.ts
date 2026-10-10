@@ -13,6 +13,7 @@ import {
 import { getDb } from '../../anatomy-revision/data/firebase';
 import type { Cohort } from '../types/cohort';
 import { getCohort } from './cohortsRepository';
+import { forgetCachedCohort } from './cohortRollups';
 
 /**
  * Bulk invitations to a class.
@@ -231,6 +232,8 @@ export async function acceptInvite(invite: CohortInvite, uid: string): Promise<C
     },
     { merge: true },
   );
+  // Same reason as joining by code (cohortsRepository.joinCohortByCode).
+  forgetCachedCohort(uid);
   await deleteInvite(invite.id);
   return getCohort(invite.cohortId);
 }
