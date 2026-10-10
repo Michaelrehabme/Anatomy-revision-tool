@@ -23,7 +23,7 @@ import { LegalLayout, legalHeading, legalProse } from './LegalLayout';
  *     scan with axe-core's WCAG rule sets is a fact about a scan. "Tested
  *     against WCAG 2.1 AA" reads as a conformance claim, and nobody qualified
  *     to make one has looked at this app.
- *  2. NOTHING IS "ANNOUNCED" OR "READ". No screen reader has been run. The
+ *  2. NOTHING IS "ANNOUNCED" OR "READ" beyond the one VoiceOver check of 10 Oct 2026. The
  *     app marks things up for one; what NVDA or VoiceOver does with that is
  *     not known, and the page says so wherever it would otherwise imply it.
  *  3. LOCATE IS DESCRIBED AS IT IS TODAY (crosshair, words route, list fallback), with what they do not do
@@ -50,7 +50,7 @@ const strong = { color: 'var(--ink)' } as const;
 
 export function AccessibilityPage() {
   return (
-    <LegalLayout title="Accessibility statement" updated="5 October 2026">
+    <LegalLayout title="Accessibility statement" updated="10 October 2026">
       <p className="mt-4" style={legalProse}>
         This statement applies to LocusMSK, an anatomy revision web application. The standard we are
         working towards is WCAG 2.2 level AA. We do not claim to meet it. This page says what we
@@ -60,8 +60,9 @@ export function AccessibilityPage() {
       <Section title="How accessible this app is">
         <p>
           <strong style={strong}>Partially compliant, on our own testing only.</strong> Every screen we
-          tested can be used with a keyboard. The app is marked up for a screen reader, but we have not
-          yet tested it with one, so we cannot tell you what a screen reader will actually say. One
+          tested can be used with a keyboard. The app is marked up for a screen reader. One short check with VoiceOver on an
+          iPhone found the four things we listened for working; most of the app has not been heard
+          through one, so beyond those four we cannot tell you what a screen reader will actually say. One
           question type — locate, where you find a structure on an anatomical image — still has no true
           equivalent for someone who cannot see the image: it can be answered in words, which is a
           different exercise. The known problems are listed below rather than
@@ -136,8 +137,8 @@ export function AccessibilityPage() {
         </p>
         <p>
           <strong style={strong}>
-            Picture descriptions are generated, cover sessions only, and have not been heard on a
-            screen reader.
+            Picture descriptions are generated, cover sessions only, and have been heard on a screen
+            reader once.
           </strong>{' '}
           They are written from the app's own data, not by hand, for every picture a question shows. The
           pictures on a structure card and in the Atlas have only a name. A description places a
@@ -145,9 +146,14 @@ export function AccessibilityPage() {
           is enough to orient by and not a substitute for seeing it.
         </p>
         <p>
-          <strong style={strong}>We have not tested with a screen reader.</strong> No session has been
-          run with NVDA or VoiceOver. Anything this page says about what a screen reader is given is
-          what the app exposes to one, read back by a script, not what we have heard one say.
+          <strong style={strong}>Screen-reader testing is one short check, not a full session.</strong> On
+          10 October 2026 the person who builds the app listened to four things with VoiceOver on an
+          iPhone: that a question's picture does not give its own answer away, the description offered
+          while the question is open, the result after answering, and the fuller description offered
+          afterwards. All four behaved as intended. Not listened to: multi-select answers, a locate
+          question answered in words, the results screen and the offline downloads. No session has
+          been run with NVDA. Anything else this page says about what a screen reader is given is what
+          the app exposes to one, read back by a script, not what we have heard one say.
         </p>
         <p>
           <strong style={strong}>No independent audit has been carried out.</strong> This is our own
@@ -243,7 +249,7 @@ export function AccessibilityPage() {
 
       <Section title="This statement">
         <p>
-          First prepared on 18 September 2026 and last revised on 5 October 2026, based on our own
+          First prepared on 18 September 2026 and last revised on 10 October 2026, based on our own
           testing. It will be reviewed when the items above are addressed, and at least once a year.
         </p>
       </Section>

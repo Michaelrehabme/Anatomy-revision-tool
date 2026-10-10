@@ -72,8 +72,8 @@ describe('AccessibilityPage', () => {
 describe('AccessibilityPage, as revised on 5 October 2026', () => {
   it('is dated', () => {
     const text = renderPage();
-    expect(text).toMatch(/5 October 2026/);
-    expect(text).toMatch(/last revised on 5 October 2026/);
+    expect(text).toMatch(/10 October 2026/);
+    expect(text).toMatch(/last revised on 10 October 2026/);
   });
 
   it('says what was tested and how, and makes no conformance claim', () => {
@@ -85,10 +85,11 @@ describe('AccessibilityPage, as revised on 5 October 2026', () => {
     expect(text).not.toMatch(/\b(conforms|complies|meets WCAG|WCAG[- ]compliant)\b/i);
   });
 
-  it('does not say a screen reader announces or reads anything, because none has been run', () => {
+  it('claims only the one VoiceOver check that was done, and names what it did not cover', () => {
     const text = renderPage();
-    expect(text).toMatch(/We have not tested with a screen reader/);
-    expect(text).toMatch(/No session has been\s+run with NVDA or VoiceOver/);
+    expect(text).toMatch(/Screen-reader testing is one short check, not a full session/);
+    expect(text).toMatch(/Not listened to: multi-select answers, a locate\s+question answered in words, the results screen and the offline downloads/);
+    expect(text).toMatch(/No session has\s+been run with NVDA/);
     expect(text).not.toMatch(/\bannounced\b|\bannounces\b|reads it straight away|is read out/i);
   });
 
@@ -108,7 +109,7 @@ describe('AccessibilityPage, as revised on 5 October 2026', () => {
 
   it('limits picture descriptions to sessions', () => {
     const text = renderPage();
-    expect(text).toMatch(/cover sessions only, and have not been heard on a\s+screen reader/);
+    expect(text).toMatch(/cover sessions only, and have been heard on a screen\s+reader once/);
     expect(text).toMatch(/pictures on a structure card and in the Atlas have only a name/);
   });
 
