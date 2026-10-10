@@ -215,7 +215,7 @@ function buildOne(
         prompt: `Name the structure: ${buildIdentifyClue(structure)}`,
         choices,
         correctIndex,
-        explanation: summarizeStructure(structure),
+        explanation: summarizeStructure(structure, indexes.byId),
       });
     }
 
@@ -234,7 +234,7 @@ function buildOne(
         promptImageId: image.id,
         choices: imgChoices,
         correctIndex: imgCorrectIndex,
-        explanation: summarizeStructure(structure),
+        explanation: summarizeStructure(structure, indexes.byId),
       });
     }
     return out;
@@ -269,7 +269,7 @@ function buildOne(
         prompt: `What is the ${promptKind} of ${structure.name}?`,
         choices,
         correctIndex,
-        explanation: summarizeStructure(structure),
+        explanation: summarizeStructure(structure, indexes.byId),
       });
     }
 
@@ -293,7 +293,7 @@ function buildOne(
         prompt: `What nerve innervates ${structure.name}?`,
         choices,
         correctIndex,
-        explanation: summarizeStructure(structure),
+        explanation: summarizeStructure(structure, indexes.byId),
       });
     }
 
@@ -324,7 +324,7 @@ function buildOne(
         prompt: `What is the action of ${structure.name}?`,
         choices,
         correctIndex,
-        explanation: summarizeStructure(structure),
+        explanation: summarizeStructure(structure, indexes.byId),
       });
     }
     return out;
@@ -354,7 +354,7 @@ function buildOne(
         prompt: `What type of joint is the ${structure.name}?`,
         choices,
         correctIndex,
-        explanation: summarizeStructure(structure),
+        explanation: summarizeStructure(structure, indexes.byId),
       });
     }
   }

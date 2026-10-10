@@ -55,13 +55,18 @@ export function MobileIdentifyTypedSession({ question, imagesById, onAnswer, onN
   const correctAnswer = slots.length
     ? `${canonical} — attaches to ${slots.map((sl) => sl.accepted[0]).join(', ')}`
     : canonical;
+  // The name is the question. Where it attaches is a bonus: a student who
+  // names the ligament has identified it, and is not wrong for missing a
+  // site (the owner's rule, 10 Oct 2026). The boxes are still marked, so the
+  // student sees which sites they had.
+  const bonus = submitted && slots.length ? `Bonus: ${submitted.slotCorrect.filter(Boolean).length} of ${slots.length} attachment${slots.length === 1 ? '' : 's'}.` : '';
   const selectedAnswer = () => (slots.length ? [attempt, ...slotInputs].join(' / ') : attempt);
 
   const handleSubmit = () => {
     if (submitted || !attempt.trim()) return;
     const nameCorrect = isAnswerMatch(attempt, question.acceptedAnswers);
     const graded = gradeTypedSlots(slotInputs, slots);
-    const correct = nameCorrect && graded.allCorrect;
+    const correct = nameCorrect;
     setSubmitted({ correct, slotCorrect: graded.slotCorrect });
     if (examMode) {
       onAnswer({ structureId: question.structureId, correct, selectedAnswer: selectedAnswer(), correctAnswer });
@@ -137,7 +142,7 @@ export function MobileIdentifyTypedSession({ question, imagesById, onAnswer, onN
             value={slotInputs[i] ?? ''}
             onChange={(e) => setSlotInputs((prev) => prev.map((v, j) => (j === i ? e.target.value : v)))}
             disabled={!!submitted}
-            placeholder={`${slot.label} (${i + 1} of ${slots.length})`}
+            placeholder={`Bonus: ${slot.label.toLowerCase()} (${i + 1} of ${slots.length})`}
             aria-label={`${slot.label} ${i + 1}`}
             onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
             className="mt-3 w-full disabled:opacity-70"
@@ -196,7 +201,7 @@ export function MobileIdentifyTypedSession({ question, imagesById, onAnswer, onN
           title={submitted.correct ? 'Correct' : 'Not quite'}
           body={
             <>
-              <strong className="font-semibold">{correctAnswer}.</strong> {question.explanation}
+              <strong className="font-semibold">{correctAnswer}.</strong> {bonus} {question.explanation}
             </>
           }
           onFullCard={onFullCard}

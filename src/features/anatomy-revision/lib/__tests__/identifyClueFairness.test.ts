@@ -66,7 +66,7 @@ describe('a clue question has one right answer', () => {
   it('does not ask a ligament by a bone list its neighbours share', () => {
     const hip = ALL_STRUCTURES.filter((s) => areasOf(s).includes('hip'));
     const questions = buildMcqQuestions(hip, ALL_IMAGES, buildIndexes(hip), createRng(1), { promptKinds: ['identify'] });
-    expect(questions.some((q) => q.prompt === 'Name the structure: attaches to: pelvis')).toBe(false);
+    expect(questions.some((q) => q.prompt === 'Name the structure: attaches to: pubis')).toBe(false);
     // Still asked, from its pictures.
     expect(questions.some((q) => q.id.startsWith('mcq-inferior-pubic-ligament-identify-image-'))).toBe(true);
   });
@@ -81,9 +81,9 @@ describe('a clue question has one right answer', () => {
   it('counts a ligament reaching the same bones, in any order or among others, as fitting a bone-list clue', () => {
     const byId = new Map(ALL_STRUCTURES.map((s) => [s.id, s]));
     const inferiorPubic = byId.get('inferior-pubic-ligament')!;
-    expect(buildIdentifyClue(inferiorPubic)).toBe('attaches to: pelvis');
-    expect(clueAlsoFits(inferiorPubic, byId.get('obturator-membrane')!)).toBe(true);
-    expect(clueAlsoFits(inferiorPubic, byId.get('sacrotuberous-ligament')!)).toBe(true);
+    expect(buildIdentifyClue(inferiorPubic)).toBe('attaches to: pubis');
+    expect(clueAlsoFits(inferiorPubic, byId.get('superior-pubic-ligament')!)).toBe(true);
+    expect(clueAlsoFits(inferiorPubic, byId.get('pubofemoral-ligament')!)).toBe(true);
     expect(clueAlsoFits(inferiorPubic, byId.get('anterior-cruciate-ligament')!)).toBe(false);
   });
 });
@@ -162,5 +162,24 @@ describe('a fill-in-the-blank says what it is about', () => {
 
   it('does not blank a word the name above it supplies', () => {
     expect(questions.filter((q) => q.structureId === 'deltoid-tuberosity' && q.answer === 'Deltoid')).toEqual([]);
+  });
+});
+
+describe('a ligament attaches to a part of a bone, where the app holds the part', () => {
+  const byId = new Map(ALL_STRUCTURES.map((s) => [s.id, s]));
+  const ligaments = ALL_STRUCTURES.filter(isLigament);
+
+  it('never to "the pelvis", which is three bones', () => {
+    expect(ligaments.filter((l) => l.attachmentStructureIds.includes('pelvis')).map((l) => l.id)).toEqual([]);
+  });
+
+  it('never to a bone and to a landmark on that bone at once', () => {
+    const both = ligaments.filter((l) =>
+      l.attachmentStructureIds.some((id) => {
+        const site = byId.get(id);
+        return site?.category === 'landmark' && !!site.parentBoneId && l.attachmentStructureIds.includes(site.parentBoneId);
+      }),
+    );
+    expect(both.map((l) => l.id)).toEqual([]);
   });
 });

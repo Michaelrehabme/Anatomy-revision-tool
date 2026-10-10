@@ -1,3 +1,4 @@
+import { containerIds } from '../attachmentSites';
 import {
   areasOf,
   isBone,
@@ -95,6 +96,12 @@ interface Part {
   items: string[];
   /** What each item claims, in a form two structures can be compared by: an id, or normalised text. */
   claims: string[];
+  /**
+   * The bones the named items are parts of. "Attaches to: Tibia; Femur" says
+   * nothing false about a ligament that attaches to the lateral condyle of
+   * the femur, so a claim one of these covers is one of this structure's own.
+   */
+  covers?: string[];
 }
 
 const CHOICES = 4;
@@ -181,14 +188,22 @@ function mentions(text: string, distinctive: ReadonlySet<string>): boolean {
  * Everything the seed says about where a structure is, as labelled parts, in
  * a fixed order per category. Empty when it says nothing.
  */
-function partsOf(structure: AnatomyStructure, nameOf: (id: string) => string | undefined): Part[] {
+function partsOf(
+  structure: AnatomyStructure,
+  nameOf: (id: string) => string | undefined,
+  entryOf: (id: string) => StructureIndexEntry | undefined = () => undefined,
+): Part[] {
   const text = (label: string, values: readonly string[]): Part => {
     const items = values.map((v) => v.trim().replace(/\.$/, '')).filter(Boolean);
     return { label, items, claims: items.map(normalise) };
   };
   const named = (label: string, ids: readonly string[]): Part => {
     const known = ids.filter((id) => nameOf(id));
-    return { label, items: known.map((id) => plainStructureName(nameOf(id)!)), claims: known };
+    const covers = known.flatMap((id) => {
+      const entry = entryOf(id);
+      return entry ? [...containerIds(entry), ...(entry.category === 'landmark' && entry.parentBoneId ? [entry.parentBoneId] : [])] : [];
+    });
+    return { label, items: known.map((id) => plainStructureName(nameOf(id)!)), claims: known, covers };
   };
 
   let parts: Part[] = [];
@@ -213,7 +228,9 @@ function render(parts: readonly Part[]): string {
 /** `a` says nothing `b` does not: every claim is one of b's, or the same words inside one of them. */
 function claimsWithin(a: Part, b: Part | undefined): boolean {
   if (!b) return false;
-  return a.claims.every((claim) => b.claims.some((other) => other === claim || ` ${other} `.includes(` ${claim} `)));
+  return a.claims.every(
+    (claim) => b.covers?.includes(claim) || b.claims.some((other) => other === claim || ` ${other} `.includes(` ${claim} `)),
+  );
 }
 
 /** What the asked structure and a candidate have in common that makes the candidate a near neighbour. */
@@ -302,7 +319,7 @@ export function createDescribedRegionBuilder({ loaded, index = loaded }: Describ
   const allParts = new Map<string, Part[]>();
   const partsFor = (s: AnatomyStructure) => {
     let parts = allParts.get(s.id);
-    if (!parts) allParts.set(s.id, (parts = partsOf(s, nameOf)));
+    if (!parts) allParts.set(s.id, (parts = partsOf(s, nameOf, (id) => indexById.get(id))));
     return parts;
   };
 

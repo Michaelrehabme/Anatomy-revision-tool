@@ -99,7 +99,7 @@ export const FAMILIES: FamilyProvenance[] = [
     scope: "Attachments checked against named works. The descriptions are not yet checked.",
     checked: 165,
     held: 0,
-    lastChecked: "2026-10-04",
+    lastChecked: "2026-10-08",
     works: [2, 3, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
   },
 ];

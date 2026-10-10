@@ -2,13 +2,18 @@ import { isMuscle, isBone, isLandmark, isJoint, isLigament, reviewedAttachmentId
 import type { AnatomyStructure, LigamentStructure } from '../types/structure';
 import { REGION_LABELS, SUBREGION_LABELS, AREA_LABELS } from '../types/region';
 import type { OinaPromptKind } from '../types/question';
+import type { StructureIndexEntry } from '../types/structureIndex';
+import { siteLabel } from './attachmentSites';
+
+/** Every structure by id, for naming a ligament's attachments as "landmark of bone". */
+export type SiteLookup = ReadonlyMap<string, StructureIndexEntry>;
 
 /**
  * Shared fact-line builder used by flashcards, MCQ explanations, and
  * StructureFactsPanel — one place that knows how to turn any category of
  * AnatomyStructure into readable prose lines.
  */
-export function describeStructure(s: AnatomyStructure): string[] {
+export function describeStructure(s: AnatomyStructure, sites?: SiteLookup): string[] {
   // Leads with the area, since that is what the user filtered by (CR-017). A
   // structure can sit in several — a pedicle revises under all three spine levels —
   // so they are all named. The finer subregion is kept in brackets where it adds
@@ -40,7 +45,13 @@ export function describeStructure(s: AnatomyStructure): string[] {
   } else if (isLigament(s)) {
     const attachments = reviewedAttachmentIds(s);
     if (attachments.length) {
-      lines.push(`Attaches to: ${attachments.map((id) => id.replace(/-/g, ' ')).join('; ')}`);
+      // "Greater Trochanter of the femur" where the caller can look the site
+      // up; the id as words where it cannot.
+      const named = attachments.map((id) => {
+        const site = sites?.get(id);
+        return site ? siteLabel(site, sites!) : siteName(id);
+      });
+      lines.push(`Attaches to: ${named.join('; ')}`);
     }
     if (s.jointId) lines.push(`Stabilises: ${s.jointId.replace(/-/g, ' ')}`);
   } else if (isJoint(s)) {
@@ -59,8 +70,8 @@ export function describeStructure(s: AnatomyStructure): string[] {
   return lines;
 }
 
-export function summarizeStructure(s: AnatomyStructure): string {
-  return [s.description, ...describeStructure(s)].join('\n');
+export function summarizeStructure(s: AnatomyStructure, sites?: SiteLookup): string {
+  return [s.description, ...describeStructure(s, sites)].join('\n');
 }
 
 /**
@@ -129,7 +140,10 @@ export function ligamentCourse(s: LigamentStructure): string | undefined {
   return sentence;
 }
 
-const attachmentClue = (ids: string[]) => `attaches to: ${ids.map((id) => id.replace(/-/g, ' ')).join('; ')}`;
+/** An attachment's id as words: "ischial tuberosity", and "AIIS" for the three spines known by their initials. */
+const siteName = (id: string) => (/^(?:aiis|asis|psis)$/.test(id) ? id.toUpperCase() : id.replace(/-/g, ' '));
+
+const attachmentClue = (ids: string[]) => `attaches to: ${ids.map(siteName).join('; ')}`;
 
 /**
  * A short text "clue" built from a structure's own facts, used as the

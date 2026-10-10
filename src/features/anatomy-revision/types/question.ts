@@ -124,7 +124,8 @@ export interface TypedIdentifyQuestion extends RevisionQuestionBase {
   /**
    * One extra box per attachment, for ligaments: a two-attachment ligament
    * gets two, graded order-independently by lib/oinaAnswer's gradeTypedSlots.
-   * The question is correct only when the name AND every attachment are.
+   * A bonus: the name alone decides whether the question is right (10 Oct
+   * 2026). The boxes are marked so the student sees which sites they had.
    * Absent for everything that is not a ligament.
    */
   attachmentSlots?: { label: string; accepted: string[] }[];

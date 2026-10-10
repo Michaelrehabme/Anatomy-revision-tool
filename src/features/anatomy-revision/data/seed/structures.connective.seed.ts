@@ -53,7 +53,7 @@ export const CONNECTIVE_STRUCTURES: LigamentStructure[] = [
     description:
       'A fibrous band on the palmar side of the hand near the wrist. It bridges the carpal arch from the scaphoid tubercle and trapezium on the radial side to the pisiform and the hook of the hamate on the ulnar side, and its deep surface forms the roof of the carpal tunnel.',
     aliases: ['Transverse Carpal Ligament', 'Anterior Annular Ligament'],
-    attachmentStructureIds: ['scaphoid-tubercle', 'trapezium', 'pisiform', 'hook-of-hamate', 'carpals'],
+    attachmentStructureIds: ['scaphoid-tubercle', 'trapezium', 'pisiform', 'hook-of-hamate'],
     imageIds: [],
     eligibility: { flashcard: true, mcq: true, locate: false },
     difficulty: 'medium',
@@ -70,7 +70,7 @@ export const CONNECTIVE_STRUCTURES: LigamentStructure[] = [
     description:
       'A strong fibrous band extending obliquely across the back of the wrist, a thickening of the deep fascia of the forearm that holds the extensor tendons in place. It attaches to the distal radius towards the styloid process and to the pisiform and triquetrum, and not to the ulna — which lets the radius rotate beneath the tendons.',
     aliases: ['Dorsal Carpal Ligament', 'Posterior Annular Ligament'],
-    attachmentStructureIds: ['radius', 'radial-styloid-process', 'pisiform', 'triquetrum', 'carpals'],
+    attachmentStructureIds: ['radial-styloid-process', 'pisiform', 'triquetrum'],
     imageIds: [],
     eligibility: { flashcard: true, mcq: true, locate: false },
     difficulty: 'medium',
@@ -87,7 +87,7 @@ export const CONNECTIVE_STRUCTURES: LigamentStructure[] = [
       'The main stabiliser of the distal radioulnar joint, formed by the triangular fibrocartilage disc together with the radioulnar and ulnocarpal ligaments. The disc attaches by thick tissue to the base of the ulnar styloid and by thinner tissue to the edge of the radius.',
     aliases: ['TFCC'],
     abbreviation: 'TFCC',
-    attachmentStructureIds: ['ulnar-styloid-process', 'ulna', 'radius'],
+    attachmentStructureIds: ['ulnar-styloid-process', 'radius'],
     jointId: 'distal-radioulnar-joint',
     imageIds: [],
     eligibility: { flashcard: true, mcq: true, locate: false },
@@ -123,7 +123,7 @@ export const CONNECTIVE_STRUCTURES: LigamentStructure[] = [
     description:
       'The distal portion of the common tendon of the quadriceps femoris, continued from the patella to the tibial tuberosity. It is called a ligament because it runs bone to bone, though it is the continuation of a tendon.',
     aliases: ['Patellar Tendon'],
-    attachmentStructureIds: ['patella', 'tibial-tuberosity', 'tibia'],
+    attachmentStructureIds: ['patella', 'tibial-tuberosity'],
     jointId: 'patellofemoral-joint',
     imageIds: [],
     eligibility: { flashcard: true, mcq: true, locate: false },
@@ -141,7 +141,7 @@ export const CONNECTIVE_STRUCTURES: LigamentStructure[] = [
     description:
       'The thick connective tissue aponeurosis supporting the arch on the plantar side of the foot. It runs from the tuberosity of the calcaneus forward to the heads of the metatarsal bones.',
     aliases: ['Plantar Aponeurosis'],
-    attachmentStructureIds: ['calcaneal-tuberosity', 'calcaneus', 'metatarsals', 'tarsals'],
+    attachmentStructureIds: ['calcaneal-tuberosity', 'calcaneus', 'metatarsals'],
     imageIds: [],
     eligibility: { flashcard: true, mcq: true, locate: false },
     difficulty: 'easy',
@@ -175,7 +175,7 @@ export const CONNECTIVE_STRUCTURES: LigamentStructure[] = [
     description:
       'A band running from the pubic tubercle to the anterior superior iliac spine, formed by the rolled lower border of the external oblique aponeurosis. It is the boundary between the abdomen and the thigh.',
     aliases: ['Poupart’s Ligament'],
-    attachmentStructureIds: ['pubic-tubercle', 'asis', 'pelvis'],
+    attachmentStructureIds: ['pubic-tubercle', 'asis'],
     imageIds: [],
     eligibility: { flashcard: true, mcq: true, locate: false },
     difficulty: 'medium',
@@ -192,7 +192,7 @@ export const CONNECTIVE_STRUCTURES: LigamentStructure[] = [
     description:
       'A thick, very tough triangular capsular ligament in front of the hip joint. It attaches superiorly at the anterior inferior iliac spine and the adjacent margin of the acetabulum, and inferiorly at the intertrochanteric line.',
     aliases: ['Y Ligament of Bigelow'],
-    attachmentStructureIds: ['aiis', 'intertrochanteric-line', 'pelvis', 'femur'],
+    attachmentStructureIds: ['aiis', 'acetabulum', 'intertrochanteric-line'],
     jointId: 'hip-joint',
     imageIds: [],
     eligibility: { flashcard: true, mcq: true, locate: false },
@@ -210,7 +210,7 @@ export const CONNECTIVE_STRUCTURES: LigamentStructure[] = [
     description:
       'Paired ligaments connecting the dens of the axis to tubercles on the medial side of each occipital condyle. They are the main check on rotation of the head.',
     aliases: [],
-    attachmentStructureIds: ['dens-odontoid-process', 'axis-c2', 'occipital-bone'],
+    attachmentStructureIds: ['dens-odontoid-process', 'occipital-bone'],
     jointId: 'atlantoaxial-joint',
     imageIds: [],
     eligibility: { flashcard: true, mcq: true, locate: false },
@@ -228,7 +228,7 @@ export const CONNECTIVE_STRUCTURES: LigamentStructure[] = [
     description:
       'A broad, tough ligament arching across the ring of the atlas behind the dens, keeping the dens in contact with the anterior arch. It attaches either side onto a small prominent tubercle on the medial aspect of each lateral mass of the atlas.',
     aliases: [],
-    attachmentStructureIds: ['lateral-mass-atlas', 'atlas-c1', 'dens-odontoid-process'],
+    attachmentStructureIds: ['lateral-mass-atlas', 'dens-odontoid-process'],
     jointId: 'atlantoaxial-joint',
     imageIds: [],
     eligibility: { flashcard: true, mcq: true, locate: false },
@@ -265,7 +265,7 @@ export const CONNECTIVE_STRUCTURES: LigamentStructure[] = [
     description:
       'The fibrous midline of the abdominal wall, formed where the aponeuroses of the flat abdominal muscles interlace. It attaches to the xiphoid process superiorly and to the pubic symphysis inferiorly.',
     aliases: [],
-    attachmentStructureIds: ['xiphoid-process', 'sternum', 'pubis'],
+    attachmentStructureIds: ['xiphoid-process', 'pubis'],
     imageIds: [],
     eligibility: { flashcard: true, mcq: true, locate: false },
     difficulty: 'medium',

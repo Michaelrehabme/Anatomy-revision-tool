@@ -1,3 +1,4 @@
+import { siteLabel } from './attachmentSites';
 import type { AnatomyImageAsset, HotspotPolygon } from '../types/image';
 import { SUBREGION_LABELS, REGION_LABELS } from '../types/region';
 import {
@@ -271,7 +272,11 @@ function relationSentences(subject: AnatomyStructure, structuresById: ReadonlyMa
   }
   if (isLigament(subject)) {
     const out: string[] = [];
-    const bones = names(reviewedAttachmentIds(subject));
+    // "the greater trochanter of the femur": the part, and the bone it is on.
+    const bones = reviewedAttachmentIds(subject).flatMap((id) => {
+      const site = structuresById.get(id);
+      return site ? [siteLabel(site, structuresById)] : [];
+    });
     if (bones.length) out.push(`It attaches to the ${list(bones.map((b) => b.toLowerCase()))}.`);
     const joint = subject.jointId ? plainName(structuresById.get(subject.jointId)) : undefined;
     if (joint) out.push(`It belongs to the ${joint}.`);

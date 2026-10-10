@@ -5,6 +5,7 @@ import type { JointMovement } from '../../types/structure';
 import { buildIndexes } from '../indexes';
 import { buildMultiSelectQuestions } from '../questionGenerators/multiSelect';
 import { createRng } from '../rng';
+import { siteLabel } from '../attachmentSites';
 
 describe('buildMultiSelectQuestions', () => {
   const indexes = buildIndexes(ALL_STRUCTURES);
@@ -47,21 +48,25 @@ describe('buildMultiSelectQuestions', () => {
     const result = buildMultiSelectQuestions(ALL_STRUCTURES, indexes, createRng(3))
       .filter((q) => q.id.startsWith('multiselect-ligament-attachment-'));
     expect(result.length).toBeGreaterThan(0);
-    const byName = new Map(ALL_STRUCTURES.map((s) => [s.name, s]));
+    const byId = new Map(ALL_STRUCTURES.map((s) => [s.id, s]));
+    // Choices read "Greater Trochanter of the femur" (attachmentSites.ts).
+    const byLabel = new Map(ALL_STRUCTURES.map((s) => [siteLabel(s, byId), s]));
     for (const q of result) {
       const lig = ALL_STRUCTURES.find((s) => s.id === q.structureId);
       if (!lig || !isLigament(lig)) throw new Error(`${q.structureId} is not a ligament`);
       const correct = new Set(lig.attachmentStructureIds);
+      const parentOf = (id: string) => { const s = byId.get(id); return s?.category === 'landmark' ? s.parentBoneId : undefined; };
       q.choices.forEach((name, i) => {
         if (q.correctIndices.includes(i)) return;
-        const s = byName.get(name);
-        // Every wrong answer is a whole bone that is neither an attachment nor
-        // the parent of one: "lateral malleolus" must not sit beside "fibula".
-        expect(s?.category).toBe('bone');
+        const s = byLabel.get(name);
+        // Every wrong answer is a bone or a part of one that is neither an
+        // attachment, nor the bone an attachment is on, nor a part of a bone
+        // that is one: "lateral malleolus" must not sit beside "fibula".
+        expect(s && (s.category === 'bone' || s.category === 'landmark'), `${q.structureId}: ${name}`).toBe(true);
         expect(correct.has(s!.id)).toBe(false);
-        for (const l of ALL_STRUCTURES) {
-          if (l.category === 'landmark' && l.parentBoneId === s!.id) expect(correct.has(l.id)).toBe(false);
-        }
+        expect([...correct].map(parentOf).includes(s!.id), `${q.structureId}: ${name} is the bone of an attachment`).toBe(false);
+        const parent = parentOf(s!.id);
+        if (parent && parent !== 'pelvis') expect(correct.has(parent), `${q.structureId}: ${name} is on an attached bone`).toBe(false);
       });
     }
   });

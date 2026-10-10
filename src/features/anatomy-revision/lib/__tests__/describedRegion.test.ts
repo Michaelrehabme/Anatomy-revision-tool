@@ -86,16 +86,16 @@ function seedValues(s: AnatomyStructure): Map<string, string[]> {
 }
 
 describe('described-region questions: coverage', () => {
-  it('covers 575 of the 595 locate questions, in every family', () => {
+  it('covers 574 of the 595 locate questions, in every family', () => {
     expect(locate).toHaveLength(595);
-    expect(built).toHaveLength(575);
+    expect(built).toHaveLength(574);
     const perCategory = (rows: { q: { category: string } }[]) =>
       Object.fromEntries(['muscle', 'ligament', 'landmark', 'joint', 'bone'].map((c) => [c, rows.filter((r) => r.q.category === c).length]));
     expect(perCategory(results)).toEqual({ muscle: 124, ligament: 151, landmark: 202, joint: 34, bone: 84 });
-    expect(perCategory(built)).toEqual({ muscle: 124, ligament: 150, landmark: 192, joint: 34, bone: 75 });
+    expect(perCategory(built)).toEqual({ muscle: 124, ligament: 149, landmark: 192, joint: 34, bone: 75 });
   });
 
-  it('and the twenty it does not are these, each for a reason the list route then covers', () => {
+  it('and the twenty-one it does not are these, each for a reason the list route then covers', () => {
     const why = new Map<string, DescribedRegionGap>();
     for (const { q, built: reason } of gaps) why.set(q.targetStructureId, reason as DescribedRegionGap);
     expect(Object.fromEntries([...why].sort(([a], [b]) => a.localeCompare(b)))).toEqual({
@@ -103,6 +103,7 @@ describe('described-region questions: coverage', () => {
       'external-intercostal-membrane': 'no-data',
       pedicle: 'no-data',
       // All the seed holds is in the name: "Neck of Fibula" is part of the fibula.
+      'glenoid-labrum': 'name-gives-it-away',
       'intervertebral-disc': 'name-gives-it-away',
       'neck-of-fibula': 'name-gives-it-away',
       'phalanges-distal-foot': 'name-gives-it-away',
@@ -112,7 +113,7 @@ describe('described-region questions: coverage', () => {
       'surgical-neck-humerus': 'name-gives-it-away',
       'vertebral-body': 'name-gives-it-away',
     });
-    expect(gaps).toHaveLength(20);
+    expect(gaps).toHaveLength(21);
   });
 });
 
@@ -316,7 +317,7 @@ describe('described-region questions: from one area\'s facts', () => {
     // than with everything loaded — an area with two bones cannot supply three
     // wrong descriptions of a bone — and those fall back to the list.
     expect(total).toBe(661);
-    expect(covered).toBe(488);
+    expect(covered).toBe(487);
   });
 
   it('names a bone from another area through the index, with no facts loaded for it', () => {

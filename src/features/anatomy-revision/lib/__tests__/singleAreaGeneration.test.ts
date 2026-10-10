@@ -12,6 +12,7 @@ import { createRng } from '../rng';
 import { AREAS, type Area } from '../../types/region';
 import { areasOf, JOINT_MOVEMENTS, JOINT_TYPE_LABELS, type AnatomyStructure } from '../../types/structure';
 import type { QuestionType, RevisionQuestion } from '../../types/question';
+import { siteLabel } from '../attachmentSites';
 
 /**
  * QUESTIONS FROM ONE AREA'S FACTS
@@ -111,7 +112,9 @@ const vocabularyStrings = new Set<string>([
   ...vocabulary.specialTests,
   ...Object.values(vocabulary.arteries).flatMap((byRegion) => Object.values(byRegion).flat()).flatMap((a) => [a, choiceName(a)]),
 ]);
-const names = new Set(index.map((e) => e.name));
+// A name, and the same name as a select-all choice prints it: "Greater Trochanter of the femur".
+const indexById = new Map(index.map((e) => [e.id, e]));
+const names = new Set(index.flatMap((e) => [e.name, siteLabel(e, indexById)]));
 
 /** Fact strings that exist ONLY in areas other than the loaded ones, and are in no bundled list. */
 function factsNotServed(loadedAreas: readonly Area[]): Set<string> {

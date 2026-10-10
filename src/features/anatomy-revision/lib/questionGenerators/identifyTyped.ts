@@ -6,6 +6,7 @@ import type { AnatomyImageAsset } from '../../types/image';
 import type { TypedIdentifyQuestion } from '../../types/question';
 import { summarizeStructure } from '../facts';
 import { promptImagesFor } from './promptImages';
+import { siteLabel } from '../attachmentSites';
 import { questionBase } from './questionBase';
 
 /**
@@ -43,7 +44,12 @@ export function buildIdentifyTypedQuestions(
     const attachmentSlots = isLigament(structure)
       ? reviewedAttachmentIds(structure).flatMap((id) => {
           const bone = byId.get(id);
-          return bone ? [{ label: 'Attaches to', accepted: structureNameVariants(bone.name, bone.aliases) }] : [];
+          if (!bone) return [];
+          // Shown as "landmark of bone"; the landmark alone is still right,
+          // and so is anything its name already accepted.
+          const variants = structureNameVariants(bone.name, bone.aliases);
+          const label = siteLabel(bone, byId);
+          return [{ label: 'Attaches to', accepted: variants.includes(label) ? variants : [label, ...variants] }];
         })
       : [];
 
@@ -57,7 +63,7 @@ export function buildIdentifyTypedQuestions(
         promptImageId: image.id,
         acceptedAnswers: structureNameVariants(structure.name, structure.aliases),
         ...(attachmentSlots.length ? { attachmentSlots } : {}),
-        explanation: summarizeStructure(structure),
+        explanation: summarizeStructure(structure, byId),
       });
     }
   }

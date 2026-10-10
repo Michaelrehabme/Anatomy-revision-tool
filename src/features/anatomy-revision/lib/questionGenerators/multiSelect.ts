@@ -13,6 +13,7 @@ import type { MultiSelectQuestion } from '../../types/question';
 import type { StructureIndexes } from '../indexes';
 import { pickStructureDistractors } from '../distractors';
 import { canonicalNerveNames, conflictsWith } from '../oinaValues';
+import { containerIds, siteLabel } from '../attachmentSites';
 import { shuffle, sample, type Rng } from '../rng';
 import { questionBase } from './questionBase';
 
@@ -232,8 +233,11 @@ function buildLigamentAttachmentQuestions(
   // reads, and the bone may be in an area whose facts are not loaded.
   const byId = new Map(names.map((s) => [s.id, s]));
   const isBony = (s: StructureIndexEntry) => s.category === 'bone' || s.category === 'landmark';
-  const nameOf = (id: string) =>
-    byId.get(id)?.name ?? id.replace(/-/g, ' ').replace(/^[a-z]/, (c) => c.toUpperCase());
+  // "Greater Trochanter of the femur": the part, and the bone it is on.
+  const nameOf = (id: string) => {
+    const site = byId.get(id);
+    return site ? siteLabel(site, byId) : id.replace(/-/g, ' ').replace(/^[a-z]/, (c) => c.toUpperCase());
+  };
   const questions: MultiSelectQuestion[] = [];
 
   for (const lig of pool.filter(isLigament)) {
@@ -253,27 +257,46 @@ function buildLigamentAttachmentQuestions(
     // punishes the student who knows more precisely where. So a correct
     // landmark rules out its parent bone and a correct bone rules out every
     // landmark on it, and only whole bones remain as wrong answers.
+    //
+    // Since 10 Oct 2026 the right answers are mostly parts of bones, so parts
+    // of bones are offered as wrong answers too — a list of whole bones with
+    // one "…of the femur" in it marks its own answer. But never a part of a
+    // bone this ligament reaches: the attachments name the site the source
+    // names, and the lesser trochanter may be a few fibres from the greater.
     const related = new Set<string>();
-    for (const s of names) {
-      if (s.category === 'landmark' && s.parentBoneId) {
-        if (correct.has(s.id)) related.add(s.parentBoneId);
-        if (correct.has(s.parentBoneId)) related.add(s.id);
-      }
+    const reached = new Set<string>(attachments);
+    for (const id of attachments) {
+      const site = byId.get(id);
+      if (!site) continue;
+      for (const container of containerIds(site)) reached.add(container);
+      // The whole bone a correct part is on is never a wrong answer.
+      if (site.category === 'landmark' && site.parentBoneId) related.add(site.parentBoneId);
     }
+    for (const s of names) {
+      if (s.category !== 'landmark') continue;
+      const onReachedBone = !!s.parentBoneId && s.parentBoneId !== 'pelvis' && reached.has(s.parentBoneId);
+      if (onReachedBone || containerIds(s).some((container) => reached.has(container))) related.add(s.id);
+    }
+    for (const container of reached) related.add(container);
     const ligAreas = areasOf(lig);
+    const wholeBonesOnly = attachments.every((id) => byId.get(id)?.category !== 'landmark');
     const distractorPool = names.filter(
-      (s) => s.category === 'bone' && !correct.has(s.id) && !related.has(s.id) && areasOf(s).some((a) => ligAreas.includes(a)),
+      (s) =>
+        (s.category === 'bone' || (!wholeBonesOnly && s.category === 'landmark')) &&
+        !correct.has(s.id) &&
+        !related.has(s.id) &&
+        areasOf(s).some((a) => ligAreas.includes(a)),
     );
     const distractors = sample(distractorPool, Math.min(MAX_DISTRACTORS, distractorPool.length), rng);
     if (distractors.length < 2) continue;
 
     const correctNames = attachments.map(nameOf);
-    const choices = shuffle([...correctNames, ...distractors.map((s) => s.name)], rng);
+    const choices = shuffle([...correctNames, ...distractors.map((s) => siteLabel(s, byId))], rng);
     const correctSet = new Set(correctNames);
     questions.push({
       ...baseFields(lig, 'attachment'),
       id: `multiselect-ligament-attachment-${lig.id}`,
-      prompt: `Select ALL the bones the ${lig.name} ${attachVerb(lig.name)} to.`,
+      prompt: `Select ALL the ${wholeBonesOnly ? 'bones' : 'sites'} the ${lig.name} ${attachVerb(lig.name)} to.`,
       choices,
       correctIndices: choices.reduce<number[]>((acc, c, i) => (correctSet.has(c) ? [...acc, i] : acc), []),
       explanation: `The ${lig.name} ${attachVerb(lig.name)} to: ${correctNames.join(', ')}.`,

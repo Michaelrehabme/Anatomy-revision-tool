@@ -59,15 +59,19 @@ export function IdentifyTypedSession({ question, imagesById, onAnswer, onNext, e
   const correctAnswer = slots.length
     ? `${canonical} — attaches to ${slots.map((sl) => sl.accepted[0]).join(', ')}`
     : canonical;
+  // The name is the question. Where it attaches is a bonus: a student who
+  // names the ligament has identified it, and is not wrong for missing a
+  // site (the owner's rule, 10 Oct 2026). The boxes are still marked, so the
+  // student sees which sites they had.
+  const bonus = submitted && slots.length ? `Bonus: ${submitted.slotCorrect.filter(Boolean).length} of ${slots.length} attachment${slots.length === 1 ? '' : 's'}.` : '';
   const selectedAnswer = () => (slots.length ? [attempt, ...slotInputs].join(' / ') : attempt);
 
   const handleSubmit = () => {
     if (submitted || !attempt.trim()) return;
     const nameCorrect = isAnswerMatch(attempt, question.acceptedAnswers);
-    // Attachments are graded in any order; the question is right only when
-    // the name and every attachment are.
+    // Attachments are graded in any order, and do not decide the question.
     const graded = gradeTypedSlots(slotInputs, slots);
-    const correct = nameCorrect && graded.allCorrect;
+    const correct = nameCorrect;
     setSubmitted({ correct, slotCorrect: graded.slotCorrect });
     if (examMode) {
       onAnswer({ structureId: question.structureId, correct, selectedAnswer: selectedAnswer(), correctAnswer });
@@ -144,7 +148,7 @@ export function IdentifyTypedSession({ question, imagesById, onAnswer, onNext, e
                   value={slotInputs[i] ?? ''}
                   onChange={(e) => setSlotInputs((prev) => prev.map((v, j) => (j === i ? e.target.value : v)))}
                   disabled={!!submitted}
-                  placeholder={`${slot.label} (${i + 1} of ${slots.length})`}
+                  placeholder={`Bonus: ${slot.label.toLowerCase()} (${i + 1} of ${slots.length})`}
                   aria-label={`${slot.label} ${i + 1}`}
                   onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
                   className="w-full rounded-[3px] px-4 py-3 text-center disabled:opacity-70"
@@ -217,7 +221,7 @@ export function IdentifyTypedSession({ question, imagesById, onAnswer, onNext, e
                 {submitted.correct ? 'Correct' : 'Not quite'}
               </FeedbackHeading>
               <p className="mt-3.5 max-w-[56ch] text-lg leading-relaxed" style={{ color: 'var(--ink)' }}>
-                <strong className="font-semibold">{correctAnswer}.</strong> {question.explanation}
+                <strong className="font-semibold">{correctAnswer}.</strong> {bonus} {question.explanation}
               </p>
               {rated && (
                 <Button onClick={onNext} className="mt-6 min-w-[180px] min-h-[50px]">
