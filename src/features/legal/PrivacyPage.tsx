@@ -1,6 +1,8 @@
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { LegalLayout, legalHeading, legalProse } from './LegalLayout';
 import { INACTIVITY_LABEL } from '../anatomy-revision/data/retention';
+import { DIAGNOSTIC_SIZE, MIN_PAIRED } from '../anatomy-revision/lib/diagnostic';
 
 /**
  * /privacy — CR-025 item 1.
@@ -41,9 +43,21 @@ const EMAIL = 'michael@rehabme.uk';
  */
 const ICO_REGISTRATION = 'ZC247309';
 
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
+/**
+ * The fewest students who must have sat both tests before a class figure is
+ * used OUTSIDE the course. docs/CLAIMS.md, "What a pilot needs before an
+ * outcome claim goes public", condition 1. Stating it here binds it: lowering
+ * it there means changing this page first, and telling the classes already
+ * sitting. privacyPage.test.tsx holds the two together.
+ */
+export const PUBLIC_FIGURE_MIN_STUDENTS = 20;
+
+/** Where the baseline and follow-up cards send "How this is used". */
+export const DIAGNOSTIC_SECTION_ID = 'before-and-after-test';
+
+function Section({ title, id, children }: { title: string; id?: string; children: React.ReactNode }) {
   return (
-    <section className="mt-9">
+    <section className="mt-9" id={id} style={id ? { scrollMarginTop: 16 } : undefined}>
       <h2 style={legalHeading}>{title}</h2>
       <div className="mt-2 flex flex-col gap-3" style={legalProse}>
         {children}
@@ -53,8 +67,15 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 }
 
 export function PrivacyPage() {
+  // The page is loaded lazily, so a link to one of its sections arrives
+  // before the section exists and the browser has nothing to scroll to.
+  useEffect(() => {
+    const id = window.location.hash.slice(1);
+    if (id) document.getElementById(id)?.scrollIntoView?.();
+  }, []);
+
   return (
-    <LegalLayout title="Privacy policy" updated="6 October 2026">
+    <LegalLayout title="Privacy policy" updated="11 October 2026">
       <p className="mt-4" style={legalProse}>
         LocusMSK is an anatomy revision app for musculoskeletal students. This policy explains what it collects, why,
         how long it keeps it, and what you can do about it.
@@ -142,6 +163,73 @@ export function PrivacyPage() {
         <p>
           Leaving a class is a single action on your account screen, takes effect immediately, and stops any further
           visibility.
+        </p>
+      </Section>
+
+      {/*
+        THE DIAGNOSTIC (lib/diagnostic.ts, lib/diagnosticPapers.ts). Every
+        sentence here is something the code does or a limit docs/CLAIMS.md
+        sets, and privacyPage.test.tsx ties the ones that can drift to their
+        source:
+          - what a sitting stores: DiagnosticResult. A score, never the
+            answer given to each question;
+          - who can read it: firestore.rules gives users/{uid}/diagnostics to
+            the student and to an admin, and to no class owner;
+          - the class figure: scripts/cohortReport.ts, run by LocusMSK, over
+            the class's CURRENT members, one paper at a time, with MIN_PAIRED
+            as the floor. No educator screen shows it;
+          - deletion: 'diagnostics' is in USER_SUBCOLLECTIONS, so it leaves
+            with the account and is in the export.
+        NO LAWFUL BASIS IS STATED FOR IT YET. The section above gives three,
+        and which of them covers the class figure, and above all its use
+        outside the course, is the owner's to decide and has not been
+        decided (flagged 11 Oct 2026). Do not add one here by guessing.
+      */}
+      <Section title="The before-and-after test" id={DIAGNOSTIC_SECTION_ID}>
+        <p>
+          If you are in a class, the app offers you a short test twice: {DIAGNOSTIC_SIZE} questions soon after you
+          join, and the same {DIAGNOSTIC_SIZE} about ten weeks later. Sitting it is your choice. It is not a mark, it
+          changes nothing about what the app shows you or schedules for you, and nothing happens if you skip it.
+        </p>
+        <p>
+          <strong style={{ color: 'var(--ink)' }}>What is kept.</strong> For each sitting: your score out of{' '}
+          {DIAGNOSTIC_SIZE}, which paper you sat and which questions were on it, the date, how long you took, and the
+          class you were in. The answer you gave to each question is not kept, so nobody, including us, can see which
+          ones you got wrong.
+        </p>
+        <p>
+          <strong style={{ color: 'var(--ink)' }}>Why.</strong> To see whether a class&rsquo;s scores changed over a
+          term. One sitting on its own shows nothing, so a class figure counts only the students who sat both.
+        </p>
+        <p>
+          <strong style={{ color: 'var(--ink)' }}>Who can see your score.</strong> You can: it is shown to you when
+          you finish, and it is in Download my data. The person who runs LocusMSK can, because the class figure is
+          added up from each student&rsquo;s score. Your course leader cannot, and neither can anyone else in your
+          class. As with your answers, that is enforced by the database&rsquo;s permission rules.
+        </p>
+        <p>
+          <strong style={{ color: 'var(--ink)' }}>What your course leader may be told.</strong> One overall figure for
+          the class: the average score at the start and at the end, and how many students sat both. Never a name, and
+          never one student&rsquo;s score. No figure is given unless at least {MIN_PAIRED} students in the class sat
+          both tests on the same paper, because the average of a smaller group says too much about the people in it.
+          Nothing about the test appears on your course leader&rsquo;s screens; we work the figure out ourselves.
+        </p>
+        <p>
+          <strong style={{ color: 'var(--ink)' }}>Outside your course.</strong> An overall figure for a class, with no
+          names, may also be used outside the course, for example to describe what happened to one class&rsquo;s
+          scores over a term. That is done only for a class in which at least {PUBLIC_FIGURE_MIN_STUDENTS} students sat
+          both tests, only with your course leader&rsquo;s written agreement, and never in a way that could pick out
+          one student. Your course and university are not named without their permission.
+        </p>
+        <p>
+          <strong style={{ color: 'var(--ink)' }}>Leaving, and deleting.</strong> If you leave the class, you are left
+          out of any class figure worked out after that. Your scores stay in your account until it is deleted: Delete
+          my account removes them with everything else, straight away. To have the test scores removed without
+          deleting your account, email{' '}
+          <a href={`mailto:${EMAIL}`} style={{ color: 'var(--accd)' }}>
+            {EMAIL}
+          </a>
+          .
         </p>
       </Section>
 

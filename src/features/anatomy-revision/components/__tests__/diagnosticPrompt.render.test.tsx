@@ -48,6 +48,9 @@ describe('DiagnosticPrompt', () => {
     expect(screen.getByText(/never sees your score/)).toBeTruthy();
     // No promise about what a course leader will be shown: none of it is on any screen.
     expect(screen.queryByText(/class as a whole moved/)).toBeNull();
+    // Told before the baseline that a class figure may leave the course, and where to read how.
+    expect(screen.getByText(/may be used outside your course/)).toBeTruthy();
+    expect(screen.getByRole('link', { name: 'How this is used' }).getAttribute('href')).toBe('/privacy#before-and-after-test');
   });
 
   it('renders nothing at all once the baseline is done', async () => {

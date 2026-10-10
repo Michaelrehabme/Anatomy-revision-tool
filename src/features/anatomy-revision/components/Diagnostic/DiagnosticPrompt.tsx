@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useRepository } from '../../hooks/useRepository';
-import { nextDiagnosticPhase, promptCopy } from '../../lib/diagnosticPrompt';
+import { DIAGNOSTIC_PRIVACY_HREF, DIAGNOSTIC_PRIVACY_LABEL, nextDiagnosticPhase, promptCopy } from '../../lib/diagnosticPrompt';
 import type { DiagnosticResult } from '../../lib/diagnostic';
 import { areasPaperNeeds, resolveDiagnosticPaper } from '../../lib/diagnosticPapers';
 import type { Area } from '../../types/region';
@@ -111,7 +111,10 @@ export function DiagnosticPrompt({ uid, cohortId, joinedAt, sitting, onStart, co
       </div>
 
       <p className="mt-1.5" style={{ font: `400 ${compact ? 14 : 13}px/1.5 var(--font-ui)`, color: 'var(--ink2)' }}>
-        {copy.body}
+        {copy.body}{' '}
+        <a href={DIAGNOSTIC_PRIVACY_HREF} style={{ color: 'var(--accd)', textDecoration: 'underline', textUnderlineOffset: 3 }}>
+          {DIAGNOSTIC_PRIVACY_LABEL}
+        </a>
       </p>
 
       <button

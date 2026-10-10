@@ -188,13 +188,22 @@ a result. `outcomeComparison.ts` makes that split for the admin screen; it stays
 **Consent and anonymity**
 
 - Students were told, before the baseline, that class-level results may be reported outside
-  their course. **They are not told this today.** The baseline prompt says that the course
-  leader never sees their score and that one overall figure for the class "may be shared with
-  your course leader" — which is what happens, by `cohortReport`, and no more (6 Oct 2026: it
-  used to say the course leader "sees whether the class as a whole moved", and no educator
-  screen shows that). It does not mention anyone outside the course, and /privacy does not
-  mention the diagnostic. Both need a sentence added before a pilot's first baseline; a class
-  that sat it without that sentence cannot be quoted in public.
+  their course. **They are told from the release that carries the 11 Oct 2026 wording, and not
+  before it.** Both cards now say that one overall figure for the class, with no names in it,
+  "may be shared with your course leader and may be used outside your course", and link to
+  /privacy, which has a section on the test ("The before-and-after test": what a sitting keeps,
+  who can see a score, the floor of 8 for telling a course leader anything, the conditions
+  below for using a figure outside the course, and how to have the scores deleted). Until then
+  the baseline card said only that the figure "may be shared with your course leader" and
+  /privacy did not mention the test. **A baseline sat before that release was sat without
+  being told, and its class cannot be quoted in public** — check each baseline's `takenAt`
+  against the date the wording went live, and write that date in this file when it does.
+  The section commits to two numbers a student can now hold us to: no class figure to anyone
+  under 8 paired students on one paper (`MIN_PAIRED`), and none outside the course under 20
+  (condition 1 above, still marked "proposed" — the page states it, so lowering it means
+  changing the page first). /privacy states **no lawful basis** for the test: which of the
+  page's three covers the class figure and its use outside the course is undecided, and is
+  the owner's to settle before a pilot's first baseline.
 - Class totals only. No names, no per-student rows, no quote from a student without their own
   written permission. Educators see class results only; a public claim cannot show more than
   an educator can.

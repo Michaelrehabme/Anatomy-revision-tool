@@ -60,12 +60,14 @@ export function diagnosticReportLines(sittings: DiagnosticResult[]): string[] {
     lines.push(`  Mean before / after       ${before}% → ${after}%  (${after - before >= 0 ? '+' : ''}${after - before} points)`);
     lines.push(`  Improved                  ${paper.improved} of ${paper.paired}`);
     // MIN_PAIRED in lib/diagnostic.ts, asked of this paper alone. Printed
-    // rather than hidden: the course lead may see a small group's own
-    // figure, but nobody may quote it.
+    // rather than hidden, for whoever runs the report. It goes no further:
+    // /privacy tells students no class figure is given, to their course
+    // leader or anyone, below that many (11 Oct 2026; this used to say the
+    // course lead may see a small group's own figure).
     lines.push(
       paper.reportable
         ? '  Before quoting any of this, read docs/CLAIMS.md: what a pilot needs.'
-        : `  NOT QUOTABLE: under ${MIN_PAIRED} students sat this paper twice. See docs/CLAIMS.md.`,
+        : `  NOT QUOTABLE: under ${MIN_PAIRED} students sat this paper twice. Not for the course lead either: /privacy promises no figure below ${MIN_PAIRED}. See docs/CLAIMS.md.`,
     );
   }
   return lines;

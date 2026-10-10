@@ -97,7 +97,22 @@ export function nextDiagnosticPhase(input: DiagnosticPromptInput): 'baseline' | 
  * the copy now says that: the course leader never sees the score (true, and
  * enforced by the rules), and one figure for the class is worked out by us
  * and MAY be shared with them. Nothing is promised to appear anywhere.
+ *
+ * AND IT SAYS THE FIGURE MAY LEAVE THE COURSE (11 Oct 2026). docs/CLAIMS.md
+ * will not let a class be quoted in public unless its students were told,
+ * before the baseline, that a class-level figure may be reported outside
+ * their course. "Only that figure may be shared with your course leader" told
+ * them the opposite. Both cards now say it, and link to the section of
+ * /privacy that sets out the conditions (DIAGNOSTIC_PRIVACY_HREF, below).
  */
+/**
+ * The section of the privacy policy about the test. A plain address, not a
+ * router link: the card is rendered in places with no router above it.
+ * privacyPage.test.tsx holds it to the section's real id.
+ */
+export const DIAGNOSTIC_PRIVACY_HREF = '/privacy#before-and-after-test';
+export const DIAGNOSTIC_PRIVACY_LABEL = 'How this is used';
+
 export function promptCopy(phase: 'baseline' | 'followUp'): { title: string; body: string; cta: string } {
   return phase === 'baseline'
     ? {
@@ -105,7 +120,8 @@ export function promptCopy(phase: 'baseline' | 'followUp'): { title: string; bod
         body:
           'Fifteen questions, about six minutes. It does not count for anything, and your course '
           + 'leader never sees your score. We work out one overall figure for the class from the '
-          + 'students who sit it twice, and only that figure may be shared with your course leader. '
+          + 'students who sit it twice. That figure, with no names in it, may be shared with your '
+          + 'course leader and may be used outside your course. '
           + 'You will sit the same fifteen again at the end of term.',
         cta: 'Take the baseline',
       }
@@ -114,7 +130,8 @@ export function promptCopy(phase: 'baseline' | 'followUp'): { title: string; bod
         body:
           'You sat these when you joined. Sitting them again is the only way to see what has '
           + 'changed over the term. Your course leader never sees your score: only one overall '
-          + 'figure for the class may be shared with them.',
+          + 'figure for the class, with no names in it, may be shared with them or used outside '
+          + 'your course.',
         cta: 'Take the follow-up',
       };
 }

@@ -97,7 +97,9 @@ describe('DiagnosticScreen', () => {
   it('promises nothing about what a course leader will be shown', () => {
     setup();
     expect(screen.queryByText(/class as a whole moved/)).toBeNull();
-    expect(screen.getByText(/only that figure may be shared with your course leader/)).toBeTruthy();
+    expect(screen.getByText(/may be shared with your course leader and may be used outside your course/)).toBeTruthy();
+    // And where to read how: the section of the privacy policy about the test.
+    expect(screen.getByRole('link', { name: 'How this is used' }).getAttribute('href')).toBe('/privacy#before-and-after-test');
   });
 
   it('says which paper it is', () => {

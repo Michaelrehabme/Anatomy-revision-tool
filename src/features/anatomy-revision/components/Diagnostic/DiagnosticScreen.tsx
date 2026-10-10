@@ -16,7 +16,7 @@ import {
   buildPaperQuestions,
   type DiagnosticPaper,
 } from '../../lib/diagnosticPapers';
-import { promptCopy } from '../../lib/diagnosticPrompt';
+import { DIAGNOSTIC_PRIVACY_HREF, DIAGNOSTIC_PRIVACY_LABEL, promptCopy } from '../../lib/diagnosticPrompt';
 import { DiagnosticSession } from './DiagnosticSession';
 import { Button } from '../shared/Button';
 
@@ -177,7 +177,12 @@ export function DiagnosticScreen({
     return (
       <div className={wrap}>
         <h1 style={{ ...display, fontSize: 38, lineHeight: 1.12 }}>{copy.title}</h1>
-        <p className="mt-4" style={{ font: '400 17px/1.6 var(--font-ui)', color: 'var(--ink2)' }}>{copy.body}</p>
+        <p className="mt-4" style={{ font: '400 17px/1.6 var(--font-ui)', color: 'var(--ink2)' }}>
+          {copy.body}{' '}
+          <a href={DIAGNOSTIC_PRIVACY_HREF} style={{ color: 'var(--accd)', textDecoration: 'underline', textUnderlineOffset: 3 }}>
+            {DIAGNOSTIC_PRIVACY_LABEL}
+          </a>
+        </p>
         {which && questions.length > 0 && (
           <p className="mt-3" style={{ font: '400 15px/1.55 var(--font-ui)', color: 'var(--ink2)' }}>{which}</p>
         )}
