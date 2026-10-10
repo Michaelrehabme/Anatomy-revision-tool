@@ -253,6 +253,78 @@ describe('a published paper is never edited', () => {
     expect(removed.some((line) => line.startsWith('dx3.knee.') && line.includes('no longer'))).toBe(true);
   });
 
+  // 9 Oct 2026: the seed respelt names ("of the" dropped, ligaments in
+  // sentence case) and one origin. Seven questions each show a wrong answer
+  // spelt as it was published, so a follow-up reads as its baseline did.
+  describe('a wrong answer the seed has since respelt', () => {
+    const pinned = file.papers.flatMap((p) =>
+      Object.entries(p.publishedWording ?? {}).flatMap(([questionId, byStructure]) =>
+        Object.entries(byStructure).map(([structureId, pair]) => ({ p, questionId, structureId, pair })),
+      ),
+    );
+
+    it('is put back on these seven questions and no others', () => {
+      expect([...new Set(pinned.map((x) => x.questionId))].sort()).toEqual([
+        'dx3.ankle-foot.metatarsals.identify',
+        'dx3.hip.sartorius.origin',
+        'dx3.lumbar-spine.interspinous-ligaments.identify',
+        'dx3.thoracic-spine.costotransverse-ligament.identify',
+        'dx3.thoracic-spine.radiate-ligament-of-head-of-rib.identify',
+        'dx3.whole-body.sartorius.origin',
+        'dx3.wrist-hand.metacarpals.identify',
+      ]);
+    });
+
+    it('reads as published: the old spelling on the paper, the new one everywhere else', () => {
+      const built = (id: PaperId) => buildFromScope(paper(id), ALL_STRUCTURES, ALL_IMAGES).questions;
+      const choices = (id: PaperId, questionId: string) => built(id).find((q) => q.id === questionId)!.choices;
+      expect(choices('hip', 'dx3.hip.sartorius.origin')).toContain('Inferior ramus of pubis');
+      expect(choices('wrist-hand', 'dx3.wrist-hand.metacarpals.identify')).toContain('Distal Phalanges of the Hand (grouped)');
+      expect(choices('ankle-foot', 'dx3.ankle-foot.metatarsals.identify')).toContain('Proximal Phalanges of the Foot (grouped)');
+      expect(choices('lumbar-spine', 'dx3.lumbar-spine.interspinous-ligaments.identify')).toContain('Intertransverse Ligaments');
+      const byId = new Map(ALL_STRUCTURES.map((s) => [s.id, s]));
+      expect(byId.get('intertransverse-ligaments')!.name).toBe('Intertransverse ligaments');
+      expect(byId.get('phalanges-distal-hand')!.name).toBe('Distal Phalanges of Hand (grouped)');
+    });
+
+    it('is spelling only: a short fragment that names no structure and states no fact', () => {
+      const names = ALL_STRUCTURES.flatMap((s) => [s.name, ...s.aliases].map((n) => n.toLowerCase()));
+      const facts = ALL_STRUCTURES.flatMap((s) => (isMuscle(s) ? [...s.origin, ...s.insertion, s.actionText] : [])).map((f) => f.toLowerCase());
+      expect(pinned.length).toBeGreaterThan(0);
+      for (const { questionId, pair } of pinned) {
+        expect(pair, questionId).toHaveLength(2);
+        for (const fragment of pair) {
+          expect(fragment.length, `${questionId}: "${fragment}"`).toBeLessThanOrEqual(12);
+          expect(names.includes(fragment.trim().toLowerCase()), `${questionId}: "${fragment}" is a name`).toBe(false);
+          expect(facts.includes(fragment.trim().toLowerCase()), `${questionId}: "${fragment}" is a fact`).toBe(false);
+        }
+        // The two differ by an article or a capital and nothing else.
+        const bare = (text: string) => text.toLowerCase().replace(/\bthe\b/g, '').replace(/\s+/g, ' ').trim();
+        expect(bare(pair[0]), questionId).toBe(bare(pair[1]));
+      }
+    });
+
+    it('is never the right answer, which must stay what the Atlas shows', () => {
+      for (const { p, questionId, structureId } of pinned) {
+        const q = p.questions.find((x) => x.id === questionId)!;
+        expect(q.structureId, questionId).not.toBe(structureId);
+        expect(q.distractors, questionId).toContain(structureId);
+      }
+      const misplaced: DiagnosticPapersFile = {
+        ...file,
+        papers: file.papers.map((p) => (p.id === 'knee' ? { ...p, publishedWording: { [p.questions[0].id]: { [p.questions[0].structureId]: ['a', 'b'] } } } : p)),
+      };
+      expect(paperShapeProblems(misplaced).join(' ')).toContain('not one of its wrong answers');
+    });
+
+    it('fails the paper, rather than passing quietly, once the seed spells the words another way again', () => {
+      const moved = ALL_STRUCTURES.map((s) => (s.id === 'intertransverse-ligaments' ? { ...s, name: 'Intertransverse LIGAMENTS' } : s));
+      const built = buildFromScope(paper('lumbar-spine'), moved, ALL_IMAGES);
+      expect(built.questions).toEqual([]);
+      expect(built.problems.join(' ')).toContain('no longer reads "ligaments"');
+    });
+  });
+
   it('says a new version must be cut, and how', () => {
     expect(NEW_VERSION_NEEDED).toContain('NEW VERSION');
     expect(NEW_VERSION_NEEDED).toContain('papers:publish');

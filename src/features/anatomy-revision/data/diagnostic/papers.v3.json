@@ -165,7 +165,15 @@
             "spinalis"
           ]
         }
-      ]
+      ],
+      "publishedWording": {
+        "dx3.whole-body.sartorius.origin": {
+          "gracilis": [
+            "of the ",
+            "of "
+          ]
+        }
+      }
     },
     {
       "id": "shoulder",
@@ -659,7 +667,19 @@
             "dorsal-radiocarpal-ligament"
           ]
         }
-      ]
+      ],
+      "publishedWording": {
+        "dx3.wrist-hand.metacarpals.identify": {
+          "phalanges-proximal-hand": [
+            "of Hand",
+            "of the Hand"
+          ],
+          "phalanges-distal-hand": [
+            "of Hand",
+            "of the Hand"
+          ]
+        }
+      }
     },
     {
       "id": "hip",
@@ -821,7 +841,15 @@
             "obturator-membrane"
           ]
         }
-      ]
+      ],
+      "publishedWording": {
+        "dx3.hip.sartorius.origin": {
+          "gracilis": [
+            "of the ",
+            "of "
+          ]
+        }
+      }
     },
     {
       "id": "knee",
@@ -1151,7 +1179,19 @@
             "tibionavicular-ligament"
           ]
         }
-      ]
+      ],
+      "publishedWording": {
+        "dx3.ankle-foot.metatarsals.identify": {
+          "phalanges-proximal-foot": [
+            "of Foot",
+            "of the Foot"
+          ],
+          "phalanges-distal-foot": [
+            "of Foot",
+            "of the Foot"
+          ]
+        }
+      }
     },
     {
       "id": "cervical-spine",
@@ -1487,7 +1527,21 @@
             "external-intercostal-membrane"
           ]
         }
-      ]
+      ],
+      "publishedWording": {
+        "dx3.thoracic-spine.radiate-ligament-of-head-of-rib.identify": {
+          "intertransverse-ligaments": [
+            "ligaments",
+            "Ligaments"
+          ]
+        },
+        "dx3.thoracic-spine.costotransverse-ligament.identify": {
+          "intertransverse-ligaments": [
+            "ligaments",
+            "Ligaments"
+          ]
+        }
+      }
     },
     {
       "id": "lumbar-spine",
@@ -1654,7 +1708,15 @@
             "supraspinous-ligament"
           ]
         }
-      ]
+      ],
+      "publishedWording": {
+        "dx3.lumbar-spine.interspinous-ligaments.identify": {
+          "intertransverse-ligaments": [
+            "ligaments",
+            "Ligaments"
+          ]
+        }
+      }
     }
   ]
 }

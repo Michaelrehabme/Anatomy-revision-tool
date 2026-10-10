@@ -60,6 +60,19 @@ import { createRng, shuffle } from './rng';
  * each question built to on the day it was published, and
  * diagnosticPapers.test.ts fails — saying a new version must be cut — if a
  * structure is renamed or removed, or a fact a question prints is corrected.
+ *
+ * WHEN THE SEED CHANGES ONLY HOW SOMETHING IS SPELT, a paper may carry
+ * `publishedWording`: for a named wrong answer of a named question, the few
+ * characters as they read now and as they read when the paper was published.
+ * On 9 Oct 2026 the seed dropped "of the" from every name, put ligament names
+ * in sentence case and wrote one muscle's origin "of the pubis"; seven
+ * version-3 questions each showed a wrong answer spelt the old way, and they
+ * still do, so a follow-up reads exactly as its baseline did. It is spelling
+ * and nothing else: a pair holds no fact (the test holds each to a short
+ * fragment that names no structure), it is never applied to a right answer,
+ * which must stay word for word what the Atlas shows, and a pair that no
+ * longer finds its words is a fault, not a silent no-op. A new version starts
+ * with none.
  */
 
 /** The version a NEW baseline is sat under. */
@@ -95,9 +108,18 @@ export interface PaperQuestionSpec {
   distractors: PaperDistractor[];
 }
 
+/** `[as the seed spells it now, as the paper was published]` — a fragment of a wrong answer, never a whole one. */
+export type PublishedWording = [now: string, published: string];
+
 export interface DiagnosticPaperSpec {
   id: PaperId;
   questions: PaperQuestionSpec[];
+  /**
+   * Question id -> the structure a wrong answer is taken from -> how that
+   * wrong answer's spelling is put back to what was published. See
+   * "WHEN THE SEED CHANGES ONLY HOW SOMETHING IS SPELT" above.
+   */
+  publishedWording?: Record<string, Record<string, PublishedWording>>;
 }
 
 export interface DiagnosticPapersFile {
@@ -365,7 +387,16 @@ export function buildPaperQuestions(
       }
       const value = answerOf(spec.kind, other, content.structuresById.get(distractor));
       if (!value) { fault(`wrong answer "${distractor}" has no ${spec.kind}`); bad = true; break; }
-      wrong.push(value);
+      // Spelt as it was when the paper was published, where the seed has
+      // since respelt it. A pair that finds nothing to respell means the seed
+      // has moved again, and the paper is no longer the one that was sat.
+      const wording = paper.publishedWording?.[spec.id]?.[distractor];
+      if (wording && !value.includes(wording[0])) {
+        fault(`wrong answer "${distractor}" no longer reads "${wording[0]}", so it cannot be put back to "${wording[1]}"`);
+        bad = true;
+        break;
+      }
+      wrong.push(wording ? value.replace(wording[0], wording[1]) : value);
     }
     if (bad) continue;
 
@@ -426,6 +457,14 @@ export function paperShapeProblems(file: DiagnosticPapersFile): string[] {
       seen.add(q.id);
       if (q.id !== paperQuestionId(file.version, paper.id, q)) problems.push(`${paper.id}: question id "${q.id}" does not match what it asks`);
       if (q.distractors.length !== PAPER_CHOICES - 1) problems.push(`${paper.id} ${q.id}: ${q.distractors.length} wrong answers, not ${PAPER_CHOICES - 1}`);
+    }
+    // A respelling belongs to a wrong answer this paper really has.
+    for (const [questionId, byStructure] of Object.entries(paper.publishedWording ?? {})) {
+      const q = paper.questions.find((x) => x.id === questionId);
+      if (!q) { problems.push(`${paper.id}: publishedWording names "${questionId}", which is not on the paper`); continue; }
+      for (const structureId of Object.keys(byStructure)) {
+        if (!q.distractors.includes(structureId)) problems.push(`${paper.id} ${questionId}: publishedWording names "${structureId}", which is not one of its wrong answers`);
+      }
     }
   }
   return problems;

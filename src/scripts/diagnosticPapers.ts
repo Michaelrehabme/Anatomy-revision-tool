@@ -25,6 +25,17 @@
  * ONCE ANYONE HAS SAT IT, a paper is never edited: see NEW_VERSION_NEEDED in
  * lib/paperLock.ts, which is what the check prints when the seed has moved
  * under a published question.
+ *
+ * WHERE THE SEED ONLY RESPELT A WRONG ANSWER ("of the" dropped from a name, a
+ * ligament put in sentence case) a paper's `publishedWording` puts those few
+ * characters back, so the version stays the one that was sat
+ * (lib/diagnosticPapers.ts). Version 3 carries seven since 10 Oct 2026. They
+ * are a holding position, and the owner's to end one of two ways: publish
+ * version 3 again with the new spellings (delete `publishedWording` from
+ * papers.v3.json, then `npm run papers:publish -- --force`) ONLY if no student
+ * has sat a version-3 paper; otherwise leave them, and start the next version
+ * without any. A copied papers file will not pass with them left in: the ids
+ * they name belong to the old version.
  */
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
