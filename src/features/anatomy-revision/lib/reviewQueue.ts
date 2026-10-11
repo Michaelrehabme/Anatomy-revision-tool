@@ -1,6 +1,8 @@
 import type { FactMastery, StructureMastery } from '../types/attempt';
 import { factDueAt, factIntervalDays } from './factMastery';
 import type { SkillKind } from './masteryLevel';
+import { areasOf, type AnatomyStructure } from '../types/structure';
+import type { Area } from '../types/region';
 
 /** One question type of one structure, waiting in the daily review. */
 export interface ReviewItem {
@@ -99,4 +101,47 @@ export function spreadReviewItems(
   // Due before pulled-forward, as in the queue itself; the sort is stable, so
   // within a structure the most overdue type is still the one asked.
   return [...items].sort((a, b) => Number(b.due) - Number(a.due) || at(a).localeCompare(at(b)));
+}
+
+/**
+ * When each structure is next due: the earliest date among its question types,
+ * by the same rows the queue above counts — so a list ordered by this agrees
+ * with Today's "N due". A structure never answered has no entry.
+ */
+export function soonestDueByStructure(
+  mastery: Iterable<StructureMastery>,
+  facts: Iterable<FactMastery>,
+): Map<string, string> {
+  const soonest = new Map<string, string>();
+  const note = (structureId: string, dueAt: string) => {
+    const current = soonest.get(structureId);
+    if (!current || dueAt < current) soonest.set(structureId, dueAt);
+  };
+  for (const m of mastery) {
+    if (m.dueAt && m.attemptsTotal > 0) note(m.structureId, m.dueAt);
+  }
+  for (const f of facts) {
+    if (f.attemptsTotal > 0) note(f.structureId, factDueAt(f));
+  }
+  return soonest;
+}
+
+/** "today", "tomorrow", "in 3 days". Overdue reads as today: it is due now. */
+export function relativeDue(dueAt: string, now: Date): string {
+  const days = Math.round((Date.parse(dueAt) - now.getTime()) / 86_400_000);
+  if (days <= 0) return 'today';
+  if (days === 1) return 'tomorrow';
+  return `in ${days} days`;
+}
+
+/** The queue cut to one area, for a review of that area alone. Order is kept. */
+export function reviewItemsInArea(
+  items: readonly ReviewItem[],
+  area: Area,
+  structuresById: ReadonlyMap<string, AnatomyStructure>,
+): ReviewItem[] {
+  return items.filter((i) => {
+    const structure = structuresById.get(i.structureId);
+    return !!structure && areasOf(structure).includes(area);
+  });
 }

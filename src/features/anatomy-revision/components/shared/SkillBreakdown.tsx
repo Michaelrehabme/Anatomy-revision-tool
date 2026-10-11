@@ -1,5 +1,5 @@
 import { MASTERY_LEVEL_LABELS, skillLabel, type StructureLevelState } from '../../lib/masteryLevel';
-import { relativeDue } from '../../hooks/useTodayData';
+import { relativeDue } from '../../lib/reviewQueue';
 
 /**
  * A structure's level, question type by question type (owner, 2 Oct 2026):

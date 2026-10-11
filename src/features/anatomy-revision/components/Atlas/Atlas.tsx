@@ -3,8 +3,9 @@ import type { AnatomyContent } from '../../hooks/useAnatomyContent';
 import type { AnatomyRepository } from '../../data/repository';
 import { CATEGORY_LABELS, type Category } from '../../types/structure';
 import { ATLAS_COLUMN_LABELS, ATLAS_MIXED_LABELS } from '../../lib/atlasFacts';
-import { accuracyText, atlasMasteryCell, sortById } from '../../lib/atlasList';
+import { accuracyText, atlasMasteryCell, reviewLabel, sortById } from '../../lib/atlasList';
 import { unmetText } from '../../lib/masteryLevel';
+import { relativeDue } from '../../lib/reviewQueue';
 import { MasteryLevelBadge } from '../shared/MasteryLevelBadge';
 import { getAtlasPanelOpen, setAtlasPanelOpen } from '../../lib/preferences';
 import { useAtlasList } from '../../hooks/useAtlasList';
@@ -26,6 +27,8 @@ interface AtlasProps {
   onDrillOina: (structureIds: string[]) => void;
   /** Starts a mixed quiz over everything currently listed, whatever its kind. */
   onQuizStructures: (structureIds: string[]) => void;
+  /** Starts a review of what is due or weak among the structures listed, and nothing else. */
+  onReviewDue: (structureIds: string[]) => void;
   onNavigate: (section: NavSection) => void;
 }
 
@@ -57,7 +60,7 @@ const PANEL_ID = 'atlas-filters';
  * locked structure would mean a row that does nothing or a paywall
  * interrupting a click; locking the list keeps the boundary in one place.
  */
-export function Atlas({ access, content, repository, userId, onOpenMuscle, onDrillOina, onQuizStructures, onNavigate }: AtlasProps) {
+export function Atlas({ access, content, repository, userId, onOpenMuscle, onDrillOina, onQuizStructures, onReviewDue, onNavigate }: AtlasProps) {
   const list = useAtlasList({ access, content, repository, userId });
   const [panelOpen, setPanelOpen] = useState(getAtlasPanelOpen);
 
@@ -65,6 +68,8 @@ export function Atlas({ access, content, repository, userId, onOpenMuscle, onDri
   const kind = filters.kind;
   const headings = kind === 'all' ? ATLAS_MIXED_LABELS : ATLAS_COLUMN_LABELS[kind];
   const noun = kind === 'all' ? 'structure' : KIND_SINGULAR[kind];
+
+  const now = new Date();
 
   const togglePanel = () => {
     const next = !panelOpen;
@@ -154,7 +159,7 @@ export function Atlas({ access, content, repository, userId, onOpenMuscle, onDri
                 </span>
               )}
             </button>
-            <p style={{ color: 'var(--ink3)', fontSize: 13.5 }}>
+            <p className="min-w-0 flex-1" style={{ color: 'var(--ink3)', fontSize: 13.5 }}>
               {sortById(list.sortId).label} ·{' '}
               {kind === 'muscle'
                 ? 'origin, insertion, nerve supply and action'
@@ -163,6 +168,20 @@ export function Atlas({ access, content, repository, userId, onOpenMuscle, onDri
                   : `${headings[0].toLowerCase()}, ${headings[1].toLowerCase()} and ${headings[2].toLowerCase()}`}{' '}
               for the {visible.length} {visible.length === 1 ? noun : `${noun}s`} listed.
             </p>
+            {/*
+              Beside the filters rather than up with "Quiz these": it asks
+              only what the queue holds for the structures listed, so it is
+              the filters that decide what it does.
+            */}
+            <button
+              type="button"
+              onClick={() => onReviewDue(contextIds)}
+              disabled={list.review.due + list.review.weak === 0}
+              className="inline-flex min-h-[42px] flex-none items-center rounded-[3px] px-4 disabled:opacity-50"
+              style={{ fontFamily: 'var(--font-display)', fontSize: 15.5, border: '1.2px solid var(--acc)', background: 'transparent', color: 'var(--accd)' }}
+            >
+              {reviewLabel(list.review)}
+            </button>
           </div>
 
           <div
@@ -181,6 +200,7 @@ export function Atlas({ access, content, repository, userId, onOpenMuscle, onDri
             {visible.map((s) => {
               const mastery = atlasMasteryCell(s, list.masteryById.get(s.id), list.factsByKey);
               const { columns } = rows.get(s.id)!;
+              const dueAt = list.dueById.get(s.id);
               const cell = (i: 0 | 1 | 2) => (
                 <>
                   {kind === 'all' && columns[i].text && <span style={{ color: 'var(--ink3)' }}>{columns[i].label} · </span>}
@@ -226,6 +246,7 @@ export function Atlas({ access, content, repository, userId, onOpenMuscle, onDri
                       const note = mastery.level.seen ? (unmetText(mastery.level.unmet) ?? accuracyText(mastery.accuracy)) : null;
                       return note && <span style={{ font: '400 11px/1 var(--font-mono)', color: 'var(--ink3)' }}>{note}</span>;
                     })()}
+                    {dueAt && <span style={{ font: '400 11px/1 var(--font-mono)', color: 'var(--ink3)' }}>due {relativeDue(dueAt, now)}</span>}
                   </span>
                 </button>
               );

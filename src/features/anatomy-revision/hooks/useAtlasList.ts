@@ -19,6 +19,7 @@ import {
   type SeenFilter,
 } from '../lib/atlasList';
 import { getAtlasSortId, setAtlasSortId } from '../lib/preferences';
+import { buildReviewQueue, soonestDueByStructure } from '../lib/reviewQueue';
 import { useMastery } from './useMastery';
 import type { StructureMastery } from '../types/attempt';
 
@@ -43,6 +44,8 @@ export interface UseAtlasList {
   masteryById: ReadonlyMap<string, StructureMastery>;
   /** Fact progress, which Master needs as well as naming (lib/masteryLevel.ts). */
   factsByKey: ReadonlyMap<string, FactMastery>;
+  /** When each structure is next due, as the review queue counts it. Absent when nothing is scheduled. */
+  dueById: ReadonlyMap<string, string>;
   /** Filtered and sorted — what the screen renders, in the order it renders it. */
   visible: AnatomyStructure[];
   filters: AtlasFilters;
@@ -53,6 +56,12 @@ export interface UseAtlasList {
   areaOptions: AreaOption[];
   contextIds: string[];
   muscleIds: string[];
+  /**
+   * What "Review due" would ask of the structures listed: how many of them
+   * have a question due now, and how many more only have a weak one that a
+   * review would pull forward (lib/reviewQueue.ts).
+   */
+  review: { due: number; weak: number };
   setKind: (kind: Category | 'all') => void;
   setArea: (area: Area | 'all') => void;
   setSeen: (seen: SeenFilter) => void;
@@ -83,6 +92,7 @@ export function useAtlasList({ access, content, repository, userId }: UseAtlasLi
   const mastery = useMastery(repository, userId);
   const masteryById = useMemo(() => new Map(mastery.map((m) => [m.structureId, m])), [mastery]);
   const factsByKey = useFactMastery(repository, userId);
+  const dueById = useMemo(() => soonestDueByStructure(mastery, factsByKey.values()), [mastery, factsByKey]);
 
   const entitled = useMemo(
     () => content.structures.filter((s) => areasOf(s).some((a) => access.areas.includes(a))),
@@ -124,6 +134,12 @@ export function useAtlasList({ access, content, repository, userId }: UseAtlasLi
 
   const contextIds = useMemo(() => visible.map((s) => s.id), [visible]);
   const muscleIds = useMemo(() => visible.filter(isMuscle).map((s) => s.id), [visible]);
+  const review = useMemo(() => {
+    const queue = buildReviewQueue(mastery, [...factsByKey.values()], new Set(contextIds));
+    const due = new Set(queue.due.map((i) => i.structureId));
+    const weak = new Set(queue.forward.map((i) => i.structureId).filter((id) => !due.has(id)));
+    return { due: due.size, weak: weak.size };
+  }, [mastery, factsByKey, contextIds]);
 
   const setSortId = useCallback((id: string) => {
     const resolved = sortById(id).id;
@@ -136,6 +152,7 @@ export function useAtlasList({ access, content, repository, userId }: UseAtlasLi
     rows,
     masteryById,
     factsByKey,
+    dueById,
     visible,
     filters,
     sortId,
@@ -144,6 +161,7 @@ export function useAtlasList({ access, content, repository, userId }: UseAtlasLi
     areaOptions,
     contextIds,
     muscleIds,
+    review,
     setKind: useCallback((kind) => setFilters((f) => ({ ...f, kind })), []),
     setArea: useCallback((area) => setFilters((f) => ({ ...f, area })), []),
     setSeen: useCallback((seen) => setFilters((f) => ({ ...f, seen })), []),
