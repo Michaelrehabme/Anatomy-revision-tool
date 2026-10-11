@@ -10,6 +10,7 @@ import { useAnatomyContent, type AnatomyContent } from './features/anatomy-revis
 import { useRevisionSession } from './features/anatomy-revision/hooks/useRevisionSession';
 import { useIsDesktop } from './features/anatomy-revision/hooks/useIsDesktop';
 import { generateRevisionSet } from './features/anatomy-revision/lib/questionGenerators/generateSet';
+import { buildReviewQueue } from './features/anatomy-revision/lib/reviewQueue';
 import { getLearnCardAttempts, getPreferredAreas, setPreferredAreas } from './features/anatomy-revision/lib/preferences';
 import { useMastery } from './features/anatomy-revision/hooks/useMastery';
 import { computeStreak } from './features/anatomy-revision/lib/streak';
@@ -590,6 +591,38 @@ function App() {
   };
 
   /**
+   * The Atlas' "Review due": the daily review cut to the structures listed.
+   * Only what the queue holds for them — due, then weak — so, unlike Today's
+   * review, no new structure is brought in to fill the session; "Quiz these"
+   * is the button for meeting what is listed.
+   */
+  const reviewDueStructures = async (structureIds: string[]) => {
+    if (!repository || !userId) return;
+    const types: QuestionType[] = ['flashcard', 'mcq', 'locate', 'identify-typed', 'oina'];
+    const [mastery, factMastery] = await Promise.all([repository.listMastery(userId), repository.listFactMastery(userId)]);
+    const now = new Date();
+    const queue = buildReviewQueue(mastery, factMastery, new Set(structureIds), now);
+    const reviewItems = [...queue.due, ...queue.forward];
+    if (reviewItems.length === 0) return;
+    const learnCardAttempts = getLearnCardAttempts();
+    const questions = generateRevisionSet(content.structures, content.images, {
+      types,
+      mode: 'practice',
+      // Narrowed to the structures in the queue, which leaves nothing unmet
+      // in the pool for the new share to draw.
+      structureIds: [...new Set(reviewItems.map((i) => i.structureId))],
+      entitledAreas,
+      reviewItems,
+      count: 20,
+      mastery,
+      now,
+      factMastery,
+      learnCardAttempts,
+    }, content.sources);
+    session.start(questions, { types, mode: 'practice', learnCardAttempts });
+  };
+
+  /**
    * A screen that revises, or what stands in for it.
    *
    * A GUEST gets the way to an account (AccountGate): the free area, a
@@ -908,6 +941,7 @@ function App() {
                 onOpenMuscle={openMuscle}
                 onDrillOina={drillOina}
                 onQuizStructures={quizStructures}
+                onReviewDue={reviewDueStructures}
                 onNavigate={onNavigateSection}
               />
             ) : (
@@ -919,6 +953,7 @@ function App() {
                 onOpenMuscle={openMuscle}
                 onDrillOina={drillOina}
                 onQuizStructures={quizStructures}
+                onReviewDue={reviewDueStructures}
                 onBack={() => mobileNavigate('today')}
                 onNavigateTab={mobileNavigate}
               />

@@ -14,6 +14,25 @@
   "these ranges were set rather than guessed."
  ],
  "_views": {
+  "olecranon": [
+   6,
+   12
+  ],
+  "coracoid-process": [
+   0,
+   6
+  ],
+  "coronoid-process-ulna": [
+   0
+  ],
+  "medial-condyle-tibia": [
+   0,
+   12
+  ],
+  "ulnar-styloid-process": [
+   0,
+   12
+  ],
   "sustentaculum-tali": [
    18,
    6,
@@ -580,6 +599,84 @@
   "close": 3,
   "smoothNormals": 5,
   "_why": "The semilunar concavity at the top of the ulna that the humerus sits in. No outward test: a notch is concave, its surface faces inward by definition."
+ },
+ "olecranon": {
+  "kind": "cap",
+  "direction": "towardAnchor",
+  "from": "Olecranon.j",
+  "depth": 0.02,
+  "close": 2,
+  "smoothNormals": 3,
+  "_why": "The owner tapped the olecranon and was marked wrong: as a point its 10-to-7 zone was a 14mm disc round a label anchor that the humerus covers from the side, while the process itself is the whole proximal end of the ulna. MEASURED (probeUlna.py, slabs down the ulna's own axis from the tip): for the first 20mm the bone spans only y=42..60mm, the posterior block that is the olecranon; at 21mm the front edge jumps forward to y=23mm, which is the coronoid process starting. So the olecranon is the proximal 20mm, the same construction as the head of the radius."
+ },
+ "spinous-process": {
+  "kind": "cap",
+  "direction": [
+   0,
+   1,
+   0
+  ],
+  "depth": 0.018,
+  "close": 2,
+  "smoothNormals": 3,
+  "_why": "Same fault as the olecranon: a point at the tip, half its 10-to-7 disc off the bone, for a process that is a whole blade. MEASURED (probe2.py, L4, slabs forward from the most posterior vertex): for 18mm the bone is at most 11mm wide (|x| under 5.7mm), the blade of the process; at 18mm it jumps to 51mm wide, which is the laminae and the inferior articular processes. So the process is the posterior 18mm."
+ },
+ "coracoid-process": {
+  "kind": "ball",
+  "from": {
+   "snap": "Coracoid process.j"
+  },
+  "width": 0.026,
+  "close": 3,
+  "smoothNormals": 4,
+  "_why": "A hooked process about 4cm long, marked until now by a disc at its tip. MEASURED (probe2.py): the anchor snaps to the anterior tip (y=-0.4mm, the front-most point of the scapula); 26mm round it reaches back to y=+22mm and up to z=1404mm, the root of the hook, before the superior border and glenoid begin. Both faces, no same-face test, so it shows from the front and the side, like the acromion."
+ },
+ "coronoid-process-ulna": {
+  "kind": "ball",
+  "from": {
+   "snap": "Coronoid process of ulna.j"
+  },
+  "width": 0.012,
+  "close": 2,
+  "smoothNormals": 3,
+  "_why": "The anterior lip of the trochlear notch. MEASURED (probe2.py): the anchor snaps to the front edge of the ulna at y=23mm, 24mm below the olecranon tip, exactly where the olecranon rule stops; 12mm round it spans x -226..-211mm, the width of the projection, without reaching the radial notch."
+ },
+ "medial-condyle-tibia": {
+  "kind": "box",
+  "lo": [
+   0.52,
+   0.0,
+   0.893
+  ],
+  "hi": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "keepLargest": true,
+  "close": 2,
+  "smoothNormals": 3,
+  "_why": "The condyle is the whole medial mass of the proximal tibia, and the point sat on its medial edge with half the disc off the bone. MEASURED (probe2.py, right tibia): the top of the bone spans x -116..-37mm, so the midline is x=-76 (0.52 of the width, medial being the high-x side on a right bone); the flare of the condyles ends 38mm below the top (z=395mm, 0.893 of the height). The same block construction as the medial condyle of the femur."
+ },
+ "radial-styloid-process": {
+  "kind": "ball",
+  "from": {
+   "snap": "Radial styloid process.j"
+  },
+  "width": 0.011,
+  "close": 2,
+  "smoothNormals": 3,
+  "_why": "As a disc its hitbox lay mostly over the carpal bones, which are not the radius. MEASURED (probe2.py): the anchor snaps to the distal-most, lateral-most point of the radius; 11mm round it is the tapering lateral end, x -289..-277mm of a distal end that is 33mm wide. A region lives on the radius alone, so the carpus is no longer part of the answer."
+ },
+ "ulnar-styloid-process": {
+  "kind": "ball",
+  "from": {
+   "snap": "Ulnar styloid process.j"
+  },
+  "width": 0.006,
+  "close": 2,
+  "smoothNormals": 3,
+  "_why": "As the radial styloid: the disc covered the triquetrum and pisiform. MEASURED (probe2.py): the distal 3mm of the ulna is a knob 4mm wide, the styloid, and above it the bone is the full 14mm head; 6mm round the anchor takes the knob and its root and nothing of the head's far side."
  },
  "transverse-process": {
   "kind": "cap",

@@ -1,16 +1,19 @@
+import { useState } from 'react';
 import type { AnatomyRepository } from '../../data/repository';
 import type { AnatomyContent } from '../../hooks/useAnatomyContent';
 import type { RevisionQuestion, QuestionType } from '../../types/question';
-import { REGION_LABELS } from '../../types/region';
+import { AREA_LABELS, REGION_LABELS, type Area } from '../../types/region';
 import { generateRevisionSet } from '../../lib/questionGenerators/generateSet';
 import { buildStarterSet, STARTER_COUNT, STARTER_TYPES } from '../../lib/questionGenerators/starterSet';
 import { getLearnCardAttempts, getPreferredAreas } from '../../lib/preferences';
 import { firstRunTitle, minutesFor } from '../../lib/sessionCopy';
 import { useTodayData } from '../../hooks/useTodayData';
+import { reviewItemsInArea, type ReviewItem } from '../../lib/reviewQueue';
 import type { RevisionSetupParams } from '../../hooks/useRevisionSession';
 import type { UseEntitlement } from '../../hooks/useEntitlement';
 import { MobileShell } from './MobileShell';
 import { ClassAssignments } from '../shared/ClassAssignments';
+import { ReviewAreaSelect } from '../shared/ReviewAreaSelect';
 import { PaymentIssue } from '../shared/PaymentIssue';
 import type { MobileTab } from './MobileTabBar';
 
@@ -33,13 +36,18 @@ interface MobileTodayProps {
 
 /** Screen 02 (mobile). Single decision on open: due count, one primary action. */
 export function MobileToday({ access, repository, userId, content, onStart, onCustomSession, onOpenMuscle, onNavigateTab }: MobileTodayProps) {
-  const { loading, streak, allMastery, weakest, reviewItems, spreadItems, dueCount, facts, weekBuckets, weekMax, dayLabels } = useTodayData(repository, userId, content, access.areas);
+  const { loading, streak, allMastery, weakest, reviewItems, spreadItems, dueCount: dueCountAll, facts, weekBuckets, weekMax, dayLabels } = useTodayData(repository, userId, content, access.areas);
   const now = new Date();
   // See Today.tsx: the guided starter until something has been attempted.
   const firstRun = !loading && allMastery.length === 0;
   // Narrowed to the entitled areas — see Today.tsx for why undefined is safe.
   const preferredAreas = getPreferredAreas().filter((a) => access.areas.includes(a));
-  const areas = preferredAreas.length ? preferredAreas : undefined;
+  // One area picked for today's review — see Today.tsx.
+  const [reviewArea, setReviewArea] = useState<Area | 'all'>('all');
+  const only = reviewArea !== 'all' && access.areas.includes(reviewArea) ? reviewArea : null;
+  const areas = only ? [only] : preferredAreas.length ? preferredAreas : undefined;
+  const inArea = (items: ReviewItem[]) => (only ? reviewItemsInArea(items, only, content.structuresById) : items);
+  const dueCount = only ? inArea(reviewItems).filter((i) => i.due).length : dueCountAll;
 
   // 'continue' works down the queue oldest first, up to two questions a
   // structure, so a structure is finished before the review moves on. 'fresh'
@@ -64,7 +72,7 @@ export function MobileToday({ access, repository, userId, content, onStart, onCu
       // Per question type (lib/reviewQueue.ts): what is due, then weak types
       // pulled forward, then new structures — never something well known and
       // not due. Fewer than twenty when there is not that much worth asking.
-      reviewItems: style === 'fresh' ? spreadItems : reviewItems,
+      reviewItems: inArea(style === 'fresh' ? spreadItems : reviewItems),
       ...(style === 'fresh' ? { maxPerStructure: 1, newShare: 0.5 } : {}),
       count: 20,
       // Without mastery the generator falls back to a uniform shuffle and the
@@ -108,14 +116,19 @@ export function MobileToday({ access, repository, userId, content, onStart, onCu
             ? `${STARTER_COUNT} questions, about ${minutesFor(STARTER_COUNT)} minutes. Multiple choice and locate-on-the-image, nothing harder yet.`
             : dueCount > 0
               ? 'Keep going finishes the structures you are on. New set moves to ones you have not seen lately, with more new material.'
-              : 'All caught up. A review now brings your weaker questions forward, plus new material; anything you know well waits until it is due.'}
+              : `${only ? `Nothing due in the ${AREA_LABELS[only].toLowerCase()}` : 'All caught up'}. A review now brings your weaker questions forward, plus new material; anything you know well waits until it is due.`}
         </p>
 
+        {!firstRun && access.areas.length > 1 && (
+          <div data-in className="mt-5.5">
+            <ReviewAreaSelect areas={access.areas} value={only ?? 'all'} onChange={setReviewArea} />
+          </div>
+        )}
         <button
           type="button"
           onClick={() => handleStart('continue')}
           data-in
-          className="mt-5.5 w-full rounded-[3px] border-0 transition-transform duration-150 active:scale-[0.97] motion-reduce:active:scale-100"
+          className={`${!firstRun && access.areas.length > 1 ? 'mt-2.5' : 'mt-5.5'} w-full rounded-[3px] border-0 transition-transform duration-150 active:scale-[0.97] motion-reduce:active:scale-100`}
           style={{ minHeight: 54, background: 'var(--acc-fill)', color: 'var(--onacc)', font: '500 17px/1 var(--font-ui)' }}
         >
           {firstRun ? 'Start your first session' : 'Keep going'}

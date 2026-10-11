@@ -81,6 +81,11 @@ export interface RevisionSetConfig {
    * yields an origin question, not a naming one — and the rest of the session
    * is new structures only: nothing well known and not due is drawn to fill
    * it, and a session with too little to ask ends short rather than repeat.
+   *
+   * `areas` does not narrow these (owner, 11 Oct 2026): what is due is asked
+   * whatever area it is in, and `areas` only chooses where the NEW structures
+   * come from. Narrowed, a student who had saved one area was asked that area
+   * alone, while Today went on counting everything else as due.
    */
   reviewItems?: readonly ReviewItem[];
   /**
@@ -555,16 +560,27 @@ export function generateRevisionSet(
   const askedFor = config.areas?.length ? config.areas : [...config.entitledAreas];
   const allowedAreas = askedFor.filter((a) => config.entitledAreas.includes(a));
 
-  let pool = filterStructures(structures, {
-    category: config.category,
-    categories: config.categories,
-    region: config.region,
-    regions: config.regions,
-    subregion: config.subregion,
-    areas: allowedAreas,
-    groups: config.groups,
-    difficulty: config.difficulty,
-  });
+  const filtered = (areas: Area[]) =>
+    filterStructures(structures, {
+      category: config.category,
+      categories: config.categories,
+      region: config.region,
+      regions: config.regions,
+      subregion: config.subregion,
+      areas,
+      groups: config.groups,
+      difficulty: config.difficulty,
+    });
+  // Where new structures come from: the areas asked for, and nothing else.
+  const areaPool = filtered(allowedAreas);
+  let pool = areaPool;
+  // The daily review also asks what is due outside those areas (see
+  // `reviewItems`), so those structures need questions built for them too.
+  if (config.reviewItems?.length) {
+    const inAreas = new Set(areaPool.map((s) => s.id));
+    const reviewed = new Set(config.reviewItems.map((i) => i.structureId));
+    pool = filtered([...config.entitledAreas]).filter((s) => inAreas.has(s.id) || reviewed.has(s.id));
+  }
   if (config.structureIds?.length) {
     const allowed = new Set(config.structureIds);
     pool = pool.filter((s) => allowed.has(s.id));
@@ -686,7 +702,7 @@ export function generateRevisionSet(
   const selected = !count
     ? balanced
     : config.reviewItems
-      ? blendReviewItems(balanced, config.reviewItems, count, rng, cap, newStructureIds(pool, config.mastery ?? [], config.factMastery), config.newShare)
+      ? blendReviewItems(balanced, config.reviewItems, count, rng, cap, newStructureIds(areaPool, config.mastery ?? [], config.factMastery), config.newShare)
     : config.priorityStructureIds?.length
       ? blendPriorityWithRest(balanced, config.priorityStructureIds, count, config.reviewShare, rng, cap, newStructureIds(pool, config.mastery))
       : // Breadth over depth here too: the mastery weighting front-loads a weak

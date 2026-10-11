@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import type { AnatomyContent } from '../../hooks/useAnatomyContent';
 import type { AnatomyRepository } from '../../data/repository';
-import { atlasMasteryCell, sortById } from '../../lib/atlasList';
+import { atlasMasteryCell, reviewLabel, sortById } from '../../lib/atlasList';
+import { relativeDue } from '../../lib/reviewQueue';
 import { MasteryLevelBadge } from '../shared/MasteryLevelBadge';
 import { useAtlasList } from '../../hooks/useAtlasList';
 import { UnlockNote } from '../shared/AreaLock';
@@ -21,6 +22,8 @@ interface MobileAtlasProps {
   onDrillOina: (structureIds: string[]) => void;
   /** Starts a mixed quiz over everything currently listed, whatever its kind. */
   onQuizStructures: (structureIds: string[]) => void;
+  /** Starts a review of what is due or weak among the structures listed, and nothing else. */
+  onReviewDue: (structureIds: string[]) => void;
   onBack: () => void;
   onNavigateTab: (tab: MobileTab) => void;
 }
@@ -48,6 +51,7 @@ export function MobileAtlas({
   onOpenMuscle,
   onDrillOina,
   onQuizStructures,
+  onReviewDue,
   onBack,
   onNavigateTab,
 }: MobileAtlasProps) {
@@ -183,6 +187,17 @@ export function MobileAtlas({
             Drill these facts
           </button>
         </div>
+        {/* Only when there is something to ask: a third button that is usually dead would cost a row of the list. */}
+        {list.review.due + list.review.weak > 0 && (
+          <button
+            type="button"
+            onClick={() => onReviewDue(contextIds)}
+            className="mt-2.5 w-full rounded-[3px] transition-transform duration-150 active:scale-[0.97] motion-reduce:active:scale-100"
+            style={{ minHeight: 48, background: 'transparent', border: '1.4px solid var(--acc)', color: 'var(--accd)', font: '500 16px/1 var(--font-ui)' }}
+          >
+            {reviewLabel(list.review)}
+          </button>
+        )}
         <p className="mt-2 text-center" style={{ font: '400 11.5px/1.5 var(--font-mono)', color: 'var(--ink3)' }}>
           {muscleIds.length > 0 ? 'Facts drill the muscles listed · quiz asks every kind' : 'Quiz asks every kind listed'}
         </p>
@@ -192,6 +207,7 @@ export function MobileAtlas({
             const mastery = atlasMasteryCell(s, list.masteryById.get(s.id), list.factsByKey);
             const { columns } = rows.get(s.id)!;
             const shown = columns.filter((c) => c.text).slice(0, 2);
+            const dueAt = list.dueById.get(s.id);
             return (
               <button
                 key={s.id}
@@ -223,6 +239,9 @@ export function MobileAtlas({
                       {c.text}
                     </span>
                   ))}
+                  {dueAt && (
+                    <span style={{ font: '400 11.5px/1.5 var(--font-mono)', color: 'var(--ink3)' }}>due {relativeDue(dueAt, new Date())}</span>
+                  )}
                 </div>
               </button>
             );

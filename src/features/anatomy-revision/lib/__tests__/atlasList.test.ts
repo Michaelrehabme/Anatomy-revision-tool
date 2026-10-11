@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { ALL_STRUCTURES } from '../../data/seed';
 import { AREAS, type Area } from '../../types/region';
 import type { AnatomyStructure } from '../../types/structure';
-import type { StructureMastery } from '../../types/attempt';
+import type { FactMastery, StructureMastery } from '../../types/attempt';
 import {
   AREA_ORDER_SUPERIOR_INFERIOR,
   ATLAS_SORTS,
@@ -11,6 +11,7 @@ import {
   bodyRank,
   filterAtlas,
   masteryState,
+  reviewLabel,
   sortAtlas,
   sortById,
   DEFAULT_FILTERS,
@@ -170,6 +171,29 @@ describe('sortAtlas', () => {
     expect(sortAtlas([knee1, knee2], 'body', 'desc', new Map()).map((s) => s.id)).toEqual(['k2', 'k1']);
   });
 
+  it('runs soonest due first and back, with nothing scheduled last either way', () => {
+    // The date is the earliest of the name and every fact, as the review
+    // queue counts it: b's name is not due for a month but its origin is
+    // overdue, so b comes before a.
+    const due = new Map([
+      ['a', { ...mastery('a', 9, 10), dueAt: '2026-10-05T09:00:00.000Z' }],
+      ['b', { ...mastery('b', 1, 10), dueAt: '2026-11-01T09:00:00.000Z' }],
+    ]);
+    const facts = new Map<string, FactMastery>([
+      [
+        'b__origin',
+        {
+          userId: 'u1', structureId: 'b', promptKind: 'origin', attemptsTotal: 2, attemptsCorrect: 1, streak: 0, missStreak: 1,
+          lastCorrect: false, lastAttemptAt: '2026-10-01T09:00:00.000Z', typed: true, dueAt: '2026-10-02T09:00:00.000Z',
+        },
+      ],
+    ]);
+    const ids = (dir: SortDirection) => sortAtlas(list, 'due', dir, due, facts).map((s) => s.id);
+    expect(ids('asc')).toEqual(['b', 'a', 'c']);
+    // "Furthest first" is what is safe for longest — not what was never met.
+    expect(ids('desc')).toEqual(['a', 'b', 'c']);
+  });
+
   it('is stable and does not mutate its input', () => {
     const input = [b, a, c];
     const once = sortAtlas(input, 'body', 'asc', masteryById).map((s) => s.id);
@@ -189,8 +213,8 @@ describe('sortAtlas', () => {
 
 describe('sort options', () => {
   it('offers every key in both directions with distinct ids', () => {
-    expect(ATLAS_SORTS).toHaveLength(10);
-    expect(new Set(ATLAS_SORTS.map((s) => s.id)).size).toBe(10);
+    expect(ATLAS_SORTS).toHaveLength(12);
+    expect(new Set(ATLAS_SORTS.map((s) => s.id)).size).toBe(12);
   });
 
   it('falls back to the default rather than crashing on a stale stored id', () => {
@@ -213,5 +237,15 @@ describe('searching the real atlas rows', () => {
     const hit = filterAtlas(ALL_STRUCTURES, rows, { ...DEFAULT_FILTERS, query: 'patella' }, new Map());
     expect(hit.length).toBeGreaterThan(0);
     expect(hit.some((s) => s.name.toLowerCase().includes('patella'))).toBe(true);
+  });
+});
+
+describe('reviewLabel', () => {
+  it('says what the review will be', () => {
+    expect(reviewLabel({ due: 3, weak: 5 })).toBe('Review due · 3');
+    // Nothing due: the review is the weak questions pulled forward, and the
+    // rows beside the button show dates in the future.
+    expect(reviewLabel({ due: 0, weak: 5 })).toBe('Review weak · 5');
+    expect(reviewLabel({ due: 0, weak: 0 })).toBe('Nothing due');
   });
 });

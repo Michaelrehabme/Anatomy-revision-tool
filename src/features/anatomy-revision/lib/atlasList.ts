@@ -6,6 +6,7 @@ import type { Area } from '../types/region';
 import type { StructureMastery } from '../types/attempt';
 import type { AtlasRow } from './atlasFacts';
 import { masteryLevelRank, structureLevel, type StructureLevelState } from './masteryLevel';
+import { soonestDueByStructure } from './reviewQueue';
 
 /**
  * How the Atlas list is narrowed and ordered.
@@ -23,7 +24,7 @@ import { masteryLevelRank, structureLevel, type StructureLevelState } from './ma
  */
 
 export type SeenFilter = 'all' | 'seen' | 'unseen';
-export type AtlasSortKey = 'body' | 'level' | 'accuracy' | 'name' | 'seen';
+export type AtlasSortKey = 'body' | 'level' | 'accuracy' | 'name' | 'seen' | 'due';
 export type SortDirection = 'asc' | 'desc';
 
 export interface AtlasFilters {
@@ -188,6 +189,7 @@ export function sortAtlas(
   factsByKey: ReadonlyMap<string, FactMastery> = new Map(),
 ): AnatomyStructure[] {
   const sign = direction === 'asc' ? 1 : -1;
+  const dueById = key === 'due' ? soonestDueByStructure(masteryById.values(), factsByKey.values()) : null;
 
   const primary = (a: AnatomyStructure, b: AnatomyStructure): number => {
     switch (key) {
@@ -224,10 +226,30 @@ export function sortAtlas(
         if (diff !== 0) return diff;
         return Number(Boolean(mb)) - Number(Boolean(ma));
       }
+      case 'due': {
+        const da = dueById?.get(a.id);
+        const db = dueById?.get(b.id);
+        // Nothing scheduled goes last whichever way the dates run: "furthest
+        // first" is asking what is safe for longest, not what was never met.
+        // Returning `sign` cancels the reversal applied below.
+        if (!da || !db) return da ? -sign : db ? sign : 0;
+        return da.localeCompare(db);
+      }
     }
   };
 
   return [...structures].sort((a, b) => primary(a, b) * sign || tiebreak(a, b));
+}
+
+/**
+ * The "Review due" button's label. It says what the review will actually be:
+ * with nothing due it is the weak questions pulled forward, and calling that
+ * "due" would contradict the dates printed on the rows beside it.
+ */
+export function reviewLabel(review: { due: number; weak: number }): string {
+  if (review.due > 0) return `Review due · ${review.due}`;
+  if (review.weak > 0) return `Review weak · ${review.weak}`;
+  return 'Nothing due';
 }
 
 export interface AtlasSortOption {
@@ -253,6 +275,8 @@ export const ATLAS_SORTS: AtlasSortOption[] = [
   { id: 'name-desc', key: 'name', direction: 'desc', label: 'Z–A' },
   { id: 'seen-asc', key: 'seen', direction: 'asc', label: 'Seen most → least' },
   { id: 'seen-desc', key: 'seen', direction: 'desc', label: 'Seen least → most' },
+  { id: 'due-asc', key: 'due', direction: 'asc', label: 'Due soonest first' },
+  { id: 'due-desc', key: 'due', direction: 'desc', label: 'Due furthest first' },
 ];
 
 /**

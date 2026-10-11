@@ -1127,4 +1127,46 @@ describe('the daily review, per question type (2 Oct 2026)', () => {
     // Learn cards ride along outside the budget (withLearnCards).
     expect(questions.filter((q) => !isFlashcardQuestion(q)).length).toBeLessThanOrEqual(20);
   });
+
+  describe('with study areas saved (owner, 11 Oct 2026)', () => {
+    // A muscle answered before, due now, and outside the areas asked for:
+    // the student who saved "shoulder" after a week on something else.
+    const home = areasOf(deltoid);
+    const away = ALL_STRUCTURES.find((s) => s.category === 'muscle' && !areasOf(s).some((a) => home.includes(a)))!;
+    const awayRow: StructureMastery = {
+      structureId: away.id, userId: 'u', attemptsTotal: 4, attemptsCorrect: 2, lastAttemptAt: NOW.toISOString(), rung: 'mcq', intervalDays: 1, dueAt: new Date(NOW.getTime() - DAY).toISOString(),
+    };
+    const review = (entitledAreas: readonly Area[]) =>
+      generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+        entitledAreas: [...entitledAreas],
+        areas: home,
+        types: ['flashcard', 'mcq', 'locate', 'identify-typed', 'oina'],
+        mode: 'practice',
+        count: 20,
+        seed: 3,
+        mastery: [...mastery, awayRow],
+        factMastery,
+        now: NOW,
+        reviewItems: [
+          { structureId: away.id, kind: 'identify', dueAt: awayRow.dueAt!, due: true },
+          { structureId: 'deltoid', kind: 'origin', dueAt: factMastery[0].dueAt!, due: true },
+        ],
+      });
+
+    it('asks what is due outside them', () => {
+      // Dropped, this was a review of one area for ever while Today counted
+      // the rest as due.
+      expect(review(AREAS).some((q) => q.structureId === away.id)).toBe(true);
+    });
+
+    it('takes new structures from them alone', () => {
+      const byId = new Map(ALL_STRUCTURES.map((s) => [s.id, s]));
+      const elsewhere = review(AREAS).filter((q) => !areasOf(byId.get(q.structureId)!).some((a) => home.includes(a)));
+      expect(new Set(elsewhere.map((q) => q.structureId))).toEqual(new Set([away.id]));
+    });
+
+    it('never asks a due structure the account cannot reach', () => {
+      expect(review(home).some((q) => q.structureId === away.id)).toBe(false);
+    });
+  });
 });

@@ -1,16 +1,19 @@
+import { useState } from 'react';
 import type { AnatomyRepository } from '../../data/repository';
 import type { AnatomyContent } from '../../hooks/useAnatomyContent';
 import type { RevisionQuestion, QuestionType } from '../../types/question';
-import { REGION_LABELS } from '../../types/region';
+import { AREA_LABELS, REGION_LABELS, type Area } from '../../types/region';
 import { generateRevisionSet } from '../../lib/questionGenerators/generateSet';
 import { buildStarterSet, STARTER_COUNT, STARTER_TYPES } from '../../lib/questionGenerators/starterSet';
 import { getLearnCardAttempts, getPreferredAreas } from '../../lib/preferences';
 import { firstRunTitle, minutesFor } from '../../lib/sessionCopy';
-import { useTodayData, relativeDue } from '../../hooks/useTodayData';
+import { useTodayData } from '../../hooks/useTodayData';
+import { relativeDue, reviewItemsInArea, type ReviewItem } from '../../lib/reviewQueue';
 import { AppShell } from '../shell/AppShell';
 import { NavSidebar, type NavSection } from '../shell/NavSidebar';
 import { Button } from '../shared/Button';
 import { ClassAssignments } from '../shared/ClassAssignments';
+import { ReviewAreaSelect } from '../shared/ReviewAreaSelect';
 import { PaymentIssue } from '../shared/PaymentIssue';
 import type { RevisionSetupParams } from '../../hooks/useRevisionSession';
 import type { UseEntitlement } from '../../hooks/useEntitlement';
@@ -33,7 +36,7 @@ interface TodayProps {
 }
 
 export function Today({ access, repository, userId, content, onStart, onCustomSession, onOpenMuscle, onNavigate }: TodayProps) {
-  const { loading, streak, totalMuscleCount, seenMusclePct, totalStructureCount, seenStructureCount, allMastery, weakest, comingDue, reviewItems, spreadItems, dueCount, facts, weekBuckets, weekMax, dayLabels } =
+  const { loading, streak, totalMuscleCount, seenMusclePct, totalStructureCount, seenStructureCount, allMastery, weakest, comingDue, reviewItems, spreadItems, dueCount: dueCountAll, facts, weekBuckets, weekMax, dayLabels } =
     useTodayData(repository, userId, content, access.areas);
   const now = new Date();
   // Nothing attempted yet: the first session is the guided starter, and the
@@ -43,7 +46,13 @@ export function Today({ access, repository, userId, content, onStart, onCustomSe
   // "no preference", which generateRevisionSet reads as every ENTITLED area —
   // never as every area.
   const preferredAreas = getPreferredAreas().filter((a) => access.areas.includes(a));
-  const areas = preferredAreas.length ? preferredAreas : undefined;
+  // One area picked for today's review (ReviewAreaSelect): the queue and the
+  // new structures are both cut to it, and the headline counts it alone.
+  const [reviewArea, setReviewArea] = useState<Area | 'all'>('all');
+  const only = reviewArea !== 'all' && access.areas.includes(reviewArea) ? reviewArea : null;
+  const areas = only ? [only] : preferredAreas.length ? preferredAreas : undefined;
+  const inArea = (items: ReviewItem[]) => (only ? reviewItemsInArea(items, only, content.structuresById) : items);
+  const dueCount = only ? inArea(reviewItems).filter((i) => i.due).length : dueCountAll;
 
   // 'continue' works down the queue oldest first, up to two questions a
   // structure, so a structure is finished before the review moves on. 'fresh'
@@ -69,7 +78,7 @@ export function Today({ access, repository, userId, content, onStart, onCustomSe
       // Per question type (lib/reviewQueue.ts): what is due, then weak types
       // pulled forward, then new structures — never something well known and
       // not due. Fewer than twenty when there is not that much worth asking.
-      reviewItems: style === 'fresh' ? spreadItems : reviewItems,
+      reviewItems: inArea(style === 'fresh' ? spreadItems : reviewItems),
       ...(style === 'fresh' ? { maxPerStructure: 1, newShare: 0.5 } : {}),
       count: 20,
       // Without mastery the generator falls back to a uniform shuffle and the
@@ -131,9 +140,14 @@ export function Today({ access, repository, userId, content, onStart, onCustomSe
               ? `${STARTER_COUNT} questions, about ${minutesFor(STARTER_COUNT)} minutes. Multiple choice and locate-on-the-image, nothing harder yet.`
               : dueCount > 0
                 ? 'Keep going finishes the structures you are on. New set moves to ones you have not seen lately, with more new material.'
-                : 'All caught up. A review now brings your weaker questions forward, plus new material; anything you know well waits until it is due.'}
+                : `${only ? `Nothing due in the ${AREA_LABELS[only].toLowerCase()}` : 'All caught up'}. A review now brings your weaker questions forward, plus new material; anything you know well waits until it is due.`}
           </p>
-          <div data-in className="mt-9 flex flex-wrap gap-3.5">
+          {!firstRun && access.areas.length > 1 && (
+            <div data-in className="mt-7">
+              <ReviewAreaSelect areas={access.areas} value={only ?? 'all'} onChange={setReviewArea} />
+            </div>
+          )}
+          <div data-in className={`${!firstRun && access.areas.length > 1 ? 'mt-3.5' : 'mt-9'} flex flex-wrap gap-3.5`}>
             <Button onClick={() => handleStart('continue')} className={firstRun ? 'min-w-[180px] min-h-[56px]' : 'flex-1 whitespace-nowrap min-h-[56px]'}>
               {firstRun ? 'Start your first session' : 'Keep going'}
             </Button>
