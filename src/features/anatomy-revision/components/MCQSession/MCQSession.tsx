@@ -181,7 +181,7 @@ export function MCQSession({ question, imagesById, onAnswer, onNext, examMode }:
                 </FeedbackHeading>
               </div>
               <p className="mt-3.5 max-w-[56ch] text-lg leading-relaxed" style={{ color: 'var(--ink)' }}>
-                <strong className="font-semibold">{question.choices[question.correctIndex]}.</strong>{' '}
+                <strong className="font-semibold">{question.choices[question.correctIndex].replace(/\.$/, '')}.</strong>{' '}
                 {question.explanation}
               </p>
               {rated && (

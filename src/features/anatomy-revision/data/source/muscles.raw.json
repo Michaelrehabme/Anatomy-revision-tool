@@ -3491,7 +3491,7 @@
         "toe-extension",
         "ankle-dorsiflexion"
       ],
-      "actionText": "Extends the toes and dorsiflexes the ankle; inserts on the base of distal phalanx of big toe.",
+      "actionText": "Extends the big toe and dorsiflexes the ankle; inserts on the base of distal phalanx of big toe.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -4070,7 +4070,7 @@
       "actions": [
         "toe-extension"
       ],
-      "actionText": "Extends the toes; inserts on the proximal phalanx of digit 1.",
+      "actionText": "Extends the big toe; inserts on the proximal phalanx of digit 1.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -4169,7 +4169,7 @@
         "toe-abduction",
         "toe-flexion"
       ],
-      "actionText": "Abducts and flexes the toes; inserts on the medial side of base of proximal phalanx of big toe.",
+      "actionText": "Abducts and flexes the big toe; inserts on the medial side of base of proximal phalanx of big toe.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -4219,7 +4219,7 @@
         "toe-abduction",
         "toe-flexion"
       ],
-      "actionText": "Abducts and flexes the toes; inserts on the lateral side of base of proximal phalanx of 5th toe.",
+      "actionText": "Abducts and flexes the little toe; inserts on the lateral side of base of proximal phalanx of 5th toe.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -4371,7 +4371,7 @@
       "actions": [
         "toe-flexion"
       ],
-      "actionText": "Flexes the toes; inserts on the medial and lateral sides of the base of the proximal phalanx of the big toe.",
+      "actionText": "Flexes the big toe; inserts on the medial and lateral sides of the base of the proximal phalanx of the big toe.",
       "clinical": null,
       "notes": "The two sesamoid bones of the foot sit within its tendons.",
       "images": {
@@ -4420,7 +4420,7 @@
       "actions": [
         "toe-adduction"
       ],
-      "actionText": "Adducts the toes.",
+      "actionText": "Adducts the big toe.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -4468,7 +4468,7 @@
       "actions": [
         "toe-flexion"
       ],
-      "actionText": "Flexes the toes; inserts on the base of proximal phalanx of 5th toe.",
+      "actionText": "Flexes the little toe; inserts on the base of proximal phalanx of 5th toe.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -4516,7 +4516,7 @@
       "actions": [
         "toe-flexion"
       ],
-      "actionText": "Flexes the toes; inserts on the lateral part of 5th metatarsal.",
+      "actionText": "Flexes the little toe; inserts on the lateral part of 5th metatarsal.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -5242,7 +5242,7 @@
       "actions": [
         "finger-extension"
       ],
-      "actionText": "Extends the fingers; inserts on the extensor expansion of digit 5.",
+      "actionText": "Extends the little finger; inserts on the extensor expansion of digit 5.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -5527,7 +5527,7 @@
       "actions": [
         "finger-extension"
       ],
-      "actionText": "Extends the fingers; inserts on the extensor expansion of digit 2.",
+      "actionText": "Extends the index finger; inserts on the extensor expansion of digit 2.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -5770,7 +5770,7 @@
       "actions": [
         "finger-abduction"
       ],
-      "actionText": "Abducts the fingers; inserts on the proximal phalanx of digit 5.",
+      "actionText": "Abducts the little finger; inserts on the proximal phalanx of digit 5.",
       "clinical": null,
       "notes": null,
       "images": {
@@ -5818,7 +5818,7 @@
       "actions": [
         "finger-flexion"
       ],
-      "actionText": "Flexes the fingers.",
+      "actionText": "Flexes the little finger.",
       "clinical": null,
       "notes": null,
       "images": {

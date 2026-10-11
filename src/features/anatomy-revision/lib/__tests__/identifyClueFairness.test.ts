@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { ALL_STRUCTURES, ALL_IMAGES } from '../../data/seed';
-import { areasOf, isLigament, isMuscle } from '../../types/structure';
-import { buildIdentifyClue, clueAlsoFits } from '../facts';
+import { areasOf, isBone, isLandmark, isLigament, isMuscle } from '../../types/structure';
+import { buildIdentifyClue, clueAlsoFits, namesStructure } from '../facts';
 import { buildIndexes } from '../indexes';
 import { createRng } from '../rng';
 import { buildMcqQuestions } from '../questionGenerators/mcq';
@@ -61,6 +61,15 @@ describe('a clue question has one right answer', () => {
         expect(alsoRight, q.prompt).toEqual([]);
       }
     }
+  });
+
+  it('never puts the name of a landmark in its own clue', () => {
+    // Found on a phone, 11 Oct 2026: "Name the structure: Anterior and
+    // posterior longitudinal ligaments run along the vertebral bodies".
+    const byId = new Map(ALL_STRUCTURES.map((s) => [s.id, s]));
+    expect(buildIdentifyClue(byId.get('vertebral-body')!)).toMatch(/^The large, cylindrical anterior portion/);
+    const named = ALL_STRUCTURES.filter((s) => (isLandmark(s) || isBone(s)) && namesStructure(buildIdentifyClue(s), s));
+    expect(named.map((s) => s.id)).toEqual([]);
   });
 
   it('does not ask a ligament by a bone list its neighbours share', () => {

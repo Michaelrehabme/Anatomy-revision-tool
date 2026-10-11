@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { structureNameVariants, swapFibularPeroneal } from '../nameVariants';
-import { isAnswerMatch } from '../answerMatching';
+import { isAnswerMatch, singular } from '../answerMatching';
 import { ALL_STRUCTURES } from '../../data/seed';
 
 describe('swapFibularPeroneal', () => {
@@ -109,16 +109,68 @@ describe('"of the hand" and "of the foot" are optional too', () => {
     // The whole safety argument for stripping the qualifier: across the entire
     // dataset, two structures may share a stripped name ONLY when they are the
     // same structure in the hand and in the foot.
+    // Keyed on the singular of each word, which is what grading compares: a
+    // plural must not be another structure's name either.
     const byForm = new Map<string, string[]>();
     for (const s of ALL_STRUCTURES) {
       for (const form of structureNameVariants(s.name, s.aliases)) {
-        const key = form.toLowerCase();
+        const key = form.toLowerCase().split(/\s+/).map(singular).join(' ');
         byForm.set(key, [...new Set([...(byForm.get(key) ?? []), s.id])]);
       }
     }
+    // The sacrum's superior articular process is a vertebra's, on the sacrum:
+    // the same structure where the picture has already said which bone.
     const twinned = (ids: string[]) =>
-      new Set(ids.map((id) => id.replace(/-(hand|foot)$/, ''))).size === 1;
+      new Set(ids.map((id) => id.replace(/-(hand|foot|sacrum)$/, ''))).size === 1;
     const bad = [...byForm.entries()].filter(([, ids]) => ids.length > 1 && !twinned(ids));
     expect(bad.map(([form, ids]) => `${form}: ${ids.join(', ')}`)).toEqual([]);
+  });
+});
+
+describe('anything in brackets is optional', () => {
+  const accept = (id: string, typed: string) => {
+    const s = ALL_STRUCTURES.find((x) => x.id === id)!;
+    return isAnswerMatch(typed, structureNameVariants(s.name, s.aliases));
+  };
+
+  it('does not make a student type the vertebral levels', () => {
+    // Found on a phone, 11 Oct 2026: "Thoracic vertebrae" marked wrong.
+    expect(accept('thoracic-vertebrae', 'Thoracic vertebrae')).toBe(true);
+    expect(accept('lumbar-vertebrae', 'lumbar vertebrae')).toBe(true);
+    expect(accept('atlas-c1', 'atlas')).toBe(true);
+    expect(accept('thoracic-vertebrae', 'Thoracic Vertebrae (T1–T12)')).toBe(true);
+  });
+
+  it('drops a bracket wherever it falls in the name', () => {
+    expect(accept('facet-joint', 'facet joint')).toBe(true);
+    expect(accept('dens-odontoid-process', 'dens')).toBe(true);
+    expect(accept('asis', 'anterior superior iliac spine')).toBe(true);
+  });
+
+  it('keeps the bracket that is the answer', () => {
+    expect(accept('posterior-meniscotibial-ligament-lateral-meniscus', 'posterior meniscotibial ligament')).toBe(false);
+    expect(accept('thoracic-vertebrae', 'lumbar vertebrae')).toBe(false);
+  });
+});
+
+describe('singular and plural are the same answer', () => {
+  const accept = (id: string, typed: string) => {
+    const s = ALL_STRUCTURES.find((x) => x.id === id)!;
+    return isAnswerMatch(typed, structureNameVariants(s.name, s.aliases));
+  };
+
+  it('takes "malleoli" for "malleolus", and the other way round', () => {
+    // Found on a phone, 11 Oct 2026, on a plate showing the lateral malleolus.
+    expect(accept('lateral-malleolus', 'Lateral malleoli')).toBe(true);
+    expect(accept('thoracic-vertebrae', 'thoracic vertebra')).toBe(true);
+    expect(accept('vertebral-body', 'vertebral bodies')).toBe(true);
+    expect(accept('spinous-process', 'spinous processes')).toBe(true);
+    expect(accept('phalanges-distal-hand', 'distal phalanx')).toBe(true);
+    expect(accept('carpals', 'carpal')).toBe(true);
+  });
+
+  it('does not fold two different words together', () => {
+    expect(singular('trapezium')).not.toBe(singular('trapezius'));
+    expect(accept('lateral-malleolus', 'medial malleoli')).toBe(false);
   });
 });

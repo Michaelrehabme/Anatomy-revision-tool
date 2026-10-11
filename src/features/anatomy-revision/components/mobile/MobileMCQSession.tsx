@@ -156,7 +156,7 @@ export function MobileMCQSession({ question, imagesById, onAnswer, onNext, onFul
           title={isCorrect ? 'Correct' : 'Not quite'}
           body={
             <>
-              <strong className="font-semibold">{question.choices[question.correctIndex]}.</strong> {question.explanation}
+              <strong className="font-semibold">{question.choices[question.correctIndex].replace(/\.$/, '')}.</strong> {question.explanation}
             </>
           }
           onFullCard={onFullCard}

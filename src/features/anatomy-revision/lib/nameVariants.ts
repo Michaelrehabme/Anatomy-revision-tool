@@ -69,14 +69,30 @@ export function swapFibularPeroneal(value: string): string | null {
  * see the picture has already answered the hand-or-foot half. So "distal
  * phalanges" grades as right.
  *
+ * EVERY OTHER BRACKET GOES TOO (the owner's call, 11 Oct 2026, after
+ * "Thoracic vertebrae" was marked wrong for "Thoracic Vertebrae (T1–T12)"):
+ * anything in brackets is a note on the name, not part of it. "Atlas (C1)" is
+ * the atlas, "Dens (Odontoid Process)" is the dens, and "Facet (Zygapophyseal)
+ * Joint" is the facet joint, wherever in the name the bracket falls.
+ *
+ * THE ONE BRACKET THAT STAYS is "(Lateral meniscus)" / "(Medial meniscus)" on
+ * the four meniscotibial ligaments. There the bracket is the answer: it is the
+ * only thing telling two ligaments on the same plate apart.
+ *
  * WHAT STRIPPING CANNOT DO is let a wrong answer through. Peeling the
- * qualifier off every name in the dataset collides only ever with that name's
- * own hand/foot twin — never with a different structure — so the worst case is
- * the one above: a question about the hand accepts the answer a student would
- * have given for the foot, on a picture of a hand. See the collision test.
+ * qualifier off every name in the dataset collides only ever with the same
+ * structure somewhere the picture has already settled — its hand/foot twin, or
+ * the sacrum's superior articular process against a vertebra's — never with a
+ * different structure. See the collision test.
  */
-const OPTIONAL_SUFFIX =
-  /(?:\s*\((?:grouped|hand|foot)\)|\s+of\s+(?:the\s+)?(?:hand|foot)|\s+muscles?)$/i;
+const OPTIONAL_SUFFIX = /(?:\s+of\s+(?:the\s+)?(?:hand|foot)|\s+muscles?)$/i;
+const BRACKETED = /\s*\((?!(?:lateral|medial) meniscus\))[^()]*\)/gi;
+
+/** The name with one layer of bookkeeping taken off: its brackets first, then a trailing qualifier. */
+function peel(form: string): string {
+  const unbracketed = form.replace(BRACKETED, '').replace(/\s+/g, ' ').trim();
+  return unbracketed !== form ? unbracketed : form.replace(OPTIONAL_SUFFIX, '').trim();
+}
 
 /**
  * Every form of a structure's name that should grade as correct: the fibular/
@@ -89,7 +105,7 @@ export function structureNameVariants(name: string, aliases: readonly string[]):
     let form = value.trim();
     while (form) {
       out.add(form);
-      const shorter = form.replace(OPTIONAL_SUFFIX, '').trim();
+      const shorter = peel(form);
       if (shorter === form) return;
       form = shorter;
     }

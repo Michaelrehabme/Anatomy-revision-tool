@@ -14,7 +14,33 @@ function normalize(value: string): string {
     .toLowerCase()
     .replace(/\s+/g, ' ')
     .replace(/^(the|a|an)\s+/, '')
-    .replace(/ the(?= )/g, '');
+    .replace(/ the(?= )/g, '')
+    .split(' ')
+    .map(singular)
+    .join(' ');
+}
+
+/**
+ * One word in its singular, so "malleoli" and "malleolus" are the same answer
+ * (the owner's call, 11 Oct 2026). A plate that shows both ankles shows two
+ * malleoli, and a student who says so has named the structure.
+ *
+ * It only has to be consistent, not good Latin: the typed answer and the
+ * accepted one both pass through it, so "carpi" coming out as "carpus" costs
+ * nothing. What it must NOT do is fold two different words together, which is
+ * why "-um" is left alone (trapezium is a bone, trapezius a muscle) and why
+ * the collision test in nameVariants.test.ts runs over these forms.
+ */
+export function singular(word: string): string {
+  if (word.length < 5) return word;
+  if (word === 'phalanges') return 'phalanx';
+  if (word === 'foramina') return 'foramen';
+  if (word.endsWith('ae')) return word.slice(0, -1);
+  if (word.endsWith('ies')) return `${word.slice(0, -3)}y`;
+  if (/(?:ss|ch|sh|x)es$/.test(word)) return word.slice(0, -2);
+  if (word.endsWith('i')) return `${word.slice(0, -1)}us`;
+  if (/[^suia]s$/.test(word)) return word.slice(0, -1);
+  return word;
 }
 
 /** Levenshtein edit distance (insert/delete/substitute), computed with a single-row DP. */

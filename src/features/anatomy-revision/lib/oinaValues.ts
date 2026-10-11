@@ -1,4 +1,5 @@
 import type { NerveRef } from '../types/structure';
+import { singular } from './answerMatching';
 
 /**
  * Value normalisation for OINA questions (CR-018). Where mcq.ts collapses a
@@ -220,7 +221,13 @@ export function canonicalNerveNames(refs: NerveRef[]): string[] {
 
 const CONFLICT_STOPWORDS = new Set(['of', 'the', 'a', 'an', 'and', 'to', 'from', 'in', 'on', 'at', 'via', 'its']);
 
-/** Lowercased content tokens, with en/em dashes and ampersands folded to their typeable forms. */
+/**
+ * Lowercased content tokens, with en/em dashes and ampersands folded to their
+ * typeable forms, each in the singular: "Medial and lateral tubercles of
+ * calcaneus" was offered as a wrong origin of abductor hallucis, which arises
+ * from the medial tubercle, because "tubercles" was not "tubercle" (found on
+ * a phone, 11 Oct 2026).
+ */
 function contentTokens(value: string): string[] {
   return value
     .toLowerCase()
@@ -228,7 +235,8 @@ function contentTokens(value: string): string[] {
     .replace(/&/g, ' and ')
     .replace(/[^a-z0-9-]+/g, ' ')
     .split(/\s+/)
-    .filter((t) => t.length > 0 && !CONFLICT_STOPWORDS.has(t));
+    .filter((t) => t.length > 0 && !CONFLICT_STOPWORDS.has(t))
+    .map(singular);
 }
 
 /**

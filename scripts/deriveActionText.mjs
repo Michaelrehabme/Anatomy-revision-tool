@@ -96,13 +96,33 @@ function list(items) {
   return `${items.slice(0, -1).join(', ')} and ${items[items.length - 1]}`;
 }
 
+/**
+ * The one digit a muscle moves, when its name says it moves only one.
+ *
+ * The tag vocabulary stops at "toe" and "finger", so adductor hallucis came out
+ * as "Adducts the toes" and abductor digiti minimi as "Abducts the fingers" —
+ * each true of a muscle that does not exist (the owner's correction, 11 Oct
+ * 2026). The name is the fact being used: hallucis is the big toe, pollicis
+ * the thumb, digiti minimi the fifth digit, indicis the index finger. Hand or
+ * foot is read off the tag itself.
+ */
+function ownDigit(name, tag) {
+  const foot = tag.startsWith('toe-');
+  if (!foot && !tag.startsWith('finger-')) return null;
+  if (/\bhallucis\b/i.test(name)) return 'the big toe';
+  if (/\bdigiti minimi\b/i.test(name)) return foot ? 'the little toe' : 'the little finger';
+  if (/\bindicis\b/i.test(name)) return 'the index finger';
+  return null;
+}
+
 /** "Flexes and externally rotates the hip" — verbs sharing an object are merged. */
-function actionsSentence(tags) {
+function actionsSentence(tags, name) {
   const groups = [];
   for (const tag of tags) {
     const entry = TAG[tag];
     if (!entry) throw new Error(`no phrase for tag: ${tag}`);
-    const [verb, object] = entry;
+    const verb = entry[0];
+    const object = ownDigit(name, tag) ?? entry[1];
     const existing = groups.find((g) => g.object === object);
     if (existing) existing.verbs.push(verb);
     else groups.push({ object, verbs: [verb] });
@@ -126,8 +146,8 @@ function lowerFirst(s) {
  * determiner, a possessive-ish word, or a vertebral level like "T12".
  */
 function withDeterminer(s) {
-  if (/^(the|a|an|its|their|each|both)/i.test(s)) return s;
-  if (/^(medial|lateral|anterior|posterior|superior|inferior|proximal|distal|plantar|dorsal|palmar)/i.test(s)) return `the ${s}`;
+  if (/^(the|a|an|its|their|each|both)\b/i.test(s)) return s;
+  if (/^(medial|lateral|anterior|posterior|superior|inferior|proximal|distal|plantar|dorsal|palmar)\b/i.test(s)) return `the ${s}`;
   if (/^[A-Z]?\d|^[CTLS]\d/.test(s)) return s; // "T12 and all lumbar...", "5th metatarsal" handled below
   return `the ${s}`;
 }
@@ -267,7 +287,7 @@ for (const m of muscles) {
     continue;
   }
 
-  sentence = actionsSentence(tags);
+  sentence = actionsSentence(tags, m.name);
   sentence = sentence.charAt(0).toUpperCase() + sentence.slice(1);
 
   const group = byTagSet.get(tags.slice().sort().join('|'));

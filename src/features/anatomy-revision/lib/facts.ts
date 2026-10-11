@@ -4,6 +4,7 @@ import { REGION_LABELS, SUBREGION_LABELS, AREA_LABELS } from '../types/region';
 import type { OinaPromptKind } from '../types/question';
 import type { StructureIndexEntry } from '../types/structureIndex';
 import { siteLabel } from './attachmentSites';
+import { singular } from './answerMatching';
 
 /** Every structure by id, for naming a ligament's attachments as "landmark of bone". */
 export type SiteLookup = ReadonlyMap<string, StructureIndexEntry>;
@@ -171,9 +172,29 @@ export function buildIdentifyClue(s: AnatomyStructure): string {
     if (attachments.length) return attachmentClue(attachments);
     return s.description;
   }
-  if (s.attachments.length) return s.attachments.join('; ');
-  if (s.articulations?.length) return s.articulations.join('; ');
-  return s.description;
+  // A fact list that names the structure is the answer, not a clue: the
+  // vertebral body's only attachment is "Anterior and posterior longitudinal
+  // ligaments run along the vertebral bodies" (found on a phone, 11 Oct 2026).
+  // The next source down is asked instead, and the first is kept only when
+  // every one of them gives the name away.
+  const sources = [s.attachments.join('; '), s.articulations?.join('; ') ?? '', s.description].filter(Boolean);
+  return sources.find((clue) => !namesStructure(clue, s)) ?? sources[0];
+}
+
+/** Lower-case words in the singular, so "vertebral bodies" is found to name the "Vertebral Body". */
+const clueWords = (text: string) =>
+  text
+    .toLowerCase()
+    .replace(/\([^)]*\)/g, ' ')
+    .split(/[^a-z0-9]+/)
+    .filter(Boolean)
+    .map(singular)
+    .join(' ');
+
+/** Whether a clue contains the structure's name or one of its aliases, in either number. */
+export function namesStructure(clue: string, s: Pick<AnatomyStructure, 'name' | 'aliases'>): boolean {
+  const words = ` ${clueWords(clue)} `;
+  return [s.name, ...s.aliases].map(clueWords).some((name) => name && words.includes(` ${name} `));
 }
 
 /**
