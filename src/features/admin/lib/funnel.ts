@@ -5,7 +5,13 @@ export interface FunnelRow {
   label: string;
   /** Accounts that reached this step in the period. */
   people: number;
-  /** As a share of the step before it, 0–100; null for the first step, or when nobody reached the one before. */
+  /**
+   * As a share of the step before it, 0–100. Null for the first step, when
+   * nobody reached the one before, and when MORE people reached this one: a
+   * step can be reached without the one above it (the account form from a
+   * link that skips the home page, the prices from an email), and "300%" of
+   * the previous step says nothing true about either.
+   */
   ofPrevious: number | null;
 }
 
@@ -31,7 +37,7 @@ export function funnelRows(events: readonly FunnelEvent[], source: string | null
       step: step.id,
       label: step.label,
       people: here,
-      ofPrevious: index === 0 || before === 0 ? null : Math.round((here / before) * 100),
+      ofPrevious: index === 0 || before === 0 || here > before ? null : Math.round((here / before) * 100),
     };
   });
 }

@@ -33,6 +33,11 @@ describe('funnelRows', () => {
     expect(rows.find((r) => r.step === 'pricing-viewed')).toMatchObject({ people: 1, ofPrevious: null });
   });
 
+  it('gives no percentage where a step was reached by more people than the one before it', () => {
+    const rows = funnelRows([event('a', 'landing-viewed'), event('a', 'signup-started'), event('b', 'signup-started')]);
+    expect(rows.find((r) => r.step === 'signup-started')).toMatchObject({ people: 2, ofPrevious: null });
+  });
+
   it('follows the people who arrived from a source, even where a later step lost the tag', () => {
     const events = [
       event('a', 'landing-viewed', 'tiktok', '2026-10-12T10:00:00.000Z'),
