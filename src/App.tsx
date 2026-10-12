@@ -423,6 +423,16 @@ function App() {
     );
   }
 
+  // The home page first, ahead of the content and the sign-in: it reads
+  // neither, and a visitor from an advert should not sit through "Loading
+  // anatomy content…" (or a retry button, if that load failed) to see a page
+  // that needs none of it. Only the yes is decided here. While the setting is
+  // still unknown the gates below run as before, and the wait for it stays
+  // where it was.
+  if (!onboarded && location.pathname === '/' && siteSettings.marketingHomeEnabled) {
+    return <MarketingHome />;
+  }
+
   if (repoError || content.error) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center gap-3 px-6 text-center text-sm" style={{ color: 'var(--ink3)' }}>
