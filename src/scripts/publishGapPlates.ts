@@ -311,6 +311,40 @@ for (const viewNo of VIEWS) {
 const sizes = new Set(rows.map((r) => `${r.width}x${r.height}`));
 if (sizes.size > 1) throw new Error(`frames are not all one size: ${[...sizes].join(', ')}`);
 
+/*
+ * MORE THAN ONE PLATE. A run publishes one spec, and the two generated files
+ * hold every plate, so what the files already say about the OTHER plates is
+ * kept as written and this plate's part is replaced. Read back as text, line
+ * for line, so that publishing the palmar plate does not rewrite a digit of
+ * the carpal one. (Until 12 October 2026 a run wrote the files whole, and a
+ * second plate would have deleted the first.)
+ */
+const plateRow = (r: Row) =>
+  `  { plateId: '${spec.plate.id}', name: '${spec.plate.name}', region: '${spec.plate.region}', subregion: '${spec.plate.subregion}', view: '${r.view}', angle: ${r.angle}, width: ${r.width}, height: ${r.height} },`;
+const rowPlate = (line: string) => /^ {2}\{ plateId: '([^']+)'/.exec(line)?.[1];
+const rowAngle = (line: string) => Number(/angle: (\d+)/.exec(line)?.[1] ?? 0);
+const keptRows = existsSync(OUT_TS)
+  ? readFileSync(OUT_TS, 'utf8')
+      .split(/\r?\n/)
+      .filter((line) => {
+        const id = rowPlate(line);
+        return id !== undefined && id !== spec.plate.id;
+      })
+  : [];
+const plateRows = [...keptRows, ...rows.map(plateRow)].sort(
+  (a, b) => rowPlate(a)!.localeCompare(rowPlate(b)!) || rowAngle(a) - rowAngle(b),
+);
+
+const framePlate = (key: string) => /^gap-(.+)-a\d{3}-plate$/.exec(key)?.[1];
+const hotspotBlocks = new Map<string, string>();
+if (existsSync(OUT_HOTSPOTS)) {
+  const written = readFileSync(OUT_HOTSPOTS, 'utf8').replace(/\r\n/g, '\n');
+  for (const [, key, body] of written.matchAll(/^ {2}'(gap-[^']+)': \[\n([\s\S]*?)\n {2}\],$/gm)) {
+    if (framePlate(key) !== spec.plate.id) hotspotBlocks.set(key, body);
+  }
+}
+for (const [key, list] of Object.entries(hotspots)) hotspotBlocks.set(key, list.join('\n'));
+
 writeFileSync(OUT_TS, `import type { ViewType } from '../../types/image';
 import type { Region, SubRegion } from '../../types/region';
 
@@ -335,7 +369,7 @@ export interface GapPlate {
 }
 
 export const GAP_PLATES: GapPlate[] = [
-${rows.map((r) => `  { plateId: '${spec.plate.id}', name: '${spec.plate.name}', region: '${spec.plate.region}', subregion: '${spec.plate.subregion}', view: '${r.view}', angle: ${r.angle}, width: ${r.width}, height: ${r.height} },`).join('\n')}
+${plateRows.join('\n')}
 ];
 `);
 
@@ -353,7 +387,7 @@ writeFileSync(OUT_HOTSPOTS, `/**
 import type { HotspotPolygon } from '../../types/image';
 
 export const GAP_HOTSPOTS: Record<string, HotspotPolygon[]> = {
-${Object.entries(hotspots).sort(([a], [b]) => a.localeCompare(b)).map(([id, list]) => `  '${id}': [\n${list.join('\n')}\n  ],`).join('\n')}
+${[...hotspotBlocks].sort(([a], [b]) => a.localeCompare(b)).map(([id, body]) => `  '${id}': [\n${body}\n  ],`).join('\n')}
 };
 `);
 
