@@ -49,8 +49,35 @@ export function isTappableTarget(hotspot: HotspotPolygon): boolean {
  * the structure rather than about a single traced piece.
  */
 export function isTappableIn(image: AnatomyImageAsset, structureId: string): boolean {
-  return (image.hotspots ?? []).some((h) => h.structureId === structureId && isTappableTarget(h));
+  const own = (image.hotspots ?? []).filter((h) => h.structureId === structureId);
+  if (!own.some(isTappableTarget)) return false;
+  if (!image.id.startsWith(STRAP_PLATE_PREFIX)) return true;
+  return own.reduce((total, h) => total + h.area, 0) >= MIN_STRAP_AREA;
 }
+
+/**
+ * How much of a ligament plate a strap has to cover before it is asked as a
+ * tap, as a share of the picture: 0.15%, about a 60-pixel square at 1600.
+ *
+ * WIDE ENOUGH IS NOT BIG ENOUGH. The width floor above passes a strap that is
+ * a dot: the atlas draws many ligaments as a flat patch of four vertices, 4 to
+ * 5 mm across, and the scaphocapitate ligament clears the width floor while
+ * covering 0.02% of its plate. A closer camera was tried on 12 October 2026
+ * and does not help (the patch is all the shape there is, and the close-up
+ * cannot be oriented), so this is the one case where the answer is the rule.
+ *
+ * 21 ligaments have no angle above it and lose their locate question; they
+ * keep every other question (owner's decision, 12 October 2026). Judged on
+ * the best angle, not the typical one: a strap that is broadside from one
+ * side is still asked, opening on that side.
+ *
+ * THE WAY BACK IS A PICTURE THAT CLEARS IT, and nothing else has to change.
+ * The ones that join two neighbouring bones are due on a gap plate
+ * (publishGapPlates.ts), whose images are not strap plates and are not held
+ * to this.
+ */
+export const MIN_STRAP_AREA = 0.0015;
+const STRAP_PLATE_PREFIX = 'ligament-';
 
 export interface LocateGenOptions {
   toleranceMultiplier?: number;
@@ -152,6 +179,22 @@ export function buildLocateQuestions(
    */
   const fallbackSetFor = (structure: StructureIndexEntry): string | undefined => {
     if (fallbackCache.has(structure.id)) return fallbackCache.get(structure.id);
+    // A DOT ON ITS OWN PLATE IS NOT RESCUED BY A NEIGHBOUR'S. The fallback is
+    // for a strap its own plate shows edge-on (too thin to aim at), which a
+    // plate from another side can show properly. One that is wide enough on
+    // its own plate and still under MIN_STRAP_AREA is small from every side,
+    // and a few more pixels of it at the edge of somebody else's picture is
+    // not the honest picture the floor is waiting for.
+    const names = new Set([structure.name, ...structure.aliases].map((n) => n.toLowerCase()));
+    const dotOnOwnPlate = [...sets].some(([key, frames]) => {
+      const subject = subjectBySet.get(key);
+      if (subject === undefined || !names.has(subject)) return false;
+      return frames.some((f) => (f.hotspots ?? []).some((h) => h.structureId === structure.id && isTappableTarget(h)));
+    });
+    if (dotOnOwnPlate) {
+      fallbackCache.set(structure.id, undefined);
+      return undefined;
+    }
     let best: string | undefined;
     let bestArea = 0;
     for (const [key, frames] of sets) {
