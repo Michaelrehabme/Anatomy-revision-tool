@@ -65,6 +65,10 @@ export type ErrorSource = 'boundary' | 'error' | 'rejection';
  */
 export const FUNNEL_STEPS = [
   { id: 'landing-viewed', label: 'Saw the home page' },
+  // A side road: a visitor may try ten questions before making an account, or
+  // not. `optional` keeps it out of the main run's percentages (admin/lib/funnel.ts).
+  { id: 'trial-started', label: 'Started the trial questions', optional: true },
+  { id: 'trial-finished', label: 'Finished the trial questions', optional: true },
   { id: 'signup-started', label: 'Opened the account form' },
   { id: 'account-created', label: 'Created an account' },
   { id: 'email-confirmed', label: 'Confirmed their email' },

@@ -32,7 +32,11 @@ export function funnelRows(events: readonly FunnelEvent[], source: string | null
 
   return FUNNEL_STEPS.map((step, index) => {
     const here = people.get(step.id) ?? 0;
-    const before = index === 0 ? 0 : (people.get(FUNNEL_STEPS[index - 1].id) ?? 0);
+    // An optional step is measured against the one above it; a step of the
+    // main run against the last main step, skipping the side road.
+    const optional = 'optional' in step;
+    const previous = FUNNEL_STEPS.slice(0, index).reverse().find((s) => optional || !('optional' in s));
+    const before = previous ? (people.get(previous.id) ?? 0) : 0;
     return {
       step: step.id,
       label: step.label,

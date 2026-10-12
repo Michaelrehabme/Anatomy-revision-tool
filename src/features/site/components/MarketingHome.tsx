@@ -336,9 +336,9 @@ export function MarketingHome() {
         </Prose>
         <div className="mt-7 flex flex-wrap items-center gap-4">
           <PrimaryLink to="/onboarding">Start free</PrimaryLink>
-          <a href="#question" style={{ font: '400 14px/1 var(--font-ui)', color: 'var(--accd)' }}>
-            Try a sample question
-          </a>
+          <Link to="/try" style={{ font: '400 14px/1 var(--font-ui)', color: 'var(--accd)' }}>
+            Try ten questions, no sign-up
+          </Link>
         </div>
         <div
           className="mt-7 flex flex-wrap gap-x-5 gap-y-2"
@@ -362,6 +362,13 @@ export function MarketingHome() {
           identify, and OINA — origin, insertion, nerve, action.
         </Prose>
         <SampleQuestion />
+        <p className="mt-6" style={{ font: '400 14px/1.5 var(--font-ui)', color: 'var(--ink2)' }}>
+          Want more than one?{' '}
+          <Link to="/try" style={{ color: 'var(--accd)' }}>
+            Try ten questions, a few of each kind
+          </Link>
+          . No account needed.
+        </p>
       </Section>
 
       <div style={{ borderTop: '1px solid var(--line)' }} />

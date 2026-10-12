@@ -101,6 +101,9 @@ const LegalRoutes = lazy(() => import('./features/legal/LegalRoutes'));
  */
 const ComparisonPage = lazy(() => import('./features/site/components/ComparisonPage'));
 const COMPARISON_PATH = '/compare';
+/** Ten questions with no account (features/trial). Public, like the prices. */
+const TRIAL_PATH = '/try';
+const TrialSession = lazy(() => import('./features/trial/TrialSession'));
 
 /**
  * What a guest sees in place of every screen that revises (the free area and
@@ -458,6 +461,17 @@ function App() {
       <div className="flex min-h-screen items-center justify-center text-sm" style={{ color: 'var(--ink3)' }}>
         Loading anatomy content…
       </div>
+    );
+  }
+
+  // The trial needs the content and nothing else: no account, no onboarding,
+  // no entitlement. Below the loading gate for the first, above the redirect
+  // to onboarding for the rest.
+  if (location.pathname === TRIAL_PATH) {
+    return (
+      <Suspense fallback={null}>
+        <TrialSession content={content} isDesktop={isDesktop} />
+      </Suspense>
     );
   }
 

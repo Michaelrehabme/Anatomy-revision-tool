@@ -20,12 +20,31 @@ describe('funnelRows', () => {
       event('b', 'signup-started'),
       event('a', 'account-created'),
     ]);
-    expect(rows.map((r) => [r.step, r.people, r.ofPrevious]).slice(0, 4)).toEqual([
+    expect(rows.filter((r) => !r.step.startsWith('trial-')).map((r) => [r.step, r.people, r.ofPrevious]).slice(0, 4)).toEqual([
       ['landing-viewed', 4, null],
       ['signup-started', 2, 50],
       ['account-created', 1, 50],
       ['email-confirmed', 0, 0],
     ]);
+  });
+
+  it('measures the trial against the home page, and the account form against the home page too', () => {
+    const rows = funnelRows([
+      event('a', 'landing-viewed'),
+      event('b', 'landing-viewed'),
+      event('c', 'landing-viewed'),
+      event('d', 'landing-viewed'),
+      event('a', 'trial-started'),
+      event('b', 'trial-started'),
+      event('a', 'trial-finished'),
+      event('a', 'signup-started'),
+      event('c', 'signup-started'),
+      event('d', 'signup-started'),
+    ]);
+    const share = (step: FunnelStep) => rows.find((r) => r.step === step)?.ofPrevious;
+    expect(share('trial-started')).toBe(50);
+    expect(share('trial-finished')).toBe(50);
+    expect(share('signup-started')).toBe(75);
   });
 
   it('gives no percentage where nobody reached the step before', () => {

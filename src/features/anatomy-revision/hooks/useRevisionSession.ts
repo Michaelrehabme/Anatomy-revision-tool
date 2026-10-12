@@ -380,7 +380,8 @@ export function useRevisionSession(repository: AnatomyRepository | null, userId:
       const durationMs = Date.now() - questionStartedAt.current;
       const record: AnswerRecord = { ...partial, durationMs };
       dispatch({ type: 'ANSWER', record });
-      trackStep('first-answer');
+      // An answer that is kept. The trial (features/trial) keeps none and counts its own steps.
+      if (repository && userId) trackStep('first-answer');
 
       if (repository && userId && currentQuestion) {
         // A locate question answered in words is recorded as what it was, and
@@ -524,7 +525,7 @@ export function useRevisionSession(repository: AnatomyRepository | null, userId:
   const finish = useCallback(async () => {
     const summary = buildSummary(state, userId ?? 'anonymous');
     dispatch({ type: 'FINISH', summary });
-    trackStep('first-session');
+    if (repository && userId) trackStep('first-session');
     if (repository && userId) {
       // Computed against pre-save history (see computeGamification's doc comment), so this must run before saveSessionSummary below.
       try {

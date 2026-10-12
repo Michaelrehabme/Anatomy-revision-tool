@@ -14,6 +14,7 @@ const APP_NAME = 'LocusMSK';
  */
 const TITLES: [prefix: string, title: string][] = [
   ['/onboarding', 'Welcome'],
+  ['/try', 'Try ten questions'],
   ['/study/setup', 'Set up a session'],
   ['/study', 'Study'],
   ['/session/results', 'Session results'],

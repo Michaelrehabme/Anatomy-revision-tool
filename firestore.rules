@@ -753,7 +753,7 @@ service cloud.firestore {
       allow create: if ownsNewRow()
         && request.resource.data.keys().hasOnly(['userId', 'step', 'source', 'createdAt'])
         && request.resource.data.step in [
-          'landing-viewed', 'signup-started', 'account-created', 'email-confirmed', 'area-picked',
+          'landing-viewed', 'trial-started', 'trial-finished', 'signup-started', 'account-created', 'email-confirmed', 'area-picked',
           'first-answer', 'first-session', 'pricing-viewed', 'checkout-opened']
         && eventId == request.auth.uid + '_' + request.resource.data.step
         && shortString(request.resource.data.source, 60)
