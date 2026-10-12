@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /dev
+Disallow: /compare
+
+Sitemap: https://locusmsk.co.uk/sitemap.xml

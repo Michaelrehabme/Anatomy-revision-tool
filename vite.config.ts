@@ -179,7 +179,7 @@ const pwa = (disable: boolean) =>
       // The legal pages must stay reachable, but they are inside the SPA, so
       // the fallback covers them. Firestore and Google endpoints are excluded
       // from navigation fallback entirely.
-      navigateFallbackDenylist: [/^\/api\//, /^https:\/\//],
+      navigateFallbackDenylist: [/^\/api\//, /^https:\/\//, /^\/(robots\.txt|sitemap\.xml)$/],
       cleanupOutdatedCaches: true,
       // A FIRST worker takes the open page at once. Without this it installs
       // and activates but controls nothing until the next launch, so an area

@@ -56,6 +56,7 @@ export function PricingPage() {
   const [params] = useSearchParams();
   const justPaid = params.get('checkout') === 'done';
   useTrackStep('pricing-viewed');
+  const hasAccount = !!user && !user.isAnonymous;
   const { entitlement, tier, loading, refresh } = useEntitlement(user?.uid ?? null);
 
   // ?plan=monthly comes from the home page's plan cards, so the choice made
@@ -123,8 +124,9 @@ export function PricingPage() {
 
   return (
     <div className="mx-auto max-w-[760px] px-5 py-10" style={{ color: 'var(--ink)' }}>
-      <Link to="/account" style={{ font: '400 12.5px/1 var(--font-ui)', color: 'var(--ink3)', textDecoration: 'none' }}>
-        ← Back to your account
+      {/* A visitor following a link to the prices has no account to go back to. */}
+      <Link to={hasAccount ? '/account' : '/'} style={{ font: '400 12.5px/1 var(--font-ui)', color: 'var(--ink3)', textDecoration: 'none' }}>
+        {hasAccount ? '← Back to your account' : '← Back to the home page'}
       </Link>
 
       <h1 className="mt-6" style={{ fontFamily: 'var(--font-display)', fontSize: 32, letterSpacing: '-0.02em' }}>

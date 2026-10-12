@@ -50,7 +50,7 @@ const ANSWER = 'B';
 const FAQS = [
   {
     q: 'What do I actually get for free?',
-    a: 'One full body area of your choosing — every muscle in it, all three question branches, streaks and scheduling. Not a trial: it does not expire, and we do not ask for a card. You create a free account, pick the area when you start, and can change it once after 30 days.',
+    a: 'One full body area of your choosing — every muscle in it, all six question formats, streaks and scheduling. Not a trial: it does not expire, and we do not ask for a card. You create a free account, pick the area when you start, and can change it once after 30 days.',
   },
   {
     q: 'Which muscles are covered?',
@@ -62,7 +62,8 @@ const FAQS = [
   },
   {
     q: 'Can I cancel?',
-    a: 'Monthly stops at the end of the period, no questions asked. Annual is refundable in full within 14 days — after that it runs to the year end.',
+    // Must agree with /refunds and with the box ticked at checkout (legal/CoolingOffWaiver).
+    a: 'Yes, whenever you like. Cancelling stops the next payment, and what you have paid for runs to the end of its month or year. You also have 14 days to change your mind for a full refund, unless you ask for access to start straight away: you confirm at checkout that starting now ends that right. Keep the 14 days and your access starts when they are up.',
   },
   {
     q: 'Is it only for medical students?',
@@ -331,7 +332,7 @@ export function MarketingHome() {
         </h1>
         <Prose>
           Pick a region, answer real anatomical renders, and let spaced repetition decide what comes back tomorrow.
-          122 muscles, three question types, and a body map that shows honestly what is sticking.
+          122 muscles, six question formats, and a body map that shows honestly what is sticking.
         </Prose>
         <div className="mt-7 flex flex-wrap items-center gap-4">
           <PrimaryLink to="/onboarding">Start free</PrimaryLink>
@@ -381,7 +382,7 @@ export function MarketingHome() {
             note="One full body area, free forever. You choose which. No card, no trial clock."
             features={[
               'Any one region, your choice — in full',
-              'All three question types',
+              'All six question formats',
               'Spaced repetition and streaks',
             ]}
             cta={<PrimaryLink to="/onboarding">Start free</PrimaryLink>}
@@ -399,7 +400,7 @@ export function MarketingHome() {
             price={PRICING.annual}
             per="year"
             note={`${PRICING.annualNote}. Everything in monthly, and it keeps working through resits.`}
-            features={['Everything in monthly', 'Exam-countdown planner', 'Keeps working through resits']}
+            features={['Everything in monthly', 'One payment, nothing monthly', 'Keeps working through resits']}
             cta={<PrimaryLink to="/pricing?plan=annual">Subscribe annually</PrimaryLink>}
             emphasis
           />
@@ -428,7 +429,7 @@ export function MarketingHome() {
                 'Year-group seats, one invoice',
                 'Tutor view of cohort weak spots',
                 'Invite a whole cohort by email',
-                'Students never share individual answers with staff',
+                'Staff see a summary of each student, never their individual answers',
               ].map((item) => (
                 <li key={item} style={{ font: '400 14px/1.5 var(--font-ui)', color: 'var(--ink2)' }}>
                   {item}
@@ -461,8 +462,8 @@ export function MarketingHome() {
             <ul className="flex flex-col gap-3" style={{ listStyle: 'none', padding: 0, margin: 0 }}>
               {[
                 ['122 muscles', 'nine regions, from Z-Anatomy renders'],
-                ['3 question types', 'locate, identify and OINA'],
-                ['10, 20 or 40', 'questions a session — it fits between lectures'],
+                ['6 question formats', 'locate, identify, type it, OINA and more'],
+                ['8 to 40', 'questions a session — it fits between lectures'],
               ].map(([figure, caption]) => (
                 <li key={figure}>
                   <div style={{ fontFamily: 'var(--font-display)', fontSize: 24, fontWeight: 500, color: 'var(--ink)' }}>
