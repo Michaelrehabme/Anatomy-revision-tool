@@ -17,6 +17,10 @@ service cloud.firestore {
     // the stored expiry), a complimentary or institutional grant, or admin.
     // See mayTeach() and mayRunCohort() below.
     //
+    // NOT AN ACCESS CODE (owner's decision, 12 Oct 2026). A code handed round
+    // student group chats gives every area to study and no teaching: its
+    // entitlement carries `teaching: false`, and hasOwnFullAccess() refuses it.
+    //
     // NOTHING IS TAKEN FROM AN EDUCATOR WHOSE ACCESS LAPSES. They keep their
     // classes and may read everything in them as before, and may delete
     // them; students stay members. What stops is the teaching: creating a
@@ -209,11 +213,16 @@ service cloud.firestore {
         && (!(e.get('expiresAt', null) is string) || isoTime(e.expiresAt) > request.time);
     }
 
+    // Full access that may TEACH, which is all this is asked for. An access
+    // code's entitlement is live and says `teaching: false`; only that exact
+    // value holds anything back, so every record without the field reads as
+    // it always has.
     function hasOwnFullAccess() {
       return isSignedIn()
         && exists(/databases/$(database)/documents/users/$(request.auth.uid))
         && entitlementIsLive(
-             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.get('entitlement', null));
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.get('entitlement', null))
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.entitlement.get('teaching', true) != false;
     }
 
     /** May start teaching: create a class, and claim the join code for it. */
@@ -694,6 +703,19 @@ service cloud.firestore {
     // granted, and nothing in the app has a reason to read it.
     match /billingFailures/{eventId} {
       allow read, write: if false;
+    }
+
+    // accessCodes/{code} — how many accounts have redeemed an access code, and
+    // under redemptions/{uid} which ones (netlify/functions/redeem-code.ts).
+    //
+    // Written by the Admin SDK and read by scripts/accountData.ts. Closed to
+    // every client: the count is the cap, so a client that could write it
+    // could reopen a code that is full, and the list is of accounts.
+    match /accessCodes/{code} {
+      allow read, write: if false;
+      match /redemptions/{uid} {
+        allow read, write: if false;
+      }
     }
   }
 }

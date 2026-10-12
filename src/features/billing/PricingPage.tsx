@@ -4,6 +4,7 @@ import { useAuth } from '../anatomy-revision/context/AuthProvider';
 import { useEntitlement } from '../anatomy-revision/hooks/useEntitlement';
 import { hasStarted, paymentIssueSince } from '../anatomy-revision/lib/entitlement';
 import { PaymentIssueNotice } from './PaymentIssueNotice';
+import { RedeemCode } from './RedeemCode';
 import { AuthScreen } from '../anatomy-revision/components/Auth/AuthScreen';
 import { CoolingOffWaiver } from '../legal/CoolingOffWaiver';
 import { PLANS, buildCheckoutRequest, readPaddleConfig, renewalTerms, type PlanId } from './lib/checkout';
@@ -157,7 +158,9 @@ export function PricingPage() {
             {pending && entitlement.startsAt
               ? `Your access starts on ${formatDate(entitlement.startsAt)}, when your 14 days are up. You can cancel for a full refund until then.`
               : entitlement.expiresAt
-                ? `Paid up to ${formatDate(entitlement.expiresAt)}.`
+                ? entitlement.accessCode
+                  ? `Free until ${formatDate(entitlement.expiresAt)} with your access code. Nothing is charged when it ends.`
+                  : `Paid up to ${formatDate(entitlement.expiresAt)}.`
                 : 'Your access does not expire.'}
             {entitlement.source === 'licence' && ' Provided by your university.'}
           </p>
@@ -306,6 +309,17 @@ export function PricingPage() {
             </div>
           )}
         </>
+      )}
+
+      {/* A code shared in a link arrives as /pricing?code=…, already typed.
+          Not in the demo, which has nothing to check one with. */}
+      {!DEMO && !loading && !subscribed && !justPaid && !unpaid && (
+        <div className="mt-8">
+          <RedeemCode
+            prefill={params.get('code') ?? ''}
+            onNeedsAccount={needsAccount ? () => setShowAuth(true) : undefined}
+          />
+        </div>
       )}
 
       <p className="mt-10 border-t pt-5" style={{ ...prose, fontSize: 13, borderColor: 'var(--line)' }}>

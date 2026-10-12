@@ -14,6 +14,8 @@
  *   npx tsx scripts/accountData.ts grant <uid> [tier] --apply        # permanent free access
  *   npx tsx scripts/accountData.ts failures                          # payments that did not land, refunds not applied
  *   npx tsx scripts/accountData.ts licence <cohortId> <YYYY-MM-DD|none> --apply
+ *   npx tsx scripts/accountData.ts code <CODE>                       # who has redeemed an access code
+ *   npx tsx scripts/accountData.ts teach <uid> --apply               # let an access-code account teach
  *
  * DRY RUN BY DEFAULT, like deleteDormantAccounts.ts, and for the same reason:
  * this one writes over a live account's data.
@@ -25,9 +27,10 @@
  *
  * Requires GOOGLE_APPLICATION_CREDENTIALS — see the README's "Admin scripts".
  */
-import { getFirestore, type Firestore } from 'firebase-admin/firestore';
+import { FieldValue, getFirestore, type Firestore } from 'firebase-admin/firestore';
 import { getAuth } from 'firebase-admin/auth';
 import { getAdminApp } from './firebaseAdmin';
+import { findAccessCode } from '../src/features/billing/lib/accessCode';
 
 /** Kept in step with accountLifecycle.ts and deleteDormantAccounts.ts by hand. */
 const USER_SUBCOLLECTIONS = [
@@ -270,6 +273,49 @@ async function licence(db: Firestore, cohortId: string, until: string): Promise<
   );
 }
 
+/**
+ * An access code: how many of its places are taken, and by whom
+ * (src/features/billing/lib/accessCode.ts, netlify/functions/redeem-code.ts).
+ */
+async function code(db: Firestore, typed: string): Promise<void> {
+  const found = findAccessCode(typed);
+  if (!found) throw new Error(`No access code "${typed}". They are listed in src/features/billing/lib/accessCode.ts.`);
+  const counter = (await db.doc(`accessCodes/${found.code}`).get()).data()?.redeemed ?? 0;
+  const redemptions = await db.collection(`accessCodes/${found.code}/redemptions`).orderBy('redeemedAt').get();
+  process.stdout.write(
+    `${found.code}: ${counter} of ${found.maxRedemptions} redeemed. Access until ${found.accessUntil}. ${found.teaching ? 'May teach.' : 'No teaching.'}\n\n`,
+  );
+  for (const row of redemptions.docs) {
+    const at = row.data().redeemedAt?.toDate?.().toISOString() ?? 'unknown';
+    process.stdout.write(`  ${at}  ${row.id}  (${await describe(row.id)})\n`);
+  }
+  if (redemptions.size !== counter) {
+    process.stdout.write(`\nNOTE: the count says ${counter} and the list has ${redemptions.size}. The count is what the cap reads.\n`);
+  }
+}
+
+/**
+ * Lets an account that redeemed an access code teach: removes the
+ * `teaching: false` the code wrote, and nothing else. The access still ends
+ * when the code's does. For the accounts the owner has agreed it with — a
+ * code gives student features "unless discussed with me".
+ */
+async function teach(db: Firestore, uid: string): Promise<void> {
+  const current = (await db.doc(`users/${uid}`).get()).data()?.entitlement as Record<string, unknown> | undefined;
+  process.stdout.write(`${uid}  (${await describe(uid)})\n`);
+  process.stdout.write(`  now:  ${current ? JSON.stringify(current) : 'none'}\n`);
+  if (current?.teaching !== false) {
+    process.stdout.write('\nNothing to do: this entitlement does not hold teaching back.\n');
+    return;
+  }
+  if (APPLY) {
+    await db.doc(`users/${uid}`).update({ 'entitlement.teaching': FieldValue.delete() });
+    process.stdout.write('\nDone. They can create a class once they reload the app.\n');
+  } else {
+    process.stdout.write('\nDry run. Re-run with --apply to let this account teach.\n');
+  }
+}
+
 async function main(): Promise<void> {
   const db = getFirestore(getAdminApp());
   const [command, a, b] = process.argv.slice(2).filter((x) => !x.startsWith('--'));
@@ -280,6 +326,8 @@ async function main(): Promise<void> {
   if (command === 'grant' && a) return grant(db, a, b ?? 'institutional');
   if (command === 'failures') return failures(db);
   if (command === 'licence' && a && b) return licence(db, a, b);
+  if (command === 'code' && a) return code(db, a);
+  if (command === 'teach' && a) return teach(db, a);
 
   process.stdout.write(
     'Usage:\n' +
@@ -288,7 +336,9 @@ async function main(): Promise<void> {
       '  npx tsx scripts/accountData.ts move <from-uid> <to-uid> [--apply]\n' +
       '  npx tsx scripts/accountData.ts grant <uid> [individual|institutional] [--apply]\n' +
       '  npx tsx scripts/accountData.ts failures\n' +
-      '  npx tsx scripts/accountData.ts licence <cohortId> <YYYY-MM-DD|none> [--apply]\n',
+      '  npx tsx scripts/accountData.ts licence <cohortId> <YYYY-MM-DD|none> [--apply]\n' +
+      '  npx tsx scripts/accountData.ts code <CODE>\n' +
+      '  npx tsx scripts/accountData.ts teach <uid> [--apply]\n',
   );
 }
 

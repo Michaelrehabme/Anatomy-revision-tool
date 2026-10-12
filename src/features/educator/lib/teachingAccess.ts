@@ -14,6 +14,10 @@ import { storedEntitlements } from '../../anatomy-revision/lib/entitlementRecord
  *   - a complimentary or institutional grant on the account;
  *   - admin.
  *
+ * AND ONE KIND OF FULL ACCESS THAT DOES NOT: an entitlement marked
+ * `teaching: false`, which is what an access code gives (owner's decision,
+ * 12 Oct 2026; billing/lib/accessCode.ts). Every area to study, no classes.
+ *
  * WHAT DOES NOT: being a MEMBER of a licensed class. A class licence gives
  * the class's students every area; it is derived from membership and is not
  * on their accounts, and a student is not an educator.
@@ -42,9 +46,10 @@ export interface TeachingAccess {
 
 type Fields = Record<string, unknown> | null | undefined;
 
-/** Whether the entitlement STORED ON THIS ACCOUNT is in force. A class licence is not stored on it. */
+/** Whether the entitlement STORED ON THIS ACCOUNT is in force, and is one that may teach. A class licence is not stored on it. */
 export function ownFullAccess(user: Fields, now: Date = new Date()): boolean {
-  return resolveEntitlement(storedEntitlements(user), now).tier !== 'free';
+  const held = resolveEntitlement(storedEntitlements(user), now);
+  return held.tier !== 'free' && held.teaching !== false;
 }
 
 /** May start teaching: create a class. */
