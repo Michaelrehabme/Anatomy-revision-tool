@@ -57,6 +57,11 @@ interface AuthContextValue extends AuthState {
    * account can be made again with another address.
    */
   removeUnconfirmedEmail: () => Promise<void>;
+  /**
+   * Emails the address a link to choose a new password. Resolves whether or
+   * not the address has an account (data/emailConfirmation.ts says why).
+   */
+  sendPasswordReset: (email: string) => Promise<void>;
 }
 
 const NOT_AVAILABLE_LOCALLY = async (): Promise<never> => {
@@ -75,6 +80,7 @@ const LOCAL_ACTIONS: Omit<AuthContextValue, keyof AuthState> = {
   sendConfirmationEmail: NOT_AVAILABLE_LOCALLY,
   checkEmailConfirmed: async () => true,
   removeUnconfirmedEmail: NOT_AVAILABLE_LOCALLY,
+  sendPasswordReset: NOT_AVAILABLE_LOCALLY,
 };
 
 const AuthContext = createContext<AuthContextValue>({
@@ -193,6 +199,10 @@ const FIRESTORE_ACTIONS: Omit<AuthContextValue, keyof AuthState> = {
     const { sendConfirmationEmail } = await import('../data/emailConfirmation');
     const { uid, email } = await sendConfirmationEmail();
     recordConfirmationSent(uid, email);
+  },
+  sendPasswordReset: async (email) => {
+    const { sendPasswordReset } = await import('../data/emailConfirmation');
+    await sendPasswordReset(email);
   },
   checkEmailConfirmed: async () => {
     const { reloadSignedInUser } = await import('../data/emailConfirmation');

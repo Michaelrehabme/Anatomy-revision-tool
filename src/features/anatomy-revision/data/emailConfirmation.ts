@@ -1,4 +1,4 @@
-import { EmailAuthProvider, sendEmailVerification, unlink, type User } from 'firebase/auth';
+import { EmailAuthProvider, sendEmailVerification, sendPasswordResetEmail, unlink, type User } from 'firebase/auth';
 import { getFirebaseAuth } from './firebase';
 
 /**
@@ -66,6 +66,23 @@ export async function sendConfirmationEmail(): Promise<{ uid: string; email: str
  * area written in that hour would be refused. When the two disagree the
  * token is replaced before anything is told it is safe to write.
  */
+/**
+ * Emails `email` a link to choose a new password, if it has an account.
+ *
+ * RESOLVES WHETHER OR NOT THERE IS ONE. Firebase can be set either to say so
+ * or to stay silent, and this app stays silent in both: a form that answers
+ * "no account with that address" tells anyone who asks which of their
+ * classmates has signed up. A malformed address, no connection and Firebase's
+ * limit on emails to one address are still reported.
+ */
+export async function sendPasswordReset(email: string): Promise<void> {
+  try {
+    await sendPasswordResetEmail(getFirebaseAuth(), email);
+  } catch (error) {
+    if ((error as { code?: string }).code !== 'auth/user-not-found') throw error;
+  }
+}
+
 export async function confirmedForRules(user: User): Promise<boolean> {
   if (!user.emailVerified) return false;
   try {

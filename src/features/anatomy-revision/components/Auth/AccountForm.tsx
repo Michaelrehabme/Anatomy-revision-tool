@@ -45,6 +45,10 @@ export function friendlyAuthError(error: unknown): string {
       return 'Password should be at least 6 characters.';
     case 'auth/invalid-email':
       return "That doesn't look like a valid email address.";
+    case 'auth/missing-email':
+      return 'Enter your email address first.';
+    case 'auth/too-many-requests':
+      return 'Too many attempts just now. Wait a few minutes and try again.';
     case 'auth/network-request-failed':
       return 'You seem to be offline. Connect and try again — nothing on this device has been lost.';
     case 'auth/popup-closed-by-user':
@@ -53,6 +57,13 @@ export function friendlyAuthError(error: unknown): string {
     default:
       return 'Something went wrong. Please try again.';
   }
+}
+
+export const FORGOT_PASSWORD = 'Forgot your password?';
+
+/** Said after a reset is asked for. True whether or not the address has an account. */
+export function passwordResetSent(email: string): string {
+  return `If ${email} has an account, a link to choose a new password is on its way to it. It can take a minute, and may be in your spam folder.`;
 }
 
 const field = {
@@ -88,7 +99,7 @@ const fieldLabel = { font: '500 12.5px/1 var(--font-ui)', color: 'var(--ink2)' }
  * sign-in arrives confirmed and goes straight on.
  */
 export function AccountForm({ initialMode = 'sign-up', onDone, guestHasProgress = false, onModeChange, onRecovered }: AccountFormProps) {
-  const { signInWithGoogle, signInWithEmail, signUpWithEmail } = useAuth();
+  const { signInWithGoogle, signInWithEmail, signUpWithEmail, sendPasswordReset } = useAuth();
   const [mode, setMode] = useState<AccountFormMode>(initialMode);
   useTrackStep('signup-started', mode === 'sign-up');
   const [email, setEmail] = useState('');
@@ -96,6 +107,8 @@ export function AccountForm({ initialMode = 'sign-up', onDone, guestHasProgress 
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [conflictMessage, setConflictMessage] = useState<string | null>(null);
+  /** The address a reset link was last sent to, for the line that says so. */
+  const [resetSentTo, setResetSentTo] = useState<string | null>(null);
   const id = useId();
   /*
    * AGE CONFIRMATION (CR-025 item 6). Under-16s in the UK bring the GDPR
@@ -149,6 +162,31 @@ export function AccountForm({ initialMode = 'sign-up', onDone, guestHasProgress 
         result.recoveredExistingAccount,
         'An account with this email already existed, so we signed you into it. Progress saved only on this device could not be merged into it.',
       );
+    } catch (err) {
+      setError(friendlyAuthError(err));
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  /*
+   * FORGOTTEN PASSWORD. Uses the address already typed in the form: a second
+   * screen to type it again is a second place to mistype it. The line shown
+   * afterwards is the same whether or not the address has an account, so the
+   * form cannot be used to find out who has signed up.
+   */
+  const handleForgot = async () => {
+    setError(null);
+    setResetSentTo(null);
+    const address = email.trim();
+    if (!address) {
+      setError(friendlyAuthError({ code: 'auth/missing-email' }));
+      return;
+    }
+    setSubmitting(true);
+    try {
+      await sendPasswordReset(address);
+      setResetSentTo(address);
     } catch (err) {
       setError(friendlyAuthError(err));
     } finally {
@@ -245,6 +283,12 @@ export function AccountForm({ initialMode = 'sign-up', onDone, guestHasProgress 
           {error}
         </div>
 
+        {resetSentTo && (
+          <p role="status" className="text-sm leading-relaxed" style={{ color: 'var(--ink2)' }}>
+            {passwordResetSent(resetSentTo)}
+          </p>
+        )}
+
         {blockedByAge && (
           <p id={`${id}-age`} className="text-sm" style={{ color: 'var(--ink3)' }}>
             Tick the box above to continue.
@@ -259,6 +303,18 @@ export function AccountForm({ initialMode = 'sign-up', onDone, guestHasProgress 
         >
           {submitting ? 'One moment…' : mode === 'sign-up' ? 'Create account' : 'Sign in'}
         </Button>
+
+        {mode === 'sign-in' && (
+          <button
+            type="button"
+            onClick={handleForgot}
+            disabled={submitting}
+            className="min-h-[44px] self-start text-sm"
+            style={{ color: 'var(--ink2)', textDecoration: 'underline', textUnderlineOffset: 3 }}
+          >
+            {FORGOT_PASSWORD}
+          </button>
+        )}
       </form>
 
       <button
@@ -268,6 +324,7 @@ export function AccountForm({ initialMode = 'sign-up', onDone, guestHasProgress 
           setMode(next);
           onModeChange?.(next);
           setError(null);
+          setResetSentTo(null);
           // Switching away and back must not carry a stale confirmation.
           setAgeConfirmed(false);
         }}
