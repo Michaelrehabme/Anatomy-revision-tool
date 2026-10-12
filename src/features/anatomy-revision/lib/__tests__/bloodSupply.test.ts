@@ -1,4 +1,15 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+
+/*
+ * BLOOD SUPPLY IS UNSCORED IN THE APP (types/question.ts BLOOD_SUPPLY_SCORED,
+ * 12 October 2026). This file tests the scored path, which is kept so the
+ * switch can be thrown back, by turning it on for these tests alone. What the
+ * app does with it off is in bloodSupplyUnscored.test.ts.
+ */
+vi.mock('../../types/question', async (original) => {
+  const actual = await original<typeof import('../../types/question')>();
+  return { ...actual, BLOOD_SUPPLY_SCORED: true, ASKED_FACT_KINDS: actual.OINA_PROMPT_KINDS };
+});
 import { ALL_IMAGES, ALL_STRUCTURES } from '../../data/seed';
 import { AREAS } from '../../types/region';
 import { areasOf } from '../../types/structure';

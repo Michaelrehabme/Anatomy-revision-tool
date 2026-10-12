@@ -94,9 +94,38 @@ export function buildFlashcardQuestions(
         if (card) questions.push(card);
       }
     }
+
+    const supply = buildBloodSupplyFlashcard(structure);
+    if (supply) questions.push(supply);
   }
 
   return questions;
+}
+
+/**
+ * A structure's blood supply, as a card to learn from.
+ *
+ * This is where blood supply lives while it is unscored (owner's decision,
+ * 12 October 2026; types/question.ts BLOOD_SUPPLY_SCORED): shown and
+ * self-rated, never marked. Every family but landmarks, which carry none.
+ *
+ * THE ARTERIES, AND THE POORLY SUPPLIED PART WHERE ONE IS RECORDED. Not the
+ * rich / moderate / poor rating: it has no source, and a card states what it
+ * says as fact. The zone is the part worth remembering, since it is where
+ * the structure heals badly.
+ */
+export function buildBloodSupplyFlashcard(structure: AnatomyStructure): FlashcardQuestion | null {
+  const b = structure.category === 'landmark' ? undefined : structure.bloodSupply;
+  if (!b?.primary) return null;
+  const lines = [`Main artery: ${b.primary}`];
+  if (b.assisting.length) lines.push(`Also supplied by: ${b.assisting.join('; ')}`);
+  if (b.zone) lines.push(`Poorly supplied part: ${b.zone}`);
+  return {
+    ...baseFields(structure, 'blood-supply'),
+    id: `flashcard-${structure.id}-blood-supply-card`,
+    front: { text: `What is the blood supply of ${structure.name}?` },
+    back: { text: lines.join('\n') },
+  };
 }
 
 /**

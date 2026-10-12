@@ -3,7 +3,7 @@ import type { AnatomyContent } from '../../hooks/useAnatomyContent';
 import { minutesFor } from '../../lib/sessionCopy';
 import { factCardCount, unbuildableSessionReason } from '../../lib/setupCount';
 import type { OinaPromptKind, QuestionType } from '../../types/question';
-import { OINA_PROMPT_KINDS } from '../../types/question';
+import { ASKED_FACT_KINDS } from '../../types/question';
 import type { Category } from '../../types/structure';
 import type { Area } from '../../types/region';
 import { AREAS, AREA_LABELS } from '../../types/region';
@@ -96,7 +96,7 @@ export function RevisionSetup({ access, content, repository, userId, areas, onSt
   // sweep is one more option on it.
   const [allCards, setAllCards] = useState(false);
   const [useSrs, setUseSrs] = useState(true);
-  const [oinaFacts, setOinaFacts] = useState<OinaPromptKind[]>([...OINA_PROMPT_KINDS]);
+  const [oinaFacts, setOinaFacts] = useState<OinaPromptKind[]>([...ASKED_FACT_KINDS]);
   const [groups, setGroups] = useState<string[]>([]);
   // Sticky across sessions — how many repeats help is a property of the
   // student, not of one session (see lib/preferences.ts).
@@ -317,7 +317,7 @@ export function RevisionSetup({ access, content, repository, userId, areas, onSt
                   OINA facts
                 </div>
                 <div className="mt-4 flex flex-wrap gap-2.5">
-                  {OINA_PROMPT_KINDS.map((fact) => (
+                  {ASKED_FACT_KINDS.map((fact) => (
                     <button
                       key={fact}
                       type="button"

@@ -94,13 +94,15 @@ describe('the bundled index', () => {
       expect(requiredFactKinds(wire(index[i])), structure.id).toEqual(fromFacts);
       if (fromFacts.length) withKinds += 1;
     }
-    expect(withKinds).toBeGreaterThan(200);
+    // The muscles. It was over 200 while blood supply was a required fact
+    // (types/question.ts BLOOD_SUPPLY_SCORED).
+    expect(withKinds).toBeGreaterThan(100);
   });
 
   it('names kinds of fact and never a fact: no artery, nerve or origin text', () => {
     const kinds = new Set(index.flatMap((e) => e.factKinds ?? []));
     expect([...kinds].sort()).toEqual(
-      ['action', 'blood-supply', 'blood-supply-assisting', 'blood-supply-rating', 'insertion', 'nerve', 'origin'].sort(),
+      ['action', 'insertion', 'nerve', 'origin'].sort(),
     );
   });
 

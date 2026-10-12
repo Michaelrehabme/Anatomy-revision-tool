@@ -165,6 +165,26 @@ export const BLOOD_FACT_KINDS = ['blood-supply', 'blood-supply-assisting'] as co
 export const OINA_PROMPT_KINDS = [...MUSCLE_FACT_KINDS, ...BLOOD_FACT_KINDS] as const;
 export type OinaPromptKind = (typeof OINA_PROMPT_KINDS)[number];
 /**
+ * BLOOD SUPPLY IS TAUGHT, NOT MARKED (owner's decision, 12 October 2026).
+ *
+ * It was asked on the fact track and as "how rich is the supply", and a
+ * structure could not be mastered without it. Two things were wrong with
+ * that. The ratings have no source: for 103 muscles "rich" or "moderate" was
+ * a count of how many arteries a source happened to list. And which artery
+ * supplies a muscle is rarely what this app's students are examined on. So
+ * until the content is sourced and its purpose settled, blood supply is a
+ * flashcard (questionGenerators/flashcards.ts) and a line on the structure's
+ * card, and nothing is scored on it.
+ *
+ * ONE SWITCH, because every place that asks or counts it reads this: the
+ * fact track, the rating question, the setup screens, and what mastery
+ * requires (lib/factMastery.ts). The kinds themselves stay in the types: a
+ * student's history holds answers recorded under them.
+ */
+export const BLOOD_SUPPLY_SCORED: boolean = false;
+/** The facts a session may ask on the fact track, and a setup screen may offer. */
+export const ASKED_FACT_KINDS: readonly OinaPromptKind[] = BLOOD_SUPPLY_SCORED ? OINA_PROMPT_KINDS : MUSCLE_FACT_KINDS;
+/**
  * A fact whose progress is tracked. "How rich" is asked only as multiple
  * choice, so it never reaches typed recall; it is still a fact a structure
  * must know to be mastered (lib/masteryLevel.ts).

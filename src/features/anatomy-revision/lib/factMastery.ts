@@ -1,6 +1,6 @@
 import type { Confidence, FactMastery } from '../types/attempt';
 import type { FactKind, PromptKind, QuestionType } from '../types/question';
-import { MUSCLE_FACT_KINDS, OINA_PROMPT_KINDS } from '../types/question';
+import { BLOOD_SUPPLY_SCORED, MUSCLE_FACT_KINDS, OINA_PROMPT_KINDS } from '../types/question';
 import { nextSchedule, scheduleConfidence } from './mastery';
 import type { BloodSupply } from '../types/structure';
 import type { StructureIndexEntry } from '../types/structureIndex';
@@ -66,10 +66,13 @@ export function factHints(fact: FactMastery | undefined): 'full' | 'none' {
 }
 
 /**
- * The facts a structure must know to be mastered (owner, 29 Sep 2026): a
- * muscle's origin, insertion, nerve and action, and — outside landmarks —
- * its blood supply: the primary artery where one is named, the assisting
- * arteries where there are any, and how rich the supply is.
+ * The facts a structure must know to be mastered: a muscle's origin,
+ * insertion, nerve and action.
+ *
+ * Blood supply was required too (owner, 29 Sep 2026) and is not while it is
+ * unscored (owner, 12 Oct 2026; types/question.ts BLOOD_SUPPLY_SCORED). A
+ * student cannot be held to a fact the app no longer asks, so a structure
+ * that was waiting only on its arteries is mastered without them.
  */
 export function requiredFactKinds(structure: StructureIndexEntry): FactKind[] {
   // An index entry whose facts are not on the device carries the answer,
@@ -78,7 +81,7 @@ export function requiredFactKinds(structure: StructureIndexEntry): FactKind[] {
   if (structure.factKinds) return [...structure.factKinds];
   const kinds: FactKind[] = structure.category === 'muscle' ? [...MUSCLE_FACT_KINDS] : [];
   const supply = (structure as { bloodSupply?: BloodSupply }).bloodSupply;
-  const b = structure.category === 'landmark' ? undefined : supply;
+  const b = !BLOOD_SUPPLY_SCORED || structure.category === 'landmark' ? undefined : supply;
   if (b) {
     if (b.primary) kinds.push('blood-supply');
     if (b.primary && b.assisting.length) kinds.push('blood-supply-assisting');

@@ -3,7 +3,7 @@ import type { AnatomyContent } from '../../hooks/useAnatomyContent';
 import { factCardCount, unbuildableSessionReason } from '../../lib/setupCount';
 import type { AnatomyRepository } from '../../data/repository';
 import type { OinaPromptKind, QuestionType, RevisionQuestion } from '../../types/question';
-import { OINA_PROMPT_KINDS } from '../../types/question';
+import { ASKED_FACT_KINDS } from '../../types/question';
 import type { Area } from '../../types/region';
 import { AREAS, AREA_LABELS } from '../../types/region';
 import { areasInScope } from '../../lib/entitlement';
@@ -93,7 +93,7 @@ export function MobileRevisionSetup({ access, content, repository, userId, areas
   const [mode, setMode] = useState<'practice' | 'adaptive' | 'assessment'>('practice');
   const [timerMinutes, setTimerMinutes] = useState(0);
   const [starting, setStarting] = useState(false);
-  const [oinaFacts, setOinaFacts] = useState<OinaPromptKind[]>([...OINA_PROMPT_KINDS]);
+  const [oinaFacts, setOinaFacts] = useState<OinaPromptKind[]>([...ASKED_FACT_KINDS]);
   const [groups, setGroups] = useState<string[]>([]);
   const [learnCards, setLearnCards] = useState(getLearnCardAttempts);
 
@@ -263,7 +263,7 @@ export function MobileRevisionSetup({ access, content, repository, userId, areas
               OINA facts
             </div>
             <div className="mt-3.5 flex flex-wrap gap-2.5">
-              {OINA_PROMPT_KINDS.map((fact) => (
+              {ASKED_FACT_KINDS.map((fact) => (
                 <button
                   key={fact}
                   type="button"

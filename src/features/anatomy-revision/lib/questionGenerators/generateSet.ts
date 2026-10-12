@@ -17,6 +17,7 @@ import { buildFillBlankQuestions } from './fillBlank';
 import { buildIdentifyTypedQuestions } from './identifyTyped';
 import { buildMultiSelectQuestions } from './multiSelect';
 import { buildBloodSupplyRatingMcqs } from './bloodSupply';
+import { BLOOD_SUPPLY_SCORED } from '../../types/question';
 import { buildClinicalQuestions } from './clinical';
 import { buildOinaQuestions } from './oina';
 import { factDueAt, factIntervalDays, factMasteryKey, indexFactMastery, shouldPrecedeWithLearnCard, skillOf } from '../factMastery';
@@ -646,8 +647,9 @@ export function generateRevisionSet(
     // convention as buildMcqQuestions itself generating several promptKinds at once.
     generated.push(...buildClinicalQuestions(mcqPool, rng));
     // "How rich" is the one blood-supply question that stays multiple choice;
-    // the arteries themselves are facts on the fact track (oina.ts).
-    generated.push(...buildBloodSupplyRatingMcqs(mcqPool));
+    // the arteries themselves are facts on the fact track (oina.ts). Neither
+    // is asked while blood supply is unscored (types/question.ts).
+    if (BLOOD_SUPPLY_SCORED) generated.push(...buildBloodSupplyRatingMcqs(mcqPool));
   }
   if (config.types.includes('locate')) {
     generated.push(...buildLocateQuestions(pool, relevantImages));

@@ -2,7 +2,7 @@ import { isMuscle } from '../../types/structure';
 import type { AnatomyStructure } from '../../types/structure';
 import type { FactMastery } from '../../types/attempt';
 import type { OinaPromptKind, OinaQuestion, OinaSelectQuestion, OinaTypedQuestion } from '../../types/question';
-import { OINA_PROMPT_KINDS, isBloodFactKind } from '../../types/question';
+import { ASKED_FACT_KINDS, isBloodFactKind } from '../../types/question';
 import { arteriesOf, choiceName, vesselKey, wrongArteries } from './bloodSupply';
 import type { StructureIndexes } from '../indexes';
 import { pickItemDistractors, pickTieredKeyDistractors } from '../distractors';
@@ -286,7 +286,10 @@ export function buildOinaQuestions(
   rng: Rng,
   options: OinaGenOptions = {},
 ): OinaQuestion[] {
-  const promptKinds = options.promptKinds?.length ? options.promptKinds : OINA_PROMPT_KINDS;
+  // Narrowed to what is asked at all: a saved assignment or an old link may
+  // still name the blood-supply facts (types/question.ts BLOOD_SUPPLY_SCORED).
+  const requested = options.promptKinds?.length ? options.promptKinds : ASKED_FACT_KINDS;
+  const promptKinds = requested.filter((kind) => ASKED_FACT_KINDS.includes(kind));
   const masteryByKey = new Map(
     (options.factMastery ?? []).map((f) => [factMasteryKey(f.structureId, f.promptKind), f]),
   );

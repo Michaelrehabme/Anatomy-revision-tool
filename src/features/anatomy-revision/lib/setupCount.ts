@@ -43,7 +43,7 @@ export function unbuildableSessionReason(params: {
     return 'Locate questions need an image with traced hotspots, and bones, landmarks and joints do not have those yet. Add another format, or set the category to Muscles.';
   }
   if (types.every((t) => t === 'oina')) {
-    return 'Nothing in this pool has the facts picked. Origin, insertion, nerve and action are muscles only, and landmarks have no blood supply questions. Widen the category, pick other facts, or add another format.';
+    return 'Nothing in this pool has the facts picked. Origin, insertion, nerve and action are muscles only. Widen the category, pick other facts, or add another format.';
   }
   return 'Nothing in this pool can be asked in these formats. Try adding a format or widening the category.';
 }
