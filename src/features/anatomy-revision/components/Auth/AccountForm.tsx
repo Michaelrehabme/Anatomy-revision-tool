@@ -1,3 +1,4 @@
+import { useTrackStep } from '../../../feedback/useTrackStep';
 import { useId, useState, type FormEvent } from 'react';
 import { useAuth } from '../../context/AuthProvider';
 import { Button } from '../shared/Button';
@@ -89,6 +90,7 @@ const fieldLabel = { font: '500 12.5px/1 var(--font-ui)', color: 'var(--ink2)' }
 export function AccountForm({ initialMode = 'sign-up', onDone, guestHasProgress = false, onModeChange, onRecovered }: AccountFormProps) {
   const { signInWithGoogle, signInWithEmail, signUpWithEmail } = useAuth();
   const [mode, setMode] = useState<AccountFormMode>(initialMode);
+  useTrackStep('signup-started', mode === 'sign-up');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [submitting, setSubmitting] = useState(false);

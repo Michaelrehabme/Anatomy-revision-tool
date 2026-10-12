@@ -1,3 +1,4 @@
+import { useTrackStep } from '../../feedback/useTrackStep';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -290,6 +291,7 @@ function PriceCard({
 
 export function MarketingHome() {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+  useTrackStep('landing-viewed');
 
   return (
     <div style={{ background: 'var(--pg)', minHeight: '100vh' }}>

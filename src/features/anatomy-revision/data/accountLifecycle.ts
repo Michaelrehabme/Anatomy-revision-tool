@@ -36,6 +36,8 @@ export { hasLiveSubscription, SUBSCRIPTION_STILL_RENEWS };
  *   users/{uid}/gamification           XP, streak, freezes
  *   users/{uid}/questionExposure       per-question exposure counters
  *   attemptEvents (userId == uid)      the answer log, top-level
+ *   questionReports, clientErrors,
+ *   funnelEvents (userId == uid)       what the app reported under this uid
  *   cohorts/{id}/studentStats/{uid}    the summary an educator reads
  *   roles/{uid}                        admin grant, if any
  *   Firebase Auth user                 the identity itself
@@ -61,6 +63,12 @@ const USER_SUBCOLLECTIONS = [
   // An educator's saved assignment templates (educator/data/assignmentTemplatesRepository).
   'assignmentTemplates',
 ] as const;
+
+/**
+ * Top-level collections whose rows carry `userId` (feedback/data/telemetry.ts).
+ * Exported and deleted with the account, like the answer log.
+ */
+const USER_REPORT_COLLECTIONS = ['questionReports', 'clientErrors', 'funnelEvents'] as const;
 
 /** Firestore caps a batch at 500 writes; leave room rather than sail close. */
 const BATCH_LIMIT = 400;
@@ -100,6 +108,10 @@ export async function exportAccountData(uid: string): Promise<AccountExport> {
   }
 
   const attempts = await getDocs(query(collection(db, 'attemptEvents'), where('userId', '==', uid)));
+  for (const name of USER_REPORT_COLLECTIONS) {
+    const rows = await getDocs(query(collection(db, name), where('userId', '==', uid)));
+    collections[name] = rows.docs.map((d) => ({ id: d.id, ...d.data() }));
+  }
 
   let cohortSummary: Record<string, unknown> | null = null;
   if (cohortId) {
@@ -199,6 +211,10 @@ export async function deleteAccountData(
   step('Deleting your answers');
   const attempts = await getDocs(query(collection(db, 'attemptEvents'), where('userId', '==', uid)));
   await deleteAll(db, attempts.docs.map((d) => ({ path: d.ref.path })));
+  for (const name of USER_REPORT_COLLECTIONS) {
+    const rows = await getDocs(query(collection(db, name), where('userId', '==', uid)));
+    await deleteAll(db, rows.docs.map((d) => ({ path: d.ref.path })));
+  }
 
   step('Deleting your progress');
   for (const name of USER_SUBCOLLECTIONS) {

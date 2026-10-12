@@ -36,6 +36,14 @@ import {
   where,
 } from 'firebase/firestore';
 
+import {
+  FUNNEL_STEPS,
+  clientErrorRow,
+  funnelEventId,
+  funnelEventRow,
+  questionReportRow,
+} from '../src/features/feedback/data/rows';
+
 let env: RulesTestEnvironment;
 
 const COHORT = 'cohort-a';
@@ -1090,6 +1098,88 @@ describe('site and admin collections', () => {
   it('closes billingFailures to every client, admins included', async () => {
     await assertFails(getDocs(collection(as.claimAdmin(), 'billingFailures')));
     await assertFails(setDoc(doc(as.student(), 'billingFailures', 'e1'), { uid: 'student' }));
+  });
+
+  describe('what the app reports about itself', () => {
+    // Built by the functions the app itself uses, so a field the client adds
+    // and the rules do not name fails here and not, silently, in production.
+    const NOW = new Date('2026-10-12T10:00:00.000Z');
+    const REPORT = questionReportRow(
+      'student',
+      { questionId: 'q1', structureId: 'biceps-brachii', questionType: 'mcq', promptKind: 'nerve', area: 'elbow', reason: 'wrong-answer', note: 'It is the radial nerve.' },
+      'v1',
+      NOW,
+    );
+    const ERROR = clientErrorRow('guest', 'boundary', new Error('render failed'), { path: '/study', userAgent: 'Mozilla' }, 'v1', NOW);
+    const STEP = funnelEventRow('guest', 'landing-viewed', 'tiktok', NOW);
+
+    it('takes every row at the largest the client will send', async () => {
+      const long = 'x'.repeat(10000);
+      const huge = Object.assign(new Error(long), { stack: long });
+      await assertSucceeds(setDoc(
+        doc(as.student(), 'questionReports', 'big'),
+        // No area: a question outside any one area is reported with null.
+        questionReportRow('student', { questionId: 'q1', structureId: 's', questionType: 'locate', promptKind: 'identify', reason: 'other', note: long }, 'v1', NOW),
+      ));
+      await assertSucceeds(setDoc(doc(as.guest(), 'clientErrors', 'big'), clientErrorRow('guest', 'rejection', huge, { path: long, userAgent: long }, 'v1', NOW)));
+      for (const { id } of FUNNEL_STEPS) {
+        await assertSucceeds(setDoc(doc(as.guest(), 'funnelEvents', funnelEventId('guest', id)), funnelEventRow('guest', id, long, NOW)));
+      }
+    });
+
+    it('takes a question report from its author and from nobody else', async () => {
+      await assertSucceeds(setDoc(doc(as.student(), 'questionReports', 'r1'), REPORT));
+      await assertFails(setDoc(doc(as.classmate(), 'questionReports', 'r2'), REPORT));
+      await assertFails(setDoc(doc(as.anon(), 'questionReports', 'r3'), REPORT));
+    });
+
+    it('refuses a report that is oversized, misnamed or carries a field of its own', async () => {
+      await assertFails(setDoc(doc(as.student(), 'questionReports', 'r1'), { ...REPORT, note: 'x'.repeat(1001) }));
+      await assertFails(setDoc(doc(as.student(), 'questionReports', 'r2'), { ...REPORT, reason: 'spam' }));
+      await assertFails(setDoc(doc(as.student(), 'questionReports', 'r3'), { ...REPORT, resolvedAt: 'now' }));
+      await assertFails(setDoc(doc(as.student(), 'questionReports', 'r4'), { ...REPORT, extra: 'x'.repeat(5000) }));
+    });
+
+    it('shows a report to its author and to admins, and lets only an admin resolve it', async () => {
+      await setDoc(doc(as.student(), 'questionReports', 'r1'), REPORT);
+      await assertSucceeds(getDoc(doc(as.student(), 'questionReports', 'r1')));
+      await assertFails(getDoc(doc(as.classmate(), 'questionReports', 'r1')));
+      await assertFails(getDoc(doc(as.educator(), 'questionReports', 'r1')));
+      await assertSucceeds(getDocs(collection(as.claimAdmin(), 'questionReports')));
+
+      await assertFails(updateDoc(doc(as.student(), 'questionReports', 'r1'), { note: 'changed' }));
+      await assertSucceeds(updateDoc(doc(as.claimAdmin(), 'questionReports', 'r1'), { resolvedAt: 'now' }));
+      await assertFails(updateDoc(doc(as.claimAdmin(), 'questionReports', 'r1'), { note: 'rewritten' }));
+    });
+
+    it('lets the author delete their own rows, which account deletion depends on', async () => {
+      await setDoc(doc(as.student(), 'questionReports', 'r1'), REPORT);
+      await assertFails(deleteDoc(doc(as.classmate(), 'questionReports', 'r1')));
+      await assertSucceeds(getDocs(query(collection(as.student(), 'questionReports'), where('userId', '==', 'student'))));
+      await assertSucceeds(deleteDoc(doc(as.student(), 'questionReports', 'r1')));
+    });
+
+    it('takes an error from a guest, bounded, and never lets it be rewritten', async () => {
+      await assertSucceeds(setDoc(doc(as.guest(), 'clientErrors', 'e1'), ERROR));
+      await assertFails(setDoc(doc(as.guest(), 'clientErrors', 'e2'), { ...ERROR, userId: 'student' }));
+      await assertFails(setDoc(doc(as.guest(), 'clientErrors', 'e3'), { ...ERROR, stack: 'x'.repeat(4001) }));
+      await assertFails(setDoc(doc(as.guest(), 'clientErrors', 'e4'), { ...ERROR, source: 'made-up' }));
+      await assertFails(updateDoc(doc(as.guest(), 'clientErrors', 'e1'), { message: 'changed' }));
+      await assertFails(getDocs(collection(as.student(), 'clientErrors')));
+      await assertSucceeds(getDocs(collection(as.claimAdmin(), 'clientErrors')));
+    });
+
+    it('records each funnel step once per account, under an id that names both', async () => {
+      await assertSucceeds(setDoc(doc(as.guest(), 'funnelEvents', 'guest_landing-viewed'), STEP));
+      // The second write to the same document is an update, and there is no update rule.
+      await assertFails(setDoc(doc(as.guest(), 'funnelEvents', 'guest_landing-viewed'), { ...STEP, source: 'instagram' }));
+      // Any other id would let one account be counted as many.
+      await assertFails(setDoc(doc(as.guest(), 'funnelEvents', 'anything'), STEP));
+      await assertFails(setDoc(doc(as.guest(), 'funnelEvents', 'guest_made-up'), { ...STEP, step: 'made-up' }));
+      await assertFails(setDoc(doc(as.student(), 'funnelEvents', 'guest_signup-started'), { ...STEP, step: 'signup-started' }));
+      await assertFails(getDocs(collection(as.student(), 'funnelEvents')));
+      await assertSucceeds(getDocs(collection(as.claimAdmin(), 'funnelEvents')));
+    });
   });
 
   it('refuses any collection the rules do not name', async () => {

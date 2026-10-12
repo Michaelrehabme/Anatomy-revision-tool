@@ -7,6 +7,7 @@ export const ADMIN_PAGES: { path: string; label: string }[] = [
   { path: '/admin/changes', label: 'Change Register' },
   { path: '/admin/users', label: 'Users' },
   { path: '/admin/analytics', label: 'Analytics' },
+  { path: '/admin/feedback', label: 'Feedback' },
   { path: '/admin/cohorts', label: 'Cohorts' },
   { path: '/admin/people', label: 'People' },
   { path: '/admin/site', label: 'Site' },

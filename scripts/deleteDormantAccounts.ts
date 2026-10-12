@@ -71,6 +71,11 @@ async function purge(db: Firestore, uid: string, cohortId: string | null): Promi
 
   const attempts = await db.collection('attemptEvents').where('userId', '==', uid).get();
   counts.attemptEvents = await deleteAll(db, attempts.docs);
+  // What the app reported under this uid (src/features/feedback/data/telemetry.ts).
+  for (const name of ['questionReports', 'clientErrors', 'funnelEvents']) {
+    const rows = await db.collection(name).where('userId', '==', uid).get();
+    counts[name] = await deleteAll(db, rows.docs);
+  }
 
   for (const name of USER_SUBCOLLECTIONS) {
     const snap = await db.collection(`users/${uid}/${name}`).get();

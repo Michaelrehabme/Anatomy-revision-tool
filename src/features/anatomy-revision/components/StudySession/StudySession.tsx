@@ -138,6 +138,7 @@ export function StudySession({ session, content, onEnd, onBackToSetup }: StudySe
           answered={session.answers.length}
           assignment={!!session.setupParams?.assignment}
           exam={examMode}
+          question={question}
           hint={
             examMode
               ? remainingSeconds !== null

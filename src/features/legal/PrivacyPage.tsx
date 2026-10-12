@@ -75,7 +75,7 @@ export function PrivacyPage() {
   }, []);
 
   return (
-    <LegalLayout title="Privacy policy" updated="11 October 2026">
+    <LegalLayout title="Privacy policy" updated="12 October 2026">
       <p className="mt-4" style={legalProse}>
         LocusMSK is an anatomy revision app for musculoskeletal students. This policy explains what it collects, why,
         how long it keeps it, and what you can do about it.
@@ -114,6 +114,17 @@ export function PrivacyPage() {
           <strong style={{ color: 'var(--ink)' }}>Revision activity.</strong> Every question you answer: which
           structure, which question type, whether you were right, the answer you gave, how long you took, and when. This
           is what the app is for — the scheduling that decides what you see next is computed from it.
+        </p>
+        <p>
+          <strong style={{ color: 'var(--ink)' }}>How the app is working.</strong> Three things are recorded against
+          your account, or against the random identifier on your device if you have not made one. The first time you
+          reach each step of getting started (seeing the home page, opening the account form, choosing an area,
+          answering a question, seeing the prices), with the site you arrived from if your browser says. Any report
+          you send with &ldquo;Report a problem&rdquo; during a session: the question, the reason you chose and
+          anything you typed. And, if a page fails, the error, the page it happened on and your browser&rsquo;s
+          description of itself. These go to the same database as everything else: no outside analytics service is
+          used and no cookie is set. They are included when you download your data and deleted when you delete your
+          account.
         </p>
         <p>
           <strong style={{ color: 'var(--ink)' }}>Technical data.</strong> Standard information your browser or device

@@ -1,3 +1,5 @@
+import { useTrackStep } from '../feedback/useTrackStep';
+import { trackStep } from '../feedback/data/telemetry';
 import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../anatomy-revision/context/AuthProvider';
@@ -53,6 +55,7 @@ export function PricingPage() {
   const { user } = useAuth();
   const [params] = useSearchParams();
   const justPaid = params.get('checkout') === 'done';
+  useTrackStep('pricing-viewed');
   const { entitlement, tier, loading, refresh } = useEntitlement(user?.uid ?? null);
 
   // ?plan=monthly comes from the home page's plan cards, so the choice made
@@ -100,6 +103,7 @@ export function PricingPage() {
     if (startNow && !waived) { setShowWaiverError(true); return; }
     if (!CONFIG || !user) return;
     setOpening(true);
+    trackStep('checkout-opened');
     try {
       const { openCheckout } = await import('./lib/paddleClient');
       await openCheckout(CONFIG, buildCheckoutRequest({

@@ -10,6 +10,11 @@ import { ThemeProvider } from './features/anatomy-revision/context/ThemeProvider
 import { UpdatePrompt } from './features/pwa/UpdatePrompt.tsx';
 import { OfflineIndicator } from './features/pwa/OfflineIndicator.tsx';
 import { purgeStaleAnatomyCaches } from './features/pwa/anatomyCache.ts';
+import { ErrorBoundary } from './features/feedback/ErrorBoundary.tsx';
+import { installErrorReporting } from './features/feedback/data/telemetry.ts';
+
+// Before anything renders, so an error on the way up is reported too.
+installErrorReporting();
 
 // Pictures from an earlier render, cached under the same filenames, are
 // dropped before the first one is asked for.
@@ -36,7 +41,12 @@ createRoot(document.getElementById('root')!).render(
         <AuthProvider>
           <RepositoryProvider>
             <PageTitle />
-            <App />
+            {/* Inside the providers, so the fallback is themed and the report
+                knows whose it is; around App alone, so the offline and update
+                notices below outlive a screen that threw. */}
+            <ErrorBoundary>
+              <App />
+            </ErrorBoundary>
             {/* Outside App so they survive its loading and error early returns —
                 losing the connection during content load is exactly when a
                 student needs telling why. */}

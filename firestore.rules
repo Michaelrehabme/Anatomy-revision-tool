@@ -687,6 +687,81 @@ service cloud.firestore {
       allow read, write: if isAdmin();
     }
 
+    // What the app reports about itself (src/features/feedback/data/telemetry.ts):
+    // a question a student says is wrong, a page that broke, and the steps a
+    // new visitor reached. Three collections with one shape of access.
+    //
+    // APPEND-ONLY FOR THE AUTHOR, like attemptEvents and for the same reason:
+    // a row is written under the caller's own uid, and can be removed by them
+    // because account deletion has to be able to (data/accountLifecycle.ts).
+    // Reading back is theirs too, which is what lets that deletion and the
+    // account export find the rows. Only an admin reads anyone else's.
+    //
+    // EVERY FIELD IS NAMED AND BOUNDED. These are the only collections a
+    // guest may write free text into, so the rules cap what one document can
+    // hold; without that, anyone with the public config could fill the
+    // database a megabyte at a time.
+    function ownsNewRow() {
+      return isSignedIn() && request.resource.data.userId == request.auth.uid;
+    }
+
+    function ownsRow() {
+      return isSignedIn() && resource.data.userId == request.auth.uid;
+    }
+
+    function shortString(value, max) {
+      return value is string && value.size() <= max;
+    }
+
+    match /questionReports/{reportId} {
+      allow create: if ownsNewRow()
+        && request.resource.data.keys().hasOnly(
+          ['userId', 'questionId', 'structureId', 'questionType', 'promptKind', 'area', 'reason', 'note', 'build', 'createdAt'])
+        && shortString(request.resource.data.questionId, 300)
+        && shortString(request.resource.data.structureId, 200)
+        && shortString(request.resource.data.questionType, 40)
+        && shortString(request.resource.data.promptKind, 40)
+        && (request.resource.data.area == null || shortString(request.resource.data.area, 60))
+        && request.resource.data.reason in ['wrong-answer', 'my-answer-right', 'picture', 'wording', 'other']
+        && shortString(request.resource.data.note, 1000)
+        && shortString(request.resource.data.build, 80)
+        && shortString(request.resource.data.createdAt, 40);
+      allow read, delete: if ownsRow() || isAdmin();
+      // An admin marks a report dealt with, and can change nothing else on it.
+      allow update: if isAdmin() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['resolvedAt']);
+    }
+
+    match /clientErrors/{errorId} {
+      allow create: if ownsNewRow()
+        && request.resource.data.keys().hasOnly(
+          ['userId', 'source', 'message', 'stack', 'path', 'userAgent', 'build', 'createdAt'])
+        && request.resource.data.source in ['boundary', 'error', 'rejection']
+        && shortString(request.resource.data.message, 500)
+        && shortString(request.resource.data.stack, 4000)
+        && shortString(request.resource.data.path, 200)
+        && shortString(request.resource.data.userAgent, 300)
+        && shortString(request.resource.data.build, 80)
+        && shortString(request.resource.data.createdAt, 40);
+      allow read, delete: if ownsRow() || isAdmin();
+      allow update: if false;
+    }
+
+    // One document per account per step: the id is the uid and the step, and
+    // with no update rule the first write is the only one. That is what makes
+    // the funnel a count of people rather than of page loads.
+    match /funnelEvents/{eventId} {
+      allow create: if ownsNewRow()
+        && request.resource.data.keys().hasOnly(['userId', 'step', 'source', 'createdAt'])
+        && request.resource.data.step in [
+          'landing-viewed', 'signup-started', 'account-created', 'email-confirmed', 'area-picked',
+          'first-answer', 'first-session', 'pricing-viewed', 'checkout-opened']
+        && eventId == request.auth.uid + '_' + request.resource.data.step
+        && shortString(request.resource.data.source, 60)
+        && shortString(request.resource.data.createdAt, 40);
+      allow read, delete: if ownsRow() || isAdmin();
+      allow update: if false;
+    }
+
     // Payments that verified but could not be written (paddle-webhook.ts).
     // Written by the Admin SDK, which bypasses these rules, and read by
     // scripts/accountData.ts. Closed to every client, including an admin's

@@ -1,3 +1,5 @@
+import { useTrackStep } from './features/feedback/useTrackStep';
+import { trackStep } from './features/feedback/data/telemetry';
 import { lazy, Suspense, useEffect, useRef, useState, type ReactElement } from 'react';
 import { MarketingHome } from './features/site/components/MarketingHome';
 import { cachedSiteSettings, fetchSiteSettings } from './features/site/data/siteSettings';
@@ -226,6 +228,11 @@ function App() {
    * or the demo, which have no accounts and work as they always did.
    */
   const isGuest = AUTH_ENABLED && (!user || user.isAnonymous);
+  // Read from the account itself rather than from the forms that make one, so
+  // Google, email and a link followed on another device all count the same.
+  // An account older than the funnel is counted on the day it next opens the app.
+  useTrackStep('account-created', AUTH_ENABLED && !isGuest);
+  useTrackStep('email-confirmed', AUTH_ENABLED && !isGuest && user?.emailVerified === true);
   /**
    * What this account may reach (CR-027). Read once here and passed down, so
    * every screen gates on the same answer and the entitlement is read once per
@@ -478,6 +485,7 @@ function App() {
     if (free && chosen.length > 0 && !entitlement.freeArea) entitlement.chooseFreeArea(chosen[0]);
     setSelectedAreas(new Set(chosen));
     setPreferredAreas(chosen);
+    if (chosen.length > 0) trackStep('area-picked');
   };
 
   const handleOnboardingDone = (areas: Area[] | null) => {
