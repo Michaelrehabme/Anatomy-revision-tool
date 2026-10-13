@@ -1,6 +1,6 @@
 {
  "schemaVersion": 1,
- "note": "The palmar ligaments of the carpus that the atlas draws as a patch a few millimetres across, each located by the gap between the two bones it joins (owner's decision, 12 October 2026; lib/questionGenerators/locate.ts MIN_STRAP_AREA says why their own plates cannot carry the question). Centred on the carpus like carpal-gaps.spec.json, and a plate of its own: the palmar lunotriquetral and palmar capitohamate ligaments cross the same two gaps as the interosseous ligaments on that plate, and a pixel can belong to one band only. Palmar views only, since these lie on the palmar side. Rendered by renderJointMasks.py --views 0,2,22, published by publishGapPlates.ts --spec carpal-palmar-gaps.spec.json. THE FRAME IS 130 MM, not that plate's 80: at 80 the owner could not tell which side the thumb was on (13 October 2026), and 130 takes in the whole thumb metacarpal and the base of the thumb. Rendered at --res 1500 so a millimetre is at least the same number of pixels as on the 80 mm plate at 900, which is what the publisher's seam and catch-margin distances are tuned to.",
+ "note": "The palmar ligaments of the carpus that the atlas draws as a patch a few millimetres across, each located by the gap between the two bones it joins (owner's decision, 12 October 2026; lib/questionGenerators/locate.ts MIN_STRAP_AREA says why their own plates cannot carry the question). Centred on the carpus like carpal-gaps.spec.json, and a plate of its own: the palmar lunotriquetral and palmar capitohamate ligaments cross the same two gaps as the interosseous ligaments on that plate, and a pixel can belong to one band only. Palmar views only, since these lie on the palmar side. Rendered by renderJointMasks.py --views 0,2,22, published by publishGapPlates.ts --spec carpal-palmar-gaps.spec.json. THE FRAME IS 130 MM, not that plate's 80: at 80 the owner could not tell which side the thumb was on (13 October 2026), and 130 takes in the whole thumb metacarpal and the base of the thumb. Rendered at --res 1500 so a millimetre is at least the same number of pixels as on the 80 mm plate at 900, which is what the publisher's seam and catch-margin distances are tuned to. catchMargin is 24 px at this scale (about 2.1 mm of bone either side of the seam, where the 80 mm plate had 1.4): zoomed out, 16 px left the bands under the 3% of the picture across that a fingertip needs at 1x on a phone (buriedLigaments.test.ts).",
  "plate": {
   "id": "carpal-palmar",
   "name": "Carpal bones from the palm",
@@ -8,7 +8,7 @@
   "subregion": "wrist-hand",
   "side": "left"
  },
- "catchMargin": 16,
+ "catchMargin": 24,
  "dropViews": [],
  "joints": [
   {

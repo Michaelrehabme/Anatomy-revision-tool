@@ -1,6 +1,6 @@
 {
  "schemaVersion": 1,
- "note": "The five intercarpal gaps the interosseous ligaments of the wrist are located by, all through one camera centred on the carpus (frameOn). Rendered by renderJointMasks.py --views 0,2,10,12,14,22 (`views`: palmar, dorsal and the 30-degree obliques; side views are not published because the gaps there are overlapping silhouettes), published by publishGapPlates.ts. Each id is the LIGAMENT the gap is asked as. `depth` renders each bone coloured by distance, so the publisher can report how level the two bones are along each seam; set `maxDepthGap` (metres) to cut a seam by it, which no gap here does.",
+ "note": "The five intercarpal gaps the interosseous ligaments of the wrist are located by, all through one camera centred on the carpus (frameOn). Rendered by renderJointMasks.py --views 0,2,10,12,14,22 (`views`: palmar, dorsal and the 30-degree obliques; side views are not published because the gaps there are overlapping silhouettes), published by publishGapPlates.ts. Each id is the LIGAMENT the gap is asked as. `depth` renders each bone coloured by distance, so the publisher can report how level the two bones are along each seam; set `maxDepthGap` (metres) to cut a seam by it, which no gap here does. FRAMED AT 130 MM AND RENDERED AT --res 1500 since 13 October 2026, like carpal-palmar-gaps.spec.json: at the 80 mm it was first published at, the owner could not tell which side the thumb was on. catchMargin is 24 px at this scale (about 2.1 mm of bone either side of the seam, where the 80 mm plate had 1.4): zoomed out, 16 px left the bands under the 3% of the picture across that a fingertip needs at 1x on a phone (buriedLigaments.test.ts).",
  "plate": {
   "id": "carpal-gaps",
   "name": "Carpal bones",
@@ -8,7 +8,7 @@
   "subregion": "wrist-hand",
   "side": "left"
  },
- "catchMargin": 16,
+ "catchMargin": 24,
  "dropViews": [],
  "joints": [
   {
@@ -26,7 +26,7 @@
      "Lunate bone.l"
     ]
    },
-   "frame": 0.08,
+   "frame": 0.13,
    "frameOn": [
     "Scaphoid bone.l",
     "Lunate bone.l",
@@ -54,7 +54,7 @@
      "Triquetrum bone.l"
     ]
    },
-   "frame": 0.08,
+   "frame": 0.13,
    "frameOn": [
     "Scaphoid bone.l",
     "Lunate bone.l",
@@ -83,7 +83,7 @@
      "Trapezoid bone.l"
     ]
    },
-   "frame": 0.08,
+   "frame": 0.13,
    "frameOn": [
     "Scaphoid bone.l",
     "Lunate bone.l",
@@ -111,7 +111,7 @@
      "Capitate bone.l"
     ]
    },
-   "frame": 0.08,
+   "frame": 0.13,
    "frameOn": [
     "Scaphoid bone.l",
     "Lunate bone.l",
@@ -140,7 +140,7 @@
      "Hamate bone.l"
     ]
    },
-   "frame": 0.08,
+   "frame": 0.13,
    "frameOn": [
     "Scaphoid bone.l",
     "Lunate bone.l",

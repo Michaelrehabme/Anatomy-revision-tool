@@ -22,12 +22,12 @@ export interface GapPlate {
 }
 
 export const GAP_PLATES: GapPlate[] = [
-  { plateId: 'carpal-gaps', name: 'Carpal bones', region: 'forearm-hand', subregion: 'wrist-hand', view: 'anterior', angle: 0, width: 900, height: 900 },
-  { plateId: 'carpal-gaps', name: 'Carpal bones', region: 'forearm-hand', subregion: 'wrist-hand', view: 'anteromedial', angle: 30, width: 900, height: 900 },
-  { plateId: 'carpal-gaps', name: 'Carpal bones', region: 'forearm-hand', subregion: 'wrist-hand', view: 'posteromedial', angle: 150, width: 900, height: 900 },
-  { plateId: 'carpal-gaps', name: 'Carpal bones', region: 'forearm-hand', subregion: 'wrist-hand', view: 'posterior', angle: 180, width: 900, height: 900 },
-  { plateId: 'carpal-gaps', name: 'Carpal bones', region: 'forearm-hand', subregion: 'wrist-hand', view: 'posterolateral', angle: 210, width: 900, height: 900 },
-  { plateId: 'carpal-gaps', name: 'Carpal bones', region: 'forearm-hand', subregion: 'wrist-hand', view: 'anterolateral', angle: 330, width: 900, height: 900 },
+  { plateId: 'carpal-gaps', name: 'Carpal bones', region: 'forearm-hand', subregion: 'wrist-hand', view: 'anterior', angle: 0, width: 1500, height: 1500 },
+  { plateId: 'carpal-gaps', name: 'Carpal bones', region: 'forearm-hand', subregion: 'wrist-hand', view: 'anteromedial', angle: 30, width: 1500, height: 1500 },
+  { plateId: 'carpal-gaps', name: 'Carpal bones', region: 'forearm-hand', subregion: 'wrist-hand', view: 'posteromedial', angle: 150, width: 1500, height: 1500 },
+  { plateId: 'carpal-gaps', name: 'Carpal bones', region: 'forearm-hand', subregion: 'wrist-hand', view: 'posterior', angle: 180, width: 1500, height: 1500 },
+  { plateId: 'carpal-gaps', name: 'Carpal bones', region: 'forearm-hand', subregion: 'wrist-hand', view: 'posterolateral', angle: 210, width: 1500, height: 1500 },
+  { plateId: 'carpal-gaps', name: 'Carpal bones', region: 'forearm-hand', subregion: 'wrist-hand', view: 'anterolateral', angle: 330, width: 1500, height: 1500 },
   { plateId: 'carpal-palmar', name: 'Carpal bones from the palm', region: 'forearm-hand', subregion: 'wrist-hand', view: 'anterior', angle: 0, width: 1500, height: 1500 },
   { plateId: 'carpal-palmar', name: 'Carpal bones from the palm', region: 'forearm-hand', subregion: 'wrist-hand', view: 'anteromedial', angle: 30, width: 1500, height: 1500 },
   { plateId: 'carpal-palmar', name: 'Carpal bones from the palm', region: 'forearm-hand', subregion: 'wrist-hand', view: 'anterolateral', angle: 330, width: 1500, height: 1500 },
