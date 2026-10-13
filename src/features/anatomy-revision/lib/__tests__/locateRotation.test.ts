@@ -171,17 +171,33 @@ describe('the shipped ligament plates', () => {
     expect(everyLigament.length).toBe(perStructure.size);
   });
 
-  it('locates only the five interosseous ligaments of the wrist on the gap plate, and turns them only within it', () => {
-    expect(onGapPlate.map((q) => q.targetStructureId).sort()).toEqual([
+  it('locates the ligaments that sit in a gap on a gap plate, each on its own plate, and turns them only within it', () => {
+    const plateOf = (imageId: string) => /^gap-(.+)-a\d{3}-plate$/.exec(imageId)?.[1];
+    const byPlate = (plate: string) =>
+      onGapPlate.filter((q) => plateOf(q.imageId) === plate).map((q) => q.targetStructureId).sort();
+    // The five interosseous ligaments of the wrist, which lie inside the gap.
+    expect(byPlate('carpal-gaps')).toEqual([
       'capitohamate-interosseous-ligament',
       'lunotriquetral-interosseous-ligament',
       'scapholunate-interosseous-ligament',
       'trapeziotrapezoidal-interosseous-ligament',
       'trapezoideocapitate-interosseous-ligament',
     ]);
-    const strays = onGapPlate.flatMap((q) => (q.frameImageIds ?? []).filter((id) => !id.startsWith('gap-carpal-gaps-')));
+    // The palmar ligaments the atlas draws as a patch too small to tap
+    // (locate.ts MIN_STRAP_AREA), asked between the two bones each one joins.
+    expect(byPlate('carpal-palmar')).toEqual([
+      'palmar-capitohamate-ligament',
+      'palmar-lunotriquetral-ligament',
+      'pisohamate-ligament',
+      'pisotriquetral-ligament',
+      'scaphocapitate-ligament',
+      'triquetrohamate-ligament',
+    ]);
+    expect(onGapPlate).toHaveLength(11);
+    const strays = onGapPlate.flatMap((q) => (q.frameImageIds ?? [q.imageId]).filter((id) => plateOf(id) !== plateOf(q.imageId)));
     expect(strays).toEqual([]);
   });
+
 
   it('only turns through frames of that ligament\u2019s own set', () => {
     const strays = qs.flatMap((q) =>

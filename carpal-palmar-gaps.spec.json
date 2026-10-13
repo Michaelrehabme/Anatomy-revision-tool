@@ -1,0 +1,188 @@
+{
+ "schemaVersion": 1,
+ "note": "The palmar ligaments of the carpus that the atlas draws as a patch a few millimetres across, each located by the gap between the two bones it joins (owner's decision, 12 October 2026; lib/questionGenerators/locate.ts MIN_STRAP_AREA says why their own plates cannot carry the question). Centred on the carpus like carpal-gaps.spec.json, and a plate of its own: the palmar lunotriquetral and palmar capitohamate ligaments cross the same two gaps as the interosseous ligaments on that plate, and a pixel can belong to one band only. Palmar views only, since these lie on the palmar side. Rendered by renderJointMasks.py --views 0,2,22, published by publishGapPlates.ts --spec carpal-palmar-gaps.spec.json. THE FRAME IS 130 MM, not that plate's 80: at 80 the owner could not tell which side the thumb was on (13 October 2026), and 130 takes in the whole thumb metacarpal and the base of the thumb. Rendered at --res 1500 so a millimetre is at least the same number of pixels as on the 80 mm plate at 900, which is what the publisher's seam and catch-margin distances are tuned to.",
+ "plate": {
+  "id": "carpal-palmar",
+  "name": "Carpal bones from the palm",
+  "region": "forearm-hand",
+  "subregion": "wrist-hand",
+  "side": "left"
+ },
+ "catchMargin": 16,
+ "dropViews": [],
+ "joints": [
+  {
+   "id": "scaphocapitate-ligament",
+   "name": "Scaphocapitate ligament",
+   "a": {
+    "id": "scaphoid",
+    "objects": [
+     "Scaphoid bone.l"
+    ]
+   },
+   "b": {
+    "id": "capitate",
+    "objects": [
+     "Capitate bone.l"
+    ]
+   },
+   "frame": 0.13,
+   "frameOn": [
+    "Scaphoid bone.l",
+    "Lunate bone.l",
+    "Triquetrum bone.l",
+    "Pisiform bone.l",
+    "Trapezium bone.l",
+    "Trapezoid bone.l",
+    "Capitate bone.l",
+    "Hamate bone.l"
+   ],
+   "depth": true
+  },
+  {
+   "id": "palmar-lunotriquetral-ligament",
+   "name": "Palmar lunotriquetral ligament",
+   "a": {
+    "id": "lunate",
+    "objects": [
+     "Lunate bone.l"
+    ]
+   },
+   "b": {
+    "id": "triquetrum",
+    "objects": [
+     "Triquetrum bone.l"
+    ]
+   },
+   "frame": 0.13,
+   "frameOn": [
+    "Scaphoid bone.l",
+    "Lunate bone.l",
+    "Triquetrum bone.l",
+    "Pisiform bone.l",
+    "Trapezium bone.l",
+    "Trapezoid bone.l",
+    "Capitate bone.l",
+    "Hamate bone.l"
+   ],
+   "depth": true
+  },
+  {
+   "id": "triquetrohamate-ligament",
+   "name": "Triquetrohamate ligament",
+   "a": {
+    "id": "triquetrum",
+    "objects": [
+     "Triquetrum bone.l"
+    ]
+   },
+   "b": {
+    "id": "hamate",
+    "objects": [
+     "Hamate bone.l"
+    ]
+   },
+   "frame": 0.13,
+   "frameOn": [
+    "Scaphoid bone.l",
+    "Lunate bone.l",
+    "Triquetrum bone.l",
+    "Pisiform bone.l",
+    "Trapezium bone.l",
+    "Trapezoid bone.l",
+    "Capitate bone.l",
+    "Hamate bone.l"
+   ],
+   "depth": true
+  },
+  {
+   "id": "palmar-capitohamate-ligament",
+   "name": "Palmar capitohamate ligament",
+   "a": {
+    "id": "capitate",
+    "objects": [
+     "Capitate bone.l"
+    ]
+   },
+   "b": {
+    "id": "hamate",
+    "objects": [
+     "Hamate bone.l"
+    ]
+   },
+   "frame": 0.13,
+   "frameOn": [
+    "Scaphoid bone.l",
+    "Lunate bone.l",
+    "Triquetrum bone.l",
+    "Pisiform bone.l",
+    "Trapezium bone.l",
+    "Trapezoid bone.l",
+    "Capitate bone.l",
+    "Hamate bone.l"
+   ],
+   "depth": true
+  },
+  {
+   "id": "pisotriquetral-ligament",
+   "name": "Pisotriquetral ligament",
+   "a": {
+    "id": "pisiform",
+    "objects": [
+     "Pisiform bone.l"
+    ]
+   },
+   "b": {
+    "id": "triquetrum",
+    "objects": [
+     "Triquetrum bone.l"
+    ]
+   },
+   "frame": 0.13,
+   "frameOn": [
+    "Scaphoid bone.l",
+    "Lunate bone.l",
+    "Triquetrum bone.l",
+    "Pisiform bone.l",
+    "Trapezium bone.l",
+    "Trapezoid bone.l",
+    "Capitate bone.l",
+    "Hamate bone.l"
+   ],
+   "depth": true
+  },
+  {
+   "id": "pisohamate-ligament",
+   "name": "Pisohamate ligament",
+   "a": {
+    "id": "pisiform",
+    "objects": [
+     "Pisiform bone.l"
+    ]
+   },
+   "b": {
+    "id": "hamate",
+    "objects": [
+     "Hamate bone.l"
+    ]
+   },
+   "frame": 0.13,
+   "frameOn": [
+    "Scaphoid bone.l",
+    "Lunate bone.l",
+    "Triquetrum bone.l",
+    "Pisiform bone.l",
+    "Trapezium bone.l",
+    "Trapezoid bone.l",
+    "Capitate bone.l",
+    "Hamate bone.l"
+   ],
+   "depth": true
+  }
+ ],
+ "views": [
+  0,
+  2,
+  22
+ ]
+}
