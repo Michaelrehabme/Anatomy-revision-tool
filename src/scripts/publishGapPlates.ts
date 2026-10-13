@@ -103,7 +103,7 @@ const overlaysDir = args.overlays ? fromRoot(args.overlays) : null;
 const quality = Number(args.quality ?? '82');
 
 interface Spec {
-  plate: { id: string; name: string; region: string; subregion: string };
+  plate: { id: string; name: string; region: string; subregion: string; view?: string };
   catchMargin?: number;
   /** Metres. When set, seam pixels whose two bones differ in depth by more are dropped. Unset: reported only. */
   maxDepthGap?: number;
@@ -292,7 +292,10 @@ for (const viewNo of VIEWS) {
 
   const slug = `a${String(angle).padStart(3, '0')}`;
   const info = await sharp(contextPath).flatten({ background: '#ffffff' }).webp({ quality }).toFile(join(OUT_DIR, `${spec.plate.id}-${slug}-plate.webp`));
-  rows.push({ angle, view: viewForAngle(angle, false), width: info.width, height: info.height });
+  // A plate seen from above or below names its own view (spec `plate.view`):
+  // the angle only says which way up the picture is, and "posterior" would be
+  // the wrong word for the dorsum of a foot.
+  rows.push({ angle, view: spec.plate.view ?? viewForAngle(angle, false), width: info.width, height: info.height });
   hotspots[`gap-${spec.plate.id}-${slug}-plate`] = list;
   report.push(`${angle}°: ${list.length} band(s), ${contested}px were claimed twice before the split`);
 

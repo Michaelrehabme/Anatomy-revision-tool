@@ -54,6 +54,8 @@ a = ap.parse_args(argv)
 spec = json.load(open(a.spec))
 wanted = a.joints.split(",") if a.joints else [j["id"] for j in spec["joints"]]
 views = [int(v) for v in a.views.split(",")]
+# Degrees above (+) or below (-) the horizon for every view of this spec; see frame_camera.
+ELEVATION = float(spec.get("elevation", 0))
 
 scene = bpy.data.scenes.new("JointScene")
 bpy.context.window.scene = scene
@@ -364,10 +366,29 @@ def frame_camera(lo, hi, angle_deg, margin, frame_size=None):
     size = max(bbox_size(lo, hi), 1e-4)
     dist = size * 8 + 0.5
     theta = math.radians(angle_deg)
-    offset = mathutils.Vector((-dist * math.sin(theta), -dist * math.cos(theta), 0))
+    # FROM ABOVE OR BELOW (spec `elevation`, degrees; 0 for every plate before
+    # the tarsal ones). The gaps between the tarsal bones are lines only when
+    # the foot is seen from the dorsum or the sole, which no camera circling
+    # at the horizon reaches. The same construction as renderLigamentPlates.py
+    # frame_camera, so a tilted gap plate and a tilted ligament plate of one
+    # foot are the same picture: straight down or up, "up" in the frame is the
+    # limit of the tilt, which puts the toes at the top when the camera tilts
+    # up from behind (view 12) or down from in front (view 0).
+    phi = math.radians(ELEVATION)
+    offset = mathutils.Vector((-dist * math.sin(theta) * math.cos(phi),
+                               -dist * math.cos(theta) * math.cos(phi),
+                               dist * math.sin(phi)))
     loc = center + offset
     cam.location = loc
-    cam.rotation_euler = (center - loc).to_track_quat("-Z", "Y").to_euler()
+    if abs(ELEVATION) >= 89.0:
+        forward = (center - loc).normalized()
+        far = mathutils.Vector((math.sin(theta), math.cos(theta), 0.0))
+        up_hint = far if ELEVATION > 0 else -far
+        right = forward.cross(up_hint).normalized()
+        true_up = right.cross(forward).normalized()
+        cam.rotation_euler = mathutils.Matrix((right, true_up, -forward)).transposed().to_euler()
+    else:
+        cam.rotation_euler = (center - loc).to_track_quat("-Z", "Y").to_euler()
     # `margin` multiplies the contact region, which breaks down where regions
     # differ by an order of magnitude: the fifth carpometacarpal contact is a
     # seventh the size of the thumb's, so the same multiplier frames a hand for
@@ -427,6 +448,31 @@ skel = bpy.data.collections.get("1: Skeletal system")
 # rotatores. `.g` is only ever a label, never anatomy.
 skeleton_names = ([o.name for o in skel.all_objects if o.type == "MESH" and boneLook.is_bone(o.name)]
                   if skel else [])
+# BONES LEFT OUT OF THE WHOLE PLATE (spec `drop`, name patterns). A foot seen
+# from above is seen down the length of the tibia, which covers the talus and
+# holds the gaps beneath it out of every mask. The tilted ligament plates drop
+# the leg for the same reason (ligament spec `tiltCutaway`). A dropped bone is
+# in neither the picture nor the holdouts, so nothing it hid is hidden.
+# ONLY THESE BONES (spec `keep`, name patterns), for a plate seen along the
+# body's length. Dropping the leg is not enough from above or below: the camera
+# is orthographic, so the femur, the pelvis, the ribs and the skull all stand
+# in line with the foot. From below they filled the picture behind it, and from
+# above they held every gap out of its mask (first tarsal render, 13 Oct 2026).
+if spec.get("keep"):
+    import fnmatch
+    for p in spec["keep"]:
+        if not any(fnmatch.fnmatch(n, p) for n in skeleton_names):
+            print(f"[warn] keep pattern '{p}' matches no bone", flush=True)
+    skeleton_names = [n for n in skeleton_names if any(fnmatch.fnmatch(n, p) for p in spec["keep"])]
+    print(f"[bones] keeping {len(skeleton_names)} by the spec", flush=True)
+if spec.get("drop"):
+    import fnmatch
+    _dropped = [n for n in skeleton_names if any(fnmatch.fnmatch(n, p) for p in spec["drop"])]
+    for p in spec["drop"]:
+        if not any(fnmatch.fnmatch(n, p) for n in skeleton_names):
+            print(f"[warn] drop pattern '{p}' matches no bone", flush=True)
+    skeleton_names = [n for n in skeleton_names if n not in _dropped]
+    print(f"[bones] dropped {len(_dropped)} by the spec", flush=True)
 print(f"[bones] baking {len(skeleton_names)} meshes...", flush=True)
 skeleton_mesh = bake(skeleton_names, "joint_skeleton")
 print(f"[bones] {len(skeleton_mesh.vertices)} verts", flush=True)
