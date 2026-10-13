@@ -152,13 +152,13 @@ describe('redeeming LocusMSK27', () => {
     });
   });
 
-  it('refuses the hundred and first account and changes nothing', async () => {
-    store.docs.set(COUNTER, { redeemed: 100 });
+  it('refuses an account once every place is taken, and changes nothing', async () => {
+    store.docs.set(COUNTER, { redeemed: 101 });
     const response = await ask('LOCUSMSK27');
     expect(response.status).toBe(410);
     expect(await response.json()).toEqual({ ok: false, reason: 'all-used' });
     expect(store.docs.get('users/student')).toEqual({ displayName: 'Sam', cohort: null });
-    expect(store.docs.get(COUNTER)).toEqual({ redeemed: 100 });
+    expect(store.docs.get(COUNTER)).toEqual({ redeemed: 101 });
   });
 
   it('refuses an account that already has full access, and leaves it exactly as it was', async () => {

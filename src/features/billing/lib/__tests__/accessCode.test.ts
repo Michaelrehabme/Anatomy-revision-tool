@@ -13,14 +13,15 @@ const NOW = new Date('2026-10-12T12:00:00.000Z');
 const DAY = 86_400_000;
 const at = (days: number) => new Date(NOW.getTime() + days * DAY).toISOString();
 
-const CODE: AccessCode = { code: 'LOCUSMSK27', accessUntil: '2027-01-01T00:00:00.000Z', maxRedemptions: 100, teaching: false };
+// 101 places: a hundred for students, and the one the owner's live test used.
+const CODE: AccessCode = { code: 'LOCUSMSK27', accessUntil: '2027-01-01T00:00:00.000Z', maxRedemptions: 101, teaching: false };
 const ACCOUNT = { anonymous: false, emailVerified: true };
 
 const redeem = (over: Partial<RedeemInput> = {}) =>
   decideRedemption({ code: CODE, account: ACCOUNT, current: undefined, redeemed: 0, alreadyRedeemed: false, now: NOW, ...over });
 
 describe('the code the owner asked for', () => {
-  it('is LOCUSMSK27: 100 accounts, until the start of 1 January 2027, no teaching', () => {
+  it('is LOCUSMSK27: 101 accounts, until the start of 1 January 2027, no teaching', () => {
     expect(ACCESS_CODES).toEqual([CODE]);
   });
 
@@ -76,9 +77,9 @@ describe('redeeming', () => {
     expect(redeem({ account: { anonymous: false, emailVerified: false } })).toEqual({ kind: 'refuse', reason: 'unconfirmed' });
   });
 
-  it('takes the hundredth account and refuses the hundred and first', () => {
-    expect(redeem({ redeemed: 99 }).kind).toBe('grant');
-    expect(redeem({ redeemed: 100 })).toEqual({ kind: 'refuse', reason: 'all-used' });
+  it('takes the last place and refuses the account after it', () => {
+    expect(redeem({ redeemed: 100 }).kind).toBe('grant');
+    expect(redeem({ redeemed: 101 })).toEqual({ kind: 'refuse', reason: 'all-used' });
     expect(redeem({ redeemed: 250 })).toEqual({ kind: 'refuse', reason: 'all-used' });
   });
 
@@ -94,7 +95,7 @@ describe('redeeming', () => {
     });
 
     it('is told the same when every place has gone, or the code has ended, or it has since subscribed', () => {
-      expect(redeem({ alreadyRedeemed: true, redeemed: 100 }).kind).toBe('already');
+      expect(redeem({ alreadyRedeemed: true, redeemed: 101 }).kind).toBe('already');
       expect(redeem({ alreadyRedeemed: true, now: new Date('2027-02-01T00:00:00.000Z') }).kind).toBe('already');
       expect(redeem({ alreadyRedeemed: true, current: { tier: 'individual', source: 'paddle', expiresAt: at(300) } }).kind).toBe('already');
     });

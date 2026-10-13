@@ -47,9 +47,13 @@ export interface AccessCode {
  * chats to be passed on, up to 100 accounts, every student feature until
  * 1 January 2027, and no teaching "unless discussed with me". The end is
  * midnight UTC, which in January is midnight in the UK.
+ *
+ * 101, NOT 100: the owner redeemed it once on the live site on 13 October to
+ * prove it worked, and that place is counted. One more gives students the
+ * hundred that was promised without touching the count by hand.
  */
 export const ACCESS_CODES: readonly AccessCode[] = [
-  { code: 'LOCUSMSK27', accessUntil: '2027-01-01T00:00:00.000Z', maxRedemptions: 100, teaching: false },
+  { code: 'LOCUSMSK27', accessUntil: '2027-01-01T00:00:00.000Z', maxRedemptions: 101, teaching: false },
 ];
 
 /** Longest thing worth reading as a code; anything longer is not one. */
