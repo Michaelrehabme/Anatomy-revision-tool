@@ -16,6 +16,7 @@
  *   npx tsx scripts/accountData.ts licence <cohortId> <YYYY-MM-DD|none> --apply
  *   npx tsx scripts/accountData.ts code <CODE>                       # who has redeemed an access code
  *   npx tsx scripts/accountData.ts teach <uid> --apply               # let an access-code account teach
+ *   npx tsx scripts/accountData.ts release <CODE> <uid> --apply      # give an access code's place back
  *
  * DRY RUN BY DEFAULT, like deleteDormantAccounts.ts, and for the same reason:
  * this one writes over a live account's data.
@@ -316,6 +317,57 @@ async function teach(db: Firestore, uid: string): Promise<void> {
   }
 }
 
+/**
+ * Gives one of an access code's places back: removes the account's
+ * redemption and takes one off the count, together. For a place used by a
+ * test, or by an account that has since been deleted — deleting an account
+ * does not free its place, because the count is the cap and nothing but this
+ * lowers it.
+ *
+ * IF THE ACCOUNT STILL HOLDS THE CODE'S ACCESS, THAT GOES TOO. A place given
+ * back while its access carried on would be a hundred and first account. An
+ * entitlement from anywhere else — a subscription bought since — is left
+ * exactly as it is.
+ */
+async function release(db: Firestore, typed: string, uid: string): Promise<void> {
+  const found = findAccessCode(typed);
+  if (!found) throw new Error(`No access code "${typed}". They are listed in src/features/billing/lib/accessCode.ts.`);
+  const codeRef = db.doc(`accessCodes/${found.code}`);
+  const redemptionRef = db.doc(`accessCodes/${found.code}/redemptions/${uid}`);
+  const userRef = db.doc(`users/${uid}`);
+
+  const [redemption, counter, user] = [await redemptionRef.get(), await codeRef.get(), await userRef.get()];
+  process.stdout.write(`${uid}  (${await describe(uid)})\n`);
+  if (!redemption.exists) {
+    process.stdout.write(`\nNothing to do: this account has not redeemed ${found.code}.\n`);
+    return;
+  }
+  const entitlement = user.data()?.entitlement as Record<string, unknown> | undefined;
+  const holds = entitlement?.accessCode === found.code;
+  const redeemed = counter.data()?.redeemed ?? 0;
+  process.stdout.write(`  ${found.code}: ${redeemed} of ${found.maxRedemptions} redeemed -> ${Math.max(0, redeemed - 1)}\n`);
+  process.stdout.write(
+    holds
+      ? `  this account still holds the code's access, which will END: ${JSON.stringify(entitlement)}\n`
+      : `  the account's entitlement is not from this code and is left alone: ${entitlement ? JSON.stringify(entitlement) : 'none'}\n`,
+  );
+
+  if (!APPLY) {
+    process.stdout.write('\nDry run. Re-run with --apply to give the place back.\n');
+    return;
+  }
+  await db.runTransaction(async (tx) => {
+    const [again, count, profile] = [await tx.get(redemptionRef), await tx.get(codeRef), await tx.get(userRef)];
+    if (!again.exists) return;
+    tx.delete(redemptionRef);
+    tx.set(codeRef, { redeemed: Math.max(0, (count.data()?.redeemed ?? 0) - 1), updatedAt: FieldValue.serverTimestamp() }, { merge: true });
+    if (profile.exists && (profile.data()?.entitlement as Record<string, unknown> | undefined)?.accessCode === found.code) {
+      tx.update(userRef, { entitlement: FieldValue.delete(), updatedAt: FieldValue.serverTimestamp() });
+    }
+  });
+  process.stdout.write('\nDone. The place is free again.\n');
+}
+
 async function main(): Promise<void> {
   const db = getFirestore(getAdminApp());
   const [command, a, b] = process.argv.slice(2).filter((x) => !x.startsWith('--'));
@@ -328,6 +380,7 @@ async function main(): Promise<void> {
   if (command === 'licence' && a && b) return licence(db, a, b);
   if (command === 'code' && a) return code(db, a);
   if (command === 'teach' && a) return teach(db, a);
+  if (command === 'release' && a && b) return release(db, a, b);
 
   process.stdout.write(
     'Usage:\n' +
@@ -338,7 +391,8 @@ async function main(): Promise<void> {
       '  npx tsx scripts/accountData.ts failures\n' +
       '  npx tsx scripts/accountData.ts licence <cohortId> <YYYY-MM-DD|none> [--apply]\n' +
       '  npx tsx scripts/accountData.ts code <CODE>\n' +
-      '  npx tsx scripts/accountData.ts teach <uid> [--apply]\n',
+      '  npx tsx scripts/accountData.ts teach <uid> [--apply]\n' +
+      '  npx tsx scripts/accountData.ts release <CODE> <uid> [--apply]\n',
   );
 }
 
