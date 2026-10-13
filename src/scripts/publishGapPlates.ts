@@ -111,7 +111,20 @@ interface Spec {
   dropViews?: [string, number][];
   /** The views published, by the same numbering. Unset: all twelve. */
   views?: number[];
-  joints: { id: string; name: string; depth?: boolean }[];
+  joints: {
+    id: string;
+    name: string;
+    depth?: boolean;
+    /**
+     * 'a' or 'b': that bone's whole visible face also passes. For a bone that
+     * sits ON its partner and not beside it, like the pisiform on the
+     * triquetrum: the seam is then the bone's outline, a ring, and a student
+     * asked for the ligament between them taps the middle of the bone, which
+     * is the hole in the ring (found by tapping it in the app, 13 Oct 2026).
+     * The seam stays the full-marks core.
+     */
+    cover?: 'a' | 'b';
+  }[];
 }
 const spec: Spec = JSON.parse(readFileSync(fromRoot(args.spec ?? 'carpal-gaps.spec.json'), 'utf8'));
 const margin = spec.catchMargin ?? 9;
@@ -202,7 +215,12 @@ for (const viewNo of VIEWS) {
       );
       continue;
     }
-    bands.push({ id: joint.id, core, catchArea: dilateBy(core, width, height, margin), seam: usedSeam, cut, level });
+    const catchArea = dilateBy(core, width, height, margin);
+    if (joint.cover) {
+      const face = joint.cover === 'a' ? a : b;
+      for (let i = 0; i < catchArea.length; i++) if (face[i]) catchArea[i] = 1;
+    }
+    bands.push({ id: joint.id, core, catchArea, seam: usedSeam, cut, level });
   }
   if (!bands.length || !contextPath) continue;
 

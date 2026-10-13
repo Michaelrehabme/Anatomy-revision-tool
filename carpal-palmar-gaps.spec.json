@@ -149,7 +149,8 @@
     "Capitate bone.l",
     "Hamate bone.l"
    ],
-   "depth": true
+   "depth": true,
+   "cover": "a"
   },
   {
    "id": "pisohamate-ligament",
