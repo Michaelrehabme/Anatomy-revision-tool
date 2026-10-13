@@ -31,4 +31,6 @@ export const GAP_PLATES: GapPlate[] = [
   { plateId: 'carpal-palmar', name: 'Carpal bones from the palm', region: 'forearm-hand', subregion: 'wrist-hand', view: 'anterior', angle: 0, width: 1500, height: 1500 },
   { plateId: 'carpal-palmar', name: 'Carpal bones from the palm', region: 'forearm-hand', subregion: 'wrist-hand', view: 'anteromedial', angle: 30, width: 1500, height: 1500 },
   { plateId: 'carpal-palmar', name: 'Carpal bones from the palm', region: 'forearm-hand', subregion: 'wrist-hand', view: 'anterolateral', angle: 330, width: 1500, height: 1500 },
+  { plateId: 'tarsal-dorsal', name: 'Tarsal bones from above', region: 'lower-leg-foot', subregion: 'ankle-foot', view: 'dorsal', angle: 180, width: 2250, height: 2250 },
+  { plateId: 'tarsal-plantar', name: 'Tarsal bones from the sole', region: 'lower-leg-foot', subregion: 'ankle-foot', view: 'plantar', angle: 0, width: 2250, height: 2250 },
 ];

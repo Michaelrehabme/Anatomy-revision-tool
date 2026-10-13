@@ -31,11 +31,11 @@ const onPlate = (q: LocateQuestion) => [...new Set(framesOf(q).flatMap((f) => (f
 const lists = locate.map((q) => ({ q, list: buildLocateList(q, framesOf(q), STRUCTURE_INDEX) }));
 
 describe('the list of names a locate question falls back to', () => {
-  it('was one name long on 212 of the 580 questions, and under four on 246', () => {
+  it('was one name long on 212 of the 585 questions, and under four on 251', () => {
     const sizes = locate.map((q) => onPlate(q).length);
-    expect(locate).toHaveLength(580);
+    expect(locate).toHaveLength(585);
     expect(sizes.filter((n) => n === 1)).toHaveLength(212);
-    expect(sizes.filter((n) => n < MIN_LIST_NAMES)).toHaveLength(246);
+    expect(sizes.filter((n) => n < MIN_LIST_NAMES)).toHaveLength(251);
   });
 
   it('is never shorter than four now, on any locate question', () => {
@@ -89,7 +89,7 @@ describe('the list of names a locate question falls back to', () => {
   });
 
   it('does not put the answer in a place a student could learn', () => {
-    // Where the answer falls in a four-name list, over the 246 made-up lists.
+    // Where the answer falls in a four-name list, over the 251 made-up lists.
     const position = [0, 0, 0, 0];
     let padded = 0;
     for (const { q, list } of lists) {
@@ -97,7 +97,7 @@ describe('the list of names a locate question falls back to', () => {
       padded += 1;
       position[list.findIndex((s) => s.id === q.targetStructureId)] += 1;
     }
-    expect(padded).toBe(246);
+    expect(padded).toBe(251);
     for (const count of position) {
       expect(count / padded).toBeGreaterThan(0.12);
       expect(count / padded).toBeLessThan(0.4);
@@ -133,6 +133,6 @@ describe('the two routes together', () => {
       }
       expect(routes.list.length, q.id).toBeGreaterThanOrEqual(MIN_LIST_NAMES);
     }
-    expect(inWords).toBe(559);
+    expect(inWords).toBe(564);
   });
 });

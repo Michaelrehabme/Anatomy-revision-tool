@@ -193,7 +193,14 @@ describe('the shipped ligament plates', () => {
       'scaphocapitate-ligament',
       'triquetrohamate-ligament',
     ]);
-    expect(onGapPlate).toHaveLength(11);
+    // The same for the foot, on a plate from above and a plate from the sole.
+    expect(byPlate('tarsal-dorsal')).toEqual([
+      'calcaneocuboid-ligament',
+      'cuneocuboid-interosseous-ligament',
+      'dorsal-cuboideonavicular-ligament',
+    ]);
+    expect(byPlate('tarsal-plantar')).toEqual(['plantar-cuboideonavicular-ligament', 'plantar-cuneocuboid-ligament']);
+    expect(onGapPlate).toHaveLength(16);
     const strays = onGapPlate.flatMap((q) => (q.frameImageIds ?? [q.imageId]).filter((id) => plateOf(id) !== plateOf(q.imageId)));
     expect(strays).toEqual([]);
   });

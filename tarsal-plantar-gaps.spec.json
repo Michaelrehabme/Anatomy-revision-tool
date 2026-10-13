@@ -1,0 +1,94 @@
+{
+ "schemaVersion": 1,
+ "note": "The atlas draws these as a patch a few millimetres across, so each is located by the gap between the two bones it joins (owner's decision, 12 October 2026; locate.ts MIN_STRAP_AREA). The sole of the foot, camera straight up (elevation -90) from the anterior view, toes at the top. Rendered by renderJointMasks.py --views 0. Framed at 200 mm on the tarsus and metatarsals, so the heel and the spread of the metatarsals say which way the foot points and which side the big toe is on (the owner's rule from the wrist plates, 13 October 2026). Only the bones of the left foot are drawn (`keep`): seen along the length of the body, everything else in the skeleton stands in line with the foot. Render with --res 2250, which keeps a millimetre the same number of pixels as the wrist plates, the scale publishGapPlates.ts is tuned to.",
+ "plate": {
+  "id": "tarsal-plantar",
+  "name": "Tarsal bones from the sole",
+  "region": "lower-leg-foot",
+  "subregion": "ankle-foot",
+  "side": "left",
+  "view": "plantar"
+ },
+ "elevation": -90,
+ "catchMargin": 24,
+ "dropViews": [],
+ "joints": [
+  {
+   "id": "plantar-cuneocuboid-ligament",
+   "name": "Plantar cuneocuboid ligament",
+   "a": {
+    "id": "lateral-cuneiform",
+    "objects": [
+     "Lateral cuneiform bone.l"
+    ]
+   },
+   "b": {
+    "id": "cuboid",
+    "objects": [
+     "Cuboid bone.l"
+    ]
+   },
+   "frame": 0.2,
+   "frameOn": [
+    "Talus.l",
+    "Calcaneus.l",
+    "Navicular bone.l",
+    "Cuboid bone.l",
+    "Medial cuneiform bone.l",
+    "Intermediate cuneiform bone.l",
+    "Lateral cuneiform bone.l",
+    "First metatarsal bone.l",
+    "Second metatarsal bone.l",
+    "Third metatarsal bone.l",
+    "Fourth metatarsal bone.l",
+    "Fifth metatarsal bone.l"
+   ],
+   "depth": true
+  },
+  {
+   "id": "plantar-cuboideonavicular-ligament",
+   "name": "Plantar cuboideonavicular ligament",
+   "a": {
+    "id": "navicular",
+    "objects": [
+     "Navicular bone.l"
+    ]
+   },
+   "b": {
+    "id": "cuboid",
+    "objects": [
+     "Cuboid bone.l"
+    ]
+   },
+   "frame": 0.2,
+   "frameOn": [
+    "Talus.l",
+    "Calcaneus.l",
+    "Navicular bone.l",
+    "Cuboid bone.l",
+    "Medial cuneiform bone.l",
+    "Intermediate cuneiform bone.l",
+    "Lateral cuneiform bone.l",
+    "First metatarsal bone.l",
+    "Second metatarsal bone.l",
+    "Third metatarsal bone.l",
+    "Fourth metatarsal bone.l",
+    "Fifth metatarsal bone.l"
+   ],
+   "depth": true
+  }
+ ],
+ "views": [
+  0
+ ],
+ "keep": [
+  "Talus.l",
+  "Calcaneus.l",
+  "Navicular bone.l",
+  "Cuboid bone.l",
+  "*cuneiform bone.l",
+  "*metatarsal bone.l",
+  "*finger of foot.l",
+  "Sesamoid bones of foot.l"
+ ]
+}
