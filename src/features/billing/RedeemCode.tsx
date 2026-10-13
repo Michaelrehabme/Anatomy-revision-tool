@@ -2,7 +2,7 @@ import { useState, type FormEvent } from 'react';
 import { refreshEntitlementEverywhere } from '../anatomy-revision/hooks/useEntitlement';
 
 /**
- * "Have an access code?" — on the pricing page and the account screen.
+ * "Have an access or discount code?" — on the pricing page and the account screen.
  *
  * An access code gives full access, free, until a fixed date: no card, and
  * nothing charged when it ends. It is NOT a class join code, which is why
@@ -100,14 +100,14 @@ export function RedeemCode({ prefill = '', onNeedsAccount }: Props) {
         className="block"
         style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.12em', textTransform: 'uppercase', color: 'var(--ink3)' }}
       >
-        Have an access code?
+        Have an access or discount code?
       </label>
       <div className="mt-2 flex gap-2">
         <input
           id="access-code"
           value={code}
           onChange={(e) => setCode(e.target.value)}
-          placeholder="Access code"
+          placeholder="Access or discount code"
           maxLength={40}
           autoCapitalize="characters"
           autoComplete="off"
