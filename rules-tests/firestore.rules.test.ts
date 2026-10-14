@@ -911,6 +911,15 @@ describe('teaching needs full access', () => {
       await assertSucceeds(createClass());
     });
 
+    // An access code (billing/lib/accessCode.ts): every area to study, no
+    // classes. Only `teaching: false` holds anything back.
+    it('refuses an access code, which gives full access without teaching', async () => {
+      await withEntitlement({ tier: 'individual', source: 'complimentary', expiresAt: iso(80), accessCode: 'LOCUSMSK27', teaching: false });
+      await refusesBoth();
+      await withEntitlement({ tier: 'individual', source: 'complimentary', expiresAt: iso(80), accessCode: 'LOCUSMSK27' });
+      await assertSucceeds(createClass());
+    });
+
     // Paid for, cancellation right kept: access begins fourteen days later.
     it('refuses a delayed start that has not begun, and allows it once it has', async () => {
       await withEntitlement({ tier: 'individual', source: 'paddle', expiresAt: iso(40), startsAt: iso(10) });
@@ -1180,6 +1189,13 @@ describe('site and admin collections', () => {
       await assertFails(getDocs(collection(as.student(), 'funnelEvents')));
       await assertSucceeds(getDocs(collection(as.claimAdmin(), 'funnelEvents')));
     });
+  });
+
+  it('closes accessCodes and who redeemed them to every client, admins included', async () => {
+    await assertFails(getDoc(doc(as.student(), 'accessCodes', 'LOCUSMSK27')));
+    await assertFails(setDoc(doc(as.student(), 'accessCodes', 'LOCUSMSK27'), { redeemed: 0 }));
+    await assertFails(getDocs(collection(as.claimAdmin(), 'accessCodes', 'LOCUSMSK27', 'redemptions')));
+    await assertFails(setDoc(doc(as.student(), 'accessCodes', 'LOCUSMSK27', 'redemptions', 'student'), { uid: 'student' }));
   });
 
   it('refuses any collection the rules do not name', async () => {

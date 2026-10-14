@@ -28,6 +28,9 @@ describe('full access on the account itself', () => {
     ['a delayed start that has begun', { entitlement: { ...PADDLE, startsAt: at(-1), expiresAt: at(29) } }, true],
     ['a complimentary grant', { entitlement: { tier: 'individual', source: 'complimentary', expiresAt: null } }, true],
     ['an institutional grant', { entitlement: { tier: 'institutional', source: 'licence', expiresAt: null, seatId: 's1' } }, true],
+    // An access code: every area to study, and no classes (billing/lib/accessCode.ts).
+    ['an access code, which does not teach', { entitlement: { tier: 'individual', source: 'complimentary', expiresAt: at(80), accessCode: 'LOCUSMSK27', teaching: false } }, false],
+    ['a grant that says nothing about teaching', { entitlement: { tier: 'individual', source: 'complimentary', expiresAt: at(80) } }, true],
     ['a tier this build has never heard of', { entitlement: { tier: 'platinum', expiresAt: null } }, false],
     // A student in a licensed class holds every area THROUGH THE CLASS. Nothing
     // is on their own account, and a student is not an educator.

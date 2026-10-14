@@ -57,6 +57,8 @@ export function parseEntitlement(raw: unknown): Entitlement | null {
     ...(typeof r.refundedAt === 'string' ? { refundedAt: r.refundedAt } : {}),
     ...(typeof r.paymentIssueSince === 'string' ? { paymentIssueSince: r.paymentIssueSince } : {}),
     ...(typeof r.cancelAt === 'string' ? { cancelAt: r.cancelAt } : {}),
+    ...(r.teaching === false ? { teaching: false as const } : {}),
+    ...(typeof r.accessCode === 'string' ? { accessCode: r.accessCode } : {}),
   };
 }
 

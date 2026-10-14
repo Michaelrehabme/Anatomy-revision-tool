@@ -101,6 +101,20 @@ export interface Entitlement {
    * the paid time ran out.
    */
   cancelAt?: string;
+  /**
+   * `false`: full access to study with, and no teaching — no creating a
+   * class, setting work or inviting (educator/lib/teachingAccess.ts, and
+   * `hasOwnFullAccess` in firestore.rules). Absent means nothing is held back.
+   *
+   * Written by an access code (billing/lib/accessCode.ts). The owner's
+   * decision, 12 October 2026: a code passed round student group chats gives
+   * the student features, and teaching only "if discussed with me" — which is
+   * `npm run admin:account -- teach <uid>`. Only ever `false`, so that a
+   * record without the field reads as it always has.
+   */
+  teaching?: false;
+  /** The access code this came from, for telling the account what it has and for support. */
+  accessCode?: string;
 }
 
 /**

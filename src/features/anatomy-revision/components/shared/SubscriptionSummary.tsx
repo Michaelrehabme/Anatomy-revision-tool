@@ -30,6 +30,12 @@ const PUBLIC_DEMO = import.meta.env.VITE_PUBLIC_DEMO === '1';
 const ManageSubscription = PUBLIC_DEMO ? null : lazy(() => import('../../../billing/ManageSubscription'));
 
 /**
+ * The access-code box (billing/RedeemCode). Lazy, and null in the demo, which
+ * has no function to check a code with and no account to give access to.
+ */
+const RedeemCode = PUBLIC_DEMO ? null : lazy(() => import('../../../billing/RedeemCode'));
+
+/**
  * The buttons that confirm an email address (Auth/EmailConfirmPanel). Lazy,
  * and null in the demo, which has no accounts: only an account whose address
  * is not confirmed ever sees them.
@@ -94,7 +100,11 @@ export function SubscriptionSummary({ access }: { access: UseEntitlement }) {
       // A refund ends access before the date the student was first given
       // (the webhook's handleAdjustment). Saying why is the difference
       // between "that is right" and "the app has lost my subscription".
-      ? `Your subscription ${entitlement.refundedAt ? 'was refunded and ended' : 'ended'} on ${formatDate(entitlement.expiresAt)}. ${freeOnly}`
+      // An access code was never a subscription, and calling it one sends a
+      // student looking for a payment they did not make.
+      ? entitlement.accessCode
+        ? `Your free full access ended on ${formatDate(entitlement.expiresAt)}. ${freeOnly}`
+        : `Your subscription ${entitlement.refundedAt ? 'was refunded and ended' : 'ended'} on ${formatDate(entitlement.expiresAt)}. ${freeOnly}`
       : tier === 'free'
         ? freeOnly
         : entitlement.expiresAt && unpaid
@@ -108,7 +118,9 @@ export function SubscriptionSummary({ access }: { access: UseEntitlement }) {
             ? `Full access until ${formatDate(entitlement.expiresAt)}, when it ends. Your subscription is cancelled and will not renew.`
             : entitlement.source === 'paddle'
               ? `Full access until ${formatDate(entitlement.expiresAt)}, when it renews.`
-              : `Full access until ${formatDate(entitlement.expiresAt)}.`
+              : entitlement.accessCode
+                ? `Full access until ${formatDate(entitlement.expiresAt)}, free with your access code. Nothing is charged when it ends.`
+                : `Full access until ${formatDate(entitlement.expiresAt)}.`
           : 'Full access.';
 
   return (
@@ -126,6 +138,14 @@ export function SubscriptionSummary({ access }: { access: UseEntitlement }) {
       {entitlement.source === 'paddle' && ManageSubscription && (
         <Suspense fallback={null}>
           <ManageSubscription />
+        </Suspense>
+      )}
+
+      {/* Only for an account with nothing in force: a code is refused over
+          access that is live or paid for (billing/lib/accessCode.ts). */}
+      {tier === 'free' && !pending && !unpaid && RedeemCode && (
+        <Suspense fallback={null}>
+          <RedeemCode />
         </Suspense>
       )}
 
