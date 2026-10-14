@@ -2,6 +2,7 @@ import { useTrackStep } from '../../../feedback/useTrackStep';
 import { useId, useState, type FormEvent } from 'react';
 import { useAuth } from '../../context/AuthProvider';
 import { Button } from '../shared/Button';
+import { currentInAppBrowser, openInBrowserHint } from '../../lib/inAppBrowser';
 
 export type AccountFormMode = 'sign-in' | 'sign-up';
 
@@ -49,6 +50,11 @@ export function friendlyAuthError(error: unknown): string {
       return 'Enter your email address first.';
     case 'auth/too-many-requests':
       return 'Too many attempts just now. Wait a few minutes and try again.';
+    case 'auth/popup-blocked':
+      return 'Your browser blocked the Google sign-in window. Allow pop-ups for this site and try again, or use your email below.';
+    case 'auth/operation-not-supported-in-this-environment':
+    case 'auth/web-storage-unsupported':
+      return "Google sign-in does not work in this browser. Use your email below, or open this page in your phone's own browser.";
     case 'auth/network-request-failed':
       return 'You seem to be offline. Connect and try again — nothing on this device has been lost.';
     case 'auth/popup-closed-by-user':
@@ -60,6 +66,45 @@ export function friendlyAuthError(error: unknown): string {
 }
 
 export const FORGOT_PASSWORD = 'Forgot your password?';
+
+/**
+ * In place of "Continue with Google" inside an app's own browser, where
+ * Google refuses to sign anyone in (lib/inAppBrowser.ts). It says why, and
+ * offers both ways out: the email form just below, or this page in the
+ * phone's own browser, with the link ready to paste.
+ *
+ * Someone whose account was made with Google has no password to type here,
+ * so for them the second way is the only one, and the copy says so.
+ */
+export function InAppBrowserNotice({ app }: { app: string }) {
+  const [copied, setCopied] = useState(false);
+  const hint = openInBrowserHint(typeof navigator === 'undefined' ? '' : navigator.userAgent);
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setCopied(true);
+    } catch {
+      // Some in-app browsers refuse the clipboard. The address bar still has it.
+      setCopied(false);
+    }
+  };
+  return (
+    <div className="rounded-[3px] p-4" style={{ background: 'var(--acc2s)', color: 'var(--ink)' }}>
+      <p style={{ font: '500 14px/1.45 var(--font-ui)', margin: 0 }}>{inAppTitle(app)}</p>
+      <p className="mt-1.5" style={{ font: '400 13px/1.5 var(--font-ui)', color: 'var(--ink2)', margin: '6px 0 0' }}>
+        Use your email below, or open this page in your phone&rsquo;s own browser: {hint}. If you signed up with
+        Google before, open it in your browser to sign in.
+      </p>
+      <Button type="button" variant="secondary" onClick={copy} className="mt-3 min-h-[44px] w-full">
+        {copied ? 'Link copied' : 'Copy the link to this page'}
+      </Button>
+    </div>
+  );
+}
+
+export function inAppTitle(app: string): string {
+  return `Google sign-in does not work inside ${app}.`;
+}
 
 /** Said after a reset is asked for. True whether or not the address has an account. */
 export function passwordResetSent(email: string): string {
@@ -107,6 +152,8 @@ export function AccountForm({ initialMode = 'sign-up', onDone, guestHasProgress 
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [conflictMessage, setConflictMessage] = useState<string | null>(null);
+  // Inside Instagram, TikTok or Facebook, Google will not sign anyone in: see lib/inAppBrowser.ts.
+  const [inApp] = useState(currentInAppBrowser);
   /** The address a reset link was last sent to, for the line that says so. */
   const [resetSentTo, setResetSentTo] = useState<string | null>(null);
   const id = useId();
@@ -233,15 +280,19 @@ export function AccountForm({ initialMode = 'sign-up', onDone, guestHasProgress 
         </p>
       )}
 
-      <Button
-        type="button"
-        variant="secondary"
-        onClick={handleGoogle}
-        disabled={submitting || blockedByAge}
-        className="min-h-[46px] w-full"
-      >
-        Continue with Google
-      </Button>
+      {inApp ? (
+        <InAppBrowserNotice app={inApp} />
+      ) : (
+        <Button
+          type="button"
+          variant="secondary"
+          onClick={handleGoogle}
+          disabled={submitting || blockedByAge}
+          className="min-h-[46px] w-full"
+        >
+          Continue with Google
+        </Button>
+      )}
 
       <div className="my-5 flex items-center gap-3" aria-hidden="true">
         <div className="h-px flex-1" style={{ background: 'var(--line)' }} />
