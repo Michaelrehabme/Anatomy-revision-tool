@@ -73,15 +73,78 @@ const ROLLUP_SESSION_LIMIT = 300;
 export async function createFirestoreRepository(): Promise<AnatomyRepository> {
   const db = getDb();
 
-  const listMasteryRows = async (userId: string) => {
-    const snapshot = await getDocs(collection(db, 'users', userId, 'mastery'));
-    return snapshot.docs.map((d) => d.data() as StructureMastery);
+  /*
+   * ONE READ OF A STUDENT'S PROGRESS PER VISIT. Firestore bills a read for
+   * every document a query returns, and the mastery and factMastery
+   * collections hold one document per structure and per fact a student has
+   * met: hundreds, for anyone who uses the app. Today, the setup screen, the
+   * session's end, Progress and the class rollup each read them whole, so a
+   * single study session paid for the same documents several times over, and
+   * that is what the free plan's 50,000 reads a day ran out on.
+   *
+   * So each is read once, kept here as a map, and written through: an upsert
+   * updates the copy as it updates the database. A reload reads afresh. What
+   * this gives up is seeing, mid-visit, an answer recorded on another device,
+   * which the next visit picks up.
+   */
+  const masteryCache = new Map<string, Promise<Map<string, StructureMastery>>>();
+  const factCache = new Map<string, Promise<Map<string, FactMastery>>>();
+
+  const masteryMap = (userId: string) => {
+    let cached = masteryCache.get(userId);
+    if (!cached) {
+      cached = getDocs(collection(db, 'users', userId, 'mastery')).then(
+        (snapshot) => new Map(snapshot.docs.map((d) => [d.id, d.data() as StructureMastery])),
+      );
+      // A failed read is not kept: the next screen tries again.
+      cached.catch(() => masteryCache.delete(userId));
+      masteryCache.set(userId, cached);
+    }
+    return cached;
   };
 
+  const factMap = (userId: string) => {
+    let cached = factCache.get(userId);
+    if (!cached) {
+      cached = getDocs(collection(db, 'users', userId, 'factMastery')).then(
+        (snapshot) => new Map(snapshot.docs.map((d) => [d.id, d.data() as FactMastery])),
+      );
+      cached.catch(() => factCache.delete(userId));
+      factCache.set(userId, cached);
+    }
+    return cached;
+  };
+
+  const listMasteryRows = async (userId: string) => [...(await masteryMap(userId)).values()];
+  const listFactRows = async (userId: string) => [...(await factMap(userId)).values()];
+
+  /*
+   * Session summaries the same way, newest first. Today asks for 60, the end
+   * of a session for 400 (the streak), the class rollup for 300, and each was
+   * its own query. One query for SUMMARY_FETCH answers all of them for the
+   * rest of the visit; a student with fewer sessions than that is billed for
+   * the ones they have. A longer list than was fetched still goes to the
+   * database, unless the fetch came back short, which means it was all of them.
+   */
+  const SUMMARY_FETCH = 400;
+  const summaryCache = new Map<string, Promise<{ rows: RevisionSessionSummary[]; all: boolean; fetched: number }>>();
+
   const listSummaries = async (userId: string, limitCount: number) => {
-    const q = query(collection(db, 'users', userId, 'sessions'), orderBy('startedAt', 'desc'), fsLimit(limitCount));
-    const snapshot = await getDocs(q);
-    return snapshot.docs.map((d) => d.data() as RevisionSessionSummary);
+    const held = summaryCache.get(userId);
+    if (held) {
+      const cached = await held.catch(() => null);
+      if (cached && (cached.all || cached.fetched >= limitCount)) return cached.rows.slice(0, limitCount);
+    }
+    const fetchCount = Math.max(limitCount, SUMMARY_FETCH);
+    const loading = getDocs(
+      query(collection(db, 'users', userId, 'sessions'), orderBy('startedAt', 'desc'), fsLimit(fetchCount)),
+    ).then((snapshot) => {
+      const rows = snapshot.docs.map((d) => d.data() as RevisionSessionSummary);
+      return { rows, all: rows.length < fetchCount, fetched: fetchCount };
+    });
+    loading.catch(() => summaryCache.delete(userId));
+    summaryCache.set(userId, loading);
+    return (await loading).rows.slice(0, limitCount);
   };
 
   /** See educator/data/cohortRollups.ts syncStudentRollup. Never throws: a stale class chart is not worth an error. */
@@ -90,7 +153,7 @@ export async function createFirestoreRepository(): Promise<AnatomyRepository> {
       await syncStudentRollup(db, userId, getFirebaseAuth().currentUser?.displayName ?? null, async () => ({
         mastery: await listMasteryRows(userId),
         summaries: await listSummaries(userId, ROLLUP_SESSION_LIMIT),
-        facts: (await getDocs(collection(db, 'users', userId, 'factMastery'))).docs.map((d) => d.data() as FactMastery),
+        facts: await listFactRows(userId),
       }));
     } catch {
       /* Rebuilt again after the next session or app open. */
@@ -191,11 +254,12 @@ export async function createFirestoreRepository(): Promise<AnatomyRepository> {
     },
 
     async getMastery(userId: string) {
-      const snapshot = await getDocs(collection(db, 'users', userId, 'mastery'));
-      return snapshot.docs.map((d) => d.data() as StructureMastery);
+      return listMasteryRows(userId);
     },
 
     async getMasteryForStructure(userId: string, structureId: string) {
+      const held = masteryCache.get(userId);
+      if (held) return (await held).get(structureId) ?? null;
       const snap = await getDoc(doc(db, 'users', userId, 'mastery', structureId));
       return snap.exists() ? (snap.data() as StructureMastery) : null;
     },
@@ -212,6 +276,14 @@ export async function createFirestoreRepository(): Promise<AnatomyRepository> {
      * before relying on this in a deployed Firestore-backed environment.
      */
     async listDueMastery(userId: string, before: string) {
+      // From the visit's copy when there is one: the same rows, with no query.
+      const held = masteryCache.get(userId);
+      if (held) {
+        // As the query: a row with no dueAt is not due, and is left out.
+        return [...(await held).values()]
+          .filter((m): m is StructureMastery & { dueAt: string } => m.dueAt !== undefined && m.dueAt <= before)
+          .sort((a, b) => a.dueAt.localeCompare(b.dueAt));
+      }
       const q = query(
         collection(db, 'users', userId, 'mastery'),
         where('dueAt', '<=', before),
@@ -223,11 +295,12 @@ export async function createFirestoreRepository(): Promise<AnatomyRepository> {
 
     async upsertMastery(mastery: StructureMastery) {
       await setDoc(doc(db, 'users', mastery.userId, 'mastery', mastery.structureId), omitUndefined(mastery));
+      const held = masteryCache.get(mastery.userId);
+      if (held) (await held).set(mastery.structureId, omitUndefined(mastery));
     },
 
     async listFactMastery(userId: string) {
-      const snapshot = await getDocs(collection(db, 'users', userId, 'factMastery'));
-      return snapshot.docs.map((d) => d.data() as FactMastery);
+      return listFactRows(userId);
     },
 
     async upsertFactMastery(fact: FactMastery) {
@@ -235,6 +308,8 @@ export async function createFirestoreRepository(): Promise<AnatomyRepository> {
         doc(db, 'users', fact.userId, 'factMastery', factMasteryKey(fact.structureId, fact.promptKind)),
         omitUndefined(fact),
       );
+      const held = factCache.get(fact.userId);
+      if (held) (await held).set(factMasteryKey(fact.structureId, fact.promptKind), omitUndefined(fact));
     },
 
     async saveDiagnosticResult(result: DiagnosticResult) {
@@ -258,6 +333,15 @@ export async function createFirestoreRepository(): Promise<AnatomyRepository> {
      */
     async saveSessionSummary(summary: RevisionSessionSummary) {
       await setDoc(doc(db, 'users', summary.userId, 'sessions', summary.id), omitUndefined(summary));
+      const held = summaryCache.get(summary.userId);
+      if (held) {
+        const cached = await held.catch(() => null);
+        if (cached) {
+          cached.rows = [omitUndefined(summary), ...cached.rows.filter((r) => r.id !== summary.id)].sort((a, b) =>
+            b.startedAt.localeCompare(a.startedAt),
+          );
+        }
+      }
       void syncCohortRollup(summary.userId);
     },
 
