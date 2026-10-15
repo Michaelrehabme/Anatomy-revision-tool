@@ -1,7 +1,8 @@
 import { isMuscle } from '../../types/structure';
 import type { AnatomyStructure } from '../../types/structure';
 import type { AnatomyImageAsset } from '../../types/image';
-import { BLOOD_SUPPLY_TAUGHT, type FlashcardQuestion, type OinaPromptKind, type PromptKind } from '../../types/question';
+import { BLOOD_SUPPLY_TAUGHT, HEALING_CARDS, type FlashcardQuestion, type OinaPromptKind, type PromptKind } from '../../types/question';
+import { STRUCTURE_HEALING, TISSUE_HEALING, type StructureHealing } from '../../data/seed/healing.seed';
 import { summarizeStructure, type SiteLookup } from '../facts';
 import { questionBase } from './questionBase';
 
@@ -97,9 +98,41 @@ export function buildFlashcardQuestions(
 
     const supply = BLOOD_SUPPLY_TAUGHT ? buildBloodSupplyFlashcard(structure) : null;
     if (supply) questions.push(supply);
+
+    if (HEALING_CARDS) {
+      for (const entry of HEALING_BY_STRUCTURE.get(structure.id) ?? []) questions.push(buildHealingFlashcard(structure, entry));
+    }
   }
 
   return questions;
+}
+
+const HEALING_BY_STRUCTURE = new Map<string, StructureHealing[]>();
+for (const entry of STRUCTURE_HEALING) {
+  HEALING_BY_STRUCTURE.set(entry.structureId, [...(HEALING_BY_STRUCTURE.get(entry.structureId) ?? []), entry]);
+}
+
+/**
+ * Why a structure heals well or badly, and how long its tissue takes
+ * (data/seed/healing.seed.ts), with the sources named on the back. A
+ * contested point says so. The links themselves are on /sources: a card is
+ * read in a session, and a student should not be sent out of it.
+ */
+export function buildHealingFlashcard(structure: AnatomyStructure, entry: StructureHealing): FlashcardQuestion {
+  const tissue = TISSUE_HEALING[entry.tissue];
+  const sources = [...entry.sources.map((s) => s.label), ...(entry.sources.some((s) => s.url === tissue.source.url) ? [] : [tissue.source.label])];
+  const back = [
+    entry.answer,
+    ...(entry.contested ? [`Contested: ${entry.contested}`] : []),
+    `How ${entry.tissue === 'cartilage' ? 'articular cartilage' : entry.tissue} heals: ${tissue.text}`,
+    `Sources: ${sources.join('; ')}`,
+  ].join('\n\n');
+  return {
+    ...baseFields(structure, 'blood-supply'),
+    id: `flashcard-${structure.id}-healing-${entry.key}`,
+    front: { text: entry.question },
+    back: { text: back },
+  };
 }
 
 /**

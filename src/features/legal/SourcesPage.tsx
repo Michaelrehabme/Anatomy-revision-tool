@@ -1,4 +1,6 @@
 import { Link } from 'react-router-dom';
+import { STRUCTURE_HEALING, TISSUE_HEALING } from '../anatomy-revision/data/seed/healing.seed';
+import { STRUCTURE_INDEX_BY_ID } from '../anatomy-revision/data/structureIndex';
 import { CATEGORY_LABELS } from '../anatomy-revision/types/structure';
 import { LegalLayout, legalHeading, legalLabel, legalProse } from './LegalLayout';
 import {
@@ -30,6 +32,24 @@ import {
  */
 
 const EMAIL = 'michael@rehabme.uk';
+
+const HEALING_CHECKED = '15 October 2026';
+const HEALING_CLAIMS = STRUCTURE_HEALING.length;
+/** One row per card, named by its structure; the tissue sources are listed once, at the end. */
+const HEALING_ROWS = [
+  ...STRUCTURE_HEALING.map((e) => ({
+    key: `${e.structureId}-${e.key}`,
+    name: `${STRUCTURE_INDEX_BY_ID.get(e.structureId)?.name ?? e.structureId}${e.key === 'long-head' ? ', long head' : e.key === 'distal' ? ', distal tendon' : e.key === 'quadriceps-tendon' ? ' (quadriceps tendon)' : ''}`,
+    contested: Boolean(e.contested),
+    sources: e.sources,
+  })),
+  ...Object.values(TISSUE_HEALING).map((t) => ({
+    key: `tissue-${t.tissue}`,
+    name: `How ${t.tissue === 'cartilage' ? 'articular cartilage' : t.tissue} heals`,
+    contested: false,
+    sources: [t.source],
+  })),
+];
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -268,6 +288,36 @@ export function SourcesPage() {
         vanished with it. "Checked" covers the fields named per family above and
         nothing else; that has to stay said however high the numbers go.
       */}
+      {/*
+        The healing cards (data/seed/healing.seed.ts) carry their sources by
+        name; this is where a reader can open them. Grouped by the card's
+        structure, in the order the seed lists them.
+      */}
+      <Section title="How structures heal">
+        <p>
+          {HEALING_CLAIMS} cards explain why a structure heals well or badly and how long its tissue usually takes,
+          with their sources named on the card. Each claim was checked on {HEALING_CHECKED}: the supporting sentence
+          is on the page, in the paper&rsquo;s abstract or in its full text, and every paper is real, peer reviewed
+          and not retracted. Where the literature disagrees the card says so.
+        </p>
+        <ul style={{ ...legalProse, paddingLeft: 20, display: 'flex', flexDirection: 'column', gap: 6 }}>
+          {HEALING_ROWS.map((row) => (
+            <li key={row.key}>
+              <strong style={{ color: 'var(--ink)' }}>{row.name}</strong>
+              {row.contested ? ' (contested)' : ''}:{' '}
+              {row.sources.map((source, i) => (
+                <span key={source.url}>
+                  {i > 0 ? '; ' : ''}
+                  <a href={source.url} target="_blank" rel="noreferrer" style={{ color: 'var(--accd)' }}>
+                    {source.label}
+                  </a>
+                </span>
+              ))}
+            </li>
+          ))}
+        </ul>
+      </Section>
+
       <Section title="What the checking does not cover">
         <p>
           {untouched.length > 0 && (

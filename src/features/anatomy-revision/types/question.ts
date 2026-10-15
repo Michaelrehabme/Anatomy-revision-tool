@@ -190,6 +190,12 @@ export const BLOOD_SUPPLY_SCORED: boolean = false;
  * part of the question pool.
  */
 export const BLOOD_SUPPLY_TAUGHT: boolean = false;
+/**
+ * The sourced healing cards that replace it (data/seed/healing.seed.ts):
+ * why a structure heals well or badly, with the source on the card. Not
+ * scored, like every flashcard.
+ */
+export const HEALING_CARDS: boolean = true;
 /** The facts a session may ask on the fact track, and a setup screen may offer. */
 export const ASKED_FACT_KINDS: readonly OinaPromptKind[] = BLOOD_SUPPLY_SCORED ? OINA_PROMPT_KINDS : MUSCLE_FACT_KINDS;
 /**
