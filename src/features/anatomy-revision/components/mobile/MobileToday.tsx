@@ -15,6 +15,7 @@ import { MobileShell } from './MobileShell';
 import { ClassAssignments } from '../shared/ClassAssignments';
 import { ReviewAreaSelect } from '../shared/ReviewAreaSelect';
 import { PaymentIssue } from '../shared/PaymentIssue';
+import { InstallCard } from '../../../pwa/InstallCard';
 import type { MobileTab } from './MobileTabBar';
 
 // OINA is in the default mix because attachments are the thing students come back
@@ -153,6 +154,9 @@ export function MobileToday({ access, repository, userId, content, onStart, onCu
         >
           Custom session
         </button>
+
+        {/* After the first session, never before it: see pwa/InstallCard. */}
+        {!firstRun && !loading && <InstallCard className="mt-5" />}
 
         <ClassAssignments access={access} repository={repository} userId={userId} content={content} onStart={onStart} compact />
 

@@ -12,9 +12,12 @@ import { OfflineIndicator } from './features/pwa/OfflineIndicator.tsx';
 import { purgeStaleAnatomyCaches } from './features/pwa/anatomyCache.ts';
 import { ErrorBoundary } from './features/feedback/ErrorBoundary.tsx';
 import { installErrorReporting } from './features/feedback/data/telemetry.ts';
+import { captureInstallPrompt } from './features/pwa/install.ts';
 
 // Before anything renders, so an error on the way up is reported too.
 installErrorReporting();
+// The install event fires once, early; it is held for Today's card (features/pwa/install.ts).
+captureInstallPrompt();
 
 // Pictures from an earlier render, cached under the same filenames, are
 // dropped before the first one is asked for.
