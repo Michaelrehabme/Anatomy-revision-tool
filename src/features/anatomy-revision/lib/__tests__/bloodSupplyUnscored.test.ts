@@ -1,15 +1,17 @@
 import { describe, expect, it } from 'vitest';
 import { ALL_IMAGES, ALL_STRUCTURES } from '../../data/seed';
 import { AREAS } from '../../types/region';
-import { ASKED_FACT_KINDS, BLOOD_SUPPLY_SCORED, type QuestionType } from '../../types/question';
+import { ASKED_FACT_KINDS, BLOOD_SUPPLY_SCORED, BLOOD_SUPPLY_TAUGHT, type QuestionType } from '../../types/question';
 import { generateRevisionSet } from '../questionGenerators/generateSet';
 import { buildBloodSupplyFlashcard } from '../questionGenerators/flashcards';
 import { requiredFactKinds } from '../factMastery';
 
 /**
- * Blood supply is taught and not marked (owner's decision, 12 October 2026).
- * What that has to mean everywhere at once: nothing scored asks it, mastery
- * does not wait on it, and it is still there to learn from as a card.
+ * Blood supply is not marked (owner's decision, 12 October 2026), and while
+ * it is being sourced it is not in the question pool at all (15 October). What
+ * that has to mean everywhere at once: nothing scored asks it, mastery does not
+ * wait on it, and no card or explanation states it. The card builder is kept,
+ * tested here, for when it is sourced.
  */
 describe('blood supply while it is unscored', () => {
   const session = (types: QuestionType[]) =>
@@ -33,12 +35,21 @@ describe('blood supply while it is unscored', () => {
     expect(waiting).toEqual([]);
   });
 
-  it('is a flashcard for every structure that has cards and a named artery, landmarks apart', () => {
-    const cards = session(['flashcard']).filter((q) => q.id.endsWith('-blood-supply-card'));
-    const expected = ALL_STRUCTURES.filter((s) => s.eligibility.flashcard && s.category !== 'landmark' && s.bloodSupply?.primary);
-    expect(expected.length).toBeGreaterThan(200);
-    expect(cards.map((q) => q.structureId).sort()).toEqual(expected.map((s) => s.id).sort());
+  it('is in no card and no explanation while it is unsourced (15 October 2026)', () => {
+    expect(BLOOD_SUPPLY_TAUGHT).toBe(false);
+    const all = session(['flashcard', 'mcq', 'identify-typed']);
+    expect(all.filter((q) => q.id.endsWith('-blood-supply-card'))).toEqual([]);
+    const shown = all.map((q) =>
+      q.type === 'flashcard' ? `${q.front.text ?? ''}
+${q.back.text}` : 'explanation' in q ? String(q.explanation ?? '') : '',
+    );
+    // What the blood supply data would add: the line on a card's back, and the
+    // card of its own. Authored descriptions that mention a vessel in passing
+    // (Guyon's canal, the scaphoid's retrograde supply) are prose about the
+    // structure, sourced with it, and stay.
+    expect(shown.filter((text) => /Blood supply \(|Main artery:/.test(text))).toEqual([]);
   });
+
 
   it('puts the arteries and the poorly supplied part on the card, and never the unsourced rating', () => {
     const acl = ALL_STRUCTURES.find((s) => s.id === 'anterior-cruciate-ligament')!;

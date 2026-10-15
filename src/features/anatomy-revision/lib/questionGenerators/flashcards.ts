@@ -1,7 +1,7 @@
 import { isMuscle } from '../../types/structure';
 import type { AnatomyStructure } from '../../types/structure';
 import type { AnatomyImageAsset } from '../../types/image';
-import type { FlashcardQuestion, OinaPromptKind, PromptKind } from '../../types/question';
+import { BLOOD_SUPPLY_TAUGHT, type FlashcardQuestion, type OinaPromptKind, type PromptKind } from '../../types/question';
 import { summarizeStructure, type SiteLookup } from '../facts';
 import { questionBase } from './questionBase';
 
@@ -95,7 +95,7 @@ export function buildFlashcardQuestions(
       }
     }
 
-    const supply = buildBloodSupplyFlashcard(structure);
+    const supply = BLOOD_SUPPLY_TAUGHT ? buildBloodSupplyFlashcard(structure) : null;
     if (supply) questions.push(supply);
   }
 

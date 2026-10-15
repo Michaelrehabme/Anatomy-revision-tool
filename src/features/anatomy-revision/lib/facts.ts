@@ -1,7 +1,7 @@
 import { isMuscle, isBone, isLandmark, isJoint, isLigament, reviewedAttachmentIds, areasOf, JOINT_TYPE_LABELS } from '../types/structure';
 import type { AnatomyStructure, LigamentStructure } from '../types/structure';
 import { REGION_LABELS, SUBREGION_LABELS, AREA_LABELS } from '../types/region';
-import type { OinaPromptKind } from '../types/question';
+import { BLOOD_SUPPLY_TAUGHT, type OinaPromptKind } from '../types/question';
 import type { StructureIndexEntry } from '../types/structureIndex';
 import { siteLabel } from './attachmentSites';
 import { singular } from './answerMatching';
@@ -61,7 +61,8 @@ export function describeStructure(s: AnatomyStructure, sites?: SiteLookup): stri
     if (s.stabilizers?.length) lines.push(`Stabilizers: ${s.stabilizers.join('; ')}`);
   }
 
-  if (s.bloodSupply) {
+  // Out of every card and explanation while it is unsourced (types/question.ts BLOOD_SUPPLY_TAUGHT).
+  if (s.bloodSupply && BLOOD_SUPPLY_TAUGHT) {
     const b = s.bloodSupply;
     const rating = { rich: 'rich', moderate: 'moderate', poor: 'poor' }[b.rating];
     const vessels = b.primary ? [b.primary, ...b.assisting].join(', ') : 'no single named artery';

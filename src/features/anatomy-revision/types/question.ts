@@ -182,6 +182,14 @@ export type OinaPromptKind = (typeof OINA_PROMPT_KINDS)[number];
  * student's history holds answers recorded under them.
  */
 export const BLOOD_SUPPLY_SCORED: boolean = false;
+/**
+ * AND, UNTIL IT IS SOURCED, NOT TAUGHT IN A SESSION EITHER (owner's
+ * decision, 15 October 2026). No blood supply flashcard, and no blood supply
+ * line on the back of a card or in an answer's explanation. It stays on the
+ * structure's own page (shared/BloodSupplyFacts), which is reference and not
+ * part of the question pool.
+ */
+export const BLOOD_SUPPLY_TAUGHT: boolean = false;
 /** The facts a session may ask on the fact track, and a setup screen may offer. */
 export const ASKED_FACT_KINDS: readonly OinaPromptKind[] = BLOOD_SUPPLY_SCORED ? OINA_PROMPT_KINDS : MUSCLE_FACT_KINDS;
 /**
