@@ -31,9 +31,9 @@ const onPlate = (q: LocateQuestion) => [...new Set(framesOf(q).flatMap((f) => (f
 const lists = locate.map((q) => ({ q, list: buildLocateList(q, framesOf(q), STRUCTURE_INDEX) }));
 
 describe('the list of names a locate question falls back to', () => {
-  it('was one name long on 212 of the 585 questions, and under four on 251', () => {
+  it('was one name long on 212 of the 593 questions, and under four on 251', () => {
     const sizes = locate.map((q) => onPlate(q).length);
-    expect(locate).toHaveLength(585);
+    expect(locate).toHaveLength(593);
     expect(sizes.filter((n) => n === 1)).toHaveLength(212);
     expect(sizes.filter((n) => n < MIN_LIST_NAMES)).toHaveLength(251);
   });
@@ -133,6 +133,6 @@ describe('the two routes together', () => {
       }
       expect(routes.list.length, q.id).toBeGreaterThanOrEqual(MIN_LIST_NAMES);
     }
-    expect(inWords).toBe(564);
+    expect(inWords).toBe(572);
   });
 });

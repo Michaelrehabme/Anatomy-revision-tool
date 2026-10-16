@@ -1,0 +1,344 @@
+{
+ "schemaVersion": 1,
+ "note": "The connective structures that had no picture (16 October 2026): retinacula, TFCC, iliotibial band, plantar fascia, Achilles tendon, inguinal ligament, linea alba, costal cartilages, each mapped to its Z-Anatomy mesh by name. The alar ligaments and the transverse ligament of the atlas are not modelled in the atlas and are not here. The TFCC was rendered and NOT published: the atlas models it as an eight-vertex disc (the articular disc of the distal radio-ulnar joint), a chip covering 0.03 to 0.17% of the frame, the same fault as the small ligaments (locate.ts MIN_STRAP_AREA). The costal cartilages and inguinal ligaments are rendered as one target of both sides, by the owner's rule that a symmetrical structure counts on either side. Full turntables (eight angles every 45 degrees) since 16 Oct 2026, at the owner's request; the retinacula carry `shrinkwrap` (3 mm) because the atlas draws them as a loose cuff.",
+ "ligaments": [
+  {
+   "key": "flexor-retinaculum",
+   "name": "Flexor retinaculum",
+   "subregion": "wrist-hand",
+   "objects": [
+    "Flexor retinaculum of wrist.l"
+   ],
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ],
+   "frame": 0.2,
+   "minFrame": 0.12,
+   "keep": [
+    "Radius.*",
+    "Ulna.*",
+    "Humerus.*",
+    "Scaphoid bone.*",
+    "Lunate bone.*",
+    "Triquetrum bone.*",
+    "Pisiform bone.*",
+    "Trapezium bone.*",
+    "Trapezoid bone.*",
+    "Capitate bone.*",
+    "Hamate bone.*",
+    "*metacarpal bone*",
+    "*finger of hand*",
+    "Sesamoid bones of hand.*"
+   ],
+   "shrinkwrap": 0.003
+  },
+  {
+   "key": "extensor-retinaculum-hand",
+   "name": "Extensor retinaculum",
+   "subregion": "wrist-hand",
+   "objects": [
+    "Extensor retinaculum of wrist.l"
+   ],
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ],
+   "frame": 0.2,
+   "minFrame": 0.12,
+   "keep": [
+    "Radius.*",
+    "Ulna.*",
+    "Humerus.*",
+    "Scaphoid bone.*",
+    "Lunate bone.*",
+    "Triquetrum bone.*",
+    "Pisiform bone.*",
+    "Trapezium bone.*",
+    "Trapezoid bone.*",
+    "Capitate bone.*",
+    "Hamate bone.*",
+    "*metacarpal bone*",
+    "*finger of hand*",
+    "Sesamoid bones of hand.*"
+   ],
+   "shrinkwrap": 0.003
+  },
+  {
+   "key": "triangular-fibrocartilage-complex",
+   "name": "Triangular fibrocartilage complex",
+   "subregion": "wrist-hand",
+   "objects": [
+    "Articular disc of distal radio-ulnar joint.l"
+   ],
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ],
+   "frame": 0.2,
+   "minFrame": 0.12,
+   "keep": [
+    "Radius.*",
+    "Ulna.*",
+    "Humerus.*",
+    "Scaphoid bone.*",
+    "Lunate bone.*",
+    "Triquetrum bone.*",
+    "Pisiform bone.*",
+    "Trapezium bone.*",
+    "Trapezoid bone.*",
+    "Capitate bone.*",
+    "Hamate bone.*",
+    "*metacarpal bone*",
+    "*finger of hand*",
+    "Sesamoid bones of hand.*"
+   ],
+   "ghost": [
+    "Ulna.l",
+    "Triquetrum bone.l",
+    "Lunate bone.l"
+   ]
+  },
+  {
+   "key": "iliotibial-band",
+   "name": "Iliotibial band",
+   "subregion": "knee",
+   "objects": [
+    "Iliotibial tract.l"
+   ],
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ],
+   "frame": 0.6,
+   "minFrame": 0.5,
+   "keep": [
+    "Femur.*",
+    "Tibia.*",
+    "Fibula.*",
+    "Patella.*",
+    "Hip bone.*",
+    "Sacrum",
+    "Vertebra L*"
+   ]
+  },
+  {
+   "key": "plantar-fascia",
+   "name": "Plantar fascia",
+   "subregion": "ankle-foot",
+   "objects": [
+    "Plantar aponeurosis.l"
+   ],
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ],
+   "frame": 0.24,
+   "minFrame": 0.14,
+   "keep": [
+    "Tibia.*",
+    "Fibula.*",
+    "Talus.*",
+    "Calcaneus.*",
+    "Navicular bone.*",
+    "Cuboid bone.*",
+    "Medial cuneiform bone.*",
+    "Intermediate cuneiform bone.*",
+    "Lateral cuneiform bone.*",
+    "*metatarsal bone*",
+    "*finger of foot*",
+    "Sesamoid bones of foot.*"
+   ],
+   "tilts": [
+    [
+     180,
+     45
+    ],
+    [
+     180,
+     90
+    ],
+    [
+     0,
+     -45
+    ],
+    [
+     0,
+     -90
+    ]
+   ],
+   "tiltCutaway": [
+    "Tibia.*",
+    "Fibula.*"
+   ]
+  },
+  {
+   "key": "achilles-tendon",
+   "name": "Achilles tendon",
+   "subregion": "ankle-foot",
+   "objects": [
+    "Calcaneal tendon.l"
+   ],
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ],
+   "frame": 0.3,
+   "minFrame": 0.2,
+   "keep": [
+    "Tibia.*",
+    "Fibula.*",
+    "Talus.*",
+    "Calcaneus.*",
+    "Navicular bone.*",
+    "Cuboid bone.*",
+    "*cuneiform bone.*",
+    "*metatarsal bone*",
+    "*finger of foot*"
+   ]
+  },
+  {
+   "key": "inguinal-ligament",
+   "name": "Inguinal ligament",
+   "subregion": "hip",
+   "objects": [
+    "Inguinal ligament.l",
+    "Inguinal ligament.r"
+   ],
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ],
+   "frame": 0.36,
+   "minFrame": 0.32,
+   "keep": [
+    "Hip bone.*",
+    "Sacrum",
+    "Coccyx",
+    "Femur.*",
+    "Vertebra L*"
+   ]
+  },
+  {
+   "key": "linea-alba",
+   "name": "Linea alba",
+   "subregion": "torso",
+   "objects": [
+    "Linea alba"
+   ],
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ],
+   "frame": 0.5,
+   "minFrame": 0.4,
+   "keep": [
+    "*rib*",
+    "*of sternum",
+    "Xiphoid process",
+    "Vertebra T*",
+    "Vertebra L*",
+    "Hip bone.*",
+    "Sacrum",
+    "Clavicle.*"
+   ]
+  },
+  {
+   "key": "costal-cartilage",
+   "name": "Costal cartilage",
+   "subregion": "torso",
+   "objects": [
+    "Costal cartilage of first rib.l",
+    "Costal cartilage of second rib.l",
+    "Costal cartilage of third rib.l",
+    "Costal cartilage of fourth rib.l",
+    "Costal cartilage of fifth rib.l",
+    "Costal cartilage of sixth rib.l",
+    "Costal cartilage of seventh rib.l",
+    "Costal cartilage of eighth rib.l",
+    "Costal cartilage of ninth rib.l",
+    "Costal cartilage of tenth rib.l",
+    "Costal cartilage of first rib.r",
+    "Costal cartilage of second rib.r",
+    "Costal cartilage of third rib.r",
+    "Costal cartilage of fourth rib.r",
+    "Costal cartilage of fifth rib.r",
+    "Costal cartilage of sixth rib.r",
+    "Costal cartilage of seventh rib.r",
+    "Costal cartilage of eighth rib.r",
+    "Costal cartilage of ninth rib.r",
+    "Costal cartilage of tenth rib.r"
+   ],
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ],
+   "frame": 0.4,
+   "minFrame": 0.3,
+   "keep": [
+    "*rib*",
+    "*of sternum",
+    "Xiphoid process",
+    "Vertebra T*",
+    "Vertebra L*",
+    "Hip bone.*",
+    "Sacrum",
+    "Clavicle.*"
+   ]
+  }
+ ]
+}

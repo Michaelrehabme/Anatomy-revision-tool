@@ -86,13 +86,13 @@ function seedValues(s: AnatomyStructure): Map<string, string[]> {
 }
 
 describe('described-region questions: coverage', () => {
-  it('covers 564 of the 585 locate questions, in every family', () => {
-    expect(locate).toHaveLength(585);
-    expect(built).toHaveLength(564);
+  it('covers 572 of the 593 locate questions, in every family', () => {
+    expect(locate).toHaveLength(593);
+    expect(built).toHaveLength(572);
     const perCategory = (rows: { q: { category: string } }[]) =>
       Object.fromEntries(['muscle', 'ligament', 'landmark', 'joint', 'bone'].map((c) => [c, rows.filter((r) => r.q.category === c).length]));
-    expect(perCategory(results)).toEqual({ muscle: 124, ligament: 141, landmark: 202, joint: 34, bone: 84 });
-    expect(perCategory(built)).toEqual({ muscle: 124, ligament: 139, landmark: 192, joint: 34, bone: 75 });
+    expect(perCategory(results)).toEqual({ muscle: 124, ligament: 149, landmark: 202, joint: 34, bone: 84 });
+    expect(perCategory(built)).toEqual({ muscle: 124, ligament: 147, landmark: 192, joint: 34, bone: 75 });
   });
 
   it('and the twenty-one it does not are these, each for a reason the list route then covers', () => {
@@ -313,11 +313,11 @@ describe('described-region questions: from one area\'s facts', () => {
         });
       }
     }
-    // 651 because a structure in two areas is asked in each. Fewer are covered
+    // 659 because a structure in two areas is asked in each. Fewer are covered
     // than with everything loaded — an area with two bones cannot supply three
     // wrong descriptions of a bone — and those fall back to the list.
-    expect(total).toBe(651);
-    expect(covered).toBe(477);
+    expect(total).toBe(659);
+    expect(covered).toBe(485);
   });
 
   it('names a bone from another area through the index, with no facts loaded for it', () => {

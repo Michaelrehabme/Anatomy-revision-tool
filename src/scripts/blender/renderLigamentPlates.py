@@ -907,6 +907,26 @@ for entry in spec["ligaments"]:
         print("[twin] " + key + ": " + ", ".join(twins), flush=True)
         bpy.data.meshes.remove(lig_mesh)
         lig_mesh = bake(lig_names + twins, "lig_" + key, skin=True)
+    # SNUG ON THE BONE (spec `shrinkwrap`, metres off the surface). The atlas
+    # draws the wrist retinacula as a cuff standing well clear of the bones,
+    # because in the body the tendons fill the space beneath them; on a
+    # bones-only plate that read as a loose band floating round the wrist
+    # (owner, 16 Oct 2026). Each vertex moves to the nearest point of the
+    # bones drawn, plus the offset, so the band lies where it would rest on the
+    # skeleton. Only for an entry that asks: everywhere else the atlas's shape
+    # is the shape.
+    if entry.get("shrinkwrap") is not None:
+        from mathutils.bvhtree import BVHTree
+        tree = BVHTree.FromPolygons([v.co.copy() for v in bones.vertices], [p.vertices[:] for p in bones.polygons])
+        offset = float(entry["shrinkwrap"])
+        moved = 0
+        for v in lig_mesh.vertices:
+            loc, normal, _i, _d = tree.find_nearest(v.co)
+            if loc is not None and normal is not None:
+                v.co = loc + normal.normalized() * offset
+                moved += 1
+        lig_mesh.update()
+        print("[shrinkwrap] " + key + ": " + str(moved) + " vertices onto the bones, " + format(offset * 1000, ".1f") + "mm off", flush=True)
     # See ghost_strap_mat: with solidStraps, the straps it does not name are
     # ghosted. They leave `others`, so they are neither holdouts nor tap targets.
     ghost_strap_mesh = None
