@@ -5,6 +5,7 @@ import type { LocateQuestion } from '../../types/question';
 import type { HotspotPolygon } from '../../types/image';
 import { polygonsWidth } from '../hotspot/polygonGeometry';
 import { questionBase } from './questionBase';
+import { askedWithPicture } from '../../data/clinicalLigaments';
 
 /**
  * How wide a traced target has to be before it is fair to ask someone to tap
@@ -220,7 +221,8 @@ export function buildLocateQuestions(
     const seen = new Set<string>();
     for (const hotspot of image.hotspots) {
       const structure = structureById.get(hotspot.structureId);
-      if (!structure || !structure.eligibility.locate) continue;
+      // A tap only for the clinically important ligaments (data/clinicalLigaments.ts).
+      if (!structure || !structure.eligibility.locate || !askedWithPicture(structure)) continue;
       // One question per structure per picture, not one per traced piece.
       if (seen.has(structure.id)) continue;
       seen.add(structure.id);

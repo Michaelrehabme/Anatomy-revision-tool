@@ -187,6 +187,12 @@ export interface QuestionEligibility {
   flashcard: boolean;
   mcq: boolean;
   locate: boolean;
+  /**
+   * Asked from a picture at all: named, typed or tapped. Absent means yes.
+   * False for the ligaments off data/clinicalLigaments.ts (owner, 16 Oct
+   * 2026); they keep their picture in the Atlas and on flashcards.
+   */
+  picture?: boolean;
 }
 
 /**

@@ -1,4 +1,5 @@
 import type { AnatomyStructure } from '../../types/structure';
+import { CLINICAL_LIGAMENTS } from '../clinicalLigaments';
 import { BLOOD_SUPPLY } from './bloodSupply.generated';
 import { MUSCLE_STRUCTURES } from './structures.muscles.seed';
 import { BONE_STRUCTURES } from './structures.bones.seed';
@@ -49,8 +50,18 @@ export const ALL_IMAGES = IMAGE_ASSETS;
  * of image ids — the app derives them at load from the images it already has,
  * and has no use for a second copy in a file.
  */
+/**
+ * Only the clinically important ligaments are asked from a picture
+ * (data/clinicalLigaments.ts, owner 16 Oct 2026). Applied here, once, to the
+ * data every screen and generator reads, rather than in each generator.
+ */
+function withPictureRule(s: AnatomyStructure): AnatomyStructure {
+  if (s.category !== 'ligament' || CLINICAL_LIGAMENTS.has(s.id)) return s;
+  return { ...s, eligibility: { ...s.eligibility, locate: false, picture: false } };
+}
+
 export const AUTHORED_STRUCTURES: AnatomyStructure[] = UNLINKED_STRUCTURES.map((s) =>
-  BLOOD_SUPPLY[s.id] ? { ...s, bloodSupply: BLOOD_SUPPLY[s.id] } : s,
+  withPictureRule(BLOOD_SUPPLY[s.id] ? { ...s, bloodSupply: BLOOD_SUPPLY[s.id] } : s),
 );
 export const ALL_STRUCTURES: AnatomyStructure[] = linkImages(AUTHORED_STRUCTURES, ALL_IMAGES);
 

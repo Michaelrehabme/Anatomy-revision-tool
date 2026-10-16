@@ -175,32 +175,15 @@ describe('the shipped ligament plates', () => {
     const plateOf = (imageId: string) => /^gap-(.+)-a\d{3}-plate$/.exec(imageId)?.[1];
     const byPlate = (plate: string) =>
       onGapPlate.filter((q) => plateOf(q.imageId) === plate).map((q) => q.targetStructureId).sort();
-    // The five interosseous ligaments of the wrist, which lie inside the gap.
-    expect(byPlate('carpal-gaps')).toEqual([
-      'capitohamate-interosseous-ligament',
-      'lunotriquetral-interosseous-ligament',
-      'scapholunate-interosseous-ligament',
-      'trapeziotrapezoidal-interosseous-ligament',
-      'trapezoideocapitate-interosseous-ligament',
-    ]);
-    // The palmar ligaments the atlas draws as a patch too small to tap
-    // (locate.ts MIN_STRAP_AREA), asked between the two bones each one joins.
-    expect(byPlate('carpal-palmar')).toEqual([
-      'palmar-capitohamate-ligament',
-      'palmar-lunotriquetral-ligament',
-      'pisohamate-ligament',
-      'pisotriquetral-ligament',
-      'scaphocapitate-ligament',
-      'triquetrohamate-ligament',
-    ]);
-    // The same for the foot, on a plate from above and a plate from the sole.
-    expect(byPlate('tarsal-dorsal')).toEqual([
-      'calcaneocuboid-ligament',
-      'cuneocuboid-interosseous-ligament',
-      'dorsal-cuboideonavicular-ligament',
-    ]);
-    expect(byPlate('tarsal-plantar')).toEqual(['plantar-cuboideonavicular-ligament', 'plantar-cuneocuboid-ligament']);
-    expect(onGapPlate).toHaveLength(16);
+    // Of the sixteen ligaments asked between two bones, only the scapholunate
+    // is still asked from a picture: the owner kept picture questions for the
+    // clinically important ligaments (data/clinicalLigaments.ts, 16 Oct 2026).
+    // The gap plates stay, and the other fifteen keep their written questions.
+    expect(byPlate('carpal-gaps')).toEqual(['scapholunate-interosseous-ligament']);
+    expect(byPlate('carpal-palmar')).toEqual([]);
+    expect(byPlate('tarsal-dorsal')).toEqual([]);
+    expect(byPlate('tarsal-plantar')).toEqual([]);
+    expect(onGapPlate).toHaveLength(1);
     const strays = onGapPlate.flatMap((q) => (q.frameImageIds ?? [q.imageId]).filter((id) => plateOf(id) !== plateOf(q.imageId)));
     expect(strays).toEqual([]);
   });

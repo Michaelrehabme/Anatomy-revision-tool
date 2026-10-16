@@ -2,6 +2,7 @@ import type { AnatomyImageAsset } from '../../types/image';
 import type { StructureIndexEntry } from '../../types/structureIndex';
 import { rotationSetKey } from '../rotationFrames';
 import { imageDepicts } from './mcq';
+import { askedWithPicture } from '../../data/clinicalLigaments';
 
 /**
  * ONE PICTURE PER TURNTABLE, AND THE STRUCTURE'S OWN TURNTABLE FIRST.
@@ -43,6 +44,10 @@ export function promptImagesFor(
   structure: StructureIndexEntry,
   images: readonly AnatomyImageAsset[],
 ): AnatomyImageAsset[] {
+  // Only the clinically important ligaments are asked from a picture
+  // (data/clinicalLigaments.ts, owner 16 Oct 2026). Gated here so every
+  // picture question — named, typed, offline-cached — follows the one list.
+  if (!askedWithPicture(structure)) return [];
   const depicting = images.filter((img) => imageDepicts(img, structure.id));
   if (depicting.length === 0) return [];
 

@@ -6,6 +6,7 @@ import { ALL_IMAGES, ALL_STRUCTURES } from '../../data/seed';
 import { isLigament, reviewedAttachmentIds } from '../../types/structure';
 import type { AnatomyImageAsset } from '../../types/image';
 import { buildLocateQuestions } from '../questionGenerators/locate';
+import { CLINICAL_LIGAMENTS } from '../../data/clinicalLigaments';
 import { buildIdentifyTypedQuestions } from '../questionGenerators/identifyTyped';
 import { promptImagesFor } from '../questionGenerators/promptImages';
 import { rotationFramesFor, rotationTilt } from '../rotationFrames';
@@ -29,6 +30,16 @@ const KNEE_PAIR = [
 ];
 const ORDINARY = ['intertransverse-ligaments', 'palmar-trapezoideocapitate-ligament'];
 
+/**
+ * ONLY THE SCAPHOLUNATE IS STILL ASKED FROM A PICTURE (owner, 16 Oct 2026:
+ * the clinically important ligaments only, data/clinicalLigaments.ts). The
+ * others keep their plates, for the Atlas and flashcards, and their written
+ * questions.
+ */
+const ASKED = [...WRIST_FIVE, ...KNEE_PAIR, ...ORDINARY].filter((id) => CLINICAL_LIGAMENTS.has(id));
+const NOT_ASKED = [...WRIST_FIVE, ...KNEE_PAIR, ...ORDINARY].filter((id) => !CLINICAL_LIGAMENTS.has(id));
+const WRIST_ASKED = WRIST_FIVE.filter((id) => CLINICAL_LIGAMENTS.has(id));
+
 const byId = new Map(ALL_STRUCTURES.map((s) => [s.id, s]));
 const locate = buildLocateQuestions(ALL_STRUCTURES, ALL_IMAGES);
 const locateFor = (id: string) => locate.filter((q) => q.structureId === id);
@@ -37,7 +48,16 @@ const platesOf = (id: string, kind: 'context' | 'highlight') =>
 const withVariant = ALL_IMAGES.filter((i): i is AnatomyImageAsset & { variant: NonNullable<AnatomyImageAsset['variant']> } => !!i.variant);
 
 describe('the buried ligaments are seeded, each asked once', () => {
-  it.each([...WRIST_FIVE, ...KNEE_PAIR, ...ORDINARY])('%s is a ligament with reviewed attachments and one locate question', (id) => {
+  it('asks the scapholunate from a picture and the other eight from none', () => {
+    expect(ASKED).toEqual(['scapholunate-interosseous-ligament']);
+    for (const id of NOT_ASKED) {
+      expect(locateFor(id), id).toEqual([]);
+      expect(promptImagesFor(byId.get(id)!, ALL_IMAGES), id).toEqual([]);
+      expect(byId.get(id)?.eligibility.mcq, id).toBe(true);
+    }
+  });
+
+  it.each(ASKED)('%s is a ligament with reviewed attachments and one locate question', (id) => {
     const s = byId.get(id);
     expect(s && isLigament(s)).toBe(true);
     if (!s || !isLigament(s)) return;
@@ -49,7 +69,7 @@ describe('the buried ligaments are seeded, each asked once', () => {
 
   it('asks the name and both attachments in the typed identify question', () => {
     const typed = buildIdentifyTypedQuestions(ALL_STRUCTURES, ALL_IMAGES);
-    for (const id of [...WRIST_FIVE, ...KNEE_PAIR, 'palmar-trapezoideocapitate-ligament']) {
+    for (const id of ASKED) {
       const mine = typed.filter((q) => q.structureId === id);
       expect(mine, id).toHaveLength(1);
       expect(mine[0].attachmentSlots, id).toHaveLength(2);
@@ -60,7 +80,7 @@ describe('the buried ligaments are seeded, each asked once', () => {
 
 describe('the interosseous ligaments of the wrist', () => {
   it('are located on the carpal gap plate and nowhere else', () => {
-    for (const id of WRIST_FIVE) {
+    for (const id of WRIST_ASKED) {
       const [q] = locateFor(id);
       expect(q.imageId, id).toMatch(/^gap-carpal-gaps-a\d{3}-plate$/);
       for (const frame of q.frameImageIds ?? []) expect(frame, id).toMatch(/^gap-carpal-gaps-/);
@@ -72,7 +92,7 @@ describe('the interosseous ligaments of the wrist', () => {
   });
 
   it('are identified on their own ghosted plate, with solid bones a switch away on every frame', () => {
-    for (const id of WRIST_FIVE) {
+    for (const id of WRIST_ASKED) {
       const highlights = platesOf(id, 'highlight');
       expect(highlights.length, id).toBeGreaterThanOrEqual(4);
       const [opener] = promptImagesFor(byId.get(id)!, ALL_IMAGES);
@@ -115,7 +135,7 @@ describe('the interosseous ligaments of the wrist', () => {
     // silhouettes overlapping; those views are not published at all.
     const angles = ALL_IMAGES.filter((i) => i.id.startsWith('gap-carpal-gaps-')).map((i) => Number(/-a(\d{3})-/.exec(i.id)![1])).sort((a, b) => a - b);
     expect(angles).toEqual([0, 30, 150, 180, 210, 330]);
-    for (const id of WRIST_FIVE) {
+    for (const id of WRIST_ASKED) {
       const [q] = locateFor(id);
       expect(q.frameImageIds?.length ?? 1, id).toBeGreaterThanOrEqual(5);
     }
@@ -164,8 +184,9 @@ describe('the meniscotibial pair', () => {
         expect(image.variant?.kind, image.id).toBe('hidden');
         expect(image.variant?.subject, image.id).toBe('Femur');
       }
-      const [q] = locateFor(id);
-      expect(q.imageId).toMatch(new RegExp(`^ligament-${id}-a\\d{3}u\\d{3}-context$`));
+      // Not asked from a picture any more (data/clinicalLigaments.ts); the
+      // plates stay for the Atlas, femur switch and all.
+      expect(locateFor(id), id).toEqual([]);
     }
   });
 });

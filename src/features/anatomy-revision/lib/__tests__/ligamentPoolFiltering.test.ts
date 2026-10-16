@@ -70,7 +70,8 @@ describe('a ligaments-only session', () => {
     // guard at all. The guard is what matters: the next ligament added
     // unreviewed must still be asked by picture and name only.
     const target = ALL_STRUCTURES.filter(isLigament).find(
-      (l) => l.attachmentStructureIds.length > 0 && l.eligibility.mcq && l.imageIds.length > 0,
+      // Asked from a picture: only the clinically important ligaments are.
+      (l) => l.attachmentStructureIds.length > 0 && l.eligibility.mcq && l.eligibility.picture !== false && l.imageIds.length > 0,
     )!;
     const structures = ALL_STRUCTURES.map((s) => (s.id === target.id ? { ...s, needsReview: true } : s));
     const questions = generateRevisionSet(structures, ALL_IMAGES, {

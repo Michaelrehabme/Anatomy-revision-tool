@@ -76,8 +76,10 @@ describe('a clue question has one right answer', () => {
     const hip = ALL_STRUCTURES.filter((s) => areasOf(s).includes('hip'));
     const questions = buildMcqQuestions(hip, ALL_IMAGES, buildIndexes(hip), createRng(1), { promptKinds: ['identify'] });
     expect(questions.some((q) => q.prompt === 'Name the structure: attaches to: pubis')).toBe(false);
-    // Still asked, from its pictures.
-    expect(questions.some((q) => q.id.startsWith('mcq-inferior-pubic-ligament-identify-image-'))).toBe(true);
+    // Not asked from its pictures either, since 16 Oct 2026: it is not one of
+    // the clinically important ligaments (data/clinicalLigaments.ts). Its
+    // written attachment questions and flashcards still teach it.
+    expect(questions.some((q) => q.id.startsWith('mcq-inferior-pubic-ligament-identify-image-'))).toBe(false);
   });
 
   it('describes where a ligament runs rather than listing its bones', () => {
