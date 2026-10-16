@@ -14,6 +14,7 @@ import { AccuracyTrendChart } from '../shared/AccuracyTrendChart';
 import { AccuracyFilters } from '../shared/AccuracyFilters';
 import { MyClasses } from './MyClasses';
 import { AdminSection } from './AdminSection';
+import { WeeklyReminderSetting } from '../../../reminders/WeeklyReminderSetting';
 import { useAuth, AUTH_ENABLED } from '../../context/AuthProvider';
 import { useProgressData } from '../../hooks/useProgressData';
 import { CATEGORIES, CATEGORY_LABELS } from '../../types/structure';
@@ -204,6 +205,11 @@ export function Account({ access, content, repository, userId, onNavigate }: Acc
           <section data-in className="mt-12" style={{ maxWidth: 620 }}>
             <h3 style={heading}>Subscription</h3>
             <SubscriptionSummary access={access} />
+
+            <h3 className="mt-10" style={heading}>Reminders</h3>
+            <div className="mt-3">
+              <WeeklyReminderSetting uid={user.uid} email={user.email} />
+            </div>
 
             <h3 className="mt-10" style={heading}>Classes</h3>
             <CohortMembership uid={user.uid} sitting={{ areas: access.areas, missing: content.facts.missing }} />

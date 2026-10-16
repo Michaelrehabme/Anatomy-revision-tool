@@ -29,6 +29,12 @@
 [functions."renewal-reminders"]
   schedule = "0 9 * * *"
 
+# The weekly study reminder, for students who ticked the box on their Account
+# screen: Monday at 07:00 UTC (8am in the UK in summer, 7am in winter).
+# src/features/reminders/studyReminder.ts.
+[functions."study-reminders"]
+  schedule = "0 7 * * 1"
+
 # SPA fallback. dist/_redirects (from public/) says the same thing; this is
 # here so the rule survives a build that loses the public/ copy.
 [[redirects]]

@@ -75,7 +75,7 @@ export function PrivacyPage() {
   }, []);
 
   return (
-    <LegalLayout title="Privacy policy" updated="12 October 2026">
+    <LegalLayout title="Privacy policy" updated="16 October 2026">
       <p className="mt-4" style={legalProse}>
         LocusMSK is an anatomy revision app for musculoskeletal students. This policy explains what it collects, why,
         how long it keeps it, and what you can do about it.
@@ -125,6 +125,12 @@ export function PrivacyPage() {
           description of itself. These go to the same database as everything else: no outside analytics service is
           used and no cookie is set. They are included when you download your data and deleted when you delete your
           account.
+        </p>
+        <p>
+          <strong style={{ color: 'var(--ink)' }}>A weekly reminder, if you ask for one.</strong> If you tick the
+          box on your Account screen, we email you on Monday mornings when something is due for review, and record
+          when you turned it on or off. Every email has a link that stops them at once. It is sent through Resend, an
+          email service, which receives your address and the email for that purpose only.
         </p>
         <p>
           <strong style={{ color: 'var(--ink)' }}>Technical data.</strong> Standard information your browser or device
@@ -248,8 +254,9 @@ export function PrivacyPage() {
         <p>
           <strong style={{ color: 'var(--ink)' }}>Google Firebase</strong> (Google Ireland Limited) provides
           authentication and the database, and sends the email that confirms your address.{' '}
-          <strong style={{ color: 'var(--ink)' }}>Netlify</strong> hosts the site. Both
-          act as processors on documented terms and use your data only to provide those services. Data may be
+          <strong style={{ color: 'var(--ink)' }}>Netlify</strong> hosts the site.{' '}
+          <strong style={{ color: 'var(--ink)' }}>Resend</strong> sends the weekly reminder to those who ask for it,
+          and subscription renewal notices. All three act as processors on documented terms and use your data only to provide those services. Data may be
           transferred outside the UK under the safeguards those providers operate.
         </p>
         <p>Your data is not sold, and there is no advertising in this app and no advertising SDK in it.</p>

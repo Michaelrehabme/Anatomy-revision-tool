@@ -28,7 +28,7 @@ const source = (path: string) => readFileSync(path, 'utf8');
 describe('PrivacyPage', () => {
   it('carries the date it was last revised', () => {
     renderPage();
-    expect(screen.getByText('Last updated 12 October 2026')).toBeTruthy();
+    expect(screen.getByText('Last updated 16 October 2026')).toBeTruthy();
   });
 
   it('has a section on the test, where the cards link to', () => {

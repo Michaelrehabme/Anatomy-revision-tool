@@ -11,6 +11,7 @@ import { AccuracyTrendChart } from '../shared/AccuracyTrendChart';
 import { AccuracyFilters } from '../shared/AccuracyFilters';
 import { MyClasses } from '../Account/MyClasses';
 import { AdminSection } from '../Account/AdminSection';
+import { WeeklyReminderSetting } from '../../../reminders/WeeklyReminderSetting';
 import { AuthScreen } from '../Auth/AuthScreen';
 import { GuestAccountPanel } from '../Auth/GuestAccountPanel';
 import { useAuth, AUTH_ENABLED } from '../../context/AuthProvider';
@@ -189,6 +190,13 @@ export function MobileAccount({ access, content, repository, userId, onNavigateT
               Subscription
             </h3>
             <SubscriptionSummary access={access} />
+
+            <h3 className="mt-9" style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 20, letterSpacing: '-.01em', margin: 0 }}>
+              Reminders
+            </h3>
+            <div className="mt-3">
+              <WeeklyReminderSetting uid={user.uid} email={user.email} />
+            </div>
 
             <h3 className="mt-9" style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 20, letterSpacing: '-.01em', margin: 0 }}>
               Classes
