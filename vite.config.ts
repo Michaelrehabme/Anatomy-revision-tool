@@ -175,6 +175,13 @@ const pwa = (disable: boolean) =>
       // in globPatterns is what admits the pictures; this only has to stop
       // ignoring that one folder.
       globIgnores: ['**/anatomy/!(panels)/**'],
+      // Workbox's default ceiling is 2 MiB, and a file over it is left out of
+      // the precache, which fails the build. The entry chunk reached 2.10 MB on
+      // 16 Oct 2026 with the connective-tissue plates. It downloads on every
+      // first visit either way, so precaching it costs nothing; leaving it out
+      // would break offline. 3 MiB keeps the build failing as an alarm if the
+      // entry chunk keeps growing: hotspot polygons belong in their own chunks.
+      maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
       navigateFallback: '/index.html',
       // The legal pages must stay reachable, but they are inside the SPA, so
       // the fallback covers them. Firestore and Google endpoints are excluded
