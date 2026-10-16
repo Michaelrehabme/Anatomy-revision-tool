@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { AREAS, type Area } from '../../../anatomy-revision/types/region';
 import { DownloadCancelled, DownloadIncomplete, NotEnoughSpace } from '../downloadArea';
 import type { AreaManifest, OfflineIndex } from '../manifest';
-import { offlineCacheName } from '../offlineCache';
+import { OFFLINE_FILES_CACHE, offlineCacheName, readRecord, writeRecord } from '../offlineCache';
 import { FACTS_PENDING, FactsRefused, OfflineController, describeFailure, type ControllerDeps } from '../offlineController';
 import { downloadPromise } from '../areaFactsPrefetch';
 import type { OfflineSource } from '../offlineSource';
@@ -98,7 +98,7 @@ describe('OfflineController', () => {
     expect(seen).toContain('downloading');
     expect(controller.getSnapshot().areas.elbow).toMatchObject({ status: 'downloaded', doneBytes: 8, error: null });
     expect(controller.getSnapshot().usedBytes).toBe(8);
-    expect(fake.pictures(offlineCacheName('elbow'))).toHaveLength(2);
+    expect(fake.pictures(OFFLINE_FILES_CACHE)).toHaveLength(2);
 
     // A deploy redraws something.
     server.hash = '2222222222222222';
@@ -114,6 +114,7 @@ describe('OfflineController', () => {
     expect(controller.getSnapshot().areas.elbow.status).toBe('not-downloaded');
     expect(controller.getSnapshot().usedBytes).toBe(0);
     expect(fake.caches.has(offlineCacheName('elbow'))).toBe(false);
+    expect(fake.pictures(OFFLINE_FILES_CACHE)).toEqual([]);
   });
 
   it('finds an earlier download again in a new session, and calls it downloaded while offline', async () => {
@@ -236,5 +237,75 @@ describe('a download fetches the area\u2019s facts first', () => {
     expect(downloadPromise(true)).toContain('and its facts');
     expect(downloadPromise(true)).toContain('14 days without a connection');
     expect(describeFailure(new FactsRefused())).toContain('not open on your account');
+  });
+});
+
+describe('one picture cache shared by every area', () => {
+  it('stores a file two areas list once, counts it once, and keeps it until neither does', async () => {
+    const { controller, fake } = setup();
+    await controller.start();
+    await controller.refreshIndex();
+    await controller.download('cervical-spine');
+    await controller.download('lumbar-spine');
+
+    expect(fake.pictures(OFFLINE_FILES_CACHE)).toHaveLength(2);
+    expect(controller.getSnapshot().usedBytes).toBe(8);
+
+    await controller.remove('cervical-spine');
+    expect(fake.pictures(OFFLINE_FILES_CACHE)).toHaveLength(2);
+    expect(controller.getSnapshot().areas['lumbar-spine'].status).toBe('downloaded');
+    expect(controller.getSnapshot().usedBytes).toBe(8);
+
+    await controller.remove('lumbar-spine');
+    expect(fake.pictures(OFFLINE_FILES_CACHE)).toEqual([]);
+  });
+
+  it('moves pictures an older version stored per area into the shared cache, with no download', async () => {
+    const { controller, fake, storage } = setup();
+    // What the previous release left: the pictures inside the area's own cache, beside its record.
+    const legacy = await storage.open(offlineCacheName('knee'));
+    for (const f of FILES) await legacy.put(f.url, new Response(f.body, { headers: { 'Content-Length': '4' } }));
+    await writeRecord(storage, {
+      version: 1,
+      area: 'knee',
+      files: Object.fromEntries(FILES.map((f) => [f.url, f.hash])),
+      bytes: 8,
+      manifestHash: '1111111111111111',
+      completedAt: '2026-10-02T09:00:00.000Z',
+    });
+
+    await controller.start();
+    await controller.refreshIndex();
+
+    expect(fake.pictures(OFFLINE_FILES_CACHE)).toEqual(FILES.map((f) => f.url));
+    expect(fake.pictures(offlineCacheName('knee'))).toEqual([]);
+    expect(controller.getSnapshot().areas.knee.status).toBe('downloaded');
+  });
+
+  it('marks the loser incomplete when two old areas held different versions of one file', async () => {
+    const { controller, fake, storage } = setup();
+    for (const [area, body, hash] of [
+      ['elbow', 'aaaa', FILES[0].hash],
+      ['knee', 'AAAA', 'ffffffffffffffff'],
+    ] as const) {
+      const legacy = await storage.open(offlineCacheName(area));
+      await legacy.put(FILES[0].url, new Response(body, { headers: { 'Content-Length': '4' } }));
+      await writeRecord(storage, {
+        version: 1,
+        area,
+        files: { [FILES[0].url]: hash },
+        bytes: 4,
+        manifestHash: '1111111111111111',
+        completedAt: '2026-10-02T09:00:00.000Z',
+      });
+    }
+
+    await controller.start();
+
+    const shared = await storage.open(OFFLINE_FILES_CACHE);
+    expect(await (await shared.match(FILES[0].url))!.text()).toBe('aaaa');
+    expect(fake.pictures(offlineCacheName('knee'))).toEqual([]);
+    expect(await readRecord(storage, 'knee')).toMatchObject({ files: {}, bytes: 0, manifestHash: null });
+    expect(await readRecord(storage, 'elbow')).toMatchObject({ files: { [FILES[0].url]: FILES[0].hash } });
   });
 });

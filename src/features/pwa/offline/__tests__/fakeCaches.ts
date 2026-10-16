@@ -17,6 +17,11 @@ class FakeCache {
   async delete(request: RequestInfo | URL): Promise<boolean> {
     return this.entries.delete(keyOf(request));
   }
+
+  /** Request-shaped: only `url` is ever read. */
+  async keys(): Promise<{ url: string }[]> {
+    return [...this.entries.keys()].map((url) => ({ url }));
+  }
 }
 
 /** A cache is keyed by path here: the tests never mix origins. */

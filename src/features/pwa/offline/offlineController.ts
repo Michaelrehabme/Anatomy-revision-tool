@@ -10,7 +10,16 @@ import {
 import { autoUpdateDecision } from './autoUpdate';
 import { prefetchFactsForDownload, type FactsPrefetch } from './areaFactsPrefetch';
 import { diffManifest, formatBytes, parseOfflineIndex, type OfflineIndex } from './manifest';
-import { offlineCacheName, readAllRecords, removeAreaCache, writeRecord, type AreaRecord } from './offlineCache';
+import {
+  heldBytes,
+  migrateLegacyAreaCaches,
+  OFFLINE_FILES_CACHE,
+  readAllRecords,
+  removeAreaCache,
+  sweepUnreferenced,
+  writeRecord,
+  type AreaRecord,
+} from './offlineCache';
 import { staticOfflineSource, type OfflineSource } from './offlineSource';
 
 /**
@@ -119,6 +128,8 @@ export class OfflineController {
   private listeners = new Set<() => void>();
   private snapshot: OfflineSnapshot;
   private started: Promise<void> | null = null;
+  /** A sweep in progress, which a starting download waits for (sweepIfIdle). */
+  private sweeping: Promise<void> | null = null;
 
   constructor(private readonly deps: ControllerDeps) {
     this.snapshot = this.build();
@@ -154,6 +165,10 @@ export class OfflineController {
       } catch {
         this.index = null;
       }
+      // Pictures an older version kept per area move to the shared cache, and
+      // anything a stopped download or a removal left behind goes.
+      await migrateLegacyAreaCaches(storage).catch(() => undefined);
+      await this.sweepIfIdle(storage);
       this.records = await readAllRecords(storage);
       await this.measureSpace();
       this.support = 'ready';
@@ -252,17 +267,20 @@ export class OfflineController {
   /** Deletes retired files from an area that is otherwise being left as it is. */
   private async prune(storage: CacheStorage, record: AreaRecord, urls: readonly string[]): Promise<void> {
     try {
-      const cache = await storage.open(offlineCacheName(record.area));
+      const cache = await storage.open(OFFLINE_FILES_CACHE);
       const files = { ...record.files };
+      const sizes = { ...record.sizes };
       let bytes = record.bytes;
       for (const url of urls) {
-        // The record does not keep sizes; the copy being deleted knows its own.
-        const held = await cache.match(url);
-        if (held) bytes -= (await held.arrayBuffer()).byteLength;
-        await cache.delete(url);
+        // An older record does not keep sizes; then the copy itself knows its own.
+        const size = sizes[url] ?? (await (await cache.match(url))?.arrayBuffer())?.byteLength ?? 0;
+        bytes -= size;
         delete files[url];
+        delete sizes[url];
       }
-      await writeRecord(storage, { ...record, files, bytes: Math.max(0, bytes) });
+      // Off the record only; the sweep deletes what no other area lists.
+      await writeRecord(storage, { ...record, files, ...(record.sizes ? { sizes } : {}), bytes: Math.max(0, bytes) });
+      await this.sweepIfIdle(storage);
       this.records = await readAllRecords(storage);
       this.emit();
     } catch {
@@ -305,6 +323,9 @@ export class OfflineController {
       const facts = await (this.deps.prefetchFacts ?? prefetchFactsForDownload)(area);
       if (facts === 'refused') throw new FactsRefused();
       factsPending = facts === 'unavailable';
+      // A sweep that began before this download must finish first, or it could
+      // delete a file this download stores before recording it.
+      await this.sweeping;
       await (this.deps.download ?? downloadArea)({
         area,
         source: this.deps.source,
@@ -330,6 +351,8 @@ export class OfflineController {
       this.active.delete(area);
       this.quiet.delete(area);
       this.progress.delete(area);
+      // An update may have retired files, and a cancelled one left some unrecorded.
+      await this.sweepIfIdle(storage);
       // The record on the device is the truth about what arrived, whichever
       // way the download ended.
       this.records = await readAllRecords(storage);
@@ -351,10 +374,26 @@ export class OfflineController {
     // would recreate the cache just after it was deleted.
     while (this.active.has(area)) await new Promise((resolve) => setTimeout(resolve, 20));
     await removeAreaCache(storage, area);
+    await this.sweepIfIdle(storage);
     this.errors.delete(area);
     this.records = await readAllRecords(storage);
     await this.measureSpace();
     this.emit();
+  }
+
+  /**
+   * Deletes the pictures no record lists, when no download is running
+   * (sweepUnreferenced says why only then). A download that starts meanwhile
+   * waits for it. Skipped while busy, the next idle moment does it instead.
+   */
+  private sweepIfIdle(storage: CacheStorage): Promise<void> {
+    if (this.active.size > 0) return Promise.resolve();
+    this.sweeping ??= sweepUnreferenced(storage)
+      .catch(() => undefined)
+      .finally(() => {
+        this.sweeping = null;
+      });
+    return this.sweeping;
   }
 
   private async measureSpace(): Promise<number | null> {
@@ -372,11 +411,14 @@ export class OfflineController {
 
   private build(): OfflineSnapshot {
     const areas = {} as Record<Area, AreaView>;
-    let usedBytes = 0;
+    // Files several areas share are stored once, so counted once.
+    let usedBytes = heldBytes(
+      AREAS.filter((area) => !this.active.has(area)).flatMap((area) => this.records[area] ?? []),
+    );
     for (const area of AREAS) {
       const record = this.records[area] ?? null;
       const downloading = this.active.has(area);
-      usedBytes += downloading ? (this.progress.get(area) ?? 0) : (record?.bytes ?? 0);
+      if (downloading) usedBytes += this.progress.get(area) ?? 0;
       areas[area] = {
         area,
         status: areaStatus({

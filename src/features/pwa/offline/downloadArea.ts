@@ -2,8 +2,9 @@ import { AREAS, type Area } from '../../anatomy-revision/types/region';
 import { diffManifest, type AreaManifest, type ManifestFile } from './manifest';
 import {
   emptyRecord,
-  offlineCacheName,
+  OFFLINE_FILES_CACHE,
   readRecord,
+  sha256Hex,
   writeRecord,
   type AreaRecord,
 } from './offlineCache';
@@ -91,11 +92,6 @@ const FLUSH_EVERY = 25;
 /** Room asked for beyond the files themselves — Cache Storage pads what it stores. */
 const SPACE_MARGIN = 1.1;
 
-export async function sha256Hex(data: ArrayBuffer): Promise<string> {
-  const digest = await crypto.subtle.digest('SHA-256', data);
-  return [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, '0')).join('');
-}
-
 function contentTypeFor(url: string): string {
   if (url.endsWith('.webp')) return 'image/webp';
   if (url.endsWith('.png')) return 'image/png';
@@ -106,30 +102,6 @@ function contentTypeFor(url: string): string {
 
 const isAbort = (error: unknown) => error instanceof DOMException && error.name === 'AbortError';
 const isQuota = (error: unknown) => error instanceof DOMException && error.name === 'QuotaExceededError';
-
-/**
- * Another downloaded area's verified copy of a file, if one has it. Sharing is
- * what makes the second and third spine areas a few megabytes of traffic
- * rather than forty each — the storage is still spent, the mobile data is not.
- */
-async function copyFromAnotherArea(
-  storage: CacheStorage,
-  area: Area,
-  file: ManifestFile,
-  others: readonly AreaRecord[],
-): Promise<ArrayBuffer | null> {
-  for (const other of others) {
-    if (other.area === area || other.files[file.url] !== file.hash) continue;
-    try {
-      const cache = await storage.open(offlineCacheName(other.area));
-      const held = await cache.match(file.url);
-      if (held) return await held.arrayBuffer();
-    } catch {
-      // That copy is unreadable; the network still has one.
-    }
-  }
-  return null;
-}
 
 /**
  * Downloads or updates an area and returns its record once it is complete.
@@ -164,25 +136,40 @@ export async function downloadArea(options: DownloadOptions): Promise<AreaRecord
   const previous = (await readRecord(storage, area)) ?? emptyRecord(area);
   const diff = diffManifest(manifest, previous.files);
 
-  // Asked before anything is deleted or fetched: a download refused for space
-  // must leave a working older copy exactly as it was.
-  const free = freeBytes ? await freeBytes().catch(() => null) : null;
-  if (free !== null && free < diff.fetchBytes * SPACE_MARGIN) throw new NotEnoughSpace(diff.fetchBytes, free);
+  // What another downloaded area already holds at the right hash is recorded
+  // without being fetched or stored again — the second and third spine areas
+  // cost a few megabytes, not forty each.
+  const others = (await Promise.all(AREAS.filter((a) => a !== area).map((a) => readRecord(storage, a)))).filter(
+    (r): r is AreaRecord => r !== null,
+  );
+  const sharedBytes = diff.toFetch
+    .filter((file) => others.some((other) => other.files[file.url] === file.hash))
+    .reduce((sum, file) => sum + file.bytes, 0);
 
-  const cache = await storage.open(offlineCacheName(area));
+  // Asked before anything is fetched: a download refused for space must leave
+  // a working older copy exactly as it was.
+  const neededBytes = diff.fetchBytes - sharedBytes;
+  const free = freeBytes ? await freeBytes().catch(() => null) : null;
+  if (free !== null && free < neededBytes * SPACE_MARGIN) throw new NotEnoughSpace(neededBytes, free);
+
+  const cache = await storage.open(OFFLINE_FILES_CACHE);
   const files: Record<string, string> = { ...previous.files };
+  const sizes: Record<string, number> = { ...previous.sizes };
+  // Only taken off the record. The picture itself may be another area's too,
+  // and is deleted by the controller's sweep once nothing lists it.
   for (const url of diff.toDelete) {
-    await cache.delete(url);
     delete files[url];
+    delete sizes[url];
   }
   // A stale copy is dropped from the record before its replacement is fetched,
   // so a download that stops here never claims a hash it no longer holds. The
   // old picture stays in the cache and goes on being served until it is
   // overwritten — an old plate is better than none in a tunnel.
   for (const file of diff.toFetch) delete files[file.url];
+  for (const file of manifest.files) if (files[file.url] !== undefined) sizes[file.url] = file.bytes;
 
   let doneBytes = diff.heldBytes;
-  const record = (): AreaRecord => ({ ...previous, files: { ...files }, bytes: doneBytes });
+  const record = (): AreaRecord => ({ ...previous, files: { ...files }, sizes: { ...sizes }, bytes: doneBytes });
   onProgress?.({ doneBytes, totalBytes: manifest.bytes });
 
   // The record is rewritten as the download goes; writes are chained so two
@@ -194,10 +181,6 @@ export async function downloadArea(options: DownloadOptions): Promise<AreaRecord
     return writing;
   };
 
-  const others = (await Promise.all(AREAS.filter((a) => a !== area).map((a) => readRecord(storage, a)))).filter(
-    (r): r is AreaRecord => r !== null,
-  );
-
   const queue = [...diff.toFetch];
   let failed = 0;
   let consecutiveFailures = 0;
@@ -205,10 +188,17 @@ export async function downloadArea(options: DownloadOptions): Promise<AreaRecord
   let outOfSpace = false;
   const stopped = () => signal?.aborted || outOfSpace || consecutiveFailures >= MAX_CONSECUTIVE_FAILURES;
 
-  const fetchVerified = async (file: ManifestFile): Promise<ArrayBuffer> => {
-    const copied = await copyFromAnotherArea(storage, area, file, others);
-    if (copied && (await digest(copied)).startsWith(file.hash)) return copied;
+  /** True when the shared cache already holds this exact file — another area's, or a stopped download's. */
+  const alreadyHeld = async (file: ManifestFile): Promise<boolean> => {
+    try {
+      const held = await cache.match(file.url);
+      return held !== undefined && (await digest(await held.arrayBuffer())).startsWith(file.hash);
+    } catch {
+      return false;
+    }
+  };
 
+  const fetchVerified = async (file: ManifestFile): Promise<ArrayBuffer> => {
     let lastError: unknown = new Error('not attempted');
     for (let attempt = 0; attempt <= retries; attempt++) {
       if (attempt > 0) await sleep(400 * 3 ** (attempt - 1));
@@ -230,17 +220,20 @@ export async function downloadArea(options: DownloadOptions): Promise<AreaRecord
       const file = queue.shift();
       if (!file) return;
       try {
-        const data = await fetchVerified(file);
-        await cache.put(
-          file.url,
-          // Built fresh rather than stored as fetched: the body has been read
-          // to hash it, and a response with no Date header can never be judged
-          // "expired" by anything that later looks at it.
-          new Response(data, {
-            headers: { 'Content-Type': contentTypeFor(file.url), 'Content-Length': String(data.byteLength) },
-          }),
-        );
+        if (!(await alreadyHeld(file))) {
+          const data = await fetchVerified(file);
+          await cache.put(
+            file.url,
+            // Built fresh rather than stored as fetched: the body has been read
+            // to hash it, and a response with no Date header can never be judged
+            // "expired" by anything that later looks at it.
+            new Response(data, {
+              headers: { 'Content-Type': contentTypeFor(file.url), 'Content-Length': String(data.byteLength) },
+            }),
+          );
+        }
         files[file.url] = file.hash;
+        sizes[file.url] = file.bytes;
         doneBytes += file.bytes;
         consecutiveFailures = 0;
         onProgress?.({ doneBytes, totalBytes: manifest.bytes });
