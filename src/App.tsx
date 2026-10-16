@@ -15,7 +15,7 @@ import { generateRevisionSet } from './features/anatomy-revision/lib/questionGen
 import { buildReviewQueue } from './features/anatomy-revision/lib/reviewQueue';
 import { getLearnCardAttempts, getPreferredAreas, setPreferredAreas } from './features/anatomy-revision/lib/preferences';
 import { useMastery } from './features/anatomy-revision/hooks/useMastery';
-import { computeStreak } from './features/anatomy-revision/lib/streak';
+import { STREAK_SESSION_LIMIT, streakWithFreezes } from './features/anatomy-revision/lib/streak';
 import type { Area } from './features/anatomy-revision/types/region';
 import type { QuestionType } from './features/anatomy-revision/types/question';
 import type { AnatomyRepository } from './features/anatomy-revision/data/repository';
@@ -321,8 +321,11 @@ function App() {
   useEffect(() => {
     if (!repository || !userId) return;
     let cancelled = false;
-    repository.listSessionSummaries(userId, 60).then((summaries) => {
-      if (!cancelled) setStreak(computeStreak(summaries));
+    Promise.all([
+      repository.listSessionSummaries(userId, STREAK_SESSION_LIMIT),
+      repository.getGamificationProfile(userId).then((p) => p.streakFreeze?.frozenDayKeys ?? [], () => [] as string[]),
+    ]).then(([summaries, frozen]) => {
+      if (!cancelled) setStreak(streakWithFreezes(summaries, frozen));
     });
     return () => {
       cancelled = true;

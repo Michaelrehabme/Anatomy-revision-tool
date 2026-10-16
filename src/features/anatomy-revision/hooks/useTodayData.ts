@@ -5,7 +5,7 @@ import type { FactMastery, StructureMastery, RevisionSessionSummary } from '../t
 import { spreadReviewItems, buildReviewQueue, type ReviewItem } from '../lib/reviewQueue';
 import { areasOf } from '../types/structure';
 import type { Area } from '../types/region';
-import { computeStreak } from '../lib/streak';
+import { STREAK_SESSION_LIMIT, streakWithFreezes } from '../lib/streak';
 import { sessionsPerDay } from '../lib/weekActivity';
 import { syncReviewReminder } from '../../native/nativeShell';
 
@@ -56,6 +56,7 @@ export function useTodayData(
   const [allMastery, setAllMastery] = useState<StructureMastery[]>([]);
   const [facts, setFacts] = useState<FactMastery[]>([]);
   const [summaries, setSummaries] = useState<RevisionSessionSummary[]>([]);
+  const [frozenDayKeys, setFrozenDayKeys] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -65,14 +66,16 @@ export function useTodayData(
     Promise.all([
       repository.listDueMastery(userId, now),
       repository.listMastery(userId),
-      repository.listSessionSummaries(userId, 30),
+      repository.listSessionSummaries(userId, STREAK_SESSION_LIMIT),
       repository.listFactMastery(userId),
-    ]).then(([dueMastery, mastery, sessions, factRows]) => {
+      repository.getGamificationProfile(userId).then((p) => p.streakFreeze?.frozenDayKeys ?? [], () => [] as string[]),
+    ]).then(([dueMastery, mastery, sessions, factRows, frozen]) => {
       if (cancelled) return;
       setDue(dueMastery);
       setAllMastery(mastery);
       setFacts(factRows);
       setSummaries(sessions);
+      setFrozenDayKeys(frozen);
       setLoading(false);
     });
     return () => {
@@ -93,7 +96,7 @@ export function useTodayData(
     void syncReviewReminder({ mastery: allMastery, facts, eligible });
   }, [loading, allMastery, facts, entitledKey, content.index]);
 
-  const streak = computeStreak(summaries);
+  const streak = streakWithFreezes(summaries, frozenDayKeys);
   // Clamped to what this account may reach, which is what makes every number
   // and list below entitled-only: due, weakest, coming up, and the seen
   // percentage. A free student's Today is about their region — offering a

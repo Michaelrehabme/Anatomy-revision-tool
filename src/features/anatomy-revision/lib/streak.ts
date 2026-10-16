@@ -63,3 +63,30 @@ export function computeStreak(summaries: RevisionSessionSummary[], now: Date = n
   const days = new Set(summaries.map((s) => toDayKey(s.startedAt)));
   return computeStreakFromDayKeys(days, now);
 }
+
+/**
+ * How many session summaries a screen reads to show the streak: the same 400
+ * the end of a session reads, and the number the Firestore repository fetches
+ * once per visit anyway, so asking for all of them costs nothing more.
+ *
+ * TODAY READ 30 AND PROGRESS 60, and the streak is counted in DAYS from a
+ * list capped in SESSIONS. A student doing three sessions a day could not see
+ * a streak past ten on Today, while the end of a session showed the true
+ * figure (owner's report, 16 October 2026).
+ */
+export const STREAK_SESSION_LIMIT = 400;
+
+/**
+ * The streak every screen shows: studied days plus the days a streak freeze
+ * covered. The end of a session counted freezes and every other screen did
+ * not, so a spent freeze showed "11-day streak" on Results and 1 on Today.
+ */
+export function streakWithFreezes(
+  summaries: RevisionSessionSummary[],
+  frozenDayKeys: readonly string[] = [],
+  now: Date = new Date(),
+): number {
+  const days = new Set(summaries.map((s) => toDayKey(s.startedAt)));
+  for (const key of frozenDayKeys) days.add(key);
+  return computeStreakFromDayKeys(days, now);
+}

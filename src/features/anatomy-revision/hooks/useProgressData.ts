@@ -9,7 +9,7 @@ import { CATEGORIES, type Category } from '../types/structure';
 import type { StructureIndexEntry } from '../types/structureIndex';
 import type { Region } from '../types/region';
 import { REGIONS } from '../types/region';
-import { computeStreak } from '../lib/streak';
+import { STREAK_SESSION_LIMIT, streakWithFreezes } from '../lib/streak';
 import { lastDays, localDayKey } from '../lib/weekActivity';
 
 const FORECAST_DAYS = 14;
@@ -66,12 +66,17 @@ export function useProgressData(repository: AnatomyRepository | null, userId: st
   useEffect(() => {
     if (!repository || !userId) return;
     let cancelled = false;
-    Promise.all([repository.listMastery(userId), repository.listSessionSummaries(userId, 60), repository.listFactMastery(userId)]).then(
-      ([m, summaries, facts]) => {
+    Promise.all([
+      repository.listMastery(userId),
+      repository.listSessionSummaries(userId, STREAK_SESSION_LIMIT),
+      repository.listFactMastery(userId),
+      repository.getGamificationProfile(userId).then((p) => p.streakFreeze?.frozenDayKeys ?? [], () => [] as string[]),
+    ]).then(
+      ([m, summaries, facts, frozen]) => {
         if (cancelled) return;
         setMastery(m);
         setFacts(facts);
-        setStreak(computeStreak(summaries));
+        setStreak(streakWithFreezes(summaries, frozen));
       },
     );
     return () => {
