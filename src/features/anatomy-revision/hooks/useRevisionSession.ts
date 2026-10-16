@@ -1,6 +1,6 @@
 import { trackStep } from '../../feedback/data/telemetry';
 import { useCallback, useReducer, useRef } from 'react';
-import type { RevisionQuestion } from '../types/question';
+import type { FlashcardQuestion, MCQQuestion, RevisionQuestion } from '../types/question';
 import type { Category, Difficulty } from '../types/structure';
 import { emptyCategoryBreakdown } from '../types/structure';
 import type { Area, Region, SubRegion } from '../types/region';
@@ -18,6 +18,7 @@ import { STRUCTURE_INDEX_BY_ID } from '../data/structureIndex';
 import { STRUCTURE_INDEX } from '../data/structureIndex';
 
 import { toDayKey, computeStreak } from '../lib/streak';
+import { RELEARN_AFTER_WRONG, isScoredQuestion, nextWrongInARow, relearnAllowed, withRelearn } from '../lib/relearn';
 import { reconcileStreakFreezes } from '../lib/streakFreeze';
 import { xpForAnswer, computeSessionXp } from '../lib/xp';
 import { levelForXp } from '../lib/levels';
@@ -121,6 +122,7 @@ type Action =
   | { type: 'START'; questions: RevisionQuestion[]; setupParams: RevisionSetupParams; sessionId: string }
   | { type: 'ANSWER'; record: AnswerRecord }
   | { type: 'NEXT' }
+  | { type: 'RELEARN'; atIndex: number; question: MCQQuestion; card: FlashcardQuestion }
   | { type: 'FINISH'; summary: RevisionSessionSummary }
   | { type: 'GAMIFICATION_RESULT'; result: GamificationResult }
   | { type: 'LEVEL'; structureId: string; from: MasteryLevel; to: MasteryLevel }
@@ -157,6 +159,10 @@ function reducer(state: SessionState, action: Action): SessionState {
       return { ...state, answers: [...state.answers, action.record] };
     case 'NEXT':
       return { ...state, currentIndex: state.currentIndex + 1 };
+    case 'RELEARN':
+      // The answer is saved after the student may already have moved on, so
+      // the card goes after whichever question is on screen now.
+      return { ...state, questions: withRelearn(state.questions, Math.max(action.atIndex, state.currentIndex), action.question, action.card) };
     case 'FINISH':
       return { ...state, phase: 'results', summary: action.summary, gamification: null };
     case 'GAMIFICATION_RESULT':
@@ -211,7 +217,7 @@ function buildSummary(state: SessionState, userId: string, partial = false): Rev
     // three-answer walk-away is 3/3 in history rather than 3/20.
     totalQuestions: partial
       ? state.answers.filter((a) => a.graded !== false).length
-      : state.questions.filter((q) => q.type !== 'flashcard').length,
+      : state.questions.filter(isScoredQuestion).length,
     correctCount: state.answers.filter((a) => a.graded !== false && a.correct).length,
     breakdownByCategory,
     breakdownByRegion,
@@ -378,7 +384,9 @@ export function useRevisionSession(repository: AnatomyRepository | null, userId:
   const submitAnswer = useCallback(
     async (partial: Omit<AnswerRecord, 'durationMs'>) => {
       const durationMs = Date.now() - questionStartedAt.current;
-      const record: AnswerRecord = { ...partial, durationMs };
+      // A question asked again after its relearn card is practice (lib/relearn.ts).
+      const reask = currentQuestion?.type === 'mcq' && currentQuestion.reask === true;
+      const record: AnswerRecord = { ...partial, durationMs, ...(reask ? { graded: false as const } : {}) };
       dispatch({ type: 'ANSWER', record });
       // An answer that is kept. The trial (features/trial) keeps none and counts its own steps.
       if (repository && userId) trackStep('first-answer');
@@ -449,6 +457,7 @@ export function useRevisionSession(repository: AnatomyRepository | null, userId:
           let nextMastery = existingMastery ?? undefined;
           let factsAfter = factsBefore;
 
+          let wrongInARow = 0;
           if (skill === 'identify') {
             nextMastery = updateMasteryAfterAttempt(existingMastery ?? undefined, {
               structureId: record.structureId,
@@ -467,6 +476,8 @@ export function useRevisionSession(repository: AnatomyRepository | null, userId:
                 credited.promptKind,
               ),
             });
+            wrongInARow = nextWrongInARow(existingMastery?.wrongInARow, record.correct);
+            nextMastery = { ...nextMastery, wrongInARow };
             await repository.upsertMastery(nextMastery);
           } else {
             const existingFact = factsBefore.find((f) => f.structureId === record.structureId && f.promptKind === skill);
@@ -485,9 +496,20 @@ export function useRevisionSession(repository: AnatomyRepository | null, userId:
                     : 'typed-hinted'
                 : 'select',
             });
+            wrongInARow = nextWrongInARow(existingFact?.wrongInARow, record.correct);
+            nextFact.wrongInARow = wrongInARow;
             await repository.upsertFactMastery(nextFact);
             factsAfter = [...factsBefore.filter((f) => f !== existingFact), nextFact];
             factRows.current = factsAfter;
+          }
+
+          if (
+            wrongInARow >= RELEARN_AFTER_WRONG &&
+            currentQuestion.type === 'mcq' &&
+            currentQuestion.relearnCard &&
+            relearnAllowed(state.setupParams)
+          ) {
+            dispatch({ type: 'RELEARN', atIndex: state.currentIndex, question: currentQuestion, card: currentQuestion.relearnCard });
           }
 
           // From the index: a level needs to know which KINDS of fact a
@@ -514,7 +536,7 @@ export function useRevisionSession(repository: AnatomyRepository | null, userId:
         }
       }
     },
-    [repository, userId, currentQuestion, state.sessionId, state.currentIndex],
+    [repository, userId, currentQuestion, state.sessionId, state.currentIndex, state.setupParams],
   );
 
   const next = useCallback(() => {
@@ -529,7 +551,12 @@ export function useRevisionSession(repository: AnatomyRepository | null, userId:
     if (repository && userId) {
       // Computed against pre-save history (see computeGamification's doc comment), so this must run before saveSessionSummary below.
       try {
-        const result = await computeGamification(repository, userId, state.answers, state.questions);
+        // The day is the day the session STARTED, which is the day its summary
+        // is filed under (startedAt). Judged at the finish instead, a session
+        // from 23:50 to 00:10 spent a freeze on the day it was studied and
+        // showed the streak one too high.
+        const sessionDay = summary.startedAt ? new Date(summary.startedAt) : new Date();
+        const result = await computeGamification(repository, userId, state.answers, state.questions, sessionDay);
         dispatch({ type: 'GAMIFICATION_RESULT', result });
       } catch (err) {
         console.error('Failed to compute gamification result:', err);

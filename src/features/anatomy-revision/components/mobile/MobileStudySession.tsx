@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
+import { RelearnNote } from '../shared/RelearnNote';
+import { isScoredQuestion } from '../../lib/relearn';
 import type { AnatomyContent } from '../../hooks/useAnatomyContent';
 import type { useRevisionSession } from '../../hooks/useRevisionSession';
 import {
@@ -83,18 +85,20 @@ export function MobileStudySession({ session, content, onEnd, onBackToSetup, onO
   }
 
   // Counts questions, not learn cards (CR-018) — see StudySession for why.
-  const gradedTotal = session.questions.filter((q) => q.type !== 'flashcard').length;
+  const gradedTotal = session.questions.filter(isScoredQuestion).length;
   const gradedSoFar = session.questions
     .slice(0, session.currentIndex + 1)
-    .filter((q) => q.type !== 'flashcard').length;
+    .filter(isScoredQuestion).length;
   const progressTotal = gradedTotal > 0 ? gradedTotal : session.questions.length;
   const progressCurrent = gradedTotal > 0 ? Math.max(1, gradedSoFar) : session.currentIndex + 1;
   const progressPct = Math.round((progressCurrent / progressTotal) * 100);
   // Learn cards get their own number rather than none — see SessionSidebar for
   // why the question counter must not move for them.
   const cardsTotal = session.questions.filter((q) => q.type === 'flashcard').length;
+  // A question asked again after its card is unscored too, but it is not a card.
+  const cardIds = new Set(session.questions.filter((q) => q.type === 'flashcard').map((q) => q.id));
   const cardsSeen = new Set(
-    session.answers.filter((a) => a.graded === false).map((a) => a.questionId),
+    session.answers.filter((a) => a.graded === false && cardIds.has(a.questionId)).map((a) => a.questionId),
   ).size;
 
   return (
@@ -159,6 +163,7 @@ export function MobileStudySession({ session, content, onEnd, onBackToSetup, onO
           onNext={advance}
         />
       )}
+      {isMcqQuestion(question) && question.reask && <RelearnNote />}
       {isMcqQuestion(question) && (
         <MobileMCQSession
           key={question.id}

@@ -65,6 +65,17 @@ export interface MCQQuestion extends RevisionQuestionBase {
   choices: string[];
   correctIndex: number;
   explanation: string;
+  /**
+   * The card that teaches this question's answer, carried so the session can
+   * show it again when the student has missed the skill three times running
+   * (lib/relearn.ts). Attached in practice sessions only, never in an exam.
+   */
+  relearnCard?: FlashcardQuestion;
+  /**
+   * Set on the copy of a question asked again after its card: practice, not
+   * scored, so it moves neither the score nor the review schedule.
+   */
+  reask?: boolean;
 }
 
 export interface LocateQuestion extends RevisionQuestionBase {

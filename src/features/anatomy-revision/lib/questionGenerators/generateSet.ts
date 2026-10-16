@@ -10,7 +10,7 @@ import { selectAdaptiveStructures, pickAdaptiveQuestionType } from '../adaptiveS
 import { buildWeightMap, structureWeight, UNSEEN_WEIGHT } from '../scheduling';
 import type { ReviewItem } from '../reviewQueue';
 import { LADDER_TYPES, hintsForRung, questionTypeForRung, rungFor } from '../ladder';
-import { buildFlashcardQuestions, buildFieldFlashcard } from './flashcards';
+import { buildFlashcardQuestions, buildFieldFlashcard, buildRelearnCard } from './flashcards';
 import { buildMcqQuestions } from './mcq';
 import { buildLocateQuestions } from './locate';
 import { buildFillBlankQuestions } from './fillBlank';
@@ -21,7 +21,7 @@ import { BLOOD_SUPPLY_SCORED } from '../../types/question';
 import { buildClinicalQuestions } from './clinical';
 import { buildOinaQuestions } from './oina';
 import { factDueAt, factIntervalDays, factMasteryKey, indexFactMastery, shouldPrecedeWithLearnCard, skillOf } from '../factMastery';
-import { isOinaQuestion } from '../../types/question';
+import { isMcqQuestion, isOinaQuestion } from '../../types/question';
 import type { StructureIndexEntry } from '../../types/structureIndex';
 import type { DistractorVocabulary } from '../../data/content/vocabulary';
 import { vocabularyWhenPartial, type DistractorSources } from './sources';
@@ -715,8 +715,25 @@ export function generateRevisionSet(
   // An exam tests rather than teaches, so it never gets a learn card (CR-018).
   if (config.mode === 'assessment') return stampRequestedArea(selected, indexes.byId, config.areas);
   return stampRequestedArea(
-    withLearnCards(selected, indexes, config.factMastery, config.learnCardAttempts),
+    withRelearnCards(withLearnCards(selected, indexes, config.factMastery, config.learnCardAttempts), indexes, images),
     indexes.byId,
     config.areas,
   );
+}
+
+/**
+ * Gives each MCQ the card the session shows if the student misses it a third
+ * time running (lib/relearn.ts). Built here, where the structures and pictures
+ * are, so the session can place it the moment the miss is recorded.
+ */
+function withRelearnCards(questions: RevisionQuestion[], indexes: StructureIndexes, images: AnatomyImageAsset[]): RevisionQuestion[] {
+  const ownImage = new Map<string, string>();
+  for (const image of images) {
+    if (image.mode === 'single-structure' && image.structureId && !ownImage.has(image.structureId)) ownImage.set(image.structureId, image.id);
+  }
+  return questions.map((question) => {
+    if (!isMcqQuestion(question)) return question;
+    const structure = indexes.byId.get(question.structureId);
+    return structure ? { ...question, relearnCard: buildRelearnCard(structure, question, ownImage.get(structure.id)) } : question;
+  });
 }

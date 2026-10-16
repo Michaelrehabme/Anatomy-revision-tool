@@ -75,6 +75,13 @@ export interface FactMastery {
   streak: number;
   /** Consecutive wrong answers — the demotion trigger. */
   missStreak: number;
+  /**
+   * Graded answers wrong in a row on this skill, whatever the stage. Unlike
+   * the miss streaks it is never reset by a demotion or a change of stage,
+   * only by a right answer: it is what lib/relearn.ts reads to put a missed
+   * question's card and the question itself back into the session.
+   */
+  wrongInARow?: number;
   /** Whether the last attempt was correct; drives the learn-card rule. */
   lastCorrect: boolean;
   lastAttemptAt: string;
@@ -132,6 +139,13 @@ export interface StructureMastery {
   rungStreak?: number;
   /** Consecutive misses on the current rung — the demotion trigger. */
   rungMissStreak?: number;
+  /**
+   * Graded answers wrong in a row on this skill, whatever the stage. Unlike
+   * the miss streaks it is never reset by a demotion or a change of stage,
+   * only by a right answer: it is what lib/relearn.ts reads to put a missed
+   * question's card and the question itself back into the session.
+   */
+  wrongInARow?: number;
   /**
    * Accuracy weighted towards recent graded answers (EWMA, lib/mastery.ts),
    * 0-1. The ladder's promotion gate reads this rather than the all-time

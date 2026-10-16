@@ -179,3 +179,34 @@ export function buildFieldFlashcard(
     back: { text: fieldBackText(structure, promptKind) },
   };
 }
+
+/**
+ * The card shown after a student has missed the same skill three times
+ * running (lib/relearn.ts), built for the MCQ they keep missing.
+ *
+ * A muscle fact gets the same card a learn card would. Anything else gets the
+ * question with its answer and the explanation the MCQ already carries, plus
+ * the structure's own picture where one shows it alone: a region plate cannot
+ * go on a card, because a card draws no highlight and the plate shows a dozen
+ * structures.
+ */
+export function buildRelearnCard(
+  structure: AnatomyStructure,
+  question: { id: string; promptKind: PromptKind; prompt: string; choices: string[]; correctIndex: number; explanation: string },
+  ownImageId?: string,
+): FlashcardQuestion {
+  const field = (MUSCLE_FIELD_KINDS as PromptKind[]).includes(question.promptKind)
+    ? buildFieldFlashcard(structure, question.promptKind as OinaPromptKind)
+    : null;
+  if (field) return { ...field, id: `relearn-${question.id}` };
+  const answer = question.choices[question.correctIndex];
+  return {
+    ...baseFields(structure, question.promptKind),
+    id: `relearn-${question.id}`,
+    front: { text: question.prompt },
+    back: {
+      text: [answer, question.explanation].filter((line) => line && line !== answer).join('\n\n') || answer,
+      imageId: ownImageId,
+    },
+  };
+}

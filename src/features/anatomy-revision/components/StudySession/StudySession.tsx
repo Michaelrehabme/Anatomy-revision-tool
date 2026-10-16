@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
+import { RelearnNote } from '../shared/RelearnNote';
+import { isScoredQuestion } from '../../lib/relearn';
 import type { AnatomyContent } from '../../hooks/useAnatomyContent';
 import type { useRevisionSession } from '../../hooks/useRevisionSession';
 import {
@@ -79,10 +81,10 @@ export function StudySession({ session, content, onEnd, onBackToSetup }: StudySe
   // ...and the counter tracks questions, not cards, so it matches both the
   // length promised at setup and the score on the results screen. Falls back
   // to a raw count for a flashcard-only session, which has no graded questions.
-  const gradedTotal = session.questions.filter((q) => q.type !== 'flashcard').length;
+  const gradedTotal = session.questions.filter(isScoredQuestion).length;
   const gradedSoFar = session.questions
     .slice(0, session.currentIndex + 1)
-    .filter((q) => q.type !== 'flashcard').length;
+    .filter(isScoredQuestion).length;
   const progressTotal = gradedTotal > 0 ? gradedTotal : session.questions.length;
   const progressCurrent = gradedTotal > 0 ? Math.max(1, gradedSoFar) : session.currentIndex + 1;
 
@@ -90,8 +92,10 @@ export function StudySession({ session, content, onEnd, onBackToSetup }: StudySe
   // the question number can stand still while the session moves on. Counted by
   // distinct question id, so a double-submitted reveal cannot inflate it.
   const cardsTotal = session.questions.filter((q) => q.type === 'flashcard').length;
+  // A question asked again after its card is unscored too, but it is not a card.
+  const cardIds = new Set(session.questions.filter((q) => q.type === 'flashcard').map((q) => q.id));
   const cardsSeen = new Set(
-    session.answers.filter((a) => a.graded === false).map((a) => a.questionId),
+    session.answers.filter((a) => a.graded === false && cardIds.has(a.questionId)).map((a) => a.questionId),
   ).size;
 
   if (!question) {
@@ -185,6 +189,7 @@ export function StudySession({ session, content, onEnd, onBackToSetup }: StudySe
             onNext={advance}
           />
         )}
+        {isMcqQuestion(question) && question.reask && <RelearnNote />}
         {isMcqQuestion(question) && (
           <MCQSession
             key={question.id}
