@@ -4,6 +4,7 @@ import { AuthScreen } from '../Auth/AuthScreen';
 import { useRepository } from '../../hooks/useRepository';
 import { levelProgress } from '../../lib/levels';
 import { EASE } from '../shared/motion';
+import { AdminShortcut } from '../shared/AdminShortcut';
 
 export type NavSection = 'today' | 'study' | 'atlas' | 'progress' | 'account';
 
@@ -187,6 +188,7 @@ export function NavSidebar({ active, onNavigate, footer, hideAccount = false }: 
           );
         })}
       </nav>
+      <AdminShortcut variant="sidebar" />
       <div className="flex-1" />
       <LevelProgress />
       {footer}
