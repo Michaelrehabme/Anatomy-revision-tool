@@ -120,7 +120,7 @@ export function describeFact(s: AnatomyStructure, promptKind: OinaPromptKind): s
  * running between the tibia and the femur." It says less than the attachment
  * list does, and two ligaments can share one word for word.
  */
-const PLACEHOLDER_DESCRIPTION = /^Ligament of the [^,.]+(?:, running between .+)?\.$/;
+export const PLACEHOLDER_DESCRIPTION = /^Ligament of the [^,.]+(?:, running between .+)?\.$/;
 
 /** Lower case, no punctuation, and none of the small words a name may or may not carry. */
 const plain = (text: string) =>
@@ -224,9 +224,10 @@ export function clueAlsoFits(correct: AnatomyStructure, other: AnatomyStructure)
 /**
  * Words that say what a structure DOES, bolded wherever they appear on a card:
  * the movements and the jobs a ligament does.
+ * ("rotator" is a name — the rotator cuff — not a movement.)
  */
 const FUNCTION_WORD =
-  /\b(?:abduct\w*|adduct\w*|flex\w*|extend\w*|extension|rotat\w*|elevat\w*|depress\w*|protract\w*|retract\w*|stabili[sz]\w*|invert\w*|evert\w*|inversion|eversion|pronat\w*|supinat\w*|plantarflex\w*|dorsiflex\w*|resist\w*|prevent\w*|limit\w*|restrain\w*|reinforc\w*)\b/gi;
+  /\b(?:abduct\w*|adduct\w*|flex\w*|extend\w*|extension|rotat(?!or)\w*|elevat\w*|depress\w*|protract\w*|retract\w*|stabili[sz]\w*|invert\w*|evert\w*|inversion|eversion|pronat\w*|supinat\w*|plantarflex\w*|dorsiflex\w*|resist\w*|prevent\w*|limit\w*|restrain\w*|reinforc\w*)\b/gi;
 
 const escapeRegExp = (text: string) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { ALL_STRUCTURES } from '../../data/seed';
-import { atlasRow, firstSentence } from '../atlasFacts';
+import { atlasCardSections, atlasRow, firstSentence, muscleCardFacts } from '../atlasFacts';
 import { isJoint, isLigament, isMuscle } from '../../types/structure';
 
 const byId = new Map(ALL_STRUCTURES.map((s) => [s.id, s]));
@@ -69,5 +69,40 @@ describe('firstSentence', () => {
     expect(firstSentence('The femur is the thigh bone. It is the longest bone.')).toBe('The femur is the thigh bone.');
     expect(firstSentence('No punctuation at all')).toBe('No punctuation at all');
     expect(firstSentence('Attaches at L4-L5. Then more.')).toBe('Attaches at L4-L5.');
+  });
+});
+
+describe('atlasCardSections', () => {
+  const sections = (id: string) => atlasCardSections(byId.get(id)!, byId);
+  const section = (id: string, label: string) => sections(id).find((s) => s.label === label)?.items ?? [];
+
+  it("states a ligament's attachments, with the part of the bone where it is sourced", () => {
+    expect(section('anterior-talofibular-ligament', 'Attaches to')).toEqual([
+      '**Talus** — in front of its lateral (fibular) facet',
+      '**Lateral Malleolus of the fibula** — anterior margin of the lateral malleolus',
+    ]);
+  });
+
+  it("prints a muscle's four facts in the card's own words, which the diagnostic papers mark", () => {
+    const m = byId.get('deltoid')!;
+    if (!isMuscle(m)) throw new Error('deltoid is a muscle');
+    const card = muscleCardFacts(m);
+    expect(section('deltoid', 'Origin(s)')).toEqual([`**${card.origin}**`]);
+    expect(section('deltoid', 'Insertion(s)')).toEqual([`**${card.insertion}**`]);
+    expect(section('deltoid', 'Nerve supply')).toEqual([`**${card.nerve}**`]);
+    expect(section('deltoid', 'Action(s)')[0].replace(/\*\*/g, '')).toBe(card.action);
+  });
+
+  it('gives every structure facts beyond its name', () => {
+    const empty = ALL_STRUCTURES.filter((s) => atlasCardSections(s, byId).length === 0);
+    expect(empty.map((s) => s.id)).toEqual([]);
+  });
+
+  it("never prints the generator's placeholder as a ligament's description", () => {
+    for (const s of ALL_STRUCTURES.filter(isLigament)) {
+      for (const line of atlasCardSections(s, byId).find((x) => x.label === 'About')?.items ?? []) {
+        expect(line, s.id).not.toMatch(/^Ligament of the [^,.]+\.$/);
+      }
+    }
   });
 });

@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import { useFactMastery } from '../../hooks/useFactMastery';
-import { BloodSupplyFacts } from '../shared/BloodSupplyFacts';
 import type { AnatomyContent } from '../../hooks/useAnatomyContent';
 import { MasteryLevelBadge } from '../shared/MasteryLevelBadge';
 import { structureLevel } from '../../lib/masteryLevel';
@@ -8,11 +7,10 @@ import { SkillBreakdown } from '../shared/SkillBreakdown';
 import { getShowLatin } from '../../lib/preferences';
 import { structureTitle } from '../shared/PageTitle';
 import type { AnatomyRepository } from '../../data/repository';
-import { areasOf, isMuscle } from '../../types/structure';
-import { FUNCTIONAL_ROLE_LABEL, functionalRole, muscleCardFacts } from '../../lib/atlasFacts';
+import { areasOf } from '../../types/structure';
 import { REGION_LABELS } from '../../types/region';
 import { useMuscleHistory } from '../../hooks/useMuscleHistory';
-import { AttributionBadge } from '../shared/AttributionBadge';
+import { StructureCardFacts, StructurePicture, drillLabel } from '../shared/StructureCardBody';
 import { LockedStructureNotice } from '../shared/AreaLock';
 import { StructureFactsUnavailable } from '../shared/AreaFactsNotice';
 import type { UseEntitlement } from '../../hooks/useEntitlement';
@@ -28,11 +26,6 @@ interface MobileMuscleCardProps {
   /** What this account may reach — see MuscleCard.tsx. */
   access: UseEntitlement;
 }
-
-const FACT_ROWS = [
-  { key: 'origin', label: 'Origin' },
-  { key: 'insertion', label: 'Insertion' },
-] as const;
 
 /**
  * Screen 10 (mobile). Image above facts (desktop puts them side by side).
@@ -54,7 +47,6 @@ export function MobileMuscleCard({ access, structureId, content, repository, use
   // The heading from the index, the body from the facts in hand: see MuscleCard.tsx.
   const structure = content.indexById.get(structureId);
   const facts = content.structuresById.get(structureId);
-  const panelImage = content.images.find((img) => img.mode === 'single-structure' && img.structureId === structureId);
 
   if (!structure) {
     return (
@@ -64,10 +56,6 @@ export function MobileMuscleCard({ access, structureId, content, repository, use
     );
   }
 
-  // The words come from lib/atlasFacts: one wording for both cards, the Atlas
-  // table and the diagnostic papers.
-  const muscle = facts && isMuscle(facts) ? muscleCardFacts(facts) : null;
-  const role = facts ? functionalRole(facts) : null;
   // The whole card is gated, not just the drill at the foot of it: on a phone
   // the lock used to sit three screens below the facts it was locking. See
   // LockedStructureNotice.
@@ -112,68 +100,22 @@ export function MobileMuscleCard({ access, structureId, content, repository, use
         </div>
       ) : (
       <>
-      <div className="mt-4 overflow-hidden rounded-[3px]" style={{ background: 'var(--fig-off)', height: 230 }}>
-        {panelImage ? (
-          <img src={panelImage.filePath} alt={structure.name} className="h-full w-full object-contain" />
-        ) : (
-          <div className="flex h-full items-center justify-center" style={{ color: 'var(--ink3)' }}>
-            No image yet
-          </div>
-        )}
+      <div className="mt-4">
+        <StructurePicture structure={structure} images={content.images} compact />
       </div>
-      {panelImage && <AttributionBadge image={panelImage} />}
 
       {!facts && (
         <div className="mt-4">
           <StructureFactsUnavailable area={ownArea} facts={content.facts} />
         </div>
       )}
-      <div className="mt-2 flex flex-col">
-        {muscle &&
-          FACT_ROWS.map(({ key, label }) => (
-            <div key={key} className="py-3.5">
-              <div style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
-                {label}
-              </div>
-              <div className="mt-1.5 text-base leading-relaxed">{muscle[key]}</div>
-            </div>
-          ))}
-        {muscle && muscle.nerve && (
-          <div className="py-3.5">
-            <div style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
-              Innervation
-            </div>
-            <div className="mt-1.5 text-base leading-relaxed">{muscle.nerve}</div>
-          </div>
-        )}
-        {muscle && (
-          <div className="py-3.5">
-            <div style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
-              Action
-            </div>
-            <div className="mt-1.5 text-base leading-relaxed">{muscle.action}</div>
-          </div>
-        )}
-        {role && (
-          <div className="py-3.5">
-            <div style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
-              {FUNCTIONAL_ROLE_LABEL}
-            </div>
-            <div className="mt-1.5 text-base leading-relaxed">{role}</div>
-          </div>
-        )}
-        {facts && <BloodSupplyFacts structure={facts} compact />}
-        {facts?.clinical && (
-          <div className="py-3.5">
-            <div style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
-              Clinical note
-            </div>
-            <p className="mt-1.5 text-[15px] leading-relaxed" style={{ color: 'var(--ink2)' }}>
-              {facts.clinical}
-            </p>
-          </div>
-        )}
-      </div>
+      {/* The words come from lib/atlasFacts: one wording for both cards, the
+          Atlas table and the diagnostic papers. */}
+      {facts && (
+        <div className="mt-2">
+          <StructureCardFacts structure={facts} byId={content.indexById} compact />
+        </div>
+      )}
       </>
       )}
 
@@ -206,7 +148,7 @@ export function MobileMuscleCard({ access, structureId, content, repository, use
           className="mt-5 w-full rounded-[3px]"
           style={{ minHeight: 50, background: 'none', border: '1.3px solid var(--line)', color: 'var(--ink)', font: '500 15.5px/1 var(--font-ui)' }}
         >
-          Drill this muscle
+          {drillLabel(structure)}
         </button>
       )}
     </main>

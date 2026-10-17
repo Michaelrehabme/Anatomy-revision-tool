@@ -30,7 +30,8 @@ const deckSources = ALL_STRUCTURES.filter(isMuscle)
   .map((m) => m.source)
   .filter((s): s is NonNullable<typeof s> => Boolean(s?.deck));
 
-const { families, works, bloodSupply } = buildProvenance(root, totals, deckSources);
+const muscleIds = ALL_STRUCTURES.filter(isMuscle).map((m) => m.id);
+const { families, works, bloodSupply, byStructure } = buildProvenance(root, totals, deckSources, muscleIds);
 
 // JSON.stringify IS the escaping primitive here — a hand-rolled quote escape in a
 // generator that writes TypeScript is how a stray apostrophe becomes a syntax error.
@@ -137,6 +138,26 @@ ${bloodLines}
 
 const target = `${root}/src/features/legal/data/provenance.generated.ts`;
 writeFileSync(target, out.replace(/\n/g, '\r\n'));
+// The works behind each structure, for its Atlas card. Its own file, beside
+// the seed, so the card does not pull the /sources page in with it.
+const structureLines = Object.keys(byStructure)
+  .sort()
+  .map((id) => `  ${lit(id)}: [[${byStructure[id].facts.join(', ')}], [${byStructure[id].blood.join(', ')}]],`)
+  .join('\n');
+const structureOut = `/**
+ * GENERATED — do not edit by hand.
+ * Regenerate with: npx tsx src/scripts/generateProvenance.ts
+ *
+ * The works each structure's facts, then its blood supply, were checked
+ * against: indices into WORKS in features/legal/data/provenance.generated.ts.
+ * Read by the Atlas card's sources line.
+ */
+export const STRUCTURE_SOURCES: Readonly<Record<string, readonly [readonly number[], readonly number[]]>> = {
+${structureLines}
+};
+`;
+const structureTarget = `${root}/src/features/anatomy-revision/data/structureSources.generated.ts`;
+writeFileSync(structureTarget, structureOut.replace(/\n/g, '\r\n'));
 const checked = families.reduce((n, f) => n + f.checked, 0);
 const total = families.reduce((n, f) => n + f.total, 0);
 console.log(`Blood supply: ${bloodSupply.families.map((f) => `${f.category} ${f.reviewed}/${f.total}`).join(', ')}`);

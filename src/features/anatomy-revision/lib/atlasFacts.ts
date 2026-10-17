@@ -1,11 +1,15 @@
 import { siteLabel } from './attachmentSites';
+import { emphasise, PLACEHOLDER_DESCRIPTION } from './facts';
+import { LIGAMENT_ATTACHMENT_DETAIL } from '../data/ligamentAttachmentDetail';
 import {
   CATEGORIES,
   JOINT_TYPE_LABELS,
   isBone,
   isJoint,
   isLandmark,
+  isLigament,
   isMuscle,
+  reviewedAttachmentIds,
   type AnatomyStructure,
   type Category,
   type MuscleStructure,
@@ -175,3 +179,83 @@ export function functionalRole(s: AnatomyStructure): string | null {
 
 /** Kind filter values in picker order. */
 export const ATLAS_KINDS: (Category | 'all')[] = ['all', ...CATEGORIES];
+
+/**
+ * One block of a structure's card: a heading and its lines, each line in the
+ * card's rich text (**bold**, see components/shared/RichText).
+ */
+export interface CardSection {
+  label: string;
+  items: string[];
+}
+
+const bold = (text: string) => `**${text}**`;
+
+/**
+ * Everything the card states about a structure, whatever kind it is (owner,
+ * 17 Oct 2026: "full facts on every card"). Until then a ligament's card held
+ * a role, a blood supply and a clinical note, and its attachments and joint
+ * were only in the Atlas table, one click back.
+ *
+ * The facts are bold, as on the flashcards. A muscle's four are its card's
+ * words exactly (muscleCardFacts), because the diagnostic papers mark an
+ * answer right on the condition that it is what the card says. The blood
+ * supply is not here: BloodSupplyFacts draws it, with its rating.
+ *
+ * `byId` names the bones a ligament joins and the surfaces a joint has, which
+ * may be in areas whose facts are not on the device, so it takes the index.
+ */
+export function atlasCardSections(s: AnatomyStructure, byId: ReadonlyMap<string, StructureIndexEntry>): CardSection[] {
+  const sections: CardSection[] = [];
+  const add = (label: string, items: readonly string[]) => {
+    const shown = items.filter(Boolean);
+    if (shown.length) sections.push({ label, items: shown });
+  };
+
+  const siteNames = isLigament(s)
+    ? reviewedAttachmentIds(s).flatMap((id) => {
+        const site = byId.get(id);
+        return site ? [site.name.replace(' (grouped)', ''), ...site.aliases] : [];
+      })
+    : [];
+  // Many muscles' descriptions are their action, word for word: said once, under Action(s).
+  const repeatsAction = isMuscle(s) && s.description.trim() === s.actionText.trim();
+  if (s.description && !PLACEHOLDER_DESCRIPTION.test(s.description) && !repeatsAction) {
+    add('About', s.description.split(/(?<=[.!?])\s+(?=[A-Z])/).map((sentence) => emphasise(sentence.trim(), siteNames)));
+  }
+
+  if (isMuscle(s)) {
+    const card = muscleCardFacts(s);
+    add('Origin(s)', [bold(card.origin)]);
+    add('Insertion(s)', [bold(card.insertion)]);
+    add('Nerve supply', card.nerve ? [bold(card.nerve)] : []);
+    add('Action(s)', [emphasise(card.action)]);
+  } else if (isLigament(s)) {
+    // Unchecked attachments are not stated as fact (reviewedAttachmentIds).
+    const detail = LIGAMENT_ATTACHMENT_DETAIL[s.id] ?? {};
+    add(
+      'Attaches to',
+      s.needsReview
+        ? ['Being checked']
+        : reviewedAttachmentIds(s).map((id) => `${bold(siteOf(id, byId))}${detail[id] ? ` — ${detail[id]}` : ''}`),
+    );
+    add('Stabilises', s.jointId ? [bold(nameOf(s.jointId, byId))] : []);
+  } else if (isJoint(s)) {
+    add('Type', [bold(JOINT_TYPE_LABELS[s.jointType])]);
+    add('Articulating surfaces', s.articulatingStructureIds.map((id) => bold(nameOf(id, byId))));
+    add('Movements', s.movements.map(bold));
+    add('Stabilisers', (s.stabilizers ?? []).map(bold));
+  } else if (isBone(s)) {
+    add('Attachments', s.attachments.map(bold));
+    add('Articulates with', s.articulations.map(bold));
+  } else if (isLandmark(s)) {
+    add('On', [s.parentBoneId ? bold(nameOf(s.parentBoneId, byId)) : '', s.palpability ? PALPABILITY[s.palpability] : '']);
+    add('Attachments', s.attachments.map(bold));
+    add('Articulations', (s.articulations ?? []).map(bold));
+  }
+
+  const role = functionalRole(s);
+  if (role) add(FUNCTIONAL_ROLE_LABEL, [emphasise(role)]);
+  if (s.clinical) add('Clinical note', [emphasise(s.clinical, siteNames)]);
+  return sections;
+}

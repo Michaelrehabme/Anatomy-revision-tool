@@ -162,13 +162,13 @@ export function resolvePublisher(raw: string): { title: string; url?: string } {
  * sites added on 17 Oct 2026, so /sources lists what they were checked
  * against. Empty when the file is absent.
  */
-export function readAttachmentDetailWorks(root: string): string[] {
+export function readAttachmentDetailWorks(root: string): { id: string; raw: string }[] {
   try {
     const parsed = JSON.parse(readFileSync(`${root}/ligament-attachment-detail.json`, 'utf8')) as {
       included?: Record<string, Record<string, { source?: string; url?: string }>>;
     };
-    return Object.values(parsed.included ?? {}).flatMap((sites) =>
-      Object.values(sites).map((site) => `${site.source ?? ''} ${site.url ?? ''}`.trim()),
+    return Object.entries(parsed.included ?? {}).flatMap(([id, sites]) =>
+      Object.values(sites).map((site) => ({ id, raw: `${site.source ?? ''} ${site.url ?? ''}`.trim() })),
     );
   } catch {
     return [];
@@ -291,6 +291,8 @@ export function buildBloodSupply(
   rows: BloodSupplyRow[],
   totals: Record<Category, number>,
   intern: (raw: string) => number,
+  /** Told the works behind each accepted row, for the structure's own card. */
+  onRow?: (id: string, works: number[]) => void,
 ): BloodSupplyProvenance {
   const accepted = acceptedBloodRows(rows);
   let lastChecked: string | null = null;
@@ -301,7 +303,9 @@ export function buildBloodSupply(
     const mine = accepted.filter((r) => r.category === category);
     const works = new Set<number>();
     for (const row of mine) {
-      for (const c of bloodCitations(row)) works.add(intern(`${c.title} ${c.url}`));
+      const own = bloodCitations(row).map((c) => intern(`${c.title} ${c.url}`));
+      for (const w of own) works.add(w);
+      onRow?.(row.id, own);
       arteriesWithheld += (row.unsupported ?? []).length;
       if (row.zone?.text) zones += 1;
       const on = acceptedOn(row);
@@ -357,10 +361,18 @@ export function zonesWithoutOwnQuote(rows: BloodSupplyRow[]): string[] {
     .map((r) => r.id);
 }
 
+/** The works behind one structure's facts and its blood supply: indices into `works`. */
+export interface StructureWorks {
+  facts: number[];
+  blood: number[];
+}
+
 export interface Built {
   families: FamilyProvenance[];
   works: CitedWork[];
   bloodSupply: BloodSupplyProvenance;
+  /** Per structure id, for the Atlas card's sources line. */
+  byStructure: Record<string, StructureWorks>;
 }
 
 /**
@@ -372,6 +384,8 @@ export function buildProvenance(
   root: string,
   totals: Record<Category, number>,
   deckSources: { deck?: string; author?: string; via?: string }[],
+  /** The muscles' ids, which the deck and Visible Body stand behind together. */
+  muscleIds: readonly string[] = [],
 ): Built {
   const works: CitedWork[] = [];
   const index = new Map<string, number>();
@@ -390,6 +404,14 @@ export function buildProvenance(
   };
 
   const families: FamilyProvenance[] = [];
+  // The same indices the families get, recorded as they are handed out: a
+  // second intern() call would count the citation twice on /sources.
+  const byStructure: Record<string, StructureWorks> = {};
+  const own = (id: string) => (byStructure[id] ??= { facts: [], blood: [] });
+  const note = (list: number[], w: number) => {
+    if (!list.includes(w)) list.push(w);
+    return w;
+  };
 
   // Muscles are the one family that came from a person's teaching rather than
   // works we looked up, so they are built from the seed, not a review file.
@@ -404,6 +426,7 @@ export function buildProvenance(
   // The deck drew on Visible Body, so it is upstream of all 122 and belongs in
   // the list even though we never looked a muscle up there ourselves.
   if (deck?.via) muscleWorks.add(intern(deck.via));
+  for (const id of muscleIds) for (const w of muscleWorks) note(own(id).facts, w);
 
   families.push({
     category: 'muscle',
@@ -417,22 +440,22 @@ export function buildProvenance(
   });
 
   for (const category of ['bone', 'landmark', 'joint', 'ligament'] as Category[]) {
-    const rows = Object.values(readReviews(root, category));
     const familyWorks = new Set<number>();
     let checked = 0;
     let held = 0;
     let lastChecked: string | null = null;
 
-    for (const row of rows) {
+    for (const [id, row] of Object.entries(readReviews(root, category))) {
       const grade = row.grade ?? '';
       if (/^verified/.test(grade)) checked += 1;
       if (grade === 'held') held += 1;
       if (row.checked && (!lastChecked || row.checked > lastChecked)) lastChecked = row.checked;
-      for (const raw of row.sources ?? []) familyWorks.add(intern(raw));
-      for (const w of row.works ?? []) familyWorks.add(intern(`${w.title} ${w.url ?? ''}`));
+      for (const raw of row.sources ?? []) familyWorks.add(note(own(id).facts, intern(raw)));
+      for (const w of row.works ?? []) familyWorks.add(note(own(id).facts, intern(`${w.title} ${w.url ?? ''}`)));
     }
     // The specific attachment sites (17 Oct 2026) carry their own works.
-    if (category === 'ligament') for (const raw of readAttachmentDetailWorks(root)) familyWorks.add(intern(raw));
+    if (category === 'ligament')
+      for (const { id, raw } of readAttachmentDetailWorks(root)) familyWorks.add(note(own(id).facts, intern(raw)));
 
     families.push({
       category,
@@ -448,7 +471,13 @@ export function buildProvenance(
 
   // Last, so the indices the families above hold do not move when a blood
   // supply row is added.
-  const bloodSupply = buildBloodSupply(readBloodSupply(root), totals, intern);
+  const bloodSupply = buildBloodSupply(readBloodSupply(root), totals, intern, (id, ws) => {
+    for (const w of ws) note(own(id).blood, w);
+  });
+  for (const entry of Object.values(byStructure)) {
+    entry.facts.sort((a, b) => a - b);
+    entry.blood.sort((a, b) => a - b);
+  }
 
-  return { families, works, bloodSupply };
+  return { families, works, bloodSupply, byStructure };
 }

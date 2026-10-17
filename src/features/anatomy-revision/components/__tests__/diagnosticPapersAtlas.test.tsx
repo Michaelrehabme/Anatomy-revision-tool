@@ -9,6 +9,7 @@ import { buildAreaFacts, buildStructureIndex, joinLoadedAreas } from '../../data
 import { linkImages } from '../../lib/linkImages';
 import { atlasRow, functionalRole, muscleCardFacts } from '../../lib/atlasFacts';
 import { promptHighlightHotspots } from '../../lib/promptHighlight';
+import { ligamentPromptLines } from '../../lib/questionGenerators/ligamentClue';
 import {
   PAPER_VERSION,
   buildPaperQuestions,
@@ -80,6 +81,7 @@ function serverHolding(areas: readonly (typeof AREAS)[number][]): PaperContent {
 
 const KIND_WORDS: Record<PaperQuestionKind, string> = {
   identify: 'name (picture question)',
+  attachments: 'name (from its attachments)',
   injury: 'name (injury vignette)',
   origin: 'origin',
   insertion: 'insertion',
@@ -95,7 +97,7 @@ function atlasShows(
   entry: StructureIndexEntry,
   indexById: ReadonlyMap<string, StructureIndexEntry>,
 ): { text: string | null; table?: string } {
-  if (kind === 'identify' || kind === 'injury') return { text: entry.name };
+  if (kind === 'identify' || kind === 'injury' || kind === 'attachments') return { text: entry.name };
   if (!facts) return { text: null };
   if (kind === 'functional') return { text: functionalRole(facts) };
   if (!isMuscle(facts)) return { text: null };
@@ -244,7 +246,11 @@ describe.each(LAYOUTS)('the $name card prints what the papers mark correct', ({ 
     const missing: string[] = [];
     for (const [structureId, questions] of byStructure) {
       const { container, unmount } = renderCard(structureId);
-      const printed = [...container.querySelectorAll('h1, div, p')].map((el) => (el.children.length === 0 ? el.textContent ?? '' : ''));
+      // A fact is one line, read whole: the card prints its key words in bold
+      // (RichText), so a line's text is split across <strong> children.
+      const printed = [...container.querySelectorAll('h1, div, p, li')].map((el) =>
+        el.children.length === 0 || el.tagName === 'P' || el.tagName === 'LI' ? el.textContent ?? '' : '',
+      );
       for (const q of questions) {
         if (!printed.includes(q.marked)) {
           missing.push(`${q.paper} paper, question ${q.number} (${seedById.get(structureId)!.name}, ${KIND_WORDS[q.spec.kind]}): "${q.marked}" is not printed on the card.`);
@@ -257,6 +263,13 @@ describe.each(LAYOUTS)('the $name card prints what the papers mark correct', ({ 
         const ownPictures = ALL_IMAGES.filter((i) => i.mode === 'single-structure' && i.structureId === structureId).map((i) => i.filePath);
         if (!cardPicture || !ownPictures.includes(cardPicture) || !ownPictures.includes(mine.filePath)) {
           missing.push(`${q.paper} paper, question ${q.number}: the card and the paper do not both show a picture of ${seedById.get(structureId)!.name}.`);
+        }
+      }
+      // A ligament named from its attachments: every site the question lists is on the card.
+      for (const q of questions.filter((x) => x.spec.kind === 'attachments')) {
+        for (const line of ligamentPromptLines(seedById.get(structureId)!, seedById) ?? []) {
+          const site = line.replace(/^Attaches to: /, '');
+          if (!printed.includes(site)) missing.push(`${q.paper} paper, question ${q.number}: "${site}" is not on the card.`);
         }
       }
       unmount();

@@ -1,13 +1,11 @@
 import { useEffect } from 'react';
 import { useFactMastery } from '../../hooks/useFactMastery';
-import { BloodSupplyFacts } from '../shared/BloodSupplyFacts';
 import type { AnatomyContent } from '../../hooks/useAnatomyContent';
 import type { AnatomyRepository } from '../../data/repository';
-import { areasOf, isMuscle } from '../../types/structure';
-import { FUNCTIONAL_ROLE_LABEL, functionalRole, muscleCardFacts } from '../../lib/atlasFacts';
+import { areasOf } from '../../types/structure';
 import { useMuscleHistory } from '../../hooks/useMuscleHistory';
 import { REGION_LABELS } from '../../types/region';
-import { AttributionBadge } from '../shared/AttributionBadge';
+import { StructureCardFacts, StructurePicture, drillLabel } from '../shared/StructureCardBody';
 import { Button } from '../shared/Button';
 import { LockedStructureNotice } from '../shared/AreaLock';
 import { StructureFactsUnavailable } from '../shared/AreaFactsNotice';
@@ -35,11 +33,6 @@ interface MuscleCardProps {
   onDrill: (structureId: string) => void;
   onNavigate: (section: NavSection) => void;
 }
-
-const FACT_ROWS = [
-  { key: 'origin', label: 'Origin' },
-  { key: 'insertion', label: 'Insertion' },
-] as const;
 
 export function MuscleCard({
   access,
@@ -86,9 +79,6 @@ export function MuscleCard({
   // name, its picture and an honest reason (AreaFactsNotice.tsx).
   const structure = content.indexById.get(structureId);
   const facts = content.structuresById.get(structureId);
-  const panelImage = content.images.find(
-    (img) => img.mode === 'single-structure' && img.structureId === structureId,
-  );
 
   if (!structure) {
     return (
@@ -98,10 +88,6 @@ export function MuscleCard({
     );
   }
 
-  // The words come from lib/atlasFacts, so the card, the Atlas table and the
-  // diagnostic papers cannot drift apart.
-  const muscle = facts && isMuscle(facts) ? muscleCardFacts(facts) : null;
-  const role = facts ? functionalRole(facts) : null;
   // A card has an address, so it is gated here as well as in the atlas that
   // lists it: the whole of it, not just the drill. See LockedStructureNotice.
   const locked = !areasOf(structure).some((a) => access.areas.includes(a));
@@ -137,7 +123,7 @@ export function MuscleCard({
               <div style={{ font: '400 11.5px/1.6 var(--font-mono)', color: 'var(--ink3)' }}>
                 J / K to move
                 <br />
-                between muscles
+                between entries
               </div>
             </>
           }
@@ -147,17 +133,7 @@ export function MuscleCard({
       <div className="flex gap-[72px] px-16 py-14">
         {!locked && (
         <div className="flex w-[480px] flex-none flex-col">
-          <div
-            className="flex min-h-[420px] flex-1 items-center justify-center overflow-hidden rounded-[3px]"
-            style={{ background: 'var(--fig-off)' }}
-          >
-            {panelImage ? (
-              <img src={panelImage.filePath} alt={structure.name} className="h-full w-full object-contain" />
-            ) : (
-              <span style={{ color: 'var(--ink3)' }}>No image yet</span>
-            )}
-          </div>
-          {panelImage && <AttributionBadge image={panelImage} />}
+          <StructurePicture structure={structure} images={content.images} />
         </div>
         )}
 
@@ -201,56 +177,15 @@ export function MuscleCard({
             </div>
           ) : (
           <>
-          <div className="mt-9 flex flex-col">
-            {muscle &&
-              FACT_ROWS.map(({ key, label }) => (
-                <div key={key} className="py-4.5">
-                  <div style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
-                    {label}
-                  </div>
-                  <div className="mt-2 text-lg leading-relaxed">{muscle[key]}</div>
-                </div>
-              ))}
-            {muscle && (
-              <div className="py-4.5">
-                <div style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
-                  Action
-                </div>
-                <div className="mt-2 text-lg leading-relaxed">{muscle.action}</div>
-              </div>
-            )}
-            {muscle && muscle.nerve && (
-              <div className="py-4.5">
-                <div style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
-                  Innervation
-                </div>
-                <div className="mt-2 text-lg leading-relaxed">{muscle.nerve}</div>
-              </div>
-            )}
-            {role && (
-              <div className="py-4.5">
-                <div style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
-                  {FUNCTIONAL_ROLE_LABEL}
-                </div>
-                <div className="mt-2 text-lg leading-relaxed">{role}</div>
-              </div>
-            )}
-            <BloodSupplyFacts structure={facts} />
-            {facts.clinical && (
-              <div className="py-4.5">
-                <div style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
-                  Clinical note
-                </div>
-                <p className="mt-2 max-w-[48ch] text-base leading-relaxed" style={{ color: 'var(--ink2)' }}>
-                  {facts.clinical}
-                </p>
-              </div>
-            )}
+          {/* The words come from lib/atlasFacts, so the card, the Atlas table and
+              the diagnostic papers cannot drift apart. */}
+          <div className="mt-9">
+            <StructureCardFacts structure={facts} byId={content.indexById} />
           </div>
 
           <div className="mt-6">
             <Button variant="secondary" onClick={() => onDrill(structure.id)} className="min-w-[180px] min-h-[52px]">
-              Drill this muscle
+              {drillLabel(structure)}
             </Button>
           </div>
           </>
