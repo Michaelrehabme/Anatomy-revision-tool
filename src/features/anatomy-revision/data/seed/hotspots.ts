@@ -17,6 +17,11 @@ import { MUSCLE_HOTSPOT_SETS } from './hotspots.muscles.index.generated';
  * arrive with the content, which was always behind a loading state. Nothing is
  * lost offline — every chunk is still precached, just as its own file.
  *
+ * In the built app each chunk is also ENCODED (hotspotCodec.ts, applied by
+ * compactHotspotsPlugin), about a third of its plain size, because the
+ * precache is what a phone stores before it works offline. It decodes itself
+ * as it loads, so what arrives here is the same `HotspotPolygon[]` as ever.
+ *
  * Attaching mutates the image objects rather than copying them, because every
  * caller holds `AnatomyImageAsset` objects by reference — the repositories
  * hand out the same array, and re-creating them would leave a session grading

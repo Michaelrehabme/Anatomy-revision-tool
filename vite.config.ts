@@ -9,6 +9,8 @@ import { ANATOMY_CACHE_NAME } from './src/features/pwa/anatomyCache';
 import { isAnatomyImageRequest, offlineAreaPlugin } from './src/features/pwa/offline/swPlugin';
 import { CONTENT_VERSION_FILE } from './src/scripts/lib/contentPaths';
 import { ensureGeneratedContent } from './src/scripts/lib/ensureContent';
+import { compactHotspotsPlugin } from './src/scripts/lib/compactHotspotsPlugin';
+import { PRECACHE_MAX_FILE_BYTES } from './src/scripts/lib/precacheLimit';
 
 /** Forward slashes even on Windows — Rollup's alias plugin compares and rewrites ids as POSIX-style strings. */
 const demoFile = (name: string) =>
@@ -181,7 +183,8 @@ const pwa = (disable: boolean) =>
       // first visit either way, so precaching it costs nothing; leaving it out
       // would break offline. 3 MiB keeps the build failing as an alarm if the
       // entry chunk keeps growing: hotspot polygons belong in their own chunks.
-      maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
+      // checkPrecacheSize.ts warns from 80% of this.
+      maximumFileSizeToCacheInBytes: PRECACHE_MAX_FILE_BYTES,
       navigateFallback: '/index.html',
       // The legal pages must stay reachable, but they are inside the SPA, so
       // the fallback covers them. Firestore and Google endpoints are excluded
@@ -306,7 +309,8 @@ export const baseConfig = () => {
 };
 
 const baseConfigAfterContent = () => ({
-  plugins: [react(), tailwindcss()],
+  // Build only: the hotspot outlines go into the bundle encoded (hotspotCodec.ts).
+  plugins: [react(), tailwindcss(), compactHotspotsPlugin()],
   define: {
     // Replaced textually wherever it appears; see data/content/version.ts.
     __CONTENT_VERSION__: JSON.stringify(readContentVersion()),

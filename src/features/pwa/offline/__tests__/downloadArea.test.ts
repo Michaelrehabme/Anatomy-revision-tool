@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 import type { Area } from '../../../anatomy-revision/types/region';
 import { DownloadCancelled, DownloadIncomplete, NotEnoughSpace, downloadArea, type DownloadOptions } from '../downloadArea';
 import type { AreaManifest, ManifestFile } from '../manifest';
-import { offlineCacheName, readRecord } from '../offlineCache';
+import { OFFLINE_FILES_CACHE, readRecord } from '../offlineCache';
 import type { OfflineSource } from '../offlineSource';
 import { fakeStorage } from './fakeCaches';
 
@@ -64,7 +64,7 @@ describe('downloadArea', () => {
 
     const record = await downloadArea({ ...base('elbow', source, storage), onProgress: (p) => progress.push(p.doneBytes) });
 
-    expect(fake.pictures(offlineCacheName('elbow'))).toEqual([A.url, B.url, C.url]);
+    expect(fake.pictures(OFFLINE_FILES_CACHE)).toEqual([A.url, B.url, C.url]);
     expect(record).toMatchObject({ manifestHash: 'm1', bytes: 300, completedAt: '2026-10-02T09:00:00.000Z' });
     expect(await readRecord(storage, 'elbow')).toEqual(record);
     expect(progress[0]).toBe(0);
@@ -93,7 +93,7 @@ describe('downloadArea', () => {
     expect(await readRecord(storage, 'elbow')).toMatchObject({ bytes: 300, manifestHash: 'm1' });
   });
 
-  it('updates: fetches the redrawn file and the new one, deletes the removed one, leaves the rest alone', async () => {
+  it('updates: fetches the redrawn file and the new one, drops the removed one from the record, leaves the rest alone', async () => {
     const { storage, fake } = fakeStorage();
     await downloadArea(base('elbow', serverWith(manifestOf('elbow', [A, B, C])).source, storage));
 
@@ -103,10 +103,11 @@ describe('downloadArea', () => {
     const record = await downloadArea(base('elbow', next.source, storage));
 
     expect(next.fetched.sort()).toEqual([redrawnB.url, D.url]);
-    expect(fake.pictures(offlineCacheName('elbow'))).toEqual([A.url, redrawnB.url, D.url]);
+    // C stays stored until the controller's sweep finds nothing lists it.
+    expect(fake.pictures(OFFLINE_FILES_CACHE)).toEqual([A.url, redrawnB.url, C.url, D.url]);
     expect(record.files).toEqual({ [A.url]: 'aaaa', [B.url]: 'BBBB', [D.url]: 'dddd' });
     expect(record.manifestHash).toBe('m2');
-    const cache = await storage.open(offlineCacheName('elbow'));
+    const cache = await storage.open(OFFLINE_FILES_CACHE);
     expect(await (await cache.match(B.url))!.text()).toBe('BBBB');
   });
 
@@ -118,7 +119,7 @@ describe('downloadArea', () => {
     });
 
     await expect(downloadArea(base('elbow', source, storage))).rejects.toBeInstanceOf(DownloadIncomplete);
-    expect(fake.pictures(offlineCacheName('elbow'))).toEqual([A.url]);
+    expect(fake.pictures(OFFLINE_FILES_CACHE)).toEqual([A.url]);
     expect((await readRecord(storage, 'elbow'))!.files).toEqual({ [A.url]: 'aaaa' });
   });
 
@@ -191,7 +192,7 @@ describe('downloadArea', () => {
   });
 
   // The three spine areas share most of their pictures.
-  it('copies a file another downloaded area already holds instead of fetching it again', async () => {
+  it('records a file another downloaded area already holds, instead of fetching or storing it again', async () => {
     const { storage, fake } = fakeStorage();
     await downloadArea(base('cervical-spine', serverWith(manifestOf('cervical-spine', [A, B])).source, storage));
 
@@ -199,7 +200,20 @@ describe('downloadArea', () => {
     await downloadArea(base('lumbar-spine', second.source, storage));
 
     expect(second.fetched).toEqual([C.url]);
-    expect(fake.pictures(offlineCacheName('lumbar-spine'))).toEqual([A.url, B.url, C.url]);
+    // One copy of each, for both areas.
+    expect(fake.pictures(OFFLINE_FILES_CACHE)).toEqual([A.url, B.url, C.url]);
+    expect([...fake.caches.keys()].filter((name) => fake.pictures(name).length > 0)).toEqual([OFFLINE_FILES_CACHE]);
+    expect((await readRecord(storage, 'lumbar-spine'))!.files).toEqual({ [A.url]: 'aaaa', [B.url]: 'bbbb', [C.url]: 'cccc' });
+  });
+
+  it('asks for room only for what is not already held', async () => {
+    const { storage } = fakeStorage();
+    await downloadArea(base('cervical-spine', serverWith(manifestOf('cervical-spine', [A, B])).source, storage));
+    const second = serverWith(manifestOf('lumbar-spine', [A, B, C]));
+    // 100 bytes of new file, with 10% margin: 111 is enough, where the whole area (330) is not.
+    await expect(
+      downloadArea({ ...base('lumbar-spine', second.source, storage), freeBytes: async () => 111 }),
+    ).resolves.toMatchObject({ manifestHash: 'm1' });
   });
 
   it('fails without touching the cache when the manifest cannot be had', async () => {

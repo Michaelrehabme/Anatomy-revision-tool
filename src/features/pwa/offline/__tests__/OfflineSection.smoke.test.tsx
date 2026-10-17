@@ -77,7 +77,7 @@ describe('OfflineSection', () => {
 
     (await screen.findByRole('button', { name: 'Download Elbow' })).click();
     await waitFor(() => expect(within(row('Elbow')).getByText(/Downloaded ·/)).toBeInTheDocument());
-    expect(fake.pictures('locusmsk-offline-elbow')).toEqual([picture.url]);
+    expect(fake.pictures('locusmsk-offline-files')).toEqual([picture.url]);
     expect(screen.getByText(/Downloads use 10 MB on this device/)).toBeInTheDocument();
     // Downloaded: nothing left to fetch, so the only button is the way back.
     expect(within(row('Elbow')).getAllByRole('button').map((b) => b.textContent)).toEqual(['Remove']);

@@ -3,7 +3,7 @@ import type { Area } from '../../../anatomy-revision/types/region';
 import { AREAS } from '../../../anatomy-revision/types/region';
 import { AUTO_UPDATE_MAX_BYTES, autoUpdateDecision, saveDataRequested, type AutoUpdateFacts } from '../autoUpdate';
 import type { AreaManifest, ManifestFile, OfflineIndex } from '../manifest';
-import { offlineCacheName, readRecord } from '../offlineCache';
+import { OFFLINE_FILES_CACHE, readRecord } from '../offlineCache';
 import { OfflineController } from '../offlineController';
 import type { OfflineSource } from '../offlineSource';
 import { fakeStorage } from './fakeCaches';
@@ -153,7 +153,7 @@ describe('OfflineController.autoApplyUpdates', () => {
     await later.autoApplyUpdates(everything);
 
     expect(fetched).toEqual([]);
-    expect(fake.pictures(offlineCacheName('elbow'))).toEqual(['/anatomy/joints/b.webp']);
+    expect(fake.pictures(OFFLINE_FILES_CACHE)).toEqual(['/anatomy/joints/b.webp']);
     expect(later.getSnapshot().areas.elbow.status).toBe('update-available');
   });
 
@@ -168,7 +168,7 @@ describe('OfflineController.autoApplyUpdates', () => {
     await later.autoApplyUpdates({ ...everything, canAccess: () => false });
 
     expect(w.fetched).toEqual([]);
-    expect(w.fake.pictures(offlineCacheName('elbow'))).toEqual(['/anatomy/joints/a.webp']);
+    expect(w.fake.pictures(OFFLINE_FILES_CACHE)).toEqual(['/anatomy/joints/a.webp']);
     expect(later.getSnapshot().areas.elbow.status).toBe('downloaded');
   });
 
