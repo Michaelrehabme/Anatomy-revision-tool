@@ -1,0 +1,261 @@
+{
+ "schemaVersion": 2,
+ "note": "The clinically important ligaments the atlas models as a 4- to 12-point chip, drawn as a band between their attachments (owner, 16 Oct 2026: the ATFL is a disc on the tip of the fibula in the model). `fromAt`/`toAt` name a Z-Anatomy landmark marker (`<name>.j`, right side, mirrored to the left) the band starts or ends at; without one, the end is where the atlas chip meets that bone. Every end must be a source-checked attachment of the ligament, as the bone itself or as a landmark on it: ligamentBands.test.ts. renderLigamentPlates.py draws these by default (--atlas-shapes to turn off). The deltoid (16-17 Oct): its three parts leave the medial malleolus together and fan forward to the navicular tuberosity, down to the sustentaculum tali and back to the talus.",
+ "ligaments": {
+  "Anterior talofibular ligament.l": {
+   "structureId": "anterior-talofibular-ligament",
+   "bands": [
+    {
+     "from": "Fibula.l",
+     "to": "Talus.l",
+     "fromAt": "Lateral malleolus",
+     "width": 0.008,
+     "toOffset": [
+      -0.008,
+      -0.02,
+      -0.002
+     ],
+     "drape": false,
+     "fromNudge": [
+      -0.002,
+      -0.012,
+      -0.008
+     ],
+     "shape": "band"
+    }
+   ]
+  },
+  "Calcaneofibular ligament.l": {
+   "structureId": "calcaneofibular-ligament",
+   "bands": [
+    {
+     "from": "Fibula.l",
+     "to": "Calcaneus.l",
+     "fromAt": "Lateral malleolus",
+     "width": 0.006,
+     "drape": false,
+     "shape": "cord",
+     "fromNudge": [
+      0.001,
+      0.002,
+      -0.014
+     ],
+     "toOffset": [
+      -0.002,
+      0.012,
+      -0.022
+     ]
+    }
+   ]
+  },
+  "Posterior talofibular ligament.l": {
+   "structureId": "posterior-talofibular-ligament",
+   "bands": [
+    {
+     "from": "Fibula.l",
+     "to": "Talus.l",
+     "fromAt": "Malleolar fossa",
+     "toAt": "Posterior process of talus",
+     "width": 0.01,
+     "drape": false,
+     "shape": "fan"
+    }
+   ]
+  },
+  "Tibiocalcaneal ligament.l": {
+   "structureId": "tibiocalcaneal-ligament",
+   "bands": [
+    {
+     "from": "Tibia.l",
+     "to": "Calcaneus.l",
+     "toAt": "Sustentaculum tali",
+     "width": 0.024,
+     "drape": true,
+     "shape": "apex",
+     "lift": 0.0008,
+     "face": [
+      -1,
+      0,
+      0
+     ],
+     "over": [
+      "Talus.l"
+     ],
+     "fromNudge": [
+      0,
+      0.0,
+      -0.008
+     ],
+     "fromAt": "Medial malleolus"
+    }
+   ]
+  },
+  "Posterior tibiotalar ligament.l": {
+   "structureId": "posterior-tibiotalar-ligament",
+   "bands": [
+    {
+     "from": "Tibia.l",
+     "to": "Talus.l",
+     "fromAt": "Medial malleolus",
+     "width": 0.022,
+     "drape": true,
+     "shape": "apex",
+     "fromNudge": [
+      0,
+      0.0,
+      -0.008
+     ],
+     "lift": 0.0008,
+     "face": [
+      -1,
+      0,
+      0
+     ],
+     "over": [],
+     "toOffset": [
+      0.008,
+      0.03,
+      -0.018
+     ]
+    }
+   ]
+  },
+  "Plantar calcaneonavicular ligament.l": {
+   "structureId": "plantar-calcaneonavicular-ligament",
+   "bands": [
+    {
+     "from": "Calcaneus.l",
+     "to": "Navicular bone.l",
+     "fromAt": "Sustentaculum tali",
+     "width": 0.012,
+     "shape": "band"
+    }
+   ]
+  },
+  "Fibular collateral ligament.l": {
+   "structureId": "fibular-collateral-ligament",
+   "bands": [
+    {
+     "from": "Femur.l",
+     "to": "Fibula.l",
+     "fromAt": "Lateral epicondyle of femur",
+     "toAt": "Head of fibula",
+     "width": 0.005,
+     "drape": false,
+     "shape": "cord"
+    }
+   ]
+  },
+  "Coraco-acromial ligament.l": {
+   "structureId": "coraco-acromial-ligament",
+   "bands": [
+    {
+     "from": "Scapula.l",
+     "to": "Scapula.l",
+     "fromAt": "Coracoid process",
+     "toAt": "Acromion",
+     "width": 0.015,
+     "shape": "fanIn",
+     "drape": false,
+     "lift": 0.003,
+     "fromNudge": [
+      0.004,
+      0.0,
+      0.006
+     ]
+    }
+   ]
+  },
+  "Acromioclavicular ligament.l": {
+   "structureId": "acromioclavicular-ligament",
+   "bands": [
+    {
+     "from": "Clavicle.l",
+     "to": "Scapula.l",
+     "toAt": "Acromion",
+     "width": 0.012,
+     "shape": "band"
+    }
+   ]
+  },
+  "Conoid ligament.l": {
+   "structureId": "conoid-ligament",
+   "bands": [
+    {
+     "from": "Scapula.l",
+     "to": "Clavicle.l",
+     "fromAt": "Coracoid process",
+     "toAt": "Conoid tubercle",
+     "width": 0.01,
+     "drape": false,
+     "shape": "fan"
+    }
+   ]
+  },
+  "Trapezoid ligament.l": {
+   "structureId": "trapezoid-ligament",
+   "bands": [
+    {
+     "from": "Scapula.l",
+     "to": "Clavicle.l",
+     "fromAt": "Coracoid process",
+     "toAt": "Trapezoid line",
+     "width": 0.011,
+     "drape": false,
+     "shape": "band"
+    }
+   ]
+  },
+  "Radial collateral ligament.l": {
+   "structureId": "radial-collateral-ligament",
+   "bands": [
+    {
+     "from": "Humerus.l",
+     "to": "Radius.l",
+     "fromAt": "Lateral epicondyle of humerus",
+     "width": 0.011,
+     "shape": "fan"
+    }
+   ]
+  },
+  "Scapholunate interosseous ligament.l": {
+   "structureId": "scapholunate-interosseous-ligament",
+   "bands": [
+    {
+     "from": "Scaphoid bone.l",
+     "to": "Lunate bone.l",
+     "width": 0.005,
+     "shape": "band"
+    }
+   ]
+  },
+  "Tibionavicular ligament.l": {
+   "structureId": "tibionavicular-ligament",
+   "bands": [
+    {
+     "from": "Tibia.l",
+     "to": "Navicular bone.l",
+     "fromAt": "Medial malleolus",
+     "fromNudge": [
+      0,
+      0.0,
+      -0.008
+     ],
+     "toAt": "Tuberosity of navicular bone",
+     "drape": true,
+     "shape": "apex",
+     "width": 0.026,
+     "lift": 0.0008,
+     "face": [
+      -1,
+      0,
+      0
+     ],
+     "over": [
+      "Talus.l"
+     ]
+    }
+   ]
+  }
+ }
+}

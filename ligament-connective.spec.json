@@ -1,6 +1,6 @@
 {
  "schemaVersion": 1,
- "note": "The connective structures that had no picture (16 October 2026): retinacula, TFCC, iliotibial band, plantar fascia, Achilles tendon, inguinal ligament, linea alba, costal cartilages, each mapped to its Z-Anatomy mesh by name. The alar ligaments and the transverse ligament of the atlas are not modelled in the atlas and are not here. The TFCC was rendered and NOT published: the atlas models it as an eight-vertex disc (the articular disc of the distal radio-ulnar joint), a chip covering 0.03 to 0.17% of the frame, the same fault as the small ligaments (locate.ts MIN_STRAP_AREA). The costal cartilages and inguinal ligaments are rendered as one target of both sides, by the owner's rule that a symmetrical structure counts on either side. Full turntables (eight angles every 45 degrees) since 16 Oct 2026, at the owner's request; the retinacula carry `shrinkwrap` (3 mm) because the atlas draws them as a loose cuff.",
+ "note": "The connective structures that had no picture (16 October 2026): retinacula, TFCC, iliotibial band, plantar fascia, Achilles tendon, inguinal ligament, linea alba, costal cartilages, each mapped to its Z-Anatomy mesh by name. The alar ligaments and the transverse ligament of the atlas are not modelled in the atlas and are not here. The TFCC was rendered and NOT published: the atlas models it as an eight-vertex disc (the articular disc of the distal radio-ulnar joint), a chip covering 0.03 to 0.17% of the frame, the same fault as the small ligaments (locate.ts MIN_STRAP_AREA). The costal cartilages and inguinal ligaments are rendered as one target of both sides, by the owner's rule that a symmetrical structure counts on either side. Full turntables (eight angles every 45 degrees) since 16 Oct 2026, at the owner's request; the retinacula carry `shrinkwrap` (3 mm) because the atlas draws them as a loose cuff. Patellar ligament (16 Oct): the atlas models only its two footprints, so `hull` builds the band between them. Iliofemoral ligament: its two parts together, as the Y.",
  "ligaments": [
   {
    "key": "flexor-retinaculum",
@@ -338,6 +338,60 @@
     "Hip bone.*",
     "Sacrum",
     "Clavicle.*"
+   ]
+  },
+  {
+   "key": "patellar-ligament",
+   "name": "Patellar ligament",
+   "subregion": "knee",
+   "objects": [
+    "Patellar ligament.ol",
+    "Patellar ligament.el"
+   ],
+   "hull": true,
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ],
+   "frame": 0.28,
+   "minFrame": 0.24,
+   "keep": [
+    "Femur.*",
+    "Patella.*",
+    "Tibia.*",
+    "Fibula.*"
+   ]
+  },
+  {
+   "key": "iliofemoral-ligament",
+   "name": "Iliofemoral ligament",
+   "subregion": "hip",
+   "objects": [
+    "Descending part of iliofemoral ligament.l",
+    "Transverse part of iliofemoral ligament.l"
+   ],
+   "angles": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315
+   ],
+   "frame": 0.26,
+   "minFrame": 0.22,
+   "keep": [
+    "Hip bone.*",
+    "Sacrum",
+    "Femur.*"
    ]
   }
  ]

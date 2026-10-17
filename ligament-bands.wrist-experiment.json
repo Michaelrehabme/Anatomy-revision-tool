@@ -1,0 +1,369 @@
+{
+ "schemaVersion": 1,
+ "note": "EXPERIMENT, NOT RENDERED (16 Oct 2026). The 27 wrist ligaments redrawn as bands bone to bone; the result piled up and curled in the crowded carpus, and the owner then decided these small ligaments are not asked from a picture. Kept for reference. Wrist and hand ligaments redrawn as bands, bone to bone (owner, 16 Oct 2026: the atlas cut-outs 'don't look realistic'). renderLigamentPlates.py draws an atlas object listed here as these bands, as target and as neighbour alike. A band may only join bones in that ligament's source-checked attachmentStructureIds (ligamentBands.test.ts enforces it); `over` names bones the band lies across on the way, which is its course, not an attachment. Which side of the bones (palmar or dorsal) and where along them comes from the atlas cut-out. The interosseous ligaments are not here: they lie inside their joints and are asked on the gap plates.",
+ "ligaments": {
+  "Radiate carpal ligament.l": {
+   "structureId": "radiate-carpal-ligament",
+   "bands": [
+    {
+     "from": "Capitate bone.l",
+     "to": "Scaphoid bone.l",
+     "hub": true
+    },
+    {
+     "from": "Capitate bone.l",
+     "to": "Lunate bone.l",
+     "hub": true
+    },
+    {
+     "from": "Capitate bone.l",
+     "to": "Triquetrum bone.l",
+     "over": [
+      "Hamate bone.l"
+     ],
+     "hub": true
+    }
+   ]
+  },
+  "Radioscaphocapitate ligament.l": {
+   "structureId": "radioscaphocapitate-ligament",
+   "bands": [
+    {
+     "from": "Radius.l",
+     "to": "Capitate bone.l",
+     "over": [
+      "Scaphoid bone.l"
+     ]
+    }
+   ]
+  },
+  "Radiocapitate ligament.l": {
+   "structureId": "radiocapitate-ligament",
+   "bands": [
+    {
+     "from": "Radius.l",
+     "to": "Capitate bone.l",
+     "over": [
+      "Scaphoid bone.l",
+      "Lunate bone.l"
+     ]
+    }
+   ]
+  },
+  "Scaphocapitate ligament.l": {
+   "structureId": "scaphocapitate-ligament",
+   "bands": [
+    {
+     "from": "Scaphoid bone.l",
+     "to": "Capitate bone.l"
+    }
+   ]
+  },
+  "Scaphotrapeziotrapezoidal ligament.l": {
+   "structureId": "scaphotrapeziotrapezoidal-ligament",
+   "bands": [
+    {
+     "from": "Scaphoid bone.l",
+     "to": "Trapezium bone.l"
+    },
+    {
+     "from": "Scaphoid bone.l",
+     "to": "Trapezoid bone.l"
+    }
+   ]
+  },
+  "Triquetrocapitate ligament.l": {
+   "structureId": "triquetrocapitate-ligament",
+   "bands": [
+    {
+     "from": "Triquetrum bone.l",
+     "to": "Capitate bone.l",
+     "over": [
+      "Hamate bone.l"
+     ]
+    }
+   ]
+  },
+  "Triquetrohamate ligament.l": {
+   "structureId": "triquetrohamate-ligament",
+   "bands": [
+    {
+     "from": "Triquetrum bone.l",
+     "to": "Hamate bone.l"
+    }
+   ]
+  },
+  "Palmar lunotriquetral ligament.l": {
+   "structureId": "palmar-lunotriquetral-ligament",
+   "bands": [
+    {
+     "from": "Lunate bone.l",
+     "to": "Triquetrum bone.l"
+    }
+   ]
+  },
+  "Palmar scaphotriquetral ligament.l": {
+   "structureId": "palmar-scaphotriquetral-ligament",
+   "bands": [
+    {
+     "from": "Scaphoid bone.l",
+     "to": "Triquetrum bone.l",
+     "over": [
+      "Lunate bone.l"
+     ]
+    }
+   ]
+  },
+  "Palmar capitohamate ligament.l": {
+   "structureId": "palmar-capitohamate-ligament",
+   "bands": [
+    {
+     "from": "Capitate bone.l",
+     "to": "Hamate bone.l"
+    }
+   ]
+  },
+  "Pisohamate ligament.l": {
+   "structureId": "pisohamate-ligament",
+   "bands": [
+    {
+     "from": "Pisiform bone.l",
+     "to": "Hamate bone.l"
+    }
+   ]
+  },
+  "Pisometacarpal ligament.l": {
+   "structureId": "pisometacarpal-ligament",
+   "bands": [
+    {
+     "from": "Pisiform bone.l",
+     "to": "Fifth metacarpal bone.l",
+     "over": [
+      "Hamate bone.l"
+     ]
+    }
+   ]
+  },
+  "Pisotriquetral ligament.l": {
+   "structureId": "pisotriquetral-ligament",
+   "bands": [
+    {
+     "from": "Pisiform bone.l",
+     "to": "Triquetrum bone.l"
+    }
+   ]
+  },
+  "Radial collateral ligament of wrist joint.l": {
+   "structureId": "radial-collateral-ligament-of-wrist-joint",
+   "bands": [
+    {
+     "from": "Radius.l",
+     "to": "Scaphoid bone.l"
+    },
+    {
+     "from": "Scaphoid bone.l",
+     "to": "Trapezium bone.l"
+    }
+   ]
+  },
+  "Ulnar collateral ligament of wrist joint.l": {
+   "structureId": "ulnar-collateral-ligament-of-wrist-joint",
+   "bands": [
+    {
+     "from": "Ulna.l",
+     "to": "Triquetrum bone.l"
+    },
+    {
+     "from": "Ulna.l",
+     "to": "Pisiform bone.l"
+    }
+   ]
+  },
+  "Ulnocapitate ligament.l": {
+   "structureId": "ulnocapitate-ligament",
+   "bands": [
+    {
+     "from": "Ulna.l",
+     "to": "Capitate bone.l",
+     "over": [
+      "Lunate bone.l",
+      "Triquetrum bone.l"
+     ]
+    }
+   ]
+  },
+  "Ulnolunate ligament.l": {
+   "structureId": "ulnolunate-ligament",
+   "bands": [
+    {
+     "from": "Ulna.l",
+     "to": "Lunate bone.l"
+    }
+   ]
+  },
+  "Ulnotriquetral ligament.l": {
+   "structureId": "ulnotriquetral-ligament",
+   "bands": [
+    {
+     "from": "Ulna.l",
+     "to": "Triquetrum bone.l"
+    }
+   ]
+  },
+  "Ulnopisiform ligament.l": {
+   "structureId": "ulnopisiform-ligament",
+   "bands": [
+    {
+     "from": "Ulna.l",
+     "to": "Pisiform bone.l",
+     "over": [
+      "Triquetrum bone.l"
+     ]
+    }
+   ]
+  },
+  "Dorsal radiocarpal ligament.l": {
+   "structureId": "dorsal-radiocarpal-ligament",
+   "bands": [
+    {
+     "from": "Radius.l",
+     "to": "Triquetrum bone.l",
+     "over": [
+      "Lunate bone.l"
+     ],
+     "width": 0.006
+    }
+   ]
+  },
+  "Dorsal intercarpal ligaments.l": {
+   "structureId": "dorsal-intercarpal-ligaments",
+   "bands": [
+    {
+     "from": "Triquetrum bone.l",
+     "to": "Scaphoid bone.l",
+     "over": [
+      "Lunate bone.l"
+     ],
+     "width": 0.005
+    },
+    {
+     "from": "Triquetrum bone.l",
+     "to": "Trapezoid bone.l",
+     "over": [
+      "Hamate bone.l",
+      "Capitate bone.l"
+     ]
+    },
+    {
+     "from": "Scaphoid bone.l",
+     "to": "Trapezium bone.l"
+    }
+   ]
+  },
+  "Dorsal scaphotriquetral ligament.l": {
+   "structureId": "dorsal-scaphotriquetral-ligament",
+   "bands": [
+    {
+     "from": "Scaphoid bone.l",
+     "to": "Triquetrum bone.l",
+     "over": [
+      "Lunate bone.l"
+     ]
+    }
+   ]
+  },
+  "Dorsal ulnocarpal ligament.l": {
+   "structureId": "dorsal-ulnocarpal-ligament",
+   "bands": [
+    {
+     "from": "Ulna.l",
+     "to": "Triquetrum bone.l"
+    }
+   ]
+  },
+  "Dorsal carpometacarpal ligaments.l": {
+   "structureId": "dorsal-carpometacarpal-ligaments",
+   "bands": [
+    {
+     "from": "Trapezium bone.l",
+     "to": "Second metacarpal bone.l"
+    },
+    {
+     "from": "Trapezoid bone.l",
+     "to": "Second metacarpal bone.l"
+    },
+    {
+     "from": "Capitate bone.l",
+     "to": "Third metacarpal bone.l"
+    },
+    {
+     "from": "Hamate bone.l",
+     "to": "Fourth metacarpal bone.l"
+    },
+    {
+     "from": "Hamate bone.l",
+     "to": "Fifth metacarpal bone.l"
+    }
+   ]
+  },
+  "Palmar carpometacarpal ligaments.l": {
+   "structureId": "palmar-carpometacarpal-ligaments",
+   "bands": [
+    {
+     "from": "Trapezium bone.l",
+     "to": "Second metacarpal bone.l"
+    },
+    {
+     "from": "Trapezoid bone.l",
+     "to": "Second metacarpal bone.l"
+    },
+    {
+     "from": "Capitate bone.l",
+     "to": "Third metacarpal bone.l"
+    },
+    {
+     "from": "Hamate bone.l",
+     "to": "Fourth metacarpal bone.l"
+    },
+    {
+     "from": "Hamate bone.l",
+     "to": "Fifth metacarpal bone.l"
+    }
+   ]
+  },
+  "Dorsal metacarpal ligaments.l": {
+   "structureId": "dorsal-metacarpal-ligaments",
+   "bands": [
+    {
+     "from": "Second metacarpal bone.l",
+     "to": "Third metacarpal bone.l"
+    },
+    {
+     "from": "Third metacarpal bone.l",
+     "to": "Fourth metacarpal bone.l"
+    },
+    {
+     "from": "Fourth metacarpal bone.l",
+     "to": "Fifth metacarpal bone.l"
+    }
+   ]
+  },
+  "Palmar metacarpal ligaments.l": {
+   "structureId": "palmar-metacarpal-ligaments",
+   "bands": [
+    {
+     "from": "Second metacarpal bone.l",
+     "to": "Third metacarpal bone.l"
+    },
+    {
+     "from": "Third metacarpal bone.l",
+     "to": "Fourth metacarpal bone.l"
+    },
+    {
+     "from": "Fourth metacarpal bone.l",
+     "to": "Fifth metacarpal bone.l"
+    }
+   ]
+  }
+ }
+}

@@ -46,6 +46,8 @@ ap.add_argument("--min-frame", type=float, default=0.10,
                      "context is a featureless crop of the talus with no ankle in "
                      "it. The frame has to hold the JOINT, whose size does not "
                      "shrink with the ligament's.")
+ap.add_argument("--atlas-shapes", action="store_true",
+                help="draw every ligament as the atlas models it, ignoring ligament-bands.json")
 ap.add_argument("--fibres", action="store_true",
                 help="draw straps with the striped fibre texture. Off by default: at "
                      "plate size its 2.6mm bands alias into moire and the user read "
@@ -58,6 +60,15 @@ ap.add_argument("--skip-existing", action="store_true",
                 help="skip an angle whose ids.json (the last file each angle writes) "
                      "already exists, so an interrupted run resumes where it stopped")
 a = ap.parse_args(argv)
+
+# The wrist and hand ligaments the atlas models as cut-outs, redrawn as bands
+# bone to bone (ligament-bands.json; build_bands below). Read from the repo
+# this script lives in, so a worktree renders its own table.
+_BANDS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "..", "ligament-bands.json")
+BAND_TABLE = {}
+if not a.atlas_shapes and os.path.exists(_BANDS_FILE):
+    with open(_BANDS_FILE, encoding="utf-8") as _f:
+        BAND_TABLE = {k: v["bands"] for k, v in json.load(_f)["ligaments"].items()}
 STUDIO = a.look == "studio"
 
 spec = json.load(open(a.spec))
@@ -301,7 +312,68 @@ HILITE_GLOW = ((0.0, 0.85, 1.0, 1), 0.8)
 REST_MUTED_FILL, REST_MUTED_LINE = (0.78, 0.78, 0.84, 1), (0.45, 0.46, 0.55, 1)
 
 
-def fibre_axes(mesh):
+_ATTACH = None
+
+
+def fibre_axes(mesh, name=None):
+    """The fibre direction for a strap: along a drawn band ("uv"), from one
+    bone attachment to the other for an atlas ligament that touches two, and
+    the long axis of its vertices only when neither is known.
+
+    The owner, 17 Oct 2026: "all ligaments & images need the fibres running in
+    the correct direction". The long axis is right for a strap like the
+    sacrotuberous but wrong for a short wide one, whose longest side runs
+    ACROSS its fibres; a ligament's fibres run from bone to bone.
+    """
+    if mesh.uv_layers.get("fibres"):
+        return "uv"
+    axis = attachment_axis(mesh, name) if name else None
+    return axis or long_axes(mesh)
+
+
+def attachment_axis(mesh, name):
+    global _ATTACH
+    if _ATTACH is None:
+        path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "..", "ligament-attachments.json")
+        try:
+            with open(path, encoding="utf-8") as f:
+                _ATTACH = {x["ligament"]: [t["bone"] for t in x["attachments"]] for x in json.load(f)["ligaments"]}
+        except OSError:
+            _ATTACH = {}
+    bones_of = _ATTACH.get(name, [])
+    if len(bones_of) < 2 or len(mesh.vertices) < 3:
+        return None
+    from mathutils.bvhtree import BVHTree
+    trees = []
+    for bone in bones_of[:2]:
+        m = bake_raw([bone], "axisbone_" + bone)
+        if not m.vertices:
+            bpy.data.meshes.remove(m)
+            return None
+        trees.append(BVHTree.FromPolygons([v.co.copy() for v in m.vertices], [p.vertices[:] for p in m.polygons]))
+        bpy.data.meshes.remove(m)
+    near = ([], [])
+    for v in mesh.vertices:
+        d = [t.find_nearest(v.co)[3] or 1.0 for t in trees]
+        near[0 if d[0] < d[1] else 1].append(v.co.copy())
+    if not near[0] or not near[1]:
+        return None
+    ca = sum(near[0], mathutils.Vector()) / len(near[0])
+    cb = sum(near[1], mathutils.Vector()) / len(near[1])
+    length = cb - ca
+    if length.length < 1e-4:
+        return None
+    length.normalize()
+    pca = long_axes(mesh)
+    width = pca[2].cross(length)
+    if width.length < 1e-6:
+        width = pca[0] - length * pca[0].dot(length)
+    width.normalize()
+    thick = length.cross(width)
+    return mathutils.Matrix((width, length, thick))
+
+
+def long_axes(mesh):
     """The long, wide and thin directions of a strap, from its vertices.
 
     A ligament is drawn with lines running along it, and "along it" is not a
@@ -378,13 +450,16 @@ def fibre_mat(name, fill, line, axes, glow=None):
     coord = nt.nodes.new("ShaderNodeTexCoord")
     mapping = nt.nodes.new("ShaderNodeMapping")
     mapping.vector_type = "POINT"
-    mapping.inputs["Rotation"].default_value = axes.to_euler()
+    by_uv = axes == "uv"
+    if not by_uv:
+        mapping.inputs["Rotation"].default_value = axes.to_euler()
 
     wave = nt.nodes.new("ShaderNodeTexWave")
     wave.wave_type = "BANDS"
     wave.bands_direction = "X"
     wave.wave_profile = "SIN"
-    wave.inputs["Scale"].default_value = 380.0
+    # A drawn band's u runs 0-1 across it: twelve fibres side by side.
+    wave.inputs["Scale"].default_value = 12.0 if by_uv else 380.0
     wave.inputs["Distortion"].default_value = 1.0
     wave.inputs["Detail"].default_value = 2.0
     wave.inputs["Detail Scale"].default_value = 2.0
@@ -397,10 +472,18 @@ def fibre_mat(name, fill, line, axes, glow=None):
 
     mix = nt.nodes.new("ShaderNodeMix")
     mix.data_type = "RGBA"
-    mix.inputs["A"].default_value = line
+    # The lines are a hint of fibre, not stripes: at full contrast they
+    # aliased into moire at phone size (see flat_strap_mat). A fifth of the
+    # way to the line colour reads as grain and survives being shrunk.
+    mix.inputs["A"].default_value = tuple(f + (l - f) * 0.22 for f, l in zip(fill, line))
     mix.inputs["B"].default_value = fill
 
-    nt.links.new(coord.outputs["Object"], mapping.inputs["Vector"])
+    if by_uv:
+        uvmap = nt.nodes.new("ShaderNodeUVMap")
+        uvmap.uv_map = "fibres"
+        nt.links.new(uvmap.outputs["UV"], mapping.inputs["Vector"])
+    else:
+        nt.links.new(coord.outputs["Object"], mapping.inputs["Vector"])
     nt.links.new(mapping.outputs["Vector"], wave.inputs["Vector"])
     nt.links.new(wave.outputs["Fac"], ramp.inputs["Fac"])
     nt.links.new(ramp.outputs["Color"], mix.inputs["Factor"])
@@ -410,7 +493,7 @@ def fibre_mat(name, fill, line, axes, glow=None):
     # the strap stops being a flat decal. This is the single biggest step
     # towards the painted look.
     bump = nt.nodes.new("ShaderNodeBump")
-    bump.inputs["Strength"].default_value = 0.45
+    bump.inputs["Strength"].default_value = 0.25
     bump.inputs["Distance"].default_value = 0.0008
     nt.links.new(wave.outputs["Fac"], bump.inputs["Height"])
     nt.links.new(bump.outputs["Normal"], bsdf.inputs["Normal"])
@@ -524,6 +607,30 @@ def skinned_copy(src):
 
 
 def bake(names, mesh_name, skin=False):
+    """bake_raw, except that a ligament in BAND_TABLE comes out as its bands."""
+    banded = [n for n in names if n in BAND_TABLE]
+    if not banded:
+        return bake_raw(names, mesh_name, skin)
+    bm = bmesh.new()
+    plain = [n for n in names if n not in BAND_TABLE]
+    if plain:
+        m = bake_raw(plain, mesh_name + "_plain", skin)
+        bm.from_mesh(m)
+        bpy.data.meshes.remove(m)
+    for n in banded:
+        cut = bake_raw([n], "cut_" + n, skin)
+        if cut.vertices:
+            m = build_bands(BAND_TABLE[n], cut, "bands_" + n)
+            bm.from_mesh(m)
+            bpy.data.meshes.remove(m)
+        bpy.data.meshes.remove(cut)
+    mesh = bpy.data.meshes.new(mesh_name)
+    bm.to_mesh(mesh)
+    bm.free()
+    return mesh
+
+
+def bake_raw(names, mesh_name, skin=False):
     bm = bmesh.new()
     for n in names:
         src = bpy.data.objects.get(n)
@@ -547,6 +654,255 @@ def bake(names, mesh_name, skin=False):
         # hundred faces per bone read as anatomy that is not there.
         mesh.polygons.foreach_set("use_smooth", [True] * len(mesh.polygons))
         mesh.set_sharp_from_angle(angle=math.radians(50))
+    return mesh
+
+
+_BAND_TREES = {}
+
+
+def anatomical(rows, mids, across, up, width, shape, cord, seed_text):
+    """Takes the geometry out of a band (owner, 17 Oct 2026: "a ligament is
+    unlikely to be a perfect rectangle from attachment A to B").
+
+    A real ligament fans out into each bone and is narrowest between them, is
+    thicker along its middle than at its edges, and is never ruled straight:
+    so the width flares towards both attachments, the cross-section is domed,
+    the outline wanders a little, and a free cord arches slightly off the
+    joint. The wander is seeded by the band's own name, so a ligament looks the
+    same in every frame and every run.
+
+    `shape` is the ligament's own outline, from the anatomy: "band" (flat,
+    widest at its footprints: ATFL, trapezoid), "fan" (narrow where it starts,
+    spreading to where it ends: the deltoid's tibiocalcaneal part, conoid,
+    elbow's radial collateral), "fanIn" (the reverse: coraco-acromial, broad at
+    the coracoid), "cord" (round and narrow: LCL, CFL), "hub" (a fan's spoke).
+    """
+    import random
+    rnd = random.Random(seed_text)
+    phases = [rnd.uniform(0, 2 * math.pi) for _ in range(4)]
+    n = len(rows) - 1
+    m = len(rows[0]) - 1
+
+    def wander(t, k):
+        return 0.6 * math.sin(2 * math.pi * (t * 1.3) + phases[k]) + 0.4 * math.sin(2 * math.pi * (t * 2.7) + phases[k + 1])
+
+    out = []
+    for i, row in enumerate(rows):
+        t = i / n
+        # Narrow waist, wide footprints; a fan's hub end stays narrow.
+        if shape == "hub":
+            flare = 0.42 + 0.58 * t + 0.25 * t * t
+        elif shape == "apex":
+            # One sector of a fan that shares its apex with its neighbours (the
+            # deltoid): a point at the start, full width at the end, so the
+            # sectors tile one sheet instead of overlapping.
+            flare = 0.06 + 0.94 * t
+        elif shape == "fan":
+            flare = 0.32 + 0.68 * t ** 1.15 + 0.12 * (1 - t) ** 6
+        elif shape == "fanIn":
+            flare = 0.32 + 0.68 * (1 - t) ** 1.15 + 0.12 * t ** 6
+        elif shape == "cord":
+            flare = 0.85 + 0.3 * (2 * t - 1) ** 2
+        else:
+            flare = 0.72 + 0.5 * (2 * t - 1) ** 2
+        flare *= 1.0 + 0.05 * wander(t, 0)
+        lift = (0.0016 if cord else 0.0006) * math.sin(math.pi * t)
+        sway = across * (0.0005 * wander(t, 1))
+        # Ends sink a little into the bone, so the band grows out of it.
+        sink = -0.0006 * (1.0 - math.sin(math.pi * t)) ** 2
+        new_row = []
+        for j in range(m + 1):
+            u = 2.0 * j / m - 1.0
+            # A cord is round: its dome is half its width. A band is a thick
+            # sheet, highest along its middle.
+            depth = 0.42 * width * flare if shape == "cord" else 0.0011
+            dome = depth * math.sqrt(max(0.0, 1.0 - u * u)) * math.sin(math.pi * min(1.0, max(0.0, t * 0.85 + 0.075)))
+            p = mids[i] + across * (u * width * 0.5 * flare) + sway + up * (lift + dome + sink)
+            new_row.append(p)
+        out.append(new_row)
+    return out
+
+
+def build_bands(bands, cutout, mesh_name):
+    """One strap mesh per spec band, laid on the two bones it joins.
+
+    A band is {"from": bone, "to": bone, "width": metres?}. Its ends are the
+    points of each bone nearest a guide point: the midway point of the two
+    bones pushed towards the atlas cut-out, so a palmar ligament lands on the
+    palmar faces. Between them a grid is laid flat, then each vertex is moved
+    onto the nearer bone's surface (plus a millimetre) wherever a bone is
+    close; over the joint gap it bridges straight across, as a real ligament
+    does. Two smoothing passes along the band take out the kinks.
+    """
+    from mathutils.bvhtree import BVHTree
+    cut = [v.co.copy() for v in cutout.vertices]
+    cut_centre = sum(cut, mathutils.Vector()) / max(1, len(cut))
+
+    trees = _BAND_TREES
+
+    def bone_tree(name):
+        if name not in trees:
+            m = bake_raw([name], "bandbone_" + name)
+            pts = [v.co.copy() for v in m.vertices]
+            centre = sum(pts, mathutils.Vector()) / max(1, len(pts))
+            trees[name] = (BVHTree.FromPolygons(pts, [p.vertices[:] for p in m.polygons]), centre)
+            bpy.data.meshes.remove(m)
+        return trees[name]
+
+    def nearest(name, point):
+        tree, centre = bone_tree(name)
+        loc, normal, _i, dist = tree.find_nearest(point)
+        if loc is None:
+            return None, None, None
+        # The left-side meshes are mirrored with their faces turned inward:
+        # an outward normal is the one pointing away from the bone's centre.
+        n = normal.normalized()
+        if n.dot(loc - centre) < 0:
+            n = -n
+        return loc, n, dist
+
+    def marker_point(marker, bone):
+        """A Z-Anatomy landmark marker (`<name>.j`, a two-point label line on
+        the RIGHT side), mirrored to the left: the end nearer the bone is the
+        landmark, the other is the label's tail."""
+        ob = bpy.data.objects.get(marker + ".j")
+        if not ob or ob.type != "MESH":
+            print("[bands] no marker " + marker, flush=True)
+            return None
+        pts = [ob.matrix_world @ v.co for v in ob.data.vertices]
+        pts = [mathutils.Vector((-p.x, p.y, p.z)) for p in pts]
+        return min(pts, key=lambda p: surface_dist(bone, p))
+
+    def surface_dist(name, point):
+        loc, _n, dist = nearest(name, point)
+        return dist if loc is not None else 1.0
+
+    def local_centre(a_name, b_name):
+        """The part of the cut-out between these two bones, else all of it."""
+        both = [v for v in cut if surface_dist(a_name, v) < 0.006 and surface_dist(b_name, v) < 0.006]
+        either = both or [v for v in cut if min(surface_dist(a_name, v), surface_dist(b_name, v)) < 0.006]
+        pts = either or cut
+        return sum(pts, mathutils.Vector()) / max(1, len(pts))
+
+    def drape(point, up, names):
+        """The highest bone surface under a point, looking down along `up`."""
+        best = None
+        for name in names:
+            tree, _c = bone_tree(name)
+            loc, _n, _i, _d = tree.ray_cast(point + up * 0.03, -up, 0.06)
+            if loc is not None and (best is None or (loc - point).dot(up) > (best - point).dot(up)):
+                best = loc
+        return best
+
+    bm = bmesh.new()
+    ALONG, ACROSS, LIFT, MIN_LENGTH = 24, 8, 0.0012, 0.009
+    for index, band in enumerate(bands):
+        a_name, b_name = band["from"], band["to"]
+        drape_over = (a_name, b_name) + tuple(band.get("over", []))
+        centre = local_centre(a_name, b_name)
+        # A fan (`"hub": true`, the radiate carpal ligament) starts every band
+        # at one point on the hub bone, nearest the middle of the cut-out, and
+        # ends each where the cut-out meets the other bone.
+        a_guide = marker_point(band["fromAt"], a_name) if band.get("fromAt") else None
+        # `fromNudge` [x, y, z] metres moves the start from its marker to the
+        # border the ligament actually leaves from: the ATFL leaves the
+        # ANTERIOR border of the lateral malleolus, the marker is on its side.
+        if a_guide is not None and band.get("fromNudge"):
+            a_guide = a_guide + mathutils.Vector(band["fromNudge"])
+        b_guide = marker_point(band["toAt"], b_name) if band.get("toAt") else None
+        a, na, _ = nearest(a_name, a_guide or (cut_centre if band.get("hub") else centre))
+        # `toOffset` [x, y, z] metres from the start, left side, atlas axes
+        # (+x lateral, -y anterior, +z up): for an end the atlas has no marker
+        # for, or a marker on the wrong face. The ATFL's talar end is the
+        # lateral side of the neck, forward of the malleolus; the atlas's
+        # "Neck of talus" marker is on the medial side.
+        if band.get("toOffset") and a is not None:
+            b_guide = a + mathutils.Vector(band["toOffset"])
+        b, nb, _ = nearest(b_name, b_guide or centre)
+        if a is None or b is None:
+            continue
+        span = b - a
+        print("[band] " + a_name + " -> " + b_name + ": from " + str(tuple(round(c, 4) for c in a)) + " to " + str(tuple(round(c, 4) for c in b)) + ", " + format(span.length * 1000, ".1f") + " mm"
+              + (" (guides " + str(a_guide and tuple(round(c, 4) for c in a_guide)) + ", " + str(b_guide and tuple(round(c, 4) for c in b_guide)) + ")"), flush=True)
+        if span.length < 1e-5:
+            continue
+        axis = span.normalized()
+        up = na + nb
+        # `face` [x, y, z] says which way the band's broad side looks, when
+        # the bones' own normals at its two ends disagree: the deltoid's
+        # parts face medially, whatever the malleolus and sustentaculum say.
+        if band.get("face"):
+            up = mathutils.Vector(band["face"])
+        up = (up - axis * up.dot(axis)).normalized() if up.length > 1e-6 else mathutils.Vector((0, 0, 1))
+        # Short across a narrow joint, a band still has to reach onto both
+        # bones to read as joining them: carpal ligaments are about a centimetre.
+        reach = max(0.0, (MIN_LENGTH - span.length) / 2) + (0.0008 if (a_guide or b_guide) else 0.0015)
+        hub = bool(band.get("hub"))
+        # A fan's bands leave the hub a little apart, so they do not knot.
+        a, b = (a + axis * 0.0015 if hub else a - axis * reach), b + axis * reach
+        span = b - a
+        across = axis.cross(up).normalized()
+        width = float(band.get("width", min(0.007, max(0.003, 0.4 * span.length))))
+        rows = []
+        for i in range(ALONG + 1):
+            t = i / ALONG
+            taper = (0.45 + 0.55 * t) if hub else 1.0 - 0.3 * abs(2 * t - 1) ** 3
+            row = []
+            for j in range(ACROSS + 1):
+                u = (j / ACROSS - 0.5) * width * taper
+                p = a + span * t + across * u
+                # A cord (`"drape": false`) runs straight between its ends, as
+                # the ankle and knee collaterals do; draping lays it on
+                # whichever bone is nearest the camera side instead.
+                hit = drape(p, up, drape_over) if band.get("drape", True) else None
+                # A surface far above or below the band's own line is another
+                # face of the bone (its side, a neighbour's edge), not the one
+                # the band lies on: bridged over instead, or the band curls.
+                if hit is not None and abs((hit - p).dot(up)) > 0.0035:
+                    hit = None
+                # Each band a hair above the last, so crossing bands never
+                # fight for the same surface.
+                row.append(hit + up * (LIFT + band.get("lift", 0.0) + 0.00025 * index) if hit is not None else None)
+            rows.append(row)
+        # Over the joint gap nothing is hit: bridge straight between the
+        # nearest draped points on either side, as the ligament does.
+        for j in range(ACROSS + 1):
+            col = [rows[i][j] for i in range(ALONG + 1)]
+            known = [i for i, p in enumerate(col) if p is not None]
+            if not known:
+                for i in range(ALONG + 1):
+                    rows[i][j] = a + span * (i / ALONG) + across * ((j / ACROSS - 0.5) * width) + up * (LIFT + band.get("lift", 0.0))
+                continue
+            for i in range(ALONG + 1):
+                if col[i] is not None:
+                    continue
+                lo = max([k for k in known if k < i], default=None)
+                hi = min([k for k in known if k > i], default=None)
+                if lo is not None and hi is not None:
+                    f = (i - lo) / (hi - lo)
+                    rows[i][j] = col[lo].lerp(col[hi], f)
+                else:
+                    k = lo if lo is not None else hi
+                    rows[i][j] = col[k] + span * ((i - k) / ALONG)
+        for _ in range(3):
+            rows = [rows[0]] + [[(rows[i - 1][j] + rows[i][j] * 2 + rows[i + 1][j]) / 4 for j in range(ACROSS + 1)] for i in range(1, ALONG)] + [rows[-1]]
+        # And once across, so the band lies flat rather than twisting.
+        mids = [sum(row, mathutils.Vector()) / len(row) for row in rows]
+        rows = [[mids[i] + (rows[i][j] - mids[i]) * 0.5 + across * ((j / ACROSS - 0.5) * width * 0.5) for j in range(ACROSS + 1)] for i in range(ALONG + 1)]
+        rows = anatomical(rows, mids, across, up, width, "hub" if hub else band.get("shape", "band"), not band.get("drape", True), a_name + b_name + str(index))
+        verts = [[bm.verts.new(p) for p in row] for row in rows]
+        uv = bm.loops.layers.uv.get("fibres") or bm.loops.layers.uv.new("fibres")
+        for i in range(ALONG):
+            for j in range(ACROSS):
+                face = bm.faces.new((verts[i][j], verts[i][j + 1], verts[i + 1][j + 1], verts[i + 1][j]))
+                # u across the band, v along it: the fibres run along v, and
+                # because u is measured across each row's own width they
+                # spread with a fan instead of running parallel.
+                for loop, (ii, jj) in zip(face.loops, ((i, j), (i, j + 1), (i + 1, j + 1), (i + 1, j))):
+                    loop[uv].uv = (jj / ACROSS, ii / ALONG)
+    mesh = bpy.data.meshes.new(mesh_name)
+    bm.to_mesh(mesh)
+    bm.free()
     return mesh
 
 
@@ -846,6 +1202,10 @@ for entry in spec["ligaments"]:
     # hangs beside the hip and the femur walks into shot. Naming the twenty
     # bones of a hand to keep is shorter and far more stable than naming the
     # two hundred to drop.
+    # `jointBones` (the isolated pictures, owner 16 Oct 2026): only the bones
+    # of this joint, on this side, in place of the region's keep list.
+    if entry.get("jointBones"):
+        entry = dict(entry, keep=entry["jointBones"])
     keep = expand(entry.get("keep", [])) if entry.get("keep") else None
     # A keep pattern that names nothing drops those bones with no error —
     # "Sternum*" matched nothing for a whole tranche, because the atlas names
@@ -902,6 +1262,10 @@ for entry in spec["ligaments"]:
     import re
     twin_names = {re.sub(r"\.((?:o\d?)?)l$", r".\1r", n) for n in lig_names} - set(lig_names)
     twins = [n for n in others if n in twin_names]
+    # An isolated picture of one side's joint has no other side to show: its
+    # bones are not drawn, and its ligament would float in space.
+    if entry.get("jointBones") and all(pat.endswith(".l") for pat in entry["jointBones"]):
+        twins = []
     if twins:
         others = [n for n in others if n not in twins]
         print("[twin] " + key + ": " + ", ".join(twins), flush=True)
@@ -915,6 +1279,22 @@ for entry in spec["ligaments"]:
     # bones drawn, plus the offset, so the band lies where it would rest on the
     # skeleton. Only for an entry that asks: everywhere else the atlas's shape
     # is the shape.
+    # A BAND BETWEEN TWO FOOTPRINTS (spec `hull`). The atlas has no patellar
+    # ligament, only its two attachment patches (`.ol` on the apex of the
+    # patella, `.el` on the tibial tuberosity, in "Muscular insertions"). The
+    # convex hull of the two is the band that runs between them, which is the
+    # ligament's real course: a straight, flat strap. Not for a twin pair,
+    # whose hull would span the body.
+    if entry.get("hull") and not twins:
+        import bmesh
+        bm = bmesh.new()
+        bm.from_mesh(lig_mesh)
+        hull = bmesh.ops.convex_hull(bm, input=bm.verts, use_existing_faces=False)
+        bmesh.ops.delete(bm, geom=hull["geom_interior"] + hull["geom_unused"], context="VERTS")
+        bm.to_mesh(lig_mesh)
+        bm.free()
+        lig_mesh.update()
+        print("[hull] " + key + ": one band over " + str(len(lig_mesh.vertices)) + " vertices", flush=True)
     if entry.get("shrinkwrap") is not None:
         from mathutils.bvhtree import BVHTree
         tree = BVHTree.FromPolygons([v.co.copy() for v in bones.vertices], [p.vertices[:] for p in bones.polygons])
@@ -938,6 +1318,49 @@ for entry in spec["ligaments"]:
             print("[ghost-straps] " + key + ": " + ", ".join(sorted(see_through)), flush=True)
             ghost_strap_mesh = smooth(bake(see_through, "ligghoststraps_" + key))
     other_mesh = None  # superseded by the per-view sets below
+    # ONE FACE OF THE WRIST AT A TIME. Every wrist ligament drawn at once,
+    # palmar and dorsal through see-through carpals, was a tangle nobody
+    # pictures; an illustration of the palmar wrist shows the palmar
+    # ligaments. For a band-drawn target, a neighbour on the far side of the
+    # capitate from it is left out.
+    if lig_names and lig_names[0] in BAND_TABLE and bpy.data.objects.get("Capitate bone.l"):
+        hub_box = world_box("Capitate bone.l")
+        hub = mathutils.Vector([(hub_box[0][i] + hub_box[1][i]) / 2 for i in range(3)])
+        tl, th = mesh_bbox(lig_mesh)
+        facing = mathutils.Vector([(tl[i] + th[i]) / 2 for i in range(3)]) - hub
+        if facing.length > 1e-6:
+            facing.normalize()
+            def same_face(n):
+                box = world_box(n)
+                if not box:
+                    return True
+                c = mathutils.Vector([(box[0][i] + box[1][i]) / 2 for i in range(3)])
+                return (c - hub).dot(facing) > -0.002
+            far = [n for n in others if not same_face(n)]
+            others = [n for n in others if same_face(n)]
+            if far:
+                print("[one-face] " + key + ": left out " + str(len(far)) + " on the far side", flush=True)
+    # THE LIGAMENT AND ITS JOINT'S BONES, NOTHING ELSE (spec `isolated`). The
+    # owner, 16 Oct 2026: on the regenerated pictures "I don't want to see any
+    # other structures other than the bones of that joint". No neighbouring
+    # straps; the keep list already limits the bones to the joint's region.
+    if entry.get("isolated"):
+        others = []
+    # QUESTION PICTURES SHOW THE JOINT'S MAIN LIGAMENTS (owner, 17 Oct 2026):
+    # "up to 5 of the largest / most significant ligaments that fit around
+    # that joint". `neighbours` is how many, chosen nearest first from
+    # `neighbourPool` (the clinically important ligaments' atlas objects).
+    elif entry.get("neighbours") is not None:
+        pool = set(entry.get("neighbourPool", []))
+        hub_lo, hub_hi = mesh_bbox(lig_mesh)
+        hub_c = mathutils.Vector([(hub_lo[i] + hub_hi[i]) / 2 for i in range(3)])
+
+        def dist(n):
+            box = world_box(n, 0.0)
+            c = mathutils.Vector([(box[0][i] + box[1][i]) / 2 for i in range(3)])
+            return (c - hub_c).length
+        ranked = sorted((n for n in others if n in pool and world_box(n)), key=dist)
+        others = ranked[: int(entry["neighbours"])]
     if others:
         print("[straps] " + key + ": " + ", ".join(sorted(others)), flush=True)
 
@@ -948,7 +1371,7 @@ for entry in spec["ligaments"]:
     for n in others:
         m = bake([n], "strap_" + key + "_" + n)
         if m.vertices:
-            axes = fibre_axes(m)
+            axes = fibre_axes(m, n)
             strap_parts.append((n, m, strap_mat("rest_" + n, REST_FILL, REST_LINE, axes),
                                 strap_mat("muted_" + n, REST_MUTED_FILL, REST_MUTED_LINE, axes)))
         else:
@@ -979,7 +1402,7 @@ for entry in spec["ligaments"]:
 
     # A sheet seen edge-on can ask to be drawn thicker (targetThickness, metres).
     target_thick = entry.get("targetThickness", 0.0009)
-    lig_axes = fibre_axes(lig_mesh)
+    lig_axes = fibre_axes(lig_mesh, lig_names[0] if lig_names else None)
     LIG_MAT = strap_mat("rest_" + key, REST_FILL, REST_LINE, lig_axes)
     HILITE_MAT = strap_mat("hilite_" + key, HILITE_FILL, HILITE_LINE, lig_axes, HILITE_GLOW)
 
