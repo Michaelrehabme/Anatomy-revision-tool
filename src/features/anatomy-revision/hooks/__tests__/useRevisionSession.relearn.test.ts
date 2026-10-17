@@ -166,4 +166,14 @@ describe('relearning a question missed three times running', () => {
     const exam = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, { ...base, mode: 'assessment' }).filter(isMcqQuestion);
     expect(exam.every((q) => !q.relearnCard)).toBe(true);
   });
+
+  it('puts a ligament question on its card as it was asked, and the answer first on the back', () => {
+    const base = { entitledAreas: AREAS, types: ['mcq' as const], categories: ['ligament' as const], mode: 'practice' as const, seed: 3 };
+    const ligament = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, { ...base, count: 30 }).filter(isMcqQuestion).find((q) => q.promptLines?.length);
+    expect(ligament).toBeDefined();
+    const card = ligament!.relearnCard!;
+    expect(card.front.text).toContain('What ligament is this?');
+    for (const line of ligament!.promptLines!) expect(card.front.text).toContain(line);
+    expect(card.back.text.split('\n')[0]).toBe(ligament!.choices[ligament!.correctIndex]);
+  });
 });

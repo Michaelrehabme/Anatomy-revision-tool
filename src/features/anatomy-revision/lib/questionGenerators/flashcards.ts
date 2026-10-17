@@ -192,7 +192,7 @@ export function buildFieldFlashcard(
  */
 export function buildRelearnCard(
   structure: AnatomyStructure,
-  question: { id: string; promptKind: PromptKind; prompt: string; choices: string[]; correctIndex: number; explanation: string },
+  question: { id: string; promptKind: PromptKind; prompt: string; promptLines?: string[]; choices: string[]; correctIndex: number; explanation: string },
   ownImageId?: string,
 ): FlashcardQuestion {
   const field = (MUSCLE_FIELD_KINDS as PromptKind[]).includes(question.promptKind)
@@ -203,9 +203,12 @@ export function buildRelearnCard(
   return {
     ...baseFields(structure, question.promptKind),
     id: `relearn-${question.id}`,
-    front: { text: question.prompt },
+    // The question as it was asked, bullet points and all: "What ligament is
+    // this?" with no attachments under it asks nothing.
+    front: { text: [question.prompt, ...(question.promptLines ?? []).map((line) => `• ${line}`)].join('\n') },
     back: {
-      text: [answer, question.explanation].filter((line) => line && line !== answer).join('\n\n') || answer,
+      // The answer first, then why: the name is what the card is for.
+      text: [answer, question.explanation].filter(Boolean).join('\n\n'),
       imageId: ownImageId,
     },
   };

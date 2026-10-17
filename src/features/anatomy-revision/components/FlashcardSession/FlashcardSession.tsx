@@ -66,7 +66,7 @@ export function FlashcardSession({ question, imagesById, onAnswer, onNext }: Fla
             {frontImage ? (
               <AnatomyImageFigure image={frontImage} frames={frontFrames} alt="Identify this structure" subjectId={question.structureId} conceal="name" />
             ) : (
-              <p style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 30 }}>{question.front.text}</p>
+              <p className="whitespace-pre-line" style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 30 }}>{question.front.text}</p>
             )}
             <Button onClick={handleReveal} className="min-w-[200px] min-h-[50px]">
               Reveal answer
@@ -76,7 +76,7 @@ export function FlashcardSession({ question, imagesById, onAnswer, onNext }: Fla
           <div className="space-y-4">
             {backImage && <AnatomyImageFigure image={backImage} frames={backFrames} alt={question.structureId} subjectId={question.structureId} />}
             {question.front.text && (
-              <p className="text-lg" style={{ color: 'var(--ink3)' }}>
+              <p className="whitespace-pre-line text-lg" style={{ color: 'var(--ink3)' }}>
                 {question.front.text}
               </p>
             )}

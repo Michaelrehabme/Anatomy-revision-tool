@@ -53,7 +53,7 @@ export function MobileFlashcardSession({ question, imagesById, onAnswer, onNext 
             {frontImage ? (
               <AnatomyImageFigure image={frontImage} frames={frontFrames} alt="Identify this structure" subjectId={question.structureId} conceal="name" />
             ) : (
-              <p style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 24 }}>{question.front.text}</p>
+              <p className="whitespace-pre-line" style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 24 }}>{question.front.text}</p>
             )}
             <button
               type="button"
@@ -68,7 +68,7 @@ export function MobileFlashcardSession({ question, imagesById, onAnswer, onNext 
           <div className="flex flex-col gap-3.5">
             {backImage && <AnatomyImageFigure image={backImage} frames={backFrames} alt={question.structureId} subjectId={question.structureId} />}
             {question.front.text && (
-              <p className="text-sm" style={{ color: 'var(--ink3)' }}>
+              <p className="whitespace-pre-line text-sm" style={{ color: 'var(--ink3)' }}>
                 {question.front.text}
               </p>
             )}
