@@ -1,0 +1,1247 @@
+{
+ "schemaVersion": 1,
+ "note": "Specific attachment sites for ligaments whose bone-level list another ligament shares (owner, 17 Oct 2026: 'if its sourced and there is no contesting evidence then im happy to include it'). Researched from Gray's 1918, open-access PubMed Central papers and Radiopaedia; every quote was checked against the page (Radiopaedia quotes re-checked live on 17 Oct). `flagged` lists what was not included and why.",
+ "included": {
+  "anterior-talocalcaneal-ligament": {
+   "talus": {
+    "text": "front and lateral surface of the neck",
+    "source": "Gray's Anatomy (1918), 7e. Intertarsal Articulations",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/7e-intertarsal-articulations/",
+    "quote": "extends from the front and lateral surface of the neck of the talus"
+   },
+   "calcaneus": {
+    "text": "superior surface",
+    "source": "Gray's Anatomy (1918), 7e. Intertarsal Articulations",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/7e-intertarsal-articulations/",
+    "quote": "to the superior surface of the calcaneus"
+   }
+  },
+  "anterior-talofibular-ligament": {
+   "lateral-malleolus": {
+    "text": "anterior margin of the lateral malleolus",
+    "source": "Gray's Anatomy (1918), 7d. Talocrural Articulation or Ankle-joint",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/7d-talocrural-articulation-or-ankle-joint/",
+    "quote": "passes from the anterior margin of the fibular malleolus"
+   },
+   "talus": {
+    "text": "in front of its lateral (fibular) facet",
+    "source": "Gray's Anatomy (1918), 7d. Talocrural Articulation or Ankle-joint",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/7d-talocrural-articulation-or-ankle-joint/",
+    "quote": "to the talus, in front of its lateral articular facet"
+   }
+  },
+  "anterior-tibiofibular-ligament": {
+   "fibula": {
+    "text": "anterior (Wagstaffe-Le Fort) tubercle of the lateral malleolus",
+    "source": "Radiopaedia: Anterior inferior tibiofibular ligament",
+    "url": "https://radiopaedia.org/articles/anterior-inferior-tibiofibular-ligament",
+    "quote": "to the anterior aspect of the lateral malleolus at the Wagstaffe-Le Fort tubercle"
+   },
+   "tibia": {
+    "text": "anterior (Chaput) tubercle of the distal tibia",
+    "source": "Radiopaedia: Anterior inferior tibiofibular ligament",
+    "url": "https://radiopaedia.org/articles/anterior-inferior-tibiofibular-ligament",
+    "quote": "at the Chaput tubercle"
+   }
+  },
+  "calcaneocuboid-ligament": {
+   "calcaneus": {
+    "text": "deep hollow on the upper surface",
+    "source": "Gray's Anatomy (1918), 7e. Intertarsal Articulations",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/7e-intertarsal-articulations/",
+    "quote": "attached behind to the deep hollow on the upper surface of the calcaneus"
+   },
+   "cuboid": {
+    "text": "medial side of the cuboid",
+    "source": "Gray's Anatomy (1918), 7e. Intertarsal Articulations",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/7e-intertarsal-articulations/",
+    "quote": "The calcaneocuboid part is fixed to the medial side of the cuboid"
+   }
+  },
+  "calcaneonavicular-ligament": {
+   "calcaneus": {
+    "text": "deep hollow on the upper surface",
+    "source": "Gray's Anatomy (1918), 7e. Intertarsal Articulations",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/7e-intertarsal-articulations/",
+    "quote": "attached behind to the deep hollow on the upper surface of the calcaneus"
+   },
+   "navicular": {
+    "text": "lateral side of the navicular",
+    "source": "Gray's Anatomy (1918), 7e. Intertarsal Articulations",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/7e-intertarsal-articulations/",
+    "quote": "The calcaneonavicular part is attached to the lateral side of the navicular."
+   }
+  },
+  "collateral-metatarsophalangeal-ligaments": {
+   "metatarsals": {
+    "text": "tubercle on the side of the head",
+    "source": "Gray's Anatomy (1918), 7h. Metatarsophalangeal Articulations",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/7h-metatarsophalangeal-articulations/",
+    "quote": "to the posterior tubercle on the side of the head of the metatarsal bone"
+   },
+   "phalanges-proximal-foot": {
+    "text": "adjoining end (base) of the phalanx",
+    "source": "Gray's Anatomy (1918), 7h. Metatarsophalangeal Articulations",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/7h-metatarsophalangeal-articulations/",
+    "quote": "by the other, to the contiguous extremity of the phalanx"
+   }
+  },
+  "cuneocuboid-interosseous-ligament": {
+   "lateral-cuneiform": {
+    "text": "rough non-articular area of lateral surface",
+    "source": "Gray's Anatomy (1918), 6d.1 The Tarsus",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/6d-the-foot-1-the-tarsus/",
+    "quote": "the rough, non-articular area serves for the attachment of an interosseous ligament"
+   },
+   "cuboid": {
+    "text": "rough part of its medial surface",
+    "source": "Gray's Anatomy (1918), 6d.1 The Tarsus",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/6d-the-foot-1-the-tarsus/",
+    "quote": "it is rough in the rest of its extent, for the attachment of strong interosseous ligaments"
+   }
+  },
+  "deep-transverse-metatarsal-ligament": {
+   "metatarsals": {
+    "text": "heads of the metatarsals",
+    "source": "Gray's Anatomy (1918), 7g. Intermetatarsal Articulations",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/7g-intermetatarsal-articulations/",
+    "quote": "connects together the heads of all the metatarsal bones"
+   }
+  },
+  "dorsal-calcaneocuboid-ligament": {
+   "calcaneus": {
+    "text": "dorsal aspect, at the cuboid joint",
+    "source": "Gray's Anatomy (1918), 7e. Intertarsal Articulations",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/7e-intertarsal-articulations/",
+    "quote": "passes between the contiguous surfaces of the calcaneus and cuboid, on the dorsal surface of the joint"
+   },
+   "cuboid": {
+    "text": "dorsal aspect, at the calcaneal joint",
+    "source": "Gray's Anatomy (1918), 7e. Intertarsal Articulations",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/7e-intertarsal-articulations/",
+    "quote": "passes between the contiguous surfaces of the calcaneus and cuboid, on the dorsal surface of the joint"
+   }
+  },
+  "dorsal-cuboideonavicular-ligament": {
+   "cuboid": {
+    "text": "dorsal surface",
+    "source": "Gray's Anatomy (1918), 6d.1 The Tarsus",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/6d-the-foot-1-the-tarsus/",
+    "quote": "The dorsal surface, directed upward and lateralward, is rough, for the attachment of ligaments."
+   },
+   "navicular": {
+    "text": "dorsal surface",
+    "source": "Gray's Anatomy (1918), 6d.1 The Tarsus",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/6d-the-foot-1-the-tarsus/",
+    "quote": "The dorsal surface is convex from side to side, and rough for the attachment of ligaments."
+   }
+  },
+  "dorsal-cuneocuboid-ligament": {
+   "cuboid": {
+    "text": "dorsal surface",
+    "source": "Gray's Anatomy (1918), 6d.1 The Tarsus",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/6d-the-foot-1-the-tarsus/",
+    "quote": "The dorsal surface, directed upward and lateralward, is rough, for the attachment of ligaments."
+   }
+  },
+  "dorsal-cuneonavicular-ligaments": {
+   "navicular": {
+    "text": "dorsal surface",
+    "source": "Gray's Anatomy (1918), 6d.1 The Tarsus",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/6d-the-foot-1-the-tarsus/",
+    "quote": "The dorsal surface is convex from side to side, and rough for the attachment of ligaments."
+   },
+   "medial-cuneiform": {
+    "text": "dorsal surface (narrow edge of the wedge)",
+    "source": "Gray's Anatomy (1918), 6d.1 The Tarsus",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/6d-the-foot-1-the-tarsus/",
+    "quote": "The dorsal surface is the narrow end of the wedge, and is directed upward and lateralward; it is rough for the attachment of ligaments."
+   },
+   "intermediate-cuneiform": {
+    "text": "dorsal surface (base of the wedge)",
+    "source": "Gray's Anatomy (1918), 6d.1 The Tarsus",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/6d-the-foot-1-the-tarsus/",
+    "quote": "The dorsal surface forms the base of the wedge; it is quadrilateral and rough for the attachment of ligaments."
+   }
+  },
+  "dorsal-intercuneiform-ligaments": {
+   "medial-cuneiform": {
+    "text": "dorsal surface (narrow edge of the wedge)",
+    "source": "Gray's Anatomy (1918), 6d.1 The Tarsus",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/6d-the-foot-1-the-tarsus/",
+    "quote": "The dorsal surface is the narrow end of the wedge, and is directed upward and lateralward; it is rough for the attachment of ligaments."
+   },
+   "intermediate-cuneiform": {
+    "text": "dorsal surface (base of the wedge)",
+    "source": "Gray's Anatomy (1918), 6d.1 The Tarsus",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/6d-the-foot-1-the-tarsus/",
+    "quote": "The dorsal surface forms the base of the wedge; it is quadrilateral and rough for the attachment of ligaments."
+   }
+  },
+  "dorsal-metatarsal-ligaments": {
+   "metatarsals": {
+    "text": "dorsal surfaces of the bases",
+    "source": "Gray's Anatomy (1918), 7g. Intermetatarsal Articulations",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/7g-intermetatarsal-articulations/",
+    "quote": "pass transversely between the dorsal surfaces of the bases of the adjacent metatarsal bones"
+   }
+  },
+  "dorsal-tarsometatarsal-ligaments": {
+   "metatarsals": {
+    "text": "dorsal surface of the bases",
+    "source": "Gray's Anatomy (1918), 6d.2 The Metatarsus",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/6d-2-the-metatarsus/",
+    "quote": "its dorsal and plantar surfaces are rough for the attachment of ligaments"
+   },
+   "medial-cuneiform": {
+    "text": "dorsal surface (narrow edge of the wedge)",
+    "source": "Gray's Anatomy (1918), 6d.1 The Tarsus",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/6d-the-foot-1-the-tarsus/",
+    "quote": "The dorsal surface is the narrow end of the wedge, and is directed upward and lateralward; it is rough for the attachment of ligaments."
+   },
+   "intermediate-cuneiform": {
+    "text": "dorsal surface (base of the wedge)",
+    "source": "Gray's Anatomy (1918), 6d.1 The Tarsus",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/6d-the-foot-1-the-tarsus/",
+    "quote": "The dorsal surface forms the base of the wedge; it is quadrilateral and rough for the attachment of ligaments."
+   },
+   "cuboid": {
+    "text": "dorsal surface",
+    "source": "Gray's Anatomy (1918), 6d.1 The Tarsus",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/6d-the-foot-1-the-tarsus/",
+    "quote": "The dorsal surface, directed upward and lateralward, is rough, for the attachment of ligaments."
+   }
+  },
+  "intercuneiform-interosseous-ligaments": {
+   "medial-cuneiform": {
+    "text": "rough non-articular facing surface",
+    "source": "Gray's Anatomy (1918), 7e. Intertarsal Articulations",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/7e-intertarsal-articulations/",
+    "quote": "pass between the rough non-articular portions of the adjacent surfaces of the bones"
+   },
+   "intermediate-cuneiform": {
+    "text": "rough non-articular facing surfaces",
+    "source": "Gray's Anatomy (1918), 7e. Intertarsal Articulations",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/7e-intertarsal-articulations/",
+    "quote": "pass between the rough non-articular portions of the adjacent surfaces of the bones"
+   },
+   "lateral-cuneiform": {
+    "text": "rough non-articular facing surface",
+    "source": "Gray's Anatomy (1918), 7e. Intertarsal Articulations",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/7e-intertarsal-articulations/",
+    "quote": "pass between the rough non-articular portions of the adjacent surfaces of the bones"
+   }
+  },
+  "lateral-talocalcaneal-ligament": {
+   "talus": {
+    "text": "lateral surface, just below the fibular facet",
+    "source": "Gray's Anatomy (1918), 7e. Intertarsal Articulations",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/7e-intertarsal-articulations/",
+    "quote": "passing from the lateral surface of the talus, immediately beneath its fibular facet"
+   },
+   "calcaneus": {
+    "text": "upper front part of the lateral surface",
+    "source": "Gray's Anatomy (1918), 6d.1 The Tarsus",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/6d-the-foot-1-the-tarsus/",
+    "quote": "At its upper and anterior part, this surface gives attachment to the lateral talocalcaneal ligament"
+   }
+  },
+  "medial-talocalcaneal-ligament": {
+   "talus": {
+    "text": "medial tubercle on the back",
+    "source": "Gray's Anatomy (1918), 7e. Intertarsal Articulations",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/7e-intertarsal-articulations/",
+    "quote": "connects the medial tubercle of the back of the talus"
+   },
+   "calcaneus": {
+    "text": "back of the sustentaculum tali",
+    "source": "Gray's Anatomy (1918), 7e. Intertarsal Articulations",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/7e-intertarsal-articulations/",
+    "quote": "with the back of the sustentaculum tali"
+   }
+  },
+  "metatarsal-interosseous-ligaments": {
+   "metatarsals": {
+    "text": "rough non-articular sides of the bases",
+    "source": "Gray's Anatomy (1918), 7g. Intermetatarsal Articulations",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/7g-intermetatarsal-articulations/",
+    "quote": "connect the rough non-articular portions of the adjacent surfaces"
+   }
+  },
+  "plantar-calcaneocuboid-ligament": {
+   "calcaneus": {
+    "text": "plantar tubercle on the forepart",
+    "source": "Gray's Anatomy (1918), 7e. Intertarsal Articulations",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/7e-intertarsal-articulations/",
+    "quote": "extends from the tubercle and the depression in front of it, on the forepart of the plantar surface of the calcaneus"
+   },
+   "cuboid": {
+    "text": "plantar surface behind the peroneal groove",
+    "source": "Gray's Anatomy (1918), 7e. Intertarsal Articulations",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/7e-intertarsal-articulations/",
+    "quote": "to the plantar surface of the cuboid behind the peroneal groove"
+   }
+  },
+  "plantar-calcaneonavicular-ligament": {
+   "calcaneus": {
+    "text": "anterior margin of the sustentaculum tali",
+    "source": "Gray's Anatomy (1918), 7e. Intertarsal Articulations",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/7e-intertarsal-articulations/",
+    "quote": "connects the anterior margin of the sustentaculum tali of the calcaneus"
+   },
+   "navicular": {
+    "text": "plantar surface",
+    "source": "Gray's Anatomy (1918), 7e. Intertarsal Articulations",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/7e-intertarsal-articulations/",
+    "quote": "to the plantar surface of the navicular"
+   }
+  },
+  "plantar-cuboideonavicular-ligament": {
+   "navicular": {
+    "text": "plantar surface",
+    "source": "Gray's Anatomy (1918), 6d.1 The Tarsus",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/6d-the-foot-1-the-tarsus/",
+    "quote": "The plantar surface is irregular, and also rough for the attachment of ligaments."
+   }
+  },
+  "plantar-cuneocuboid-ligament": {
+   "lateral-cuneiform": {
+    "text": "plantar surface (rounded lower edge)",
+    "source": "Gray's Anatomy (1918), 6d.1 The Tarsus",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/6d-the-foot-1-the-tarsus/",
+    "quote": "The plantar surface is a rounded margin, and serves for the attachment of part of the tendon of the Tibialis posterior, part of the Flexor hallucis brevis, and ligaments."
+   }
+  },
+  "plantar-cuneonavicular-ligaments": {
+   "navicular": {
+    "text": "plantar surface",
+    "source": "Gray's Anatomy (1918), 6d.1 The Tarsus",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/6d-the-foot-1-the-tarsus/",
+    "quote": "The plantar surface is irregular, and also rough for the attachment of ligaments."
+   },
+   "medial-cuneiform": {
+    "text": "plantar surface (base of the wedge)",
+    "source": "Gray's Anatomy (1918), 6d.1 The Tarsus",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/6d-the-foot-1-the-tarsus/",
+    "quote": "The plantar surface is rough, and forms the base of the wedge"
+   },
+   "intermediate-cuneiform": {
+    "text": "plantar surface (sharp lower edge)",
+    "source": "Gray's Anatomy (1918), 6d.1 The Tarsus",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/6d-the-foot-1-the-tarsus/",
+    "quote": "The plantar surface, sharp and tuberculated, is also rough for the attachment of ligaments"
+   },
+   "lateral-cuneiform": {
+    "text": "plantar surface (rounded lower edge)",
+    "source": "Gray's Anatomy (1918), 6d.1 The Tarsus",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/6d-the-foot-1-the-tarsus/",
+    "quote": "The plantar surface is a rounded margin, and serves for the attachment of part of the tendon of the Tibialis posterior, part of the Flexor hallucis brevis, and ligaments."
+   }
+  },
+  "plantar-intercuneiform-ligaments": {
+   "medial-cuneiform": {
+    "text": "plantar surface (base of the wedge)",
+    "source": "Gray's Anatomy (1918), 6d.1 The Tarsus",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/6d-the-foot-1-the-tarsus/",
+    "quote": "The plantar surface is rough, and forms the base of the wedge"
+   },
+   "intermediate-cuneiform": {
+    "text": "plantar surface (sharp lower edge)",
+    "source": "Gray's Anatomy (1918), 6d.1 The Tarsus",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/6d-the-foot-1-the-tarsus/",
+    "quote": "The plantar surface, sharp and tuberculated, is also rough for the attachment of ligaments"
+   },
+   "lateral-cuneiform": {
+    "text": "plantar surface (rounded lower edge)",
+    "source": "Gray's Anatomy (1918), 6d.1 The Tarsus",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/6d-the-foot-1-the-tarsus/",
+    "quote": "The plantar surface is a rounded margin, and serves for the attachment of part of the tendon of the Tibialis posterior, part of the Flexor hallucis brevis, and ligaments."
+   }
+  },
+  "plantar-metatarsal-ligaments": {
+   "metatarsals": {
+    "text": "plantar surfaces of the bases",
+    "source": "Gray's Anatomy (1918), 6d.2 The Metatarsus",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/6d-2-the-metatarsus/",
+    "quote": "its dorsal and plantar surfaces are rough for the attachment of ligaments"
+   }
+  },
+  "plantar-metatarsophalangeal-ligaments": {
+   "metatarsals": {
+    "text": "periosteum of the metatarsal shaft",
+    "source": "Radiopaedia: Metatarsophalangeal joint",
+    "url": "https://radiopaedia.org/articles/metatarsophalangeal-joint",
+    "quote": "originates from the metatarsal shaft periosteum to the proximal phalanx"
+   },
+   "phalanges-proximal-foot": {
+    "text": "plantar base of the proximal phalanx",
+    "source": "Gray's Anatomy (1918), 7h. Metatarsophalangeal Articulations",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/7h-metatarsophalangeal-articulations/",
+    "quote": "but very firmly to the bases of the first phalanges"
+   }
+  },
+  "plantar-tarsometatarsal-ligaments": {
+   "medial-cuneiform": {
+    "text": "plantar surface (base of the wedge)",
+    "source": "Gray's Anatomy (1918), 6d.1 The Tarsus",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/6d-the-foot-1-the-tarsus/",
+    "quote": "The plantar surface is rough, and forms the base of the wedge"
+   },
+   "intermediate-cuneiform": {
+    "text": "plantar surface (sharp lower edge)",
+    "source": "Gray's Anatomy (1918), 6d.1 The Tarsus",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/6d-the-foot-1-the-tarsus/",
+    "quote": "The plantar surface, sharp and tuberculated, is also rough for the attachment of ligaments"
+   },
+   "lateral-cuneiform": {
+    "text": "plantar surface (rounded lower edge)",
+    "source": "Gray's Anatomy (1918), 6d.1 The Tarsus",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/6d-the-foot-1-the-tarsus/",
+    "quote": "The plantar surface is a rounded margin, and serves for the attachment of part of the tendon of the Tibialis posterior, part of the Flexor hallucis brevis, and ligaments."
+   },
+   "metatarsals": {
+    "text": "plantar surface of the bases",
+    "source": "Gray's Anatomy (1918), 6d.2 The Metatarsus",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/6d-2-the-metatarsus/",
+    "quote": "its dorsal and plantar surfaces are rough for the attachment of ligaments"
+   }
+  },
+  "posterior-talocalcaneal-ligament": {
+   "talus": {
+    "text": "lateral tubercle (posterior process)",
+    "source": "Gray's Anatomy (1918), 7e. Intertarsal Articulations",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/7e-intertarsal-articulations/",
+    "quote": "connects the lateral tubercle of the talus"
+   },
+   "calcaneus": {
+    "text": "upper medial part",
+    "source": "Gray's Anatomy (1918), 7e. Intertarsal Articulations",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/7e-intertarsal-articulations/",
+    "quote": "with the upper and medial part of the calcaneus"
+   }
+  },
+  "posterior-talofibular-ligament": {
+   "lateral-malleolus": {
+    "text": "depression on its medial back part",
+    "source": "Gray's Anatomy (1918), 7d. Talocrural Articulation or Ankle-joint",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/7d-talocrural-articulation-or-ankle-joint/",
+    "quote": "from the depression at the medial and back part of the fibular malleolus"
+   },
+   "talus": {
+    "text": "posterior process, lateral to the FHL groove",
+    "source": "Gray's Anatomy (1918), 7d. Talocrural Articulation or Ankle-joint",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/7d-talocrural-articulation-or-ankle-joint/",
+    "quote": "to a prominent tubercle on the posterior surface of the talus immediately lateral to the groove for the tendon of the Flexor hallucis longus"
+   }
+  },
+  "posterior-tibiofibular-ligament": {
+   "tibia": {
+    "text": "posterolateral (Volkmann) tubercle",
+    "source": "Radiopaedia: Posterior inferior tibiofibular ligament",
+    "url": "https://radiopaedia.org/articles/posterior-inferior-tibiofibular-ligament",
+    "quote": "proximal origin from the posterolateral tubercle of tibia (Volkmann)"
+   },
+   "lateral-malleolus": {
+    "text": "small posterior fibular tubercle",
+    "source": "Radiopaedia: Posterior inferior tibiofibular ligament",
+    "url": "https://radiopaedia.org/articles/posterior-inferior-tibiofibular-ligament",
+    "quote": "distally converging insertion at the small posterior fibular tubercle"
+   }
+  },
+  "talocalcaneal-interosseous-ligament": {
+   "talus": {
+    "text": "groove between the under-surface facets",
+    "source": "Gray's Anatomy (1918), 7e. Intertarsal Articulations",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/7e-intertarsal-articulations/",
+    "quote": "attached, above, to the groove between the articular facets of the under surface of the talus"
+   },
+   "calcaneus": {
+    "text": "depression on the upper surface",
+    "source": "Gray's Anatomy (1918), 7e. Intertarsal Articulations",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/7e-intertarsal-articulations/",
+    "quote": "below, to a corresponding depression on the upper surface of the calcaneus"
+   }
+  },
+  "transverse-tibiofibular-ligament": {
+   "tibia": {
+    "text": "posterior border of the articular surface",
+    "source": "Gray's Anatomy (1918), 7c. Articulations between the Tibia and Fibula",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/7c-articulations-between-the-tibia-and-fibula/",
+    "quote": "to the posterior border of the articular surface of the tibia"
+   },
+   "lateral-malleolus": {
+    "text": "upper edge of the malleolar fossa",
+    "source": "Radiopaedia: Transverse tibiofibular ligament",
+    "url": "https://radiopaedia.org/articles/transverse-tibiofibular-ligament",
+    "quote": "lateral attachment at the proximal edge of the fibular malleolar fossa"
+   }
+  },
+  "interosseous-membrane-of-forearm": {
+   "ulna": {
+    "text": "interosseous crest of the ulna",
+    "source": "Gray's Anatomy of the Human Body, 20th ed. (1918)",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/6e-radioulnar-articulation/",
+    "quote": "the interosseous crest of the radius to that of the ulna"
+   },
+   "radius": {
+    "text": "interosseous crest of the radius",
+    "source": "Gray's Anatomy of the Human Body, 20th ed. (1918)",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/6e-radioulnar-articulation/",
+    "quote": "the interosseous crest of the radius to that of the ulna"
+   }
+  },
+  "quadrate-ligament": {
+   "ulna": {
+    "text": "lateral ulna just below the radial notch",
+    "source": "Tubbs RS et al. The morphology and function of the quadrate ligament. Folia Morphol 2006;65(3):225-227",
+    "url": "https://journals.viamedica.pl/folia_morphologica/article/view/16087",
+    "quote": "The quadrate ligament was always found to attach the medial neck of the radius to the area of the lateral ulna just inferior to the radial notch"
+   },
+   "radius": {
+    "text": "medial side of the neck of the radius",
+    "source": "Tubbs RS et al. The morphology and function of the quadrate ligament. Folia Morphol 2006;65(3):225-227",
+    "url": "https://journals.viamedica.pl/folia_morphologica/article/view/16087",
+    "quote": "The quadrate ligament was always found to attach the medial neck of the radius to the area of the lateral ulna just inferior to the radial notch"
+   }
+  },
+  "collateral-interphalangeal-ligaments-of-hand": {
+   "phalanges-proximal-hand": {
+    "text": "fossa on each side of the head",
+    "source": "Kim YW et al. Volar plate avulsion fracture alone or concomitant with collateral ligament rupture of the proximal interphalangeal joint. Arch Plast Surg 2018",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6177630/",
+    "quote": "The proper collateral ligaments arise from each side of a concave fossa of the proximal phalanx head and extend obliquely and distally to their insertions in the middle phalanx base"
+   }
+  },
+  "deep-transverse-metacarpal-ligament": {
+   "metacarpals": {
+    "text": "palmar surfaces of the heads of metacarpals 2-5",
+    "source": "Gray's Anatomy of the Human Body, 20th ed. (1918)",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/6i-intermetacarpal-articulations/",
+    "quote": "runs across the volar surfaces of the heads of the second, third, fourth and fifth metacarpal bones"
+   }
+  },
+  "dorsal-carpometacarpal-ligaments": {
+   "capitate": {
+    "text": "dorsal surface of the capitate",
+    "source": "Gray's Anatomy of the Human Body, 20th ed. (1918)",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/6h-carpometacarpal-articulations/",
+    "quote": "connect the carpal and metacarpal bones on their dorsal surfaces"
+   },
+   "metacarpals": {
+    "text": "dorsal surfaces of the bases of metacarpals 2-5",
+    "source": "Gray's Anatomy of the Human Body, 20th ed. (1918)",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/6h-carpometacarpal-articulations/",
+    "quote": "connect the carpal and metacarpal bones on their dorsal surfaces"
+   },
+   "trapezium": {
+    "text": "dorsal surface of the trapezium",
+    "source": "Gray's Anatomy of the Human Body, 20th ed. (1918)",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/6h-carpometacarpal-articulations/",
+    "quote": "connect the carpal and metacarpal bones on their dorsal surfaces"
+   },
+   "hamate": {
+    "text": "dorsal surface of the hamate",
+    "source": "Gray's Anatomy of the Human Body, 20th ed. (1918)",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/6h-carpometacarpal-articulations/",
+    "quote": "connect the carpal and metacarpal bones on their dorsal surfaces"
+   },
+   "trapezoid": {
+    "text": "dorsal surface of the trapezoid",
+    "source": "Gray's Anatomy of the Human Body, 20th ed. (1918)",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/6h-carpometacarpal-articulations/",
+    "quote": "connect the carpal and metacarpal bones on their dorsal surfaces"
+   }
+  },
+  "dorsal-metacarpal-ligaments": {
+   "metacarpals": {
+    "text": "dorsal surfaces of the bases of metacarpals 2-5",
+    "source": "Gray's Anatomy of the Human Body, 20th ed. (1918)",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/6i-intermetacarpal-articulations/",
+    "quote": "The bases of the second, third, fourth and fifth metacarpal bones articulate with one another ... pass transversely from one bone to another on the dorsal and volar surfaces"
+   }
+  },
+  "dorsal-radio-ulnar-ligament": {
+   "radius": {
+    "text": "dorsal rim of the ulnar (sigmoid) notch",
+    "source": "Winnett C, Fenech M. Sonographic Anatomy and Imaging of the Triangular Fibrocartilage Complex and the Distal Radio-Ulnar Joint. Australas J Ultrasound Med 2025",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12209593/",
+    "quote": "They extend from the ulnar styloid and fovea to the dorsal and palmar rims of the sigmoid notch of the radius"
+   }
+  },
+  "dorsal-ulnocarpal-ligament": {
+   "triquetrum": {
+    "text": "dorsal aspect of the triquetrum",
+    "source": "The triangular fibrocartilage complex (TFCC): updated anatomy, variants, and MRI diagnostic pitfalls. Skeletal Radiol 2026 (open access, CC BY)",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13652943/",
+    "quote": "extends from the ulnar styloid process to the dorsal aspect of the triquetrum"
+   }
+  },
+  "interosseous-metacarpal-ligaments": {
+   "metacarpals": {
+    "text": "facing sides of the metacarpal bases, beyond the facets",
+    "source": "Gray's Anatomy of the Human Body, 20th ed. (1918)",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/6i-intermetacarpal-articulations/",
+    "quote": "connect their contiguous surfaces, just distal to their collateral articular facets"
+   }
+  },
+  "palmar-capitohamate-ligament": {
+   "capitate": {
+    "text": "palmar surface of the capitate",
+    "source": "Gray's Anatomy of the Human Body, 20th ed. (1918)",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/6g-intercarpal-articulations/",
+    "quote": "The volar ligaments, also three, have a similar arrangement on the volar surface"
+   },
+   "hamate": {
+    "text": "palmar surface of the hamate",
+    "source": "Gray's Anatomy of the Human Body, 20th ed. (1918)",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/6g-intercarpal-articulations/",
+    "quote": "The volar ligaments, also three, have a similar arrangement on the volar surface"
+   }
+  },
+  "palmar-carpometacarpal-ligaments": {
+   "metacarpals": {
+    "text": "palmar surfaces of the bases of metacarpals 2-5",
+    "source": "Gray's Anatomy of the Human Body, 20th ed. (1918)",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/6h-carpometacarpal-articulations/",
+    "quote": "The volar ligaments have a somewhat similar arrangement, with the exception of those of the third metacarpal"
+   },
+   "trapezium": {
+    "text": "palmar surface of the trapezium",
+    "source": "Gray's Anatomy of the Human Body, 20th ed. (1918)",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/6h-carpometacarpal-articulations/",
+    "quote": "The volar ligaments have a somewhat similar arrangement, with the exception of those of the third metacarpal"
+   },
+   "trapezoid": {
+    "text": "palmar surface of the trapezoid",
+    "source": "Gray's Anatomy of the Human Body, 20th ed. (1918)",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/6h-carpometacarpal-articulations/",
+    "quote": "The volar ligaments have a somewhat similar arrangement, with the exception of those of the third metacarpal"
+   },
+   "capitate": {
+    "text": "palmar surface of the capitate",
+    "source": "Gray's Anatomy of the Human Body, 20th ed. (1918)",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/6h-carpometacarpal-articulations/",
+    "quote": "The volar ligaments have a somewhat similar arrangement, with the exception of those of the third metacarpal"
+   },
+   "hamate": {
+    "text": "palmar surface of the hamate",
+    "source": "Gray's Anatomy of the Human Body, 20th ed. (1918)",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/6h-carpometacarpal-articulations/",
+    "quote": "The volar ligaments have a somewhat similar arrangement, with the exception of those of the third metacarpal"
+   }
+  },
+  "palmar-interphalangeal-ligaments": {
+   "phalanges-middle-hand": {
+    "text": "palmar base of the middle phalanx",
+    "source": "Kim YW et al. Volar plate avulsion fracture alone or concomitant with collateral ligament rupture of the proximal interphalangeal joint. Arch Plast Surg 2018",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6177630/",
+    "quote": "inserts into the volar periosteum of the middle phalanx base"
+   },
+   "phalanges-distal-hand": {
+    "text": "articular edge of the distal phalanx base",
+    "source": "Collagen organisation in the fibrous joint capsules in the digits of the human hand. J Anat 2025 (review)",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13140493/",
+    "quote": "This ligament attaches to the edge of the articular cartilage at the distal phalangeal base, from where it runs proximally and attaches to the periosteum of the proximal bone, which would be the middle phalanx in the DIP"
+   },
+   "phalanges-proximal-hand": {
+    "text": "palmar periosteum of the shaft (check-reins)",
+    "source": "Collagen organisation in the fibrous joint capsules in the digits of the human hand. J Anat 2025 (review)",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13140493/",
+    "quote": "which extend proximally on both the medial and lateral aspects of the PIP and attach to the palmar periosteum of the proximal phalanx"
+   }
+  },
+  "palmar-lunotriquetral-ligament": {
+   "triquetrum": {
+    "text": "palmar surface of the triquetrum",
+    "source": "Gray's Anatomy of the Human Body, 20th ed. (1918)",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/6g-intercarpal-articulations/",
+    "quote": "The volar ligaments, also two, connect the navicular and lunate, and the lunate and triangular; they are less strong than the dorsal, and placed very deeply behind the Flexor tendons and the volar radiocarpal ligament"
+   },
+   "lunate": {
+    "text": "palmar surface of the lunate",
+    "source": "Gray's Anatomy of the Human Body, 20th ed. (1918)",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/6g-intercarpal-articulations/",
+    "quote": "The volar ligaments, also two, connect the navicular and lunate, and the lunate and triangular; they are less strong than the dorsal, and placed very deeply behind the Flexor tendons and the volar radiocarpal ligament"
+   }
+  },
+  "palmar-metacarpal-ligaments": {
+   "metacarpals": {
+    "text": "palmar surfaces of the bases of metacarpals 2-5",
+    "source": "Gray's Anatomy of the Human Body, 20th ed. (1918)",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/6i-intermetacarpal-articulations/",
+    "quote": "The bases of the second, third, fourth and fifth metacarpal bones articulate with one another ... pass transversely from one bone to another on the dorsal and volar surfaces"
+   }
+  },
+  "palmar-radio-ulnar-ligament": {
+   "ulna": {
+    "text": "front of the head of the ulna",
+    "source": "Gray's Anatomy of the Human Body, 20th ed. (1918)",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/6e-radioulnar-articulation/",
+    "quote": "from the anterior margin of the ulnar notch of the radius to the front of the head of the ulna"
+   },
+   "radius": {
+    "text": "anterior margin of the ulnar notch",
+    "source": "Gray's Anatomy of the Human Body, 20th ed. (1918)",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/6e-radioulnar-articulation/",
+    "quote": "from the anterior margin of the ulnar notch of the radius to the front of the head of the ulna"
+   }
+  },
+  "ulnotriquetral-ligament": {
+   "ulnar-styloid-process": {
+    "text": "palmar radial surface of the ulnar styloid",
+    "source": "The triangular fibrocartilage complex (TFCC): updated anatomy, variants, and MRI diagnostic pitfalls. Skeletal Radiol 2026 (open access, CC BY)",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13652943/",
+    "quote": "PUTL: arises primarily from the PRUL, with some fibers originating from the palmar radial surface of the ulnar styloid process."
+   },
+   "triquetrum": {
+    "text": "proximal and ulnar surfaces of the triquetrum",
+    "source": "The triangular fibrocartilage complex (TFCC): updated anatomy, variants, and MRI diagnostic pitfalls. Skeletal Radiol 2026 (open access, CC BY)",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13652943/",
+    "quote": "Inserts on the proximal and ulnar surfaces of the triquetrum."
+   }
+  },
+  "lunotriquetral-interosseous-ligament": {
+   "lunate": {
+    "text": "proximal edge facing the triquetrum",
+    "source": "Gray's Anatomy of the Human Body, 20th ed. (1918)",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/6g-intercarpal-articulations/",
+    "quote": "one connecting the lunate with the navicular, the other joining it to the triangular. They are on a level with the superior surfaces of these bones"
+   },
+   "triquetrum": {
+    "text": "proximal edge facing the lunate",
+    "source": "Gray's Anatomy of the Human Body, 20th ed. (1918)",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/6g-intercarpal-articulations/",
+    "quote": "one connecting the lunate with the navicular, the other joining it to the triangular. They are on a level with the superior surfaces of these bones"
+   }
+  },
+  "trapezoideocapitate-interosseous-ligament": {
+   "trapezoid": {
+    "text": "notch beside the capitate-facing joint surface",
+    "source": "Radiopaedia: Capitotrapezoid ligament",
+    "url": "https://radiopaedia.org/articles/capitotrapezoid-ligament",
+    "quote": "runs obliquely in a notch between the articulating surfaces of the trapezoid and the capitate"
+   },
+   "capitate": {
+    "text": "notch beside the trapezoid-facing joint surface",
+    "source": "Radiopaedia: Capitotrapezoid ligament",
+    "url": "https://radiopaedia.org/articles/capitotrapezoid-ligament",
+    "quote": "runs obliquely in a notch between the articulating surfaces of the trapezoid and the capitate"
+   }
+  },
+  "capitohamate-interosseous-ligament": {
+   "capitate": {
+    "text": "distal palmar margin facing the hamate",
+    "source": "Radiopaedia: Capitohamate ligament",
+    "url": "https://radiopaedia.org/articles/capitohamate-ligament",
+    "quote": "located in a square-shaped depression in the anterior and distal margin of the capitohamate joint"
+   },
+   "hamate": {
+    "text": "distal palmar margin facing the capitate",
+    "source": "Radiopaedia: Capitohamate ligament",
+    "url": "https://radiopaedia.org/articles/capitohamate-ligament",
+    "quote": "located in a square-shaped depression in the anterior and distal margin of the capitohamate joint"
+   }
+  },
+  "palmar-trapezoideocapitate-ligament": {
+   "trapezoid": {
+    "text": "palmar surface of the trapezoid",
+    "source": "Gray's Anatomy of the Human Body, 20th ed. (1918)",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/6g-intercarpal-articulations/",
+    "quote": "The volar ligaments, also three, have a similar arrangement on the volar surface"
+   },
+   "capitate": {
+    "text": "palmar surface of the capitate",
+    "source": "Gray's Anatomy of the Human Body, 20th ed. (1918)",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/6g-intercarpal-articulations/",
+    "quote": "The volar ligaments, also three, have a similar arrangement on the volar surface"
+   }
+  },
+  "acetabular-labrum": {
+   "acetabulum": {
+    "text": "acetabular rim (margin)",
+    "source": "Gray's Anatomy (1918), 7a. Coxal Articulation or Hip-joint",
+    "url": "https://www.bartleby.com/107/92.html",
+    "quote": "its base being attached to the margin of the acetabulum"
+   }
+  },
+  "anterior-sacro-iliac-ligament": {
+   "sacrum": {
+    "text": "anterior surface of lateral sacrum",
+    "source": "Gray's Anatomy (1918), 5i. Articulations of the Pelvis",
+    "url": "https://www.bartleby.com/107/80.html",
+    "quote": "connect the anterior surface of the lateral part of the sacrum"
+   },
+   "ilium": {
+    "text": "margin of auricular surface, preauricular sulcus",
+    "source": "Gray's Anatomy (1918), 5i. Articulations of the Pelvis",
+    "url": "https://www.bartleby.com/107/80.html",
+    "quote": "to the margin of the auricular surface of the ilium and to the preauricular sulcus"
+   }
+  },
+  "descending-part-of-iliofemoral-ligament": {
+   "aiis": {
+    "text": "lower part of AIIS",
+    "source": "Gray's Anatomy (1918), 7a. Coxal Articulation or Hip-joint",
+    "url": "https://www.bartleby.com/107/92.html",
+    "quote": "It is attached, above, to the lower part of the anterior inferior iliac spine"
+   },
+   "acetabulum": {
+    "text": "iliac part of acetabular margin",
+    "source": "The role of the iliofemoral ligament as a stabilizer of the hip joint (EFORT Open Reviews, PMC8335960)",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8335960/",
+    "quote": "It originated proximally from the lower part of the AIIS and the iliac portion of the acetabular margin"
+   },
+   "intertrochanteric-line": {
+    "text": "lower part of intertrochanteric line",
+    "source": "Gray's Anatomy (1918), 7a. Coxal Articulation or Hip-joint",
+    "url": "https://www.bartleby.com/107/92.html",
+    "quote": "one of which passes downward and is fixed to the lower part of the intertrochanteric line"
+   }
+  },
+  "interosseous-sacro-iliac-ligament": {
+   "ilium": {
+    "text": "iliac tuberosity",
+    "source": "Gray's Anatomy (1918), 5i. Articulations of the Pelvis",
+    "url": "https://www.bartleby.com/107/80.html",
+    "quote": "short, strong fibers connecting the tubeosities of the sacrum and ilium"
+   },
+   "sacrum": {
+    "text": "sacral tuberosity",
+    "source": "Gray's Anatomy (1918), 5i. Articulations of the Pelvis",
+    "url": "https://www.bartleby.com/107/80.html",
+    "quote": "short, strong fibers connecting the tubeosities of the sacrum and ilium"
+   }
+  },
+  "posterior-sacro-iliac-ligament": {
+   "sacrum": {
+    "text": "transverse tubercles on back of sacrum",
+    "source": "Gray's Anatomy (1918), 5i. Articulations of the Pelvis",
+    "url": "https://www.bartleby.com/107/80.html",
+    "quote": "from the first and second transverse tubercles on the back of the sacrum to the tuberosity of the ilium"
+   },
+   "ilium": {
+    "text": "iliac tuberosity and posterior superior iliac spine",
+    "source": "Gray's Anatomy (1918), 5i. Articulations of the Pelvis",
+    "url": "https://www.bartleby.com/107/80.html",
+    "quote": "and by the other to the posterior superior spine of the ilium"
+   }
+  },
+  "transverse-acetabular-ligament": {
+   "acetabulum": {
+    "text": "across the acetabular notch",
+    "source": "Gray's Anatomy (1918), 7a. Coxal Articulation or Hip-joint",
+    "url": "https://www.bartleby.com/107/92.html",
+    "quote": "flattened fibers, which cross the acetabular notch"
+   }
+  },
+  "transverse-part-of-iliofemoral-ligament": {
+   "aiis": {
+    "text": "lower part of AIIS",
+    "source": "Gray's Anatomy (1918), 7a. Coxal Articulation or Hip-joint",
+    "url": "https://www.bartleby.com/107/92.html",
+    "quote": "It is attached, above, to the lower part of the anterior inferior iliac spine"
+   },
+   "acetabulum": {
+    "text": "iliac part of acetabular margin",
+    "source": "The role of the iliofemoral ligament as a stabilizer of the hip joint (EFORT Open Reviews, PMC8335960)",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8335960/",
+    "quote": "It originated proximally from the lower part of the AIIS and the iliac portion of the acetabular margin"
+   },
+   "intertrochanteric-line": {
+    "text": "upper part of intertrochanteric line",
+    "source": "Gray's Anatomy (1918), 7a. Coxal Articulation or Hip-joint",
+    "url": "https://www.bartleby.com/107/92.html",
+    "quote": "the other is directed downward and lateralward and is attached to the upper part of the same line"
+   }
+  },
+  "anterior-ligament-of-fibular-head": {
+   "head-of-fibula": {
+    "text": "front of fibular head",
+    "source": "Gray's Anatomy (1918), 7c. Articulations between the Tibia and Fibula",
+    "url": "https://www.bartleby.com/107/94.html",
+    "quote": "pass obliquely upward from the front of the head of the fibula to the front of the lateral condyle of the tibia"
+   },
+   "lateral-condyle-tibia": {
+    "text": "front of lateral tibial condyle",
+    "source": "Gray's Anatomy (1918), 7c. Articulations between the Tibia and Fibula",
+    "url": "https://www.bartleby.com/107/94.html",
+    "quote": "pass obliquely upward from the front of the head of the fibula to the front of the lateral condyle of the tibia"
+   }
+  },
+  "deep-part-of-tibial-collateral-ligament": {
+   "medial-condyle-tibia": {
+    "text": "just below medial tibial joint line",
+    "source": "From Anatomy to Complex Reconstruction: A Modern Review on the Medial Collateral Ligament of the Knee (Arch Bone Jt Surg, PMC9702019)",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9702019/",
+    "quote": "the meniscotibial component attaches to the tibia 3.2 mm distal to the tibial joint line"
+   },
+   "medial-epicondyle-femur": {
+    "text": "just distal to superficial MCL origin",
+    "source": "From Anatomy to Complex Reconstruction: A Modern Review on the Medial Collateral Ligament of the Knee (Arch Bone Jt Surg, PMC9702019)",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9702019/",
+    "quote": "The dMCL originates on the femur, approximately 1.3 cm distal to the femoral sMCL attachment"
+   }
+  },
+  "interosseous-membrane-of-leg": {
+   "fibula": {
+    "text": "interosseous crest of fibula",
+    "source": "Gray's Anatomy (1918), 7c. Articulations between the Tibia and Fibula",
+    "url": "https://www.bartleby.com/107/94.html",
+    "quote": "An interosseous membrane extends between the interosseous crests of the tibia and fibula"
+   },
+   "tibia": {
+    "text": "interosseous crest of tibia",
+    "source": "Gray's Anatomy (1918), 7c. Articulations between the Tibia and Fibula",
+    "url": "https://www.bartleby.com/107/94.html",
+    "quote": "An interosseous membrane extends between the interosseous crests of the tibia and fibula"
+   }
+  },
+  "posterior-ligament-of-fibular-head": {
+   "head-of-fibula": {
+    "text": "back of fibular head",
+    "source": "Gray's Anatomy (1918), 7c. Articulations between the Tibia and Fibula",
+    "url": "https://www.bartleby.com/107/94.html",
+    "quote": "passes obliquely upward from the back of the head of the fibula to the back of the lateral condyle of the tibia"
+   },
+   "lateral-condyle-tibia": {
+    "text": "back of lateral tibial condyle",
+    "source": "Gray's Anatomy (1918), 7c. Articulations between the Tibia and Fibula",
+    "url": "https://www.bartleby.com/107/94.html",
+    "quote": "passes obliquely upward from the back of the head of the fibula to the back of the lateral condyle of the tibia"
+   }
+  },
+  "posterior-meniscotibial-ligament-lateral-meniscus": {
+   "tibial-plateau": {
+    "text": "lateral tibial condyle, behind posterior root",
+    "source": "Radiopaedia: Meniscotibial ligament",
+    "url": "https://radiopaedia.org/articles/meniscotibial-ligament",
+    "quote": "The lateral posterior meniscotibial ligament is located laterally and posteriorly to the lateral meniscal root attachment"
+   }
+  },
+  "posterior-meniscotibial-ligament-medial-meniscus": {
+   "tibial-plateau": {
+    "text": "posterior medial tibial plateau, below cartilage",
+    "source": "Radiopaedia: Meniscotibial ligament",
+    "url": "https://radiopaedia.org/articles/meniscotibial-ligament",
+    "quote": "of the medial and posterior part of the medial tibial plateau"
+   }
+  },
+  "superficial-part-of-tibial-collateral-ligament": {
+   "medial-epicondyle-femur": {
+    "text": "just above and behind medial epicondyle",
+    "source": "From Anatomy to Complex Reconstruction: A Modern Review on the Medial Collateral Ligament of the Knee (Arch Bone Jt Surg, PMC9702019)",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9702019/",
+    "quote": "located in an osseous depression 3.2 mm proximal to the medial epicondyle and 4.8 mm posterior"
+   },
+   "medial-condyle-tibia": {
+    "text": "medial tibia about 6 cm below joint line",
+    "source": "From Anatomy to Complex Reconstruction: A Modern Review on the Medial Collateral Ligament of the Knee (Arch Bone Jt Surg, PMC9702019)",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9702019/",
+    "quote": "the center of this attachment point is 6 cm distal to the medial joint line"
+   }
+  },
+  "anterior-sternoclavicular-ligament": {
+   "clavicle": {
+    "text": "upper front of sternal end",
+    "source": "Gray's Anatomy (1918), 6a. Sternoclavicular Articulation",
+    "url": "https://www.bartleby.com/107/81.html",
+    "quote": "it is attached above to the upper and front part of the sternal end of the clavicle"
+   },
+   "manubrium": {
+    "text": "front of upper manubrium",
+    "source": "Gray's Anatomy (1918), 6a. Sternoclavicular Articulation",
+    "url": "https://www.bartleby.com/107/81.html",
+    "quote": "is attached below to the front of the upper part of the manubrium sterni"
+   }
+  },
+  "conoid-ligament": {
+   "coracoid-process": {
+    "text": "base of coracoid process",
+    "source": "Gray's Anatomy (1918), 6b. Acromioclavicular Articulation",
+    "url": "https://www.bartleby.com/107/82.html",
+    "quote": "It is attached by its apex to a rough impression at the base of the coracoid process"
+   },
+   "clavicle": {
+    "text": "conoid tubercle (coracoid tuberosity)",
+    "source": "Gray's Anatomy (1918), 6b. Acromioclavicular Articulation",
+    "url": "https://www.bartleby.com/107/82.html",
+    "quote": "to the coracoid tuberosity on the under surface of the clavicle"
+   }
+  },
+  "posterior-sternoclavicular-ligament": {
+   "clavicle": {
+    "text": "upper back of sternal end",
+    "source": "Gray's Anatomy (1918), 6a. Sternoclavicular Articulation",
+    "url": "https://www.bartleby.com/107/81.html",
+    "quote": "it is attached above to the upper and back part of the sternal end of the clavicle"
+   },
+   "manubrium": {
+    "text": "back of upper manubrium",
+    "source": "Gray's Anatomy (1918), 6a. Sternoclavicular Articulation",
+    "url": "https://www.bartleby.com/107/81.html",
+    "quote": "is fixed below to the back of the upper part of the manubrium sterni"
+   }
+  },
+  "trapezoid-ligament": {
+   "coracoid-process": {
+    "text": "upper surface of coracoid process",
+    "source": "Gray's Anatomy (1918), 6b. Acromioclavicular Articulation",
+    "url": "https://www.bartleby.com/107/82.html",
+    "quote": "It is attached, below, to the upper surface of the coracoid process"
+   },
+   "clavicle": {
+    "text": "trapezoid line (oblique ridge)",
+    "source": "Gray's Anatomy (1918), 6b. Acromioclavicular Articulation",
+    "url": "https://www.bartleby.com/107/82.html",
+    "quote": "above, to the oblique ridge on the under surface of the clavicle"
+   }
+  },
+  "interspinous-ligaments": {
+   "c7-spinous-process": {
+    "text": "root to apex of spinous process",
+    "source": "Gray's Anatomy (1918), 5a. Articulations of the Vertebral Column",
+    "url": "https://www.bartleby.com/107/72.html",
+    "quote": "connect adjoining spinous processes and extend from the root to the apex of each process"
+   },
+   "thoracic-vertebrae": {
+    "text": "root to apex of spinous processes",
+    "source": "Gray's Anatomy (1918), 5a. Articulations of the Vertebral Column",
+    "url": "https://www.bartleby.com/107/72.html",
+    "quote": "connect adjoining spinous processes and extend from the root to the apex of each process"
+   },
+   "lumbar-vertebrae": {
+    "text": "root to apex of spinous processes",
+    "source": "Gray's Anatomy (1918), 5a. Articulations of the Vertebral Column",
+    "url": "https://www.bartleby.com/107/72.html",
+    "quote": "connect adjoining spinous processes and extend from the root to the apex of each process"
+   }
+  },
+  "ligamenta-flava": {
+   "axis-c2": {
+    "text": "laminae of the axis",
+    "source": "Gray's Anatomy (1918), 5a. Articulations of the Vertebral Column",
+    "url": "https://www.bartleby.com/107/72.html",
+    "quote": "connect the laminæ of adjacent vertebræ, from the axis to the first segment of the sacrum"
+   },
+   "cervical-vertebrae": {
+    "text": "laminae (front above, back below)",
+    "source": "Gray's Anatomy (1918), 5a. Articulations of the Vertebral Column",
+    "url": "https://www.bartleby.com/107/72.html",
+    "quote": "are attached to the anterior surface of the lamina above, some distance from its inferior margin, and to the posterior surface and upper margin of the lamina below"
+   },
+   "c7-vertebra": {
+    "text": "laminae (front above, back below)",
+    "source": "Gray's Anatomy (1918), 5a. Articulations of the Vertebral Column",
+    "url": "https://www.bartleby.com/107/72.html",
+    "quote": "are attached to the anterior surface of the lamina above, some distance from its inferior margin, and to the posterior surface and upper margin of the lamina below"
+   },
+   "thoracic-vertebrae": {
+    "text": "laminae (front above, back below)",
+    "source": "Gray's Anatomy (1918), 5a. Articulations of the Vertebral Column",
+    "url": "https://www.bartleby.com/107/72.html",
+    "quote": "are attached to the anterior surface of the lamina above, some distance from its inferior margin, and to the posterior surface and upper margin of the lamina below"
+   },
+   "lumbar-vertebrae": {
+    "text": "laminae (front above, back below)",
+    "source": "Gray's Anatomy (1918), 5a. Articulations of the Vertebral Column",
+    "url": "https://www.bartleby.com/107/72.html",
+    "quote": "are attached to the anterior surface of the lamina above, some distance from its inferior margin, and to the posterior surface and upper margin of the lamina below"
+   },
+   "sacrum": {
+    "text": "first sacral segment",
+    "source": "Gray's Anatomy (1918), 5a. Articulations of the Vertebral Column",
+    "url": "https://www.bartleby.com/107/72.html",
+    "quote": "connect the laminæ of adjacent vertebræ, from the axis to the first segment of the sacrum"
+   }
+  },
+  "posterior-longitudinal-ligament": {
+   "axis-c2": {
+    "text": "back of body of the axis",
+    "source": "Gray's Anatomy (1918), 5a. Articulations of the Vertebral Column",
+    "url": "https://www.bartleby.com/107/72.html",
+    "quote": "from the body of the axis, where it is continuous with the membrana tectoria"
+   },
+   "cervical-vertebrae": {
+    "text": "posterior surfaces of vertebral bodies",
+    "source": "Gray's Anatomy (1918), 5a. Articulations of the Vertebral Column",
+    "url": "https://www.bartleby.com/107/72.html",
+    "quote": "extends along the posterior surfaces of the bodies of the vertebræ"
+   },
+   "c7-vertebra": {
+    "text": "posterior surface of vertebral body",
+    "source": "Gray's Anatomy (1918), 5a. Articulations of the Vertebral Column",
+    "url": "https://www.bartleby.com/107/72.html",
+    "quote": "extends along the posterior surfaces of the bodies of the vertebræ"
+   },
+   "thoracic-vertebrae": {
+    "text": "posterior surfaces of vertebral bodies",
+    "source": "Gray's Anatomy (1918), 5a. Articulations of the Vertebral Column",
+    "url": "https://www.bartleby.com/107/72.html",
+    "quote": "extends along the posterior surfaces of the bodies of the vertebræ"
+   },
+   "lumbar-vertebrae": {
+    "text": "posterior surfaces of vertebral bodies",
+    "source": "Gray's Anatomy (1918), 5a. Articulations of the Vertebral Column",
+    "url": "https://www.bartleby.com/107/72.html",
+    "quote": "extends along the posterior surfaces of the bodies of the vertebræ"
+   }
+  },
+  "supraspinous-ligament": {
+   "c7-spinous-process": {
+    "text": "tip of C7 spinous process",
+    "source": "Gray's Anatomy (1918), 5a. Articulations of the Vertebral Column",
+    "url": "https://www.bartleby.com/107/72.html",
+    "quote": "connects together the apices of the spinous processes from the seventh cervical vertebra to the sacrum"
+   },
+   "thoracic-vertebrae": {
+    "text": "tips of spinous processes",
+    "source": "Gray's Anatomy (1918), 5a. Articulations of the Vertebral Column",
+    "url": "https://www.bartleby.com/107/72.html",
+    "quote": "connects together the apices of the spinous processes from the seventh cervical vertebra to the sacrum"
+   },
+   "lumbar-vertebrae": {
+    "text": "tips of spinous processes",
+    "source": "Gray's Anatomy (1918), 5a. Articulations of the Vertebral Column",
+    "url": "https://www.bartleby.com/107/72.html",
+    "quote": "connects together the apices of the spinous processes from the seventh cervical vertebra to the sacrum"
+   }
+  },
+  "iliofemoral-ligament": {
+   "aiis": {
+    "text": "lower part of AIIS",
+    "source": "Gray's Anatomy (1918), 7a. Coxal Articulation or Hip-joint",
+    "url": "https://www.bartleby.com/107/92.html",
+    "quote": "It is attached, above, to the lower part of the anterior inferior iliac spine"
+   },
+   "acetabulum": {
+    "text": "iliac part of acetabular margin",
+    "source": "The role of the iliofemoral ligament as a stabilizer of the hip joint (EFORT Open Reviews, PMC8335960)",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8335960/",
+    "quote": "It originated proximally from the lower part of the AIIS and the iliac portion of the acetabular margin"
+   },
+   "intertrochanteric-line": {
+    "text": "along the whole intertrochanteric line",
+    "source": "The role of the iliofemoral ligament as a stabilizer of the hip joint (EFORT Open Reviews, PMC8335960)",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8335960/",
+    "quote": "it was inserted distally along the inter-trochanteric line"
+   }
+  }
+ },
+ "flagged": [
+  {
+   "ligament": "collateral-interphalangeal-ligaments-of-foot",
+   "site": "phalanges-proximal-foot",
+   "why": "no permitted source names a more specific site"
+  },
+  {
+   "ligament": "collateral-interphalangeal-ligaments-of-foot",
+   "site": "phalanges-middle-foot",
+   "why": "no permitted source names a more specific site"
+  },
+  {
+   "ligament": "collateral-interphalangeal-ligaments-of-foot",
+   "site": "phalanges-distal-foot",
+   "why": "no permitted source names a more specific site"
+  },
+  {
+   "ligament": "dorsal-cuneocuboid-ligament",
+   "site": "lateral-cuneiform",
+   "why": "only the ligament's name says \"dorsal\"; Gray's osteology of the bone does not name it",
+   "proposed": "dorsal surface"
+  },
+  {
+   "ligament": "dorsal-cuneonavicular-ligaments",
+   "site": "lateral-cuneiform",
+   "why": "only the ligament's name says \"dorsal\"",
+   "proposed": "dorsal surface"
+  },
+  {
+   "ligament": "dorsal-intercuneiform-ligaments",
+   "site": "lateral-cuneiform",
+   "why": "only the ligament's name says \"dorsal\"",
+   "proposed": "dorsal surface"
+  },
+  {
+   "ligament": "dorsal-tarsometatarsal-ligaments",
+   "site": "lateral-cuneiform",
+   "why": "only the ligament's name says \"dorsal\"",
+   "proposed": "dorsal surface"
+  },
+  {
+   "ligament": "plantar-cuboideonavicular-ligament",
+   "site": "cuboid",
+   "why": "only the ligament's name says \"plantar\"; Gray's gives that surface to the plantar calcaneocuboid",
+   "proposed": "plantar surface"
+  },
+  {
+   "ligament": "plantar-cuneocuboid-ligament",
+   "site": "cuboid",
+   "why": "only the ligament's name says \"plantar\"",
+   "proposed": "plantar surface"
+  },
+  {
+   "ligament": "plantar-interphalangeal-ligaments",
+   "site": "phalanges-proximal-foot",
+   "why": "no permitted source names a more specific site"
+  },
+  {
+   "ligament": "plantar-interphalangeal-ligaments",
+   "site": "phalanges-middle-foot",
+   "why": "no permitted source names a more specific site"
+  },
+  {
+   "ligament": "plantar-interphalangeal-ligaments",
+   "site": "phalanges-distal-foot",
+   "why": "no permitted source names a more specific site"
+  },
+  {
+   "ligament": "plantar-tarsometatarsal-ligaments",
+   "site": "cuboid",
+   "why": "only the ligament's name says \"plantar\"",
+   "proposed": "plantar surface"
+  },
+  {
+   "ligament": "collateral-interphalangeal-ligaments-of-hand",
+   "site": "phalanges-middle-hand",
+   "why": "a choice between two sites (PIP insertion at the base, DIP origin at the head)",
+   "proposed": "sides of the base of the middle phalanx"
+  },
+  {
+   "ligament": "collateral-interphalangeal-ligaments-of-hand",
+   "site": "phalanges-distal-hand",
+   "why": "inferred from Gray's \"same arrangement as the knuckle joints\"; no source names it",
+   "proposed": "sides of the base of the distal phalanx"
+  },
+  {
+   "ligament": "dorsal-radio-ulnar-ligament",
+   "site": "ulna",
+   "why": "sources disagree: Gray's says the back of the ulnar head, modern papers the fovea and styloid base",
+   "proposed": "back of the head of the ulna"
+  },
+  {
+   "ligament": "dorsal-ulnocarpal-ligament",
+   "site": "ulnar-styloid-process",
+   "why": "no permitted source names a more specific site"
+  },
+  {
+   "ligament": "interspinous-ligaments",
+   "site": "sacrum",
+   "why": "no permitted source names a more specific site"
+  },
+  {
+   "ligament": "posterior-longitudinal-ligament",
+   "site": "sacrum",
+   "why": "no permitted source names a more specific site"
+  },
+  {
+   "ligament": "supraspinous-ligament",
+   "site": "sacrum",
+   "why": "no permitted source names a more specific site"
+  },
+  {
+   "ligament": "external-intercostal-membrane",
+   "site": null,
+   "why": "not yet in the app: it has no attachment sites to refine"
+  }
+ ]
+}

@@ -157,6 +157,24 @@ export function resolvePublisher(raw: string): { title: string; url?: string } {
   return { title: new URL(url).hostname.replace(/^www\./, ''), url };
 }
 
+/**
+ * Every work behind ligament-attachment-detail.json, the specific attachment
+ * sites added on 17 Oct 2026, so /sources lists what they were checked
+ * against. Empty when the file is absent.
+ */
+export function readAttachmentDetailWorks(root: string): string[] {
+  try {
+    const parsed = JSON.parse(readFileSync(`${root}/ligament-attachment-detail.json`, 'utf8')) as {
+      included?: Record<string, Record<string, { source?: string; url?: string }>>;
+    };
+    return Object.values(parsed.included ?? {}).flatMap((sites) =>
+      Object.values(sites).map((site) => `${site.source ?? ''} ${site.url ?? ''}`.trim()),
+    );
+  } catch {
+    return [];
+  }
+}
+
 export function readReviews(root: string, family: string): Record<string, ReviewEntry> {
   const spec = REVIEW_FILES[family];
   if (!spec) return {};
@@ -413,6 +431,8 @@ export function buildProvenance(
       for (const raw of row.sources ?? []) familyWorks.add(intern(raw));
       for (const w of row.works ?? []) familyWorks.add(intern(`${w.title} ${w.url ?? ''}`));
     }
+    // The specific attachment sites (17 Oct 2026) carry their own works.
+    if (category === 'ligament') for (const raw of readAttachmentDetailWorks(root)) familyWorks.add(intern(raw));
 
     families.push({
       category,

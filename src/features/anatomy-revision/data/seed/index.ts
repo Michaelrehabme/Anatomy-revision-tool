@@ -1,6 +1,7 @@
 import type { AnatomyStructure } from '../../types/structure';
 import { isLigament, reviewedAttachmentIds } from '../../types/structure';
 import { CLINICAL_LIGAMENTS, LIGAMENT_PICTURE_QUESTIONS } from '../clinicalLigaments';
+import { LIGAMENT_ATTACHMENT_DETAIL } from '../ligamentAttachmentDetail';
 import { BLOOD_SUPPLY } from './bloodSupply.generated';
 import { MUSCLE_STRUCTURES } from './structures.muscles.seed';
 import { BONE_STRUCTURES } from './structures.bones.seed';
@@ -71,7 +72,13 @@ function withPictureRule(s: AnatomyStructure): AnatomyStructure {
  * them, so a session of one area cannot think a ligament unique that is not.
  */
 function withAttachmentRule(structures: AnatomyStructure[]): AnatomyStructure[] {
-  const key = (s: AnatomyStructure) => (isLigament(s) ? [...reviewedAttachmentIds(s)].sort().join('|') : '');
+  // A site with a sourced specific part counts as that part: the ATFL and
+  // PTFL share "talus + lateral malleolus" but not where on them.
+  const key = (s: AnatomyStructure) => {
+    if (!isLigament(s)) return '';
+    const detail = LIGAMENT_ATTACHMENT_DETAIL[s.id] ?? {};
+    return reviewedAttachmentIds(s).map((id) => `${id}:${detail[id] ?? ''}`).sort().join('|');
+  };
   const counts = new Map<string, number>();
   for (const s of structures) if (isLigament(s)) counts.set(key(s), (counts.get(key(s)) ?? 0) + 1);
   return structures.map((s) => {

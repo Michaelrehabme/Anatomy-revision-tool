@@ -4,6 +4,7 @@ import { REGION_LABELS, SUBREGION_LABELS, AREA_LABELS } from '../types/region';
 import { BLOOD_SUPPLY_TAUGHT, type OinaPromptKind } from '../types/question';
 import type { StructureIndexEntry } from '../types/structureIndex';
 import { siteLabel } from './attachmentSites';
+import { LIGAMENT_ATTACHMENT_DETAIL } from '../data/ligamentAttachmentDetail';
 import { singular } from './answerMatching';
 
 /** Every structure by id, for naming a ligament's attachments as "landmark of bone". */
@@ -263,9 +264,11 @@ export function cardBullets(s: AnatomyStructure, sites?: SiteLookup): string {
   if (isMuscle(s)) {
     for (const line of muscleProfileLines(s, true)) lines.push(`• ${line}`);
   } else if (isLigament(s)) {
+    const detail = LIGAMENT_ATTACHMENT_DETAIL[s.id] ?? {};
     const named = reviewedAttachmentIds(s).map((id) => {
       const site = sites?.get(id);
-      return site ? siteLabel(site, sites!) : siteName(id);
+      const label = site ? siteLabel(site, sites!) : siteName(id);
+      return detail[id] ? `${label} — ${detail[id]}` : label;
     });
     if (named.length) lines.push(`• Attaches to: ${boldList(named)}`);
     if (s.jointId) lines.push(`• Stabilises: **${s.jointId.replace(/-/g, ' ')}**`);
