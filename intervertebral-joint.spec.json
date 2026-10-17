@@ -1,0 +1,56 @@
+{
+ "schemaVersion": 1,
+ "generated": "2026-09-12T07:09:26.758Z",
+ "note": "The intervertebral joint on the lumbar spine alone (owner, 17 Oct 2026): T12 to the sacrum drawn, nothing else, so neither ribs nor pelvis stand in front of a disc. No frames from 120 to 240 degrees: from behind the discs are hidden by the vertebral arches and the band would show through them. Opens from the side (data/openingViews.ts).",
+ "keep": [
+  "Vertebra T12",
+  "Vertebra L1",
+  "Vertebra L2",
+  "Vertebra L3",
+  "Vertebra L4",
+  "Vertebra L5",
+  "Sacrum",
+  "Coccyx"
+ ],
+ "joints": [
+  {
+   "id": "intervertebral-joint",
+   "name": "Intervertebral Joint",
+   "a": {
+    "id": "Vertebrae",
+    "objects": [
+     "Vertebra T12",
+     "Vertebra L1",
+     "Vertebra L2",
+     "Vertebra L3",
+     "Vertebra L4",
+     "Vertebra L5",
+     "Sacrum"
+    ]
+   },
+   "b": {
+    "id": "Intervertebral discs",
+    "objects": [
+     "Intervertebral disc T12-L1",
+     "Intervertebral disc L1-L2",
+     "Intervertebral disc L2-L3",
+     "Intervertebral disc L3-L4",
+     "Intervertebral disc L4-L5",
+     "Intervertebral disc L5-S1"
+    ]
+   },
+   "allContacts": true,
+   "seam": 9,
+   "catchMargin": 14,
+   "frame": 0.24,
+   "skipViews": [
+    8,
+    10,
+    12,
+    14,
+    16
+   ],
+   "note": "17 Oct 2026, owner: the thoracic plate drew the band over the ribs in front of it and opened on an anterior view. Now the lumbar spine alone (T12 to the sacrum, no ribs), every 30 degrees, opening from the side (data/openingViews.ts), where each disc shows between two vertebral bodies."
+  }
+ ]
+}

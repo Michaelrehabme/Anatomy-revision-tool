@@ -6,6 +6,7 @@ import type { HotspotPolygon } from '../../types/image';
 import { polygonsWidth } from '../hotspot/polygonGeometry';
 import { questionBase } from './questionBase';
 import { askedWithPicture } from '../../data/clinicalLigaments';
+import { OPENING_ANGLES } from '../../data/openingViews';
 
 /**
  * How wide a traced target has to be before it is fair to ask someone to tap
@@ -263,6 +264,15 @@ export function buildLocateQuestions(
           const bestArea = (best.hotspots ?? []).find((h) => h.structureId === structure.id)?.area ?? 0;
           return area > bestArea ? f : best;
         }, withTarget[0]);
+        // Where the owner has named the view a student expects, open there
+        // (data/openingViews.ts): the intervertebral joint from the side.
+        for (const angle of OPENING_ANGLES[structure.id] ?? []) {
+          const preferred = withTarget.find((f) => rotationAngle(f.id) === angle);
+          if (preferred) {
+            opening = preferred;
+            break;
+          }
+        }
         frameIds = withTarget.map((f) => f.id);
       }
 
