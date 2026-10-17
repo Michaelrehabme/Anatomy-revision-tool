@@ -9,6 +9,7 @@ import { buildVocabulary } from '../../data/content/vocabulary';
 import { AREAS } from '../../types/region';
 import { areasOf, reviewedAttachmentIds } from '../../types/structure';
 import type { FlashcardQuestion, MCQQuestion } from '../../types/question';
+import { LIGAMENT_ATTACHMENT_DETAIL } from '../../data/ligamentAttachmentDetail';
 
 const byId = new Map(ALL_STRUCTURES.map((s) => [s.id, s]));
 const label = (id: string) => siteLabel(byId.get(id)!, byId);
@@ -110,7 +111,8 @@ describe('an explanation names a site the same way whatever the session holds', 
         { ...base, types: ['flashcard', 'mcq'], areas: [area], entitledAreas: [area], structureIds: [reaching.id] },
         sources,
       );
-      const expected = `Attaches to: ${reviewedAttachmentIds(reaching).map((id) => label(id)).join('; ')}`;
+      const detail = LIGAMENT_ATTACHMENT_DETAIL[reaching.id] ?? {};
+      const expected = `Attaches to: ${reviewedAttachmentIds(reaching).map((id) => (detail[id] ? `${label(id)} — ${detail[id]}` : label(id))).join('; ')}`;
       const texts = set.flatMap((q) => (q.type === 'flashcard' ? [q.back.text] : q.type === 'mcq' ? [q.explanation] : []));
       for (const text of texts.filter((t) => t.includes('Attaches to: '))) {
         expect(attachesTo(text), `${area}: ${reaching.id}`).toBe(expected);

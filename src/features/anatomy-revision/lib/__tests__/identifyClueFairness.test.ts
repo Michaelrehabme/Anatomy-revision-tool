@@ -5,6 +5,7 @@ import { buildIdentifyClue, clueAlsoFits, namesStructure } from '../facts';
 import { buildIndexes } from '../indexes';
 import { createRng } from '../rng';
 import { buildMcqQuestions } from '../questionGenerators/mcq';
+import { alsoAttachesToAll } from '../questionGenerators/ligamentClue';
 import { buildMultiSelectQuestions } from '../questionGenerators/multiSelect';
 import { buildClinicalQuestions } from '../questionGenerators/clinical';
 import { buildFillBlankQuestions } from '../questionGenerators/fillBlank';
@@ -57,7 +58,10 @@ describe('a clue question has one right answer', () => {
       const questions = buildMcqQuestions(pool, ALL_IMAGES, indexes, createRng(seed), { promptKinds: ['identify'] });
       for (const q of questions.filter((q) => q.id.endsWith('-identify-text'))) {
         const right = byName.get(q.choices[q.correctIndex])!;
-        const alsoRight = q.choices.filter((c, i) => i !== q.correctIndex && clueAlsoFits(right, byName.get(c)!));
+        // A ligament asked by its attachment lines is judged on those lines, part
+        // of the bone included: the trapezoid is a fair wrong answer for the conoid.
+        const fits = q.promptLines?.length ? alsoAttachesToAll : clueAlsoFits;
+        const alsoRight = q.choices.filter((c, i) => i !== q.correctIndex && fits(right, byName.get(c)!));
         expect(alsoRight, q.prompt).toEqual([]);
       }
     }

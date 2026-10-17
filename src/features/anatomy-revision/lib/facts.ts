@@ -48,10 +48,12 @@ export function describeStructure(s: AnatomyStructure, sites?: SiteLookup): stri
     const attachments = reviewedAttachmentIds(s);
     if (attachments.length) {
       // "Greater Trochanter of the femur" where the caller can look the site
-      // up; the id as words where it cannot.
+      // up; the id as words where it cannot. Then the part of it, where sourced.
+      const detail = LIGAMENT_ATTACHMENT_DETAIL[s.id] ?? {};
       const named = attachments.map((id) => {
         const site = sites?.get(id);
-        return site ? siteLabel(site, sites!) : siteName(id);
+        const label = site ? siteLabel(site, sites!) : siteName(id);
+        return detail[id] ? `${label} — ${detail[id]}` : label;
       });
       lines.push(`Attaches to: ${named.join('; ')}`);
     }

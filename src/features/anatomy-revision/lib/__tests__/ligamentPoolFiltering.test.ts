@@ -119,7 +119,8 @@ describe('a ligaments-only session on the live data', () => {
       for (const line of lines) {
         expect(line, q.id).toMatch(/^Attaches to: /);
         // Named from the index, not the narrowed pool: no raw ids.
-        expect(line, q.id).not.toMatch(/[a-z]-[a-z]/);
+        // The site's name, that is: its sourced part may say "under-surface".
+        expect(line.split(' — ')[0], q.id).not.toMatch(/[a-z]-[a-z]/);
       }
     }
   });
