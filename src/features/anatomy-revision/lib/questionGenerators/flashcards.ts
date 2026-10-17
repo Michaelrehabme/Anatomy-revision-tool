@@ -3,7 +3,7 @@ import type { AnatomyStructure } from '../../types/structure';
 import type { AnatomyImageAsset } from '../../types/image';
 import { BLOOD_SUPPLY_TAUGHT, HEALING_CARDS, type FlashcardQuestion, type OinaPromptKind, type PromptKind } from '../../types/question';
 import { STRUCTURE_HEALING, TISSUE_HEALING, type StructureHealing } from '../../data/seed/healing.seed';
-import { summarizeStructure, type SiteLookup } from '../facts';
+import { cardBullets, emphasise, type SiteLookup } from '../facts';
 import { questionBase } from './questionBase';
 
 export interface FlashcardGenOptions {
@@ -26,19 +26,24 @@ function baseFields(structure: AnatomyStructure, promptKind: PromptKind) {
   return { ...questionBase(structure, promptKind), type: 'flashcard' as const };
 }
 
+/**
+ * One fact as bullet points with the facts in bold (owner, 17 Oct 2026):
+ * each origin, insertion or nerve its own line, and the movement words of an
+ * action bolded (components/shared/RichText draws the marks).
+ */
+const bulletsOf = (items: readonly string[]) => (items.length === 1 ? `**${items[0]}**` : items.map((item) => `• **${item}**`).join('\n'));
+
 function fieldBackText(structure: AnatomyStructure, promptKind: PromptKind): string {
   if (!isMuscle(structure)) return '';
   switch (promptKind) {
     case 'origin':
-      return structure.origin.join('; ');
+      return bulletsOf(structure.origin);
     case 'insertion':
-      return structure.insertion.join('; ');
+      return bulletsOf(structure.insertion);
     case 'nerve':
-      return structure.nerve
-        .map((n) => `${n.name}${n.roots.length ? ` (${n.roots.join(', ')})` : ''}`)
-        .join('; ');
+      return bulletsOf(structure.nerve.map((n) => `${n.name}${n.roots.length ? ` (${n.roots.join(', ')})` : ''}`));
     case 'action':
-      return structure.actionText;
+      return emphasise(structure.actionText);
     default:
       return '';
   }
@@ -68,7 +73,7 @@ export function buildFlashcardQuestions(
   for (const structure of structures) {
     if (!structure.eligibility.flashcard) continue;
 
-    const backText = summarizeStructure(structure, byId);
+    const backText = cardBullets(structure, byId);
     const image = images.find(
       (img) => img.mode === 'single-structure' && img.structureId === structure.id,
     );
@@ -85,7 +90,7 @@ export function buildFlashcardQuestions(
         ...baseFields(structure, 'identify'),
         id: `flashcard-${structure.id}-image`,
         front: { imageId: image.id },
-        back: { text: `${structure.name}\n\n${backText}` },
+        back: { text: `**${structure.name}**\n${backText}` },
       });
     }
 
@@ -194,6 +199,7 @@ export function buildRelearnCard(
   structure: AnatomyStructure,
   question: { id: string; promptKind: PromptKind; prompt: string; promptLines?: string[]; choices: string[]; correctIndex: number; explanation: string },
   ownImageId?: string,
+  sites?: SiteLookup,
 ): FlashcardQuestion {
   const field = (MUSCLE_FIELD_KINDS as PromptKind[]).includes(question.promptKind)
     ? buildFieldFlashcard(structure, question.promptKind as OinaPromptKind)
@@ -207,8 +213,8 @@ export function buildRelearnCard(
     // this?" with no attachments under it asks nothing.
     front: { text: [question.prompt, ...(question.promptLines ?? []).map((line) => `• ${line}`)].join('\n') },
     back: {
-      // The answer first, then why: the name is what the card is for.
-      text: [answer, question.explanation].filter(Boolean).join('\n\n'),
+      // The answer first, then the card's bullet points (facts.ts cardBullets).
+      text: `**${answer}**\n${cardBullets(structure, sites)}`,
       imageId: ownImageId,
     },
   };

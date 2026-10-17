@@ -217,3 +217,87 @@ export function clueAlsoFits(correct: AnatomyStructure, other: AnatomyStructure)
   const reached = new Set(reviewedAttachmentIds(other));
   return bones.every((id) => reached.has(id));
 }
+
+/**
+ * Words that say what a structure DOES, bolded wherever they appear on a card:
+ * the movements and the jobs a ligament does.
+ */
+const FUNCTION_WORD =
+  /\b(?:abduct\w*|adduct\w*|flex\w*|extend\w*|extension|rotat\w*|elevat\w*|depress\w*|protract\w*|retract\w*|stabili[sz]\w*|invert\w*|evert\w*|inversion|eversion|pronat\w*|supinat\w*|plantarflex\w*|dorsiflex\w*|resist\w*|prevent\w*|limit\w*|restrain\w*|reinforc\w*)\b/gi;
+
+const escapeRegExp = (text: string) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+/** `text` with the movement words and each of `terms` in **bold**. */
+export function emphasise(text: string, terms: readonly string[] = []): string {
+  const names = [...new Set(terms.filter((t) => t.length > 2))].sort((a, b) => b.length - a.length).map(escapeRegExp);
+  const pattern = new RegExp(`${names.length ? `\\b(?:${names.join('|')})\\b|` : ''}${FUNCTION_WORD.source}`, 'gi');
+  return text.replace(pattern, (m) => `**${m}**`);
+}
+
+const boldList = (items: readonly string[]) => items.map((item) => `**${item}**`).join('; ');
+
+/**
+ * A card back as short bullet points with the key words in bold (owner,
+ * 17 Oct 2026: the descriptions were "quite a mouthful"). Rendered by
+ * components/shared/RichText: "• " starts a bullet, **…** is bold.
+ *
+ * The description becomes one bullet per sentence, with its attachment sites
+ * and its movement words in bold; then one bullet per fact, the facts
+ * themselves (origins, insertions, nerves, attachments, movements) in bold.
+ */
+export function cardBullets(s: AnatomyStructure, sites?: SiteLookup): string {
+  const lines: string[] = [];
+  const siteNames = isLigament(s)
+    ? reviewedAttachmentIds(s).flatMap((id) => {
+        const site = sites?.get(id);
+        return site ? [site.name.replace(' (grouped)', ''), ...site.aliases] : [id.replace(/-/g, ' ')];
+      })
+    : [];
+  if (s.description && !PLACEHOLDER_DESCRIPTION.test(s.description)) {
+    for (const sentence of s.description.split(/(?<=[.!?])\s+(?=[A-Z])/)) {
+      if (sentence.trim()) lines.push(`• ${emphasise(sentence.trim(), siteNames)}`);
+    }
+  }
+  const areas = areasOf(s);
+  lines.push(`• Area: ${areas.length ? areas.map((a) => AREA_LABELS[a]).join(', ') : REGION_LABELS[s.region]}`);
+  if (isMuscle(s)) {
+    for (const line of muscleProfileLines(s, true)) lines.push(`• ${line}`);
+  } else if (isLigament(s)) {
+    const named = reviewedAttachmentIds(s).map((id) => {
+      const site = sites?.get(id);
+      return site ? siteLabel(site, sites!) : siteName(id);
+    });
+    if (named.length) lines.push(`• Attaches to: ${boldList(named)}`);
+    if (s.jointId) lines.push(`• Stabilises: **${s.jointId.replace(/-/g, ' ')}**`);
+  } else if (isJoint(s)) {
+    lines.push(`• Type: **${JOINT_TYPE_LABELS[s.jointType]}**`);
+    lines.push(`• Movements: ${boldList(s.movements)}`);
+    if (s.stabilizers?.length) lines.push(`• Stabilisers: ${boldList(s.stabilizers)}`);
+  } else if (isBone(s) || isLandmark(s)) {
+    if (s.attachments.length) lines.push(`• Attachments: ${boldList(s.attachments)}`);
+    if (s.articulations?.length) lines.push(`• Articulations: ${boldList(s.articulations)}`);
+  }
+  if (s.clinical) lines.push(`• Clinical relevance: ${emphasise(s.clinical, siteNames)}`);
+  return lines.join('\n');
+}
+
+
+/**
+ * A muscle's four facts under the labels the owner chose (17 Oct 2026):
+ * "Origin(s):", "Insertion(s):", "Nerve supply:", "Action(s):". Items are
+ * joined with commas, or semicolons where an item has a comma of its own
+ * ("Axillary nerve (C5, C6)"). `bold` puts each item in **bold** for a card.
+ */
+export function muscleProfileLines(s: AnatomyStructure, bold = false): string[] {
+  if (!isMuscle(s)) return [];
+  const list = (items: readonly string[]) => {
+    const shown = bold ? items.map((item) => `**${item}**`) : items;
+    return shown.join(items.some((item) => item.includes(',')) ? '; ' : ', ');
+  };
+  return [
+    `Origin(s): ${list(s.origin)}`,
+    `Insertion(s): ${list(s.insertion)}`,
+    `Nerve supply: ${list(s.nerve.map((n) => `${n.name}${n.roots.length ? ` (${n.roots.join(', ')})` : ''}`))}`,
+    `Action(s): ${bold ? emphasise(s.actionText) : s.actionText}`,
+  ];
+}

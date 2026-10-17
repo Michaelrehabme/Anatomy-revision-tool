@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { RichText } from '../shared/RichText';
 import type { FlashcardQuestion } from '../../types/question';
 import type { AnatomyImageAsset } from '../../types/image';
 import { AnatomyImageFigure } from '../shared/AnatomyImageFigure';
@@ -32,7 +33,7 @@ export function FlashcardSession({ question, imagesById, onAnswer, onNext }: Fla
   // Revealing removes the button that was pressed. Focus goes to the answer,
   // so a screen reader reads it and a keyboard carries on to Next from there —
   // it used to fall back to the question's wrapper and say nothing (WCAG 2.4.3).
-  const answerRef = useRef<HTMLParagraphElement>(null);
+  const answerRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (revealed) answerRef.current?.focus();
   }, [revealed]);
@@ -80,9 +81,9 @@ export function FlashcardSession({ question, imagesById, onAnswer, onNext }: Fla
                 {question.front.text}
               </p>
             )}
-            <p ref={answerRef} tabIndex={-1} className="whitespace-pre-line text-2xl leading-snug outline-none" style={{ color: 'var(--ink)' }}>
-              {question.back.text}
-            </p>
+            <div ref={answerRef} tabIndex={-1} className="text-xl leading-snug outline-none" style={{ color: 'var(--ink)' }}>
+              <RichText text={question.back.text} />
+            </div>
           </div>
         )}
       </div>

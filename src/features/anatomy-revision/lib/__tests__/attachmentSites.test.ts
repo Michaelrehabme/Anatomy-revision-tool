@@ -78,7 +78,12 @@ describe('a bonus box takes the landmark with or without its bone', () => {
 describe('an explanation names a site the same way whatever the session holds', () => {
   const sources = { index: ALL_STRUCTURES, vocabulary: buildVocabulary(ALL_STRUCTURES) };
   const base = { mode: 'practice' as const, seed: 1, count: 50, entitledAreas: AREAS };
-  const attachesTo = (text: string) => text.split('\n').find((line) => line.startsWith('Attaches to: '));
+  // Card backs are bullet points with bold sites (facts.ts cardBullets); read as plain text.
+  const attachesTo = (text: string) =>
+    text
+      .split('\n')
+      .map((line) => line.replace(/^• /, '').replace(/\*\*/g, ''))
+      .find((line) => line.startsWith('Attaches to: '));
 
   it('in a session of ligaments alone, on the card and in the explanation', () => {
     const set = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {

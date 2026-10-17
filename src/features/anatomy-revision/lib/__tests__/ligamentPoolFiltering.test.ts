@@ -117,7 +117,7 @@ describe('a ligaments-only session on the live data', () => {
       const lines = (q as { promptLines?: string[] }).promptLines ?? [];
       expect(lines.length, q.id).toBeGreaterThan(0);
       for (const line of lines) {
-        expect(line, q.id).toMatch(/^Attaches: /);
+        expect(line, q.id).toMatch(/^Attaches to: /);
         // Named from the index, not the narrowed pool: no raw ids.
         expect(line, q.id).not.toMatch(/[a-z]-[a-z]/);
       }

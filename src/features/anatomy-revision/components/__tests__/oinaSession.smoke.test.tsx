@@ -97,7 +97,10 @@ describe('FlashcardSession', () => {
 
     fireEvent.click(screen.getByText('Reveal answer'));
     expect(onAnswer).toHaveBeenCalledWith({ structureId: 'biceps-femoris', correct: true, graded: false });
-    expect(screen.getByText(card.back.text)).toBeInTheDocument();
+    // Each site its own bullet, in bold (components/shared/RichText).
+    for (const site of ['Long head: ischial tuberosity', 'Short head: linea aspera of the femur']) {
+      expect(screen.getByText(site).tagName).toBe('STRONG');
+    }
 
     // No self-rating any more — the card is purely for learning.
     expect(screen.queryByText('Easy')).toBeNull();

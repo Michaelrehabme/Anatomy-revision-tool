@@ -7,6 +7,7 @@ import { pickNameDistractors, pickTextFieldDistractors } from '../distractors';
 import { canonicalNerveNames, conflictsWith, stripHeadPrefix } from '../oinaValues';
 import { buildIdentifyClue, clueAlsoFits, ligamentCourse, summarizeStructure, type SiteLookup } from '../facts';
 import { alsoAttachesToAll, ligamentPromptLines } from './ligamentClue';
+import { muscleProfileLines } from '../facts';
 import { shuffle, sample, type Rng } from '../rng';
 import { promptImagesFor } from './promptImages';
 import { questionBase } from './questionBase';
@@ -211,8 +212,12 @@ function buildOne(
       // (8 Oct 2026). The picture questions below keep the first pick — there
       // the near neighbour is the wrong answer worth offering — and so does
       // every clue question that never drew one, so nothing else moves.
-      const fair = (s: AnatomyStructure) => !clueAlsoFits(structure, s);
-      const unfair = new Set(all.filter((s) => s.id !== structure.id && !fair(s)).map((s) => s.name));
+      // "What muscle is this?" is answered by a muscle: a landmark or a bone
+      // among its choices is a choice nobody would make.
+      const fair = (s: AnatomyStructure) => !clueAlsoFits(structure, s) && (!isMuscle(structure) || isMuscle(s));
+      // Over the top-up pool too: a drill of one muscle draws every wrong
+      // answer from there.
+      const unfair = new Set([...all, ...(fallback ?? [])].filter((s) => s.id !== structure.id && !fair(s)).map((s) => s.name));
       const clueDistractors = !distractors.some((name) => unfair.has(name))
         ? distractors
         : toppedUp(structure.name, pickNameDistractors(structure, all.filter(fair), distractorCount, rng), distractorCount, (missing, taken) =>
@@ -227,7 +232,17 @@ function buildOne(
       out.push({
         ...baseFields(structure, promptKind),
         id: `mcq-${structure.id}-identify-text`,
-        prompt: `Name the structure: ${buildIdentifyClue(structure)}`,
+        // A muscle as its four facts, one line each (owner, 17 Oct 2026);
+        // everything else keeps its one-line clue.
+        ...(isMuscle(structure)
+          ? {
+              prompt: 'What muscle is this?',
+              // All four, even where one carries the name ("deltoid
+              // tuberosity", "nerve to piriformis"): the owner's call, 17 Oct
+              // 2026 — the student still has to put the facts together.
+              promptLines: muscleProfileLines(structure),
+            }
+          : { prompt: `Name the structure: ${buildIdentifyClue(structure)}` }),
         choices,
         correctIndex,
         explanation: summarizeStructure(structure, siteLookup),
@@ -423,3 +438,4 @@ function ligamentIdentify(
     },
   ];
 }
+

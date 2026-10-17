@@ -63,7 +63,7 @@ export interface MCQQuestion extends RevisionQuestionBase {
   promptImageId?: string;
   /**
    * Short lines shown under the prompt as bullet points, in place of a clue
-   * sentence: a ligament's "Attaches: …" sites, one per sourced attachment.
+   * sentence: a ligament's "Attaches to: …" sites, one per sourced attachment.
    */
   promptLines?: string[];
   /** 4 shuffled choices (1 correct + up to 3 distractors; may be fewer if the pool is small). */
@@ -136,7 +136,7 @@ export interface TypedIdentifyQuestion extends RevisionQuestionBase {
   prompt: string;
   /** The picture asked about. Absent for a ligament, asked from its attachments in `promptLines`. */
   promptImageId?: string;
-  /** Bullet points under the prompt: a ligament's "Attaches: …" sites (ligamentClue.ts). */
+  /** Bullet points under the prompt: a ligament's "Attaches to: …" sites (ligamentClue.ts). */
   promptLines?: string[];
   /** Structure name plus any aliases — any of these count as correct. */
   acceptedAnswers: string[];

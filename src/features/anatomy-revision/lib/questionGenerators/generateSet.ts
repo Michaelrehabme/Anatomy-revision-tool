@@ -751,6 +751,6 @@ function withRelearnCards(questions: RevisionQuestion[], indexes: StructureIndex
   return questions.map((question) => {
     if (!isMcqQuestion(question)) return question;
     const structure = indexes.byId.get(question.structureId);
-    return structure ? { ...question, relearnCard: buildRelearnCard(structure, question, ownImage.get(structure.id)) } : question;
+    return structure ? { ...question, relearnCard: buildRelearnCard(structure, question, ownImage.get(structure.id), indexes.byId) } : question;
   });
 }

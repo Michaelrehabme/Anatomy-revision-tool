@@ -25,7 +25,7 @@ export function ligamentPromptLines(
   if (!ids.length) return null;
   return ids.map((id) => {
     const site = sites.get(id);
-    return `Attaches: ${site ? siteLabel(site, sites) : id.replace(/-/g, ' ')}`;
+    return `Attaches to: ${site ? siteLabel(site, sites) : id.replace(/-/g, ' ')}`;
   });
 }
 

@@ -174,6 +174,6 @@ describe('relearning a question missed three times running', () => {
     const card = ligament!.relearnCard!;
     expect(card.front.text).toContain('What ligament is this?');
     for (const line of ligament!.promptLines!) expect(card.front.text).toContain(line);
-    expect(card.back.text.split('\n')[0]).toBe(ligament!.choices[ligament!.correctIndex]);
+    expect(card.back.text.split('\n')[0]).toBe(`**${ligament!.choices[ligament!.correctIndex]}**`);
   });
 });
