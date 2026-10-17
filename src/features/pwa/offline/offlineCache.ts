@@ -184,14 +184,21 @@ export async function migrateLegacyAreaCaches(
     if (!record) continue;
     const cache = await storage.open(offlineCacheName(area));
     const files: Record<string, string> = { ...record.files };
+    // Older records kept no sizes. Taken from each copy as it moves, so the
+    // device total counts shared files once from this start on, not only
+    // after every area has been downloaded again.
+    const sizes: Record<string, number> = { ...record.sizes };
     let bytes = record.bytes;
-    let changed = false;
+    let moved = false;
+    let lost = false;
     for (const request of await cache.keys()) {
       const url = pathOf(request);
       if (url === RECORD_URL) continue;
       const response = await cache.match(request);
       const hash = record.files[url];
       if (response && hash !== undefined) {
+        moved = true;
+        const size = Number(response.headers.get('Content-Length')) || (await response.clone().arrayBuffer()).byteLength;
         if (!kept.has(url)) {
           // Already there only if an earlier start was interrupted part way.
           const there = await (await sharedCache()).match(url);
@@ -201,16 +208,22 @@ export async function migrateLegacyAreaCaches(
         if (keptHash === undefined) {
           await (await sharedCache()).put(url, response);
           kept.set(url, hash);
-        } else if (keptHash !== hash) {
-          bytes -= Number(response.headers.get('Content-Length') ?? 0);
+          sizes[url] = size;
+        } else if (keptHash === hash) {
+          sizes[url] = size;
+        } else {
+          bytes -= size;
           delete files[url];
-          changed = true;
+          delete sizes[url];
+          lost = true;
         }
       }
       await cache.delete(request);
     }
-    if (changed) {
-      await writeRecord(storage, { ...record, files, bytes: Math.max(0, bytes), manifestHash: null, completedAt: null });
+    if (lost) {
+      await writeRecord(storage, { ...record, files, sizes, bytes: Math.max(0, bytes), manifestHash: null, completedAt: null });
+    } else if (moved) {
+      await writeRecord(storage, { ...record, sizes });
     }
   }
 }

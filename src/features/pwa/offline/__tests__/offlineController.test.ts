@@ -309,3 +309,23 @@ describe('one picture cache shared by every area', () => {
     expect(await readRecord(storage, 'elbow')).toMatchObject({ files: { [FILES[0].url]: FILES[0].hash } });
   });
 });
+
+describe('the device total after moving older downloads across', () => {
+  it('counts files two old areas shared once, from the first start', async () => {
+    const { controller, storage } = setup();
+    for (const area of ['cervical-spine', 'lumbar-spine'] as const) {
+      const legacy = await storage.open(offlineCacheName(area));
+      for (const f of FILES) await legacy.put(f.url, new Response(f.body, { headers: { 'Content-Length': '4' } }));
+      await writeRecord(storage, {
+        version: 1,
+        area,
+        files: Object.fromEntries(FILES.map((f) => [f.url, f.hash])),
+        bytes: 8,
+        manifestHash: '1111111111111111',
+        completedAt: '2026-10-02T09:00:00.000Z',
+      });
+    }
+    await controller.start();
+    expect(controller.getSnapshot().usedBytes).toBe(8);
+  });
+});
