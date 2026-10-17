@@ -193,6 +193,13 @@ export interface QuestionEligibility {
    * 2026); they keep their picture in the Atlas and on flashcards.
    */
   picture?: boolean;
+  /**
+   * A ligament asked by name from its attachments as bullet points
+   * (lib/questionGenerators/ligamentClue.ts). False where another ligament
+   * attaches to exactly the same sites, worked out once over every ligament
+   * in data/seed/index.ts so that every session, whatever its pool, agrees.
+   */
+  identifyByAttachments?: boolean;
 }
 
 /**

@@ -75,6 +75,7 @@ describe('the setting changes how a question is answered, never which questions 
     expect(on).toBe(off);
     // And no generated question is of the kind an answer in words is recorded as.
     expect(off).not.toContain('described-region');
-    expect(JSON.parse(off).flat().length).toBeGreaterThan(700);
+    // 672 since 17 Oct 2026, when ligaments stopped being asked from a picture.
+    expect(JSON.parse(off).flat().length).toBeGreaterThan(650);
   });
 });

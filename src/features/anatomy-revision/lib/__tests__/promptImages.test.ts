@@ -86,7 +86,7 @@ describe('the shipped identify questions', () => {
     const seen = new Set<string>();
     const repeats: string[] = [];
     for (const q of questions) {
-      const frames = rotationFramesFor(imagesById.get(q.promptImageId), ALL_IMAGES);
+      const frames = rotationFramesFor(imagesById.get(q.promptImageId!), ALL_IMAGES);
       const key = `${q.structureId}|${frames.length > 1 ? frames[0].id.replace(/-a\d{3}.*$/, '') : q.promptImageId}`;
       if (seen.has(key)) repeats.push(key);
       seen.add(key);

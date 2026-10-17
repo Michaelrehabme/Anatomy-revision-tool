@@ -137,7 +137,7 @@ describe('the highlight turns with the picture', () => {
   });
 
   it('only offers angles where the target is traced', () => {
-    const frames = rotationFramesFor(imagesById.get(question.promptImageId), fixtureFrames);
+    const frames = rotationFramesFor(imagesById.get(question.promptImageId!), fixtureFrames);
     const offered = promptHighlightFrames(frames, question.structureId);
     expect(offered.length).toBeGreaterThan(1);
     for (const f of offered) expect((f.hotspots ?? []).some((h) => h.structureId === question.structureId)).toBe(true);

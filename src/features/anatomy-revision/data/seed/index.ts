@@ -1,5 +1,6 @@
 import type { AnatomyStructure } from '../../types/structure';
-import { CLINICAL_LIGAMENTS } from '../clinicalLigaments';
+import { isLigament, reviewedAttachmentIds } from '../../types/structure';
+import { CLINICAL_LIGAMENTS, LIGAMENT_PICTURE_QUESTIONS } from '../clinicalLigaments';
 import { BLOOD_SUPPLY } from './bloodSupply.generated';
 import { MUSCLE_STRUCTURES } from './structures.muscles.seed';
 import { BONE_STRUCTURES } from './structures.bones.seed';
@@ -51,19 +52,52 @@ export const ALL_IMAGES = IMAGE_ASSETS;
  * and has no use for a second copy in a file.
  */
 /**
- * Only the clinically important ligaments are asked from a picture
- * (data/clinicalLigaments.ts, owner 16 Oct 2026). Applied here, once, to the
- * data every screen and generator reads, rather than in each generator.
+ * No ligament is asked from a picture for now (owner, 17 Oct 2026); when
+ * LIGAMENT_PICTURE_QUESTIONS is turned on, the clinically important ones are
+ * (data/clinicalLigaments.ts). Applied here, once, to the data every screen
+ * and generator reads, rather than in each generator. Their pictures stay in
+ * the Atlas and on flashcards.
  */
 function withPictureRule(s: AnatomyStructure): AnatomyStructure {
-  if (s.category !== 'ligament' || CLINICAL_LIGAMENTS.has(s.id)) return s;
+  if (s.category !== 'ligament') return s;
+  if (LIGAMENT_PICTURE_QUESTIONS && CLINICAL_LIGAMENTS.has(s.id)) return s;
   return { ...s, eligibility: { ...s.eligibility, locate: false, picture: false } };
 }
 
-export const AUTHORED_STRUCTURES: AnatomyStructure[] = UNLINKED_STRUCTURES.map((s) =>
-  withPictureRule(BLOOD_SUPPLY[s.id] ? { ...s, bloodSupply: BLOOD_SUPPLY[s.id] } : s),
+/**
+ * A ligament is named from its attachments only where no other ligament
+ * attaches to exactly the same sites (owner, 17 Oct 2026): the ATFL and PTFL
+ * both reach the lateral malleolus and the talus. Worked out here, over all of
+ * them, so a session of one area cannot think a ligament unique that is not.
+ */
+function withAttachmentRule(structures: AnatomyStructure[]): AnatomyStructure[] {
+  const key = (s: AnatomyStructure) => (isLigament(s) ? [...reviewedAttachmentIds(s)].sort().join('|') : '');
+  const counts = new Map<string, number>();
+  for (const s of structures) if (isLigament(s)) counts.set(key(s), (counts.get(key(s)) ?? 0) + 1);
+  return structures.map((s) => {
+    if (!isLigament(s)) return s;
+    const ok = reviewedAttachmentIds(s).length > 0 && counts.get(key(s)) === 1;
+    return { ...s, eligibility: { ...s.eligibility, identifyByAttachments: ok } };
+  });
+}
+
+export const AUTHORED_STRUCTURES: AnatomyStructure[] = withAttachmentRule(
+  UNLINKED_STRUCTURES.map((s) => withPictureRule(BLOOD_SUPPLY[s.id] ? { ...s, bloodSupply: BLOOD_SUPPLY[s.id] } : s)),
 );
 export const ALL_STRUCTURES: AnatomyStructure[] = linkImages(AUTHORED_STRUCTURES, ALL_IMAGES);
+
+/**
+ * The same data with every ligament's picture questions ON, as it was before
+ * 17 Oct 2026. Not used by the app: it is what the tests of the tap, gap-plate
+ * and typed-with-attachment-boxes questions run against, so those builders
+ * stay working while they are switched off (data/clinicalLigaments.ts).
+ */
+export function structuresWithLigamentPictures(): AnatomyStructure[] {
+  return linkImages(
+    withAttachmentRule(UNLINKED_STRUCTURES.map((s) => (BLOOD_SUPPLY[s.id] ? { ...s, bloodSupply: BLOOD_SUPPLY[s.id] } : s))),
+    ALL_IMAGES,
+  );
+}
 
 export {
   MUSCLE_STRUCTURES,

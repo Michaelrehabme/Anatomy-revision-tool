@@ -18,6 +18,16 @@
  * how the app holds it; the thumb's ulnar collateral ligament (skier's thumb)
  * is inside the grouped collateral metacarpophalangeal ligaments.
  */
+/**
+ * OFF FOR NOW (owner, 17 Oct 2026): "I want to prioritise the quality of
+ * questions being asked over the quantity." The atlas the plates are drawn
+ * from models too many ligaments as chips and flat cut-outs to stand beside
+ * the references students know, and better models need funding. Until then
+ * no ligament is asked from a picture; ligaments are asked in words. Turn this
+ * on with better pictures and the list below decides which are.
+ */
+export const LIGAMENT_PICTURE_QUESTIONS = false;
+
 export const CLINICAL_LIGAMENTS: ReadonlySet<string> = new Set([
   // Ankle and foot
   'anterior-talofibular-ligament',

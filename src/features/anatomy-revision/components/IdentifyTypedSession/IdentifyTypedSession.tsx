@@ -44,7 +44,7 @@ export function IdentifyTypedSession({ question, imagesById, onAnswer, onNext, e
     setRated(false);
   }, [question.id, slots]);
 
-  const promptImage = imagesById.get(question.promptImageId);
+  const promptImage = (question.promptImageId ? imagesById.get(question.promptImageId) : undefined);
   // Every angle of the same picture, so the student can turn it. A plate
   // that is not part of a rotation set gives back nothing and the viewer
   // simply shows no turn controls.
@@ -106,6 +106,13 @@ export function IdentifyTypedSession({ question, imagesById, onAnswer, onNext, e
           >
             {question.prompt}
           </h2>
+          {question.promptLines?.length ? (
+            <ul className="mx-auto mt-6 flex w-fit max-w-full list-disc flex-col gap-2 pl-6 text-left" style={{ font: '400 20px/1.4 var(--font-ui)', color: 'var(--ink)' }}>
+              {question.promptLines.map((line) => (
+                <li key={line}>{line}</li>
+              ))}
+            </ul>
+          ) : null}
 
           {promptImage && (
             <ImageViewer

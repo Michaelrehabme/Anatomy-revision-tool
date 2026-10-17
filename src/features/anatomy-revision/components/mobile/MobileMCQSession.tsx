@@ -91,6 +91,13 @@ export function MobileMCQSession({ question, imagesById, onAnswer, onNext, onFul
         >
           {question.prompt}
         </h2>
+        {question.promptLines?.length ? (
+          <ul className="mt-3 flex list-disc flex-col gap-1.5 pl-5" style={{ font: '400 17px/1.4 var(--font-ui)', color: 'var(--ink)' }}>
+            {question.promptLines.map((line) => (
+              <li key={line}>{line}</li>
+            ))}
+          </ul>
+        ) : null}
 
         {promptImage && (
           <ImageViewer

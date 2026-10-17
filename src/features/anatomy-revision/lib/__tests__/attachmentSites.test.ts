@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { ALL_IMAGES, ALL_STRUCTURES } from '../../data/seed';
+import { ALL_IMAGES, ALL_STRUCTURES, structuresWithLigamentPictures } from '../../data/seed';
 import { isLigament } from '../../types/structure';
 import { siteLabel } from '../attachmentSites';
 import { gradeTypedSlots } from '../oinaAnswer';
@@ -45,7 +45,9 @@ describe('an attachment reads as "landmark of bone"', () => {
 });
 
 describe('a bonus box takes the landmark with or without its bone', () => {
-  const question = buildIdentifyTypedQuestions(ALL_STRUCTURES, ALL_IMAGES).find((q) => q.structureId === 'ischiofemoral-ligament')!;
+  // The boxes belong to the picture question, switched off for ligaments for
+  // now (data/clinicalLigaments.ts); tested on the data with it on.
+  const question = buildIdentifyTypedQuestions(structuresWithLigamentPictures(), ALL_IMAGES).find((q) => q.structureId === 'ischiofemoral-ligament')!;
   const slots = question.attachmentSlots!;
   const right = (...typed: string[]) => gradeTypedSlots(typed, slots).correctCount;
 

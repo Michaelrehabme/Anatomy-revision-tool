@@ -44,7 +44,7 @@ export function MobileIdentifyTypedSession({ question, imagesById, onAnswer, onN
     setRated(false);
   }, [question.id, slots]);
 
-  const promptImage = imagesById.get(question.promptImageId);
+  const promptImage = (question.promptImageId ? imagesById.get(question.promptImageId) : undefined);
   // Every angle of the same picture, so the student can turn it. A plate
   // that is not part of a rotation set gives back nothing and the viewer
   // simply shows no turn controls.
@@ -101,6 +101,13 @@ export function MobileIdentifyTypedSession({ question, imagesById, onAnswer, onN
         >
           {question.prompt}
         </h2>
+        {question.promptLines?.length ? (
+          <ul className="mt-3 flex list-disc flex-col gap-1.5 pl-5" style={{ font: '400 17px/1.4 var(--font-ui)', color: 'var(--ink)' }}>
+            {question.promptLines.map((line) => (
+              <li key={line}>{line}</li>
+            ))}
+          </ul>
+        ) : null}
 
         {promptImage && (
           <ImageViewer

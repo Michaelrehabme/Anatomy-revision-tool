@@ -8,6 +8,7 @@ import { summarizeStructure } from '../facts';
 import { promptImagesFor } from './promptImages';
 import { siteLabel } from '../attachmentSites';
 import { questionBase } from './questionBase';
+import { ligamentPromptLines } from './ligamentClue';
 
 /**
  * Builds a typed-answer counterpart to MCQ's image-based "identify"
@@ -37,6 +38,25 @@ export function buildIdentifyTypedQuestions(
 
   for (const structure of structures) {
     if (!structure.eligibility.mcq) continue;
+
+    // A ligament is asked from its attachments, as bullet points, and typed
+    // by name (ligamentClue.ts); the sites are the clue, so there are no
+    // attachment boxes to fill. Not from a picture: data/seed/index.ts.
+    if (isLigament(structure) && structure.eligibility.picture === false) {
+      const lines = ligamentPromptLines(structure, byId);
+      if (lines) {
+        questions.push({
+          ...questionBase(structure, 'identify'),
+          type: 'identify-typed',
+          id: `identify-typed-${structure.id}-attachments`,
+          prompt: 'What ligament is this?',
+          promptLines: lines,
+          acceptedAnswers: structureNameVariants(structure.name, structure.aliases),
+          explanation: summarizeStructure(structure, byId),
+        });
+      }
+      continue;
+    }
 
     // A ligament is asked for its name AND its attachments, one box each —
     // the bones are named through the seed so "talus" and "tarsals" are

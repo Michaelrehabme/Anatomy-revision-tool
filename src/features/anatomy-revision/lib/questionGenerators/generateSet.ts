@@ -609,20 +609,37 @@ export function generateRevisionSet(
     const selected = selectAdaptiveStructures(pool, masteryByStructureId, desiredCount, rng, config.now ?? new Date());
 
     const adaptiveQuestions: RevisionQuestion[] = [];
-    for (const structure of selected) {
-      const mastery = masteryByStructureId.get(structure.id);
-      const preferredType = pickAdaptiveQuestionType(mastery, config.types);
-      if (!preferredType) continue;
-      const orderedTypes = [preferredType, ...config.types.filter((t) => t !== preferredType)];
-      for (const type of orderedTypes) {
-        const question = generateOneQuestionForStructure(structure, type, relevantImages, indexes, rng, config, names, vocabulary, pool, entitled);
-        if (question) {
-          adaptiveQuestions.push(
-            question.type === 'identify-typed' ? { ...question, hints: hintsForRung(rungFor(mastery)) } : question,
-          );
-          break;
+    // A structure can have no question of any requested kind: since 17 Oct
+    // 2026 a ligament whose attachment list another ligament shares has no
+    // naming question at all (ligamentClue.ts). Its place is taken by the next
+    // structure the selection would have chosen, so twenty asked is twenty
+    // given. The first pass is exactly the old one; only a short session draws
+    // again, from structures not yet tried.
+    const tried = new Set<string>();
+    let candidates = selected;
+    while (candidates.length && adaptiveQuestions.length < desiredCount) {
+      for (const structure of candidates) {
+        if (adaptiveQuestions.length >= desiredCount) break;
+        tried.add(structure.id);
+        const mastery = masteryByStructureId.get(structure.id);
+        const preferredType = pickAdaptiveQuestionType(mastery, config.types);
+        if (!preferredType) continue;
+        const orderedTypes = [preferredType, ...config.types.filter((t) => t !== preferredType)];
+        for (const type of orderedTypes) {
+          const question = generateOneQuestionForStructure(structure, type, relevantImages, indexes, rng, config, names, vocabulary, pool, entitled);
+          if (question) {
+            adaptiveQuestions.push(
+              question.type === 'identify-typed' ? { ...question, hints: hintsForRung(rungFor(mastery)) } : question,
+            );
+            break;
+          }
         }
       }
+      if (adaptiveQuestions.length >= desiredCount) break;
+      const rest = pool.filter((s) => !tried.has(s.id));
+      candidates = rest.length
+        ? selectAdaptiveStructures(rest, masteryByStructureId, desiredCount - adaptiveQuestions.length, rng, config.now ?? new Date())
+        : [];
     }
     return stampRequestedArea(
       withLearnCards(shuffle(adaptiveQuestions, rng), indexes, config.factMastery, config.learnCardAttempts),

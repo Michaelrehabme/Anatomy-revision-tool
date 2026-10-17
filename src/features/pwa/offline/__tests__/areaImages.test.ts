@@ -24,7 +24,7 @@ function imageIdsOf(question: RevisionQuestion): string[] {
     case 'mcq':
       return question.promptImageId ? [question.promptImageId] : [];
     case 'identify-typed':
-      return [question.promptImageId];
+      return question.promptImageId ? [question.promptImageId] : [];
     case 'locate':
       return [question.imageId, ...(question.frameImageIds ?? [])];
     default:

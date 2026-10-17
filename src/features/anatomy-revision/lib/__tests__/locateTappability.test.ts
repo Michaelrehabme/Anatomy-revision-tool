@@ -52,9 +52,9 @@ describe('buildLocateQuestions', () => {
     // to 586 while losing no structure, which is exactly the shape a count
     // threshold cannot tell apart from a real loss of coverage.
     expect(new Set(q.map((x) => x.targetStructureId)).size).toBeGreaterThan(280);
-    // 496 since 16 Oct 2026, when the small ligaments stopped being asked
-    // from a picture (data/clinicalLigaments.ts): 99 questions, on purpose.
-    expect(q.length).toBeGreaterThan(480);
+    // 444 since 17 Oct 2026, when ligaments stopped being asked from a
+    // picture at all (data/clinicalLigaments.ts): 151 questions, on purpose.
+    expect(q.length).toBeGreaterThan(430);
   });
 });
 

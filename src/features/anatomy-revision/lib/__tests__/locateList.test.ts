@@ -31,13 +31,13 @@ const onPlate = (q: LocateQuestion) => [...new Set(framesOf(q).flatMap((f) => (f
 const lists = locate.map((q) => ({ q, list: buildLocateList(q, framesOf(q), STRUCTURE_INDEX) }));
 
 describe('the list of names a locate question falls back to', () => {
-  it('was one name long on 211 of the 496 questions, and under four on 239', () => {
+  it('was one name long on 211 of the 444 questions, and under four on 237', () => {
     const sizes = locate.map((q) => onPlate(q).length);
-    // 496 since 16 Oct 2026: ligaments are asked from a picture only when
-    // clinically important (data/clinicalLigaments.ts).
-    expect(locate).toHaveLength(496);
+    // 444 since 17 Oct 2026: no ligament is asked from a picture for now
+    // (data/clinicalLigaments.ts).
+    expect(locate).toHaveLength(444);
     expect(sizes.filter((n) => n === 1)).toHaveLength(211);
-    expect(sizes.filter((n) => n < MIN_LIST_NAMES)).toHaveLength(239);
+    expect(sizes.filter((n) => n < MIN_LIST_NAMES)).toHaveLength(237);
   });
 
   it('is never shorter than four now, on any locate question', () => {
@@ -99,7 +99,7 @@ describe('the list of names a locate question falls back to', () => {
       padded += 1;
       position[list.findIndex((s) => s.id === q.targetStructureId)] += 1;
     }
-    expect(padded).toBe(239);
+    expect(padded).toBe(237);
     for (const count of position) {
       expect(count / padded).toBeGreaterThan(0.12);
       expect(count / padded).toBeLessThan(0.4);
@@ -135,6 +135,6 @@ describe('the two routes together', () => {
       }
       expect(routes.list.length, q.id).toBeGreaterThanOrEqual(MIN_LIST_NAMES);
     }
-    expect(inWords).toBe(476);
+    expect(inWords).toBe(425);
   });
 });

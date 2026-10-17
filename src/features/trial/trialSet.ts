@@ -49,7 +49,8 @@ export const TRIAL_SPECS: readonly TrialSpec[] = [
   {
     type: 'identify-typed',
     structureId: 'anterior-cruciate-ligament',
-    id: 'identify-typed-anterior-cruciate-ligament-ligament-anterior-cruciate-ligament-a000-highlight',
+    // From its attachments since 17 Oct 2026: ligaments are not asked from a picture.
+    id: 'identify-typed-anterior-cruciate-ligament-attachments',
   },
   { type: 'oina', structureId: 'deltoid', id: 'oina-deltoid-action-select' },
 ];

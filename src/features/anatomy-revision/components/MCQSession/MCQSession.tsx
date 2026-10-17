@@ -94,6 +94,13 @@ export function MCQSession({ question, imagesById, onAnswer, onNext, examMode }:
           >
             {question.prompt}
           </h2>
+          {question.promptLines?.length ? (
+            <ul className="mx-auto mt-6 flex w-fit max-w-full list-disc flex-col gap-2 pl-6 text-left" style={{ font: '400 20px/1.4 var(--font-ui)', color: 'var(--ink)' }}>
+              {question.promptLines.map((line) => (
+                <li key={line}>{line}</li>
+              ))}
+            </ul>
+          ) : null}
 
           {promptImage && (
             <ImageViewer

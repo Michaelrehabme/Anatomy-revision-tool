@@ -1,5 +1,13 @@
 import { describe, expect, it } from 'vitest';
-import { ALL_STRUCTURES, ALL_IMAGES } from '../../data/seed';
+import { ALL_IMAGES, ALL_STRUCTURES as LIVE_STRUCTURES, structuresWithLigamentPictures } from '../../data/seed';
+
+/**
+ * The typed boxes are part of the picture question, switched off for
+ * ligaments for now (data/clinicalLigaments.ts); the tests below run on the
+ * data with it on, so the boxes keep working for when it returns. The live
+ * data's own ligaments-only session is checked at the end.
+ */
+const ALL_STRUCTURES = structuresWithLigamentPictures();
 import { generateRevisionSet } from '../questionGenerators/generateSet';
 import { AREAS } from '../../types/region';
 import { isLigament } from '../../types/structure';
@@ -89,5 +97,30 @@ describe('a ligaments-only session', () => {
     expect(attachmentQs.map((q) => q.id)).toEqual([]);
     // It is still asked by picture and name.
     expect(questions.some((q) => q.type === 'identify-typed')).toBe(true);
+  });
+});
+
+describe('a ligaments-only session on the live data', () => {
+  const set = generateRevisionSet(LIVE_STRUCTURES, ALL_IMAGES, {
+    entitledAreas: AREAS,
+    types: ['mcq', 'identify-typed'],
+    category: 'ligament',
+    mode: 'practice',
+    seed: 11,
+  });
+
+  it('asks a ligament by its attachments, as bullet points, never from a picture', () => {
+    const named = set.filter((q) => (q.type === 'mcq' || q.type === 'identify-typed') && q.promptKind === 'identify');
+    expect(named.length).toBeGreaterThan(0);
+    for (const q of named) {
+      expect((q as { promptImageId?: string }).promptImageId, q.id).toBeUndefined();
+      const lines = (q as { promptLines?: string[] }).promptLines ?? [];
+      expect(lines.length, q.id).toBeGreaterThan(0);
+      for (const line of lines) {
+        expect(line, q.id).toMatch(/^Attaches: /);
+        // Named from the index, not the narrowed pool: no raw ids.
+        expect(line, q.id).not.toMatch(/[a-z]-[a-z]/);
+      }
+    }
   });
 });

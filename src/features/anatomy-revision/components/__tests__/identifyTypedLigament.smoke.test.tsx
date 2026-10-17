@@ -2,8 +2,17 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { IdentifyTypedSession } from '../IdentifyTypedSession/IdentifyTypedSession';
 import { buildIdentifyTypedQuestions } from '../../lib/questionGenerators/identifyTyped';
-import { ALL_STRUCTURES, ALL_IMAGES } from '../../data/seed';
+import { ALL_IMAGES, structuresWithLigamentPictures } from '../../data/seed';
 import type { TypedIdentifyQuestion } from '../../types/question';
+
+/**
+ * Ligaments are not asked from a picture for now (data/clinicalLigaments.ts,
+ * owner 17 Oct 2026). These tests keep the picture questions' builders
+ * working for when they return, so they run on the data with ligament
+ * pictures on (structuresWithLigamentPictures).
+ */
+const ALL_STRUCTURES = structuresWithLigamentPictures();
+
 
 /**
  * A ligament's typed identify asks for the name and one box per attachment.

@@ -86,25 +86,24 @@ function seedValues(s: AnatomyStructure): Map<string, string[]> {
 }
 
 describe('described-region questions: coverage', () => {
-  it('covers 476 of the 496 locate questions, in every family', () => {
-    // 496 since 16 Oct 2026: only the clinically important ligaments are asked
-    // from a picture (data/clinicalLigaments.ts), 52 of them where there were 151.
-    expect(locate).toHaveLength(496);
-    expect(built).toHaveLength(476);
+  it('covers 425 of the 444 locate questions, in every family', () => {
+    // 444 since 17 Oct 2026: no ligament is asked from a picture for now
+    // (data/clinicalLigaments.ts); there were 151.
+    expect(locate).toHaveLength(444);
+    expect(built).toHaveLength(425);
     const perCategory = (rows: { q: { category: string } }[]) =>
       Object.fromEntries(['muscle', 'ligament', 'landmark', 'joint', 'bone'].map((c) => [c, rows.filter((r) => r.q.category === c).length]));
-    expect(perCategory(results)).toEqual({ muscle: 124, ligament: 52, landmark: 202, joint: 34, bone: 84 });
-    expect(perCategory(built)).toEqual({ muscle: 124, ligament: 51, landmark: 192, joint: 34, bone: 75 });
+    expect(perCategory(results)).toEqual({ muscle: 124, ligament: 0, landmark: 202, joint: 34, bone: 84 });
+    expect(perCategory(built)).toEqual({ muscle: 124, ligament: 0, landmark: 192, joint: 34, bone: 75 });
   });
 
-  it('and the twenty it does not are these, each for a reason the list route then covers', () => {
+  it('and the nineteen it does not are these, each for a reason the list route then covers', () => {
     const why = new Map<string, DescribedRegionGap>();
     for (const { q, built: reason } of gaps) why.set(q.targetStructureId, reason as DescribedRegionGap);
     expect(Object.fromEntries([...why].sort(([a], [b]) => a.localeCompare(b)))).toEqual({
       // The seed holds no attachment for it at all.
       pedicle: 'no-data',
       // All the seed holds is in the name: "Neck of Fibula" is part of the fibula.
-      'glenoid-labrum': 'name-gives-it-away',
       'intervertebral-disc': 'name-gives-it-away',
       'neck-of-fibula': 'name-gives-it-away',
       'phalanges-distal-foot': 'name-gives-it-away',
@@ -114,7 +113,7 @@ describe('described-region questions: coverage', () => {
       'surgical-neck-humerus': 'name-gives-it-away',
       'vertebral-body': 'name-gives-it-away',
     });
-    expect(gaps).toHaveLength(20);
+    expect(gaps).toHaveLength(19);
   });
 });
 
@@ -314,11 +313,11 @@ describe('described-region questions: from one area\'s facts', () => {
         });
       }
     }
-    // 554 because a structure in two areas is asked in each. Fewer are covered
+    // 492 because a structure in two areas is asked in each. Fewer are covered
     // than with everything loaded — an area with two bones cannot supply three
     // wrong descriptions of a bone — and those fall back to the list.
-    expect(total).toBe(554);
-    expect(covered).toBe(383);
+    expect(total).toBe(492);
+    expect(covered).toBe(325);
   });
 
   it('names a bone from another area through the index, with no facts loaded for it', () => {

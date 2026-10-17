@@ -6,6 +6,7 @@ import type { StructureIndexes } from '../indexes';
 import { pickNameDistractors, pickTextFieldDistractors } from '../distractors';
 import { canonicalNerveNames, conflictsWith, stripHeadPrefix } from '../oinaValues';
 import { buildIdentifyClue, clueAlsoFits, ligamentCourse, summarizeStructure, type SiteLookup } from '../facts';
+import { alsoAttachesToAll, ligamentPromptLines } from './ligamentClue';
 import { shuffle, sample, type Rng } from '../rng';
 import { promptImagesFor } from './promptImages';
 import { questionBase } from './questionBase';
@@ -169,6 +170,10 @@ function buildOne(
   siteLookup: SiteLookup,
 ): MCQQuestion[] {
   const out: MCQQuestion[] = [];
+
+  if (promptKind === 'identify' && isLigament(structure)) {
+    return ligamentIdentify(structure, all, fallback, promptKind, distractorCount, choiceCount, rng, siteLookup);
+  }
 
   if (promptKind === 'identify') {
     const promptImages = promptImagesFor(structure, images);
@@ -375,4 +380,46 @@ function buildOne(
 export function imageDepicts(image: AnatomyImageAsset, structureId: string): boolean {
   if (image.mode === 'single-structure') return image.structureId === structureId;
   return (image.hotspots ?? []).some((h) => h.structureId === structureId);
+}
+
+
+/**
+ * A ligament's naming question: its attachments as bullet points
+ * (ligamentClue.ts). Ligaments are not asked from a picture (data/seed/
+ * index.ts), so this is it; none when another ligament shares its sites. A
+ * wrong answer that attaches to every one of these sites too is a second right
+ * answer, so it is never offered.
+ */
+function ligamentIdentify(
+  structure: AnatomyStructure,
+  all: AnatomyStructure[],
+  fallback: AnatomyStructure[] | undefined,
+  promptKind: PromptKind,
+  distractorCount: number,
+  choiceCount: number,
+  rng: Rng,
+  siteLookup: SiteLookup,
+): MCQQuestion[] {
+  const lines = ligamentPromptLines(structure, siteLookup);
+  if (!lines) return [];
+  const fair = (s: AnatomyStructure) => s.id !== structure.id && !alsoAttachesToAll(structure, s);
+  const distractors = toppedUp(
+    structure.name,
+    pickNameDistractors(structure, all.filter(fair), distractorCount, rng),
+    distractorCount,
+    (missing, taken) =>
+      pickNameDistractors(structure, (fallback ?? []).filter((s) => fair(s) && s.name !== structure.name && !taken.includes(s.name)), missing, rng),
+  );
+  const { choices, correctIndex } = buildChoices(structure.name, distractors, choiceCount, rng);
+  return [
+    {
+      ...baseFields(structure, promptKind),
+      id: `mcq-${structure.id}-identify-text`,
+      prompt: 'What ligament is this?',
+      promptLines: lines,
+      choices,
+      correctIndex,
+      explanation: summarizeStructure(structure, siteLookup),
+    },
+  ];
 }
