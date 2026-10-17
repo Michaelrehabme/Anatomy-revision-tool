@@ -1,7 +1,7 @@
 # The diagnostic papers
 
-Version 3. Written by `npm run papers:publish` from
-`src/features/anatomy-revision/data/diagnostic/papers.v3.json` and the seed; do not edit by hand.
+Version 4. Written by `npm run papers:publish` from
+`src/features/anatomy-revision/data/diagnostic/papers.v4.json` and the seed; do not edit by hand.
 
 Ten papers of fifteen questions. A student with every area sits the whole-body paper; a
 student on a free account sits the paper for their free area. The questions were chosen for
@@ -29,10 +29,10 @@ Sat by anyone holding every area. Built from all nine areas.
 | 5 | Carpometacarpal Joint of Thumb | joint | name the picture: Which structure is shown? | Carpometacarpal Joint of Thumb | Metacarpophalangeal Joint; Radiocarpal Joint; Second Carpometacarpal Joint |
 | 6 | Gluteus Maximus | muscle | nerve: What nerve innervates Gluteus Maximus? | Inferior gluteal nerve | Gluteus Medius; Iliacus; Gracilis |
 | 7 | Sartorius | muscle | origin: What is the origin of Sartorius? | Anterior superior iliac spine (ASIS) | Gracilis; Piriformis; Quadratus Femoris |
-| 8 | Anterior cruciate ligament | ligament | name the picture: Which structure is shown? | Anterior cruciate ligament | Posterior cruciate ligament; Transverse ligament of knee; Oblique popliteal ligament |
+| 8 | Anterior cruciate ligament | ligament | name the ligament from its attachments: What ligament is this? | Anterior cruciate ligament | Posterior cruciate ligament; Transverse ligament of knee; Oblique popliteal ligament |
 | 9 | Rectus Femoris | muscle | origin: What is the origin of Rectus Femoris? | Anterior Inferior Iliac Spine (AIIS) | Vastus Lateralis; Semitendinosus; Popliteus |
 | 10 | Gastrocnemius | muscle | action: What is the action of Gastrocnemius? | Plantarflexes the ankle — most powerfully with the knee extended — and flexes the knee. | Plantaris; Tibialis Posterior; Flexor Hallucis Longus |
-| 11 | Anterior talofibular ligament | ligament | name the picture: Which structure is shown? | Anterior talofibular ligament | Posterior talofibular ligament; Calcaneofibular ligament; Anterior tibiofibular ligament |
+| 11 | Anterior talofibular ligament | ligament | name the ligament from its attachments: What ligament is this? | Anterior talofibular ligament | Posterior talofibular ligament; Calcaneofibular ligament; Anterior tibiofibular ligament |
 | 12 | Atlas (C1) | bone | name the picture: Which structure is shown? | Atlas (C1) | Axis (C2); C7 Vertebra; Occipital Bone |
 | 13 | Diaphragm | muscle | nerve: What nerve innervates Diaphragm? | Phrenic nerve | External Intercostals; Longissimus; Long thoracic nerve (a nerve name) |
 | 14 | Intervertebral Disc | landmark | name the picture: Which structure is shown? | Intervertebral Disc | Vertebral Body; Intervertebral Foramen; Vertebral Foramen |
@@ -57,8 +57,8 @@ Sat by a free account whose free area is Shoulder. Built from that area alone.
 | 11 | Coracoid Process | landmark | name the picture: Which structure is shown? | Coracoid Process | Acromion; Glenoid Cavity; Inferior Angle of Scapula |
 | 12 | Greater Tubercle of Humerus | landmark | name the picture: Which structure is shown? | Greater Tubercle of Humerus | Lesser Tubercle of Humerus; Deltoid Tuberosity; Surgical Neck of Humerus |
 | 13 | Glenohumeral Joint | joint | injury vignette (clinical): Visible deformity (loss of the normal deltoid contour), severe pain, and the arm held in slight abduction and external rotation. Which structure is most likely involved? | Glenohumeral Joint | Acromioclavicular Joint; Sternoclavicular Joint; Pectoralis Major |
-| 14 | Acromioclavicular ligament | ligament | name the picture: Which structure is shown? | Acromioclavicular ligament | Coraco-acromial ligament; Conoid ligament; Coracohumeral ligament |
-| 15 | Glenoid labrum | ligament | name the picture: Which structure is shown? | Glenoid labrum | Superior glenohumeral ligament; Transverse humeral ligament; Coraco-acromial ligament |
+| 14 | Acromioclavicular ligament | ligament | name the ligament from its attachments: What ligament is this? | Acromioclavicular ligament | Coraco-acromial ligament; Conoid ligament; Coracohumeral ligament |
+| 15 | Glenoid labrum | ligament | name the ligament from its attachments: What ligament is this? | Glenoid labrum | Coraco-acromial ligament; Anterior sternoclavicular ligament; Transverse humeral ligament |
 
 ## Elbow
 
@@ -78,9 +78,9 @@ Sat by a free account whose free area is Elbow. Built from that area alone.
 | 10 | Coronoid Process of Ulna | landmark | name the picture: Which structure is shown? | Coronoid Process of Ulna | Olecranon; Trochlear Notch; Radial Tuberosity |
 | 11 | Humeroulnar Joint | joint | injury vignette (clinical): Visible deformity, severe pain, and inability to move the elbow; check distal pulses and nerve function given the joint's proximity to the brachial artery and major nerves. Which structure is most likely involved? | Humeroulnar Joint | Proximal Radioulnar Joint; Biceps Brachii; Triceps Brachii |
 | 12 | Proximal Radioulnar Joint | joint | injury vignette (clinical): Lateral elbow pain and swelling, with pain specifically on pronation/supination rather than flexion/extension. Which structure is most likely involved? | Proximal Radioulnar Joint | Humeroulnar Joint; Biceps Brachii; Triceps Brachii |
-| 13 | Ulnar collateral ligament | ligament | name the picture: Which structure is shown? | Ulnar collateral ligament | Radial collateral ligament; Annular ligament of radius; Quadrate ligament |
-| 14 | Radial collateral ligament | ligament | name the picture: Which structure is shown? | Radial collateral ligament | Ulnar collateral ligament; Annular ligament of radius; Interosseous membrane of forearm |
-| 15 | Annular ligament of radius | ligament | name the picture: Which structure is shown? | Annular ligament of radius | Quadrate ligament; Radial collateral ligament; Interosseous membrane of forearm |
+| 13 | Ulnar collateral ligament | ligament | name the ligament from its attachments: What ligament is this? | Ulnar collateral ligament | Radial collateral ligament; Annular ligament of radius; Quadrate ligament |
+| 14 | Radial collateral ligament | ligament | name the ligament from its attachments: What ligament is this? | Radial collateral ligament | Ulnar collateral ligament; Annular ligament of radius; Interosseous membrane of forearm |
+| 15 | Anconeus | muscle | action: What is the action of Anconeus? | Assists elbow extension and steadies the joint through pronation. | Triceps Brachii; Brachialis; Biceps Brachii |
 
 ## Wrist & Hand
 
@@ -97,12 +97,12 @@ Sat by a free account whose free area is Wrist & Hand. Built from that area alon
 | 7 | Lumbricals (Hand) | muscle | action: What is the action of Lumbricals (Hand)? | Flexes the metacarpophalangeal joints of digits 2–5 while extending their interphalangeal joints. | Palmar Interossei; Dorsal Interossei (Hand); Opponens Pollicis |
 | 8 | Supinator | muscle | name the picture: Which structure is shown? | Supinator | Pronator Teres; Extensor Digitorum; Extensor Carpi Radialis Longus |
 | 9 | Flexor Carpi Radialis | muscle | insertion: What is the insertion of Flexor Carpi Radialis? | Base of 2nd and 3rd metacarpals | Flexor Carpi Ulnaris; Extensor Carpi Ulnaris; Palmaris Longus |
-| 10 | Metacarpals (grouped) | bone | name the picture: Which structure is shown? | Metacarpals (grouped) | Carpals (grouped); Proximal Phalanges of the Hand (grouped); Distal Phalanges of the Hand (grouped) |
+| 10 | Metacarpals (grouped) | bone | name the picture: Which structure is shown? | Metacarpals (grouped) | Carpals (grouped); Proximal Phalanges of Hand (grouped); Distal Phalanges of Hand (grouped) |
 | 11 | Scaphoid | landmark | name the picture: Which structure is shown? | Scaphoid | Lunate; Trapezium; Capitate |
 | 12 | Radial Styloid Process | landmark | name the picture: Which structure is shown? | Radial Styloid Process | Ulnar Styloid Process; Pisiform; Scaphoid |
 | 13 | Radiocarpal Joint | joint | name the picture: Which structure is shown? | Radiocarpal Joint | Midcarpal Joint; Distal Radioulnar Joint; Carpometacarpal Joint of Thumb |
 | 14 | Carpometacarpal Joint of Thumb | joint | name the picture: Which structure is shown? | Carpometacarpal Joint of Thumb | Metacarpophalangeal Joint; Radiocarpal Joint; Second Carpometacarpal Joint |
-| 15 | Scapholunate interosseous ligament | ligament | name the picture: Which structure is shown? | Scapholunate interosseous ligament | Lunotriquetral interosseous ligament; Capitohamate interosseous ligament; Dorsal radiocarpal ligament |
+| 15 | Scapholunate interosseous ligament | ligament | name the ligament from its attachments: What ligament is this? | Scapholunate interosseous ligament | Lunotriquetral interosseous ligament; Capitohamate interosseous ligament; Dorsal radiocarpal ligament |
 
 ## Hip
 
@@ -123,8 +123,8 @@ Sat by a free account whose free area is Hip. Built from that area alone.
 | 11 | Anterior Superior Iliac Spine (ASIS) | landmark | name the picture: Which structure is shown? | Anterior Superior Iliac Spine (ASIS) | Anterior Inferior Iliac Spine (AIIS); Posterior Superior Iliac Spine (PSIS); Pubic Tubercle |
 | 12 | Ischial Tuberosity | landmark | name the picture: Which structure is shown? | Ischial Tuberosity | Pubic Tubercle; Posterior Superior Iliac Spine (PSIS); Acetabulum |
 | 13 | Iliac Crest | landmark | name the picture: Which structure is shown? | Iliac Crest | Ilium; Pubis; Ischium |
-| 14 | Ischiofemoral ligament | ligament | name the picture: Which structure is shown? | Ischiofemoral ligament | Pubofemoral ligament; Descending part of iliofemoral ligament; Sacrospinous ligament |
-| 15 | Acetabular labrum | ligament | name the picture: Which structure is shown? | Acetabular labrum | Transverse acetabular ligament; Ligament of head of femur; Obturator membrane |
+| 14 | Ischiofemoral ligament | ligament | name the ligament from its attachments: What ligament is this? | Ischiofemoral ligament | Pubofemoral ligament; Descending part of iliofemoral ligament; Sacrospinous ligament |
+| 15 | Acetabular labrum | ligament | name the ligament from its attachments: What ligament is this? | Acetabular labrum | Sacrotuberous ligament; Ischiofemoral ligament; Descending part of iliofemoral ligament |
 
 ## Knee
 
@@ -143,10 +143,10 @@ Sat by a free account whose free area is Knee. Built from that area alone.
 | 9 | Tibial Tuberosity | landmark | name the picture: Which structure is shown? | Tibial Tuberosity | Tibial Plateau; Tibial Crest; Intercondylar Eminence of Tibia |
 | 10 | Medial Condyle of Femur | landmark | name the picture: Which structure is shown? | Medial Condyle of Femur | Lateral Condyle of Femur; Medial Epicondyle of Femur; Adductor Tubercle |
 | 11 | Head of Fibula | landmark | name the picture: Which structure is shown? | Head of Fibula | Neck of Fibula; Lateral Condyle of Tibia; Tibial Tuberosity |
-| 12 | Anterior cruciate ligament | ligament | name the picture: Which structure is shown? | Anterior cruciate ligament | Posterior cruciate ligament; Transverse ligament of knee; Oblique popliteal ligament |
-| 13 | Medial meniscus | ligament | name the picture: Which structure is shown? | Medial meniscus | Lateral meniscus; Transverse ligament of knee; Posterior cruciate ligament |
-| 14 | Fibular collateral ligament | ligament | name the picture: Which structure is shown? | Fibular collateral ligament | Superficial part of tibial collateral ligament; Popliteofibular ligament; Arcuate popliteal ligament |
-| 15 | Superficial part of tibial collateral ligament | ligament | name the picture: Which structure is shown? | Superficial part of tibial collateral ligament | Fibular collateral ligament; Oblique popliteal ligament; Anterior cruciate ligament |
+| 12 | Anterior cruciate ligament | ligament | name the ligament from its attachments: What ligament is this? | Anterior cruciate ligament | Posterior cruciate ligament; Transverse ligament of knee; Oblique popliteal ligament |
+| 13 | Medial meniscus | ligament | name the ligament from its attachments: What ligament is this? | Medial meniscus | Lateral meniscus; Transverse ligament of knee; Posterior cruciate ligament |
+| 14 | Fibular collateral ligament | ligament | name the ligament from its attachments: What ligament is this? | Fibular collateral ligament | Oblique popliteal ligament; Meniscopatellar ligament; Posterior cruciate ligament |
+| 15 | Superficial part of tibial collateral ligament | ligament | name the ligament from its attachments: What ligament is this? | Superficial part of tibial collateral ligament | Fibular collateral ligament; Oblique popliteal ligament; Anterior cruciate ligament |
 
 ## Ankle & Foot
 
@@ -162,13 +162,13 @@ Sat by a free account whose free area is Ankle & Foot. Built from that area alon
 | 6 | Tibialis Posterior | muscle | action: What is the action of Tibialis Posterior? | Inverts the foot and plantarflexes the ankle. | Tibialis Anterior; Peroneus Brevis; Extensor Digitorum Longus |
 | 7 | Flexor Hallucis Longus | muscle | origin: What is the origin of Flexor Hallucis Longus? | Posterior fibula | Flexor Digitorum Longus; Tibialis Anterior; Peroneus Brevis |
 | 8 | Extensor Hallucis Longus | muscle | name the picture: Which structure is shown? | Extensor Hallucis Longus | Extensor Digitorum Longus; Tibialis Anterior; Peroneus Tertius |
-| 9 | Metatarsals (grouped) | bone | name the picture: Which structure is shown? | Metatarsals (grouped) | Tarsals (grouped); Proximal Phalanges of the Foot (grouped); Distal Phalanges of the Foot (grouped) |
+| 9 | Metatarsals (grouped) | bone | name the picture: Which structure is shown? | Metatarsals (grouped) | Tarsals (grouped); Proximal Phalanges of Foot (grouped); Distal Phalanges of Foot (grouped) |
 | 10 | Lateral Malleolus | landmark | name the picture: Which structure is shown? | Lateral Malleolus | Medial Malleolus; Calcaneus; Cuboid |
 | 11 | Talus | landmark | name the picture: Which structure is shown? | Talus | Calcaneus; Navicular; Cuboid |
 | 12 | Calcaneus | landmark | name the picture: Which structure is shown? | Calcaneus | Talus; Cuboid; Sustentaculum Tali |
 | 13 | Talocrural Joint | joint | name the picture: Which structure is shown? | Talocrural Joint | Subtalar Joint; Distal Tibiofibular Joint; Transverse Tarsal Joint |
-| 14 | Anterior talofibular ligament | ligament | name the picture: Which structure is shown? | Anterior talofibular ligament | Posterior talofibular ligament; Calcaneofibular ligament; Anterior tibiofibular ligament |
-| 15 | Plantar calcaneonavicular ligament | ligament | name the picture: Which structure is shown? | Plantar calcaneonavicular ligament | Long plantar ligament; Plantar calcaneocuboid ligament; Tibionavicular ligament |
+| 14 | Anterior talofibular ligament | ligament | name the ligament from its attachments: What ligament is this? | Anterior talofibular ligament | Posterior talofibular ligament; Calcaneofibular ligament; Anterior tibiofibular ligament |
+| 15 | Plantar calcaneonavicular ligament | ligament | name the ligament from its attachments: What ligament is this? | Plantar calcaneonavicular ligament | Long plantar ligament; Plantar calcaneocuboid ligament; Tibionavicular ligament |
 
 ## Cervical Spine
 
@@ -189,8 +189,8 @@ Sat by a free account whose free area is Cervical Spine. Built from that area al
 | 11 | Vertebral Body | landmark | name the picture: Which structure is shown? | Vertebral Body | Intervertebral Disc; Vertebral Foramen; Superior Articular Process |
 | 12 | Atlantoaxial Joint | joint | name the picture: Which structure is shown? | Atlantoaxial Joint | Atlanto-occipital Joint; Facet (Zygapophyseal) Joint; Intervertebral Joint |
 | 13 | Atlanto-occipital Joint | joint | name the picture: Which structure is shown? | Atlanto-occipital Joint | Atlantoaxial Joint; Facet (Zygapophyseal) Joint; Intervertebral Joint |
-| 14 | Nuchal ligament | ligament | name the picture: Which structure is shown? | Nuchal ligament | Supraspinous ligament; Interspinous ligaments; Ligamenta flava |
-| 15 | Anterior longitudinal ligament | ligament | name the picture: Which structure is shown? | Anterior longitudinal ligament | Posterior longitudinal ligament; Ligamenta flava; Nuchal ligament |
+| 14 | Nuchal ligament | ligament | name the ligament from its attachments: What ligament is this? | Nuchal ligament | Supraspinous ligament; Interspinous ligaments; Ligamenta flava |
+| 15 | Anterior longitudinal ligament | ligament | name the ligament from its attachments: What ligament is this? | Anterior longitudinal ligament | Posterior longitudinal ligament; Ligamenta flava; Nuchal ligament |
 
 ## Thoracic Spine
 
@@ -210,9 +210,9 @@ Sat by a free account whose free area is Thoracic Spine. Built from that area al
 | 10 | Transverse Process | landmark | name the picture: Which structure is shown? | Transverse Process | Spinous Process; Pedicle; Superior Articular Process |
 | 11 | Costovertebral Joint | joint | name the picture: Which structure is shown? | Costovertebral Joint | Sternocostal Joint; Facet (Zygapophyseal) Joint; Intervertebral Joint |
 | 12 | Facet (Zygapophyseal) Joint | joint | name the picture: Which structure is shown? | Facet (Zygapophyseal) Joint | Costovertebral Joint; Intervertebral Joint; Sternocostal Joint |
-| 13 | Supraspinous ligament | ligament | name the picture: Which structure is shown? | Supraspinous ligament | Interspinous ligaments; Ligamenta flava; Posterior longitudinal ligament |
-| 14 | Radiate ligament of head of rib | ligament | name the picture: Which structure is shown? | Radiate ligament of head of rib | Costotransverse ligament; Intra-articular ligament of head of rib; Intertransverse Ligaments |
-| 15 | Costotransverse ligament | ligament | name the picture: Which structure is shown? | Costotransverse ligament | Radiate ligament of head of rib; Intertransverse Ligaments; External intercostal membrane |
+| 13 | Supraspinous ligament | ligament | name the ligament from its attachments: What ligament is this? | Supraspinous ligament | Interspinous ligaments; Ligamenta flava; Posterior longitudinal ligament |
+| 14 | Radiate ligament of head of rib | ligament | name the ligament from its attachments: What ligament is this? | Radiate ligament of head of rib | Costotransverse ligament; Intra-articular ligament of head of rib; Intertransverse ligaments |
+| 15 | Costotransverse ligament | ligament | name the ligament from its attachments: What ligament is this? | Costotransverse ligament | Intra-articular ligament of head of rib; Intertransverse ligaments; Internal intercostal membrane |
 
 ## Lumbar Spine
 
@@ -232,7 +232,7 @@ Sat by a free account whose free area is Lumbar Spine. Built from that area alon
 | 10 | Pedicle | landmark | name the picture: Which structure is shown? | Pedicle | Lamina; Transverse Process; Spinous Process |
 | 11 | Lamina | landmark | name the picture: Which structure is shown? | Lamina | Pedicle; Pars Interarticularis; Superior Articular Process |
 | 12 | Transverse Process | landmark | name the picture: Which structure is shown? | Transverse Process | Spinous Process; Superior Articular Process; Pedicle |
-| 13 | Ligamenta flava | ligament | name the picture: Which structure is shown? | Ligamenta flava | Interspinous ligaments; Supraspinous ligament; Posterior longitudinal ligament |
-| 14 | Interspinous ligaments | ligament | name the picture: Which structure is shown? | Interspinous ligaments | Supraspinous ligament; Ligamenta flava; Intertransverse Ligaments |
-| 15 | Posterior longitudinal ligament | ligament | name the picture: Which structure is shown? | Posterior longitudinal ligament | Anterior longitudinal ligament; Ligamenta flava; Supraspinous ligament |
+| 13 | Ligamenta flava | ligament | name the ligament from its attachments: What ligament is this? | Ligamenta flava | Interspinous ligaments; Supraspinous ligament; Posterior longitudinal ligament |
+| 14 | Interspinous ligaments | ligament | name the ligament from its attachments: What ligament is this? | Interspinous ligaments | Supraspinous ligament; Ligamenta flava; Intertransverse ligaments |
+| 15 | Posterior longitudinal ligament | ligament | name the ligament from its attachments: What ligament is this? | Posterior longitudinal ligament | Anterior longitudinal ligament; Ligamenta flava; Supraspinous ligament |
 

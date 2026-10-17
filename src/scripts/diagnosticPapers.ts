@@ -57,6 +57,7 @@ import {
   type PaperQuestionKind,
   type PaperQuestionSpec,
 } from '../features/anatomy-revision/lib/diagnosticPapers';
+import { alsoAttachesToAll } from '../features/anatomy-revision/lib/questionGenerators/ligamentClue';
 import { NEW_VERSION_NEEDED, buildFromScope, lockDrift, lockFor, type PaperLock } from './lib/paperLock';
 
 const DIR = 'src/features/anatomy-revision/data/diagnostic';
@@ -83,7 +84,7 @@ function seedFrom(text: string): number {
 
 /** A structure's answer to a kind of question, as the seed states it. */
 function valueOf(kind: PaperQuestionKind, s: AnatomyStructure): string | null {
-  if (kind === 'identify' || kind === 'injury') return s.name;
+  if (kind === 'identify' || kind === 'injury' || kind === 'attachments') return s.name;
   if (kind === 'functional') return s.functionalContext ?? null;
   if (!isMuscle(s)) return null;
   if (kind === 'origin') return s.origin.join('; ');
@@ -105,6 +106,8 @@ function suggestDistractors(paper: DiagnosticPaperSpec, q: PaperQuestionSpec): P
   const pool = ALL_STRUCTURES.filter((s) => s.id !== target.id && areasOf(s).some((a) => scope.includes(a)));
   const usable = pool.filter((s) => {
     if (q.kind === 'identify') return s.category === target.category;
+    // Never one that reaches every site the question lists: a second right answer.
+    if (q.kind === 'attachments') return s.category === target.category && !alsoAttachesToAll(target, s);
     if (q.kind === 'injury') return (s.commonInjuries?.length ?? 0) > 0;
     return valueOf(q.kind, s) !== null;
   });
@@ -183,6 +186,7 @@ function contentProblems(file: DiagnosticPapersFile): string[] {
 
 const KIND_LABEL: Record<PaperQuestionKind, string> = {
   identify: 'name the picture',
+  attachments: 'name the ligament from its attachments',
   origin: 'origin',
   insertion: 'insertion',
   nerve: 'nerve',
@@ -248,6 +252,7 @@ function review(file: DiagnosticPapersFile): void {
     console.log(`\n=== ${paper.id} ===`);
     for (const q of built.questions) {
       console.log(`  ${q.id}\n    ${q.prompt}${q.promptImageId ? `  [${q.promptImageId}]` : ''}`);
+      for (const line of q.promptLines ?? []) console.log(`      - ${line}`);
       q.choices.forEach((c, i) => console.log(`      ${i === q.correctIndex ? '*' : ' '} ${c}`));
     }
   }

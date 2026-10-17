@@ -38,7 +38,15 @@ export interface PaperLock {
 
 /** The parts of a question a student sees, and nothing a build may vary. */
 export function fingerprint(q: MCQQuestion): string {
-  const seen = { prompt: q.prompt, picture: q.promptImageId ?? null, choices: q.choices, correct: q.correctIndex };
+  // The lines only where there are some, so a version-3 question, which has
+  // none, keeps the fingerprint it was published with.
+  const seen = {
+    prompt: q.prompt,
+    picture: q.promptImageId ?? null,
+    ...(q.promptLines ? { lines: q.promptLines } : {}),
+    choices: q.choices,
+    correct: q.correctIndex,
+  };
   return createHash('sha256').update(JSON.stringify(seen)).digest('hex').slice(0, 20);
 }
 

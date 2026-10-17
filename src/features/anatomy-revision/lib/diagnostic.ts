@@ -71,11 +71,13 @@ export const DIAGNOSTIC_SIZE = 15;
  *      with every area sits the whole-body paper, a student on a free
  *      account sits the paper for their free area. A sitting records WHICH
  *      paper beside the version (`paperId`).
+ *   4  the same ten, with the ligaments named from their attachments rather
+ *      than a picture (17 Oct 2026; lib/diagnosticPapers.ts PAPER_VERSION).
  *
  * This is the version a NEW BASELINE is stamped with. A follow-up carries its
  * baseline's version and paper, not this one — see `resolveDiagnosticPaper`.
  */
-export const DIAGNOSTIC_VERSION = 3;
+export const DIAGNOSTIC_VERSION = 4;
 
 /**
  * The version whose papers were drawn per class. Baselines sat under it are

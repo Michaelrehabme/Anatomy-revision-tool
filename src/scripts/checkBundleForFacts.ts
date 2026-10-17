@@ -26,7 +26,7 @@
  *   fixture   the two demo areas' structures, and no others.
  *
  * NOTHING IS EXEMPT. The diagnostic's papers are in every build
- * (data/diagnostic/papers.v3.json) and hold no facts: they name structures,
+ * (data/diagnostic/papers.v3.json, papers.v4.json) and hold no facts: they name structures,
  * and the questions are built at the sitting from what the sitter holds
  * (features/anatomy-revision/lib/diagnosticPapers.ts). An earlier, public
  * paper of finished questions needed an allowance here; it never shipped,

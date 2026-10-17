@@ -40,6 +40,9 @@ const DIR = 'src/features/anatomy-revision/data/diagnostic';
 const file = (await loadPapers(PAPER_VERSION))!;
 const lock = JSON.parse(readFileSync(`${DIR}/papers.v${PAPER_VERSION}.lock.json`, 'utf8')) as PaperLock;
 const paper = (id: PaperId) => file.papers.find((p) => p.id === id)!;
+// Version 3, superseded on 17 Oct 2026 and still replayed for its baselines.
+const v3file = (await loadPapers(3))!;
+const paper3 = (id: PaperId) => v3file.papers.find((p) => p.id === id)!;
 const images = new Map(ALL_IMAGES.map((i) => [i.id, i]));
 
 /** A BUNDLED build: every structure with its facts, and the index is the seed itself. */
@@ -82,7 +85,7 @@ describe('the papers file', () => {
   it('holds no fact: only ids, kinds, pictures, and nerve names that are already public', () => {
     const structureIds = new Set(ALL_STRUCTURES.map((s) => s.id));
     const nerves = new Set(buildVocabulary(ALL_STRUCTURES).nerves);
-    const kinds = new Set(['identify', 'origin', 'insertion', 'nerve', 'action', 'functional', 'injury']);
+    const kinds = new Set(['identify', 'attachments', 'origin', 'insertion', 'nerve', 'action', 'functional', 'injury']);
     for (const p of file.papers) {
       for (const q of p.questions) {
         expect(Object.keys(q).sort().filter((k) => !['id', 'structureId', 'kind', 'imageId', 'injury', 'distractors'].includes(k))).toEqual([]);
@@ -151,6 +154,19 @@ describe.each(file.papers.map((p) => [p.id, p] as const))('the %s paper', (id, s
     }
   });
 
+  // Version 4: ligaments are named from their attachments, as in the quiz.
+  it('names no ligament from a picture, and lists the attachments it does name one from', () => {
+    const byId = new Map(ALL_STRUCTURES.map((s) => [s.id, s]));
+    const fromPicture = spec.questions.filter((q) => q.kind === 'identify' && byId.get(q.structureId)!.category === 'ligament');
+    expect(fromPicture.map((q) => q.id)).toEqual([]);
+    const built = buildFromScope(spec, ALL_STRUCTURES, ALL_IMAGES);
+    for (const q of built.questions.filter((b) => b.id.endsWith('.attachments'))) {
+      expect(q.promptImageId, q.id).toBeUndefined();
+      expect(q.promptLines?.length, q.id).toBeGreaterThan(0);
+      for (const line of q.promptLines!) expect(line, q.id).toMatch(/^Attaches to: /);
+    }
+  });
+
   it("offers a picture's choices from the same kind of structure as the answer", () => {
     const byId = new Map(ALL_STRUCTURES.map((s) => [s.id, s]));
     for (const q of spec.questions.filter((x) => x.kind === 'identify')) {
@@ -166,7 +182,7 @@ describe.each(file.papers.map((p) => [p.id, p] as const))('the %s paper', (id, s
       const s = byId.get(q.structureId) as AnatomyStructure;
       const right = built.questions.find((b) => b.id === q.id)!;
       const answer = right.choices[right.correctIndex];
-      if (q.kind === 'identify' || q.kind === 'injury') expect(answer).toBe(s.name);
+      if (q.kind === 'identify' || q.kind === 'injury' || q.kind === 'attachments') expect(answer).toBe(s.name);
       else if (q.kind === 'functional') expect(answer).toBe(s.functionalContext);
       else if (isMuscle(s)) {
         expect(answer).toBe(
@@ -235,29 +251,40 @@ describe('a published paper is never edited', () => {
     expect(Object.keys(lock.questions)).toHaveLength(file.papers.length * PAPER_SIZE);
   });
 
+  // Superseded by version 4 on 17 Oct 2026, but a follow-up to a baseline sat
+  // under it replays it, so it must still build as it was published.
+  it('version 3 too, for the baselines sat under it', async () => {
+    const v3 = (await loadPapers(3))!;
+    const v3Lock = JSON.parse(readFileSync(`${DIR}/papers.v3.lock.json`, 'utf8')) as PaperLock;
+    const now = lockFor(v3, ALL_STRUCTURES, ALL_IMAGES);
+    expect(now.problems).toEqual([]);
+    expect(lockDrift(v3Lock, now.lock)).toEqual([]);
+  });
+
   it('notices a corrected fact, a renamed structure and a removed one', () => {
     const edited = (change: (s: AnatomyStructure) => AnatomyStructure | null) =>
       lockDrift(lock, lockFor(file, ALL_STRUCTURES.map(change).filter((s): s is AnatomyStructure => s !== null), ALL_IMAGES).lock);
 
     // A fact a question prints as its right answer.
     const corrected = edited((s) => (s.id === 'biceps-femoris' && isMuscle(s) ? { ...s, insertion: ['Head of the fibula (corrected)'] } : s));
-    expect(corrected).toContain('dx3.knee.biceps-femoris.insertion: now builds a different question from the one published');
+    expect(corrected).toContain('dx4.knee.biceps-femoris.insertion: now builds a different question from the one published');
     // A fact a question prints as a WRONG answer is on the paper too.
-    expect(corrected.some((line) => line.startsWith('dx3.knee.popliteus.insertion'))).toBe(true);
+    expect(corrected.some((line) => line.startsWith('dx4.knee.popliteus.insertion'))).toBe(true);
 
     const renamed = edited((s) => (s.id === 'anterior-cruciate-ligament' ? { ...s, name: 'ACL' } : s));
-    expect(renamed).toContain('dx3.knee.anterior-cruciate-ligament.identify: now builds a different question from the one published');
-    expect(renamed).toContain('dx3.whole-body.anterior-cruciate-ligament.identify: now builds a different question from the one published');
+    expect(renamed).toContain('dx4.knee.anterior-cruciate-ligament.attachments: now builds a different question from the one published');
+    expect(renamed).toContain('dx4.whole-body.anterior-cruciate-ligament.attachments: now builds a different question from the one published');
 
     const removed = edited((s) => (s.id === 'popliteus' ? null : s));
-    expect(removed.some((line) => line.startsWith('dx3.knee.') && line.includes('no longer'))).toBe(true);
+    expect(removed.some((line) => line.startsWith('dx4.knee.') && line.includes('no longer'))).toBe(true);
   });
 
   // 9 Oct 2026: the seed respelt names ("of the" dropped, ligaments in
   // sentence case) and one origin. Seven questions each show a wrong answer
   // spelt as it was published, so a follow-up reads as its baseline did.
-  describe('a wrong answer the seed has since respelt', () => {
-    const pinned = file.papers.flatMap((p) =>
+  // Version 3's: version 4 starts with today's spellings and none of these.
+  describe('a wrong answer the seed has since respelt (version 3)', () => {
+    const pinned = v3file.papers.flatMap((p) =>
       Object.entries(p.publishedWording ?? {}).flatMap(([questionId, byStructure]) =>
         Object.entries(byStructure).map(([structureId, pair]) => ({ p, questionId, structureId, pair })),
       ),
@@ -276,7 +303,7 @@ describe('a published paper is never edited', () => {
     });
 
     it('reads as published: the old spelling on the paper, the new one everywhere else', () => {
-      const built = (id: PaperId) => buildFromScope(paper(id), ALL_STRUCTURES, ALL_IMAGES).questions;
+      const built = (id: PaperId) => buildFromScope(paper3(id), ALL_STRUCTURES, ALL_IMAGES).questions;
       const choices = (id: PaperId, questionId: string) => built(id).find((q) => q.id === questionId)!.choices;
       expect(choices('hip', 'dx3.hip.sartorius.origin')).toContain('Inferior ramus of pubis');
       expect(choices('wrist-hand', 'dx3.wrist-hand.metacarpals.identify')).toContain('Distal Phalanges of the Hand (grouped)');
@@ -311,15 +338,15 @@ describe('a published paper is never edited', () => {
         expect(q.distractors, questionId).toContain(structureId);
       }
       const misplaced: DiagnosticPapersFile = {
-        ...file,
-        papers: file.papers.map((p) => (p.id === 'knee' ? { ...p, publishedWording: { [p.questions[0].id]: { [p.questions[0].structureId]: ['a', 'b'] } } } : p)),
+        ...v3file,
+        papers: v3file.papers.map((p) => (p.id === 'knee' ? { ...p, publishedWording: { [p.questions[0].id]: { [p.questions[0].structureId]: ['a', 'b'] } } } : p)),
       };
       expect(paperShapeProblems(misplaced).join(' ')).toContain('not one of its wrong answers');
     });
 
     it('fails the paper, rather than passing quietly, once the seed spells the words another way again', () => {
       const moved = ALL_STRUCTURES.map((s) => (s.id === 'intertransverse-ligaments' ? { ...s, name: 'Intertransverse LIGAMENTS' } : s));
-      const built = buildFromScope(paper('lumbar-spine'), moved, ALL_IMAGES);
+      const built = buildFromScope(paper3('lumbar-spine'), moved, ALL_IMAGES);
       expect(built.questions).toEqual([]);
       expect(built.problems.join(' ')).toContain('no longer reads "ligaments"');
     });

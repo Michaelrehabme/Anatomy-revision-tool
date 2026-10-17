@@ -1,5 +1,5 @@
 import type { AnatomyStructure } from '../types/structure';
-import { areasOf, isMuscle } from '../types/structure';
+import { areasOf, isLigament, isMuscle } from '../types/structure';
 import type { StructureIndexEntry } from '../types/structureIndex';
 import type { AnatomyImageAsset } from '../types/image';
 import type { MCQQuestion, PromptKind } from '../types/question';
@@ -7,6 +7,7 @@ import { AREAS, AREA_LABELS, type Area } from '../types/region';
 import { COHORT_DRAWN_VERSION, type DiagnosticResult } from './diagnostic';
 import { questionBase } from './questionGenerators/questionBase';
 import { createRng, shuffle } from './rng';
+import { alsoAttachesToAll, ligamentPromptLines } from './questionGenerators/ligamentClue';
 
 /**
  * The diagnostic's papers (owner's decision, 6 Oct 2026: "choose your own,
@@ -75,8 +76,18 @@ import { createRng, shuffle } from './rng';
  * with none.
  */
 
-/** The version a NEW baseline is sat under. */
-export const PAPER_VERSION = 3;
+/**
+ * The version a NEW baseline is sat under.
+ *
+ * VERSION 4 (17 Oct 2026). Ligaments stopped being asked from a picture
+ * (owner: the pictures were not good enough), and the Atlas stopped showing
+ * them, so the 24 version-3 questions that named a ligament from its picture
+ * became `attachments` questions: "What ligament is this?" over its sourced
+ * attachment sites, as the quiz asks it. Everything else is version 3's, with
+ * today's spellings (no `publishedWording`). Version 3 stays, for follow-ups
+ * to the baselines sat under it.
+ */
+export const PAPER_VERSION = 4;
 
 export const WHOLE_BODY_PAPER = 'whole-body';
 export type PaperId = typeof WHOLE_BODY_PAPER | Area;
@@ -88,7 +99,7 @@ export type PaperId = typeof WHOLE_BODY_PAPER | Area;
  * insertion, nerve and action, and the two clinical kinds where the dataset
  * has that layer (the shoulder and the elbow).
  */
-export type PaperQuestionKind = 'identify' | 'origin' | 'insertion' | 'nerve' | 'action' | 'functional' | 'injury';
+export type PaperQuestionKind = 'identify' | 'attachments' | 'origin' | 'insertion' | 'nerve' | 'action' | 'functional' | 'injury';
 
 /**
  * Where a wrong answer comes from: a structure in the paper's scope (its own
@@ -134,6 +145,7 @@ export const PAPER_CHOICES = 4;
 
 const FILES: Record<number, () => Promise<DiagnosticPapersFile>> = {
   3: () => import('../data/diagnostic/papers.v3.json').then((m) => m.default as unknown as DiagnosticPapersFile),
+  4: () => import('../data/diagnostic/papers.v4.json').then((m) => m.default as unknown as DiagnosticPapersFile),
 };
 
 /**
@@ -236,6 +248,7 @@ export interface PaperContent {
 
 const PROMPT_KIND: Record<PaperQuestionKind, PromptKind> = {
   identify: 'identify',
+  attachments: 'identify',
   origin: 'origin',
   insertion: 'insertion',
   nerve: 'nerve',
@@ -262,6 +275,8 @@ function seedFrom(id: string): number {
 function answerOf(kind: PaperQuestionKind, entry: StructureIndexEntry, facts: AnatomyStructure | undefined): string | null {
   if (kind === 'identify' || kind === 'injury') return entry.name;
   if (!facts) return null;
+  // Named from its attachments, which are facts: only where they are in hand.
+  if (kind === 'attachments') return isLigament(facts) ? entry.name : null;
   if (kind === 'functional') return facts.functionalContext || null;
   if (!isMuscle(facts)) return null;
   switch (kind) {
@@ -289,6 +304,8 @@ function promptOf(
     case 'identify':
       if (!image) return null;
       return image.mode === 'atlas-slide' ? 'Which structure is highlighted?' : 'Which structure is shown?';
+    case 'attachments':
+      return 'What ligament is this?';
     case 'origin':
     case 'insertion':
       return `What is the ${spec.kind} of ${entry.name}?`;
@@ -360,6 +377,12 @@ export function buildPaperQuestions(
     const prompt = promptOf(spec, entry, facts, image);
     const correct = answerOf(spec.kind, entry, facts);
     if (!prompt || !correct) { fault(`"${spec.structureId}" has no ${spec.kind} to ask about`); continue; }
+    // The lines under "What ligament is this?", as the quiz writes them.
+    const promptLines = spec.kind === 'attachments' && facts ? ligamentPromptLines(facts, content.indexById) : null;
+    if (spec.kind === 'attachments' && !promptLines) {
+      fault(`"${spec.structureId}" cannot be named from its attachments: another ligament shares them`);
+      continue;
+    }
 
     const wrong: string[] = [];
     let bad = false;
@@ -374,8 +397,15 @@ export function buildPaperQuestions(
       if (!inScope(other)) { fault(`wrong answer "${distractor}" is outside the paper's area`); bad = true; break; }
       // A picture's choices are all the same kind of thing as the answer: a
       // bone among three ligaments is not a choice anyone has to think about.
-      if (spec.kind === 'identify' && other.category !== entry.category) {
+      if ((spec.kind === 'identify' || spec.kind === 'attachments') && other.category !== entry.category) {
         fault(`wrong answer "${distractor}" is not a ${entry.category}`);
+        bad = true;
+        break;
+      }
+      // A ligament that reaches every one of the same sites is a second right answer.
+      const otherFacts = content.structuresById.get(distractor);
+      if (spec.kind === 'attachments' && facts && otherFacts && alsoAttachesToAll(facts, otherFacts)) {
+        fault(`wrong answer "${distractor}" attaches to every site the question lists`);
         bad = true;
         break;
       }
@@ -413,6 +443,7 @@ export function buildPaperQuestions(
       id: spec.id,
       prompt,
       ...(image ? { promptImageId: image.id } : {}),
+      ...(promptLines ? { promptLines } : {}),
       choices,
       correctIndex: choices.indexOf(correct),
       // Never shown: a sitting gives no feedback (lib/diagnostic.ts, rule 2).

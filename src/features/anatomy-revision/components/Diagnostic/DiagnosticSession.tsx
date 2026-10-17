@@ -165,6 +165,14 @@ export function DiagnosticSession({ questions, imagesById, onSubmit, onCancel, p
       >
         {question.prompt}
       </h2>
+      {/* A ligament is named from its attachments (version-4 papers). */}
+      {question.promptLines?.length ? (
+        <ul className="mt-4 flex list-disc flex-col gap-1.5 pl-6" style={{ font: '400 18px/1.4 var(--font-ui)', color: 'var(--ink)' }}>
+          {question.promptLines.map((line) => (
+            <li key={line}>{line}</li>
+          ))}
+        </ul>
+      ) : null}
 
       {promptImage && (
         <ImageViewer
