@@ -573,13 +573,19 @@
       "subregion": "spine",
       "parent": "thoracic-vertebrae",
       "parentObjects": [
-        "Vertebra T6"
+        "Vertebra T8"
       ],
       "anchors": [
         "Inferior costal facet.j"
       ],
       "radius": 0.006,
-      "sizeNote": "a small feature"
+      "sizeNote": "a small feature",
+      "anchorOffset": [
+        0,
+        0,
+        0.0265
+      ],
+      "anchorOffsetWhy": "18 Oct 2026: the anchor is a two-point label; its mean sits about 25mm off the bone, so it is moved onto the point that touches the bone (measured with a nearest-surface probe)."
     },
     {
       "id": "infraspinous-fossa",
@@ -1395,13 +1401,19 @@
       "subregion": "spine",
       "parent": "thoracic-vertebrae",
       "parentObjects": [
-        "Vertebra T6"
+        "Vertebra T8"
       ],
       "anchors": [
         "Superior costal facet.j"
       ],
       "radius": 0.006,
-      "sizeNote": "a small feature"
+      "sizeNote": "a small feature",
+      "anchorOffset": [
+        0,
+        0,
+        0.0245
+      ],
+      "anchorOffsetWhy": "18 Oct 2026: the anchor is a two-point label; its mean sits about 25mm off the bone, so it is moved onto the point that touches the bone (measured with a nearest-surface probe)."
     },
     {
       "id": "supraspinous-fossa",
@@ -1518,13 +1530,19 @@
       "subregion": "spine",
       "parent": "thoracic-vertebrae",
       "parentObjects": [
-        "Vertebra T6"
+        "Vertebra T8"
       ],
       "anchors": [
         "Transverse costal facet.j"
       ],
       "radius": 0.006,
-      "sizeNote": "a small feature"
+      "sizeNote": "a small feature",
+      "anchorOffset": [
+        0,
+        0,
+        0.024
+      ],
+      "anchorOffsetWhy": "18 Oct 2026: the anchor is a two-point label; its mean sits about 25mm off the bone, so it is moved onto the point that touches the bone (measured with a nearest-surface probe)."
     },
     {
       "id": "transverse-process",
@@ -1602,6 +1620,49 @@
       ],
       "radius": 0.006,
       "sizeNote": "a small feature"
+    },
+    {
+      "id": "transverse-foramen",
+      "name": "Transverse Foramen",
+      "region": "back-core",
+      "subregion": "neck",
+      "parent": "cervical-vertebrae",
+      "parentObjects": [
+        "Vertebra C4"
+      ],
+      "anchors": [
+        "Foramen transversarium.j"
+      ],
+      "radius": 0.003,
+      "sizeNote": "a small feature",
+      "anchorOffset": [
+        0,
+        0,
+        0.026
+      ],
+      "anchorOffsetWhy": "18 Oct 2026: the anchor is a two-point label; its mean sits about 25mm off the bone, so it is moved onto the point that touches the bone (measured with a nearest-surface probe)."
+    },
+    {
+      "id": "gerdys-tubercle",
+      "name": "Gerdy's Tubercle",
+      "region": "hip-thigh",
+      "subregion": "knee",
+      "parent": "tibia",
+      "parentObjects": [
+        "Tibia.l",
+        "Tibia.r"
+      ],
+      "anchors": [
+        "Tubercle of iliotibial tract.j"
+      ],
+      "radius": 0.01,
+      "sizeNote": "a discrete prominence",
+      "anchorOffset": [
+        0.0215,
+        0.021,
+        0
+      ],
+      "anchorOffsetWhy": "18 Oct 2026: the anchor is a two-point label; its mean sits about 25mm off the bone, so it is moved onto the point that touches the bone (measured with a nearest-surface probe)."
     }
   ]
 }

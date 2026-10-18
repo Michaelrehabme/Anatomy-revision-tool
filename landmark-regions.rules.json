@@ -116,6 +116,20 @@
   "sacral-cornua": [
    6,
    12
+  ],
+  "superior-costal-facet": [
+   6
+  ],
+  "inferior-costal-facet": [
+   6
+  ],
+  "transverse-costal-facet": [
+   6
+  ],
+  "gerdys-tubercle": [
+   0,
+   3,
+   6
   ]
  },
  "linea-aspera": {

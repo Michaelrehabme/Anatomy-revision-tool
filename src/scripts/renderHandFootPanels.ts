@@ -68,6 +68,13 @@ const HAND = {
     'carpals', 'capitate', 'hamate', 'lunate', 'pisiform', 'scaphoid', 'trapezium', 'trapezoid',
     'triquetrum', 'metacarpals', 'phalanges-proximal-hand', 'phalanges-middle-hand',
     'phalanges-distal-hand',
+    // Filed as landmarks, but each is a whole bone (18 Oct 2026).
+    'first-metacarpal', 'second-metacarpal', 'third-metacarpal', 'fourth-metacarpal', 'fifth-metacarpal',
+    // Parts of a bone, painted as regions (panel-regions.rules.json).
+    'hook-of-hamate', 'base-of-first-metacarpal', 'head-of-first-metacarpal',
+    // Not 'scaphoid-tubercle': its rule (panel-regions.rules.json) marks a sliver
+    // that is not clearly the tubercle and wraps onto the dorsum. Needs a probe.
+
   ],
   /** The bones the camera is framed on — the hand itself, wrist to fingertips. */
   frameOn: ['carpals', 'metacarpals', 'phalanges-proximal-hand', 'phalanges-middle-hand', 'phalanges-distal-hand'],
@@ -127,7 +134,8 @@ const FOOT = {
   skeletal: [
     'tarsals', 'talus', 'calcaneus', 'navicular', 'cuboid', 'medial-cuneiform',
     'intermediate-cuneiform', 'lateral-cuneiform', 'metatarsals', 'phalanges-proximal-foot',
-    'phalanges-middle-foot', 'phalanges-distal-foot',
+    'phalanges-middle-foot', 'phalanges-distal-foot', 'sesamoids-foot',
+    'calcaneal-tuberosity', 'navicular-tuberosity', 'base-of-fifth-metatarsal',
   ],
   frameOn: ['tarsals', 'metatarsals', 'phalanges-proximal-foot', 'phalanges-middle-foot', 'phalanges-distal-foot'],
   views: [
@@ -338,6 +346,9 @@ async function main(): Promise<void> {
         '--highlight', family.highlight,
         '--frame-on', frameOn.join(','),
         ...(backdrop ? ['--backdrop', backdrop.join(',')] : []),
+        // A landmark that is part of a bone (the hook of the hamate) is painted
+        // as a region grown on that bone; ids the file does not name are untouched.
+        '--regions', 'panel-regions.rules.json',
       ], `${family.kind} (${ids.length} structures)`);
 
       // Stage into a flat <id>/<label>.png layout. composeCaptioned takes a
