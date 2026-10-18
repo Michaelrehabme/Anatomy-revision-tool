@@ -100,19 +100,19 @@ export const FAMILIES: FamilyProvenance[] = [
     checked: 165,
     held: 0,
     lastChecked: "2026-10-08",
-    works: [2, 3, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
+    works: [2, 3, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
   },
 ];
 
 export const WORKS: ProvenanceWork[] = [
   { title: "ALL_Muscles_of_the_body — Vinnie Maynard, University of Salford", citations: 202 },
   { title: "Visible Body", url: "https://www.visiblebody.com/learn/", citations: 1 },
-  { title: "Gray's Anatomy (public domain, via Wikipedia)", url: "https://en.wikipedia.org/wiki/Gray%27s_Anatomy", citations: 627 },
+  { title: "Gray's Anatomy (public domain, via Wikipedia)", url: "https://en.wikipedia.org/wiki/Gray%27s_Anatomy", citations: 634 },
   { title: "Radiopaedia", url: "https://radiopaedia.org/", citations: 136 },
   { title: "Z-Anatomy (Gauthier Kervyn and contributors), CC BY-SA 4.0", url: "https://github.com/Z-Anatomy/Models-of-human-anatomy", citations: 90 },
   { title: "StatPearls (NCBI Bookshelf)", url: "https://www.ncbi.nlm.nih.gov/books/NBK430685/", citations: 339 },
   { title: "Checked by the project owner, a sports rehabilitation student", citations: 94 },
-  { title: "Peer-reviewed journal articles", citations: 180 },
+  { title: "Peer-reviewed journal articles", citations: 181 },
   { title: "Netter plates supplied by the project owner", citations: 1 },
   { title: "Terminologia Anatomica", url: "https://ta2viewer.openanatomy.org/", citations: 8 },
   { title: "Radsource MRI Web Clinic", url: "https://radsource.us/", citations: 3 },
@@ -122,6 +122,7 @@ export const WORKS: ProvenanceWork[] = [
   { title: "Medscape", url: "https://emedicine.medscape.com/", citations: 1 },
   { title: "Wheeless' Textbook of Orthopaedics", url: "https://www.wheelessonline.com/", citations: 1 },
   { title: "WikiSM (Sports Medicine Wiki)", url: "https://wikism.org/", citations: 5 },
+  { title: "Kenhub", url: "https://www.kenhub.com/", citations: 5 },
 ];
 
 export const BLOOD_SUPPLY: BloodSupplyProvenance = {

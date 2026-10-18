@@ -1,6 +1,6 @@
 {
  "schemaVersion": 1,
- "note": "Specific attachment sites for ligaments whose bone-level list another ligament shares (owner, 17 Oct 2026: 'if its sourced and there is no contesting evidence then im happy to include it'). Researched from Gray's 1918, open-access PubMed Central papers and Radiopaedia; every quote was checked against the page (Radiopaedia quotes re-checked live on 17 Oct). `flagged` lists what was not included and why.",
+ "note": "Specific attachment sites for ligaments whose bone-level list another ligament shares (owner, 17 Oct 2026: 'if its sourced and there is no contesting evidence then im happy to include it'). Researched from Gray's 1918, open-access PubMed Central papers and Radiopaedia; every quote was checked against the page (Radiopaedia quotes re-checked live on 17 Oct). `flagged` lists what was not included and why. 18 Oct 2026: a second round (owner's PIP paper, Allison 2005; Kenhub; Gray's) and owner decisions moved 14 flagged sites into `included`; IMAIOS and Complete Anatomy were used to cross-check only, never cited.",
  "included": {
   "anterior-talocalcaneal-ligament": {
    "talus": {
@@ -142,6 +142,13 @@
     "source": "Gray's Anatomy (1918), 6d.1 The Tarsus",
     "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/6d-the-foot-1-the-tarsus/",
     "quote": "The dorsal surface, directed upward and lateralward, is rough, for the attachment of ligaments."
+   },
+   "lateral-cuneiform": {
+    "text": "dorsal surface",
+    "source": "Gray's Anatomy (1918), 7e. Intertarsal Articulations",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/7e-intertarsal-articulations/",
+    "quote": "another the third cuneiform with the cuboid",
+    "basis": "Gray's names these the dorsal ligaments of the third cuneiform; owner accepted 'dorsal surface' on that basis, 18 Oct 2026. Nothing citable contests it."
    }
   },
   "dorsal-cuneonavicular-ligaments": {
@@ -162,6 +169,13 @@
     "source": "Gray's Anatomy (1918), 6d.1 The Tarsus",
     "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/6d-the-foot-1-the-tarsus/",
     "quote": "The dorsal surface forms the base of the wedge; it is quadrilateral and rough for the attachment of ligaments."
+   },
+   "lateral-cuneiform": {
+    "text": "dorsal surface",
+    "source": "Gray's Anatomy (1918), 7e. Intertarsal Articulations",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/7e-intertarsal-articulations/",
+    "quote": "The dorsal ligaments are three small bundles, one attached to each of the cuneiform bones.",
+    "basis": "Gray's names these the dorsal ligaments of the third cuneiform; owner accepted 'dorsal surface' on that basis, 18 Oct 2026. Nothing citable contests it."
    }
   },
   "dorsal-intercuneiform-ligaments": {
@@ -176,6 +190,13 @@
     "source": "Gray's Anatomy (1918), 6d.1 The Tarsus",
     "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/6d-the-foot-1-the-tarsus/",
     "quote": "The dorsal surface forms the base of the wedge; it is quadrilateral and rough for the attachment of ligaments."
+   },
+   "lateral-cuneiform": {
+    "text": "dorsal surface",
+    "source": "Gray's Anatomy (1918), 7e. Intertarsal Articulations",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/7e-intertarsal-articulations/",
+    "quote": "one connects the first with the second cuneiform, another the second with the third cuneiform",
+    "basis": "Gray's names these the dorsal ligaments of the third cuneiform; owner accepted 'dorsal surface' on that basis, 18 Oct 2026. Nothing citable contests it."
    }
   },
   "dorsal-metatarsal-ligaments": {
@@ -210,6 +231,13 @@
     "source": "Gray's Anatomy (1918), 6d.1 The Tarsus",
     "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/6d-the-foot-1-the-tarsus/",
     "quote": "The dorsal surface, directed upward and lateralward, is rough, for the attachment of ligaments."
+   },
+   "lateral-cuneiform": {
+    "text": "dorsal surface",
+    "source": "Gray's Anatomy (1918), 7f. Tarsometatarsal Articulations",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/1f-tarsometatarsal-articulations/",
+    "quote": "the third has one from the third cuneiform",
+    "basis": "Gray's names these the dorsal ligaments of the third cuneiform; owner accepted 'dorsal surface' on that basis, 18 Oct 2026. Nothing citable contests it."
    }
   },
   "intercuneiform-interosseous-ligaments": {
@@ -302,6 +330,13 @@
     "source": "Gray's Anatomy (1918), 6d.1 The Tarsus",
     "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/6d-the-foot-1-the-tarsus/",
     "quote": "The plantar surface is irregular, and also rough for the attachment of ligaments."
+   },
+   "cuboid": {
+    "text": "plantar surface",
+    "source": "Gray's Anatomy (1918), 7e. Intertarsal Articulations",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/7e-intertarsal-articulations/",
+    "quote": "The plantar ligament passes nearly transversely between these two bones",
+    "basis": "Gray's names these plantar ligaments; owner accepted 'plantar surface' on that basis, 18 Oct 2026. One older atlas (Bergman, not citable here) puts one on the cuboid's medial surface."
    }
   },
   "plantar-cuneocuboid-ligament": {
@@ -310,6 +345,13 @@
     "source": "Gray's Anatomy (1918), 6d.1 The Tarsus",
     "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/6d-the-foot-1-the-tarsus/",
     "quote": "The plantar surface is a rounded margin, and serves for the attachment of part of the tendon of the Tibialis posterior, part of the Flexor hallucis brevis, and ligaments."
+   },
+   "cuboid": {
+    "text": "plantar surface",
+    "source": "Gray's Anatomy (1918), 7e. Intertarsal Articulations",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/7e-intertarsal-articulations/",
+    "quote": "The plantar ligaments have a similar arrangement to the dorsal, and are strengthened by slips from the tendon of the Tibialis posterior.",
+    "basis": "Gray's names these plantar ligaments; owner accepted 'plantar surface' on that basis, 18 Oct 2026. One older atlas (Bergman, not citable here) puts one on the cuboid's medial surface."
    }
   },
   "plantar-cuneonavicular-ligaments": {
@@ -404,6 +446,13 @@
     "source": "Gray's Anatomy (1918), 6d.2 The Metatarsus",
     "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/6d-2-the-metatarsus/",
     "quote": "its dorsal and plantar surfaces are rough for the attachment of ligaments"
+   },
+   "cuboid": {
+    "text": "plantar surface",
+    "source": "Gray's Anatomy (1918), 7f. Tarsometatarsal Articulations",
+    "url": "https://www.bartleby.com/lit-hub/anatomy-of-the-human-body/1f-tarsometatarsal-articulations/",
+    "quote": "the fourth and fifth metatarsals are connected by a few fibers to the cuboid",
+    "basis": "Gray's names these plantar ligaments; owner accepted 'plantar surface' on that basis, 18 Oct 2026. One older atlas (Bergman, not citable here) puts one on the cuboid's medial surface."
    }
   },
   "posterior-talocalcaneal-ligament": {
@@ -510,6 +559,18 @@
     "source": "Kim YW et al. Volar plate avulsion fracture alone or concomitant with collateral ligament rupture of the proximal interphalangeal joint. Arch Plast Surg 2018",
     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6177630/",
     "quote": "The proper collateral ligaments arise from each side of a concave fossa of the proximal phalanx head and extend obliquely and distally to their insertions in the middle phalanx base"
+   },
+   "phalanges-middle-hand": {
+    "text": "sides of the base, and the sides of the head",
+    "source": "Allison DM. Anatomy of the collateral ligaments of the proximal interphalangeal joint. J Hand Surg 2005;30A:1026-1031 (PDF supplied by the owner); Kenhub: Interphalangeal joints of the hand (A. Beger)",
+    "url": "https://doi.org/10.1016/j.jhsa.2005.05.015 ; https://www.kenhub.com/en/library/anatomy/interphalangeal-joints-of-the-hand",
+    "quote": "The proper collateral ligament was found to arise widely from dorsal and proximal to and from the fovea on the side of the head of the proximal phalanx and insert for some distance on most of the side of the base of the middle phalanx. | During this study some distal interphalangeal joints were dissected by way of comparison; the pattern was similar to that in the PIPJ. | Kenhub: The collateral ligaments course on either side of each interphalangeal joint, arising from the head of the more proximal phalanx and extending to the palmar, or volar, aspect of its distal counterpart."
+   },
+   "phalanges-distal-hand": {
+    "text": "sides of the base",
+    "source": "Allison DM. Anatomy of the collateral ligaments of the proximal interphalangeal joint. J Hand Surg 2005;30A:1026-1031 (PDF supplied by the owner); Kenhub: Interphalangeal joints of the hand (A. Beger)",
+    "url": "https://doi.org/10.1016/j.jhsa.2005.05.015 ; https://www.kenhub.com/en/library/anatomy/interphalangeal-joints-of-the-hand",
+    "quote": "During this study some distal interphalangeal joints were dissected by way of comparison; the pattern was similar to that in the PIPJ. | The proper collateral ligament was found to arise widely from dorsal and proximal to and from the fovea on the side of the head of the proximal phalanx and insert for some distance on most of the side of the base of the middle phalanx. | Kenhub: The collateral ligaments course on either side of each interphalangeal joint, arising from the head of the more proximal phalanx and extending to the palmar, or volar, aspect of its distal counterpart."
    }
   },
   "deep-transverse-metacarpal-ligament": {
@@ -566,6 +627,14 @@
     "source": "Winnett C, Fenech M. Sonographic Anatomy and Imaging of the Triangular Fibrocartilage Complex and the Distal Radio-Ulnar Joint. Australas J Ultrasound Med 2025",
     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12209593/",
     "quote": "They extend from the ulnar styloid and fovea to the dorsal and palmar rims of the sigmoid notch of the radius"
+   },
+   "ulna": {
+    "text": "fovea and base of the ulnar styloid",
+    "source": "Bouredoucen H. The triangular fibrocartilage complex (TFCC): updated anatomy, variants, and MRI diagnostic pitfalls. Skeletal Radiol 2026;55:2175-2193 (open access)",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13652943/",
+    "quote": "Deep fibers insert on the fovea; superficial fibers attach to the mid-portion and base of the ulnar styloid.",
+    "basis": "Gray's says the back of the ulnar head; modern sources the fovea (deep fibres) and styloid base (superficial). Owner chose the modern wording, 18 Oct 2026.",
+    "contested": "Gray's (1918) puts it on the back of the ulnar head: 'This ligament extends between corresponding surfaces on the dorsal aspect of the articulation.' Radiopaedia gives both: the posterior head, with deep and superficial divisions to the fovea and styloid."
    }
   },
   "dorsal-ulnocarpal-ligament": {
@@ -1125,61 +1194,30 @@
     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8335960/",
     "quote": "it was inserted distally along the inter-trochanteric line"
    }
+  },
+  "collateral-interphalangeal-ligaments-of-foot": {
+   "phalanges-proximal-foot": {
+    "text": "tubercles on the sides of the head",
+    "source": "Kenhub: Interphalangeal joints of the foot (G. Sendic; last reviewed 30 Oct 2023)",
+    "url": "https://www.kenhub.com/en/library/anatomy/interphalangeal-joints-of-the-foot",
+    "quote": "Collateral interphalangeal ligaments : strong ligaments found on the medial and lateral sides of each joint, extending proximally and medially from small tubercles present on each side the head of the proximal phalanx to the base of the next phalanx."
+   },
+   "phalanges-middle-foot": {
+    "text": "sides of the base, and tubercles on the sides of the head",
+    "source": "Kenhub: Interphalangeal joints of the foot (G. Sendic; last reviewed 30 Oct 2023)",
+    "url": "https://www.kenhub.com/en/library/anatomy/interphalangeal-joints-of-the-foot",
+    "quote": "Collateral interphalangeal ligaments : strong ligaments found on the medial and lateral sides of each joint, extending proximally and medially from small tubercles present on each side the head of the proximal phalanx to the base of the next phalanx."
+   },
+   "phalanges-distal-foot": {
+    "text": "sides of the base",
+    "source": "Kenhub: Interphalangeal joints of the foot (G. Sendic; last reviewed 30 Oct 2023)",
+    "url": "https://www.kenhub.com/en/library/anatomy/interphalangeal-joints-of-the-foot",
+    "quote": "Collateral interphalangeal ligaments : strong ligaments found on the medial and lateral sides of each joint, extending proximally and medially from small tubercles present on each side the head of the proximal phalanx to the base of the next phalanx."
+   }
   }
  },
  "flagged": [
   {
-   "ligament": "collateral-interphalangeal-ligaments-of-foot",
-   "site": "phalanges-proximal-foot",
-   "why": "no permitted source names a more specific site"
-  },
-  {
-   "ligament": "collateral-interphalangeal-ligaments-of-foot",
-   "site": "phalanges-middle-foot",
-   "why": "no permitted source names a more specific site"
-  },
-  {
-   "ligament": "collateral-interphalangeal-ligaments-of-foot",
-   "site": "phalanges-distal-foot",
-   "why": "no permitted source names a more specific site"
-  },
-  {
-   "ligament": "dorsal-cuneocuboid-ligament",
-   "site": "lateral-cuneiform",
-   "why": "only the ligament's name says \"dorsal\"; Gray's osteology of the bone does not name it",
-   "proposed": "dorsal surface"
-  },
-  {
-   "ligament": "dorsal-cuneonavicular-ligaments",
-   "site": "lateral-cuneiform",
-   "why": "only the ligament's name says \"dorsal\"",
-   "proposed": "dorsal surface"
-  },
-  {
-   "ligament": "dorsal-intercuneiform-ligaments",
-   "site": "lateral-cuneiform",
-   "why": "only the ligament's name says \"dorsal\"",
-   "proposed": "dorsal surface"
-  },
-  {
-   "ligament": "dorsal-tarsometatarsal-ligaments",
-   "site": "lateral-cuneiform",
-   "why": "only the ligament's name says \"dorsal\"",
-   "proposed": "dorsal surface"
-  },
-  {
-   "ligament": "plantar-cuboideonavicular-ligament",
-   "site": "cuboid",
-   "why": "only the ligament's name says \"plantar\"; Gray's gives that surface to the plantar calcaneocuboid",
-   "proposed": "plantar surface"
-  },
-  {
-   "ligament": "plantar-cuneocuboid-ligament",
-   "site": "cuboid",
-   "why": "only the ligament's name says \"plantar\"",
-   "proposed": "plantar surface"
-  },
-  {
    "ligament": "plantar-interphalangeal-ligaments",
    "site": "phalanges-proximal-foot",
    "why": "no permitted source names a more specific site"
@@ -1193,30 +1231,6 @@
    "ligament": "plantar-interphalangeal-ligaments",
    "site": "phalanges-distal-foot",
    "why": "no permitted source names a more specific site"
-  },
-  {
-   "ligament": "plantar-tarsometatarsal-ligaments",
-   "site": "cuboid",
-   "why": "only the ligament's name says \"plantar\"",
-   "proposed": "plantar surface"
-  },
-  {
-   "ligament": "collateral-interphalangeal-ligaments-of-hand",
-   "site": "phalanges-middle-hand",
-   "why": "a choice between two sites (PIP insertion at the base, DIP origin at the head)",
-   "proposed": "sides of the base of the middle phalanx"
-  },
-  {
-   "ligament": "collateral-interphalangeal-ligaments-of-hand",
-   "site": "phalanges-distal-hand",
-   "why": "inferred from Gray's \"same arrangement as the knuckle joints\"; no source names it",
-   "proposed": "sides of the base of the distal phalanx"
-  },
-  {
-   "ligament": "dorsal-radio-ulnar-ligament",
-   "site": "ulna",
-   "why": "sources disagree: Gray's says the back of the ulnar head, modern papers the fovea and styloid base",
-   "proposed": "back of the head of the ulna"
   },
   {
    "ligament": "dorsal-ulnocarpal-ligament",
@@ -1230,11 +1244,6 @@
   },
   {
    "ligament": "posterior-longitudinal-ligament",
-   "site": "sacrum",
-   "why": "no permitted source names a more specific site"
-  },
-  {
-   "ligament": "supraspinous-ligament",
    "site": "sacrum",
    "why": "no permitted source names a more specific site"
   },

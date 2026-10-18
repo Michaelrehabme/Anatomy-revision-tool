@@ -720,8 +720,7 @@
    "attachmentStructureIds": [
     "c7-spinous-process",
     "thoracic-vertebrae",
-    "lumbar-vertebrae",
-    "sacrum"
+    "lumbar-vertebrae"
    ],
    "description": "A cord-like band joining the tips of the spinous processes, continuous above with the nuchal ligament. Classically described as running from C7 to the sacrum (TA98), though in practice it is well developed only to the upper lumbar spine: it most often ends at L4, occasionally L3, reaches L5 in about one person in twenty, and is almost always absent at L5/S1.",
    "confirmed": true,
@@ -732,7 +731,7 @@
     "Rissanen, cited in Anatomy Standard",
     "TA98 A03.2.01.005"
    ],
-   "why": "The lumbar levels were missing from the seed. The description carries the real extent as well as the classical line, so a student is not taught a sacral attachment that is usually not there.",
+   "why": "The lumbar levels were missing from the seed. The description carries the real extent as well as the classical line, so a student is not taught a sacral attachment that is usually not there. 18 Oct 2026: sacrum dropped (owner). Gray's 1918 runs it 'to the sacrum', but it usually ends at L4 and is almost always absent at L5/S1 (this row's own description; Kenhub: ends at L3/L4).",
    "checked": "2026-09-22",
    "sites": "Named by the part of the bone where the work quoted here or the description names one and the app holds it as a structure: 10 Oct 2026. An end with no such structure keeps the whole bone."
   },

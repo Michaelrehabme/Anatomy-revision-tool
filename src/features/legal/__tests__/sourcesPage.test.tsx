@@ -71,7 +71,8 @@ describe('SourcesPage', () => {
     // Mirrors EXCLUDED_WORKS in scripts/lib/provenance.ts. Kept here as well
     // as in the validator because a test failure names the page, and this is
     // the artifact a reader actually sees.
-    for (const banned of [/kenhub/i, /teachmeanatomy/i, /imaios/i, /complete anatomy/i]) {
+    // Kenhub's public articles are citable (owner, 24 Sep 2026; confirmed 18 Oct).
+    for (const banned of [/teachmeanatomy/i, /imaios/i, /complete anatomy/i]) {
       expect(WORKS.some((w) => banned.test(`${w.title} ${w.url ?? ''}`))).toBe(false);
     }
   });
