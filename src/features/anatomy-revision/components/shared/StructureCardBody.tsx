@@ -9,6 +9,7 @@ import { WORKS } from '../../../legal/data/provenance.generated';
 import { BloodSupplyFacts } from './BloodSupplyFacts';
 import { RichText } from './RichText';
 import { ImageViewer } from './ImageViewer';
+import { LigamentPictureNote, isLigamentPlate } from './LigamentPictureNote';
 
 const LABEL_STYLE = { font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' } as const;
 
@@ -16,9 +17,9 @@ const LABEL_STYLE = { font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em
  * The picture at the top of a structure's card: the one the quiz shows, which
  * a student can zoom into and turn through its angles (ImageViewer).
  *
- * Not for a ligament. Its pictures were taken out of the questions as not
- * good enough (owner, 17 Oct 2026), and the Atlas follows: a ligament is in
- * words until better models are bought.
+ * A ligament's picture is shown with a note that it is rough (owner, 18 Oct
+ * 2026): its pictures were taken out of the questions as not good enough, but
+ * still help a student see where it lies.
  */
 export function StructurePicture({ structure, images, compact = false }: {
   structure: AnatomyStructure | StructureIndexEntry;
@@ -31,7 +32,6 @@ export function StructurePicture({ structure, images, compact = false }: {
       {text}
     </div>
   );
-  if (structure.category === 'ligament') return blank('No picture yet: ligaments are learnt from their attachments for now.');
   const own = images.filter((img) => img.mode === 'single-structure' && img.structureId === structure.id);
   // Muscle plates are listed primary angle first (images.seed.ts).
   const image = own[0];
@@ -43,6 +43,7 @@ export function StructurePicture({ structure, images, compact = false }: {
         {/* The viewer prints the picture's credit itself. */}
         <ImageViewer image={image} frames={frames} subjectId={structure.id} resetKey={structure.id} />
       </div>
+      {isLigamentPlate(image) && <LigamentPictureNote compact={compact} />}
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import type { AnatomyImageAsset } from '../../types/image';
 import { ImageViewer } from './ImageViewer';
 import type { PlateConceal } from '../../lib/plateLabel';
+import { LigamentPictureNote, isLigamentPlate } from './LigamentPictureNote';
 
 /**
  * A prompt picture the student can turn and zoom but not answer on.
@@ -22,5 +23,13 @@ export function AnatomyImageFigure({ image, alt, frames, subjectId, conceal }: {
   subjectId?: string;
   conceal?: PlateConceal;
 }) {
-  return <ImageViewer image={image} frames={frames} resetKey={`${image.id}|${alt}`} subjectId={subjectId} conceal={conceal} />;
+  const viewer = <ImageViewer image={image} frames={frames} resetKey={`${image.id}|${alt}`} subjectId={subjectId} conceal={conceal} />;
+  // The note says "ligament", so not while the name is still the answer.
+  if (!isLigamentPlate(image) || conceal === 'name') return viewer;
+  return (
+    <div>
+      {viewer}
+      <LigamentPictureNote />
+    </div>
+  );
 }
