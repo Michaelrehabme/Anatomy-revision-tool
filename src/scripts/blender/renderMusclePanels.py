@@ -465,6 +465,30 @@ def build_mesh(spec, mesh_name):
     me = bpy.data.meshes.new(mesh_name)
     out.to_mesh(me)
     out.free()
+    # SOFTENED. A gap fill is built on a grid, and its walls step and its edges
+    # are hard (owner, 19 Oct 2026: "too geometric"). Re-meshed into even
+    # voxels and smoothed it reads as tissue; the smoothing swells it a little
+    # into the bones, which `subtract` below then cuts back to their surfaces.
+    if spec.get("smooth"):
+        sm = spec["smooth"]
+        ob = bpy.data.objects.new(f"{mesh_name}_smooth", me)
+        scene.collection.objects.link(ob)
+        rm = ob.modifiers.new("remesh", "REMESH")
+        rm.mode = "VOXEL"
+        rm.voxel_size = float(sm.get("voxel", 0.4)) / 1000.0
+        ls = ob.modifiers.new("smooth", "SMOOTH")
+        ls.iterations = int(sm.get("iterations", 20))
+        ls.factor = float(sm.get("factor", 0.6))
+        if sm.get("inflate"):
+            dp = ob.modifiers.new("inflate", "DISPLACE")
+            dp.strength = float(sm["inflate"]) / 1000.0
+            dp.direction = "NORMAL"
+        dg = bpy.context.evaluated_depsgraph_get()
+        soft = bpy.data.meshes.new_from_object(ob.evaluated_get(dg))
+        bpy.data.objects.remove(ob)
+        bpy.data.meshes.remove(me)
+        soft.name = mesh_name
+        me = soft
     # SHAPED BY THE BONES ROUND IT. A hull spans the space between bones but
     # cuts through their ends (owner, 19 Oct 2026, of the TFCC: "it needs to fit
     # the shape by contacting the bones and not going through them"), so the
