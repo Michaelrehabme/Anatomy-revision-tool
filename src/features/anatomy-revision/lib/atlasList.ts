@@ -7,6 +7,7 @@ import type { StructureMastery } from '../types/attempt';
 import type { AtlasRow } from './atlasFacts';
 import { masteryLevelRank, structureLevel, type StructureLevelState } from './masteryLevel';
 import { soonestDueByStructure } from './reviewQueue';
+import { matchesLens, type LensKind } from './atlasLenses';
 
 /**
  * How the Atlas list is narrowed and ordered.
@@ -32,9 +33,20 @@ export interface AtlasFilters {
   area: Area | 'all';
   seen: SeenFilter;
   query: string;
+  /** Only the structures starred from a card (lib/studyProfile.ts). */
+  starred: boolean;
+  /** Study by system (lib/atlasLenses.ts): a muscle group, a movement or a nerve. 'all' = any. */
+  lens: Record<LensKind, string>;
 }
 
-export const DEFAULT_FILTERS: AtlasFilters = { kind: 'all', area: 'all', seen: 'all', query: '' };
+export const DEFAULT_FILTERS: AtlasFilters = {
+  kind: 'all',
+  area: 'all',
+  seen: 'all',
+  query: '',
+  starred: false,
+  lens: { group: 'all', movement: 'all', nerve: 'all' },
+};
 
 /**
  * Head-to-toe, for the "top -> bottom" sort.
@@ -154,10 +166,14 @@ export function filterAtlas(
   rows: ReadonlyMap<string, AtlasRow>,
   filters: AtlasFilters,
   masteryById: ReadonlyMap<string, StructureMastery>,
+  starredIds: ReadonlySet<string> = new Set(),
 ): AnatomyStructure[] {
   const q = filters.query.trim().toLowerCase();
+  const lenses = (Object.keys(filters.lens) as LensKind[]).filter((k) => filters.lens[k] !== 'all');
   return structures.filter((s) => {
     if (filters.kind !== 'all' && s.category !== filters.kind) return false;
+    if (filters.starred && !starredIds.has(s.id)) return false;
+    if (lenses.some((k) => !matchesLens(s, k, filters.lens[k]))) return false;
     if (filters.area !== 'all' && !areasOf(s).includes(filters.area)) return false;
     if (filters.seen !== 'all' && isSeen(s.id, masteryById) !== (filters.seen === 'seen')) return false;
     if (!q) return true;
@@ -300,6 +316,8 @@ export function activeFilterCount(filters: AtlasFilters): number {
   if (filters.area !== 'all') count++;
   if (filters.seen !== 'all') count++;
   if (filters.query.trim()) count++;
+  if (filters.starred) count++;
+  count += Object.values(filters.lens).filter((v) => v !== 'all').length;
   return count;
 }
 

@@ -198,7 +198,7 @@ export default function StudyProfileForm({ initial, areas, onSave, onSkip, onCan
     {
       id: 'time',
       title: 'How long do you have most days?',
-      hint: 'This sets how long the daily review is. An exam in the next six weeks brings in new material faster.',
+      hint: 'This sets how long the daily review is. With an exam date, new structures are paced so you have met them all a week before it.',
       render: () => (
         <div>
           <div className="flex flex-wrap gap-2">

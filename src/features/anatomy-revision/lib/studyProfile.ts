@@ -115,7 +115,22 @@ export interface StudyProfile {
   /** Local YYYY-MM-DD. */
   examDate?: string;
   weeklyFocus?: WeeklyFocus;
+  /**
+   * Whether a never-seen structure is shown before it is asked ('show': the
+   * flashcard rung) or asked straight away on multiple choice ('ask'). Unset:
+   * decided from the answers above (skipsFlashcard). Account's "Learn first
+   * or test first".
+   */
+  newStructures?: NewStructureStart;
+  /** Structure ids starred from a card: the student's own list, a filter in the Atlas. */
+  starred?: string[];
 }
+
+export type NewStructureStart = 'show' | 'ask';
+
+/** Enough for every structure in the app twice over; a cap so a broken client cannot grow the profile forever. */
+export const STARRED_LIMIT = 1000;
+const STRUCTURE_ID = /^[a-z0-9][a-z0-9-]{0,120}$/;
 
 export function emptyStudyProfile(now: number = Date.now()): StudyProfile {
   return { version: 1, updatedAt: now, areaConfidence: {}, typeConfidence: {}, preferredFormats: [] };
@@ -170,6 +185,10 @@ export function asStudyProfile(raw: unknown): StudyProfile | null {
     ...withDefined('minutesPerDay', minutes),
     preferredFormats: [...new Set(formats)],
     ...withDefined('examDate', typeof r.examDate === 'string' && ISO_DAY.test(r.examDate) ? r.examDate : undefined),
+    ...withDefined('newStructures', oneOf(r.newStructures, ['show', 'ask'] as const)),
+    ...(Array.isArray(r.starred)
+      ? { starred: [...new Set(r.starred.filter((id): id is string => typeof id === 'string' && STRUCTURE_ID.test(id)))].slice(0, STARRED_LIMIT) }
+      : {}),
     ...((focusArea || focusCategory) && focusWeek
       ? { weeklyFocus: { ...withDefined('area', focusArea), ...withDefined('category', focusCategory), weekStart: focusWeek } }
       : {}),
@@ -253,6 +272,9 @@ export function skipsFlashcard(
   profile: StudyProfile | null,
   structure: Pick<StructureIndexEntry, 'category'>,
 ): boolean {
+  // The student's own choice in Account wins over anything inferred, and
+  // applies whether or not they answered the questions.
+  if (profile?.newStructures) return profile.newStructures === 'ask';
   if (!hasAnswers(profile)) return false;
   if (profile.typeConfidence[structure.category] === 'confident') return true;
   if (profile.typeConfidence[structure.category] === 'new') return false;
@@ -275,20 +297,44 @@ export function sessionCountFor(profile: StudyProfile | null): number {
   }
 }
 
-/** Weeks inside which an exam starts to pull new material forward. */
-export const EXAM_SOON_WEEKS = 6;
+/** Days before the exam kept for review alone: everything should have been met a week before it. */
+export const EXAM_REVIEW_DAYS = 7;
+/** The most of a session given to new material, however close the exam: a review that is all new is not a review. */
+export const EXAM_MAX_NEW_SHARE = 0.7;
 
 /**
- * The share of a review given to new structures. An exam close enough to
- * worry about raises it, so everything is met at least once before the day;
- * otherwise `base` (the generator's own default when undefined).
+ * The share of a review given to new structures, paced to an exam date
+ * (owner, 19 Oct 2026: "exam countdown plan").
+ *
+ * With `unseen` structures still to meet and the days left before the
+ * review week, a daily session of `count` questions needs `unseen / days`
+ * of them new; that, as a share of the session, is the floor. It only ever
+ * RAISES the share: an exam months away, or a student well ahead, keeps
+ * `base` (the generator's own default when undefined). Past the review week,
+ * or past the exam, nothing changes either — new material in the last week
+ * is what the review week exists to avoid.
  */
-export function newShareFor(profile: StudyProfile | null, now: Date, base?: number): number | undefined {
+export function newShareFor(
+  profile: StudyProfile | null,
+  now: Date,
+  base?: number,
+  pace?: { unseen: number; count: number },
+): number | undefined {
   const exam = hasAnswers(profile) && profile.examDate ? localDate(profile.examDate) : null;
-  if (!exam) return base;
-  const days = (exam.getTime() - startOfDay(now).getTime()) / 86_400_000;
-  if (days < 0 || days > EXAM_SOON_WEEKS * 7) return base;
-  return Math.max(base ?? 0.25, 0.4);
+  if (!exam || !pace || pace.unseen <= 0 || pace.count <= 0) return base;
+  const daysLeft = Math.round((exam.getTime() - startOfDay(now).getTime()) / 86_400_000) - EXAM_REVIEW_DAYS;
+  if (daysLeft <= 0) return base;
+  const needed = pace.unseen / daysLeft / pace.count;
+  const floor = base ?? 0.25;
+  return needed > floor ? Math.min(EXAM_MAX_NEW_SHARE, needed) : base;
+}
+
+/** Days of new material left before the exam's review week, or null without an exam ahead. For the screens' wording. */
+export function examPaceDays(profile: StudyProfile | null, now: Date): number | null {
+  const exam = hasAnswers(profile) && profile.examDate ? localDate(profile.examDate) : null;
+  if (!exam) return null;
+  const days = Math.round((exam.getTime() - startOfDay(now).getTime()) / 86_400_000) - EXAM_REVIEW_DAYS;
+  return days > 0 ? days : null;
 }
 
 /**
@@ -471,3 +517,20 @@ export function suggestFocusCategory(
  * review keeps the rest of the body ticking over.
  */
 export const FOCUS_NEW_SHARE = 0.4;
+
+// ---------------------------------------------------------------------------
+// The starred list
+// ---------------------------------------------------------------------------
+
+export function isStarred(profile: StudyProfile | null, structureId: string): boolean {
+  return !!profile?.starred?.includes(structureId);
+}
+
+/** The profile with one structure starred or unstarred; newest first, so the list reads as recently starred. */
+export function toggleStar(profile: StudyProfile, structureId: string): Omit<StudyProfile, 'updatedAt'> {
+  const current = profile.starred ?? [];
+  const starred = current.includes(structureId)
+    ? current.filter((id) => id !== structureId)
+    : [structureId, ...current].slice(0, STARRED_LIMIT);
+  return { ...profile, starred };
+}

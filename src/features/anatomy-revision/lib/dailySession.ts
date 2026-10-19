@@ -3,7 +3,7 @@ import type { RevisionSetupParams } from '../hooks/useRevisionSession';
 import type { FactMastery, StructureMastery } from '../types/attempt';
 import type { QuestionType, RevisionQuestion } from '../types/question';
 import type { Area } from '../types/region';
-import type { AnatomyStructure } from '../types/structure';
+import { areasOf, type AnatomyStructure } from '../types/structure';
 import { generateRevisionSet } from './questionGenerators/generateSet';
 import { buildStarterSet, STARTER_TYPES } from './questionGenerators/starterSet';
 import { reviewItemsInArea, type ReviewItem } from './reviewQueue';
@@ -104,7 +104,20 @@ export function buildDailySession(input: DailySessionInput): DailySession {
   });
   const reviewItems = scopeArea ? reviewItemsInArea(inScope, scopeArea, content.structuresById) : inScope;
 
+  // What is still to meet in the session's own scope, for pacing to an exam.
+  const answered = new Set([
+    ...input.mastery.filter((m) => m.attemptsTotal > 0).map((m) => m.structureId),
+    ...input.facts.filter((f) => f.attemptsTotal > 0).map((f) => f.structureId),
+  ]);
+  const scope = areas ?? [...entitledAreas];
+  const unseen = content.structures.filter(
+    (s) => !answered.has(s.id) && (!category || s.category === category) && areasOf(s).some((a) => scope.includes(a)),
+  ).length;
+  const count = sessionCountFor(profile);
+  const pace = { unseen, count };
+
   const types = DEFAULT_TYPES;
+  const choseStart = !!profile?.newStructures;
   const questions = generateRevisionSet(content.structures, content.images, {
     types,
     mode: 'practice',
@@ -118,9 +131,9 @@ export function buildDailySession(input: DailySessionInput): DailySession {
     ...(input.style === 'fresh' ? { maxPerStructure: 1 } : {}),
     newShare:
       input.style === 'focus'
-        ? newShareFor(profile, now, FOCUS_NEW_SHARE)
-        : newShareFor(profile, now, input.style === 'fresh' ? 0.5 : undefined),
-    count: sessionCountFor(profile),
+        ? newShareFor(profile, now, FOCUS_NEW_SHARE, pace)
+        : newShareFor(profile, now, input.style === 'fresh' ? 0.5 : undefined, pace),
+    count,
     // Without mastery the generator falls back to a uniform shuffle and the
     // scheduler's due/weakness weighting never runs on the daily review.
     mastery: input.mastery,
@@ -133,10 +146,11 @@ export function buildDailySession(input: DailySessionInput): DailySession {
     ...(hasAnswers(profile)
       ? {
           newStructureBias: (s: AnatomyStructure) => newStructureBias(profile, s),
-          skipFlashcard: (s: AnatomyStructure) => skipsFlashcard(profile, s),
           typeWeights: typeWeightsFor(profile),
         }
       : {}),
+    // "Learn first or test first" applies on its own, answers or none.
+    ...(hasAnswers(profile) || choseStart ? { skipFlashcard: (s: AnatomyStructure) => skipsFlashcard(profile, s) } : {}),
     seed: input.seed,
   }, content.sources);
   return {

@@ -12,6 +12,7 @@ import {
   STUDY_LEVEL_LABELS,
   weekStartOf,
   type Confidence,
+  type NewStructureStart,
   type StudyProfile,
   type WeeklyFocus,
 } from '../../lib/studyProfile';
@@ -21,6 +22,13 @@ import { LockPill } from './AreaLock';
 import { focusLabel } from './WeeklyFocusCard';
 
 const StudyProfileForm = lazy(() => import('./StudyProfileForm'));
+
+/** Null: decided from the questionnaire (lib/studyProfile.ts skipsFlashcard). */
+const NEW_STRUCTURE_OPTIONS: { value: NewStructureStart | null; label: string }[] = [
+  { value: null, label: 'From my answers' },
+  { value: 'show', label: 'Show me first' },
+  { value: 'ask', label: 'Ask me first' },
+];
 
 const label = {
   font: '500 10px/1 var(--font-mono)',
@@ -192,6 +200,31 @@ export function StudyPreferences({ access, compact = false }: { access: UseEntit
               style={chipStyle(on, compact)}
             >
               {LEARN_CARD_ATTEMPT_LABELS[n]}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Learn first or test first (owner, 19 Oct 2026), here rather than a
+          setting of its own: it is the same question as the row above —
+          shown before asked — for a structure met for the first time. */}
+      <p className="mt-5" style={{ fontSize: 13, lineHeight: 1.5, color: 'var(--ink3)' }}>
+        A structure you have never met: see it first, or try it straight away on multiple choice.
+      </p>
+      <div className="mt-2.5 flex flex-wrap gap-2" role="radiogroup" aria-label="New structures">
+        {NEW_STRUCTURE_OPTIONS.map(({ value, label: text }) => {
+          const on = (profile?.newStructures ?? null) === value;
+          return (
+            <button
+              key={text}
+              type="button"
+              role="radio"
+              aria-checked={on}
+              onClick={() => update((current) => ({ ...current, newStructures: value ?? undefined }))}
+              className={`inline-flex min-h-[44px] items-center justify-center rounded-[3px] px-3 ${compact ? 'flex-1' : ''}`}
+              style={chipStyle(on, compact)}
+            >
+              {text}
             </button>
           );
         })}

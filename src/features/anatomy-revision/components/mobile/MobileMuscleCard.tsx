@@ -15,6 +15,7 @@ import { LockedStructureNotice } from '../shared/AreaLock';
 import { StructureFactsUnavailable } from '../shared/AreaFactsNotice';
 import type { UseEntitlement } from '../../hooks/useEntitlement';
 import { PronounceButton } from '../shared/PronounceButton';
+import { StarButton } from '../shared/StarButton';
 import { MobileShell } from './MobileShell';
 import type { MobileTab } from './MobileTabBar';
 
@@ -86,6 +87,7 @@ export function MobileMuscleCard({ access, structureId, content, repository, use
             {structure.name}
           </h1>
           <PronounceButton structure={structure} size={19} />
+          <StarButton structureId={structure.id} name={structure.name} size={19} />
         </div>
         {structure.phoneticSpelling && (
           <div className="mt-0.5" style={{ font: '400 12.5px/1.4 var(--font-mono)', color: 'var(--ink3)' }}>

@@ -5,6 +5,9 @@ import { ATLAS_KINDS } from '../../lib/atlasFacts';
 import { ATLAS_SORTS, SEEN_FILTER_LABELS, type SeenFilter } from '../../lib/atlasList';
 import type { UseAtlasList } from '../../hooks/useAtlasList';
 import { LockPill } from './AreaLock';
+import { LENS_LABELS, type LensKind } from '../../lib/atlasLenses';
+
+const LENSES: LensKind[] = ['group', 'movement', 'nerve'];
 
 const SEEN_FILTERS: SeenFilter[] = ['all', 'seen', 'unseen'];
 
@@ -68,7 +71,7 @@ interface AtlasFilterPanelProps {
  * this without it knowing.
  */
 export function AtlasFilterPanel({ list, id }: AtlasFilterPanelProps) {
-  const { filters, sortId, areaOptions, kindCounts, activeCount } = list;
+  const { filters, sortId, areaOptions, kindCounts, activeCount, starredCount } = list;
 
   return (
     <div id={id}>
@@ -116,6 +119,20 @@ export function AtlasFilterPanel({ list, id }: AtlasFilterPanelProps) {
         </div>
       </Group>
 
+      <Group label="Your list">
+        <Chip on={filters.starred} onClick={() => list.setStarred(!filters.starred)}>
+          Starred
+          <span className="ml-2" style={{ font: '400 11.5px/1 var(--font-mono)', color: 'inherit' }}>
+            {starredCount}
+          </span>
+        </Chip>
+        {starredCount === 0 && (
+          <p className="mt-2" style={{ fontSize: 12.5, lineHeight: 1.5, color: 'var(--ink3)' }}>
+            Star a structure from its card to add it here.
+          </p>
+        )}
+      </Group>
+
       <Group label="Kind">
         <div className="flex flex-wrap gap-2">
           {ATLAS_KINDS.map((k) => (
@@ -125,6 +142,40 @@ export function AtlasFilterPanel({ list, id }: AtlasFilterPanelProps) {
                 {kindCounts[k] ?? 0}
               </span>
             </Chip>
+          ))}
+        </div>
+      </Group>
+
+      {/* Study by system (lib/atlasLenses.ts). Selects rather than chips: a
+          nerve list is thirty long, and a chip row that long is a wall. */}
+      <Group label="Muscles by system">
+        <div className="flex flex-col gap-2">
+          {LENSES.map((kind) => (
+            <label key={kind} className="flex items-center gap-3">
+              <span className="w-[76px] flex-none" style={{ fontSize: 13.5, color: 'var(--ink2)' }}>
+                {LENS_LABELS[kind]}
+              </span>
+              <select
+                value={filters.lens[kind]}
+                onChange={(e) => list.setLens(kind, e.target.value)}
+                className="min-w-0 flex-1 rounded-[3px] px-2.5"
+                style={{
+                  minHeight: 40,
+                  fontFamily: 'var(--font-display)',
+                  fontSize: 14.5,
+                  border: filters.lens[kind] !== 'all' ? '1.2px solid var(--acc)' : '1.2px solid var(--line)',
+                  background: 'var(--sf)',
+                  color: 'var(--ink)',
+                }}
+              >
+                <option value="all">Any</option>
+                {list.lensOptions[kind].map((o) => (
+                  <option key={o.value} value={o.value}>
+                    {o.label} ({o.count})
+                  </option>
+                ))}
+              </select>
+            </label>
           ))}
         </div>
       </Group>

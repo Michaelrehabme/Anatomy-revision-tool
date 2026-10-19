@@ -21,6 +21,8 @@ import {
 import { getAtlasSortId, setAtlasSortId } from '../lib/preferences';
 import { buildReviewQueue, soonestDueByStructure } from '../lib/reviewQueue';
 import { useMastery } from './useMastery';
+import { useStudyProfile } from './useStudyProfile';
+import { lensOptions, type LensKind, type LensOption } from '../lib/atlasLenses';
 import type { StructureMastery } from '../types/attempt';
 
 interface UseAtlasListArgs {
@@ -54,6 +56,10 @@ export interface UseAtlasList {
   /** Per-kind counts for the chip row, over entitled structures. */
   kindCounts: Record<Category | 'all', number>;
   areaOptions: AreaOption[];
+  /** The choices for each study-by-system lens, over the muscles this account may reach. */
+  lensOptions: Record<LensKind, LensOption[]>;
+  /** How many reachable structures are starred. */
+  starredCount: number;
   contextIds: string[];
   muscleIds: string[];
   /**
@@ -66,6 +72,8 @@ export interface UseAtlasList {
   setArea: (area: Area | 'all') => void;
   setSeen: (seen: SeenFilter) => void;
   setQuery: (query: string) => void;
+  setStarred: (starred: boolean) => void;
+  setLens: (kind: LensKind, value: string) => void;
   setSortId: (id: string) => void;
   clearFilters: () => void;
 }
@@ -104,11 +112,19 @@ export function useAtlasList({ access, content, repository, userId }: UseAtlasLi
     [entitled, content.indexById],
   );
 
+  const { profile } = useStudyProfile();
+  const starredIds = useMemo(() => new Set(profile?.starred ?? []), [profile?.starred]);
+  const starredCount = useMemo(() => entitled.filter((s) => starredIds.has(s.id)).length, [entitled, starredIds]);
+  const lenses = useMemo(
+    () => ({ group: lensOptions(entitled, 'group'), movement: lensOptions(entitled, 'movement'), nerve: lensOptions(entitled, 'nerve') }),
+    [entitled],
+  );
+
   const visible = useMemo(() => {
-    const matched = filterAtlas(entitled, rows, filters, masteryById);
+    const matched = filterAtlas(entitled, rows, filters, masteryById, starredIds);
     const { key, direction } = sortById(sortId);
     return sortAtlas(matched, key, direction, masteryById, factsByKey);
-  }, [entitled, rows, filters, masteryById, factsByKey, sortId]);
+  }, [entitled, rows, filters, masteryById, factsByKey, sortId, starredIds]);
 
   const kindCounts = useMemo(() => {
     const counts = { all: entitled.length } as Record<Category | 'all', number>;
@@ -159,6 +175,8 @@ export function useAtlasList({ access, content, repository, userId }: UseAtlasLi
     activeCount: activeFilterCount(filters),
     kindCounts,
     areaOptions,
+    lensOptions: lenses,
+    starredCount,
     contextIds,
     muscleIds,
     review,
@@ -166,6 +184,8 @@ export function useAtlasList({ access, content, repository, userId }: UseAtlasLi
     setArea: useCallback((area) => setFilters((f) => ({ ...f, area })), []),
     setSeen: useCallback((seen) => setFilters((f) => ({ ...f, seen })), []),
     setQuery: useCallback((query) => setFilters((f) => ({ ...f, query })), []),
+    setStarred: useCallback((starred) => setFilters((f) => ({ ...f, starred })), []),
+    setLens: useCallback((kind, value) => setFilters((f) => ({ ...f, lens: { ...f.lens, [kind]: value } })), []),
     setSortId,
     clearFilters: useCallback(() => setFilters(DEFAULT_FILTERS), []),
   };

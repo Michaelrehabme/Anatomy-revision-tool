@@ -227,7 +227,8 @@ describe('activeFilterCount', () => {
   it('counts only what narrows the list', () => {
     expect(activeFilterCount(DEFAULT_FILTERS)).toBe(0);
     expect(activeFilterCount({ ...DEFAULT_FILTERS, query: '   ' })).toBe(0);
-    expect(activeFilterCount({ kind: 'muscle', area: 'knee', seen: 'unseen', query: 'x' })).toBe(4);
+    expect(activeFilterCount({ ...DEFAULT_FILTERS, kind: 'muscle', area: 'knee', seen: 'unseen', query: 'x' })).toBe(4);
+    expect(activeFilterCount({ ...DEFAULT_FILTERS, starred: true, lens: { group: 'all', movement: 'hip-flexion', nerve: 'Femoral nerve' } })).toBe(3);
   });
 });
 

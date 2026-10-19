@@ -4,6 +4,7 @@ import {
   currentFocus,
   emptyStudyProfile,
   hasAnswers,
+  isStarred,
   newerProfile,
   newShareFor,
   newStructureBias,
@@ -14,6 +15,7 @@ import {
   starterCategories,
   suggestFocusArea,
   suggestFocusCategory,
+  toggleStar,
   typeWeightsFor,
   weekStartOf,
   type FocusStanding,
@@ -92,6 +94,27 @@ describe('newStructureBias', () => {
   });
 });
 
+describe('learn first or test first', () => {
+  it('follows the student’s own choice over anything inferred, answers or none', () => {
+    expect(skipsFlashcard(profile({ skipped: true, newStructures: 'ask' }), knee)).toBe(true);
+    expect(skipsFlashcard(profile({ studyLength: '2yplus', newStructures: 'show' }), knee)).toBe(false);
+  });
+});
+
+describe('the starred list', () => {
+  it('stars newest first and unstars', () => {
+    const one = toggleStar(profile({}), 'deltoid') as StudyProfile;
+    const two = toggleStar(one, 'femur') as StudyProfile;
+    expect(two.starred).toEqual(['femur', 'deltoid']);
+    expect(isStarred(two, 'deltoid')).toBe(true);
+    expect(toggleStar(two, 'deltoid').starred).toEqual(['femur']);
+  });
+
+  it('keeps only readable ids from storage', () => {
+    expect(asStudyProfile({ updatedAt: 1, starred: ['deltoid', 'deltoid', 7, 'Bad Id', 'femur'] })!.starred).toEqual(['deltoid', 'femur']);
+  });
+});
+
 describe('skipsFlashcard', () => {
   it('skips only for a confident kind or a year or more of study, and never for a kind called new', () => {
     expect(skipsFlashcard(profile({ typeConfidence: { ligament: 'confident' } }), knee)).toBe(true);
@@ -106,13 +129,19 @@ describe('session length and pace', () => {
     expect([5, 10, 20, 30].map((m) => sessionCountFor(profile({ minutesPerDay: m as 5 })))).toEqual([10, 20, 30, 40]);
   });
 
-  it('brings in new material faster only inside six weeks of an exam', () => {
+  it('paces new material so everything is met a week before the exam', () => {
     const now = new Date(2026, 9, 19);
-    expect(newShareFor(profile({ examDate: '2026-11-10' }), now)).toBe(0.4);
-    expect(newShareFor(profile({ examDate: '2027-03-01' }), now)).toBeUndefined();
-    expect(newShareFor(profile({ examDate: '2026-10-01' }), now, 0.5)).toBe(0.5);
+    // 21 days to the exam, 14 of them for new material: 280 unseen in 20-question sessions is 1.0 a day — capped.
+    expect(newShareFor(profile({ examDate: '2026-11-09' }), now, undefined, { unseen: 280, count: 20 })).toBe(0.7);
+    // 140 unseen over 14 days at 20 a session: half of each session.
+    expect(newShareFor(profile({ examDate: '2026-11-09' }), now, undefined, { unseen: 140, count: 20 })).toBeCloseTo(0.5);
+    // Plenty of time: the share is left alone.
+    expect(newShareFor(profile({ examDate: '2027-06-01' }), now, undefined, { unseen: 100, count: 20 })).toBeUndefined();
+    // Inside the review week, or after the exam: nothing changes.
+    expect(newShareFor(profile({ examDate: '2026-10-24' }), now, 0.5, { unseen: 300, count: 20 })).toBe(0.5);
+    expect(newShareFor(profile({ examDate: '2026-10-01' }), now, 0.5, { unseen: 300, count: 20 })).toBe(0.5);
     // Never lower than a share the session already asks for.
-    expect(newShareFor(profile({ examDate: '2026-11-10' }), now, 0.5)).toBe(0.5);
+    expect(newShareFor(profile({ examDate: '2026-11-09' }), now, 0.6, { unseen: 70, count: 20 })).toBe(0.6);
   });
 
   it('leans towards preferred formats without removing the others', () => {
