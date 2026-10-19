@@ -130,6 +130,25 @@ export interface RevisionSetConfig {
    * lib/preferences.ts. Omitted, FACT_MASTERY_CONFIG's default applies.
    */
   learnCardAttempts?: number;
+  /**
+   * How much more (or less) often a structure the student has NEVER answered
+   * is drawn — the questionnaire's "unsure about ligaments" made a weight
+   * (lib/studyProfile.ts newStructureBias). Multiplies UNSEEN_WEIGHT only, so
+   * anything with a graded answer is weighted by its answers alone.
+   */
+  newStructureBias?: (structure: AnatomyStructure) => number;
+  /**
+   * Relative share of each question type when a capped session deals its
+   * types out in turn (interleaveByType). 1 when absent. A preference leans
+   * the mix; no type that was asked for is ever left out.
+   */
+  typeWeights?: Partial<Record<QuestionType, number>>;
+  /**
+   * A structure never seen opens on multiple choice instead of a flashcard
+   * (lib/studyProfile.ts skipsFlashcard). Never moves a structure above MCQ:
+   * typed recall is still earned at the rung.
+   */
+  skipFlashcard?: (structure: AnatomyStructure) => boolean;
 }
 
 /**
@@ -184,18 +203,26 @@ function withLearnCards(
 function interleaveByType(
   ordered: RevisionQuestion[],
   types: readonly QuestionType[],
+  weights?: Partial<Record<QuestionType, number>>,
 ): RevisionQuestion[] {
   const queues = types
-    .map((type) => ordered.filter((q) => q.type === type))
-    .filter((queue) => queue.length > 0);
+    .map((type) => ({ type, queue: ordered.filter((q) => q.type === type), credit: 0 }))
+    .filter(({ queue }) => queue.length > 0);
   // A question whose type was not requested — a clinical MCQ arrives as 'mcq',
   // but anything else would be dropped silently, so they go on the end.
-  const dealt = new Set(queues.flat());
+  const dealt = new Set(queues.flatMap(({ queue }) => queue));
   const out: RevisionQuestion[] = [];
+  // Each turn a type earns its weight in credit and is dealt one question per
+  // whole credit, so a weight of 1.5 comes out one, two, one, two. Unweighted,
+  // every type earns exactly one a turn — the plain alternation it always was.
+  // The floor keeps every requested type in the session: a lean, never a removal.
   for (let i = 0; out.length < dealt.size; i++) {
-    const queue = queues[i % queues.length];
-    const next = queue.shift();
-    if (next) out.push(next);
+    const slot = queues[i % queues.length];
+    slot.credit += Math.max(0.25, weights?.[slot.type] ?? 1);
+    while (slot.credit >= 1 && slot.queue.length) {
+      out.push(slot.queue.shift()!);
+      slot.credit -= 1;
+    }
   }
   return [...out, ...ordered.filter((q) => !dealt.has(q))];
 }
@@ -439,7 +466,10 @@ function ladderPlan(
   const byType = new Map<QuestionType, AnatomyStructure[]>();
   const bare = new Set<string>();
   for (const structure of pool) {
-    const rung = rungFor(masteryById.get(structure.id));
+    const row = masteryById.get(structure.id);
+    // Only the never-seen flashcard rung can be passed over, and only on the
+    // student's word that they have met this kind of structure before.
+    const rung = !row && config.skipFlashcard?.(structure) ? 'mcq' : rungFor(row);
     const type = questionTypeForRung(rung, requested);
     if (!type) continue;
     const list = byType.get(type);
@@ -703,20 +733,32 @@ export function generateRevisionSet(
   // is not.
   const weights = config.mastery?.length ? buildWeightMap(config.mastery, config.now) : null;
   const factsByKey = config.factMastery?.length ? indexFactMastery(config.factMastery) : null;
+  // The questionnaire's lean towards some new structures over others
+  // (lib/studyProfile.ts). Only for a structure with no graded answer at all:
+  // the moment it has one, its answers weight it and the questionnaire does not.
+  const answered = new Set([
+    ...(config.mastery ?? []).filter((m) => m.attemptsTotal > 0).map((m) => m.structureId),
+    ...(config.factMastery ?? []).filter((f) => f.attemptsTotal > 0).map((f) => f.structureId),
+  ]);
+  const unseenWeight = (structureId: string): number => {
+    if (!config.newStructureBias || answered.has(structureId)) return UNSEEN_WEIGHT;
+    const structure = indexes.byId.get(structureId);
+    return structure ? UNSEEN_WEIGHT * config.newStructureBias(structure) : UNSEEN_WEIGHT;
+  };
   const weightOf = (q: RevisionQuestion): number => {
     const skill = skillOf(q.type, q.promptKind);
-    if (skill === 'identify') return weights?.get(q.structureId) ?? UNSEEN_WEIGHT;
+    if (skill === 'identify') return weights?.get(q.structureId) ?? unseenWeight(q.structureId);
     const fact = factsByKey?.get(factMasteryKey(q.structureId, skill));
     return fact
       ? structureWeight({ ...fact, dueAt: factDueAt(fact), intervalDays: factIntervalDays(fact) }, config.now)
-      : UNSEEN_WEIGHT;
+      : unseenWeight(q.structureId);
   };
-  const ordered = weights || factsByKey ? weightedShuffle(generated, weightOf, rng) : shuffle(generated, rng);
+  const ordered = weights || factsByKey || config.newStructureBias ? weightedShuffle(generated, weightOf, rng) : shuffle(generated, rng);
 
   const count = config.mode === 'assessment' ? (config.count ?? generated.length) : config.count;
   // Only a CAPPED session needs balancing — an uncapped one asks everything it
   // built, in whatever order the weighting chose.
-  const balanced = count && config.types.length > 1 ? interleaveByType(ordered, config.types) : ordered;
+  const balanced = count && config.types.length > 1 ? interleaveByType(ordered, config.types, config.typeWeights) : ordered;
   const cap = Math.max(1, config.maxPerStructure ?? MAX_QUESTIONS_PER_STRUCTURE);
   const selected = !count
     ? balanced

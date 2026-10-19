@@ -184,6 +184,24 @@ export async function touchUserProfile(user: User): Promise<void> {
 }
 
 /**
+ * users/{uid}.studyProfile — the questionnaire's answers and the weekly
+ * focus (lib/studyProfile.ts). Raw: the caller validates with asStudyProfile.
+ */
+export async function readStudyProfile(uid: string): Promise<unknown> {
+  const snapshot = await getDoc(doc(getDb(), 'users', uid));
+  return snapshot.exists() ? snapshot.get('studyProfile') : null;
+}
+
+/**
+ * Replaces the whole field rather than merging into it (`mergeFields`), so an
+ * answer taken back — an exam date cleared — is gone from the account too,
+ * and every other field of the profile document is left as it is.
+ */
+export async function writeStudyProfile(uid: string, profile: object): Promise<void> {
+  await setDoc(doc(getDb(), 'users', uid), { studyProfile: profile }, { mergeFields: ['studyProfile'] });
+}
+
+/**
  * A GUEST: the anonymous sign-in every visitor is given — or an account whose
  * only way of signing in has been taken off again, which is what "Use a
  * different email" does (removeEmailSignIn, below). Firebase goes on calling

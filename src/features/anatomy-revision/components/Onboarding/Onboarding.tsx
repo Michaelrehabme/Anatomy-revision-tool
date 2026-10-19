@@ -13,6 +13,8 @@ import { useOnboardingFlow, type OnboardingStepKind } from './onboardingSteps';
  * which a Google sign-up and a returning student never do.
  */
 const EmailConfirmPanel = lazy(() => import('../Auth/EmailConfirmPanel'));
+/** The questionnaire: loaded when a student chooses to answer it. */
+const StudyProfileForm = lazy(() => import('../shared/StudyProfileForm'));
 
 interface OnboardingProps {
   /** What this account may reach. Onboarding is where a free account picks which one area that is. */
@@ -42,6 +44,7 @@ export function Onboarding({ access, content, initialAreas = [], only, onDone }:
   const onAreaStep = current.kind === 'areas' && flow.stage === 'step';
   const onAccountStep = flow.stage !== 'step';
   const confirming = flow.stage === 'confirm';
+  const onProfileStep = current.kind === 'profile' && flow.stage === 'step';
 
   const heading = useRef<HTMLHeadingElement>(null);
   const opened = useRef(false);
@@ -96,9 +99,9 @@ export function Onboarding({ access, content, initialAreas = [], only, onDone }:
             </div>
           )}
 
-          {!onAccountStep && (
+          {!onAccountStep && !flow.profileOpen && (
             <div className="mt-8 flex items-center gap-5">
-              <Button onClick={flow.next} disabled={!flow.canContinue} className="min-w-[180px] min-h-[54px] px-6">
+              <Button onClick={onProfileStep ? flow.openProfile : flow.next} disabled={!flow.canContinue} className="min-w-[180px] min-h-[54px] px-6">
                 {onAreaStep && selected.size === 0 ? (flow.single ? 'Choose an area' : 'Choose at least one area') : current.cta}
               </Button>
               {flow.canSkip && (
@@ -128,6 +131,18 @@ export function Onboarding({ access, content, initialAreas = [], only, onDone }:
             ) : (
               <AccountForm onDone={flow.onAccountMade} />
             )}
+          </div>
+        ) : flow.profileOpen ? (
+          <div className="w-[460px] flex-none">
+            <Suspense fallback={<p role="status" style={{ font: '400 15px/1.5 var(--font-ui)', color: 'var(--ink2)' }}>One moment…</p>}>
+              <StudyProfileForm
+                initial={flow.profile}
+                areas={[...selected]}
+                onSave={flow.saveProfile}
+                onSkip={flow.skipProfile}
+                saveLabel="Done"
+              />
+            </Suspense>
           </div>
         ) : (
           <div className="flex w-[420px] flex-none items-start gap-8">

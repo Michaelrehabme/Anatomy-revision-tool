@@ -6,6 +6,7 @@ import { BodyFigure } from '../shared/BodyFigure';
 import { LockPill, UnlockNote } from '../shared/AreaLock';
 import type { UseEntitlement } from '../../hooks/useEntitlement';
 import { MobileShell } from './MobileShell';
+import type { MobileTab } from './MobileTabBar';
 
 interface MobileRegionPickerProps {
   /** What this account may reach — see RegionPicker.tsx. */
@@ -15,15 +16,18 @@ interface MobileRegionPickerProps {
   onChange: (next: Set<Area>) => void;
   onContinue: () => void;
   onBack: () => void;
+  onNavigateTab: (tab: MobileTab) => void;
 }
 
 /**
  * Screen 03 (mobile). Figure and area list stacked vertically (desktop puts
- * them side by side). No tab bar since CR-018: the Atlas tab now leads to
- * MobileAtlas, and this is the first step of starting a session — the same
- * treatment Setup already had.
+ * them side by side). Not a tab destination since CR-018 (the Atlas tab leads
+ * to MobileAtlas), but the bar is back, under Today where "Custom session"
+ * starts this flow: it was dropped as "a step in a flow", and the result was a
+ * screen whose only way out was its back link. Only screens where a question
+ * is being answered go without the bar.
  */
-export function MobileRegionPicker({ access, content, selected, onChange, onContinue, onBack }: MobileRegionPickerProps) {
+export function MobileRegionPicker({ access, content, selected, onChange, onContinue, onBack, onNavigateTab }: MobileRegionPickerProps) {
   const entitled: ReadonlySet<Area> = new Set(access.areas);
   // Counts every category, not just muscles — matching the desktop picker (CR-017).
   const countByArea = new Map<Area, number>();
@@ -46,7 +50,7 @@ export function MobileRegionPicker({ access, content, selected, onChange, onCont
   const poolSize = content.index.filter((s) => areasOf(s).some((area) => effective.has(area))).length;
 
   return (
-    <MobileShell>
+    <MobileShell tabs={{ active: 'today', onNavigate: onNavigateTab }}>
       <div className="px-6.5 pt-4 pb-6">
         <button type="button" onClick={onBack} className="border-0 bg-transparent p-0 pb-2.5" style={{ fontSize: 14.5, color: 'var(--ink3)' }}>
           &larr; Today

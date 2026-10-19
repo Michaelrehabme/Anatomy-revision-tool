@@ -28,7 +28,7 @@ const LAYOUTS = [
         </MemoryRouter>,
       ),
   },
-  { name: 'mobile', renderPage: () => render(<MobileAchievements repository={null} userId={null} onBack={vi.fn()} />) },
+  { name: 'mobile', renderPage: () => render(<MobileAchievements repository={null} userId={null} onBack={vi.fn()} onNavigateTab={vi.fn()} />) },
 ] as const;
 
 describe.each(LAYOUTS)('unearned achievements on $name', ({ renderPage }) => {

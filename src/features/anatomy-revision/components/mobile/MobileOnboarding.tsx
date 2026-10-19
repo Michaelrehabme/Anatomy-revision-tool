@@ -9,6 +9,8 @@ import { useOnboardingFlow, type OnboardingStepKind } from '../Onboarding/onboar
 
 /** "Check your inbox" — see Onboarding.tsx. */
 const EmailConfirmPanel = lazy(() => import('../Auth/EmailConfirmPanel'));
+/** The questionnaire — see Onboarding.tsx. */
+const StudyProfileForm = lazy(() => import('../shared/StudyProfileForm'));
 
 interface MobileOnboardingProps {
   /** What this account may reach — see Onboarding.tsx. */
@@ -29,6 +31,7 @@ export function MobileOnboarding({ access, content, initialAreas = [], only, onD
   const onAreaStep = current.kind === 'areas' && flow.stage === 'step';
   const onAccountStep = flow.stage !== 'step';
   const confirming = flow.stage === 'confirm';
+  const onProfileStep = current.kind === 'profile' && flow.stage === 'step';
 
   const heading = useRef<HTMLHeadingElement>(null);
   const opened = useRef(false);
@@ -37,7 +40,7 @@ export function MobileOnboarding({ access, content, initialAreas = [], only, onD
     if (!opened.current) { opened.current = true; return; }
     heading.current?.focus();
     window.scrollTo(0, 0);
-  }, [flow.index, confirming]);
+  }, [flow.index, confirming, flow.profileOpen]);
 
   return (
     <main className="flex min-h-screen flex-col px-6.5 pt-6 pb-9" style={{ background: 'var(--pg)', color: 'var(--ink)', boxSizing: 'border-box' }}>
@@ -52,11 +55,27 @@ export function MobileOnboarding({ access, content, initialAreas = [], only, onD
       >
         {current.title}
       </h1>
-      <p className="text-[15px] leading-relaxed" style={{ color: 'var(--ink2)' }}>
-        {current.body}
-      </p>
+      {/* The form explains each question itself; on a phone the step's own words would push it below the fold. */}
+      {!flow.profileOpen && (
+        <p className="text-[15px] leading-relaxed" style={{ color: 'var(--ink2)' }}>
+          {current.body}
+        </p>
+      )}
 
-      {onAccountStep ? (
+      {flow.profileOpen ? (
+        <div className="flex-1 pt-7">
+          <Suspense fallback={<p role="status" style={{ font: '400 15px/1.5 var(--font-ui)', color: 'var(--ink2)' }}>One moment…</p>}>
+            <StudyProfileForm
+              initial={flow.profile}
+              areas={[...selected]}
+              onSave={flow.saveProfile}
+              onSkip={flow.skipProfile}
+              saveLabel="Done"
+              compact
+            />
+          </Suspense>
+        </div>
+      ) : onAccountStep ? (
         <div className="flex-1 pt-6">
           {confirming ? (
             <Suspense fallback={<p role="status" style={{ font: '400 15px/1.5 var(--font-ui)', color: 'var(--ink2)' }}>One moment…</p>}>
@@ -89,7 +108,7 @@ export function MobileOnboarding({ access, content, initialAreas = [], only, onD
         </div>
       )}
 
-      {flow.steps.length > 1 && (
+      {flow.steps.length > 1 && !flow.profileOpen && (
         <div className="mb-4.5 flex gap-1.5" aria-hidden="true">
           {flow.steps.map((_, i) => (
             <span key={i} className="h-0.5 w-6.5 rounded-full" style={{ background: i === flow.index ? 'var(--ink)' : 'var(--line)' }} />
@@ -97,11 +116,11 @@ export function MobileOnboarding({ access, content, initialAreas = [], only, onD
         </div>
       )}
 
-      {!onAccountStep && (
+      {!onAccountStep && !flow.profileOpen && (
         <div className="flex items-center gap-3">
           <button
             type="button"
-            onClick={flow.next}
+            onClick={onProfileStep ? flow.openProfile : flow.next}
             disabled={!flow.canContinue}
             className="flex-1 rounded-[3px] border-0 disabled:opacity-45"
             style={{ minHeight: 50, background: 'var(--acc-fill)', color: 'var(--onacc)', font: '500 16.5px/1 var(--font-ui)' }}

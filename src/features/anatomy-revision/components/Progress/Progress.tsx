@@ -5,6 +5,7 @@ import { useProgressData } from '../../hooks/useProgressData';
 import { CATEGORIES, CATEGORY_LABELS } from '../../types/structure';
 import { Button } from '../shared/Button';
 import { RegionLevelBar, RegionLevelLegend } from '../shared/RegionLevelBar';
+import { AccuracySection } from '../shared/AccuracySection';
 import type { UseEntitlement } from '../../hooks/useEntitlement';
 import { AppShell } from '../shell/AppShell';
 import { NavSidebar, type NavSection } from '../shell/NavSidebar';
@@ -188,6 +189,19 @@ export function Progress({ access, content, repository, userId, onStart, onNavig
             )}
           </div>
         </div>
+
+        {/* Moved from Account. Below the region and forecast columns, full
+            width, because the chart wants the width. Only Attempts and
+            Accuracy as tiles plus the streak: the seen counts are already in
+            the lines under the heading, and the streak is in the sidebar
+            footer but not in the page itself. */}
+        <AccuracySection
+          className="mt-16"
+          repository={repository}
+          userId={userId}
+          content={content}
+          stats={[{ label: 'Current streak', value: `${streak} ${streak === 1 ? 'day' : 'days'}` }]}
+        />
       </div>
     </AppShell>
   );

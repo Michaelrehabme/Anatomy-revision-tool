@@ -1,5 +1,5 @@
 import { AccountDataControls } from '../shared/AccountDataControls';
-import { useEffect, useMemo, useState } from 'react';
+import { useState } from 'react';
 import { AppShell } from '../shell/AppShell';
 import { NavSidebar, type NavSection } from '../shell/NavSidebar';
 import { AuthScreen } from '../Auth/AuthScreen';
@@ -7,24 +7,17 @@ import { GuestAccountPanel } from '../Auth/GuestAccountPanel';
 import { CohortMembership } from '../shared/CohortMembership';
 import { SubscriptionSummary } from '../shared/SubscriptionSummary';
 import { ThemeControls } from '../shared/ThemeControls';
+import { StudyPreferences } from '../shared/StudyPreferences';
 import { LegalLinks } from '../shared/LegalLinks';
 import { OfflineDownloads } from '../../../pwa/offline/OfflineDownloads';
 import type { UseEntitlement } from '../../hooks/useEntitlement';
-import { AccuracyTrendChart } from '../shared/AccuracyTrendChart';
-import { AccuracyFilters } from '../shared/AccuracyFilters';
 import { MyClasses } from './MyClasses';
 import { AdminSection } from './AdminSection';
 import { WeeklyReminderSetting } from '../../../reminders/WeeklyReminderSetting';
 import { useAuth, AUTH_ENABLED } from '../../context/AuthProvider';
 import { useProgressData } from '../../hooks/useProgressData';
-import { CATEGORIES, CATEGORY_LABELS } from '../../types/structure';
-import { gradedAttempts } from '../../lib/accuracyTrend';
-import { useAccuracyFilter } from '../../hooks/useAccuracyFilter';
-import type { UserAttempt } from '../../types/attempt';
 import type { AnatomyContent } from '../../hooks/useAnatomyContent';
 import type { AnatomyRepository } from '../../data/repository';
-
-const ATTEMPT_LIMIT = 5000;
 
 const heading = {
   fontFamily: 'var(--font-display)',
@@ -33,29 +26,6 @@ const heading = {
   letterSpacing: '-.01em',
   margin: 0,
 } as const;
-
-const statLabel = {
-  font: '500 10px/1 var(--font-mono)',
-  letterSpacing: '.12em',
-  textTransform: 'uppercase',
-  color: 'var(--ink3)',
-} as const;
-
-function Stat({ label, value, detail }: { label: string; value: string; detail?: string }) {
-  return (
-    <div data-in className="rounded-[4px] px-4 py-3" style={{ background: 'var(--sf)', border: '1px solid var(--line)', minWidth: 150 }}>
-      <div style={statLabel}>{label}</div>
-      <div data-count className="mt-1.5 tabular-nums" style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 26, letterSpacing: '-.01em' }}>
-        {value}
-      </div>
-      {detail && (
-        <div className="mt-1" style={{ font: '400 11px/1.4 var(--font-mono)', color: 'var(--ink3)' }}>
-          {detail}
-        </div>
-      )}
-    </div>
-  );
-}
 
 interface AccountProps {
   /** What this account may reach — the billing block and the free-area swap read it. */
@@ -67,57 +37,18 @@ interface AccountProps {
 }
 
 /**
- * The account screen: who you are, how you're doing, the class you're in, and
- * the classes you teach.
+ * The account screen: who you are, the class you're in, and the classes you
+ * teach. How you're doing — the tiles and the accuracy chart — moved to
+ * Progress (shared/AccuracySection).
  *
  * Teaching lives here because it isn't a role anyone grants — anyone can
  * create a class and own it — so it belongs with the rest of "your account"
  * rather than behind a door most people would never think to try.
- *
- * The accuracy chart is the same component an educator sees about a student,
- * minus the class-average line: a student cannot read their classmates'
- * attempts (firestore.rules), so that comparison is genuinely not theirs.
  */
 export function Account({ access, content, repository, userId, onNavigate }: AccountProps) {
   const { user, signOut } = useAuth();
-  const { streak, seenByCategory, totalSeen, totalStructures } = useProgressData(repository, userId, content);
-  const seenDetail = CATEGORIES.map((c) => `${seenByCategory[c].seen}/${seenByCategory[c].total} ${CATEGORY_LABELS[c].toLowerCase()}`).join(' · ');
-  const [attempts, setAttempts] = useState<UserAttempt[] | null>(null);
+  const { streak } = useProgressData(repository, userId, content);
   const [showAuthScreen, setShowAuthScreen] = useState<false | 'sign-up' | 'sign-in'>(false);
-
-  useEffect(() => {
-    if (!repository || !userId) return;
-    let cancelled = false;
-    repository
-      .listAttempts({ userId, limit: ATTEMPT_LIMIT })
-      .then((result) => {
-        if (!cancelled) setAttempts(result);
-      })
-      .catch(() => {
-        if (!cancelled) setAttempts([]);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [repository, userId]);
-
-  // Graded answers only: a flashcard learn card is recorded as an attempt
-  // but carries no judgement, and was inflating both the tile and the line.
-  const answered = useMemo(() => gradedAttempts(attempts ?? []), [attempts]);
-  const correct = answered.filter((a) => a.correct).length;
-  const accuracyPct = answered.length > 0 ? Math.round((correct / answered.length) * 100) : null;
-  // Two lines for one person: structures met for the first time, and
-  // structures seen before. No cohort series — a student cannot read their
-  // classmates' attempts.
-  // Both are narrowed by the filters above the chart (lib/attemptFilter.ts);
-  // the tiles at the top stay on everything.
-  const accuracy = useAccuracyFilter(answered, content);
-  const { trend, delta } = accuracy.result;
-  // Each line averages its own last few answers, and the two can differ in
-  // how many, so the chart says which (accuracyTrend.ts).
-  const windowNote = trend.seenBeforeWindow === trend.firstSightWindow
-    ? `each point is the last ${trend.seenBeforeWindow} answers of its kind`
-    : `each point is the last ${trend.seenBeforeWindow} seen-before answers, or the last ${trend.firstSightWindow} first sights`;
 
   return (
     <AppShell
@@ -140,36 +71,18 @@ export function Account({ access, content, repository, userId, onNavigate }: Acc
           {user?.isAnonymous && ' — this device only, until you create an account.'}
         </p>
 
-        <div className="mt-8 flex flex-wrap gap-3">
-          <Stat label="Attempts" value={String(answered.length)} />
-          <Stat label="Accuracy" value={accuracyPct !== null ? `${accuracyPct}%` : '—'} />
-          <Stat label="Current streak" value={`${streak} ${streak === 1 ? 'day' : 'days'}`} />
-          <Stat label="Structures seen" value={`${totalSeen} / ${totalStructures}`} detail={seenDetail} />
-        </div>
-
-        <section data-in className="mt-12">
-          <h3 style={heading}>
-            Accuracy over time
-            {delta && (
-              <span className="ml-3" style={{ font: '500 13px/1 var(--font-mono)', color: delta.deltaPts >= 0 ? 'var(--accd)' : 'var(--acc2d)' }}>
-                {delta.deltaPts >= 0 ? '+' : ''}
-                {delta.deltaPts} pts
-                <span style={{ color: 'var(--ink3)' }}>
-                  {' '}
-                  · first {delta.sliceSize} attempts {delta.firstPct}% → last {delta.sliceSize} {delta.lastPct}%
-                </span>
-              </span>
-            )}
-          </h3>
-          <AccuracyFilters accuracy={accuracy} />
-          <AccuracyTrendChart
-            points={trend.seenBeforeTrend}
-            studentName="Seen before"
-            secondary={{ label: 'First sight', points: trend.firstSightTrend }}
-            windowNote={windowNote}
-            emptyNote="Too few answers here to draw a line yet — each line needs five of its kind. The figures above still count every one."
-          />
-        </section>
+        {/* What sessions ask: the questionnaire, this week's focus, teaching
+            cards (components/shared/StudyPreferences.tsx). First, because it
+            is the setting a student comes here to change. Not for a guest,
+            who has no sessions to shape. */}
+        {!access.guest && (
+          <section data-in className="mt-12" style={{ maxWidth: 620 }}>
+            <h3 style={heading}>Study preferences</h3>
+            <div className="mt-4">
+              <StudyPreferences access={access} />
+            </div>
+          </section>
+        )}
 
         {/* Above the signed-in block deliberately: everything below it is
             hidden for an anonymous user, and appearance is not an account

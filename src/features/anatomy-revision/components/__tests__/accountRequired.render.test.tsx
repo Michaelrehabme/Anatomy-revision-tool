@@ -182,9 +182,9 @@ describe.each([
   ['desktop', Onboarding],
   ['mobile', MobileOnboarding],
 ] as const)('onboarding for a new visitor (%s)', (_name, Screen) => {
-  it('starts with the account, as step one of four', () => {
+  it('starts with the account, as step one of five', () => {
     render(<MemoryRouter><Screen access={guest()} content={content} onDone={() => {}} /></MemoryRouter>);
-    expect(screen.getByText('Step one of four')).toBeTruthy();
+    expect(screen.getByText('Step one of five')).toBeTruthy();
     expect(screen.getByRole('heading', { level: 1, name: 'Create your free account' })).toBeTruthy();
     expect(screen.getByLabelText('Email')).toBeTruthy();
     // No way past it: no Continue, no Skip.
@@ -206,7 +206,7 @@ describe.each([
     view.rerender(<MemoryRouter><Screen access={access({ needsFreeArea: true })} content={content} onDone={onDone} /></MemoryRouter>);
 
     expect(await screen.findByRole('heading', { level: 1, name: 'Pick your free area' })).toBeTruthy();
-    expect(screen.getByText('Step two of four')).toBeTruthy();
+    expect(screen.getByText('Step two of five')).toBeTruthy();
     expect(onDone).not.toHaveBeenCalled();
   });
 
@@ -245,7 +245,7 @@ describe('choosing the free area', () => {
     const onDone = vi.fn();
     render(<MemoryRouter><Onboarding access={free} content={content} onDone={onDone} /></MemoryRouter>);
     expect(screen.getByRole('heading', { level: 1, name: 'Pick your free area' })).toBeTruthy();
-    expect(screen.getByText('Step one of three')).toBeTruthy();
+    expect(screen.getByText('Step one of four')).toBeTruthy();
     expect(screen.queryByRole('button', { name: 'Skip' })).toBeNull();
     expect(document.body.textContent).not.toMatch(/keeps the shoulder/);
 
@@ -262,9 +262,34 @@ describe('choosing the free area', () => {
     expect(screen.getAllByRole('radio').filter((r) => r.getAttribute('aria-checked') === 'true')).toHaveLength(1);
 
     fireEvent.click(screen.getByRole('button', { name: 'Continue' }));
+    // The questionnaire: skipped, it skips itself and nothing else.
+    expect(screen.getByRole('heading', { level: 1, name: 'Tell us where you are starting' })).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: 'Skip' }));
+    expect(onDone).not.toHaveBeenCalled();
     fireEvent.click(screen.getByRole('button', { name: 'Understood' }));
     fireEvent.click(screen.getByRole('button', { name: 'Start learning' }));
     expect(onDone).toHaveBeenCalledWith(['hip']);
+    expect(JSON.parse(localStorage.getItem('anatomy-revision:v1:studyProfile')!).profile.skipped).toBe(true);
+  });
+
+  it('asks the questionnaire after the area, and saves the answers', async () => {
+    const onDone = vi.fn();
+    render(<MemoryRouter><Onboarding access={free} content={content} onDone={onDone} /></MemoryRouter>);
+    fireEvent.click(screen.getByRole('radio', { name: /Knee/ }));
+    fireEvent.click(screen.getByRole('button', { name: 'Continue' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Answer the questions' }));
+    expect(await screen.findByRole('heading', { name: 'How long have you been studying anatomy?' })).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: '1 to 2 years' }));
+    for (let i = 0; i < 3; i++) fireEvent.click(screen.getByRole('button', { name: 'Next' }));
+    // The area chosen is the one rated first.
+    fireEvent.click(screen.getByRole('button', { name: 'Knee: Unsure' }));
+    for (let i = 0; i < 3; i++) fireEvent.click(screen.getByRole('button', { name: 'Next' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Done' }));
+    expect(screen.getByRole('heading', { level: 1, name: 'Answer honestly, not correctly' })).toBeTruthy();
+    const saved = JSON.parse(localStorage.getItem('anatomy-revision:v1:studyProfile')!).profile;
+    expect(saved.studyLength).toBe('1to2y');
+    expect(saved.areaConfidence).toEqual({ knee: 'unsure' });
+    expect(saved.skipped).toBeUndefined();
   });
 
   it('may skip the explanations once an area is chosen, and keeps the choice', () => {
@@ -272,6 +297,8 @@ describe('choosing the free area', () => {
     render(<MemoryRouter><Onboarding access={free} content={content} onDone={onDone} /></MemoryRouter>);
     fireEvent.click(screen.getByRole('radio', { name: /Elbow/ }));
     fireEvent.click(screen.getByRole('button', { name: 'Continue' }));
+    // Past the questionnaire, then past the explanations.
+    fireEvent.click(screen.getByRole('button', { name: 'Skip' }));
     fireEvent.click(screen.getByRole('button', { name: 'Skip' }));
     expect(onDone).toHaveBeenCalledWith(['elbow']);
   });
@@ -295,8 +322,9 @@ describe('choosing the free area', () => {
     const chooseFreeArea = vi.fn();
     const has = access({ freeArea: chosen('hip'), areas: ['hip'], canAccess: (a) => a === 'hip', chooseFreeArea });
     render(<MemoryRouter><Onboarding access={has} content={content} onDone={onDone} /></MemoryRouter>);
-    expect(await screen.findByRole('heading', { level: 1, name: 'Answer honestly, not correctly' })).toBeTruthy();
+    expect(await screen.findByRole('heading', { level: 1, name: 'Tell us where you are starting' })).toBeTruthy();
     expect(screen.queryByRole('heading', { name: 'Pick your free area' })).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: 'Skip' }));
     fireEvent.click(screen.getByRole('button', { name: 'Understood' }));
     fireEvent.click(screen.getByRole('button', { name: 'Start learning' }));
     expect(onDone).toHaveBeenCalledWith(['hip']);
@@ -324,7 +352,7 @@ describe('choosing the free area', () => {
     vi.stubEnv('VITE_PERSISTENCE', 'local');
     const onDone = vi.fn();
     render(<MemoryRouter><Onboarding access={access({ areas: ['shoulder'] })} content={content} onDone={onDone} /></MemoryRouter>);
-    expect(screen.getByText('Step one of three')).toBeTruthy();
+    expect(screen.getByText('Step one of four')).toBeTruthy();
     expect(screen.queryByLabelText('Email')).toBeNull();
     expect(screen.getByText('Skip keeps the shoulder as your free area.')).toBeTruthy();
     fireEvent.click(screen.getByRole('button', { name: 'Skip' }));

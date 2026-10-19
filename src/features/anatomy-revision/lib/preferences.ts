@@ -320,3 +320,24 @@ export function getLocateWithoutPicture(): boolean {
 export function setLocateWithoutPicture(on: boolean): void {
   write(LOCATE_WITHOUT_PICTURE_KEY, on ? 'true' : 'false');
 }
+
+const ACCURACY_FILTERS_OPEN_KEY = `${PREFIX}accuracyFiltersOpen`;
+
+/**
+ * Whether the chip rows over the Progress accuracy chart are showing. The
+ * filters themselves are not remembered (a filter is a question being asked
+ * right now — see getAtlasSortId above); only whether this person likes the
+ * rows out.
+ *
+ * Defaults to closed, the opposite of the atlas panel: three rows of chips
+ * pushed the chart itself below the fold on a phone, and most visits want the
+ * line, not the controls. A one-line summary of what is active stays in view
+ * while they are closed, so a narrowed chart never passes for the whole one.
+ */
+export function getAccuracyFiltersOpen(): boolean {
+  return read(ACCURACY_FILTERS_OPEN_KEY) === 'true';
+}
+
+export function setAccuracyFiltersOpen(open: boolean): void {
+  write(ACCURACY_FILTERS_OPEN_KEY, String(open));
+}

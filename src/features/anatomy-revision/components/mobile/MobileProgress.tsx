@@ -5,6 +5,8 @@ import { REGION_LABELS } from '../../types/region';
 import { useProgressData } from '../../hooks/useProgressData';
 import { RegionBodyFigure } from '../shared/BodyFigure';
 import { RegionLevelBar, RegionLevelLegend } from '../shared/RegionLevelBar';
+import { AccuracySection } from '../shared/AccuracySection';
+import { CATEGORIES, CATEGORY_LABELS } from '../../types/structure';
 import { MobileShell } from './MobileShell';
 import type { MobileTab } from './MobileTabBar';
 
@@ -23,11 +25,11 @@ function masteryFill(pct: number): string {
 
 /** Screen 11 (mobile). BodyFigure shaded per-region by mastery, not just bars (desktop is bars-only). */
 export function MobileProgress({ content, repository, userId, onNavigateTab, onOpenAchievements }: MobileProgressProps) {
-  const { streak, masteryByStructureId, byRegion, forecast } = useProgressData(repository, userId, content);
+  const { streak, byRegion, forecast, seenByCategory, totalSeen, totalStructures } = useProgressData(repository, userId, content);
 
   const fills = Object.fromEntries(byRegion.map((r) => [r.region, masteryFill(r.pct)])) as Partial<Record<Region, string>>;
-  const answered = [...masteryByStructureId.values()].reduce((sum, m) => sum + m.attemptsTotal, 0);
   const dueTomorrow = forecast[1] ?? 0;
+  const seenDetail = CATEGORIES.map((c) => `${seenByCategory[c].seen}/${seenByCategory[c].total} ${CATEGORY_LABELS[c].toLowerCase()}`).join(' · ');
 
   return (
     <MobileShell tabs={{ active: 'progress', onNavigate: onNavigateTab }}>
@@ -76,29 +78,23 @@ export function MobileProgress({ content, repository, userId, onNavigateTab, onO
           ))}
         </div>
 
-        <div data-in className="mt-6 flex gap-8.5">
-          <div>
-            <div data-count style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 34, lineHeight: 1 }}>{streak}</div>
-            <div className="mt-1.5" style={{ font: '400 10.5px/1.3 var(--font-mono)', color: 'var(--ink3)' }}>
-              day streak
-            </div>
-          </div>
-          <div>
-            <div data-count style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 34, lineHeight: 1 }}>{answered}</div>
-            <div className="mt-1.5" style={{ font: '400 10.5px/1.3 var(--font-mono)', color: 'var(--ink3)' }}>
-              answered
-            </div>
-          </div>
-          <div>
-            <div data-count style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 34, lineHeight: 1, color: 'var(--acc2d)' }}>
-              {dueTomorrow}
-            </div>
-            <div className="mt-1.5" style={{ font: '400 10.5px/1.3 var(--font-mono)', color: 'var(--ink3)' }}>
-              due tomorrow
-            </div>
-          </div>
-        </div>
-
+        {/* The tiles and chart that were on Account. They replace the old
+            streak / answered / due-tomorrow row rather than sitting under it:
+            "Attempts" is the graded count the chart reads, where "answered"
+            summed every attempt including learn cards, and two different
+            numbers for the same question would read as a bug. */}
+        <AccuracySection
+          className="mt-8"
+          compact
+          repository={repository}
+          userId={userId}
+          content={content}
+          stats={[
+            { label: 'Streak', value: `${streak} ${streak === 1 ? 'day' : 'days'}` },
+            { label: 'Due tomorrow', value: String(dueTomorrow), color: 'var(--acc2d)' },
+            { label: 'Seen', value: `${totalSeen} / ${totalStructures}`, detail: seenDetail },
+          ]}
+        />
       </div>
     </MobileShell>
   );

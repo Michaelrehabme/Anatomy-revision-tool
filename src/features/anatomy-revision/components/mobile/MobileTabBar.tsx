@@ -41,7 +41,15 @@ export function MobileTabBar({ active, onNavigate }: MobileTabBarProps) {
   }, [activeIndex]);
 
   return (
-    <nav aria-label="Main" className="relative flex flex-none px-5 pt-2 pb-6.5" style={{ background: 'var(--sf)' }}>
+    // The bottom padding is the old pb-6.5 (26px), or the phone's home-indicator
+    // inset where that is larger. The top rule is new: now that <main> scrolls
+    // under the bar (MobileShell) rather than the bar following the page, the
+    // edge needs to read as an edge.
+    <nav
+      aria-label="Main"
+      className="relative flex flex-none px-5 pt-2"
+      style={{ background: 'var(--sf)', borderTop: '1px solid var(--line)', paddingBottom: 'max(26px, env(safe-area-inset-bottom))' }}
+    >
       {/* One marker that slides between the tabs, in the slot each tab leaves for it above its label. */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-x-5 top-2 h-12">
         <div
