@@ -9,6 +9,7 @@ import { WORKS } from '../../../legal/data/provenance.generated';
 import { BloodSupplyFacts } from './BloodSupplyFacts';
 import { RichText } from './RichText';
 import { ImageViewer } from './ImageViewer';
+import { PromptHighlightOverlay } from './PromptHighlightOverlay';
 import { LigamentPictureNote, isLigamentPlate } from './LigamentPictureNote';
 
 const LABEL_STYLE = { font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' } as const;
@@ -41,7 +42,16 @@ export function StructurePicture({ structure, images, compact = false }: {
     <div>
       <div className="overflow-hidden rounded-[3px]" style={{ background: 'var(--fig-off)' }}>
         {/* The viewer prints the picture's credit itself. */}
-        <ImageViewer image={image} frames={frames} subjectId={structure.id} resetKey={structure.id} />
+        <ImageViewer
+          image={image}
+          frames={frames}
+          subjectId={structure.id}
+          resetKey={structure.id}
+          // A landmark or joint panel is a plain skeleton with its target stored
+          // beside it: drawn here, as the quiz draws it, or the card shows an
+          // unmarked bone. Pre-highlighted pictures carry no hotspot and are untouched.
+          overlay={(current) => <PromptHighlightOverlay image={current} structureId={structure.id} />}
+        />
       </div>
       {isLigamentPlate(image) && <LigamentPictureNote compact={compact} />}
     </div>
