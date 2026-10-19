@@ -34,7 +34,8 @@ interface AccuracySectionProps {
   className?: string;
 }
 
-function Stat({ label, value, detail, color, compact }: AccuracyStat & { compact: boolean }) {
+/** One number tile. Exported for the Mastery tab's own tiles, so the two tabs share one look. */
+export function StatTile({ label, value, detail, color, compact }: AccuracyStat & { compact: boolean }) {
   return (
     <div
       data-in
@@ -121,10 +122,10 @@ export function AccuracySection({ repository, userId, content, compact = false, 
   return (
     <div className={className}>
       <div className={compact ? 'flex flex-wrap gap-2.5' : 'flex flex-wrap gap-3'}>
-        <Stat compact={compact} label="Attempts" value={String(answered.length)} />
-        <Stat compact={compact} label="Accuracy" value={accuracyPct !== null ? `${accuracyPct}%` : '—'} />
+        <StatTile compact={compact} label="Attempts" value={String(answered.length)} />
+        <StatTile compact={compact} label="Accuracy" value={accuracyPct !== null ? `${accuracyPct}%` : '—'} />
         {stats.map((s) => (
-          <Stat key={s.label} compact={compact} {...s} />
+          <StatTile key={s.label} compact={compact} {...s} />
         ))}
       </div>
 

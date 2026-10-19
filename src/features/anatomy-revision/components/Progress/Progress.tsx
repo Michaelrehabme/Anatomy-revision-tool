@@ -6,6 +6,7 @@ import { CATEGORIES, CATEGORY_LABELS } from '../../types/structure';
 import { Button } from '../shared/Button';
 import { RegionLevelBar, RegionLevelLegend } from '../shared/RegionLevelBar';
 import { AccuracySection } from '../shared/AccuracySection';
+import { ProgressTabs } from '../shared/ProgressTabs';
 import type { UseEntitlement } from '../../hooks/useEntitlement';
 import { AppShell } from '../shell/AppShell';
 import { NavSidebar, type NavSection } from '../shell/NavSidebar';
@@ -85,122 +86,121 @@ export function Progress({ access, content, repository, userId, onStart, onNavig
         >
           Progress
         </h1>
-        <div data-in className="flex items-baseline justify-between">
-          <p className="text-base" style={{ color: 'var(--ink2)' }}>
-            {totalStructures} structures · {totalSeen} seen at least once · {muscles.length} muscles, {seenCount} seen, {untouched.length} still untouched
-          </p>
-        </div>
-        <p data-in className="mt-2" style={{ font: '400 12px/1.6 var(--font-mono)', color: 'var(--ink3)' }}>
-          {CATEGORIES.map((c) => `${seenByCategory[c].seen} / ${seenByCategory[c].total} ${CATEGORY_LABELS[c].toLowerCase()}`).join(' · ')}
-        </p>
         <div data-in>
           <button type="button" onClick={onOpenAchievements} style={{ font: '500 13px/1 var(--font-ui)', color: 'var(--accd)' }}>
             View achievements →
           </button>
         </div>
 
-        <div className="mt-13 flex gap-[88px]">
-          <div className="flex-1">
-            <div data-in style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
-              By region
-            </div>
-            <div data-in className="mt-3.5">
-              <RegionLevelLegend />
-            </div>
-            <div className="mt-5.5 flex flex-col gap-6.5">
-              {byRegion.map(({ region, levels }) => {
-                const all = Object.values(levels).reduce((a, b) => a + b, 0);
-                return (
-                <div key={region} data-row>
-                  <div className="flex items-baseline gap-3.5">
-                    <span className="flex-1" style={{ fontFamily: 'var(--font-display)', fontSize: 23 }}>
-                      {REGION_LABELS[region]}
-                    </span>
-                    <span style={{ font: '400 12px/1 var(--font-mono)', color: 'var(--ink3)' }}>
-                      {all - levels.unmet} / {all} met
-                    </span>
-                    <span style={{ font: '500 13.5px/1 var(--font-mono)', color: 'var(--accd)', minWidth: 40, textAlign: 'right' }}>
-                      <span data-count>{levels.master}</span> mastered
-                    </span>
+        <ProgressTabs
+          className="mt-8"
+          mastery={
+            <div className="pt-7">
+              <div className="flex items-baseline justify-between">
+                <p className="text-base" style={{ color: 'var(--ink2)' }}>
+                  {totalStructures} structures · {totalSeen} seen at least once · {muscles.length} muscles, {seenCount} seen, {untouched.length} still untouched
+                </p>
+              </div>
+              <p className="mt-2" style={{ font: '400 12px/1.6 var(--font-mono)', color: 'var(--ink3)' }}>
+                {CATEGORIES.map((c) => `${seenByCategory[c].seen} / ${seenByCategory[c].total} ${CATEGORY_LABELS[c].toLowerCase()}`).join(' · ')}
+              </p>
+              <div className="mt-11 flex gap-[88px]">
+                <div className="flex-1">
+                  <div data-in style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
+                    By region
                   </div>
-                  <div className="mt-2.5">
-                    <RegionLevelBar levels={levels} />
+                  <div data-in className="mt-3.5">
+                    <RegionLevelLegend />
+                  </div>
+                  <div className="mt-5.5 flex flex-col gap-6.5">
+                    {byRegion.map(({ region, levels }) => {
+                      const all = Object.values(levels).reduce((a, b) => a + b, 0);
+                      return (
+                      <div key={region} data-row>
+                        <div className="flex items-baseline gap-3.5">
+                          <span className="flex-1" style={{ fontFamily: 'var(--font-display)', fontSize: 23 }}>
+                            {REGION_LABELS[region]}
+                          </span>
+                          <span style={{ font: '400 12px/1 var(--font-mono)', color: 'var(--ink3)' }}>
+                            {all - levels.unmet} / {all} met
+                          </span>
+                          <span style={{ font: '500 13.5px/1 var(--font-mono)', color: 'var(--accd)', minWidth: 40, textAlign: 'right' }}>
+                            <span data-count>{levels.master}</span> mastered
+                          </span>
+                        </div>
+                        <div className="mt-2.5">
+                          <RegionLevelBar levels={levels} />
+                        </div>
+                      </div>
+                      );
+                    })}
                   </div>
                 </div>
-                );
-              })}
-            </div>
-          </div>
 
-          <div className="w-[460px] flex-none">
-            <div data-in style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
-              Due over the next fortnight
-            </div>
-            <div className="mt-5.5 flex h-[180px] items-end gap-2.5">
-              {forecast.map((count, i) => (
-                <div
-                  key={i}
-                  data-wbar
-                  className="flex-1"
-                  style={{ height: `${Math.max(4, (count / forecastMax) * 100)}%`, background: i === 0 ? 'var(--accd)' : count > 0 ? 'var(--acc)' : 'var(--accs)' }}
-                />
-              ))}
-            </div>
-            <div className="mt-2.5 flex justify-between">
-              <span style={{ font: '400 11px/1 var(--font-mono)', color: 'var(--ink3)' }}>today</span>
-              <span style={{ font: '400 11px/1 var(--font-mono)', color: 'var(--ink3)' }}>+7</span>
-              <span style={{ font: '400 11px/1 var(--font-mono)', color: 'var(--ink3)' }}>+14</span>
-            </div>
+                <div className="w-[460px] flex-none">
+                  <div data-in style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
+                    Due over the next fortnight
+                  </div>
+                  <div className="mt-5.5 flex h-[180px] items-end gap-2.5">
+                    {forecast.map((count, i) => (
+                      <div
+                        key={i}
+                        data-wbar
+                        className="flex-1"
+                        style={{ height: `${Math.max(4, (count / forecastMax) * 100)}%`, background: i === 0 ? 'var(--accd)' : count > 0 ? 'var(--acc)' : 'var(--accs)' }}
+                      />
+                    ))}
+                  </div>
+                  <div className="mt-2.5 flex justify-between">
+                    <span style={{ font: '400 11px/1 var(--font-mono)', color: 'var(--ink3)' }}>today</span>
+                    <span style={{ font: '400 11px/1 var(--font-mono)', color: 'var(--ink3)' }}>+7</span>
+                    <span style={{ font: '400 11px/1 var(--font-mono)', color: 'var(--ink3)' }}>+14</span>
+                  </div>
 
-            <div
-              data-in
-              className="mt-13"
-              style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}
-            >
-              Untouched
-            </div>
-            <p data-in className="mt-3.5 text-base leading-relaxed" style={{ color: 'var(--ink2)' }}>
-              {untouched.length > 0
-                ? `${untouched.length} muscles have never come up. Worth a dedicated session.`
-                : 'Every muscle has come up at least once.'}
-            </p>
-            {untouched.length > 0 && (
-              <Button variant="secondary" onClick={handleDrillUntouched} className="mt-5 min-h-[52px] px-6">
-                Drill the untouched {untouched.length}
-              </Button>
-            )}
+                  <div
+                    data-in
+                    className="mt-13"
+                    style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}
+                  >
+                    Untouched
+                  </div>
+                  <p data-in className="mt-3.5 text-base leading-relaxed" style={{ color: 'var(--ink2)' }}>
+                    {untouched.length > 0
+                      ? `${untouched.length} muscles have never come up. Worth a dedicated session.`
+                      : 'Every muscle has come up at least once.'}
+                  </p>
+                  {untouched.length > 0 && (
+                    <Button variant="secondary" onClick={handleDrillUntouched} className="mt-5 min-h-[52px] px-6">
+                      Drill the untouched {untouched.length}
+                    </Button>
+                  )}
 
-            <div
-              data-in
-              className="mt-13"
-              style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}
-            >
-              Leeches
+                  <div
+                    data-in
+                    className="mt-13"
+                    style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}
+                  >
+                    Leeches
+                  </div>
+                  <p data-in className="mt-3.5 text-base leading-relaxed" style={{ color: 'var(--ink2)' }}>
+                    {leeches.length > 0
+                      ? `${leeches.length} structures keep coming back wrong. Worth isolating.`
+                      : 'No leeches — nothing is stuck.'}
+                  </p>
+                  {leeches.length > 0 && (
+                    <Button variant="secondary" onClick={handleDrillLeeches} className="mt-5 min-h-[52px] px-6">
+                      Drill the {leeches.length} leech{leeches.length === 1 ? '' : 'es'}
+                    </Button>
+                  )}
+                </div>
+              </div>
             </div>
-            <p data-in className="mt-3.5 text-base leading-relaxed" style={{ color: 'var(--ink2)' }}>
-              {leeches.length > 0
-                ? `${leeches.length} structures keep coming back wrong. Worth isolating.`
-                : 'No leeches — nothing is stuck.'}
-            </p>
-            {leeches.length > 0 && (
-              <Button variant="secondary" onClick={handleDrillLeeches} className="mt-5 min-h-[52px] px-6">
-                Drill the {leeches.length} leech{leeches.length === 1 ? '' : 'es'}
-              </Button>
-            )}
-          </div>
-        </div>
-
-        {/* Moved from Account. Below the region and forecast columns, full
-            width, because the chart wants the width. Only Attempts and
-            Accuracy as tiles plus the streak: the seen counts are already in
-            the lines under the heading, and the streak is in the sidebar
-            footer but not in the page itself. */}
-        <AccuracySection
-          className="mt-16"
-          repository={repository}
-          userId={userId}
-          content={content}
-          stats={[{ label: 'Current streak', value: `${streak} ${streak === 1 ? 'day' : 'days'}` }]}
+          }
+          accuracy={
+            // Attempts and Accuracy only: the streak is in the sidebar footer,
+            // and the seen counts belong to Mastery.
+            <AccuracySection className="mt-8" repository={repository} userId={userId} content={content} />
+          }
         />
       </div>
     </AppShell>

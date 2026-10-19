@@ -341,3 +341,20 @@ export function getAccuracyFiltersOpen(): boolean {
 export function setAccuracyFiltersOpen(open: boolean): void {
   write(ACCURACY_FILTERS_OPEN_KEY, String(open));
 }
+
+const PROGRESS_TAB_KEY = `${PREFIX}progressTab`;
+
+export type ProgressTab = 'mastery' | 'accuracy';
+
+/**
+ * Which of Progress's two tabs opens (owner, 19 Oct 2026). Mastery unless the
+ * student last left it on Accuracy: someone who checks their accuracy every
+ * day should not have to switch to it every day.
+ */
+export function getProgressTab(): ProgressTab {
+  return read(PROGRESS_TAB_KEY) === 'accuracy' ? 'accuracy' : 'mastery';
+}
+
+export function setProgressTab(tab: ProgressTab): void {
+  write(PROGRESS_TAB_KEY, tab);
+}
