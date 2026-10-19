@@ -202,7 +202,6 @@ export const LANDMARK_PANELS: LandmarkPanel[] = [
   { structureId: 'tibial-tuberosity', name: "Tibial Tuberosity", region: 'hip-thigh', subregion: 'knee', view: 'anterior', width: 1400, height: 1400 },
   { structureId: 'tibial-tuberosity', name: "Tibial Tuberosity", region: 'hip-thigh', subregion: 'knee', view: 'lateral', width: 1400, height: 1400 },
   { structureId: 'transverse-costal-facet', name: "Transverse Costal Facet", region: 'back-core', subregion: 'spine', view: 'lateral', width: 1400, height: 1400 },
-  { structureId: 'transverse-foramen', name: "Transverse Foramen", region: 'back-core', subregion: 'neck', view: 'lateral', width: 1400, height: 1400 },
   { structureId: 'transverse-foramen', name: "Transverse Foramen", region: 'back-core', subregion: 'neck', view: 'superior', width: 1400, height: 1400 },
   { structureId: 'transverse-process', name: "Transverse Process", region: 'back-core', subregion: 'spine', view: 'lateral', width: 1400, height: 1400 },
   { structureId: 'transverse-process', name: "Transverse Process", region: 'back-core', subregion: 'spine', view: 'superior', width: 1400, height: 1400 },

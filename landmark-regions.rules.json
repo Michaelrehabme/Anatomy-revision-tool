@@ -124,12 +124,16 @@
    6
   ],
   "transverse-costal-facet": [
-   6
+   6,
+   3
   ],
   "gerdys-tubercle": [
    0,
    3,
    6
+  ],
+  "transverse-foramen": [
+   "top"
   ]
  },
  "linea-aspera": {
@@ -922,9 +926,6 @@
    "superior-articular-process",
    "inferior-articular-process",
    "pars-interarticularis",
-   "superior-costal-facet",
-   "inferior-costal-facet",
-   "transverse-costal-facet",
    "sacral-cornua",
    "psis",
    "pubic-tubercle",
@@ -1307,5 +1308,81 @@
    "sustentaculum-tali"
   ],
   "_why": "THIRD PASS. The reviewer asked for a whole-foot view. The foot is drawn alone (see _isolateWith) so nothing above it blocks a superior view."
+ },
+ "superior-costal-facet": {
+  "kind": "ball",
+  "from": {
+   "world": [
+    17.5,
+    62.0,
+    1276.0
+   ]
+  },
+  "width": 0.004,
+  "keepLargest": false,
+  "close": 2,
+  "smoothNormals": 2,
+  "mirrorX": true,
+  "_why": "The demifacet at the TOP of the body's posterolateral corner, just in front of the pedicle: the body ends at y~66mm and its upper edge is at z~1276-1280 on T8. Both sides. Measured 19 Oct 2026 (probe_facets.py, world mm). Owner: the three facets' rings overlapped and could not be told apart, and the targets were too big."
+ },
+ "inferior-costal-facet": {
+  "kind": "ball",
+  "from": {
+   "world": [
+    17.5,
+    62.0,
+    1255.0
+   ]
+  },
+  "width": 0.004,
+  "keepLargest": false,
+  "close": 2,
+  "smoothNormals": 2,
+  "mirrorX": true,
+  "_why": "The demifacet at the BOTTOM of the body's posterolateral corner, 21mm below the superior one. Both sides. Measured 19 Oct 2026 (probe_facets.py, world mm). Owner: the three facets' rings overlapped and could not be told apart, and the targets were too big."
+ },
+ "transverse-costal-facet": {
+  "kind": "ball",
+  "from": {
+   "world": [
+    32.3,
+    77.3,
+    1261.5
+   ]
+  },
+  "width": 0.005,
+  "keepLargest": false,
+  "close": 2,
+  "smoothNormals": 2,
+  "mirrorX": true,
+  "_why": "On the front of the transverse process tip, where the rib's tubercle articulates: the tip is the most lateral point of T8 (x 35mm), its anterior face 4mm forward. Both sides. Measured 19 Oct 2026 (probe_facets.py, world mm). Owner: the three facets' rings overlapped and could not be told apart, and the targets were too big."
+ },
+ "transverse-foramen": {
+  "kind": "plug",
+  "mirrorX": true,
+  "radius": 0.003,
+  "at": [
+   [
+    16.5,
+    11.5,
+    1494.0
+   ]
+  ],
+  "_why": "The hole in C4's transverse process: the enclosed gap lateral to the body and IN FRONT of the canal, about 2.5mm clear (a first search that also looked behind the canal found a false gap in the arch), mirrored for the right. Measured 19 Oct 2026 (probe_facets.py, world mm). Owner: the three facets' rings overlapped and could not be told apart, and the targets were too big."
+ },
+ "gerdys-tubercle": {
+  "kind": "ball",
+  "from": {
+   "world": [
+    -97.4,
+    12.5,
+    390.9
+   ]
+  },
+  "width": 0.009,
+  "keepLargest": false,
+  "close": 2,
+  "smoothNormals": 2,
+  "_why": "The anterolateral tubercle of the lateral tibial condyle: the atlas's 'Tubercle of iliotibial tract.j' label touches the bone here (the ring placed by anchorOffset sat on it). Measured 19 Oct 2026 (probe_facets.py, world mm). Owner: the three facets' rings overlapped and could not be told apart, and the targets were too big."
  }
 }
