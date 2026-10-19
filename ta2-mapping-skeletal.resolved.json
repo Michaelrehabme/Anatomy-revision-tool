@@ -2434,6 +2434,70 @@
    ],
    "resolution": "object-name",
    "note": "Added 18 Oct 2026 for the Atlas card: a whole-object highlight, no anchor needed."
+  },
+  {
+   "id": "triangular-fibrocartilage-complex",
+   "name": "Triangular fibrocartilage complex",
+   "category": "ligament",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Articular disc of distal radio-ulnar joint.l",
+    "Dorsal radio-ulnar ligament.l",
+    "Palmar radio-ulnar ligament.l"
+   ],
+   "resolution": "manual",
+   "note": "19 Oct 2026, Atlas card picture. The TFCC drawn as its parts the atlas has: the articular disc of the distal radio-ulnar joint and the dorsal and palmar radio-ulnar ligaments."
+  },
+  {
+   "id": "iliofemoral-ligament",
+   "name": "Iliofemoral ligament",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Descending part of iliofemoral ligament.l",
+    "Descending part of iliofemoral ligament.r",
+    "Transverse part of iliofemoral ligament.l",
+    "Transverse part of iliofemoral ligament.r"
+   ],
+   "resolution": "manual",
+   "note": "19 Oct 2026, Atlas card picture. Both parts of the Y-ligament."
+  },
+  {
+   "id": "patellar-ligament",
+   "name": "Patellar ligament",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Patellar ligament.or",
+    "Patellar ligament.er",
+    "Patella.r"
+   ],
+   "resolution": "manual",
+   "note": "19 Oct 2026, Atlas card picture. Framed on its attachment patches; the painted mesh is their hull (panel-regions.rules.json)."
+  },
+  {
+   "id": "alar-ligaments",
+   "name": "Alar ligaments",
+   "category": "ligament",
+   "region": "back-core",
+   "blenderObjects": [
+    "Atlas (C1)",
+    "Axis (C2)"
+   ],
+   "resolution": "manual",
+   "note": "19 Oct 2026, Atlas card picture. Not in the atlas: built from measured points (panel-regions.rules.json); framed on C1 and C2."
+  },
+  {
+   "id": "transverse-ligament-of-atlas",
+   "name": "Transverse ligament of atlas",
+   "category": "ligament",
+   "region": "back-core",
+   "blenderObjects": [
+    "Atlas (C1)",
+    "Axis (C2)"
+   ],
+   "resolution": "manual",
+   "note": "19 Oct 2026, Atlas card picture. Not in the atlas: built from measured points (panel-regions.rules.json); framed on C1 and C2."
   }
  ]
 }

@@ -315,5 +315,94 @@
    "smoothNormals": 3,
    "_why": "The inferior articular processes hang down behind the body, either side of the spinous process: L4's lowest points more than 10mm from the midline and 15mm behind its centre, both sides. The atlas has no anchor for them. Added 19 Oct 2026; point measured in world millimetres with probe_last4.py (+x body left, +y posterior, +z up)."
   }
+ },
+ "transverse-ligament-of-atlas": {
+  "build": {
+   "kind": "tube",
+   "radius": 0.0028,
+   "paths": [
+    [
+     [
+      8.2,
+      8.5,
+      1542.0
+     ],
+     [
+      6.0,
+      14.0,
+      1543.0
+     ],
+     [
+      0.0,
+      17.8,
+      1543.5
+     ],
+     [
+      -6.0,
+      14.0,
+      1543.0
+     ],
+     [
+      -8.2,
+      8.5,
+      1542.0
+     ]
+    ]
+   ]
+  },
+  "_why": "Not in the atlas. A band from the medial surface of one lateral mass of C1 to the other, arching behind the dens: the lateral masses' medial surfaces at the dens's depth are (+-8.2, 8.5, 1541.9); the back of the dens at mid-height is y 15.3, so the band passes 2.5mm behind it. Added 19 Oct 2026 (owner: build them from measured points; probe_atlas.py / probe_atlas2.py, world mm)."
+ },
+ "alar-ligaments": {
+  "build": {
+   "kind": "tube",
+   "radius": 0.002,
+   "paths": [
+    [
+     [
+      4.7,
+      9.3,
+      1547.7
+     ],
+     [
+      7.2,
+      9.6,
+      1552.0
+     ],
+     [
+      8.8,
+      9.8,
+      1555.5
+     ]
+    ],
+    [
+     [
+      -4.6,
+      9.3,
+      1547.7
+     ],
+     [
+      -7.2,
+      9.6,
+      1552.0
+     ],
+     [
+      -8.8,
+      9.8,
+      1555.5
+     ]
+    ]
+   ]
+  },
+  "_why": "Not in the atlas. Two cords from the sides of the dens tip (+-4.7, 9.3, 1547.7) up and out to the medial faces of the occipital condyles (+-8.8, 9.8, 1555.5), the condyles being the occipital surface that sits on C1's superior facets. Added 19 Oct 2026 (owner: build them from measured points; probe_atlas.py / probe_atlas2.py, world mm)."
+ },
+ "patellar-ligament": {
+  "build": {
+   "kind": "hull",
+   "objects": [
+    "Patellar ligament.or",
+    "Patellar ligament.er"
+   ]
+  },
+  "_why": "The atlas has only the ligament's two attachment patches (.o on the patella's apex, .e on the tibial tuberosity); the ligament is the solid spanning them. The right knee only: a hull over both knees' patches spans the gap between the legs. Added 19 Oct 2026 (owner: build them from measured points; probe_atlas.py / probe_atlas2.py, world mm)."
  }
 }

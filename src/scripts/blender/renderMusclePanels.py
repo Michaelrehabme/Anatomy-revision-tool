@@ -310,6 +310,57 @@ def link(mesh, name, material):
     scene.collection.objects.link(ob)
 
 
+def build_mesh(spec, mesh_name):
+    """A mesh made from measured geometry, for a structure the atlas lacks.
+
+      {"kind": "tube", "paths": [[[x,y,z], ...], ...], "radius": m}
+          a round cord along each path of world-millimetre points, smoothed
+          through them: a ligament as a band between its measured attachments.
+      {"kind": "hull", "objects": [names]}
+          the convex hull of the named objects' vertices: the patellar
+          ligament as the solid spanning its two attachment patches.
+    """
+    out = bmesh.new()
+    if spec["kind"] == "tube":
+        for i, path in enumerate(spec["paths"]):
+            cu = bpy.data.curves.new(f"{mesh_name}_c{i}", "CURVE")
+            cu.dimensions = "3D"
+            cu.bevel_depth = float(spec["radius"])
+            cu.bevel_resolution = 4
+            cu.use_fill_caps = True
+            sp = cu.splines.new("NURBS")
+            sp.points.add(len(path) - 1)
+            for p, co in zip(sp.points, path):
+                p.co = (co[0] / 1000.0, co[1] / 1000.0, co[2] / 1000.0, 1.0)
+            sp.use_endpoint_u = True
+            sp.order_u = min(3, len(path))
+            ob = bpy.data.objects.new(f"{mesh_name}_o{i}", cu)
+            scene.collection.objects.link(ob)
+            dg = bpy.context.evaluated_depsgraph_get()
+            me = bpy.data.meshes.new_from_object(ob.evaluated_get(dg))
+            out.from_mesh(me)
+            bpy.data.meshes.remove(me)
+            bpy.data.objects.remove(ob)
+            bpy.data.curves.remove(cu)
+    elif spec["kind"] == "hull":
+        pts = []
+        for n in spec["objects"]:
+            src = bpy.data.objects.get(n)
+            if src and src.type == "MESH":
+                pts += [src.matrix_world @ v.co for v in src.data.vertices]
+        vs = [out.verts.new(p) for p in pts]
+        bmesh.ops.convex_hull(out, input=vs)
+        loose = [v for v in out.verts if not v.link_faces]
+        bmesh.ops.delete(out, geom=loose, context="VERTS")
+    else:
+        raise ValueError("unknown build kind: " + spec["kind"])
+    bmesh.ops.recalc_face_normals(out, faces=out.faces)
+    me = bpy.data.meshes.new(mesh_name)
+    out.to_mesh(me)
+    out.free()
+    return me
+
+
 def region_mesh(object_names, rule, mesh_name):
     """The faces of each named bone that a landmark rule picks, as one mesh.
 
@@ -517,6 +568,15 @@ for mid in wanted:
         else:
             bpy.data.meshes.remove(mesh)
             mesh = grown
+    # A STRUCTURE THE MODEL DOES NOT HAVE. The alar ligaments and the
+    # transverse ligament of the atlas are not in Z-Anatomy at all, and the
+    # patellar ligament is only its two attachment patches. `build` makes the
+    # painted mesh from measured points instead (panel-regions.rules.json says
+    # where each number came from); the mapped objects still frame the shot.
+    if isinstance(region, dict) and region.get("build"):
+        built = build_mesh(region["build"], f"panel_{mid}_built")
+        bpy.data.meshes.remove(mesh)
+        mesh = built
 
     for elev in elevations:
         for frame in views:
