@@ -404,5 +404,73 @@
    ]
   },
   "_why": "The atlas has only the ligament's two attachment patches (.o on the patella's apex, .e on the tibial tuberosity); the ligament is the solid spanning them. The right knee only: a hull over both knees' patches spans the gap between the legs. Added 19 Oct 2026 (owner: build them from measured points; probe_atlas.py / probe_atlas2.py, world mm)."
+ },
+ "triangular-fibrocartilage-complex": {
+  "build": {
+   "kind": "hull",
+   "points": [
+    [
+     245.0,
+     -13.0,
+     857.5
+    ],
+    [
+     245.0,
+     -13.0,
+     860.5
+    ],
+    [
+     257.1,
+     -7.5,
+     861.7
+    ],
+    [
+     257.1,
+     -7.5,
+     864.7
+    ],
+    [
+     257.2,
+     -24.0,
+     864.4
+    ],
+    [
+     257.2,
+     -24.0,
+     867.4
+    ],
+    [
+     257.2,
+     -15.5,
+     862.8
+    ],
+    [
+     257.2,
+     -15.5,
+     865.8
+    ],
+    [
+     252.5,
+     -11.0,
+     849.0
+    ],
+    [
+     248.0,
+     -15.0,
+     848.0
+    ],
+    [
+     244.5,
+     -21.5,
+     841.5
+    ],
+    [
+     241.0,
+     -14.0,
+     850.0
+    ]
+   ]
+  },
+  "_why": "Owner's reference (dorsal view): a triangular disc between the ulnar head and the lunate/triquetrum, its apex at the base of the ulnar styloid and its base along the ulnar edge of the radius. The model's own pieces (articular disc, radio-ulnar ligaments) render as blocks. MEASURED (probe_tfcc.py, probe_tfcc2.py, left wrist, world mm): styloid tip (243.4,-11.1,855.6); ulnar head's distal surface z 860.5; radius's ulnar edge from (257.1,-7.5,863.2) dorsally to (257.2,-24.0,865.9) palmarly. A 3mm slab through those corners. Added 19 Oct 2026. SECOND PASS (owner: the disc alone, seen edge-on from behind, does not read as the complex). The ulnocarpal part added, as in the owner's reference: the solid also reaches the proximal surfaces of the lunate (lowest point 253.6,-11.6,847.6) and triquetrum (244.5,-23.1,838.9), filling the gap between the end of the ulna and those two bones."
  }
 }

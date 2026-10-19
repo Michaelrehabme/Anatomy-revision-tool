@@ -2446,7 +2446,7 @@
     "Palmar radio-ulnar ligament.l"
    ],
    "resolution": "manual",
-   "note": "19 Oct 2026, Atlas card picture. The TFCC drawn as its parts the atlas has: the articular disc of the distal radio-ulnar joint and the dorsal and palmar radio-ulnar ligaments."
+   "note": "19 Oct 2026, Atlas card picture. Framed on the model's disc and radio-ulnar ligaments; the painted mesh is a measured triangular disc (panel-regions.rules.json)."
   },
   {
    "id": "iliofemoral-ligament",

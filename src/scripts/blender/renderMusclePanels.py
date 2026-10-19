@@ -316,9 +316,10 @@ def build_mesh(spec, mesh_name):
       {"kind": "tube", "paths": [[[x,y,z], ...], ...], "radius": m}
           a round cord along each path of world-millimetre points, smoothed
           through them: a ligament as a band between its measured attachments.
-      {"kind": "hull", "objects": [names]}
-          the convex hull of the named objects' vertices: the patellar
-          ligament as the solid spanning its two attachment patches.
+      {"kind": "hull", "objects": [names], "points": [[x,y,z], ...]}
+          the convex hull of the named objects' vertices and/or measured
+          points: the patellar ligament as the solid spanning its two
+          attachment patches, the TFCC's disc as the slab through its corners.
     """
     out = bmesh.new()
     if spec["kind"] == "tube":
@@ -343,8 +344,10 @@ def build_mesh(spec, mesh_name):
             bpy.data.objects.remove(ob)
             bpy.data.curves.remove(cu)
     elif spec["kind"] == "hull":
-        pts = []
-        for n in spec["objects"]:
+        # Measured points (world mm) as well as, or instead of, objects: a
+        # triangular disc is the hull of its corners above and below its plane.
+        pts = [mathutils.Vector(c) / 1000.0 for c in spec.get("points", [])]
+        for n in spec.get("objects", []):
             src = bpy.data.objects.get(n)
             if src and src.type == "MESH":
                 pts += [src.matrix_world @ v.co for v in src.data.vertices]
