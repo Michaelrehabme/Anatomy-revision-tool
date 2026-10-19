@@ -584,7 +584,23 @@ def build_mesh(spec, mesh_name):
                 off = -rad if i_s in (0, n_s) else lift
                 q = loc + nrm.normalized() * off
                 pts.append([c * 1000.0 for c in q])
+            # TIDY (owner, 20 Oct 2026: "quite messy"). Snapping each point to
+            # the nearest facet of a coarse bone makes a fibre wobble; averaged
+            # with its neighbours a few times, ends held, it runs smoothly.
+            for _ in range(int(spec.get("smoothPath", 4))):
+                pts = [pts[0]] + [
+                    [(pts[i - 1][c] + 2 * pts[i][c] + pts[i + 1][c]) / 4 for c in range(3)]
+                    for i in range(1, len(pts) - 1)
+                ] + [pts[-1]]
             paths.append(pts)
+        # Neighbouring fibres at the same point along their length are averaged
+        # a little too, so the band lies flat instead of twisting.
+        for _ in range(int(spec.get("smoothAcross", 2))):
+            paths = [
+                [[(paths[max(j - 1, 0)][i][c] + 2 * paths[j][i][c] + paths[min(j + 1, len(paths) - 1)][i][c]) / 4 for c in range(3)]
+                 for i in range(len(paths[j]))]
+                for j in range(len(paths))
+            ]
         sub = {"kind": "tube", "radius": spec.get("radius", 0.0008), "paths": paths}
         tm = build_mesh(sub, f"{mesh_name}_tubes")
         out.from_mesh(tm)

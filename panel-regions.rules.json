@@ -465,102 +465,48 @@
      "keepPieces": 0.12
     },
     {
-     "kind": "tube",
-     "radius": 0.0009,
-     "paths": [
+     "kind": "fibres",
+     "ligament": [],
+     "from": [
+      "Ulna.l"
+     ],
+     "to": [
+      "Triquetrum bone.l",
+      "Lunate bone.l"
+     ],
+     "fromSpan": [
       [
-       [
-        241.8,
-        -6.4,
-        862.5
-       ],
-       [
-        241.5,
-        -10.0,
-        856.5
-       ],
-       [
-        240.5,
-        -17.0,
-        851.5
-       ]
+       241.8,
+       -6.4,
+       862.0
       ],
       [
-       [
-        242.8,
-        -6.2,
-        860.0
-       ],
-       [
-        243.5,
-        -8.4,
-        855.0
-       ],
-       [
-        244.4,
-        -13.6,
-        850.0
-       ]
-      ],
-      [
-       [
-        245.8,
-        -8.0,
-        863.0
-       ],
-       [
-        246.0,
-        -9.0,
-        857.5
-       ],
-       [
-        245.6,
-        -12.9,
-        849.0
-       ]
-      ],
-      [
-       [
-        247.0,
-        -8.6,
-        863.8
-       ],
-       [
-        248.5,
-        -8.6,
-        858.0
-       ],
-       [
-        250.5,
-        -11.5,
-        856.0
-       ]
-      ],
-      [
-       [
-        248.6,
-        -9.1,
-        863.5
-       ],
-       [
-        250.0,
-        -8.0,
-        858.5
-       ],
-       [
-        252.1,
-        -10.0,
-        855.0
-       ]
+       248.6,
+       -9.1,
+       863.5
       ]
      ],
-     "subtract": [
-      "Ulna.l",
-      "Radius.l",
-      "Lunate bone.l",
-      "Triquetrum bone.l"
+     "toSpan": [
+      [
+       240.5,
+       -17.0,
+       851.5
+      ],
+      [
+       251.5,
+       -10.5,
+       855.5
+      ]
      ],
-     "keepPieces": 0.0
+     "count": 14,
+     "radius": 0.0012,
+     "samples": 16,
+     "lift": 0.3,
+     "smooth": {
+      "voxel": 0.3,
+      "iterations": 6,
+      "factor": 0.5
+     }
     },
     {
      "kind": "fibres",
@@ -595,9 +541,15 @@
        857.0
       ]
      ],
-     "count": 6,
-     "radius": 0.0009,
-     "lift": 0.3
+     "count": 10,
+     "radius": 0.0012,
+     "lift": 0.3,
+     "samples": 16,
+     "smooth": {
+      "voxel": 0.3,
+      "iterations": 6,
+      "factor": 0.5
+     }
     },
     {
      "kind": "fibres",
@@ -632,9 +584,15 @@
        848.0
       ]
      ],
-     "count": 6,
-     "radius": 0.0009,
-     "lift": 0.3
+     "count": 10,
+     "radius": 0.0012,
+     "lift": 0.3,
+     "samples": 16,
+     "smooth": {
+      "voxel": 0.3,
+      "iterations": 6,
+      "factor": 0.5
+     }
     },
     {
      "kind": "fibres",
@@ -670,9 +628,15 @@
        847.0
       ]
      ],
-     "count": 5,
-     "radius": 0.0009,
-     "lift": 0.3
+     "count": 10,
+     "radius": 0.0012,
+     "lift": 0.3,
+     "samples": 16,
+     "smooth": {
+      "voxel": 0.3,
+      "iterations": 6,
+      "factor": 0.5
+     }
     }
    ]
   },
@@ -690,9 +654,9 @@
    "to": [
     "Talus.l"
    ],
-   "count": 8,
+   "count": 14,
    "bow": 1.2,
-   "radius": 0.0011,
+   "radius": 0.0012,
    "lift": 0.3,
    "fromSpan": [
     [
@@ -717,9 +681,15 @@
      22.0,
      71.0
     ]
-   ]
+   ],
+   "samples": 16,
+   "smooth": {
+    "voxel": 0.3,
+    "iterations": 6,
+    "factor": 0.5
+   }
   },
-  "_why": " Added 20 Oct 2026 (owner: improve the ligament pictures from the lecture slides, Atlas only; ankle deck p6, p7, p19). The atlas mesh gives only the attachment footprints; the picture is a fan of fibres between them (build kind 'fibres'), trimmed at the bones. SPANS MEASURED (probe_lat2.py, left ankle, world mm; the atlas's ligament is one quad): anterior margin of the lateral malleolus (z+6..+14 above its tip) forward to the talus just in front of its lateral facet."
+  "_why": " Added 20 Oct 2026 (owner: improve the ligament pictures from the lecture slides, Atlas only; ankle deck p6, p7, p19). The atlas mesh gives only the attachment footprints; the picture is a fan of fibres between them (build kind 'fibres'), trimmed at the bones. SPANS MEASURED (probe_lat2.py, left ankle, world mm; the atlas's ligament is one quad): anterior margin of the lateral malleolus (z+6..+14 above its tip) forward to the talus just in front of its lateral facet. TIDIED 20 Oct (owner: messy): 14 fibres close enough to merge into one band, paths smoothed along and across, then lightly remeshed and smoothed."
  },
  "posterior-talofibular-ligament": {
   "build": {
@@ -733,9 +703,9 @@
    "to": [
     "Talus.l"
    ],
-   "count": 8,
+   "count": 14,
    "bow": 1.2,
-   "radius": 0.0011,
+   "radius": 0.0012,
    "lift": 0.3,
    "fromSpan": [
     [
@@ -760,9 +730,15 @@
      63.0,
      61.5
     ]
-   ]
+   ],
+   "samples": 16,
+   "smooth": {
+    "voxel": 0.3,
+    "iterations": 6,
+    "factor": 0.5
+   }
   },
-  "_why": " Added 20 Oct 2026 (owner: improve the ligament pictures from the lecture slides, Atlas only; ankle deck p6, p7, p19). The atlas mesh gives only the attachment footprints; the picture is a fan of fibres between them (build kind 'fibres'), trimmed at the bones. SPANS MEASURED (probe_lat2.py, left ankle, world mm; the atlas's ligament is one quad): the malleolar fossa on the medial-posterior fibula back and in to the lateral tubercle of the talus's posterior process."
+  "_why": " Added 20 Oct 2026 (owner: improve the ligament pictures from the lecture slides, Atlas only; ankle deck p6, p7, p19). The atlas mesh gives only the attachment footprints; the picture is a fan of fibres between them (build kind 'fibres'), trimmed at the bones. SPANS MEASURED (probe_lat2.py, left ankle, world mm; the atlas's ligament is one quad): the malleolar fossa on the medial-posterior fibula back and in to the lateral tubercle of the talus's posterior process. TIDIED 20 Oct (owner: messy): 14 fibres close enough to merge into one band, paths smoothed along and across, then lightly remeshed and smoothed."
  },
  "calcaneofibular-ligament": {
   "build": {
@@ -776,9 +752,9 @@
    "to": [
     "Calcaneus.l"
    ],
-   "count": 8,
+   "count": 14,
    "bow": 2.0,
-   "radius": 0.0011,
+   "radius": 0.0012,
    "lift": 0.3,
    "fromSpan": [
     [
@@ -803,9 +779,15 @@
      62.0,
      35.0
     ]
-   ]
+   ],
+   "samples": 16,
+   "smooth": {
+    "voxel": 0.3,
+    "iterations": 6,
+    "factor": 0.5
+   }
   },
-  "_why": " Added 20 Oct 2026 (owner: improve the ligament pictures from the lecture slides, Atlas only; ankle deck p6, p7, p19). The atlas mesh gives only the attachment footprints; the picture is a fan of fibres between them (build kind 'fibres'), trimmed at the bones. SPANS MEASURED (probe_lat2.py, left ankle, world mm; the atlas's ligament is one quad): the tip of the lateral malleolus down and back to the lateral surface of the calcaneus, 18-20mm below."
+  "_why": " Added 20 Oct 2026 (owner: improve the ligament pictures from the lecture slides, Atlas only; ankle deck p6, p7, p19). The atlas mesh gives only the attachment footprints; the picture is a fan of fibres between them (build kind 'fibres'), trimmed at the bones. SPANS MEASURED (probe_lat2.py, left ankle, world mm; the atlas's ligament is one quad): the tip of the lateral malleolus down and back to the lateral surface of the calcaneus, 18-20mm below. TIDIED 20 Oct (owner: messy): 14 fibres close enough to merge into one band, paths smoothed along and across, then lightly remeshed and smoothed."
  },
  "tibionavicular-ligament": {
   "build": {
@@ -819,9 +801,9 @@
    "to": [
     "Navicular bone.l"
    ],
-   "count": 9,
+   "count": 14,
    "bow": 1.5,
-   "radius": 0.0011,
+   "radius": 0.0012,
    "lift": 0.3,
    "fromSpan": [
     [
@@ -846,9 +828,15 @@
      14.0,
      62.0
     ]
-   ]
+   ],
+   "samples": 16,
+   "smooth": {
+    "voxel": 0.3,
+    "iterations": 6,
+    "factor": 0.5
+   }
   },
-  "_why": " Added 20 Oct 2026 (owner: improve the ligament pictures from the lecture slides, Atlas only; ankle deck p6, p7, p19). The atlas mesh gives only the attachment footprints; the picture is a fan of fibres between them (build kind 'fibres'), trimmed at the bones. The deltoid's other two parts are drawn pale beside it, so the three read as one fan. SPANS MEASURED (probe_med.py): one apex along the tip of the medial malleolus (z 79-81, y 27 to 47) divided in thirds, fanning to the navicular tuberosity (52.7,5.7,57.7), the sustentaculum tali (57.1,38.9,55.7) and the talus's medial tubercle (54.5,53.1,62.9), as on the owner's slide (ankle deck p7).",
+  "_why": " Added 20 Oct 2026 (owner: improve the ligament pictures from the lecture slides, Atlas only; ankle deck p6, p7, p19). The atlas mesh gives only the attachment footprints; the picture is a fan of fibres between them (build kind 'fibres'), trimmed at the bones. The deltoid's other two parts are drawn pale beside it, so the three read as one fan. SPANS MEASURED (probe_med.py): one apex along the tip of the medial malleolus (z 79-81, y 27 to 47) divided in thirds, fanning to the navicular tuberosity (52.7,5.7,57.7), the sustentaculum tali (57.1,38.9,55.7) and the talus's medial tubercle (54.5,53.1,62.9), as on the owner's slide (ankle deck p7). TIDIED 20 Oct (owner: messy): 14 fibres close enough to merge into one band, paths smoothed along and across, then lightly remeshed and smoothed.",
   "contextBuild": [
    {
     "kind": "fibres",
@@ -861,9 +849,9 @@
     "to": [
      "Calcaneus.l"
     ],
-    "count": 9,
+    "count": 14,
     "bow": 1.5,
-    "radius": 0.0011,
+    "radius": 0.0012,
     "lift": 0.3,
     "fromSpan": [
      [
@@ -888,7 +876,13 @@
       43.0,
       55.5
      ]
-    ]
+    ],
+    "samples": 16,
+    "smooth": {
+     "voxel": 0.3,
+     "iterations": 6,
+     "factor": 0.5
+    }
    },
    {
     "kind": "fibres",
@@ -901,9 +895,9 @@
     "to": [
      "Talus.l"
     ],
-    "count": 9,
+    "count": 14,
     "bow": 1.2,
-    "radius": 0.0011,
+    "radius": 0.0012,
     "lift": 0.3,
     "fromSpan": [
      [
@@ -928,7 +922,13 @@
       54.0,
       62.5
      ]
-    ]
+    ],
+    "samples": 16,
+    "smooth": {
+     "voxel": 0.3,
+     "iterations": 6,
+     "factor": 0.5
+    }
    }
   ]
  },
@@ -944,9 +944,9 @@
    "to": [
     "Calcaneus.l"
    ],
-   "count": 9,
+   "count": 14,
    "bow": 1.5,
-   "radius": 0.0011,
+   "radius": 0.0012,
    "lift": 0.3,
    "fromSpan": [
     [
@@ -971,9 +971,15 @@
      43.0,
      55.5
     ]
-   ]
+   ],
+   "samples": 16,
+   "smooth": {
+    "voxel": 0.3,
+    "iterations": 6,
+    "factor": 0.5
+   }
   },
-  "_why": " Added 20 Oct 2026 (owner: improve the ligament pictures from the lecture slides, Atlas only; ankle deck p6, p7, p19). The atlas mesh gives only the attachment footprints; the picture is a fan of fibres between them (build kind 'fibres'), trimmed at the bones. The deltoid's other two parts are drawn pale beside it, so the three read as one fan. SPANS MEASURED (probe_med.py): one apex along the tip of the medial malleolus (z 79-81, y 27 to 47) divided in thirds, fanning to the navicular tuberosity (52.7,5.7,57.7), the sustentaculum tali (57.1,38.9,55.7) and the talus's medial tubercle (54.5,53.1,62.9), as on the owner's slide (ankle deck p7).",
+  "_why": " Added 20 Oct 2026 (owner: improve the ligament pictures from the lecture slides, Atlas only; ankle deck p6, p7, p19). The atlas mesh gives only the attachment footprints; the picture is a fan of fibres between them (build kind 'fibres'), trimmed at the bones. The deltoid's other two parts are drawn pale beside it, so the three read as one fan. SPANS MEASURED (probe_med.py): one apex along the tip of the medial malleolus (z 79-81, y 27 to 47) divided in thirds, fanning to the navicular tuberosity (52.7,5.7,57.7), the sustentaculum tali (57.1,38.9,55.7) and the talus's medial tubercle (54.5,53.1,62.9), as on the owner's slide (ankle deck p7). TIDIED 20 Oct (owner: messy): 14 fibres close enough to merge into one band, paths smoothed along and across, then lightly remeshed and smoothed.",
   "contextBuild": [
    {
     "kind": "fibres",
@@ -986,9 +992,9 @@
     "to": [
      "Navicular bone.l"
     ],
-    "count": 9,
+    "count": 14,
     "bow": 1.5,
-    "radius": 0.0011,
+    "radius": 0.0012,
     "lift": 0.3,
     "fromSpan": [
      [
@@ -1013,7 +1019,13 @@
       14.0,
       62.0
      ]
-    ]
+    ],
+    "samples": 16,
+    "smooth": {
+     "voxel": 0.3,
+     "iterations": 6,
+     "factor": 0.5
+    }
    },
    {
     "kind": "fibres",
@@ -1026,9 +1038,9 @@
     "to": [
      "Talus.l"
     ],
-    "count": 9,
+    "count": 14,
     "bow": 1.2,
-    "radius": 0.0011,
+    "radius": 0.0012,
     "lift": 0.3,
     "fromSpan": [
      [
@@ -1053,7 +1065,13 @@
       54.0,
       62.5
      ]
-    ]
+    ],
+    "samples": 16,
+    "smooth": {
+     "voxel": 0.3,
+     "iterations": 6,
+     "factor": 0.5
+    }
    }
   ]
  },
@@ -1069,9 +1087,9 @@
    "to": [
     "Talus.l"
    ],
-   "count": 9,
+   "count": 14,
    "bow": 1.2,
-   "radius": 0.0011,
+   "radius": 0.0012,
    "lift": 0.3,
    "fromSpan": [
     [
@@ -1096,9 +1114,15 @@
      54.0,
      62.5
     ]
-   ]
+   ],
+   "samples": 16,
+   "smooth": {
+    "voxel": 0.3,
+    "iterations": 6,
+    "factor": 0.5
+   }
   },
-  "_why": " Added 20 Oct 2026 (owner: improve the ligament pictures from the lecture slides, Atlas only; ankle deck p6, p7, p19). The atlas mesh gives only the attachment footprints; the picture is a fan of fibres between them (build kind 'fibres'), trimmed at the bones. The deltoid's other two parts are drawn pale beside it, so the three read as one fan. SPANS MEASURED (probe_med.py): one apex along the tip of the medial malleolus (z 79-81, y 27 to 47) divided in thirds, fanning to the navicular tuberosity (52.7,5.7,57.7), the sustentaculum tali (57.1,38.9,55.7) and the talus's medial tubercle (54.5,53.1,62.9), as on the owner's slide (ankle deck p7).",
+  "_why": " Added 20 Oct 2026 (owner: improve the ligament pictures from the lecture slides, Atlas only; ankle deck p6, p7, p19). The atlas mesh gives only the attachment footprints; the picture is a fan of fibres between them (build kind 'fibres'), trimmed at the bones. The deltoid's other two parts are drawn pale beside it, so the three read as one fan. SPANS MEASURED (probe_med.py): one apex along the tip of the medial malleolus (z 79-81, y 27 to 47) divided in thirds, fanning to the navicular tuberosity (52.7,5.7,57.7), the sustentaculum tali (57.1,38.9,55.7) and the talus's medial tubercle (54.5,53.1,62.9), as on the owner's slide (ankle deck p7). TIDIED 20 Oct (owner: messy): 14 fibres close enough to merge into one band, paths smoothed along and across, then lightly remeshed and smoothed.",
   "contextBuild": [
    {
     "kind": "fibres",
@@ -1111,9 +1135,9 @@
     "to": [
      "Navicular bone.l"
     ],
-    "count": 9,
+    "count": 14,
     "bow": 1.5,
-    "radius": 0.0011,
+    "radius": 0.0012,
     "lift": 0.3,
     "fromSpan": [
      [
@@ -1138,7 +1162,13 @@
       14.0,
       62.0
      ]
-    ]
+    ],
+    "samples": 16,
+    "smooth": {
+     "voxel": 0.3,
+     "iterations": 6,
+     "factor": 0.5
+    }
    },
    {
     "kind": "fibres",
@@ -1151,9 +1181,9 @@
     "to": [
      "Calcaneus.l"
     ],
-    "count": 9,
+    "count": 14,
     "bow": 1.5,
-    "radius": 0.0011,
+    "radius": 0.0012,
     "lift": 0.3,
     "fromSpan": [
      [
@@ -1178,7 +1208,13 @@
       43.0,
       55.5
      ]
-    ]
+    ],
+    "samples": 16,
+    "smooth": {
+     "voxel": 0.3,
+     "iterations": 6,
+     "factor": 0.5
+    }
    }
   ]
  }
