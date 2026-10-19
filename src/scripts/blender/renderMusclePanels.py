@@ -459,6 +459,137 @@ def build_mesh(spec, mesh_name):
                         pass
         bmesh.ops.delete(out, geom=[v for v in out.verts if not v.link_faces], context="VERTS")
         print(f"[build] {mesh_name}: gap filled over {len(cells)} cells", flush=True)
+    elif spec["kind"] == "fibres":
+        # A LIGAMENT AS ITS FIBRES. The atlas's ligament meshes are in the
+        # right place but read as flat straps (owner, 17-19 Oct 2026: the
+        # deltoid does not fan, the CFL goes through the fibula). The mesh is
+        # used only to find WHERE the ligament attaches: its vertices within a
+        # couple of millimetres of each named bone are that attachment's
+        # footprint. `count` fibres then run from points spread along one
+        # footprint to points spread along the other, each bowed outward from
+        # the bones by `bow`, as a fan of cords; `subtract` then trims them at
+        # the bone surfaces.
+        import numpy as np
+        from mathutils.bvhtree import BVHTree
+        # The atlas's ligaments are a few dozen vertices each, so points are
+        # SAMPLED over their faces, by area, rather than read off the vertices.
+        rng = np.random.default_rng(7)
+        lig = []
+        for n in spec["ligament"]:
+            o = bpy.data.objects.get(n)
+            if not o:
+                continue
+            mw = o.matrix_world
+            for poly in o.data.polygons:
+                vs = [mw @ o.data.vertices[i].co for i in poly.vertices]
+                for t in range(1, len(vs) - 1):
+                    v0, v1, v2 = vs[0], vs[t], vs[t + 1]
+                    area = ((v1 - v0).cross(v2 - v0)).length / 2
+                    for _ in range(max(1, int(area / 2e-7))):
+                        r1, r2 = rng.random(), rng.random()
+                        if r1 + r2 > 1:
+                            r1, r2 = 1 - r1, 1 - r2
+                        lig.append(v0 + (v1 - v0) * r1 + (v2 - v0) * r2)
+        near = float(spec.get("near", 3.0)) / 1000.0
+
+        def footprint(names):
+            bm_t = bmesh.new()
+            for n in names:
+                src = bpy.data.objects.get(n)
+                if not src:
+                    continue
+                tmp = src.data.copy()
+                tmp.transform(src.matrix_world)
+                bm_t.from_mesh(tmp)
+                bpy.data.meshes.remove(tmp)
+            t = BVHTree.FromBMesh(bm_t)
+            bm_t.free()
+            dist = np.array([t.find_nearest(p)[3] or 1.0 for p in lig])
+            pts = np.array([p[:] for p in lig])
+            close = pts[dist < near]
+            # A ligament drawn a little off the bone: its nearest tenth instead.
+            if len(close) < 12:
+                close = pts[np.argsort(dist)[: max(12, len(pts) // 10)]]
+            return close
+
+        # Measured spans (world mm) where the atlas's ligament is a single quad
+        # and its footprints say nothing: the ATFL, CFL and PTFL.
+        if spec.get("fromSpan") and spec.get("toSpan"):
+            k_ = int(spec.get("count", 6))
+            line = lambda sp: np.array([np.array(sp[0]) + (np.array(sp[1]) - np.array(sp[0])) * t for t in np.linspace(0, 1, max(k_ * 3, 12))]) / 1000.0
+            a, b = line(spec["fromSpan"]), line(spec["toSpan"])
+        else:
+            a, b = footprint(spec["from"]), footprint(spec["to"])
+        if len(a) < 3 or len(b) < 3:
+            raise ValueError(f"{mesh_name}: footprints too small ({len(a)}, {len(b)})")
+
+        def spread(pts, k):
+            c = pts.mean(axis=0)
+            axis = np.linalg.svd(pts - c)[2][0]
+            t = (pts - c) @ axis
+            order = np.argsort(t)
+            chunks = np.array_split(pts[order], k)
+            return [ch.mean(axis=0) for ch in chunks if len(ch)]
+
+        k = int(spec.get("count", 6))
+        pa, pb = spread(a, k), spread(b, k)
+        # Pair them so the fibres fan rather than cross.
+        straight = sum(np.linalg.norm(x - y) for x, y in zip(pa, pb))
+        crossed = sum(np.linalg.norm(x - y) for x, y in zip(pa, pb[::-1]))
+        if crossed < straight:
+            pb = pb[::-1]
+        centre = (np.array(lig).mean(axis=0) if len(lig) else (a.mean(axis=0) + b.mean(axis=0)) / 2) if spec.get("bowFrom") is None else np.array(spec["bowFrom"]) / 1000.0
+        # Outward: away from the bones the ligament crosses, measured from a
+        # point inside the joint (the bones' common centre near the ligament).
+        bone_pts = []
+        for n in list(spec["from"]) + list(spec["to"]):
+            src = bpy.data.objects.get(n)
+            if src:
+                vs = np.array([(src.matrix_world @ v.co)[:] for v in src.data.vertices])
+                d = np.linalg.norm(vs - centre, axis=1)
+                bone_pts.append(vs[d < 0.025])
+        inner = np.concatenate([p for p in bone_pts if len(p)]).mean(axis=0) if any(len(p) for p in bone_pts) else centre
+        bow = float(spec.get("bow", 1.5)) / 1000.0
+        sink = float(spec.get("sink", 0.6)) / 1000.0
+        # LAID ON THE BONES. A chord between two attachments passes through
+        # the bone it wraps round; so every point along each fibre is moved to
+        # the nearest bone surface and lifted clear of it by `lift`, and the
+        # fibre runs over the bones the way the ligament does.
+        allb = bmesh.new()
+        for n in list(spec["from"]) + list(spec["to"]) + list(spec.get("over", [])):
+            src = bpy.data.objects.get(n)
+            if not src:
+                continue
+            tmp = src.data.copy()
+            tmp.transform(src.matrix_world)
+            allb.from_mesh(tmp)
+            bpy.data.meshes.remove(tmp)
+        bmesh.ops.recalc_face_normals(allb, faces=allb.faces)
+        surf = BVHTree.FromBMesh(allb)
+        allb.free()
+        rad = float(spec.get("radius", 0.0008))
+        lift = float(spec.get("lift", 0.4)) / 1000.0 + rad
+        paths = []
+        for x, y in zip(pa, pb):
+            pts = []
+            n_s = int(spec.get("samples", 12))
+            for i_s in range(n_s + 1):
+                s_ = i_s / n_s
+                p = mathutils.Vector((x + (y - x) * s_).tolist())
+                loc, nrm, _, _ = surf.find_nearest(p)
+                if loc is None:
+                    pts.append([c * 1000.0 for c in p])
+                    continue
+                # Ends sink into the bone so the trimmed fibre meets it.
+                off = -rad if i_s in (0, n_s) else lift
+                q = loc + nrm.normalized() * off
+                pts.append([c * 1000.0 for c in q])
+            paths.append(pts)
+        sub = {"kind": "tube", "radius": spec.get("radius", 0.0008), "paths": paths}
+        tm = build_mesh(sub, f"{mesh_name}_tubes")
+        out.from_mesh(tm)
+        bpy.data.meshes.remove(tm)
+        print(f"[build] {mesh_name}: {len(paths)} fibres, footprints {len(a)}/{len(b)} verts, ends {np.round(a.mean(axis=0)*1000,1)} -> {np.round(b.mean(axis=0)*1000,1)}, span {np.linalg.norm(a.mean(axis=0)-b.mean(axis=0))*1000:.1f}mm", flush=True)
     elif spec["kind"] == "multi":
         # Several builds as one structure, each finished on its own (its own
         # smoothing and cuts): the TFCC's disc in the gap and the fibre
@@ -690,6 +821,8 @@ print(f"[bones] {len(bone_mesh.vertices)} verts", flush=True)
 context_names = [n for n in a.context.split(",") if n]
 context_mesh = bake_world_mesh(context_names, "panel_context") if context_names else None
 context_mat = principled("panel_context", (0.76, 0.27, 0.25, 1.0), roughness=0.55)
+# Neighbouring ligaments: the pale blue-grey a ligament is drawn in on a plate.
+ligament_grey_mat = principled("panel_ligament_grey", (0.80, 0.83, 0.88, 1.0), roughness=0.5)
 
 # FRAME ON THE HAND, NOT ON THE MUSCLE INSIDE IT.
 #
@@ -798,6 +931,19 @@ for mid in wanted:
         built = build_mesh(region["build"], f"panel_{mid}_built")
         bpy.data.meshes.remove(mesh)
         mesh = built
+    # NEIGHBOURS, PALE. The deltoid's parts are three cards; each shows its own
+    # fibres in the highlight and its siblings' in pale ligament grey, so the
+    # fan reads as one ligament. `contextBuild` is a list of build specs.
+    ctx_built = None
+    if isinstance(region, dict) and region.get("contextBuild"):
+        cb = bmesh.new()
+        for i, spec_c in enumerate(region["contextBuild"]):
+            m_c = build_mesh(spec_c, f"panel_{mid}_ctx{i}")
+            cb.from_mesh(m_c)
+            bpy.data.meshes.remove(m_c)
+        ctx_built = bpy.data.meshes.new(f"panel_{mid}_ctx")
+        cb.to_mesh(ctx_built)
+        cb.free()
 
     for elev in elevations:
         for frame in views:
@@ -806,6 +952,8 @@ for mid in wanted:
             link(bone_mesh, "panel_skeleton", bone_mat)
             if context_mesh is not None:
                 link(context_mesh, "panel_context", context_mat)
+            if ctx_built is not None:
+                link(ctx_built, "panel_ctx_built", ligament_grey_mat)
             link(mesh, f"panel_{mid}_hi", highlight_mat)
             # Elevation 0 keeps the flat <mid>/view-NN.png layout the compositor
             # and the existing 130 panels already use; anything else gets its own

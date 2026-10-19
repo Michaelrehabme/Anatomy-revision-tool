@@ -2498,6 +2498,78 @@
    ],
    "resolution": "manual",
    "note": "19 Oct 2026, Atlas card picture. Not in the atlas: built from measured points (panel-regions.rules.json); framed on C1 and C2."
+  },
+  {
+   "id": "anterior-talofibular-ligament",
+   "name": "Anterior talofibular ligament",
+   "category": "ligament",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Anterior talofibular ligament.l"
+   ],
+   "resolution": "manual",
+   "note": "20 Oct 2026, Atlas card picture: framed on the atlas ligament(s); the painted mesh is a fan of fibres (panel-regions.rules.json)."
+  },
+  {
+   "id": "posterior-talofibular-ligament",
+   "name": "Posterior talofibular ligament",
+   "category": "ligament",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Posterior talofibular ligament.l"
+   ],
+   "resolution": "manual",
+   "note": "20 Oct 2026, Atlas card picture: framed on the atlas ligament(s); the painted mesh is a fan of fibres (panel-regions.rules.json)."
+  },
+  {
+   "id": "calcaneofibular-ligament",
+   "name": "Calcaneofibular ligament",
+   "category": "ligament",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Calcaneofibular ligament.l"
+   ],
+   "resolution": "manual",
+   "note": "20 Oct 2026, Atlas card picture: framed on the atlas ligament(s); the painted mesh is a fan of fibres (panel-regions.rules.json)."
+  },
+  {
+   "id": "tibionavicular-ligament",
+   "name": "Tibionavicular ligament",
+   "category": "ligament",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Tibionavicular ligament.l",
+    "Tibiocalcaneal ligament.l",
+    "Posterior tibiotalar ligament.l"
+   ],
+   "resolution": "manual",
+   "note": "20 Oct 2026, Atlas card picture: framed on the atlas ligament(s); the painted mesh is a fan of fibres (panel-regions.rules.json)."
+  },
+  {
+   "id": "tibiocalcaneal-ligament",
+   "name": "Tibiocalcaneal ligament",
+   "category": "ligament",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Tibionavicular ligament.l",
+    "Tibiocalcaneal ligament.l",
+    "Posterior tibiotalar ligament.l"
+   ],
+   "resolution": "manual",
+   "note": "20 Oct 2026, Atlas card picture: framed on the atlas ligament(s); the painted mesh is a fan of fibres (panel-regions.rules.json)."
+  },
+  {
+   "id": "posterior-tibiotalar-ligament",
+   "name": "Posterior tibiotalar ligament",
+   "category": "ligament",
+   "region": "lower-leg-foot",
+   "blenderObjects": [
+    "Tibionavicular ligament.l",
+    "Tibiocalcaneal ligament.l",
+    "Posterior tibiotalar ligament.l"
+   ],
+   "resolution": "manual",
+   "note": "20 Oct 2026, Atlas card picture: framed on the atlas ligament(s); the painted mesh is a fan of fibres (panel-regions.rules.json)."
   }
  ]
 }

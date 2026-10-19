@@ -561,9 +561,625 @@
       "Triquetrum bone.l"
      ],
      "keepPieces": 0.0
+    },
+    {
+     "kind": "fibres",
+     "ligament": [],
+     "from": [
+      "Ulna.l"
+     ],
+     "to": [
+      "Lunate bone.l"
+     ],
+     "fromSpan": [
+      [
+       247.5,
+       -22.0,
+       866.0
+      ],
+      [
+       250.5,
+       -20.5,
+       864.5
+      ]
+     ],
+     "toSpan": [
+      [
+       255.5,
+       -25.5,
+       856.0
+      ],
+      [
+       251.5,
+       -24.5,
+       857.0
+      ]
+     ],
+     "count": 6,
+     "radius": 0.0009,
+     "lift": 0.3
+    },
+    {
+     "kind": "fibres",
+     "ligament": [],
+     "from": [
+      "Ulna.l"
+     ],
+     "to": [
+      "Triquetrum bone.l"
+     ],
+     "fromSpan": [
+      [
+       245.0,
+       -21.0,
+       864.5
+      ],
+      [
+       247.5,
+       -22.5,
+       866.0
+      ]
+     ],
+     "toSpan": [
+      [
+       246.5,
+       -27.5,
+       849.0
+      ],
+      [
+       243.5,
+       -27.0,
+       848.0
+      ]
+     ],
+     "count": 6,
+     "radius": 0.0009,
+     "lift": 0.3
+    },
+    {
+     "kind": "fibres",
+     "ligament": [],
+     "from": [
+      "Ulna.l"
+     ],
+     "to": [
+      "Triquetrum bone.l",
+      "Pisiform bone.l"
+     ],
+     "fromSpan": [
+      [
+       242.5,
+       -12.0,
+       857.0
+      ],
+      [
+       241.6,
+       -15.1,
+       862.0
+      ]
+     ],
+     "toSpan": [
+      [
+       239.8,
+       -24.0,
+       844.0
+      ],
+      [
+       239.6,
+       -28.0,
+       847.0
+      ]
+     ],
+     "count": 5,
+     "radius": 0.0009,
+     "lift": 0.3
     }
    ]
   },
-  "_why": "Owner's reference (dorsal view): the complex lies in the gap between the ulnar head (with the radius's ulnar edge) above and the lunate and triquetrum below. FOURTH PASS (owner: still passing through bones). Built as a gap fill: over the footprint, a vertical line through each point meets the ulna/radius under-surface and the lunate/triquetrum upper surface, and the solid is what lies between (gaps up to 10mm). Its top and bottom ARE those bone surfaces, so it touches both and goes through neither. Footprint (world mm, left wrist): from the ulnar styloid (243.4,-11.1) across to the radius's ulnar edge (257, -6.5 to -25) and back along the triquetrum (241,-26). Earlier passes (a hull through measured corners, then cut by the bones) wrapped round the ulnar head. FIFTH PASS (owner: 'too geometric'). Re-meshed and smoothed, inflated 0.4mm so it still meets the bones, then cut back by the four bones (build.smooth, build.subtract). SIXTH PASS (owner: now too small). Inflated 1.6mm after smoothing (the bone cut trims anything that enters a bone, so only the outer walls grow), the footprint widened 1-1.5mm, and the strip under the radius kept as well as the ulnar piece (build.keepPieces). SEVENTH PASS, from the owner's reference plate (dorsal view): the complex shown as fibre bundles fanning over the back of the joint from the ulnar head and styloid base to the triquetrum and lunate, over the disc. Five 1.8mm bundles between measured dorsal-surface points (probe_tfcc4.py): ulnar head (241.8..248.6, -6.2..-9.1, 860..864) to triquetrum (240.5..245.6, -12.9..-17, 849..851.5) and lunate (250.5..252.1, -10..-11.5, 855..856), each bowed 1.5mm dorsally so it lies on, not in, the bones; then cut by the bones."
+  "_why": "Owner's reference (dorsal view): the complex lies in the gap between the ulnar head (with the radius's ulnar edge) above and the lunate and triquetrum below. FOURTH PASS (owner: still passing through bones). Built as a gap fill: over the footprint, a vertical line through each point meets the ulna/radius under-surface and the lunate/triquetrum upper surface, and the solid is what lies between (gaps up to 10mm). Its top and bottom ARE those bone surfaces, so it touches both and goes through neither. Footprint (world mm, left wrist): from the ulnar styloid (243.4,-11.1) across to the radius's ulnar edge (257, -6.5 to -25) and back along the triquetrum (241,-26). Earlier passes (a hull through measured corners, then cut by the bones) wrapped round the ulnar head. FIFTH PASS (owner: 'too geometric'). Re-meshed and smoothed, inflated 0.4mm so it still meets the bones, then cut back by the four bones (build.smooth, build.subtract). SIXTH PASS (owner: now too small). Inflated 1.6mm after smoothing (the bone cut trims anything that enters a bone, so only the outer walls grow), the footprint widened 1-1.5mm, and the strip under the radius kept as well as the ulnar piece (build.keepPieces). SEVENTH PASS, from the owner's reference plate (dorsal view): the complex shown as fibre bundles fanning over the back of the joint from the ulnar head and styloid base to the triquetrum and lunate, over the disc. Five 1.8mm bundles between measured dorsal-surface points (probe_tfcc4.py): ulnar head (241.8..248.6, -6.2..-9.1, 860..864) to triquetrum (240.5..245.6, -12.9..-17, 849..851.5) and lunate (250.5..252.1, -10..-11.5, 855..856), each bowed 1.5mm dorsally so it lies on, not in, the bones; then cut by the bones. EIGHTH PASS (owner: add the palmar parts from the wrist slide, elbow deck p24): palmar ulnolunate and ulnotriquetral fibres from the front of the ulnar head and disc to the palmar surfaces of the lunate and triquetrum, and the ulnar collateral band from the styloid to the triquetrum and pisiform. MEASURED (probe_palm.py)."
+ },
+ "anterior-talofibular-ligament": {
+  "build": {
+   "kind": "fibres",
+   "ligament": [
+    "Anterior talofibular ligament.l"
+   ],
+   "from": [
+    "Fibula.l"
+   ],
+   "to": [
+    "Talus.l"
+   ],
+   "count": 8,
+   "bow": 1.2,
+   "radius": 0.0011,
+   "lift": 0.3,
+   "fromSpan": [
+    [
+     97.5,
+     39.9,
+     61.0
+    ],
+    [
+     96.1,
+     35.1,
+     68.0
+    ]
+   ],
+   "toSpan": [
+    [
+     90.0,
+     24.0,
+     64.0
+    ],
+    [
+     88.0,
+     22.0,
+     71.0
+    ]
+   ]
+  },
+  "_why": " Added 20 Oct 2026 (owner: improve the ligament pictures from the lecture slides, Atlas only; ankle deck p6, p7, p19). The atlas mesh gives only the attachment footprints; the picture is a fan of fibres between them (build kind 'fibres'), trimmed at the bones. SPANS MEASURED (probe_lat2.py, left ankle, world mm; the atlas's ligament is one quad): anterior margin of the lateral malleolus (z+6..+14 above its tip) forward to the talus just in front of its lateral facet."
+ },
+ "posterior-talofibular-ligament": {
+  "build": {
+   "kind": "fibres",
+   "ligament": [
+    "Posterior talofibular ligament.l"
+   ],
+   "from": [
+    "Fibula.l"
+   ],
+   "to": [
+    "Talus.l"
+   ],
+   "count": 8,
+   "bow": 1.2,
+   "radius": 0.0011,
+   "lift": 0.3,
+   "fromSpan": [
+    [
+     93.5,
+     47.4,
+     63.0
+    ],
+    [
+     95.0,
+     55.0,
+     66.0
+    ]
+   ],
+   "toSpan": [
+    [
+     84.0,
+     58.5,
+     63.0
+    ],
+    [
+     79.0,
+     63.0,
+     61.5
+    ]
+   ]
+  },
+  "_why": " Added 20 Oct 2026 (owner: improve the ligament pictures from the lecture slides, Atlas only; ankle deck p6, p7, p19). The atlas mesh gives only the attachment footprints; the picture is a fan of fibres between them (build kind 'fibres'), trimmed at the bones. SPANS MEASURED (probe_lat2.py, left ankle, world mm; the atlas's ligament is one quad): the malleolar fossa on the medial-posterior fibula back and in to the lateral tubercle of the talus's posterior process."
+ },
+ "calcaneofibular-ligament": {
+  "build": {
+   "kind": "fibres",
+   "ligament": [
+    "Calcaneofibular ligament.l"
+   ],
+   "from": [
+    "Fibula.l"
+   ],
+   "to": [
+    "Calcaneus.l"
+   ],
+   "count": 8,
+   "bow": 2.0,
+   "radius": 0.0011,
+   "lift": 0.3,
+   "fromSpan": [
+    [
+     101.6,
+     52.1,
+     56.5
+    ],
+    [
+     103.5,
+     50.0,
+     60.5
+    ]
+   ],
+   "toSpan": [
+    [
+     97.0,
+     57.0,
+     38.0
+    ],
+    [
+     95.0,
+     62.0,
+     35.0
+    ]
+   ]
+  },
+  "_why": " Added 20 Oct 2026 (owner: improve the ligament pictures from the lecture slides, Atlas only; ankle deck p6, p7, p19). The atlas mesh gives only the attachment footprints; the picture is a fan of fibres between them (build kind 'fibres'), trimmed at the bones. SPANS MEASURED (probe_lat2.py, left ankle, world mm; the atlas's ligament is one quad): the tip of the lateral malleolus down and back to the lateral surface of the calcaneus, 18-20mm below."
+ },
+ "tibionavicular-ligament": {
+  "build": {
+   "kind": "fibres",
+   "ligament": [
+    "Tibionavicular ligament.l"
+   ],
+   "from": [
+    "Tibia.l"
+   ],
+   "to": [
+    "Navicular bone.l"
+   ],
+   "count": 9,
+   "bow": 1.5,
+   "radius": 0.0011,
+   "lift": 0.3,
+   "fromSpan": [
+    [
+     52.0,
+     27.0,
+     80.0
+    ],
+    [
+     49.5,
+     31.5,
+     79.0
+    ]
+   ],
+   "toSpan": [
+    [
+     52.7,
+     6.0,
+     58.0
+    ],
+    [
+     54.0,
+     14.0,
+     62.0
+    ]
+   ]
+  },
+  "_why": " Added 20 Oct 2026 (owner: improve the ligament pictures from the lecture slides, Atlas only; ankle deck p6, p7, p19). The atlas mesh gives only the attachment footprints; the picture is a fan of fibres between them (build kind 'fibres'), trimmed at the bones. The deltoid's other two parts are drawn pale beside it, so the three read as one fan. SPANS MEASURED (probe_med.py): one apex along the tip of the medial malleolus (z 79-81, y 27 to 47) divided in thirds, fanning to the navicular tuberosity (52.7,5.7,57.7), the sustentaculum tali (57.1,38.9,55.7) and the talus's medial tubercle (54.5,53.1,62.9), as on the owner's slide (ankle deck p7).",
+  "contextBuild": [
+   {
+    "kind": "fibres",
+    "ligament": [
+     "Tibiocalcaneal ligament.l"
+    ],
+    "from": [
+     "Tibia.l"
+    ],
+    "to": [
+     "Calcaneus.l"
+    ],
+    "count": 9,
+    "bow": 1.5,
+    "radius": 0.0011,
+    "lift": 0.3,
+    "fromSpan": [
+     [
+      49.5,
+      32.5,
+      79.0
+     ],
+     [
+      48.5,
+      38.5,
+      79.5
+     ]
+    ],
+    "toSpan": [
+     [
+      56.5,
+      33.0,
+      56.0
+     ],
+     [
+      56.5,
+      43.0,
+      55.5
+     ]
+    ]
+   },
+   {
+    "kind": "fibres",
+    "ligament": [
+     "Posterior tibiotalar ligament.l"
+    ],
+    "from": [
+     "Tibia.l"
+    ],
+    "to": [
+     "Talus.l"
+    ],
+    "count": 9,
+    "bow": 1.2,
+    "radius": 0.0011,
+    "lift": 0.3,
+    "fromSpan": [
+     [
+      48.5,
+      39.5,
+      80.0
+     ],
+     [
+      51.5,
+      46.5,
+      80.5
+     ]
+    ],
+    "toSpan": [
+     [
+      54.0,
+      47.0,
+      64.0
+     ],
+     [
+      54.5,
+      54.0,
+      62.5
+     ]
+    ]
+   }
+  ]
+ },
+ "tibiocalcaneal-ligament": {
+  "build": {
+   "kind": "fibres",
+   "ligament": [
+    "Tibiocalcaneal ligament.l"
+   ],
+   "from": [
+    "Tibia.l"
+   ],
+   "to": [
+    "Calcaneus.l"
+   ],
+   "count": 9,
+   "bow": 1.5,
+   "radius": 0.0011,
+   "lift": 0.3,
+   "fromSpan": [
+    [
+     49.5,
+     32.5,
+     79.0
+    ],
+    [
+     48.5,
+     38.5,
+     79.5
+    ]
+   ],
+   "toSpan": [
+    [
+     56.5,
+     33.0,
+     56.0
+    ],
+    [
+     56.5,
+     43.0,
+     55.5
+    ]
+   ]
+  },
+  "_why": " Added 20 Oct 2026 (owner: improve the ligament pictures from the lecture slides, Atlas only; ankle deck p6, p7, p19). The atlas mesh gives only the attachment footprints; the picture is a fan of fibres between them (build kind 'fibres'), trimmed at the bones. The deltoid's other two parts are drawn pale beside it, so the three read as one fan. SPANS MEASURED (probe_med.py): one apex along the tip of the medial malleolus (z 79-81, y 27 to 47) divided in thirds, fanning to the navicular tuberosity (52.7,5.7,57.7), the sustentaculum tali (57.1,38.9,55.7) and the talus's medial tubercle (54.5,53.1,62.9), as on the owner's slide (ankle deck p7).",
+  "contextBuild": [
+   {
+    "kind": "fibres",
+    "ligament": [
+     "Tibionavicular ligament.l"
+    ],
+    "from": [
+     "Tibia.l"
+    ],
+    "to": [
+     "Navicular bone.l"
+    ],
+    "count": 9,
+    "bow": 1.5,
+    "radius": 0.0011,
+    "lift": 0.3,
+    "fromSpan": [
+     [
+      52.0,
+      27.0,
+      80.0
+     ],
+     [
+      49.5,
+      31.5,
+      79.0
+     ]
+    ],
+    "toSpan": [
+     [
+      52.7,
+      6.0,
+      58.0
+     ],
+     [
+      54.0,
+      14.0,
+      62.0
+     ]
+    ]
+   },
+   {
+    "kind": "fibres",
+    "ligament": [
+     "Posterior tibiotalar ligament.l"
+    ],
+    "from": [
+     "Tibia.l"
+    ],
+    "to": [
+     "Talus.l"
+    ],
+    "count": 9,
+    "bow": 1.2,
+    "radius": 0.0011,
+    "lift": 0.3,
+    "fromSpan": [
+     [
+      48.5,
+      39.5,
+      80.0
+     ],
+     [
+      51.5,
+      46.5,
+      80.5
+     ]
+    ],
+    "toSpan": [
+     [
+      54.0,
+      47.0,
+      64.0
+     ],
+     [
+      54.5,
+      54.0,
+      62.5
+     ]
+    ]
+   }
+  ]
+ },
+ "posterior-tibiotalar-ligament": {
+  "build": {
+   "kind": "fibres",
+   "ligament": [
+    "Posterior tibiotalar ligament.l"
+   ],
+   "from": [
+    "Tibia.l"
+   ],
+   "to": [
+    "Talus.l"
+   ],
+   "count": 9,
+   "bow": 1.2,
+   "radius": 0.0011,
+   "lift": 0.3,
+   "fromSpan": [
+    [
+     48.5,
+     39.5,
+     80.0
+    ],
+    [
+     51.5,
+     46.5,
+     80.5
+    ]
+   ],
+   "toSpan": [
+    [
+     54.0,
+     47.0,
+     64.0
+    ],
+    [
+     54.5,
+     54.0,
+     62.5
+    ]
+   ]
+  },
+  "_why": " Added 20 Oct 2026 (owner: improve the ligament pictures from the lecture slides, Atlas only; ankle deck p6, p7, p19). The atlas mesh gives only the attachment footprints; the picture is a fan of fibres between them (build kind 'fibres'), trimmed at the bones. The deltoid's other two parts are drawn pale beside it, so the three read as one fan. SPANS MEASURED (probe_med.py): one apex along the tip of the medial malleolus (z 79-81, y 27 to 47) divided in thirds, fanning to the navicular tuberosity (52.7,5.7,57.7), the sustentaculum tali (57.1,38.9,55.7) and the talus's medial tubercle (54.5,53.1,62.9), as on the owner's slide (ankle deck p7).",
+  "contextBuild": [
+   {
+    "kind": "fibres",
+    "ligament": [
+     "Tibionavicular ligament.l"
+    ],
+    "from": [
+     "Tibia.l"
+    ],
+    "to": [
+     "Navicular bone.l"
+    ],
+    "count": 9,
+    "bow": 1.5,
+    "radius": 0.0011,
+    "lift": 0.3,
+    "fromSpan": [
+     [
+      52.0,
+      27.0,
+      80.0
+     ],
+     [
+      49.5,
+      31.5,
+      79.0
+     ]
+    ],
+    "toSpan": [
+     [
+      52.7,
+      6.0,
+      58.0
+     ],
+     [
+      54.0,
+      14.0,
+      62.0
+     ]
+    ]
+   },
+   {
+    "kind": "fibres",
+    "ligament": [
+     "Tibiocalcaneal ligament.l"
+    ],
+    "from": [
+     "Tibia.l"
+    ],
+    "to": [
+     "Calcaneus.l"
+    ],
+    "count": 9,
+    "bow": 1.5,
+    "radius": 0.0011,
+    "lift": 0.3,
+    "fromSpan": [
+     [
+      49.5,
+      32.5,
+      79.0
+     ],
+     [
+      48.5,
+      38.5,
+      79.5
+     ]
+    ],
+    "toSpan": [
+     [
+      56.5,
+      33.0,
+      56.0
+     ],
+     [
+      56.5,
+      43.0,
+      55.5
+     ]
+    ]
+   }
+  ]
  }
 }
