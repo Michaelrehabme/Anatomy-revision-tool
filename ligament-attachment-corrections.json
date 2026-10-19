@@ -527,15 +527,20 @@
    "sites": "Named by the part of the bone where the work quoted here or the description names one and the app holds it as a structure: 10 Oct 2026. An end with no such structure keeps the whole bone."
   },
   "external-intercostal-membrane": {
-   "attachmentStructureIds": [],
+   "attachmentStructureIds": [
+    "costal-cartilage",
+    "sternum"
+   ],
    "description": "The aponeurotic sheet continuing the external intercostal muscle forwards between the costal cartilages.",
    "confirmed": true,
    "source": "Review page, confirmed 13 Sept 2026",
-   "why": "NOT SETTLED, attempt recorded. The seed carries no attachment ids for this structure at all, and the obvious work does not describe the membrane. Needs a thoracic anatomy source. Graded 27 Sep 2026: the owner personally confirmed this row on the review page. The owner is a sports rehabilitation STUDENT, not a qualified therapist: this is a dated, attributable check by someone studying the subject, which is real evidence but not expert sign-off. Where a published work disagrees, the work wins.",
+   "why": "19 Oct 2026: SETTLED. Gray's 1918 ('end in thin membranes, the anterior intercostal membranes, which are continued forward to the sternum') and Kenhub ('from the costochondral junction to the sternum'). Earlier: NOT SETTLED, attempt recorded. The seed carries no attachment ids for this structure at all, and the obvious work does not describe the membrane. Needs a thoracic anatomy source. Graded 27 Sep 2026: the owner personally confirmed this row on the review page. The owner is a sports rehabilitation STUDENT, not a qualified therapist: this is a dated, attributable check by someone studying the subject, which is real evidence but not expert sign-off. Where a published work disagrees, the work wins.",
    "checked": "2026-09-24",
    "grade": "verified (owner review)",
    "sources": [
-    "Intercostal muscles - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Intercostal_muscles"
+    "Intercostal muscles - Wikipedia (Gray's, public domain). https://en.wikipedia.org/wiki/Intercostal_muscles",
+    "Gray's Anatomy (1918), 6c. The Muscles of the Thorax",
+    "Kenhub: External intercostal muscles"
    ],
    "quote": "(the article describes the external intercostal muscles but contains no description of the external intercostal membrane)"
   },

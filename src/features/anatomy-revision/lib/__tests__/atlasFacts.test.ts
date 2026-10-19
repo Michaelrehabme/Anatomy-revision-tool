@@ -12,7 +12,9 @@ describe('atlasRow', () => {
     // in the ligament set at all. Until that review lands it is the one row
     // the atlas shows with a role only. Ligaments awaiting review say
     // "Being checked" instead of stating attachments nobody has verified.
-    const known = ['ligament:external-intercostal-membrane'];
+    // (Since 19 Oct 2026 it has its two sites, costal cartilages and sternum,
+    // from Gray's and Kenhub, so no row is thin any more.)
+    const known: string[] = [];
     const thin = ALL_STRUCTURES.filter((s) => atlasRow(s, byId).columns.filter((c) => c.text).length < 2);
     expect(thin.map((s) => `${s.category}:${s.id}`)).toEqual(known);
   });

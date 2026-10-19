@@ -1,6 +1,6 @@
 {
  "schemaVersion": 1,
- "note": "Specific attachment sites for ligaments whose bone-level list another ligament shares (owner, 17 Oct 2026: 'if its sourced and there is no contesting evidence then im happy to include it'). Researched from Gray's 1918, open-access PubMed Central papers and Radiopaedia; every quote was checked against the page (Radiopaedia quotes re-checked live on 17 Oct). `flagged` lists what was not included and why. 18 Oct 2026: a second round (owner's PIP paper, Allison 2005; Kenhub; Gray's) and owner decisions moved 14 flagged sites into `included`; IMAIOS and Complete Anatomy were used to cross-check only, never cited.",
+ "note": "Specific attachment sites for ligaments whose bone-level list another ligament shares (owner, 17 Oct 2026: 'if its sourced and there is no contesting evidence then im happy to include it'). Researched from Gray's 1918, open-access PubMed Central papers and Radiopaedia; every quote was checked against the page (Radiopaedia quotes re-checked live on 17 Oct). `flagged` lists what was not included and why. 18 Oct 2026: a second round (owner's PIP paper, Allison 2005; Kenhub; Gray's) and owner decisions moved 14 flagged sites into `included`; IMAIOS and Complete Anatomy were used to cross-check only, never cited. 19 Oct 2026: a third round sourced the sacral interspinous and posterior longitudinal sites and the external intercostal membrane's two sites; entries carry `added` so a diagnostic paper published earlier keeps the wording it was published with.",
  "included": {
   "anterior-talocalcaneal-ligament": {
    "talus": {
@@ -1083,6 +1083,13 @@
     "source": "Gray's Anatomy (1918), 5a. Articulations of the Vertebral Column",
     "url": "https://www.bartleby.com/107/72.html",
     "quote": "connect adjoining spinous processes and extend from the root to the apex of each process"
+   },
+   "sacrum": {
+    "text": "median sacral crest",
+    "source": "Mahato NK. Anatomy of lumbar interspinous ligaments: attachment, thickness, fibre orientation and biomechanical importance. Int J Morphol 2013;31(1):351-355 (peer-reviewed, open access on SciELO; 25 cadavers)",
+    "url": "https://www.scielo.cl/pdf/ijmorphol/v31n1/art54.pdf",
+    "quote": "ISL fibres at the L5-S1 junction were oriented almost vertically (Fig. 1c). The fibres originated at the tips of the median sacra crest (fused spinous elements of the sacral segments). ... The coronal disposition of the ISL at its attachment to the median sacral crest was longer than that in the other spaces.",
+    "added": "2026-10-19"
    }
   },
   "ligamenta-flava": {
@@ -1153,6 +1160,14 @@
     "source": "Gray's Anatomy (1918), 5a. Articulations of the Vertebral Column",
     "url": "https://www.bartleby.com/107/72.html",
     "quote": "extends along the posterior surfaces of the bodies of the vertebræ"
+   },
+   "sacrum": {
+    "text": "back of the sacral bodies, inside the sacral canal",
+    "source": "Radiopaedia: Posterior longitudinal ligament (created A. Wong; last revised 28 Oct 2020, C. Hacking) + Cao J, Tian K, et al. Management strategies of pediatric coccydynia: a narrative review. Front Pediatr 2026;14:1750781 (open access, CC BY)",
+    "url": "https://radiopaedia.org/articles/posterior-longitudinal-ligament ; https://pmc.ncbi.nlm.nih.gov/articles/PMC13006408/",
+    "quote": "Radiopaedia: \"It extends from the back of the sacrum inferiorly and gradually broadens as it ascends.\" | Front Pediatr: \"The Posterior Sacrococcygeal Ligament consists of deep and superficial components; the deep portion continues the posterior longitudinal ligament inside the sacral canal, while the superficial portion descends from the sacral hiatus.\"",
+    "added": "2026-10-19",
+    "basis": "Radiopaedia's 'back of the sacrum' and a 2026 paper's 'inside the sacral canal'; owner chose the combined wording, 19 Oct 2026."
    }
   },
   "supraspinous-ligament": {
@@ -1214,43 +1229,44 @@
     "url": "https://www.kenhub.com/en/library/anatomy/interphalangeal-joints-of-the-foot",
     "quote": "Collateral interphalangeal ligaments : strong ligaments found on the medial and lateral sides of each joint, extending proximally and medially from small tubercles present on each side the head of the proximal phalanx to the base of the next phalanx."
    }
+  },
+  "external-intercostal-membrane": {
+   "costal-cartilage": {
+    "text": "between adjacent cartilages, from the costochondral junction forward",
+    "source": "Gray's Anatomy (1918), 6c. The Muscles of the Thorax + Kenhub: External intercostal muscles",
+    "url": "https://www.bartleby.com/107/117.html ; https://www.kenhub.com/en/library/anatomy/external-intercostal-muscles",
+    "quote": "Gray's: \"They extend from the tubercles of the ribs behind, to the cartilages of the ribs in front, where they end in thin membranes, the anterior intercostal membranes, which are continued forward to the sternum.\" | Kenhub: \"the most anterior fibers blend with the external intercostal membrane , which fills the remainder of the corresponding intercostal space from the costochondral junction to the sternum .\"",
+    "added": "2026-10-19"
+   },
+   "sternum": {
+    "text": "at the front end of each intercostal space",
+    "source": "Gray's Anatomy (1918), 6c. The Muscles of the Thorax + Kenhub: External intercostal muscles",
+    "url": "https://www.bartleby.com/107/117.html ; https://www.kenhub.com/en/library/anatomy/external-intercostal-muscles",
+    "quote": "Gray's: \"the anterior intercostal membranes, which are continued forward to the sternum\" | Kenhub: \"fills the remainder of the corresponding intercostal space from the costochondral junction to the sternum\"",
+    "added": "2026-10-19"
+   }
   }
  },
  "flagged": [
   {
    "ligament": "plantar-interphalangeal-ligaments",
    "site": "phalanges-proximal-foot",
-   "why": "no permitted source names a more specific site"
+   "why": "no permitted source names a more specific site 19 Oct 2026: the only direct source (Moroni et al., Sci Rep 2022) studied the big toe's joint alone; owner kept the lesser toes at bone level."
   },
   {
    "ligament": "plantar-interphalangeal-ligaments",
    "site": "phalanges-middle-foot",
-   "why": "no permitted source names a more specific site"
+   "why": "no permitted source names a more specific site 19 Oct 2026: the only direct source (Moroni et al., Sci Rep 2022) studied the big toe's joint alone; owner kept the lesser toes at bone level."
   },
   {
    "ligament": "plantar-interphalangeal-ligaments",
    "site": "phalanges-distal-foot",
-   "why": "no permitted source names a more specific site"
+   "why": "no permitted source names a more specific site 19 Oct 2026: the only direct source (Moroni et al., Sci Rep 2022) studied the big toe's joint alone; owner kept the lesser toes at bone level."
   },
   {
    "ligament": "dorsal-ulnocarpal-ligament",
    "site": "ulnar-styloid-process",
-   "why": "no permitted source names a more specific site"
-  },
-  {
-   "ligament": "interspinous-ligaments",
-   "site": "sacrum",
-   "why": "no permitted source names a more specific site"
-  },
-  {
-   "ligament": "posterior-longitudinal-ligament",
-   "site": "sacrum",
-   "why": "no permitted source names a more specific site"
-  },
-  {
-   "ligament": "external-intercostal-membrane",
-   "site": null,
-   "why": "not yet in the app: it has no attachment sites to refine"
+   "why": "no permitted source names a more specific site 19 Oct 2026: re-searched; every citable source says only 'ulnar styloid process'."
   }
  ]
 }

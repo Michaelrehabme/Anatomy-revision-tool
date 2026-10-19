@@ -56,7 +56,7 @@ describe('the diagnostic papers, which are in every build', () => {
   const files = readdirSync(DIAGNOSTIC_DIR);
 
   it('are the only files there, with their lock, and no public paper of finished questions is left', () => {
-    expect(files.sort()).toEqual(['papers.v3.json', 'papers.v3.lock.json', 'papers.v4.json', 'papers.v4.lock.json']);
+    expect(files.sort()).toEqual(['papers.v3.json', 'papers.v3.lock.json', 'papers.v4.json', 'papers.v4.lock.json', 'papers.v5.json', 'papers.v5.lock.json']);
   });
 
   it('would pass the check as built files: none carries a description', () => {

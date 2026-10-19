@@ -253,6 +253,16 @@ describe('a published paper is never edited', () => {
 
   // Superseded by version 4 on 17 Oct 2026, but a follow-up to a baseline sat
   // under it replays it, so it must still build as it was published.
+  // Version 4 asks its ligaments from attachments as they were sourced on
+  // 18 Oct 2026 (`asOf`): parts of a bone sourced later never reach it.
+  it('version 4 too, for the baselines sat under it', async () => {
+    const v4 = (await loadPapers(4))!;
+    const v4Lock = JSON.parse(readFileSync(`${DIR}/papers.v4.lock.json`, 'utf8')) as PaperLock;
+    const now = lockFor(v4, ALL_STRUCTURES, ALL_IMAGES);
+    expect(now.problems).toEqual([]);
+    expect(lockDrift(v4Lock, now.lock)).toEqual([]);
+  });
+
   it('version 3 too, for the baselines sat under it', async () => {
     const v3 = (await loadPapers(3))!;
     const v3Lock = JSON.parse(readFileSync(`${DIR}/papers.v3.lock.json`, 'utf8')) as PaperLock;
@@ -267,16 +277,16 @@ describe('a published paper is never edited', () => {
 
     // A fact a question prints as its right answer.
     const corrected = edited((s) => (s.id === 'biceps-femoris' && isMuscle(s) ? { ...s, insertion: ['Head of the fibula (corrected)'] } : s));
-    expect(corrected).toContain('dx4.knee.biceps-femoris.insertion: now builds a different question from the one published');
+    expect(corrected).toContain('dx5.knee.biceps-femoris.insertion: now builds a different question from the one published');
     // A fact a question prints as a WRONG answer is on the paper too.
-    expect(corrected.some((line) => line.startsWith('dx4.knee.popliteus.insertion'))).toBe(true);
+    expect(corrected.some((line) => line.startsWith('dx5.knee.popliteus.insertion'))).toBe(true);
 
     const renamed = edited((s) => (s.id === 'anterior-cruciate-ligament' ? { ...s, name: 'ACL' } : s));
-    expect(renamed).toContain('dx4.knee.anterior-cruciate-ligament.attachments: now builds a different question from the one published');
-    expect(renamed).toContain('dx4.whole-body.anterior-cruciate-ligament.attachments: now builds a different question from the one published');
+    expect(renamed).toContain('dx5.knee.anterior-cruciate-ligament.attachments: now builds a different question from the one published');
+    expect(renamed).toContain('dx5.whole-body.anterior-cruciate-ligament.attachments: now builds a different question from the one published');
 
     const removed = edited((s) => (s.id === 'popliteus' ? null : s));
-    expect(removed.some((line) => line.startsWith('dx4.knee.') && line.includes('no longer'))).toBe(true);
+    expect(removed.some((line) => line.startsWith('dx5.knee.') && line.includes('no longer'))).toBe(true);
   });
 
   // 9 Oct 2026: the seed respelt names ("of the" dropped, ligaments in

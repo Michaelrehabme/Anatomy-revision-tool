@@ -36,13 +36,14 @@ export const LIGAMENT_ATTACHMENT_DETAIL: Readonly<Record<string, Readonly<Record
   "dorsal-radio-ulnar-ligament": { "radius": "dorsal rim of the ulnar (sigmoid) notch", "ulna": "fovea and base of the ulnar styloid" },
   "dorsal-tarsometatarsal-ligaments": { "cuboid": "dorsal surface", "intermediate-cuneiform": "dorsal surface (base of the wedge)", "lateral-cuneiform": "dorsal surface", "medial-cuneiform": "dorsal surface (narrow edge of the wedge)", "metatarsals": "dorsal surface of the bases" },
   "dorsal-ulnocarpal-ligament": { "triquetrum": "dorsal aspect of the triquetrum" },
+  "external-intercostal-membrane": { "costal-cartilage": "between adjacent cartilages, from the costochondral junction forward", "sternum": "at the front end of each intercostal space" },
   "iliofemoral-ligament": { "acetabulum": "iliac part of acetabular margin", "aiis": "lower part of AIIS", "intertrochanteric-line": "along the whole intertrochanteric line" },
   "intercuneiform-interosseous-ligaments": { "intermediate-cuneiform": "rough non-articular facing surfaces", "lateral-cuneiform": "rough non-articular facing surface", "medial-cuneiform": "rough non-articular facing surface" },
   "interosseous-membrane-of-forearm": { "radius": "interosseous crest of the radius", "ulna": "interosseous crest of the ulna" },
   "interosseous-membrane-of-leg": { "fibula": "interosseous crest of fibula", "tibia": "interosseous crest of tibia" },
   "interosseous-metacarpal-ligaments": { "metacarpals": "facing sides of the metacarpal bases, beyond the facets" },
   "interosseous-sacro-iliac-ligament": { "ilium": "iliac tuberosity", "sacrum": "sacral tuberosity" },
-  "interspinous-ligaments": { "c7-spinous-process": "root to apex of spinous process", "lumbar-vertebrae": "root to apex of spinous processes", "thoracic-vertebrae": "root to apex of spinous processes" },
+  "interspinous-ligaments": { "c7-spinous-process": "root to apex of spinous process", "lumbar-vertebrae": "root to apex of spinous processes", "sacrum": "median sacral crest", "thoracic-vertebrae": "root to apex of spinous processes" },
   "lateral-talocalcaneal-ligament": { "calcaneus": "upper front part of the lateral surface", "talus": "lateral surface, just below the fibular facet" },
   "ligamenta-flava": { "axis-c2": "laminae of the axis", "c7-vertebra": "laminae (front above, back below)", "cervical-vertebrae": "laminae (front above, back below)", "lumbar-vertebrae": "laminae (front above, back below)", "sacrum": "first sacral segment", "thoracic-vertebrae": "laminae (front above, back below)" },
   "lunotriquetral-interosseous-ligament": { "lunate": "proximal edge facing the triquetrum", "triquetrum": "proximal edge facing the lunate" },
@@ -65,7 +66,7 @@ export const LIGAMENT_ATTACHMENT_DETAIL: Readonly<Record<string, Readonly<Record
   "plantar-metatarsophalangeal-ligaments": { "metatarsals": "periosteum of the metatarsal shaft", "phalanges-proximal-foot": "plantar base of the proximal phalanx" },
   "plantar-tarsometatarsal-ligaments": { "cuboid": "plantar surface", "intermediate-cuneiform": "plantar surface (sharp lower edge)", "lateral-cuneiform": "plantar surface (rounded lower edge)", "medial-cuneiform": "plantar surface (base of the wedge)", "metatarsals": "plantar surface of the bases" },
   "posterior-ligament-of-fibular-head": { "head-of-fibula": "back of fibular head", "lateral-condyle-tibia": "back of lateral tibial condyle" },
-  "posterior-longitudinal-ligament": { "axis-c2": "back of body of the axis", "c7-vertebra": "posterior surface of vertebral body", "cervical-vertebrae": "posterior surfaces of vertebral bodies", "lumbar-vertebrae": "posterior surfaces of vertebral bodies", "thoracic-vertebrae": "posterior surfaces of vertebral bodies" },
+  "posterior-longitudinal-ligament": { "axis-c2": "back of body of the axis", "c7-vertebra": "posterior surface of vertebral body", "cervical-vertebrae": "posterior surfaces of vertebral bodies", "lumbar-vertebrae": "posterior surfaces of vertebral bodies", "sacrum": "back of the sacral bodies, inside the sacral canal", "thoracic-vertebrae": "posterior surfaces of vertebral bodies" },
   "posterior-meniscotibial-ligament-lateral-meniscus": { "tibial-plateau": "lateral tibial condyle, behind posterior root" },
   "posterior-meniscotibial-ligament-medial-meniscus": { "tibial-plateau": "posterior medial tibial plateau, below cartilage" },
   "posterior-sacro-iliac-ligament": { "ilium": "iliac tuberosity and posterior superior iliac spine", "sacrum": "transverse tubercles on back of sacrum" },
@@ -83,4 +84,15 @@ export const LIGAMENT_ATTACHMENT_DETAIL: Readonly<Record<string, Readonly<Record
   "trapezoid-ligament": { "clavicle": "trapezoid line (oblique ridge)", "coracoid-process": "upper surface of coracoid process" },
   "trapezoideocapitate-interosseous-ligament": { "capitate": "notch beside the trapezoid-facing joint surface", "trapezoid": "notch beside the capitate-facing joint surface" },
   "ulnotriquetral-ligament": { "triquetrum": "proximal and ulnar surfaces of the triquetrum", "ulnar-styloid-process": "palmar radial surface of the ulnar styloid" },
+};
+
+/**
+ * When an entry was added, for those added after the first round (YYYY-MM-DD).
+ * A diagnostic paper published before that date asks its question without it,
+ * so a follow-up reads exactly as its baseline did (lib/diagnosticPapers.ts).
+ */
+export const LIGAMENT_ATTACHMENT_DETAIL_ADDED: Readonly<Record<string, Readonly<Record<string, string>>>> = {
+  "external-intercostal-membrane": { "costal-cartilage": "2026-10-19", "sternum": "2026-10-19" },
+  "interspinous-ligaments": { "sacrum": "2026-10-19" },
+  "posterior-longitudinal-ligament": { "sacrum": "2026-10-19" },
 };

@@ -2,7 +2,7 @@ import { isLigament, reviewedAttachmentIds } from '../../types/structure';
 import type { AnatomyStructure } from '../../types/structure';
 import type { StructureIndexEntry } from '../../types/structureIndex';
 import { siteLabel } from '../attachmentSites';
-import { LIGAMENT_ATTACHMENT_DETAIL } from '../../data/ligamentAttachmentDetail';
+import { LIGAMENT_ATTACHMENT_DETAIL, LIGAMENT_ATTACHMENT_DETAIL_ADDED } from '../../data/ligamentAttachmentDetail';
 
 /**
  * "WHAT LIGAMENT IS THIS?" AS BULLET POINTS (owner, 17 Oct 2026): one short
@@ -18,6 +18,11 @@ import { LIGAMENT_ATTACHMENT_DETAIL } from '../../data/ligamentAttachmentDetail'
 export function ligamentPromptLines(
   structure: AnatomyStructure,
   sites: ReadonlyMap<string, StructureIndexEntry>,
+  /**
+   * A diagnostic paper's publication date (YYYY-MM-DD): a part of the bone
+   * sourced after it is left out, so the paper still asks what it asked.
+   */
+  asOf?: string,
 ): string[] | null {
   if (!isLigament(structure)) return null;
   // Decided once over every ligament: data/seed/index.ts withAttachmentRule.
@@ -25,11 +30,13 @@ export function ligamentPromptLines(
   const ids = reviewedAttachmentIds(structure);
   if (!ids.length) return null;
   const detail = LIGAMENT_ATTACHMENT_DETAIL[structure.id] ?? {};
+  const added = LIGAMENT_ATTACHMENT_DETAIL_ADDED[structure.id] ?? {};
   return ids.map((id) => {
     const site = sites.get(id);
     const label = site ? siteLabel(site, sites) : id.replace(/-/g, ' ');
     // The part of the bone, where a source names it (data/ligamentAttachmentDetail.ts).
-    return `Attaches to: ${label}${detail[id] ? ` — ${detail[id]}` : ''}`;
+    const part = detail[id] && !(asOf && added[id] && added[id] > asOf) ? detail[id] : null;
+    return `Attaches to: ${label}${part ? ` — ${part}` : ''}`;
   });
 }
 

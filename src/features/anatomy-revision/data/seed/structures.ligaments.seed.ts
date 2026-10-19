@@ -1649,7 +1649,7 @@ export const LIGAMENT_STRUCTURES: LigamentStructure[] = [
     subregion: 'torso',
     description: 'The aponeurotic sheet continuing the external intercostal muscle forwards between the costal cartilages.',
     aliases: [],
-    attachmentStructureIds: [],
+    attachmentStructureIds: ['costal-cartilage', 'sternum'],
     imageIds: [],
     eligibility: { flashcard: true, mcq: true, locate: true },
     difficulty: 'medium',

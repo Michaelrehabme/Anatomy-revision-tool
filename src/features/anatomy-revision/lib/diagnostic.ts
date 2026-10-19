@@ -73,11 +73,12 @@ export const DIAGNOSTIC_SIZE = 15;
  *      paper beside the version (`paperId`).
  *   4  the same ten, with the ligaments named from their attachments rather
  *      than a picture (17 Oct 2026; lib/diagnosticPapers.ts PAPER_VERSION).
+ *   5  the same, with two newly sourced sacral attachment sites (19 Oct 2026).
  *
  * This is the version a NEW BASELINE is stamped with. A follow-up carries its
  * baseline's version and paper, not this one — see `resolveDiagnosticPaper`.
  */
-export const DIAGNOSTIC_VERSION = 4;
+export const DIAGNOSTIC_VERSION = 5;
 
 /**
  * The version whose papers were drawn per class. Baselines sat under it are

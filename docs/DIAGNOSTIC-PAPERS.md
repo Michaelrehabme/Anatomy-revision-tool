@@ -1,7 +1,7 @@
 # The diagnostic papers
 
-Version 4. Written by `npm run papers:publish` from
-`src/features/anatomy-revision/data/diagnostic/papers.v4.json` and the seed; do not edit by hand.
+Version 5. Written by `npm run papers:publish` from
+`src/features/anatomy-revision/data/diagnostic/papers.v5.json` and the seed; do not edit by hand.
 
 Ten papers of fifteen questions. A student with every area sits the whole-body paper; a
 student on a free account sits the paper for their free area. The questions were chosen for

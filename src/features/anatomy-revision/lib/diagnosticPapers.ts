@@ -86,8 +86,13 @@ import { alsoAttachesToAll, ligamentPromptLines } from './questionGenerators/lig
  * attachment sites, as the quiz asks it. Everything else is version 3's, with
  * today's spellings (no `publishedWording`). Version 3 stays, for follow-ups
  * to the baselines sat under it.
+ *
+ * VERSION 5 (19 Oct 2026). Version 4's questions, with the sacral sites of
+ * the interspinous ligaments and the posterior longitudinal ligament now
+ * sourced: two lumbar (and whole-body) attachment questions gained a line.
+ * Version 4 stays, pinned to what it asked by `asOf`.
  */
-export const PAPER_VERSION = 4;
+export const PAPER_VERSION = 5;
 
 export const WHOLE_BODY_PAPER = 'whole-body';
 export type PaperId = typeof WHOLE_BODY_PAPER | Area;
@@ -131,6 +136,14 @@ export interface DiagnosticPaperSpec {
    * "WHEN THE SEED CHANGES ONLY HOW SOMETHING IS SPELT" above.
    */
   publishedWording?: Record<string, Record<string, PublishedWording>>;
+  /**
+   * The day the paper was published (YYYY-MM-DD). A ligament asked from its
+   * attachments is asked without any part of a bone sourced after this day
+   * (data/ligamentAttachmentDetail.ts LIGAMENT_ATTACHMENT_DETAIL_ADDED), so
+   * new sourcing never changes a paper someone has sat. Version 4 carries
+   * 2026-10-18; a paper without one uses everything.
+   */
+  asOf?: string;
 }
 
 export interface DiagnosticPapersFile {
@@ -146,6 +159,7 @@ export const PAPER_CHOICES = 4;
 const FILES: Record<number, () => Promise<DiagnosticPapersFile>> = {
   3: () => import('../data/diagnostic/papers.v3.json').then((m) => m.default as unknown as DiagnosticPapersFile),
   4: () => import('../data/diagnostic/papers.v4.json').then((m) => m.default as unknown as DiagnosticPapersFile),
+  5: () => import('../data/diagnostic/papers.v5.json').then((m) => m.default as unknown as DiagnosticPapersFile),
 };
 
 /**
@@ -378,7 +392,7 @@ export function buildPaperQuestions(
     const correct = answerOf(spec.kind, entry, facts);
     if (!prompt || !correct) { fault(`"${spec.structureId}" has no ${spec.kind} to ask about`); continue; }
     // The lines under "What ligament is this?", as the quiz writes them.
-    const promptLines = spec.kind === 'attachments' && facts ? ligamentPromptLines(facts, content.indexById) : null;
+    const promptLines = spec.kind === 'attachments' && facts ? ligamentPromptLines(facts, content.indexById, paper.asOf) : null;
     if (spec.kind === 'attachments' && !promptLines) {
       fault(`"${spec.structureId}" cannot be named from its attachments: another ligament shares them`);
       continue;
