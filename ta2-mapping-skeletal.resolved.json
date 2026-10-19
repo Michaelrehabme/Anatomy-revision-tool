@@ -897,7 +897,7 @@
    "region": "forearm-hand",
    "blenderObjects": [
     "Scaphoid bone.l",
-    "Scaphoid bone.r"
+    "Trapezium bone.l"
    ],
    "resolution": "region",
    "note": "19 Oct 2026: framed on the parent bone(s); the highlight is a region grown on it (panel-regions.rules.json)."

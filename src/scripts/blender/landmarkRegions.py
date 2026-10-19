@@ -383,6 +383,34 @@ def select_faces(bone_verts, vert_normals, face_centres, face_normals, rule, anc
         f = (centres_np - lo) / (hi - lo)
         mask = np.all((f >= np.array(rule["lo"], dtype=float)) & (f <= np.array(rule["hi"], dtype=float)), axis=1)
         seeds = []
+    elif kind == "within":
+        # A SPACE BOUNDED BY OTHER STRUCTURES. The anatomical snuffbox is the
+        # hollow between three tendons and the end of the radius; what can be
+        # painted is the floor that shows through it. So the rule gives the
+        # outline of that space as measured points (world mm) and the direction
+        # it is looked into, and keeps the faces whose centres, seen along that
+        # direction, fall inside the outline. Pair with `facing` so the far side
+        # of the bone behind the floor is not picked up too.
+        n = np.array(_unit(rule["normal"]), dtype=float)
+        up = np.array([0.0, 0.0, 1.0])
+        e2 = np.cross(n, up)
+        e2 /= np.linalg.norm(e2)
+        e1 = np.cross(e2, n)
+        poly = np.array(rule["polygon"], dtype=float) / 1000.0
+        poly2 = np.stack([poly @ e2, poly @ e1], axis=1)
+        pts = np.stack([centres_np @ e2, centres_np @ e1], axis=1)
+        inside = np.zeros(len(pts), dtype=bool)
+        j = len(poly2) - 1
+        for i in range(len(poly2)):
+            xi, yi = poly2[i]
+            xj, yj = poly2[j]
+            crosses = ((yi > pts[:, 1]) != (yj > pts[:, 1])) & (
+                pts[:, 0] < (xj - xi) * (pts[:, 1] - yi) / ((yj - yi) if yj != yi else 1e-12) + xi
+            )
+            inside ^= crosses
+            j = i
+        mask = inside
+        seeds = []
     elif kind == "cap":
         anchor_pt = None
         if rule.get("from"):

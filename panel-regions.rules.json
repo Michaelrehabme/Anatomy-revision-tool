@@ -242,23 +242,57 @@
  "anatomical-snuffbox": {
   "parentObjects": [
    "Scaphoid bone.l",
-   "Scaphoid bone.r"
+   "Trapezium bone.l"
   ],
   "rule": {
-   "kind": "ball",
-   "from": {
-    "world": [
-     281.0,
-     -16.0,
-     856.0
+   "kind": "within",
+   "normal": [
+    0.66,
+    0.75,
+    0.0
+   ],
+   "polygon": [
+    [
+     276.0,
+     -4.0,
+     857.0
+    ],
+    [
+     283.6,
+     -11.3,
+     849.7
+    ],
+    [
+     287.0,
+     -15.0,
+     845.0
+    ],
+    [
+     296.0,
+     -21.5,
+     845.0
+    ],
+    [
+     291.9,
+     -16.1,
+     849.7
+    ],
+    [
+     287.5,
+     -10.1,
+     857.0
     ]
-   },
-   "width": 0.007,
-   "mirrorX": true,
+   ],
+   "facing": [
+    0.66,
+    0.75,
+    0.0
+   ],
+   "facingMin": 0.1,
    "keepLargest": false,
    "close": 2,
    "smoothNormals": 3,
-   "_why": "The snuffbox is a space between the tendons of extensor pollicis longus and brevis/abductor pollicis longus, with no object of its own; the picture marks its FLOOR, the radial (lateral), dorsal side of the scaphoid, which is what is palpated in it. Added 19 Oct 2026; point measured in world millimetres with probe_last4.py (+x body left, +y posterior, +z up)."
+   "_why": "SECOND PASS. Owner: the hit zone was a bone, not the space between the tendons and the end of the radius. The snuffbox is the hollow bounded by extensor pollicis longus (dorsal/ulnar), extensor pollicis brevis (palmar/radial; abductor pollicis longus beside it) and, above, the end of the radius; its floor is the scaphoid and trapezium. MEASURED (probe_snuff.py, left wrist, world mm): tendon centrelines at z 857, 849.7 and 845; radius ends at z 856. The highlight is the floor that shows through that outline, looked into from its outward direction (lateral-dorsal, +x+y on the left hand). The three tendons are drawn in red (--context). Left hand only: the panels show the left."
   }
  },
  "inferior-articular-process": {
