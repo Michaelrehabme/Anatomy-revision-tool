@@ -79,7 +79,7 @@
  },
  "bifid-spinous-process": {
   "parentObjects": [
-   "Vertebra C2",
+   "Axis (C2)",
    "Vertebra C3",
    "Vertebra C4",
    "Vertebra C5",
@@ -95,7 +95,7 @@
    "depth": 0.012,
    "close": 2,
    "smoothNormals": 3,
-   "_why": "The forked tips of the cervical spinous processes, C2 to C6 (owner: the other cervical vertebrae have one too; C7's is usually single and long, its own landmark). The posterior 12mm of each. Added 18 Oct 2026 for the Atlas card; the spec's anchor sits off the bone (renders/landmarks-render.log), so the region is grown on the bone instead."
+   "_why": "The forked tips of the cervical spinous processes, C2 to C6 (the atlas names C2 'Axis (C2)'; 'Vertebra C2' matched nothing and C2 went unpainted until the owner spotted it) (owner: the other cervical vertebrae have one too; C7's is usually single and long, its own landmark). The posterior 12mm of each. Added 18 Oct 2026 for the Atlas card; the spec's anchor sits off the bone (renders/landmarks-render.log), so the region is grown on the bone instead."
   }
  },
  "jugular-notch": {
