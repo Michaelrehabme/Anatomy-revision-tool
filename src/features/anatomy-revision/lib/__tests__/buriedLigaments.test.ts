@@ -201,7 +201,9 @@ describe('a second render is the same frame', () => {
       const own = await sharp(join(process.cwd(), 'public', image.filePath)).metadata();
       expect([own.width, own.height], image.filePath).toEqual([image.width, image.height]);
     }
-  });
+    // It reads the headers of every variant file from disk: well under a second
+    // alone, but over the 5s default when the full suite has the machine busy.
+  }, 30_000);
 
   it('is never an image of its own: nothing in the catalogue points at a variant file', () => {
     const variantFiles = new Set(withVariant.map((i) => i.variant.filePath));
