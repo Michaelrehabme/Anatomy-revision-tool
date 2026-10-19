@@ -361,6 +361,84 @@ def build_mesh(spec, mesh_name):
     me = bpy.data.meshes.new(mesh_name)
     out.to_mesh(me)
     out.free()
+    # SHAPED BY THE BONES ROUND IT. A hull spans the space between bones but
+    # cuts through their ends (owner, 19 Oct 2026, of the TFCC: "it needs to fit
+    # the shape by contacting the bones and not going through them"), so the
+    # named bones are subtracted: what is left meets each bone's surface.
+    if spec.get("subtract"):
+        ob = bpy.data.objects.new(f"{mesh_name}_cut", me)
+        scene.collection.objects.link(ob)
+        # NO BULGING PAST THE BONES. The hull's outer faces are flat planes
+        # between measured corners and stand proud of the bones beside them;
+        # `envelope` clips it to the convex envelope of the named bones' parts
+        # inside a box (world mm), so its outer surface runs bone to bone.
+        env_ob = None
+        if spec.get("envelope"):
+            env = spec["envelope"]
+            lo = mathutils.Vector(env["box"][0]) / 1000.0
+            hi = mathutils.Vector(env["box"][1]) / 1000.0
+            eb = bmesh.new()
+            for n in env["objects"]:
+                src = bpy.data.objects.get(n)
+                if not src:
+                    continue
+                for v in src.data.vertices:
+                    p = src.matrix_world @ v.co
+                    if all(lo[i] <= p[i] <= hi[i] for i in range(3)):
+                        eb.verts.new(p)
+            bmesh.ops.convex_hull(eb, input=list(eb.verts))
+            bmesh.ops.delete(eb, geom=[v for v in eb.verts if not v.link_faces], context="VERTS")
+            env_me = bpy.data.meshes.new(f"{mesh_name}_env")
+            eb.to_mesh(env_me)
+            eb.free()
+            env_ob = bpy.data.objects.new(f"{mesh_name}_env", env_me)
+            scene.collection.objects.link(env_ob)
+            mod = ob.modifiers.new("envelope", "BOOLEAN")
+            mod.operation = "INTERSECT"
+            mod.solver = "EXACT"
+            mod.object = env_ob
+        for n in spec["subtract"]:
+            cutter = bpy.data.objects.get(n)
+            if not cutter:
+                continue
+            mod = ob.modifiers.new(f"cut_{n}", "BOOLEAN")
+            mod.operation = "DIFFERENCE"
+            mod.solver = "EXACT"
+            mod.object = cutter
+        dg = bpy.context.evaluated_depsgraph_get()
+        cut = bpy.data.meshes.new_from_object(ob.evaluated_get(dg))
+        bpy.data.objects.remove(ob)
+        bpy.data.meshes.remove(me)
+        if env_ob is not None:
+            env_me = env_ob.data
+            bpy.data.objects.remove(env_ob)
+            bpy.data.meshes.remove(env_me)
+        # Keep the largest piece: a cut can leave slivers on the far side of a bone.
+        bm = bmesh.new()
+        bm.from_mesh(cut)
+        parts, seen = [], set()
+        for f in bm.faces:
+            if f.index in seen:
+                continue
+            stack, part = [f], []
+            seen.add(f.index)
+            while stack:
+                g = stack.pop()
+                part.append(g)
+                for e in g.edges:
+                    for h in e.link_faces:
+                        if h.index not in seen:
+                            seen.add(h.index)
+                            stack.append(h)
+            parts.append(part)
+        if len(parts) > 1:
+            keep = set(max(parts, key=lambda p: sum(x.calc_area() for x in p)))
+            bmesh.ops.delete(bm, geom=[f for f in bm.faces if f not in keep], context="FACES")
+        bm.to_mesh(cut)
+        bm.free()
+        cut.name = mesh_name
+        print(f"[build] {mesh_name}: cut by {len(spec['subtract'])} bone(s), {len(parts)} piece(s), kept {len(cut.polygons)} faces", flush=True)
+        me = cut
     return me
 
 
