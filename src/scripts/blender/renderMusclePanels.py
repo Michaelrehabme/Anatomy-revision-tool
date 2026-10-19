@@ -560,7 +560,11 @@ def build_mesh(spec, mesh_name):
                             stack.append(h)
             parts.append(part)
         if len(parts) > 1:
-            keep = set(max(parts, key=lambda p: sum(x.calc_area() for x in p)))
+            # Pieces of real size are kept (the TFCC's strip under the radius);
+            # only slivers well under the largest go.
+            areas = [sum(x.calc_area() for x in p) for p in parts]
+            floor = max(areas) * float(spec.get("keepPieces", 1.0))
+            keep = {f for p, a in zip(parts, areas) if a >= floor for f in p}
             bmesh.ops.delete(bm, geom=[f for f in bm.faces if f not in keep], context="FACES")
         bm.to_mesh(cut)
         bm.free()
