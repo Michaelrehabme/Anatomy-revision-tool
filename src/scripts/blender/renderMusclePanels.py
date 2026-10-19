@@ -459,6 +459,14 @@ def build_mesh(spec, mesh_name):
                         pass
         bmesh.ops.delete(out, geom=[v for v in out.verts if not v.link_faces], context="VERTS")
         print(f"[build] {mesh_name}: gap filled over {len(cells)} cells", flush=True)
+    elif spec["kind"] == "multi":
+        # Several builds as one structure, each finished on its own (its own
+        # smoothing and cuts): the TFCC's disc in the gap and the fibre
+        # bundles fanning over the back of the joint (owner's reference plate).
+        for i, part in enumerate(spec["parts"]):
+            pm = build_mesh(part, f"{mesh_name}_p{i}")
+            out.from_mesh(pm)
+            bpy.data.meshes.remove(pm)
     else:
         raise ValueError("unknown build kind: " + spec["kind"])
     bmesh.ops.recalc_face_normals(out, faces=out.faces)

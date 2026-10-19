@@ -103,7 +103,7 @@ export const MUSCLE_PANELS: MusclePanel[] = [
   { structureId: 'transverse-tarsal-joint', region: 'lower-leg-foot', subregion: 'ankle-foot', layer: 'skeletal', width: 1379, height: 523 },
   { structureId: 'trapezium', region: 'forearm-hand', subregion: 'wrist-hand', layer: 'landmark', width: 1490, height: 1437 },
   { structureId: 'trapezoid', region: 'forearm-hand', subregion: 'wrist-hand', layer: 'landmark', width: 1490, height: 1437 },
-  { structureId: 'triangular-fibrocartilage-complex', region: 'forearm-hand', subregion: 'wrist-hand', layer: 'skeletal', width: 1400, height: 1096 },
+  { structureId: 'triangular-fibrocartilage-complex', region: 'forearm-hand', subregion: 'wrist-hand', layer: 'skeletal', width: 1400, height: 1074 },
   { structureId: 'triquetrum', region: 'forearm-hand', subregion: 'wrist-hand', layer: 'landmark', width: 1490, height: 1437 },
   { structureId: 'twelfth-rib', region: 'back-core', subregion: 'torso', layer: 'landmark', width: 2314, height: 900 },
   { structureId: 'ulna', region: 'forearm-hand', subregion: 'elbow', layer: 'skeletal', width: 898, height: 1387 },
