@@ -355,6 +355,110 @@ def build_mesh(spec, mesh_name):
         bmesh.ops.convex_hull(out, input=vs)
         loose = [v for v in out.verts if not v.link_faces]
         bmesh.ops.delete(out, geom=loose, context="VERTS")
+    elif spec["kind"] == "gapfill":
+        # THE SPACE BETWEEN TWO SETS OF BONES, AND NOTHING ELSE. Over a
+        # footprint (world mm, x and y), a vertical line through each grid point
+        # meets the upper bones' under-surface and the lower bones' upper
+        # surface; the solid is what lies between. Its top IS the upper bones'
+        # surface and its bottom the lower bones', so it touches both and cannot
+        # pass through or wrap round either — the TFCC between the ulna and
+        # radius above and the lunate and triquetrum below (owner, 19 Oct 2026).
+        from mathutils.bvhtree import BVHTree
+
+        def tree(names):
+            bm_t = bmesh.new()
+            for n in names:
+                src = bpy.data.objects.get(n)
+                if not src:
+                    continue
+                tmp = src.data.copy()
+                tmp.transform(src.matrix_world)
+                bm_t.from_mesh(tmp)
+                bpy.data.meshes.remove(tmp)
+            t = BVHTree.FromBMesh(bm_t)
+            bm_t.free()
+            return t
+
+        upper, lower = tree(spec["upper"]), tree(spec["lower"])
+        foot = [(p[0] / 1000.0, p[1] / 1000.0) for p in spec["footprint"]]
+        step = float(spec.get("step", 0.8)) / 1000.0
+        max_gap = float(spec.get("maxGap", 12)) / 1000.0
+        inset = float(spec.get("inset", 0.2)) / 1000.0
+        z_hi, z_lo = spec["zRange"][1] / 1000.0, spec["zRange"][0] / 1000.0
+
+        def inside(x, y):
+            c = False
+            j = len(foot) - 1
+            for i in range(len(foot)):
+                xi, yi = foot[i]
+                xj, yj = foot[j]
+                if (yi > y) != (yj > y) and x < (xj - xi) * (y - yi) / (yj - yi) + xi:
+                    c = not c
+                j = i
+            return c
+
+        xs = [p[0] for p in foot]
+        ys = [p[1] for p in foot]
+        nx = int((max(xs) - min(xs)) / step) + 2
+        ny = int((max(ys) - min(ys)) / step) + 2
+        node = {}
+        for i in range(nx):
+            for j in range(ny):
+                x, y = min(xs) + i * step, min(ys) + j * step
+                if not inside(x, y):
+                    continue
+                # Up from below the joint to the upper bones' under-surface, then
+                # down from just under that to the first lower bone: the gap.
+                # (Down from above starts inside the shaft; up from below meets
+                # a carpal's distal face first.)
+                up = upper.ray_cast(mathutils.Vector((x, y, z_lo)), mathutils.Vector((0, 0, 1)))
+                if up[0] is None or up[0].z > z_hi:
+                    continue
+                down = lower.ray_cast(mathutils.Vector((x, y, up[0].z - 0.0001)), mathutils.Vector((0, 0, -1)))
+                if down[0] is None:
+                    continue
+                top, bot = up[0].z - inset, down[0].z + inset
+                if 0 < top - bot <= max_gap:
+                    node[(i, j)] = (x, y, top, bot)
+        # A line that grazes the side of a bone jumps to a far surface and draws
+        # a spike; a lone cell at the edge draws a tooth. Drop columns that stand
+        # out from their neighbours, and cells too short of neighbours to be
+        # part of the sheet, a few passes over.
+        jump = float(spec.get("maxJump", 1.2)) / 1000.0
+        for _ in range(int(spec.get("cleanPasses", 3))):
+            keep = {}
+            for (i, j), (x, y, top, bot) in node.items():
+                nb = [node[(i + di, j + dj)] for di in (-1, 0, 1) for dj in (-1, 0, 1)
+                      if (di or dj) and (i + di, j + dj) in node]
+                if len(nb) < 5:
+                    continue
+                tops = sorted(n[2] for n in nb)
+                bots = sorted(n[3] for n in nb)
+                if abs(top - tops[len(tops) // 2]) > jump or abs(bot - bots[len(bots) // 2]) > jump:
+                    continue
+                keep[(i, j)] = (x, y, top, bot)
+            node = keep
+        verts_top, verts_bot = {}, {}
+        for k, (x, y, top, bot) in node.items():
+            verts_top[k] = out.verts.new((x, y, top))
+            verts_bot[k] = out.verts.new((x, y, bot))
+        cells = [(i, j) for (i, j) in node if (i + 1, j) in node and (i, j + 1) in node and (i + 1, j + 1) in node]
+        cellset = set(cells)
+        for (i, j) in cells:
+            q = [(i, j), (i + 1, j), (i + 1, j + 1), (i, j + 1)]
+            out.faces.new([verts_top[k] for k in q])
+            out.faces.new([verts_bot[k] for k in reversed(q)])
+        # Walls on the outline: a cell edge with no cell on its other side.
+        for (i, j) in cells:
+            for a, b, nb in (((i, j), (i + 1, j), (i, j - 1)), ((i + 1, j), (i + 1, j + 1), (i + 1, j)),
+                             ((i + 1, j + 1), (i, j + 1), (i, j + 1)), ((i, j + 1), (i, j), (i - 1, j))):
+                if nb not in cellset:
+                    try:
+                        out.faces.new([verts_top[a], verts_bot[a], verts_bot[b], verts_top[b]])
+                    except ValueError:
+                        pass
+        bmesh.ops.delete(out, geom=[v for v in out.verts if not v.link_faces], context="VERTS")
+        print(f"[build] {mesh_name}: gap filled over {len(cells)} cells", flush=True)
     else:
         raise ValueError("unknown build kind: " + spec["kind"])
     bmesh.ops.recalc_face_normals(out, faces=out.faces)

@@ -407,101 +407,47 @@
  },
  "triangular-fibrocartilage-complex": {
   "build": {
-   "kind": "hull",
-   "points": [
-    [
-     245.0,
-     -13.0,
-     857.5
-    ],
-    [
-     245.0,
-     -13.0,
-     860.5
-    ],
-    [
-     257.1,
-     -7.5,
-     861.7
-    ],
-    [
-     257.1,
-     -7.5,
-     864.7
-    ],
-    [
-     257.2,
-     -24.0,
-     864.4
-    ],
-    [
-     257.2,
-     -24.0,
-     867.4
-    ],
-    [
-     257.2,
-     -15.5,
-     862.8
-    ],
-    [
-     257.2,
-     -15.5,
-     865.8
-    ],
-    [
-     246.0,
-     -14.5,
-     852.5
-    ],
-    [
-     246.0,
-     -24.0,
-     852.5
-    ],
-    [
-     241.0,
-     -20.0,
-     853.0
-    ],
-    [
-     250.0,
-     -13.0,
-     858.5
-    ],
-    [
-     250.0,
-     -23.0,
-     858.5
-    ]
-   ],
-   "subtract": [
+   "kind": "gapfill",
+   "upper": [
     "Ulna.l",
-    "Radius.l",
+    "Radius.l"
+   ],
+   "lower": [
     "Lunate bone.l",
     "Triquetrum bone.l"
    ],
-   "envelope": {
-    "objects": [
-     "Ulna.l",
-     "Radius.l",
-     "Lunate bone.l",
-     "Triquetrum bone.l"
+   "footprint": [
+    [
+     239.0,
+     -11.0
     ],
-    "box": [
-     [
-      234.0,
-      -27.0,
-      838.0
-     ],
-     [
-      262.0,
-      -3.0,
-      868.0
-     ]
+    [
+     244.0,
+     -8.5
+    ],
+    [
+     257.5,
+     -6.5
+    ],
+    [
+     258.0,
+     -25.0
+    ],
+    [
+     241.0,
+     -26.0
     ]
-   }
+   ],
+   "zRange": [
+    830.0,
+    875.0
+   ],
+   "step": 0.5,
+   "maxGap": 8,
+   "inset": 0.15,
+   "maxJump": 1.0,
+   "cleanPasses": 3
   },
-  "_why": "Owner's reference (dorsal view): a triangular disc between the ulnar head and the lunate/triquetrum, its apex at the base of the ulnar styloid and its base along the ulnar edge of the radius. The model's own pieces (articular disc, radio-ulnar ligaments) render as blocks. MEASURED (probe_tfcc.py, probe_tfcc2.py, left wrist, world mm): styloid tip (243.4,-11.1,855.6); ulnar head's distal surface z 860.5; radius's ulnar edge from (257.1,-7.5,863.2) dorsally to (257.2,-24.0,865.9) palmarly. A 3mm slab through those corners. Added 19 Oct 2026. SECOND PASS (owner: the disc alone, seen edge-on from behind, does not read as the complex). The ulnocarpal part added, as in the owner's reference: the solid also reaches down to the PROXIMAL surfaces of the lunate and triquetrum (the arm hangs, so a carpal's proximal surface is its HIGHEST: lunate top z 860.8, triquetrum top z 853.2 over x 240-250, y -25 to -14; the first try used their lowest points, their distal ends, and passed through both bones). THIRD PASS (owner: 'still going through bones; it needs to fit the shape by contacting the bones'). The hull is now cut by the ulna, radius, lunate and triquetrum (build.subtract), so what is left meets each bone's surface. Clipped to the convex envelope of those four bones' parts round the joint (build.envelope), so its outer surface runs from bone to bone instead of standing proud of them."
+  "_why": "Owner's reference (dorsal view): the complex lies in the gap between the ulnar head (with the radius's ulnar edge) above and the lunate and triquetrum below. FOURTH PASS (owner: still passing through bones). Built as a gap fill: over the footprint, a vertical line through each point meets the ulna/radius under-surface and the lunate/triquetrum upper surface, and the solid is what lies between (gaps up to 10mm). Its top and bottom ARE those bone surfaces, so it touches both and goes through neither. Footprint (world mm, left wrist): from the ulnar styloid (243.4,-11.1) across to the radius's ulnar edge (257, -6.5 to -25) and back along the triquetrum (241,-26). Earlier passes (a hull through measured corners, then cut by the bones) wrapped round the ulnar head."
  }
 }
