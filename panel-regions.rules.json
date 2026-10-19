@@ -219,40 +219,83 @@
    "Scaphoid bone.r"
   ],
   "rule": {
+   "kind": "ball",
+   "from": {
+    "world": [
+     280.4,
+     -25.6,
+     854.9
+    ]
+   },
+   "width": 0.006,
+   "mirrorX": true,
+   "keepLargest": false,
+   "close": 2,
+   "smoothNormals": 3,
+   "_why": "The tubercle is the scaphoid's palmar, distal, radial prominence: the bone's extreme in that direction on the left hand, mirrored for the right. The atlas's 'Tubercle of scaphoid bone.j' label, snapped to the bone, lands within about 3mm of it. A palmar slab (the first two tries) marked a sliver that wrapped onto the dorsum. Added 19 Oct 2026; point measured in world millimetres with probe_last4.py (+x body left, +y posterior, +z up)."
+  }
+ },
+ "anatomical-snuffbox": {
+  "parentObjects": [
+   "Scaphoid bone.l",
+   "Scaphoid bone.r"
+  ],
+  "rule": {
+   "kind": "ball",
+   "from": {
+    "world": [
+     281.0,
+     -16.0,
+     856.0
+    ]
+   },
+   "width": 0.007,
+   "mirrorX": true,
+   "keepLargest": false,
+   "close": 2,
+   "smoothNormals": 3,
+   "_why": "The snuffbox is a space between the tendons of extensor pollicis longus and brevis/abductor pollicis longus, with no object of its own; the picture marks its FLOOR, the radial (lateral), dorsal side of the scaphoid, which is what is palpated in it. Added 19 Oct 2026; point measured in world millimetres with probe_last4.py (+x body left, +y posterior, +z up)."
+  }
+ },
+ "inferior-articular-process": {
+  "parentObjects": [
+   "Vertebra L4"
+  ],
+  "rule": {
+   "kind": "ball",
+   "from": {
+    "world": [
+     23.5,
+     43.9,
+     995.4
+    ]
+   },
+   "width": 0.008,
+   "mirrorX": true,
+   "keepLargest": false,
+   "close": 2,
+   "smoothNormals": 3,
+   "_why": "The inferior articular processes hang down behind the body, either side of the spinous process: L4's lowest points more than 10mm from the midline and 15mm behind its centre, both sides. The atlas has no anchor for them. Added 19 Oct 2026; point measured in world millimetres with probe_last4.py (+x body left, +y posterior, +z up)."
+  }
+ },
+ "ankle-mortise": {
+  "parentObjects": [
+   "Tibia.l",
+   "Tibia.r",
+   "Fibula.l",
+   "Fibula.r"
+  ],
+  "rule": {
    "kind": "cap",
    "direction": [
     0,
-    -1,
-    0
+    0,
+    -1
    ],
-   "depth": 0.009,
+   "depth": 0.022,
    "close": 2,
    "smoothNormals": 3,
-   "_why": "The tubercle is the palmar prominence at the distal, lateral (radial) end of the scaphoid: its most palmar 9mm, palmar-facing faces only (a 6mm slab was too small to see and wrapped onto the dorsum), distal half and lateral half only. The hand panels show the LEFT hand, whose lateral side is +x. Added 18 Oct 2026 for the Atlas card; the spec's anchor sits off the bone (renders/landmarks-render.log), so the region is grown on the bone instead.",
-   "keepIf": [
-    {
-     "axis": [
-      0,
-      0,
-      1
-     ],
-     "max": 0.0
-    },
-    {
-     "axis": [
-      1,
-      0,
-      0
-     ],
-     "min": 0.0
-    }
-   ],
-   "facing": [
-    0,
-    -1,
-    0
-   ],
-   "facingMin": 0.3
+   "_why": "The mortise is the socket the talus sits in: the tibial plafond and the two malleoli. Painted as the lowest 22mm of the tibia (plafond and medial malleolus) and of the fibula (lateral malleolus), each bone cut from its own lowest point. Added 19 Oct 2026."
   }
  }
 }

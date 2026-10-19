@@ -21,6 +21,8 @@ export interface MusclePanel {
 
 export const MUSCLE_PANELS: MusclePanel[] = [
   { structureId: 'acromioclavicular-joint', region: 'shoulder-arm', subregion: 'shoulder', layer: 'skeletal', width: 2627, height: 900 },
+  { structureId: 'anatomical-snuffbox', region: 'forearm-hand', subregion: 'wrist-hand', layer: 'landmark', width: 1400, height: 1141 },
+  { structureId: 'ankle-mortise', region: 'lower-leg-foot', subregion: 'ankle-foot', layer: 'landmark', width: 1234, height: 1056 },
   { structureId: 'atlas-c1', region: 'back-core', subregion: 'neck', layer: 'skeletal', width: 2148, height: 900 },
   { structureId: 'axis-c2', region: 'back-core', subregion: 'neck', layer: 'skeletal', width: 2700, height: 900 },
   { structureId: 'base-of-fifth-metatarsal', region: 'lower-leg-foot', subregion: 'ankle-foot', layer: 'landmark', width: 1081, height: 1386 },
@@ -49,6 +51,7 @@ export const MUSCLE_PANELS: MusclePanel[] = [
   { structureId: 'head-of-first-metacarpal', region: 'forearm-hand', subregion: 'wrist-hand', layer: 'landmark', width: 1490, height: 1437 },
   { structureId: 'hook-of-hamate', region: 'forearm-hand', subregion: 'wrist-hand', layer: 'landmark', width: 1490, height: 1437 },
   { structureId: 'humerus', region: 'shoulder-arm', subregion: 'shoulder', layer: 'skeletal', width: 1233, height: 806 },
+  { structureId: 'inferior-articular-process', region: 'back-core', subregion: 'spine', layer: 'landmark', width: 1400, height: 251 },
   { structureId: 'intermediate-cuneiform', region: 'lower-leg-foot', subregion: 'ankle-foot', layer: 'landmark', width: 1081, height: 1386 },
   { structureId: 'intervertebral-disc', region: 'back-core', subregion: 'spine', layer: 'landmark', width: 942, height: 751 },
   { structureId: 'jugular-notch', region: 'back-core', subregion: 'torso', layer: 'landmark', width: 1400, height: 514 },
@@ -80,6 +83,7 @@ export const MUSCLE_PANELS: MusclePanel[] = [
   { structureId: 'radius', region: 'forearm-hand', subregion: 'elbow', layer: 'skeletal', width: 898, height: 1387 },
   { structureId: 'ribs', region: 'back-core', subregion: 'torso', layer: 'skeletal', width: 1539, height: 896 },
   { structureId: 'sacrum', region: 'back-core', subregion: 'spine', layer: 'skeletal', width: 2331, height: 900 },
+  { structureId: 'scaphoid-tubercle', region: 'forearm-hand', subregion: 'wrist-hand', layer: 'landmark', width: 1490, height: 1437 },
   { structureId: 'scaphoid', region: 'forearm-hand', subregion: 'wrist-hand', layer: 'landmark', width: 1490, height: 1437 },
   { structureId: 'scapula', region: 'shoulder-arm', subregion: 'shoulder', layer: 'skeletal', width: 1478, height: 858 },
   { structureId: 'second-metacarpal', region: 'forearm-hand', subregion: 'wrist-hand', layer: 'landmark', width: 1490, height: 1437 },

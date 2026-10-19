@@ -895,16 +895,26 @@
    "name": "Anatomical Snuffbox",
    "category": "landmark",
    "region": "forearm-hand",
-   "blenderObjects": [],
-   "resolution": "unresolved"
+   "blenderObjects": [
+    "Scaphoid bone.l",
+    "Scaphoid bone.r"
+   ],
+   "resolution": "region",
+   "note": "19 Oct 2026: framed on the parent bone(s); the highlight is a region grown on it (panel-regions.rules.json)."
   },
   {
    "id": "ankle-mortise",
    "name": "Ankle Mortise",
    "category": "landmark",
    "region": "lower-leg-foot",
-   "blenderObjects": [],
-   "resolution": "unresolved"
+   "blenderObjects": [
+    "Tibia.l",
+    "Tibia.r",
+    "Fibula.l",
+    "Fibula.r"
+   ],
+   "resolution": "region",
+   "note": "19 Oct 2026: framed on the parent bone(s); the highlight is a region grown on it (panel-regions.rules.json)."
   },
   {
    "id": "anterior-arch-atlas",
@@ -1312,8 +1322,11 @@
    "name": "Inferior Articular Process",
    "category": "landmark",
    "region": "back-core",
-   "blenderObjects": [],
-   "resolution": "unresolved"
+   "blenderObjects": [
+    "Vertebra L4"
+   ],
+   "resolution": "region",
+   "note": "19 Oct 2026: framed on the parent bone(s); the highlight is a region grown on it (panel-regions.rules.json)."
   },
   {
    "id": "inferior-costal-facet",
@@ -2032,7 +2045,7 @@
    "anchorObjects": [
     "Tubercle of scaphoid bone.j"
    ],
-   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES. 18 Oct 2026: framed on the parent bone; the highlight is a region grown on it (panel-regions.rules.json)."
+   "note": "Z-Anatomy models this as a label anchor, not geometry — it cannot be highlighted. See ANCHOR_SUFFIXES. 18 Oct 2026: framed on the parent bone; the highlight is a region grown on it (panel-regions.rules.json). 19 Oct 2026: framed on the parent bone(s); the highlight is a region grown on it (panel-regions.rules.json)."
   },
   {
    "id": "spine-of-scapula",

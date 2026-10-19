@@ -71,9 +71,7 @@ const HAND = {
     // Filed as landmarks, but each is a whole bone (18 Oct 2026).
     'first-metacarpal', 'second-metacarpal', 'third-metacarpal', 'fourth-metacarpal', 'fifth-metacarpal',
     // Parts of a bone, painted as regions (panel-regions.rules.json).
-    'hook-of-hamate', 'base-of-first-metacarpal', 'head-of-first-metacarpal',
-    // Not 'scaphoid-tubercle': its rule (panel-regions.rules.json) marks a sliver
-    // that is not clearly the tubercle and wraps onto the dorsum. Needs a probe.
+    'hook-of-hamate', 'scaphoid-tubercle', 'base-of-first-metacarpal', 'head-of-first-metacarpal',
 
   ],
   /** The bones the camera is framed on — the hand itself, wrist to fingertips. */
