@@ -2570,6 +2570,58 @@
    ],
    "resolution": "manual",
    "note": "20 Oct 2026, Atlas card picture: framed on the atlas ligament(s); the painted mesh is a fan of fibres (panel-regions.rules.json)."
+  },
+  {
+   "id": "ulnar-collateral-ligament",
+   "name": "Ulnar collateral ligament",
+   "category": "ligament",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Ulnar collateral ligament.l",
+    "Radial collateral ligament.l",
+    "Annular ligament of radius.l"
+   ],
+   "resolution": "manual",
+   "note": "20 Oct 2026, Atlas card picture: built from measured points (panel-regions.rules.json)."
+  },
+  {
+   "id": "radial-collateral-ligament",
+   "name": "Radial collateral ligament",
+   "category": "ligament",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Ulnar collateral ligament.l",
+    "Radial collateral ligament.l",
+    "Annular ligament of radius.l"
+   ],
+   "resolution": "manual",
+   "note": "20 Oct 2026, Atlas card picture: built from measured points (panel-regions.rules.json)."
+  },
+  {
+   "id": "annular-ligament-of-radius",
+   "name": "Annular ligament of radius",
+   "category": "ligament",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Ulnar collateral ligament.l",
+    "Radial collateral ligament.l",
+    "Annular ligament of radius.l"
+   ],
+   "resolution": "manual",
+   "note": "20 Oct 2026, Atlas card picture: built from measured points (panel-regions.rules.json)."
+  },
+  {
+   "id": "quadrate-ligament",
+   "name": "Quadrate ligament",
+   "category": "ligament",
+   "region": "forearm-hand",
+   "blenderObjects": [
+    "Ulnar collateral ligament.l",
+    "Radial collateral ligament.l",
+    "Annular ligament of radius.l"
+   ],
+   "resolution": "manual",
+   "note": "20 Oct 2026, Atlas card picture: built from measured points (panel-regions.rules.json)."
   }
  ]
 }
