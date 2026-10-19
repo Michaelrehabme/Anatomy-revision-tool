@@ -21,13 +21,12 @@ export interface MusclePanel {
 
 export const MUSCLE_PANELS: MusclePanel[] = [
   { structureId: 'acromioclavicular-joint', region: 'shoulder-arm', subregion: 'shoulder', layer: 'skeletal', width: 2627, height: 900 },
-  { structureId: 'anatomical-snuffbox', region: 'forearm-hand', subregion: 'wrist-hand', layer: 'landmark', width: 1400, height: 1141 },
-  { structureId: 'ankle-mortise', region: 'lower-leg-foot', subregion: 'ankle-foot', layer: 'landmark', width: 1234, height: 1056 },
+  { structureId: 'anatomical-snuffbox', region: 'forearm-hand', subregion: 'wrist-hand', layer: 'landmark', width: 1400, height: 1115 },
   { structureId: 'atlas-c1', region: 'back-core', subregion: 'neck', layer: 'skeletal', width: 2148, height: 900 },
   { structureId: 'axis-c2', region: 'back-core', subregion: 'neck', layer: 'skeletal', width: 2700, height: 900 },
   { structureId: 'base-of-fifth-metatarsal', region: 'lower-leg-foot', subregion: 'ankle-foot', layer: 'landmark', width: 1081, height: 1386 },
   { structureId: 'base-of-first-metacarpal', region: 'forearm-hand', subregion: 'wrist-hand', layer: 'landmark', width: 1490, height: 1437 },
-  { structureId: 'bifid-spinous-process', region: 'back-core', subregion: 'neck', layer: 'landmark', width: 1400, height: 493 },
+  { structureId: 'bifid-spinous-process', region: 'back-core', subregion: 'neck', layer: 'landmark', width: 1400, height: 490 },
   { structureId: 'c7-spinous-process', region: 'back-core', subregion: 'neck', layer: 'landmark', width: 1400, height: 490 },
   { structureId: 'c7-vertebra', region: 'back-core', subregion: 'neck', layer: 'skeletal', width: 2575, height: 900 },
   { structureId: 'calcaneal-tuberosity', region: 'lower-leg-foot', subregion: 'ankle-foot', layer: 'landmark', width: 1081, height: 1386 },

@@ -55,6 +55,10 @@ ap.add_argument("--look", default="studio", choices=["studio", "flat"],
                 help="'studio' is the shared plate look: boneLook's dim world, camera-fixed key and "
                      "fill, occluded ivory bone and the Workbench line pass the muscle turntables "
                      "multiply over every frame. 'flat' is the old white-world panel")
+ap.add_argument("--context", default="",
+                help="comma-separated Blender object names drawn in muscle red beside the subject: "
+                     "soft tissue that is part of what the picture shows without being its subject, "
+                     "such as the three tendons that bound the anatomical snuffbox")
 ap.add_argument("--regions", default="",
                 help="a rules file (panel-regions.rules.json): for the ids it names, the highlight is "
                      "a region grown on the parent bone by landmarkRegions.select_faces, and the "
@@ -409,6 +413,11 @@ if backdrop_only:
 print(f"[bones] baking {len(bone_names)} meshes...", flush=True)
 bone_mesh = bake_world_mesh(bone_names, "panel_bones")
 print(f"[bones] {len(bone_mesh.vertices)} verts", flush=True)
+# Tissue drawn for context, in the red the region plates give a muscle
+# (renderRegionsWithBones.py), so it reads as tissue rather than as the answer.
+context_names = [n for n in a.context.split(",") if n]
+context_mesh = bake_world_mesh(context_names, "panel_context") if context_names else None
+context_mat = principled("panel_context", (0.76, 0.27, 0.25, 1.0), roughness=0.55)
 
 # FRAME ON THE HAND, NOT ON THE MUSCLE INSIDE IT.
 #
@@ -514,6 +523,8 @@ for mid in wanted:
             frame_camera(bmin, bmax, frame * 360.0 / a.frames, a.margin, elev)
             clear_objects()
             link(bone_mesh, "panel_skeleton", bone_mat)
+            if context_mesh is not None:
+                link(context_mesh, "panel_context", context_mat)
             link(mesh, f"panel_{mid}_hi", highlight_mat)
             # Elevation 0 keeps the flat <mid>/view-NN.png layout the compositor
             # and the existing 130 panels already use; anything else gets its own

@@ -907,14 +907,9 @@
    "name": "Ankle Mortise",
    "category": "landmark",
    "region": "lower-leg-foot",
-   "blenderObjects": [
-    "Tibia.l",
-    "Tibia.r",
-    "Fibula.l",
-    "Fibula.r"
-   ],
-   "resolution": "region",
-   "note": "19 Oct 2026: framed on the parent bone(s); the highlight is a region grown on it (panel-regions.rules.json)."
+   "blenderObjects": [],
+   "resolution": "unresolved",
+   "note": "19 Oct 2026 (owner): the mortise is shown as the talocrural joint line; its card uses that joint's pictures (StructureCardBody PICTURE_FROM)."
   },
   {
    "id": "anterior-arch-atlas",
@@ -990,7 +985,11 @@
    "category": "landmark",
    "region": "back-core",
    "blenderObjects": [
-    "Vertebra C4"
+    "Vertebra C2",
+    "Vertebra C3",
+    "Vertebra C4",
+    "Vertebra C5",
+    "Vertebra C6"
    ],
    "resolution": "region",
    "anchorObjects": [

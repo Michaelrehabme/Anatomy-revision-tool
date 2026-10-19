@@ -79,7 +79,11 @@
  },
  "bifid-spinous-process": {
   "parentObjects": [
-   "Vertebra C4"
+   "Vertebra C2",
+   "Vertebra C3",
+   "Vertebra C4",
+   "Vertebra C5",
+   "Vertebra C6"
   ],
   "rule": {
    "kind": "cap",
@@ -91,7 +95,7 @@
    "depth": 0.012,
    "close": 2,
    "smoothNormals": 3,
-   "_why": "The forked tip of a typical cervical spinous process (C4), the posterior 12mm. Added 18 Oct 2026 for the Atlas card; the spec's anchor sits off the bone (renders/landmarks-render.log), so the region is grown on the bone instead."
+   "_why": "The forked tips of the cervical spinous processes, C2 to C6 (owner: the other cervical vertebrae have one too; C7's is usually single and long, its own landmark). The posterior 12mm of each. Added 18 Oct 2026 for the Atlas card; the spec's anchor sits off the bone (renders/landmarks-render.log), so the region is grown on the bone instead."
   }
  },
  "jugular-notch": {
@@ -276,26 +280,6 @@
    "close": 2,
    "smoothNormals": 3,
    "_why": "The inferior articular processes hang down behind the body, either side of the spinous process: L4's lowest points more than 10mm from the midline and 15mm behind its centre, both sides. The atlas has no anchor for them. Added 19 Oct 2026; point measured in world millimetres with probe_last4.py (+x body left, +y posterior, +z up)."
-  }
- },
- "ankle-mortise": {
-  "parentObjects": [
-   "Tibia.l",
-   "Tibia.r",
-   "Fibula.l",
-   "Fibula.r"
-  ],
-  "rule": {
-   "kind": "cap",
-   "direction": [
-    0,
-    0,
-    -1
-   ],
-   "depth": 0.022,
-   "close": 2,
-   "smoothNormals": 3,
-   "_why": "The mortise is the socket the talus sits in: the tibial plafond and the two malleoli. Painted as the lowest 22mm of the tibia (plafond and medial malleolus) and of the fibula (lateral malleolus), each bone cut from its own lowest point. Added 19 Oct 2026."
   }
  }
 }

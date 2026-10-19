@@ -15,6 +15,16 @@ import { LigamentPictureNote, isLigamentPlate } from './LigamentPictureNote';
 const LABEL_STYLE = { font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' } as const;
 
 /**
+ * Structures whose card shows another structure's picture and target, where
+ * that one IS the picture of it. The ankle mortise is the socket of the ankle
+ * joint, and the owner wants it shown as the joint line (19 Oct 2026), which
+ * the talocrural joint's turntable already traces.
+ */
+const PICTURE_FROM: Readonly<Record<string, string>> = {
+  'ankle-mortise': 'talocrural-joint',
+};
+
+/**
  * The picture at the top of a structure's card: the one the quiz shows, which
  * a student can zoom into and turn through its angles (ImageViewer).
  *
@@ -33,7 +43,9 @@ export function StructurePicture({ structure, images, compact = false }: {
       {text}
     </div>
   );
-  const own = images.filter((img) => img.mode === 'single-structure' && img.structureId === structure.id);
+  // A structure drawn with another's picture and target: see PICTURE_FROM.
+  const subject = PICTURE_FROM[structure.id] ?? structure.id;
+  const own = images.filter((img) => img.mode === 'single-structure' && img.structureId === subject);
   // Muscle plates are listed primary angle first (images.seed.ts).
   const image = own[0];
   if (!image) return blank('No image yet');
@@ -45,12 +57,12 @@ export function StructurePicture({ structure, images, compact = false }: {
         <ImageViewer
           image={image}
           frames={frames}
-          subjectId={structure.id}
+          subjectId={subject}
           resetKey={structure.id}
           // A landmark or joint panel is a plain skeleton with its target stored
           // beside it: drawn here, as the quiz draws it, or the card shows an
           // unmarked bone. Pre-highlighted pictures carry no hotspot and are untouched.
-          overlay={(current) => <PromptHighlightOverlay image={current} structureId={structure.id} />}
+          overlay={(current) => <PromptHighlightOverlay image={current} structureId={subject} />}
         />
       </div>
       {isLigamentPlate(image) && <LigamentPictureNote compact={compact} />}

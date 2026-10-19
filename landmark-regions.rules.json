@@ -1314,16 +1314,16 @@
   "from": {
    "world": [
     17.5,
-    62.0,
-    1276.0
+    65.0,
+    1278.5
    ]
   },
-  "width": 0.004,
+  "width": 0.0035,
   "keepLargest": false,
   "close": 2,
   "smoothNormals": 2,
   "mirrorX": true,
-  "_why": "The demifacet at the TOP of the body's posterolateral corner, just in front of the pedicle: the body ends at y~66mm and its upper edge is at z~1276-1280 on T8. Both sides. Measured 19 Oct 2026 (probe_facets.py, world mm). Owner: the three facets' rings overlapped and could not be told apart, and the targets were too big."
+  "_why": "SECOND PASS (owner's plate: on the body's upper rim, right against the pedicle). The demifacet at the TOP of the body's posterolateral corner, moved back to the pedicle's root (y 65mm) and up to the rim: the body ends at y~66mm and its upper edge is at z~1276-1280 on T8. Both sides. Measured 19 Oct 2026 (probe_facets.py, world mm). Owner: the three facets' rings overlapped and could not be told apart, and the targets were too big."
  },
  "inferior-costal-facet": {
   "kind": "ball",
@@ -1374,15 +1374,15 @@
   "kind": "ball",
   "from": {
    "world": [
-    -97.4,
-    12.5,
-    390.9
+    -98.5,
+    6.0,
+    416.0
    ]
   },
-  "width": 0.009,
+  "width": 0.008,
   "keepLargest": false,
   "close": 2,
   "smoothNormals": 2,
-  "_why": "The anterolateral tubercle of the lateral tibial condyle: the atlas's 'Tubercle of iliotibial tract.j' label touches the bone here (the ring placed by anchorOffset sat on it). Measured 19 Oct 2026 (probe_facets.py, world mm). Owner: the three facets' rings overlapped and could not be told apart, and the targets were too big."
+  "_why": "SECOND PASS. Owner's reference plate: on the FRONT of the lateral condyle, between the tibial tuberosity and the fibular head, just below the plateau. MEASURED (probe_gerdy.py, right tibia): tuberosity front at (-83.7,-5.1,399.4), plateau top z 433, anterior surface halfway out to the lateral edge at (-99.4,5.6,417.6). The first pass sat 27mm lower and further back, where the atlas label touches the bone."
  }
 }
