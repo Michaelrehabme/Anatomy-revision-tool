@@ -98,6 +98,8 @@ export function plateFamily(image: AnatomyImageAsset): PlateFamily {
   const id = image.id;
   if (id.startsWith('muscle-')) return id.endsWith('-highlight') ? 'muscle-highlight' : 'muscle-context';
   if (id.startsWith('ligament-')) return id.endsWith('-highlight') ? 'ligament-highlight' : 'ligament-context';
+  // A redrawn ligament's Atlas turntable: the ligament in cyan, like a highlight plate.
+  if (id.startsWith('redraw-')) return 'ligament-highlight';
   if (id.startsWith('joint-')) return 'joint';
   if (id.startsWith('landmark-')) return 'landmark';
   if (id.startsWith('bone-')) return 'bone';

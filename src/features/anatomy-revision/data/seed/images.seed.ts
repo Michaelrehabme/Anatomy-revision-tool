@@ -6,6 +6,7 @@ import { LANDMARK_PANELS } from './landmarkPanels.generated';
 import { SUBREGION_PLATES } from './subRegionPlates.generated';
 import { LIGAMENT_PLATES } from './ligamentPlates.generated';
 import { GAP_PLATES } from './gapPlates.generated';
+import { REDRAW_TURNTABLES } from './redrawTurntables.generated';
 import { MUSCLE_PLATES, layerOfPlate } from './musclePlates.generated';
 
 /**
@@ -394,4 +395,31 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
       licence: Z_ANATOMY_LICENCE,
     };
   }),
+
+  // --- Redrawn ligaments: the Atlas card's turntable ---
+  // Fibres laid on the bones from the owner's lecture slides (20 Oct 2026),
+  // rendered at every 30 degrees. LAST, so a flashcard, which takes the first
+  // single-structure picture, keeps the ligament plate: the owner asked for
+  // these on the Atlas only. The card asks for them by id (StructureCardBody).
+  ...REDRAW_TURNTABLES.flatMap((t) =>
+    t.frames.map((f): AnatomyImageAsset => {
+      const marker = `a${String(f.angle).padStart(3, '0')}`;
+      return {
+        id: `redraw-${t.structureId}-${marker}-plate`,
+        filePath: `/anatomy/redraws/${t.structureId}-${marker}.webp`,
+        slideTitle: `${t.name} — ${f.view[0].toUpperCase()}${f.view.slice(1)} View`,
+        mode: 'single-structure',
+        structureId: t.structureId,
+        region: t.region,
+        subregion: t.subregion,
+        view: f.view,
+        layer: 'ligament',
+        width: t.width,
+        height: t.height,
+        hotspots: [],
+        credit: Z_ANATOMY_CREDIT,
+        licence: Z_ANATOMY_LICENCE,
+      };
+    }),
+  ),
 ];
