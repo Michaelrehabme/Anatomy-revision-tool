@@ -94,7 +94,6 @@ export const STRUCTURE_SOURCES: Readonly<Record<string, readonly [readonly numbe
   "cuboid": [[2, 6], []],
   "cuneocuboid-interosseous-ligament": [[2], []],
   "cuneometatarsal-interosseous-ligaments": [[2], []],
-  "deep-part-of-tibial-collateral-ligament": [[2, 7], []],
   "deep-transverse-metacarpal-ligament": [[2], []],
   "deep-transverse-metatarsal-ligament": [[2], []],
   "deltoid": [[0, 1], [3, 5]],

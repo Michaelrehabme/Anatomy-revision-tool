@@ -145,8 +145,8 @@ Sat by a free account whose free area is Knee. Built from that area alone.
 | 11 | Head of Fibula | landmark | name the picture: Which structure is shown? | Head of Fibula | Neck of Fibula; Lateral Condyle of Tibia; Tibial Tuberosity |
 | 12 | Anterior cruciate ligament | ligament | name the ligament from its attachments: What ligament is this? | Anterior cruciate ligament | Posterior cruciate ligament; Transverse ligament of knee; Oblique popliteal ligament |
 | 13 | Medial meniscus | ligament | name the ligament from its attachments: What ligament is this? | Medial meniscus | Lateral meniscus; Transverse ligament of knee; Posterior cruciate ligament |
-| 14 | Fibular collateral ligament | ligament | name the ligament from its attachments: What ligament is this? | Fibular collateral ligament | Oblique popliteal ligament; Meniscopatellar ligament; Posterior cruciate ligament |
-| 15 | Superficial part of tibial collateral ligament | ligament | name the ligament from its attachments: What ligament is this? | Superficial part of tibial collateral ligament | Fibular collateral ligament; Oblique popliteal ligament; Anterior cruciate ligament |
+| 14 | Lateral collateral ligament | ligament | name the ligament from its attachments: What ligament is this? | Lateral collateral ligament | Oblique popliteal ligament; Meniscopatellar ligament; Posterior cruciate ligament |
+| 15 | Medial collateral ligament | ligament | name the ligament from its attachments: What ligament is this? | Medial collateral ligament | Lateral collateral ligament; Oblique popliteal ligament; Anterior cruciate ligament |
 
 ## Ankle & Foot
 

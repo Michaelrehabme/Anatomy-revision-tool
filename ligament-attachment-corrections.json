@@ -1691,23 +1691,6 @@
    "checked": "2026-09-22",
    "sites": "Named by the part of the bone where the work quoted here or the description names one and the app holds it as a structure: 10 Oct 2026. An end with no such structure keeps the whole bone."
   },
-  "deep-part-of-tibial-collateral-ligament": {
-   "attachmentStructureIds": [
-    "medial-condyle-tibia",
-    "medial-epicondyle-femur"
-   ],
-   "description": "A capsular thickening lying deep to the superficial band, running from the distal femur to the proximal tibia by way of the medial meniscus, to which it is firmly bound. Its meniscofemoral and meniscotibial parts anchor the medial meniscus and steady the medial side of the knee.",
-   "confirmed": true,
-   "grade": "verified",
-   "source": "Re-checked against a non-competitor work, 2026-09-23: the attachment pair was confirmed, the citation replaced",
-   "sources": [
-    "Tibial collateral ligament - Wikipedia (text from Gray's Anatomy, public domain). https://en.wikipedia.org/wiki/Tibial_collateral_ligament"
-   ],
-   "quote": "It is attached proximally to the medial epicondyle of the femur, immediately below the adductor tubercle; below to the medial condyle of the tibia and medial surface of its body.",
-   "why": "Bony ends confirmed as femur and tibia; its middle attachment is the medial meniscus, which the app does not model. The app does not model Medial meniscus; the nearest structure stands in.",
-   "checked": "2026-09-23",
-   "sites": "Named by the part of the bone where the work quoted here or the description names one and the app holds it as a structure: 10 Oct 2026. An end with no such structure keeps the whole bone."
-  },
   "fibular-collateral-ligament": {
    "attachmentStructureIds": [
     "lateral-epicondyle-femur",
@@ -1797,7 +1780,7 @@
     "medial-epicondyle-femur",
     "medial-condyle-tibia"
    ],
-   "description": "A long flat band from just above the medial epicondyle of the femur down to the medial condyle and medial shaft of the tibia, well below the joint line. It is the main restraint to valgus (knock-kneed) stress at the knee.",
+   "description": "A long flat band from just above the medial epicondyle of the femur down to the medial condyle and medial shaft of the tibia, well below the joint line. Its deeper fibres blend with the joint capsule and are bound to the medial meniscus. It is the main restraint to valgus (knock-kneed) stress at the knee.",
    "confirmed": true,
    "grade": "verified",
    "source": "Re-checked against a non-competitor work, 2026-09-23: the attachment pair was confirmed, the citation replaced",
@@ -1805,7 +1788,7 @@
     "Tibial collateral ligament - Wikipedia (text from Gray's Anatomy, public domain). https://en.wikipedia.org/wiki/Tibial_collateral_ligament"
    ],
    "quote": "It is attached proximally to the medial epicondyle of the femur, immediately below the adductor tubercle; below to the medial condyle of the tibia and medial surface of its body.",
-   "why": "Seed is right: femur above, tibia below, with no meniscal attachment for the superficial part.",
+   "why": "Femur above, tibia below. Asked as one ligament, the MCL, with its deep part folded in (owner, 20 Oct 2026); the deep part's middle attachment, the medial meniscus, is not modelled as an attachment.",
    "checked": "2026-09-23",
    "sites": "Named by the part of the bone where the work quoted here or the description names one and the app holds it as a structure: 10 Oct 2026. An end with no such structure keeps the whole bone."
   },

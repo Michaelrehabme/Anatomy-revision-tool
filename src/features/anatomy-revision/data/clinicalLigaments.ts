@@ -47,7 +47,6 @@ export const CLINICAL_LIGAMENTS: ReadonlySet<string> = new Set([
   'anterior-cruciate-ligament',
   'posterior-cruciate-ligament',
   'superficial-part-of-tibial-collateral-ligament',
-  'deep-part-of-tibial-collateral-ligament',
   'fibular-collateral-ligament',
   'medial-meniscus',
   'lateral-meniscus',

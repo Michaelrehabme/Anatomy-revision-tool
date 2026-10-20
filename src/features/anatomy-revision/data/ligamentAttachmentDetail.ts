@@ -21,7 +21,6 @@ export const LIGAMENT_ATTACHMENT_DETAIL: Readonly<Record<string, Readonly<Record
   "collateral-metatarsophalangeal-ligaments": { "metatarsals": "tubercle on the side of the head", "phalanges-proximal-foot": "adjoining end (base) of the phalanx" },
   "conoid-ligament": { "clavicle": "conoid tubercle (coracoid tuberosity)", "coracoid-process": "base of coracoid process" },
   "cuneocuboid-interosseous-ligament": { "cuboid": "rough part of its medial surface", "lateral-cuneiform": "rough non-articular area of lateral surface" },
-  "deep-part-of-tibial-collateral-ligament": { "medial-condyle-tibia": "just below medial tibial joint line", "medial-epicondyle-femur": "just distal to superficial MCL origin" },
   "deep-transverse-metacarpal-ligament": { "metacarpals": "palmar surfaces of the heads of metacarpals 2-5" },
   "deep-transverse-metatarsal-ligament": { "metatarsals": "heads of the metatarsals" },
   "descending-part-of-iliofemoral-ligament": { "acetabulum": "iliac part of acetabular margin", "aiis": "lower part of AIIS", "intertrochanteric-line": "lower part of intertrochanteric line" },

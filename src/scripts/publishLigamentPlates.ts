@@ -193,11 +193,20 @@ const ligaments = ALL_STRUCTURES.filter(isLigament);
 const byId = new Map(ligaments.map((l) => [l.id, l]));
 /** Atlas mesh base name -> seeded ligament id, for naming the neighbours. */
 const idByMeshName = new Map<string, string>();
+/**
+ * Atlas parts asked as one ligament (owner, 20 Oct 2026): the deep part of the
+ * MCL is not seeded, and a tap on it names the MCL. Same table as
+ * generateLigamentSeed.ts.
+ */
+const MERGED_INTO: Record<string, string> = {
+  'deep-part-of-tibial-collateral-ligament': 'superficial-part-of-tibial-collateral-ligament',
+};
+const asAsked = (id: string) => MERGED_INTO[id] ?? id;
 {
   const mapping: { id: string; blenderObjects: string[] }[] = JSON.parse(
     readFileSync(`${ROOT}/ta2-mapping-ligaments.resolved.json`, 'utf8'),
   ).mapping;
-  for (const m of mapping) for (const b of m.blenderObjects) idByMeshName.set(b.replace(/\.(o\d?)?[lr]$/, ''), m.id);
+  for (const m of mapping) for (const b of m.blenderObjects) idByMeshName.set(b.replace(/\.(o\d?)?[lr]$/, ''), asAsked(m.id));
   // The mapping file was last regenerated for the first tranche alone, so it
   // names 32 ligaments and the other 111 would be scenery on any plate
   // published now. The render specs say which meshes each ligament is drawn
@@ -205,10 +214,10 @@ const idByMeshName = new Map<string, string>();
   // ignored, as an unmapped mesh always was.
   for (const file of ['ligament-tranche1.spec.json', 'ligament-tranche2.spec.json', 'ligament-buried.spec.json']) {
     for (const e of readSpec(`${ROOT}/${file}`)) {
-      if (!byId.has(e.key)) continue;
+      if (!byId.has(asAsked(e.key))) continue;
       for (const b of e.objects ?? []) {
         const base = b.replace(/\.(o\d?)?[lr]$/, '');
-        if (!idByMeshName.has(base)) idByMeshName.set(base, e.key);
+        if (!idByMeshName.has(base)) idByMeshName.set(base, asAsked(e.key));
       }
     }
   }
@@ -257,6 +266,17 @@ function traceNeighbours(dir: string, targetId: string): IdPass {
     if (n < 40) continue;
     const t = maskToPolygons(mask, png.width, png.height, { minComponentPx: 40, epsilon: 1.5, maxVertices: 80 });
     if (!t.polygons.length || t.area < MIN_TARGET_AREA) continue;
+    // A merged part on its whole's own plate is the target, not a neighbour.
+    if (structureId === targetId) continue;
+    // Two parts asked as one ligament are one hotspot.
+    const same = out.find((h) => h.structureId === structureId);
+    if (same) {
+      const area = same.area + t.area;
+      same.centroid = [0, 1].map((k) => (same.centroid[k] * same.area + t.centroid[k] * t.area) / area) as [number, number];
+      same.polygons = [...same.polygons, ...t.polygons];
+      same.area = area;
+      continue;
+    }
     out.push({ structureId, polygons: t.polygons, area: t.area, centroid: t.centroid });
   }
   return {

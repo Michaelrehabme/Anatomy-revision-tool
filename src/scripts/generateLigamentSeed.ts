@@ -116,7 +116,7 @@ const REGION_FOR: Record<SubRegion, Region> = {
 
 const ABBREVIATIONS: Record<string, string> = {
   'anterior-cruciate-ligament': 'ACL', 'posterior-cruciate-ligament': 'PCL', 'anterior-talofibular-ligament': 'ATFL',
-  'calcaneofibular-ligament': 'CFL', 'posterior-talofibular-ligament': 'PTFL', 'tibial-collateral-ligament': 'MCL',
+  'calcaneofibular-ligament': 'CFL', 'posterior-talofibular-ligament': 'PTFL', 'superficial-part-of-tibial-collateral-ligament': 'MCL',
   'fibular-collateral-ligament': 'LCL', 'acromioclavicular-ligament': 'AC ligament', 'ulnar-collateral-ligament': 'UCL',
 };
 
@@ -130,16 +130,33 @@ const ABBREVIATIONS: Record<string, string> = {
  * answer matching, so a student typing the clinical name is now right too —
  * which is the better reason for them to be here.
  *
- * Only unambiguous synonyms: one name, one structure. "Medial collateral
- * ligament" is deliberately absent because the seed splits it into a deep and
- * a superficial part, and the name would match both.
+ * Only unambiguous synonyms: one name, one structure.
  */
 const SYNONYMS: Record<string, string[]> = {
   'nuchal-ligament': ['Ligamentum nuchae'],
   'plantar-calcaneonavicular-ligament': ['Spring ligament'],
-  'fibular-collateral-ligament': ['Lateral collateral ligament'],
+  'superficial-part-of-tibial-collateral-ligament': ['TCL', 'Tibial collateral ligament'],
+  'fibular-collateral-ligament': ['FCL', 'Fibular collateral ligament'],
   'ligamenta-flava': ['Ligamentum flavum'],
   'interspinous-ligaments': ['Interspinous ligament'],
+};
+
+/**
+ * Asked by the name students are taught, not the atlas's (owner, 20 Oct 2026:
+ * "TCL should be called MCL ... same with the FCL"). The id stays, so what a
+ * student has learnt about it stays theirs.
+ */
+const DISPLAY_NAMES: Record<string, string> = {
+  'superficial-part-of-tibial-collateral-ligament': 'Medial collateral ligament',
+  'fibular-collateral-ligament': 'Lateral collateral ligament',
+};
+
+/**
+ * Atlas parts the app asks as one ligament: the part is not seeded, and its
+ * meshes render and name as the whole (publishLigamentPlates.ts does the same).
+ */
+const MERGED_INTO: Record<string, string> = {
+  'deep-part-of-tibial-collateral-ligament': 'superficial-part-of-tibial-collateral-ligament',
 };
 
 interface Correction {
@@ -240,6 +257,7 @@ const dropped: string[] = [];
 for (const l of byName.values()) {
   const colls = [...l.colls];
   if (colls.some((c) => EXCLUDE.includes(c))) continue;
+  if (MERGED_INTO[kebab(l.name)]) continue;
   if (l.best < MIN_VISIBLE) continue;
   const rule = SUBREGION_RULES.find(([re]) => colls.some((c) => re.test(c)));
   // A few sit only in a limb collection; the name says where they are.
@@ -302,7 +320,7 @@ const entries = chosen.map((l) => {
   const notes = fix?.why ? [fix.why, fix.source ? `(${fix.source})` : ''].filter(Boolean).join(' ') : null;
   return `  {
     id: ${q(l.id)},
-    name: ${q(l.name)},
+    name: ${q(DISPLAY_NAMES[l.id] ?? l.name)},
     category: 'ligament',
     region: ${q(l.region)},
     subregion: ${q(l.subregion)},

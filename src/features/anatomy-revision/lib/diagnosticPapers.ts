@@ -141,9 +141,41 @@ export interface DiagnosticPaperSpec {
    * attachments is asked without any part of a bone sourced after this day
    * (data/ligamentAttachmentDetail.ts LIGAMENT_ATTACHMENT_DETAIL_ADDED), so
    * new sourcing never changes a paper someone has sat. Version 4 carries
-   * 2026-10-18; a paper without one uses everything.
+   * 2026-10-18; a paper without one uses everything. It also puts back a
+   * name changed after it (RENAMED_SINCE), which is why version 3 carries
+   * the day it was published, 2026-10-06.
    */
   asOf?: string;
+}
+
+/**
+ * Structures renamed after a paper was published: id -> [the name before,
+ * the day it changed]. A paper whose `asOf` is earlier asks under the old
+ * name, right answer and wrong answers alike, so a follow-up reads exactly
+ * as its baseline did.
+ *
+ * 20 Oct 2026 (owner): the knee's collaterals are asked by the names students
+ * are taught, MCL and LCL, with the deep part of the MCL folded into it.
+ */
+export const RENAMED_SINCE: Readonly<Record<string, readonly [was: string, on: string]>> = {
+  'superficial-part-of-tibial-collateral-ligament': ['Superficial part of tibial collateral ligament', '2026-10-20'],
+  'fibular-collateral-ligament': ['Fibular collateral ligament', '2026-10-20'],
+};
+
+/** The content as a paper published on `asOf` named it. */
+function namedAsOf(content: PaperContent, asOf: string | undefined): PaperContent {
+  if (!asOf) return content;
+  const old = Object.entries(RENAMED_SINCE).filter(([, [, on]]) => on > asOf);
+  if (!old.length) return content;
+  const indexById = new Map(content.indexById);
+  const structuresById = new Map(content.structuresById);
+  for (const [id, [was]] of old) {
+    const entry = indexById.get(id);
+    if (entry) indexById.set(id, { ...entry, name: was });
+    const facts = structuresById.get(id);
+    if (facts) structuresById.set(id, { ...facts, name: was });
+  }
+  return { ...content, indexById, structuresById };
 }
 
 export interface DiagnosticPapersFile {
@@ -367,9 +399,10 @@ export interface BuiltPaper {
  */
 export function buildPaperQuestions(
   paper: DiagnosticPaperSpec,
-  content: PaperContent,
+  current: PaperContent,
   replayIds?: readonly string[],
 ): BuiltPaper {
+  const content = namedAsOf(current, paper.asOf);
   const scope = paperScope(paper.id);
   const problems: string[] = [];
   const questions: MCQQuestion[] = [];
