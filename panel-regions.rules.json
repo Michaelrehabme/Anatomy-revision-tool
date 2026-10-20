@@ -1255,16 +1255,17 @@
        1094.5
       ]
      ],
-     "count": 34,
-     "radius": 0.0011,
-     "samples": 18,
-     "lift": 0.15,
+     "count": 52,
+     "radius": 0.00075,
+     "samples": 24,
+     "lift": 0.1,
      "smoothAcross": 2,
      "smooth": {
-      "voxel": 0.18,
+      "voxel": 0.13,
       "iterations": 2,
-      "factor": 0.5
-     }
+      "factor": 0.45
+     },
+     "smoothPath": 6
     },
     {
      "kind": "fibres",
@@ -1299,20 +1300,21 @@
        1087.5
       ]
      ],
-     "count": 16,
-     "radius": 0.0011,
-     "samples": 18,
-     "lift": 0.15,
+     "count": 24,
+     "radius": 0.00075,
+     "samples": 24,
+     "lift": 0.1,
      "smooth": {
-      "voxel": 0.18,
+      "voxel": 0.13,
       "iterations": 2,
-      "factor": 0.5
+      "factor": 0.45
      },
-     "smoothAcross": 2
+     "smoothAcross": 2,
+     "smoothPath": 6
     }
    ]
   },
-  "_why": "UCL as its anterior band (medial epicondyle to the coronoid process) and posterior band (to the medial olecranon), as on the owner's slide. Added 20 Oct 2026 from the elbow slides (elbow deck p8-p15). MEASURED (probe_elbow.py, left elbow, world mm: +x lateral, +y posterior): medial epicondyle (183.5,35.6,1107), lateral epicondyle (248.8,43.3,1112.8), coronoid (218,22.5,1091.2), olecranon medial edge (203.2,52,1098.3), radial head centre (238.1,29,1087.9) radius 13.2mm, top z 1093.3, radial notch (226.3,28.6,1084.4). SECOND PASS (owner's diagram, 20 Oct): three bundles - anterior (medial epicondyle to the coronoid process), posterior (a fan from the epicondyle to the medial olecranon) and transverse (along the ulna from the coronoid to the olecranon). THIRD PASS (owner: combine the broad sheet with the separate parts): the broad continuous spans again, drawn as individual fibres with no remeshing, so each bundle's fibre direction shows where the bundles meet. FOURTH PASS (owner: merge the two looks). Each bundle a smooth solid band (the broad render) with fine fibre lines laid along its surface (the fibred render); the three bands kept apart. The fibre lines (grainBuild) sit on the bands' surface in a darker cyan. FIFTH PASS (owner's reference image, straight medial view): one broad continuous fan from the medial epicondyle spreading over the ulna from the coronoid to the olecranon, with the transverse band along its base, solid with a fibre grain. SIXTH PASS (owner: why are the grains like that?): the separate grain cords dipped in and out of the band; the grain is now the band's own surface - overlapping fibres remeshed finely and only lightly smoothed, so each fibre leaves a shallow ridge."
+  "_why": "UCL as its anterior band (medial epicondyle to the coronoid process) and posterior band (to the medial olecranon), as on the owner's slide. Added 20 Oct 2026 from the elbow slides (elbow deck p8-p15). MEASURED (probe_elbow.py, left elbow, world mm: +x lateral, +y posterior): medial epicondyle (183.5,35.6,1107), lateral epicondyle (248.8,43.3,1112.8), coronoid (218,22.5,1091.2), olecranon medial edge (203.2,52,1098.3), radial head centre (238.1,29,1087.9) radius 13.2mm, top z 1093.3, radial notch (226.3,28.6,1084.4). SECOND PASS (owner's diagram, 20 Oct): three bundles - anterior (medial epicondyle to the coronoid process), posterior (a fan from the epicondyle to the medial olecranon) and transverse (along the ulna from the coronoid to the olecranon). THIRD PASS (owner: combine the broad sheet with the separate parts): the broad continuous spans again, drawn as individual fibres with no remeshing, so each bundle's fibre direction shows where the bundles meet. FOURTH PASS (owner: merge the two looks). Each bundle a smooth solid band (the broad render) with fine fibre lines laid along its surface (the fibred render); the three bands kept apart. The fibre lines (grainBuild) sit on the bands' surface in a darker cyan. FIFTH PASS (owner's reference image, straight medial view): one broad continuous fan from the medial epicondyle spreading over the ulna from the coronoid to the olecranon, with the transverse band along its base, solid with a fibre grain. SIXTH PASS (owner: why are the grains like that?): the separate grain cords dipped in and out of the band; the grain is now the band's own surface - overlapping fibres remeshed finely and only lightly smoothed, so each fibre leaves a shallow ridge. SEVENTH PASS (owner: grain must match the fibres, bone-level realism): finer fibres (0.75mm, 52 across the fan, 24 in the transverse band) so every ridge is one fibre, and rendered with ambient occlusion (--ao) like the bone."
  },
  "radial-collateral-ligament": {
   "build": {

@@ -59,6 +59,10 @@ ap.add_argument("--context", default="",
                 help="comma-separated Blender object names drawn in muscle red beside the subject: "
                      "soft tissue that is part of what the picture shows without being its subject, "
                      "such as the three tendons that bound the anatomical snuffbox")
+ap.add_argument("--ao", action="store_true",
+                help="shade the highlighted structure the way boneLook shades bone: ambient occlusion "
+                     "darkens its hollows, so the grooves between a ligament's fibres read as the bone's "
+                     "crevices do (owner, 20 Oct 2026: 'the same level of realism as the bones')")
 ap.add_argument("--regions", default="",
                 help="a rules file (panel-regions.rules.json): for the ids it names, the highlight is "
                      "a region grown on the parent bone by landmarkRegions.select_faces, and the "
@@ -176,6 +180,22 @@ if APP_HIGHLIGHT:
         _hb = highlight_mat.node_tree.nodes["Principled BSDF"]
         _hb.inputs["Emission Color"].default_value = (0.0, 0.85, 1.0, 1)
         _hb.inputs["Emission Strength"].default_value = 0.35
+    except KeyError:
+        pass
+if a.ao:
+    _nt = highlight_mat.node_tree
+    _b = _nt.nodes["Principled BSDF"]
+    _ao = _nt.nodes.new("ShaderNodeAmbientOcclusion")
+    _ao.samples = 16
+    _ao.inputs["Distance"].default_value = 0.004
+    _ao.inputs["Color"].default_value = highlight_rgb
+    _g = _nt.nodes.new("ShaderNodeGamma")
+    _g.inputs["Gamma"].default_value = 2.2
+    _nt.links.new(_ao.outputs["Color"], _g.inputs["Color"])
+    _nt.links.new(_g.outputs["Color"], _b.inputs["Base Color"])
+    _b.inputs["Roughness"].default_value = 0.42
+    try:
+        _b.inputs["Emission Strength"].default_value = 0.12 if APP_HIGHLIGHT else 0.0
     except KeyError:
         pass
 bone_mat = (boneLook.bone_material("panel_bone") if STUDIO
