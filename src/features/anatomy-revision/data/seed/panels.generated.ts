@@ -116,6 +116,6 @@ export const MUSCLE_PANELS: MusclePanel[] = [
   { structureId: 'triquetrum', region: 'forearm-hand', subregion: 'wrist-hand', layer: 'landmark', width: 1490, height: 1437 },
   { structureId: 'twelfth-rib', region: 'back-core', subregion: 'torso', layer: 'landmark', width: 2314, height: 900 },
   { structureId: 'ulna', region: 'forearm-hand', subregion: 'elbow', layer: 'skeletal', width: 898, height: 1387 },
-  { structureId: 'ulnar-collateral-ligament', region: 'shoulder-arm', subregion: 'elbow', layer: 'skeletal', width: 806, height: 1400 },
+  { structureId: 'ulnar-collateral-ligament', region: 'shoulder-arm', subregion: 'elbow', layer: 'skeletal', width: 1021, height: 1400 },
   { structureId: 'xiphoid-process', region: 'back-core', subregion: 'torso', layer: 'landmark', width: 2413, height: 900 },
 ];
