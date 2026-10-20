@@ -12917,7 +12917,7 @@
    "to": [
     "Manubrium of sternum"
    ],
-   "count": 22,
+   "count": 40,
    "radius": 0.00075,
    "samples": 24,
    "smoothPath": 6,
@@ -12927,9 +12927,35 @@
     "voxel": 0.13,
     "iterations": 2,
     "factor": 0.45
-   }
+   },
+   "mirrorX": true,
+   "near": 5.0,
+   "fromSpan": [
+    [
+     19.0,
+     -47.0,
+     1414.0
+    ],
+    [
+     16.0,
+     -50.0,
+     1392.0
+    ]
+   ],
+   "toSpan": [
+    [
+     24.0,
+     -55.0,
+     1399.0
+    ],
+    [
+     13.0,
+     -56.0,
+     1387.0
+    ]
+   ]
   },
-  "_why": " Added 20 Oct 2026 (shoulder slides, owner's deck p11, p15, p18): fibres laid between the footprints of the atlas's own ligament mesh on each bone, with the UCL finish (render with --ao)."
+  "_why": " Added 20 Oct 2026 (shoulder slides, owner's deck p11, p15, p18): fibres laid between the footprints of the atlas's own ligament mesh on each bone, with the UCL finish (render with --ao). 20 Oct (owner): both sides (build.mirrorX), and wider footprints so the fan reads as broadly as on the slide (shoulder deck p18). SPANS MEASURED 20 Oct (probe_sc.py, left SC joint, world mm; -y anterior): clavicle's medial end x 11-23, y -50..-27, z 1389-1416; the manubrium's clavicular notch x 12-26, y -56..-32, z 1386-1404. Broad fans over the joint as on the owner's slide (shoulder deck p18), both sides."
  },
  "posterior-sternoclavicular-ligament": {
   "build": {
@@ -12943,7 +12969,7 @@
    "to": [
     "Manubrium of sternum"
    ],
-   "count": 22,
+   "count": 40,
    "radius": 0.00075,
    "samples": 24,
    "smoothPath": 6,
@@ -12953,9 +12979,35 @@
     "voxel": 0.13,
     "iterations": 2,
     "factor": 0.45
-   }
+   },
+   "mirrorX": true,
+   "near": 7.0,
+   "fromSpan": [
+    [
+     19.0,
+     -28.0,
+     1414.0
+    ],
+    [
+     16.0,
+     -27.5,
+     1392.0
+    ]
+   ],
+   "toSpan": [
+    [
+     24.0,
+     -32.0,
+     1399.0
+    ],
+    [
+     13.0,
+     -31.5,
+     1387.0
+    ]
+   ]
   },
-  "_why": " Added 20 Oct 2026 (shoulder slides, owner's deck p11, p15, p18): fibres laid between the footprints of the atlas's own ligament mesh on each bone, with the UCL finish (render with --ao)."
+  "_why": " Added 20 Oct 2026 (shoulder slides, owner's deck p11, p15, p18): fibres laid between the footprints of the atlas's own ligament mesh on each bone, with the UCL finish (render with --ao). 20 Oct (owner): both sides (build.mirrorX), and wider footprints so the fan reads as broadly as on the slide (shoulder deck p18). SPANS MEASURED 20 Oct (probe_sc.py, left SC joint, world mm; -y anterior): clavicle's medial end x 11-23, y -50..-27, z 1389-1416; the manubrium's clavicular notch x 12-26, y -56..-32, z 1386-1404. Broad fans over the joint as on the owner's slide (shoulder deck p18), both sides."
  },
  "costoclavicular-ligament": {
   "build": {
@@ -12980,9 +13032,11 @@
     "voxel": 0.13,
     "iterations": 2,
     "factor": 0.45
-   }
+   },
+   "mirrorX": true,
+   "near": 5.0
   },
-  "_why": " Added 20 Oct 2026 (shoulder slides, owner's deck p11, p15, p18): fibres laid between the footprints of the atlas's own ligament mesh on each bone, with the UCL finish (render with --ao)."
+  "_why": " Added 20 Oct 2026 (shoulder slides, owner's deck p11, p15, p18): fibres laid between the footprints of the atlas's own ligament mesh on each bone, with the UCL finish (render with --ao). 20 Oct (owner): both sides (build.mirrorX), and wider footprints so the fan reads as broadly as on the slide (shoulder deck p18)."
  },
  "interclavicular-ligament": {
   "build": {
@@ -12996,7 +13050,7 @@
    "to": [
     "Manubrium of sternum"
    ],
-   "count": 16,
+   "count": 26,
    "radius": 0.00075,
    "samples": 24,
    "smoothPath": 6,
@@ -13006,8 +13060,34 @@
     "voxel": 0.13,
     "iterations": 2,
     "factor": 0.45
-   }
+   },
+   "mirrorX": true,
+   "near": 5.0,
+   "fromSpan": [
+    [
+     14.0,
+     -44.0,
+     1416.0
+    ],
+    [
+     13.5,
+     -33.0,
+     1415.0
+    ]
+   ],
+   "toSpan": [
+    [
+     0.5,
+     -46.0,
+     1405.5
+    ],
+    [
+     0.5,
+     -36.0,
+     1405.0
+    ]
+   ]
   },
-  "_why": " Added 20 Oct 2026 (shoulder slides, owner's deck p11, p15, p18): fibres laid between the footprints of the atlas's own ligament mesh on each bone, with the UCL finish (render with --ao)."
+  "_why": " Added 20 Oct 2026 (shoulder slides, owner's deck p11, p15, p18): fibres laid between the footprints of the atlas's own ligament mesh on each bone, with the UCL finish (render with --ao). 20 Oct (owner): both sides (build.mirrorX), and wider footprints so the fan reads as broadly as on the slide (shoulder deck p18). SPANS MEASURED 20 Oct (probe_sc.py, left SC joint, world mm; -y anterior): clavicle's medial end x 11-23, y -50..-27, z 1389-1416; the manubrium's clavicular notch x 12-26, y -56..-32, z 1386-1404. Broad fans over the joint as on the owner's slide (shoulder deck p18), both sides."
  }
 }

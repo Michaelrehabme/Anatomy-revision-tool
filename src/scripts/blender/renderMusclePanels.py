@@ -63,6 +63,10 @@ ap.add_argument("--ao", action="store_true",
                 help="shade the highlighted structure the way boneLook shades bone: ambient occlusion "
                      "darkens its hollows, so the grooves between a ligament's fibres read as the bone's "
                      "crevices do (owner, 20 Oct 2026: 'the same level of realism as the bones')")
+ap.add_argument("--exposure", type=float, default=0.0,
+                help="stops of extra exposure. The trunk's ribs and girdle shade a shoulder far more "
+                     "than a limb is shaded (owner, 20 Oct 2026: 'quite dark and shadowed')")
+ap.add_argument("--fill", type=float, default=0.0, help="extra fill-light energy, for the same reason")
 ap.add_argument("--regions", default="",
                 help="a rules file (panel-regions.rules.json): for the ids it names, the highlight is "
                      "a region grown on the parent bone by landmarkRegions.select_faces, and the "
@@ -117,6 +121,9 @@ if STUDIO:
     sun, fill = boneLook.add_lights(scene)
     scene.view_settings.view_transform = "Standard"
     scene.view_settings.look = "None"
+    scene.view_settings.exposure = a.exposure
+    if a.fill and fill is not None:
+        fill.data.energy += a.fill
     _sh = scene.display.shading
     _sh.light = "FLAT"
     _sh.color_type = "SINGLE"
@@ -645,6 +652,14 @@ def build_mesh(spec, mesh_name):
             bpy.data.meshes.remove(pm)
     else:
         raise ValueError("unknown build kind: " + spec["kind"])
+    # BOTH SIDES. A midline joint has a ligament each side (owner, 20 Oct
+    # 2026: the sternoclavicular ligaments); built on the left, mirrored.
+    if spec.get("mirrorX"):
+        geom = out.verts[:] + out.edges[:] + out.faces[:]
+        dup = bmesh.ops.duplicate(out, geom=geom)
+        for v in [g for g in dup["geom"] if isinstance(g, bmesh.types.BMVert)]:
+            v.co.x = -v.co.x
+        bmesh.ops.reverse_faces(out, faces=[g for g in dup["geom"] if isinstance(g, bmesh.types.BMFace)])
     bmesh.ops.recalc_face_normals(out, faces=out.faces)
     me = bpy.data.meshes.new(mesh_name)
     out.to_mesh(me)
