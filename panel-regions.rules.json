@@ -13895,7 +13895,13 @@
     "factor": 0.45
    }
   },
-  "_why": " Added 20 Oct 2026 (hip and knee batch, owner's Hip and Knee deck): fibres between the footprints of the atlas's own ligament on each bone, the UCL finish."
+  "_why": " Added 20 Oct 2026 (hip and knee batch, owner's Hip and Knee deck): fibres between the footprints of the atlas's own ligament on each bone, the UCL finish. 20 Oct 2026 (owner: still has ligaments coming over each other): the arcuate, posterior ligament of the fibular head, LCL and oblique popliteal cross it at the fibular head, so they are not drawn on its picture.",
+  "notNeighbours": [
+   "arcuate-popliteal-ligament",
+   "posterior-ligament-of-fibular-head",
+   "fibular-collateral-ligament",
+   "oblique-popliteal-ligament"
+  ]
  },
  "anterior-ligament-of-fibular-head": {
   "build": {
