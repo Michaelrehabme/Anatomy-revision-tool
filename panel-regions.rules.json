@@ -13093,53 +13093,103 @@
  "descending-part-of-iliofemoral-ligament": {
   "build": {
    "kind": "fibres",
-   "ligament": [
-    "Descending part of iliofemoral ligament.l"
-   ],
+   "ligament": [],
    "from": [
     "Hip bone.l"
    ],
    "to": [
     "Femur.l"
    ],
-   "count": 24,
+   "over": [
+    "Articular capsule of hip joint.l"
+   ],
    "radius": 0.00075,
    "samples": 24,
    "smoothPath": 6,
    "smoothAcross": 2,
-   "lift": 0.1,
+   "lift": 0.6,
+   "count": 24,
    "smooth": {
     "voxel": 0.13,
     "iterations": 2,
     "factor": 0.45
    },
-   "mirrorX": true
+   "mirrorX": true,
+   "fromSpan": [
+    [
+     88,
+     -24,
+     886
+    ],
+    [
+     100,
+     -25,
+     887
+    ]
+   ],
+   "toSpan": [
+    [
+     112,
+     1,
+     826
+    ],
+    [
+     90,
+     6,
+     792
+    ]
+   ]
   },
-  "_why": " Added 20 Oct 2026 (hip and knee batch, owner's Hip and Knee deck): fibres between the footprints of the atlas's own ligament on each bone, the UCL finish. BOTH SIDES (owner, 20 Oct 2026): the pelvis is drawn whole, so the ligament is drawn on each side.",
+  "_why": " Added 20 Oct 2026 (hip and knee batch, owner's Hip and Knee deck): fibres between the footprints of the atlas's own ligament on each bone, the UCL finish. BOTH SIDES (owner, 20 Oct 2026): the pelvis is drawn whole, so the ligament is drawn on each side. REBUILT 20 Oct 2026 (owner: still not fixed; Gray's fig. 339): the atlas's parts are 8mm straps, so the Y is drawn from measured points instead - the stem at the anterior inferior iliac spine (atlas label tip, mirrored: 94,-24,889) and the acetabular rim beside it, the lateral limb to the upper intertrochanteric line (greater-trochanter end 131,-4,856, from the landmark rule), the medial limb to its lower part (to 89,6,790), laid over the hip capsule.",
   "contextBuild": [
    {
     "kind": "fibres",
-    "ligament": [
-     "Transverse part of iliofemoral ligament.l"
-    ],
+    "ligament": [],
     "from": [
      "Hip bone.l"
     ],
     "to": [
      "Femur.l"
     ],
-    "count": 22,
+    "over": [
+     "Articular capsule of hip joint.l"
+    ],
     "radius": 0.00075,
     "samples": 24,
     "smoothPath": 6,
     "smoothAcross": 2,
-    "lift": 0.1,
+    "lift": 0.6,
+    "count": 24,
     "smooth": {
      "voxel": 0.13,
      "iterations": 2,
      "factor": 0.45
     },
-    "mirrorX": true
+    "mirrorX": true,
+    "fromSpan": [
+     [
+      95,
+      -25,
+      889
+     ],
+     [
+      110,
+      -19,
+      885
+     ]
+    ],
+    "toSpan": [
+     [
+      133,
+      -3,
+      855
+     ],
+     [
+      112,
+      1,
+      826
+     ]
+    ]
    }
   ],
   "notNeighbours": [
@@ -13151,53 +13201,103 @@
  "transverse-part-of-iliofemoral-ligament": {
   "build": {
    "kind": "fibres",
-   "ligament": [
-    "Transverse part of iliofemoral ligament.l"
-   ],
+   "ligament": [],
    "from": [
     "Hip bone.l"
    ],
    "to": [
     "Femur.l"
    ],
-   "count": 22,
+   "over": [
+    "Articular capsule of hip joint.l"
+   ],
    "radius": 0.00075,
    "samples": 24,
    "smoothPath": 6,
    "smoothAcross": 2,
-   "lift": 0.1,
+   "lift": 0.6,
+   "count": 24,
    "smooth": {
     "voxel": 0.13,
     "iterations": 2,
     "factor": 0.45
    },
-   "mirrorX": true
+   "mirrorX": true,
+   "fromSpan": [
+    [
+     95,
+     -25,
+     889
+    ],
+    [
+     110,
+     -19,
+     885
+    ]
+   ],
+   "toSpan": [
+    [
+     133,
+     -3,
+     855
+    ],
+    [
+     112,
+     1,
+     826
+    ]
+   ]
   },
-  "_why": " Added 20 Oct 2026 (hip and knee batch, owner's Hip and Knee deck): fibres between the footprints of the atlas's own ligament on each bone, the UCL finish. BOTH SIDES (owner, 20 Oct 2026): the pelvis is drawn whole, so the ligament is drawn on each side.",
+  "_why": " Added 20 Oct 2026 (hip and knee batch, owner's Hip and Knee deck): fibres between the footprints of the atlas's own ligament on each bone, the UCL finish. BOTH SIDES (owner, 20 Oct 2026): the pelvis is drawn whole, so the ligament is drawn on each side. REBUILT 20 Oct 2026 (owner: still not fixed; Gray's fig. 339): the atlas's parts are 8mm straps, so the Y is drawn from measured points instead - the stem at the anterior inferior iliac spine (atlas label tip, mirrored: 94,-24,889) and the acetabular rim beside it, the lateral limb to the upper intertrochanteric line (greater-trochanter end 131,-4,856, from the landmark rule), the medial limb to its lower part (to 89,6,790), laid over the hip capsule.",
   "contextBuild": [
    {
     "kind": "fibres",
-    "ligament": [
-     "Descending part of iliofemoral ligament.l"
-    ],
+    "ligament": [],
     "from": [
      "Hip bone.l"
     ],
     "to": [
      "Femur.l"
     ],
-    "count": 24,
+    "over": [
+     "Articular capsule of hip joint.l"
+    ],
     "radius": 0.00075,
     "samples": 24,
     "smoothPath": 6,
     "smoothAcross": 2,
-    "lift": 0.1,
+    "lift": 0.6,
+    "count": 24,
     "smooth": {
      "voxel": 0.13,
      "iterations": 2,
      "factor": 0.45
     },
-    "mirrorX": true
+    "mirrorX": true,
+    "fromSpan": [
+     [
+      88,
+      -24,
+      886
+     ],
+     [
+      100,
+      -25,
+      887
+     ]
+    ],
+    "toSpan": [
+     [
+      112,
+      1,
+      826
+     ],
+     [
+      90,
+      6,
+      792
+     ]
+    ]
    }
   ],
   "notNeighbours": [
@@ -13686,28 +13786,53 @@
  "oblique-popliteal-ligament": {
   "build": {
    "kind": "fibres",
-   "ligament": [
-    "Oblique popliteal ligament.l"
-   ],
+   "ligament": [],
    "from": [
-    "Femur.l"
-   ],
-   "to": [
     "Tibia.l"
    ],
-   "count": 26,
+   "to": [
+    "Femur.l"
+   ],
+   "over": [
+    "Articular capsule of knee joint.l"
+   ],
+   "fromSpan": [
+    [
+     48,
+     60,
+     416
+    ],
+    [
+     60,
+     64,
+     410
+    ]
+   ],
+   "toSpan": [
+    [
+     90,
+     62,
+     480
+    ],
+    [
+     108,
+     58,
+     470
+    ]
+   ],
+   "count": 24,
    "radius": 0.00075,
    "samples": 24,
    "smoothPath": 6,
    "smoothAcross": 2,
-   "lift": 0.1,
+   "lift": 0.4,
    "smooth": {
     "voxel": 0.13,
     "iterations": 2,
     "factor": 0.45
    }
   },
-  "_why": " Added 20 Oct 2026 (hip and knee batch, owner's Hip and Knee deck): fibres between the footprints of the atlas's own ligament on each bone, the UCL finish."
+  "_why": " Added 20 Oct 2026 (hip and knee batch, owner's Hip and Knee deck): fibres between the footprints of the atlas's own ligament on each bone, the UCL finish. REBUILT 20 Oct 2026 (owner rejected; Gray's fig. 346): snapped to the bones it fell into the intercondylar notch, so it is laid over the back of the knee capsule instead, from the posteromedial tibia (semimembranosus insertion, atlas end 52,59,412) up and laterally to the back of the lateral femoral condyle (atlas end 96,36,483, moved out to the capsule's surface)."
  },
  "arcuate-popliteal-ligament": {
   "build": {
@@ -13727,14 +13852,17 @@
    "samples": 24,
    "smoothPath": 6,
    "smoothAcross": 2,
-   "lift": 0.1,
+   "lift": 0.4,
    "smooth": {
     "voxel": 0.13,
     "iterations": 2,
     "factor": 0.45
-   }
+   },
+   "over": [
+    "Articular capsule of knee joint.l"
+   ]
   },
-  "_why": " Added 20 Oct 2026 (hip and knee batch, owner's Hip and Knee deck): fibres between the footprints of the atlas's own ligament on each bone, the UCL finish."
+  "_why": " Added 20 Oct 2026 (hip and knee batch, owner's Hip and Knee deck): fibres between the footprints of the atlas's own ligament on each bone, the UCL finish. 20 Oct 2026: laid over the knee capsule, not into the notch."
  },
  "popliteofibular-ligament": {
   "build": {
@@ -13847,54 +13975,106 @@
    "parts": [
     {
      "kind": "fibres",
-     "ligament": [
-      "Descending part of iliofemoral ligament.l"
-     ],
+     "ligament": [],
      "from": [
       "Hip bone.l"
      ],
      "to": [
       "Femur.l"
      ],
-     "count": 24,
+     "over": [
+      "Articular capsule of hip joint.l"
+     ],
      "radius": 0.00075,
      "samples": 24,
      "smoothPath": 6,
      "smoothAcross": 2,
-     "lift": 0.1,
+     "lift": 0.6,
+     "count": 24,
      "smooth": {
       "voxel": 0.13,
       "iterations": 2,
       "factor": 0.45
-     }
+     },
+     "mirrorX": false,
+     "fromSpan": [
+      [
+       95,
+       -25,
+       889
+      ],
+      [
+       110,
+       -19,
+       885
+      ]
+     ],
+     "toSpan": [
+      [
+       133,
+       -3,
+       855
+      ],
+      [
+       112,
+       1,
+       826
+      ]
+     ]
     },
     {
      "kind": "fibres",
-     "ligament": [
-      "Transverse part of iliofemoral ligament.l"
-     ],
+     "ligament": [],
      "from": [
       "Hip bone.l"
      ],
      "to": [
       "Femur.l"
      ],
-     "count": 22,
+     "over": [
+      "Articular capsule of hip joint.l"
+     ],
      "radius": 0.00075,
      "samples": 24,
      "smoothPath": 6,
      "smoothAcross": 2,
-     "lift": 0.1,
+     "lift": 0.6,
+     "count": 24,
      "smooth": {
       "voxel": 0.13,
       "iterations": 2,
       "factor": 0.45
-     }
+     },
+     "mirrorX": false,
+     "fromSpan": [
+      [
+       88,
+       -24,
+       886
+      ],
+      [
+       100,
+       -25,
+       887
+      ]
+     ],
+     "toSpan": [
+      [
+       112,
+       1,
+       826
+      ],
+      [
+       90,
+       6,
+       792
+      ]
+     ]
     }
    ],
    "mirrorX": true
   },
-  "_why": "Both parts of the Y. Added 20 Oct 2026 (hip and knee batch, owner's Hip and Knee deck): fibres between the footprints of the atlas's own ligament on each bone, the UCL finish. BOTH SIDES (owner, 20 Oct 2026): the pelvis is drawn whole, so the ligament is drawn on each side.",
+  "_why": "Both parts of the Y. Added 20 Oct 2026 (hip and knee batch, owner's Hip and Knee deck): fibres between the footprints of the atlas's own ligament on each bone, the UCL finish. BOTH SIDES (owner, 20 Oct 2026): the pelvis is drawn whole, so the ligament is drawn on each side. REBUILT 20 Oct 2026 (owner: still not fixed; Gray's fig. 339): the atlas's parts are 8mm straps, so the Y is drawn from measured points instead - the stem at the anterior inferior iliac spine (atlas label tip, mirrored: 94,-24,889) and the acetabular rim beside it, the lateral limb to the upper intertrochanteric line (greater-trochanter end 131,-4,856, from the landmark rule), the medial limb to its lower part (to 89,6,790), laid over the hip capsule.",
   "notNeighbours": [
    "descending-part-of-iliofemoral-ligament",
    "transverse-part-of-iliofemoral-ligament"
