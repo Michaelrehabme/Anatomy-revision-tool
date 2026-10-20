@@ -2455,9 +2455,7 @@
    "region": "hip-thigh",
    "blenderObjects": [
     "Descending part of iliofemoral ligament.l",
-    "Descending part of iliofemoral ligament.r",
-    "Transverse part of iliofemoral ligament.l",
-    "Transverse part of iliofemoral ligament.r"
+    "Transverse part of iliofemoral ligament.l"
    ],
    "resolution": "manual",
    "note": "19 Oct 2026, Atlas card picture. Both parts of the Y-ligament."
@@ -2468,9 +2466,9 @@
    "category": "ligament",
    "region": "hip-thigh",
    "blenderObjects": [
-    "Patellar ligament.or",
-    "Patellar ligament.er",
-    "Patella.r"
+    "Patellar ligament.ol",
+    "Patellar ligament.el",
+    "Patella.l"
    ],
    "resolution": "manual",
    "note": "19 Oct 2026, Atlas card picture. Framed on its attachment patches; the painted mesh is their hull (panel-regions.rules.json)."
@@ -2805,7 +2803,414 @@
     "Glenoid labrum.l"
    ],
    "resolution": "manual",
-   "note": "20 Oct 2026, Atlas card picture: framed on the atlas ligament; painted as fibres (panel-regions.rules.json)."
+   "note": "20 Oct 2026, Atlas turntable."
+  },
+  {
+   "id": "acetabular-labrum",
+   "name": "Acetabular labrum",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Acetabular labrum.l"
+   ],
+   "resolution": "manual",
+   "note": "20 Oct 2026, Atlas turntable."
+  },
+  {
+   "id": "descending-part-of-iliofemoral-ligament",
+   "name": "Descending part of iliofemoral ligament",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Descending part of iliofemoral ligament.l"
+   ],
+   "resolution": "manual",
+   "note": "20 Oct 2026, Atlas turntable."
+  },
+  {
+   "id": "iliolumbar-ligament",
+   "name": "Iliolumbar ligament",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Iliolumbar ligament.l"
+   ],
+   "resolution": "manual",
+   "note": "20 Oct 2026, Atlas turntable."
+  },
+  {
+   "id": "inferior-pubic-ligament",
+   "name": "Inferior pubic ligament",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Inferior pubic ligament"
+   ],
+   "resolution": "manual",
+   "note": "20 Oct 2026, Atlas turntable."
+  },
+  {
+   "id": "ischiofemoral-ligament",
+   "name": "Ischiofemoral ligament",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Ischiofemoral ligament.l"
+   ],
+   "resolution": "manual",
+   "note": "20 Oct 2026, Atlas turntable."
+  },
+  {
+   "id": "ligament-of-head-of-femur",
+   "name": "Ligament of head of femur",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Ligament of head of femur.l"
+   ],
+   "resolution": "manual",
+   "note": "20 Oct 2026, Atlas turntable."
+  },
+  {
+   "id": "obturator-membrane",
+   "name": "Obturator membrane",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Obturator membrane.l"
+   ],
+   "resolution": "manual",
+   "note": "20 Oct 2026, Atlas turntable."
+  },
+  {
+   "id": "pubofemoral-ligament",
+   "name": "Pubofemoral ligament",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Pubofemoral ligament.l"
+   ],
+   "resolution": "manual",
+   "note": "20 Oct 2026, Atlas turntable."
+  },
+  {
+   "id": "sacrospinous-ligament",
+   "name": "Sacrospinous ligament",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Sacrospinous ligament.l"
+   ],
+   "resolution": "manual",
+   "note": "20 Oct 2026, Atlas turntable."
+  },
+  {
+   "id": "sacrotuberous-ligament",
+   "name": "Sacrotuberous ligament",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Sacrotuberous ligament.l"
+   ],
+   "resolution": "manual",
+   "note": "20 Oct 2026, Atlas turntable."
+  },
+  {
+   "id": "superior-pubic-ligament",
+   "name": "Superior pubic ligament",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Superior pubic ligament"
+   ],
+   "resolution": "manual",
+   "note": "20 Oct 2026, Atlas turntable."
+  },
+  {
+   "id": "transverse-acetabular-ligament",
+   "name": "Transverse acetabular ligament",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Transverse acetabular ligament.l"
+   ],
+   "resolution": "manual",
+   "note": "20 Oct 2026, Atlas turntable."
+  },
+  {
+   "id": "transverse-part-of-iliofemoral-ligament",
+   "name": "Transverse part of iliofemoral ligament",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Transverse part of iliofemoral ligament.l"
+   ],
+   "resolution": "manual",
+   "note": "20 Oct 2026, Atlas turntable."
+  },
+  {
+   "id": "inguinal-ligament",
+   "name": "Inguinal ligament",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Inguinal ligament.l"
+   ],
+   "resolution": "manual",
+   "note": "20 Oct 2026, Atlas turntable."
+  },
+  {
+   "id": "anterior-cruciate-ligament",
+   "name": "Anterior cruciate ligament",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Anterior cruciate ligament.l"
+   ],
+   "resolution": "manual",
+   "note": "20 Oct 2026, Atlas turntable."
+  },
+  {
+   "id": "anterior-ligament-of-fibular-head",
+   "name": "Anterior ligament of fibular head",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Anterior ligament of fibular head.l"
+   ],
+   "resolution": "manual",
+   "note": "20 Oct 2026, Atlas turntable."
+  },
+  {
+   "id": "arcuate-popliteal-ligament",
+   "name": "Arcuate popliteal ligament",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Arcuate popliteal ligament.l"
+   ],
+   "resolution": "manual",
+   "note": "20 Oct 2026, Atlas turntable."
+  },
+  {
+   "id": "deep-part-of-tibial-collateral-ligament",
+   "name": "Deep part of tibial collateral ligament",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Deep part of tibial collateral ligament.l"
+   ],
+   "resolution": "manual",
+   "note": "20 Oct 2026, Atlas turntable."
+  },
+  {
+   "id": "fibular-collateral-ligament",
+   "name": "Fibular collateral ligament",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Fibular collateral ligament.l"
+   ],
+   "resolution": "manual",
+   "note": "20 Oct 2026, Atlas turntable."
+  },
+  {
+   "id": "interosseous-membrane-of-leg",
+   "name": "Interosseous membrane of leg",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Interosseous membrane of leg.l"
+   ],
+   "resolution": "manual",
+   "note": "20 Oct 2026, Atlas turntable."
+  },
+  {
+   "id": "lateral-meniscus",
+   "name": "Lateral meniscus",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Lateral meniscus.l"
+   ],
+   "resolution": "manual",
+   "note": "20 Oct 2026, Atlas turntable."
+  },
+  {
+   "id": "medial-meniscus",
+   "name": "Medial meniscus",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Medial meniscus.l"
+   ],
+   "resolution": "manual",
+   "note": "20 Oct 2026, Atlas turntable."
+  },
+  {
+   "id": "meniscopatellar-ligament",
+   "name": "Meniscopatellar ligament",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Meniscopatellar ligament.l"
+   ],
+   "resolution": "manual",
+   "note": "20 Oct 2026, Atlas turntable."
+  },
+  {
+   "id": "oblique-popliteal-ligament",
+   "name": "Oblique popliteal ligament",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Oblique popliteal ligament.l"
+   ],
+   "resolution": "manual",
+   "note": "20 Oct 2026, Atlas turntable."
+  },
+  {
+   "id": "popliteofibular-ligament",
+   "name": "Popliteofibular ligament",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Popliteofibular ligament.l"
+   ],
+   "resolution": "manual",
+   "note": "20 Oct 2026, Atlas turntable."
+  },
+  {
+   "id": "posterior-cruciate-ligament",
+   "name": "Posterior cruciate ligament",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Posterior cruciate ligament.l"
+   ],
+   "resolution": "manual",
+   "note": "20 Oct 2026, Atlas turntable."
+  },
+  {
+   "id": "posterior-ligament-of-fibular-head",
+   "name": "Posterior ligament of fibular head",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Posterior ligament of fibular head.l"
+   ],
+   "resolution": "manual",
+   "note": "20 Oct 2026, Atlas turntable."
+  },
+  {
+   "id": "superficial-part-of-tibial-collateral-ligament",
+   "name": "Superficial part of tibial collateral ligament",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Superficial part of tibial collateral ligament.l"
+   ],
+   "resolution": "manual",
+   "note": "20 Oct 2026, Atlas turntable."
+  },
+  {
+   "id": "transverse-ligament-of-knee",
+   "name": "Transverse ligament of knee",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Transverse ligament of knee.l"
+   ],
+   "resolution": "manual",
+   "note": "20 Oct 2026, Atlas turntable."
+  },
+  {
+   "id": "anterior-sacro-iliac-ligament",
+   "name": "Anterior sacro iliac ligament",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Anterior sacro-iliac ligament.l"
+   ],
+   "resolution": "manual",
+   "note": "20 Oct 2026, Atlas turntable."
+  },
+  {
+   "id": "interosseous-sacro-iliac-ligament",
+   "name": "Interosseous sacro iliac ligament",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Interosseous sacro-iliac ligament.l"
+   ],
+   "resolution": "manual",
+   "note": "20 Oct 2026, Atlas turntable."
+  },
+  {
+   "id": "posterior-sacro-iliac-ligament",
+   "name": "Posterior sacro iliac ligament",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Posterior sacro-iliac ligament.l"
+   ],
+   "resolution": "manual",
+   "note": "20 Oct 2026, Atlas turntable."
+  },
+  {
+   "id": "posterior-meniscotibial-ligament-lateral-meniscus",
+   "name": "Posterior meniscotibial ligament lateral meniscus",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Posterior meniscotibial ligament (Lateral meniscus).l"
+   ],
+   "resolution": "manual",
+   "note": "20 Oct 2026, Atlas turntable."
+  },
+  {
+   "id": "posterior-meniscotibial-ligament-medial-meniscus",
+   "name": "Posterior meniscotibial ligament medial meniscus",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Posterior meniscotibial ligament (Medial meniscus).l"
+   ],
+   "resolution": "manual",
+   "note": "20 Oct 2026, Atlas turntable."
+  },
+  {
+   "id": "anterior-meniscotibial-ligament-lateral-meniscus",
+   "name": "Anterior meniscotibial ligament lateral meniscus",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Anterior meniscotibial ligament (Lateral meniscus).l"
+   ],
+   "resolution": "manual",
+   "note": "20 Oct 2026, Atlas turntable."
+  },
+  {
+   "id": "anterior-meniscotibial-ligament-medial-meniscus",
+   "name": "Anterior meniscotibial ligament medial meniscus",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Anterior meniscotibial ligament (Medial meniscus).l"
+   ],
+   "resolution": "manual",
+   "note": "20 Oct 2026, Atlas turntable."
+  },
+  {
+   "id": "iliotibial-band",
+   "name": "Iliotibial band",
+   "category": "ligament",
+   "region": "hip-thigh",
+   "blenderObjects": [
+    "Iliotibial tract.l"
+   ],
+   "resolution": "manual",
+   "note": "20 Oct 2026, Atlas turntable."
   }
  ]
 }

@@ -399,8 +399,8 @@
   "build": {
    "kind": "hull",
    "objects": [
-    "Patellar ligament.or",
-    "Patellar ligament.er"
+    "Patellar ligament.ol",
+    "Patellar ligament.el"
    ]
   },
   "_why": "The atlas has only the ligament's two attachment patches (.o on the patella's apex, .e on the tibial tuberosity); the ligament is the solid spanning them. The right knee only: a hull over both knees' patches spans the gap between the legs. Added 19 Oct 2026 (owner: build them from measured points; probe_atlas.py / probe_atlas2.py, world mm)."
@@ -13089,5 +13089,784 @@
    ]
   },
   "_why": " Added 20 Oct 2026 (shoulder slides, owner's deck p11, p15, p18): fibres laid between the footprints of the atlas's own ligament mesh on each bone, with the UCL finish (render with --ao). 20 Oct (owner): both sides (build.mirrorX), and wider footprints so the fan reads as broadly as on the slide (shoulder deck p18). SPANS MEASURED 20 Oct (probe_sc.py, left SC joint, world mm; -y anterior): clavicle's medial end x 11-23, y -50..-27, z 1389-1416; the manubrium's clavicular notch x 12-26, y -56..-32, z 1386-1404. Broad fans over the joint as on the owner's slide (shoulder deck p18), both sides."
+ },
+ "descending-part-of-iliofemoral-ligament": {
+  "build": {
+   "kind": "fibres",
+   "ligament": [
+    "Descending part of iliofemoral ligament.l"
+   ],
+   "from": [
+    "Hip bone.l"
+   ],
+   "to": [
+    "Femur.l"
+   ],
+   "count": 24,
+   "radius": 0.00075,
+   "samples": 24,
+   "smoothPath": 6,
+   "smoothAcross": 2,
+   "lift": 0.1,
+   "smooth": {
+    "voxel": 0.13,
+    "iterations": 2,
+    "factor": 0.45
+   }
+  },
+  "_why": " Added 20 Oct 2026 (hip and knee batch, owner's Hip and Knee deck): fibres between the footprints of the atlas's own ligament on each bone, the UCL finish.",
+  "contextBuild": [
+   {
+    "kind": "fibres",
+    "ligament": [
+     "Transverse part of iliofemoral ligament.l"
+    ],
+    "from": [
+     "Hip bone.l"
+    ],
+    "to": [
+     "Femur.l"
+    ],
+    "count": 22,
+    "radius": 0.00075,
+    "samples": 24,
+    "smoothPath": 6,
+    "smoothAcross": 2,
+    "lift": 0.1,
+    "smooth": {
+     "voxel": 0.13,
+     "iterations": 2,
+     "factor": 0.45
+    }
+   }
+  ]
+ },
+ "transverse-part-of-iliofemoral-ligament": {
+  "build": {
+   "kind": "fibres",
+   "ligament": [
+    "Transverse part of iliofemoral ligament.l"
+   ],
+   "from": [
+    "Hip bone.l"
+   ],
+   "to": [
+    "Femur.l"
+   ],
+   "count": 22,
+   "radius": 0.00075,
+   "samples": 24,
+   "smoothPath": 6,
+   "smoothAcross": 2,
+   "lift": 0.1,
+   "smooth": {
+    "voxel": 0.13,
+    "iterations": 2,
+    "factor": 0.45
+   }
+  },
+  "_why": " Added 20 Oct 2026 (hip and knee batch, owner's Hip and Knee deck): fibres between the footprints of the atlas's own ligament on each bone, the UCL finish.",
+  "contextBuild": [
+   {
+    "kind": "fibres",
+    "ligament": [
+     "Descending part of iliofemoral ligament.l"
+    ],
+    "from": [
+     "Hip bone.l"
+    ],
+    "to": [
+     "Femur.l"
+    ],
+    "count": 24,
+    "radius": 0.00075,
+    "samples": 24,
+    "smoothPath": 6,
+    "smoothAcross": 2,
+    "lift": 0.1,
+    "smooth": {
+     "voxel": 0.13,
+     "iterations": 2,
+     "factor": 0.45
+    }
+   }
+  ]
+ },
+ "ischiofemoral-ligament": {
+  "build": {
+   "kind": "fibres",
+   "ligament": [
+    "Ischiofemoral ligament.l"
+   ],
+   "from": [
+    "Hip bone.l"
+   ],
+   "to": [
+    "Femur.l"
+   ],
+   "count": 24,
+   "radius": 0.00075,
+   "samples": 24,
+   "smoothPath": 6,
+   "smoothAcross": 2,
+   "lift": 0.1,
+   "smooth": {
+    "voxel": 0.13,
+    "iterations": 2,
+    "factor": 0.45
+   }
+  },
+  "_why": " Added 20 Oct 2026 (hip and knee batch, owner's Hip and Knee deck): fibres between the footprints of the atlas's own ligament on each bone, the UCL finish."
+ },
+ "pubofemoral-ligament": {
+  "build": {
+   "kind": "fibres",
+   "ligament": [
+    "Pubofemoral ligament.l"
+   ],
+   "from": [
+    "Hip bone.l"
+   ],
+   "to": [
+    "Femur.l"
+   ],
+   "count": 20,
+   "radius": 0.00075,
+   "samples": 24,
+   "smoothPath": 6,
+   "smoothAcross": 2,
+   "lift": 0.1,
+   "smooth": {
+    "voxel": 0.13,
+    "iterations": 2,
+    "factor": 0.45
+   }
+  },
+  "_why": " Added 20 Oct 2026 (hip and knee batch, owner's Hip and Knee deck): fibres between the footprints of the atlas's own ligament on each bone, the UCL finish."
+ },
+ "iliolumbar-ligament": {
+  "build": {
+   "kind": "fibres",
+   "ligament": [
+    "Iliolumbar ligament.l"
+   ],
+   "from": [
+    "Hip bone.l"
+   ],
+   "to": [
+    "Vertebra L5",
+    "Vertebra L4"
+   ],
+   "count": 18,
+   "radius": 0.00075,
+   "samples": 24,
+   "smoothPath": 6,
+   "smoothAcross": 2,
+   "lift": 0.1,
+   "smooth": {
+    "voxel": 0.13,
+    "iterations": 2,
+    "factor": 0.45
+   }
+  },
+  "_why": " Added 20 Oct 2026 (hip and knee batch, owner's Hip and Knee deck): fibres between the footprints of the atlas's own ligament on each bone, the UCL finish."
+ },
+ "sacrotuberous-ligament": {
+  "build": {
+   "kind": "fibres",
+   "ligament": [
+    "Sacrotuberous ligament.l"
+   ],
+   "from": [
+    "Sacrum"
+   ],
+   "to": [
+    "Hip bone.l"
+   ],
+   "count": 30,
+   "radius": 0.00075,
+   "samples": 24,
+   "smoothPath": 6,
+   "smoothAcross": 2,
+   "lift": 0.1,
+   "smooth": {
+    "voxel": 0.13,
+    "iterations": 2,
+    "factor": 0.45
+   }
+  },
+  "_why": " Added 20 Oct 2026 (hip and knee batch, owner's Hip and Knee deck): fibres between the footprints of the atlas's own ligament on each bone, the UCL finish."
+ },
+ "sacrospinous-ligament": {
+  "build": {
+   "kind": "fibres",
+   "ligament": [
+    "Sacrospinous ligament.l"
+   ],
+   "from": [
+    "Sacrum"
+   ],
+   "to": [
+    "Hip bone.l"
+   ],
+   "count": 24,
+   "radius": 0.00075,
+   "samples": 24,
+   "smoothPath": 6,
+   "smoothAcross": 2,
+   "lift": 0.1,
+   "smooth": {
+    "voxel": 0.13,
+    "iterations": 2,
+    "factor": 0.45
+   }
+  },
+  "_why": " Added 20 Oct 2026 (hip and knee batch, owner's Hip and Knee deck): fibres between the footprints of the atlas's own ligament on each bone, the UCL finish."
+ },
+ "anterior-sacro-iliac-ligament": {
+  "build": {
+   "kind": "fibres",
+   "ligament": [
+    "Anterior sacro-iliac ligament.l"
+   ],
+   "from": [
+    "Sacrum"
+   ],
+   "to": [
+    "Hip bone.l"
+   ],
+   "count": 28,
+   "radius": 0.00075,
+   "samples": 24,
+   "smoothPath": 6,
+   "smoothAcross": 2,
+   "lift": 0.1,
+   "smooth": {
+    "voxel": 0.13,
+    "iterations": 2,
+    "factor": 0.45
+   }
+  },
+  "_why": " Added 20 Oct 2026 (hip and knee batch, owner's Hip and Knee deck): fibres between the footprints of the atlas's own ligament on each bone, the UCL finish."
+ },
+ "posterior-sacro-iliac-ligament": {
+  "build": {
+   "kind": "fibres",
+   "ligament": [
+    "Posterior sacro-iliac ligament.l"
+   ],
+   "from": [
+    "Sacrum"
+   ],
+   "to": [
+    "Hip bone.l"
+   ],
+   "count": 30,
+   "radius": 0.00075,
+   "samples": 24,
+   "smoothPath": 6,
+   "smoothAcross": 2,
+   "lift": 0.1,
+   "smooth": {
+    "voxel": 0.13,
+    "iterations": 2,
+    "factor": 0.45
+   }
+  },
+  "_why": " Added 20 Oct 2026 (hip and knee batch, owner's Hip and Knee deck): fibres between the footprints of the atlas's own ligament on each bone, the UCL finish."
+ },
+ "interosseous-sacro-iliac-ligament": {
+  "build": {
+   "kind": "fibres",
+   "ligament": [
+    "Interosseous sacro-iliac ligament.l"
+   ],
+   "from": [
+    "Sacrum"
+   ],
+   "to": [
+    "Hip bone.l"
+   ],
+   "count": 20,
+   "radius": 0.00075,
+   "samples": 24,
+   "smoothPath": 6,
+   "smoothAcross": 2,
+   "lift": 0.1,
+   "smooth": {
+    "voxel": 0.13,
+    "iterations": 2,
+    "factor": 0.45
+   }
+  },
+  "_why": " Added 20 Oct 2026 (hip and knee batch, owner's Hip and Knee deck): fibres between the footprints of the atlas's own ligament on each bone, the UCL finish."
+ },
+ "inguinal-ligament": {
+  "build": {
+   "kind": "fibres",
+   "ligament": [
+    "Inguinal ligament.l"
+   ],
+   "from": [
+    "Hip bone.l"
+   ],
+   "to": [
+    "Hip bone.l"
+   ],
+   "count": 24,
+   "radius": 0.00075,
+   "samples": 24,
+   "smoothPath": 6,
+   "smoothAcross": 2,
+   "lift": 0.1,
+   "smooth": {
+    "voxel": 0.13,
+    "iterations": 2,
+    "factor": 0.45
+   }
+  },
+  "_why": " Added 20 Oct 2026 (hip and knee batch, owner's Hip and Knee deck): fibres between the footprints of the atlas's own ligament on each bone, the UCL finish."
+ },
+ "anterior-cruciate-ligament": {
+  "build": {
+   "kind": "fibres",
+   "ligament": [
+    "Anterior cruciate ligament.l"
+   ],
+   "from": [
+    "Tibia.l"
+   ],
+   "to": [
+    "Femur.l"
+   ],
+   "count": 30,
+   "radius": 0.00075,
+   "samples": 24,
+   "smoothPath": 6,
+   "smoothAcross": 2,
+   "lift": 0.1,
+   "smooth": {
+    "voxel": 0.13,
+    "iterations": 2,
+    "factor": 0.45
+   }
+  },
+  "_why": " Added 20 Oct 2026 (hip and knee batch, owner's Hip and Knee deck): fibres between the footprints of the atlas's own ligament on each bone, the UCL finish.",
+  "contextBuild": [
+   {
+    "kind": "fibres",
+    "ligament": [
+     "Posterior cruciate ligament.l"
+    ],
+    "from": [
+     "Tibia.l"
+    ],
+    "to": [
+     "Femur.l"
+    ],
+    "count": 30,
+    "radius": 0.00075,
+    "samples": 24,
+    "smoothPath": 6,
+    "smoothAcross": 2,
+    "lift": 0.1,
+    "smooth": {
+     "voxel": 0.13,
+     "iterations": 2,
+     "factor": 0.45
+    }
+   }
+  ]
+ },
+ "posterior-cruciate-ligament": {
+  "build": {
+   "kind": "fibres",
+   "ligament": [
+    "Posterior cruciate ligament.l"
+   ],
+   "from": [
+    "Tibia.l"
+   ],
+   "to": [
+    "Femur.l"
+   ],
+   "count": 30,
+   "radius": 0.00075,
+   "samples": 24,
+   "smoothPath": 6,
+   "smoothAcross": 2,
+   "lift": 0.1,
+   "smooth": {
+    "voxel": 0.13,
+    "iterations": 2,
+    "factor": 0.45
+   }
+  },
+  "_why": " Added 20 Oct 2026 (hip and knee batch, owner's Hip and Knee deck): fibres between the footprints of the atlas's own ligament on each bone, the UCL finish.",
+  "contextBuild": [
+   {
+    "kind": "fibres",
+    "ligament": [
+     "Anterior cruciate ligament.l"
+    ],
+    "from": [
+     "Tibia.l"
+    ],
+    "to": [
+     "Femur.l"
+    ],
+    "count": 30,
+    "radius": 0.00075,
+    "samples": 24,
+    "smoothPath": 6,
+    "smoothAcross": 2,
+    "lift": 0.1,
+    "smooth": {
+     "voxel": 0.13,
+     "iterations": 2,
+     "factor": 0.45
+    }
+   }
+  ]
+ },
+ "deep-part-of-tibial-collateral-ligament": {
+  "build": {
+   "kind": "fibres",
+   "ligament": [
+    "Deep part of tibial collateral ligament.l"
+   ],
+   "from": [
+    "Tibia.l"
+   ],
+   "to": [
+    "Femur.l"
+   ],
+   "count": 26,
+   "radius": 0.00075,
+   "samples": 24,
+   "smoothPath": 6,
+   "smoothAcross": 2,
+   "lift": 0.1,
+   "smooth": {
+    "voxel": 0.13,
+    "iterations": 2,
+    "factor": 0.45
+   }
+  },
+  "_why": " Added 20 Oct 2026 (hip and knee batch, owner's Hip and Knee deck): fibres between the footprints of the atlas's own ligament on each bone, the UCL finish.",
+  "contextBuild": [
+   {
+    "kind": "fibres",
+    "ligament": [
+     "Superficial part of tibial collateral ligament.l"
+    ],
+    "from": [
+     "Tibia.l"
+    ],
+    "to": [
+     "Femur.l"
+    ],
+    "count": 24,
+    "radius": 0.00075,
+    "samples": 24,
+    "smoothPath": 6,
+    "smoothAcross": 2,
+    "lift": 0.1,
+    "smooth": {
+     "voxel": 0.13,
+     "iterations": 2,
+     "factor": 0.45
+    }
+   }
+  ]
+ },
+ "superficial-part-of-tibial-collateral-ligament": {
+  "build": {
+   "kind": "fibres",
+   "ligament": [
+    "Superficial part of tibial collateral ligament.l"
+   ],
+   "from": [
+    "Tibia.l"
+   ],
+   "to": [
+    "Femur.l"
+   ],
+   "count": 24,
+   "radius": 0.00075,
+   "samples": 24,
+   "smoothPath": 6,
+   "smoothAcross": 2,
+   "lift": 0.1,
+   "smooth": {
+    "voxel": 0.13,
+    "iterations": 2,
+    "factor": 0.45
+   }
+  },
+  "_why": " Added 20 Oct 2026 (hip and knee batch, owner's Hip and Knee deck): fibres between the footprints of the atlas's own ligament on each bone, the UCL finish.",
+  "contextBuild": [
+   {
+    "kind": "fibres",
+    "ligament": [
+     "Deep part of tibial collateral ligament.l"
+    ],
+    "from": [
+     "Tibia.l"
+    ],
+    "to": [
+     "Femur.l"
+    ],
+    "count": 26,
+    "radius": 0.00075,
+    "samples": 24,
+    "smoothPath": 6,
+    "smoothAcross": 2,
+    "lift": 0.1,
+    "smooth": {
+     "voxel": 0.13,
+     "iterations": 2,
+     "factor": 0.45
+    }
+   }
+  ]
+ },
+ "fibular-collateral-ligament": {
+  "build": {
+   "kind": "fibres",
+   "ligament": [
+    "Fibular collateral ligament.l"
+   ],
+   "from": [
+    "Fibula.l"
+   ],
+   "to": [
+    "Femur.l"
+   ],
+   "count": 16,
+   "radius": 0.00075,
+   "samples": 24,
+   "smoothPath": 6,
+   "smoothAcross": 2,
+   "lift": 0.1,
+   "smooth": {
+    "voxel": 0.13,
+    "iterations": 2,
+    "factor": 0.45
+   }
+  },
+  "_why": " Added 20 Oct 2026 (hip and knee batch, owner's Hip and Knee deck): fibres between the footprints of the atlas's own ligament on each bone, the UCL finish."
+ },
+ "oblique-popliteal-ligament": {
+  "build": {
+   "kind": "fibres",
+   "ligament": [
+    "Oblique popliteal ligament.l"
+   ],
+   "from": [
+    "Femur.l"
+   ],
+   "to": [
+    "Tibia.l"
+   ],
+   "count": 26,
+   "radius": 0.00075,
+   "samples": 24,
+   "smoothPath": 6,
+   "smoothAcross": 2,
+   "lift": 0.1,
+   "smooth": {
+    "voxel": 0.13,
+    "iterations": 2,
+    "factor": 0.45
+   }
+  },
+  "_why": " Added 20 Oct 2026 (hip and knee batch, owner's Hip and Knee deck): fibres between the footprints of the atlas's own ligament on each bone, the UCL finish."
+ },
+ "arcuate-popliteal-ligament": {
+  "build": {
+   "kind": "fibres",
+   "ligament": [
+    "Arcuate popliteal ligament.l"
+   ],
+   "from": [
+    "Femur.l"
+   ],
+   "to": [
+    "Fibula.l",
+    "Tibia.l"
+   ],
+   "count": 22,
+   "radius": 0.00075,
+   "samples": 24,
+   "smoothPath": 6,
+   "smoothAcross": 2,
+   "lift": 0.1,
+   "smooth": {
+    "voxel": 0.13,
+    "iterations": 2,
+    "factor": 0.45
+   }
+  },
+  "_why": " Added 20 Oct 2026 (hip and knee batch, owner's Hip and Knee deck): fibres between the footprints of the atlas's own ligament on each bone, the UCL finish."
+ },
+ "popliteofibular-ligament": {
+  "build": {
+   "kind": "fibres",
+   "ligament": [
+    "Popliteofibular ligament.l"
+   ],
+   "from": [
+    "Fibula.l"
+   ],
+   "to": [
+    "Femur.l",
+    "Tibia.l"
+   ],
+   "count": 14,
+   "radius": 0.00075,
+   "samples": 24,
+   "smoothPath": 6,
+   "smoothAcross": 2,
+   "lift": 0.1,
+   "smooth": {
+    "voxel": 0.13,
+    "iterations": 2,
+    "factor": 0.45
+   }
+  },
+  "_why": " Added 20 Oct 2026 (hip and knee batch, owner's Hip and Knee deck): fibres between the footprints of the atlas's own ligament on each bone, the UCL finish."
+ },
+ "anterior-ligament-of-fibular-head": {
+  "build": {
+   "kind": "fibres",
+   "ligament": [
+    "Anterior ligament of fibular head.l"
+   ],
+   "from": [
+    "Fibula.l"
+   ],
+   "to": [
+    "Tibia.l"
+   ],
+   "count": 16,
+   "radius": 0.00075,
+   "samples": 24,
+   "smoothPath": 6,
+   "smoothAcross": 2,
+   "lift": 0.1,
+   "smooth": {
+    "voxel": 0.13,
+    "iterations": 2,
+    "factor": 0.45
+   }
+  },
+  "_why": " Added 20 Oct 2026 (hip and knee batch, owner's Hip and Knee deck): fibres between the footprints of the atlas's own ligament on each bone, the UCL finish."
+ },
+ "posterior-ligament-of-fibular-head": {
+  "build": {
+   "kind": "fibres",
+   "ligament": [
+    "Posterior ligament of fibular head.l"
+   ],
+   "from": [
+    "Fibula.l"
+   ],
+   "to": [
+    "Tibia.l"
+   ],
+   "count": 16,
+   "radius": 0.00075,
+   "samples": 24,
+   "smoothPath": 6,
+   "smoothAcross": 2,
+   "lift": 0.1,
+   "smooth": {
+    "voxel": 0.13,
+    "iterations": 2,
+    "factor": 0.45
+   }
+  },
+  "_why": " Added 20 Oct 2026 (hip and knee batch, owner's Hip and Knee deck): fibres between the footprints of the atlas's own ligament on each bone, the UCL finish."
+ },
+ "meniscopatellar-ligament": {
+  "build": {
+   "kind": "fibres",
+   "ligament": [
+    "Meniscopatellar ligament.l"
+   ],
+   "from": [
+    "Patella.l"
+   ],
+   "to": [
+    "Tibia.l"
+   ],
+   "count": 16,
+   "radius": 0.00075,
+   "samples": 24,
+   "smoothPath": 6,
+   "smoothAcross": 2,
+   "lift": 0.1,
+   "smooth": {
+    "voxel": 0.13,
+    "iterations": 2,
+    "factor": 0.45
+   }
+  },
+  "_why": " Added 20 Oct 2026 (hip and knee batch, owner's Hip and Knee deck): fibres between the footprints of the atlas's own ligament on each bone, the UCL finish."
+ },
+ "iliofemoral-ligament": {
+  "build": {
+   "kind": "multi",
+   "parts": [
+    {
+     "kind": "fibres",
+     "ligament": [
+      "Descending part of iliofemoral ligament.l"
+     ],
+     "from": [
+      "Hip bone.l"
+     ],
+     "to": [
+      "Femur.l"
+     ],
+     "count": 24,
+     "radius": 0.00075,
+     "samples": 24,
+     "smoothPath": 6,
+     "smoothAcross": 2,
+     "lift": 0.1,
+     "smooth": {
+      "voxel": 0.13,
+      "iterations": 2,
+      "factor": 0.45
+     }
+    },
+    {
+     "kind": "fibres",
+     "ligament": [
+      "Transverse part of iliofemoral ligament.l"
+     ],
+     "from": [
+      "Hip bone.l"
+     ],
+     "to": [
+      "Femur.l"
+     ],
+     "count": 22,
+     "radius": 0.00075,
+     "samples": 24,
+     "smoothPath": 6,
+     "smoothAcross": 2,
+     "lift": 0.1,
+     "smooth": {
+      "voxel": 0.13,
+      "iterations": 2,
+      "factor": 0.45
+     }
+    }
+   ]
+  },
+  "_why": "Both parts of the Y. Added 20 Oct 2026 (hip and knee batch, owner's Hip and Knee deck): fibres between the footprints of the atlas's own ligament on each bone, the UCL finish."
  }
 }
