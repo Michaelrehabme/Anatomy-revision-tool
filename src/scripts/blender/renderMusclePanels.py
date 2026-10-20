@@ -67,6 +67,12 @@ ap.add_argument("--exposure", type=float, default=0.0,
                 help="stops of extra exposure. The trunk's ribs and girdle shade a shoulder far more "
                      "than a limb is shaded (owner, 20 Oct 2026: 'quite dark and shadowed')")
 ap.add_argument("--fill", type=float, default=0.0, help="extra fill-light energy, for the same reason")
+ap.add_argument("--whole", action="store_true", help="frame both sides of --frame-on, never one")
+ap.add_argument("--neighbours", default="",
+                help="comma-separated structure ids drawn in pale ligament grey on every render of the "
+                     "others: the ligaments around the subject (owner, 20 Oct 2026: 'with the other "
+                     "structures around them'). Each is its rules `build` if it has one, else its mapped "
+                     "objects; a region's `notNeighbours` leaves out its own parts")
 ap.add_argument("--regions", default="",
                 help="a rules file (panel-regions.rules.json): for the ids it names, the highlight is "
                      "a region grown on the parent bone by landmarkRegions.select_faces, and the "
@@ -86,6 +92,10 @@ backdrop_only = [n for n in a.backdrop.split(",") if n]
 # skeleton is baked before that, and it needs the answer first.
 _one_side = [n for n in frame_on if n.endswith(".l")] or [n for n in frame_on if n.endswith(".r")]
 framed_side = _one_side[0][-2:] if _one_side and len(_one_side) < len(frame_on) else None
+# --whole: frame on everything --frame-on names, both sides (owner, 20 Oct 2026:
+# the pelvis drawn whole, its ligaments on each side).
+if a.whole:
+    framed_side = None
 APP_HIGHLIGHT = a.highlight == "app"
 highlight_rgb = (0.0, 0.72, 0.95, 1.0) if APP_HIGHLIGHT else tuple(float(v) for v in a.highlight.split(",")) + (1.0,)
 STUDIO = a.look == "studio"
@@ -349,7 +359,14 @@ def build_mesh(spec, mesh_name):
           attachment patches, the TFCC's disc as the slab through its corners.
     """
     out = bmesh.new()
-    if spec["kind"] == "tube":
+    if spec["kind"] == "objects":
+        # The atlas's own meshes, as they are: a membrane with no fibres to
+        # draw (the obturator membrane), named here so it can be mirrored or
+        # drawn as a pale neighbour like any build.
+        om = bake_world_mesh(spec["objects"], f"{mesh_name}_objs")
+        out.from_mesh(om)
+        bpy.data.meshes.remove(om)
+    elif spec["kind"] == "tube":
         for i, path in enumerate(spec["paths"]):
             cu = bpy.data.curves.new(f"{mesh_name}_c{i}", "CURVE")
             cu.dimensions = "3D"
@@ -568,6 +585,21 @@ def build_mesh(spec, mesh_name):
             return [ch.mean(axis=0) for ch in chunks if len(ch)]
 
         k = int(spec.get("count", 6))
+        # PACKED, NO GAPS (owner, 20 Oct 2026: "gaps in the ligament" on the
+        # sacrotuberous, both sacro-iliacs and the iliolumbar). A fixed count
+        # spread over a wide attachment leaves bone showing between fibres;
+        # so there are at least enough for neighbours to overlap across the
+        # wider of the two ends, one every `pitch` mm (default: 80% of a
+        # fibre's width).
+        rad_ = float(spec.get("radius", 0.0008))
+        pitch = float(spec.get("pitch", 1.6 * rad_ * 1000.0)) / 1000.0
+
+        def extent(pts):
+            c = pts.mean(axis=0)
+            t = (pts - c) @ np.linalg.svd(pts - c)[2][0]
+            return float(t.max() - t.min())
+        if not spec.get("exactCount"):
+            k = min(int(spec.get("maxCount", 160)), max(k, int(np.ceil(max(extent(a), extent(b)) / pitch)) + 1))
         pa, pb = spread(a, k), spread(b, k)
         # Pair them so the fibres fan rather than cross.
         straight = sum(np.linalg.norm(x - y) for x, y in zip(pa, pb))
@@ -637,6 +669,21 @@ def build_mesh(spec, mesh_name):
                  for i in range(len(paths[j]))]
                 for j in range(len(paths))
             ]
+        # GAPS ALONG THE LENGTH. Packed at their ends, neighbouring fibres can
+        # still part in the middle, where a ligament fans or twists over bone
+        # (the sacrotuberous). Wherever two neighbours drift more than `pitch`
+        # apart, fibres are laid between them, interpolated from the pair.
+        if not spec.get("exactCount"):
+            pitch_mm = pitch * 1000.0
+            filled = [paths[0]]
+            for j in range(1, len(paths)):
+                p0, p1 = np.array(paths[j - 1]), np.array(paths[j])
+                gap = float(np.linalg.norm(p1 - p0, axis=1).max())
+                for e in range(1, int(np.ceil(gap / pitch_mm))):
+                    f = e / np.ceil(gap / pitch_mm)
+                    filled.append((p0 + (p1 - p0) * f).tolist())
+                filled.append(paths[j])
+            paths = filled[: int(spec.get("maxFibres", 400))]
         sub = {"kind": "tube", "radius": spec.get("radius", 0.0008), "paths": paths}
         tm = build_mesh(sub, f"{mesh_name}_tubes")
         out.from_mesh(tm)
@@ -917,6 +964,21 @@ if frame_on:
     bpy.data.meshes.remove(frame_mesh)
     print(f"[frame] framing every render on {len(frame_on)} objects", flush=True)
 
+neighbour_ids = [n for n in a.neighbours.split(",") if n]
+_neighbour_cache = {}
+
+
+def neighbour_mesh(n):
+    """A neighbour as drawn: its build if it has one, else its mapped objects. Built once."""
+    if n not in _neighbour_cache:
+        reg = REGIONS.get(n)
+        if isinstance(reg, dict) and reg.get("build"):
+            _neighbour_cache[n] = build_mesh(reg["build"], f"near_{n}")
+        else:
+            _neighbour_cache[n] = bake_world_mesh((mapping.get(n) or {}).get("blenderObjects", []), f"near_{n}")
+    return _neighbour_cache[n]
+
+
 t0 = time.time()
 count = 0
 for mid in wanted:
@@ -1010,12 +1072,16 @@ for mid in wanted:
         gb.free()
         print(f"[grain] {mid}: {len(grain_built.polygons)} faces", flush=True)
     ctx_built = None
-    if isinstance(region, dict) and region.get("contextBuild"):
+    skip_n = set((region or {}).get("notNeighbours", [])) if isinstance(region, dict) else set()
+    near_ids = [n for n in neighbour_ids if n != mid and n not in skip_n]
+    if (isinstance(region, dict) and region.get("contextBuild")) or near_ids:
         cb = bmesh.new()
-        for i, spec_c in enumerate(region["contextBuild"]):
+        for i, spec_c in enumerate((region or {}).get("contextBuild", []) if isinstance(region, dict) else []):
             m_c = build_mesh(spec_c, f"panel_{mid}_ctx{i}")
             cb.from_mesh(m_c)
             bpy.data.meshes.remove(m_c)
+        for n in near_ids:
+            cb.from_mesh(neighbour_mesh(n))
         ctx_built = bpy.data.meshes.new(f"panel_{mid}_ctx")
         cb.to_mesh(ctx_built)
         cb.free()

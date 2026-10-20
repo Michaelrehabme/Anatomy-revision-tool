@@ -13112,9 +13112,10 @@
     "voxel": 0.13,
     "iterations": 2,
     "factor": 0.45
-   }
+   },
+   "mirrorX": true
   },
-  "_why": " Added 20 Oct 2026 (hip and knee batch, owner's Hip and Knee deck): fibres between the footprints of the atlas's own ligament on each bone, the UCL finish.",
+  "_why": " Added 20 Oct 2026 (hip and knee batch, owner's Hip and Knee deck): fibres between the footprints of the atlas's own ligament on each bone, the UCL finish. BOTH SIDES (owner, 20 Oct 2026): the pelvis is drawn whole, so the ligament is drawn on each side.",
   "contextBuild": [
    {
     "kind": "fibres",
@@ -13137,8 +13138,14 @@
      "voxel": 0.13,
      "iterations": 2,
      "factor": 0.45
-    }
+    },
+    "mirrorX": true
    }
+  ],
+  "notNeighbours": [
+   "iliofemoral-ligament",
+   "descending-part-of-iliofemoral-ligament",
+   "transverse-part-of-iliofemoral-ligament"
   ]
  },
  "transverse-part-of-iliofemoral-ligament": {
@@ -13163,9 +13170,10 @@
     "voxel": 0.13,
     "iterations": 2,
     "factor": 0.45
-   }
+   },
+   "mirrorX": true
   },
-  "_why": " Added 20 Oct 2026 (hip and knee batch, owner's Hip and Knee deck): fibres between the footprints of the atlas's own ligament on each bone, the UCL finish.",
+  "_why": " Added 20 Oct 2026 (hip and knee batch, owner's Hip and Knee deck): fibres between the footprints of the atlas's own ligament on each bone, the UCL finish. BOTH SIDES (owner, 20 Oct 2026): the pelvis is drawn whole, so the ligament is drawn on each side.",
   "contextBuild": [
    {
     "kind": "fibres",
@@ -13188,8 +13196,14 @@
      "voxel": 0.13,
      "iterations": 2,
      "factor": 0.45
-    }
+    },
+    "mirrorX": true
    }
+  ],
+  "notNeighbours": [
+   "iliofemoral-ligament",
+   "descending-part-of-iliofemoral-ligament",
+   "transverse-part-of-iliofemoral-ligament"
   ]
  },
  "ischiofemoral-ligament": {
@@ -13214,9 +13228,10 @@
     "voxel": 0.13,
     "iterations": 2,
     "factor": 0.45
-   }
+   },
+   "mirrorX": true
   },
-  "_why": " Added 20 Oct 2026 (hip and knee batch, owner's Hip and Knee deck): fibres between the footprints of the atlas's own ligament on each bone, the UCL finish."
+  "_why": " Added 20 Oct 2026 (hip and knee batch, owner's Hip and Knee deck): fibres between the footprints of the atlas's own ligament on each bone, the UCL finish. BOTH SIDES (owner, 20 Oct 2026): the pelvis is drawn whole, so the ligament is drawn on each side."
  },
  "pubofemoral-ligament": {
   "build": {
@@ -13240,9 +13255,10 @@
     "voxel": 0.13,
     "iterations": 2,
     "factor": 0.45
-   }
+   },
+   "mirrorX": true
   },
-  "_why": " Added 20 Oct 2026 (hip and knee batch, owner's Hip and Knee deck): fibres between the footprints of the atlas's own ligament on each bone, the UCL finish."
+  "_why": " Added 20 Oct 2026 (hip and knee batch, owner's Hip and Knee deck): fibres between the footprints of the atlas's own ligament on each bone, the UCL finish. BOTH SIDES (owner, 20 Oct 2026): the pelvis is drawn whole, so the ligament is drawn on each side."
  },
  "iliolumbar-ligament": {
   "build": {
@@ -13267,9 +13283,10 @@
     "voxel": 0.13,
     "iterations": 2,
     "factor": 0.45
-   }
+   },
+   "mirrorX": true
   },
-  "_why": " Added 20 Oct 2026 (hip and knee batch, owner's Hip and Knee deck): fibres between the footprints of the atlas's own ligament on each bone, the UCL finish."
+  "_why": " Added 20 Oct 2026 (hip and knee batch, owner's Hip and Knee deck): fibres between the footprints of the atlas's own ligament on each bone, the UCL finish. BOTH SIDES (owner, 20 Oct 2026): the pelvis is drawn whole, so the ligament is drawn on each side."
  },
  "sacrotuberous-ligament": {
   "build": {
@@ -13293,9 +13310,10 @@
     "voxel": 0.13,
     "iterations": 2,
     "factor": 0.45
-   }
+   },
+   "mirrorX": true
   },
-  "_why": " Added 20 Oct 2026 (hip and knee batch, owner's Hip and Knee deck): fibres between the footprints of the atlas's own ligament on each bone, the UCL finish."
+  "_why": " Added 20 Oct 2026 (hip and knee batch, owner's Hip and Knee deck): fibres between the footprints of the atlas's own ligament on each bone, the UCL finish. BOTH SIDES (owner, 20 Oct 2026): the pelvis is drawn whole, so the ligament is drawn on each side."
  },
  "sacrospinous-ligament": {
   "build": {
@@ -13319,9 +13337,10 @@
     "voxel": 0.13,
     "iterations": 2,
     "factor": 0.45
-   }
+   },
+   "mirrorX": true
   },
-  "_why": " Added 20 Oct 2026 (hip and knee batch, owner's Hip and Knee deck): fibres between the footprints of the atlas's own ligament on each bone, the UCL finish."
+  "_why": " Added 20 Oct 2026 (hip and knee batch, owner's Hip and Knee deck): fibres between the footprints of the atlas's own ligament on each bone, the UCL finish. BOTH SIDES (owner, 20 Oct 2026): the pelvis is drawn whole, so the ligament is drawn on each side."
  },
  "anterior-sacro-iliac-ligament": {
   "build": {
@@ -13345,9 +13364,10 @@
     "voxel": 0.13,
     "iterations": 2,
     "factor": 0.45
-   }
+   },
+   "mirrorX": true
   },
-  "_why": " Added 20 Oct 2026 (hip and knee batch, owner's Hip and Knee deck): fibres between the footprints of the atlas's own ligament on each bone, the UCL finish."
+  "_why": " Added 20 Oct 2026 (hip and knee batch, owner's Hip and Knee deck): fibres between the footprints of the atlas's own ligament on each bone, the UCL finish. BOTH SIDES (owner, 20 Oct 2026): the pelvis is drawn whole, so the ligament is drawn on each side."
  },
  "posterior-sacro-iliac-ligament": {
   "build": {
@@ -13371,9 +13391,10 @@
     "voxel": 0.13,
     "iterations": 2,
     "factor": 0.45
-   }
+   },
+   "mirrorX": true
   },
-  "_why": " Added 20 Oct 2026 (hip and knee batch, owner's Hip and Knee deck): fibres between the footprints of the atlas's own ligament on each bone, the UCL finish."
+  "_why": " Added 20 Oct 2026 (hip and knee batch, owner's Hip and Knee deck): fibres between the footprints of the atlas's own ligament on each bone, the UCL finish. BOTH SIDES (owner, 20 Oct 2026): the pelvis is drawn whole, so the ligament is drawn on each side."
  },
  "interosseous-sacro-iliac-ligament": {
   "build": {
@@ -13397,9 +13418,10 @@
     "voxel": 0.13,
     "iterations": 2,
     "factor": 0.45
-   }
+   },
+   "mirrorX": true
   },
-  "_why": " Added 20 Oct 2026 (hip and knee batch, owner's Hip and Knee deck): fibres between the footprints of the atlas's own ligament on each bone, the UCL finish."
+  "_why": " Added 20 Oct 2026 (hip and knee batch, owner's Hip and Knee deck): fibres between the footprints of the atlas's own ligament on each bone, the UCL finish. BOTH SIDES (owner, 20 Oct 2026): the pelvis is drawn whole, so the ligament is drawn on each side."
  },
  "inguinal-ligament": {
   "build": {
@@ -13423,9 +13445,10 @@
     "voxel": 0.13,
     "iterations": 2,
     "factor": 0.45
-   }
+   },
+   "mirrorX": true
   },
-  "_why": " Added 20 Oct 2026 (hip and knee batch, owner's Hip and Knee deck): fibres between the footprints of the atlas's own ligament on each bone, the UCL finish."
+  "_why": " Added 20 Oct 2026 (hip and knee batch, owner's Hip and Knee deck): fibres between the footprints of the atlas's own ligament on each bone, the UCL finish. BOTH SIDES (owner, 20 Oct 2026): the pelvis is drawn whole, so the ligament is drawn on each side."
  },
  "anterior-cruciate-ligament": {
   "build": {
@@ -13582,54 +13605,57 @@
  },
  "superficial-part-of-tibial-collateral-ligament": {
   "build": {
-   "kind": "fibres",
-   "ligament": [
-    "Superficial part of tibial collateral ligament.l"
-   ],
-   "from": [
-    "Tibia.l"
-   ],
-   "to": [
-    "Femur.l"
-   ],
-   "count": 24,
-   "radius": 0.00075,
-   "samples": 24,
-   "smoothPath": 6,
-   "smoothAcross": 2,
-   "lift": 0.1,
-   "smooth": {
-    "voxel": 0.13,
-    "iterations": 2,
-    "factor": 0.45
-   }
-  },
-  "_why": " Added 20 Oct 2026 (hip and knee batch, owner's Hip and Knee deck): fibres between the footprints of the atlas's own ligament on each bone, the UCL finish.",
-  "contextBuild": [
-   {
-    "kind": "fibres",
-    "ligament": [
-     "Deep part of tibial collateral ligament.l"
-    ],
-    "from": [
-     "Tibia.l"
-    ],
-    "to": [
-     "Femur.l"
-    ],
-    "count": 26,
-    "radius": 0.00075,
-    "samples": 24,
-    "smoothPath": 6,
-    "smoothAcross": 2,
-    "lift": 0.1,
-    "smooth": {
-     "voxel": 0.13,
-     "iterations": 2,
-     "factor": 0.45
+   "kind": "multi",
+   "parts": [
+    {
+     "kind": "fibres",
+     "ligament": [
+      "Superficial part of tibial collateral ligament.l"
+     ],
+     "from": [
+      "Tibia.l"
+     ],
+     "to": [
+      "Femur.l"
+     ],
+     "count": 24,
+     "radius": 0.00075,
+     "samples": 24,
+     "smoothPath": 6,
+     "smoothAcross": 2,
+     "lift": 0.1,
+     "smooth": {
+      "voxel": 0.13,
+      "iterations": 2,
+      "factor": 0.45
+     }
+    },
+    {
+     "kind": "fibres",
+     "ligament": [
+      "Deep part of tibial collateral ligament.l"
+     ],
+     "from": [
+      "Tibia.l"
+     ],
+     "to": [
+      "Femur.l"
+     ],
+     "count": 26,
+     "radius": 0.00075,
+     "samples": 24,
+     "smoothPath": 6,
+     "smoothAcross": 2,
+     "lift": 0.1,
+     "smooth": {
+      "voxel": 0.13,
+      "iterations": 2,
+      "factor": 0.45
+     }
     }
-   }
-  ]
+   ]
+  },
+  "_why": " Added 20 Oct 2026 (hip and knee batch, owner's Hip and Knee deck): fibres between the footprints of the atlas's own ligament on each bone, the UCL finish. 20 Oct 2026: asked as one ligament, the MCL (owner), so the deep part's fibres are part of the highlight."
  },
  "fibular-collateral-ligament": {
   "build": {
@@ -13865,8 +13891,23 @@
       "factor": 0.45
      }
     }
+   ],
+   "mirrorX": true
+  },
+  "_why": "Both parts of the Y. Added 20 Oct 2026 (hip and knee batch, owner's Hip and Knee deck): fibres between the footprints of the atlas's own ligament on each bone, the UCL finish. BOTH SIDES (owner, 20 Oct 2026): the pelvis is drawn whole, so the ligament is drawn on each side.",
+  "notNeighbours": [
+   "descending-part-of-iliofemoral-ligament",
+   "transverse-part-of-iliofemoral-ligament"
+  ]
+ },
+ "obturator-membrane": {
+  "build": {
+   "kind": "objects",
+   "objects": [
+    "Obturator membrane.l",
+    "Obturator membrane.r"
    ]
   },
-  "_why": "Both parts of the Y. Added 20 Oct 2026 (hip and knee batch, owner's Hip and Knee deck): fibres between the footprints of the atlas's own ligament on each bone, the UCL finish."
+  "_why": " BOTH SIDES (owner, 20 Oct 2026): the pelvis is drawn whole, so the ligament is drawn on each side."
  }
 }
