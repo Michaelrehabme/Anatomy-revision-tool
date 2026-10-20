@@ -508,7 +508,8 @@
       "factor": 0.45
      },
      "smoothPath": 6,
-     "smoothAcross": 2
+     "smoothAcross": 2,
+     "exactCount": true
     },
     {
      "kind": "fibres",
@@ -553,7 +554,8 @@
       "factor": 0.45
      },
      "smoothPath": 6,
-     "smoothAcross": 2
+     "smoothAcross": 2,
+     "exactCount": true
     },
     {
      "kind": "fibres",
@@ -598,7 +600,8 @@
       "factor": 0.45
      },
      "smoothPath": 6,
-     "smoothAcross": 2
+     "smoothAcross": 2,
+     "exactCount": true
     },
     {
      "kind": "fibres",
@@ -644,11 +647,12 @@
       "factor": 0.45
      },
      "smoothPath": 6,
-     "smoothAcross": 2
+     "smoothAcross": 2,
+     "exactCount": true
     }
    ]
   },
-  "_why": "Owner's reference (dorsal view): the complex lies in the gap between the ulnar head (with the radius's ulnar edge) above and the lunate and triquetrum below. FOURTH PASS (owner: still passing through bones). Built as a gap fill: over the footprint, a vertical line through each point meets the ulna/radius under-surface and the lunate/triquetrum upper surface, and the solid is what lies between (gaps up to 10mm). Its top and bottom ARE those bone surfaces, so it touches both and goes through neither. Footprint (world mm, left wrist): from the ulnar styloid (243.4,-11.1) across to the radius's ulnar edge (257, -6.5 to -25) and back along the triquetrum (241,-26). Earlier passes (a hull through measured corners, then cut by the bones) wrapped round the ulnar head. FIFTH PASS (owner: 'too geometric'). Re-meshed and smoothed, inflated 0.4mm so it still meets the bones, then cut back by the four bones (build.smooth, build.subtract). SIXTH PASS (owner: now too small). Inflated 1.6mm after smoothing (the bone cut trims anything that enters a bone, so only the outer walls grow), the footprint widened 1-1.5mm, and the strip under the radius kept as well as the ulnar piece (build.keepPieces). SEVENTH PASS, from the owner's reference plate (dorsal view): the complex shown as fibre bundles fanning over the back of the joint from the ulnar head and styloid base to the triquetrum and lunate, over the disc. Five 1.8mm bundles between measured dorsal-surface points (probe_tfcc4.py): ulnar head (241.8..248.6, -6.2..-9.1, 860..864) to triquetrum (240.5..245.6, -12.9..-17, 849..851.5) and lunate (250.5..252.1, -10..-11.5, 855..856), each bowed 1.5mm dorsally so it lies on, not in, the bones; then cut by the bones. EIGHTH PASS (owner: add the palmar parts from the wrist slide, elbow deck p24): palmar ulnolunate and ulnotriquetral fibres from the front of the ulnar head and disc to the palmar surfaces of the lunate and triquetrum, and the ulnar collateral band from the styloid to the triquetrum and pisiform. MEASURED (probe_palm.py). 20 Oct: the UCL finish (owner) - fine fibres, one per ridge of grain, rendered with --ao."
+  "_why": "Owner's reference (dorsal view): the complex lies in the gap between the ulnar head (with the radius's ulnar edge) above and the lunate and triquetrum below. FOURTH PASS (owner: still passing through bones). Built as a gap fill: over the footprint, a vertical line through each point meets the ulna/radius under-surface and the lunate/triquetrum upper surface, and the solid is what lies between (gaps up to 10mm). Its top and bottom ARE those bone surfaces, so it touches both and goes through neither. Footprint (world mm, left wrist): from the ulnar styloid (243.4,-11.1) across to the radius's ulnar edge (257, -6.5 to -25) and back along the triquetrum (241,-26). Earlier passes (a hull through measured corners, then cut by the bones) wrapped round the ulnar head. FIFTH PASS (owner: 'too geometric'). Re-meshed and smoothed, inflated 0.4mm so it still meets the bones, then cut back by the four bones (build.smooth, build.subtract). SIXTH PASS (owner: now too small). Inflated 1.6mm after smoothing (the bone cut trims anything that enters a bone, so only the outer walls grow), the footprint widened 1-1.5mm, and the strip under the radius kept as well as the ulnar piece (build.keepPieces). SEVENTH PASS, from the owner's reference plate (dorsal view): the complex shown as fibre bundles fanning over the back of the joint from the ulnar head and styloid base to the triquetrum and lunate, over the disc. Five 1.8mm bundles between measured dorsal-surface points (probe_tfcc4.py): ulnar head (241.8..248.6, -6.2..-9.1, 860..864) to triquetrum (240.5..245.6, -12.9..-17, 849..851.5) and lunate (250.5..252.1, -10..-11.5, 855..856), each bowed 1.5mm dorsally so it lies on, not in, the bones; then cut by the bones. EIGHTH PASS (owner: add the palmar parts from the wrist slide, elbow deck p24): palmar ulnolunate and ulnotriquetral fibres from the front of the ulnar head and disc to the palmar surfaces of the lunate and triquetrum, and the ulnar collateral band from the styloid to the triquetrum and pisiform. MEASURED (probe_palm.py). 20 Oct: the UCL finish (owner) - fine fibres, one per ridge of grain, rendered with --ao. 20 Oct 2026: exactCount, so the gap-filling never lays fibres between bundles through the carpal bones (owner: phased through)."
  },
  "anterior-talofibular-ligament": {
   "build": {
@@ -13521,7 +13525,11 @@
    },
    "mirrorX": true
   },
-  "_why": " Added 20 Oct 2026 (hip and knee batch, owner's Hip and Knee deck): fibres between the footprints of the atlas's own ligament on each bone, the UCL finish. BOTH SIDES (owner, 20 Oct 2026): the pelvis is drawn whole, so the ligament is drawn on each side."
+  "_why": " Added 20 Oct 2026 (hip and knee batch, owner's Hip and Knee deck): fibres between the footprints of the atlas's own ligament on each bone, the UCL finish. BOTH SIDES (owner, 20 Oct 2026): the pelvis is drawn whole, so the ligament is drawn on each side.",
+  "notNeighbours": [
+   "posterior-sacro-iliac-ligament",
+   "anterior-sacro-iliac-ligament"
+  ]
  },
  "inguinal-ligament": {
   "build": {
@@ -13746,7 +13754,7 @@
    "samples": 28,
    "smoothPath": 6,
    "smoothAcross": 2,
-   "lift": 1.0,
+   "lift": 2.2,
    "smooth": {
     "voxel": 0.13,
     "iterations": 2,

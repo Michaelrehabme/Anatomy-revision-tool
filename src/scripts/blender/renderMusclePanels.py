@@ -67,6 +67,7 @@ ap.add_argument("--exposure", type=float, default=0.0,
                 help="stops of extra exposure. The trunk's ribs and girdle shade a shoulder far more "
                      "than a limb is shaded (owner, 20 Oct 2026: 'quite dark and shadowed')")
 ap.add_argument("--fill", type=float, default=0.0, help="extra fill-light energy, for the same reason")
+ap.add_argument("--ghost", default="", help="comma-separated bones drawn see-through, for a ligament buried between them")
 ap.add_argument("--whole", action="store_true", help="frame both sides of --frame-on, never one")
 ap.add_argument("--neighbours", default="",
                 help="comma-separated structure ids drawn in pale ligament grey on every render of the "
@@ -920,6 +921,20 @@ if framed_side:
 # hand and the trim keeps it. Saying which bones may appear settles it.
 if backdrop_only:
     bone_names = backdrop_only
+# GHOSTED BONES (owner, 20 Oct 2026: the interosseous sacro-iliac "isn't very
+# visible"). A ligament buried between two bones is drawn with the bone in
+# front of it see-through, as renderLigamentPlates.py ghosts the femur for the
+# ACL; the bone keeps its shape and its place.
+ghost_names = [n for n in a.ghost.split(",") if n]
+bone_names = [n for n in bone_names if n not in ghost_names]
+ghost_mesh = bake_world_mesh(ghost_names, "panel_ghost") if ghost_names else None
+ghost_bone_mat = principled("panel_ghost_bone", (0.93, 0.87, 0.74, 1), 0.4)
+ghost_bone_mat.node_tree.nodes["Principled BSDF"].inputs["Alpha"].default_value = 0.3
+for _attr, _val in (("blend_method", "BLEND"), ("show_transparent_back", False)):
+    try:
+        setattr(ghost_bone_mat, _attr, _val)
+    except (AttributeError, TypeError):
+        pass
 print(f"[bones] baking {len(bone_names)} meshes...", flush=True)
 bone_mesh = bake_world_mesh(bone_names, "panel_bones")
 print(f"[bones] {len(bone_mesh.vertices)} verts", flush=True)
@@ -1091,6 +1106,8 @@ for mid in wanted:
             frame_camera(bmin, bmax, frame * 360.0 / a.frames, a.margin, elev)
             clear_objects()
             link(bone_mesh, "panel_skeleton", bone_mat)
+            if ghost_mesh is not None:
+                link(ghost_mesh, "panel_ghost", ghost_bone_mat)
             if context_mesh is not None:
                 link(context_mesh, "panel_context", context_mat)
             if ctx_built is not None:
