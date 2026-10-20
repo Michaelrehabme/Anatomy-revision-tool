@@ -1234,20 +1234,20 @@
      "fromSpan": [
       [
        184.5,
-       26.5,
+       27.0,
        1097.0
       ],
       [
-       185.5,
-       32.0,
-       1100.0
+       186.5,
+       35.0,
+       1101.5
       ]
      ],
      "toSpan": [
       [
-       205.0,
-       18.5,
-       1085.0
+       204.0,
+       18.0,
+       1084.5
       ],
       [
        215.0,
@@ -1255,15 +1255,11 @@
        1091.0
       ]
      ],
-     "count": 18,
-     "radius": 0.0012,
+     "count": 26,
+     "radius": 0.0011,
      "samples": 18,
-     "lift": 0.25,
-     "smooth": {
-      "voxel": 0.3,
-      "iterations": 4,
-      "factor": 0.5
-     }
+     "lift": 0.2,
+     "smoothAcross": 1
     },
     {
      "kind": "fibres",
@@ -1276,21 +1272,21 @@
      ],
      "fromSpan": [
       [
-       187.0,
-       38.0,
-       1101.5
+       186.5,
+       35.0,
+       1101.0
       ],
       [
-       189.5,
+       189.0,
        45.0,
        1106.0
       ]
      ],
      "toSpan": [
       [
-       199.0,
-       40.0,
-       1090.0
+       198.0,
+       36.0,
+       1089.0
       ],
       [
        204.5,
@@ -1298,15 +1294,11 @@
        1101.0
       ]
      ],
-     "count": 18,
-     "radius": 0.0012,
+     "count": 26,
+     "radius": 0.0011,
      "samples": 18,
-     "lift": 0.6,
-     "smooth": {
-      "voxel": 0.3,
-      "iterations": 4,
-      "factor": 0.5
-     }
+     "lift": 0.35,
+     "smoothAcross": 1
     },
     {
      "kind": "fibres",
@@ -1320,8 +1312,8 @@
      "fromSpan": [
       [
        206.5,
-       22.0,
-       1086.0
+       20.5,
+       1089.0
       ],
       [
        207.0,
@@ -1332,8 +1324,8 @@
      "toSpan": [
       [
        201.0,
-       46.0,
-       1092.0
+       45.0,
+       1095.5
       ],
       [
        200.5,
@@ -1341,19 +1333,15 @@
        1086.0
       ]
      ],
-     "count": 14,
-     "radius": 0.0012,
+     "count": 18,
+     "radius": 0.0011,
      "samples": 18,
-     "lift": 0.4,
-     "smooth": {
-      "voxel": 0.3,
-      "iterations": 4,
-      "factor": 0.5
-     }
+     "lift": 0.5,
+     "smoothAcross": 1
     }
    ]
   },
-  "_why": "UCL as its anterior band (medial epicondyle to the coronoid process) and posterior band (to the medial olecranon), as on the owner's slide. Added 20 Oct 2026 from the elbow slides (elbow deck p8-p15). MEASURED (probe_elbow.py, left elbow, world mm: +x lateral, +y posterior): medial epicondyle (183.5,35.6,1107), lateral epicondyle (248.8,43.3,1112.8), coronoid (218,22.5,1091.2), olecranon medial edge (203.2,52,1098.3), radial head centre (238.1,29,1087.9) radius 13.2mm, top z 1093.3, radial notch (226.3,28.6,1084.4). SECOND PASS (owner's diagram, 20 Oct): three bundles - anterior (medial epicondyle to the coronoid process), posterior (a fan from the epicondyle to the medial olecranon) and transverse (along the ulna from the coronoid to the olecranon)."
+  "_why": "UCL as its anterior band (medial epicondyle to the coronoid process) and posterior band (to the medial olecranon), as on the owner's slide. Added 20 Oct 2026 from the elbow slides (elbow deck p8-p15). MEASURED (probe_elbow.py, left elbow, world mm: +x lateral, +y posterior): medial epicondyle (183.5,35.6,1107), lateral epicondyle (248.8,43.3,1112.8), coronoid (218,22.5,1091.2), olecranon medial edge (203.2,52,1098.3), radial head centre (238.1,29,1087.9) radius 13.2mm, top z 1093.3, radial notch (226.3,28.6,1084.4). SECOND PASS (owner's diagram, 20 Oct): three bundles - anterior (medial epicondyle to the coronoid process), posterior (a fan from the epicondyle to the medial olecranon) and transverse (along the ulna from the coronoid to the olecranon). THIRD PASS (owner: combine the broad sheet with the separate parts): the broad continuous spans again, drawn as individual fibres with no remeshing, so each bundle's fibre direction shows where the bundles meet."
  },
  "radial-collateral-ligament": {
   "build": {
