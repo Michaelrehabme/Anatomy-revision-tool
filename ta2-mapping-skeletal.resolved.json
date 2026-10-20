@@ -3211,6 +3211,342 @@
    ],
    "resolution": "manual",
    "note": "20 Oct 2026, Atlas turntable."
+  },
+  {
+   "id": "collateral-metacarpophalangeal-ligaments",
+   "category": "ligament",
+   "blenderObjects": [
+    "Collateral metacarpophalangeal ligaments.l"
+   ],
+   "_note": "wrist redraw, 20 Oct 2026"
+  },
+  {
+   "id": "deep-transverse-metacarpal-ligament",
+   "category": "ligament",
+   "blenderObjects": [
+    "Deep transverse metacarpal ligament.l"
+   ],
+   "_note": "wrist redraw, 20 Oct 2026"
+  },
+  {
+   "id": "palmar-interphalangeal-ligaments",
+   "category": "ligament",
+   "blenderObjects": [
+    "Palmar interphalangeal ligaments.l"
+   ],
+   "_note": "wrist redraw, 20 Oct 2026"
+  },
+  {
+   "id": "palmar-radio-ulnar-ligament",
+   "category": "ligament",
+   "blenderObjects": [
+    "Palmar radio-ulnar ligament.l"
+   ],
+   "_note": "wrist redraw, 20 Oct 2026"
+  },
+  {
+   "id": "ulnocapitate-ligament",
+   "category": "ligament",
+   "blenderObjects": [
+    "Ulnocapitate ligament.l"
+   ],
+   "_note": "wrist redraw, 20 Oct 2026"
+  },
+  {
+   "id": "ulnolunate-ligament",
+   "category": "ligament",
+   "blenderObjects": [
+    "Ulnolunate ligament.l"
+   ],
+   "_note": "wrist redraw, 20 Oct 2026"
+  },
+  {
+   "id": "ulnopisiform-ligament",
+   "category": "ligament",
+   "blenderObjects": [
+    "Ulnopisiform ligament.l"
+   ],
+   "_note": "wrist redraw, 20 Oct 2026"
+  },
+  {
+   "id": "ulnotriquetral-ligament",
+   "category": "ligament",
+   "blenderObjects": [
+    "Ulnotriquetral ligament.l"
+   ],
+   "_note": "wrist redraw, 20 Oct 2026"
+  },
+  {
+   "id": "capitohamate-interosseous-ligament",
+   "category": "ligament",
+   "blenderObjects": [
+    "Capitohamate interosseous ligament.l"
+   ],
+   "_note": "wrist redraw, 20 Oct 2026"
+  },
+  {
+   "id": "collateral-interphalangeal-ligaments-of-hand",
+   "category": "ligament",
+   "blenderObjects": [
+    "Collateral interphalangeal ligaments of hand.l"
+   ],
+   "_note": "wrist redraw, 20 Oct 2026"
+  },
+  {
+   "id": "dorsal-carpometacarpal-ligaments",
+   "category": "ligament",
+   "blenderObjects": [
+    "Dorsal carpometacarpal ligaments.l"
+   ],
+   "_note": "wrist redraw, 20 Oct 2026"
+  },
+  {
+   "id": "dorsal-intercarpal-ligaments",
+   "category": "ligament",
+   "blenderObjects": [
+    "Dorsal intercarpal ligaments.l"
+   ],
+   "_note": "wrist redraw, 20 Oct 2026"
+  },
+  {
+   "id": "dorsal-metacarpal-ligaments",
+   "category": "ligament",
+   "blenderObjects": [
+    "Dorsal metacarpal ligaments.l"
+   ],
+   "_note": "wrist redraw, 20 Oct 2026"
+  },
+  {
+   "id": "dorsal-radio-ulnar-ligament",
+   "category": "ligament",
+   "blenderObjects": [
+    "Dorsal radio-ulnar ligament.l"
+   ],
+   "_note": "wrist redraw, 20 Oct 2026"
+  },
+  {
+   "id": "dorsal-radiocarpal-ligament",
+   "category": "ligament",
+   "blenderObjects": [
+    "Dorsal radiocarpal ligament.l"
+   ],
+   "_note": "wrist redraw, 20 Oct 2026"
+  },
+  {
+   "id": "dorsal-scaphotriquetral-ligament",
+   "category": "ligament",
+   "blenderObjects": [
+    "Dorsal scaphotriquetral ligament.l"
+   ],
+   "_note": "wrist redraw, 20 Oct 2026"
+  },
+  {
+   "id": "dorsal-ulnocarpal-ligament",
+   "category": "ligament",
+   "blenderObjects": [
+    "Dorsal ulnocarpal ligament.l"
+   ],
+   "_note": "wrist redraw, 20 Oct 2026"
+  },
+  {
+   "id": "interosseous-metacarpal-ligaments",
+   "category": "ligament",
+   "blenderObjects": [
+    "Interosseous metacarpal ligaments.l"
+   ],
+   "_note": "wrist redraw, 20 Oct 2026"
+  },
+  {
+   "id": "lunotriquetral-interosseous-ligament",
+   "category": "ligament",
+   "blenderObjects": [
+    "Lunotriquetral interosseous ligament.l"
+   ],
+   "_note": "wrist redraw, 20 Oct 2026"
+  },
+  {
+   "id": "palmar-capitohamate-ligament",
+   "category": "ligament",
+   "blenderObjects": [
+    "Palmar capitohamate ligament.l"
+   ],
+   "_note": "wrist redraw, 20 Oct 2026"
+  },
+  {
+   "id": "palmar-carpometacarpal-ligaments",
+   "category": "ligament",
+   "blenderObjects": [
+    "Palmar carpometacarpal ligaments.l"
+   ],
+   "_note": "wrist redraw, 20 Oct 2026"
+  },
+  {
+   "id": "palmar-lunotriquetral-ligament",
+   "category": "ligament",
+   "blenderObjects": [
+    "Palmar lunotriquetral ligament.l"
+   ],
+   "_note": "wrist redraw, 20 Oct 2026"
+  },
+  {
+   "id": "palmar-metacarpal-ligaments",
+   "category": "ligament",
+   "blenderObjects": [
+    "Palmar metacarpal ligaments.l"
+   ],
+   "_note": "wrist redraw, 20 Oct 2026"
+  },
+  {
+   "id": "palmar-scaphotriquetral-ligament",
+   "category": "ligament",
+   "blenderObjects": [
+    "Palmar scaphotriquetral ligament.l"
+   ],
+   "_note": "wrist redraw, 20 Oct 2026"
+  },
+  {
+   "id": "palmar-trapezoideocapitate-ligament",
+   "category": "ligament",
+   "blenderObjects": [
+    "Palmar trapezoideocapitate ligament.l"
+   ],
+   "_note": "wrist redraw, 20 Oct 2026"
+  },
+  {
+   "id": "pisohamate-ligament",
+   "category": "ligament",
+   "blenderObjects": [
+    "Pisohamate ligament.l"
+   ],
+   "_note": "wrist redraw, 20 Oct 2026"
+  },
+  {
+   "id": "pisometacarpal-ligament",
+   "category": "ligament",
+   "blenderObjects": [
+    "Pisometacarpal ligament.l"
+   ],
+   "_note": "wrist redraw, 20 Oct 2026"
+  },
+  {
+   "id": "pisotriquetral-ligament",
+   "category": "ligament",
+   "blenderObjects": [
+    "Pisotriquetral ligament.l"
+   ],
+   "_note": "wrist redraw, 20 Oct 2026"
+  },
+  {
+   "id": "radial-collateral-ligament-of-wrist-joint",
+   "category": "ligament",
+   "blenderObjects": [
+    "Radial collateral ligament of wrist joint.l"
+   ],
+   "_note": "wrist redraw, 20 Oct 2026"
+  },
+  {
+   "id": "radiate-carpal-ligament",
+   "category": "ligament",
+   "blenderObjects": [
+    "Radiate carpal ligament.l"
+   ],
+   "_note": "wrist redraw, 20 Oct 2026"
+  },
+  {
+   "id": "radiocapitate-ligament",
+   "category": "ligament",
+   "blenderObjects": [
+    "Radiocapitate ligament.l"
+   ],
+   "_note": "wrist redraw, 20 Oct 2026"
+  },
+  {
+   "id": "radioscaphocapitate-ligament",
+   "category": "ligament",
+   "blenderObjects": [
+    "Radioscaphocapitate ligament.l"
+   ],
+   "_note": "wrist redraw, 20 Oct 2026"
+  },
+  {
+   "id": "scaphocapitate-ligament",
+   "category": "ligament",
+   "blenderObjects": [
+    "Scaphocapitate ligament.l"
+   ],
+   "_note": "wrist redraw, 20 Oct 2026"
+  },
+  {
+   "id": "scapholunate-interosseous-ligament",
+   "category": "ligament",
+   "blenderObjects": [
+    "Scapholunate interosseous ligament.l"
+   ],
+   "_note": "wrist redraw, 20 Oct 2026"
+  },
+  {
+   "id": "scaphotrapeziotrapezoidal-ligament",
+   "category": "ligament",
+   "blenderObjects": [
+    "Scaphotrapeziotrapezoidal ligament.l"
+   ],
+   "_note": "wrist redraw, 20 Oct 2026"
+  },
+  {
+   "id": "trapeziotrapezoidal-interosseous-ligament",
+   "category": "ligament",
+   "blenderObjects": [
+    "Trapeziotrapezoidal interosseous ligament.l"
+   ],
+   "_note": "wrist redraw, 20 Oct 2026"
+  },
+  {
+   "id": "trapezoideocapitate-interosseous-ligament",
+   "category": "ligament",
+   "blenderObjects": [
+    "Trapezoideocapitate interosseous ligament.l"
+   ],
+   "_note": "wrist redraw, 20 Oct 2026"
+  },
+  {
+   "id": "triquetrocapitate-ligament",
+   "category": "ligament",
+   "blenderObjects": [
+    "Triquetrocapitate ligament.l"
+   ],
+   "_note": "wrist redraw, 20 Oct 2026"
+  },
+  {
+   "id": "triquetrohamate-ligament",
+   "category": "ligament",
+   "blenderObjects": [
+    "Triquetrohamate ligament.l"
+   ],
+   "_note": "wrist redraw, 20 Oct 2026"
+  },
+  {
+   "id": "ulnar-collateral-ligament-of-wrist-joint",
+   "category": "ligament",
+   "blenderObjects": [
+    "Ulnar collateral ligament of wrist joint.l"
+   ],
+   "_note": "wrist redraw, 20 Oct 2026"
+  },
+  {
+   "id": "flexor-retinaculum",
+   "category": "ligament",
+   "blenderObjects": [
+    "Flexor retinaculum of wrist.l"
+   ],
+   "_note": "wrist redraw, 20 Oct 2026"
+  },
+  {
+   "id": "extensor-retinaculum-hand",
+   "category": "ligament",
+   "blenderObjects": [
+    "Extensor retinaculum of wrist.l"
+   ],
+   "_note": "wrist redraw, 20 Oct 2026"
   }
  ]
 }

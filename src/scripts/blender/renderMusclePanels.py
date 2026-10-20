@@ -360,7 +360,100 @@ def build_mesh(spec, mesh_name):
           attachment patches, the TFCC's disc as the slab through its corners.
     """
     out = bmesh.new()
-    if spec["kind"] == "objects":
+    if spec["kind"] == "autoFibres":
+        # A SERIES AS FIBRES (owner, 20 Oct 2026: the wrist and hand). One
+        # atlas mesh often holds a whole series - the collateral ligaments of
+        # every finger joint, the dorsal intercarpal bands - as loose pieces.
+        # Each piece becomes its own fibre build between the two `bones` it
+        # touches most (or the extremes of one bone, for a piece on one).
+        import numpy as np
+        from mathutils.bvhtree import BVHTree
+        trees = {}
+        for n in spec["bones"]:
+            src = bpy.data.objects.get(n)
+            if not src:
+                continue
+            tmp = src.data.copy()
+            tmp.transform(src.matrix_world)
+            bm_b = bmesh.new()
+            bm_b.from_mesh(tmp)
+            bpy.data.meshes.remove(tmp)
+            trees[n] = BVHTree.FromBMesh(bm_b)
+            bm_b.free()
+        near_m = float(spec.get("near", 3.0)) / 1000.0
+        whole = bmesh.new()
+        for n in spec["ligament"]:
+            src = bpy.data.objects.get(n)
+            if not src:
+                continue
+            tmp = src.data.copy()
+            tmp.transform(src.matrix_world)
+            whole.from_mesh(tmp)
+            bpy.data.meshes.remove(tmp)
+        whole.verts.ensure_lookup_table()
+        seen, parts = set(), []
+        for v in whole.verts:
+            if v.index in seen:
+                continue
+            stack, part = [v], []
+            seen.add(v.index)
+            while stack:
+                x = stack.pop()
+                part.append(x.index)
+                for e in x.link_edges:
+                    o = e.other_vert(x)
+                    if o.index not in seen:
+                        seen.add(o.index)
+                        stack.append(o)
+            parts.append(part)
+        built = 0
+        for k, part in enumerate(parts):
+            pset = set(part)
+            pm = bmesh.new()
+            vmap = {}
+            for i in part:
+                vmap[i] = pm.verts.new(whole.verts[i].co)
+            for f in whole.faces:
+                if all(v.index in pset for v in f.verts):
+                    try:
+                        pm.faces.new([vmap[v.index] for v in f.verts])
+                    except ValueError:
+                        pass
+            if len(pm.faces) == 0:
+                pm.free()
+                continue
+            score = {}
+            for v in pm.verts:
+                for n, t in trees.items():
+                    d = t.find_nearest(v.co)[3]
+                    if d is not None and d < near_m:
+                        score[n] = score.get(n, 0) + 1
+            ranked = sorted(score, key=lambda n: -score[n])
+            if not ranked:
+                pm.free()
+                continue
+            me_p = bpy.data.meshes.new(f"{mesh_name}_piece{k}")
+            pm.to_mesh(me_p)
+            pm.free()
+            ob_p = bpy.data.objects.new(f"{mesh_name}_piece{k}", me_p)
+            scene.collection.objects.link(ob_p)
+            a_b = ranked[0]
+            b_b = ranked[1] if len(ranked) > 1 and score[ranked[1]] >= max(3, score[ranked[0]] * 0.15) else ranked[0]
+            sub = {k_: v_ for k_, v_ in spec.items() if k_ not in ("kind", "bones", "ligament", "mirrorX", "smooth")}
+            sub.update({"kind": "fibres", "ligament": [ob_p.name], "from": [a_b], "to": [b_b]})
+            try:
+                fm = build_mesh(sub, f"{mesh_name}_f{k}")
+                out.from_mesh(fm)
+                bpy.data.meshes.remove(fm)
+                built += 1
+            except ValueError as err:
+                print(f"[build] {mesh_name} piece {k}: {err}; drawn as the atlas piece", flush=True)
+                out.from_mesh(me_p)
+            bpy.data.objects.remove(ob_p)
+            bpy.data.meshes.remove(me_p)
+        whole.free()
+        print(f"[build] {mesh_name}: {built} of {len(parts)} pieces as fibres", flush=True)
+    elif spec["kind"] == "objects":
         # The atlas's own meshes, as they are: a membrane with no fibres to
         # draw (the obturator membrane), named here so it can be mirrored or
         # drawn as a pale neighbour like any build.
