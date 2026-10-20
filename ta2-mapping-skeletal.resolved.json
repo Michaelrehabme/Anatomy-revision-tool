@@ -2622,6 +2622,190 @@
    ],
    "resolution": "manual",
    "note": "20 Oct 2026, Atlas card picture: built from measured points (panel-regions.rules.json)."
+  },
+  {
+   "id": "acromioclavicular-ligament",
+   "name": "Acromioclavicular ligament",
+   "category": "ligament",
+   "region": "shoulder-arm",
+   "blenderObjects": [
+    "Acromioclavicular ligament.l"
+   ],
+   "resolution": "manual",
+   "note": "20 Oct 2026, Atlas card picture: framed on the atlas ligament; painted as fibres (panel-regions.rules.json)."
+  },
+  {
+   "id": "coraco-acromial-ligament",
+   "name": "Coraco-acromial ligament",
+   "category": "ligament",
+   "region": "shoulder-arm",
+   "blenderObjects": [
+    "Coraco-acromial ligament.l"
+   ],
+   "resolution": "manual",
+   "note": "20 Oct 2026, Atlas card picture: framed on the atlas ligament; painted as fibres (panel-regions.rules.json)."
+  },
+  {
+   "id": "conoid-ligament",
+   "name": "Conoid ligament",
+   "category": "ligament",
+   "region": "shoulder-arm",
+   "blenderObjects": [
+    "Conoid ligament.l"
+   ],
+   "resolution": "manual",
+   "note": "20 Oct 2026, Atlas card picture: framed on the atlas ligament; painted as fibres (panel-regions.rules.json)."
+  },
+  {
+   "id": "trapezoid-ligament",
+   "name": "Trapezoid ligament",
+   "category": "ligament",
+   "region": "shoulder-arm",
+   "blenderObjects": [
+    "Trapezoid ligament.l"
+   ],
+   "resolution": "manual",
+   "note": "20 Oct 2026, Atlas card picture: framed on the atlas ligament; painted as fibres (panel-regions.rules.json)."
+  },
+  {
+   "id": "coracohumeral-ligament",
+   "name": "Coracohumeral ligament",
+   "category": "ligament",
+   "region": "shoulder-arm",
+   "blenderObjects": [
+    "Coracohumeral ligament.l"
+   ],
+   "resolution": "manual",
+   "note": "20 Oct 2026, Atlas card picture: framed on the atlas ligament; painted as fibres (panel-regions.rules.json)."
+  },
+  {
+   "id": "superior-glenohumeral-ligament",
+   "name": "Superior glenohumeral ligament",
+   "category": "ligament",
+   "region": "shoulder-arm",
+   "blenderObjects": [
+    "Superior glenohumeral ligament.l"
+   ],
+   "resolution": "manual",
+   "note": "20 Oct 2026, Atlas card picture: framed on the atlas ligament; painted as fibres (panel-regions.rules.json)."
+  },
+  {
+   "id": "middle-glenohumeral-ligament",
+   "name": "Middle glenohumeral ligament",
+   "category": "ligament",
+   "region": "shoulder-arm",
+   "blenderObjects": [
+    "Middle glenohumeral ligament.l"
+   ],
+   "resolution": "manual",
+   "note": "20 Oct 2026, Atlas card picture: framed on the atlas ligament; painted as fibres (panel-regions.rules.json)."
+  },
+  {
+   "id": "inferior-glenohumeral-ligament",
+   "name": "Inferior glenohumeral ligament",
+   "category": "ligament",
+   "region": "shoulder-arm",
+   "blenderObjects": [
+    "Inferior glenohumeral ligament.l"
+   ],
+   "resolution": "manual",
+   "note": "20 Oct 2026, Atlas card picture: framed on the atlas ligament; painted as fibres (panel-regions.rules.json)."
+  },
+  {
+   "id": "transverse-humeral-ligament",
+   "name": "Transverse humeral ligament",
+   "category": "ligament",
+   "region": "shoulder-arm",
+   "blenderObjects": [
+    "Transverse humeral ligament.l"
+   ],
+   "resolution": "manual",
+   "note": "20 Oct 2026, Atlas card picture: framed on the atlas ligament; painted as fibres (panel-regions.rules.json)."
+  },
+  {
+   "id": "superior-transverse-scapular-ligament",
+   "name": "Superior transverse scapular ligament",
+   "category": "ligament",
+   "region": "shoulder-arm",
+   "blenderObjects": [
+    "Superior transverse scapular ligament.l"
+   ],
+   "resolution": "manual",
+   "note": "20 Oct 2026, Atlas card picture: framed on the atlas ligament; painted as fibres (panel-regions.rules.json)."
+  },
+  {
+   "id": "inferior-transverse-scapular-ligament",
+   "name": "Inferior transverse scapular ligament",
+   "category": "ligament",
+   "region": "shoulder-arm",
+   "blenderObjects": [
+    "Inferior transverse scapular ligament.l"
+   ],
+   "resolution": "manual",
+   "note": "20 Oct 2026, Atlas card picture: framed on the atlas ligament; painted as fibres (panel-regions.rules.json)."
+  },
+  {
+   "id": "anterior-sternoclavicular-ligament",
+   "name": "Anterior sternoclavicular ligament",
+   "category": "ligament",
+   "region": "shoulder-arm",
+   "blenderObjects": [
+    "Manubrium of sternum",
+    "Clavicle.l",
+    "Clavicle.r"
+   ],
+   "resolution": "manual",
+   "note": "20 Oct 2026, Atlas card picture: framed on the atlas ligament; painted as fibres (panel-regions.rules.json)."
+  },
+  {
+   "id": "posterior-sternoclavicular-ligament",
+   "name": "Posterior sternoclavicular ligament",
+   "category": "ligament",
+   "region": "shoulder-arm",
+   "blenderObjects": [
+    "Manubrium of sternum",
+    "Clavicle.l",
+    "Clavicle.r"
+   ],
+   "resolution": "manual",
+   "note": "20 Oct 2026, Atlas card picture: framed on the atlas ligament; painted as fibres (panel-regions.rules.json)."
+  },
+  {
+   "id": "costoclavicular-ligament",
+   "name": "Costoclavicular ligament",
+   "category": "ligament",
+   "region": "shoulder-arm",
+   "blenderObjects": [
+    "Manubrium of sternum",
+    "Clavicle.l",
+    "Clavicle.r"
+   ],
+   "resolution": "manual",
+   "note": "20 Oct 2026, Atlas card picture: framed on the atlas ligament; painted as fibres (panel-regions.rules.json)."
+  },
+  {
+   "id": "interclavicular-ligament",
+   "name": "Interclavicular ligament",
+   "category": "ligament",
+   "region": "shoulder-arm",
+   "blenderObjects": [
+    "Manubrium of sternum",
+    "Clavicle.l",
+    "Clavicle.r"
+   ],
+   "resolution": "manual",
+   "note": "20 Oct 2026, Atlas card picture: framed on the atlas ligament; painted as fibres (panel-regions.rules.json)."
+  },
+  {
+   "id": "glenoid-labrum",
+   "name": "Glenoid labrum",
+   "category": "ligament",
+   "region": "shoulder-arm",
+   "blenderObjects": [
+    "Glenoid labrum.l"
+   ],
+   "resolution": "manual",
+   "note": "20 Oct 2026, Atlas card picture: framed on the atlas ligament; painted as fibres (panel-regions.rules.json)."
   }
  ]
 }

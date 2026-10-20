@@ -538,6 +538,15 @@ def build_mesh(spec, mesh_name):
             k_ = int(spec.get("count", 6))
             line = lambda sp: np.array([np.array(sp[0]) + (np.array(sp[1]) - np.array(sp[0])) * t for t in np.linspace(0, 1, max(k_ * 3, 12))]) / 1000.0
             a, b = line(spec["fromSpan"]), line(spec["toSpan"])
+        elif list(spec["from"]) == list(spec["to"]):
+            # Both ends on one bone (the coraco-acromial ligament, coracoid to
+            # acromion; the transverse humeral ligament, tubercle to tubercle):
+            # one footprint, so its two ends are its extremes along its length.
+            fp = footprint(spec["from"])
+            c0 = fp.mean(axis=0)
+            ax0 = np.linalg.svd(fp - c0)[2][0]
+            t0 = (fp - c0) @ ax0
+            a, b = fp[t0 < np.percentile(t0, 22)], fp[t0 > np.percentile(t0, 78)]
         else:
             a, b = footprint(spec["from"]), footprint(spec["to"])
         if len(a) < 3 or len(b) < 3:

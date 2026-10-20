@@ -12330,5 +12330,684 @@
    }
   ],
   "_why": "Short fibres from the ulna below the radial notch to the medial neck of the radius, under the annular ligament (pale), as on the owner's slide (elbow deck p15). Added 20 Oct 2026 from the elbow slides (elbow deck p8-p15). MEASURED (probe_elbow.py, left elbow, world mm: +x lateral, +y posterior): medial epicondyle (183.5,35.6,1107), lateral epicondyle (248.8,43.3,1112.8), coronoid (218,22.5,1091.2), olecranon medial edge (203.2,52,1098.3), radial head centre (238.1,29,1087.9) radius 13.2mm, top z 1093.3, radial notch (226.3,28.6,1084.4). 20 Oct: the UCL finish (owner) - fine fibres, one per ridge of grain, rendered with --ao."
+ },
+ "acromioclavicular-ligament": {
+  "build": {
+   "kind": "fibres",
+   "ligament": [
+    "Acromioclavicular ligament.l"
+   ],
+   "from": [
+    "Scapula.l"
+   ],
+   "to": [
+    "Clavicle.l"
+   ],
+   "count": 20,
+   "radius": 0.00075,
+   "samples": 24,
+   "smoothPath": 6,
+   "smoothAcross": 2,
+   "lift": 0.1,
+   "smooth": {
+    "voxel": 0.13,
+    "iterations": 2,
+    "factor": 0.45
+   }
+  },
+  "_why": " Added 20 Oct 2026 (shoulder slides, owner's deck p11, p15, p18): fibres laid between the footprints of the atlas's own ligament mesh on each bone, with the UCL finish (render with --ao)."
+ },
+ "coraco-acromial-ligament": {
+  "build": {
+   "kind": "fibres",
+   "ligament": [
+    "Coraco-acromial ligament.l"
+   ],
+   "from": [
+    "Scapula.l"
+   ],
+   "to": [
+    "Scapula.l"
+   ],
+   "count": 30,
+   "radius": 0.00075,
+   "samples": 24,
+   "smoothPath": 6,
+   "smoothAcross": 2,
+   "lift": 0.1,
+   "smooth": {
+    "voxel": 0.13,
+    "iterations": 2,
+    "factor": 0.45
+   }
+  },
+  "_why": " Added 20 Oct 2026 (shoulder slides, owner's deck p11, p15, p18): fibres laid between the footprints of the atlas's own ligament mesh on each bone, with the UCL finish (render with --ao).",
+  "contextBuild": [
+   {
+    "kind": "fibres",
+    "ligament": [
+     "Conoid ligament.l"
+    ],
+    "from": [
+     "Scapula.l"
+    ],
+    "to": [
+     "Clavicle.l"
+    ],
+    "count": 18,
+    "radius": 0.00075,
+    "samples": 24,
+    "smoothPath": 6,
+    "smoothAcross": 2,
+    "lift": 0.1,
+    "smooth": {
+     "voxel": 0.13,
+     "iterations": 2,
+     "factor": 0.45
+    }
+   },
+   {
+    "kind": "fibres",
+    "ligament": [
+     "Trapezoid ligament.l"
+    ],
+    "from": [
+     "Scapula.l"
+    ],
+    "to": [
+     "Clavicle.l"
+    ],
+    "count": 22,
+    "radius": 0.00075,
+    "samples": 24,
+    "smoothPath": 6,
+    "smoothAcross": 2,
+    "lift": 0.1,
+    "smooth": {
+     "voxel": 0.13,
+     "iterations": 2,
+     "factor": 0.45
+    }
+   }
+  ]
+ },
+ "conoid-ligament": {
+  "build": {
+   "kind": "fibres",
+   "ligament": [
+    "Conoid ligament.l"
+   ],
+   "from": [
+    "Scapula.l"
+   ],
+   "to": [
+    "Clavicle.l"
+   ],
+   "count": 18,
+   "radius": 0.00075,
+   "samples": 24,
+   "smoothPath": 6,
+   "smoothAcross": 2,
+   "lift": 0.1,
+   "smooth": {
+    "voxel": 0.13,
+    "iterations": 2,
+    "factor": 0.45
+   }
+  },
+  "_why": " Added 20 Oct 2026 (shoulder slides, owner's deck p11, p15, p18): fibres laid between the footprints of the atlas's own ligament mesh on each bone, with the UCL finish (render with --ao).",
+  "contextBuild": [
+   {
+    "kind": "fibres",
+    "ligament": [
+     "Trapezoid ligament.l"
+    ],
+    "from": [
+     "Scapula.l"
+    ],
+    "to": [
+     "Clavicle.l"
+    ],
+    "count": 22,
+    "radius": 0.00075,
+    "samples": 24,
+    "smoothPath": 6,
+    "smoothAcross": 2,
+    "lift": 0.1,
+    "smooth": {
+     "voxel": 0.13,
+     "iterations": 2,
+     "factor": 0.45
+    }
+   },
+   {
+    "kind": "fibres",
+    "ligament": [
+     "Coraco-acromial ligament.l"
+    ],
+    "from": [
+     "Scapula.l"
+    ],
+    "to": [
+     "Scapula.l"
+    ],
+    "count": 30,
+    "radius": 0.00075,
+    "samples": 24,
+    "smoothPath": 6,
+    "smoothAcross": 2,
+    "lift": 0.1,
+    "smooth": {
+     "voxel": 0.13,
+     "iterations": 2,
+     "factor": 0.45
+    }
+   }
+  ]
+ },
+ "trapezoid-ligament": {
+  "build": {
+   "kind": "fibres",
+   "ligament": [
+    "Trapezoid ligament.l"
+   ],
+   "from": [
+    "Scapula.l"
+   ],
+   "to": [
+    "Clavicle.l"
+   ],
+   "count": 22,
+   "radius": 0.00075,
+   "samples": 24,
+   "smoothPath": 6,
+   "smoothAcross": 2,
+   "lift": 0.1,
+   "smooth": {
+    "voxel": 0.13,
+    "iterations": 2,
+    "factor": 0.45
+   }
+  },
+  "_why": " Added 20 Oct 2026 (shoulder slides, owner's deck p11, p15, p18): fibres laid between the footprints of the atlas's own ligament mesh on each bone, with the UCL finish (render with --ao).",
+  "contextBuild": [
+   {
+    "kind": "fibres",
+    "ligament": [
+     "Conoid ligament.l"
+    ],
+    "from": [
+     "Scapula.l"
+    ],
+    "to": [
+     "Clavicle.l"
+    ],
+    "count": 18,
+    "radius": 0.00075,
+    "samples": 24,
+    "smoothPath": 6,
+    "smoothAcross": 2,
+    "lift": 0.1,
+    "smooth": {
+     "voxel": 0.13,
+     "iterations": 2,
+     "factor": 0.45
+    }
+   },
+   {
+    "kind": "fibres",
+    "ligament": [
+     "Coraco-acromial ligament.l"
+    ],
+    "from": [
+     "Scapula.l"
+    ],
+    "to": [
+     "Scapula.l"
+    ],
+    "count": 30,
+    "radius": 0.00075,
+    "samples": 24,
+    "smoothPath": 6,
+    "smoothAcross": 2,
+    "lift": 0.1,
+    "smooth": {
+     "voxel": 0.13,
+     "iterations": 2,
+     "factor": 0.45
+    }
+   }
+  ]
+ },
+ "coracohumeral-ligament": {
+  "build": {
+   "kind": "fibres",
+   "ligament": [
+    "Coracohumeral ligament.l"
+   ],
+   "from": [
+    "Scapula.l"
+   ],
+   "to": [
+    "Humerus.l"
+   ],
+   "count": 26,
+   "radius": 0.00075,
+   "samples": 24,
+   "smoothPath": 6,
+   "smoothAcross": 2,
+   "lift": 0.1,
+   "smooth": {
+    "voxel": 0.13,
+    "iterations": 2,
+    "factor": 0.45
+   }
+  },
+  "_why": " Added 20 Oct 2026 (shoulder slides, owner's deck p11, p15, p18): fibres laid between the footprints of the atlas's own ligament mesh on each bone, with the UCL finish (render with --ao)."
+ },
+ "superior-glenohumeral-ligament": {
+  "build": {
+   "kind": "fibres",
+   "ligament": [
+    "Superior glenohumeral ligament.l"
+   ],
+   "from": [
+    "Scapula.l"
+   ],
+   "to": [
+    "Humerus.l"
+   ],
+   "count": 16,
+   "radius": 0.00075,
+   "samples": 24,
+   "smoothPath": 6,
+   "smoothAcross": 2,
+   "lift": 0.1,
+   "smooth": {
+    "voxel": 0.13,
+    "iterations": 2,
+    "factor": 0.45
+   }
+  },
+  "_why": " Added 20 Oct 2026 (shoulder slides, owner's deck p11, p15, p18): fibres laid between the footprints of the atlas's own ligament mesh on each bone, with the UCL finish (render with --ao).",
+  "contextBuild": [
+   {
+    "kind": "fibres",
+    "ligament": [
+     "Middle glenohumeral ligament.l"
+    ],
+    "from": [
+     "Scapula.l"
+    ],
+    "to": [
+     "Humerus.l"
+    ],
+    "count": 20,
+    "radius": 0.00075,
+    "samples": 24,
+    "smoothPath": 6,
+    "smoothAcross": 2,
+    "lift": 0.1,
+    "smooth": {
+     "voxel": 0.13,
+     "iterations": 2,
+     "factor": 0.45
+    }
+   },
+   {
+    "kind": "fibres",
+    "ligament": [
+     "Inferior glenohumeral ligament.l"
+    ],
+    "from": [
+     "Scapula.l"
+    ],
+    "to": [
+     "Humerus.l"
+    ],
+    "count": 34,
+    "radius": 0.00075,
+    "samples": 24,
+    "smoothPath": 6,
+    "smoothAcross": 2,
+    "lift": 0.1,
+    "smooth": {
+     "voxel": 0.13,
+     "iterations": 2,
+     "factor": 0.45
+    }
+   }
+  ]
+ },
+ "middle-glenohumeral-ligament": {
+  "build": {
+   "kind": "fibres",
+   "ligament": [
+    "Middle glenohumeral ligament.l"
+   ],
+   "from": [
+    "Scapula.l"
+   ],
+   "to": [
+    "Humerus.l"
+   ],
+   "count": 20,
+   "radius": 0.00075,
+   "samples": 24,
+   "smoothPath": 6,
+   "smoothAcross": 2,
+   "lift": 0.1,
+   "smooth": {
+    "voxel": 0.13,
+    "iterations": 2,
+    "factor": 0.45
+   }
+  },
+  "_why": " Added 20 Oct 2026 (shoulder slides, owner's deck p11, p15, p18): fibres laid between the footprints of the atlas's own ligament mesh on each bone, with the UCL finish (render with --ao).",
+  "contextBuild": [
+   {
+    "kind": "fibres",
+    "ligament": [
+     "Superior glenohumeral ligament.l"
+    ],
+    "from": [
+     "Scapula.l"
+    ],
+    "to": [
+     "Humerus.l"
+    ],
+    "count": 16,
+    "radius": 0.00075,
+    "samples": 24,
+    "smoothPath": 6,
+    "smoothAcross": 2,
+    "lift": 0.1,
+    "smooth": {
+     "voxel": 0.13,
+     "iterations": 2,
+     "factor": 0.45
+    }
+   },
+   {
+    "kind": "fibres",
+    "ligament": [
+     "Inferior glenohumeral ligament.l"
+    ],
+    "from": [
+     "Scapula.l"
+    ],
+    "to": [
+     "Humerus.l"
+    ],
+    "count": 34,
+    "radius": 0.00075,
+    "samples": 24,
+    "smoothPath": 6,
+    "smoothAcross": 2,
+    "lift": 0.1,
+    "smooth": {
+     "voxel": 0.13,
+     "iterations": 2,
+     "factor": 0.45
+    }
+   }
+  ]
+ },
+ "inferior-glenohumeral-ligament": {
+  "build": {
+   "kind": "fibres",
+   "ligament": [
+    "Inferior glenohumeral ligament.l"
+   ],
+   "from": [
+    "Scapula.l"
+   ],
+   "to": [
+    "Humerus.l"
+   ],
+   "count": 34,
+   "radius": 0.00075,
+   "samples": 24,
+   "smoothPath": 6,
+   "smoothAcross": 2,
+   "lift": 0.1,
+   "smooth": {
+    "voxel": 0.13,
+    "iterations": 2,
+    "factor": 0.45
+   }
+  },
+  "_why": " Added 20 Oct 2026 (shoulder slides, owner's deck p11, p15, p18): fibres laid between the footprints of the atlas's own ligament mesh on each bone, with the UCL finish (render with --ao).",
+  "contextBuild": [
+   {
+    "kind": "fibres",
+    "ligament": [
+     "Superior glenohumeral ligament.l"
+    ],
+    "from": [
+     "Scapula.l"
+    ],
+    "to": [
+     "Humerus.l"
+    ],
+    "count": 16,
+    "radius": 0.00075,
+    "samples": 24,
+    "smoothPath": 6,
+    "smoothAcross": 2,
+    "lift": 0.1,
+    "smooth": {
+     "voxel": 0.13,
+     "iterations": 2,
+     "factor": 0.45
+    }
+   },
+   {
+    "kind": "fibres",
+    "ligament": [
+     "Middle glenohumeral ligament.l"
+    ],
+    "from": [
+     "Scapula.l"
+    ],
+    "to": [
+     "Humerus.l"
+    ],
+    "count": 20,
+    "radius": 0.00075,
+    "samples": 24,
+    "smoothPath": 6,
+    "smoothAcross": 2,
+    "lift": 0.1,
+    "smooth": {
+     "voxel": 0.13,
+     "iterations": 2,
+     "factor": 0.45
+    }
+   }
+  ]
+ },
+ "transverse-humeral-ligament": {
+  "build": {
+   "kind": "fibres",
+   "ligament": [
+    "Transverse humeral ligament.l"
+   ],
+   "from": [
+    "Humerus.l"
+   ],
+   "to": [
+    "Humerus.l"
+   ],
+   "count": 20,
+   "radius": 0.00075,
+   "samples": 24,
+   "smoothPath": 6,
+   "smoothAcross": 2,
+   "lift": 0.1,
+   "smooth": {
+    "voxel": 0.13,
+    "iterations": 2,
+    "factor": 0.45
+   }
+  },
+  "_why": " Added 20 Oct 2026 (shoulder slides, owner's deck p11, p15, p18): fibres laid between the footprints of the atlas's own ligament mesh on each bone, with the UCL finish (render with --ao)."
+ },
+ "superior-transverse-scapular-ligament": {
+  "build": {
+   "kind": "fibres",
+   "ligament": [
+    "Superior transverse scapular ligament.l"
+   ],
+   "from": [
+    "Scapula.l"
+   ],
+   "to": [
+    "Scapula.l"
+   ],
+   "count": 12,
+   "radius": 0.00075,
+   "samples": 24,
+   "smoothPath": 6,
+   "smoothAcross": 2,
+   "lift": 0.1,
+   "smooth": {
+    "voxel": 0.13,
+    "iterations": 2,
+    "factor": 0.45
+   }
+  },
+  "_why": " Added 20 Oct 2026 (shoulder slides, owner's deck p11, p15, p18): fibres laid between the footprints of the atlas's own ligament mesh on each bone, with the UCL finish (render with --ao)."
+ },
+ "inferior-transverse-scapular-ligament": {
+  "build": {
+   "kind": "fibres",
+   "ligament": [
+    "Inferior transverse scapular ligament.l"
+   ],
+   "from": [
+    "Scapula.l"
+   ],
+   "to": [
+    "Scapula.l"
+   ],
+   "count": 14,
+   "radius": 0.00075,
+   "samples": 24,
+   "smoothPath": 6,
+   "smoothAcross": 2,
+   "lift": 0.1,
+   "smooth": {
+    "voxel": 0.13,
+    "iterations": 2,
+    "factor": 0.45
+   }
+  },
+  "_why": " Added 20 Oct 2026 (shoulder slides, owner's deck p11, p15, p18): fibres laid between the footprints of the atlas's own ligament mesh on each bone, with the UCL finish (render with --ao)."
+ },
+ "anterior-sternoclavicular-ligament": {
+  "build": {
+   "kind": "fibres",
+   "ligament": [
+    "Anterior sternoclavicular ligament.l"
+   ],
+   "from": [
+    "Clavicle.l"
+   ],
+   "to": [
+    "Manubrium of sternum"
+   ],
+   "count": 22,
+   "radius": 0.00075,
+   "samples": 24,
+   "smoothPath": 6,
+   "smoothAcross": 2,
+   "lift": 0.1,
+   "smooth": {
+    "voxel": 0.13,
+    "iterations": 2,
+    "factor": 0.45
+   }
+  },
+  "_why": " Added 20 Oct 2026 (shoulder slides, owner's deck p11, p15, p18): fibres laid between the footprints of the atlas's own ligament mesh on each bone, with the UCL finish (render with --ao)."
+ },
+ "posterior-sternoclavicular-ligament": {
+  "build": {
+   "kind": "fibres",
+   "ligament": [
+    "Posterior sternoclavicular ligament.l"
+   ],
+   "from": [
+    "Clavicle.l"
+   ],
+   "to": [
+    "Manubrium of sternum"
+   ],
+   "count": 22,
+   "radius": 0.00075,
+   "samples": 24,
+   "smoothPath": 6,
+   "smoothAcross": 2,
+   "lift": 0.1,
+   "smooth": {
+    "voxel": 0.13,
+    "iterations": 2,
+    "factor": 0.45
+   }
+  },
+  "_why": " Added 20 Oct 2026 (shoulder slides, owner's deck p11, p15, p18): fibres laid between the footprints of the atlas's own ligament mesh on each bone, with the UCL finish (render with --ao)."
+ },
+ "costoclavicular-ligament": {
+  "build": {
+   "kind": "fibres",
+   "ligament": [
+    "Costoclavicular ligament.l"
+   ],
+   "from": [
+    "Clavicle.l"
+   ],
+   "to": [
+    "First rib.l",
+    "Costal cartilage of first rib.l"
+   ],
+   "count": 22,
+   "radius": 0.00075,
+   "samples": 24,
+   "smoothPath": 6,
+   "smoothAcross": 2,
+   "lift": 0.1,
+   "smooth": {
+    "voxel": 0.13,
+    "iterations": 2,
+    "factor": 0.45
+   }
+  },
+  "_why": " Added 20 Oct 2026 (shoulder slides, owner's deck p11, p15, p18): fibres laid between the footprints of the atlas's own ligament mesh on each bone, with the UCL finish (render with --ao)."
+ },
+ "interclavicular-ligament": {
+  "build": {
+   "kind": "fibres",
+   "ligament": [
+    "Interclavicular ligament.l"
+   ],
+   "from": [
+    "Clavicle.l"
+   ],
+   "to": [
+    "Manubrium of sternum"
+   ],
+   "count": 16,
+   "radius": 0.00075,
+   "samples": 24,
+   "smoothPath": 6,
+   "smoothAcross": 2,
+   "lift": 0.1,
+   "smooth": {
+    "voxel": 0.13,
+    "iterations": 2,
+    "factor": 0.45
+   }
+  },
+  "_why": " Added 20 Oct 2026 (shoulder slides, owner's deck p11, p15, p18): fibres laid between the footprints of the atlas's own ligament mesh on each bone, with the UCL finish (render with --ao)."
  }
 }
