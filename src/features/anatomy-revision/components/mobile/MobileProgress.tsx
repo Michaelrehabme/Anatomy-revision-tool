@@ -5,6 +5,9 @@ import { REGION_LABELS } from '../../types/region';
 import { useProgressData } from '../../hooks/useProgressData';
 import { RegionBodyFigure } from '../shared/BodyFigure';
 import { RegionLevelBar, RegionLevelLegend } from '../shared/RegionLevelBar';
+import { AccuracySection, StatTile } from '../shared/AccuracySection';
+import { ProgressTabs } from '../shared/ProgressTabs';
+import { CATEGORIES, CATEGORY_LABELS } from '../../types/structure';
 import { MobileShell } from './MobileShell';
 import type { MobileTab } from './MobileTabBar';
 
@@ -23,11 +26,11 @@ function masteryFill(pct: number): string {
 
 /** Screen 11 (mobile). BodyFigure shaded per-region by mastery, not just bars (desktop is bars-only). */
 export function MobileProgress({ content, repository, userId, onNavigateTab, onOpenAchievements }: MobileProgressProps) {
-  const { streak, masteryByStructureId, byRegion, forecast } = useProgressData(repository, userId, content);
+  const { streak, byRegion, forecast, seenByCategory, totalSeen, totalStructures } = useProgressData(repository, userId, content);
 
   const fills = Object.fromEntries(byRegion.map((r) => [r.region, masteryFill(r.pct)])) as Partial<Record<Region, string>>;
-  const answered = [...masteryByStructureId.values()].reduce((sum, m) => sum + m.attemptsTotal, 0);
   const dueTomorrow = forecast[1] ?? 0;
+  const seenDetail = CATEGORIES.map((c) => `${seenByCategory[c].seen}/${seenByCategory[c].total} ${CATEGORY_LABELS[c].toLowerCase()}`).join(' · ');
 
   return (
     <MobileShell tabs={{ active: 'progress', onNavigate: onNavigateTab }}>
@@ -38,9 +41,6 @@ export function MobileProgress({ content, repository, userId, onNavigateTab, onO
         >
           Progress
         </h1>
-        <p data-in className="mt-2.5 text-[14.5px] leading-relaxed" style={{ color: 'var(--ink3)' }}>
-          Mastery shades the map. Pale means unseen, deep means retained.
-        </p>
         <button
           type="button"
           onClick={onOpenAchievements}
@@ -51,54 +51,50 @@ export function MobileProgress({ content, repository, userId, onNavigateTab, onO
           View achievements →
         </button>
 
-        <div data-in className="flex justify-center">
-          <div style={{ width: 132 }}>
-            <RegionBodyFigure fills={fills} />
-          </div>
-        </div>
-
-        <div data-in className="mt-2">
-          <RegionLevelLegend />
-        </div>
-        <div className="mt-1.5 flex flex-col">
-          {byRegion.map((r) => (
-            <div key={r.region} data-row className="py-2.5">
-              <div className="flex items-baseline gap-2.5">
-                <span className="flex-1" style={{ fontSize: 16.5, lineHeight: 1.2 }}>
-                  {REGION_LABELS[r.region]}
-                </span>
-                <span style={{ font: '500 12.5px/1 var(--font-mono)', color: 'var(--ink2)' }}><span data-count>{r.levels.master}</span> mastered</span>
+        <ProgressTabs
+          className="mt-5"
+          compact
+          mastery={
+            <>
+              <p className="mt-4 text-[14.5px] leading-relaxed" style={{ color: 'var(--ink3)' }}>
+                Mastery shades the map. Pale means unseen, deep means retained.
+              </p>
+              <div className="flex justify-center">
+                <div style={{ width: 132 }}>
+                  <RegionBodyFigure fills={fills} />
+                </div>
               </div>
-              <div className="mt-2 overflow-hidden rounded-full">
-                <RegionLevelBar levels={r.levels} height={6} />
+
+              <div className="mt-2">
+                <RegionLevelLegend />
               </div>
-            </div>
-          ))}
-        </div>
+              <div className="mt-1.5 flex flex-col">
+                {byRegion.map((r) => (
+                  <div key={r.region} data-row className="py-2.5">
+                    <div className="flex items-baseline gap-2.5">
+                      <span className="flex-1" style={{ fontSize: 16.5, lineHeight: 1.2 }}>
+                        {REGION_LABELS[r.region]}
+                      </span>
+                      <span style={{ font: '500 12.5px/1 var(--font-mono)', color: 'var(--ink2)' }}><span data-count>{r.levels.master}</span> mastered</span>
+                    </div>
+                    <div className="mt-2 overflow-hidden rounded-full">
+                      <RegionLevelBar levels={r.levels} height={6} />
+                    </div>
+                  </div>
+                ))}
+              </div>
 
-        <div data-in className="mt-6 flex gap-8.5">
-          <div>
-            <div data-count style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 34, lineHeight: 1 }}>{streak}</div>
-            <div className="mt-1.5" style={{ font: '400 10.5px/1.3 var(--font-mono)', color: 'var(--ink3)' }}>
-              day streak
-            </div>
-          </div>
-          <div>
-            <div data-count style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 34, lineHeight: 1 }}>{answered}</div>
-            <div className="mt-1.5" style={{ font: '400 10.5px/1.3 var(--font-mono)', color: 'var(--ink3)' }}>
-              answered
-            </div>
-          </div>
-          <div>
-            <div data-count style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 34, lineHeight: 1, color: 'var(--acc2d)' }}>
-              {dueTomorrow}
-            </div>
-            <div className="mt-1.5" style={{ font: '400 10.5px/1.3 var(--font-mono)', color: 'var(--ink3)' }}>
-              due tomorrow
-            </div>
-          </div>
-        </div>
-
+              <div className="mt-7 flex flex-wrap gap-2.5">
+                <StatTile compact label="Streak" value={`${streak} ${streak === 1 ? 'day' : 'days'}`} />
+                <StatTile compact label="Due tomorrow" value={String(dueTomorrow)} color="var(--acc2d)" />
+                <StatTile compact label="Seen" value={`${totalSeen} / ${totalStructures}`} detail={seenDetail} />
+              </div>
+            </>
+          }
+          accuracy={
+            <AccuracySection className="mt-6" compact repository={repository} userId={userId} content={content} />
+          }
+        />
       </div>
     </MobileShell>
   );

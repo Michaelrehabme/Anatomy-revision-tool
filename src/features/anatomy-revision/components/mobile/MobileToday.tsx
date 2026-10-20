@@ -1,14 +1,17 @@
 import { useState } from 'react';
 import type { AnatomyRepository } from '../../data/repository';
 import type { AnatomyContent } from '../../hooks/useAnatomyContent';
-import type { RevisionQuestion, QuestionType } from '../../types/question';
+import type { RevisionQuestion } from '../../types/question';
 import { AREA_LABELS, REGION_LABELS, type Area } from '../../types/region';
-import { generateRevisionSet } from '../../lib/questionGenerators/generateSet';
-import { buildStarterSet, STARTER_COUNT, STARTER_TYPES } from '../../lib/questionGenerators/starterSet';
+import { STARTER_COUNT } from '../../lib/questionGenerators/starterSet';
+import { buildDailySession, type DailyStyle } from '../../lib/dailySession';
+import type { WeeklyFocus } from '../../lib/studyProfile';
+import { useStudyProfile } from '../../hooks/useStudyProfile';
+import { WeeklyFocusCard } from '../shared/WeeklyFocusCard';
 import { getLearnCardAttempts, getPreferredAreas } from '../../lib/preferences';
 import { firstRunTitle, minutesFor } from '../../lib/sessionCopy';
 import { useTodayData } from '../../hooks/useTodayData';
-import { reviewItemsInArea, type ReviewItem } from '../../lib/reviewQueue';
+import { reviewItemsInArea } from '../../lib/reviewQueue';
 import type { RevisionSetupParams } from '../../hooks/useRevisionSession';
 import type { UseEntitlement } from '../../hooks/useEntitlement';
 import { MobileShell } from './MobileShell';
@@ -18,11 +21,6 @@ import { PaymentIssue } from '../shared/PaymentIssue';
 import { InstallCard } from '../../../pwa/InstallCard';
 import { AdminShortcut } from '../shared/AdminShortcut';
 import type { MobileTab } from './MobileTabBar';
-
-// OINA is in the default mix because attachments are the thing students come back
-// to relearn (CR-018); its own learn cards handle teaching, so 'flashcard' stays for
-// the whole-muscle identify cards rather than as the teaching step.
-const DEFAULT_TYPES: QuestionType[] = ['flashcard', 'mcq', 'locate', 'identify-typed', 'oina'];
 
 interface MobileTodayProps {
   /** What this account may reach — see Today.tsx. */
@@ -48,43 +46,29 @@ export function MobileToday({ access, repository, userId, content, onStart, onCu
   const [reviewArea, setReviewArea] = useState<Area | 'all'>('all');
   const only = reviewArea !== 'all' && access.areas.includes(reviewArea) ? reviewArea : null;
   const areas = only ? [only] : preferredAreas.length ? preferredAreas : undefined;
-  const inArea = (items: ReviewItem[]) => (only ? reviewItemsInArea(items, only, content.structuresById) : items);
-  const dueCount = only ? inArea(reviewItems).filter((i) => i.due).length : dueCountAll;
+  const dueCount = only ? reviewItemsInArea(reviewItems, only, content.structuresById).filter((i) => i.due).length : dueCountAll;
 
-  // 'continue' works down the queue oldest first, up to two questions a
-  // structure, so a structure is finished before the review moves on. 'fresh'
-  // is the same queue spread out: one question a structure, the ones answered
-  // longest ago first, and half the session new (owner, 3 Oct 2026).
-  const handleStart = async (style: 'continue' | 'fresh' = 'continue') => {
-    if (firstRun) {
-      const starter = buildStarterSet(content.structures, content.images, { areas: areas ?? access.areas }, content.sources);
-      if (starter.length > 0) {
-        onStart(starter, { types: STARTER_TYPES, mode: 'practice', areas });
-        return;
-      }
-    }
-    // generateSet is repository-free (CR-009), so fact mastery is fetched here.
-    const factMastery = facts;
-    const learnCardAttempts = getLearnCardAttempts();
-    const questions = generateRevisionSet(content.structures, content.images, {
-      types: DEFAULT_TYPES,
-      mode: 'practice',
-      areas,
+  // The session behind each button, built the same way on desktop and mobile
+  // (lib/dailySession.ts), leaned by the questionnaire's answers.
+  const studyProfile = useStudyProfile();
+  const handleStart = (style: DailyStyle = 'continue', focus?: WeeklyFocus) => {
+    const { questions, params } = buildDailySession({
+      content,
       entitledAreas: access.areas,
-      // Per question type (lib/reviewQueue.ts): what is due, then weak types
-      // pulled forward, then new structures — never something well known and
-      // not due. Fewer than twenty when there is not that much worth asking.
-      reviewItems: inArea(style === 'fresh' ? spreadItems : reviewItems),
-      ...(style === 'fresh' ? { maxPerStructure: 1, newShare: 0.5 } : {}),
-      count: 20,
-      // Without mastery the generator falls back to a uniform shuffle and the
-      // scheduler's due/weakness weighting never runs on the daily review.
+      areas,
+      only,
+      firstRun,
+      reviewItems,
+      spreadItems,
       mastery: allMastery,
-      now: new Date(),
-      factMastery,
-      learnCardAttempts,
-    }, content.sources);
-    onStart(questions, { types: DEFAULT_TYPES, mode: 'practice', areas, learnCardAttempts });
+      // generateSet is repository-free (CR-009), so fact mastery is fetched by useTodayData.
+      facts,
+      learnCardAttempts: getLearnCardAttempts(),
+      profile: studyProfile.profile,
+      focus,
+      style,
+    });
+    onStart(questions, params);
   };
 
   return (
@@ -158,6 +142,21 @@ export function MobileToday({ access, repository, userId, content, onStart, onCu
         >
           Custom session
         </button>
+
+        {/* After the first session, never before it: a focus means nothing until something has been met. */}
+        {!firstRun && (
+          <WeeklyFocusCard
+            access={access}
+            content={content}
+            studyProfile={studyProfile}
+            mastery={allMastery}
+            facts={facts}
+            reviewItems={reviewItems}
+            loading={loading}
+            onStartFocus={(focus) => handleStart('focus', focus)}
+            compact
+          />
+        )}
 
         {/* After the first session, never before it: see pwa/InstallCard. */}
         {!firstRun && !loading && <InstallCard className="mt-5" />}

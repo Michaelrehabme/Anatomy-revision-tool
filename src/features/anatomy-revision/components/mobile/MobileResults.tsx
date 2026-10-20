@@ -7,6 +7,8 @@ import { REGION_LABELS } from '../../types/region';
 import { levelProgress } from '../../lib/levels';
 import { AchievementToastStack } from '../shared/AchievementToast';
 import { ResultsHeading } from '../shared/ResultsHeading';
+import { MobileShell } from './MobileShell';
+import type { MobileTab } from './MobileTabBar';
 
 const DUE_TEXT: Record<'hard' | 'medium' | 'easy', string> = { hard: 'tomorrow', medium: '4 days', easy: '10 days' };
 
@@ -24,6 +26,8 @@ interface MobileResultsProps {
   assignment?: RevisionSetupParams['assignment'];
   onDone: () => void;
   onRetry: () => void;
+  /** The tab bar — the session is over, so leaving by a tab is leaving the results (App.tsx mobileNavigate resets it). */
+  onNavigateTab: (tab: MobileTab) => void;
 }
 
 function resultsLine(summary: RevisionSessionSummary, structuresById: Map<string, AnatomyStructure>): string {
@@ -43,7 +47,7 @@ function resultsLine(summary: RevisionSessionSummary, structuresById: Map<string
 }
 
 /** Screen 09 (mobile). Score, then "back in the queue" — no by-region chart (not in the mobile spec). */
-export function MobileResults({ summary, answers, levelChanges = [], structuresById, gamification, sessionMode, assignment, onDone, onRetry }: MobileResultsProps) {
+export function MobileResults({ summary, answers, levelChanges = [], structuresById, gamification, sessionMode, assignment, onDone, onRetry, onNavigateTab }: MobileResultsProps) {
   const isExam = sessionMode === 'assessment';
   const progress = gamification ? levelProgress(gamification.xpTotal) : null;
   const queueRows = summary.missedStructureIds.map((id) => {
@@ -58,87 +62,89 @@ export function MobileResults({ summary, answers, levelChanges = [], structuresB
   });
 
   return (
-    <main className="flex min-h-screen flex-col px-6.5 pt-5 pb-7.5" style={{ background: 'var(--pg)', color: 'var(--ink)' }}>
-      <ResultsHeading label={`${isExam ? 'Exam results' : 'Session complete'}. ${summary.correctCount} of ${summary.totalQuestions} correct.`}>
-        {isExam ? 'Exam results' : 'Session complete'}
-      </ResultsHeading>
-      <div className="mt-3.5 flex items-baseline gap-2.5">
-        <span style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 80, lineHeight: 0.86, letterSpacing: '-.04em' }}>
-          {summary.correctCount}
-        </span>
-        <span style={{ fontFamily: 'var(--font-display)', fontSize: 26, color: 'var(--ink3)' }}>/ {summary.totalQuestions}</span>
+    <MobileShell tabs={{ active: 'today', onNavigate: onNavigateTab }}>
+      <div className="flex flex-col px-6.5 pt-5 pb-7.5">
+        <ResultsHeading label={`${isExam ? 'Exam results' : 'Session complete'}. ${summary.correctCount} of ${summary.totalQuestions} correct.`}>
+          {isExam ? 'Exam results' : 'Session complete'}
+        </ResultsHeading>
+        <div className="mt-3.5 flex items-baseline gap-2.5">
+          <span style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 80, lineHeight: 0.86, letterSpacing: '-.04em' }}>
+            {summary.correctCount}
+          </span>
+          <span style={{ fontFamily: 'var(--font-display)', fontSize: 26, color: 'var(--ink3)' }}>/ {summary.totalQuestions}</span>
+        </div>
+        {assignment ? (
+          <AssignmentResultNote assignment={assignment} summary={summary} compact />
+        ) : (
+          <p className="mt-4 text-[15px] leading-relaxed" style={{ color: 'var(--ink2)' }}>
+            {resultsLine(summary, structuresById)}
+          </p>
+        )}
+
+        {levelChanges.length > 0 && (
+          <div className="mt-6">
+            <LevelChangesList changes={levelChanges} structuresById={structuresById} />
+          </div>
+        )}
+
+        {gamification && progress && (
+          <div className="mt-5 rounded-[4px] p-3.5" style={{ background: 'var(--accs)' }}>
+            <div className="flex items-baseline justify-between">
+              <span style={{ font: '600 17px/1 var(--font-display)', color: 'var(--accd)' }}>+{gamification.xpEarned} XP</span>
+              <span style={{ font: '500 11.5px/1 var(--font-mono)', color: 'var(--ink2)' }}>
+                {gamification.leveledUp ? 'Level up! ' : ''}Lv {progress.level}
+              </span>
+            </div>
+            <div className="mt-2 h-1.5 overflow-hidden rounded-full" style={{ background: 'var(--line)' }}>
+              <div className="h-full" style={{ width: `${progress.pct}%`, background: 'var(--acc)' }} />
+            </div>
+            <div className="mt-1.5" style={{ font: '500 11px/1 var(--font-mono)', color: 'var(--acc2d)' }}>
+              {gamification.streak}-day streak{gamification.freezeConsumed ? ' · freeze used' : ''}
+            </div>
+          </div>
+        )}
+
+        {gamification && <AchievementToastStack achievements={gamification.newAchievements} />}
+
+        {queueRows.length > 0 && (
+          <>
+            <div
+              className="mt-7.5"
+              style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}
+            >
+              Back in the queue
+            </div>
+            <div className="mt-2 flex flex-col">
+              {queueRows.map((row) => (
+                <div key={row.name} className="flex items-baseline gap-3 py-3">
+                  <span className="h-2.5 w-2.5 flex-none rounded-full" style={{ background: row.dot }} />
+                  <span className="flex-1" style={{ fontFamily: 'var(--font-display)', fontSize: 19, lineHeight: 1.25 }}>
+                    {row.name}
+                  </span>
+                  <span style={{ font: '400 11.5px/1 var(--font-mono)', color: 'var(--ink3)' }}>{row.due}</span>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+
+        <button
+          type="button"
+          onClick={onDone}
+          className="mt-6 w-full rounded-[3px] border-0"
+          style={{ minHeight: 54, background: 'var(--acc-fill)', color: 'var(--onacc)', font: '500 16.5px/1 var(--font-ui)' }}
+        >
+          Done
+        </button>
+        <button
+          type="button"
+          onClick={onRetry}
+          className="mt-2.5 w-full rounded-[3px]"
+          style={{ minHeight: 50, background: 'none', border: '1.3px solid var(--line)', color: 'var(--ink)', font: '500 15.5px/1 var(--font-ui)' }}
+        >
+          Another {summary.totalQuestions}
+        </button>
       </div>
-      {assignment ? (
-        <AssignmentResultNote assignment={assignment} summary={summary} compact />
-      ) : (
-        <p className="mt-4 text-[15px] leading-relaxed" style={{ color: 'var(--ink2)' }}>
-          {resultsLine(summary, structuresById)}
-        </p>
-      )}
-
-      {levelChanges.length > 0 && (
-        <div className="mt-6">
-          <LevelChangesList changes={levelChanges} structuresById={structuresById} />
-        </div>
-      )}
-
-      {gamification && progress && (
-        <div className="mt-5 rounded-[4px] p-3.5" style={{ background: 'var(--accs)' }}>
-          <div className="flex items-baseline justify-between">
-            <span style={{ font: '600 17px/1 var(--font-display)', color: 'var(--accd)' }}>+{gamification.xpEarned} XP</span>
-            <span style={{ font: '500 11.5px/1 var(--font-mono)', color: 'var(--ink2)' }}>
-              {gamification.leveledUp ? 'Level up! ' : ''}Lv {progress.level}
-            </span>
-          </div>
-          <div className="mt-2 h-1.5 overflow-hidden rounded-full" style={{ background: 'var(--line)' }}>
-            <div className="h-full" style={{ width: `${progress.pct}%`, background: 'var(--acc)' }} />
-          </div>
-          <div className="mt-1.5" style={{ font: '500 11px/1 var(--font-mono)', color: 'var(--acc2d)' }}>
-            {gamification.streak}-day streak{gamification.freezeConsumed ? ' · freeze used' : ''}
-          </div>
-        </div>
-      )}
-
-      {gamification && <AchievementToastStack achievements={gamification.newAchievements} />}
-
-      {queueRows.length > 0 && (
-        <>
-          <div
-            className="mt-7.5"
-            style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}
-          >
-            Back in the queue
-          </div>
-          <div className="mt-2 flex flex-col">
-            {queueRows.map((row) => (
-              <div key={row.name} className="flex items-baseline gap-3 py-3">
-                <span className="h-2.5 w-2.5 flex-none rounded-full" style={{ background: row.dot }} />
-                <span className="flex-1" style={{ fontFamily: 'var(--font-display)', fontSize: 19, lineHeight: 1.25 }}>
-                  {row.name}
-                </span>
-                <span style={{ font: '400 11.5px/1 var(--font-mono)', color: 'var(--ink3)' }}>{row.due}</span>
-              </div>
-            ))}
-          </div>
-        </>
-      )}
-
-      <button
-        type="button"
-        onClick={onDone}
-        className="mt-6 w-full rounded-[3px] border-0"
-        style={{ minHeight: 54, background: 'var(--acc-fill)', color: 'var(--onacc)', font: '500 16.5px/1 var(--font-ui)' }}
-      >
-        Done
-      </button>
-      <button
-        type="button"
-        onClick={onRetry}
-        className="mt-2.5 w-full rounded-[3px]"
-        style={{ minHeight: 50, background: 'none', border: '1.3px solid var(--line)', color: 'var(--ink)', font: '500 15.5px/1 var(--font-ui)' }}
-      >
-        Another {summary.totalQuestions}
-      </button>
-    </main>
+    </MobileShell>
   );
 }

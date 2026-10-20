@@ -154,6 +154,8 @@ interface StructureRouteProps {
   isDesktop: boolean;
   onNavigateSection: (section: NavSection) => void;
   onDrill: (structureId: string) => void;
+  /** The mobile tab bar; undefined while a session is running, so the card a question opened has no tab to abandon it by. */
+  onNavigateTab?: (tab: MobileTab) => void;
 }
 
 /**
@@ -161,7 +163,7 @@ interface StructureRouteProps {
  * inside a matched Route's subtree, not in the App component that renders
  * the <Routes> table.
  */
-function StructureRoute({ access, content, repository, userId, isDesktop, onNavigateSection, onDrill }: StructureRouteProps) {
+function StructureRoute({ access, content, repository, userId, isDesktop, onNavigateSection, onDrill, onNavigateTab }: StructureRouteProps) {
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
   const navigate = useNavigate();
@@ -198,6 +200,7 @@ function StructureRoute({ access, content, repository, userId, isDesktop, onNavi
       userId={userId}
       onBack={handleBack}
       onDrill={onDrill}
+      onNavigateTab={onNavigateTab}
     />
   );
 }
@@ -829,6 +832,7 @@ function App() {
                 onChange={chooseAreas}
                 onContinue={() => navigate('/study/setup')}
                 onBack={() => mobileNavigate('today')}
+                onNavigateTab={mobileNavigate}
               />
             ),
             )
@@ -858,6 +862,7 @@ function App() {
                 areas={selectedAreas}
                 onStart={session.start}
                 onBack={() => navigate('/study')}
+                onNavigateTab={mobileNavigate}
               />
             ),
             )
@@ -940,6 +945,7 @@ function App() {
                 sessionMode={session.setupParams?.mode}
                 assignment={session.setupParams?.assignment}
                 onDone={endSession}
+                onNavigateTab={mobileNavigate}
                 onRetry={async () => {
                   // Mobile's "Another N" re-runs the same setup fresh (not missed-only) — the
                   // mockup's startSession/`this.go('session')` resets and starts over, unlike
@@ -1008,6 +1014,7 @@ function App() {
               isDesktop={isDesktop}
               onNavigateSection={onNavigateSection}
               onDrill={drillStructure}
+              onNavigateTab={session.phase === 'in-progress' ? undefined : mobileNavigate}
             />,
             )
           }
@@ -1079,7 +1086,7 @@ function App() {
               {isDesktop ? (
                 <Achievements repository={repository} userId={userId} onNavigate={onNavigateSection} />
               ) : (
-                <MobileAchievements repository={repository} userId={userId} onBack={() => navigate('/progress')} />
+                <MobileAchievements repository={repository} userId={userId} onBack={() => navigate('/progress')} onNavigateTab={mobileNavigate} />
               )}
             </Suspense>,
             )

@@ -11,6 +11,7 @@ import { LockedStructureNotice } from '../shared/AreaLock';
 import { StructureFactsUnavailable } from '../shared/AreaFactsNotice';
 import type { UseEntitlement } from '../../hooks/useEntitlement';
 import { PronounceButton } from '../shared/PronounceButton';
+import { StarButton } from '../shared/StarButton';
 import { MasteryLevelBadge } from '../shared/MasteryLevelBadge';
 import { structureLevel } from '../../lib/masteryLevel';
 import { SkillBreakdown } from '../shared/SkillBreakdown';
@@ -155,6 +156,7 @@ export function MuscleCard({
               {structure.name}
             </h1>
             <PronounceButton structure={structure} size={22} />
+            <StarButton structureId={structure.id} name={structure.name} size={22} />
           </div>
           {structure.phoneticSpelling && (
             <div className="mt-1.5" style={{ font: '400 14px/1.4 var(--font-mono)', color: 'var(--ink3)' }}>

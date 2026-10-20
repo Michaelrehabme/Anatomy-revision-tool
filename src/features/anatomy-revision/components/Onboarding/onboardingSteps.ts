@@ -3,6 +3,8 @@ import type { Area } from '../../types/region';
 import { AREA_LABELS } from '../../types/region';
 import { freeAreaIsOnTheAccount, type UseEntitlement } from '../../hooks/useEntitlement';
 import { CONFIRM_BODY, CONFIRM_TITLE } from '../Auth/emailConfirmCopy';
+import { useStudyProfile } from '../../hooks/useStudyProfile';
+import type { StudyProfile } from '../../lib/studyProfile';
 
 /**
  * The onboarding steps, shared by the desktop and mobile screens so the two
@@ -18,6 +20,9 @@ import { CONFIRM_BODY, CONFIRM_TITLE } from '../Auth/emailConfirmCopy';
  *            of this step, not a step of its own: it keeps the step's number,
  *            and a Google account, which arrives confirmed, never sees it.
  *   areas    the real choice. On a free account, which ONE area is free.
+ *   profile  the optional questionnaire (lib/studyProfile.ts, owner 19 Oct
+ *            2026): where the student is starting from. Skipping it skips
+ *            only it, never the rest of onboarding.
  *   rating   how to answer the confidence question.
  *   rhythm   what a first session is.
  *
@@ -25,7 +30,7 @@ import { CONFIRM_BODY, CONFIRM_TITLE } from '../Auth/emailConfirmCopy';
  * been using the app and holds no free area yet (it skipped the choice when
  * skipping still gave it the shoulder).
  */
-export type OnboardingStepKind = 'account' | 'areas' | 'rating' | 'rhythm';
+export type OnboardingStepKind = 'account' | 'areas' | 'profile' | 'rating' | 'rhythm';
 
 export interface OnboardingStep {
   kind: OnboardingStepKind;
@@ -35,7 +40,7 @@ export interface OnboardingStep {
   cta: string;
 }
 
-const COUNT_WORDS = ['one', 'two', 'three', 'four'];
+const COUNT_WORDS = ['one', 'two', 'three', 'four', 'five'];
 
 /** The words on each step. `free` is whether this account is on the free tier. */
 function copyFor(kind: OnboardingStepKind, free: boolean): Omit<OnboardingStep, 'kind' | 'kicker'> {
@@ -58,6 +63,12 @@ function copyFor(kind: OnboardingStepKind, free: boolean): Omit<OnboardingStep, 
             body: 'Pick the areas your course examines. Every session is built from your selection, so you will never be asked about the forearm if you did not ask for the forearm.',
             cta: 'Continue',
           };
+    case 'profile':
+      return {
+        title: 'Tell us where you are starting',
+        body: 'Seven quick questions, about a minute. Your answers decide which new structures come first and how long your daily review is. You can change them any time in Account.',
+        cta: 'Answer the questions',
+      };
     case 'rating':
       return {
         title: 'Answer honestly, not correctly',
@@ -116,7 +127,7 @@ export function useOnboardingFlow({ access, initialAreas, only, onDone }: Onboar
   // through the account step, and a list of steps that shrank under them
   // would skip the next one.
   const [kinds] = useState<readonly OnboardingStepKind[]>(
-    () => only ?? [...(access.guest ? (['account'] as const) : []), 'areas', 'rating', 'rhythm'],
+    () => only ?? [...(access.guest ? (['account'] as const) : []), 'areas', 'profile', 'rating', 'rhythm'],
   );
   const [index, setIndex] = useState(0);
   const free = access.tier === 'free';
@@ -150,6 +161,18 @@ export function useOnboardingFlow({ access, initialAreas, only, onDone }: Onboar
   const next = () => {
     if (index >= steps.length - 1) onDone([...selected]);
     else setIndex((i) => i + 1);
+  };
+
+  // THE QUESTIONNAIRE. The step opens on its explanation; "Answer the
+  // questions" swaps in the form, and both of its endings move on to the next
+  // step. Skipping is recorded, so Account can offer the questions later
+  // without onboarding asking again.
+  const studyProfile = useStudyProfile();
+  const [profileOpen, setProfileOpen] = useState(false);
+  const leaveProfile = (draft: Omit<StudyProfile, 'updatedAt'> | null) => {
+    studyProfile.update((current) => (draft ? { ...draft, weeklyFocus: current.weeklyFocus } : { ...current, skipped: true }));
+    setProfileOpen(false);
+    next();
   };
 
   // THE ACCOUNT STEP ENDS BY ITSELF. The form creates the account (or signs
@@ -229,8 +252,14 @@ export function useOnboardingFlow({ access, initialAreas, only, onDone }: Onboar
     canSkipAreas,
     /** The areas step may only be left with something chosen. */
     canContinue: current.kind !== 'areas' || selected.size > 0,
-    /** Skip: past the explanations with what has been chosen, or past the choice where that is allowed. */
-    skip: () => onDone(current.kind === 'areas' ? [] : [...selected]),
+    /** Skip: past the explanations with what has been chosen, or past the choice where that is allowed. The questionnaire skips only itself. */
+    skip: () => (current.kind === 'profile' ? leaveProfile(null) : onDone(current.kind === 'areas' ? [] : [...selected])),
+    /** The questionnaire's form is open in place of the step's buttons. */
+    profileOpen: current.kind === 'profile' && profileOpen,
+    profile: studyProfile.profile,
+    openProfile: () => setProfileOpen(true),
+    saveProfile: (draft: Omit<StudyProfile, 'updatedAt'>) => leaveProfile(draft),
+    skipProfile: () => leaveProfile(null),
     canSkip: current.kind !== 'account' && (current.kind !== 'areas' || canSkipAreas),
     /** The line under the buttons on the areas step. */
     areaNote:

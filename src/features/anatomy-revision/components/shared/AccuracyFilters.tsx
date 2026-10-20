@@ -1,6 +1,7 @@
-import { useState, type ReactNode } from 'react';
+import { useId, useState, type ReactNode } from 'react';
 import { AREAS, AREA_LABELS } from '../../types/region';
-import { ANSWER_FORMATS, ANSWER_FORMAT_LABELS, LAST_ANSWER_PRESETS, type Tally } from '../../lib/attemptFilter';
+import { ANSWER_FORMATS, ANSWER_FORMAT_LABELS, LAST_ANSWER_PRESETS, type ProgressFilter, type Tally } from '../../lib/attemptFilter';
+import { getAccuracyFiltersOpen, setAccuracyFiltersOpen } from '../../lib/preferences';
 import type { UseAccuracyFilter } from '../../hooks/useAccuracyFilter';
 
 const eyebrow = {
@@ -44,11 +45,26 @@ const pct = (t: Tally) => (t.pct !== null ? `${t.pct}%` : '—');
 
 const shortDay = (iso: string) => new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
 
+/**
+ * The active filters in one line, for when the chip rows are folded away:
+ * "Locate · Knee · Last 50", or "All answers" when nothing narrows the chart.
+ * Listed in the rows' own order (ANSWER_FORMATS, AREAS) rather than the order
+ * they were picked, so the same filter always reads the same way.
+ */
+export function accuracyFilterSummary(filter: ProgressFilter): string {
+  const parts = [
+    ...ANSWER_FORMATS.filter((f) => filter.formats.has(f)).map((f) => ANSWER_FORMAT_LABELS[f]),
+    ...AREAS.filter((a) => filter.areas.has(a)).map((a) => AREA_LABELS[a]),
+    ...(filter.last !== null ? [`Last ${filter.last}`] : []),
+  ];
+  return parts.length > 0 ? parts.join(' · ') : 'All answers';
+}
+
 /** What Custom opens on: a number none of the chips offers. */
 const CUSTOM_DEFAULT = 200;
 
 /**
- * The filters over the account page's accuracy chart, and the figures for
+ * The filters over the Progress page's accuracy chart, and the figures for
  * what they leave: by how the question was answered and by the area of the
  * body it was about. Nothing selected in a row means all of it. A third row
  * keeps only the most recent answers that match, and the line underneath says
@@ -57,6 +73,12 @@ const CUSTOM_DEFAULT = 200;
  * The seen-before / first-sight pair is printed as numbers here as well as
  * drawn below, because a narrow filter often leaves too few answers for a
  * line and the two figures are still worth reading.
+ *
+ * The three chip rows fold away behind a "Filters" button, closed unless this
+ * person last left them open (preferences getAccuracyFiltersOpen): on a phone
+ * they stood between the heading and the chart it was about. Folded, a
+ * one-line summary says what is active, and "Clear filters" and the figures
+ * line stay in view, so a narrowed chart never passes for the whole one.
  */
 export function AccuracyFilters({ accuracy, compact = false }: { accuracy: UseAccuracyFilter; compact?: boolean }) {
   const { filter, counts, result } = accuracy;
@@ -64,6 +86,12 @@ export function AccuracyFilters({ accuracy, compact = false }: { accuracy: UseAc
   // Custom is a mode, not a value: typing 50 into the box must not jump the
   // selection across to the "Last 50" chip mid-keystroke.
   const [custom, setCustom] = useState(false);
+  const [open, setOpen] = useState(getAccuracyFiltersOpen);
+  const rowsId = useId();
+  const toggleOpen = () => {
+    setOpen(!open);
+    setAccuracyFiltersOpen(!open);
+  };
   const pickLast = (last: number | null) => {
     setCustom(false);
     accuracy.setLast(last);
@@ -71,84 +99,117 @@ export function AccuracyFilters({ accuracy, compact = false }: { accuracy: UseAc
 
   return (
     <div className="mt-4">
-      <div style={eyebrow}>Question type</div>
-      <div className="mt-2 flex flex-wrap gap-2">
-        <Chip on={filter.formats.size === 0} compact={compact} onClick={() => filter.formats.forEach(accuracy.toggleFormat)}>
-          All types
-        </Chip>
-        {ANSWER_FORMATS.map((format) => (
-          <Chip
-            key={format}
-            on={filter.formats.has(format)}
-            count={counts.formats[format]}
-            compact={compact}
-            onClick={() => accuracy.toggleFormat(format)}
-          >
-            {ANSWER_FORMAT_LABELS[format]}
-          </Chip>
-        ))}
-      </div>
-
-      <div className="mt-4" style={eyebrow}>
-        Area
-      </div>
-      <div className="mt-2 flex flex-wrap gap-2">
-        <Chip on={filter.areas.size === 0} compact={compact} onClick={() => filter.areas.forEach(accuracy.toggleArea)}>
-          All areas
-        </Chip>
-        {AREAS.map((area) => (
-          <Chip
-            key={area}
-            on={filter.areas.has(area)}
-            count={counts.areas[area] ?? 0}
-            compact={compact}
-            onClick={() => accuracy.toggleArea(area)}
-          >
-            {AREA_LABELS[area]}
-          </Chip>
-        ))}
-      </div>
-
-      <div className="mt-4" style={eyebrow}>
-        Answers
-      </div>
-      <div className="mt-2 flex flex-wrap items-center gap-2">
-        {LAST_ANSWER_PRESETS.map((n) => (
-          <Chip key={n} on={!custom && filter.last === n} compact={compact} onClick={() => pickLast(n)}>
-            Last {n}
-          </Chip>
-        ))}
-        <Chip on={!custom && filter.last === null} compact={compact} onClick={() => pickLast(null)}>
-          All time
-        </Chip>
-        <Chip
-          on={custom}
-          compact={compact}
-          onClick={() => {
-            setCustom(true);
-            accuracy.setLast(filter.last ?? CUSTOM_DEFAULT);
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+        <button
+          type="button"
+          onClick={toggleOpen}
+          aria-expanded={open}
+          aria-controls={rowsId}
+          className={`inline-flex items-center gap-1.5 rounded-full ${compact ? 'min-h-[38px] px-3' : 'min-h-[34px] px-3.5'}`}
+          style={{
+            fontFamily: 'var(--font-display)',
+            fontSize: compact ? 13.5 : 14,
+            border: '1.2px solid var(--line)',
+            background: 'transparent',
+            color: 'var(--ink2)',
           }}
         >
-          Custom
-        </Chip>
-        {custom && (
-          <label className="inline-flex items-center gap-2" style={{ font: '400 13px/1 var(--font-ui)', color: 'var(--ink2)' }}>
-            Last
-            <input
-              type="number"
-              inputMode="numeric"
-              min={1}
-              value={filter.last ?? ''}
-              onChange={(e) => {
-                const n = Math.floor(Number(e.target.value));
-                if (Number.isFinite(n) && n >= 1) accuracy.setLast(n);
-              }}
-              className="rounded-[3px] px-2 tabular-nums"
-              style={{ width: 84, minHeight: compact ? 38 : 34, border: '1.2px solid var(--line)', background: 'var(--sf)', color: 'var(--ink)' }}
-            />
-            answers
-          </label>
+          Filters
+          <span
+            aria-hidden="true"
+            className="inline-block transition-transform duration-200 motion-reduce:transition-none"
+            style={{ transform: open ? 'rotate(180deg)' : 'none', fontSize: 10 }}
+          >
+            ▾
+          </span>
+        </button>
+        {!open && (
+          <span data-testid="accuracy-filter-summary" style={{ font: '400 12.5px/1.4 var(--font-mono)', color: active ? 'var(--accd)' : 'var(--ink3)' }}>
+            {accuracyFilterSummary(filter)}
+          </span>
         )}
+      </div>
+
+      <div id={rowsId} hidden={!open} className="mt-4">
+        <div style={eyebrow}>Question type</div>
+        <div className="mt-2 flex flex-wrap gap-2">
+          <Chip on={filter.formats.size === 0} compact={compact} onClick={() => filter.formats.forEach(accuracy.toggleFormat)}>
+            All types
+          </Chip>
+          {ANSWER_FORMATS.map((format) => (
+            <Chip
+              key={format}
+              on={filter.formats.has(format)}
+              count={counts.formats[format]}
+              compact={compact}
+              onClick={() => accuracy.toggleFormat(format)}
+            >
+              {ANSWER_FORMAT_LABELS[format]}
+            </Chip>
+          ))}
+        </div>
+
+        <div className="mt-4" style={eyebrow}>
+          Area
+        </div>
+        <div className="mt-2 flex flex-wrap gap-2">
+          <Chip on={filter.areas.size === 0} compact={compact} onClick={() => filter.areas.forEach(accuracy.toggleArea)}>
+            All areas
+          </Chip>
+          {AREAS.map((area) => (
+            <Chip
+              key={area}
+              on={filter.areas.has(area)}
+              count={counts.areas[area] ?? 0}
+              compact={compact}
+              onClick={() => accuracy.toggleArea(area)}
+            >
+              {AREA_LABELS[area]}
+            </Chip>
+          ))}
+        </div>
+
+        <div className="mt-4" style={eyebrow}>
+          Answers
+        </div>
+        <div className="mt-2 flex flex-wrap items-center gap-2">
+          {LAST_ANSWER_PRESETS.map((n) => (
+            <Chip key={n} on={!custom && filter.last === n} compact={compact} onClick={() => pickLast(n)}>
+              Last {n}
+            </Chip>
+          ))}
+          <Chip on={!custom && filter.last === null} compact={compact} onClick={() => pickLast(null)}>
+            All time
+          </Chip>
+          <Chip
+            on={custom}
+            compact={compact}
+            onClick={() => {
+              setCustom(true);
+              accuracy.setLast(filter.last ?? CUSTOM_DEFAULT);
+            }}
+          >
+            Custom
+          </Chip>
+          {custom && (
+            <label className="inline-flex items-center gap-2" style={{ font: '400 13px/1 var(--font-ui)', color: 'var(--ink2)' }}>
+              Last
+              <input
+                type="number"
+                inputMode="numeric"
+                min={1}
+                value={filter.last ?? ''}
+                onChange={(e) => {
+                  const n = Math.floor(Number(e.target.value));
+                  if (Number.isFinite(n) && n >= 1) accuracy.setLast(n);
+                }}
+                className="rounded-[3px] px-2 tabular-nums"
+                style={{ width: 84, minHeight: compact ? 38 : 34, border: '1.2px solid var(--line)', background: 'var(--sf)', color: 'var(--ink)' }}
+              />
+              answers
+            </label>
+          )}
+        </div>
       </div>
 
       <div className="mt-4" style={{ font: '400 12.5px/1.6 var(--font-mono)', color: 'var(--ink2)' }} aria-live="polite">

@@ -1,11 +1,14 @@
 import { useEffect, useState } from 'react';
 import { ACHIEVEMENT_DEFINITIONS, type AchievementDoc, type AchievementDefinition } from '../../lib/achievements';
 import type { AnatomyRepository } from '../../data/repository';
+import { MobileShell } from './MobileShell';
+import type { MobileTab } from './MobileTabBar';
 
 interface MobileAchievementsProps {
   repository: AnatomyRepository | null;
   userId: string | null;
   onBack: () => void;
+  onNavigateTab: (tab: MobileTab) => void;
 }
 
 function formatRecordValue(def: AchievementDefinition, value: number): string {
@@ -37,8 +40,12 @@ function AchievementRow({ def, doc }: { def: AchievementDefinition; doc?: Achiev
   );
 }
 
-/** Reached from Progress's "View achievements" link — no tab bar, same back-navigation pattern as MobileMuscleCard. */
-export function MobileAchievements({ repository, userId, onBack }: MobileAchievementsProps) {
+/**
+ * Reached from Progress's "View achievements" link, with the same back link as
+ * MobileMuscleCard. Under the Progress tab: it is a page of Progress, and the
+ * bar is how every non-question screen gets you anywhere else.
+ */
+export function MobileAchievements({ repository, userId, onBack, onNavigateTab }: MobileAchievementsProps) {
   const [achievements, setAchievements] = useState<AchievementDoc[]>([]);
 
   useEffect(() => {
@@ -57,34 +64,36 @@ export function MobileAchievements({ repository, userId, onBack }: MobileAchieve
   const milestones = ACHIEVEMENT_DEFINITIONS.filter((d) => d.tier === 'milestone');
 
   return (
-    <main className="flex min-h-screen flex-col px-6.5 pt-4 pb-7.5" style={{ background: 'var(--pg)', color: 'var(--ink)' }}>
-      <button type="button" onClick={onBack} className="border-0 bg-transparent p-0 pb-2" style={{ fontSize: 14.5, color: 'var(--ink3)' }}>
-        &larr; Back
-      </button>
-      <h1 style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 30, lineHeight: 1.04, letterSpacing: '-.02em', margin: '8px 0 4px' }}>
-        Achievements
-      </h1>
-      <p className="text-[13.5px]" style={{ color: 'var(--ink2)' }}>
-        {achievements.length} of {ACHIEVEMENT_DEFINITIONS.length} earned
-      </p>
+    <MobileShell tabs={{ active: 'progress', onNavigate: onNavigateTab }}>
+      <div className="flex flex-col px-6.5 pt-4 pb-7.5">
+        <button type="button" onClick={onBack} className="border-0 bg-transparent p-0 pb-2" style={{ fontSize: 14.5, color: 'var(--ink3)' }}>
+          &larr; Back
+        </button>
+        <h1 style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 30, lineHeight: 1.04, letterSpacing: '-.02em', margin: '8px 0 4px' }}>
+          Achievements
+        </h1>
+        <p className="text-[13.5px]" style={{ color: 'var(--ink2)' }}>
+          {achievements.length} of {ACHIEVEMENT_DEFINITIONS.length} earned
+        </p>
 
-      <div className="mt-6" style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.14em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
-        Personal records
-      </div>
-      <div className="mt-1 flex flex-col">
-        {records.map((def) => (
-          <AchievementRow key={def.id} def={def} doc={byId.get(def.id)} />
-        ))}
-      </div>
+        <div className="mt-6" style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.14em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
+          Personal records
+        </div>
+        <div className="mt-1 flex flex-col">
+          {records.map((def) => (
+            <AchievementRow key={def.id} def={def} doc={byId.get(def.id)} />
+          ))}
+        </div>
 
-      <div className="mt-7" style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.14em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
-        Milestones
+        <div className="mt-7" style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.14em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
+          Milestones
+        </div>
+        <div className="mt-1 flex flex-col">
+          {milestones.map((def) => (
+            <AchievementRow key={def.id} def={def} doc={byId.get(def.id)} />
+          ))}
+        </div>
       </div>
-      <div className="mt-1 flex flex-col">
-        {milestones.map((def) => (
-          <AchievementRow key={def.id} def={def} doc={byId.get(def.id)} />
-        ))}
-      </div>
-    </main>
+    </MobileShell>
   );
 }

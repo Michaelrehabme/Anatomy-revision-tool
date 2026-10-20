@@ -364,7 +364,7 @@ describe.each([
       </MemoryRouter>,
     );
     expect(screen.getByRole('heading', { level: 1, name: 'Check your inbox' })).toBeTruthy();
-    expect(screen.getByText('Step one of four')).toBeTruthy();
+    expect(screen.getByText('Step one of five')).toBeTruthy();
     expect(await screen.findByRole('button', { name: CONTINUE })).toBeTruthy();
     // No Continue to the next step, no Skip, no area to tick.
     expect(screen.queryByRole('button', { name: 'Skip' })).toBeNull();

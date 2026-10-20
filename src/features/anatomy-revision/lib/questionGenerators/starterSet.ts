@@ -1,4 +1,4 @@
-import type { AnatomyStructure } from '../../types/structure';
+import type { AnatomyStructure, Category } from '../../types/structure';
 import type { AnatomyImageAsset } from '../../types/image';
 import type { LocateQuestion, MCQQuestion, QuestionType, RevisionQuestion } from '../../types/question';
 import type { Area } from '../../types/region';
@@ -20,16 +20,22 @@ export const STARTER_TYPES: QuestionType[] = ['mcq', 'locate'];
 export const STARTER_COUNT = 8;
 
 export interface StarterSetConfig {
-  /** The areas chosen in onboarding. Empty or omitted = every area. */
+  /**
+   * The areas chosen in onboarding. Empty or omitted = every area. In order of
+   * priority: the first area that can fill the session is the one it is drawn
+   * from (lib/studyProfile.ts starterAreaOrder puts the least confident first).
+   */
   areas?: readonly Area[];
+  /** The kinds of structure to ask about. Muscles alone when omitted — see lib/studyProfile.ts starterCategories. */
+  categories?: readonly Category[];
   count?: number;
   /** Fixed seed for deterministic tests. */
   seed?: number;
 }
 
 /**
- * The guided first session (CR: first-run workflow). Muscles only, from the
- * student's own areas, alternating a multiple-choice warm-up with locate
+ * The guided first session (CR: first-run workflow). Muscles only unless the
+ * questionnaire says otherwise, from the student's own areas, alternating a multiple-choice warm-up with locate
  * questions ordered biggest target first — so the first thing they are asked
  * to click is a large superficial muscle they can actually see, not a sliver
  * of a deep one. Falls back to multiple choice alone when the chosen areas
@@ -46,7 +52,16 @@ export function buildStarterSet(
   const count = Math.max(1, config.count ?? STARTER_COUNT);
   const rng = createRng(config.seed);
 
-  const pool = filterStructures(structures, { areas: [...(config.areas ?? [])], category: 'muscle' });
+  const categories = config.categories?.length ? [...config.categories] : ['muscle' as const];
+  const inAreas = (areas: Area[]) => filterStructures(structures, { areas, categories });
+  // Area by area in the order given, until there is enough to choose from: a
+  // student least sure of the knee starts on the knee, not on whichever of
+  // their areas has the most muscles. Every area at once when no single run
+  // fills the session.
+  const ordered = [...(config.areas ?? [])];
+  let pool: AnatomyStructure[] = [];
+  for (let i = 1; i <= ordered.length && pool.length < count; i++) pool = inAreas(ordered.slice(0, i));
+  if (pool.length < count) pool = inAreas(ordered);
   if (pool.length === 0) return [];
   const poolIds = new Set(pool.map((s) => s.id));
 

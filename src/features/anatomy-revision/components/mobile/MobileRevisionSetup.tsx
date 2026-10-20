@@ -19,6 +19,7 @@ import {
 import type { RevisionSetupParams } from '../../hooks/useRevisionSession';
 import type { UseEntitlement } from '../../hooks/useEntitlement';
 import { MobileShell } from './MobileShell';
+import type { MobileTab } from './MobileTabBar';
 import { QUESTION_FORMATS } from '../../lib/questionFormats';
 
 /**
@@ -70,6 +71,7 @@ interface MobileRevisionSetupProps {
   areas: Set<Area>;
   onStart: (questions: RevisionQuestion[], params: RevisionSetupParams) => void;
   onBack: () => void;
+  onNavigateTab: (tab: MobileTab) => void;
 }
 
 function chipStyle(selected: boolean) {
@@ -78,8 +80,13 @@ function chipStyle(selected: boolean) {
     : { border: '1.2px solid var(--line)', background: 'transparent', color: 'var(--ink3)' };
 }
 
-/** Screen 04 (mobile). No tab bar (not in the mockup's showTabs list) — a step within the Study flow. */
-export function MobileRevisionSetup({ access, content, repository, userId, areas, onStart, onBack }: MobileRevisionSetupProps) {
+/**
+ * Screen 04 (mobile). A step within the Study flow, left out of the mockup's
+ * showTabs list — but with the bar, under Today, for the same reason as
+ * MobileRegionPicker: only screens where a question is being answered go
+ * without it.
+ */
+export function MobileRevisionSetup({ access, content, repository, userId, areas, onStart, onBack, onNavigateTab }: MobileRevisionSetupProps) {
   const [types, setTypes] = useState<QuestionType[]>(['mcq', 'identify-typed']);
   // Empty means every category, as on the area picker.
   const [categories, setCategories] = useState<Category[]>([]);
@@ -213,7 +220,7 @@ export function MobileRevisionSetup({ access, content, repository, userId, areas
   const summary = `${areasArray.length ? areasArray.map((a) => AREA_LABELS[a]).join(', ') : allAreasLabel} · ${poolSize} ${noun} in the pool.`;
 
   return (
-    <MobileShell>
+    <MobileShell tabs={{ active: 'today', onNavigate: onNavigateTab }}>
       <div className="px-6.5 pt-4 pb-7.5">
         <button type="button" onClick={onBack} className="border-0 bg-transparent p-0 pb-2.5" style={{ fontSize: 14.5, color: 'var(--ink3)' }}>
           &larr; Areas
