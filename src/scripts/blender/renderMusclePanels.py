@@ -68,6 +68,7 @@ ap.add_argument("--exposure", type=float, default=0.0,
                      "than a limb is shaded (owner, 20 Oct 2026: 'quite dark and shadowed')")
 ap.add_argument("--fill", type=float, default=0.0, help="extra fill-light energy, for the same reason")
 ap.add_argument("--ghost", default="", help="comma-separated bones drawn see-through, for a ligament buried between them")
+ap.add_argument("--neighbour-alpha", type=float, default=1.0, help="opacity of the pale neighbours; under 1 they are see-through")
 ap.add_argument("--whole", action="store_true", help="frame both sides of --frame-on, never one")
 ap.add_argument("--neighbours", default="",
                 help="comma-separated structure ids drawn in pale ligament grey on every render of the "
@@ -641,6 +642,7 @@ def build_mesh(spec, mesh_name):
                 bm_t.from_mesh(tmp)
                 bpy.data.meshes.remove(tmp)
             t = BVHTree.FromBMesh(bm_t)
+            bone_v = np.array([v.co[:] for v in bm_t.verts])
             bm_t.free()
             dist = np.array([t.find_nearest(p)[3] or 1.0 for p in lig])
             pts = np.array([p[:] for p in lig])
@@ -648,6 +650,20 @@ def build_mesh(spec, mesh_name):
             # A ligament drawn a little off the bone: its nearest tenth instead.
             if len(close) < 12:
                 close = pts[np.argsort(dist)[: max(12, len(pts) // 10)]]
+            # SPREAD (owner, 20 Oct 2026, the wrist): the atlas's carpal
+            # ligaments are patches a few millimetres across, so their contact
+            # says WHERE the ligament attaches but not how broad it is. The
+            # attachment becomes the cap of bone surface within `spread` mm of
+            # that contact, on the same face of the bone.
+            if spec.get("spread") and len(bone_v):
+                c = close.mean(axis=0)
+                loc, nrm, _, _ = t.find_nearest(mathutils.Vector(c.tolist()))
+                if loc is not None:
+                    n = np.array(nrm[:])
+                    rel = bone_v - np.array(loc[:])
+                    cap = bone_v[(np.linalg.norm(rel, axis=1) < float(spec["spread"]) / 1000.0) & (rel @ n > -0.0015)]
+                    if len(cap) >= 6:
+                        close = cap
             return close
 
         # Measured spans (world mm) where the atlas's ligament is a single quad
@@ -1038,6 +1054,17 @@ context_mesh = bake_world_mesh(context_names, "panel_context") if context_names 
 context_mat = principled("panel_context", (0.76, 0.27, 0.25, 1.0), roughness=0.55)
 # Neighbouring ligaments: the pale blue-grey a ligament is drawn in on a plate.
 ligament_grey_mat = principled("panel_ligament_grey", (0.80, 0.83, 0.88, 1.0), roughness=0.5)
+# SEE-THROUGH NEIGHBOURS (owner, 20 Oct 2026: "ligaments coming over each
+# other"). Where ligaments crowd, as at the wrist, a pale neighbour in front of
+# the subject hides it; at --neighbour-alpha under 1 they are drawn
+# see-through, so the subject shows through them.
+if a.neighbour_alpha < 1.0:
+    ligament_grey_mat.node_tree.nodes["Principled BSDF"].inputs["Alpha"].default_value = a.neighbour_alpha
+    for _attr, _val in (("blend_method", "BLEND"), ("show_transparent_back", False)):
+        try:
+            setattr(ligament_grey_mat, _attr, _val)
+        except (AttributeError, TypeError):
+            pass
 grain_mat = principled("panel_grain", (0.0, 0.52, 0.72, 1.0), roughness=0.5)
 
 # FRAME ON THE HAND, NOT ON THE MUSCLE INSIDE IT.

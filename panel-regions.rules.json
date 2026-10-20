@@ -14145,7 +14145,8 @@
    "smoothPath": 6,
    "smoothAcross": 2,
    "lift": 0.1,
-   "near": 2.5
+   "near": 2.5,
+   "spread": 2.5
   },
   "_why": " Added 20 Oct 2026 (owner: wrist and hand ligaments next): each loose piece of the atlas's ligament drawn as fibres between the two bones it touches most, the UCL finish."
  },
@@ -14192,7 +14193,8 @@
    "smoothPath": 6,
    "smoothAcross": 2,
    "lift": 0.1,
-   "near": 2.5
+   "near": 2.5,
+   "spread": 2.5
   },
   "_why": " Added 20 Oct 2026 (owner: wrist and hand ligaments next): each loose piece of the atlas's ligament drawn as fibres between the two bones it touches most, the UCL finish."
  },
@@ -14239,7 +14241,8 @@
    "smoothPath": 6,
    "smoothAcross": 2,
    "lift": 0.1,
-   "near": 2.5
+   "near": 2.5,
+   "spread": 2.5
   },
   "_why": " Added 20 Oct 2026 (owner: wrist and hand ligaments next): each loose piece of the atlas's ligament drawn as fibres between the two bones it touches most, the UCL finish."
  },
@@ -14286,7 +14289,8 @@
    "smoothPath": 6,
    "smoothAcross": 2,
    "lift": 0.1,
-   "near": 2.5
+   "near": 2.5,
+   "spread": 4.5
   },
   "_why": " Added 20 Oct 2026 (owner: wrist and hand ligaments next): each loose piece of the atlas's ligament drawn as fibres between the two bones it touches most, the UCL finish."
  },
@@ -14333,7 +14337,8 @@
    "smoothPath": 6,
    "smoothAcross": 2,
    "lift": 0.1,
-   "near": 2.5
+   "near": 2.5,
+   "spread": 4.5
   },
   "_why": " Added 20 Oct 2026 (owner: wrist and hand ligaments next): each loose piece of the atlas's ligament drawn as fibres between the two bones it touches most, the UCL finish."
  },
@@ -14380,7 +14385,8 @@
    "smoothPath": 6,
    "smoothAcross": 2,
    "lift": 0.1,
-   "near": 2.5
+   "near": 2.5,
+   "spread": 4.5
   },
   "_why": " Added 20 Oct 2026 (owner: wrist and hand ligaments next): each loose piece of the atlas's ligament drawn as fibres between the two bones it touches most, the UCL finish."
  },
@@ -14427,7 +14433,8 @@
    "smoothPath": 6,
    "smoothAcross": 2,
    "lift": 0.1,
-   "near": 2.5
+   "near": 2.5,
+   "spread": 4.5
   },
   "_why": " Added 20 Oct 2026 (owner: wrist and hand ligaments next): each loose piece of the atlas's ligament drawn as fibres between the two bones it touches most, the UCL finish."
  },
@@ -14474,7 +14481,8 @@
    "smoothPath": 6,
    "smoothAcross": 2,
    "lift": 0.1,
-   "near": 2.5
+   "near": 2.5,
+   "spread": 4.5
   },
   "_why": " Added 20 Oct 2026 (owner: wrist and hand ligaments next): each loose piece of the atlas's ligament drawn as fibres between the two bones it touches most, the UCL finish."
  },
@@ -14521,7 +14529,8 @@
    "smoothPath": 6,
    "smoothAcross": 2,
    "lift": 0.1,
-   "near": 2.5
+   "near": 2.5,
+   "spread": 4.5
   },
   "_why": " Added 20 Oct 2026 (owner: wrist and hand ligaments next): each loose piece of the atlas's ligament drawn as fibres between the two bones it touches most, the UCL finish."
  },
@@ -14568,7 +14577,8 @@
    "smoothPath": 6,
    "smoothAcross": 2,
    "lift": 0.1,
-   "near": 2.5
+   "near": 2.5,
+   "spread": 2.5
   },
   "_why": " Added 20 Oct 2026 (owner: wrist and hand ligaments next): each loose piece of the atlas's ligament drawn as fibres between the two bones it touches most, the UCL finish."
  },
@@ -14615,7 +14625,8 @@
    "smoothPath": 6,
    "smoothAcross": 2,
    "lift": 0.1,
-   "near": 2.5
+   "near": 2.5,
+   "spread": 4.5
   },
   "_why": " Added 20 Oct 2026 (owner: wrist and hand ligaments next): each loose piece of the atlas's ligament drawn as fibres between the two bones it touches most, the UCL finish."
  },
@@ -14662,7 +14673,8 @@
    "smoothPath": 6,
    "smoothAcross": 2,
    "lift": 0.1,
-   "near": 2.5
+   "near": 2.5,
+   "spread": 4.5
   },
   "_why": " Added 20 Oct 2026 (owner: wrist and hand ligaments next): each loose piece of the atlas's ligament drawn as fibres between the two bones it touches most, the UCL finish."
  },
@@ -14709,7 +14721,8 @@
    "smoothPath": 6,
    "smoothAcross": 2,
    "lift": 0.1,
-   "near": 2.5
+   "near": 2.5,
+   "spread": 4.5
   },
   "_why": " Added 20 Oct 2026 (owner: wrist and hand ligaments next): each loose piece of the atlas's ligament drawn as fibres between the two bones it touches most, the UCL finish."
  },
@@ -14756,7 +14769,8 @@
    "smoothPath": 6,
    "smoothAcross": 2,
    "lift": 0.1,
-   "near": 2.5
+   "near": 2.5,
+   "spread": 4.5
   },
   "_why": " Added 20 Oct 2026 (owner: wrist and hand ligaments next): each loose piece of the atlas's ligament drawn as fibres between the two bones it touches most, the UCL finish."
  },
@@ -14803,7 +14817,8 @@
    "smoothPath": 6,
    "smoothAcross": 2,
    "lift": 0.1,
-   "near": 2.5
+   "near": 2.5,
+   "spread": 4.5
   },
   "_why": " Added 20 Oct 2026 (owner: wrist and hand ligaments next): each loose piece of the atlas's ligament drawn as fibres between the two bones it touches most, the UCL finish."
  },
@@ -14850,7 +14865,8 @@
    "smoothPath": 6,
    "smoothAcross": 2,
    "lift": 0.1,
-   "near": 2.5
+   "near": 2.5,
+   "spread": 4.5
   },
   "_why": " Added 20 Oct 2026 (owner: wrist and hand ligaments next): each loose piece of the atlas's ligament drawn as fibres between the two bones it touches most, the UCL finish."
  },
@@ -14897,7 +14913,8 @@
    "smoothPath": 6,
    "smoothAcross": 2,
    "lift": 0.1,
-   "near": 2.5
+   "near": 2.5,
+   "spread": 4.5
   },
   "_why": " Added 20 Oct 2026 (owner: wrist and hand ligaments next): each loose piece of the atlas's ligament drawn as fibres between the two bones it touches most, the UCL finish."
  },
@@ -14944,7 +14961,8 @@
    "smoothPath": 6,
    "smoothAcross": 2,
    "lift": 0.1,
-   "near": 2.5
+   "near": 2.5,
+   "spread": 4.5
   },
   "_why": " Added 20 Oct 2026 (owner: wrist and hand ligaments next): each loose piece of the atlas's ligament drawn as fibres between the two bones it touches most, the UCL finish."
  },
@@ -14991,7 +15009,8 @@
    "smoothPath": 6,
    "smoothAcross": 2,
    "lift": 0.1,
-   "near": 2.5
+   "near": 2.5,
+   "spread": 4.5
   },
   "_why": " Added 20 Oct 2026 (owner: wrist and hand ligaments next): each loose piece of the atlas's ligament drawn as fibres between the two bones it touches most, the UCL finish."
  },
@@ -15038,7 +15057,8 @@
    "smoothPath": 6,
    "smoothAcross": 2,
    "lift": 0.1,
-   "near": 2.5
+   "near": 2.5,
+   "spread": 4.5
   },
   "_why": " Added 20 Oct 2026 (owner: wrist and hand ligaments next): each loose piece of the atlas's ligament drawn as fibres between the two bones it touches most, the UCL finish."
  },
@@ -15085,7 +15105,8 @@
    "smoothPath": 6,
    "smoothAcross": 2,
    "lift": 0.1,
-   "near": 2.5
+   "near": 2.5,
+   "spread": 4.5
   },
   "_why": " Added 20 Oct 2026 (owner: wrist and hand ligaments next): each loose piece of the atlas's ligament drawn as fibres between the two bones it touches most, the UCL finish."
  },
@@ -15132,7 +15153,8 @@
    "smoothPath": 6,
    "smoothAcross": 2,
    "lift": 0.1,
-   "near": 2.5
+   "near": 2.5,
+   "spread": 4.5
   },
   "_why": " Added 20 Oct 2026 (owner: wrist and hand ligaments next): each loose piece of the atlas's ligament drawn as fibres between the two bones it touches most, the UCL finish."
  },
@@ -15179,7 +15201,8 @@
    "smoothPath": 6,
    "smoothAcross": 2,
    "lift": 0.1,
-   "near": 2.5
+   "near": 2.5,
+   "spread": 4.5
   },
   "_why": " Added 20 Oct 2026 (owner: wrist and hand ligaments next): each loose piece of the atlas's ligament drawn as fibres between the two bones it touches most, the UCL finish."
  },
@@ -15226,7 +15249,8 @@
    "smoothPath": 6,
    "smoothAcross": 2,
    "lift": 0.1,
-   "near": 2.5
+   "near": 2.5,
+   "spread": 4.5
   },
   "_why": " Added 20 Oct 2026 (owner: wrist and hand ligaments next): each loose piece of the atlas's ligament drawn as fibres between the two bones it touches most, the UCL finish."
  },
@@ -15273,7 +15297,8 @@
    "smoothPath": 6,
    "smoothAcross": 2,
    "lift": 0.1,
-   "near": 2.5
+   "near": 2.5,
+   "spread": 4.5
   },
   "_why": " Added 20 Oct 2026 (owner: wrist and hand ligaments next): each loose piece of the atlas's ligament drawn as fibres between the two bones it touches most, the UCL finish."
  },
@@ -15320,7 +15345,8 @@
    "smoothPath": 6,
    "smoothAcross": 2,
    "lift": 0.1,
-   "near": 2.5
+   "near": 2.5,
+   "spread": 4.5
   },
   "_why": " Added 20 Oct 2026 (owner: wrist and hand ligaments next): each loose piece of the atlas's ligament drawn as fibres between the two bones it touches most, the UCL finish."
  },
@@ -15367,7 +15393,8 @@
    "smoothPath": 6,
    "smoothAcross": 2,
    "lift": 0.1,
-   "near": 2.5
+   "near": 2.5,
+   "spread": 4.5
   },
   "_why": " Added 20 Oct 2026 (owner: wrist and hand ligaments next): each loose piece of the atlas's ligament drawn as fibres between the two bones it touches most, the UCL finish."
  },
@@ -15414,7 +15441,8 @@
    "smoothPath": 6,
    "smoothAcross": 2,
    "lift": 0.1,
-   "near": 2.5
+   "near": 2.5,
+   "spread": 4.5
   },
   "_why": " Added 20 Oct 2026 (owner: wrist and hand ligaments next): each loose piece of the atlas's ligament drawn as fibres between the two bones it touches most, the UCL finish."
  },
@@ -15461,7 +15489,8 @@
    "smoothPath": 6,
    "smoothAcross": 2,
    "lift": 0.1,
-   "near": 2.5
+   "near": 2.5,
+   "spread": 4.5
   },
   "_why": " Added 20 Oct 2026 (owner: wrist and hand ligaments next): each loose piece of the atlas's ligament drawn as fibres between the two bones it touches most, the UCL finish."
  },
@@ -15508,7 +15537,8 @@
    "smoothPath": 6,
    "smoothAcross": 2,
    "lift": 0.1,
-   "near": 2.5
+   "near": 2.5,
+   "spread": 4.5
   },
   "_why": " Added 20 Oct 2026 (owner: wrist and hand ligaments next): each loose piece of the atlas's ligament drawn as fibres between the two bones it touches most, the UCL finish."
  },
@@ -15555,7 +15585,8 @@
    "smoothPath": 6,
    "smoothAcross": 2,
    "lift": 0.1,
-   "near": 2.5
+   "near": 2.5,
+   "spread": 4.5
   },
   "_why": " Added 20 Oct 2026 (owner: wrist and hand ligaments next): each loose piece of the atlas's ligament drawn as fibres between the two bones it touches most, the UCL finish."
  },
@@ -15602,7 +15633,8 @@
    "smoothPath": 6,
    "smoothAcross": 2,
    "lift": 0.1,
-   "near": 2.5
+   "near": 2.5,
+   "spread": 4.5
   },
   "_why": " Added 20 Oct 2026 (owner: wrist and hand ligaments next): each loose piece of the atlas's ligament drawn as fibres between the two bones it touches most, the UCL finish."
  },
@@ -15649,7 +15681,8 @@
    "smoothPath": 6,
    "smoothAcross": 2,
    "lift": 0.1,
-   "near": 2.5
+   "near": 2.5,
+   "spread": 4.5
   },
   "_why": " Added 20 Oct 2026 (owner: wrist and hand ligaments next): each loose piece of the atlas's ligament drawn as fibres between the two bones it touches most, the UCL finish."
  },
@@ -15696,7 +15729,8 @@
    "smoothPath": 6,
    "smoothAcross": 2,
    "lift": 0.1,
-   "near": 2.5
+   "near": 2.5,
+   "spread": 4.5
   },
   "_why": " Added 20 Oct 2026 (owner: wrist and hand ligaments next): each loose piece of the atlas's ligament drawn as fibres between the two bones it touches most, the UCL finish."
  },
@@ -15743,7 +15777,8 @@
    "smoothPath": 6,
    "smoothAcross": 2,
    "lift": 0.1,
-   "near": 2.5
+   "near": 2.5,
+   "spread": 4.5
   },
   "_why": " Added 20 Oct 2026 (owner: wrist and hand ligaments next): each loose piece of the atlas's ligament drawn as fibres between the two bones it touches most, the UCL finish."
  },
@@ -15790,7 +15825,8 @@
    "smoothPath": 6,
    "smoothAcross": 2,
    "lift": 0.1,
-   "near": 2.5
+   "near": 2.5,
+   "spread": 4.5
   },
   "_why": " Added 20 Oct 2026 (owner: wrist and hand ligaments next): each loose piece of the atlas's ligament drawn as fibres between the two bones it touches most, the UCL finish."
  },
@@ -15837,7 +15873,8 @@
    "smoothPath": 6,
    "smoothAcross": 2,
    "lift": 0.1,
-   "near": 2.5
+   "near": 2.5,
+   "spread": 4.5
   },
   "_why": " Added 20 Oct 2026 (owner: wrist and hand ligaments next): each loose piece of the atlas's ligament drawn as fibres between the two bones it touches most, the UCL finish."
  },
@@ -15884,7 +15921,8 @@
    "smoothPath": 6,
    "smoothAcross": 2,
    "lift": 0.1,
-   "near": 2.5
+   "near": 2.5,
+   "spread": 4.5
   },
   "_why": " Added 20 Oct 2026 (owner: wrist and hand ligaments next): each loose piece of the atlas's ligament drawn as fibres between the two bones it touches most, the UCL finish."
  },
@@ -15931,7 +15969,8 @@
    "smoothPath": 6,
    "smoothAcross": 2,
    "lift": 0.1,
-   "near": 2.5
+   "near": 2.5,
+   "spread": 4.5
   },
   "_why": " Added 20 Oct 2026 (owner: wrist and hand ligaments next): each loose piece of the atlas's ligament drawn as fibres between the two bones it touches most, the UCL finish."
  },
@@ -15978,7 +16017,8 @@
    "smoothPath": 6,
    "smoothAcross": 2,
    "lift": 0.1,
-   "near": 2.5
+   "near": 2.5,
+   "spread": 4.5
   },
   "_why": " Added 20 Oct 2026 (owner: wrist and hand ligaments next): each loose piece of the atlas's ligament drawn as fibres between the two bones it touches most, the UCL finish."
  },
@@ -16006,7 +16046,8 @@
     "voxel": 0.13,
     "iterations": 2,
     "factor": 0.45
-   }
+   },
+   "spread": 8
   },
   "_why": " Added 20 Oct 2026 (owner: wrist and hand ligaments next): each loose piece of the atlas's ligament drawn as fibres between the two bones it touches most, the UCL finish. The roof of the carpal tunnel: pisiform and hook of hamate across to the scaphoid tubercle and trapezium (Gray's fig. 334), so the bones are named rather than found."
  },
@@ -16034,7 +16075,8 @@
     "voxel": 0.13,
     "iterations": 2,
     "factor": 0.45
-   }
+   },
+   "spread": 8
   },
   "_why": " Added 20 Oct 2026 (owner: wrist and hand ligaments next): each loose piece of the atlas's ligament drawn as fibres between the two bones it touches most, the UCL finish. Across the back of the wrist from the radius to the ulnar side (styloid, triquetrum, pisiform), named rather than found."
  }
