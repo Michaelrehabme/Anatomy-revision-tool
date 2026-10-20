@@ -13705,57 +13705,55 @@
  },
  "superficial-part-of-tibial-collateral-ligament": {
   "build": {
-   "kind": "multi",
-   "parts": [
-    {
-     "kind": "fibres",
-     "ligament": [
-      "Superficial part of tibial collateral ligament.l"
-     ],
-     "from": [
-      "Tibia.l"
-     ],
-     "to": [
-      "Femur.l"
-     ],
-     "count": 24,
-     "radius": 0.00075,
-     "samples": 24,
-     "smoothPath": 6,
-     "smoothAcross": 2,
-     "lift": 0.1,
-     "smooth": {
-      "voxel": 0.13,
-      "iterations": 2,
-      "factor": 0.45
-     }
-    },
-    {
-     "kind": "fibres",
-     "ligament": [
-      "Deep part of tibial collateral ligament.l"
-     ],
-     "from": [
-      "Tibia.l"
-     ],
-     "to": [
-      "Femur.l"
-     ],
-     "count": 26,
-     "radius": 0.00075,
-     "samples": 24,
-     "smoothPath": 6,
-     "smoothAcross": 2,
-     "lift": 0.1,
-     "smooth": {
-      "voxel": 0.13,
-      "iterations": 2,
-      "factor": 0.45
-     }
-    }
-   ]
+   "kind": "fibres",
+   "ligament": [],
+   "from": [
+    "Femur.l"
+   ],
+   "to": [
+    "Tibia.l"
+   ],
+   "over": [
+    "Articular capsule of knee joint.l",
+    "Medial meniscus.l"
+   ],
+   "fromSpan": [
+    [
+     33,
+     27,
+     461
+    ],
+    [
+     33,
+     41,
+     456
+    ]
+   ],
+   "toSpan": [
+    [
+     56,
+     20,
+     373
+    ],
+    [
+     60,
+     34,
+     367
+    ]
+   ],
+   "count": 24,
+   "radius": 0.00075,
+   "samples": 28,
+   "smoothPath": 6,
+   "smoothAcross": 2,
+   "lift": 1.0,
+   "smooth": {
+    "voxel": 0.13,
+    "iterations": 2,
+    "factor": 0.45
+   }
   },
-  "_why": " Added 20 Oct 2026 (hip and knee batch, owner's Hip and Knee deck): fibres between the footprints of the atlas's own ligament on each bone, the UCL finish. 20 Oct 2026: asked as one ligament, the MCL (owner), so the deep part's fibres are part of the highlight."
+  "_why": " Added 20 Oct 2026 (hip and knee batch, owner's Hip and Knee deck): fibres between the footprints of the atlas's own ligament on each bone, the UCL finish. 20 Oct 2026: asked as one ligament, the MCL (owner), so the deep part's fibres are part of the highlight. REBUILT 20 Oct 2026 (render showed a short thin strip; Gray's fig. 345: a long flat band): the superficial fibres from measured points, just above and behind the medial epicondyle (femur's medial surface at z 450-460) to the medial tibia about 6 cm below the joint line (z 370, where the tibia's medial surface is x 58), about 14 mm wide, laid over the capsule and medial meniscus; the deep fibres stay beneath. The deep fibres are left out of the picture: built from the atlas they stood off the joint line as a flap, and in life they lie hidden under the superficial band."
  },
  "fibular-collateral-ligament": {
   "build": {
