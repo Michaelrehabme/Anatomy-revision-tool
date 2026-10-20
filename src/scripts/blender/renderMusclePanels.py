@@ -839,6 +839,7 @@ context_mesh = bake_world_mesh(context_names, "panel_context") if context_names 
 context_mat = principled("panel_context", (0.76, 0.27, 0.25, 1.0), roughness=0.55)
 # Neighbouring ligaments: the pale blue-grey a ligament is drawn in on a plate.
 ligament_grey_mat = principled("panel_ligament_grey", (0.80, 0.83, 0.88, 1.0), roughness=0.5)
+grain_mat = principled("panel_grain", (0.0, 0.52, 0.72, 1.0), roughness=0.5)
 
 # FRAME ON THE HAND, NOT ON THE MUSCLE INSIDE IT.
 #
@@ -950,6 +951,20 @@ for mid in wanted:
     # NEIGHBOURS, PALE. The deltoid's parts are three cards; each shows its own
     # fibres in the highlight and its siblings' in pale ligament grey, so the
     # fan reads as one ligament. `contextBuild` is a list of build specs.
+    # FIBRE GRAIN. Fine fibres laid over a solid band, drawn a shade darker
+    # than the highlight, so the band reads as one ligament and its fibre
+    # direction still shows (owner, 20 Oct 2026, the UCL's three bundles).
+    grain_built = None
+    if isinstance(region, dict) and region.get("grainBuild"):
+        gb = bmesh.new()
+        for i, spec_g in enumerate(region["grainBuild"]):
+            m_g = build_mesh(spec_g, f"panel_{mid}_grain{i}")
+            gb.from_mesh(m_g)
+            bpy.data.meshes.remove(m_g)
+        grain_built = bpy.data.meshes.new(f"panel_{mid}_grain")
+        gb.to_mesh(grain_built)
+        gb.free()
+        print(f"[grain] {mid}: {len(grain_built.polygons)} faces", flush=True)
     ctx_built = None
     if isinstance(region, dict) and region.get("contextBuild"):
         cb = bmesh.new()
@@ -970,6 +985,8 @@ for mid in wanted:
                 link(context_mesh, "panel_context", context_mat)
             if ctx_built is not None:
                 link(ctx_built, "panel_ctx_built", ligament_grey_mat)
+            if grain_built is not None:
+                link(grain_built, "panel_grain", grain_mat)
             link(mesh, f"panel_{mid}_hi", highlight_mat)
             # Elevation 0 keeps the flat <mid>/view-NN.png layout the compositor
             # and the existing 130 panels already use; anything else gets its own
