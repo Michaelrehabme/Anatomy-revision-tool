@@ -14248,99 +14248,57 @@
  },
  "palmar-radio-ulnar-ligament": {
   "build": {
-   "kind": "autoFibres",
+   "kind": "fibres",
+   "count": 14,
+   "radius": 0.00075,
+   "samples": 24,
+   "smoothPath": 6,
+   "smoothAcross": 2,
+   "lift": 0.3,
+   "spread": 4.5,
+   "smooth": {
+    "voxel": 0.13,
+    "iterations": 2,
+    "factor": 0.45
+   },
    "ligament": [
     "Palmar radio-ulnar ligament.l"
    ],
-   "bones": [
-    "Capitate bone.l",
-    "Hamate bone.l",
-    "Lunate bone.l",
-    "Pisiform bone.l",
-    "Scaphoid bone.l",
-    "Trapezium bone.l",
-    "Trapezoid bone.l",
-    "Triquetrum bone.l",
-    "Fifth metacarpal bone.l",
-    "First metacarpal bone.l",
-    "Fourth metacarpal bone.l",
-    "Second metacarpal bone.l",
-    "Third metacarpal bone.l",
-    "Proximal phalanx of fifth finger of hand.l",
-    "Proximal phalanx of first finger of hand.l",
-    "Proximal phalanx of fourth finger of hand.l",
-    "Proximal phalanx of second finger of hand.l",
-    "Proximal phalanx of third finger of hand.l",
-    "Middle phalanx of fifth finger of hand.l",
-    "Middle phalanx of fourth finger of hand.l",
-    "Middle phalanx of second finger of hand.l",
-    "Middle phalanx of third finger of hand.l",
-    "Distal phalanx of fifth finger of hand.l",
-    "Distal phalanx of first finger of hand.l",
-    "Distal phalanx of fourth finger of hand.l",
-    "Distal phalanx of second finger of hand.l",
-    "Distal phalanx of third finger of hand.l",
-    "Radius.l",
-    "Ulna.l"
+   "from": [
+    "Radius.l"
    ],
-   "count": 12,
-   "radius": 0.00075,
-   "samples": 20,
-   "smoothPath": 6,
-   "smoothAcross": 2,
-   "lift": 0.1,
-   "near": 2.5,
-   "spread": 4.5
+   "to": [
+    "Ulna.l"
+   ]
   },
-  "_why": " Added 20 Oct 2026 (owner: wrist and hand ligaments next): each loose piece of the atlas's ligament drawn as fibres between the two bones it touches most, the UCL finish."
+  "_why": " Added 20 Oct 2026 (owner: wrist and hand ligaments next): each loose piece of the atlas's ligament drawn as fibres between the two bones it touches most, the UCL finish. 20 Oct 2026 (owner rejected): the automatic pairing chose the wrong bones, so they are named: palmar margin of the radius's ulnar notch to the ulnar head (Gray's fig. 334)."
  },
  "ulnocapitate-ligament": {
   "build": {
-   "kind": "autoFibres",
+   "kind": "fibres",
+   "count": 14,
+   "radius": 0.00075,
+   "samples": 24,
+   "smoothPath": 6,
+   "smoothAcross": 2,
+   "lift": 0.3,
+   "spread": 4.5,
+   "smooth": {
+    "voxel": 0.13,
+    "iterations": 2,
+    "factor": 0.45
+   },
    "ligament": [
     "Ulnocapitate ligament.l"
    ],
-   "bones": [
-    "Capitate bone.l",
-    "Hamate bone.l",
-    "Lunate bone.l",
-    "Pisiform bone.l",
-    "Scaphoid bone.l",
-    "Trapezium bone.l",
-    "Trapezoid bone.l",
-    "Triquetrum bone.l",
-    "Fifth metacarpal bone.l",
-    "First metacarpal bone.l",
-    "Fourth metacarpal bone.l",
-    "Second metacarpal bone.l",
-    "Third metacarpal bone.l",
-    "Proximal phalanx of fifth finger of hand.l",
-    "Proximal phalanx of first finger of hand.l",
-    "Proximal phalanx of fourth finger of hand.l",
-    "Proximal phalanx of second finger of hand.l",
-    "Proximal phalanx of third finger of hand.l",
-    "Middle phalanx of fifth finger of hand.l",
-    "Middle phalanx of fourth finger of hand.l",
-    "Middle phalanx of second finger of hand.l",
-    "Middle phalanx of third finger of hand.l",
-    "Distal phalanx of fifth finger of hand.l",
-    "Distal phalanx of first finger of hand.l",
-    "Distal phalanx of fourth finger of hand.l",
-    "Distal phalanx of second finger of hand.l",
-    "Distal phalanx of third finger of hand.l",
-    "Radius.l",
+   "from": [
     "Ulna.l"
    ],
-   "count": 12,
-   "radius": 0.00075,
-   "samples": 20,
-   "smoothPath": 6,
-   "smoothAcross": 2,
-   "lift": 0.1,
-   "near": 2.5,
-   "spread": 4.5
+   "to": [
+    "Capitate bone.l"
+   ]
   },
-  "_why": " Added 20 Oct 2026 (owner: wrist and hand ligaments next): each loose piece of the atlas's ligament drawn as fibres between the two bones it touches most, the UCL finish."
+  "_why": " Added 20 Oct 2026 (owner: wrist and hand ligaments next): each loose piece of the atlas's ligament drawn as fibres between the two bones it touches most, the UCL finish. 20 Oct 2026 (owner rejected): the automatic pairing chose the wrong bones, so they are named: ulnar head obliquely to the capitate."
  },
  "ulnolunate-ligament": {
   "build": {
@@ -15352,51 +15310,30 @@
  },
  "pisometacarpal-ligament": {
   "build": {
-   "kind": "autoFibres",
+   "kind": "fibres",
+   "count": 14,
+   "radius": 0.00075,
+   "samples": 24,
+   "smoothPath": 6,
+   "smoothAcross": 2,
+   "lift": 0.3,
+   "spread": 4.5,
+   "smooth": {
+    "voxel": 0.13,
+    "iterations": 2,
+    "factor": 0.45
+   },
    "ligament": [
     "Pisometacarpal ligament.l"
    ],
-   "bones": [
-    "Capitate bone.l",
-    "Hamate bone.l",
-    "Lunate bone.l",
-    "Pisiform bone.l",
-    "Scaphoid bone.l",
-    "Trapezium bone.l",
-    "Trapezoid bone.l",
-    "Triquetrum bone.l",
-    "Fifth metacarpal bone.l",
-    "First metacarpal bone.l",
-    "Fourth metacarpal bone.l",
-    "Second metacarpal bone.l",
-    "Third metacarpal bone.l",
-    "Proximal phalanx of fifth finger of hand.l",
-    "Proximal phalanx of first finger of hand.l",
-    "Proximal phalanx of fourth finger of hand.l",
-    "Proximal phalanx of second finger of hand.l",
-    "Proximal phalanx of third finger of hand.l",
-    "Middle phalanx of fifth finger of hand.l",
-    "Middle phalanx of fourth finger of hand.l",
-    "Middle phalanx of second finger of hand.l",
-    "Middle phalanx of third finger of hand.l",
-    "Distal phalanx of fifth finger of hand.l",
-    "Distal phalanx of first finger of hand.l",
-    "Distal phalanx of fourth finger of hand.l",
-    "Distal phalanx of second finger of hand.l",
-    "Distal phalanx of third finger of hand.l",
-    "Radius.l",
-    "Ulna.l"
+   "from": [
+    "Pisiform bone.l"
    ],
-   "count": 12,
-   "radius": 0.00075,
-   "samples": 20,
-   "smoothPath": 6,
-   "smoothAcross": 2,
-   "lift": 0.1,
-   "near": 2.5,
-   "spread": 4.5
+   "to": [
+    "Fifth metacarpal bone.l"
+   ]
   },
-  "_why": " Added 20 Oct 2026 (owner: wrist and hand ligaments next): each loose piece of the atlas's ligament drawn as fibres between the two bones it touches most, the UCL finish."
+  "_why": " Added 20 Oct 2026 (owner: wrist and hand ligaments next): each loose piece of the atlas's ligament drawn as fibres between the two bones it touches most, the UCL finish. 20 Oct 2026 (owner rejected): the automatic pairing chose the wrong bones, so they are named: pisiform to the base of the fifth metacarpal (Gray's fig. 334; owner's deck p. 26)."
  },
  "pisotriquetral-ligament": {
   "build": {
@@ -15448,51 +15385,31 @@
  },
  "radial-collateral-ligament-of-wrist-joint": {
   "build": {
-   "kind": "autoFibres",
+   "kind": "fibres",
+   "count": 14,
+   "radius": 0.00075,
+   "samples": 24,
+   "smoothPath": 6,
+   "smoothAcross": 2,
+   "lift": 0.3,
+   "spread": 4.5,
+   "smooth": {
+    "voxel": 0.13,
+    "iterations": 2,
+    "factor": 0.45
+   },
    "ligament": [
     "Radial collateral ligament of wrist joint.l"
    ],
-   "bones": [
-    "Capitate bone.l",
-    "Hamate bone.l",
-    "Lunate bone.l",
-    "Pisiform bone.l",
-    "Scaphoid bone.l",
-    "Trapezium bone.l",
-    "Trapezoid bone.l",
-    "Triquetrum bone.l",
-    "Fifth metacarpal bone.l",
-    "First metacarpal bone.l",
-    "Fourth metacarpal bone.l",
-    "Second metacarpal bone.l",
-    "Third metacarpal bone.l",
-    "Proximal phalanx of fifth finger of hand.l",
-    "Proximal phalanx of first finger of hand.l",
-    "Proximal phalanx of fourth finger of hand.l",
-    "Proximal phalanx of second finger of hand.l",
-    "Proximal phalanx of third finger of hand.l",
-    "Middle phalanx of fifth finger of hand.l",
-    "Middle phalanx of fourth finger of hand.l",
-    "Middle phalanx of second finger of hand.l",
-    "Middle phalanx of third finger of hand.l",
-    "Distal phalanx of fifth finger of hand.l",
-    "Distal phalanx of first finger of hand.l",
-    "Distal phalanx of fourth finger of hand.l",
-    "Distal phalanx of second finger of hand.l",
-    "Distal phalanx of third finger of hand.l",
-    "Radius.l",
-    "Ulna.l"
+   "from": [
+    "Radius.l"
    ],
-   "count": 12,
-   "radius": 0.00075,
-   "samples": 20,
-   "smoothPath": 6,
-   "smoothAcross": 2,
-   "lift": 0.1,
-   "near": 2.5,
-   "spread": 4.5
+   "to": [
+    "Scaphoid bone.l",
+    "Trapezium bone.l"
+   ]
   },
-  "_why": " Added 20 Oct 2026 (owner: wrist and hand ligaments next): each loose piece of the atlas's ligament drawn as fibres between the two bones it touches most, the UCL finish."
+  "_why": " Added 20 Oct 2026 (owner: wrist and hand ligaments next): each loose piece of the atlas's ligament drawn as fibres between the two bones it touches most, the UCL finish. 20 Oct 2026 (owner rejected): the automatic pairing chose the wrong bones, so they are named: radial styloid to the scaphoid and trapezium (owner's deck p. 24)."
  },
  "radiate-carpal-ligament": {
   "build": {
