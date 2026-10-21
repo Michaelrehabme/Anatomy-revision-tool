@@ -3547,6 +3547,323 @@
     "Extensor retinaculum of wrist.l"
    ],
    "_note": "wrist redraw, 20 Oct 2026"
+  },
+  {
+   "id": "anterior-tibiofibular-ligament",
+   "category": "ligament",
+   "blenderObjects": [
+    "Anterior tibiofibular ligament.l"
+   ],
+   "_note": "foot redraw, 21 Oct 2026"
+  },
+  {
+   "id": "posterior-tibiofibular-ligament",
+   "category": "ligament",
+   "blenderObjects": [
+    "Posterior tibiofibular ligament.l"
+   ],
+   "_note": "foot redraw, 21 Oct 2026"
+  },
+  {
+   "id": "transverse-tibiofibular-ligament",
+   "category": "ligament",
+   "blenderObjects": [
+    "Transverse tibiofibular ligament.l"
+   ],
+   "_note": "foot redraw, 21 Oct 2026"
+  },
+  {
+   "id": "anterior-talocalcaneal-ligament",
+   "category": "ligament",
+   "blenderObjects": [
+    "Anterior talocalcaneal ligament.l"
+   ],
+   "_note": "foot redraw, 21 Oct 2026"
+  },
+  {
+   "id": "lateral-talocalcaneal-ligament",
+   "category": "ligament",
+   "blenderObjects": [
+    "Lateral talocalcaneal ligament.l"
+   ],
+   "_note": "foot redraw, 21 Oct 2026"
+  },
+  {
+   "id": "medial-talocalcaneal-ligament",
+   "category": "ligament",
+   "blenderObjects": [
+    "Medial talocalcaneal ligament.l"
+   ],
+   "_note": "foot redraw, 21 Oct 2026"
+  },
+  {
+   "id": "posterior-talocalcaneal-ligament",
+   "category": "ligament",
+   "blenderObjects": [
+    "Posterior talocalcaneal ligament.l"
+   ],
+   "_note": "foot redraw, 21 Oct 2026"
+  },
+  {
+   "id": "achilles-tendon",
+   "category": "ligament",
+   "blenderObjects": [
+    "Calcaneal tendon.l"
+   ],
+   "_note": "foot redraw, 21 Oct 2026"
+  },
+  {
+   "id": "talonavicular-ligament",
+   "category": "ligament",
+   "blenderObjects": [
+    "Talonavicular ligament.l"
+   ],
+   "_note": "foot redraw, 21 Oct 2026"
+  },
+  {
+   "id": "calcaneonavicular-ligament",
+   "category": "ligament",
+   "blenderObjects": [
+    "Calcaneonavicular ligament.l"
+   ],
+   "_note": "foot redraw, 21 Oct 2026"
+  },
+  {
+   "id": "calcaneocuboid-ligament",
+   "category": "ligament",
+   "blenderObjects": [
+    "Calcaneocuboid ligament.l"
+   ],
+   "_note": "foot redraw, 21 Oct 2026"
+  },
+  {
+   "id": "dorsal-calcaneocuboid-ligament",
+   "category": "ligament",
+   "blenderObjects": [
+    "Dorsal calcaneocuboid ligament.l"
+   ],
+   "_note": "foot redraw, 21 Oct 2026"
+  },
+  {
+   "id": "dorsal-cuboideonavicular-ligament",
+   "category": "ligament",
+   "blenderObjects": [
+    "Dorsal cuboideonavicular ligament.l"
+   ],
+   "_note": "foot redraw, 21 Oct 2026"
+  },
+  {
+   "id": "dorsal-cuneocuboid-ligament",
+   "category": "ligament",
+   "blenderObjects": [
+    "Dorsal cuneocuboid ligament.l"
+   ],
+   "_note": "foot redraw, 21 Oct 2026"
+  },
+  {
+   "id": "dorsal-cuneonavicular-ligaments",
+   "category": "ligament",
+   "blenderObjects": [
+    "Dorsal cuneonavicular ligaments.l"
+   ],
+   "_note": "foot redraw, 21 Oct 2026"
+  },
+  {
+   "id": "dorsal-intercuneiform-ligaments",
+   "category": "ligament",
+   "blenderObjects": [
+    "Dorsal intercuneiform ligaments.l"
+   ],
+   "_note": "foot redraw, 21 Oct 2026"
+  },
+  {
+   "id": "dorsal-tarsometatarsal-ligaments",
+   "category": "ligament",
+   "blenderObjects": [
+    "Dorsal tarsometatarsal ligaments.l"
+   ],
+   "_note": "foot redraw, 21 Oct 2026"
+  },
+  {
+   "id": "dorsal-metatarsal-ligaments",
+   "category": "ligament",
+   "blenderObjects": [
+    "Dorsal metatarsal ligaments.l"
+   ],
+   "_note": "foot redraw, 21 Oct 2026"
+  },
+  {
+   "id": "long-plantar-ligament",
+   "category": "ligament",
+   "blenderObjects": [
+    "Long plantar ligament.l",
+    "Long plantar ligament.o1l",
+    "Long plantar ligament.o2l",
+    "Long plantar ligament.o3l",
+    "Long plantar ligament.o4l",
+    "Long plantar ligament.ol"
+   ],
+   "_note": "foot redraw, 21 Oct 2026"
+  },
+  {
+   "id": "plantar-calcaneocuboid-ligament",
+   "category": "ligament",
+   "blenderObjects": [
+    "Plantar calcaneocuboid ligament.l"
+   ],
+   "_note": "foot redraw, 21 Oct 2026"
+  },
+  {
+   "id": "plantar-calcaneonavicular-ligament",
+   "category": "ligament",
+   "blenderObjects": [
+    "Plantar calcaneonavicular ligament.l"
+   ],
+   "_note": "foot redraw, 21 Oct 2026"
+  },
+  {
+   "id": "plantar-cuboideonavicular-ligament",
+   "category": "ligament",
+   "blenderObjects": [
+    "Plantar cuboideonavicular ligament.l"
+   ],
+   "_note": "foot redraw, 21 Oct 2026"
+  },
+  {
+   "id": "plantar-cuneocuboid-ligament",
+   "category": "ligament",
+   "blenderObjects": [
+    "Plantar cuneocuboid ligament.l"
+   ],
+   "_note": "foot redraw, 21 Oct 2026"
+  },
+  {
+   "id": "plantar-cuneonavicular-ligaments",
+   "category": "ligament",
+   "blenderObjects": [
+    "Plantar cuneonavicular ligaments.l"
+   ],
+   "_note": "foot redraw, 21 Oct 2026"
+  },
+  {
+   "id": "plantar-intercuneiform-ligaments",
+   "category": "ligament",
+   "blenderObjects": [
+    "Plantar intercuneiform ligaments.l"
+   ],
+   "_note": "foot redraw, 21 Oct 2026"
+  },
+  {
+   "id": "plantar-tarsometatarsal-ligaments",
+   "category": "ligament",
+   "blenderObjects": [
+    "Plantar tarsometatarsal ligaments.l"
+   ],
+   "_note": "foot redraw, 21 Oct 2026"
+  },
+  {
+   "id": "plantar-metatarsal-ligaments",
+   "category": "ligament",
+   "blenderObjects": [
+    "Plantar metatarsal ligaments.l"
+   ],
+   "_note": "foot redraw, 21 Oct 2026"
+  },
+  {
+   "id": "plantar-fascia",
+   "category": "ligament",
+   "blenderObjects": [
+    "Plantar aponeurosis.l"
+   ],
+   "_note": "foot redraw, 21 Oct 2026"
+  },
+  {
+   "id": "talocalcaneal-interosseous-ligament",
+   "category": "ligament",
+   "blenderObjects": [
+    "Talocalcaneal interosseous ligament.l"
+   ],
+   "_note": "foot redraw, 21 Oct 2026"
+  },
+  {
+   "id": "cuneocuboid-interosseous-ligament",
+   "category": "ligament",
+   "blenderObjects": [
+    "Cuneocuboid interosseous ligament.l"
+   ],
+   "_note": "foot redraw, 21 Oct 2026"
+  },
+  {
+   "id": "cuneometatarsal-interosseous-ligaments",
+   "category": "ligament",
+   "blenderObjects": [
+    "Cuneometatarsal interosseous ligaments.l"
+   ],
+   "_note": "foot redraw, 21 Oct 2026"
+  },
+  {
+   "id": "intercuneiform-interosseous-ligaments",
+   "category": "ligament",
+   "blenderObjects": [
+    "Intercuneiform interosseous ligaments.l"
+   ],
+   "_note": "foot redraw, 21 Oct 2026"
+  },
+  {
+   "id": "metatarsal-interosseous-ligaments",
+   "category": "ligament",
+   "blenderObjects": [
+    "Metatarsal interosseous ligaments.l"
+   ],
+   "_note": "foot redraw, 21 Oct 2026"
+  },
+  {
+   "id": "collateral-interphalangeal-ligaments-of-foot",
+   "category": "ligament",
+   "blenderObjects": [
+    "Collateral interphalangeal ligaments of foot.l"
+   ],
+   "_note": "foot redraw, 21 Oct 2026"
+  },
+  {
+   "id": "collateral-metatarsophalangeal-ligaments",
+   "category": "ligament",
+   "blenderObjects": [
+    "Collateral metatarsophalangeal ligaments.l"
+   ],
+   "_note": "foot redraw, 21 Oct 2026"
+  },
+  {
+   "id": "deep-transverse-metatarsal-ligament",
+   "category": "ligament",
+   "blenderObjects": [
+    "Deep transverse metatarsal ligament.l"
+   ],
+   "_note": "foot redraw, 21 Oct 2026"
+  },
+  {
+   "id": "intersesamoid-ligament",
+   "category": "ligament",
+   "blenderObjects": [
+    "Intersesamoid ligament.l"
+   ],
+   "_note": "foot redraw, 21 Oct 2026"
+  },
+  {
+   "id": "plantar-interphalangeal-ligaments",
+   "category": "ligament",
+   "blenderObjects": [
+    "Plantar interphalangeal ligaments.l"
+   ],
+   "_note": "foot redraw, 21 Oct 2026"
+  },
+  {
+   "id": "plantar-metatarsophalangeal-ligaments",
+   "category": "ligament",
+   "blenderObjects": [
+    "Plantar metatarsophalangeal ligaments.l"
+   ],
+   "_note": "foot redraw, 21 Oct 2026"
   }
  ]
 }
