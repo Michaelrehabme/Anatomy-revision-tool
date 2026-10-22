@@ -361,7 +361,58 @@ def build_mesh(spec, mesh_name):
           attachment patches, the TFCC's disc as the slab through its corners.
     """
     out = bmesh.new()
-    if spec["kind"] == "autoFibres":
+    if spec["kind"] == "meshFibres":
+        # FIBRES THROUGH A SHEET (owner, 21 Oct 2026: the Achilles tendon and
+        # plantar fascia read as smooth blobs). The atlas's tendon or fascia
+        # is cut into slices along its length; in each slice the fibres are
+        # spread across its width, so they follow the sheet as it narrows
+        # and fans, and run its whole length.
+        import numpy as np
+        P = []
+        for n in spec["objects"]:
+            src = bpy.data.objects.get(n)
+            if src:
+                P += [(src.matrix_world @ v.co)[:] for v in src.data.vertices]
+        P = np.array(P)
+        c = P.mean(axis=0)
+        ax = np.linalg.svd(P - c)[2]
+        t = (P - c) @ ax[0]
+        n_sl = int(spec.get("slices", 24))
+        edges = np.linspace(t.min(), t.max(), n_sl + 1)
+        k = int(spec.get("count", 24))
+        rows = []
+        for i in range(n_sl):
+            sel = P[(t >= edges[i]) & (t <= edges[i + 1])]
+            if len(sel) < 3:
+                continue
+            sc = sel.mean(axis=0)
+            q = sel - sc
+            u = np.linalg.svd(q - q.mean(axis=0))[2][0] if len(sel) > 3 else ax[1]
+            if rows and np.dot(u, rows[-1][1]) < 0:
+                u = -u
+            w = q @ u
+            v = np.cross(ax[0], u)
+            v = v / (np.linalg.norm(v) or 1.0)
+            if rows and np.dot(v, rows[-1][4]) < 0:
+                v = -v
+            h = q @ v
+            rows.append((sc, u, float(np.percentile(w, 4)), float(np.percentile(w, 96)), v,
+                         float(np.percentile(h, 15)), float(np.percentile(h, 85))))
+        paths = []
+        layers = int(spec.get("layers", 1))
+        for L in range(layers):
+            g = 0.5 if layers == 1 else L / (layers - 1)
+            for j in range(k):
+                f = (j + 0.5) / k
+                paths.append([((sc + u * (lo + (hi - lo) * f) + v * (lo2 + (hi2 - lo2) * g)) * 1000.0).tolist()
+                              for sc, u, lo, hi, v, lo2, hi2 in rows])
+        for _ in range(int(spec.get("smoothPath", 4))):
+            paths = [[p[0]] + [[(p[i - 1][d] + 2 * p[i][d] + p[i + 1][d]) / 4 for d in range(3)] for i in range(1, len(p) - 1)] + [p[-1]] for p in paths]
+        tm = build_mesh({"kind": "tube", "radius": spec.get("radius", 0.0008), "paths": paths}, f"{mesh_name}_tubes")
+        out.from_mesh(tm)
+        bpy.data.meshes.remove(tm)
+        print(f"[build] {mesh_name}: {k} fibres through {len(rows)} slices", flush=True)
+    elif spec["kind"] == "autoFibres":
         # A SERIES AS FIBRES (owner, 20 Oct 2026: the wrist and hand). One
         # atlas mesh often holds a whole series - the collateral ligaments of
         # every finger joint, the dorsal intercarpal bands - as loose pieces.

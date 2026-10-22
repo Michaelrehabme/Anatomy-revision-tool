@@ -15970,32 +15970,17 @@
  },
  "extensor-retinaculum-hand": {
   "build": {
-   "kind": "fibres",
-   "ligament": [
+   "kind": "meshFibres",
+   "objects": [
     "Extensor retinaculum of wrist.l"
    ],
-   "from": [
-    "Radius.l"
-   ],
-   "to": [
-    "Ulna.l",
-    "Triquetrum bone.l",
-    "Pisiform bone.l"
-   ],
-   "count": 20,
+   "count": 26,
+   "layers": 1,
+   "slices": 20,
    "radius": 0.00075,
-   "samples": 24,
-   "smoothPath": 6,
-   "smoothAcross": 2,
-   "lift": 0.4,
-   "smooth": {
-    "voxel": 0.13,
-    "iterations": 2,
-    "factor": 0.45
-   },
-   "spread": 8
+   "smoothPath": 4
   },
-  "_why": " Added 20 Oct 2026 (owner: wrist and hand ligaments next): each loose piece of the atlas's ligament drawn as fibres between the two bones it touches most, the UCL finish. Across the back of the wrist from the radius to the ulnar side (styloid, triquetrum, pisiform), named rather than found."
+  "_why": " Added 20 Oct 2026 (owner: wrist and hand ligaments next): each loose piece of the atlas's ligament drawn as fibres between the two bones it touches most, the UCL finish. Across the back of the wrist from the radius to the ulnar side (styloid, triquetrum, pisiform), named rather than found. 21 Oct 2026 (owner rejected the smooth sheet): fibres laid through the atlas's own sheet, slice by slice across its width, so they follow it as it narrows and fans."
  },
  "anterior-tibiofibular-ligament": {
   "build": {
@@ -16089,7 +16074,10 @@
    "near": 2.5,
    "spread": 4.5
   },
-  "_why": " Added 21 Oct 2026 (foot redraw, after the wrist): each loose piece of the atlas's ligament as fibres between the two bones it touches most, its attachments spread over the bone around where it touches."
+  "_why": " Added 21 Oct 2026 (foot redraw, after the wrist): each loose piece of the atlas's ligament as fibres between the two bones it touches most, its attachments spread over the bone around where it touches.",
+  "notNeighbours": [
+   "achilles-tendon"
+  ]
  },
  "transverse-tibiofibular-ligament": {
   "build": {
@@ -16136,7 +16124,10 @@
    "near": 2.5,
    "spread": 4.5
   },
-  "_why": " Added 21 Oct 2026 (foot redraw, after the wrist): each loose piece of the atlas's ligament as fibres between the two bones it touches most, its attachments spread over the bone around where it touches."
+  "_why": " Added 21 Oct 2026 (foot redraw, after the wrist): each loose piece of the atlas's ligament as fibres between the two bones it touches most, its attachments spread over the bone around where it touches.",
+  "notNeighbours": [
+   "achilles-tendon"
+  ]
  },
  "anterior-talocalcaneal-ligament": {
   "build": {
@@ -16322,18 +16313,26 @@
    "smoothAcross": 2,
    "lift": 0.2,
    "near": 2.5,
-   "spread": 4.5
+   "spread": 7
   },
-  "_why": " Added 21 Oct 2026 (foot redraw, after the wrist): each loose piece of the atlas's ligament as fibres between the two bones it touches most, its attachments spread over the bone around where it touches."
+  "_why": " Added 21 Oct 2026 (foot redraw, after the wrist): each loose piece of the atlas's ligament as fibres between the two bones it touches most, its attachments spread over the bone around where it touches. 21 Oct 2026 (owner rejected): wider attachments, and the Achilles is not drawn over it.",
+  "notNeighbours": [
+   "achilles-tendon"
+  ]
  },
  "achilles-tendon": {
   "build": {
-   "kind": "objects",
+   "kind": "meshFibres",
    "objects": [
     "Calcaneal tendon.l"
-   ]
+   ],
+   "count": 28,
+   "layers": 6,
+   "slices": 30,
+   "radius": 0.0011,
+   "smoothPath": 4
   },
-  "_why": " Added 21 Oct 2026: the atlas's own sheet (a fascia or tendon, not a ligament to draw as fibres)."
+  "_why": " Added 21 Oct 2026: the atlas's own sheet (a fascia or tendon, not a ligament to draw as fibres). 21 Oct 2026 (owner rejected the smooth sheet): fibres laid through the atlas's own sheet, slice by slice across its width, so they follow it as it narrows and fans."
  },
  "talonavicular-ligament": {
   "build": {
@@ -17235,12 +17234,17 @@
  },
  "plantar-fascia": {
   "build": {
-   "kind": "objects",
+   "kind": "meshFibres",
    "objects": [
     "Plantar aponeurosis.l"
-   ]
+   ],
+   "count": 40,
+   "layers": 1,
+   "slices": 24,
+   "radius": 0.00075,
+   "smoothPath": 4
   },
-  "_why": " Added 21 Oct 2026: the atlas's own sheet (a fascia or tendon, not a ligament to draw as fibres)."
+  "_why": " Added 21 Oct 2026: the atlas's own sheet (a fascia or tendon, not a ligament to draw as fibres). 21 Oct 2026 (owner rejected the smooth sheet): fibres laid through the atlas's own sheet, slice by slice across its width, so they follow it as it narrows and fans."
  },
  "talocalcaneal-interosseous-ligament": {
   "build": {
