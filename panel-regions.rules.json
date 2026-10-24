@@ -15970,17 +15970,73 @@
  },
  "extensor-retinaculum-hand": {
   "build": {
-   "kind": "meshFibres",
-   "objects": [
+   "kind": "fibres",
+   "ligament": [
     "Extensor retinaculum of wrist.l"
    ],
-   "count": 26,
-   "layers": 1,
-   "slices": 20,
+   "from": [
+    "Radius.l"
+   ],
+   "to": [
+    "Capitate bone.l",
+    "Hamate bone.l",
+    "Lunate bone.l",
+    "Pisiform bone.l",
+    "Scaphoid bone.l",
+    "Trapezium bone.l",
+    "Trapezoid bone.l",
+    "Triquetrum bone.l",
+    "Ulna.l"
+   ],
+   "over": [
+    "Capitate bone.l",
+    "Hamate bone.l",
+    "Lunate bone.l",
+    "Pisiform bone.l",
+    "Scaphoid bone.l",
+    "Trapezium bone.l",
+    "Trapezoid bone.l",
+    "Triquetrum bone.l",
+    "Ulna.l",
+    "Radius.l"
+   ],
+   "fromSpan": [
+    [
+     291,
+     1,
+     866
+    ],
+    [
+     290,
+     3,
+     890
+    ]
+   ],
+   "toSpan": [
+    [
+     240,
+     1,
+     842
+    ],
+    [
+     242,
+     3,
+     864
+    ]
+   ],
+   "count": 30,
    "radius": 0.00075,
-   "smoothPath": 4
+   "samples": 28,
+   "smoothPath": 6,
+   "smoothAcross": 2,
+   "lift": 3.0,
+   "smooth": {
+    "voxel": 0.13,
+    "iterations": 2,
+    "factor": 0.45
+   }
   },
-  "_why": " Added 20 Oct 2026 (owner: wrist and hand ligaments next): each loose piece of the atlas's ligament drawn as fibres between the two bones it touches most, the UCL finish. Across the back of the wrist from the radius to the ulnar side (styloid, triquetrum, pisiform), named rather than found. 21 Oct 2026 (owner rejected the smooth sheet): fibres laid through the atlas's own sheet, slice by slice across its width, so they follow it as it narrows and fans."
+  "_why": " Added 20 Oct 2026 (owner: wrist and hand ligaments next): each loose piece of the atlas's ligament drawn as fibres between the two bones it touches most, the UCL finish. Across the back of the wrist from the radius to the ulnar side (styloid, triquetrum, pisiform), named rather than found. 21 Oct 2026 (owner rejected the smooth sheet): fibres laid through the atlas's own sheet, slice by slice across its width, so they follow it as it narrows and fans. 24 Oct 2026 (owner: as in Gray's fig. 424): an oblique band across the back of the wrist, from the lateral border of the radius down and across to the ulnar side of the carpus (triquetrum, pisiform), lifted clear of the tendons beneath."
  },
  "anterior-tibiofibular-ligament": {
   "build": {
@@ -16284,41 +16340,41 @@
    ],
    "fromSpan": [
     [
-     62,
-     61,
-     60
+     60,
+     63,
+     61
     ],
     [
-     76,
-     64,
-     59
+     80,
+     66,
+     60
     ]
    ],
    "toSpan": [
     [
      58,
-     56,
-     48
+     62,
+     47
     ],
     [
-     72,
-     60,
-     49
+     80,
+     66,
+     47
     ]
    ],
-   "count": 16,
-   "radius": 0.00075,
+   "count": 20,
+   "radius": 0.0009,
    "samples": 20,
    "smoothPath": 6,
    "smoothAcross": 2,
-   "lift": 0.4,
+   "lift": 0.6,
    "smooth": {
     "voxel": 0.13,
     "iterations": 2,
     "factor": 0.45
    }
   },
-  "_why": " Added 21 Oct 2026 (foot redraw, after the wrist): each loose piece of the atlas's ligament as fibres between the two bones it touches most, its attachments spread over the bone around where it touches. 21 Oct 2026 (owner rejected): wider attachments, and the Achilles is not drawn over it. Rebuilt from measured points (owner: it didn't connect the talus and calcaneus): the lower edge of the talus's posterior process (z about 60) down to the calcaneus behind the subtalar joint (z about 48), along the atlas ligament's own line.",
+  "_why": " Added 21 Oct 2026 (foot redraw, after the wrist): each loose piece of the atlas's ligament as fibres between the two bones it touches most, its attachments spread over the bone around where it touches. 21 Oct 2026 (owner rejected): wider attachments, and the Achilles is not drawn over it. Rebuilt from measured points (owner: it didn't connect the talus and calcaneus): the lower edge of the talus's posterior process (z about 60) down to the calcaneus behind the subtalar joint (z about 48), along the atlas ligament's own line. 24 Oct 2026 (owner: as in Gray's fig. 354): a short broad vertical band across the whole back of the talus down to the calcaneus.",
   "notNeighbours": [
    "achilles-tendon"
   ]
@@ -17237,27 +17293,246 @@
  },
  "plantar-fascia": {
   "build": {
-   "kind": "meshFibres",
-   "objects": [
-    "Plantar aponeurosis.l"
-   ],
-   "count": 40,
-   "layers": 1,
-   "slices": 24,
-   "radius": 0.00075,
-   "smoothPath": 4,
-   "anchorStart": [
-    "Calcaneus.l"
-   ],
-   "anchorEnd": [
-    "Proximal phalanx of fifth finger of foot.l",
-    "Proximal phalanx of first finger of foot.l",
-    "Proximal phalanx of fourth finger of foot.l",
-    "Proximal phalanx of second finger of foot.l",
-    "Proximal phalanx of third finger of foot.l"
+   "kind": "multi",
+   "parts": [
+    {
+     "kind": "fibres",
+     "ligament": [],
+     "from": [
+      "Calcaneus.l"
+     ],
+     "to": [
+      "Proximal phalanx of first finger of foot.l"
+     ],
+     "straight": true,
+     "fromSpan": [
+      [
+       66,
+       64,
+       12
+      ],
+      [
+       86,
+       66,
+       12.5
+      ]
+     ],
+     "toSpan": [
+      [
+       63.8,
+       -81.2,
+       12.3
+      ],
+      [
+       75.8,
+       -81.2,
+       12.3
+      ]
+     ],
+     "count": 12,
+     "exactCount": true,
+     "radius": 0.0008,
+     "samples": 24,
+     "smoothPath": 2,
+     "smoothAcross": 1,
+     "lift": 0.2,
+     "smooth": {
+      "voxel": 0.13,
+      "iterations": 2,
+      "factor": 0.45
+     }
+    },
+    {
+     "kind": "fibres",
+     "ligament": [],
+     "from": [
+      "Calcaneus.l"
+     ],
+     "to": [
+      "Proximal phalanx of second finger of foot.l"
+     ],
+     "straight": true,
+     "fromSpan": [
+      [
+       66,
+       64,
+       12
+      ],
+      [
+       86,
+       66,
+       12.5
+      ]
+     ],
+     "toSpan": [
+      [
+       91.9,
+       -83.4,
+       16.3
+      ],
+      [
+       100.9,
+       -83.4,
+       16.3
+      ]
+     ],
+     "count": 12,
+     "exactCount": true,
+     "radius": 0.0008,
+     "samples": 24,
+     "smoothPath": 2,
+     "smoothAcross": 1,
+     "lift": 0.2,
+     "smooth": {
+      "voxel": 0.13,
+      "iterations": 2,
+      "factor": 0.45
+     }
+    },
+    {
+     "kind": "fibres",
+     "ligament": [],
+     "from": [
+      "Calcaneus.l"
+     ],
+     "to": [
+      "Proximal phalanx of third finger of foot.l"
+     ],
+     "straight": true,
+     "fromSpan": [
+      [
+       66,
+       64,
+       12
+      ],
+      [
+       86,
+       66,
+       12.5
+      ]
+     ],
+     "toSpan": [
+      [
+       104.4,
+       -77.2,
+       13.4
+      ],
+      [
+       113.4,
+       -77.2,
+       13.4
+      ]
+     ],
+     "count": 12,
+     "exactCount": true,
+     "radius": 0.0008,
+     "samples": 24,
+     "smoothPath": 2,
+     "smoothAcross": 1,
+     "lift": 0.2,
+     "smooth": {
+      "voxel": 0.13,
+      "iterations": 2,
+      "factor": 0.45
+     }
+    },
+    {
+     "kind": "fibres",
+     "ligament": [],
+     "from": [
+      "Calcaneus.l"
+     ],
+     "to": [
+      "Proximal phalanx of fourth finger of foot.l"
+     ],
+     "straight": true,
+     "fromSpan": [
+      [
+       66,
+       64,
+       12
+      ],
+      [
+       86,
+       66,
+       12.5
+      ]
+     ],
+     "toSpan": [
+      [
+       117.8,
+       -69.2,
+       11.9
+      ],
+      [
+       126.8,
+       -69.2,
+       11.9
+      ]
+     ],
+     "count": 12,
+     "exactCount": true,
+     "radius": 0.0008,
+     "samples": 24,
+     "smoothPath": 2,
+     "smoothAcross": 1,
+     "lift": 0.2,
+     "smooth": {
+      "voxel": 0.13,
+      "iterations": 2,
+      "factor": 0.45
+     }
+    },
+    {
+     "kind": "fibres",
+     "ligament": [],
+     "from": [
+      "Calcaneus.l"
+     ],
+     "to": [
+      "Proximal phalanx of fifth finger of foot.l"
+     ],
+     "straight": true,
+     "fromSpan": [
+      [
+       66,
+       64,
+       12
+      ],
+      [
+       86,
+       66,
+       12.5
+      ]
+     ],
+     "toSpan": [
+      [
+       131.0,
+       -57.2,
+       9.4
+      ],
+      [
+       140.0,
+       -57.2,
+       9.4
+      ]
+     ],
+     "count": 12,
+     "exactCount": true,
+     "radius": 0.0008,
+     "samples": 24,
+     "smoothPath": 2,
+     "smoothAcross": 1,
+     "lift": 0.2,
+     "smooth": {
+      "voxel": 0.13,
+      "iterations": 2,
+      "factor": 0.45
+     }
+    }
    ]
   },
-  "_why": " Added 21 Oct 2026: the atlas's own sheet (a fascia or tendon, not a ligament to draw as fibres). 21 Oct 2026 (owner rejected the smooth sheet): fibres laid through the atlas's own sheet, slice by slice across its width, so they follow it as it narrows and fans. Anchored (owner: it didn't attach to anything): each fibre carried on to the calcaneal tuberosity behind and the bases of the proximal phalanges in front."
+  "_why": " Added 21 Oct 2026: the atlas's own sheet (a fascia or tendon, not a ligament to draw as fibres). 21 Oct 2026 (owner rejected the smooth sheet): fibres laid through the atlas's own sheet, slice by slice across its width, so they follow it as it narrows and fans. Anchored (owner: it didn't attach to anything): each fibre carried on to the calcaneal tuberosity behind and the bases of the proximal phalanges in front. 24 Oct 2026 (owner: it has multiple bands): a central band from the heel splitting into five slips, one to each toe's proximal phalanx. REBUILT 24 Oct 2026: the atlas sheet ends in an oblique edge, so slicing it sent every fibre to the big toe. Now five slips from one attachment on the medial process of the calcaneal tuberosity (underside, x 66-86 mm), each running straight like a bowstring under the arch to the plantar base of its toe's proximal phalanx (measured), overlapping as the central band behind and parting toward the toes."
  },
  "talocalcaneal-interosseous-ligament": {
   "build": {

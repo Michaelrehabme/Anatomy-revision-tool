@@ -425,6 +425,40 @@ def build_mesh(spec, mesh_name):
             tr = BVHTree.FromBMesh(bm_a)
             bm_a.free()
             return tr
+        # SLIPS (owner, 24 Oct 2026: "the plantar fascia has multiple
+        # bands"). Toward the far end the sheet splits into one slip per bone
+        # named in `slips`: each fibre joins the slip of the bone its end is
+        # nearest, and over the last part of its length is drawn in toward
+        # that slip's line, leaving gaps between the slips.
+        if spec.get("slips") and paths:
+            sl = spec["slips"]
+            cents = []
+            for nm in sl["bones"]:
+                src = bpy.data.objects.get(nm)
+                if src:
+                    vs = np.array([(src.matrix_world @ v.co)[:] for v in src.data.vertices]) * 1000.0
+                    cents.append(vs.mean(axis=0))
+            cents = np.array(cents)
+            tips = np.array([p[-1] for p in paths])
+            if np.linalg.norm(tips.mean(0) - cents.mean(0)) > np.linalg.norm(np.array([p[0] for p in paths]).mean(0) - cents.mean(0)):
+                paths = [p[::-1] for p in paths]
+                tips = np.array([p[-1] for p in paths])
+            grp = [int(np.argmin(np.linalg.norm(cents - t, axis=1))) for t in tips]
+            print(f"[build] {mesh_name}: slips {sorted({g: grp.count(g) for g in set(grp)}.items())}, tips mean {np.round(tips.mean(0),1)}, bones {np.round(cents,1).tolist()}", flush=True)
+            start = float(sl.get("from", 0.55))
+            squeeze = float(sl.get("squeeze", 0.6))
+            for gi in set(grp):
+                members = [j for j in range(len(paths)) if grp[j] == gi]
+                n_pts = len(paths[members[0]])
+                for i in range(n_pts):
+                    f = i / max(1, n_pts - 1)
+                    if f < start:
+                        continue
+                    w = squeeze * (f - start) / (1 - start)
+                    mid = np.mean([paths[j][i] for j in members], axis=0)
+                    for j in members:
+                        paths[j][i] = (np.array(paths[j][i]) * (1 - w) + mid * w).tolist()
+            spec = dict(spec, anchorEnd=list(sl["bones"]))
         for key, at_start in (("anchorStart", True), ("anchorEnd", False)):
             if not spec.get(key) or not paths:
                 continue
@@ -841,7 +875,9 @@ def build_mesh(spec, mesh_name):
             for i_s in range(n_s + 1):
                 s_ = i_s / n_s
                 p = mathutils.Vector((x + (y - x) * s_).tolist())
-                loc, nrm, _, _ = surf.find_nearest(p)
+                # STRAIGHT: a bowstring (the plantar fascia under the arch)
+                # runs straight between its ends instead of over the bones.
+                loc, nrm, _, _ = (None, None, None, None) if spec.get("straight") and 0 < i_s < n_s else surf.find_nearest(p)
                 if loc is None:
                     pts.append([c * 1000.0 for c in p])
                     continue
