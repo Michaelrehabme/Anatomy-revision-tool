@@ -1,4 +1,5 @@
-import type { NerveRef } from '../types/structure';
+import type { AnatomyStructure, NerveRef } from '../types/structure';
+import { areasOf } from '../types/structure';
 import { singular } from './answerMatching';
 
 /**
@@ -96,6 +97,163 @@ export const ATTACHMENT_SYNONYMS: { when: RegExp; accept: string[] }[] = [
   },
 ];
 
+/** Which limb's digits a value names, where the value itself does not say. */
+export type Limb = 'hand' | 'foot';
+
+/**
+ * The names a student is taught for the same digit (owner, 24 Oct 2026): the
+ * hallux is the big toe, the great toe, the first toe and digit 1, and the
+ * dataset itself writes "big toe" for flexor hallucis longus and "digit 1"
+ * for extensor hallucis brevis. Grading is token-based, so "distal phalanx
+ * of the hallux" shared one word with the answer and failed.
+ *
+ * Every digit is folded to one token naming the limb and the number —
+ * "toe1", "finger2-5" — on both sides of the comparison. The token carries a
+ * digit, so the grader matches it exactly (isIdentifierToken): the 2nd
+ * metacarpal is never the 3rd, the thumb is never the big toe, and the toes
+ * 2-5 are never the fingers 2-5. The same rule as ATTACHMENT_SYNONYMS
+ * applies: two names for one digit, never a part for a whole, so a bare
+ * "distal phalanx" still does not answer "distal phalanx of big toe".
+ *
+ * "Digit" on its own names no limb. `limb` decides it: the answer key's own
+ * limb when grading, the muscle's when the accepted forms are built
+ * (limbExplicitForm).
+ */
+export function canonicalDigits(value: string, limb?: Limb): string {
+  const kind = (word: string) => {
+    if (word.startsWith('toe')) return 'toe';
+    if (word.startsWith('finger')) return 'finger';
+    return limb === 'foot' ? 'toe' : limb === 'hand' ? 'finger' : 'digit';
+  };
+  const n = (word: string) => NUMBER_WORDS[word] ?? word;
+  const RANGE = String.raw`(\d)(?:st|nd|rd|th)?\s*(?:-|to|through)\s*(\d)(?:st|nd|rd|th)?`;
+  const DIGIT_WORD = String.raw`(digit|toe|finger)s?`;
+  return (
+    value
+      .toLowerCase()
+      .replace(/[–—]/g, '-')
+      .replace(/['’]/g, '')
+      // Fractions of a bone: "medial third of the clavicle" is "Medial 1/3 clavicle".
+      .replace(/\b(\d)\/(\d)(?:st|nd|rd|th|s)+\b/g, '$1/$2')
+      .replace(/\btwo[\s-]thirds?\b/g, '2/3')
+      .replace(/\b(?:(?:one|a)[\s-])?third(?!\s+(?:digit|toe|finger|metacarp|metatars|phalan|cuneiform|rib|vertebra))\b/g, '1/3')
+      .replace(/\b(?:(?:one|a)[\s-])?half\b/g, '1/2')
+      .replace(/\b(?:(?:one|a)[\s-])?quarter\b/g, '1/4')
+      // Ordinals as numbers, so "first toe", "1st toe" and "toe 1" meet.
+      .replace(/\b(first|second|third|fourth|fifth)\b/g, (w) => ORDINAL_WORDS[w])
+      .replace(/\b(digits?|toes?|fingers?|metatarsals?|metacarpals?)\s+(one|two|three|four|five)\b/g, (_, w, num) => `${w} ${n(num)}`)
+      .replace(
+        /\b(digits?|toes?|fingers?|metatarsals?|metacarpals?)\s+(i{1,3}|iv|v)(?:\s*(?:-|to)\s*(i{1,3}|iv|v))?\b/g,
+        (_, w, a, b) => `${w} ${ROMAN[a]}${b ? `-${ROMAN[b]}` : ''}`,
+      )
+      // Digits with a name of their own.
+      .replace(/\b(?:hallux|hallucis|great toe|big toe)\b/g, 'toe1')
+      .replace(/\b(?:thumb|pollex|pollicis)\b/g, 'finger1')
+      .replace(/\blittle toe\b/g, 'toe5')
+      .replace(/\blittle finger\b/g, 'finger5')
+      .replace(/\bindex finger\b/g, 'finger2')
+      .replace(/\bmiddle finger\b/g, 'finger3')
+      .replace(/\bring finger\b/g, 'finger4')
+      .replace(/\bdigiti minimi\b/g, `${kind('digit')}5`)
+      // The four besides the first: the lateral four toes, the medial four fingers.
+      .replace(/\b(?:(?:four|4) )?lesser toes\b/g, 'toe2-5')
+      .replace(/\blateral (?:four|4) (toe|digit)s\b/g, (_, w) => `${kind(w)}2-5`)
+      .replace(/\bmedial (?:four|4) (finger|digit)s\b/g, (_, w) => `${kind(w)}2-5`)
+      // Numbered digits, as a range or one at a time, either way round.
+      .replace(new RegExp(String.raw`\b${DIGIT_WORD}\s*${RANGE}\b`, 'g'), (_, w, a, b) => `${kind(w)}${a}-${b}`)
+      .replace(new RegExp(String.raw`\b${RANGE}\s+${DIGIT_WORD}\b`, 'g'), (_, a, b, w) => `${kind(w)}${a}-${b}`)
+      .replace(new RegExp(String.raw`\b${DIGIT_WORD}\s*(\d)(?![\d/-])\b`, 'g'), (_, w, a) => `${kind(w)}${a}`)
+      .replace(new RegExp(String.raw`\b(\d)(?:st|nd|rd|th)?\s+${DIGIT_WORD}\b`, 'g'), (_, a, w) => `${kind(w)}${a}`)
+      // Numbered metacarpals and metatarsals: "1st metatarsal" is "metatarsal 1".
+      .replace(new RegExp(String.raw`\b${RANGE}\s+(metatarsal|metacarpal)s\b`, 'g'), (_, a, b, bone) => `${bone}s ${a}-${b}`)
+      .replace(/\b(\d)(?:st|nd|rd|th)?\s+(metatarsal|metacarpal)(s?)\b/g, (_, a, bone, s) => `${bone}${s} ${a}`)
+  );
+}
+
+const ORDINAL_WORDS: Record<string, string> = { first: '1st', second: '2nd', third: '3rd', fourth: '4th', fifth: '5th' };
+const NUMBER_WORDS: Record<string, string> = { one: '1', two: '2', three: '3', four: '4', five: '5' };
+const ROMAN: Record<string, string> = { i: '1', ii: '2', iii: '3', iv: '4', v: '5' };
+
+/**
+ * Authored values that name two places in one string, and the two places
+ * (owner, 24 Oct 2026: "multiple O's and I's presented in the same answer
+ * box"). A question about a muscle's sites asks for each on its own: its own
+ * button, its own typed box.
+ *
+ * Held here rather than split in muscles.raw.json because the published
+ * diagnostic papers print a muscle's field as authored, and a published
+ * paper is never edited (diagnosticPapers.ts). The Atlas and the fact cards
+ * keep the authored sentence too.
+ *
+ * Each place in the source's own words, with the bone it shares with its
+ * partner said where it would otherwise be lost ("Pubic crest & symphysis"
+ * is the pubic symphysis). Left joined: a value whose "and" describes one
+ * surface ("Anterior and medial surfaces of ulna", "Medial and lateral sides
+ * of the base of the proximal phalanx"), one head's footprint behind a head
+ * prefix (biceps brachii's long head, adductor pollicis's oblique head),
+ * anconeus's "Lateral olecranon & proximal ulna" (split, "Proximal ulna" is
+ * where brachialis inserts too, and was offered as a wrong answer to it), and
+ * longus colli, whose bodies and transverse processes do not share the one
+ * range the value gives them.
+ */
+export const SEPARATE_SITES: Record<string, string[]> = {
+  'Superior angle & medial border of scapula': ['Superior angle of scapula', 'Medial border of scapula'],
+  'Coronoid process & ulnar tuberosity': ['Coronoid process of ulna', 'Ulnar tuberosity'],
+  'Pubic crest & symphysis': ['Pubic crest', 'Pubic symphysis'],
+  'Lateral condyle and upper 2/3 of lateral tibia': ['Lateral condyle of tibia', 'Upper 2/3 of lateral tibia'],
+  'Head & upper lateral fibula': ['Head of fibula', 'Upper lateral fibula'],
+  'Upper posterior fibula & tibia': ['Upper posterior fibula', 'Upper posterior tibia'],
+  'Medial & lateral femoral condyles': ['Medial femoral condyle', 'Lateral femoral condyle'],
+  'Medial and lateral tubercles of calcaneus': ['Medial tubercle of calcaneus', 'Lateral tubercle of calcaneus'],
+  'Medial and lateral sides of calcaneus': ['Medial side of calcaneus', 'Lateral side of calcaneus'],
+  'Base of 2nd and 3rd metacarpals': ['Base of 2nd metacarpal', 'Base of 3rd metacarpal'],
+  'Posterior surfaces of ulna and radius': ['Posterior surface of ulna', 'Posterior surface of radius'],
+  'Sternum & costal cartilages 1–6': ['Sternum', 'Costal cartilages 1–6'],
+};
+
+/** The places one authored value names, head prefix stripped: one, or two where SEPARATE_SITES splits it. */
+export function separateSites(raw: string): string[] {
+  const canonical = stripHeadPrefix(raw);
+  return SEPARATE_SITES[canonical] ?? [canonical];
+}
+
+/** The limb whose digits a structure's attachments name: its area's. */
+export function limbOfStructure(structure: Pick<AnatomyStructure, 'areas' | 'subregion'>): Limb | undefined {
+  const areas = areasOf(structure);
+  if (areas.includes('ankle-foot')) return 'foot';
+  if (areas.includes('wrist-hand')) return 'hand';
+  return undefined;
+}
+
+/** The limb a value's digits belong to, when it names one. */
+export function limbOfValue(value: string): Limb | undefined {
+  const canonical = canonicalDigits(value);
+  if (/toe\d|metatars|calcane|hallu/.test(canonical)) return 'foot';
+  if (/finger\d|metacarp|pollic/.test(canonical)) return 'hand';
+  return undefined;
+}
+
+/**
+ * An authored value that writes "digit" for a toe, said with the limb: the
+ * foot's "Proximal phalanx of digit 1" is "Proximal phalanx of big toe", and
+ * its "Digits 2–4" are toes. Undefined when the value already says which, or
+ * names no digit. Readable, because it is an accepted form and the hints
+ * count from accepted forms (SlotHints).
+ */
+export function limbExplicitForm(value: string, limb: Limb): string | undefined {
+  if (limbOfValue(value)) return undefined;
+  const toe = limb === 'foot';
+  const out = value
+    .replace(/\bdigit\s+(?:1|I)\b/gi, toe ? 'big toe' : 'thumb')
+    .replace(/\bdigit\s+(?:5|V)\b/gi, toe ? 'little toe' : 'little finger')
+    .replace(/\b(d)igit(s?)\b/gi, (_, d: string, s: string) => {
+      const word = toe ? `toe${s}` : `finger${s}`;
+      return d === 'D' ? word.charAt(0).toUpperCase() + word.slice(1) : word;
+    })
+    .replace(/\b(phalanx|phalanges)\s+(\d(?:\s*[–-]\s*\d)?)\b/gi, (_, p: string, d: string) => `${p} of ${toe ? 'toes' : 'fingers'} ${d}`);
+  return out === value ? undefined : out;
+}
+
 /** Strips head/part markers so a value can stand as a choice or a typed slot. */
 export function stripHeadPrefix(value: string): string {
   const stripped = value.replace(HEAD_PREFIX, '').replace(HEAD_SUFFIX, '').trim();
@@ -136,6 +294,14 @@ export const EQUIVALENT_ACTION_GROUPS: string[][] = [
     'hip-stabilisation',
   ],
   ['inspiration', 'accessory-inspiration'],
+  // The big toe is a toe: "Toe flexion" offered against abductor hallucis's
+  // "Big toe flexion" is true of it. The hallux has its own tags (owner, 24
+  // Oct 2026: "should be big toe abd") as the thumb does, but unlike the
+  // thumb and the fingers it is still one of the toes.
+  ['toe-flexion', 'big-toe-flexion'],
+  ['toe-extension', 'big-toe-extension'],
+  ['toe-abduction', 'big-toe-abduction'],
+  ['toe-adduction', 'big-toe-adduction'],
 ];
 
 /** True when two action tags are the same tag, or interchangeable per the groups above. */

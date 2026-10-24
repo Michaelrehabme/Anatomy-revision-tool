@@ -1,6 +1,7 @@
 import type { PromptKind } from '../types/question';
-import { ATTACHMENT_SYNONYMS, stripHeadPrefix } from './oinaValues';
+import { ATTACHMENT_SYNONYMS, canonicalDigits, limbExplicitForm, limbOfValue, stripHeadPrefix, type Limb } from './oinaValues';
 import { swapFibularPeroneal } from './nameVariants';
+import { editDistance } from './answerMatching';
 
 /**
  * Typed-answer grading for OINA questions (CR-018).
@@ -81,24 +82,6 @@ export function gradingTokens(value: string): string[] {
     .filter((t) => t.length > 0 && !STOPWORDS.has(t));
 }
 
-/** Levenshtein edit distance, single-row DP — same algorithm as answerMatching.ts. */
-function editDistance(a: string, b: string): number {
-  if (a === b) return 0;
-  if (a.length === 0) return b.length;
-  if (b.length === 0) return a.length;
-
-  let prevRow = Array.from({ length: b.length + 1 }, (_, j) => j);
-  for (let i = 1; i <= a.length; i++) {
-    const currentRow = [i];
-    for (let j = 1; j <= b.length; j++) {
-      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
-      currentRow.push(Math.min(prevRow[j] + 1, currentRow[j - 1] + 1, prevRow[j - 1] + cost));
-    }
-    prevRow = currentRow;
-  }
-  return prevRow[b.length];
-}
-
 /** A word token tolerates one typo, but only once it is long enough that a typo and a different word are distinguishable. */
 function wordTokensMatch(expected: string, actual: string): boolean {
   if (expected === actual) return true;
@@ -143,8 +126,11 @@ const MAX_UNMATCHED_INPUT_WORDS = 1;
  * a different answer, not a more detailed one.
  */
 export function matchesAcceptedValue(input: string, accepted: string, strict = false): boolean {
-  const inputTokens = gradingTokens(input);
-  const acceptedTokens = gradingTokens(accepted);
+  // The answer key says which limb's digits it means; the student's "digit 1"
+  // is read on the same limb (canonicalDigits).
+  const limb = limbOfValue(accepted);
+  const inputTokens = gradingTokens(canonicalDigits(input, limb));
+  const acceptedTokens = gradingTokens(canonicalDigits(accepted, limb));
   if (inputTokens.length === 0 || acceptedTokens.length === 0) return false;
 
   const inputIds = inputTokens.filter(isIdentifierToken);
@@ -181,13 +167,16 @@ export function matchesSlot(input: string, accepted: string[], strict = false): 
  * ("Medial surface of tibia (pes anserinus)") and an abbreviation they may
  * use on its own ("Anterior superior iliac spine (ASIS)" -> "ASIS").
  *
+ * `limb` is the muscle's, for values that write "digit" without saying
+ * whose (limbExplicitForm).
+ *
  * The authored value is always first, and the UI relies on that: a missed
  * slot reveals `accepted[0]`, so the student gets the full authored form
  * back — including the head prefix the choices strip, since once the answer
  * is being shown, knowing it was specifically the short head is the useful
  * part.
  */
-export function acceptedVariantsFor(promptKind: PromptKind, raw: string): string[] {
+export function acceptedVariantsFor(promptKind: PromptKind, raw: string, limb?: Limb): string[] {
   const variants = new Set<string>();
   const add = (value: string) => {
     const trimmed = value.trim();
@@ -217,6 +206,14 @@ export function acceptedVariantsFor(promptKind: PromptKind, raw: string): string
     // definitional equivalences are listed there and Gerdy's tubercle is not.
     for (const { when, accept } of ATTACHMENT_SYNONYMS) {
       if (when.test(raw)) accept.forEach(add);
+    }
+    // "Digit 1" on a foot muscle is the big toe: said so, the grader reads a
+    // student's "hallux" or "toe 1" against it.
+    if (limb) {
+      for (const value of [...variants]) {
+        const explicit = limbExplicitForm(value, limb);
+        if (explicit) add(explicit);
+      }
     }
   }
   if (promptKind === 'nerve') {

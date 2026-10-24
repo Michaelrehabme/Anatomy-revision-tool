@@ -86,6 +86,10 @@ const SAME_SITE_DIFFERENT_WORDING = new Set([
   'Medial & lateral femoral condyles <= Lateral surface of the lateral femoral condyle',
   'Posterior surface of radius <= Posterior surfaces of ulna and radius',
   'Posterior surface of ulna <= Posterior surfaces of ulna and radius',
+  // "Digits" names no limb, and on a foot question the digits are toes
+  // (canonicalDigits): the hand's wording, typed for the foot, is right.
+  'Distal phalanges of toes 2–5 <= Distal phalanges of digits 2–5',
+  'Middle phalanges of toes 2–5 <= Middle phalanges of digits 2–5',
 ]);
 
 describe('no authored attachment grades as another', () => {
@@ -186,5 +190,70 @@ describe('clinical synonyms for attachment sites', () => {
     const variants = acceptedVariantsFor('insertion', 'Calcaneus via Achilles tendon');
     expect(variants[0]).toBe('Calcaneus via Achilles tendon');
     expect(insertion('calcaneus via Achilles tendon', 'Calcaneus via Achilles tendon')).toBe(true);
+  });
+});
+
+describe('other names for the same digit (24 Oct 2026)', () => {
+  const grades = (input: string, raw: string, limb: 'hand' | 'foot') => matchesSlot(input, acceptedVariantsFor('insertion', raw, limb));
+
+  it('accepts every name for the big toe, and not the thumb', () => {
+    const fhl = 'Distal phalanx of big toe';
+    for (const input of [
+      'distal phalanx of the hallux',
+      'distal phalanx of great toe',
+      'distal phalanx of first toe',
+      'distal phalanx of 1st digit',
+      'distal phalanx of toe 1',
+      'distal phalanx of digit I',
+    ]) {
+      expect(grades(input, fhl, 'foot'), input).toBe(true);
+    }
+    expect(grades('distal phalanx of the thumb', fhl, 'foot')).toBe(false);
+    // A part for the whole is still not the answer.
+    expect(grades('distal phalanx', fhl, 'foot')).toBe(false);
+  });
+
+  it('accepts every name for the thumb, and not the big toe', () => {
+    const fpl = 'Distal phalanx of the thumb';
+    expect(grades('distal phalanx of pollex', fpl, 'hand')).toBe(true);
+    expect(grades('distal phalanx of digit 1', fpl, 'hand')).toBe(true);
+    expect(grades('distal phalanx of big toe', fpl, 'hand')).toBe(false);
+  });
+
+  it('reads "digit 1" on the muscle\'s own limb', () => {
+    const ehb = 'Proximal phalanx of digit 1';
+    expect(grades('proximal phalanx of hallux', ehb, 'foot')).toBe(true);
+    expect(grades('proximal phalanx of digit 1', ehb, 'foot')).toBe(true);
+    expect(grades('proximal phalanx of thumb', ehb, 'foot')).toBe(false);
+  });
+
+  it('accepts the lesser digits however they are numbered', () => {
+    const fdp = 'Distal phalanges of digits 2–5';
+    for (const input of [
+      'distal phalanges of fingers 2-5',
+      'distal phalanges of medial four fingers',
+      'distal phalanges of digits 2 to 5',
+      'distal phalanges of 2nd-5th digits',
+      'distal phalanges of digits II-V',
+    ]) {
+      expect(grades(input, fdp, 'hand'), input).toBe(true);
+    }
+    expect(grades('distal phalanges of toes 2-5', fdp, 'hand')).toBe(false);
+    expect(grades('distal phalanges of lateral four fingers', fdp, 'hand')).toBe(false);
+    expect(grades('distal phalanges of lesser toes', 'Distal phalanges of toes 2–5', 'foot')).toBe(true);
+  });
+
+  it('accepts the little finger and ordinal bones by name', () => {
+    expect(grades('proximal phalanx of little finger', 'Proximal phalanx of digit 5', 'hand')).toBe(true);
+    expect(grades('proximal phalanx of little toe', 'Proximal phalanx of digit 5', 'hand')).toBe(false);
+    expect(grades('base of first metatarsal', 'Base of 1st metatarsal', 'foot')).toBe(true);
+    expect(grades('base of metatarsal 1', 'Base of 1st metatarsal', 'foot')).toBe(true);
+    expect(grades('base of second metatarsal', 'Base of 1st metatarsal', 'foot')).toBe(false);
+  });
+
+  it('accepts a fraction in words', () => {
+    expect(matchesSlot('medial third of the clavicle', slotFor('Medial 1/3 clavicle'))).toBe(true);
+    expect(matchesSlot('lateral third of the clavicle', slotFor('Medial 1/3 clavicle'))).toBe(false);
+    expect(matchesSlot('lateral third of the clavicle', slotFor('Lateral 1/3 clavicle'))).toBe(true);
   });
 });

@@ -12,7 +12,7 @@ import type { StructureIndexEntry } from '../../types/structureIndex';
 import type { MultiSelectQuestion } from '../../types/question';
 import type { StructureIndexes } from '../indexes';
 import { pickStructureDistractors } from '../distractors';
-import { canonicalNerveNames, conflictsWith } from '../oinaValues';
+import { actionsConflict, canonicalNerveNames, conflictsWith } from '../oinaValues';
 import { containerIds, siteLabel } from '../attachmentSites';
 import { shuffle, sample, type Rng } from '../rng';
 import { questionBase } from './questionBase';
@@ -97,7 +97,12 @@ function buildActionExclusionQuestions(pool: AnatomyStructure[], indexes: Struct
   const questions: MultiSelectQuestion[] = [];
 
   for (const [action, muscleIds] of indexes.byAction) {
-    const hasAction = new Set(muscleIds);
+    // A muscle tagged with the same movement under another name contributes
+    // too: flexor hallucis longus flexes a toe, so it is not the one that
+    // does NOT contribute to toe flexion.
+    const hasAction = new Set(
+      [...indexes.byAction].flatMap(([other, ids]) => (actionsConflict(other, action) ? ids : [])),
+    );
     const matchingInPool = muscleIds.map((id) => poolById.get(id)).filter((s): s is AnatomyStructure => !!s);
     if (matchingInPool.length < MIN_ACTION_MATCHES) continue;
 

@@ -3,8 +3,8 @@ import type { AnatomyStructure } from '../../types/structure';
 import type { AnatomyImageAsset } from '../../types/image';
 import type { MCQQuestion, PromptKind } from '../../types/question';
 import type { StructureIndexes } from '../indexes';
-import { pickNameDistractors, pickTextFieldDistractors } from '../distractors';
-import { canonicalNerveNames, conflictsWith, stripHeadPrefix } from '../oinaValues';
+import { pickItemDistractors, pickNameDistractors, pickTextFieldDistractors } from '../distractors';
+import { canonicalNerveNames, conflictsWith, separateSites, stripHeadPrefix } from '../oinaValues';
 import { buildIdentifyClue, clueAlsoFits, ligamentCourse, summarizeStructure, type SiteLookup } from '../facts';
 import { alsoAttachesToAll, ligamentPromptLines } from './ligamentClue';
 import { muscleProfileLines } from '../facts';
@@ -272,35 +272,35 @@ function buildOne(
 
   if (isMuscle(structure)) {
     if (promptKind === 'origin' || promptKind === 'insertion') {
-      const field = promptKind === 'origin' ? structure.origin : structure.insertion;
-      const correctValue = field.join('; ');
-      const sites = field.map(stripHeadPrefix);
-      // A neighbour whose answer names one of this muscle's own sites is not a
-      // wrong answer: "Linea aspera of the femur" was offered against adductor
-      // magnus, which inserts there, and "Inferior ramus of pubis" against
-      // "Inferior ramus of the pubis" (8 Oct 2026). The fact cards have
-      // refused these since CR-018 (oinaValues.conflictsWith); this question
-      // predates them and never did.
-      const fieldOf = (s: AnatomyStructure) => {
-        if (!isMuscle(s)) return undefined;
-        const theirs = promptKind === 'origin' ? s.origin : s.insertion;
-        return theirs.some((value) => sites.some((site) => conflictsWith(site, stripHeadPrefix(value)))) ? undefined : theirs;
-      };
-      const distractors = toppedUp(
-        correctValue,
-        pickTextFieldDistractors(correctValue, structure, all, fieldOf, distractorCount, rng),
-        distractorCount,
-        (missing, taken) => pickTextFieldDistractors(correctValue, structure, fallback ?? [], fieldOf, missing, rng, taken),
-      );
-      const { choices, correctIndex } = buildChoices(correctValue, distractors, choiceCount, rng);
-      out.push({
-        ...baseFields(structure, promptKind),
-        id: `mcq-${structure.id}-${promptKind}`,
-        prompt: `What is the ${promptKind} of ${structure.name}?`,
-        choices,
-        correctIndex,
-        explanation: summarizeStructure(structure, siteLookup),
-      });
+      const fieldOf = (s: AnatomyStructure) =>
+        isMuscle(s) ? (promptKind === 'origin' ? s.origin : s.insertion).flatMap(separateSites) : undefined;
+      // One place on each button (owner, 24 Oct 2026). The whole field
+      // joined with "; " made a muscle with two origins one long button, and
+      // its neighbours' two origins long wrong ones beside it. A muscle with
+      // two places is asked for one of them, and no wrong answer names
+      // either: "Linea aspera of the femur" offered against adductor magnus,
+      // which inserts there, was a second right answer (8 Oct 2026).
+      const sites = [...new Set(fieldOf(structure) ?? [])];
+      const correctValue = sites.length === 1 ? sites[0] : sample(sites, 1, rng)[0];
+      if (correctValue) {
+        const pick = (pool: AnatomyStructure[], missing: number, taken: readonly string[]) =>
+          pickItemDistractors([...sites, ...taken], structure, pool, fieldOf, stripHeadPrefix, missing, rng, conflictsWith);
+        const distractors = toppedUp(correctValue, pick(all, distractorCount, []), distractorCount, (missing, taken) =>
+          pick(fallback ?? [], missing, taken),
+        );
+        const { choices, correctIndex } = buildChoices(correctValue, distractors, choiceCount, rng);
+        out.push({
+          ...baseFields(structure, promptKind),
+          id: `mcq-${structure.id}-${promptKind}`,
+          prompt:
+            sites.length === 1
+              ? `What is the ${promptKind} of ${structure.name}?`
+              : `Which of these is an ${promptKind} of ${structure.name}?`,
+          choices,
+          correctIndex,
+          explanation: summarizeStructure(structure, siteLookup),
+        });
+      }
     }
 
     if (promptKind === 'nerve') {
