@@ -188,6 +188,8 @@ export function pickTieredKeyDistractors(
   count: number,
   rng: Rng,
   reject: (correctKey: string, candidate: string) => boolean,
+  /** Two wrong answers this says are the same movement are never both offered. */
+  sameAs?: (earlier: string, candidate: string) => boolean,
 ): string[] {
   const picked: string[] = [];
   const seen = new Set(correctKeys);
@@ -201,7 +203,13 @@ export function pickTieredKeyDistractors(
         if (key && usable(key)) candidates.add(key);
       }
     }
-    for (const key of sample([...candidates], count - picked.length, rng)) {
+    for (const key of sample([...candidates], candidates.size, rng)) {
+      if (picked.length >= count) break;
+      // Not one movement twice among the wrong answers, as pickItemDistractors
+      // refuses one site twice: "Toe adduction" beside "Big toe adduction".
+      // Opt-in: nerves are left as they were, where a nerve and its branch are
+      // both fair wrong answers and the neighbours have few others.
+      if (sameAs && picked.some((earlier) => sameAs(earlier, key))) continue;
       picked.push(key);
       seen.add(key);
     }

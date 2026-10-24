@@ -35,6 +35,13 @@
 [functions."study-reminders"]
   schedule = "0 7 * * 1"
 
+# One email to the owner per question a student reports, so reports arrive in
+# the inbox and not only on /admin/feedback. Every ten minutes: a report is
+# read once it has landed in Firestore, offline queue and all.
+# netlify/functions/report-emails.ts.
+[functions."report-emails"]
+  schedule = "*/10 * * * *"
+
 # SPA fallback. dist/_redirects (from public/) says the same thing; this is
 # here so the rule survives a build that loses the public/ copy.
 [[redirects]]

@@ -14,7 +14,7 @@ import {
   canonicalNerveNames,
   conflictsWith,
   humanizeActionTag,
-  stripHeadPrefix,
+  separateSites,
 } from '../oinaValues';
 
 const muscles = ALL_STRUCTURES.filter(isMuscle);
@@ -121,6 +121,20 @@ describe('every muscle and fact across the dataset', () => {
     expect(offending).toEqual([]);
   });
 
+  it('never offers two wrong answers that say the same thing', () => {
+    // "Toe adduction" beside "Big toe adduction" (24 Oct 2026).
+    const offending: string[] = [];
+    for (const q of all) {
+      // Nerves excepted: a nerve and its branch are both fair wrong answers.
+      if (q.format !== 'select' || isBloodFactKind(q.promptKind) || q.promptKind === 'nerve') continue;
+      const reject = q.promptKind === 'action' ? actionsConflict : conflictsWith;
+      const asKey = (choice: string) => (q.promptKind === 'action' ? choice.toLowerCase().replace(/ /g, '-') : choice);
+      const wrong = q.choices.filter((_, i) => !q.correctIndices.includes(i)).map(asKey);
+      wrong.forEach((a, i) => wrong.slice(i + 1).forEach((b) => reject(a, b) && offending.push(`${q.id}: ${a} / ${b}`)));
+    }
+    expect(offending).toEqual([]);
+  });
+
   it('never renders the same choice twice, and always leaves something to eliminate', () => {
     for (const q of all) {
       if (q.format !== 'select') continue;
@@ -142,9 +156,9 @@ describe('every muscle and fact across the dataset', () => {
     const valuesOf = (m: MuscleStructure, promptKind: OinaPromptKind) => {
       switch (promptKind) {
         case 'origin':
-          return m.origin.map(stripHeadPrefix);
+          return m.origin.flatMap(separateSites);
         case 'insertion':
-          return m.insertion.map(stripHeadPrefix);
+          return m.insertion.flatMap(separateSites);
         case 'nerve':
           return canonicalNerveNames(m.nerve);
         case 'action':

@@ -43,19 +43,28 @@ export function singular(word: string): string {
   return word;
 }
 
-/** Levenshtein edit distance (insert/delete/substitute), computed with a single-row DP. */
-function editDistance(a: string, b: string): number {
+/**
+ * Edit distance where inserting, deleting or changing a letter costs one, and
+ * so does swapping two neighbouring letters (optimal string alignment). The
+ * swap is the commonest slip in a long Latin name, and a student who typed
+ * "intretransversarii" got one letter wrong, not two (owner, 24 Oct 2026).
+ */
+export function editDistance(a: string, b: string): number {
   if (a === b) return 0;
   if (a.length === 0) return b.length;
   if (b.length === 0) return a.length;
 
+  let twoBack: number[] = [];
   let prevRow = Array.from({ length: b.length + 1 }, (_, j) => j);
   for (let i = 1; i <= a.length; i++) {
     const currentRow = [i];
     for (let j = 1; j <= b.length; j++) {
       const cost = a[i - 1] === b[j - 1] ? 0 : 1;
-      currentRow.push(Math.min(prevRow[j] + 1, currentRow[j - 1] + 1, prevRow[j - 1] + cost));
+      let best = Math.min(prevRow[j] + 1, currentRow[j - 1] + 1, prevRow[j - 1] + cost);
+      if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) best = Math.min(best, twoBack[j - 2] + 1);
+      currentRow.push(best);
     }
+    twoBack = prevRow;
     prevRow = currentRow;
   }
   return prevRow[b.length];
