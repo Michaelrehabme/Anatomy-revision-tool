@@ -425,6 +425,35 @@ def build_mesh(spec, mesh_name):
             tr = BVHTree.FromBMesh(bm_a)
             bm_a.free()
             return tr
+        # SNAPPED (owner, 24 Oct 2026: the anterior longitudinal ligament
+        # "runs through the bones"). Slices cut square to one axis cut a
+        # curved spine obliquely, so their centres fall inside the bodies;
+        # each point is moved onto the nearest named bone and lifted clear.
+        if spec.get("snap") and paths:
+            from mathutils.bvhtree import BVHTree as _BVH
+            bm_s = bmesh.new()
+            for nm in spec["snap"]:
+                src = bpy.data.objects.get(nm)
+                if not src:
+                    continue
+                tmp = src.data.copy()
+                tmp.transform(src.matrix_world)
+                bm_s.from_mesh(tmp)
+                bpy.data.meshes.remove(tmp)
+            bmesh.ops.recalc_face_normals(bm_s, faces=bm_s.faces)
+            tr_s = _BVH.FromBMesh(bm_s)
+            bm_s.free()
+            lift_s = float(spec.get("snapLift", 1.0)) / 1000.0
+            snapped = []
+            for p in paths:
+                q = []
+                for pt in p:
+                    loc, nrm, _, _ = tr_s.find_nearest(mathutils.Vector([c / 1000.0 for c in pt]))
+                    q.append([c * 1000.0 for c in (loc + nrm.normalized() * lift_s)] if loc is not None else pt)
+                snapped.append(q)
+            paths = snapped
+            for _ in range(int(spec.get("snapSmooth", 3))):
+                paths = [[p[0]] + [[(p[i - 1][d] + 2 * p[i][d] + p[i + 1][d]) / 4 for d in range(3)] for i in range(1, len(p) - 1)] + [p[-1]] for p in paths]
         # SLIPS (owner, 24 Oct 2026: "the plantar fascia has multiple
         # bands"). Toward the far end the sheet splits into one slip per bone
         # named in `slips`: each fibre joins the slip of the bone its end is
