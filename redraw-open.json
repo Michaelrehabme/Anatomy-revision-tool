@@ -120,7 +120,7 @@
  "plantar-intercuneiform-ligaments": 150,
  "plantar-tarsometatarsal-ligaments": 120,
  "plantar-metatarsal-ligaments": 90,
- "plantar-fascia": 60,
+ "plantar-fascia": 90,
  "talocalcaneal-interosseous-ligament": 120,
  "cuneocuboid-interosseous-ligament": 300,
  "cuneometatarsal-interosseous-ligaments": 30,
@@ -131,5 +131,6 @@
  "deep-transverse-metatarsal-ligament": 210,
  "intersesamoid-ligament": 300,
  "plantar-interphalangeal-ligaments": 150,
- "plantar-metatarsophalangeal-ligaments": 240
+ "plantar-metatarsophalangeal-ligaments": 240,
+ "achilles-tendon": 180
 }

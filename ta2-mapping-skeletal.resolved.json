@@ -3864,6 +3864,145 @@
     "Plantar metatarsophalangeal ligaments.l"
    ],
    "_note": "foot redraw, 21 Oct 2026"
+  },
+  {
+   "id": "anterior-longitudinal-ligament",
+   "category": "ligament",
+   "blenderObjects": [
+    "Anterior longitudinal ligament"
+   ],
+   "_note": "spine redraw, 24 Oct 2026"
+  },
+  {
+   "id": "posterior-longitudinal-ligament",
+   "category": "ligament",
+   "blenderObjects": [
+    "Posterior longitudinal ligament"
+   ],
+   "_note": "spine redraw, 24 Oct 2026"
+  },
+  {
+   "id": "supraspinous-ligament",
+   "category": "ligament",
+   "blenderObjects": [
+    "Supraspinous ligament"
+   ],
+   "_note": "spine redraw, 24 Oct 2026"
+  },
+  {
+   "id": "nuchal-ligament",
+   "category": "ligament",
+   "blenderObjects": [
+    "Nuchal ligament"
+   ],
+   "_note": "spine redraw, 24 Oct 2026"
+  },
+  {
+   "id": "ligamenta-flava",
+   "category": "ligament",
+   "blenderObjects": [
+    "Ligamenta flava"
+   ],
+   "_note": "spine redraw, 24 Oct 2026"
+  },
+  {
+   "id": "interspinous-ligaments",
+   "category": "ligament",
+   "blenderObjects": [
+    "Interspinous ligaments"
+   ],
+   "_note": "spine redraw, 24 Oct 2026"
+  },
+  {
+   "id": "intertransverse-ligaments",
+   "category": "ligament",
+   "blenderObjects": [
+    "Intertransverse ligaments.l"
+   ],
+   "_note": "spine redraw, 24 Oct 2026"
+  },
+  {
+   "id": "intercornual-ligament",
+   "category": "ligament",
+   "blenderObjects": [
+    "Intercornual ligament.l"
+   ],
+   "_note": "spine redraw, 24 Oct 2026"
+  },
+  {
+   "id": "radiate-ligament-of-head-of-rib",
+   "category": "ligament",
+   "blenderObjects": [
+    "Radiate ligament of head of rib.l"
+   ],
+   "_note": "spine redraw, 24 Oct 2026"
+  },
+  {
+   "id": "intra-articular-ligament-of-head-of-rib",
+   "category": "ligament",
+   "blenderObjects": [
+    "Intra-articular ligament of head of rib"
+   ],
+   "_note": "spine redraw, 24 Oct 2026"
+  },
+  {
+   "id": "costotransverse-ligament",
+   "category": "ligament",
+   "blenderObjects": [
+    "Costotransverse ligament.l"
+   ],
+   "_note": "spine redraw, 24 Oct 2026"
+  },
+  {
+   "id": "external-intercostal-membrane",
+   "category": "ligament",
+   "blenderObjects": [
+    "External intercostal membrane.l"
+   ],
+   "_note": "spine redraw, 24 Oct 2026"
+  },
+  {
+   "id": "internal-intercostal-membrane",
+   "category": "ligament",
+   "blenderObjects": [
+    "Internal intercostal membrane.l"
+   ],
+   "_note": "spine redraw, 24 Oct 2026"
+  },
+  {
+   "id": "linea-alba",
+   "category": "ligament",
+   "blenderObjects": [
+    "Linea alba"
+   ],
+   "_note": "spine redraw, 24 Oct 2026"
+  },
+  {
+   "id": "costal-cartilage",
+   "category": "ligament",
+   "blenderObjects": [
+    "Costal cartilage of first rib.l",
+    "Costal cartilage of second rib.l",
+    "Costal cartilage of third rib.l",
+    "Costal cartilage of fourth rib.l",
+    "Costal cartilage of fifth rib.l",
+    "Costal cartilage of sixth rib.l",
+    "Costal cartilage of seventh rib.l",
+    "Costal cartilage of eighth rib.l",
+    "Costal cartilage of ninth rib.l",
+    "Costal cartilage of tenth rib.l",
+    "Costal cartilage of first rib.r",
+    "Costal cartilage of second rib.r",
+    "Costal cartilage of third rib.r",
+    "Costal cartilage of fourth rib.r",
+    "Costal cartilage of fifth rib.r",
+    "Costal cartilage of sixth rib.r",
+    "Costal cartilage of seventh rib.r",
+    "Costal cartilage of eighth rib.r",
+    "Costal cartilage of ninth rib.r",
+    "Costal cartilage of tenth rib.r"
+   ],
+   "_note": "spine redraw, 24 Oct 2026"
   }
  ]
 }

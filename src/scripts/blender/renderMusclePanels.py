@@ -878,6 +878,12 @@ def build_mesh(spec, mesh_name):
                 # STRAIGHT: a bowstring (the plantar fascia under the arch)
                 # runs straight between its ends instead of over the bones.
                 loc, nrm, _, _ = (None, None, None, None) if spec.get("straight") and 0 < i_s < n_s else surf.find_nearest(p)
+                # ARCH: a bowstring raised into the arch of the foot, highest
+                # mid-way (`arch` mm), so it follows the arch rather than
+                # cutting straight across beneath it.
+                if loc is None and spec.get("arch"):
+                    import math
+                    p = p + mathutils.Vector((0.0, 0.0, float(spec["arch"]) / 1000.0 * math.sin(math.pi * s_)))
                 if loc is None:
                     pts.append([c * 1000.0 for c in p])
                     continue
