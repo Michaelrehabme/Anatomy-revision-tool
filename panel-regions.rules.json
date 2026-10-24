@@ -16272,50 +16272,53 @@
  },
  "posterior-talocalcaneal-ligament": {
   "build": {
-   "kind": "autoFibres",
+   "kind": "fibres",
    "ligament": [
     "Posterior talocalcaneal ligament.l"
    ],
-   "bones": [
-    "Calcaneus.l",
-    "Cuboid bone.l",
-    "Intermediate cuneiform bone.l",
-    "Lateral cuneiform bone.l",
-    "Medial cuneiform bone.l",
-    "Navicular bone.l",
-    "Talus.l",
-    "Fifth metatarsal bone.l",
-    "First metatarsal bone.l",
-    "Fourth metatarsal bone.l",
-    "Second metatarsal bone.l",
-    "Third metatarsal bone.l",
-    "Proximal phalanx of fifth finger of foot.l",
-    "Proximal phalanx of first finger of foot.l",
-    "Proximal phalanx of fourth finger of foot.l",
-    "Proximal phalanx of second finger of foot.l",
-    "Proximal phalanx of third finger of foot.l",
-    "Middle phalanx of fifth finger of foot.l",
-    "Middle phalanx of fourth finger of foot.l",
-    "Middle phalanx of second finger of foot.l",
-    "Middle phalanx of third finger of foot.l",
-    "Distal phalanx of fifth finger of foot.l",
-    "Distal phalanx of first finger of foot.l",
-    "Distal phalanx of fourth finger of foot.l",
-    "Distal phalanx of second finger of foot.l",
-    "Distal phalanx of third finger of foot.l",
-    "Tibia.l",
-    "Fibula.l"
+   "from": [
+    "Talus.l"
    ],
-   "count": 12,
+   "to": [
+    "Calcaneus.l"
+   ],
+   "fromSpan": [
+    [
+     62,
+     61,
+     60
+    ],
+    [
+     76,
+     64,
+     59
+    ]
+   ],
+   "toSpan": [
+    [
+     58,
+     56,
+     48
+    ],
+    [
+     72,
+     60,
+     49
+    ]
+   ],
+   "count": 16,
    "radius": 0.00075,
    "samples": 20,
    "smoothPath": 6,
    "smoothAcross": 2,
-   "lift": 0.2,
-   "near": 2.5,
-   "spread": 7
+   "lift": 0.4,
+   "smooth": {
+    "voxel": 0.13,
+    "iterations": 2,
+    "factor": 0.45
+   }
   },
-  "_why": " Added 21 Oct 2026 (foot redraw, after the wrist): each loose piece of the atlas's ligament as fibres between the two bones it touches most, its attachments spread over the bone around where it touches. 21 Oct 2026 (owner rejected): wider attachments, and the Achilles is not drawn over it.",
+  "_why": " Added 21 Oct 2026 (foot redraw, after the wrist): each loose piece of the atlas's ligament as fibres between the two bones it touches most, its attachments spread over the bone around where it touches. 21 Oct 2026 (owner rejected): wider attachments, and the Achilles is not drawn over it. Rebuilt from measured points (owner: it didn't connect the talus and calcaneus): the lower edge of the talus's posterior process (z about 60) down to the calcaneus behind the subtalar joint (z about 48), along the atlas ligament's own line.",
   "notNeighbours": [
    "achilles-tendon"
   ]
@@ -17242,9 +17245,19 @@
    "layers": 1,
    "slices": 24,
    "radius": 0.00075,
-   "smoothPath": 4
+   "smoothPath": 4,
+   "anchorStart": [
+    "Calcaneus.l"
+   ],
+   "anchorEnd": [
+    "Proximal phalanx of fifth finger of foot.l",
+    "Proximal phalanx of first finger of foot.l",
+    "Proximal phalanx of fourth finger of foot.l",
+    "Proximal phalanx of second finger of foot.l",
+    "Proximal phalanx of third finger of foot.l"
+   ]
   },
-  "_why": " Added 21 Oct 2026: the atlas's own sheet (a fascia or tendon, not a ligament to draw as fibres). 21 Oct 2026 (owner rejected the smooth sheet): fibres laid through the atlas's own sheet, slice by slice across its width, so they follow it as it narrows and fans."
+  "_why": " Added 21 Oct 2026: the atlas's own sheet (a fascia or tendon, not a ligament to draw as fibres). 21 Oct 2026 (owner rejected the smooth sheet): fibres laid through the atlas's own sheet, slice by slice across its width, so they follow it as it narrows and fans. Anchored (owner: it didn't attach to anything): each fibre carried on to the calcaneal tuberosity behind and the bases of the proximal phalanges in front."
  },
  "talocalcaneal-interosseous-ligament": {
   "build": {

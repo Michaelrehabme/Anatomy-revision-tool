@@ -408,6 +408,42 @@ def build_mesh(spec, mesh_name):
                               for sc, u, lo, hi, v, lo2, hi2 in rows])
         for _ in range(int(spec.get("smoothPath", 4))):
             paths = [[p[0]] + [[(p[i - 1][d] + 2 * p[i][d] + p[i + 1][d]) / 4 for d in range(3)] for i in range(1, len(p) - 1)] + [p[-1]] for p in paths]
+        # ANCHORED (owner, 21 Oct 2026: "the plantar fascia doesn't attach to
+        # anything"). The atlas's sheet stops short of the bones; each fibre
+        # is carried on to the nearest point of the bones named for each end.
+        from mathutils.bvhtree import BVHTree
+        def bone_tree(names):
+            bm_a = bmesh.new()
+            for nm in names:
+                src = bpy.data.objects.get(nm)
+                if not src:
+                    continue
+                tmp = src.data.copy()
+                tmp.transform(src.matrix_world)
+                bm_a.from_mesh(tmp)
+                bpy.data.meshes.remove(tmp)
+            tr = BVHTree.FromBMesh(bm_a)
+            bm_a.free()
+            return tr
+        for key, at_start in (("anchorStart", True), ("anchorEnd", False)):
+            if not spec.get(key) or not paths:
+                continue
+            tr = bone_tree(spec[key])
+            # Which end of the sheet is nearer these bones decides which end they anchor.
+            d0 = sum((tr.find_nearest(mathutils.Vector([c / 1000.0 for c in p[0]]))[3] or 1) for p in paths)
+            d1 = sum((tr.find_nearest(mathutils.Vector([c / 1000.0 for c in p[-1]]))[3] or 1) for p in paths)
+            first = d0 <= d1
+            for p in paths:
+                end = p[0] if first else p[-1]
+                loc = tr.find_nearest(mathutils.Vector([c / 1000.0 for c in end]))[0]
+                if loc is None:
+                    continue
+                q = [c * 1000.0 for c in loc]
+                mid = [(end[d] + q[d]) / 2 for d in range(3)]
+                if first:
+                    p[:0] = [q, mid]
+                else:
+                    p += [mid, q]
         tm = build_mesh({"kind": "tube", "radius": spec.get("radius", 0.0008), "paths": paths}, f"{mesh_name}_tubes")
         out.from_mesh(tm)
         bpy.data.meshes.remove(tm)
