@@ -35900,9 +35900,20 @@
       9.4
      ]
     ]
-   ]
+   ],
+   "snapStart": [
+    "Calcaneus.l"
+   ],
+   "snapEnd": [
+    "Proximal phalanx of fifth finger of foot.l",
+    "Proximal phalanx of first finger of foot.l",
+    "Proximal phalanx of fourth finger of foot.l",
+    "Proximal phalanx of second finger of foot.l",
+    "Proximal phalanx of third finger of foot.l"
+   ],
+   "snapEase": 0.3
   },
-  "_why": " Added 21 Oct 2026: the atlas's own sheet (a fascia or tendon, not a ligament to draw as fibres). 21 Oct 2026 (owner rejected the smooth sheet): fibres laid through the atlas's own sheet, slice by slice across its width, so they follow it as it narrows and fans. Anchored (owner: it didn't attach to anything): each fibre carried on to the calcaneal tuberosity behind and the bases of the proximal phalanges in front. 24 Oct 2026 (owner: it has multiple bands): a central band from the heel splitting into five slips, one to each toe's proximal phalanx. REBUILT 24 Oct 2026: the atlas sheet ends in an oblique edge, so slicing it sent every fibre to the big toe. Now five slips from one attachment on the medial process of the calcaneal tuberosity (underside, x 66-86 mm), each running straight like a bowstring under the arch to the plantar base of its toe's proximal phalanx (measured), overlapping as the central band behind and parting toward the toes. 24 Oct 2026 (owner: follow the arches, insert less geometrically): the slips are laid along the underside of the tarsals and metatarsals 7 mm clear of them, so they rise with the arch, and their toe ends fan wider and are softened. 24 Oct 2026 (owner: connected until it inserts): one continuous sheet from the heel, raised with the arch, to the level of the metatarsal heads, dividing there into five digital slips to the toes. 24 Oct 2026 (owner: smooth into the insertion): each of 70 fibres one smooth curve from its place across the heel attachment, through the sheet (raised with the arch, more on the medial side) to the line of the metatarsal heads, and on into its toe, so the sheet eases into the five slips with no step."
+  "_why": " Added 21 Oct 2026: the atlas's own sheet (a fascia or tendon, not a ligament to draw as fibres). 21 Oct 2026 (owner rejected the smooth sheet): fibres laid through the atlas's own sheet, slice by slice across its width, so they follow it as it narrows and fans. Anchored (owner: it didn't attach to anything): each fibre carried on to the calcaneal tuberosity behind and the bases of the proximal phalanges in front. 24 Oct 2026 (owner: it has multiple bands): a central band from the heel splitting into five slips, one to each toe's proximal phalanx. REBUILT 24 Oct 2026: the atlas sheet ends in an oblique edge, so slicing it sent every fibre to the big toe. Now five slips from one attachment on the medial process of the calcaneal tuberosity (underside, x 66-86 mm), each running straight like a bowstring under the arch to the plantar base of its toe's proximal phalanx (measured), overlapping as the central band behind and parting toward the toes. 24 Oct 2026 (owner: follow the arches, insert less geometrically): the slips are laid along the underside of the tarsals and metatarsals 7 mm clear of them, so they rise with the arch, and their toe ends fan wider and are softened. 24 Oct 2026 (owner: connected until it inserts): one continuous sheet from the heel, raised with the arch, to the level of the metatarsal heads, dividing there into five digital slips to the toes. 24 Oct 2026 (owner: smooth into the insertion): each of 70 fibres one smooth curve from its place across the heel attachment, through the sheet (raised with the arch, more on the medial side) to the line of the metatarsal heads, and on into its toe, so the sheet eases into the five slips with no step. 24 Oct 2026 (owner: not attaching): every fibre's ends moved onto the calcaneal tuberosity and the base of its toe's proximal phalanx, the curve eased to meet them."
  },
  "talocalcaneal-interosseous-ligament": {
   "build": {
@@ -36459,10 +36470,10 @@
     "Vertebra L5",
     "Sacrum"
    ],
-   "snapLift": 1.0,
+   "snapLift": 1.5,
    "snapSmooth": 4
   },
-  "_why": " Added 24 Oct 2026 (spine, neck and ribs, after the foot). 24 Oct 2026 (owner: runs through the bones): every point laid onto the front of the vertebral bodies and discs, 1 mm clear."
+  "_why": " Added 24 Oct 2026 (spine, neck and ribs, after the foot). 24 Oct 2026 (owner: runs through the bones): every point laid onto the front of the vertebral bodies and discs, 1 mm clear. A last pass puts back outside any point the smoothing had pulled inside a vertebral body."
  },
  "posterior-longitudinal-ligament": {
   "build": {
@@ -48040,9 +48051,10 @@
    "smoothPath": 6,
    "smoothAcross": 2,
    "lift": 0.3,
-   "near": 3.0
+   "near": 3.0,
+   "mirrorX": true
   },
-  "_why": " Added 24 Oct 2026 (spine, neck and ribs, after the foot)."
+  "_why": " Added 24 Oct 2026 (spine, neck and ribs, after the foot). 24 Oct 2026 (owner rejected: hard to see): drawn both sides and shown as a cutaway, thoracic vertebrae with see-through ribs, from the front."
  },
  "costotransverse-ligament": {
   "build": {

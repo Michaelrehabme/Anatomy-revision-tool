@@ -454,6 +454,21 @@ def build_mesh(spec, mesh_name):
             paths = snapped
             for _ in range(int(spec.get("snapSmooth", 3))):
                 paths = [[p[0]] + [[(p[i - 1][d] + 2 * p[i][d] + p[i + 1][d]) / 4 for d in range(3)] for i in range(1, len(p) - 1)] + [p[-1]] for p in paths]
+            # Smoothing pulls a path inside a bulging body; a last pass puts
+            # back outside any point that has sunk to under half the lift.
+            final = []
+            for p in paths:
+                q = []
+                for pt in p:
+                    v = mathutils.Vector([c / 1000.0 for c in pt])
+                    loc, nrm, _, dist = tr_s.find_nearest(v)
+                    if loc is not None:
+                        inside = (v - loc).dot(nrm) < 0
+                        if inside or dist < lift_s * 0.5:
+                            v = loc + nrm.normalized() * lift_s
+                    q.append([c * 1000.0 for c in v])
+                final.append(q)
+            paths = final
         # SLIPS (owner, 24 Oct 2026: "the plantar fascia has multiple
         # bands"). Toward the far end the sheet splits into one slip per bone
         # named in `slips`: each fibre joins the slip of the bone its end is
@@ -617,7 +632,44 @@ def build_mesh(spec, mesh_name):
         out.from_mesh(om)
         bpy.data.meshes.remove(om)
     elif spec["kind"] == "tube":
-        for i, path in enumerate(spec["paths"]):
+        paths_t = [list(map(list, p)) for p in spec["paths"]]
+        # ATTACHED ENDS (owner, 24 Oct 2026: "not attaching at all"). Each
+        # path's first point is moved onto the nearest of the `snapStart`
+        # bones and its last onto `snapEnd`, sunk 0.5 mm into the bone, and
+        # the move is eased back along the path so the curve meets the bone.
+        from mathutils.bvhtree import BVHTree as _BVH
+        def _tree(names):
+            bm_x = bmesh.new()
+            for nm in names:
+                src = bpy.data.objects.get(nm)
+                if src:
+                    tmp = src.data.copy()
+                    tmp.transform(src.matrix_world)
+                    bm_x.from_mesh(tmp)
+                    bpy.data.meshes.remove(tmp)
+            bmesh.ops.recalc_face_normals(bm_x, faces=bm_x.faces)
+            t_x = _BVH.FromBMesh(bm_x)
+            bm_x.free()
+            return t_x
+        for key, first in (("snapStart", True), ("snapEnd", False)):
+            if not spec.get(key):
+                continue
+            tr_x = _tree(spec[key])
+            ease = float(spec.get("snapEase", 0.25))
+            for path in paths_t:
+                n_p = len(path)
+                end = path[0] if first else path[-1]
+                loc, nrm, _, _ = tr_x.find_nearest(mathutils.Vector([c / 1000.0 for c in end]))
+                if loc is None:
+                    continue
+                tgt = [c * 1000.0 for c in (loc - nrm.normalized() * 0.0005)]
+                delta = [tgt[d] - end[d] for d in range(3)]
+                span = max(1, int(n_p * ease))
+                for j in range(span + 1):
+                    w = (1 - j / span) ** 2
+                    idx = j if first else n_p - 1 - j
+                    path[idx] = [path[idx][d] + delta[d] * w for d in range(3)]
+        for i, path in enumerate(paths_t):
             cu = bpy.data.curves.new(f"{mesh_name}_c{i}", "CURVE")
             cu.dimensions = "3D"
             cu.bevel_depth = float(spec["radius"])
