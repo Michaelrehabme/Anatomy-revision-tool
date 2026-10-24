@@ -11,9 +11,11 @@ import { shuffle, sample, type Rng } from '../rng';
 import { acceptedVariantsFor } from '../oinaAnswer';
 import {
   actionsConflict,
+  separateSites,
   canonicalNerveNames,
   conflictsWith,
   humanizeActionTag,
+  limbOfStructure,
   stripHeadPrefix,
 } from '../oinaValues';
 import { factHints, factMasteryKey, pickOinaFormat } from '../factMastery';
@@ -106,9 +108,9 @@ export function correctValuesFor(structure: AnatomyStructure, promptKind: OinaPr
   if (!isMuscle(structure)) return [];
   switch (promptKind) {
     case 'origin':
-      return [...new Set(structure.origin.map(stripHeadPrefix))];
+      return [...new Set(structure.origin.flatMap(separateSites))];
     case 'insertion':
-      return [...new Set(structure.insertion.map(stripHeadPrefix))];
+      return [...new Set(structure.insertion.flatMap(separateSites))];
     case 'nerve':
       return canonicalNerveNames(structure.nerve);
     case 'action':
@@ -130,8 +132,9 @@ function rawValuesFor(structure: AnatomyStructure, promptKind: OinaPromptKind): 
   }
   if (isMuscle(structure) && (promptKind === 'origin' || promptKind === 'insertion')) {
     for (const raw of promptKind === 'origin' ? structure.origin : structure.insertion) {
-      const canonical = stripHeadPrefix(raw);
-      if (!map.has(canonical)) map.set(canonical, raw);
+      const sites = separateSites(raw);
+      // A place split out of a joined value is its own authored form.
+      for (const site of sites) if (!map.has(site)) map.set(site, sites.length > 1 ? site : raw);
     }
   }
   return map;
@@ -168,7 +171,7 @@ function buildDistractors(
       correctValues,
       muscle,
       neighbours,
-      (s) => (isMuscle(s) ? (promptKind === 'origin' ? s.origin : s.insertion) : undefined),
+      (s) => (isMuscle(s) ? (promptKind === 'origin' ? s.origin : s.insertion).flatMap(separateSites) : undefined),
       stripHeadPrefix,
       DISTRACTOR_COUNT,
       rng,
@@ -184,7 +187,8 @@ function buildDistractors(
     if (!isMuscle(s)) return [];
     return promptKind === 'nerve' ? canonicalNerveNames(s.nerve) : s.actions;
   };
-  const tiered = pickTieredKeyDistractors(correctValues, muscle, neighbours, keysOf, DISTRACTOR_COUNT, rng, reject);
+  const sameAs = promptKind === 'action' ? actionsConflict : undefined;
+  const tiered = pickTieredKeyDistractors(correctValues, muscle, neighbours, keysOf, DISTRACTOR_COUNT, rng, reject, sameAs);
   if (tiered.length >= DISTRACTOR_COUNT) return tiered;
 
   // A muscle whose neighbours all share its nerve can run short — the
@@ -199,8 +203,14 @@ function buildDistractors(
   const keys = [...index.keys(), ...unloaded.filter((key) => !index.has(key))];
   const globalKeys = (
     promptKind === 'nerve' ? keys.flatMap((key) => canonicalNerveNames([{ name: key, roots: [] }])) : keys
-  ).filter((key) => !tiered.includes(key) && !correctValues.some((correctValue) => reject(correctValue, key)));
-  return [...tiered, ...sample([...new Set(globalKeys)], DISTRACTOR_COUNT - tiered.length, rng)];
+  ).filter((key) => !correctValues.some((correctValue) => reject(correctValue, key)));
+  const topUp: string[] = [];
+  for (const key of sample([...new Set(globalKeys)], globalKeys.length, rng)) {
+    if (tiered.length + topUp.length >= DISTRACTOR_COUNT) break;
+    if (sameAs && [...tiered, ...topUp].some((earlier) => sameAs(earlier, key))) continue;
+    topUp.push(key);
+  }
+  return [...tiered, ...topUp];
 }
 
 /** The question's wording: blood facts read as questions about arteries, not "every origin of". */
@@ -264,7 +274,7 @@ function buildTyped(
     // value, a student who sees two boxes should read that as the shape of the
     // answer, not as a trick.
     label: multiple ? `${FACT_NOUN[promptKind]} ${index + 1} of ${correctValues.length}` : FACT_NOUN[promptKind],
-    accepted: acceptedVariantsFor(promptKind, raws.get(value) ?? display(value)),
+    accepted: acceptedVariantsFor(promptKind, raws.get(value) ?? display(value), limbOfStructure(muscle)),
     ...(isBloodFactKind(promptKind) ? { strict: true } : {}),
   }));
 

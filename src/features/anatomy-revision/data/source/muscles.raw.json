@@ -5,7 +5,7 @@
     "muscles": 122,
     "regions": 5,
     "groups": 44,
-    "actionTags": 63,
+    "actionTags": 68,
     "nerves": 44,
     "needsReview": 2
   },
@@ -3488,7 +3488,7 @@
         }
       ],
       "actions": [
-        "toe-extension",
+        "big-toe-extension",
         "ankle-dorsiflexion"
       ],
       "actionText": "Extends the big toe and dorsiflexes the ankle; inserts on the base of distal phalanx of big toe.",
@@ -3972,7 +3972,7 @@
         }
       ],
       "actions": [
-        "toe-flexion",
+        "big-toe-flexion",
         "ankle-plantarflexion"
       ],
       "actionText": "Flexes the big toe and assists ankle plantarflexion; the muscle that drives push-off.",
@@ -4068,7 +4068,7 @@
         }
       ],
       "actions": [
-        "toe-extension"
+        "big-toe-extension"
       ],
       "actionText": "Extends the big toe; inserts on the proximal phalanx of digit 1.",
       "clinical": null,
@@ -4166,8 +4166,8 @@
         }
       ],
       "actions": [
-        "toe-abduction",
-        "toe-flexion"
+        "big-toe-abduction",
+        "big-toe-flexion"
       ],
       "actionText": "Abducts and flexes the big toe; inserts on the medial side of base of proximal phalanx of big toe.",
       "clinical": null,
@@ -4369,7 +4369,7 @@
         }
       ],
       "actions": [
-        "toe-flexion"
+        "big-toe-flexion"
       ],
       "actionText": "Flexes the big toe; inserts on the medial and lateral sides of the base of the proximal phalanx of the big toe.",
       "clinical": null,
@@ -4418,7 +4418,7 @@
         }
       ],
       "actions": [
-        "toe-adduction"
+        "big-toe-adduction"
       ],
       "actionText": "Adducts the big toe.",
       "clinical": null,
@@ -6329,35 +6329,43 @@
       ],
       "toe-abduction": [
         "abductor-digiti-minimi-foot",
-        "abductor-hallucis",
         "dorsal-interossei-foot"
       ],
+      "big-toe-abduction": [
+        "abductor-hallucis"
+      ],
       "toe-adduction": [
-        "adductor-hallucis",
         "plantar-interossei"
+      ],
+      "big-toe-adduction": [
+        "adductor-hallucis"
       ],
       "toe-extension": [
         "dorsal-interossei-foot",
         "extensor-digitorum-brevis",
         "extensor-digitorum-longus",
-        "extensor-hallucis-brevis",
-        "extensor-hallucis-longus",
         "lumbricals-foot",
         "plantar-interossei"
       ],
+      "big-toe-extension": [
+        "extensor-hallucis-longus",
+        "extensor-hallucis-brevis"
+      ],
       "toe-flexion": [
         "abductor-digiti-minimi-foot",
-        "abductor-hallucis",
         "dorsal-interossei-foot",
         "flexor-digiti-minimi-brevis-foot",
         "flexor-digitorum-brevis",
         "flexor-digitorum-longus",
-        "flexor-hallucis-brevis",
-        "flexor-hallucis-longus",
         "lumbricals-foot",
         "opponens-digiti-minimi-foot",
         "plantar-interossei",
         "quadratus-plantae"
+      ],
+      "big-toe-flexion": [
+        "flexor-hallucis-longus",
+        "abductor-hallucis",
+        "flexor-hallucis-brevis"
       ],
       "trunk-flexion": [
         "rectus-abdominis"
@@ -6392,6 +6400,12 @@
         "flexor-digitorum-profundus",
         "flexor-digitorum-superficialis",
         "palmaris-longus"
+      ],
+      "hip-stabilisation": [
+        "piriformis",
+        "gemelli",
+        "obturator-internus",
+        "quadratus-femoris"
       ]
     },
     "byNerve": {

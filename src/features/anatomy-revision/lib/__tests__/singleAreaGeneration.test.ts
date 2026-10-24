@@ -7,7 +7,7 @@ import { generateRevisionSet, type RevisionSetConfig } from '../questionGenerato
 import { buildStarterSet } from '../questionGenerators/starterSet';
 import { arteriesOf, choiceName, wrongArteries } from '../questionGenerators/bloodSupply';
 import type { DistractorSources } from '../questionGenerators/sources';
-import { canonicalNerveNames, humanizeActionTag, stripHeadPrefix } from '../oinaValues';
+import { canonicalNerveNames, humanizeActionTag, separateSites, stripHeadPrefix } from '../oinaValues';
 import { createRng } from '../rng';
 import { AREAS, type Area } from '../../types/region';
 import { areasOf, JOINT_MOVEMENTS, JOINT_TYPE_LABELS, type AnatomyStructure } from '../../types/structure';
@@ -87,6 +87,7 @@ function factStrings(s: AnatomyStructure): string[] {
   if (s.category === 'muscle') {
     out.push(s.origin.join('; '), s.insertion.join('; '), s.actionText);
     out.push(...s.origin.map(stripHeadPrefix), ...s.insertion.map(stripHeadPrefix));
+    out.push(...s.origin.flatMap(separateSites), ...s.insertion.flatMap(separateSites));
     out.push(s.nerve.map((n) => n.name).join('; '), ...s.nerve.map((n) => n.name), ...canonicalNerveNames(s.nerve));
     out.push(...s.actions, ...s.actions.map(humanizeActionTag));
   }

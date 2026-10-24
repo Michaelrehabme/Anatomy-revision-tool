@@ -20,7 +20,7 @@ import { AREAS, AREA_LABELS } from '../features/anatomy-revision/types/region';
 import { MUSCLE_FACT_KINDS } from '../features/anatomy-revision/types/question';
 import { correctValuesFor } from '../features/anatomy-revision/lib/questionGenerators/oina';
 import { acceptedVariantsFor, matchesSlot } from '../features/anatomy-revision/lib/oinaAnswer';
-import { stripHeadPrefix } from '../features/anatomy-revision/lib/oinaValues';
+import { limbOfStructure, stripHeadPrefix } from '../features/anatomy-revision/lib/oinaValues';
 import { auditHotspotSizes } from './lib/hotspotSizeAudit';
 import { vesselKey } from '../features/anatomy-revision/lib/questionGenerators/bloodSupply';
 import { validateProvenance } from './lib/validateProvenance';
@@ -186,7 +186,7 @@ function validateOina(): void {
       for (const a of values) {
         for (const b of values) {
           if (a === b) continue;
-          if (matchesSlot(b, acceptedVariantsFor(promptKind, a))) {
+          if (matchesSlot(b, acceptedVariantsFor(promptKind, a, limbOfStructure(m)))) {
             fail(
               `Muscle "${m.id}" ${promptKind}: ${JSON.stringify(b)} also grades as ${JSON.stringify(a)} — ` +
                 'one typed answer could satisfy two slots, so first-fit matching is no longer sound',

@@ -43,3 +43,11 @@ describe('isAnswerMatch', () => {
     expect(isAnswerMatch('the femur', ['femur'])).toBe(true);
   });
 });
+
+describe('two neighbouring letters swapped', () => {
+  it('counts as one letter wrong (24 Oct 2026)', () => {
+    expect(isAnswerMatch('intretransversarii', ['Intertransversarii'])).toBe(true);
+    expect(isAnswerMatch('intertransverasrii', ['Intertransversarii'])).toBe(true);
+    expect(isAnswerMatch('intretransverasrii', ['Intertransversarii'])).toBe(false);
+  });
+});
