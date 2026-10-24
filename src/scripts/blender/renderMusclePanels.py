@@ -552,7 +552,12 @@ def build_mesh(spec, mesh_name):
                         score[n] = score.get(n, 0) + 1
             ranked = sorted(score, key=lambda n: -score[n])
             if not ranked:
+                # Touches no named bone: drawn as the atlas piece, never dropped.
+                me_p = bpy.data.meshes.new(f"{mesh_name}_piece{k}")
+                pm.to_mesh(me_p)
                 pm.free()
+                out.from_mesh(me_p)
+                bpy.data.meshes.remove(me_p)
                 continue
             me_p = bpy.data.meshes.new(f"{mesh_name}_piece{k}")
             pm.to_mesh(me_p)
