@@ -1172,7 +1172,7 @@ ghost_names = [n for n in a.ghost.split(",") if n]
 bone_names = [n for n in bone_names if n not in ghost_names]
 ghost_mesh = bake_world_mesh(ghost_names, "panel_ghost") if ghost_names else None
 ghost_bone_mat = principled("panel_ghost_bone", (0.93, 0.87, 0.74, 1), 0.4)
-ghost_bone_mat.node_tree.nodes["Principled BSDF"].inputs["Alpha"].default_value = 0.3
+ghost_bone_mat.node_tree.nodes["Principled BSDF"].inputs["Alpha"].default_value = 0.55
 for _attr, _val in (("blend_method", "BLEND"), ("show_transparent_back", False)):
     try:
         setattr(ghost_bone_mat, _attr, _val)
