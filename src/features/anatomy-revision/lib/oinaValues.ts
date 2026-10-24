@@ -142,6 +142,10 @@ export function canonicalDigits(value: string, limb?: Limb): string {
       // Ordinals as numbers, so "first toe", "1st toe" and "toe 1" meet.
       .replace(/\b(first|second|third|fourth|fifth)\b/g, (w) => ORDINAL_WORDS[w])
       .replace(/\b(digits?|toes?|fingers?|metatarsals?|metacarpals?)\s+(one|two|three|four|five)\b/g, (_, w, num) => `${w} ${n(num)}`)
+      .replace(/\b(\d)\s*(-|to|through)\s*(one|two|three|four|five)\b/g, (_, a, sep, num) => `${a} ${sep} ${n(num)}`)
+      // Clinical shorthand: D1 is digit 1, D2-D5 the digits 2 to 5.
+      .replace(/\bd([1-5])\s*-\s*d?([1-5])\b/g, 'digits $1-$2')
+      .replace(/\bd([1-5])\b/g, 'digit $1')
       .replace(
         /\b(digits?|toes?|fingers?|metatarsals?|metacarpals?)\s+(i{1,3}|iv|v)(?:\s*(?:-|to)\s*(i{1,3}|iv|v))?\b/g,
         (_, w, a, b) => `${w} ${ROMAN[a]}${b ? `-${ROMAN[b]}` : ''}`,
@@ -149,16 +153,20 @@ export function canonicalDigits(value: string, limb?: Limb): string {
       // Digits with a name of their own.
       .replace(/\b(?:hallux|hallucis|great toe|big toe)\b/g, 'toe1')
       .replace(/\b(?:thumb|pollex|pollicis)\b/g, 'finger1')
-      .replace(/\blittle toe\b/g, 'toe5')
-      .replace(/\blittle finger\b/g, 'finger5')
-      .replace(/\bindex finger\b/g, 'finger2')
+      .replace(/\b(?:little|small|baby|pinky|pinkie) toe\b/g, 'toe5')
+      .replace(/\b(?:(?:little|small) finger|pinky|pinkie)\b/g, 'finger5')
+      .replace(/\b(?:index|pointer) finger\b/g, 'finger2')
       .replace(/\bmiddle finger\b/g, 'finger3')
       .replace(/\bring finger\b/g, 'finger4')
       .replace(/\bdigiti minimi\b/g, `${kind('digit')}5`)
       // The four besides the first: the lateral four toes, the medial four fingers.
       .replace(/\b(?:(?:four|4) )?lesser toes\b/g, 'toe2-5')
-      .replace(/\blateral (?:four|4) (toe|digit)s\b/g, (_, w) => `${kind(w)}2-5`)
-      .replace(/\bmedial (?:four|4) (finger|digit)s\b/g, (_, w) => `${kind(w)}2-5`)
+      // Lateral on the foot, medial on the hand: the other way round is the
+      // four that include the first.
+      .replace(/\blateral (?:four|4) (toe|digit)s\b/g, (m, w) => (kind(w) === 'toe' ? 'toe2-5' : m))
+      .replace(/\bmedial (?:four|4) (finger|digit)s\b/g, (m, w) => (kind(w) === 'finger' ? 'finger2-5' : m))
+      // "The four fingers" are the four besides the thumb.
+      .replace(/(?<!lateral |medial )\b(?:four|4) fingers\b/g, 'finger2-5')
       // Numbered digits, as a range or one at a time, either way round.
       .replace(new RegExp(String.raw`\b${DIGIT_WORD}\s*${RANGE}\b`, 'g'), (_, w, a, b) => `${kind(w)}${a}-${b}`)
       .replace(new RegExp(String.raw`\b${RANGE}\s+${DIGIT_WORD}\b`, 'g'), (_, a, b, w) => `${kind(w)}${a}-${b}`)

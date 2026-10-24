@@ -257,3 +257,43 @@ describe('other names for the same digit (24 Oct 2026)', () => {
     expect(matchesSlot('lateral third of the clavicle', slotFor('Lateral 1/3 clavicle'))).toBe(true);
   });
 });
+
+describe('every way of naming each digit', () => {
+  const forms = (limb: 'hand' | 'foot', n: number): string[] => {
+    const ord = ['', 'first', 'second', 'third', 'fourth', 'fifth'][n];
+    const num = ['', '1st', '2nd', '3rd', '4th', '5th'][n];
+    const roman = ['', 'I', 'II', 'III', 'IV', 'V'][n];
+    const word = ['', 'one', 'two', 'three', 'four', 'five'][n];
+    const d = limb === 'hand' ? 'finger' : 'toe';
+    const named: Record<string, string[]> = {
+      hand1: ['thumb', 'pollex'],
+      hand2: ['index finger', 'pointer finger'],
+      hand5: ['little finger', 'pinky', 'pinkie', 'small finger'],
+      foot1: ['big toe', 'great toe', 'hallux'],
+      foot5: ['little toe', 'small toe', 'baby toe', 'pinky toe'],
+    };
+    return [`digit ${n}`, `digit ${roman}`, `digit ${word}`, `${ord} digit`, `${num} digit`, `D${n}`, `${d} ${n}`, `${ord} ${d}`, `${num} ${d}`, ...(named[`${limb}${n}`] ?? [])];
+  };
+  const cases: ['hand' | 'foot', number, string, string][] = [
+    ['hand', 1, 'Distal phalanx of the thumb', 'distal phalanx of'],
+    ['hand', 2, 'Extensor expansion of digit 2', 'extensor expansion of'],
+    ['hand', 5, 'Proximal phalanx of digit 5', 'proximal phalanx of'],
+    ['foot', 1, 'Distal phalanx of big toe', 'distal phalanx of'],
+    ['foot', 5, 'Base of proximal phalanx of 5th toe', 'base of proximal phalanx of'],
+  ];
+  it.each(cases)('%s digit %i: %s', (limb, n, raw, stem) => {
+    const accepted = acceptedVariantsFor('insertion', raw, limb);
+    expect(forms(limb, n).filter((form) => !matchesSlot(`${stem} ${form}`, accepted))).toEqual([]);
+    // The same name on the other limb is a different digit.
+    const other = limb === 'hand' ? 'foot' : 'hand';
+    expect(forms(other, n).filter((form) => /toe|finger|thumb|hallux|pollex|pink/.test(form) && matchesSlot(`${stem} ${form}`, accepted))).toEqual([]);
+  });
+
+  it('names the four lesser fingers every usual way', () => {
+    const fdp = acceptedVariantsFor('insertion', 'Distal phalanges of digits 2–5', 'hand');
+    for (const form of ['digits two to five', 'fingers 2 through 5', 'second to fifth digits', 'D2-D5', 'D2-5', 'medial 4 digits', 'the four fingers']) {
+      expect(matchesSlot(`distal phalanges of ${form}`, fdp), form).toBe(true);
+    }
+    expect(matchesSlot('distal phalanges of lateral four digits', fdp)).toBe(false);
+  });
+});
