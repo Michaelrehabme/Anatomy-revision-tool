@@ -42,6 +42,11 @@
 [functions."report-emails"]
   schedule = "*/10 * * * *"
 
+# One email to the owner per new sign-up, for their own reference. Every ten
+# minutes, the same pattern as report-emails; see netlify/functions/signup-emails.ts.
+[functions."signup-emails"]
+  schedule = "*/10 * * * *"
+
 # SPA fallback. dist/_redirects (from public/) says the same thing; this is
 # here so the rule survives a build that loses the public/ copy.
 [[redirects]]
