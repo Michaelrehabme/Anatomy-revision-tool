@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { EndSessionControl } from '../shared/EndSessionControl';
-import { ReportQuestionControl } from '../../../feedback/ReportQuestionControl';
+import { ReportQuestionControl, type ReportContext } from '../../../feedback/ReportQuestionControl';
 import type { RevisionQuestion } from '../../types/question';
 
 interface SessionSidebarProps {
@@ -32,10 +32,12 @@ interface SessionSidebarProps {
   hint?: ReactNode;
   /** The question on screen, which "Report a problem" is about. Omitted where there is none. */
   question?: RevisionQuestion;
+  /** What the report says was on screen beside the question (feedback/ReportQuestionControl). */
+  reportContext?: ReportContext;
 }
 
 /** The in-session sidebar (screens 05–08): replaces nav while a question is active. */
-export function SessionSidebar({ current, total, correctCount, wrongCount, cardsSeen = 0, cardsTotal = 0, onEnd, answered = 0, assignment = false, exam = false, hint, question }: SessionSidebarProps) {
+export function SessionSidebar({ current, total, correctCount, wrongCount, cardsSeen = 0, cardsTotal = 0, onEnd, answered = 0, assignment = false, exam = false, hint, question, reportContext }: SessionSidebarProps) {
   const pct = total > 0 ? (current / total) * 100 : 0;
   return (
     <>
@@ -99,7 +101,7 @@ export function SessionSidebar({ current, total, correctCount, wrongCount, cards
       <div className="flex-1" />
       {question && (
         <div className="mb-4">
-          <ReportQuestionControl variant="sidebar" question={question} />
+          <ReportQuestionControl variant="sidebar" question={question} context={reportContext} />
         </div>
       )}
       {hint && <div style={{ font: '400 11.5px/1.6 var(--font-mono)', color: 'var(--ink3)' }}>{hint}</div>}

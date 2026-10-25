@@ -1149,6 +1149,16 @@ describe('site and admin collections', () => {
       await assertFails(setDoc(doc(as.student(), 'questionReports', 'r4'), { ...REPORT, extra: 'x'.repeat(5000) }));
     });
 
+    // 25 Oct 2026: a report may carry what was on screen, for the owner's email.
+    it('takes the question as shown, held to its strings and their lengths', async () => {
+      const shown = { subject: 'Biceps brachii', prompt: 'What nerve?', lines: '', choices: 'A\nB', correct: 'A', given: 'B', picture: '/anatomy/x.webp' };
+      await assertSucceeds(setDoc(doc(as.student(), 'questionReports', 's1'), { ...REPORT, shown }));
+      await assertFails(setDoc(doc(as.student(), 'questionReports', 's2'), { ...REPORT, shown: { ...shown, extra: 'x' } }));
+      await assertFails(setDoc(doc(as.student(), 'questionReports', 's3'), { ...REPORT, shown: { ...shown, prompt: 'x'.repeat(601) } }));
+      await assertFails(setDoc(doc(as.student(), 'questionReports', 's4'), { ...REPORT, shown: { ...shown, choices: ['A'] } }));
+      await assertFails(setDoc(doc(as.student(), 'questionReports', 's5'), { ...REPORT, shown: 'everything' }));
+    });
+
     it('shows a report to its author and to admins, and lets only an admin resolve it', async () => {
       await setDoc(doc(as.student(), 'questionReports', 'r1'), REPORT);
       await assertSucceeds(getDoc(doc(as.student(), 'questionReports', 'r1')));

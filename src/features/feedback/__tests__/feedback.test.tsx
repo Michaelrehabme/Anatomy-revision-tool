@@ -55,15 +55,19 @@ describe('ReportQuestionControl', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Send report' }));
 
     await waitFor(() => expect(screen.getByRole('status').textContent).toBe(REPORT_SENT));
-    expect(reportQuestion).toHaveBeenCalledWith({
-      questionId: 'q1',
-      structureId: 'biceps-brachii',
-      questionType: 'mcq',
-      promptKind: 'nerve',
-      area: 'elbow',
-      reason: 'wrong-answer',
-      note: 'It is the radial nerve.',
-    });
+    expect(reportQuestion).toHaveBeenCalledWith(
+      expect.objectContaining({
+        questionId: 'q1',
+        structureId: 'biceps-brachii',
+        questionType: 'mcq',
+        promptKind: 'nerve',
+        area: 'elbow',
+        reason: 'wrong-answer',
+        note: 'It is the radial nerve.',
+      }),
+    );
+    // And what was on screen, for the owner's email (25 Oct 2026).
+    expect(reportQuestion.mock.calls[0][0].shown).toEqual(expect.objectContaining({ prompt: expect.any(String) }));
   });
 
   it('keeps what was typed when the report cannot be sent', async () => {

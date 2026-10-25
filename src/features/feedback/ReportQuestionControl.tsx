@@ -1,6 +1,7 @@
 import { useEffect, useId, useRef, useState } from 'react';
 import type { RevisionQuestion } from '../anatomy-revision/types/question';
 import { NOTE_MAX, REPORTING_AVAILABLE, REPORT_REASONS, reportQuestion, type ReportReason } from './data/telemetry';
+import { questionShown } from './data/questionShown';
 
 /**
  * "Report a problem" with the question on screen.
@@ -23,6 +24,18 @@ interface ReportQuestionControlProps {
   question: RevisionQuestion;
   /** The desktop sidebar's text button, or the phone top bar's. */
   variant: 'sidebar' | 'bar';
+  /**
+   * What the report says the student saw beside the question itself: the
+   * structure's name, their answer if they had given one, and where the
+   * question's picture is (owner, 25 Oct 2026: the email shows the question).
+   */
+  context?: ReportContext;
+}
+
+export interface ReportContext {
+  subject?: string;
+  given?: string;
+  picture?: (imageId: string) => string | undefined;
 }
 
 type Stage = 'closed' | 'open' | 'sending' | 'sent' | 'failed';
@@ -31,7 +44,7 @@ export const REPORT_TRIGGER = 'Report a problem';
 export const REPORT_SENT = 'Thank you. This question has been reported.';
 export const REPORT_FAILED = 'That could not be sent. Check your connection and try again.';
 
-export function ReportQuestionControl({ question, variant }: ReportQuestionControlProps) {
+export function ReportQuestionControl({ question, variant, context }: ReportQuestionControlProps) {
   const [stage, setStage] = useState<Stage>('closed');
   const [reason, setReason] = useState<ReportReason | null>(null);
   const [note, setNote] = useState('');
@@ -72,6 +85,7 @@ export function ReportQuestionControl({ question, variant }: ReportQuestionContr
       area: question.area,
       reason,
       note,
+      shown: questionShown(question, context),
     });
     setStage(saved ? 'sent' : 'failed');
   };
