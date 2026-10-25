@@ -218,10 +218,10 @@ export function PrivacyPage() {
             as the floor. No educator screen shows it;
           - deletion: 'diagnostics' is in USER_SUBCOLLECTIONS, so it leaves
             with the account and is in the export.
-        NO LAWFUL BASIS IS STATED FOR IT YET. The section above gives three,
-        and which of them covers the class figure, and above all its use
-        outside the course, is the owner's to decide and has not been
-        decided (flagged 11 Oct 2026). Do not add one here by guessing.
+        LAWFUL BASIS: legitimate interests, chosen by the owner on 25 Oct
+        2026 (flagged as undecided on 11 Oct). Use outside the course also
+        needs the course leader's written agreement, which is a condition,
+        not a basis. Changing the basis is the owner's decision, not an edit.
       */}
       <Section title="The before-and-after test" id={DIAGNOSTIC_SECTION_ID}>
         <p>
@@ -238,6 +238,11 @@ export function PrivacyPage() {
         <p>
           <strong style={{ color: 'var(--ink)' }}>Why.</strong> To see whether a class&rsquo;s scores changed over a
           term. One sitting on its own shows nothing, so a class figure counts only the students who sat both.
+        </p>
+        <p>
+          <strong style={{ color: 'var(--ink)' }}>Lawful basis:</strong> legitimate interests, being the interest in
+          knowing whether the app helps a class learn. Sitting the test is your choice, the figure never names you,
+          and you can object at any time by emailing us, after which your scores are left out.
         </p>
         <p>
           <strong style={{ color: 'var(--ink)' }}>Who can see your score.</strong> You can: it is shown to you when
@@ -292,7 +297,9 @@ export function PrivacyPage() {
         </p>
         <p>
           Some of these services handle data in the United States: Netlify&rsquo;s servers, Resend, and parts of
-          Google&rsquo;s. Those transfers rely on the UK Extension to the EU&ndash;US Data Privacy Framework where the
+          Google&rsquo;s. Your account and revision data are not among them: the database is held in Google&rsquo;s
+          European Union data centres, in Belgium and the Netherlands, which UK law treats as giving adequate
+          protection. The transfers that do happen rely on the UK Extension to the EU&ndash;US Data Privacy Framework where the
           provider is certified under it, and otherwise on the UK International Data Transfer Addendum to the standard
           contractual clauses in that provider&rsquo;s data processing terms.
         </p>

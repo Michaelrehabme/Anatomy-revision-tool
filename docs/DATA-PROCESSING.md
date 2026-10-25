@@ -71,6 +71,7 @@ Students aged 16 or over who create an account. Educators who create a class. No
 |---|---|
 | Providing the app: account, revision history, scheduling across devices | Contract (Art 6(1)(b)) — the terms accepted on use |
 | Selling and managing a subscription, and the notice before it renews | Contract (Art 6(1)(b)) |
+| The before-and-after test and the class figure worked out from it | Legitimate interests (Art 6(1)(f)) — knowing whether the app helps a class learn; optional to sit, never names a student, objection by email; use outside the course also needs the course lead's written agreement |
 | Showing a student's summary to a class they joined | **Consent** (Art 6(1)(a)) — given by entering a join code, withdrawn by leaving the class |
 | Keeping the service working: aggregate usage, error rates, which questions perform badly | Legitimate interests (Art 6(1)(f)) — never involves profiling an individual |
 
@@ -96,7 +97,7 @@ An earlier version of the rules did grant that access, and removing it (change `
 
 | Sub-processor | Role | Location / safeguard |
 |---|---|---|
-| **Google Ireland Limited** (Firebase Authentication, Cloud Firestore) | Authentication and database | Firestore in the project's database location (see the Firebase console, Firestore → Databases, before quoting it); Firebase Authentication in the United States. Google's data processing terms: UK Extension to the EU–US Data Privacy Framework and the UK Addendum to the SCCs |
+| **Google Ireland Limited** (Firebase Authentication, Cloud Firestore) | Authentication and database | Cloud Firestore in `eur3`, Google's EU multi-region (Belgium and the Netherlands), covered by the UK's adequacy regulations for the EU (checked 25 October 2026); Firebase Authentication in the United States. Google's data processing terms: UK Extension to the EU–US Data Privacy Framework and the UK Addendum to the SCCs |
 | **Netlify** | Static site hosting, CDN and server functions | United States; UK Extension to the EU–US Data Privacy Framework, or the UK Addendum to the SCCs in Netlify's DPA |
 | **Resend** | Weekly reminder and renewal notice emails | United States; UK Addendum to the SCCs in Resend's DPA, or the DPF where certified |
 
