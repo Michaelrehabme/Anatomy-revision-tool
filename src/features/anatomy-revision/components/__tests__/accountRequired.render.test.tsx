@@ -278,7 +278,8 @@ describe('choosing the free area', () => {
     fireEvent.click(screen.getByRole('radio', { name: /Knee/ }));
     fireEvent.click(screen.getByRole('button', { name: 'Continue' }));
     fireEvent.click(screen.getByRole('button', { name: 'Answer the questions' }));
-    expect(await screen.findByRole('heading', { name: 'How long have you been studying anatomy?' })).toBeTruthy();
+    // The form is a lazy chunk; on a busy machine it can take more than findBy's default second.
+    expect(await screen.findByRole('heading', { name: 'How long have you been studying anatomy?' }, { timeout: 10000 })).toBeTruthy();
     fireEvent.click(screen.getByRole('button', { name: '1 to 2 years' }));
     for (let i = 0; i < 3; i++) fireEvent.click(screen.getByRole('button', { name: 'Next' }));
     // The area chosen is the one rated first.

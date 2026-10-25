@@ -19,6 +19,8 @@ import {
   type WeeklyFocus,
 } from '../../lib/studyProfile';
 import { LockPill } from './AreaLock';
+import type { ClassChallenge } from '../../hooks/useClassChallenge';
+import { studentSecured } from '../../../educator/lib/classChallenge';
 
 const eyebrow = {
   font: '500 10px/1 var(--font-mono)',
@@ -55,6 +57,8 @@ interface WeeklyFocusCardProps {
   onStartFocus: (focus: WeeklyFocus) => void;
   /** Mobile: full-width buttons, smaller type. */
   compact?: boolean;
+  /** This week's class challenge (hooks/useClassChallenge.ts). Takes the focus over for the week. */
+  challenge?: ClassChallenge | null;
 }
 
 /**
@@ -67,7 +71,77 @@ interface WeeklyFocusCardProps {
  * over: it lights the area where the fewest structures are secure (nudged by
  * the questionnaire), and the student confirms it or picks another.
  */
-export function WeeklyFocusCard({ access, content, studyProfile, mastery, facts, reviewItems, loading, onStartFocus, compact = false }: WeeklyFocusCardProps) {
+export function WeeklyFocusCard(props: WeeklyFocusCardProps) {
+  const { access, content, mastery, facts, loading, onStartFocus, compact = false } = props;
+  const challenge = props.challenge?.challenge ?? null;
+  const since = props.challenge?.since ?? null;
+  // Counted exactly as the teacher's figures are (educator/lib/classChallenge.ts
+  // studentSecured): what was answered since joining the class.
+  const secured = useMemo(
+    () => (challenge && since ? studentSecured(content.index, mastery, facts, challenge.area, since) : 0),
+    [challenge, since, content.index, mastery, facts],
+  );
+  if (!challenge || loading) return <OwnFocusCard {...props} />;
+
+  const card = { background: 'var(--sf)', boxShadow: 'var(--shadow-card)', borderRadius: 3 };
+  const label = AREA_LABELS[challenge.area];
+
+  // A class challenge in an area this account cannot reach — a free student
+  // whose class works on the knee while their free area is the shoulder. Said
+  // once, with the way to open it, and their own focus goes on below.
+  if (!access.areas.includes(challenge.area)) {
+    return (
+      <>
+        <p data-in className={`${compact ? 'mt-6' : 'mt-9'} flex flex-wrap items-center gap-2`} style={{ font: '400 13.5px/1.55 var(--font-ui)', color: 'var(--ink2)' }}>
+          <LockPill compact /> Your class challenge this week is the {label.toLowerCase()}, which is not in your free area.{' '}
+          <Link to="/pricing" style={{ color: 'var(--accd)' }}>
+            See the plans
+          </Link>
+        </p>
+        <OwnFocusCard {...props} challenge={null} />
+      </>
+    );
+  }
+
+  const s = { secure: secured };
+  const pct = Math.min(100, Math.round((s.secure / Math.max(1, challenge.targetSecure)) * 100));
+  const met = s.secure >= challenge.targetSecure;
+  const buttonStyle = {
+    minHeight: compact ? 50 : 52,
+    font: `500 ${compact ? 15.5 : 15}px/1 var(--font-ui)`,
+    background: 'var(--acc-fill)',
+    color: 'var(--onacc)',
+    border: 0,
+  };
+  return (
+    <section data-in aria-labelledby="weekly-focus-title" className={compact ? 'mt-6 p-4.5' : 'mt-9 p-6'} style={card}>
+      <div style={eyebrow}>Class challenge · this week</div>
+      <h3 id="weekly-focus-title" className="mt-2.5" style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: compact ? 26 : 30, lineHeight: 1.05, color: 'var(--ink)' }}>
+        {label}
+      </h3>
+      <p className="mt-2" style={{ font: '400 14px/1.5 var(--font-ui)', color: 'var(--ink2)' }}>
+        {met ? `Target met: ${s.secure} secure, of ${challenge.targetSecure} asked.` : `${s.secure} of ${challenge.targetSecure} secure · ends Sunday`}
+      </p>
+      <div className="mt-3 h-1.5 overflow-hidden rounded-full" style={{ background: 'var(--line)' }} role="img" aria-label={`${s.secure} of ${challenge.targetSecure} secure`}>
+        <div className="h-full" style={{ width: `${Math.max(2, pct)}%`, background: 'var(--acc)' }} />
+      </div>
+      <button
+        type="button"
+        onClick={() => onStartFocus({ area: challenge.area, weekStart: challenge.weekStart })}
+        className={`mt-4.5 rounded-[3px] px-5 ${compact ? 'w-full' : ''}`}
+        style={buttonStyle}
+      >
+        Start focus session
+      </button>
+      <p className="mt-3" style={{ font: '400 12.5px/1.5 var(--font-ui)', color: 'var(--ink3)' }}>
+        Set by your class. Anything in the {label.toLowerCase()} you answer from joining the class counts, and only your teacher sees how the class is doing.
+      </p>
+    </section>
+  );
+}
+
+/** The student's own weekly focus, when no class challenge is running. */
+function OwnFocusCard({ access, content, studyProfile, mastery, facts, reviewItems, loading, onStartFocus, compact = false }: WeeklyFocusCardProps) {
   const now = new Date();
   const { profile, update } = studyProfile;
   const free = access.tier === 'free';

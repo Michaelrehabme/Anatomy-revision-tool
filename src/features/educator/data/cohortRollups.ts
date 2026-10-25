@@ -224,7 +224,7 @@ export function rollUpAttemptDetached(db: Firestore, attempt: UserAttempt, displ
  * recorded: the day the rollup shipped. Earlier than that, nothing in the
  * rollup was ever shown to an educator, so starting here reveals nothing new.
  */
-const ROLLUP_FALLBACK_SINCE = '2026-09-28T00:00:00.000Z';
+export const ROLLUP_FALLBACK_SINCE = '2026-09-28T00:00:00.000Z';
 
 export async function syncStudentRollup(
   db: Firestore,

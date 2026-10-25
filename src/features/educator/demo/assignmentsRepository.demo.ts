@@ -1,5 +1,6 @@
 import { DEMO_ASSIGNMENTS } from './demoData';
-import type { Assignment, NewAssignment, ScopedAssignment } from '../types/cohort';
+import type { Assignment, ChallengeAssignment, NewAssignment, NewChallenge, ScopedAssignment } from '../types/cohort';
+import { challengeEnd, regionOfArea } from '../lib/classChallenge';
 
 /**
  * Demo-mode stand-in for data/assignmentsRepository.ts (see that file, and
@@ -19,4 +20,24 @@ export async function createAssignment(input: NewAssignment): Promise<ScopedAssi
   };
   DEMO_ASSIGNMENTS.push(assignment);
   return assignment;
+}
+
+/** Challenges set in the demo live in memory for the session, like assignments. */
+const DEMO_CHALLENGES: ChallengeAssignment[] = [];
+
+export async function listChallenges(cohortId: string): Promise<ChallengeAssignment[]> {
+  return DEMO_CHALLENGES.filter((c) => c.cohortId === cohortId).sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+}
+
+export async function createChallenge(input: NewChallenge): Promise<ChallengeAssignment> {
+  const challenge: ChallengeAssignment = {
+    ...input,
+    kind: 'challenge',
+    region: regionOfArea(input.area),
+    dueAt: challengeEnd(input.weekStart).toISOString(),
+    id: `demo-challenge-${DEMO_CHALLENGES.length + 1}`,
+    createdAt: new Date().toISOString(),
+  };
+  DEMO_CHALLENGES.push(challenge);
+  return challenge;
 }

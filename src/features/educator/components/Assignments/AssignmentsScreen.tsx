@@ -16,6 +16,7 @@ import {
   type ScopedAssignment,
 } from '../../types/cohort';
 import { CreateAssignmentForm } from './CreateAssignmentForm';
+import { ChallengeSection } from './ChallengeSection';
 
 const metaStyle = { font: '400 12.5px/1.4 var(--font-ui)', color: 'var(--ink3)' } as const;
 
@@ -238,6 +239,9 @@ export function EducatorAssignmentsScreen() {
 
   return (
     <div>
+      <ChallengeSection cohortId={cohortId} createdBy={educatorUid} students={students} statsByUid={snapshot?.statsByUid ?? null} />
+
+      <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 22, letterSpacing: '-.01em', margin: '0 0 12px' }}>Assignments</h2>
       <CreateAssignmentForm cohortId={cohortId} createdBy={educatorUid} onCreate={handleCreate} />
 
       {assignmentsError && (

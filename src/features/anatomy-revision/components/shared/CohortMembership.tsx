@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { refreshEntitlementEverywhere } from '../../hooks/useEntitlement';
+import { refreshClassChallenge } from '../../hooks/useClassChallenge';
 import { useAuth } from '../../context/AuthProvider';
 import { useNavigate } from 'react-router-dom';
 import { DiagnosticPrompt, type SittingMeans } from '../Diagnostic/DiagnosticPrompt';
@@ -115,6 +116,7 @@ export function CohortMembership({ uid, sitting, compact }: CohortMembershipProp
       setJoinedAt(new Date().toISOString());
       // A class licence can open every area; every gate should see it now.
       refreshEntitlementEverywhere();
+      refreshClassChallenge();
       setInvites((current) => current.filter((i) => i.id !== invite.id));
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Could not join that class.');
@@ -169,6 +171,7 @@ export function CohortMembership({ uid, sitting, compact }: CohortMembershipProp
       setJoinedAt(new Date().toISOString());
       // A class licence can open every area; every gate should see it now.
       refreshEntitlementEverywhere();
+      refreshClassChallenge();
       setCode('');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Could not join that cohort.');
@@ -184,6 +187,7 @@ export function CohortMembership({ uid, sitting, compact }: CohortMembershipProp
       await leaveCohort(uid);
       setCohort(null);
       refreshEntitlementEverywhere();
+      refreshClassChallenge();
     } finally {
       setBusy(false);
     }

@@ -2,6 +2,8 @@ import { lazy, Suspense, useState } from 'react';
 import { Link } from 'react-router-dom';
 import type { UseEntitlement } from '../../hooks/useEntitlement';
 import { useStudyProfile } from '../../hooks/useStudyProfile';
+import { useClassChallenge } from '../../hooks/useClassChallenge';
+import { useAuth } from '../../context/AuthProvider';
 import { getLearnCardAttempts, getPreferredAreas, LEARN_CARD_ATTEMPT_LABELS, LEARN_CARD_ATTEMPT_OPTIONS, setLearnCardAttempts } from '../../lib/preferences';
 import {
   COURSE_LABELS,
@@ -91,6 +93,9 @@ function summaryLines(profile: StudyProfile): string[] {
 export function StudyPreferences({ access, compact = false }: { access: UseEntitlement; compact?: boolean }) {
   const studyProfile = useStudyProfile();
   const { profile, update } = studyProfile;
+  const { user } = useAuth();
+  const challenge = useClassChallenge(user?.uid ?? null);
+  const challengeHere = challenge && access.areas.includes(challenge.challenge.area) ? challenge.challenge : null;
   const [editing, setEditing] = useState(false);
   const [learnCards, setLearnCardsState] = useState(getLearnCardAttempts);
   const now = new Date();
@@ -149,6 +154,13 @@ export function StudyPreferences({ access, compact = false }: { access: UseEntit
           <div className="mt-7" style={label}>
             This week’s focus
           </div>
+          {/* A class challenge decides the focus for its week; the chips come back the Monday after. */}
+          {challengeHere ? (
+            <p className="mt-2" style={{ fontSize: 13.5, lineHeight: 1.5, color: 'var(--ink2)' }}>
+              Set by your class this week: {AREA_LABELS[challengeHere.area]}, until Sunday. Your own choice comes back next week.
+            </p>
+          ) : (
+          <>
           <p className="mt-2" style={{ fontSize: 13, lineHeight: 1.5, color: 'var(--ink3)' }}>
             {focus
               ? `${focusLabel(focus, free ? access.areas[0] : undefined)} until Sunday. Its own session is on Today.`
@@ -179,6 +191,8 @@ export function StudyPreferences({ access, compact = false }: { access: UseEntit
                 See the plans
               </Link>
             </p>
+          )}
+          </>
           )}
         </>
       )}

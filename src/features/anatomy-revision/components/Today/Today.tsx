@@ -7,6 +7,7 @@ import { STARTER_COUNT } from '../../lib/questionGenerators/starterSet';
 import { buildDailySession, type DailyStyle } from '../../lib/dailySession';
 import type { WeeklyFocus } from '../../lib/studyProfile';
 import { useStudyProfile } from '../../hooks/useStudyProfile';
+import { useClassChallenge } from '../../hooks/useClassChallenge';
 import { WeeklyFocusCard } from '../shared/WeeklyFocusCard';
 import { DailyGoalRing } from '../shared/DailyGoalRing';
 import { dailyGoalFor } from '../../lib/studyProfile';
@@ -56,6 +57,7 @@ export function Today({ access, repository, userId, content, onStart, onCustomSe
   // The session behind each button, built the same way on desktop and mobile
   // (lib/dailySession.ts), leaned by the questionnaire's answers.
   const studyProfile = useStudyProfile();
+  const challenge = useClassChallenge(userId);
   const handleStart = (style: DailyStyle = 'continue', focus?: WeeklyFocus) => {
     const { questions, params } = buildDailySession({
       content,
@@ -159,6 +161,7 @@ export function Today({ access, repository, userId, content, onStart, onCustomSe
               reviewItems={reviewItems}
               loading={loading}
               onStartFocus={(focus) => handleStart('focus', focus)}
+              challenge={challenge}
             />
           )}
 

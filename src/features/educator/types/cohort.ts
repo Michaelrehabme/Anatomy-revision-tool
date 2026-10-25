@@ -97,3 +97,28 @@ export type Assignment = RegionAssignment | ScopedAssignment;
 export type NewAssignment = Omit<ScopedAssignment, 'id' | 'createdAt'>;
 
 export const isScopedAssignment = (a: Assignment): a is ScopedAssignment => 'scope' in a && !!a.scope;
+
+/**
+ * A weekly class challenge (owner, 19 Oct 2026): one area for one week and a
+ * number of its structures to have secure (Intermediate or above) by Sunday.
+ * Any revision counts — it becomes each student's weekly focus — and only the
+ * class owner sees who is where; students see their own progress alone.
+ *
+ * Stored in the assignments collection, which the owner may already write and
+ * every member read, so it needed no change to the rules. `kind` keeps it out
+ * of every assignment list (assignmentsRepository.listAssignments), and
+ * `region` is there for app versions from before challenges, which read any
+ * document without a scope as a region assignment and would otherwise show a
+ * card with no region on it.
+ */
+export interface ChallengeAssignment extends AssignmentBase {
+  kind: 'challenge';
+  area: Area;
+  /** Structures in the area to have at Intermediate or above by `dueAt`. */
+  targetSecure: number;
+  /** The Monday the challenge runs from, local YYYY-MM-DD. `dueAt` is the end of that Sunday. */
+  weekStart: string;
+  region: Region;
+}
+
+export type NewChallenge = Omit<ChallengeAssignment, 'id' | 'createdAt' | 'kind' | 'region' | 'dueAt'>;
