@@ -6,7 +6,9 @@ import { spreadReviewItems, buildReviewQueue, type ReviewItem } from '../lib/rev
 import { areasOf } from '../types/structure';
 import type { Area } from '../types/region';
 import { STREAK_SESSION_LIMIT, streakWithFreezes } from '../lib/streak';
-import { sessionsPerDay } from '../lib/weekActivity';
+import { localDayKey, sessionsPerDay } from '../lib/weekActivity';
+import { useStudyProfile } from './useStudyProfile';
+import { parseReminderTime } from '../lib/studyProfile';
 import { syncReviewReminder } from '../../native/nativeShell';
 
 
@@ -39,6 +41,8 @@ export interface TodayData {
   weekBuckets: number[];
   weekMax: number;
   dayLabels: string[];
+  /** Questions answered in today's finished sessions — the daily goal ring's progress. */
+  questionsToday: number;
 }
 
 /**
@@ -87,14 +91,17 @@ export function useTodayData(
   // step with what was just loaded. A no-op in a browser — see nativeShell.ts.
   // Keyed on the loaded rows, so it runs again when Today reloads after a session.
   const entitledKey = entitledAreas.join(',');
+  const { profile } = useStudyProfile();
+  const reminderTime = profile?.reminderTime;
   useEffect(() => {
     if (loading) return;
     const reachable = entitledKey.split(',');
     const eligible = new Set(
       content.index.filter((s) => areasOf(s).some((a) => reachable.includes(a))).map((s) => s.id),
     );
-    void syncReviewReminder({ mastery: allMastery, facts, eligible });
-  }, [loading, allMastery, facts, entitledKey, content.index]);
+    const time = reminderTime ? parseReminderTime(reminderTime) ?? undefined : undefined;
+    void syncReviewReminder({ mastery: allMastery, facts, eligible, time });
+  }, [loading, allMastery, facts, entitledKey, content.index, reminderTime]);
 
   const streak = streakWithFreezes(summaries, frozenDayKeys);
   // Clamped to what this account may reach, which is what makes every number
@@ -149,6 +156,10 @@ export function useTodayData(
   const weekBuckets = week.map((d) => d.count);
   const weekMax = Math.max(1, ...weekBuckets);
   const dayLabels = week.map((d) => d.label);
+  const todayKey = localDayKey(new Date());
+  const questionsToday = summaries
+    .filter((s) => localDayKey(s.finishedAt ?? s.startedAt) === todayKey)
+    .reduce((sum, s) => sum + s.totalQuestions, 0);
 
   return {
     loading,
@@ -168,5 +179,6 @@ export function useTodayData(
     weekBuckets,
     weekMax,
     dayLabels,
+    questionsToday,
   };
 }

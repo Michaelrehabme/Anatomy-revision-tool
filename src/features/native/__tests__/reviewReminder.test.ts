@@ -63,6 +63,12 @@ describe('planReviewReminder', () => {
     expect(plan?.at).toEqual(at(6, REMINDER_HOUR));
   });
 
+  it('fires at the student’s own time, and moves to tomorrow once that has passed', () => {
+    const due = [naming('deltoid', { dueAt: at(4, 9).toISOString() })];
+    expect(planReviewReminder(due, [], ELIGIBLE, NOW, { hour: 7, minute: 30 })?.at).toEqual(new Date(at(6, 7).getTime() + 30 * 60_000));
+    expect(planReviewReminder(due, [], ELIGIBLE, NOW, { hour: 20, minute: 15 })?.at).toEqual(new Date(at(5, 20).getTime() + 15 * 60_000));
+  });
+
   it('waits for the first day that has anything due, rather than firing empty', () => {
     const plan = planReviewReminder([naming('deltoid', { dueAt: at(9, 7).toISOString() })], [], ELIGIBLE, NOW);
     expect(plan?.at).toEqual(at(9, REMINDER_HOUR));

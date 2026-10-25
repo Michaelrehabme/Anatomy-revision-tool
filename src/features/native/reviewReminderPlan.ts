@@ -44,9 +44,11 @@ export function planReviewReminder(
   facts: readonly FactMastery[],
   eligible: ReadonlySet<string>,
   now: Date = new Date(),
+  /** The student's own time of day (Account → Study preferences). REMINDER_HOUR on the hour when unset. */
+  time: { hour: number; minute: number } = { hour: REMINDER_HOUR, minute: 0 },
 ): ReminderPlan | null {
   for (let day = 0; day <= REMINDER_HORIZON_DAYS; day += 1) {
-    const at = new Date(now.getFullYear(), now.getMonth(), now.getDate() + day, REMINDER_HOUR, 0, 0, 0);
+    const at = new Date(now.getFullYear(), now.getMonth(), now.getDate() + day, time.hour, time.minute, 0, 0);
     if (at.getTime() <= now.getTime()) continue;
     const count = buildReviewQueue(mastery, facts, eligible, at).due.length;
     if (count > 0) return { at, count, title: 'LocusMSK', body: reminderBody(count) };

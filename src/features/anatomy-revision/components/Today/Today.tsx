@@ -8,6 +8,8 @@ import { buildDailySession, type DailyStyle } from '../../lib/dailySession';
 import type { WeeklyFocus } from '../../lib/studyProfile';
 import { useStudyProfile } from '../../hooks/useStudyProfile';
 import { WeeklyFocusCard } from '../shared/WeeklyFocusCard';
+import { DailyGoalRing } from '../shared/DailyGoalRing';
+import { dailyGoalFor } from '../../lib/studyProfile';
 import { getLearnCardAttempts, getPreferredAreas } from '../../lib/preferences';
 import { firstRunTitle, minutesFor } from '../../lib/sessionCopy';
 import { useTodayData } from '../../hooks/useTodayData';
@@ -34,7 +36,7 @@ interface TodayProps {
 }
 
 export function Today({ access, repository, userId, content, onStart, onCustomSession, onOpenMuscle, onNavigate }: TodayProps) {
-  const { loading, streak, totalMuscleCount, seenMusclePct, totalStructureCount, seenStructureCount, allMastery, weakest, comingDue, reviewItems, spreadItems, dueCount: dueCountAll, facts, weekBuckets, weekMax, dayLabels } =
+  const { loading, streak, totalMuscleCount, seenMusclePct, totalStructureCount, seenStructureCount, allMastery, weakest, comingDue, reviewItems, spreadItems, dueCount: dueCountAll, facts, weekBuckets, weekMax, dayLabels, questionsToday } =
     useTodayData(repository, userId, content, access.areas);
   const now = new Date();
   // Nothing attempted yet: the first session is the guided starter, and the
@@ -101,8 +103,11 @@ export function Today({ access, repository, userId, content, onStart, onCustomSe
       <PaymentIssue access={access} placement="today" className="mx-16 mt-10" />
       <div className="flex gap-20 px-16 pt-16 pb-12">
         <div className="w-[440px] flex-none">
-          <div data-in style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
-            {now.toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' })}
+          <div data-in className="flex items-center justify-between">
+            <div style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
+              {now.toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' })}
+            </div>
+            {!firstRun && !loading && <DailyGoalRing done={questionsToday} goal={dailyGoalFor(studyProfile.profile)} />}
           </div>
           <h2
             data-in

@@ -8,6 +8,8 @@ import { buildDailySession, type DailyStyle } from '../../lib/dailySession';
 import type { WeeklyFocus } from '../../lib/studyProfile';
 import { useStudyProfile } from '../../hooks/useStudyProfile';
 import { WeeklyFocusCard } from '../shared/WeeklyFocusCard';
+import { DailyGoalRing } from '../shared/DailyGoalRing';
+import { dailyGoalFor } from '../../lib/studyProfile';
 import { getLearnCardAttempts, getPreferredAreas } from '../../lib/preferences';
 import { firstRunTitle, minutesFor } from '../../lib/sessionCopy';
 import { useTodayData } from '../../hooks/useTodayData';
@@ -36,7 +38,7 @@ interface MobileTodayProps {
 
 /** Screen 02 (mobile). Single decision on open: due count, one primary action. */
 export function MobileToday({ access, repository, userId, content, onStart, onCustomSession, onOpenMuscle, onNavigateTab }: MobileTodayProps) {
-  const { loading, streak, allMastery, weakest, reviewItems, spreadItems, dueCount: dueCountAll, facts, weekBuckets, weekMax, dayLabels } = useTodayData(repository, userId, content, access.areas);
+  const { loading, streak, allMastery, weakest, reviewItems, spreadItems, dueCount: dueCountAll, facts, weekBuckets, weekMax, dayLabels, questionsToday } = useTodayData(repository, userId, content, access.areas);
   const now = new Date();
   // See Today.tsx: the guided starter until something has been attempted.
   const firstRun = !loading && allMastery.length === 0;
@@ -79,11 +81,14 @@ export function MobileToday({ access, repository, userId, content, onStart, onCu
         <div className="mb-4 flex justify-end empty:hidden">
           <AdminShortcut variant="bar" />
         </div>
-        <div data-in className="flex items-baseline justify-between">
+        <div data-in className="flex items-center justify-between">
           <div style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
             {now.toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' })}
           </div>
-          <div style={{ font: '500 11.5px/1 var(--font-mono)', color: 'var(--acc2d)' }}>{streak}-day streak</div>
+          <div className="flex items-center gap-3.5">
+            {!firstRun && !loading && <DailyGoalRing done={questionsToday} goal={dailyGoalFor(studyProfile.profile)} size={30} />}
+            <div style={{ font: '500 11.5px/1 var(--font-mono)', color: 'var(--acc2d)' }}>{streak}-day streak</div>
+          </div>
         </div>
 
         <h2

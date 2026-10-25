@@ -2,6 +2,8 @@ import { describe, expect, it } from 'vitest';
 import {
   asStudyProfile,
   currentFocus,
+  dailyGoalFor,
+  parseReminderTime,
   emptyStudyProfile,
   hasAnswers,
   isStarred,
@@ -98,6 +100,20 @@ describe('learn first or test first', () => {
   it('follows the student’s own choice over anything inferred, answers or none', () => {
     expect(skipsFlashcard(profile({ skipped: true, newStructures: 'ask' }), knee)).toBe(true);
     expect(skipsFlashcard(profile({ studyLength: '2yplus', newStructures: 'show' }), knee)).toBe(false);
+  });
+});
+
+describe('daily goal and reminder time', () => {
+  it('makes the goal one daily review', () => {
+    expect(dailyGoalFor(null)).toBe(20);
+    expect(dailyGoalFor(profile({ minutesPerDay: 30 }))).toBe(40);
+  });
+
+  it('reads a reminder time, and keeps only a real one', () => {
+    expect(parseReminderTime('07:30')).toEqual({ hour: 7, minute: 30 });
+    expect(parseReminderTime('24:00')).toBeNull();
+    expect(asStudyProfile({ updatedAt: 1, reminderTime: '19:45' })!.reminderTime).toBe('19:45');
+    expect(asStudyProfile({ updatedAt: 1, reminderTime: '7pm' })!.reminderTime).toBeUndefined();
   });
 });
 

@@ -28,6 +28,8 @@ export interface ReviewReminderInput {
   facts: readonly FactMastery[];
   /** Structures this account may reach. A locked muscle is never "due". */
   eligible: ReadonlySet<string>;
+  /** The student's chosen time of day; the plan's default hour when absent. */
+  time?: { hour: number; minute: number };
 }
 
 /**

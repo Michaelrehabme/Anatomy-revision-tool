@@ -124,6 +124,8 @@ export interface StudyProfile {
   newStructures?: NewStructureStart;
   /** Structure ids starred from a card: the student's own list, a filter in the Atlas. */
   starred?: string[];
+  /** Local "HH:MM" for the app's "reviews are due" notification. Unset: REMINDER_HOUR. Installed app only. */
+  reminderTime?: string;
 }
 
 export type NewStructureStart = 'show' | 'ask';
@@ -186,6 +188,7 @@ export function asStudyProfile(raw: unknown): StudyProfile | null {
     preferredFormats: [...new Set(formats)],
     ...withDefined('examDate', typeof r.examDate === 'string' && ISO_DAY.test(r.examDate) ? r.examDate : undefined),
     ...withDefined('newStructures', oneOf(r.newStructures, ['show', 'ask'] as const)),
+    ...withDefined('reminderTime', typeof r.reminderTime === 'string' && parseReminderTime(r.reminderTime) ? r.reminderTime : undefined),
     ...(Array.isArray(r.starred)
       ? { starred: [...new Set(r.starred.filter((id): id is string => typeof id === 'string' && STRUCTURE_ID.test(id)))].slice(0, STARRED_LIMIT) }
       : {}),
@@ -279,6 +282,24 @@ export function skipsFlashcard(
   if (profile.typeConfidence[structure.category] === 'confident') return true;
   if (profile.typeConfidence[structure.category] === 'new') return false;
   return profile.studyLength === '1to2y' || profile.studyLength === '2yplus';
+}
+
+/**
+ * The daily goal on Today's ring, in questions (owner, 19 Oct 2026). One
+ * daily review's worth: the same figure the session length comes from, so the
+ * goal is met by doing what Today offers, not by a number set somewhere else.
+ */
+export function dailyGoalFor(profile: StudyProfile | null): number {
+  return sessionCountFor(profile);
+}
+
+/** The minutes answer behind each goal, for Account's "Daily goal" row. */
+export const GOAL_FOR_MINUTES: Record<MinutesPerDay, number> = { 5: 10, 10: 20, 20: 30, 30: 40 };
+
+/** "18:30" → { hour: 18, minute: 30 }, or null for anything that is not a time of day. */
+export function parseReminderTime(value: string): { hour: number; minute: number } | null {
+  const m = /^([01]\d|2[0-3]):([0-5]\d)$/.exec(value);
+  return m ? { hour: Number(m[1]), minute: Number(m[2]) } : null;
 }
 
 /** The daily review's length for the minutes a student said they have. Twenty — the old fixed length — without an answer. */

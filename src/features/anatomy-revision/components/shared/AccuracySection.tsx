@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { AccuracyTrendChart } from './AccuracyTrendChart';
 import { AccuracyFilters } from './AccuracyFilters';
 import { gradedAttempts } from '../../lib/accuracyTrend';
+import { ConfidenceCheck } from './ConfidenceCheck';
 import { useAccuracyFilter } from '../../hooks/useAccuracyFilter';
 import type { UserAttempt } from '../../types/attempt';
 import type { AnatomyContent } from '../../hooks/useAnatomyContent';
@@ -168,6 +169,10 @@ export function AccuracySection({ repository, userId, content, compact = false, 
           emptyNote="Too few answers here to draw a line yet — each line needs five of its kind. The figures above still count every one."
         />
       </section>
+
+      {/* Every graded answer, not the filtered ones: a rating's track record
+          is about the student, not about this week's knee questions. */}
+      <ConfidenceCheck answered={answered} compact={compact} />
     </div>
   );
 }

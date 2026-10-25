@@ -6,6 +6,10 @@ import { getLearnCardAttempts, getPreferredAreas, LEARN_CARD_ATTEMPT_LABELS, LEA
 import {
   COURSE_LABELS,
   currentFocus,
+  dailyGoalFor,
+  GOAL_FOR_MINUTES,
+  MINUTES_OPTIONS,
+  parseReminderTime,
   hasAnswers,
   PREFERRED_FORMAT_LABELS,
   STUDY_LENGTH_LABELS,
@@ -20,6 +24,8 @@ import { AREA_LABELS, type Area } from '../../types/region';
 import { CATEGORIES, CATEGORY_LABELS, type Category } from '../../types/structure';
 import { LockPill } from './AreaLock';
 import { focusLabel } from './WeeklyFocusCard';
+import { isNativeShell } from '../../../native/nativeShell';
+import { REMINDER_HOUR } from '../../../native/reviewReminderPlan';
 
 const StudyProfileForm = lazy(() => import('./StudyProfileForm'));
 
@@ -174,6 +180,61 @@ export function StudyPreferences({ access, compact = false }: { access: UseEntit
               </Link>
             </p>
           )}
+        </>
+      )}
+
+      {/* The daily goal is the minutes answer under another name (owner, 19
+          Oct 2026): one setting, read as "how much a day", that sizes both the
+          review and the ring on Today. Setting it here counts as answering. */}
+      <div className="mt-7" style={label}>
+        Daily goal
+      </div>
+      <p className="mt-2" style={{ fontSize: 13, lineHeight: 1.5, color: 'var(--ink3)' }}>
+        Questions a day. It sets the length of your daily review and fills the ring on Today.
+      </p>
+      <div className="mt-2.5 flex gap-2" role="radiogroup" aria-label="Daily goal">
+        {MINUTES_OPTIONS.map((m) => {
+          const goal = GOAL_FOR_MINUTES[m];
+          const on = dailyGoalFor(profile) === goal && (answered || goal === 20);
+          return (
+            <button
+              key={m}
+              type="button"
+              role="radio"
+              aria-checked={on}
+              onClick={() => update((current) => ({ ...current, skipped: undefined, minutesPerDay: m }))}
+              className="inline-flex min-h-[44px] flex-1 flex-col items-center justify-center rounded-[3px] px-2"
+              style={chipStyle(on, compact)}
+            >
+              {goal}
+              <span style={{ font: '400 10.5px/1.2 var(--font-mono)', color: 'inherit', opacity: 0.8 }}>~{m} min</span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Only where there is a notification to time: the installed app
+          (native/nativeShell.ts). A browser has no reminder, and a setting
+          that does nothing is worse than none. */}
+      {isNativeShell() && (
+        <>
+          <div className="mt-7" style={label}>
+            Reminder
+          </div>
+          <label className="mt-2 flex items-center gap-3" style={{ fontSize: 13.5, color: 'var(--ink2)' }}>
+            When your reviews are due, remind me at
+            <input
+              id="study-reminder-time"
+              type="time"
+              value={profile?.reminderTime ?? `${String(REMINDER_HOUR).padStart(2, '0')}:00`}
+              onChange={(e) => {
+                const value = e.target.value;
+                if (parseReminderTime(value)) update((current) => ({ ...current, reminderTime: value }));
+              }}
+              className="rounded-[3px] px-2.5"
+              style={{ minHeight: 42, border: '1.2px solid var(--line)', background: 'var(--sf)', color: 'var(--ink)', fontFamily: 'var(--font-ui)', fontSize: 15 }}
+            />
+          </label>
         </>
       )}
 

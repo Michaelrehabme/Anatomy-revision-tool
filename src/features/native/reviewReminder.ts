@@ -25,7 +25,7 @@ export const REVIEW_REMINDER_ID = 1001;
 export type ReminderOutcome = 'scheduled' | 'cleared' | 'denied';
 
 export async function scheduleReviewReminder(input: ReviewReminderInput, now: Date = new Date()): Promise<ReminderOutcome> {
-  const plan = planReviewReminder(input.mastery, input.facts, input.eligible, now);
+  const plan = planReviewReminder(input.mastery, input.facts, input.eligible, now, input.time);
 
   await LocalNotifications.cancel({ notifications: [{ id: REVIEW_REMINDER_ID }] });
   if (!plan) return 'cleared';
