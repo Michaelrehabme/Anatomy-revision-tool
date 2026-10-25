@@ -293,6 +293,16 @@ export function AccountForm({ initialMode = 'sign-up', onDone, guestHasProgress 
           Continue with Google
         </Button>
       )}
+      {/* Google is the same button whether or not an account exists, so
+          "Sign in" with it can make one, without the box sign-up shows. */}
+      {mode === 'sign-in' && !inApp && (
+        <p className="mt-2" style={{ font: '400 12px/1.5 var(--font-ui)', color: 'var(--ink3)' }}>
+          If that Google account is new here, this creates a LocusMSK account, and you confirm you are 16 or over and
+          agree to the{' '}
+          <a href="/terms" target="_blank" rel="noreferrer" style={{ color: 'var(--accd)' }}>terms</a> and{' '}
+          <a href="/privacy" target="_blank" rel="noreferrer" style={{ color: 'var(--accd)' }}>privacy policy</a>.
+        </p>
+      )}
 
       <div className="my-5 flex items-center gap-3" aria-hidden="true">
         <div className="h-px flex-1" style={{ background: 'var(--line)' }} />

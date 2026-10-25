@@ -150,7 +150,8 @@ export async function createFirestoreRepository(): Promise<AnatomyRepository> {
   /** See educator/data/cohortRollups.ts syncStudentRollup. Never throws: a stale class chart is not worth an error. */
   const syncCohortRollup = async (userId: string) => {
     try {
-      await syncStudentRollup(db, userId, getFirebaseAuth().currentUser?.displayName ?? null, async () => ({
+      const user = getFirebaseAuth().currentUser;
+      await syncStudentRollup(db, userId, { displayName: user?.displayName ?? null, email: user?.email ?? null }, async () => ({
         mastery: await listMasteryRows(userId),
         summaries: await listSummaries(userId, ROLLUP_SESSION_LIMIT),
         facts: await listFactRows(userId),

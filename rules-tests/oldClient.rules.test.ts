@@ -346,7 +346,11 @@ describe('an educator on the live bundle', () => {
       createdAt: NOW(), createdAtServer: serverTimestamp(),
     });
     await assertSucceeds(batch.commit());
-    await assertSucceeds(getDocs(query(collection(db, 'users'), where('cohort', '==', COHORT))));
+    // KNOWN BREAK, accepted 25 Oct 2026: the live bundle lists a class by
+    // reading its students' profiles, which handed the educator their payment
+    // fields. That read is closed; an educator on the old bundle sees an empty
+    // class list until the app updates (cohorts/{id}/members replaces it).
+    await assertFails(getDocs(query(collection(db, 'users'), where('cohort', '==', COHORT))));
     await assertSucceeds(getDocs(collection(db, 'cohorts', COHORT, 'studentStats')));
   });
 

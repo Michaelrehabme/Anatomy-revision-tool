@@ -15,7 +15,7 @@ const store = vi.hoisted(() => ({
   writes: [] as { path: string; data: Record<string, unknown> }[],
 }));
 
-vi.mock('../../../anatomy-revision/data/firebase', () => ({ getDb: () => ({}) }));
+vi.mock('../../../anatomy-revision/data/firebase', () => ({ getDb: () => ({}), getFirebaseAuth: () => ({ currentUser: null }) }));
 
 vi.mock('firebase/firestore', () => {
   const doc = (_db: unknown, ...segments: string[]) => ({ path: segments.join('/') });
@@ -62,32 +62,40 @@ describe('a class joined while the app is open', () => {
   it('is counted into from the next answer, without a reload', async () => {
     forgetCachedCohort('s1');
     // The app starts: the student is in no class, and the device remembers that.
-    await syncStudentRollup(db, 's1', 'Sam', load);
+    await syncStudentRollup(db, 's1', { displayName: 'Sam', email: null }, load);
     expect(statsWrites()).toHaveLength(0);
 
     await joinCohortByCode('s1', 'ABC123');
-    await syncStudentRollup(db, 's1', 'Sam', load);
+    await syncStudentRollup(db, 's1', { displayName: 'Sam', email: null }, load);
     expect(statsWrites().map((w) => w.path)).toEqual(['cohorts/class-1/studentStats/s1']);
   });
 
   it('is counted into after an invitation is accepted', async () => {
     forgetCachedCohort('s2');
-    await syncStudentRollup(db, 's2', 'Sam', load);
+    await syncStudentRollup(db, 's2', { displayName: 'Sam', email: null }, load);
     expect(statsWrites()).toHaveLength(0);
 
     await acceptInvite({ id: 'invite-1', cohortId: 'class-1' } as never, 's2');
-    await syncStudentRollup(db, 's2', 'Sam', load);
+    await syncStudentRollup(db, 's2', { displayName: 'Sam', email: null }, load);
     expect(statsWrites().map((w) => w.path)).toEqual(['cohorts/class-1/studentStats/s2']);
   });
 
   it('stops being counted into the moment the student leaves', async () => {
     forgetCachedCohort('s3');
     store.user.cohort = 'class-1';
-    await syncStudentRollup(db, 's3', 'Sam', load);
+    await syncStudentRollup(db, 's3', { displayName: 'Sam', email: null }, load);
     expect(statsWrites()).toHaveLength(1);
 
     await leaveCohort('s3');
-    await syncStudentRollup(db, 's3', 'Sam', load);
+    await syncStudentRollup(db, 's3', { displayName: 'Sam', email: null }, load);
     expect(statsWrites()).toHaveLength(1);
+  });
+
+  it('puts the student on the class list, which is all their educator reads of them as a person', async () => {
+    await joinCohortByCode('s4', 'ABC123');
+    await acceptInvite({ id: 'invite-2', cohortId: 'class-1' } as never, 's5');
+    const entries = store.writes.filter((w) => w.path.includes('/members/'));
+    expect(entries.map((w) => w.path)).toEqual(['cohorts/class-1/members/s4', 'cohorts/class-1/members/s5']);
+    for (const entry of entries) expect(Object.keys(entry.data).sort()).toEqual(['displayName', 'email', 'joinedAt', 'uid']);
   });
 });

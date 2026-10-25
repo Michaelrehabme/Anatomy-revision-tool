@@ -75,7 +75,7 @@ export function PrivacyPage() {
   }, []);
 
   return (
-    <LegalLayout title="Privacy policy" updated="16 October 2026">
+    <LegalLayout title="Privacy policy" updated="25 October 2026">
       <p className="mt-4" style={legalProse}>
         LocusMSK is an anatomy revision app for musculoskeletal students. This policy explains what it collects, why,
         how long it keeps it, and what you can do about it.
@@ -133,6 +133,14 @@ export function PrivacyPage() {
           email service, which receives your address and the email for that purpose only.
         </p>
         <p>
+          <strong style={{ color: 'var(--ink)' }}>Payments, if you subscribe.</strong> Subscriptions are sold by
+          Paddle, which takes the payment: your card or bank details go to Paddle and never reach us. We receive and
+          keep your plan, when it started, when it renews or ends, and the customer and subscription references Paddle
+          gives it, so the app knows what you have paid for. Before a subscription renews we email you about it. If a
+          payment reaches us that the app could not apply to your account, we keep a record of it
+          so it can be put right.
+        </p>
+        <p>
           <strong style={{ color: 'var(--ink)' }}>Technical data.</strong> Standard information your browser or device
           sends when it connects, including an IP address, handled by the services listed below.
         </p>
@@ -147,6 +155,11 @@ export function PrivacyPage() {
           <strong style={{ color: 'var(--ink)' }}>To provide the app</strong> — your account and revision history exist
           so the app can work across your devices and schedule your reviews. Lawful basis: performance of a contract,
           being the terms you accept by using it.
+        </p>
+        <p>
+          <strong style={{ color: 'var(--ink)' }}>To sell and manage a subscription</strong> — knowing what you have
+          paid for, sending the notice before it renews, and putting right a payment that went wrong. Lawful basis:
+          performance of a contract.
         </p>
         <p>
           <strong style={{ color: 'var(--ink)' }}>To show your work to a class you join</strong> — see below. Lawful
@@ -165,7 +178,8 @@ export function PrivacyPage() {
           the one part of this app where another person sees your work.
         </p>
         <p>
-          While you are in a class, its owner — normally your module leader — can see your name, your overall accuracy,
+          While you are in a class, its owner — normally your module leader — can see your name, the email address you
+          sign in with, when you joined, your overall accuracy,
           how recently you were active and on which days, which structures you get wrong most, your mastery level for
           each structure (from Beginner to Master), how many sessions you finished, and your scores on the assignments
           they set. It is meant to tell them what the group finds hard, in time to reteach it.
@@ -176,6 +190,13 @@ export function PrivacyPage() {
           structure was attempted and how often it was right, and the level that leaves you on — so the
           answer-by-answer record never leaves your account. This is enforced by the database’s own permission rules, not merely by what the app chooses to
           display.
+        </p>
+        <p>
+          They cannot see anything else on your account: not your plan or payments, and not your settings.
+        </p>
+        <p>
+          If your educator invites you by email, your address is stored with the invitation until you accept it, turn
+          it down, or the educator withdraws it. If your educator deletes their account, the class is deleted with it.
         </p>
         <p>
           Leaving a class is a single action on your account screen, takes effect immediately, and stops any further
@@ -256,10 +277,40 @@ export function PrivacyPage() {
           authentication and the database, and sends the email that confirms your address.{' '}
           <strong style={{ color: 'var(--ink)' }}>Netlify</strong> hosts the site.{' '}
           <strong style={{ color: 'var(--ink)' }}>Resend</strong> sends the weekly reminder to those who ask for it,
-          and subscription renewal notices. All three act as processors on documented terms and use your data only to provide those services. Data may be
-          transferred outside the UK under the safeguards those providers operate.
+          and subscription renewal notices. All three act as processors on documented terms and use your data only to
+          provide those services.
+        </p>
+        <p>
+          <strong style={{ color: 'var(--ink)' }}>Paddle</strong> (Paddle.com Market Limited) sells the
+          subscriptions. It is the merchant of record, so it is the seller on your receipt, and it receives your email
+          address and an account reference when you open the checkout. It handles your payment details as a controller
+          in its own right, under{' '}
+          <a href="https://www.paddle.com/legal/privacy" target="_blank" rel="noreferrer noopener" style={{ color: 'var(--accd)' }}>
+            its privacy notice
+          </a>
+          , and keeps its own transaction records for as long as tax law requires.
+        </p>
+        <p>
+          Some of these services handle data in the United States: Netlify&rsquo;s servers, Resend, and parts of
+          Google&rsquo;s. Those transfers rely on the UK Extension to the EU&ndash;US Data Privacy Framework where the
+          provider is certified under it, and otherwise on the UK International Data Transfer Addendum to the standard
+          contractual clauses in that provider&rsquo;s data processing terms.
         </p>
         <p>Your data is not sold, and there is no advertising in this app and no advertising SDK in it.</p>
+      </Section>
+
+      <Section title="Storage on your device">
+        <p>
+          LocusMSK sets no advertising or tracking cookies, and uses no analytics service. It does keep things in your
+          browser&rsquo;s storage that the app needs to work: that you are signed in, a copy of your progress and of
+          the areas you have downloaded so the app works offline, and your settings, such as dark mode. Because it is
+          all needed for what you asked the app to do, it does not need your consent, and there is no cookie banner.
+          Clearing your browser&rsquo;s data for this site removes all of it.
+        </p>
+        <p>
+          The checkout is the one exception: when you open it, Paddle&rsquo;s checkout loads and may set the cookies it
+          needs to take a payment safely. Nothing of Paddle&rsquo;s loads until you choose to buy.
+        </p>
       </Section>
 
       <Section title="How long it is kept">
@@ -272,6 +323,10 @@ export function PrivacyPage() {
           Delete your account at any time from your account screen and all of it goes immediately — your answers, your
           progress, your streaks, and the summary your class owner sees. There is no waiting period and no need to ask
           us.
+        </p>
+        <p>
+          Your plan and the Paddle references are part of your account and go with it. A record of a payment that
+          could not be applied is kept for 12 months at most, or until your account is deleted if that is sooner.
         </p>
         <p>
           One thing has to come first if you have a subscription that is still set to renew: cancel it, on the same
@@ -288,7 +343,9 @@ export function PrivacyPage() {
           as a JSON file, and <strong style={{ color: 'var(--ink)' }}>Delete my account</strong>.
         </p>
         <p>
-          You can also ask us to correct your data, restrict how it is used, or object to that use. Email{' '}
+          The download is your right of access and your right to data portability: a complete copy, in a format
+          another service can read. You can also ask us to correct your data, restrict how it is used, or object to
+          that use. Email{' '}
           <a href={`mailto:${EMAIL}`} style={{ color: 'var(--accd)' }}>
             {EMAIL}
           </a>{' '}
@@ -306,8 +363,8 @@ export function PrivacyPage() {
       <Section title="Age">
         <p>
           LocusMSK is for students aged <strong style={{ color: 'var(--ink)' }}>16 or over</strong>. It is not designed
-          for children, and creating an account requires confirming you are 16 or over before you can sign up by any
-          route.
+          for children. Creating an account requires confirming you are 16 or over: a box to tick when you sign up,
+          and a statement you accept if you use Google to sign in and that makes a new account.
         </p>
       </Section>
 

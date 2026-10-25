@@ -28,7 +28,7 @@ const source = (path: string) => readFileSync(path, 'utf8');
 describe('PrivacyPage', () => {
   it('carries the date it was last revised', () => {
     renderPage();
-    expect(screen.getByText('Last updated 16 October 2026')).toBeTruthy();
+    expect(screen.getByText('Last updated 25 October 2026')).toBeTruthy();
   });
 
   it('has a section on the test, where the cards link to', () => {
@@ -119,7 +119,7 @@ describe('PrivacyPage', () => {
   it('does not invent a lawful basis for the test', () => {
     const { section, page } = renderPage();
     expect(section).not.toMatch(/lawful basis|legitimate interests|consent|contract/i);
-    expect(page.match(/Lawful basis:/g)).toHaveLength(3);
+    expect(page.match(/Lawful basis:/g)).toHaveLength(4);
   });
 
   it('is what the cards say too: the figure may leave the course', () => {
