@@ -321,11 +321,16 @@
   "_why": "A head is a ball, so it is fitted rather than guessed. The reviewer's rule: every 'head of' is a region, because a head covers far more bone than the prominences around it."
  },
  "head-of-fibula": {
-  "kind": "sphere",
-  "from": "Head of fibula.j",
-  "fitRadius": 0.018,
-  "grow": 1.3,
-  "_why": " GROWN 1.1 -> 1.3 (owner, round 3 of the 27 Oct review): the region did not cover the whole head; it needed to wrap round the top and the sides."
+  "kind": "cap",
+  "direction": [
+   0,
+   0,
+   1
+  ],
+  "depth": 0.03,
+  "close": 2,
+  "smoothNormals": 3,
+  "_why": "THIRD PASS (owner, round 4 of the 27 Oct review): \"still not the whole of head of fib\" on the lateral and posterior views. The fitted sphere could not reach the apex, which rises up behind the tibia, without spilling down the neck. The head is now the top 30mm of the fibula. MEASURED (src/scripts/blender/probeFibulaHead.py): the fibula's top is at z 417.7mm and the neck anchor at 380.6mm, so the cut at 387.7mm stops 7mm above the neck. EARLIER: a sphere fitted near the head anchor (fitRadius 18mm), grown 1.1 and then 1.3."
  },
  "head-of-radius": {
   "kind": "cap",

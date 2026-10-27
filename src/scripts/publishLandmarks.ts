@@ -404,11 +404,20 @@ for (const id of readdirSync(masksRoot).sort()) {
     let traced: ReturnType<typeof maskToPolygons> | null = null;
     let core: ReturnType<typeof maskToPolygons> | null = null;
     if (isRegion) {
-      const maskPath = join(masksRoot, id, `${viewDir.replace('view', 'mask')}.png`);
+      // DRAWN BY THE OWNER. Where they have outlined the landmark on the
+      // picture themselves (round 4 of the 27 Oct review: "the black outline
+      // should be a good indication for the hitbox"), that outline replaces
+      // the traced region. It was registered to the render at publish size,
+      // and it is the whole hitbox, with no margin.
+      const drawnPath = join(ROOT, 'landmark-drawn-masks', `${imageId}.png`);
+      const drawn = existsSync(drawnPath);
+      const maskPath = drawn ? drawnPath : join(masksRoot, id, `${viewDir.replace('view', 'mask')}.png`);
       if (!existsSync(maskPath)) continue;
+      // A drawn outline is already the shape the owner wants. The blur that
+      // smooths a traced edge would wipe out its thin tail along the spine.
       const { data, info: mi } = await sharp(maskPath)
         .greyscale()
-        .blur(MASK_BLUR)
+        .blur(drawn ? 1 : MASK_BLUR)
         .raw()
         .toBuffer({ resolveWithObject: true });
       let bits = new Uint8Array(mi.width * mi.height);
@@ -508,7 +517,7 @@ for (const id of readdirSync(masksRoot).sort()) {
       // added more area than any small landmark has in total. It gets the
       // fingertip floor as its margin and no more.
       const large = corePx / bits.length > LARGE_REGION_SHARE;
-      const coreOnly = CORE_ONLY.has(imageId);
+      const coreOnly = drawn || CORE_ONLY.has(imageId);
       let growPx = coreOnly
         ? 0
         : SHRINK.has(imageId)
