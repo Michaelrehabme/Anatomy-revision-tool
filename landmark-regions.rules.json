@@ -232,7 +232,8 @@
    1
   ],
   "facingMin": -0.25,
-  "_why": "The crest is the highest edge of the ilium, so the bins run front-to-back (ASIS round to PSIS) and each takes its topmost vertex. facingMin is below zero so the rim's outer and inner lips are kept, not just the faces pointing straight up."
+  "_why": "The crest is the highest edge of the ilium, so the bins run front-to-back (ASIS round to PSIS) and each takes its topmost vertex. facingMin is below zero so the rim's outer and inner lips are kept, not just the faces pointing straight up. CLIPPED TO ITS OWN BONE (owner, round 2 of the 27 Oct review): at the peak of the crest the margin lay on the lumbar vertebra.",
+  "clipToParent": true
  },
  "intertrochanteric-line": {
   "emit": "capsule",
@@ -320,10 +321,16 @@
   "_why": "A head is a ball, so it is fitted rather than guessed. The reviewer's rule: every 'head of' is a region, because a head covers far more bone than the prominences around it."
  },
  "head-of-fibula": {
-  "kind": "sphere",
-  "from": "Head of fibula.j",
-  "fitRadius": 0.018,
-  "grow": 1.1
+  "kind": "cap",
+  "direction": [
+   0,
+   0,
+   1
+  ],
+  "depth": 0.03,
+  "close": 2,
+  "smoothNormals": 3,
+  "_why": "THIRD PASS (owner, round 4 of the 27 Oct review): \"still not the whole of head of fib\" on the lateral and posterior views. The fitted sphere could not reach the apex, which rises up behind the tibia, without spilling down the neck. The head is now the top 30mm of the fibula. MEASURED (src/scripts/blender/probeFibulaHead.py): the fibula's top is at z 417.7mm and the neck anchor at 380.6mm, so the cut at 387.7mm stops 7mm above the neck. EARLIER: a sphere fitted near the head anchor (fitRadius 18mm), grown 1.1 and then 1.3."
  },
  "head-of-radius": {
   "kind": "cap",
@@ -428,7 +435,8 @@
   "close": 3,
   "open": 0,
   "axisHalfWidth": 0.004,
-  "_why": "THIRD PASS. The reviewer, three times now: a HORIZONTAL line below the humeral head. Their word is final over my reading of their plate (where I followed the oblique edge of the articular surface). Built exactly as the surgical neck they passed — the rim of an end-cap of the bone — but 33mm from the top instead of 48: MEASURED, the articular head's lowest point is 41mm from the top and the surgical neck line is at 48, so this sits just under the bulge of the head and 15mm above the surgical neck."
+  "_why": "THIRD PASS. The reviewer, three times now: a HORIZONTAL line below the humeral head. Their word is final over my reading of their plate (where I followed the oblique edge of the articular surface). Built exactly as the surgical neck they passed — the rim of an end-cap of the bone — but 33mm from the top instead of 48: MEASURED, the articular head's lowest point is 41mm from the top and the surgical neck line is at 48, so this sits just under the bulge of the head and 15mm above the surgical neck. CLIPPED TO ITS OWN BONE (owner, round 2 of the 27 Oct review): its ends ran onto the glenoid labrum and the infraspinous fossa.",
+  "clipToParent": true
  },
  "acetabulum": {
   "emit": "capsule",
@@ -730,16 +738,83 @@
   "_why": "The two lateral projections, per the reviewer's red-marked superior and lateral plates: the outermost 18mm on one side, mirrored to mark the other. Bounded by MEASURED numbers on L4 (probeTP.py): the process tip sits 11.7mm above the bone's centre and 0-6mm behind it; the body's lateral edge is lower and the superior articular process is higher (z to 16mm) and further back (y to 14mm). A 7mm height cap guessed earlier cut the process itself off."
  },
  "infraspinous-fossa": {
-  "kind": "box",
-  "lo": [
-   0.0,
-   0.0,
-   0.0
+  "kind": "within",
+  "normal": [
+   0,
+   1,
+   0
   ],
-  "hi": [
-   1.0,
-   1.0,
-   1.0
+  "polygon": [
+   [
+    -40,
+    0,
+    1362
+   ],
+   [
+    -60,
+    0,
+    1364
+   ],
+   [
+    -84,
+    0,
+    1367
+   ],
+   [
+    -96,
+    0,
+    1367
+   ],
+   [
+    -104,
+    0,
+    1369
+   ],
+   [
+    -112,
+    0,
+    1374
+   ],
+   [
+    -116,
+    0,
+    1377
+   ],
+   [
+    -128,
+    0,
+    1386
+   ],
+   [
+    -136,
+    0,
+    1388
+   ],
+   [
+    -143,
+    0,
+    1372
+   ],
+   [
+    -155,
+    0,
+    1360
+   ],
+   [
+    -200,
+    0,
+    1360
+   ],
+   [
+    -200,
+    0,
+    1200
+   ],
+   [
+    -40,
+    0,
+    1200
+   ]
   ],
   "facing": [
    0,
@@ -750,18 +825,7 @@
   "keepLargest": true,
   "close": 3,
   "smoothNormals": 5,
-  "_why": "THIRD PASS. 'Doesn't cover the whole fossa — the bottom and the right angle are missing — and it comes up into the supraspinous fossa.' A ball round an anchor can do neither: it is round and the fossa is a triangle. Now EVERY backward-facing face of the scapula below the root of the spine (the lower 78% of the bone's height), which reaches the inferior angle and the lateral border by construction; the facing test is tilted slightly downward so the up-and-back-facing supraspinous surface is refused. The top edge follows the SPINE, which is not level: it rises about 30mm from its root on the medial border to the acromion, so the cut is the tilted plane z + 0.3x = 1350mm (the spine's own anchor sits at 1361 on that measure; the cut is a spine's thickness below it), not a horizontal one.",
-  "keepIf": [
-   {
-    "axis": [
-     0.3,
-     0,
-     1
-    ],
-    "world": true,
-    "max": 1.2931
-   }
-  ]
+  "_why": "FOURTH PASS (owner, round 2 of the 27 Oct review): 'the hitbox needs to follow the bottom of the spine of scapula'. A tilted plane cannot follow a curved spine, so the fossa is now the backward-facing surface inside an outline whose top edge runs 4mm under the spine's measured lower edge. The other three sides lie off the bone, so there the bone's own borders set the edge. MEASURED (src/scripts/blender/probeSpineOfScapula.py, 27 Oct 2026): across Scapula.r in 4mm columns, the spine as seen from behind is the band around the most posterior point between z 1330-1420mm. Its lower edge runs z 1371 (x -84, the root) to 1392 (x -132), and its upper edge 1382 to 1405; medial of x -84 the root flattens into the medial border and is extrapolated. PREVIOUSLY: THIRD PASS. 'Doesn't cover the whole fossa — the bottom and the right angle are missing — and it comes up into the supraspinous fossa.' A ball round an anchor can do neither: it is round and the fossa is a triangle. Now EVERY backward-facing face of the scapula below the root of the spine (the lower 78% of the bone's height), which reaches the inferior angle and the lateral border by construction; the facing test is tilted slightly downward so the up-and-back-facing supraspinous surface is refused. The top edge follows the SPINE, which is not level: it rises about 30mm from its root on the medial border to the acromion, so the cut is the tilted plane z + 0.3x = 1350mm (the spine's own anchor sits at 1361 on that measure; the cut is a spine's thickness below it), not a horizontal one."
  },
  "supraspinous-fossa": {
   "kind": "ball",
@@ -775,7 +839,19 @@
   "facingMin": 0.3,
   "close": 3,
   "smoothNormals": 5,
-  "_why": "The smaller posterior surface ABOVE the spine, the pink fill on the same plate. SECOND PASS: posterior view only, and widened 26 -> 43mm so it fills the fossa from the medial border to the root of the acromion, as on the reviewer's plate. The fossa faces up-and-back while the infraspinous surface below the spine faces straight back, so the facing test is tilted upward to stop the wider patch spilling over the spine."
+  "_why": "FIFTH PASS (owner, round 3 of the 27 Oct review): the polygon retrace was \"worse than before. The original zoom was fine, it was just dropping below the spine\". So this is the original ball again, plus one half-space cut along the spine's CREST, its most posterior ridge. probeSpineOfScapula.py puts the crest at z 1373mm at the root (x -84) and 1397mm laterally (x -132), which is the line z + 0.5x = 1331mm. Along the unit axis (0.447, 0, 0.894) that is 1.190. Everything above the crest is fossa as seen from behind. A cut at the spine's upper edge (fourth pass, the same night) took the lateral half of the fossa with it. frameUncut keeps the camera the owner approved.",
+  "keepIf": [
+   {
+    "axis": [
+     0.5,
+     0,
+     1
+    ],
+    "world": true,
+    "min": 1.19
+   }
+  ],
+  "frameUncut": true
  },
  "ilium": {
   "kind": "cap",
@@ -986,52 +1062,38 @@
   ]
  },
  "anterior-arch-atlas": {
-  "emit": "capsule",
-  "kind": "span",
-  "from": {
-   "bbox": [
-    0.5,
-    0.0,
-    0.5
-   ]
-  },
-  "to": {
-   "bbox": [
-    0.61,
-    0.163,
-    0.5
-   ]
-  },
-  "samples": 7,
-  "width": 0.004,
-  "axisHalfWidth": 0.003,
-  "mirrorX": true,
+  "kind": "box",
+  "lo": [
+   0.39,
+   0,
+   0
+  ],
+  "hi": [
+   0.61,
+   0.2,
+   1
+  ],
   "keepLargest": false,
-  "_why": "Two lines meeting in the middle of the arch, one per side — the reviewer's suggestion, and much smaller than the 18mm disc it replaces. MEASURED on the atlas (probeAtlas.py): the ring's centre is 21.4mm behind the front of the bone; the anterior arch is the thin run within about 25 degrees of straight ahead (ring thickness 18-24mm there), and beyond it the lateral mass begins (the ring thickens to 13-35mm and rises 5mm). The end point is that junction at mid-height, as fractions of the bone's box because the atlas's tubercle anchors float 20mm below the bone."
+  "close": 2,
+  "smoothNormals": 3,
+  "_why": "THIRD PASS (owner, 27 Oct 2026): the line along the arch sat on its front edge and half off the bone; the owner asked for the whole arch traced as a region instead. The anterior arch is the bar of bone in front of the lateral masses, so the region is every face of the atlas in that part of its box: x 0.39-0.61 and y 0-0.2. The earlier probe (probeAtlas.py) put the arch's junction with the lateral mass at x 0.61, y 0.163 (as fractions of the box), so 0.2 gives the bar its full depth there. The cuts across the bar at each end are where the arch meets the lateral mass. Earlier passes: two capsules meeting in the middle, each a line from the midline to that junction."
  },
  "posterior-arch-atlas": {
-  "emit": "capsule",
-  "kind": "span",
-  "from": {
-   "bbox": [
-    0.5,
-    1.0,
-    0.5
-   ]
-  },
-  "to": {
-   "bbox": [
-    0.719,
-    0.637,
-    0.5
-   ]
-  },
-  "samples": 11,
-  "width": 0.004,
-  "axisHalfWidth": 0.003,
-  "mirrorX": true,
+  "kind": "box",
+  "lo": [
+   0.281,
+   0.637,
+   0
+  ],
+  "hi": [
+   0.719,
+   1,
+   1
+  ],
   "keepLargest": false,
-  "_why": "The reviewer: a region or line, not a point, traced on their plate from lateral mass round to lateral mass. Same construction as the anterior arch. MEASURED: the posterior arch is the thin ring (15.6-24.5mm from the centre, 9mm tall) from about 20 degrees behind the transverse process round to the midline; the far end point is where it meets the lateral mass."
+  "close": 2,
+  "smoothNormals": 3,
+  "_why": "THIRD PASS (owner, 27 Oct 2026): the whole arch traced as a region, replacing the capsule that ran along its upper edge. The probe put the junction with the lateral mass at x 0.719, y 0.637 of the box, and the arch is everything behind that between the two junctions. The lateral masses and transverse processes lie outside x 0.281-0.719."
  },
  "lateral-mass-atlas": {
   "kind": "ball",
@@ -1214,25 +1276,25 @@
   "kind": "box",
   "lo": [
    0.679,
-   0.0,
-   0.73
+   0,
+   0.55
   ],
   "hi": [
-   0.97,
-   0.33,
-   1.0
+   1,
+   0.36,
+   1
   ],
   "facing": [
    0,
-   -0.6,
-   0.8
+   -0.45,
+   0.89
   ],
-  "facingMin": 0.0,
+  "facingMin": 0.3,
   "mirrorX": true,
   "keepLargest": false,
-  "close": 2,
-  "smoothNormals": 4,
-  "_why": "The wing of the sacrum either side of the S1 body. As a point it carried an 18mm radius whose halo was a third of the picture, and once both sides had to fit it fitted neither. Taken as the top quarter of the bone lateral to the S1 body (|x| 22-58mm of a 61mm half-width), keeping the faces that look up and forward so the articular processes behind are left out. Placed by proportion, not probed — flagged for the reviewer's eye. Both sides. SECOND PASS: stopped at y 34mm, in front of the superior articular processes, which the block had been climbing."
+  "close": 3,
+  "smoothNormals": 6,
+  "_why": "THIRD PASS (owner, 27 Oct 2026): \"boxy, not the wing shape\". The box's lower cut (z 0.73) and its front-facing test (facingMin 0) drew a straight bottom edge across the front of the wing. The wing is the surface that faces up and forward lateral to the S1 body, so that facing test, with a 0.3 threshold on normals smoothed over 6 rings, now sets the outline: it stops where the surface turns down onto the pelvic face or out onto the auricular surface. The box only bounds it loosely: lateral to the body (x 0.679), in front of the articular processes (y 0.36), and in the upper half (z 0.55). FIRST/SECOND PASS: The wing of the sacrum either side of the S1 body. As a point it carried an 18mm radius whose halo was a third of the picture, and once both sides had to fit it fitted neither. Taken as the top quarter of the bone lateral to the S1 body (|x| 22-58mm of a 61mm half-width), keeping the faces that look up and forward so the articular processes behind are left out. Placed by proportion, not probed — flagged for the reviewer's eye. Both sides. SECOND PASS: stopped at y 34mm, in front of the superior articular processes, which the block had been climbing."
  },
  "acromion": {
   "kind": "ball",

@@ -3,6 +3,7 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
 import { maskToPolygons } from './lib/maskToPolygons';
+import { pointSegmentDistance } from '../features/anatomy-revision/lib/hotspot/accuracy';
 
 /**
  * Publishes the landmark images and their target hotspots.
@@ -222,6 +223,71 @@ function dilateMask(mask: Uint8Array, width: number, height: number, radius: num
   return src;
 }
 
+/**
+ * TRIMMED TO THE BONE. The owner's review of 27 Oct 2026 found the launch
+ * hitboxes ran off the bone into empty picture — a tap on nothing, marked
+ * right. `landmark-hitbox-trim.json` lists the images whose pass zone is cut
+ * back to the bone's silhouette (the render's alpha) plus this much, which
+ * covers antialiasing and the fringe a ridge traced on its own outline leaves.
+ * src/scripts/auditLandmarkSpill.ts measures what is left.
+ */
+const TRIM_EDGE_PX = 6;
+/** The region margin for an image the owner asked to shrink as well as trim. */
+const SHRUNK_GROW_PX = Math.round(MIN_HITBOX_GROW_PX / 2);
+/**
+ * A target that is an OPENING is meant to sit over the gap, so it is trimmed
+ * against the silhouette with its enclosed holes filled: only what runs past
+ * the bone's OUTER edge goes.
+ */
+const OPENING = /foramen|foramina|canal|hiatus/;
+
+/**
+ * The bone in a render — alpha over 128 — grown by `edge` px, optionally with
+ * enclosed gaps filled. When the renderer wrote a parent-NN.png beside the
+ * view (a rule with `clipToParent`), that is used instead: the landmark's own
+ * bone alone, so a margin cannot rest on a neighbouring one.
+ */
+async function boneSilhouette(src: string, edge: number, fillHoles: boolean): Promise<Uint8Array> {
+  const parentPath = src.replace(/view-([\w-]+)\.png$/, 'parent-$1.png');
+  const fromParent = parentPath !== src && existsSync(parentPath);
+  const { data, info } = await sharp(src).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+  const w = info.width;
+  const h = info.height;
+  const bone = new Uint8Array(w * h);
+  for (let i = 0; i < bone.length; i++) bone[i] = data[i * 4 + 3] > 128 ? 1 : 0;
+  if (fromParent) {
+    // AND, not instead: the parent mesh is drawn 0.4mm proud of the skeleton,
+    // so on a bone's outline — the iliac crest IS the outline — it overhangs
+    // the picture by a few pixels, and trimming to it alone let that fringe in.
+    const parent = await sharp(parentPath).greyscale().raw().toBuffer();
+    for (let i = 0; i < bone.length; i++) if (parent[i] <= 128) bone[i] = 0;
+  }
+  if (fillHoles) {
+    // Flood the background in from the picture's edge; whatever it cannot
+    // reach is enclosed by bone, and counts as bone.
+    const reached = new Uint8Array(bone.length);
+    const stack: number[] = [];
+    const push = (i: number) => {
+      if (!bone[i] && !reached[i]) {
+        reached[i] = 1;
+        stack.push(i);
+      }
+    };
+    for (let x = 0; x < w; x++) { push(x); push((h - 1) * w + x); }
+    for (let y = 0; y < h; y++) { push(y * w); push(y * w + w - 1); }
+    while (stack.length) {
+      const i = stack.pop()!;
+      const x = i % w;
+      if (x > 0) push(i - 1);
+      if (x < w - 1) push(i + 1);
+      if (i >= w) push(i - w);
+      if (i < (h - 1) * w) push(i + w);
+    }
+    for (let i = 0; i < bone.length; i++) if (!reached[i]) bone[i] = 1;
+  }
+  return dilateMask(bone, w, h, edge);
+}
+
 function parseArgs(argv: string[]): Record<string, string> {
   const out: Record<string, string> = {};
   for (let i = 0; i < argv.length; i++) {
@@ -257,6 +323,18 @@ const AXES: Record<string, Record<string, number[][]>> = existsSync(axesPath)
       Object.entries(JSON.parse(readFileSync(axesPath, 'utf8'))).filter(([k]) => !k.startsWith('_')),
     )
   : {};
+
+const trimPath = join(ROOT, args.trim ?? 'landmark-hitbox-trim.json');
+const TRIM_FILE = existsSync(trimPath) ? JSON.parse(readFileSync(trimPath, 'utf8')) : {};
+const TRIM = new Set<string>(TRIM_FILE.trim ?? []);
+const SHRINK = new Set<string>(TRIM_FILE.shrink ?? []);
+/** Images whose hitbox is the landmark itself, with no margin at all — the owner's "only the green is needed". */
+const CORE_ONLY = new Set<string>(TRIM_FILE.coreOnly ?? []);
+/** A measured shift of a POINT target's centre, normalized, per image — the owner's call on where the landmark is. */
+const NUDGE: Record<string, [number, number]> = Object.fromEntries(
+  Object.entries(TRIM_FILE.nudge ?? {}).filter(([k]) => !k.startsWith('_')) as [string, [number, number]][],
+);
+const trimmedViews: string[] = [];
 
 const rendered = readdirSync(masksRoot).filter((d) => existsSync(join(masksRoot, d, 'meta.json')));
 const coverage = rendered.length / Math.max(1, spec.landmarks.length);
@@ -314,15 +392,32 @@ for (const id of readdirSync(masksRoot).sort()) {
 
     const src = join(masksRoot, id, `${viewDir}.png`);
     if (!existsSync(src)) continue;
+    const imageId = `landmark-${id}-${view}`;
+    const trim = TRIM.has(imageId);
+    // The owner's measured correction to where a point sits, applied before
+    // anything is drawn from it.
+    if (!isRegion && NUDGE[imageId]) {
+      v.u += NUDGE[imageId][0];
+      v.v += NUDGE[imageId][1];
+    }
 
     let traced: ReturnType<typeof maskToPolygons> | null = null;
     let core: ReturnType<typeof maskToPolygons> | null = null;
     if (isRegion) {
-      const maskPath = join(masksRoot, id, `${viewDir.replace('view', 'mask')}.png`);
+      // DRAWN BY THE OWNER. Where they have outlined the landmark on the
+      // picture themselves (round 4 of the 27 Oct review: "the black outline
+      // should be a good indication for the hitbox"), that outline replaces
+      // the traced region. It was registered to the render at publish size,
+      // and it is the whole hitbox, with no margin.
+      const drawnPath = join(ROOT, 'landmark-drawn-masks', `${imageId}.png`);
+      const drawn = existsSync(drawnPath);
+      const maskPath = drawn ? drawnPath : join(masksRoot, id, `${viewDir.replace('view', 'mask')}.png`);
       if (!existsSync(maskPath)) continue;
+      // A drawn outline is already the shape the owner wants. The blur that
+      // smooths a traced edge would wipe out its thin tail along the spine.
       const { data, info: mi } = await sharp(maskPath)
         .greyscale()
-        .blur(MASK_BLUR)
+        .blur(drawn ? 1 : MASK_BLUR)
         .raw()
         .toBuffer({ resolveWithObject: true });
       let bits = new Uint8Array(mi.width * mi.height);
@@ -422,9 +517,14 @@ for (const id of readdirSync(masksRoot).sort()) {
       // added more area than any small landmark has in total. It gets the
       // fingertip floor as its margin and no more.
       const large = corePx / bits.length > LARGE_REGION_SHARE;
-      let growPx = large
-        ? MIN_HITBOX_GROW_PX
-        : Math.max(Math.round(HITBOX_GROW_M * (mi.width / frameSize)), MIN_HITBOX_GROW_PX);
+      const coreOnly = drawn || CORE_ONLY.has(imageId);
+      let growPx = coreOnly
+        ? 0
+        : SHRINK.has(imageId)
+          ? SHRUNK_GROW_PX
+          : large
+            ? MIN_HITBOX_GROW_PX
+            : Math.max(Math.round(HITBOX_GROW_M * (mi.width / frameSize)), MIN_HITBOX_GROW_PX);
       let grown = dilateMask(bits, mi.width, mi.height, growPx);
       const countOf = (m: Uint8Array) => { let n = 0; for (let i = 0; i < m.length; i++) n += m[i]; return n; };
       // ...and never so far that the hitbox drops under MIN_REGION_SHARE: a
@@ -435,6 +535,38 @@ for (const id of readdirSync(masksRoot).sort()) {
         if (countOf(next) / next.length < MIN_REGION_SHARE) break;
         growPx = nextPx;
         grown = next;
+      }
+      if (trim) {
+        const opening = Boolean(meta.hole) || OPENING.test(id);
+        const keep = await boneSilhouette(src, TRIM_EDGE_PX, opening);
+        let before = 0;
+        let after = 0;
+        for (let i = 0; i < grown.length; i++) {
+          before += grown[i];
+          // The anatomy is trimmed too, unless it is a gap: a core traced on
+          // a thin process comes out a few pixels fatter than the process.
+          if (!opening) bits[i] &= keep[i];
+          grown[i] = (grown[i] & keep[i]) | bits[i];
+          after += grown[i];
+        }
+        // A TRIM MUST NOT COST A QUESTION. A small process on the bone's edge
+        // (the ulnar styloid) loses most of its margin to the trim and drops
+        // under MIN_REGION_SHARE. Its margin is then grown further, over bone
+        // only, until it is tappable again — the margin moves onto the bone
+        // rather than off the picture.
+        let reach = growPx;
+        while (after / grown.length < MIN_REGION_SHARE && reach < growPx * 6) {
+          reach = Math.round(reach * 1.5);
+          const wider = dilateMask(bits, mi.width, mi.height, reach);
+          after = 0;
+          for (let i = 0; i < grown.length; i++) {
+            grown[i] = (wider[i] & keep[i]) | bits[i];
+            after += grown[i];
+          }
+        }
+        if (reach > growPx) trimmedViews.push(`${id} ${view}: margin widened over bone to ${reach}px to stay tappable`);
+        if (!opening) core = maskToPolygons(bits, mi.width, mi.height, traceOpts);
+        trimmedViews.push(`${id} ${view}: hitbox ${((1 - after / Math.max(1, before)) * 100).toFixed(0)}% smaller`);
       }
       // TAPPABILITY IS A PROPERTY OF THE HITBOX, not of the anatomy inside it.
       // Testing the core instead dropped a region for being thin even when the
@@ -533,6 +665,33 @@ for (const id of readdirSync(masksRoot).sort()) {
       if (twins.length) twinViews++;
       // Length-weighted midpoint, since `centroid` still resolves overlaps.
       const mid = spine[Math.floor(spine.length / 2)];
+      // A trimmed capsule keeps its rings but scores 0 off the bone: the clip
+      // is the bone inside the whole capsule, traced once.
+      let clip: number[][][] | null = null;
+      if (trim) {
+        const keep = await boneSilhouette(src, TRIM_EDGE_PX, false);
+        const w = info.width;
+        const h = info.height;
+        const inside = new Uint8Array(w * h);
+        const spines = [spine, ...twins];
+        for (let y = 0; y < h; y++) {
+          for (let x = 0; x < w; x++) {
+            const i = y * w + x;
+            if (!keep[i]) continue;
+            const p = [(x + 0.5) / w, (y + 0.5) / h];
+            for (const s of spines) {
+              let near = false;
+              for (let k = 1; k < s.length && !near; k++) near = pointSegmentDistance(p, s[k - 1], s[k]) < rN;
+              if (near) { inside[i] = 1; break; }
+            }
+          }
+        }
+        const traced = maskToPolygons(inside, w, h, { minComponentPx: 50, epsilon: 1.2, maxVertices: 220 });
+        if (traced.polygons.length) {
+          clip = traced.polygons;
+          trimmedViews.push(`${id} ${view}: capsule clipped to the bone`);
+        }
+      }
       hotspots[`landmark-${id}-${view}`] = [
         {
           structureId: id,
@@ -542,6 +701,7 @@ for (const id of readdirSync(masksRoot).sort()) {
           targetRadius: Number(rN.toFixed(5)),
           targetAxis: spine,
           ...(twins.length ? { targetTwins: twins } : {}),
+          ...(clip ? { targetClip: clip } : {}),
         },
       ];
       capsuleViews++;
@@ -553,7 +713,6 @@ for (const id of readdirSync(masksRoot).sort()) {
     }
 
     if (traced) regionViews++;
-    const imageId = `landmark-${id}-${view}`;
     // A POINT WITH A TWIN is two targets. Where the two would overlap they are
     // shrunk until they touch instead — two small targets, one each side, is
     // the reviewer's rule, and a merged blob across the midline would pass a
@@ -687,6 +846,11 @@ for (const line of capped) console.log(`  ${line}`);
 console.log(`${regionViews} view(s) published as a traced region rather than a circle`);
 console.log(`${capsuleViews} view(s) published as a capsule along a spine`);
 console.log(`${twinViews} view(s) carry a twin target for the other side`);
+if (trimmedViews.length) {
+  console.log(`
+${trimmedViews.length} view(s) trimmed to the bone (landmark-hitbox-trim.json):`);
+  for (const t of trimmedViews) console.log(`  ${t}`);
+}
 if (trimmedSpines.length) {
   console.log(`\n${trimmedSpines.length} capsule(s) shortened to stay on the picture:`);
   for (const t of trimmedSpines) console.log(`  ${t}`);

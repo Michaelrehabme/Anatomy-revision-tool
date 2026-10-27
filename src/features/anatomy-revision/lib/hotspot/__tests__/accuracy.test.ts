@@ -186,6 +186,33 @@ describe('scoreAccuracy with a twin', () => {
   });
 });
 
+/**
+ * A face trimmed to the bone: the rings stay, but the part that overhangs the
+ * bone's edge is empty picture and scores nothing (owner review, 27 Oct 2026).
+ */
+describe('scoreAccuracy with a clip', () => {
+  // A crest along x = 0.5 whose bone stops at y = 0.5: the lower half of the
+  // capsule hangs off the edge.
+  const clipped = {
+    centroid: [0.5, 0.5] as [number, number],
+    targetRadius: 0.1,
+    targetAxis: [[0.2, 0.5], [0.8, 0.5]],
+    targetClip: [[[0, 0], [1, 0], [1, 0.5], [0, 0.5]]],
+  };
+
+  it('scores a tap on the bone exactly as before', () => {
+    expect(scoreAccuracy([0.5, 0.48], clipped)).toBe(scoreAccuracy([0.5, 0.48], { ...clipped, targetClip: undefined }));
+  });
+
+  it('scores 0 off the bone, however close to the spine', () => {
+    expect(scoreAccuracy([0.5, 0.52], clipped)).toBe(0);
+  });
+
+  it('changes nothing when there is no clip', () => {
+    expect(scoreAccuracy([0.5, 0.52], { ...clipped, targetClip: [] })).toBe(8);
+  });
+});
+
 describe('scoreRegion', () => {
   const square = (x0: number, y0: number, x1: number, y1: number) => [
     [x0, y0],

@@ -128,10 +128,13 @@ export function distanceToTarget(
  */
 export function scoreAccuracy(
   point: [number, number],
-  hotspot: Pick<HotspotPolygon, 'centroid' | 'targetRadius' | 'targetAxis' | 'targetTwins'>,
+  hotspot: Pick<HotspotPolygon, 'centroid' | 'targetRadius' | 'targetAxis' | 'targetTwins' | 'targetClip'>,
 ): number | null {
   const radius = hotspot.targetRadius;
   if (typeof radius !== 'number' || radius <= 0) return null;
+  // Off the bone is a miss, however near the spine: the part of the face that
+  // overhangs the bone's edge is a tap on empty picture.
+  if (hotspot.targetClip?.length && !pointInAnyPolygon(point, hotspot.targetClip)) return 0;
 
   const distance = distanceToTarget(point, hotspot);
   if (distance >= radius) return 0;

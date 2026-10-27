@@ -685,6 +685,17 @@ for lm in spec["landmarks"]:
             print(f"[skip] {lid}: region rule selected nothing on {parent_name}", flush=True)
             continue
         region_mesh, region_seeds, rlo, rhi = built
+        # FRAMED AS BEFORE THE CUT. When the owner has approved a picture and
+        # only the region inside it is to change, a half-space cut must not
+        # move the camera: cutting the supraspinous fossa back above the spine
+        # shrank and shifted its extent, and the refit framed a different
+        # picture (round 3 of the 27 Oct review). `frameUncut` takes the
+        # framing from the same rule without its keepIf cuts.
+        if rule.get("frameUncut") and rule.get("keepIf"):
+            uncut = build_region(parent_name, {k: v for k, v in rule.items() if k != "keepIf"}, region_anchors)
+            if uncut is not None:
+                bpy.data.meshes.remove(uncut[0])
+                rlo, rhi = uncut[2], uncut[3]
         region_centre = (rlo + rhi) / 2
         extent = max(rhi.x - rlo.x, rhi.y - rlo.y, rhi.z - rlo.z)
         # Context, but bounded by the bone. A small feature wants room around it;
@@ -808,6 +819,22 @@ for lm in spec["landmarks"]:
         region_ob.data.materials.append(MASK_ON)
         scene.collection.objects.link(region_ob)
         region_ob.hide_render = True
+
+    # THE LANDMARK'S OWN BONE, masked through the same camera. The publisher
+    # trims a hitbox to the bone silhouette, but the silhouette is every bone
+    # in shot: the iliac crest's margin still climbed onto L5 at the peak of
+    # the crest, and the anatomical neck's ran onto the glenoid (owner, round
+    # 2 of the 27 Oct review). A rule with `clipToParent` also writes
+    # parent-NN.png, the parent bone alone with real occlusion, and the
+    # publisher trims to that instead.
+    parent_ob = None
+    if rule and rule.get("clipToParent") and region_mesh is not None:
+        pbuilt = build_region(parent_name, {"kind": "cap", "direction": [0, 0, 1], "depth": 1, "smoothNormals": 0}, region_anchors)
+        if pbuilt is not None:
+            parent_ob = bpy.data.objects.new(f"landmark_parent_ob_{lid}", pbuilt[0])
+            parent_ob.data.materials.append(MASK_ON)
+            scene.collection.objects.link(parent_ob)
+            parent_ob.hide_render = True
 
     # A LINE THAT EXISTS ONLY IN THE PICTURE. With the femur in its socket the
     # acetabulum is, in the reviewer's words, "the line in which we stop seeing
@@ -1037,6 +1064,13 @@ for lm in spec["landmarks"]:
                 _bg.inputs[1].default_value = 0.0
             mask_path = os.path.join(a.out, lid, vkey.replace("view", "mask") + ".png")
             render_to(mask_path)
+            if parent_ob is not None:
+                region_ob.hide_render = True
+                parent_ob.hide_render = False
+                render_to(os.path.join(a.out, lid, vkey.replace("view", "parent") + ".png"))
+                parent_ob.hide_render = True
+                region_ob.hide_render = False
+                entry["parentMask"] = True
             if edge_ob is not None:
                 region_ob.hide_render = True
                 edge_ob.hide_render = False
@@ -1147,6 +1181,11 @@ for lm in spec["landmarks"]:
         scene.collection.objects.unlink(region_ob)
         bpy.data.objects.remove(region_ob)
         bpy.data.meshes.remove(region_mesh)
+    if parent_ob is not None:
+        pmesh = parent_ob.data
+        scene.collection.objects.unlink(parent_ob)
+        bpy.data.objects.remove(parent_ob)
+        bpy.data.meshes.remove(pmesh)
 
     with open(os.path.join(os.path.abspath(a.out), lid, "meta.json"), "w") as f:
         json.dump(meta, f, indent=1)

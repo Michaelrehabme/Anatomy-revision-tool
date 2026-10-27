@@ -1,3 +1,4 @@
+import { useId } from 'react';
 import type { HotspotPolygon } from '../../types/image';
 import { isAccuracyTarget, PASS_FRACTION, RING_COUNT, targetSpines } from '../../lib/hotspot/accuracy';
 
@@ -136,6 +137,18 @@ const PASS_BAND = Math.round(PASS_FRACTION * RING_COUNT);
 
 function TargetFace({ hotspot, scored }: { hotspot: HotspotPolygon; scored: boolean }) {
   const radius = hotspot.targetRadius!;
+  // A face trimmed to the bone is DRAWN trimmed too, so the rings a student
+  // sees end where the grading does. The id is per instance: two faces on one
+  // page must not share a clip.
+  const clipId = `target-clip-${useId().replace(/:/g, '')}`;
+  const clip = hotspot.targetClip?.length ? (
+    <clipPath id={clipId}>
+      {hotspot.targetClip.map((polygon, i) => (
+        <polygon key={i} points={polygon.map(([x, y]) => `${x},${y}`).join(' ')} />
+      ))}
+    </clipPath>
+  ) : null;
+  const clipPath = clip ? `url(#${clipId})` : undefined;
   // One spine, or one per side when the landmark has a twin. Every band is
   // drawn on all of them before the next band in, so two faces that overlap
   // still read as one printed target rather than one face stamped on another.
@@ -178,7 +191,8 @@ function TargetFace({ hotspot, scored }: { hotspot: HotspotPolygon; scored: bool
     // 2.5x target here, which answers "where is the greater trochanter" with a
     // disc two and a half times too big.
     return (
-      <g data-target-face>
+      <g data-target-face clipPath={clipPath}>
+        {clip}
         {band('halo', radius, 'var(--ring-halo)', 0.12)}
         {band('zone', radius * PASS_FRACTION, 'var(--ring-halo)', 0.45)}
       </g>
@@ -199,7 +213,8 @@ function TargetFace({ hotspot, scored }: { hotspot: HotspotPolygon; scored: bool
   }
 
   return (
-    <g style={{ opacity: FACE_OPACITY }} data-target-face>
+    <g style={{ opacity: FACE_OPACITY }} data-target-face clipPath={clipPath}>
+      {clip}
       {bands}
     </g>
   );

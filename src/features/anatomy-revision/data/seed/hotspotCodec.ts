@@ -104,7 +104,7 @@ const encodeOrKeep = (ring: Ring): StoredRing => encodeRing(ring) ?? ring;
 const decodeIfText = (ring: StoredRing): Ring => (typeof ring === 'string' ? decodeRing(ring) : ring);
 
 /** Optional fields that hold a list of rings, and the one that holds a single ring. */
-const RING_LISTS = ['targetCore', 'targetTwins'] as const;
+const RING_LISTS = ['targetCore', 'targetTwins', 'targetClip'] as const;
 const SINGLE_RING = 'targetAxis';
 
 /**
