@@ -3,6 +3,7 @@ import type { StructureIndexEntry } from '../../types/structureIndex';
 import { rotationSetKey } from '../rotationFrames';
 import { imageDepicts } from './mcq';
 import { askedWithPicture } from '../../data/clinicalLigaments';
+import { isRedraw, ownPictureOf } from '../ownPicture';
 
 /**
  * ONE PICTURE PER TURNTABLE, AND THE STRUCTURE'S OWN TURNTABLE FIRST.
@@ -132,17 +133,5 @@ export function promptImagesFor(
   return [biggest(legible.length ? legible : openers)];
 }
 
-/** A frame of a ligament's redraw (data/seed/images.seed.ts, "Redrawn ligaments"). */
-export function isRedraw(image: Pick<AnatomyImageAsset, 'id'>): boolean {
-  return image.id.startsWith('redraw-');
-}
-
-/**
- * A structure's own picture, for a flashcard or a relearn card: its redraw's
- * opening frame where it has one (owner, 27 Oct 2026), otherwise the first
- * single-structure picture of it, as always.
- */
-export function ownPictureOf(structureId: string, images: readonly AnatomyImageAsset[]): AnatomyImageAsset | undefined {
-  const own = images.filter((img) => img.mode === 'single-structure' && img.structureId === structureId);
-  return own.find(isRedraw) ?? own[0];
-}
+// Lives on its own so the Atlas card can use it without the question generators.
+export { isRedraw, ownPictureOf };

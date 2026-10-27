@@ -2,6 +2,8 @@ import type { AnatomyImageAsset } from '../../types/image';
 import { ImageViewer } from './ImageViewer';
 import type { PlateConceal } from '../../lib/plateLabel';
 import { LigamentPictureNote, isLigamentPlate } from './LigamentPictureNote';
+import { PromptHighlightOverlay } from './PromptHighlightOverlay';
+import { promptHighlightFrames } from '../../lib/promptHighlight';
 
 /**
  * A prompt picture the student can turn and zoom but not answer on.
@@ -23,7 +25,17 @@ export function AnatomyImageFigure({ image, alt, frames, subjectId, conceal }: {
   subjectId?: string;
   conceal?: PlateConceal;
 }) {
-  const viewer = <ImageViewer image={image} frames={frames} resetKey={`${image.id}|${alt}`} subjectId={subjectId} conceal={conceal} />;
+  // A landmark or joint panel is a plain skeleton with its target stored
+  // beside it, so the target is drawn here as the quiz and the Atlas draw it.
+  // Without it the obturator foramen's card showed an unmarked pelvis (student
+  // report, 16 Oct 2026). Pictures with the target already coloured in carry
+  // no hotspot and are untouched.
+  const overlay = subjectId ? (current: AnatomyImageAsset) => <PromptHighlightOverlay image={current} structureId={subjectId} /> : undefined;
+  // Only the angles where the target is traced, as MCQ and identify offer them.
+  const turnable = subjectId && frames ? promptHighlightFrames(frames, subjectId) : frames;
+  const viewer = (
+    <ImageViewer image={image} frames={turnable} resetKey={`${image.id}|${alt}`} subjectId={subjectId} conceal={conceal} overlay={overlay} />
+  );
   // The note says "ligament", so not while the name is still the answer.
   if (!isLigamentPlate(image) || conceal === 'name') return viewer;
   return (

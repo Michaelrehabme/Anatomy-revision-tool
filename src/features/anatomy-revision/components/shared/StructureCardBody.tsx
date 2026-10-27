@@ -4,6 +4,7 @@ import type { AnatomyImageAsset } from '../../types/image';
 import type { StructureIndexEntry } from '../../types/structureIndex';
 import { atlasCardSections } from '../../lib/atlasFacts';
 import { rotationFramesFor } from '../../lib/rotationFrames';
+import { ownPictureOf } from '../../lib/ownPicture';
 import { STRUCTURE_SOURCES } from '../../data/structureSources.generated';
 import { WORKS } from '../../../legal/data/provenance.generated';
 import { BloodSupplyFacts } from './BloodSupplyFacts';
@@ -45,11 +46,10 @@ export function StructurePicture({ structure, images, compact = false }: {
   );
   // A structure drawn with another's picture and target: see PICTURE_FROM.
   const subject = PICTURE_FROM[structure.id] ?? structure.id;
-  const own = images.filter((img) => img.mode === 'single-structure' && img.structureId === subject);
-  // A redrawn ligament's turntable comes first on its card (images.seed.ts).
-  own.sort((x, y) => Number(y.id.startsWith('redraw-')) - Number(x.id.startsWith('redraw-')));
-  // Muscle plates are listed primary angle first (images.seed.ts).
-  const image = own[0];
+  // The picture a flashcard shows (lib/ownPicture.ts): a redraw
+  // first, then one with the target traced, then the first listed, which for
+  // a muscle is its primary angle (images.seed.ts).
+  const image = ownPictureOf(subject, images);
   if (!image) return blank('No image yet');
   const frames = rotationFramesFor(image, images);
   return (
