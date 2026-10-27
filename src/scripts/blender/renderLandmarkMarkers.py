@@ -685,6 +685,17 @@ for lm in spec["landmarks"]:
             print(f"[skip] {lid}: region rule selected nothing on {parent_name}", flush=True)
             continue
         region_mesh, region_seeds, rlo, rhi = built
+        # FRAMED AS BEFORE THE CUT. When the owner has approved a picture and
+        # only the region inside it is to change, a half-space cut must not
+        # move the camera: cutting the supraspinous fossa back above the spine
+        # shrank and shifted its extent, and the refit framed a different
+        # picture (round 3 of the 27 Oct review). `frameUncut` takes the
+        # framing from the same rule without its keepIf cuts.
+        if rule.get("frameUncut") and rule.get("keepIf"):
+            uncut = build_region(parent_name, {k: v for k, v in rule.items() if k != "keepIf"}, region_anchors)
+            if uncut is not None:
+                bpy.data.meshes.remove(uncut[0])
+                rlo, rhi = uncut[2], uncut[3]
         region_centre = (rlo + rhi) / 2
         extent = max(rhi.x - rlo.x, rhi.y - rlo.y, rhi.z - rlo.z)
         # Context, but bounded by the bone. A small feature wants room around it;

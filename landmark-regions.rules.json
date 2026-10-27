@@ -324,7 +324,8 @@
   "kind": "sphere",
   "from": "Head of fibula.j",
   "fitRadius": 0.018,
-  "grow": 1.1
+  "grow": 1.3,
+  "_why": " GROWN 1.1 -> 1.3 (owner, round 3 of the 27 Oct review): the region did not cover the whole head; it needed to wrap round the top and the sides."
  },
  "head-of-radius": {
   "kind": "cap",
@@ -822,84 +823,30 @@
   "_why": "FOURTH PASS (owner, round 2 of the 27 Oct review): 'the hitbox needs to follow the bottom of the spine of scapula'. A tilted plane cannot follow a curved spine, so the fossa is now the backward-facing surface inside an outline whose top edge runs 4mm under the spine's measured lower edge. The other three sides lie off the bone, so there the bone's own borders set the edge. MEASURED (src/scripts/blender/probeSpineOfScapula.py, 27 Oct 2026): across Scapula.r in 4mm columns, the spine as seen from behind is the band around the most posterior point between z 1330-1420mm. Its lower edge runs z 1371 (x -84, the root) to 1392 (x -132), and its upper edge 1382 to 1405; medial of x -84 the root flattens into the medial border and is extrapolated. PREVIOUSLY: THIRD PASS. 'Doesn't cover the whole fossa — the bottom and the right angle are missing — and it comes up into the supraspinous fossa.' A ball round an anchor can do neither: it is round and the fossa is a triangle. Now EVERY backward-facing face of the scapula below the root of the spine (the lower 78% of the bone's height), which reaches the inferior angle and the lateral border by construction; the facing test is tilted slightly downward so the up-and-back-facing supraspinous surface is refused. The top edge follows the SPINE, which is not level: it rises about 30mm from its root on the medial border to the acromion, so the cut is the tilted plane z + 0.3x = 1350mm (the spine's own anchor sits at 1361 on that measure; the cut is a spine's thickness below it), not a horizontal one."
  },
  "supraspinous-fossa": {
-  "kind": "within",
-  "normal": [
-   0,
-   1,
-   0
-  ],
-  "polygon": [
-   [
-    -40,
-    0,
-    1381
-   ],
-   [
-    -60,
-    0,
-    1381
-   ],
-   [
-    -84,
-    0,
-    1389
-   ],
-   [
-    -92,
-    0,
-    1386
-   ],
-   [
-    -100,
-    0,
-    1388
-   ],
-   [
-    -108,
-    0,
-    1393
-   ],
-   [
-    -116,
-    0,
-    1397
-   ],
-   [
-    -124,
-    0,
-    1401
-   ],
-   [
-    -132,
-    0,
-    1402
-   ],
-   [
-    -138,
-    0,
-    1408
-   ],
-   [
-    -138,
-    0,
-    1480
-   ],
-   [
-    -40,
-    0,
-    1480
-   ]
-  ],
+  "kind": "ball",
+  "from": "Supraspinous fossa.j",
+  "width": 0.043,
   "facing": [
    0,
    0.55,
    0.83
   ],
   "facingMin": 0.3,
-  "keepLargest": true,
   "close": 3,
   "smoothNormals": 5,
-  "_why": "THIRD PASS (owner, round 2 of the 27 Oct review): 'needs to be above the spine of scapula'. The 43mm ball took the spine's own upper surface, which faces up and back just like the fossa. It is now the up-and-back-facing surface inside an outline whose lower edge runs 3mm above the spine's measured upper edge, out to the root of the acromion at x -138. MEASURED (src/scripts/blender/probeSpineOfScapula.py, 27 Oct 2026): across Scapula.r in 4mm columns, the spine as seen from behind is the band around the most posterior point between z 1330-1420mm. Its lower edge runs z 1371 (x -84, the root) to 1392 (x -132), and its upper edge 1382 to 1405; medial of x -84 the root flattens into the medial border and is extrapolated. PREVIOUSLY: The smaller posterior surface ABOVE the spine, the pink fill on the same plate. SECOND PASS: posterior view only, and widened 26 -> 43mm so it fills the fossa from the medial border to the root of the acromion, as on the reviewer's plate. The fossa faces up-and-back while the infraspinous surface below the spine faces straight back, so the facing test is tilted upward to stop the wider patch spilling over the spine."
+  "_why": "FIFTH PASS (owner, round 3 of the 27 Oct review): the polygon retrace was \"worse than before. The original zoom was fine, it was just dropping below the spine\". So this is the original ball again, plus one half-space cut along the spine's CREST, its most posterior ridge. probeSpineOfScapula.py puts the crest at z 1373mm at the root (x -84) and 1397mm laterally (x -132), which is the line z + 0.5x = 1331mm. Along the unit axis (0.447, 0, 0.894) that is 1.190. Everything above the crest is fossa as seen from behind. A cut at the spine's upper edge (fourth pass, the same night) took the lateral half of the fossa with it. frameUncut keeps the camera the owner approved.",
+  "keepIf": [
+   {
+    "axis": [
+     0.5,
+     0,
+     1
+    ],
+    "world": true,
+    "min": 1.19
+   }
+  ],
+  "frameUncut": true
  },
  "ilium": {
   "kind": "cap",
