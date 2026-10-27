@@ -56,6 +56,17 @@ for (const trim of trims) {
     pattern,
     `$1${JSON.stringify(kept.map((m) => m.r))}$3${area}$5[${cx}, ${cy}]`,
   );
+  // The line inside a dropped ring goes with it, or the speck is still drawn
+  // as a bullseye and still scores. Each core ring belongs to the ring whose
+  // centre is nearest its own.
+  const corePattern = new RegExp(`('${trim.imageId}':[\\s\\S]*?targetCore: )(\\[\\[\\[[\\s\\S]*?\\]\\]\\])(,\\n)`);
+  const core = src.match(corePattern);
+  const entryEnd = src.indexOf('\n  ],', src.indexOf(`'${trim.imageId}':`));
+  if (core && core.index < entryEnd) {
+    const nearest = (c) => rings.reduce((a, b) => (Math.hypot(b.c[0] - c[0], b.c[1] - c[1]) < Math.hypot(a.c[0] - c[0], a.c[1] - c[1]) ? b : a));
+    const keptCore = JSON.parse(core[2]).filter((r) => kept.includes(nearest(centre(r))));
+    src = src.replace(corePattern, `$1${JSON.stringify(keptCore)}$3`);
+  }
   console.log(
     `${trim.imageId}: ${rings.length} -> ${kept.length} rings, ` +
       `${(Number(found[4]) * 100).toFixed(2)}% -> ${(area * 100).toFixed(2)}% of the frame`,

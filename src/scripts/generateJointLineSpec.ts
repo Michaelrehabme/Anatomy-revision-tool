@@ -81,6 +81,8 @@ interface PartOverride {
   catchMargin?: number;
   /** Take the whole articular surface rather than the seam, for a broad articulation seen face-on. */
   useSurface?: boolean;
+  /** The articulations one joint is made of, each traced on its own and joined (renderJointMasks.py). */
+  pairs?: { a: string[]; b: string[] }[];
 }
 
 const PART_OVERRIDE: Record<string, PartOverride> = {
@@ -207,6 +209,14 @@ const PART_OVERRIDE: Record<string, PartOverride> = {
   'transverse-tarsal-joint': {
     a: ['talus', 'calcaneus'],
     b: ['navicular', 'cuboid'],
+    // Traced as its two articulations, not as the seam between two merged
+    // rows: that also ran down the calcaneus-navicular gap and round the
+    // talus-cuboid corner, and a student tapping the joint line was marked
+    // wrong (report, 16 Oct 2026).
+    pairs: [
+      { a: ['talus'], b: ['navicular'] },
+      { a: ['calcaneus'], b: ['cuboid'] },
+    ],
   },
 
   // The PROXIMAL interphalangeal joints stand for the pair. The seed names
@@ -325,6 +335,7 @@ for (const joint of joints) {
     ...(override?.seam ? { seam: override.seam } : {}),
     ...(override?.catchMargin ? { catchMargin: override.catchMargin } : {}),
     ...(override?.useSurface ? { useSurface: true } : {}),
+    ...(override?.pairs ? { pairs: override.pairs.map((pr) => ({ a: resolve(pr.a), b: resolve(pr.b) })) } : {}),
     ...(TUNING[joint.id] ?? {}),
   });
 }

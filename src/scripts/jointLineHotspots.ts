@@ -147,6 +147,34 @@ function parseArgs(argv: string[]): Options {
 
 
 
+/** A pair's pieces smaller than this are flecks, not a stretch of joint line. */
+const PAIR_FLECK_PX = 40;
+
+/** The mask without its 4-connected pieces under `floor` pixels. */
+function withoutFlecks(mask: BinaryMask, width: number, floor: number): BinaryMask {
+  const out = new Uint8Array(mask.length);
+  const seen = new Uint8Array(mask.length);
+  for (let start = 0; start < mask.length; start++) {
+    if (!mask[start] || seen[start]) continue;
+    const piece: number[] = [];
+    const stack = [start];
+    seen[start] = 1;
+    while (stack.length) {
+      const p = stack.pop()!;
+      piece.push(p);
+      const x = p % width;
+      for (const q of [x > 0 ? p - 1 : -1, x < width - 1 ? p + 1 : -1, p - width, p + width]) {
+        if (q >= 0 && q < mask.length && mask[q] && !seen[q]) {
+          seen[q] = 1;
+          stack.push(q);
+        }
+      }
+    }
+    if (piece.length >= floor) for (const p of piece) out[p] = 1;
+  }
+  return out;
+}
+
 /** "view-06" is the sixth 15-degree step, so 90 degrees. */
 const angleOfView = (view: string): number => (Number(view.replace('view-', '')) * 15) % 360;
 
@@ -219,15 +247,41 @@ for (const jointId of jointIds) {
     // where thin works, wider only where the gap demands it.
     let band = dilateBy(line.mask, line.width, line.height, specJoints[jointId]?.seam ?? opts.pad);
     let usedSeam = 0;
-    if (hasSilhouettes && !specJoints[jointId]?.useSurface) {
-      const aMask = loadMask(aPath).mask;
-      const bMask = loadMask(bPath).mask;
-      const baseSeam = specJoints[jointId]?.seam ?? opts.seam;
-      for (const seam of [1, 2, 3, 4, 6, 8].map((n) => baseSeam * n)) {
-        band = seamBand(aMask, bMask, line.mask, line.width, line.height, seam, opts.gate);
-        usedSeam = seam;
-        if (countSet(band) >= opts.minPx) break;
+    const baseSeam = specJoints[jointId]?.seam ?? opts.seam;
+    /** The smallest reach at which two silhouettes meet in at least `floor` pixels, and that seam. */
+    const smallestSeam = (aMask: BinaryMask, bMask: BinaryMask, contact: BinaryMask, floor: number, reaches = [1, 2, 3, 4, 6, 8]) => {
+      let found = contact;
+      let reach = 0;
+      for (const seam of reaches.map((n) => baseSeam * n)) {
+        found = seamBand(aMask, bMask, contact, line.width, line.height, seam, opts.gate);
+        reach = seam;
+        if (countSet(found) >= floor) break;
       }
+      return { found, reach };
+    };
+    // A JOINT OF SEVERAL ARTICULATIONS (spec `pairs`; renderJointMasks.py
+    // writes line.pK / a.pK / b.pK): each pair's own seam, joined. The merged
+    // halves found every seam between the two rows, which is not the joint.
+    // Each pair is held to the usual minimum on its own, so an articulation
+    // all but out of sight from this angle (a 90-pixel talonavicular speck
+    // seen from behind) adds nothing, and its flecks are dropped.
+    const pairs = [0, 1, 2, 3]
+      .map((k) => ['line', 'a', 'b'].map((part) => join(dir, `${part}.p${k}.png`)))
+      .filter((paths) => paths.every((p) => existsSync(p)));
+    if (pairs.length > 0 && !specJoints[jointId]?.useSurface) {
+      band = new Uint8Array(line.mask.length);
+      for (const [lp, ap, bp] of pairs) {
+        // Twice the seam at most. Reaching further finds two bones that meet
+        // somewhere on screen, not this articulation: the talonavicular joint
+        // seen from behind turned up as a band on the tip of the fibula.
+        const { found, reach } = smallestSeam(loadMask(ap).mask, loadMask(bp).mask, loadMask(lp).mask, opts.minPx, [1, 2]);
+        if (countSet(found) < opts.minPx) continue;
+        const kept = withoutFlecks(found, line.width, PAIR_FLECK_PX);
+        for (let i = 0; i < band.length; i++) band[i] |= kept[i];
+        usedSeam = Math.max(usedSeam, reach);
+      }
+    } else if (hasSilhouettes && !specJoints[jointId]?.useSurface) {
+      ({ found: band, reach: usedSeam } = smallestSeam(loadMask(aPath).mask, loadMask(bPath).mask, line.mask, opts.minPx));
     }
 
     const pixels = countSet(band);

@@ -615,6 +615,32 @@ for jid in wanted:
     # hours).
     side_meshes = {"a": (mesh_a, mesh_b), "b": (mesh_b, mesh_a)}
 
+    # ONE JOINT, SEVERAL ARTICULATIONS. The transverse tarsal joint is the
+    # talonavicular and the calcaneocuboid joints side by side. As two merged
+    # halves (talus+calcaneus against navicular+cuboid) every hindfoot-midfoot
+    # seam counted, so the band also ran down the calcaneus-navicular gap and
+    # the talus-cuboid corner, which are not this joint, and one shared d_min
+    # thinned whichever articulation was looser (student report, 16 Oct 2026).
+    # `pairs` names the real articulations: each gets its own contact surface
+    # and its own two silhouettes, through the same camera, written as
+    # line.pK.png, a.pK.png and b.pK.png, and jointLineHotspots.ts joins the
+    # seams. The merged masks are still written, so the picture is unchanged.
+    pair_parts = []
+    for k, pr in enumerate(j.get("pairs", [])):
+        pa = restrict(pr["a"], suffix) or pr["a"]
+        pb = restrict(pr["b"], suffix) or pr["b"]
+        m_pa, m_pb = bake(pa, f"pa{k}_{jid}"), bake(pb, f"pb{k}_{jid}")
+        found_k = contact_region(m_pa, m_pb, band, a.cluster, None)
+        if found_k is None:
+            print(f"[pair] {jid} #{k}: never close enough, skipped", flush=True)
+            continue
+        patch_k, _ = surface_patch(((m_pa, found_k[0]), (m_pb, found_k[1])), f"pline{k}_{jid}")
+        # The joint's other bones hold this pair out, as the rest of the
+        # skeleton does: a talus seen through the calcaneus is not the talus.
+        rest = bake([n for n in own if n not in set(pa) | set(pb)], f"prest{k}_{jid}")
+        print(f"[pair] {jid} #{k}: {len(found_k[2])} contact verts, {len(patch_k.polygons)} faces", flush=True)
+        pair_parts.append((k, m_pa, m_pb, patch_k, rest))
+
     # A JOINT CAN BE UNSIGHTED FROM AN ANGLE, and mostly that looks after
     # itself: a frame whose band traces too small to tap is dropped when the
     # hotspots are derived, so a student only turns to angles where the joint
@@ -655,6 +681,23 @@ for jid in wanted:
                 link(mesh, f"depth_{side}_{jid}", DEPTH_MAT)
                 aim_depth(mathutils.Vector(((lo[0] + hi[0]) / 2, (lo[1] + hi[1]) / 2, (lo[2] + hi[2]) / 2)))
                 render_depth(os.path.join(a.out, jid, f"view-{frame:02d}", f"{side}.depth.png"))
+
+        for k, m_pa, m_pb, patch_k, rest in pair_parts:
+            view_dir = os.path.join(a.out, jid, f"view-{frame:02d}")
+            clear()
+            frame_camera(lo, hi, frame * 15, margin, frame_size)
+            link(occ, f"occ_{jid}", BONE_MAT, holdout=True)
+            link(rest, f"prest_{jid}", BONE_MAT, holdout=True)
+            link(patch_k, f"pline_{jid}", MASK_MAT)
+            render_to(os.path.join(view_dir, f"line.p{k}.png"))
+            for side, (mesh, partner) in (("a", (m_pa, m_pb)), ("b", (m_pb, m_pa))):
+                clear()
+                frame_camera(lo, hi, frame * 15, margin, frame_size)
+                link(occ, f"occ_{jid}", BONE_MAT, holdout=True)
+                link(rest, f"prest_{jid}", BONE_MAT, holdout=True)
+                link(partner, f"ppartner_{jid}", BONE_MAT, holdout=True)
+                link(mesh, f"pmask_{jid}", MASK_MAT)
+                render_to(os.path.join(view_dir, f"{side}.p{k}.png"))
 
         # The image a locate question actually shows: the whole skeleton framed
         # on this joint, lit normally and NOT highlighted — highlighting the

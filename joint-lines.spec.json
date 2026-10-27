@@ -856,7 +856,29 @@
      "Cuboid bone.r"
     ]
    },
-   "band": 0.03
+   "band": 0.03,
+   "pairs": [
+    {
+     "a": [
+      "Talus.l",
+      "Talus.r"
+     ],
+     "b": [
+      "Navicular bone.l",
+      "Navicular bone.r"
+     ]
+    },
+    {
+     "a": [
+      "Calcaneus.l",
+      "Calcaneus.r"
+     ],
+     "b": [
+      "Cuboid bone.l",
+      "Cuboid bone.r"
+     ]
+    }
+   ]
   }
  ]
 }
