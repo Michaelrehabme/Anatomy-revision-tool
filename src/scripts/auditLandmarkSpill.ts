@@ -8,7 +8,7 @@ import { isAccuratePass, scoreAccuracy, scoreRegion } from '../features/anatomy-
 /**
  * How much of each landmark's PASS ZONE lies off the bone.
  *
- *   npx tsx src/scripts/auditLandmarkSpill.ts [--out landmark-spill.json] [--overlays dir]
+ *   npx tsx src/scripts/auditLandmarkSpill.ts [--out landmark-spill.json] [--overlays dir] [--only id,id]
  *
  * The hitboxes were grown generously so a student could hit a small landmark,
  * and some of that growth runs past the edge of the bone into empty picture —
@@ -87,6 +87,8 @@ const args = parseArgs(process.argv.slice(2));
 const outPath = join(ROOT, args.out ?? 'landmark-spill.json');
 const overlayDir = args.overlays;
 if (overlayDir) mkdirSync(overlayDir, { recursive: true });
+/** Landmark ids to measure, when re-checking a few after a fix; a full run is ~12 minutes. */
+const only = args.only ? new Set(args.only.split(',')) : null;
 
 interface Row {
   imageId: string;
@@ -107,6 +109,7 @@ for (const [imageId, hotspots] of Object.entries(LANDMARK_HOTSPOTS)) {
   const view = imageId.split('-').pop()!;
   const hs = hotspots[0];
   const id = hs.structureId;
+  if (only && !only.has(id)) continue;
   const png = join(MASKS, id, `${VIEW_DIRS[view]}.png`);
   if (!existsSync(png)) {
     console.warn(`${imageId}: no render at ${png}`);

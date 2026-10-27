@@ -1,5 +1,5 @@
 {
- "_why": "Owner review of 27 Oct 2026 (review page https://claude.ai/artifact/RBfCZ5QuBbHQTt1PNL3bVA, db hitboxReview). The launch hitboxes were grown generously and ran off the bone into empty picture. Every image listed under trim has its pass zone cut back to the bone silhouette (EDGE px of tolerance); an opening keeps its gap. Point targets were all judged fine and are not listed. shrink also halves the region margin. anatomy marks targets whose tracing itself is wrong and is awaiting a re-render; they are trimmed meanwhile.",
+ "_why": "Owner review of 27 Oct 2026 (review page https://claude.ai/artifact/RBfCZ5QuBbHQTt1PNL3bVA, db hitboxReview). The launch hitboxes were grown generously and ran off the bone into empty picture. Every image listed under trim has its pass zone cut back to the bone silhouette (EDGE px of tolerance); an opening keeps its gap. Point targets were all judged fine and are not listed. shrink also halves the region margin. anatomy marks targets whose tracing itself is wrong and is awaiting a re-render; they are trimmed meanwhile. coreOnly (round 2, db hitboxRound2): the owner wants the hitbox to be the landmark itself, with no margin; for the head of radius (lateral) and the radial tuberosity (anterior), the margin covered the neighbouring bones.",
  "trim": [
   "landmark-acromion-anterior",
   "landmark-acromion-lateral",
@@ -162,5 +162,22 @@
    0,
    -0.035
   ]
- }
+ },
+ "coreOnly": [
+  "landmark-acromion-anterior",
+  "landmark-acromion-lateral",
+  "landmark-acromion-posterior",
+  "landmark-coracoid-process-anterior",
+  "landmark-femoral-neck-lateral",
+  "landmark-head-of-fibula-anterior",
+  "landmark-head-of-fibula-lateral",
+  "landmark-head-of-fibula-posterior",
+  "landmark-head-of-radius-anterior",
+  "landmark-head-of-radius-posterior",
+  "landmark-head-of-radius-lateral",
+  "landmark-radial-tuberosity-anterior",
+  "landmark-tibial-plateau-anterior",
+  "landmark-tibial-plateau-lateral",
+  "landmark-tibial-plateau-posterior"
+ ]
 }

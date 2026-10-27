@@ -241,13 +241,27 @@ const SHRUNK_GROW_PX = Math.round(MIN_HITBOX_GROW_PX / 2);
  */
 const OPENING = /foramen|foramina|canal|hiatus/;
 
-/** The bone in a render — alpha over 128 — grown by `edge` px, optionally with enclosed gaps filled. */
+/**
+ * The bone in a render — alpha over 128 — grown by `edge` px, optionally with
+ * enclosed gaps filled. When the renderer wrote a parent-NN.png beside the
+ * view (a rule with `clipToParent`), that is used instead: the landmark's own
+ * bone alone, so a margin cannot rest on a neighbouring one.
+ */
 async function boneSilhouette(src: string, edge: number, fillHoles: boolean): Promise<Uint8Array> {
+  const parentPath = src.replace(/view-([\w-]+)\.png$/, 'parent-$1.png');
+  const fromParent = parentPath !== src && existsSync(parentPath);
   const { data, info } = await sharp(src).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
   const w = info.width;
   const h = info.height;
   const bone = new Uint8Array(w * h);
   for (let i = 0; i < bone.length; i++) bone[i] = data[i * 4 + 3] > 128 ? 1 : 0;
+  if (fromParent) {
+    // AND, not instead: the parent mesh is drawn 0.4mm proud of the skeleton,
+    // so on a bone's outline — the iliac crest IS the outline — it overhangs
+    // the picture by a few pixels, and trimming to it alone let that fringe in.
+    const parent = await sharp(parentPath).greyscale().raw().toBuffer();
+    for (let i = 0; i < bone.length; i++) if (parent[i] <= 128) bone[i] = 0;
+  }
   if (fillHoles) {
     // Flood the background in from the picture's edge; whatever it cannot
     // reach is enclosed by bone, and counts as bone.
@@ -314,6 +328,8 @@ const trimPath = join(ROOT, args.trim ?? 'landmark-hitbox-trim.json');
 const TRIM_FILE = existsSync(trimPath) ? JSON.parse(readFileSync(trimPath, 'utf8')) : {};
 const TRIM = new Set<string>(TRIM_FILE.trim ?? []);
 const SHRINK = new Set<string>(TRIM_FILE.shrink ?? []);
+/** Images whose hitbox is the landmark itself, with no margin at all — the owner's "only the green is needed". */
+const CORE_ONLY = new Set<string>(TRIM_FILE.coreOnly ?? []);
 /** A measured shift of a POINT target's centre, normalized, per image — the owner's call on where the landmark is. */
 const NUDGE: Record<string, [number, number]> = Object.fromEntries(
   Object.entries(TRIM_FILE.nudge ?? {}).filter(([k]) => !k.startsWith('_')) as [string, [number, number]][],
@@ -492,11 +508,14 @@ for (const id of readdirSync(masksRoot).sort()) {
       // added more area than any small landmark has in total. It gets the
       // fingertip floor as its margin and no more.
       const large = corePx / bits.length > LARGE_REGION_SHARE;
-      let growPx = SHRINK.has(imageId)
-        ? SHRUNK_GROW_PX
-        : large
-          ? MIN_HITBOX_GROW_PX
-          : Math.max(Math.round(HITBOX_GROW_M * (mi.width / frameSize)), MIN_HITBOX_GROW_PX);
+      const coreOnly = CORE_ONLY.has(imageId);
+      let growPx = coreOnly
+        ? 0
+        : SHRINK.has(imageId)
+          ? SHRUNK_GROW_PX
+          : large
+            ? MIN_HITBOX_GROW_PX
+            : Math.max(Math.round(HITBOX_GROW_M * (mi.width / frameSize)), MIN_HITBOX_GROW_PX);
       let grown = dilateMask(bits, mi.width, mi.height, growPx);
       const countOf = (m: Uint8Array) => { let n = 0; for (let i = 0; i < m.length; i++) n += m[i]; return n; };
       // ...and never so far that the hitbox drops under MIN_REGION_SHARE: a

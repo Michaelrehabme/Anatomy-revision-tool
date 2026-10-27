@@ -232,7 +232,8 @@
    1
   ],
   "facingMin": -0.25,
-  "_why": "The crest is the highest edge of the ilium, so the bins run front-to-back (ASIS round to PSIS) and each takes its topmost vertex. facingMin is below zero so the rim's outer and inner lips are kept, not just the faces pointing straight up."
+  "_why": "The crest is the highest edge of the ilium, so the bins run front-to-back (ASIS round to PSIS) and each takes its topmost vertex. facingMin is below zero so the rim's outer and inner lips are kept, not just the faces pointing straight up. CLIPPED TO ITS OWN BONE (owner, round 2 of the 27 Oct review): at the peak of the crest the margin lay on the lumbar vertebra.",
+  "clipToParent": true
  },
  "intertrochanteric-line": {
   "emit": "capsule",
@@ -428,7 +429,8 @@
   "close": 3,
   "open": 0,
   "axisHalfWidth": 0.004,
-  "_why": "THIRD PASS. The reviewer, three times now: a HORIZONTAL line below the humeral head. Their word is final over my reading of their plate (where I followed the oblique edge of the articular surface). Built exactly as the surgical neck they passed — the rim of an end-cap of the bone — but 33mm from the top instead of 48: MEASURED, the articular head's lowest point is 41mm from the top and the surgical neck line is at 48, so this sits just under the bulge of the head and 15mm above the surgical neck."
+  "_why": "THIRD PASS. The reviewer, three times now: a HORIZONTAL line below the humeral head. Their word is final over my reading of their plate (where I followed the oblique edge of the articular surface). Built exactly as the surgical neck they passed — the rim of an end-cap of the bone — but 33mm from the top instead of 48: MEASURED, the articular head's lowest point is 41mm from the top and the surgical neck line is at 48, so this sits just under the bulge of the head and 15mm above the surgical neck. CLIPPED TO ITS OWN BONE (owner, round 2 of the 27 Oct review): its ends ran onto the glenoid labrum and the infraspinous fossa.",
+  "clipToParent": true
  },
  "acetabulum": {
   "emit": "capsule",
@@ -730,16 +732,83 @@
   "_why": "The two lateral projections, per the reviewer's red-marked superior and lateral plates: the outermost 18mm on one side, mirrored to mark the other. Bounded by MEASURED numbers on L4 (probeTP.py): the process tip sits 11.7mm above the bone's centre and 0-6mm behind it; the body's lateral edge is lower and the superior articular process is higher (z to 16mm) and further back (y to 14mm). A 7mm height cap guessed earlier cut the process itself off."
  },
  "infraspinous-fossa": {
-  "kind": "box",
-  "lo": [
-   0.0,
-   0.0,
-   0.0
+  "kind": "within",
+  "normal": [
+   0,
+   1,
+   0
   ],
-  "hi": [
-   1.0,
-   1.0,
-   1.0
+  "polygon": [
+   [
+    -40,
+    0,
+    1362
+   ],
+   [
+    -60,
+    0,
+    1364
+   ],
+   [
+    -84,
+    0,
+    1367
+   ],
+   [
+    -96,
+    0,
+    1367
+   ],
+   [
+    -104,
+    0,
+    1369
+   ],
+   [
+    -112,
+    0,
+    1374
+   ],
+   [
+    -116,
+    0,
+    1377
+   ],
+   [
+    -128,
+    0,
+    1386
+   ],
+   [
+    -136,
+    0,
+    1388
+   ],
+   [
+    -143,
+    0,
+    1372
+   ],
+   [
+    -155,
+    0,
+    1360
+   ],
+   [
+    -200,
+    0,
+    1360
+   ],
+   [
+    -200,
+    0,
+    1200
+   ],
+   [
+    -40,
+    0,
+    1200
+   ]
   ],
   "facing": [
    0,
@@ -750,32 +819,87 @@
   "keepLargest": true,
   "close": 3,
   "smoothNormals": 5,
-  "_why": "THIRD PASS. 'Doesn't cover the whole fossa — the bottom and the right angle are missing — and it comes up into the supraspinous fossa.' A ball round an anchor can do neither: it is round and the fossa is a triangle. Now EVERY backward-facing face of the scapula below the root of the spine (the lower 78% of the bone's height), which reaches the inferior angle and the lateral border by construction; the facing test is tilted slightly downward so the up-and-back-facing supraspinous surface is refused. The top edge follows the SPINE, which is not level: it rises about 30mm from its root on the medial border to the acromion, so the cut is the tilted plane z + 0.3x = 1350mm (the spine's own anchor sits at 1361 on that measure; the cut is a spine's thickness below it), not a horizontal one.",
-  "keepIf": [
-   {
-    "axis": [
-     0.3,
-     0,
-     1
-    ],
-    "world": true,
-    "max": 1.2931
-   }
-  ]
+  "_why": "FOURTH PASS (owner, round 2 of the 27 Oct review): 'the hitbox needs to follow the bottom of the spine of scapula'. A tilted plane cannot follow a curved spine, so the fossa is now the backward-facing surface inside an outline whose top edge runs 4mm under the spine's measured lower edge. The other three sides lie off the bone, so there the bone's own borders set the edge. MEASURED (src/scripts/blender/probeSpineOfScapula.py, 27 Oct 2026): across Scapula.r in 4mm columns, the spine as seen from behind is the band around the most posterior point between z 1330-1420mm. Its lower edge runs z 1371 (x -84, the root) to 1392 (x -132), and its upper edge 1382 to 1405; medial of x -84 the root flattens into the medial border and is extrapolated. PREVIOUSLY: THIRD PASS. 'Doesn't cover the whole fossa — the bottom and the right angle are missing — and it comes up into the supraspinous fossa.' A ball round an anchor can do neither: it is round and the fossa is a triangle. Now EVERY backward-facing face of the scapula below the root of the spine (the lower 78% of the bone's height), which reaches the inferior angle and the lateral border by construction; the facing test is tilted slightly downward so the up-and-back-facing supraspinous surface is refused. The top edge follows the SPINE, which is not level: it rises about 30mm from its root on the medial border to the acromion, so the cut is the tilted plane z + 0.3x = 1350mm (the spine's own anchor sits at 1361 on that measure; the cut is a spine's thickness below it), not a horizontal one."
  },
  "supraspinous-fossa": {
-  "kind": "ball",
-  "from": "Supraspinous fossa.j",
-  "width": 0.043,
+  "kind": "within",
+  "normal": [
+   0,
+   1,
+   0
+  ],
+  "polygon": [
+   [
+    -40,
+    0,
+    1381
+   ],
+   [
+    -60,
+    0,
+    1381
+   ],
+   [
+    -84,
+    0,
+    1389
+   ],
+   [
+    -92,
+    0,
+    1386
+   ],
+   [
+    -100,
+    0,
+    1388
+   ],
+   [
+    -108,
+    0,
+    1393
+   ],
+   [
+    -116,
+    0,
+    1397
+   ],
+   [
+    -124,
+    0,
+    1401
+   ],
+   [
+    -132,
+    0,
+    1402
+   ],
+   [
+    -138,
+    0,
+    1408
+   ],
+   [
+    -138,
+    0,
+    1480
+   ],
+   [
+    -40,
+    0,
+    1480
+   ]
+  ],
   "facing": [
    0,
    0.55,
    0.83
   ],
   "facingMin": 0.3,
+  "keepLargest": true,
   "close": 3,
   "smoothNormals": 5,
-  "_why": "The smaller posterior surface ABOVE the spine, the pink fill on the same plate. SECOND PASS: posterior view only, and widened 26 -> 43mm so it fills the fossa from the medial border to the root of the acromion, as on the reviewer's plate. The fossa faces up-and-back while the infraspinous surface below the spine faces straight back, so the facing test is tilted upward to stop the wider patch spilling over the spine."
+  "_why": "THIRD PASS (owner, round 2 of the 27 Oct review): 'needs to be above the spine of scapula'. The 43mm ball took the spine's own upper surface, which faces up and back just like the fossa. It is now the up-and-back-facing surface inside an outline whose lower edge runs 3mm above the spine's measured upper edge, out to the root of the acromion at x -138. MEASURED (src/scripts/blender/probeSpineOfScapula.py, 27 Oct 2026): across Scapula.r in 4mm columns, the spine as seen from behind is the band around the most posterior point between z 1330-1420mm. Its lower edge runs z 1371 (x -84, the root) to 1392 (x -132), and its upper edge 1382 to 1405; medial of x -84 the root flattens into the medial border and is extrapolated. PREVIOUSLY: The smaller posterior surface ABOVE the spine, the pink fill on the same plate. SECOND PASS: posterior view only, and widened 26 -> 43mm so it fills the fossa from the medial border to the root of the acromion, as on the reviewer's plate. The fossa faces up-and-back while the infraspinous surface below the spine faces straight back, so the facing test is tilted upward to stop the wider patch spilling over the spine."
  },
  "ilium": {
   "kind": "cap",
