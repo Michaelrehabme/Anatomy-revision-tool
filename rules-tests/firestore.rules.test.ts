@@ -677,13 +677,61 @@ describe('users/{uid}', () => {
   });
 
   describe('what an educator sees', () => {
-    it("reads the profile of a student who joined their cohort", async () => {
-      await assertSucceeds(getDoc(doc(as.educator(), 'users', 'student')));
+    // The profile carries email, payment ids, plan and cancellation date; the
+    // join notice names none of the payment ones. Closed 25 Oct 2026.
+    it("cannot read the profile of a student who joined their cohort, or list the class by profile", async () => {
+      await assertFails(getDoc(doc(as.educator(), 'users', 'student')));
+      await assertFails(getDocs(query(collection(as.educator(), 'users'), where('cohort', '==', COHORT))));
     });
 
     it('cannot read a student who has not joined, or who joined someone else', async () => {
       await assertFails(getDoc(doc(as.educator(), 'users', 'stranger')));
       await assertFails(getDoc(doc(as.otherEducator(), 'users', 'student')));
+    });
+
+    describe('the class list, cohorts/{id}/members', () => {
+      const entry = { uid: 'student', displayName: 'Sam', email: 'student@uni.ac.uk', joinedAt: '2026-10-01T00:00:00.000Z' };
+
+      it('a member writes their own entry, and the class owner reads the list', async () => {
+        await assertSucceeds(setDoc(doc(as.student(), 'cohorts', COHORT, 'members', 'student'), entry));
+        await assertSucceeds(getDocs(collection(as.educator(), 'cohorts', COHORT, 'members')));
+        // Their own, for Download my data.
+        await assertSucceeds(getDoc(doc(as.student(), 'cohorts', COHORT, 'members', 'student')));
+      });
+
+      it('nobody else reads it: not another educator, not a classmate', async () => {
+        await assertFails(getDocs(collection(as.otherEducator(), 'cohorts', COHORT, 'members')));
+        await assertFails(getDoc(doc(as.classmate(), 'cohorts', COHORT, 'members', 'student')));
+      });
+
+      it('refuses an entry for a class the writer is not in, or for someone else', async () => {
+        await assertFails(setDoc(doc(as.stranger(), 'cohorts', COHORT, 'members', 'stranger'), { ...entry, uid: 'stranger', email: 'stranger@uni.ac.uk' }));
+        await assertFails(setDoc(doc(as.student(), 'cohorts', COHORT, 'members', 'classmate'), { ...entry, uid: 'classmate' }));
+      });
+
+      it('refuses any field beyond the four, and an email that is not the sign-in one', async () => {
+        await assertFails(setDoc(doc(as.student(), 'cohorts', COHORT, 'members', 'student'), { ...entry, plan: 'individual' }));
+        await assertFails(setDoc(doc(as.student(), 'cohorts', COHORT, 'members', 'student'), { ...entry, email: 'someone@else.com' }));
+      });
+
+      it('the student, or the class owner, can take an entry off the list', async () => {
+        await env.withSecurityRulesDisabled((ctx) => setDoc(doc(ctx.firestore(), 'cohorts', COHORT, 'members', 'classmate'), { uid: 'classmate' }));
+        await assertSucceeds(setDoc(doc(as.student(), 'cohorts', COHORT, 'members', 'student'), entry));
+        await assertSucceeds(deleteDoc(doc(as.student(), 'cohorts', COHORT, 'members', 'student')));
+        await assertFails(deleteDoc(doc(as.otherEducator(), 'cohorts', COHORT, 'members', 'classmate')));
+        await assertSucceeds(deleteDoc(doc(as.educator(), 'cohorts', COHORT, 'members', 'classmate')));
+      });
+    });
+
+    it("lets the class owner remove the class's summaries when the class goes, and nobody else", async () => {
+      await env.withSecurityRulesDisabled(async (ctx) => {
+        await setDoc(doc(ctx.firestore(), 'cohorts', COHORT, 'studentStats', 'student'), { gradedTotal: 1 });
+        await setDoc(doc(ctx.firestore(), 'cohorts', COHORT, 'confusionStats', 'a~b'), { count: 1 });
+      });
+      await assertFails(deleteDoc(doc(as.otherEducator(), 'cohorts', COHORT, 'studentStats', 'student')));
+      await assertFails(deleteDoc(doc(as.classmate(), 'cohorts', COHORT, 'studentStats', 'student')));
+      await assertSucceeds(deleteDoc(doc(as.educator(), 'cohorts', COHORT, 'studentStats', 'student')));
+      await assertSucceeds(deleteDoc(doc(as.educator(), 'cohorts', COHORT, 'confusionStats', 'a~b')));
     });
 
     it("cannot read a member's sessions or other subcollections (CR-031)", async () => {
@@ -997,7 +1045,7 @@ describe('teaching needs full access', () => {
       const db = as.educator();
       await assertSucceeds(getDoc(doc(db, 'cohorts', COHORT)));
       await assertSucceeds(getDocs(query(collection(db, 'cohorts'), where('ownerUid', '==', 'educator'))));
-      await assertSucceeds(getDocs(query(collection(db, 'users'), where('cohort', '==', COHORT))));
+      await assertSucceeds(getDocs(collection(db, 'cohorts', COHORT, 'members')));
       await assertSucceeds(getDocs(collection(db, 'cohorts', COHORT, 'studentStats')));
       await assertSucceeds(getDocs(collection(db, 'cohorts', COHORT, 'assignments')));
       await assertSucceeds(getDoc(doc(db, 'invites', 'stranger@uni.ac.uk__cohort-a')));

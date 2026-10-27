@@ -28,7 +28,7 @@ const source = (path: string) => readFileSync(path, 'utf8');
 describe('PrivacyPage', () => {
   it('carries the date it was last revised', () => {
     renderPage();
-    expect(screen.getByText('Last updated 16 October 2026')).toBeTruthy();
+    expect(screen.getByText('Last updated 25 October 2026')).toBeTruthy();
   });
 
   it('has a section on the test, where the cards link to', () => {
@@ -114,12 +114,13 @@ describe('PrivacyPage', () => {
     expect(source('scripts/cohortReport.ts')).toContain(".where('cohort', '==', cohortId)");
   });
 
-  // Which basis covers the class figure has not been decided. Until it is,
-  // the section states none rather than one somebody guessed.
-  it('does not invent a lawful basis for the test', () => {
+  // The owner chose legitimate interests on 25 Oct 2026. Exactly one basis,
+  // so a second one cannot be slipped in beside it.
+  it('states the basis the owner chose for the test, and only that one', () => {
     const { section, page } = renderPage();
-    expect(section).not.toMatch(/lawful basis|legitimate interests|consent|contract/i);
-    expect(page.match(/Lawful basis:/g)).toHaveLength(3);
+    expect(section).toContain('Lawful basis: legitimate interests');
+    expect(section).not.toMatch(/consent|contract/i);
+    expect(page.match(/Lawful basis:/g)).toHaveLength(5);
   });
 
   it('is what the cards say too: the figure may leave the course', () => {

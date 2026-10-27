@@ -41,7 +41,11 @@ const USER_SUBCOLLECTIONS = [
   'gamification',
   'questionExposure',
   'diagnostics',
+  'assignmentTemplates',
 ];
+
+/** How long a billingFailures row is kept: the privacy policy's "Payments" paragraph. */
+const BILLING_FAILURE_MONTHS = 12;
 
 const APPLY = process.argv.includes('--apply');
 const asOfArg = process.argv.indexOf('--asOf');
@@ -59,15 +63,43 @@ async function deleteAll(db: Firestore, docs: FirebaseFirestore.QueryDocumentSna
   return done;
 }
 
-async function purge(db: Firestore, uid: string, cohortId: string | null): Promise<Record<string, number>> {
+async function purge(
+  db: Firestore,
+  uid: string,
+  cohortId: string | null,
+  email: string | null,
+): Promise<Record<string, number>> {
   const counts: Record<string, number> = {};
 
   // The educator-visible summary first, for the reason accountLifecycle gives:
   // an educator should stop seeing a student before the rest disappears.
   if (cohortId) {
+    await db.doc(`cohorts/${cohortId}/members/${uid}`).delete().catch(() => {});
     await db.doc(`cohorts/${cohortId}/studentStats/${uid}`).delete().catch(() => {});
     counts.studentStats = 1;
   }
+  if (email) {
+    const invites = await db.collection('invites').where('email', '==', email.trim().toLowerCase()).get();
+    counts.invitesToThem = await deleteAll(db, invites.docs);
+  }
+
+  // Classes they ran go with them, as with the delete button.
+  const owned = await db.collection('cohorts').where('ownerUid', '==', uid).get();
+  for (const cohort of owned.docs) {
+    for (const sub of ['members', 'studentStats', 'confusionStats', 'assignments']) {
+      const rows = await db.collection(`cohorts/${cohort.id}/${sub}`).get();
+      await deleteAll(db, rows.docs);
+    }
+    const sent = await db.collection('invites').where('cohortId', '==', cohort.id).get();
+    await deleteAll(db, sent.docs);
+    const code = cohort.data().joinCode;
+    if (typeof code === 'string' && code) await db.doc(`joinCodes/${code}`).delete().catch(() => {});
+    await cohort.ref.delete();
+  }
+  if (owned.size > 0) counts.classesRun = owned.size;
+
+  const failures = await db.collection('billingFailures').where('uid', '==', uid).get();
+  if (failures.size > 0) counts.billingFailures = await deleteAll(db, failures.docs);
 
   const attempts = await db.collection('attemptEvents').where('userId', '==', uid).get();
   counts.attemptEvents = await deleteAll(db, attempts.docs);
@@ -104,6 +136,17 @@ async function main(): Promise<void> {
   console.log(`Cutoff:    accounts last active before ${cutoff.toISOString().slice(0, 10)}`);
   console.log(APPLY ? 'Mode:      APPLY — data will be deleted\n' : 'Mode:      dry run — nothing will be deleted\n');
 
+  // Payment failure records outlive nobody's account, but are kept only so
+  // long: past that, a failure nobody has acted on never will be.
+  const failureCutoff = new Date(NOW);
+  failureCutoff.setMonth(failureCutoff.getMonth() - BILLING_FAILURE_MONTHS);
+  const oldFailures = await db.collection('billingFailures').where('recordedAt', '<', Timestamp.fromDate(failureCutoff)).get();
+  if (oldFailures.size > 0) {
+    console.log(`${APPLY ? 'deleting' : 'would delete'}  ${oldFailures.size} billing failure record(s) older than ${BILLING_FAILURE_MONTHS} months
+`);
+    if (APPLY) await deleteAll(db, oldFailures.docs);
+  }
+
   const snapshot = await db
     .collection('users')
     .where('lastActiveAt', '<', Timestamp.fromDate(cutoff))
@@ -126,7 +169,7 @@ async function main(): Promise<void> {
       continue;
     }
 
-    const counts = await purge(db, doc.id, cohortId);
+    const counts = await purge(db, doc.id, cohortId, (data.email as string | null) ?? null);
     deleted += 1;
     console.log(`deleted       ${label}  ${JSON.stringify(counts)}`);
   }

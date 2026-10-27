@@ -12,8 +12,8 @@ import {
 } from 'firebase/firestore';
 import { getDb } from '../../anatomy-revision/data/firebase';
 import type { Cohort } from '../types/cohort';
-import { getCohort } from './cohortsRepository';
-import { forgetCachedCohort } from './cohortRollups';
+import { currentMemberIdentity, getCohort } from './cohortsRepository';
+import { forgetCachedCohort, writeMembership } from './cohortRollups';
 
 /**
  * Bulk invitations to a class.
@@ -223,15 +223,17 @@ export async function acceptInvite(invite: CohortInvite, uid: string): Promise<C
   // invitation for this cohort addressed to this account's verified email.
   // The invite is deleted immediately after, so the field is a spent ticket
   // rather than a standing permission.
+  const joinedAt = new Date().toISOString();
   await setDoc(
     doc(db, 'users', uid),
     {
       cohort: invite.cohortId,
-      cohortJoinedAt: new Date().toISOString(),
+      cohortJoinedAt: joinedAt,
       cohortInviteId: invite.id,
     },
     { merge: true },
   );
+  await writeMembership(db, invite.cohortId, uid, currentMemberIdentity(), joinedAt);
   // Same reason as joining by code (cohortsRepository.joinCohortByCode).
   forgetCachedCohort(uid);
   await deleteInvite(invite.id);

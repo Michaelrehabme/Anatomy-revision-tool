@@ -20,6 +20,9 @@ export interface AccountExport {
   profile: Record<string, unknown> | null;
   attemptEvents: Record<string, unknown>[];
   cohortSummary: Record<string, unknown> | null;
+  classListEntry: Record<string, unknown> | null;
+  invitesToYou: Record<string, unknown>[];
+  classesYouRun: Record<string, unknown>[];
   collections: Record<string, Record<string, unknown>[]>;
 }
 
@@ -39,6 +42,9 @@ export async function exportAccountData(uid: string): Promise<AccountExport> {
     },
     attemptEvents: [],
     cohortSummary: null,
+    classListEntry: null,
+    invitesToYou: [],
+    classesYouRun: [],
     collections: {
       mastery: [],
       factMastery: [],

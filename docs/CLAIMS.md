@@ -201,9 +201,9 @@ a result. `outcomeComparison.ts` makes that split for the admin screen; it stays
   The section commits to two numbers a student can now hold us to: no class figure to anyone
   under 8 paired students on one paper (`MIN_PAIRED`), and none outside the course under 20
   (condition 1 above, still marked "proposed" — the page states it, so lowering it means
-  changing the page first). /privacy states **no lawful basis** for the test: which of the
-  page's three covers the class figure and its use outside the course is undecided, and is
-  the owner's to settle before a pilot's first baseline.
+  changing the page first). /privacy states **legitimate interests** as the basis for the
+  test (owner's decision, 25 October 2026), with a right to object by email; use outside the
+  course additionally needs the course lead's written agreement.
 - Class totals only. No names, no per-student rows, no quote from a student without their own
   written permission. Educators see class results only; a public claim cannot show more than
   an educator can.

@@ -84,8 +84,12 @@ async function cohortOf(db: Firestore, uid: string): Promise<string | null> {
   if (cached !== undefined) return cached;
 
   const snapshot = await getDoc(doc(db, 'users', uid));
-  const cohort = (snapshot.exists() ? (snapshot.data().cohort as string | null) : null) || null;
+  let cohort = (snapshot.exists() ? (snapshot.data().cohort as string | null) : null) || null;
   const joinedAt = snapshot.exists() ? snapshot.data().cohortJoinedAt : null;
+  // A class is removed with its educator's account (accountLifecycle.ts).
+  // Its students are still pointed at it, and summing their answers into a
+  // class nobody owns would only leave data nobody can see or delete.
+  if (cohort && !(await getDoc(doc(db, 'cohorts', cohort))).exists()) cohort = null;
   cohortCache.set(uid, cohort);
   joinedAtCache.set(uid, typeof joinedAt === 'string' ? joinedAt : null);
   return cohort;
@@ -229,11 +233,18 @@ export const ROLLUP_FALLBACK_SINCE = '2026-09-28T00:00:00.000Z';
 export async function syncStudentRollup(
   db: Firestore,
   uid: string,
-  displayName: string | null,
+  who: MemberIdentity,
   load: () => Promise<{ mastery: StructureMastery[]; summaries: RevisionSessionSummary[]; facts: FactMastery[] }>,
 ): Promise<void> {
   const cohortId = await cohortOf(db, uid);
   if (!cohortId) return;
+  const { displayName } = who;
+  // Members who joined before members/{uid} existed get theirs here, the
+  // next time they use the app, and a changed name or address is carried
+  // over. scripts/backfillCohortMembers.ts covers the ones who do not come back.
+  // Never allowed to cost the rollup itself, which is what the educator's
+  // charts are drawn from.
+  await writeMembership(db, cohortId, uid, who, joinedAtCache.get(uid) ?? null).catch(() => {});
   const { mastery, summaries, facts } = await load();
   await setDoc(
     doc(db, 'cohorts', cohortId, 'studentStats', uid),
@@ -245,6 +256,38 @@ export async function syncStudentRollup(
     },
     { mergeFields: ['uid', 'displayName', 'rollup', 'rollupAt'] },
   );
+}
+
+export interface MemberIdentity {
+  displayName: string | null;
+  email: string | null;
+}
+
+/**
+ * cohorts/{id}/members/{uid}: who is in a class, and all a class owner may
+ * know about them as people. It is the class list.
+ *
+ * The owner used to list a class by reading every member's users/{uid}
+ * profile. That handed them the whole profile, and the rules cannot hide
+ * fields of a document, only the document: email, payment ids, plan and
+ * cancellation date, none of which the join notice mentions. So the student
+ * writes this, with exactly the fields the notice names, and the profile is
+ * closed to the class owner (firestore.rules, users/{uid}; GDPR review 25 Oct
+ * 2026).
+ *
+ * Written by the student and pinned by the rules to their own uid, a class
+ * they are actually in, and the email on their own sign-in.
+ */
+export async function writeMembership(
+  db: Firestore,
+  cohortId: string,
+  uid: string,
+  who: MemberIdentity,
+  joinedAt: string | null,
+): Promise<void> {
+  const fields: Record<string, unknown> = { uid, displayName: who.displayName, email: who.email };
+  if (joinedAt) fields.joinedAt = joinedAt;
+  await setDoc(doc(db, 'cohorts', cohortId, 'members', uid), fields, { merge: true });
 }
 
 /** Clears a student's summary when they leave a class, so an educator stops seeing them immediately. */

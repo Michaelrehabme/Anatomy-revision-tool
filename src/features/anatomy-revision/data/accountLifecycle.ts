@@ -39,6 +39,11 @@ export { hasLiveSubscription, SUBSCRIPTION_STILL_RENEWS };
  *   questionReports, clientErrors,
  *   funnelEvents (userId == uid)       what the app reported under this uid
  *   cohorts/{id}/studentStats/{uid}    the summary an educator reads
+ *   cohorts/{id}/members/{uid}         their entry on the class list
+ *   invites (email == theirs)          invitations addressed to them
+ *   cohorts they OWN                   the class, its list, summaries,
+ *                                      assignments, invites and join code:
+ *                                      the class goes with its educator
  *   roles/{uid}                        admin grant, if any
  *   Firebase Auth user                 the identity itself
  *
@@ -79,7 +84,28 @@ export interface AccountExport {
   profile: Record<string, unknown> | null;
   attemptEvents: Record<string, unknown>[];
   cohortSummary: Record<string, unknown> | null;
+  /** Their entry on their class's list: what the class owner sees of them as a person. */
+  classListEntry: Record<string, unknown> | null;
+  /** Invitations addressed to them that they have not answered. */
+  invitesToYou: Record<string, unknown>[];
+  /** Classes they run, with the invitations they sent for each. Their students' data is not theirs to export. */
+  classesYouRun: Record<string, unknown>[];
   collections: Record<string, Record<string, unknown>[]>;
+}
+
+/** The signed-in account's email as invitations store it (invitesRepository: lower case). */
+function ownEmail(uid: string): string | null {
+  const user = getFirebaseAuth().currentUser;
+  return user && user.uid === uid && user.email ? user.email.toLowerCase() : null;
+}
+
+async function invitesAddressedTo(db: Firestore, email: string | null) {
+  if (!email) return [];
+  return (await getDocs(query(collection(db, 'invites'), where('email', '==', email)))).docs;
+}
+
+async function cohortsOwnedBy(db: Firestore, uid: string) {
+  return (await getDocs(query(collection(db, 'cohorts'), where('ownerUid', '==', uid)))).docs;
 }
 
 async function readCollection(db: Firestore, uid: string, name: string): Promise<Record<string, unknown>[]> {
@@ -114,9 +140,19 @@ export async function exportAccountData(uid: string): Promise<AccountExport> {
   }
 
   let cohortSummary: Record<string, unknown> | null = null;
+  let classListEntry: Record<string, unknown> | null = null;
   if (cohortId) {
     const summary = await getDoc(doc(db, 'cohorts', cohortId, 'studentStats', uid));
     if (summary.exists()) cohortSummary = summary.data();
+    const entry = await getDoc(doc(db, 'cohorts', cohortId, 'members', uid)).catch(() => null);
+    if (entry?.exists()) classListEntry = entry.data();
+  }
+
+  const invitesToYou = (await invitesAddressedTo(db, ownEmail(uid))).map((d) => ({ id: d.id, ...d.data() }));
+  const classesYouRun: Record<string, unknown>[] = [];
+  for (const cohort of await cohortsOwnedBy(db, uid)) {
+    const sent = await getDocs(query(collection(db, 'invites'), where('cohortId', '==', cohort.id)));
+    classesYouRun.push({ id: cohort.id, ...cohort.data(), invitesSent: sent.docs.map((d) => ({ id: d.id, ...d.data() })) });
   }
 
   return {
@@ -125,6 +161,9 @@ export async function exportAccountData(uid: string): Promise<AccountExport> {
     profile,
     attemptEvents: attempts.docs.map((d) => ({ id: d.id, ...d.data() })),
     cohortSummary,
+    classListEntry,
+    invitesToYou,
+    classesYouRun,
     collections,
   };
 }
@@ -203,9 +242,28 @@ export async function deleteAccountData(
     ? (profileSnap.data().cohort as string)
     : null;
   if (cohortId) {
+    await deleteDoc(doc(db, 'cohorts', cohortId, 'members', uid)).catch(() => {});
     await deleteDoc(doc(db, 'cohorts', cohortId, 'studentStats', uid)).catch(() => {
       // A summary that was never written is not an error.
     });
+  }
+  await deleteAll(db, (await invitesAddressedTo(db, ownEmail(uid))).map((d) => ({ path: d.ref.path })));
+
+  // An educator's classes go with them. Everything under a class is removed
+  // before the class itself, because the owner's right to remove it is read
+  // from the class document (firestore.rules ownsCohort).
+  const owned = await cohortsOwnedBy(db, uid);
+  if (owned.length > 0) step('Removing the classes you run');
+  for (const cohort of owned) {
+    for (const sub of ['members', 'studentStats', 'confusionStats', 'assignments']) {
+      const rows = await getDocs(collection(db, 'cohorts', cohort.id, sub));
+      await deleteAll(db, rows.docs.map((d) => ({ path: d.ref.path })));
+    }
+    const sent = await getDocs(query(collection(db, 'invites'), where('cohortId', '==', cohort.id)));
+    await deleteAll(db, sent.docs.map((d) => ({ path: d.ref.path })));
+    const code = cohort.data().joinCode;
+    if (typeof code === 'string' && code) await deleteDoc(doc(db, 'joinCodes', code)).catch(() => {});
+    await deleteDoc(cohort.ref);
   }
 
   step('Deleting your answers');

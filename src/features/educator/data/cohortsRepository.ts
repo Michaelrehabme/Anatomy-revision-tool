@@ -1,8 +1,8 @@
-import { collection, deleteField, doc, getDoc, getDocs, query, setDoc, where } from 'firebase/firestore';
-import { getDb } from '../../anatomy-revision/data/firebase';
+import { collection, deleteDoc, deleteField, doc, getDoc, getDocs, query, setDoc, where } from 'firebase/firestore';
+import { getDb, getFirebaseAuth } from '../../anatomy-revision/data/firebase';
 import { generateJoinCode } from '../lib/joinCode';
 import type { Cohort, CohortStudent } from '../types/cohort';
-import { forgetCachedCohort } from './cohortRollups';
+import { forgetCachedCohort, writeMembership, type MemberIdentity } from './cohortRollups';
 
 /**
  * cohorts/{cohortId} lives outside users/{uid} and outside AnatomyRepository
@@ -131,23 +131,36 @@ export async function listCohortsByIds(ids: string[]): Promise<Cohort[]> {
   return cohorts.filter((c): c is Cohort => c !== null);
 }
 
-/** Every users/{uid} profile with cohort === cohortId — see firestore.rules' ownership-scoped read rule on users/{uid}. */
+/**
+ * The class list: cohorts/{id}/members (cohortRollups.writeMembership), with
+ * when each student last answered taken from their summary. Never the
+ * students' own profiles, which a class owner cannot read.
+ */
 export async function listStudentsInCohort(cohortId: string): Promise<CohortStudent[]> {
-  const snapshot = await getDocs(query(collection(getDb(), 'users'), where('cohort', '==', cohortId)));
-  return snapshot.docs.map((d) => {
+  const db = getDb();
+  const [members, stats] = await Promise.all([
+    getDocs(collection(db, 'cohorts', cohortId, 'members')),
+    getDocs(collection(db, 'cohorts', cohortId, 'studentStats')),
+  ]);
+  const lastActive = new Map(
+    stats.docs.map((d) => [d.id, typeof d.data().lastActiveAt === 'string' ? (d.data().lastActiveAt as string) : null]),
+  );
+  return members.docs.map((d) => {
     const data = d.data();
     return {
       uid: d.id,
       displayName: (data.displayName as string | null) ?? null,
       email: (data.email as string | null) ?? null,
-      joinedAt: (data.cohortJoinedAt as string | null) ?? null,
-      // A Firestore timestamp (touchUserProfile writes serverTimestamp()), not
-      // a string: handed on as one, the Students screens printed "Invalid Date".
-      lastActiveAt: typeof data.lastActiveAt === 'string'
-        ? data.lastActiveAt
-        : ((data.lastActiveAt as { toDate?: () => Date } | null)?.toDate?.().toISOString() ?? null),
+      joinedAt: (data.joinedAt as string | null) ?? null,
+      lastActiveAt: lastActive.get(d.id) ?? null,
     };
   });
+}
+
+/** The signed-in student, as their class owner may know them. */
+export function currentMemberIdentity(): MemberIdentity {
+  const user = getFirebaseAuth().currentUser;
+  return { displayName: user?.displayName ?? null, email: user?.email ?? null };
 }
 
 /**
@@ -165,16 +178,19 @@ export async function listStudentsInCohort(cohortId: string): Promise<CohortStud
 export async function joinCohortByCode(uid: string, joinCode: string): Promise<Cohort> {
   const cohort = await getCohortByJoinCode(joinCode);
   if (!cohort) throw new Error('No cohort found with that code — check it and try again.');
+  const joinedAt = new Date().toISOString();
   await setDoc(
     doc(getDb(), 'users', uid),
     {
       cohort: cohort.id,
-      cohortJoinedAt: new Date().toISOString(),
+      cohortJoinedAt: joinedAt,
       cohortJoinCode: cohort.joinCode,
       cohortInviteId: deleteField(),
     },
     { merge: true },
   );
+  // After the profile: the rules accept it only from a member of the class.
+  await writeMembership(getDb(), cohort.id, uid, currentMemberIdentity(), joinedAt);
   // The rollup remembers which class an account is in for as long as the app
   // stays open. It asked when the app started, before this join, and was told
   // "none" — so without this, everything the student answers until they next
@@ -186,6 +202,11 @@ export async function joinCohortByCode(uid: string, joinCode: string): Promise<C
 
 /** Student-initiated: clears users/{uid}.cohort. Leaving is always available and immediate. */
 export async function leaveCohort(uid: string): Promise<void> {
+  // Off the class list first, so a failure later in leaving never leaves a
+  // student listed in a class they asked to leave.
+  const current = await getDoc(doc(getDb(), 'users', uid));
+  const cohortId = current.exists() ? (current.data().cohort as string | null) : null;
+  if (cohortId) await deleteDoc(doc(getDb(), 'cohorts', cohortId, 'members', uid)).catch(() => {});
   await setDoc(
     doc(getDb(), 'users', uid),
     {

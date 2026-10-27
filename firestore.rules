@@ -446,7 +446,11 @@ service cloud.firestore {
       // Erasure — see data/accountLifecycle.ts.
       allow delete: if isSignedIn() && request.auth.uid == uid;
       allow read: if isAdmin();
-      allow read: if ownsCohort(resource.data.get('cohort', ''));
+      // NO COHORT-OWNER READ of the profile either. There was one, and it
+      // handed a class owner the whole document: email, payment ids, plan and
+      // cancellation date, none of which the join notice mentions. A class is
+      // listed from cohorts/{id}/members instead, which holds only what the
+      // notice names (GDPR review, 25 Oct 2026).
 
       // Subcollections: mastery, questionExposure, sessions.
       //
@@ -607,6 +611,21 @@ service cloud.firestore {
       return isSignedIn() && cohortOfUser(request.auth.uid) == cohortId;
     }
 
+    // cohorts/{id}/members/{uid} — the class list (cohortRollups.writeMembership).
+    // The student writes their own, only while they are in the class, with
+    // only these fields, and with the email their own sign-in carries, so a
+    // class owner is never shown an address the student did not sign in
+    // with. Leaving deletes it; so does the owner removing the class.
+    match /cohorts/{cohortId}/members/{uid} {
+      allow read: if (isSignedIn() && request.auth.uid == uid) || isAdmin() || ownsCohort(cohortId);
+      allow create, update: if isMemberOfCohort(cohortId)
+        && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['uid', 'displayName', 'email', 'joinedAt'])
+        && request.resource.data.uid == uid
+        && request.resource.data.get('email', null) == request.auth.token.get('email', null);
+      allow delete: if (isSignedIn() && request.auth.uid == uid) || ownsCohort(cohortId) || isAdmin();
+    }
+
     match /cohorts/{cohortId}/confusionStats/{pairKey} {
       allow read: if isAdmin() || ownsCohort(cohortId);
       // Students only. The backfill that rebuilds these runs through the
@@ -614,6 +633,8 @@ service cloud.firestore {
       // entirely — so there is no reason to widen who may write derived
       // student data here, permanently, for a migration that runs once.
       allow write: if isMemberOfCohort(cohortId);
+      // The class's owner, removing the class (accountLifecycle.ts).
+      allow delete: if ownsCohort(cohortId);
     }
 
     match /cohorts/{cohortId}/studentStats/{uid} {
@@ -622,6 +643,8 @@ service cloud.firestore {
       // what stops one member rewriting a classmate's accuracy. No admin
       // grant, for the reason given above.
       allow write: if isMemberOfCohort(cohortId) && request.auth.uid == uid;
+      // The class's owner, removing the class (accountLifecycle.ts).
+      allow delete: if ownsCohort(cohortId);
     }
 
     match /cohorts/{cohortId} {
