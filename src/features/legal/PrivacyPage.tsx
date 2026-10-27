@@ -103,6 +103,12 @@ export function PrivacyPage() {
           identifier is stored on your device instead and no email is collected; revising needs an account.
         </p>
         <p>
+          <strong style={{ color: 'var(--ink)' }}>A note that you joined.</strong> When an account is created, the
+          person who runs LocusMSK is sent an email with its name, email address, sign-in method and date, so we know
+          who has joined. It is sent through Resend and kept in our mailbox for 24 months at most, and deleted sooner
+          if you ask us to.
+        </p>
+        <p>
           <strong style={{ color: 'var(--ink)' }}>Whether your email address is confirmed.</strong> The free area
           needs an email address that is confirmed to be yours. If you sign up with an email and password, we email
           that address a link to confirm it, and again only if you ask for it or sign in on another device before

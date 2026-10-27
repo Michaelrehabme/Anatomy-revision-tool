@@ -63,7 +63,8 @@ export default async function handler(): Promise<Response> {
   const to = process.env.SIGNUP_EMAIL_TO || process.env.REPORT_EMAIL_TO || 'michael@rehabme.uk';
   const from = process.env.REMINDER_FROM ?? 'LocusMSK <hello@locusmsk.co.uk>';
 
-  const signedUp = (await everyAccount()).filter(isSignedUp);
+  const accounts = await everyAccount();
+  const signedUp = accounts.filter(isSignedUp);
   const seenDoc = await db.doc(SEEN).get();
 
   if (!seenDoc.exists) {
@@ -73,6 +74,16 @@ export default async function handler(): Promise<Response> {
   }
 
   const seen = new Set<string>(seenDoc.get('uids') ?? []);
+
+  // A deleted account comes off the list: it cannot sign up again under the
+  // same uid, so remembering it does nothing, and keeping it would keep a
+  // trace of someone who asked to be erased (GDPR review, 25 Oct 2026).
+  const existing = new Set(accounts.map((a) => a.uid));
+  const gone = [...seen].filter((uid) => !existing.has(uid));
+  if (gone.length > 0) {
+    await db.doc(SEEN).update({ uids: FieldValue.arrayRemove(...gone) });
+    console.log(`signup-emails: dropped ${gone.length} deleted account(s) from the seen list`);
+  }
   const due = signedUp.filter((a) => !seen.has(a.uid)).slice(0, BATCH);
 
   let sent = 0;
