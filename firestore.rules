@@ -745,10 +745,26 @@ service cloud.firestore {
       return value is string && value.size() <= max;
     }
 
+    // A report's snapshot of the question on screen: seven strings, each held
+    // to the length the client cuts it to (feedback/data/rows.ts SHOWN_MAX).
+    function validShown(shown) {
+      return shown is map
+        && shown.keys().hasOnly(['subject', 'prompt', 'lines', 'choices', 'correct', 'given', 'picture'])
+        && shortString(shown.get('subject', ''), 200)
+        && shortString(shown.get('prompt', ''), 600)
+        && shortString(shown.get('lines', ''), 1600)
+        && shortString(shown.get('choices', ''), 1600)
+        && shortString(shown.get('correct', ''), 300)
+        && shortString(shown.get('given', ''), 300)
+        && shortString(shown.get('picture', ''), 200);
+    }
+
     match /questionReports/{reportId} {
       allow create: if ownsNewRow()
         && request.resource.data.keys().hasOnly(
-          ['userId', 'questionId', 'structureId', 'questionType', 'promptKind', 'area', 'reason', 'note', 'build', 'createdAt'])
+          ['userId', 'questionId', 'structureId', 'questionType', 'promptKind', 'area', 'reason', 'note', 'build', 'createdAt', 'shown'])
+        // What was on screen (25 Oct 2026), optional so older apps still report.
+        && (!('shown' in request.resource.data) || validShown(request.resource.data.shown))
         && shortString(request.resource.data.questionId, 300)
         && shortString(request.resource.data.structureId, 200)
         && shortString(request.resource.data.questionType, 40)

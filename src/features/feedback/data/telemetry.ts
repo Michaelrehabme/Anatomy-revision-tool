@@ -70,10 +70,18 @@ export async function reportQuestion(input: QuestionReportInput): Promise<boolea
     const report = questionReportRow(uid, input, CONTENT_VERSION, new Date());
     // Offline, the write is queued on the device and the promise waits for the
     // server. The report is as good as sent, so the student is not kept waiting.
-    await Promise.race([
-      sdk.addDoc(sdk.collection(db, QUESTION_REPORTS), report),
-      new Promise((resolve) => setTimeout(resolve, QUEUED_AFTER_MS)),
-    ]);
+    const write = (row: typeof report) =>
+      Promise.race([sdk.addDoc(sdk.collection(db, QUESTION_REPORTS), row), new Promise((resolve) => setTimeout(resolve, QUEUED_AFTER_MS))]);
+    try {
+      await write(report);
+    } catch (error) {
+      // Rules deployed before 25 Oct 2026 refuse the `shown` snapshot. The
+      // report still matters more than the snapshot: send it without.
+      if (!report.shown) throw error;
+      const plain = { ...report };
+      delete plain.shown;
+      await write(plain);
+    }
     return true;
   } catch {
     return false;

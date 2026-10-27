@@ -25,6 +25,7 @@ import { useRecoverFocus } from '../shared/useRecoverFocus';
 import { PersistErrorBanner } from '../shared/PersistErrorBanner';
 import { AnswerAnnouncer } from '../shared/AnswerAnnouncer';
 import { PlateCatalogueProvider } from '../shared/PlateDescription';
+import { reportContextFor } from '../../../feedback/data/questionShown';
 
 interface StudySessionProps {
   session: ReturnType<typeof useRevisionSession>;
@@ -143,6 +144,7 @@ export function StudySession({ session, content, onEnd, onBackToSetup }: StudySe
           assignment={!!session.setupParams?.assignment}
           exam={examMode}
           question={question}
+          reportContext={reportContextFor(question, session.answers, content)}
           hint={
             examMode
               ? remainingSeconds !== null

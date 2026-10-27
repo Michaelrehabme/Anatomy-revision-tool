@@ -29,6 +29,37 @@ export const REPORT_REASONS = [
 
 export type ReportReason = (typeof REPORT_REASONS)[number]['id'];
 
+/**
+ * What was on the student's screen when they reported it (owner, 25 Oct 2026:
+ * the email should "include the screen/question that was shown"). Strings
+ * only, so firestore.rules can hold each to a length; lists are joined one
+ * item per line. Every field may be empty.
+ */
+export interface QuestionShown {
+  /** The structure the question is about, by name. */
+  subject: string;
+  prompt: string;
+  /** Bullet lines under the prompt (a ligament's attachments), one per line. */
+  lines: string;
+  /** The choices offered, one per line, in the order shown. */
+  choices: string;
+  correct: string;
+  /** What the student answered, if they had answered before reporting. */
+  given: string;
+  /** The picture's path on the site, '' for a question with none. */
+  picture: string;
+}
+
+export const SHOWN_MAX: Record<keyof QuestionShown, number> = {
+  subject: 200,
+  prompt: 600,
+  lines: 1600,
+  choices: 1600,
+  correct: 300,
+  given: 300,
+  picture: 200,
+};
+
 export interface QuestionReport {
   userId: string;
   questionId: string;
@@ -42,6 +73,8 @@ export interface QuestionReport {
   createdAt: string;
   /** Set by an admin once it has been dealt with. */
   resolvedAt?: string;
+  /** Absent on reports sent before 25 Oct 2026. */
+  shown?: QuestionShown;
 }
 
 export interface ClientError {
@@ -97,10 +130,19 @@ export interface QuestionReportInput {
   area?: string;
   reason: ReportReason;
   note: string;
+  shown?: QuestionShown;
+}
+
+/** Each field cut to its limit, so the rules never refuse a long question. */
+export function clampShown(shown: QuestionShown): QuestionShown {
+  const out = {} as QuestionShown;
+  for (const key of Object.keys(SHOWN_MAX) as (keyof QuestionShown)[]) out[key] = (shown[key] ?? '').slice(0, SHOWN_MAX[key]);
+  return out;
 }
 
 export function questionReportRow(uid: string, input: QuestionReportInput, build: string, now: Date): QuestionReport {
   return {
+    ...(input.shown ? { shown: clampShown(input.shown) } : {}),
     userId: uid,
     questionId: input.questionId,
     structureId: input.structureId,

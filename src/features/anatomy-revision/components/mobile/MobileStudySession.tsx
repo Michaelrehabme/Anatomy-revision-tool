@@ -24,6 +24,7 @@ import { useRecoverFocus } from '../shared/useRecoverFocus';
 import { PlateCatalogueProvider } from '../shared/PlateDescription';
 import { EndSessionControl } from '../shared/EndSessionControl';
 import { ReportQuestionControl } from '../../../feedback/ReportQuestionControl';
+import { reportContextFor } from '../../../feedback/data/questionShown';
 
 interface MobileStudySessionProps {
   session: ReturnType<typeof useRevisionSession>;
@@ -135,7 +136,7 @@ export function MobileStudySession({ session, content, onEnd, onBackToSetup, onO
             )}
           </span>
           {/* Last in the row, and takes a line of its own once opened, as End session's question does. */}
-          <ReportQuestionControl variant="bar" question={question} />
+          <ReportQuestionControl variant="bar" question={question} context={reportContextFor(question, session.answers, content)} />
         </div>
         {examMode && (
           <div className="mt-1.5" style={{ font: '500 11px/1 var(--font-mono)', color: 'var(--accd)' }}>

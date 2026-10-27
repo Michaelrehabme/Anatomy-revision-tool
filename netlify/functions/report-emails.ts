@@ -1,7 +1,8 @@
 import { FieldValue } from 'firebase-admin/firestore';
-import { adminDb } from './lib/firebaseAdmin';
+import { getAuth } from 'firebase-admin/auth';
+import { adminApp, adminDb } from './lib/firebaseAdmin';
 import { QUESTION_REPORTS, type QuestionReport } from '../../src/features/feedback/data/rows';
-import { reportEmail } from '../../src/features/feedback/data/reportEmail';
+import { reportEmail, type Reporter } from '../../src/features/feedback/data/reportEmail';
 
 /**
  * Scheduled every ten minutes. Emails the owner one message per question a
@@ -48,9 +49,26 @@ export default async function handler(): Promise<Response> {
   const marks = unresolved.length ? await db.getAll(...unresolved.map((d) => db.doc(`${REPORT_EMAILS}/${d.id}`))) : [];
   const due = unresolved.filter((_, i) => !marks[i].exists).slice(0, BATCH);
 
+  // Who reported it, named in the email (owner, 25 Oct 2026). The row holds
+  // only the uid; the name and address come from the account, here on the
+  // server, and never go back to any client.
+  const reporters = new Map<string, Reporter>();
+  const reporterOf = async (uid: string): Promise<Reporter | undefined> => {
+    if (!reporters.has(uid)) {
+      try {
+        const user = await getAuth(adminApp()).getUser(uid);
+        reporters.set(uid, { name: user.displayName ?? undefined, email: user.email ?? undefined });
+      } catch {
+        reporters.set(uid, {});
+      }
+    }
+    return reporters.get(uid);
+  };
+
   let sent = 0;
   for (const doc of due) {
-    const { subject, text } = reportEmail(doc.data() as QuestionReport);
+    const report = doc.data() as QuestionReport;
+    const { subject, text, html } = reportEmail(report, await reporterOf(report.userId));
     if (!key) {
       console.log(`report-emails: dry run, would send ${doc.id}: ${subject}`);
       continue;
@@ -58,7 +76,7 @@ export default async function handler(): Promise<Response> {
     const response = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ from, to, subject, text }),
+      body: JSON.stringify({ from, to, subject, text, html }),
     });
     if (!response.ok) {
       console.error(`report-emails: send failed for ${doc.id}, ${response.status}: ${(await response.text()).slice(0, 200)}`);
