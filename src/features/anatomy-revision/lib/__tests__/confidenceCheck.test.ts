@@ -23,8 +23,12 @@ function pairs(rating: Confidence, count: number, nextRightCount: number): UserA
 }
 
 describe('calibration', () => {
-  it('says nothing until there are enough rated answers', () => {
-    expect(calibration(pairs('easy', CALIBRATION_MIN - 1, 0)).verdict).toBe('too-soon');
+  it('gives no advice until there are enough rated answers, but shows the figures from the first', () => {
+    const result = calibration([...pairs('easy', CALIBRATION_MIN - 1, 0), ...pairs('hard', 3, 2)]);
+    expect(result.verdict).toBe('too-soon');
+    expect(result.hard.share).toBeCloseTo(2 / 3);
+    expect(result.hard.judged).toBe(false);
+    expect(result.medium.share).toBeNull();
   });
 
   it('flags Easy pressed for things that do not last', () => {

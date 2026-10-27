@@ -9,7 +9,7 @@ import { LENS_LABELS, type LensKind } from '../../lib/atlasLenses';
 
 const LENSES: LensKind[] = ['group', 'movement', 'nerve'];
 
-const SEEN_FILTERS: SeenFilter[] = ['all', 'seen', 'unseen'];
+const SEEN_FILTERS: SeenFilter[] = ['all', 'seen', 'unseen', 'due'];
 
 const eyebrow = {
   font: '500 10px/1 var(--font-mono)',

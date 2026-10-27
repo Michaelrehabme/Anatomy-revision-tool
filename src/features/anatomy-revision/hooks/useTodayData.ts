@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import type { AnatomyRepository } from '../data/repository';
 import type { AnatomyContent } from './useAnatomyContent';
 import type { FactMastery, StructureMastery, RevisionSessionSummary } from '../types/attempt';
-import { spreadReviewItems, buildReviewQueue, type ReviewItem } from '../lib/reviewQueue';
+import { spreadReviewItems, buildReviewQueue, dueStructureIds, type ReviewItem } from '../lib/reviewQueue';
 import { areasOf } from '../types/structure';
 import type { Area } from '../types/region';
 import { STREAK_SESSION_LIMIT, streakWithFreezes } from '../lib/streak';
@@ -34,7 +34,7 @@ export interface TodayData {
   reviewItems: ReviewItem[];
   /** The same items in "New set" order — structures answered longest ago first (lib/reviewQueue.ts). */
   spreadItems: ReviewItem[];
-  /** Question types due now, across the muscles this account may reach. */
+  /** Structures with something due now, across everything this account may reach (lib/reviewQueue.ts dueStructureIds). */
   dueCount: number;
   /** Every fact row for the user, passed on to the session generator. */
   facts: FactMastery[];
@@ -174,7 +174,7 @@ export function useTodayData(
     comingDue,
     reviewItems,
     spreadItems,
-    dueCount: queue.due.length,
+    dueCount: dueStructureIds(queue.due).size,
     facts,
     weekBuckets,
     weekMax,

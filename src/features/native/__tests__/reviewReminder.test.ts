@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { FactMastery, StructureMastery } from '../../anatomy-revision/types/attempt';
-import { buildReviewQueue } from '../../anatomy-revision/lib/reviewQueue';
+import { buildReviewQueue, dueStructureIds } from '../../anatomy-revision/lib/reviewQueue';
 import { REMINDER_HOUR, planReviewReminder, reminderBody } from '../reviewReminderPlan';
 
 const plugin = vi.hoisted(() => ({
@@ -46,8 +46,9 @@ describe('planReviewReminder', () => {
       NOW,
     );
     expect(plan?.at).toEqual(at(5, REMINDER_HOUR));
-    expect(plan?.count).toBe(2);
-    expect(plan?.body).toBe('2 reviews are due.');
+    // The deltoid's name and its origin are both due: one structure, as Today counts it (27 Oct 2026).
+    expect(plan?.count).toBe(1);
+    expect(plan?.body).toBe('1 structure is due for review.');
   });
 
   it('counts what will be due BY the reminder, exactly as the Today screen would then', () => {
@@ -55,7 +56,7 @@ describe('planReviewReminder', () => {
     const plan = planReviewReminder(mastery, [], ELIGIBLE, NOW);
     // 16:00 is before the 18:00 slot and counts; 20:00 is after it and does not.
     expect(plan?.count).toBe(1);
-    expect(plan?.count).toBe(buildReviewQueue(mastery, [], ELIGIBLE, plan!.at).due.length);
+    expect(plan?.count).toBe(dueStructureIds(buildReviewQueue(mastery, [], ELIGIBLE, plan!.at).due).size);
   });
 
   it('moves to tomorrow once today\'s slot has passed', () => {
@@ -72,7 +73,7 @@ describe('planReviewReminder', () => {
   it('waits for the first day that has anything due, rather than firing empty', () => {
     const plan = planReviewReminder([naming('deltoid', { dueAt: at(9, 7).toISOString() })], [], ELIGIBLE, NOW);
     expect(plan?.at).toEqual(at(9, REMINDER_HOUR));
-    expect(plan?.body).toBe('1 review is due.');
+    expect(plan?.body).toBe('1 structure is due for review.');
   });
 
   it('never reminds about a structure in a locked area', () => {
@@ -85,8 +86,8 @@ describe('planReviewReminder', () => {
   });
 
   it('says one review, not "1 reviews"', () => {
-    expect(reminderBody(1)).toBe('1 review is due.');
-    expect(reminderBody(12)).toBe('12 reviews are due.');
+    expect(reminderBody(1)).toBe('1 structure is due for review.');
+    expect(reminderBody(12)).toBe('12 structures are due for review.');
   });
 });
 
@@ -129,7 +130,7 @@ describe('syncReviewReminder', () => {
     const [{ notifications }] = plugin.schedule.mock.calls[0] as unknown as [{ notifications: { id: number; body: string; schedule: { at: Date } }[] }];
     expect(notifications).toHaveLength(1);
     expect(notifications[0].id).toBe(REVIEW_REMINDER_ID);
-    expect(notifications[0].body).toBe('1 review is due.');
+    expect(notifications[0].body).toBe('1 structure is due for review.');
     expect(notifications[0].schedule.at.getHours()).toBe(REMINDER_HOUR);
   });
 

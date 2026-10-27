@@ -1,4 +1,7 @@
 import { useState } from 'react';
+import { useLocation } from 'react-router-dom';
+import type { SeenFilter } from '../../lib/atlasList';
+import type { Area } from '../../types/region';
 import type { AnatomyContent } from '../../hooks/useAnatomyContent';
 import type { AnatomyRepository } from '../../data/repository';
 import { CATEGORY_LABELS, type Category } from '../../types/structure';
@@ -61,7 +64,9 @@ const PANEL_ID = 'atlas-filters';
  * interrupting a click; locking the list keeps the boundary in one place.
  */
 export function Atlas({ access, content, repository, userId, onOpenMuscle, onDrillOina, onQuizStructures, onReviewDue, onNavigate }: AtlasProps) {
-  const list = useAtlasList({ access, content, repository, userId });
+  // Today's "See them" arrives with the list already narrowed to what is due.
+  const arrival = useLocation().state as { atlasSeen?: SeenFilter; atlasArea?: Area } | null;
+  const list = useAtlasList({ access, content, repository, userId, initialSeen: arrival?.atlasSeen, initialArea: arrival?.atlasArea });
   const [panelOpen, setPanelOpen] = useState(getAtlasPanelOpen);
 
   const { entitled, visible, rows, filters, contextIds, muscleIds, activeCount } = list;

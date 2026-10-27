@@ -28,8 +28,10 @@ export interface RatingRecord {
   pairs: number;
   /** Of those, how many were right the next time. */
   heldUp: number;
-  /** heldUp / pairs, or null under CALIBRATION_MIN. */
+  /** heldUp / pairs, or null with no pairs at all. Shown from the first pair; judged only from CALIBRATION_MIN. */
   share: number | null;
+  /** Enough pairs for the share to be judged (CALIBRATION_MIN). */
+  judged: boolean;
 }
 
 export type CalibrationVerdict =
@@ -50,7 +52,7 @@ export interface Calibration {
 }
 
 function record(pairs: number, heldUp: number): RatingRecord {
-  return { pairs, heldUp, share: pairs >= CALIBRATION_MIN ? heldUp / pairs : null };
+  return { pairs, heldUp, share: pairs > 0 ? heldUp / pairs : null, judged: pairs >= CALIBRATION_MIN };
 }
 
 /** Over GRADED attempts (lib/accuracyTrend.ts gradedAttempts), any order. */
@@ -79,12 +81,13 @@ export function calibration(attempts: readonly UserAttempt[]): Calibration {
   const easy = record(tally.easy.pairs, tally.easy.heldUp);
   const medium = record(tally.medium.pairs, tally.medium.heldUp);
   const hard = record(tally.hard.pairs, tally.hard.heldUp);
+  // The advice waits for enough answers; the figures do not.
   const verdict: CalibrationVerdict =
-    easy.share === null && hard.share === null
+    !easy.judged && !hard.judged
       ? 'too-soon'
-      : easy.share !== null && easy.share < EASY_HOLDS
+      : easy.judged && easy.share! < EASY_HOLDS
         ? 'easy-too-often'
-        : hard.share !== null && hard.share >= HARD_TOO_HUMBLE
+        : hard.judged && hard.share! >= HARD_TOO_HUMBLE
           ? 'hard-too-often'
           : 'well-judged';
   return { easy, medium, hard, verdict };

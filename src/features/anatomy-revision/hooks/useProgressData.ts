@@ -127,11 +127,14 @@ export function useProgressData(repository: AnatomyRepository | null, userId: st
   const horizon = lastDays(new Date(now.getFullYear(), now.getMonth(), now.getDate() + FORECAST_DAYS - 1), FORECAST_DAYS);
   const forecast = horizon.map((day) => {
     const key = localDayKey(day);
-    // Naming and every fact are reviewed on their own dates now (2 Oct 2026).
-    return (
-      mastery.filter((m) => m.dueAt && localDayKey(m.dueAt) === key).length +
-      facts.filter((f) => localDayKey(factDueAt(f)) === key).length
-    );
+    // Naming and every fact are reviewed on their own dates (2 Oct 2026), but
+    // a day's figure is of STRUCTURES, the unit Today and the Atlas count in
+    // (lib/reviewQueue.ts dueStructureIds): a muscle with its name and its
+    // origin due the same day is one structure due that day.
+    return new Set([
+      ...mastery.filter((m) => m.dueAt && localDayKey(m.dueAt) === key).map((m) => m.structureId),
+      ...facts.filter((f) => localDayKey(factDueAt(f)) === key).map((f) => f.structureId),
+    ]).size;
   });
   const forecastMax = Math.max(1, ...forecast);
 

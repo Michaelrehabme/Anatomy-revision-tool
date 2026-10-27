@@ -107,6 +107,12 @@ describe('daily goal and reminder time', () => {
   it('makes the goal one daily review', () => {
     expect(dailyGoalFor(null)).toBe(20);
     expect(dailyGoalFor(profile({ minutesPerDay: 30 }))).toBe(40);
+    // A custom goal wins, answered or skipped, and leaves the review's length alone.
+    expect(dailyGoalFor(profile({ minutesPerDay: 30, dailyGoal: 55 }))).toBe(55);
+    expect(dailyGoalFor(profile({ skipped: true, dailyGoal: 12 }))).toBe(12);
+    expect(sessionCountFor(profile({ minutesPerDay: 30, dailyGoal: 55 }))).toBe(40);
+    expect(asStudyProfile({ updatedAt: 1, dailyGoal: 0 })!.dailyGoal).toBeUndefined();
+    expect(asStudyProfile({ updatedAt: 1, dailyGoal: 55 })!.dailyGoal).toBe(55);
   });
 
   it('reads a reminder time, and keeps only a real one', () => {

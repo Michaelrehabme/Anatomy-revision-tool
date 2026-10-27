@@ -126,7 +126,13 @@ export interface StudyProfile {
   starred?: string[];
   /** Local "HH:MM" for the app's "reviews are due" notification. Unset: REMINDER_HOUR. Installed app only. */
   reminderTime?: string;
+  /** A daily goal of the student's own (Account → Daily goal → Custom). Moves the ring only, not the review's length. */
+  dailyGoal?: number;
 }
+
+/** The custom goal's bounds: one question a day up to a long day's work. */
+export const DAILY_GOAL_MIN = 1;
+export const DAILY_GOAL_MAX = 300;
 
 export type NewStructureStart = 'show' | 'ask';
 
@@ -188,6 +194,12 @@ export function asStudyProfile(raw: unknown): StudyProfile | null {
     preferredFormats: [...new Set(formats)],
     ...withDefined('examDate', typeof r.examDate === 'string' && ISO_DAY.test(r.examDate) ? r.examDate : undefined),
     ...withDefined('newStructures', oneOf(r.newStructures, ['show', 'ask'] as const)),
+    ...withDefined(
+      'dailyGoal',
+      typeof r.dailyGoal === 'number' && Number.isInteger(r.dailyGoal) && r.dailyGoal >= DAILY_GOAL_MIN && r.dailyGoal <= DAILY_GOAL_MAX
+        ? r.dailyGoal
+        : undefined,
+    ),
     ...withDefined('reminderTime', typeof r.reminderTime === 'string' && parseReminderTime(r.reminderTime) ? r.reminderTime : undefined),
     ...(Array.isArray(r.starred)
       ? { starred: [...new Set(r.starred.filter((id): id is string => typeof id === 'string' && STRUCTURE_ID.test(id)))].slice(0, STARRED_LIMIT) }
@@ -290,7 +302,8 @@ export function skipsFlashcard(
  * goal is met by doing what Today offers, not by a number set somewhere else.
  */
 export function dailyGoalFor(profile: StudyProfile | null): number {
-  return sessionCountFor(profile);
+  // A goal the student typed in is theirs whatever else was answered or skipped.
+  return profile?.dailyGoal ?? sessionCountFor(profile);
 }
 
 /** The minutes answer behind each goal, for Account's "Daily goal" row. */

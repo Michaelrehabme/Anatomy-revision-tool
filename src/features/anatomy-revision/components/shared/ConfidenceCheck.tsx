@@ -20,7 +20,11 @@ function Figure({ label, record }: { label: string; record: RatingRecord }) {
         {record.share === null ? '—' : `${Math.round(record.share * 100)}%`}
       </div>
       <div className="mt-0.5" style={{ font: '400 11px/1.4 var(--font-mono)', color: 'var(--ink3)' }}>
-        {record.share === null ? `${record.pairs} so far` : `right next time, of ${record.pairs}`}
+        {record.share === null
+          ? 'none yet'
+          : record.judged
+            ? `right next time, of ${record.pairs}`
+            : `of ${record.pairs}, too few to judge yet`}
       </div>
     </div>
   );

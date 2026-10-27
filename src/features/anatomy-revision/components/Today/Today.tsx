@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import type { AnatomyRepository } from '../../data/repository';
 import type { AnatomyContent } from '../../hooks/useAnatomyContent';
 import type { RevisionQuestion } from '../../types/question';
@@ -14,7 +15,7 @@ import { dailyGoalFor } from '../../lib/studyProfile';
 import { getLearnCardAttempts, getPreferredAreas } from '../../lib/preferences';
 import { firstRunTitle, minutesFor } from '../../lib/sessionCopy';
 import { useTodayData } from '../../hooks/useTodayData';
-import { relativeDue, reviewItemsInArea } from '../../lib/reviewQueue';
+import { dueStructureIds, relativeDue, reviewItemsInArea } from '../../lib/reviewQueue';
 import { AppShell } from '../shell/AppShell';
 import { NavSidebar, type NavSection } from '../shell/NavSidebar';
 import { Button } from '../shared/Button';
@@ -52,7 +53,8 @@ export function Today({ access, repository, userId, content, onStart, onCustomSe
   const [reviewArea, setReviewArea] = useState<Area | 'all'>('all');
   const only = reviewArea !== 'all' && access.areas.includes(reviewArea) ? reviewArea : null;
   const areas = only ? [only] : preferredAreas.length ? preferredAreas : undefined;
-  const dueCount = only ? reviewItemsInArea(reviewItems, only, content.structuresById).filter((i) => i.due).length : dueCountAll;
+  const dueCount = only ? dueStructureIds(reviewItemsInArea(reviewItems, only, content.structuresById)).size : dueCountAll;
+  const navigate = useNavigate();
 
   // The session behind each button, built the same way on desktop and mobile
   // (lib/dailySession.ts), leaned by the questionnaire's answers.
@@ -132,6 +134,20 @@ export function Today({ access, repository, userId, content, onStart, onCustomSe
                 ? 'Keep going finishes the structures you are on. New set moves to ones you have not seen lately, with more new material.'
                 : `${only ? `Nothing due in the ${AREA_LABELS[only].toLowerCase()}` : 'All caught up'}. A review now brings your weaker questions forward, plus new material; anything you know well waits until it is due.`}
           </p>
+
+          {/* Which ones (owner, 27 Oct 2026): the Atlas, narrowed to what is due. */}
+          {!firstRun && !loading && dueCount > 0 && (
+            <button
+              type="button"
+              data-in
+              onClick={() => navigate('/atlas', { state: { atlasSeen: 'due', atlasArea: only ?? undefined } })}
+              className="mt-2 border-0 bg-transparent p-0 underline"
+              style={{ font: '500 14px/1.4 var(--font-ui)', color: 'var(--accd)' }}
+            >
+              See which {dueCount === 1 ? 'structure is' : `${dueCount} structures are`} due
+            </button>
+          )}
+
           {!firstRun && access.areas.length > 1 && (
             <div data-in className="mt-7">
               <ReviewAreaSelect areas={access.areas} value={only ?? 'all'} onChange={setReviewArea} />

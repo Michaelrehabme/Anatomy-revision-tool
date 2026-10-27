@@ -19,7 +19,7 @@ import {
   type SeenFilter,
 } from '../lib/atlasList';
 import { getAtlasSortId, setAtlasSortId } from '../lib/preferences';
-import { buildReviewQueue, soonestDueByStructure } from '../lib/reviewQueue';
+import { buildReviewQueue, dueStructureIds, soonestDueByStructure } from '../lib/reviewQueue';
 import { useMastery } from './useMastery';
 import { useStudyProfile } from './useStudyProfile';
 import { lensOptions, type LensKind, type LensOption } from '../lib/atlasLenses';
@@ -30,6 +30,9 @@ interface UseAtlasListArgs {
   content: AnatomyContent;
   repository: AnatomyRepository | null;
   userId: string | null;
+  /** Where the list opens: Today's "See which" opens it on 'due', and on the one area if today's review was cut to one. */
+  initialSeen?: SeenFilter;
+  initialArea?: Area;
 }
 
 export interface AreaOption {
@@ -60,6 +63,8 @@ export interface UseAtlasList {
   lensOptions: Record<LensKind, LensOption[]>;
   /** How many reachable structures are starred. */
   starredCount: number;
+  /** Structures with something due now, across everything this account may reach — the same count Today shows. */
+  dueNowCount: number;
   contextIds: string[];
   muscleIds: string[];
   /**
@@ -91,8 +96,12 @@ export interface UseAtlasList {
  * which genuinely differ: a column that collapses beside a table is not a
  * modal drawer over a card list.
  */
-export function useAtlasList({ access, content, repository, userId }: UseAtlasListArgs): UseAtlasList {
-  const [filters, setFilters] = useState<AtlasFilters>(DEFAULT_FILTERS);
+export function useAtlasList({ access, content, repository, userId, initialSeen, initialArea }: UseAtlasListArgs): UseAtlasList {
+  const [filters, setFilters] = useState<AtlasFilters>(() => ({
+    ...DEFAULT_FILTERS,
+    ...(initialSeen ? { seen: initialSeen } : {}),
+    ...(initialArea ? { area: initialArea } : {}),
+  }));
   // Resolved through sortById so a stale or hand-edited stored id falls back
   // to the default rather than leaving the list in no order at all.
   const [sortId, setSortIdState] = useState(() => sortById(getAtlasSortId() ?? '').id);
@@ -120,11 +129,17 @@ export function useAtlasList({ access, content, repository, userId }: UseAtlasLi
     [entitled],
   );
 
+  // Due now, by the one rule every screen uses (lib/reviewQueue.ts dueStructureIds).
+  const dueIds = useMemo(
+    () => dueStructureIds(buildReviewQueue(mastery, [...factsByKey.values()], new Set(entitled.map((s) => s.id))).due),
+    [mastery, factsByKey, entitled],
+  );
+
   const visible = useMemo(() => {
-    const matched = filterAtlas(entitled, rows, filters, masteryById, starredIds);
+    const matched = filterAtlas(entitled, rows, filters, masteryById, starredIds, dueIds);
     const { key, direction } = sortById(sortId);
     return sortAtlas(matched, key, direction, masteryById, factsByKey);
-  }, [entitled, rows, filters, masteryById, factsByKey, sortId, starredIds]);
+  }, [entitled, rows, filters, masteryById, factsByKey, sortId, starredIds, dueIds]);
 
   const kindCounts = useMemo(() => {
     const counts = { all: entitled.length } as Record<Category | 'all', number>;
@@ -177,6 +192,7 @@ export function useAtlasList({ access, content, repository, userId }: UseAtlasLi
     areaOptions,
     lensOptions: lenses,
     starredCount,
+    dueNowCount: dueIds.size,
     contextIds,
     muscleIds,
     review,

@@ -1,4 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
+import { useLocation } from 'react-router-dom';
+import type { SeenFilter } from '../../lib/atlasList';
+import type { Area } from '../../types/region';
 import type { AnatomyContent } from '../../hooks/useAnatomyContent';
 import type { AnatomyRepository } from '../../data/repository';
 import { atlasMasteryCell, reviewLabel, sortById } from '../../lib/atlasList';
@@ -55,7 +58,9 @@ export function MobileAtlas({
   onBack,
   onNavigateTab,
 }: MobileAtlasProps) {
-  const list = useAtlasList({ access, content, repository, userId });
+  // Today's "See them" arrives with the list already narrowed to what is due.
+  const arrival = useLocation().state as { atlasSeen?: SeenFilter; atlasArea?: Area } | null;
+  const list = useAtlasList({ access, content, repository, userId, initialSeen: arrival?.atlasSeen, initialArea: arrival?.atlasArea });
   // Always closed on arrival: the drawer is a modal over the list, and
   // restoring it open would mean every visit starts with something to dismiss.
   const [drawerOpen, setDrawerOpen] = useState(false);

@@ -145,3 +145,13 @@ export function reviewItemsInArea(
     return !!structure && areasOf(structure).includes(area);
   });
 }
+
+/**
+ * The structures with something due — THE count of "due" everywhere a student
+ * reads one (owner, 27 Oct 2026). Today used to count due question types, so a
+ * muscle with its name and its origin both due counted twice, and Today said
+ * 18 where the Atlas, counting structures, said 15. One structure, one count.
+ */
+export function dueStructureIds(items: readonly ReviewItem[]): Set<string> {
+  return new Set(items.filter((i) => i.due).map((i) => i.structureId));
+}

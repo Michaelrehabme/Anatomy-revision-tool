@@ -9,7 +9,10 @@ import {
   COURSE_LABELS,
   currentFocus,
   dailyGoalFor,
+  DAILY_GOAL_MAX,
+  DAILY_GOAL_MIN,
   GOAL_FOR_MINUTES,
+  sessionCountFor,
   MINUTES_OPTIONS,
   parseReminderTime,
   hasAnswers,
@@ -98,6 +101,9 @@ export function StudyPreferences({ access, compact = false }: { access: UseEntit
   const challengeHere = challenge && access.areas.includes(challenge.challenge.area) ? challenge.challenge : null;
   const [editing, setEditing] = useState(false);
   const [learnCards, setLearnCardsState] = useState(getLearnCardAttempts);
+  // "Custom" is lit by a goal already set, or by being pressed before a number is typed.
+  const [customOpen, setCustomOpen] = useState(false);
+  const customGoal = customOpen || profile?.dailyGoal !== undefined;
   const now = new Date();
   const free = access.tier === 'free';
   const focus = currentFocus(profile, now, access.areas);
@@ -206,18 +212,21 @@ export function StudyPreferences({ access, compact = false }: { access: UseEntit
       <p className="mt-2" style={{ fontSize: 13, lineHeight: 1.5, color: 'var(--ink3)' }}>
         Questions a day. It sets the length of your daily review and fills the ring on Today.
       </p>
-      <div className="mt-2.5 flex gap-2" role="radiogroup" aria-label="Daily goal">
+      <div className="mt-2.5 grid grid-cols-5 gap-2" role="radiogroup" aria-label="Daily goal">
         {MINUTES_OPTIONS.map((m) => {
           const goal = GOAL_FOR_MINUTES[m];
-          const on = dailyGoalFor(profile) === goal && (answered || goal === 20);
+          const on = !customGoal && dailyGoalFor(profile) === goal && (answered || goal === 20);
           return (
             <button
               key={m}
               type="button"
               role="radio"
               aria-checked={on}
-              onClick={() => update((current) => ({ ...current, skipped: undefined, minutesPerDay: m }))}
-              className="inline-flex min-h-[44px] flex-1 flex-col items-center justify-center rounded-[3px] px-2"
+              onClick={() => {
+                setCustomOpen(false);
+                update((current) => ({ ...current, skipped: undefined, minutesPerDay: m, dailyGoal: undefined }));
+              }}
+              className="inline-flex min-h-[44px] flex-col items-center justify-center rounded-[3px] px-1"
               style={chipStyle(on, compact)}
             >
               {goal}
@@ -225,7 +234,38 @@ export function StudyPreferences({ access, compact = false }: { access: UseEntit
             </button>
           );
         })}
+        <button
+          type="button"
+          role="radio"
+          aria-checked={customGoal}
+          onClick={() => setCustomOpen(true)}
+          className="inline-flex min-h-[44px] flex-col items-center justify-center rounded-[3px] px-1"
+          style={chipStyle(customGoal, compact)}
+        >
+          {profile?.dailyGoal ?? 'Custom'}
+          <span style={{ font: '400 10.5px/1.2 var(--font-mono)', color: 'inherit', opacity: 0.8 }}>{profile?.dailyGoal ? 'custom' : 'your own'}</span>
+        </button>
       </div>
+      {customGoal && (
+        <label className="mt-3 flex flex-wrap items-center gap-2.5" style={{ fontSize: 13.5, color: 'var(--ink2)' }}>
+          My goal is
+          <input
+            id="study-daily-goal"
+            type="number"
+            inputMode="numeric"
+            min={DAILY_GOAL_MIN}
+            max={DAILY_GOAL_MAX}
+            defaultValue={profile?.dailyGoal ?? dailyGoalFor(profile)}
+            onChange={(e) => {
+              const n = Number.parseInt(e.target.value, 10);
+              if (Number.isInteger(n) && n >= DAILY_GOAL_MIN && n <= DAILY_GOAL_MAX) update((current) => ({ ...current, dailyGoal: n }));
+            }}
+            className="rounded-[3px] px-2.5"
+            style={{ width: 84, minHeight: 42, border: '1.2px solid var(--line)', background: 'var(--sf)', color: 'var(--ink)', fontFamily: 'var(--font-ui)', fontSize: 15 }}
+          />
+          questions a day. Your daily review stays {sessionCountFor(profile)} questions; do more sessions to reach it.
+        </label>
+      )}
 
       {/* Only where there is a notification to time: the installed app
           (native/nativeShell.ts). A browser has no reminder, and a setting

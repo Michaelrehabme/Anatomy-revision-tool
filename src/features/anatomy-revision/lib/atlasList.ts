@@ -24,7 +24,7 @@ import { matchesLens, type LensKind } from './atlasLenses';
  * state (hooks/useAtlasList.ts); this module owns the rules.
  */
 
-export type SeenFilter = 'all' | 'seen' | 'unseen';
+export type SeenFilter = 'all' | 'seen' | 'unseen' | 'due';
 export type AtlasSortKey = 'body' | 'level' | 'accuracy' | 'name' | 'seen' | 'due';
 export type SortDirection = 'asc' | 'desc';
 
@@ -167,6 +167,8 @@ export function filterAtlas(
   filters: AtlasFilters,
   masteryById: ReadonlyMap<string, StructureMastery>,
   starredIds: ReadonlySet<string> = new Set(),
+  /** Structures with something due now (lib/reviewQueue.ts dueStructureIds), for the "Due now" filter. */
+  dueIds: ReadonlySet<string> = new Set(),
 ): AnatomyStructure[] {
   const q = filters.query.trim().toLowerCase();
   const lenses = (Object.keys(filters.lens) as LensKind[]).filter((k) => filters.lens[k] !== 'all');
@@ -175,7 +177,9 @@ export function filterAtlas(
     if (filters.starred && !starredIds.has(s.id)) return false;
     if (lenses.some((k) => !matchesLens(s, k, filters.lens[k]))) return false;
     if (filters.area !== 'all' && !areasOf(s).includes(filters.area)) return false;
-    if (filters.seen !== 'all' && isSeen(s.id, masteryById) !== (filters.seen === 'seen')) return false;
+    if (filters.seen === 'due') {
+      if (!dueIds.has(s.id)) return false;
+    } else if (filters.seen !== 'all' && isSeen(s.id, masteryById) !== (filters.seen === 'seen')) return false;
     if (!q) return true;
     return rows.get(s.id)?.searchText.includes(q) ?? false;
   });
@@ -325,4 +329,5 @@ export const SEEN_FILTER_LABELS: Record<SeenFilter, string> = {
   all: 'All',
   seen: 'Seen',
   unseen: 'Unseen',
+  due: 'Due now',
 };

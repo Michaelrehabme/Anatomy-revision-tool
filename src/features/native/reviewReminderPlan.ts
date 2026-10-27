@@ -1,5 +1,5 @@
 import type { FactMastery, StructureMastery } from '../anatomy-revision/types/attempt';
-import { buildReviewQueue } from '../anatomy-revision/lib/reviewQueue';
+import { buildReviewQueue, dueStructureIds } from '../anatomy-revision/lib/reviewQueue';
 
 /**
  * WHEN to remind, and what to say. Pure, so it is tested without a phone.
@@ -21,14 +21,14 @@ export const REMINDER_HORIZON_DAYS = 14;
 
 export interface ReminderPlan {
   at: Date;
-  /** Question types due by then. */
+  /** Structures with something due by then — the count Today will show (dueStructureIds). */
   count: number;
   title: string;
   body: string;
 }
 
 export function reminderBody(count: number): string {
-  return count === 1 ? '1 review is due.' : `${count} reviews are due.`;
+  return count === 1 ? '1 structure is due for review.' : `${count} structures are due for review.`;
 }
 
 /**
@@ -50,7 +50,7 @@ export function planReviewReminder(
   for (let day = 0; day <= REMINDER_HORIZON_DAYS; day += 1) {
     const at = new Date(now.getFullYear(), now.getMonth(), now.getDate() + day, time.hour, time.minute, 0, 0);
     if (at.getTime() <= now.getTime()) continue;
-    const count = buildReviewQueue(mastery, facts, eligible, at).due.length;
+    const count = dueStructureIds(buildReviewQueue(mastery, facts, eligible, at).due).size;
     if (count > 0) return { at, count, title: 'LocusMSK', body: reminderBody(count) };
   }
   return null;
