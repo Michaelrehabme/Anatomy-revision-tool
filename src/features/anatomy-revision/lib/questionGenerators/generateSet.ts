@@ -1,3 +1,4 @@
+import { ownPictureOf } from './promptImages';
 import type { AnatomyStructure, Category, Difficulty } from '../../types/structure';
 import type { AnatomyImageAsset } from '../../types/image';
 import type { OinaPromptKind, QuestionType, RevisionQuestion } from '../../types/question';
@@ -788,7 +789,9 @@ export function generateRevisionSet(
 function withRelearnCards(questions: RevisionQuestion[], indexes: StructureIndexes, images: AnatomyImageAsset[]): RevisionQuestion[] {
   const ownImage = new Map<string, string>();
   for (const image of images) {
-    if (image.mode === 'single-structure' && image.structureId && !ownImage.has(image.structureId)) ownImage.set(image.structureId, image.id);
+    if (image.mode === 'single-structure' && image.structureId && !ownImage.has(image.structureId)) {
+      ownImage.set(image.structureId, ownPictureOf(image.structureId, images)!.id);
+    }
   }
   return questions.map((question) => {
     if (!isMcqQuestion(question)) return question;

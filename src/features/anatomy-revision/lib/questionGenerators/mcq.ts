@@ -173,7 +173,11 @@ function buildOne(
   const out: MCQQuestion[] = [];
 
   if (promptKind === 'identify' && isLigament(structure)) {
-    return ligamentIdentify(structure, all, fallback, promptKind, distractorCount, choiceCount, rng, siteLookup);
+    const byAttachments = ligamentIdentify(structure, all, fallback, promptKind, distractorCount, choiceCount, rng, siteLookup);
+    // A redrawn ligament is also named from its redraw (owner, 27 Oct 2026),
+    // below like any other structure; the rest from their attachments alone.
+    if (!structure.eligibility.redrawOnly) return byAttachments;
+    out.push(...byAttachments);
   }
 
   if (promptKind === 'identify') {
@@ -206,7 +210,10 @@ function buildOne(
     // The same for anything else whose clue a neighbour shares word for word,
     // where a picture can ask instead: two plane joints that both glide.
     const sharedClue = promptImages.length > 0 && all.some((s) => s.id !== structure.id && clueAlsoFits(structure, s));
-    if (!isBone(structure) && !sharedBoneList && !sharedClue) {
+    // A redrawn ligament's written question is its attachment lines (above),
+    // never this older one-line clue.
+    const redrawnLigament = isLigament(structure) && !!structure.eligibility.redrawOnly;
+    if (!isBone(structure) && !sharedBoneList && !sharedClue && !redrawnLigament) {
       // A wrong answer the clue describes just as well is a second right
       // answer: "attaches to: pelvis" beside four more ligaments of the pelvis
       // (8 Oct 2026). The picture questions below keep the first pick — there

@@ -48,7 +48,13 @@ export function promptImagesFor(
   // (data/clinicalLigaments.ts, owner 16 Oct 2026). Gated here so every
   // picture question — named, typed, offline-cached — follows the one list.
   if (!askedWithPicture(structure)) return [];
-  const depicting = images.filter((img) => imageDepicts(img, structure.id));
+  // A redrawn ligament is asked from its redraw, never the older plate
+  // (types/structure.ts redrawOnly). The redraw's frames come in the order
+  // the card opens them, the owner's slide view first, and all rank alike,
+  // so the first frame is the one a question opens on.
+  const depicting = images.filter(
+    (img) => imageDepicts(img, structure.id) && (!structure.eligibility.redrawOnly || isRedraw(img)),
+  );
   if (depicting.length === 0) return [];
 
   // A ligament plate is rendered twice from one scene: '-context', which draws
@@ -124,4 +130,19 @@ export function promptImagesFor(
   // Nothing framed for it and nothing turnable: keep the best picture there is
   // rather than dropping the structure out of identify altogether.
   return [biggest(legible.length ? legible : openers)];
+}
+
+/** A frame of a ligament's redraw (data/seed/images.seed.ts, "Redrawn ligaments"). */
+export function isRedraw(image: Pick<AnatomyImageAsset, 'id'>): boolean {
+  return image.id.startsWith('redraw-');
+}
+
+/**
+ * A structure's own picture, for a flashcard or a relearn card: its redraw's
+ * opening frame where it has one (owner, 27 Oct 2026), otherwise the first
+ * single-structure picture of it, as always.
+ */
+export function ownPictureOf(structureId: string, images: readonly AnatomyImageAsset[]): AnatomyImageAsset | undefined {
+  const own = images.filter((img) => img.mode === 'single-structure' && img.structureId === structureId);
+  return own.find(isRedraw) ?? own[0];
 }

@@ -13,6 +13,7 @@ import { JOINT_STRUCTURES } from './structures.joints.seed';
 import { LIGAMENT_STRUCTURES } from './structures.ligaments.seed';
 import { CONNECTIVE_STRUCTURES } from './structures.connective.seed';
 import { IMAGE_ASSETS } from './images.seed';
+import { REDRAW_TURNTABLES } from './redrawTurntables.generated';
 import { linkImages } from '../../lib/linkImages';
 
 /**
@@ -53,15 +54,22 @@ export const ALL_IMAGES = IMAGE_ASSETS;
  * and has no use for a second copy in a file.
  */
 /**
- * No ligament is asked from a picture for now (owner, 17 Oct 2026); when
+ * No ligament was asked from a picture from 17 Oct 2026 — the old plates were
+ * too rough — until the redraws (owner, 27 Oct 2026): a redrawn ligament is
+ * asked from its redraw again, the rest stay off pictures. When
  * LIGAMENT_PICTURE_QUESTIONS is turned on, the clinically important ones are
  * (data/clinicalLigaments.ts). Applied here, once, to the data every screen
  * and generator reads, rather than in each generator. Their pictures stay in
  * the Atlas and on flashcards.
  */
+const REDRAWN = new Set(REDRAW_TURNTABLES.map((t) => t.structureId));
+
 function withPictureRule(s: AnatomyStructure): AnatomyStructure {
   if (s.category !== 'ligament') return s;
   if (LIGAMENT_PICTURE_QUESTIONS && CLINICAL_LIGAMENTS.has(s.id)) return s;
+  // Redrawn from the owner's slides (owner, 27 Oct 2026): asked from that
+  // picture again, but never tapped — a redraw has no traced target to tap.
+  if (REDRAWN.has(s.id)) return { ...s, eligibility: { ...s.eligibility, locate: false, redrawOnly: true } };
   return { ...s, eligibility: { ...s.eligibility, locate: false, picture: false } };
 }
 

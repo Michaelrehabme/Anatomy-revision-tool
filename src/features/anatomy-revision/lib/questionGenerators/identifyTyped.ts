@@ -42,7 +42,7 @@ export function buildIdentifyTypedQuestions(
     // A ligament is asked from its attachments, as bullet points, and typed
     // by name (ligamentClue.ts); the sites are the clue, so there are no
     // attachment boxes to fill. Not from a picture: data/seed/index.ts.
-    if (isLigament(structure) && structure.eligibility.picture === false) {
+    if (isLigament(structure) && (structure.eligibility.picture === false || structure.eligibility.redrawOnly)) {
       const lines = ligamentPromptLines(structure, byId);
       if (lines) {
         questions.push({
@@ -54,6 +54,22 @@ export function buildIdentifyTypedQuestions(
           acceptedAnswers: structureNameVariants(structure.name, structure.aliases),
           explanation: summarizeStructure(structure, byId),
         });
+      }
+      // A redrawn ligament is typed from its redraw too, on the name alone
+      // (owner, 27 Oct 2026): the attachments are the other question's clue,
+      // never boxes to fill under a picture.
+      if (structure.eligibility.redrawOnly) {
+        for (const image of promptImagesFor(structure, images)) {
+          questions.push({
+            ...questionBase(structure, 'identify'),
+            type: 'identify-typed',
+            id: `identify-typed-${structure.id}-${image.id}`,
+            prompt: 'Which structure is shown?',
+            promptImageId: image.id,
+            acceptedAnswers: structureNameVariants(structure.name, structure.aliases),
+            explanation: summarizeStructure(structure, byId),
+          });
+        }
       }
       continue;
     }

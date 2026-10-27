@@ -109,11 +109,18 @@ describe('a ligaments-only session on the live data', () => {
     seed: 11,
   });
 
-  it('asks a ligament by its attachments, as bullet points, never from a picture', () => {
+  // Since 27 Oct 2026 a redrawn ligament is also named from its redraw — only
+  // ever the redraw, and typed on the name alone. Everything else stays as it was.
+  it('names a ligament from its redraw or from its attachments, as bullet points — never the old plate', () => {
     const named = set.filter((q) => (q.type === 'mcq' || q.type === 'identify-typed') && q.promptKind === 'identify');
     expect(named.length).toBeGreaterThan(0);
     for (const q of named) {
-      expect((q as { promptImageId?: string }).promptImageId, q.id).toBeUndefined();
+      const image = (q as { promptImageId?: string }).promptImageId;
+      if (image) {
+        expect(image, q.id).toMatch(/^redraw-/);
+        expect((q as { attachmentSlots?: unknown[] }).attachmentSlots, q.id).toBeUndefined();
+        continue;
+      }
       const lines = (q as { promptLines?: string[] }).promptLines ?? [];
       expect(lines.length, q.id).toBeGreaterThan(0);
       for (const line of lines) {

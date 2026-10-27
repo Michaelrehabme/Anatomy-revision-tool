@@ -1,3 +1,4 @@
+import { ownPictureOf } from './promptImages';
 import { isMuscle } from '../../types/structure';
 import type { AnatomyStructure } from '../../types/structure';
 import type { AnatomyImageAsset } from '../../types/image';
@@ -74,9 +75,8 @@ export function buildFlashcardQuestions(
     if (!structure.eligibility.flashcard) continue;
 
     const backText = cardBullets(structure, byId);
-    const image = images.find(
-      (img) => img.mode === 'single-structure' && img.structureId === structure.id,
-    );
+    // The redraw where there is one (owner, 27 Oct 2026), else the first picture of it.
+    const image = ownPictureOf(structure.id, images);
 
     questions.push({
       ...baseFields(structure, 'identify'),

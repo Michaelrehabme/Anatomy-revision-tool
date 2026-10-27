@@ -194,6 +194,13 @@ export interface QuestionEligibility {
    */
   picture?: boolean;
   /**
+   * A ligament redrawn from the owner's slides (data/seed/redrawTurntables):
+   * asked from its redraw only — never the older, rougher plate — named by
+   * picture alongside its attachment lines, and typed on the name alone
+   * (owner, 27 Oct 2026). Set in data/seed/index.ts.
+   */
+  redrawOnly?: boolean;
+  /**
    * A ligament asked by name from its attachments as bullet points
    * (lib/questionGenerators/ligamentClue.ts). False where another ligament
    * attaches to exactly the same sites, worked out once over every ligament
