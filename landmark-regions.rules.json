@@ -986,52 +986,38 @@
   ]
  },
  "anterior-arch-atlas": {
-  "emit": "capsule",
-  "kind": "span",
-  "from": {
-   "bbox": [
-    0.5,
-    0.0,
-    0.5
-   ]
-  },
-  "to": {
-   "bbox": [
-    0.61,
-    0.163,
-    0.5
-   ]
-  },
-  "samples": 7,
-  "width": 0.004,
-  "axisHalfWidth": 0.003,
-  "mirrorX": true,
+  "kind": "box",
+  "lo": [
+   0.39,
+   0,
+   0
+  ],
+  "hi": [
+   0.61,
+   0.2,
+   1
+  ],
   "keepLargest": false,
-  "_why": "Two lines meeting in the middle of the arch, one per side — the reviewer's suggestion, and much smaller than the 18mm disc it replaces. MEASURED on the atlas (probeAtlas.py): the ring's centre is 21.4mm behind the front of the bone; the anterior arch is the thin run within about 25 degrees of straight ahead (ring thickness 18-24mm there), and beyond it the lateral mass begins (the ring thickens to 13-35mm and rises 5mm). The end point is that junction at mid-height, as fractions of the bone's box because the atlas's tubercle anchors float 20mm below the bone."
+  "close": 2,
+  "smoothNormals": 3,
+  "_why": "THIRD PASS (owner, 27 Oct 2026): the line along the arch sat on its front edge and half off the bone; the owner asked for the whole arch traced as a region instead. The anterior arch is the bar of bone in front of the lateral masses, so the region is every face of the atlas in that part of its box: x 0.39-0.61 and y 0-0.2. The earlier probe (probeAtlas.py) put the arch's junction with the lateral mass at x 0.61, y 0.163 (as fractions of the box), so 0.2 gives the bar its full depth there. The cuts across the bar at each end are where the arch meets the lateral mass. Earlier passes: two capsules meeting in the middle, each a line from the midline to that junction."
  },
  "posterior-arch-atlas": {
-  "emit": "capsule",
-  "kind": "span",
-  "from": {
-   "bbox": [
-    0.5,
-    1.0,
-    0.5
-   ]
-  },
-  "to": {
-   "bbox": [
-    0.719,
-    0.637,
-    0.5
-   ]
-  },
-  "samples": 11,
-  "width": 0.004,
-  "axisHalfWidth": 0.003,
-  "mirrorX": true,
+  "kind": "box",
+  "lo": [
+   0.281,
+   0.637,
+   0
+  ],
+  "hi": [
+   0.719,
+   1,
+   1
+  ],
   "keepLargest": false,
-  "_why": "The reviewer: a region or line, not a point, traced on their plate from lateral mass round to lateral mass. Same construction as the anterior arch. MEASURED: the posterior arch is the thin ring (15.6-24.5mm from the centre, 9mm tall) from about 20 degrees behind the transverse process round to the midline; the far end point is where it meets the lateral mass."
+  "close": 2,
+  "smoothNormals": 3,
+  "_why": "THIRD PASS (owner, 27 Oct 2026): the whole arch traced as a region, replacing the capsule that ran along its upper edge. The probe put the junction with the lateral mass at x 0.719, y 0.637 of the box, and the arch is everything behind that between the two junctions. The lateral masses and transverse processes lie outside x 0.281-0.719."
  },
  "lateral-mass-atlas": {
   "kind": "ball",
@@ -1214,25 +1200,25 @@
   "kind": "box",
   "lo": [
    0.679,
-   0.0,
-   0.73
+   0,
+   0.55
   ],
   "hi": [
-   0.97,
-   0.33,
-   1.0
+   1,
+   0.36,
+   1
   ],
   "facing": [
    0,
-   -0.6,
-   0.8
+   -0.45,
+   0.89
   ],
-  "facingMin": 0.0,
+  "facingMin": 0.3,
   "mirrorX": true,
   "keepLargest": false,
-  "close": 2,
-  "smoothNormals": 4,
-  "_why": "The wing of the sacrum either side of the S1 body. As a point it carried an 18mm radius whose halo was a third of the picture, and once both sides had to fit it fitted neither. Taken as the top quarter of the bone lateral to the S1 body (|x| 22-58mm of a 61mm half-width), keeping the faces that look up and forward so the articular processes behind are left out. Placed by proportion, not probed — flagged for the reviewer's eye. Both sides. SECOND PASS: stopped at y 34mm, in front of the superior articular processes, which the block had been climbing."
+  "close": 3,
+  "smoothNormals": 6,
+  "_why": "THIRD PASS (owner, 27 Oct 2026): \"boxy, not the wing shape\". The box's lower cut (z 0.73) and its front-facing test (facingMin 0) drew a straight bottom edge across the front of the wing. The wing is the surface that faces up and forward lateral to the S1 body, so that facing test, with a 0.3 threshold on normals smoothed over 6 rings, now sets the outline: it stops where the surface turns down onto the pelvic face or out onto the auricular surface. The box only bounds it loosely: lateral to the body (x 0.679), in front of the articular processes (y 0.36), and in the upper half (z 0.55). FIRST/SECOND PASS: The wing of the sacrum either side of the S1 body. As a point it carried an 18mm radius whose halo was a third of the picture, and once both sides had to fit it fitted neither. Taken as the top quarter of the bone lateral to the S1 body (|x| 22-58mm of a 61mm half-width), keeping the faces that look up and forward so the articular processes behind are left out. Placed by proportion, not probed — flagged for the reviewer's eye. Both sides. SECOND PASS: stopped at y 34mm, in front of the superior articular processes, which the block had been climbing."
  },
  "acromion": {
   "kind": "ball",

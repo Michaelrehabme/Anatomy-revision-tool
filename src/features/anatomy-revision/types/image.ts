@@ -86,6 +86,16 @@ export interface HotspotPolygon {
    * same distinction for a shape. Absent when the outline needed no growing.
    */
   targetCore?: number[][][];
+  /**
+   * The bone under a ring target, for a point or a line whose rings run off
+   * the edge of it. A tap outside these rings scores 0 however close it was to
+   * the spine — a ring over empty picture is a tap on nothing. Absent means
+   * the whole face counts, as it always did.
+   *
+   * Owner review, 27 Oct 2026: the launch hitboxes were grown generously and
+   * ran past the bone; see landmark-hitbox-trim.json.
+   */
+  targetClip?: number[][][];
 }
 
 /**

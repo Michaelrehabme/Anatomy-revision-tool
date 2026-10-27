@@ -93,3 +93,42 @@ describe('the target face', () => {
     expect(container.querySelectorAll('polygon').length).toBe(1);
   });
 });
+
+/**
+ * A face trimmed to the bone is drawn trimmed: the rings a student sees must
+ * end where the grading does, or the picture claims a tap off the bone was
+ * close (owner review, 27 Oct 2026).
+ */
+describe('a target clipped to the bone', () => {
+  const clipped: HotspotPolygon = {
+    ...ridge,
+    targetClip: [[[0, 0], [1, 0], [1, 0.5], [0, 0.5]]],
+  };
+
+  it('clips the whole face to the bone, scored or not', () => {
+    for (const container of [
+      face(clipped),
+      render(<HotspotOverlay hotspots={[clipped]} highlightStructureId={clipped.structureId} />).container,
+    ]) {
+      const group = container.querySelector('[data-target-face]')!;
+      const id = group.getAttribute('clip-path')?.match(/url\(#(.+)\)/)?.[1];
+      expect(id).toBeTruthy();
+      expect(container.querySelector(`clipPath[id="${id}"] polygon`)).not.toBeNull();
+    }
+  });
+
+  it('gives two faces on one picture their own clips', () => {
+    const container = render(
+      <>
+        <HotspotOverlay hotspots={[clipped]} highlightStructureId={clipped.structureId} />
+        <HotspotOverlay hotspots={[clipped]} highlightStructureId={clipped.structureId} />
+      </>,
+    ).container;
+    const ids = [...container.querySelectorAll('clipPath')].map((el) => el.id);
+    expect(new Set(ids).size).toBe(2);
+  });
+
+  it('leaves an unclipped face alone', () => {
+    expect(face(ridge).querySelector('[data-target-face]')!.getAttribute('clip-path')).toBeNull();
+  });
+});
