@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import type { FactMastery } from '../types/attempt';
 import { factsIndex, structureLevel, type MasteryLevel } from '../lib/masteryLevel';
 import { factDueAt } from '../lib/factMastery';
+import { isReviewedKind } from '../lib/reviewQueue';
 import type { AnatomyRepository } from '../data/repository';
 import type { AnatomyContent } from './useAnatomyContent';
 import type { StructureMastery } from '../types/attempt';
@@ -133,7 +134,7 @@ export function useProgressData(repository: AnatomyRepository | null, userId: st
     // origin due the same day is one structure due that day.
     return new Set([
       ...mastery.filter((m) => m.dueAt && localDayKey(m.dueAt) === key).map((m) => m.structureId),
-      ...facts.filter((f) => localDayKey(factDueAt(f)) === key).map((f) => f.structureId),
+      ...facts.filter((f) => isReviewedKind(f.promptKind) && localDayKey(factDueAt(f)) === key).map((f) => f.structureId),
     ]).size;
   });
   const forecastMax = Math.max(1, ...forecast);
