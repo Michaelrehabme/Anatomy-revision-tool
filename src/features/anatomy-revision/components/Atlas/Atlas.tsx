@@ -95,8 +95,14 @@ export function Atlas({ access, content, repository, userId, onOpenMuscle, onDri
         )}
 
         <div className="flex min-h-0 min-w-0 flex-1 flex-col px-10 pt-14">
-          <div data-in className="flex items-end gap-8">
-            <div className="flex-1">
+          {/*
+            Two rows, every width able to give: with the filter column open
+            the old single row of fixed widths ran off the right edge and the
+            count beside the title wrapped to three lines (owner, 28 Oct 2026:
+            "fits on one page").
+          */}
+          <div data-in className="flex flex-wrap items-end gap-x-6 gap-y-3">
+            <div className="min-w-0 flex-1">
               <h1
                 style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 44, lineHeight: 1.02, letterSpacing: '-.024em', margin: '0 0 8px' }}
               >
@@ -107,39 +113,28 @@ export function Atlas({ access, content, repository, userId, onOpenMuscle, onDri
                 resize when a filter changes — the count is the only feedback
                 that a chip in a collapsed panel did anything.
               */}
-              <p aria-live="polite" style={{ color: 'var(--ink3)', fontSize: 15.5 }}>
+              <p aria-live="polite" className="truncate" style={{ color: 'var(--ink3)', fontSize: 15.5 }}>
                 {entitled.length} structures · showing {visible.length}
-                {filters.query ? ` matching “${filters.query}”` : ''}
+                {filters.query ? ` matching “${filters.query}”` : ''} · {sortById(list.sortId).label}
               </p>
               <UnlockNote access={access} className="mt-1.5" />
             </div>
-            <input
-              type="text"
-              value={filters.query}
-              onChange={(e) => list.setQuery(e.target.value)}
-              placeholder="Search…"
-              aria-label="Search structures"
-              className="w-[300px] flex-none rounded-[3px] px-4.5 py-3.5"
-              style={{ fontFamily: 'var(--font-display)', fontSize: 19, border: '1.4px solid var(--acc)', background: 'var(--sf)', color: 'var(--ink)' }}
-            />
-            <Button
-              onClick={() => onQuizStructures(contextIds)}
-              disabled={contextIds.length === 0}
-              className="flex-none min-h-[54px] min-w-[140px]"
-              variant="secondary"
-            >
-              Quiz these
-            </Button>
-            <Button
-              onClick={() => onDrillOina(muscleIds)}
-              disabled={muscleIds.length === 0}
-              className="flex-none min-h-[54px] min-w-[175px]"
-            >
-              Drill these facts
-            </Button>
+            <div className="flex flex-none gap-3">
+              <Button
+                onClick={() => onQuizStructures(contextIds)}
+                disabled={contextIds.length === 0}
+                className="min-h-[46px] px-5"
+                variant="secondary"
+              >
+                Quiz these
+              </Button>
+              <Button onClick={() => onDrillOina(muscleIds)} disabled={muscleIds.length === 0} className="min-h-[46px] px-5">
+                Drill these facts
+              </Button>
+            </div>
           </div>
 
-          <div data-in className="mt-5 flex items-center gap-4">
+          <div data-in className="mt-5 flex items-center gap-3">
             <button
               type="button"
               onClick={togglePanel}
@@ -164,15 +159,15 @@ export function Atlas({ access, content, repository, userId, onOpenMuscle, onDri
                 </span>
               )}
             </button>
-            <p className="min-w-0 flex-1" style={{ color: 'var(--ink3)', fontSize: 13.5 }}>
-              {sortById(list.sortId).label} ·{' '}
-              {kind === 'muscle'
-                ? 'origin, insertion, nerve supply and action'
-                : kind === 'all'
-                  ? 'what each structure is and what it does'
-                  : `${headings[0].toLowerCase()}, ${headings[1].toLowerCase()} and ${headings[2].toLowerCase()}`}{' '}
-              for the {visible.length} {visible.length === 1 ? noun : `${noun}s`} listed.
-            </p>
+            <input
+              type="text"
+              value={filters.query}
+              onChange={(e) => list.setQuery(e.target.value)}
+              placeholder={`Search ${visible.length === 1 ? noun : `${noun}s`}…`}
+              aria-label="Search structures"
+              className="min-h-[42px] min-w-0 flex-1 rounded-[3px] px-4"
+              style={{ fontFamily: 'var(--font-display)', fontSize: 16, border: '1.4px solid var(--acc)', background: 'var(--sf)', color: 'var(--ink)' }}
+            />
             {/*
               Beside the filters rather than up with "Quiz these": it asks
               only what the queue holds for the structures listed, so it is
@@ -194,11 +189,11 @@ export function Atlas({ access, content, repository, userId, onOpenMuscle, onDri
             className="mt-6 flex gap-5 pb-3"
             style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}
           >
-            <span className="w-[190px] flex-none">{kind === 'all' ? 'Structure' : CATEGORY_LABELS[kind].replace(/s$/, '')}</span>
+            <span className="w-[180px] flex-none">{kind === 'all' ? 'Structure' : CATEGORY_LABELS[kind].replace(/s$/, '')}</span>
             <span className="min-w-0 flex-1">{headings[0]}</span>
             <span className="min-w-0 flex-1">{headings[1]}</span>
             <span className="min-w-0 flex-[1.3]">{headings[2]}</span>
-            <span className="w-[150px] flex-none">Mastery</span>
+            <span className="w-[130px] flex-none">Mastery</span>
           </div>
 
           <div className="min-h-0 flex-1 overflow-auto pb-14">
@@ -221,21 +216,21 @@ export function Atlas({ access, content, repository, userId, onOpenMuscle, onDri
                   className="flex w-full items-baseline gap-5 py-3 text-left transition-colors duration-150 hover:bg-[var(--accs)]"
                   style={{ borderTop: '1px solid var(--line)' }}
                 >
-                  <span className="w-[190px] flex-none">
-                    <span style={{ fontFamily: 'var(--font-display)', fontSize: 20 }}>{s.name}</span>
+                  <span className="w-[180px] flex-none">
+                    <span style={{ fontFamily: 'var(--font-display)', fontSize: 18 }}>{s.name}</span>
                     {kind === 'all' && (
                       <span className="ml-2" style={{ font: '400 10.5px/1 var(--font-mono)', letterSpacing: '.08em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
                         {KIND_SINGULAR[s.category]}
                       </span>
                     )}
                   </span>
-                  <span className="min-w-0 flex-1 text-[14.5px] leading-snug" style={{ color: 'var(--ink2)' }}>
+                  <span className="min-w-0 flex-1 line-clamp-3 text-[14px] leading-snug" style={{ color: 'var(--ink2)' }}>
                     {cell(0)}
                   </span>
-                  <span className="min-w-0 flex-1 text-[14.5px] leading-snug" style={{ color: 'var(--ink2)' }}>
+                  <span className="min-w-0 flex-1 line-clamp-3 text-[14px] leading-snug" style={{ color: 'var(--ink2)' }}>
                     {cell(1)}
                   </span>
-                  <span className="min-w-0 flex-[1.3] text-[14.5px] leading-snug" style={{ color: 'var(--ink2)' }}>
+                  <span className="min-w-0 flex-[1.3] line-clamp-3 text-[14px] leading-snug" style={{ color: 'var(--ink2)' }}>
                     {cell(2)}
                   </span>
                   {/*
@@ -245,7 +240,7 @@ export function Atlas({ access, content, repository, userId, onOpenMuscle, onDri
                     types met; underneath, how many are not met yet, or else
                     the naming percentage.
                   */}
-                  <span className="flex w-[150px] flex-none flex-col gap-1.5">
+                  <span className="flex w-[130px] flex-none flex-col gap-1.5">
                     <MasteryLevelBadge state={mastery.level} />
                     {(() => {
                       const note = mastery.level.seen ? (unmetText(mastery.level.unmet) ?? accuracyText(mastery.accuracy)) : null;
