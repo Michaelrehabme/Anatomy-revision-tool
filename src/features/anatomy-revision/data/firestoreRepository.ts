@@ -227,6 +227,14 @@ export async function createFirestoreRepository(): Promise<AnatomyRepository> {
         constraints.push(where('timestamp', '>=', filter.since));
       }
       constraints.push(orderBy('timestamp', 'desc'));
+      // Every document returned is a billed read, so the limit goes to the
+      // server whenever no filter is left to apply below. With one left it
+      // cannot: which rows that filter drops is not known until they arrive.
+      const filteredHere =
+        (!primaryIsUserId && !!filter.userId) || (!primaryIsStructureId && !!filter.structureId) || !!filter.questionId;
+      if (filter.limit !== undefined && !filteredHere) {
+        constraints.push(fsLimit(filter.limit));
+      }
 
       const snapshot = await getDocs(query(collection(db, 'attemptEvents'), ...constraints));
       let results = snapshot.docs.map((d) => d.data() as UserAttempt);
