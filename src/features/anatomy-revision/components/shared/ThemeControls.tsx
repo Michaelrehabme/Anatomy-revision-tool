@@ -3,6 +3,7 @@ import { flushSync } from 'react-dom';
 import { useTheme } from '../../context/ThemeProvider';
 import { getLocateWithoutPicture, getShowLatin, setLocateWithoutPicture, setShowLatin } from '../../lib/preferences';
 import { THEME_PREFERENCES, THEME_PREFERENCE_LABELS } from '../../lib/theme';
+import { resetTours } from '../../lib/tours';
 import { withThemeTransition } from './motion';
 
 /** The knob overshoots slightly as it lands; the track fills behind it. */
@@ -27,6 +28,7 @@ export function ThemeControls({ compact = false }: { compact?: boolean }) {
   const wordsLabelId = useId();
   const [showLatin, setShowLatinState] = useState(getShowLatin);
   const [locateInWords, setLocateInWordsState] = useState(getLocateWithoutPicture);
+  const [toursReplayed, setToursReplayed] = useState(false);
   const {
     themePreference,
     contrastPreference,
@@ -218,6 +220,27 @@ export function ThemeControls({ compact = false }: { compact?: boolean }) {
           </p>
         </div>
       </div>
+
+      {/* Here because this is where the per-device settings live, and the tours are remembered per device too (lib/tours.ts). */}
+      <div className="mt-7" style={label}>
+        Tours
+      </div>
+      <button
+        type="button"
+        onClick={() => {
+          resetTours();
+          setToursReplayed(true);
+        }}
+        className="mt-2.5 inline-flex min-h-[44px] items-center rounded-[3px] px-4"
+        style={{ fontFamily: 'var(--font-display)', fontSize: compact ? 15 : 15.5, border: '1.2px solid var(--line)', background: 'transparent', color: 'var(--ink2)' }}
+      >
+        Replay the tours
+      </button>
+      <p className="mt-1.5" role="status" style={{ fontSize: 13, lineHeight: 1.5, color: 'var(--ink3)' }}>
+        {toursReplayed
+          ? 'Done. Each screen’s tour will play the next time you open it.'
+          : 'The step-by-step guide to each screen, shown the first time you open it.'}
+      </p>
     </div>
   );
 }

@@ -9,6 +9,7 @@ import { relativeDue } from '../../lib/reviewQueue';
 import { MasteryLevelBadge } from '../shared/MasteryLevelBadge';
 import { useAtlasList } from '../../hooks/useAtlasList';
 import { UnlockNote } from '../shared/AreaLock';
+import { Tour } from '../shared/Tour';
 import { AtlasFilterPanel } from '../shared/AtlasFilterPanel';
 import type { UseEntitlement } from '../../hooks/useEntitlement';
 import { MobileShell } from './MobileShell';
@@ -128,6 +129,7 @@ export function MobileAtlas({
           onChange={(e) => list.setQuery(e.target.value)}
           placeholder="Search structures…"
           aria-label="Search structures"
+          data-tour="atlas-search"
           data-in
           className="mt-4 w-full rounded-[3px] px-4"
           style={{
@@ -147,6 +149,7 @@ export function MobileAtlas({
             onClick={() => setDrawerOpen(true)}
             aria-expanded={drawerOpen}
             aria-controls={PANEL_ID}
+            data-tour="atlas-filters"
             className="inline-flex flex-none items-center gap-2 rounded-[3px] px-4"
             style={{
               minHeight: 44,
@@ -172,7 +175,7 @@ export function MobileAtlas({
           </span>
         </div>
 
-        <div data-in className="mt-3.5 flex gap-2.5">
+        <div data-in data-tour="atlas-quiz" className="mt-3.5 flex gap-2.5">
           <button
             type="button"
             onClick={() => onQuizStructures(contextIds)}
@@ -235,7 +238,9 @@ export function MobileAtlas({
                     </span>
                   )}
                   {/* The level, not the all-time percentage — see the note in Atlas.tsx. */}
-                  <MasteryLevelBadge state={mastery.level} />
+                  <span data-tour="atlas-level" className="inline-flex">
+                    <MasteryLevelBadge state={mastery.level} />
+                  </span>
                 </div>
                 <div className="mt-2 flex flex-col gap-1">
                   {shown.map((c) => (
@@ -307,6 +312,8 @@ export function MobileAtlas({
           </div>
         </>
       )}
+      {/* Not while the filter drawer is open: two modals, one over the other. */}
+      {!drawerOpen && <Tour tourKey="atlas" ready={!content.loading} />}
     </MobileShell>
   );
 }

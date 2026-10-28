@@ -117,7 +117,7 @@ export function ClassAssignments({ access, repository, userId, content, onStart,
   const titleSize = compact ? 19 : 22;
 
   return (
-    <div className={compact ? 'mt-9' : 'mt-14'}>
+    <div data-tour="today-class" className={compact ? 'mt-9' : 'mt-14'}>
       <div style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
         From your class
       </div>

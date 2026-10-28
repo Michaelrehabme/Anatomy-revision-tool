@@ -21,6 +21,7 @@ import type { RevisionSetupParams } from '../../hooks/useRevisionSession';
 import type { RevisionQuestion } from '../../types/question';
 import type { AnatomyRepository } from '../../data/repository';
 import { Button } from '../shared/Button';
+import { Tour } from '../shared/Tour';
 import type { UseEntitlement } from '../../hooks/useEntitlement';
 import { AppShell } from '../shell/AppShell';
 import { NavSidebar, type NavSection } from '../shell/NavSidebar';
@@ -278,7 +279,7 @@ export function RevisionSetup({ access, content, repository, userId, areas, onSt
             <div style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
               Question formats
             </div>
-            <div className="mt-4 flex flex-wrap gap-2.5">
+            <div data-tour="setup-formats" className="mt-4 flex flex-wrap gap-2.5">
               {/* The all-chip leads, as "All categories" does below. It is not a
                   format, so it is named for what it does to the row rather than
                   echoing the "Select all" format sitting four along. */}
@@ -428,7 +429,7 @@ export function RevisionSetup({ access, content, repository, userId, areas, onSt
             <div style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
               Length
             </div>
-            <div className="mt-4 flex gap-2.5">
+            <div data-tour="setup-length" className="mt-4 flex gap-2.5">
               {LENGTHS.map((n) => (
                 <button
                   key={n}
@@ -507,7 +508,7 @@ structure{oinaMuscleCount === 1 ? '' : 's'}. A shorter session draws at random f
               </>
             )}
 
-            <label className="mt-12 flex cursor-pointer items-start gap-4">
+            <label data-tour="setup-srs" className="mt-12 flex cursor-pointer items-start gap-4">
               <span
                 className="relative h-[31px] w-[52px] flex-none rounded-full transition-colors"
                 style={{ background: useSrs ? 'var(--acc)' : 'var(--line)' }}
@@ -587,6 +588,7 @@ structure{oinaMuscleCount === 1 ? '' : 's'}. A shorter session draws at random f
               onClick={handleStart}
               disabled={!canStart || starting}
               className="mt-10 min-h-[58px] w-full"
+              data-tour="setup-begin"
             >
               {content.loading ? 'Loading content…' : starting ? 'Starting…' : 'Begin session'}
             </Button>
@@ -603,6 +605,7 @@ structure{oinaMuscleCount === 1 ? '' : 's'}. A shorter session draws at random f
           </div>
         </div>
       </div>
+      <Tour tourKey="setup" ready={!content.loading} />
     </AppShell>
   );
 }

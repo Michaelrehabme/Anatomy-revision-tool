@@ -14,6 +14,7 @@ import { getAtlasPanelOpen, setAtlasPanelOpen } from '../../lib/preferences';
 import { useAtlasList } from '../../hooks/useAtlasList';
 import { Button } from '../shared/Button';
 import { UnlockNote } from '../shared/AreaLock';
+import { Tour } from '../shared/Tour';
 import { AtlasFilterPanel } from '../shared/AtlasFilterPanel';
 import type { UseEntitlement } from '../../hooks/useEntitlement';
 import { AppShell } from '../shell/AppShell';
@@ -119,6 +120,7 @@ export function Atlas({ access, content, repository, userId, onOpenMuscle, onDri
               onChange={(e) => list.setQuery(e.target.value)}
               placeholder="Search…"
               aria-label="Search structures"
+              data-tour="atlas-search"
               className="w-[300px] flex-none rounded-[3px] px-4.5 py-3.5"
               style={{ fontFamily: 'var(--font-display)', fontSize: 19, border: '1.4px solid var(--acc)', background: 'var(--sf)', color: 'var(--ink)' }}
             />
@@ -127,6 +129,7 @@ export function Atlas({ access, content, repository, userId, onOpenMuscle, onDri
               disabled={contextIds.length === 0}
               className="flex-none min-h-[54px] min-w-[140px]"
               variant="secondary"
+              data-tour="atlas-quiz"
             >
               Quiz these
             </Button>
@@ -145,6 +148,7 @@ export function Atlas({ access, content, repository, userId, onOpenMuscle, onDri
               onClick={togglePanel}
               aria-expanded={panelOpen}
               aria-controls={PANEL_ID}
+              data-tour="atlas-filters"
               className="inline-flex min-h-[42px] items-center gap-2 rounded-[3px] px-4"
               style={{
                 fontFamily: 'var(--font-display)',
@@ -245,7 +249,7 @@ export function Atlas({ access, content, repository, userId, onOpenMuscle, onDri
                     types met; underneath, how many are not met yet, or else
                     the naming percentage.
                   */}
-                  <span className="flex w-[150px] flex-none flex-col gap-1.5">
+                  <span data-tour="atlas-level" className="flex w-[150px] flex-none flex-col gap-1.5">
                     <MasteryLevelBadge state={mastery.level} />
                     {(() => {
                       const note = mastery.level.seen ? (unmetText(mastery.level.unmet) ?? accuracyText(mastery.accuracy)) : null;
@@ -264,6 +268,7 @@ export function Atlas({ access, content, repository, userId, onOpenMuscle, onDri
           </div>
         </div>
       </div>
+      <Tour tourKey="atlas" ready={!content.loading} />
     </AppShell>
   );
 }

@@ -9,6 +9,7 @@ import { AccuracySection, StatTile } from '../shared/AccuracySection';
 import { ProgressTabs } from '../shared/ProgressTabs';
 import { CATEGORIES, CATEGORY_LABELS } from '../../types/structure';
 import { MobileShell } from './MobileShell';
+import { Tour } from '../shared/Tour';
 import type { MobileTab } from './MobileTabBar';
 
 interface MobileProgressProps {
@@ -45,6 +46,7 @@ export function MobileProgress({ content, repository, userId, onNavigateTab, onO
           type="button"
           onClick={onOpenAchievements}
           data-in
+          data-tour="progress-achievements"
           className="mt-2 border-0 bg-transparent p-0"
           style={{ font: '500 13px/1 var(--font-ui)', color: 'var(--accd)' }}
         >
@@ -59,14 +61,16 @@ export function MobileProgress({ content, repository, userId, onNavigateTab, onO
               <p className="mt-4 text-[14.5px] leading-relaxed" style={{ color: 'var(--ink3)' }}>
                 Mastery shades the map. Pale means unseen, deep means retained.
               </p>
-              <div className="flex justify-center">
-                <div style={{ width: 132 }}>
-                  <RegionBodyFigure fills={fills} />
+              <div data-tour="progress-regions">
+                <div className="flex justify-center">
+                  <div style={{ width: 132 }}>
+                    <RegionBodyFigure fills={fills} />
+                  </div>
                 </div>
-              </div>
 
-              <div className="mt-2">
-                <RegionLevelLegend />
+                <div className="mt-2">
+                  <RegionLevelLegend />
+                </div>
               </div>
               <div className="mt-1.5 flex flex-col">
                 {byRegion.map((r) => (
@@ -96,6 +100,7 @@ export function MobileProgress({ content, repository, userId, onNavigateTab, onO
           }
         />
       </div>
+      <Tour tourKey="progress" />
     </MobileShell>
   );
 }

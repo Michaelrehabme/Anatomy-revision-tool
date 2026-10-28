@@ -50,6 +50,7 @@ export function ProgressTabs({ mastery, accuracy, compact = false, className }: 
     <div className={className}>
       <div
         role="tablist"
+        data-tour="progress-tabs"
         aria-label="Progress"
         onKeyDown={onKeyDown}
         className={`flex ${compact ? 'gap-1' : 'gap-2'}`}

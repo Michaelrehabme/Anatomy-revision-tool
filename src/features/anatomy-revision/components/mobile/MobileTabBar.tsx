@@ -47,6 +47,7 @@ export function MobileTabBar({ active, onNavigate }: MobileTabBarProps) {
     // edge needs to read as an edge.
     <nav
       aria-label="Main"
+      data-tour="nav"
       className="relative flex flex-none px-5 pt-2"
       style={{ background: 'var(--sf)', borderTop: '1px solid var(--line)', paddingBottom: 'max(26px, env(safe-area-inset-bottom))' }}
     >

@@ -22,6 +22,7 @@ import { MobileShell } from './MobileShell';
 import { ClassAssignments } from '../shared/ClassAssignments';
 import { ReviewAreaSelect } from '../shared/ReviewAreaSelect';
 import { PaymentIssue } from '../shared/PaymentIssue';
+import { Tour } from '../shared/Tour';
 import { InstallCard } from '../../../pwa/InstallCard';
 import { AdminShortcut } from '../shared/AdminShortcut';
 import type { MobileTab } from './MobileTabBar';
@@ -97,6 +98,7 @@ export function MobileToday({ access, repository, userId, content, onStart, onCu
 
         <h2
           data-in
+          data-tour="today-headline"
           style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: firstRun ? 36 : 42, lineHeight: 1.02, letterSpacing: '-.022em', margin: '16px 0 0' }}
         >
           {firstRun ? (
@@ -132,39 +134,41 @@ export function MobileToday({ access, repository, userId, content, onStart, onCu
         )}
 
         {!firstRun && access.areas.length > 1 && (
-          <div data-in className="mt-5.5">
+          <div data-in data-tour="today-area" className="mt-5.5">
             <ReviewAreaSelect areas={access.areas} value={only ?? 'all'} onChange={setReviewArea} />
           </div>
         )}
-        <button
-          type="button"
-          onClick={() => handleStart('continue')}
-          data-in
-          className={`${!firstRun && access.areas.length > 1 ? 'mt-2.5' : 'mt-5.5'} w-full rounded-[3px] border-0 transition-transform duration-150 active:scale-[0.97] motion-reduce:active:scale-100`}
-          style={{ minHeight: 54, background: 'var(--acc-fill)', color: 'var(--onacc)', font: '500 17px/1 var(--font-ui)' }}
-        >
-          {firstRun ? 'Start your first session' : 'Keep going'}
-        </button>
-        {!firstRun && (
+        <div data-tour="today-start">
           <button
             type="button"
-            onClick={() => handleStart('fresh')}
+            onClick={() => handleStart('continue')}
+            data-in
+            className={`${!firstRun && access.areas.length > 1 ? 'mt-2.5' : 'mt-5.5'} w-full rounded-[3px] border-0 transition-transform duration-150 active:scale-[0.97] motion-reduce:active:scale-100`}
+            style={{ minHeight: 54, background: 'var(--acc-fill)', color: 'var(--onacc)', font: '500 17px/1 var(--font-ui)' }}
+          >
+            {firstRun ? 'Start your first session' : 'Keep going'}
+          </button>
+          {!firstRun && (
+            <button
+              type="button"
+              onClick={() => handleStart('fresh')}
+              data-in
+              className="mt-2.5 w-full rounded-[3px] transition-transform duration-150 active:scale-[0.97] motion-reduce:active:scale-100"
+              style={{ minHeight: 50, background: 'none', border: '1.3px solid var(--line)', color: 'var(--ink)', font: '500 15.5px/1 var(--font-ui)' }}
+            >
+              New set
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={onCustomSession}
             data-in
             className="mt-2.5 w-full rounded-[3px] transition-transform duration-150 active:scale-[0.97] motion-reduce:active:scale-100"
             style={{ minHeight: 50, background: 'none', border: '1.3px solid var(--line)', color: 'var(--ink)', font: '500 15.5px/1 var(--font-ui)' }}
           >
-            New set
+            Custom session
           </button>
-        )}
-        <button
-          type="button"
-          onClick={onCustomSession}
-          data-in
-          className="mt-2.5 w-full rounded-[3px] transition-transform duration-150 active:scale-[0.97] motion-reduce:active:scale-100"
-          style={{ minHeight: 50, background: 'none', border: '1.3px solid var(--line)', color: 'var(--ink)', font: '500 15.5px/1 var(--font-ui)' }}
-        >
-          Custom session
-        </button>
+        </div>
 
         {/* After the first session, never before it: a focus means nothing until something has been met. */}
         {!firstRun && (
@@ -187,51 +191,53 @@ export function MobileToday({ access, repository, userId, content, onStart, onCu
 
         <ClassAssignments access={access} repository={repository} userId={userId} content={content} onStart={onStart} compact />
 
-        <div
-          data-in
-          className="mt-9"
-          style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}
-        >
-          Weakest structures
-        </div>
-        <div className="mt-3 flex flex-col">
-          {weakest.length === 0 && (
-            <p className="py-3 text-sm" style={{ color: 'var(--ink3)' }}>
-              {firstRun ? 'Fills in after your first session.' : 'No attempts recorded yet.'}
-            </p>
-          )}
-          {weakest.slice(0, 3).map((m) => {
-            const structure = content.indexById.get(m.structureId);
-            const pct = Math.round((m.attemptsCorrect / m.attemptsTotal) * 100);
-            return (
-              <button
-                key={m.structureId}
-                type="button"
-                onClick={() => onOpenMuscle(m.structureId)}
-                data-row
-                className="flex items-baseline gap-3 border-0 bg-transparent py-3.5 text-left"
-              >
-                <span className="flex-1" style={{ fontFamily: 'var(--font-display)', fontSize: 20, lineHeight: 1.2, color: 'var(--ink)' }}>
-                  {structure?.name ?? m.structureId}
-                </span>
-                <span style={{ font: '400 11.5px/1 var(--font-mono)', color: 'var(--ink3)' }}>
-                  {structure ? REGION_LABELS[structure.region] : ''}
-                </span>
-                <span
-                  data-count
-                  className="tabular-nums"
-                  style={{
-                    font: '500 12.5px/1 var(--font-mono)',
-                    color: pct < 60 ? 'var(--acc2d)' : 'var(--ink2)',
-                    minWidth: 34,
-                    textAlign: 'right',
-                  }}
+        <div data-tour="today-weakest">
+          <div
+            data-in
+            className="mt-9"
+            style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}
+          >
+            Weakest structures
+          </div>
+          <div className="mt-3 flex flex-col">
+            {weakest.length === 0 && (
+              <p className="py-3 text-sm" style={{ color: 'var(--ink3)' }}>
+                {firstRun ? 'Fills in after your first session.' : 'No attempts recorded yet.'}
+              </p>
+            )}
+            {weakest.slice(0, 3).map((m) => {
+              const structure = content.indexById.get(m.structureId);
+              const pct = Math.round((m.attemptsCorrect / m.attemptsTotal) * 100);
+              return (
+                <button
+                  key={m.structureId}
+                  type="button"
+                  onClick={() => onOpenMuscle(m.structureId)}
+                  data-row
+                  className="flex items-baseline gap-3 border-0 bg-transparent py-3.5 text-left"
                 >
-                  {`${pct}%`}
-                </span>
-              </button>
-            );
-          })}
+                  <span className="flex-1" style={{ fontFamily: 'var(--font-display)', fontSize: 20, lineHeight: 1.2, color: 'var(--ink)' }}>
+                    {structure?.name ?? m.structureId}
+                  </span>
+                  <span style={{ font: '400 11.5px/1 var(--font-mono)', color: 'var(--ink3)' }}>
+                    {structure ? REGION_LABELS[structure.region] : ''}
+                  </span>
+                  <span
+                    data-count
+                    className="tabular-nums"
+                    style={{
+                      font: '500 12.5px/1 var(--font-mono)',
+                      color: pct < 60 ? 'var(--acc2d)' : 'var(--ink2)',
+                      minWidth: 34,
+                      textAlign: 'right',
+                    }}
+                  >
+                    {`${pct}%`}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         {!firstRun && (
@@ -267,6 +273,7 @@ export function MobileToday({ access, repository, userId, content, onStart, onCu
           </>
         )}
       </div>
+      <Tour tourKey="today" ready={!loading} />
     </MobileShell>
   );
 }

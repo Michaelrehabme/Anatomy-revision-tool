@@ -19,6 +19,7 @@ import {
 import type { RevisionSetupParams } from '../../hooks/useRevisionSession';
 import type { UseEntitlement } from '../../hooks/useEntitlement';
 import { MobileShell } from './MobileShell';
+import { Tour } from '../shared/Tour';
 import type { MobileTab } from './MobileTabBar';
 import { QUESTION_FORMATS } from '../../lib/questionFormats';
 
@@ -237,7 +238,7 @@ export function MobileRevisionSetup({ access, content, repository, userId, areas
         <div style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
           Question formats
         </div>
-        <div className="mt-3.5 flex flex-wrap gap-2.5">
+        <div data-tour="setup-formats" className="mt-3.5 flex flex-wrap gap-2.5">
           <button
             type="button"
             onClick={chooseAllTypes}
@@ -363,7 +364,7 @@ export function MobileRevisionSetup({ access, content, repository, userId, areas
         >
           Length
         </div>
-        <div className="mt-3.5 flex gap-2.5">
+        <div data-tour="setup-length" className="mt-3.5 flex gap-2.5">
           {LENGTHS.map((n) => {
             const on = !allCards && !customActive && count === n;
             return (
@@ -477,7 +478,7 @@ structure{oinaMuscleCount === 1 ? '' : 's'}. A shorter session draws at random f
           </>
         )}
 
-        <div className="mt-7.5 flex items-start gap-3.5">
+        <div data-tour="setup-srs" className="mt-7.5 flex items-start gap-3.5">
           <button
             type="button"
             role="switch"
@@ -505,6 +506,7 @@ structure{oinaMuscleCount === 1 ? '' : 's'}. A shorter session draws at random f
           type="button"
           onClick={handleStart}
           disabled={!canStart || starting}
+          data-tour="setup-begin"
           className="mt-8 w-full rounded-[3px] border-0 disabled:opacity-45"
           style={{ minHeight: 54, background: 'var(--acc-fill)', color: 'var(--onacc)', font: '500 17px/1 var(--font-ui)' }}
         >
@@ -516,6 +518,7 @@ structure{oinaMuscleCount === 1 ? '' : 's'}. A shorter session draws at random f
           </p>
         )}
       </div>
+      <Tour tourKey="setup" ready={!content.loading} />
     </MobileShell>
   );
 }

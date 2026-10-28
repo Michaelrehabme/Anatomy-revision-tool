@@ -4,6 +4,7 @@ import { getLearnCardAttempts } from '../../lib/preferences';
 import { useProgressData } from '../../hooks/useProgressData';
 import { CATEGORIES, CATEGORY_LABELS } from '../../types/structure';
 import { Button } from '../shared/Button';
+import { Tour } from '../shared/Tour';
 import { RegionLevelBar, RegionLevelLegend } from '../shared/RegionLevelBar';
 import { AccuracySection } from '../shared/AccuracySection';
 import { ProgressTabs } from '../shared/ProgressTabs';
@@ -87,7 +88,7 @@ export function Progress({ access, content, repository, userId, onStart, onNavig
           Progress
         </h1>
         <div data-in>
-          <button type="button" onClick={onOpenAchievements} style={{ font: '500 13px/1 var(--font-ui)', color: 'var(--accd)' }}>
+          <button type="button" onClick={onOpenAchievements} data-tour="progress-achievements" style={{ font: '500 13px/1 var(--font-ui)', color: 'var(--accd)' }}>
             View achievements →
           </button>
         </div>
@@ -105,7 +106,7 @@ export function Progress({ access, content, repository, userId, onStart, onNavig
                 {CATEGORIES.map((c) => `${seenByCategory[c].seen} / ${seenByCategory[c].total} ${CATEGORY_LABELS[c].toLowerCase()}`).join(' · ')}
               </p>
               <div className="mt-11 flex gap-[88px]">
-                <div className="flex-1">
+                <div data-tour="progress-regions" className="flex-1">
                   <div data-in style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
                     By region
                   </div>
@@ -138,60 +139,66 @@ export function Progress({ access, content, repository, userId, onStart, onNavig
                 </div>
 
                 <div className="w-[460px] flex-none">
-                  <div data-in style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
-                    Due over the next fortnight
-                  </div>
-                  <div className="mt-5.5 flex h-[180px] items-end gap-2.5">
-                    {forecast.map((count, i) => (
-                      <div
-                        key={i}
-                        data-wbar
-                        className="flex-1"
-                        style={{ height: `${Math.max(4, (count / forecastMax) * 100)}%`, background: i === 0 ? 'var(--accd)' : count > 0 ? 'var(--acc)' : 'var(--accs)' }}
-                      />
-                    ))}
-                  </div>
-                  <div className="mt-2.5 flex justify-between">
-                    <span style={{ font: '400 11px/1 var(--font-mono)', color: 'var(--ink3)' }}>today</span>
-                    <span style={{ font: '400 11px/1 var(--font-mono)', color: 'var(--ink3)' }}>+7</span>
-                    <span style={{ font: '400 11px/1 var(--font-mono)', color: 'var(--ink3)' }}>+14</span>
+                  <div data-tour="progress-forecast">
+                    <div data-in style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
+                      Due over the next fortnight
+                    </div>
+                    <div className="mt-5.5 flex h-[180px] items-end gap-2.5">
+                      {forecast.map((count, i) => (
+                        <div
+                          key={i}
+                          data-wbar
+                          className="flex-1"
+                          style={{ height: `${Math.max(4, (count / forecastMax) * 100)}%`, background: i === 0 ? 'var(--accd)' : count > 0 ? 'var(--acc)' : 'var(--accs)' }}
+                        />
+                      ))}
+                    </div>
+                    <div className="mt-2.5 flex justify-between">
+                      <span style={{ font: '400 11px/1 var(--font-mono)', color: 'var(--ink3)' }}>today</span>
+                      <span style={{ font: '400 11px/1 var(--font-mono)', color: 'var(--ink3)' }}>+7</span>
+                      <span style={{ font: '400 11px/1 var(--font-mono)', color: 'var(--ink3)' }}>+14</span>
+                    </div>
                   </div>
 
-                  <div
-                    data-in
-                    className="mt-13"
-                    style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}
-                  >
-                    Untouched
+                  <div data-tour="progress-untouched">
+                    <div
+                      data-in
+                      className="mt-13"
+                      style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}
+                    >
+                      Untouched
+                    </div>
+                    <p data-in className="mt-3.5 text-base leading-relaxed" style={{ color: 'var(--ink2)' }}>
+                      {untouched.length > 0
+                        ? `${untouched.length} muscles have never come up. Worth a dedicated session.`
+                        : 'Every muscle has come up at least once.'}
+                    </p>
+                    {untouched.length > 0 && (
+                      <Button variant="secondary" onClick={handleDrillUntouched} className="mt-5 min-h-[52px] px-6">
+                        Drill the untouched {untouched.length}
+                      </Button>
+                    )}
                   </div>
-                  <p data-in className="mt-3.5 text-base leading-relaxed" style={{ color: 'var(--ink2)' }}>
-                    {untouched.length > 0
-                      ? `${untouched.length} muscles have never come up. Worth a dedicated session.`
-                      : 'Every muscle has come up at least once.'}
-                  </p>
-                  {untouched.length > 0 && (
-                    <Button variant="secondary" onClick={handleDrillUntouched} className="mt-5 min-h-[52px] px-6">
-                      Drill the untouched {untouched.length}
-                    </Button>
-                  )}
 
-                  <div
-                    data-in
-                    className="mt-13"
-                    style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}
-                  >
-                    Leeches
+                  <div data-tour="progress-leeches">
+                    <div
+                      data-in
+                      className="mt-13"
+                      style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}
+                    >
+                      Leeches
+                    </div>
+                    <p data-in className="mt-3.5 text-base leading-relaxed" style={{ color: 'var(--ink2)' }}>
+                      {leeches.length > 0
+                        ? `${leeches.length} structures keep coming back wrong. Worth isolating.`
+                        : 'No leeches — nothing is stuck.'}
+                    </p>
+                    {leeches.length > 0 && (
+                      <Button variant="secondary" onClick={handleDrillLeeches} className="mt-5 min-h-[52px] px-6">
+                        Drill the {leeches.length} leech{leeches.length === 1 ? '' : 'es'}
+                      </Button>
+                    )}
                   </div>
-                  <p data-in className="mt-3.5 text-base leading-relaxed" style={{ color: 'var(--ink2)' }}>
-                    {leeches.length > 0
-                      ? `${leeches.length} structures keep coming back wrong. Worth isolating.`
-                      : 'No leeches — nothing is stuck.'}
-                  </p>
-                  {leeches.length > 0 && (
-                    <Button variant="secondary" onClick={handleDrillLeeches} className="mt-5 min-h-[52px] px-6">
-                      Drill the {leeches.length} leech{leeches.length === 1 ? '' : 'es'}
-                    </Button>
-                  )}
                 </div>
               </div>
             </div>
@@ -203,6 +210,7 @@ export function Progress({ access, content, repository, userId, onStart, onNavig
           }
         />
       </div>
+      <Tour tourKey="progress" />
     </AppShell>
   );
 }

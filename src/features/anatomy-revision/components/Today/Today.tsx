@@ -22,6 +22,7 @@ import { Button } from '../shared/Button';
 import { ClassAssignments } from '../shared/ClassAssignments';
 import { ReviewAreaSelect } from '../shared/ReviewAreaSelect';
 import { PaymentIssue } from '../shared/PaymentIssue';
+import { Tour } from '../shared/Tour';
 import type { RevisionSetupParams } from '../../hooks/useRevisionSession';
 import type { UseEntitlement } from '../../hooks/useEntitlement';
 
@@ -115,6 +116,7 @@ export function Today({ access, repository, userId, content, onStart, onCustomSe
           </div>
           <h2
             data-in
+            data-tour="today-headline"
             style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: firstRun ? 64 : 76, lineHeight: 0.98, letterSpacing: '-.032em', margin: '20px 0 0' }}
           >
             {firstRun ? (
@@ -149,11 +151,11 @@ export function Today({ access, repository, userId, content, onStart, onCustomSe
           )}
 
           {!firstRun && access.areas.length > 1 && (
-            <div data-in className="mt-7">
+            <div data-in data-tour="today-area" className="mt-7">
               <ReviewAreaSelect areas={access.areas} value={only ?? 'all'} onChange={setReviewArea} />
             </div>
           )}
-          <div data-in className={`${!firstRun && access.areas.length > 1 ? 'mt-3.5' : 'mt-9'} flex flex-wrap gap-3.5`}>
+          <div data-in data-tour="today-start" className={`${!firstRun && access.areas.length > 1 ? 'mt-3.5' : 'mt-9'} flex flex-wrap gap-3.5`}>
             <Button onClick={() => handleStart('continue')} className={firstRun ? 'min-w-[180px] min-h-[56px]' : 'flex-1 whitespace-nowrap min-h-[56px]'}>
               {firstRun ? 'Start your first session' : 'Keep going'}
             </Button>
@@ -213,7 +215,7 @@ export function Today({ access, repository, userId, content, onStart, onCustomSe
           )}
         </div>
 
-        <div className="flex-1">
+        <div data-tour="today-weakest" className="flex-1">
           <div data-in style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>
             Weakest structures
           </div>
@@ -287,6 +289,7 @@ export function Today({ access, repository, userId, content, onStart, onCustomSe
           )}
         </div>
       </div>
+      <Tour tourKey="today" ready={!loading} />
     </AppShell>
   );
 }

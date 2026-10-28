@@ -57,6 +57,7 @@ export function EducatorMobileShell({ children }: { children: ReactNode }) {
             class list, and a picker directly above it says the same thing twice. */}
         {!loading && cohortId && cohorts && cohorts.length > 1 && (
           <select
+            data-tour="edu-class"
             value={cohortId}
             onChange={(e) => navigate(`/educator/${e.target.value}`)}
             className="mt-3 w-full"
@@ -80,13 +81,14 @@ export function EducatorMobileShell({ children }: { children: ReactNode }) {
           </select>
         )}
         {!loading && cohorts && cohorts.length === 1 && (
-          <div className="mt-2 truncate" style={{ font: '500 15px/1.2 var(--font-ui)', color: 'var(--ink2)' }}>
+          <div data-tour="edu-class" className="mt-2 truncate" style={{ font: '500 15px/1.2 var(--font-ui)', color: 'var(--ink2)' }}>
             {cohorts[0].name}
           </div>
         )}
 
         {navItems.length > 0 && (
           <nav
+            data-tour="edu-nav"
             className="-mx-4 mt-3 flex gap-1 overflow-x-auto px-4 pb-1"
             // The strip scrolls rather than wrapping, so the header keeps a
             // predictable height whatever the labels are.
@@ -120,6 +122,7 @@ export function EducatorMobileShell({ children }: { children: ReactNode }) {
       <div className="flex-none border-t px-4 py-3" style={{ borderColor: 'var(--line)', background: 'var(--sf)' }}>
         <Link
           to="/educator/new"
+          data-tour="edu-new"
           className="flex items-center"
           style={{ fontFamily: 'var(--font-display)', fontSize: 16, minHeight: 44, color: 'var(--accd)', textDecoration: 'none' }}
         >

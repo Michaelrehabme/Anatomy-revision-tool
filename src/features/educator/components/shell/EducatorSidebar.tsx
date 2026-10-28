@@ -25,6 +25,7 @@ export function EducatorSidebar() {
 
       {!loading && cohorts && cohorts.length > 1 && (
         <select
+          data-tour="edu-class"
           value={cohortId ?? ''}
           onChange={(e) => navigate(`/educator/${e.target.value}`)}
           className="mt-4"
@@ -45,12 +46,12 @@ export function EducatorSidebar() {
         </select>
       )}
       {!loading && cohorts && cohorts.length === 1 && (
-        <div className="mt-4 truncate" style={{ font: '500 14px/1 var(--font-ui)', color: 'var(--ink2)' }}>
+        <div data-tour="edu-class" className="mt-4 truncate" style={{ font: '500 14px/1 var(--font-ui)', color: 'var(--ink2)' }}>
           {cohorts[0].name}
         </div>
       )}
 
-      <nav className="mt-8 flex flex-col gap-0.5">
+      <nav data-tour="edu-nav" className="mt-8 flex flex-col gap-0.5">
         {navItems.map((item) => (
           <NavLink
             key={item.path}
@@ -73,6 +74,7 @@ export function EducatorSidebar() {
       <div className="flex-1" />
       <Link
         to="/educator/new"
+        data-tour="edu-new"
         className="rounded-[3px] px-3.5 py-2.5"
         style={{ fontFamily: 'var(--font-display)', fontSize: 16, color: 'var(--accd)', textDecoration: 'none' }}
       >

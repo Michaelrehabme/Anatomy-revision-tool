@@ -156,7 +156,7 @@ export function NavSidebar({ active, onNavigate, footer, hideAccount = false }: 
       <div style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 25, letterSpacing: '-0.018em' }}>
         LocusMSK
       </div>
-      <nav aria-label="Main" className="relative mt-10 flex flex-col" style={{ gap: NAV_ITEM_GAP }}>
+      <nav aria-label="Main" data-tour="nav" className="relative mt-10 flex flex-col" style={{ gap: NAV_ITEM_GAP }}>
         <div
           aria-hidden="true"
           className="pointer-events-none absolute inset-x-0 top-0 rounded-[3px] motion-reduce:transition-none"

@@ -2,6 +2,7 @@ import { useParams } from 'react-router-dom';
 import { useCohortAnalytics } from '../../hooks/useCohortAnalytics';
 import { useCohorts } from '../CohortsProvider';
 import { JoinCodePanel } from './JoinCodePanel';
+import { Tour } from '../../../anatomy-revision/components/shared/Tour';
 import { StatTile } from '../../../admin/components/Analytics/StatTile';
 import { AccuracyByRegionChart } from '../../../admin/components/Analytics/AccuracyByRegionChart';
 import { ActiveUsersChart } from '../../../admin/components/Analytics/ActiveUsersChart';
@@ -50,7 +51,9 @@ export function EducatorCohortOverviewScreen() {
         breakdowns.
       </p>
 
-      <JoinCodePanel cohort={cohort} />
+      <div data-tour="edu-join">
+        <JoinCodePanel cohort={cohort} />
+      </div>
 
       <div className="mt-6 flex flex-wrap gap-3">
         <StatTile label="Enrolled students" value={String(students.length)} />
@@ -85,6 +88,7 @@ export function EducatorCohortOverviewScreen() {
         <h2 style={sectionHeading}>Engagement over time</h2>
         <ActiveUsersChart points={snapshot.overview.activeUsersByDay} />
       </section>
+      <Tour tourKey="educator" />
     </div>
   );
 }
