@@ -18,9 +18,33 @@
 
 const PREFIX = 'anatomy-revision:v1:tour:';
 
-export type TourKey = 'today' | 'atlas' | 'progress' | 'setup' | 'educator';
+/** One per screen. The educator section has one per page, since each page is a different kind of report. */
+export type TourKey =
+  | 'today'
+  | 'atlas'
+  | 'progress'
+  | 'setup'
+  | 'educator'
+  | 'educator-classes'
+  | 'educator-weakness'
+  | 'educator-confusion'
+  | 'educator-students'
+  | 'educator-student'
+  | 'educator-assignments';
 
-export const TOUR_KEYS: readonly TourKey[] = ['today', 'atlas', 'progress', 'setup', 'educator'];
+export const TOUR_KEYS: readonly TourKey[] = [
+  'today',
+  'atlas',
+  'progress',
+  'setup',
+  'educator',
+  'educator-classes',
+  'educator-weakness',
+  'educator-confusion',
+  'educator-students',
+  'educator-student',
+  'educator-assignments',
+];
 
 export type TourLayout = 'desktop' | 'mobile';
 
@@ -103,19 +127,16 @@ export const TOURS: Record<TourKey, readonly TourStep[]> = {
       target: 'progress-forecast',
       title: 'What is coming due',
       body: 'How many reviews fall due each day for the next fortnight, so a heavy day is never a surprise.',
-      layouts: ['desktop'],
     },
     {
       target: 'progress-untouched',
       title: 'Not started yet',
       body: 'Muscles that have never come up in a session. One drill on them starts them on your reviews.',
-      layouts: ['desktop'],
     },
     {
       target: 'progress-leeches',
       title: 'Leeches',
       body: 'The structures you keep losing. Drill them on their own until they stick.',
-      layouts: ['desktop'],
     },
     {
       target: 'progress-achievements',
@@ -154,7 +175,17 @@ export const TOURS: Record<TourKey, readonly TourStep[]> = {
     {
       target: 'edu-join',
       title: 'Bring your students in',
-      body: 'Share this code. Students enter it in the app to join the class, and their results start appearing here.',
+      body: 'Read it out or put it on a slide. Students enter it in their own account to join, and can leave whenever they like, which takes their data off these pages.',
+    },
+    {
+      target: 'edu-tiles',
+      title: 'The class at a glance',
+      body: 'Active students have answered at least one question. Completion rate is the share of started sessions that were finished.',
+    },
+    {
+      target: 'edu-mastery',
+      title: 'Where the class has got to',
+      body: 'The same level bars a student sees on their own Progress screen, counting every student and structure together. A student is counted from the next time they open the app.',
     },
     {
       target: 'edu-nav',
@@ -165,6 +196,88 @@ export const TOURS: Record<TourKey, readonly TourStep[]> = {
       target: 'edu-new',
       title: 'Another class',
       body: 'Start a separate class for each cohort or module.',
+    },
+  ],
+  'educator-classes': [
+    {
+      target: 'edu-classes',
+      title: 'Your classes',
+      body: 'Every class you run, with its join code. Open one to see how it is getting on.',
+    },
+    {
+      target: 'edu-new',
+      title: 'Another class',
+      body: 'Start a separate class for each cohort or module. Each gets its own join code.',
+    },
+  ],
+  'educator-weakness': [
+    {
+      target: 'edu-weak-table',
+      title: 'What the class gets wrong',
+      body: 'Every structure the class has attempted at least 5 times, worst accuracy first. Start at the top when planning what to go over again.',
+    },
+    {
+      target: 'edu-weak-trend',
+      title: 'Learning or forgetting',
+      body: 'Overall accuracy minus first-attempt accuracy. Learning means students get there with practice. Forgetting means they got it right at first and are losing it.',
+    },
+  ],
+  'educator-confusion': [
+    {
+      target: 'edu-confusion',
+      title: 'What the class mixes up',
+      body: 'Each row is a right answer and the wrong answer students picked instead, commonest first. A frequent pair is a distinction the class is not making, and a good one to teach side by side.',
+    },
+  ],
+  'educator-students': [
+    {
+      target: 'edu-students',
+      title: 'Everyone in the class',
+      body: 'Lowest accuracy first, so the students who need help are at the top. Those who have not answered anything yet sit at the bottom. Open a name for their own page.',
+    },
+    {
+      target: 'edu-invite',
+      title: 'Invite by email',
+      body: 'Paste a list of addresses, from a register or a spreadsheet column, and each student is sent an invitation. They join when they accept.',
+    },
+  ],
+  'educator-student': [
+    {
+      target: 'edu-student-tiles',
+      title: 'Their totals',
+      body: 'Attempts, accuracy, and the streak: how many days in a row they have studied.',
+    },
+    {
+      target: 'edu-student-trend',
+      title: 'Accuracy over time',
+      body: 'How their accuracy has moved, set against the class as a whole.',
+    },
+    {
+      target: 'edu-student-mastery',
+      title: 'Where they have got to',
+      body: 'How far through each region they are, from not met to Master.',
+    },
+    {
+      target: 'edu-student-weakest',
+      title: 'Their weakest structures',
+      body: 'The structures they get wrong most, with how many times they have tried each. Answer-by-answer logs are never shown.',
+    },
+  ],
+  'educator-assignments': [
+    {
+      target: 'edu-challenge',
+      title: 'A weekly challenge',
+      body: 'Pick one area for the week. It becomes every student’s weekly focus, and you see how many reach the target by Sunday. Students see only their own progress.',
+    },
+    {
+      target: 'edu-assignment-form',
+      title: 'Set a piece of work',
+      body: 'Start from a template, then give it a title, a due date and a pass mark. Customise chooses the areas, question formats and length.',
+    },
+    {
+      target: 'edu-assignment-list',
+      title: 'Who has done it',
+      body: 'Each assignment shows who has passed, who is below the pass mark and who has not started. Open its student list to see each person’s best score.',
     },
   ],
 };

@@ -1,5 +1,6 @@
 import { useParams } from 'react-router-dom';
 import { useCohortAnalytics } from '../../hooks/useCohortAnalytics';
+import { Tour } from '../../../anatomy-revision/components/shared/Tour';
 import { StructureWeaknessTable } from '../../../admin/components/Analytics/StructureWeaknessTable';
 
 /** Educator's cohort-scoped counterpart to admin's platform-wide StructureWeaknessScreen — this is the screen the CR-012 prompt calls out as "the thing educators actually want", since it tells them what to reteach before the exam. */
@@ -29,7 +30,10 @@ export function EducatorStructureWeaknessScreen() {
         accuracy vs. overall means students are learning it through repetition; the reverse means they're forgetting
         it once revised.
       </p>
-      <StructureWeaknessTable rows={snapshot?.structureWeakness ?? []} />
+      <div data-tour="edu-weak-table">
+        <StructureWeaknessTable rows={snapshot?.structureWeakness ?? []} />
+      </div>
+      <Tour tourKey="educator-weakness" />
     </div>
   );
 }

@@ -1,5 +1,9 @@
 import type { AnatomyContent } from '../../hooks/useAnatomyContent';
 import type { AnatomyRepository } from '../../data/repository';
+import type { UseEntitlement } from '../../hooks/useEntitlement';
+import type { RevisionSetupParams } from '../../hooks/useRevisionSession';
+import type { RevisionQuestion } from '../../types/question';
+import { buildProgressDrill, type ProgressDrill } from '../../lib/progressDrills';
 import type { Region } from '../../types/region';
 import { REGION_LABELS } from '../../types/region';
 import { useProgressData } from '../../hooks/useProgressData';
@@ -13,9 +17,12 @@ import { Tour } from '../shared/Tour';
 import type { MobileTab } from './MobileTabBar';
 
 interface MobileProgressProps {
+  /** What this account may reach — the drills are clamped to it. */
+  access: UseEntitlement;
   content: AnatomyContent;
   repository: AnatomyRepository | null;
   userId: string | null;
+  onStart: (questions: RevisionQuestion[], params: RevisionSetupParams) => void;
   onNavigateTab: (tab: MobileTab) => void;
   onOpenAchievements: () => void;
 }
@@ -26,8 +33,13 @@ function masteryFill(pct: number): string {
 }
 
 /** Screen 11 (mobile). BodyFigure shaded per-region by mastery, not just bars (desktop is bars-only). */
-export function MobileProgress({ content, repository, userId, onNavigateTab, onOpenAchievements }: MobileProgressProps) {
-  const { streak, byRegion, forecast, seenByCategory, totalSeen, totalStructures } = useProgressData(repository, userId, content);
+export function MobileProgress({ access, content, repository, userId, onStart, onNavigateTab, onOpenAchievements }: MobileProgressProps) {
+  const { streak, byRegion, forecast, forecastMax, untouched, leeches, seenByCategory, totalSeen, totalStructures } = useProgressData(repository, userId, content);
+  // The same drills the desktop screen starts (lib/progressDrills.ts).
+  const drill = async (kind: ProgressDrill, structureIds: string[]) => {
+    const { questions, params } = await buildProgressDrill(kind, { content, repository, userId, structureIds, entitledAreas: access.areas });
+    onStart(questions, params);
+  };
 
   const fills = Object.fromEntries(byRegion.map((r) => [r.region, masteryFill(r.pct)])) as Partial<Record<Region, string>>;
   const dueTomorrow = forecast[1] ?? 0;
@@ -86,6 +98,66 @@ export function MobileProgress({ content, repository, userId, onNavigateTab, onO
                     </div>
                   </div>
                 ))}
+              </div>
+
+              {/* Below the regions (owner, 28 Oct 2026): what the desktop screen
+                  already had in its side column — the fortnight ahead, the
+                  untouched and the leeches — in one column for a phone. */}
+              <div data-tour="progress-forecast" className="mt-8">
+                <div style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>Due over the next fortnight</div>
+                <div className="mt-4 flex h-[90px] items-end gap-1.5">
+                  {forecast.map((count, i) => (
+                    <div
+                      key={i}
+                      data-wbar
+                      className="flex-1"
+                      style={{ height: `${Math.max(4, (count / forecastMax) * 100)}%`, background: i === 0 ? 'var(--accd)' : count > 0 ? 'var(--acc)' : 'var(--accs)' }}
+                    />
+                  ))}
+                </div>
+                <div className="mt-2 flex justify-between">
+                  <span style={{ font: '400 11px/1 var(--font-mono)', color: 'var(--ink3)' }}>today</span>
+                  <span style={{ font: '400 11px/1 var(--font-mono)', color: 'var(--ink3)' }}>+7</span>
+                  <span style={{ font: '400 11px/1 var(--font-mono)', color: 'var(--ink3)' }}>+14</span>
+                </div>
+              </div>
+
+              <div data-tour="progress-untouched" className="mt-8">
+                <div style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>Untouched</div>
+                <p className="mt-2.5 text-[15px] leading-snug" style={{ color: 'var(--ink2)' }}>
+                  {untouched.length > 0
+                    ? `${untouched.length} muscles have never come up. Worth a dedicated session.`
+                    : 'Every muscle has come up at least once.'}
+                </p>
+                {untouched.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => drill('untouched', untouched.map((m) => m.id))}
+                    className="mt-3.5 w-full rounded-[3px] transition-transform duration-150 active:scale-[0.97] motion-reduce:active:scale-100"
+                  style={{ minHeight: 50, background: 'none', border: '1.3px solid var(--line)', color: 'var(--ink)', font: '500 15.5px/1 var(--font-ui)' }}
+                  >
+                    Drill the untouched {untouched.length}
+                  </button>
+                )}
+              </div>
+
+              <div data-tour="progress-leeches" className="mt-8">
+                <div style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>Leeches</div>
+                <p className="mt-2.5 text-[15px] leading-snug" style={{ color: 'var(--ink2)' }}>
+                  {leeches.length > 0
+                    ? `${leeches.length} structures keep coming back wrong. Worth isolating.`
+                    : 'No leeches — nothing is stuck.'}
+                </p>
+                {leeches.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => drill('leeches', leeches.map((m) => m.id))}
+                    className="mt-3.5 w-full rounded-[3px] transition-transform duration-150 active:scale-[0.97] motion-reduce:active:scale-100"
+                  style={{ minHeight: 50, background: 'none', border: '1.3px solid var(--line)', color: 'var(--ink)', font: '500 15.5px/1 var(--font-ui)' }}
+                  >
+                    Drill the {leeches.length} leech{leeches.length === 1 ? '' : 'es'}
+                  </button>
+                )}
               </div>
 
               <div className="mt-7 flex flex-wrap gap-2.5">

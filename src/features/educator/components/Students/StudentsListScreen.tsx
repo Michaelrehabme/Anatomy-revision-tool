@@ -1,5 +1,6 @@
 import { Link, useParams } from 'react-router-dom';
 import { InviteStudentsPanel } from './InviteStudentsPanel';
+import { Tour } from '../../../anatomy-revision/components/shared/Tour';
 import { useCohortAnalytics } from '../../hooks/useCohortAnalytics';
 
 /**
@@ -41,6 +42,7 @@ export function EducatorStudentsListScreen() {
           overview.
         </div>
         {cohortId && <InviteStudentsPanel cohortId={cohortId} memberEmails={[]} />}
+        <Tour tourKey="educator-students" />
       </>
     );
   }
@@ -60,7 +62,7 @@ export function EducatorStudentsListScreen() {
 
   return (
     <div className="mt-6 overflow-x-auto">
-      <table className="w-full border-collapse text-left">
+      <table data-tour="edu-students" className="w-full border-collapse text-left">
         <thead>
           <tr style={{ borderBottom: '1.2px solid var(--line)' }}>
             {['Student', 'Attempts', 'Accuracy', 'Last active'].map((label) => (
@@ -108,6 +110,7 @@ export function EducatorStudentsListScreen() {
           memberEmails={students.map((s) => s.email).filter((e): e is string => !!e)}
         />
       )}
+      <Tour tourKey="educator-students" />
     </div>
   );
 }

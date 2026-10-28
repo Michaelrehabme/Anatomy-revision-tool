@@ -41,16 +41,17 @@ describe('seen state', () => {
 });
 
 describe('stepsFor', () => {
-  it('leaves desktop-only steps out of the mobile tour', () => {
-    const mobile = stepsFor('progress', 'mobile').map((s) => s.target);
-    expect(mobile).not.toContain('progress-leeches');
-    expect(mobile).not.toContain('progress-forecast');
-    expect(stepsFor('progress', 'desktop').map((s) => s.target)).toContain('progress-leeches');
+  // The phone Progress screen gained the fortnight, untouched and leeches (28 Oct 2026), so its tour is the whole tour.
+  it('gives the phone the whole Progress tour', () => {
+    expect(stepsFor('progress', 'mobile')).toEqual(stepsFor('progress', 'desktop'));
+    expect(stepsFor('progress', 'mobile').map((s) => s.target)).toContain('progress-leeches');
   });
 });
 
 const C = 'src/features/anatomy-revision/components/';
 const E = 'src/features/educator/components/';
+/** Educator pages are one component for both layouts; only the shell differs. */
+const both = (...files: string[]) => ({ desktop: files, mobile: files });
 /** The files each layout renders for a screen, shells and shared parts included. */
 const FILES: Record<TourKey, Record<TourLayout, string[]>> = {
   today: {
@@ -67,6 +68,15 @@ const FILES: Record<TourKey, Record<TourLayout, string[]>> = {
     desktop: [`${E}Overview/CohortOverviewScreen.tsx`, `${E}shell/EducatorSidebar.tsx`],
     mobile: [`${E}Overview/CohortOverviewScreen.tsx`, `${E}shell/EducatorMobileShell.tsx`],
   },
+  'educator-classes': {
+    desktop: [`${E}EducatorHome.tsx`, `${E}shell/EducatorSidebar.tsx`],
+    mobile: [`${E}EducatorHome.tsx`, `${E}shell/EducatorMobileShell.tsx`],
+  },
+  'educator-weakness': both(`${E}Weakness/StructureWeaknessScreen.tsx`, 'src/features/admin/components/Analytics/StructureWeaknessTable.tsx'),
+  'educator-confusion': both(`${E}Confusion/ConfusionPairsScreen.tsx`),
+  'educator-students': both(`${E}Students/StudentsListScreen.tsx`, `${E}Students/InviteStudentsPanel.tsx`),
+  'educator-student': both(`${E}Students/StudentDetailScreen.tsx`),
+  'educator-assignments': both(`${E}Assignments/AssignmentsScreen.tsx`, `${E}Assignments/ChallengeSection.tsx`, `${E}Assignments/CreateAssignmentForm.tsx`),
 };
 
 describe('every step is marked on the page, at both breakpoints', () => {
@@ -74,7 +84,8 @@ describe('every step is marked on the page, at both breakpoints', () => {
     for (const layout of ['desktop', 'mobile'] as const) {
       it(`${key} · ${layout}`, () => {
         const source = FILES[key][layout].map((f) => readFileSync(resolve(process.cwd(), f), 'utf8')).join('\n');
-        const missing = stepsFor(key, layout).filter((s) => !source.includes(`data-tour="${s.target}"`));
+        // Written out, or chosen in code (the weakness table tags one of its generated column headers).
+        const missing = stepsFor(key, layout).filter((s) => !source.includes(`data-tour="${s.target}"`) && !source.includes(`'${s.target}'`));
         expect(missing.map((s) => s.target)).toEqual([]);
         expect(source).toContain(`<Tour tourKey="${key}"`);
       });

@@ -37,6 +37,7 @@ export function StructureWeaknessTable({ rows }: { rows: StructureWeaknessRow[] 
               (label) => (
                 <th
                   key={label}
+                  data-tour={label === 'Learning vs. forgetting' ? 'edu-weak-trend' : undefined}
                   className="pb-2.5 pr-4 whitespace-nowrap"
                   style={{
                     font: '500 10px/1 var(--font-mono)',

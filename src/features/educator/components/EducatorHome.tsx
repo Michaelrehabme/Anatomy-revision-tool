@@ -1,6 +1,7 @@
 import { Link, Navigate } from 'react-router-dom';
 import { useCohorts } from './CohortsProvider';
 import { CreateClassScreen } from './CreateClass/CreateClassScreen';
+import { Tour } from '../../anatomy-revision/components/shared/Tour';
 
 /**
  * /educator index — the create form for someone with no classes, straight
@@ -49,7 +50,7 @@ export function EducatorHome() {
         {ordered.length} classes
       </p>
 
-      <ul className="mt-6 flex list-none flex-col gap-2 p-0">
+      <ul data-tour="edu-classes" className="mt-6 flex list-none flex-col gap-2 p-0">
         {ordered.map((cohort) => (
           <li key={cohort.id}>
             <Link
@@ -92,6 +93,7 @@ export function EducatorHome() {
       >
         + New class
       </Link>
+      <Tour tourKey="educator-classes" />
     </div>
   );
 }

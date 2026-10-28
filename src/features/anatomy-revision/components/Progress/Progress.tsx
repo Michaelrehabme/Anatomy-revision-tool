@@ -1,6 +1,5 @@
 import { REGION_LABELS } from '../../types/region';
-import { generateRevisionSet } from '../../lib/questionGenerators/generateSet';
-import { getLearnCardAttempts } from '../../lib/preferences';
+import { buildProgressDrill, type ProgressDrill } from '../../lib/progressDrills';
 import { useProgressData } from '../../hooks/useProgressData';
 import { CATEGORIES, CATEGORY_LABELS } from '../../types/structure';
 import { Button } from '../shared/Button';
@@ -12,7 +11,7 @@ import type { UseEntitlement } from '../../hooks/useEntitlement';
 import { AppShell } from '../shell/AppShell';
 import { NavSidebar, type NavSection } from '../shell/NavSidebar';
 import type { RevisionSetupParams } from '../../hooks/useRevisionSession';
-import type { RevisionQuestion, QuestionType } from '../../types/question';
+import type { RevisionQuestion } from '../../types/question';
 import type { AnatomyContent } from '../../hooks/useAnatomyContent';
 import type { AnatomyRepository } from '../../data/repository';
 
@@ -33,42 +32,13 @@ export function Progress({ access, content, repository, userId, onStart, onNavig
   // Desktop shows strongest-first; the mobile mockup keeps REGIONS' natural order instead.
   const byRegion = [...byRegionUnsorted].sort((a, b) => b.pct - a.pct);
 
-  // No mastery passed here on purpose: every structure in `untouched` is by
-  // definition unattempted, so they all carry UNSEEN_WEIGHT and the ordering
-  // stays uniform. For the same reason none of them has fact mastery either, so
-  // every OINA question arrives preceded by its learn card — which is what
-  // "start these" should mean.
-  const handleDrillUntouched = async () => {
-    const types: QuestionType[] = ['oina', 'mcq'];
-    const factMastery = repository && userId ? await repository.listFactMastery(userId) : undefined;
-    const learnCardAttempts = getLearnCardAttempts();
-    const questions = generateRevisionSet(content.structures, content.images, {
-      types,
-      mode: 'practice',
-      structureIds: untouched.map((m) => m.id),
-      entitledAreas: access.areas,
-      factMastery,
-      learnCardAttempts,
-    }, content.sources);
-    onStart(questions, { types, mode: 'practice', learnCardAttempts });
+  // The same drills the phone starts (lib/progressDrills.ts).
+  const drill = async (kind: ProgressDrill, structureIds: string[]) => {
+    const { questions, params } = await buildProgressDrill(kind, { content, repository, userId, structureIds, entitledAreas: access.areas });
+    onStart(questions, params);
   };
-
-  const handleDrillLeeches = async () => {
-    // Leeches are the muscles a student keeps losing, which is exactly what
-    // per-fact drilling is for — OINA leads.
-    const types: QuestionType[] = ['oina', 'mcq', 'fill-blank', 'identify-typed'];
-    const factMastery = repository && userId ? await repository.listFactMastery(userId) : undefined;
-    const learnCardAttempts = getLearnCardAttempts();
-    const questions = generateRevisionSet(content.structures, content.images, {
-      types,
-      mode: 'practice',
-      structureIds: leeches.map((m) => m.id),
-      entitledAreas: access.areas,
-      factMastery,
-      learnCardAttempts,
-    }, content.sources);
-    onStart(questions, { types, mode: 'practice', learnCardAttempts });
-  };
+  const handleDrillUntouched = () => drill('untouched', untouched.map((m) => m.id));
+  const handleDrillLeeches = () => drill('leeches', leeches.map((m) => m.id));
 
   return (
     <AppShell

@@ -17,6 +17,7 @@ import {
 } from '../../types/cohort';
 import { CreateAssignmentForm } from './CreateAssignmentForm';
 import { ChallengeSection } from './ChallengeSection';
+import { Tour } from '../../../anatomy-revision/components/shared/Tour';
 
 const metaStyle = { font: '400 12.5px/1.4 var(--font-ui)', color: 'var(--ink3)' } as const;
 
@@ -262,7 +263,7 @@ export function EducatorAssignmentsScreen() {
       )}
 
       {!loading && !error && assignments && students && snapshot && (
-        <div className="mt-6 flex flex-col gap-3">
+        <div data-tour="edu-assignment-list" className="mt-6 flex flex-col gap-3">
           {assignments.length === 0 && (
             <div className="text-sm" style={{ color: 'var(--ink3)' }}>
               No assignments yet — create one above.
@@ -279,6 +280,8 @@ export function EducatorAssignmentsScreen() {
           ))}
         </div>
       )}
+      {/* Once the list is in, so the last step has something to point at. */}
+      <Tour tourKey="educator-assignments" ready={!loading && assignments !== null} />
     </div>
   );
 }

@@ -254,7 +254,7 @@ export function CreateAssignmentForm({
     .join(', ');
 
   return (
-    <section className="flex flex-col gap-5 rounded-[4px] p-4" style={{ background: 'var(--sf)', border: '1px solid var(--line)' }}>
+    <section data-tour="edu-assignment-form" className="flex flex-col gap-5 rounded-[4px] p-4" style={{ background: 'var(--sf)', border: '1px solid var(--line)' }}>
       <div className="flex flex-col gap-2">
         <span style={labelStyle}>Start from a template</span>
         <div className="flex flex-wrap gap-2">

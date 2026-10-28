@@ -166,7 +166,7 @@ export function InviteStudentsPanel({ cohortId, memberEmails, onInvited }: Invit
   const label = { font: '500 10px/1 var(--font-mono)', letterSpacing: '.12em', textTransform: 'uppercase' as const, color: 'var(--ink3)' };
 
   return (
-    <section className="mt-8" style={{ maxWidth: 640 }}>
+    <section data-tour="edu-invite" className="mt-8" style={{ maxWidth: 640 }}>
       <div className="flex items-baseline justify-between gap-4">
         <h2 style={{ ...label, margin: 0 }}>
           Invitations{pending && pending.length > 0 ? ` · ${pending.length} awaiting reply` : ''}

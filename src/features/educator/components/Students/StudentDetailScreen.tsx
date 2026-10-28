@@ -1,4 +1,5 @@
 import { Link, useParams } from 'react-router-dom';
+import { Tour } from '../../../anatomy-revision/components/shared/Tour';
 import { useCohortAnalytics } from '../../hooks/useCohortAnalytics';
 import { computeStreakFromDayKeys } from '../../../anatomy-revision/lib/streak';
 import { masteryMixByRegion } from '../../lib/rollupAggregation';
@@ -78,14 +79,14 @@ export function EducatorStudentDetailScreen() {
         {displayName}
       </h1>
 
-      <div className="mt-6 flex flex-wrap gap-3">
+      <div data-tour="edu-student-tiles" className="mt-6 flex flex-wrap gap-3">
         <StatTile label="Total attempts" value={String(stats?.attemptsTotal ?? 0)} />
         <StatTile label="Accuracy" value={accuracyPct !== null ? `${accuracyPct}%` : '—'} />
         <StatTile label="Current streak" value={`${streak} ${streak === 1 ? 'day' : 'days'}`} />
         <StatTile label="Last active" value={student.lastActiveAt ? new Date(student.lastActiveAt).toLocaleDateString() : '—'} />
       </div>
 
-      <section className="mt-10">
+      <section data-tour="edu-student-trend" className="mt-10">
         <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 20, letterSpacing: '-.01em', margin: 0 }}>
           Accuracy over time
           {delta && (
@@ -102,14 +103,14 @@ export function EducatorStudentDetailScreen() {
         <AccuracyTrendChart points={trend} studentName={displayName} />
       </section>
 
-      <section className="mt-10">
+      <section data-tour="edu-student-mastery" className="mt-10">
         <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 20, letterSpacing: '-.01em', margin: 0 }}>
           Mastery by region
         </h2>
         <MasteryByRegion regions={mastery?.regions ?? []} studentsReporting={mastery?.studentsReporting ?? 0} />
       </section>
 
-      <section className="mt-10">
+      <section data-tour="edu-student-weakest" className="mt-10">
         <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 20, letterSpacing: '-.01em', margin: 0 }}>
           Weakest structures
         </h2>
@@ -132,6 +133,7 @@ export function EducatorStudentDetailScreen() {
           </div>
         )}
       </section>
+      <Tour tourKey="educator-student" />
     </div>
   );
 }

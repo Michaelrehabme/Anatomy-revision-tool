@@ -1074,9 +1074,11 @@ function App() {
               />
             ) : (
               <MobileProgress
+                access={entitlement}
                 content={content}
                 repository={repository}
                 userId={userId}
+                onStart={session.start}
                 onNavigateTab={mobileNavigate}
                 onOpenAchievements={() => navigate('/achievements')}
               />

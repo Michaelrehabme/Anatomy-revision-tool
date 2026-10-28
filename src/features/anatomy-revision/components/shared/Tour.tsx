@@ -29,6 +29,12 @@ interface Box {
  * target that leaves no room above or below gets the card along the bottom.
  */
 function placeCard(target: Box, card: { width: number; height: number }, desktop: boolean): { top: number; left: number } {
+  const { top, left } = placeBeside(target, card, desktop);
+  // Never off screen, whatever the target does: a table taller than the viewport has no room above or below it.
+  return { top: Math.min(Math.max(top, EDGE), window.innerHeight - card.height - EDGE), left };
+}
+
+function placeBeside(target: Box, card: { width: number; height: number }, desktop: boolean): { top: number; left: number } {
   const vw = window.innerWidth;
   const vh = window.innerHeight;
   const left = desktop ? Math.min(Math.max(target.left, EDGE), vw - card.width - EDGE) : EDGE;
@@ -97,7 +103,10 @@ export function Tour({ tourKey, ready = true }: { tourKey: TourKey; ready?: bool
       setBox(null);
       return;
     }
-    el.scrollIntoView?.({ block: 'center', behavior: reduced ? 'auto' : 'smooth' });
+    // Instant, not smooth: a class's weakness table runs to thousands of pixels, and a smooth scroll still under way
+    // when the card is placed leaves both off screen. The spotlight's own glide is the motion. A target taller than
+    // the screen is lined up by its top, where its heading is, rather than centred on its middle.
+    el.scrollIntoView?.({ block: el.getBoundingClientRect().height > window.innerHeight * 0.8 ? 'start' : 'center', inline: 'nearest' });
     let frame = 0;
     const measure = () => {
       cancelAnimationFrame(frame);
@@ -116,7 +125,7 @@ export function Tour({ tourKey, ready = true }: { tourKey: TourKey; ready?: bool
       window.removeEventListener('resize', measure);
       window.removeEventListener('scroll', measure, true);
     };
-  }, [step, reduced]);
+  }, [step]);
 
   useLayoutEffect(() => {
     if (!cardRef.current) return;

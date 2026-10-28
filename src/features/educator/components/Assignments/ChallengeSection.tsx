@@ -159,7 +159,7 @@ export function ChallengeSection({
   };
 
   return (
-    <section className="mb-8">
+    <section data-tour="edu-challenge" className="mb-8">
       <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 22, letterSpacing: '-.01em', margin: '0 0 6px' }}>Weekly challenge</h2>
       <p className="m-0 mb-4" style={{ font: '400 13.5px/1.5 var(--font-ui)', color: 'var(--ink2)', maxWidth: 640 }}>
         One area for the week. It becomes every student’s weekly focus, and any revision in it counts. Students see only their own progress.

@@ -1,5 +1,6 @@
 import { useParams } from 'react-router-dom';
 import { useCohortAnalytics } from '../../hooks/useCohortAnalytics';
+import { Tour } from '../../../anatomy-revision/components/shared/Tour';
 import { ConfusionPairsList } from '../../../admin/components/Analytics/ConfusionPairsList';
 
 /** Educator's cohort-scoped counterpart to admin's platform-wide confusion-pairs view. */
@@ -28,7 +29,10 @@ export function EducatorConfusionPairsScreen() {
         Ranked (correct, selected) pairs across every wrong attempt this cohort has made — each frequent pair is a
         distinction students consistently fail to make.
       </p>
-      <ConfusionPairsList pairs={snapshot?.confusionPairs ?? []} />
+      <div data-tour="edu-confusion">
+        <ConfusionPairsList pairs={snapshot?.confusionPairs ?? []} />
+      </div>
+      <Tour tourKey="educator-confusion" />
     </div>
   );
 }

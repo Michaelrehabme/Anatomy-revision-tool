@@ -55,7 +55,7 @@ export function EducatorCohortOverviewScreen() {
         <JoinCodePanel cohort={cohort} />
       </div>
 
-      <div className="mt-6 flex flex-wrap gap-3">
+      <div data-tour="edu-tiles" className="mt-6 flex flex-wrap gap-3">
         <StatTile label="Enrolled students" value={String(students.length)} />
         <StatTile label="Active students" value={String(snapshot.overview.activeStudentCount)} />
         <StatTile label="Total sessions" value={String(snapshot.overview.totalSessions)} />
@@ -70,7 +70,7 @@ export function EducatorCohortOverviewScreen() {
         />
       </div>
 
-      <section className="mt-12">
+      <section data-tour="edu-mastery" className="mt-12">
         <h2 style={sectionHeading}>Mastery by region</h2>
         <MasteryByRegion
           regions={snapshot.masteryByRegion}
