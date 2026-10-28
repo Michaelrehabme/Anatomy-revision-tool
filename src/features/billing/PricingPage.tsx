@@ -7,7 +7,11 @@ import { useEntitlement } from '../anatomy-revision/hooks/useEntitlement';
 import { hasStarted, paymentIssueSince } from '../anatomy-revision/lib/entitlement';
 import { PaymentIssueNotice } from './PaymentIssueNotice';
 import { RedeemCode } from './RedeemCode';
+import { ClaimCodePanel } from './ClaimCodePanel';
+import { CodeStart } from './CodeStart';
+import { readPendingCode, savePendingCode } from './lib/codeOffer';
 import { AuthScreen } from '../anatomy-revision/components/Auth/AuthScreen';
+import type { AccountFormMode } from '../anatomy-revision/components/Auth/AccountForm';
 import { CoolingOffWaiver } from '../legal/CoolingOffWaiver';
 import { PLANS, buildCheckoutRequest, readPaddleConfig, renewalTerms, type PlanId } from './lib/checkout';
 
@@ -52,10 +56,24 @@ function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
 }
 
-export function PricingPage() {
+interface PricingPageProps {
+  /** A code-holder's first session: ten mixed questions. Given by App, which holds the content and the session. */
+  onQuickStart?: () => void;
+  /** A code-holder's way to the session builder instead. */
+  onCustomSession?: () => void;
+}
+
+export function PricingPage({ onQuickStart, onCustomSession }: PricingPageProps = {}) {
   const { user } = useAuth();
   const [params] = useSearchParams();
   const justPaid = params.get('checkout') === 'done';
+  // A code from a "Claim" link, or one kept on this device while the student
+  // went to confirm their email (lib/codeOffer.ts).
+  const codeParam = params.get('code');
+  const [claimCode] = useState(() => codeParam || readPendingCode() || '');
+  useEffect(() => {
+    if (codeParam) savePendingCode(codeParam);
+  }, [codeParam]);
   useTrackStep('pricing-viewed');
   const hasAccount = !!user && !user.isAnonymous;
   const { entitlement, tier, loading, refresh } = useEntitlement(user?.uid ?? null);
@@ -68,7 +86,7 @@ export function PricingPage() {
   const [showWaiverError, setShowWaiverError] = useState(false);
   const [opening, setOpening] = useState(false);
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
-  const [showAuth, setShowAuth] = useState(false);
+  const [showAuth, setShowAuth] = useState<AccountFormMode | null>(null);
 
   // The demo account always holds a licence, which would hide the checkout
   // this page is in the demo to test.
@@ -99,6 +117,9 @@ export function PricingPage() {
 
   const needsAccount = !user || user.isAnonymous;
   const terms = renewalTerms(plan);
+  // Claiming a code: the page opens on the code, and the plans move below it.
+  const claiming = !DEMO && !!claimCode && !subscribed && !justPaid && !unpaid;
+  const holdsCode = !DEMO && !loading && subscribed && !pending && !!entitlement.accessCode;
 
   async function buy(startNow: boolean) {
     setCheckoutError(null);
@@ -130,13 +151,32 @@ export function PricingPage() {
         {hasAccount ? '← Back to your account' : '← Back to the home page'}
       </Link>
 
-      <h1 className="mt-6" style={{ fontFamily: 'var(--font-display)', fontSize: 32, letterSpacing: '-0.02em' }}>
-        Unlock every region
-      </h1>
-      <p className="mt-3" style={prose}>
-        Your chosen area stays free, for good. A subscription opens every other region: every
-        muscle, bone and landmark, with the same spaced revision behind all of it.
-      </p>
+      {claiming ? (
+        <ClaimCodePanel
+          code={claimCode}
+          needsAccount={needsAccount}
+          loading={loading}
+          confirmed={!!user && !user.isAnonymous && user.emailVerified}
+          onCreateAccount={() => setShowAuth('sign-up')}
+          onSignIn={() => setShowAuth('sign-in')}
+        />
+      ) : holdsCode ? (
+        // Nothing to unlock: the code has done it, and "your chosen area stays
+        // free" would describe a choice this student has not made.
+        <h1 className="mt-6" style={{ fontFamily: 'var(--font-display)', fontSize: 32, letterSpacing: '-0.02em' }}>
+          Code applied
+        </h1>
+      ) : (
+        <>
+          <h1 className="mt-6" style={{ fontFamily: 'var(--font-display)', fontSize: 32, letterSpacing: '-0.02em' }}>
+            Unlock every region
+          </h1>
+          <p className="mt-3" style={prose}>
+            Your chosen area stays free, for good. A subscription opens every other region: every
+            muscle, bone and landmark, with the same spaced revision behind all of it.
+          </p>
+        </>
+      )}
 
       {DEMO && (
         <p className="mt-6 rounded-[4px] px-4 py-3" style={{ ...prose, fontSize: 13.5, background: 'var(--sf)', border: '1px dashed var(--line)' }}>
@@ -173,6 +213,10 @@ export function PricingPage() {
         </div>
       )}
 
+      {holdsCode && onQuickStart && onCustomSession && (
+        <CodeStart onQuickStart={onQuickStart} onCustomSession={onCustomSession} />
+      )}
+
       {!loading && unpaid && (
         <div className="mt-8">
           <PaymentIssueNotice entitlement={entitlement} placement="account" />
@@ -195,7 +239,15 @@ export function PricingPage() {
 
       {!subscribed && !justPaid && !unpaid && (
         <>
-          <div className="mt-8 grid gap-3 sm:grid-cols-2" role="radiogroup" aria-label="Plan">
+          {claiming && (
+            <div className="mt-10 border-t pt-6" style={{ borderColor: 'var(--line)' }}>
+              <div style={cardLabel}>Prefer to pay?</div>
+              <p className="mt-2" style={{ ...prose, fontSize: 14 }}>
+                You can subscribe instead of using the code, or after it ends.
+              </p>
+            </div>
+          )}
+          <div className={`${claiming ? 'mt-4' : 'mt-8'} grid gap-3 sm:grid-cols-2`} role="radiogroup" aria-label="Plan">
             {PLANS.map((p) => {
               const selected = plan === p.id;
               return (
@@ -227,20 +279,23 @@ export function PricingPage() {
           </p>
 
           {needsAccount ? (
-            <div className="mt-8">
-              <p style={prose}>
-                Create an account first, so your subscription follows you to any device and is not lost
-                if this browser is cleared. Your progress so far comes with you.
-              </p>
-              <button
-                type="button"
-                onClick={() => setShowAuth(true)}
-                className="mt-4 rounded-[3px] px-5 py-3"
-                style={{ font: '500 14.5px/1 var(--font-ui)', background: 'var(--acc-fill)', color: 'var(--onacc)' }}
-              >
-                Create an account
-              </button>
-            </div>
+            // Claiming a code, the account step is already at the top of the page.
+            claiming ? null : (
+              <div className="mt-8">
+                <p style={prose}>
+                  Create an account first, so your subscription follows you to any device and is not lost
+                  if this browser is cleared. Your progress so far comes with you.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setShowAuth('sign-up')}
+                  className="mt-4 rounded-[3px] px-5 py-3"
+                  style={{ font: '500 14.5px/1 var(--font-ui)', background: 'var(--acc-fill)', color: 'var(--onacc)' }}
+                >
+                  Create an account
+                </button>
+              </div>
+            )
           ) : (
             <div className="mt-8">
               {/*
@@ -319,11 +374,12 @@ export function PricingPage() {
 
       {/* A code shared in a link arrives as /pricing?code=…, already typed.
           Not in the demo, which has nothing to check one with. */}
-      {!DEMO && !loading && !subscribed && !justPaid && !unpaid && (
+      {/* Claiming, the code has its own panel at the top instead. */}
+      {!DEMO && !loading && !subscribed && !justPaid && !unpaid && !claiming && (
         <div className="mt-8">
           <RedeemCode
             prefill={params.get('code') ?? ''}
-            onNeedsAccount={needsAccount ? () => setShowAuth(true) : undefined}
+            onNeedsAccount={needsAccount ? () => setShowAuth('sign-up') : undefined}
           />
         </div>
       )}
@@ -336,7 +392,7 @@ export function PricingPage() {
         <Link to="/terms" style={{ color: 'var(--accd)' }}>terms</Link>.
       </p>
 
-      {showAuth && <AuthScreen onClose={() => setShowAuth(false)} />}
+      {showAuth && <AuthScreen initialMode={showAuth} onClose={() => setShowAuth(null)} />}
     </div>
   );
 }

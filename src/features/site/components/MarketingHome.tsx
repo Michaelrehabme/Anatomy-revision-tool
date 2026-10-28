@@ -1,23 +1,31 @@
 import { useTrackStep } from '../../feedback/useTrackStep';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { CLAIM_HREF, CODE_OFFER, codeOfferOpen } from '../../billing/lib/codeOffer';
 
 /**
- * The public home page (CR-028): what the product is, what it costs, and how
- * an institution buys it.
+ * The public home page (CR-028): what the product is, and the shortest way in.
  *
  * Built from the design handoff's LocusMSK Home page, using the app's own
  * tokens rather than the handoff's hardcoded hexes — the palette is already
  * the brand, so a page that repeated the colours literally would drift the
  * first time one changed.
  *
+ * CUT DOWN, 28 OCTOBER 2026. The owner found the page too much for a first
+ * visit, and signing up the main thing keeping students away. It went from
+ * seven sections to four: the access code first (printed openly, the owner's
+ * decision), one sample question, one line on prices and three questions.
+ * The institutions pitch is now a footer link. While the code is open, every
+ * "Claim" goes to /pricing?code=…, which opens on the code and the account
+ * step (billing/ClaimCodePanel.tsx). When it ends the banner and the
+ * code-first wording come down by themselves (lib/codeOffer.ts) and the page
+ * leads with the free area again.
+ *
  * THE SAMPLE QUESTION USES REAL PLATES. The four images are the same
  * Z-Anatomy renders the app serves from /anatomy/muscles/ — each muscle's
  * highlight picture at the angle where it shows largest, which is the one its
- * own card opens on — not screenshots or mock-ups. A visitor deciding whether this is worth £29.99 is really asking
- * "what will the questions look like", and the honest answer is to show them
- * one. It also means the sample cannot drift from the product: if the renders
- * change, this changes with them.
+ * own card opens on — not screenshots or mock-ups. It also means the sample
+ * cannot drift from the product: if the renders change, this changes with them.
  *
  * Shown only to a visitor who has not been through onboarding, and only when
  * an admin has switched it on — see data/siteSettings.ts.
@@ -26,7 +34,6 @@ import { Link } from 'react-router-dom';
 const PRICING = {
   monthly: '£4.99',
   annual: '£29.99',
-  annualNote: '£2.50 a month',
 } as const;
 
 /**
@@ -47,35 +54,33 @@ export const panelSrc = (panel: (typeof PANELS)[number]) =>
 
 const ANSWER = 'B';
 
-const FAQS = [
-  {
-    q: 'What do I actually get for free?',
-    a: 'One full body area of your choosing — every muscle in it, all six question formats, streaks and scheduling. Not a trial: it does not expire, and we do not ask for a card. You create a free account, pick the area when you start, and can change it once after 30 days.',
-  },
-  {
-    q: 'Which muscles are covered?',
-    a: '122 muscles across nine regions: shoulder, elbow, wrist and hand, hip, knee, ankle and foot, and the cervical, thoracic and lumbar spine. Bones, landmarks, joints and ligaments bring it to 486 structures in all. Questions are built on Z-Anatomy renders with the labels hidden, so what you revise looks like what you will be examined on.',
-  },
-  {
-    q: 'Does it work offline?',
-    a: 'Yes. Questions work with no signal, and you can download the pictures for an area to your device beforehand, so a train journey or a basement dissection room is fine. Your progress syncs when you are back online.',
-  },
-  {
-    q: 'Can I cancel?',
-    // Must agree with /refunds and with the box ticked at checkout (legal/CoolingOffWaiver).
-    a: 'Yes, whenever you like. Cancelling stops the next payment, and what you have paid for runs to the end of its month or year. You also have 14 days to change your mind for a full refund, unless you ask for access to start straight away: you confirm at checkout that starting now ends that right. Keep the 14 days and your access starts when they are up.',
-  },
-  {
-    q: 'Is it only for medical students?',
-    a: 'No. It is built around the musculoskeletal syllabus shared by physiotherapy, sports therapy, sport rehabilitation, osteopathy and chiropractic — and medicine. Region-first selection means you can drill only what your course examines.',
-  },
-];
-
 const CONTACT = 'michael@rehabme.uk';
+
+function faqs(codeOpen: boolean) {
+  return [
+    codeOpen
+      ? {
+          q: `What happens on ${CODE_OFFER.untilLabel}?`,
+          a: 'Your full access ends, and nothing is charged because you never gave a card. You then choose one area to keep for free, for good, and all your progress stays. Subscribe if you want every region back.',
+        }
+      : {
+          q: 'What do I actually get for free?',
+          a: 'One full body area of your choosing — every structure in it and every question format. Not a trial: it does not expire, and we do not ask for a card. You can change the area once, after 30 days.',
+        },
+    {
+      q: 'Which courses is it for?',
+      a: 'Any course that teaches the musculoskeletal syllabus: physiotherapy, sports therapy, sport rehabilitation, osteopathy, chiropractic and medicine. It covers 122 muscles across nine regions, plus the bones, landmarks, joints and ligaments.',
+    },
+    {
+      q: 'Does it work offline?',
+      a: 'Yes. Download an area’s pictures before you set off, and your progress syncs when you are back online.',
+    },
+  ];
+}
 
 function Section({ children, id }: { children: React.ReactNode; id?: string }) {
   return (
-    <section id={id} className="px-6 py-16 md:py-24">
+    <section id={id} className="px-6 py-14 md:py-20">
       <div className="mx-auto" style={{ maxWidth: 1080 }}>
         {children}
       </div>
@@ -83,9 +88,10 @@ function Section({ children, id }: { children: React.ReactNode; id?: string }) {
   );
 }
 
-function Eyebrow({ children }: { children: React.ReactNode }) {
+function Eyebrow({ children, id }: { children: React.ReactNode; id?: string }) {
   return (
     <div
+      id={id}
       style={{
         font: '500 10px/1 var(--font-mono)',
         letterSpacing: '.14em',
@@ -105,7 +111,7 @@ function Heading({ children }: { children: React.ReactNode }) {
       style={{
         fontFamily: 'var(--font-display)',
         fontWeight: 500,
-        fontSize: 'clamp(26px, 4vw, 40px)',
+        fontSize: 'clamp(26px, 4vw, 36px)',
         letterSpacing: '-.02em',
         lineHeight: 1.12,
         margin: 0,
@@ -117,29 +123,102 @@ function Heading({ children }: { children: React.ReactNode }) {
   );
 }
 
-function Prose({ children }: { children: React.ReactNode }) {
-  return (
-    <p className="mt-4" style={{ font: '400 16px/1.6 var(--font-ui)', color: 'var(--ink2)', maxWidth: 620 }}>
-      {children}
-    </p>
-  );
-}
-
-function PrimaryLink({ to, children }: { to: string; children: React.ReactNode }) {
+function PrimaryLink({ to, children, small }: { to: string; children: React.ReactNode; small?: boolean }) {
   return (
     <Link
       to={to}
       style={{
-        font: '500 14px/1 var(--font-ui)',
-        padding: '13px 20px',
+        font: `500 ${small ? 13.5 : 15}px/1 var(--font-ui)`,
+        padding: small ? '9px 14px' : '14px 22px',
         background: 'var(--acc-fill)',
         color: 'var(--onacc)',
         textDecoration: 'none',
         display: 'inline-block',
+        borderRadius: 3,
       }}
     >
       {children}
     </Link>
+  );
+}
+
+function QuietLink({ to, children }: { to: string; children: React.ReactNode }) {
+  return (
+    <Link
+      to={to}
+      style={{
+        font: '500 15px/1 var(--font-ui)',
+        padding: '13px 21px',
+        border: '1.2px solid var(--line-strong)',
+        color: 'var(--ink)',
+        textDecoration: 'none',
+        display: 'inline-block',
+        borderRadius: 3,
+      }}
+    >
+      {children}
+    </Link>
+  );
+}
+
+function CodeChip() {
+  return (
+    <span
+      style={{
+        font: '600 14px/1 var(--font-ui)',
+        letterSpacing: '.06em',
+        background: 'var(--pg)',
+        color: 'var(--ink)',
+        border: '1.2px dashed var(--acc)',
+        padding: '6px 9px',
+        borderRadius: 3,
+        whiteSpace: 'nowrap',
+      }}
+    >
+      {CODE_OFFER.code}
+    </span>
+  );
+}
+
+/** Three steps from the home page to a first question, with the code. */
+function HowTheCodeWorks() {
+  const steps = [
+    ['Create an account', 'Use Google, or an email and password.'],
+    ['The code is applied for you', 'It is already typed in. Email sign-ups confirm their address first, and the code waits.'],
+    ['Start revising straight away', `Every region is open until ${CODE_OFFER.untilLabel}, so there is nothing to choose first. Nothing is charged when it ends.`],
+  ];
+  return (
+    <aside className="rounded-[4px] p-6" style={{ background: 'var(--sf)' }} aria-labelledby="how-code">
+      <Eyebrow id="how-code">How the code works</Eyebrow>
+      <ol className="mt-4 flex flex-col gap-4" style={{ listStyle: 'none', padding: 0, margin: '16px 0 0' }}>
+        {steps.map(([title, detail], i) => (
+          <li key={title} className="grid gap-3.5" style={{ gridTemplateColumns: '34px minmax(0,1fr)' }}>
+            <span
+              aria-hidden
+              className="grid place-items-center"
+              style={{
+                width: 34,
+                height: 34,
+                borderRadius: '50%',
+                font: '600 15px/1 var(--font-display)',
+                color: 'var(--accd)',
+                border: '1.5px solid var(--acc)',
+                background: 'var(--pg)',
+              }}
+            >
+              {i + 1}
+            </span>
+            <div>
+              <div style={{ font: '600 16px/1.3 var(--font-ui)', color: 'var(--ink)' }}>{title}</div>
+              <div style={{ font: '400 14px/1.5 var(--font-ui)', color: 'var(--ink2)' }}>{detail}</div>
+            </div>
+          </li>
+        ))}
+      </ol>
+      <div className="mt-4 pt-3.5" style={{ borderTop: '1px solid var(--line)', font: '400 13.5px/1.4 var(--font-ui)', color: 'var(--ink3)' }}>
+        About a minute with Google.
+      </div>
+    </aside>
   );
 }
 
@@ -245,253 +324,127 @@ function SampleQuestion() {
   );
 }
 
-function PriceCard({
-  name,
-  price,
-  per,
-  note,
-  features,
-  cta,
-  emphasis,
-}: {
-  name: string;
-  price: string;
-  per?: string;
-  note: string;
-  features: string[];
-  cta: React.ReactNode;
-  emphasis?: boolean;
-}) {
-  return (
-    <div
-      className="flex flex-col p-6"
-      style={{
-        background: 'var(--sf)',
-        border: emphasis ? '1.6px solid var(--acc)' : '1.2px solid var(--line)',
-      }}
-    >
-      <Eyebrow>{name}</Eyebrow>
-      <div className="mt-3" style={{ fontFamily: 'var(--font-display)', color: 'var(--ink)' }}>
-        <span style={{ fontSize: 34, fontWeight: 500, letterSpacing: '-.02em' }}>{price}</span>
-        {per && <span style={{ fontSize: 15, color: 'var(--ink3)' }}> / {per}</span>}
-      </div>
-      <p className="mt-2" style={{ font: '400 13.5px/1.5 var(--font-ui)', color: 'var(--ink2)', margin: '8px 0 0' }}>
-        {note}
-      </p>
-      <ul className="mt-4 flex flex-1 flex-col gap-2" style={{ listStyle: 'none', padding: 0, margin: '16px 0 0' }}>
-        {features.map((f) => (
-          <li key={f} style={{ font: '400 13.5px/1.5 var(--font-ui)', color: 'var(--ink2)' }}>
-            {f}
-          </li>
-        ))}
-      </ul>
-      <div className="mt-5">{cta}</div>
-    </div>
-  );
-}
-
 export function MarketingHome() {
-  const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
   useTrackStep('landing-viewed');
+  const codeOpen = codeOfferOpen();
+  const questions = faqs(codeOpen);
 
   return (
     <div style={{ background: 'var(--pg)', minHeight: '100vh' }}>
+      {codeOpen && (
+        <div style={{ background: 'var(--accs)', borderBottom: '1px solid var(--line)' }}>
+          <div
+            className="mx-auto flex flex-wrap items-center justify-center gap-x-4 gap-y-2 px-4 py-2.5 text-center"
+            style={{ maxWidth: 1080, font: '400 14.5px/1.45 var(--font-ui)', color: 'var(--ink)' }}
+          >
+            <span>
+              Free full access to every region until <strong>{CODE_OFFER.untilLabel}</strong> with code
+            </span>
+            <CodeChip />
+            <PrimaryLink to={CLAIM_HREF} small>Claim it</PrimaryLink>
+          </div>
+        </div>
+      )}
+
       <header className="px-6 py-5">
-        <div className="mx-auto flex flex-wrap items-center justify-between gap-4" style={{ maxWidth: 1080 }}>
+        <div className="mx-auto flex items-center justify-between gap-4" style={{ maxWidth: 1080 }}>
           <span className="flex items-center gap-2.5">
             <img src="/favicon.svg" alt="" width={26} height={26} />
             <span style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 19, color: 'var(--ink)' }}>
               Locus<em style={{ fontWeight: 400 }}>MSK</em>
             </span>
           </span>
-          <nav className="flex flex-wrap items-center gap-5" style={{ font: '400 14px/1 var(--font-ui)' }}>
-            <a href="#question" style={{ color: 'var(--ink2)', textDecoration: 'none' }}>Try a question</a>
-            <a href="#pricing" style={{ color: 'var(--ink2)', textDecoration: 'none' }}>Pricing</a>
-            <a href="#institutions" style={{ color: 'var(--ink2)', textDecoration: 'none' }}>For institutions</a>
-            <PrimaryLink to="/onboarding">Start free</PrimaryLink>
+          <nav className="flex items-center gap-5" style={{ font: '400 14.5px/1 var(--font-ui)' }}>
+            {/* The account step is the first thing onboarding shows a visitor. */}
+            <Link to="/onboarding" style={{ color: 'var(--ink2)', textDecoration: 'none' }}>Sign in</Link>
+            <PrimaryLink to={codeOpen ? CLAIM_HREF : '/onboarding'} small>Start free</PrimaryLink>
           </nav>
         </div>
       </header>
 
-      <Section>
-        <Eyebrow>Musculoskeletal anatomy · revision</Eyebrow>
-        <h1
-          className="mt-3"
-          style={{
-            fontFamily: 'var(--font-display)',
-            fontWeight: 500,
-            fontSize: 'clamp(34px, 6vw, 60px)',
-            letterSpacing: '-.03em',
-            lineHeight: 1.05,
-            margin: 0,
-            color: 'var(--ink)',
-            maxWidth: 780,
-          }}
-        >
-          Learn every muscle by where it lives.
-        </h1>
-        <Prose>
-          Pick a region, answer real anatomical renders, and let spaced repetition decide what comes back tomorrow.
-          122 muscles, six question formats, and a body map that shows honestly what is sticking.
-        </Prose>
-        <div className="mt-7 flex flex-wrap items-center gap-4">
-          <PrimaryLink to="/onboarding">Start free</PrimaryLink>
-          <Link to="/try" style={{ font: '400 14px/1 var(--font-ui)', color: 'var(--accd)' }}>
-            Try ten questions, no sign-up
-          </Link>
-        </div>
+      <section className="px-6 pb-12 pt-8 md:pb-16 md:pt-14">
         <div
-          className="mt-7 flex flex-wrap gap-x-5 gap-y-2"
-          style={{ font: '400 13px/1.4 var(--font-mono)', color: 'var(--ink3)' }}
+          className={`mx-auto grid items-center gap-10 ${codeOpen ? 'md:grid-cols-[minmax(0,1.15fr)_minmax(0,.85fr)] md:gap-12' : ''}`}
+          style={{ maxWidth: 1080 }}
         >
-          <span>One body area free, forever</span>
-          <span aria-hidden>·</span>
-          <span>No card to start</span>
-          <span aria-hidden>·</span>
-          <span>Works offline on the train</span>
+          <div>
+            <Eyebrow>Musculoskeletal anatomy revision</Eyebrow>
+            <h1
+              className="mt-3"
+              style={{
+                fontFamily: 'var(--font-display)',
+                fontWeight: 500,
+                fontSize: 'clamp(36px, 6vw, 60px)',
+                letterSpacing: '-.03em',
+                lineHeight: 1.04,
+                margin: 0,
+                color: 'var(--ink)',
+                maxWidth: 780,
+              }}
+            >
+              Learn every muscle by where it lives.
+            </h1>
+            <p className="mt-4" style={{ font: '400 17.5px/1.6 var(--font-ui)', color: 'var(--ink2)', maxWidth: 560 }}>
+              Answer questions on real anatomical pictures, and the app decides what you see again tomorrow. It covers
+              muscles, bones, landmarks, joints and ligaments, region by region.
+            </p>
+            <div className="mt-7 flex flex-wrap items-center gap-3">
+              {codeOpen ? (
+                <>
+                  <PrimaryLink to={CLAIM_HREF}>Claim free access</PrimaryLink>
+                  <QuietLink to="/onboarding">Start free with one area</QuietLink>
+                </>
+              ) : (
+                <PrimaryLink to="/onboarding">Start free</PrimaryLink>
+              )}
+            </div>
+            <p className="mt-4" style={{ font: '400 13.5px/1.5 var(--font-ui)', color: 'var(--ink3)' }}>
+              No card needed. Or{' '}
+              <Link to="/try" style={{ color: 'var(--accd)' }}>try ten questions first</Link>, without signing up.
+            </p>
+          </div>
+          {codeOpen && <HowTheCodeWorks />}
         </div>
-      </Section>
+      </section>
 
       <div style={{ borderTop: '1px solid var(--line)' }} />
 
       <Section id="question">
         <Eyebrow>A real question</Eyebrow>
-        <Heading>Have a go — no sign-up.</Heading>
-        <Prose>
-          This is the locate branch, using the same renders the app uses with the labels hidden. The other two are
-          identify, and OINA — origin, insertion, nerve, action.
-        </Prose>
+        <Heading>Try one now. No sign-up needed.</Heading>
+        <p className="mt-3" style={{ font: '400 16px/1.6 var(--font-ui)', color: 'var(--ink2)', maxWidth: 620 }}>
+          These are the pictures the app uses, with the labels hidden.
+        </p>
         <SampleQuestion />
         <p className="mt-6" style={{ font: '400 14px/1.5 var(--font-ui)', color: 'var(--ink2)' }}>
-          Want more than one?{' '}
+          Want more?{' '}
           <Link to="/try" style={{ color: 'var(--accd)' }}>
-            Try ten questions, a few of each kind
+            Try ten questions
           </Link>
-          . No account needed.
+          , still with no account.
         </p>
       </Section>
 
       <div style={{ borderTop: '1px solid var(--line)' }} />
 
       <Section id="pricing">
-        <Eyebrow>Pricing</Eyebrow>
-        <Heading>Revision that comes with you.</Heading>
-        <Prose>
-          Start on one body area for nothing. When you want the whole body, the year works out at about the price of a
-          coffee a month — and it goes where you do: between lectures, on the bus, or halfway up a mountain with no
-          signal at all.
-        </Prose>
-
-        <div className="mt-9 grid gap-4 md:grid-cols-3">
-          <PriceCard
-            name="Free"
-            price="£0"
-            note="One full body area, free forever. You choose which. No card, no trial clock."
-            features={[
-              'Any one region, your choice — in full',
-              'All six question formats',
-              'Spaced repetition and streaks',
-            ]}
-            cta={<PrimaryLink to="/onboarding">Start free</PrimaryLink>}
-          />
-          <PriceCard
-            name="Monthly"
-            price={PRICING.monthly}
-            per="month"
-            note="The whole body, month to month. Cancel whenever."
-            features={['All 122 muscles, nine regions', 'Full body progress map', 'Offline sessions']}
-            cta={<PrimaryLink to="/pricing?plan=monthly">Subscribe monthly</PrimaryLink>}
-          />
-          <PriceCard
-            name="Annual · best value"
-            price={PRICING.annual}
-            per="year"
-            note={`${PRICING.annualNote}. Everything in monthly, and it keeps working through resits.`}
-            features={['Everything in monthly', 'One payment, nothing monthly', 'Keeps working through resits']}
-            cta={<PrimaryLink to="/pricing?plan=annual">Subscribe annually</PrimaryLink>}
-            emphasis
-          />
+        <div className="flex flex-wrap items-baseline justify-between gap-x-7 gap-y-3">
+          <p style={{ font: '400 16px/1.6 var(--font-ui)', color: 'var(--ink2)', maxWidth: 640, margin: 0 }}>
+            <strong style={{ color: 'var(--ink)', fontWeight: 600 }}>
+              {codeOpen ? 'After the code ends,' : 'One area is free for good.'}
+            </strong>{' '}
+            {codeOpen ? 'the area you choose stays free for good. ' : ''}
+            Every region costs {PRICING.monthly} a month or {PRICING.annual} a year, including VAT. Your progress stays
+            either way.
+          </p>
+          <Link to="/pricing" style={{ font: '400 14.5px/1.4 var(--font-ui)', color: 'var(--accd)' }}>
+            See prices
+          </Link>
         </div>
 
-        <p className="mt-5" style={{ font: '400 12.5px/1.6 var(--font-mono)', color: 'var(--ink3)' }}>
-          Student card not required — the free area is genuinely free. Prices include VAT, and payment is handled by
-          Paddle, who appear on your statement.
-        </p>
-      </Section>
-
-      <div style={{ borderTop: '1px solid var(--line)' }} />
-
-      <Section id="institutions">
-        <Eyebrow>Universities &amp; societies</Eyebrow>
-        <Heading>Licence it for the whole year group.</Heading>
-        <Prose>
-          Course leads, anatomy societies and demonstrators can put LocusMSK in front of a cohort on one invoice — and
-          see which regions the year is quietly failing before the OSCE does.
-        </Prose>
-
-        <div className="mt-8 grid gap-4 md:grid-cols-2">
-          <div className="p-6" style={{ background: 'var(--sf)', border: '1.2px solid var(--line)' }}>
-            <ul className="flex flex-col gap-2.5" style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-              {[
-                'Year-group seats, one invoice',
-                'Tutor view of cohort weak spots',
-                'Invite a whole cohort by email',
-                'Staff see a summary of each student, never their individual answers',
-              ].map((item) => (
-                <li key={item} style={{ font: '400 14px/1.5 var(--font-ui)', color: 'var(--ink2)' }}>
-                  {item}
-                </li>
-              ))}
-            </ul>
-            <div className="mt-6 flex flex-wrap gap-4">
-              <a
-                href={`mailto:${CONTACT}?subject=LocusMSK cohort quote`}
-                style={{
-                  font: '500 14px/1 var(--font-ui)',
-                  padding: '13px 20px',
-                  background: 'var(--acc-fill)',
-                  color: 'var(--onacc)',
-                  textDecoration: 'none',
-                }}
-              >
-                Request a cohort quote
-              </a>
-              <a
-                href={`mailto:${CONTACT}?subject=LocusMSK demo`}
-                style={{ font: '400 14px/1 var(--font-ui)', color: 'var(--accd)', alignSelf: 'center' }}
-              >
-                Book a 15-minute demo
-              </a>
-            </div>
-          </div>
-
-          <div className="p-6" style={{ border: '1.2px solid var(--line)' }}>
-            <ul className="flex flex-col gap-3" style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-              {[
-                ['122 muscles', 'nine regions, from Z-Anatomy renders'],
-                ['6 question formats', 'locate, identify, type it, OINA and more'],
-                ['8 to 40', 'questions a session — it fits between lectures'],
-              ].map(([figure, caption]) => (
-                <li key={figure}>
-                  <div style={{ fontFamily: 'var(--font-display)', fontSize: 24, fontWeight: 500, color: 'var(--ink)' }}>
-                    {figure}
-                  </div>
-                  <div style={{ font: '400 13px/1.4 var(--font-ui)', color: 'var(--ink3)' }}>{caption}</div>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </Section>
-
-      <div style={{ borderTop: '1px solid var(--line)' }} />
-
-      <Section>
-        <Eyebrow>Questions</Eyebrow>
-        <Heading>Before you start.</Heading>
-
-        <div className="mt-7" style={{ maxWidth: 760 }}>
-          {FAQS.map((faq, i) => (
+        <div className="mt-8" style={{ maxWidth: 760 }}>
+          {questions.map((faq, i) => (
             <div key={faq.q} style={{ borderTop: '1px solid var(--line)' }}>
               <button
                 type="button"
@@ -524,7 +477,7 @@ export function MarketingHome() {
         </p>
       </Section>
 
-      <footer className="px-6 py-10" style={{ borderTop: '1px solid var(--line)', background: 'var(--sf)' }}>
+      <footer className="px-6 py-8" style={{ borderTop: '1px solid var(--line)', background: 'var(--sf)' }}>
         <div className="mx-auto flex flex-wrap items-center justify-between gap-4" style={{ maxWidth: 1080 }}>
           <div>
             <div style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 16, color: 'var(--ink)' }}>
@@ -534,9 +487,12 @@ export function MarketingHome() {
               Musculoskeletal anatomy revision
             </div>
           </div>
-          <nav className="flex flex-wrap gap-5" style={{ font: '400 13px/1 var(--font-ui)' }}>
-            <a href="#pricing" style={{ color: 'var(--ink2)', textDecoration: 'none' }}>Pricing</a>
-            <a href="#institutions" style={{ color: 'var(--ink2)', textDecoration: 'none' }}>Institutions</a>
+          <nav className="flex flex-wrap gap-x-5 gap-y-2" style={{ font: '400 13px/1 var(--font-ui)' }}>
+            {/* The cohort pitch used to be a whole section; a course lead finds it here. */}
+            <a href={`mailto:${CONTACT}?subject=LocusMSK for universities`} style={{ color: 'var(--accd)', textDecoration: 'none', fontWeight: 500 }}>
+              For universities
+            </a>
+            <Link to="/pricing" style={{ color: 'var(--ink2)', textDecoration: 'none' }}>Pricing</Link>
             <Link to="/privacy" style={{ color: 'var(--ink2)', textDecoration: 'none' }}>Privacy</Link>
             <Link to="/terms" style={{ color: 'var(--ink2)', textDecoration: 'none' }}>Terms</Link>
             <Link to="/accessibility" style={{ color: 'var(--ink2)', textDecoration: 'none' }}>Accessibility</Link>

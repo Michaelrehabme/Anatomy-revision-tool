@@ -518,6 +518,45 @@ function App() {
     if (chosen.length > 0) trackStep('area-picked');
   };
 
+  /**
+   * A student with an access code, starting from the pricing page once the
+   * code is in. Every region is open, so there is no area to choose and the
+   * rest of onboarding is skipped (owner's decision, 28 Oct 2026). The free
+   * area is asked for when the code ends, by the gate that asks any free
+   * account without one.
+   */
+  const markOnboarded = () => {
+    localStorage.setItem(ONBOARDED_KEY, 'true');
+    setOnboarded(true);
+  };
+
+  /**
+   * Ten mixed questions from across the body, at the easier level, flashcards
+   * first for anything new. No typed answers: naming a structure from memory
+   * is the hard end of the ladder, not where a first session starts.
+   */
+  const quickStartAfterCode = async () => {
+    markOnboarded();
+    const types: QuestionType[] = ['flashcard', 'mcq', 'locate', 'oina'];
+    const factMastery = repository && userId ? await repository.listFactMastery(userId) : undefined;
+    const learnCardAttempts = getLearnCardAttempts();
+    const questions = generateRevisionSet(content.structures, content.images, {
+      types,
+      mode: 'practice',
+      entitledAreas,
+      count: 10,
+      difficulty: 'easy',
+      factMastery,
+      learnCardAttempts,
+    }, content.sources);
+    session.start(questions, { types, mode: 'practice', difficulty: 'easy', learnCardAttempts });
+  };
+
+  const customSessionAfterCode = () => {
+    markOnboarded();
+    navigate('/study');
+  };
+
   const handleOnboardingDone = (areas: Area[] | null) => {
     // null: they signed in, at the account step, to an account that is
     // already set up. Nothing to choose; straight in.
@@ -1059,7 +1098,7 @@ function App() {
           path="/pricing"
           element={
             <Suspense fallback={null}>
-              <PricingPage />
+              <PricingPage onQuickStart={() => void quickStartAfterCode()} onCustomSession={customSessionAfterCode} />
             </Suspense>
           }
         />

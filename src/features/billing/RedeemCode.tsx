@@ -1,5 +1,6 @@
-import { useState, type FormEvent } from 'react';
+import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { refreshEntitlementEverywhere } from '../anatomy-revision/hooks/useEntitlement';
+import { clearPendingCode } from './lib/codeOffer';
 
 /**
  * "Have an access or discount code?" — on the pricing page and the account screen.
@@ -38,16 +39,39 @@ interface Props {
   prefill?: string;
   /** Nobody is signed in to an account. Called instead of asking the server, which would only refuse. */
   onNeedsAccount?: () => void;
+  /**
+   * Send the prefilled code as soon as the box appears, once. For a code the
+   * student already chose to claim (a "Claim" link, or one kept across the
+   * trip to confirm their email), so they are not asked to press for it twice.
+   */
+  autoSubmit?: boolean;
 }
 
-export function RedeemCode({ prefill = '', onNeedsAccount }: Props) {
+/** The server's last word on a code: sending it again would change nothing. */
+const FINAL = new Set(['unknown-code', 'ended', 'all-used', 'has-access']);
+
+export function RedeemCode({ prefill = '', onNeedsAccount, autoSubmit = false }: Props) {
   const [code, setCode] = useState(prefill);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState<string | null>(null);
 
-  async function redeem(event: FormEvent) {
+  const autoSent = useRef(false);
+  useEffect(() => {
+    if (!autoSubmit || autoSent.current || onNeedsAccount || !prefill.trim()) return;
+    autoSent.current = true;
+    // A fresh token: an address confirmed a moment ago is not in the old one.
+    void submit(true);
+    // Once, as the box appears.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoSubmit]);
+
+  function redeem(event: FormEvent) {
     event.preventDefault();
+    void submit(false);
+  }
+
+  async function submit(freshToken: boolean) {
     if (busy || !code.trim()) return;
     setError(null);
     if (onNeedsAccount) {
@@ -63,7 +87,7 @@ export function RedeemCode({ prefill = '', onNeedsAccount }: Props) {
 
       const response = await fetch('/.netlify/functions/redeem-code', {
         method: 'POST',
-        headers: { authorization: `Bearer ${await user.getIdToken()}`, 'content-type': 'application/json' },
+        headers: { authorization: `Bearer ${await user.getIdToken(freshToken)}`, 'content-type': 'application/json' },
         body: JSON.stringify({ code }),
       });
       const body = (await response.json().catch(() => null)) as
@@ -75,8 +99,10 @@ export function RedeemCode({ prefill = '', onNeedsAccount }: Props) {
         // Every screen that gates on the entitlement reads it again, so the
         // regions unlock without a reload.
         refreshEntitlementEverywhere();
+        clearPendingCode();
         return;
       }
+      if (body?.reason && FINAL.has(body.reason)) clearPendingCode();
       setError((body?.reason && REFUSALS[body.reason]) || FAILED);
     } catch {
       setError(FAILED);
