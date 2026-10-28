@@ -1,6 +1,6 @@
 import { FieldValue } from 'firebase-admin/firestore';
-import { getAuth } from 'firebase-admin/auth';
-import { adminApp, adminDb } from './lib/firebaseAdmin';
+import { adminDb } from './lib/firebaseAdmin';
+import { accountByUid } from './lib/accounts';
 import { QUESTION_REPORTS, type QuestionReport } from '../../src/features/feedback/data/rows';
 import { reportEmail, type Reporter } from '../../src/features/feedback/data/reportEmail';
 
@@ -33,7 +33,13 @@ import { reportEmail, type Reporter } from '../../src/features/feedback/data/rep
  */
 
 const REPORT_EMAILS = 'reportEmails';
-const LOOKBACK_DAYS = 2;
+/**
+ * A week, not two days (28 Oct 2026): this function once crashed for a day
+ * after a deploy, and a report that falls out of the window while it is down
+ * is never emailed. A sent report is marked, so a longer window costs reads,
+ * never a second email.
+ */
+const LOOKBACK_DAYS = 7;
 /** Netlify stops a scheduled function at 30 seconds; a run sends at most this many. */
 const BATCH = 25;
 
@@ -56,8 +62,8 @@ export default async function handler(): Promise<Response> {
   const reporterOf = async (uid: string): Promise<Reporter | undefined> => {
     if (!reporters.has(uid)) {
       try {
-        const user = await getAuth(adminApp()).getUser(uid);
-        reporters.set(uid, { name: user.displayName ?? undefined, email: user.email ?? undefined });
+        const user = await accountByUid(uid);
+        reporters.set(uid, { name: user?.displayName, email: user?.email });
       } catch {
         reporters.set(uid, {});
       }

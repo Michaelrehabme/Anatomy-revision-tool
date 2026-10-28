@@ -1,5 +1,6 @@
 import { FieldValue } from 'firebase-admin/firestore';
-import { adminApp, adminDb } from './lib/firebaseAdmin';
+import { adminDb } from './lib/firebaseAdmin';
+import { listAccounts, type ToolkitUser } from './lib/accounts';
 import { isSignedUp, signupEmail, type SignupAccount } from '../../src/features/admin/data/signupEmail';
 
 /**
@@ -33,17 +34,6 @@ const SEEN = 'signupEmails/seen';
 /** Netlify stops a scheduled function at 30 seconds; a run sends at most this many. */
 const BATCH = 25;
 
-/** One account as Google's identity toolkit returns it; only the fields used here. */
-interface ToolkitUser {
-  localId: string;
-  email?: string;
-  displayName?: string;
-  emailVerified?: boolean;
-  /** Millisecond timestamp, as a string. */
-  createdAt?: string;
-  providerUserInfo?: { providerId: string }[];
-}
-
 function toAccount(user: ToolkitUser): SignupAccount {
   return {
     uid: user.localId,
@@ -55,31 +45,8 @@ function toAccount(user: ToolkitUser): SignupAccount {
   };
 }
 
-/**
- * Every account, over HTTP rather than with firebase-admin/auth: that module
- * cannot load in the bundled function runtime (ERR_REQUIRE_ESM, see
- * lib/idToken.ts), and the first deploy of this function failed on exactly
- * that. The service account's own access token authorises the listing.
- */
 async function everyAccount(): Promise<SignupAccount[]> {
-  const app = adminApp();
-  const credential = app.options.credential;
-  const projectId = app.options.projectId ?? JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT ?? '{}').project_id;
-  if (!credential || !projectId) throw new Error('signup-emails: no service account credential to list accounts with');
-  const { access_token } = await credential.getAccessToken();
-  const out: SignupAccount[] = [];
-  let pageToken: string | undefined;
-  do {
-    const url = new URL(`https://identitytoolkit.googleapis.com/v1/projects/${projectId}/accounts:batchGet`);
-    url.searchParams.set('maxResults', '1000');
-    if (pageToken) url.searchParams.set('nextPageToken', pageToken);
-    const response = await fetch(url, { headers: { Authorization: `Bearer ${access_token}` } });
-    if (!response.ok) throw new Error(`signup-emails: listing accounts failed, ${response.status}: ${(await response.text()).slice(0, 200)}`);
-    const page = (await response.json()) as { users?: ToolkitUser[]; nextPageToken?: string };
-    out.push(...(page.users ?? []).map(toAccount));
-    pageToken = page.users?.length ? page.nextPageToken : undefined;
-  } while (pageToken);
-  return out;
+  return (await listAccounts()).map(toAccount);
 }
 
 export default async function handler(): Promise<Response> {
