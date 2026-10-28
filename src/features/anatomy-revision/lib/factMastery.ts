@@ -4,6 +4,7 @@ import { BLOOD_SUPPLY_SCORED, MUSCLE_FACT_KINDS, OINA_PROMPT_KINDS } from '../ty
 import { nextSchedule, scheduleConfidence } from './mastery';
 import type { BloodSupply } from '../types/structure';
 import type { StructureIndexEntry } from '../types/structureIndex';
+import { dueDateAfter } from './dueDay';
 
 /**
  * All OINA escalation tuning in one place, matching the convention
@@ -149,7 +150,6 @@ export function isStagedFactKind(kind: FactKind): boolean {
   return (OINA_PROMPT_KINDS as readonly string[]).includes(kind);
 }
 
-const DAY_MS = 24 * 60 * 60 * 1000;
 /** How far out a fact row from before facts were scheduled is read as due, by stage. */
 const LEGACY_FACT_INTERVAL_DAYS: Record<FactStage, number> = { select: 1, 'typed-hinted': 4, 'typed-bare': 10 };
 
@@ -162,7 +162,7 @@ const LEGACY_FACT_INTERVAL_DAYS: Record<FactStage, number> = { select: 1, 'typed
 export function factDueAt(fact: FactMastery): string {
   if (fact.dueAt) return fact.dueAt;
   const days = LEGACY_FACT_INTERVAL_DAYS[factStage(fact)];
-  return new Date(new Date(fact.lastAttemptAt).getTime() + days * DAY_MS).toISOString();
+  return dueDateAfter(new Date(fact.lastAttemptAt), days);
 }
 
 /** The interval a fact is on, legacy rows included. */

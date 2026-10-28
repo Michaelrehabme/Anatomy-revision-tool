@@ -3,6 +3,7 @@ import { factDueAt, factIntervalDays } from './factMastery';
 import type { SkillKind } from './masteryLevel';
 import { areasOf, type AnatomyStructure } from '../types/structure';
 import type { Area } from '../types/region';
+import { calendarDaysUntil, endOfLocalToday } from './dueDay';
 import { BLOOD_FACT_KINDS, BLOOD_SUPPLY_SCORED } from '../types/question';
 
 /** One question type of one structure, waiting in the daily review. */
@@ -75,7 +76,8 @@ export function buildReviewQueue(
   eligible: ReadonlySet<string>,
   now: Date = new Date(),
 ): { due: ReviewItem[]; forward: ReviewItem[] } {
-  const nowIso = now.toISOString();
+  // Due by the student's day, not to the minute (lib/dueDay.ts).
+  const nowIso = endOfLocalToday(now);
   const items: (ReviewItem & { weak: boolean })[] = [];
 
   for (const m of mastery) {
@@ -162,7 +164,7 @@ export function soonestDueByStructure(
 
 /** "today", "tomorrow", "in 3 days". Overdue reads as today: it is due now. */
 export function relativeDue(dueAt: string, now: Date): string {
-  const days = Math.round((Date.parse(dueAt) - now.getTime()) / 86_400_000);
+  const days = calendarDaysUntil(dueAt, now);
   if (days <= 0) return 'today';
   if (days === 1) return 'tomorrow';
   return `in ${days} days`;

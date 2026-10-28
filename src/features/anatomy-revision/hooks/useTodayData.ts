@@ -10,6 +10,7 @@ import { localDayKey, sessionsPerDay } from '../lib/weekActivity';
 import { useStudyProfile } from './useStudyProfile';
 import { parseReminderTime } from '../lib/studyProfile';
 import { syncReviewReminder } from '../../native/nativeShell';
+import { endOfLocalToday } from '../lib/dueDay';
 
 
 export interface TodayData {
@@ -66,7 +67,7 @@ export function useTodayData(
   useEffect(() => {
     if (!repository || !userId) return;
     let cancelled = false;
-    const now = new Date().toISOString();
+    const now = endOfLocalToday();
     Promise.all([
       repository.listDueMastery(userId, now),
       repository.listMastery(userId),
