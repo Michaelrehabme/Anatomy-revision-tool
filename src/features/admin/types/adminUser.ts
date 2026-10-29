@@ -1,3 +1,4 @@
+import type { Entitlement } from '../../anatomy-revision/lib/entitlement';
 import type { Region } from '../../anatomy-revision/types/region';
 
 export interface AdminUserProfile {
@@ -6,6 +7,8 @@ export interface AdminUserProfile {
   email: string | null;
   createdAt: string | null;
   lastActiveAt: string | null;
+  /** users/{uid}.entitlement as parsed, or null for none. Absent in the demo's people. */
+  entitlement?: Entitlement | null;
 }
 
 /** One row of the /admin/users table — profile fields plus derived stats from attemptEvents/sessions. */

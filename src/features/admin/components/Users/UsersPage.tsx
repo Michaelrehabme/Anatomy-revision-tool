@@ -2,9 +2,10 @@ import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAdminUsers } from '../../hooks/useAdminUsers';
 import { formatDateTime } from '../../lib/formatDate';
+import { countUsers, matchesFilter, userAccess, type UserAccess, type UsersFilter } from '../../lib/userAccess';
 import type { AdminUserRow } from '../../types/adminUser';
 
-type SortColumn = 'name' | 'email' | 'totalAttempts' | 'accuracyPct' | 'streak' | 'lastActiveAt';
+type SortColumn = 'name' | 'email' | 'access' | 'totalAttempts' | 'accuracyPct' | 'streak' | 'lastActiveAt';
 
 interface SortState {
   column: SortColumn;
@@ -14,18 +15,30 @@ interface SortState {
 const COLUMNS: { key: SortColumn; label: string }[] = [
   { key: 'name', label: 'Name' },
   { key: 'email', label: 'Email' },
+  { key: 'access', label: 'Access' },
   { key: 'totalAttempts', label: 'Attempts' },
   { key: 'accuracyPct', label: 'Accuracy' },
   { key: 'streak', label: 'Streak' },
   { key: 'lastActiveAt', label: 'Last active' },
 ];
 
-function sortValue(row: AdminUserRow, column: SortColumn): string | number {
+type Row = AdminUserRow & { access: UserAccess };
+
+const FILTERS: { key: UsersFilter; label: string; count: keyof ReturnType<typeof countUsers> }[] = [
+  { key: 'all', label: 'All', count: 'all' },
+  { key: 'signed-up', label: 'Signed up', count: 'signedUp' },
+  { key: 'full-access', label: 'Full access', count: 'fullAccess' },
+  { key: 'redeemed', label: 'Redeemed a code', count: 'redeemed' },
+];
+
+function sortValue(row: Row, column: SortColumn): string | number {
   switch (column) {
     case 'name':
       return (row.displayName ?? '').toLowerCase();
     case 'email':
       return (row.email ?? '').toLowerCase();
+    case 'access':
+      return row.access.label.toLowerCase();
     case 'totalAttempts':
       return row.totalAttempts;
     case 'accuracyPct':
@@ -40,17 +53,26 @@ function sortValue(row: AdminUserRow, column: SortColumn): string | number {
 export function UsersPage() {
   const { rows, loading, error } = useAdminUsers();
   const [sort, setSort] = useState<SortState>({ column: 'lastActiveAt', direction: 'desc' });
+  const [filter, setFilter] = useState<UsersFilter>('all');
 
+  const withAccess = useMemo<Row[]>(() => {
+    const now = new Date();
+    return rows.map((row) => ({ ...row, access: userAccess(row, now) }));
+  }, [rows]);
+  const counts = useMemo(() => countUsers(withAccess.map((r) => r.access)), [withAccess]);
+
+  // Signed-up accounts always sit above guests, whatever the column sort.
   const sorted = useMemo(() => {
     const factor = sort.direction === 'asc' ? 1 : -1;
-    return [...rows].sort((a, b) => {
+    return withAccess.filter((row) => matchesFilter(row.access, filter)).sort((a, b) => {
+      if (a.access.signedUp !== b.access.signedUp) return a.access.signedUp ? -1 : 1;
       const av = sortValue(a, sort.column);
       const bv = sortValue(b, sort.column);
       if (av < bv) return -1 * factor;
       if (av > bv) return 1 * factor;
       return 0;
     });
-  }, [rows, sort]);
+  }, [withAccess, filter, sort]);
 
   const toggleSort = (column: SortColumn) => {
     setSort((prev) =>
@@ -73,8 +95,33 @@ export function UsersPage() {
         Users
       </h1>
       <p className="mt-2 text-sm" style={{ color: 'var(--ink2)' }}>
-        {rows.length} user{rows.length === 1 ? '' : 's'}
+        {counts.all} user{counts.all === 1 ? '' : 's'} · {counts.signedUp} signed up · {counts.fullAccess} with full access ·{' '}
+        {counts.redeemed} redeemed a code
       </p>
+
+      <div className="mt-5 flex flex-wrap gap-2" role="group" aria-label="Show">
+        {FILTERS.map((f) => {
+          const active = filter === f.key;
+          return (
+            <button
+              key={f.key}
+              type="button"
+              aria-pressed={active}
+              onClick={() => setFilter(f.key)}
+              className="rounded-full px-3 py-1.5"
+              style={{
+                font: '500 12.5px/1 var(--font-ui)',
+                border: `1.2px solid ${active ? 'var(--acc)' : 'var(--line)'}`,
+                background: active ? 'var(--acc)' : 'transparent',
+                color: active ? 'var(--onacc)' : 'var(--ink2)',
+                cursor: 'pointer',
+              }}
+            >
+              {f.label} {counts[f.count]}
+            </button>
+          );
+        })}
+      </div>
 
       {loading && (
         <div className="mt-10 text-sm" style={{ color: 'var(--ink3)' }}>
@@ -121,7 +168,13 @@ export function UsersPage() {
                   </Link>
                 </td>
                 <td className="py-3 pr-4" style={{ font: '400 12.5px/1 var(--font-ui)', color: 'var(--ink2)' }}>
-                  {row.email ?? '—'}
+                  {row.email ?? 'Guest'}
+                </td>
+                <td
+                  className="py-3 pr-4"
+                  style={{ font: '500 12.5px/1.3 var(--font-ui)', color: row.access.fullAccess ? 'var(--accd)' : 'var(--ink3)' }}
+                >
+                  {row.access.label}
                 </td>
                 <td className="py-3 pr-4" style={{ font: '400 13px/1 var(--font-mono)', color: 'var(--ink2)' }}>
                   {row.totalAttempts}
