@@ -52,9 +52,10 @@ describe('planReviewReminder', () => {
   });
 
   it('counts what will be due BY the reminder, exactly as the Today screen would then', () => {
-    const mastery = [naming('deltoid', { dueAt: at(5, 16).toISOString() }), naming('supraspinatus', { dueAt: at(5, 20).toISOString() })];
+    const mastery = [naming('deltoid', { dueAt: at(5, 20).toISOString() }), naming('supraspinatus', { dueAt: at(6, 9).toISOString() })];
     const plan = planReviewReminder(mastery, [], ELIGIBLE, NOW);
-    // 16:00 is before the 18:00 slot and counts; 20:00 is after it and does not.
+    // Due by the day, from local midnight (lib/dueDay.ts, 28 Oct 2026): 20:00 today counts at the 18:00 slot
+    // because Today already counts it; tomorrow morning does not.
     expect(plan?.count).toBe(1);
     expect(plan?.count).toBe(dueStructureIds(buildReviewQueue(mastery, [], ELIGIBLE, plan!.at).due).size);
   });
