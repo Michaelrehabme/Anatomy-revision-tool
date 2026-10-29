@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useIsDesktop } from '../../../anatomy-revision/hooks/useIsDesktop';
 import { useAdminUsers } from '../../hooks/useAdminUsers';
 import { formatDateTime } from '../../lib/formatDate';
 import { countUsers, matchesFilter, userAccess, type UserAccess, type UsersFilter } from '../../lib/userAccess';
@@ -54,6 +55,7 @@ export function UsersPage() {
   const { rows, loading, error } = useAdminUsers();
   const [sort, setSort] = useState<SortState>({ column: 'lastActiveAt', direction: 'desc' });
   const [filter, setFilter] = useState<UsersFilter>('all');
+  const isDesktop = useIsDesktop();
 
   const withAccess = useMemo<Row[]>(() => {
     const now = new Date();
@@ -81,12 +83,12 @@ export function UsersPage() {
   };
 
   return (
-    <div className="px-16 pt-16 pb-16">
+    <div className={isDesktop ? 'px-16 pt-16 pb-16' : 'px-4 pt-6 pb-8'}>
       <h1
         style={{
           fontFamily: 'var(--font-display)',
           fontWeight: 500,
-          fontSize: 40,
+          fontSize: isDesktop ? 40 : 30,
           lineHeight: 1.05,
           letterSpacing: '-.02em',
           margin: 0,
@@ -134,7 +136,11 @@ export function UsersPage() {
         </div>
       )}
 
-      {!loading && !error && (
+      {!loading && !error && !isDesktop && (
+        <MobileUserList rows={sorted} sort={sort} onSort={setSort} />
+      )}
+
+      {!loading && !error && isDesktop && (
         <table className="mt-8 w-full border-collapse text-left">
           <thead>
             <tr style={{ borderBottom: '1.2px solid var(--line)' }}>
@@ -197,5 +203,75 @@ export function UsersPage() {
         </table>
       )}
     </div>
+  );
+}
+
+/** The phone layout: a sort picker over one card per user, since six columns do not fit. */
+function MobileUserList({ rows, sort, onSort }: { rows: Row[]; sort: SortState; onSort: (sort: SortState) => void }) {
+  const label = { font: '500 10px/1 var(--font-mono)', letterSpacing: '.12em', textTransform: 'uppercase', color: 'var(--ink3)' } as const;
+  return (
+    <>
+      <div className="mt-5 flex items-center gap-2">
+        <label htmlFor="users-sort" style={label}>
+          Sort
+        </label>
+        <select
+          id="users-sort"
+          value={sort.column}
+          onChange={(e) => onSort({ ...sort, column: e.target.value as SortColumn })}
+          className="min-w-0 flex-1 rounded-[3px] px-2 py-2"
+          style={{ font: '400 13.5px/1 var(--font-ui)', border: '1px solid var(--line)', background: 'var(--sf)', color: 'var(--ink)' }}
+        >
+          {COLUMNS.map((col) => (
+            <option key={col.key} value={col.key}>
+              {col.label}
+            </option>
+          ))}
+        </select>
+        <button
+          type="button"
+          onClick={() => onSort({ ...sort, direction: sort.direction === 'asc' ? 'desc' : 'asc' })}
+          aria-label={sort.direction === 'asc' ? 'Ascending; switch to descending' : 'Descending; switch to ascending'}
+          className="rounded-[3px] px-3 py-2"
+          style={{ font: '500 13.5px/1 var(--font-ui)', border: '1px solid var(--line)', background: 'var(--sf)', color: 'var(--ink2)', cursor: 'pointer' }}
+        >
+          {sort.direction === 'asc' ? '↑' : '↓'}
+        </button>
+      </div>
+      <ul className="mt-4 flex flex-col gap-2" style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+        {rows.map((row) => (
+          <li key={row.uid}>
+            <Link
+              to={`/admin/users/${row.uid}`}
+              className="block rounded-[4px] px-4 py-3"
+              style={{ background: 'var(--sf)', border: '1px solid var(--line)', textDecoration: 'none' }}
+            >
+              <div className="flex items-baseline justify-between gap-3">
+                <span className="min-w-0 truncate" style={{ font: '500 14.5px/1.3 var(--font-ui)', color: 'var(--accd)' }}>
+                  {row.displayName ?? 'Unnamed user'}
+                </span>
+                <span
+                  className="flex-none"
+                  style={{ font: '500 12px/1.3 var(--font-ui)', color: row.access.fullAccess ? 'var(--accd)' : 'var(--ink3)' }}
+                >
+                  {row.access.label}
+                </span>
+              </div>
+              <div className="mt-1 truncate" style={{ font: '400 12.5px/1.3 var(--font-ui)', color: 'var(--ink2)' }}>
+                {row.email ?? 'Guest'}
+              </div>
+              <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1" style={{ font: '400 12px/1.3 var(--font-mono)', color: 'var(--ink3)' }}>
+                <span>{row.totalAttempts} attempts</span>
+                {row.totalAttempts > 0 && (
+                  <span style={{ color: row.accuracyPct < 60 ? 'var(--acc2d)' : 'var(--accd)' }}>{row.accuracyPct}%</span>
+                )}
+                <span>streak {row.streak}</span>
+                <span>{formatDateTime(row.lastActiveAt)}</span>
+              </div>
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </>
   );
 }

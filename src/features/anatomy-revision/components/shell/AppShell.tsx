@@ -5,6 +5,8 @@ interface AppShellProps {
   /** Sidebar content is contextual (brand+nav vs. in-session end/progress) — see NavSidebar/SessionSidebar. */
   sidebar: ReactNode;
   children: ReactNode;
+  /** Pin the sidebar to the viewport, so its foot (admin's Back to app) stays in view on a long page. */
+  stickySidebar?: boolean;
 }
 
 /**
@@ -13,12 +15,12 @@ interface AppShellProps {
  * shell across screens 02–04 and 09–12; screens 05–08 (an active question)
  * reuse this same shell with a different sidebar via SessionSidebar.
  */
-export function AppShell({ sidebar, children }: AppShellProps) {
+export function AppShell({ sidebar, children, stickySidebar = false }: AppShellProps) {
   const motionRoot = useMotionRoot<HTMLDivElement>();
   return (
     <div ref={motionRoot} className="flex min-h-screen" style={{ background: 'var(--pg)' }}>
       <aside
-        className="box-border flex w-[260px] flex-none flex-col px-6 py-9"
+        className={`box-border flex w-[260px] flex-none flex-col px-6 py-9${stickySidebar ? ' sticky top-0 h-screen overflow-y-auto' : ''}`}
         style={{ background: 'var(--sf)' }}
       >
         {sidebar}

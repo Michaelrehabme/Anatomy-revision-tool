@@ -15,7 +15,7 @@ export function UserDetailPage() {
   const { detail, loading, error } = useAdminUserDetail(uid ?? '');
 
   return (
-    <div className="px-16 pt-16 pb-16">
+    <div className="px-4 pt-6 pb-8 lg:px-16 lg:pt-16 lg:pb-16">
       <Link to="/admin/users" style={{ font: '400 12.5px/1 var(--font-ui)', color: 'var(--ink3)', textDecoration: 'none' }}>
         ← Users
       </Link>
@@ -50,7 +50,7 @@ export function UserDetailPage() {
             {detail.profile.email ?? 'No email on file'} · last active {formatDateTime(detail.profile.lastActiveAt)}
           </p>
 
-          <div className="mt-8 flex gap-12">
+          <div className="mt-8 flex flex-wrap gap-x-12 gap-y-6">
             <div>
               <div style={labelStyle}>Total attempts</div>
               <div className="mt-1.5" style={{ font: '500 22px/1 var(--font-mono)', color: 'var(--ink)' }}>
@@ -74,7 +74,7 @@ export function UserDetailPage() {
             </div>
           </div>
 
-          <div className="mt-13 flex gap-[88px]">
+          <div className="mt-13 flex flex-col gap-12 lg:flex-row lg:gap-[88px]">
             <div className="flex-1">
               <div style={labelStyle}>Accuracy by region</div>
               {detail.byRegion.length === 0 ? (
@@ -115,7 +115,7 @@ export function UserDetailPage() {
               )}
             </div>
 
-            <div className="w-[420px] flex-none">
+            <div className="w-full flex-none lg:w-[420px]">
               <div style={labelStyle}>Ten weakest structures</div>
               {detail.weakestStructures.length === 0 ? (
                 <p className="mt-4 text-sm" style={{ color: 'var(--ink3)' }}>
