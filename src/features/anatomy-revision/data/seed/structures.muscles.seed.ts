@@ -137,6 +137,9 @@ const EXTRA_ALIASES: Record<string, string[]> = {
   // muscles.json has one combined "Semispinalis" entry; the neck/back atlas
   // slide splits it into three regionally-highlighted panels.
   semispinalis: ['Semispinalis capitis', 'Semispinalis cervicis', 'Semispinalis thoracis'],
+  // What students actually call it (user report, 28 Oct 2026). "Tensor fascia
+  // latae" is already one letter off; "fascia lata" is two.
+  'tensor-fasciae-latae': ['TFL', 'Tensor fascia lata'],
 };
 
 /**

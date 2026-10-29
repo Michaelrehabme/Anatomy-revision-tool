@@ -1,6 +1,7 @@
 import { useId } from 'react';
 import type { HotspotPolygon } from '../../types/image';
 import { isAccuracyTarget, PASS_FRACTION, RING_COUNT, targetSpines } from '../../lib/hotspot/accuracy';
+import { TAP_SLACK } from '../../lib/hotspot/pointInPolygon';
 
 interface HotspotOverlayProps {
   hotspots: HotspotPolygon[];
@@ -86,7 +87,8 @@ export function HotspotOverlay({ hotspots, highlightStructureId, clickPoint, cli
         <circle
           cx={clickPoint[0]}
           cy={clickPoint[1]}
-          r={0.012}
+          // The grading slack: a dot that touches the target is a tap on it.
+          r={TAP_SLACK}
           fill={clickWasCorrect ? 'var(--ring-halo)' : 'var(--ring-red)'}
           stroke="var(--ring-white)"
           strokeWidth={0.003}

@@ -52,6 +52,8 @@ ap.add_argument("--margin", type=float, default=1.45,
                 help="camera frame as a multiple of the muscle's own span, floored by the spec's minFrame")
 ap.add_argument("--muscles", default="", help="comma-separated keys; default every muscle in the spec")
 ap.add_argument("--angles", default="", help="comma-separated degrees; default every angle in the spec")
+ap.add_argument("--tilts-only", action="store_true",
+                help="render only the spec's tilted views (aNNNuMMM / aNNNdMMM), not the turntable")
 ap.add_argument("--lines", default="workbench", choices=["freestyle", "workbench"],
                 help="what draws the edge between two touching muscles. Freestyle traces each muscle's "
                      "own silhouette and is the better line; Workbench's object outline is drawn in the "
@@ -321,14 +323,28 @@ def in_frame(centre, size, names, exclude, skip_side):
     return found
 
 
-def frame_camera(lo, hi, angle_deg, margin, min_frame):
+def frame_camera(lo, hi, angle_deg, margin, min_frame, elevation_deg=0):
     centre = mathutils.Vector(((lo[0] + hi[0]) / 2, (lo[1] + hi[1]) / 2, (lo[2] + hi[2]) / 2))
     span = max(hi[0] - lo[0], hi[1] - lo[1], hi[2] - lo[2])
     size = frame_size(span, margin, min_frame)
     dist = size * 8 + 0.5
     theta = math.radians(angle_deg)
-    cam.location = centre + mathutils.Vector((-dist * math.sin(theta), -dist * math.cos(theta), 0.0))
-    cam.rotation_euler = (centre - cam.location).to_track_quat("-Z", "Y").to_euler()
+    phi = math.radians(elevation_deg)
+    cam.location = centre + mathutils.Vector((-dist * math.sin(theta) * math.cos(phi),
+                                              -dist * math.cos(theta) * math.cos(phi),
+                                              dist * math.sin(phi)))
+    if abs(elevation_deg) >= 89.0:
+        # Straight up or down, "up" in the picture is undefined: take the limit
+        # of the tilt, as renderLigamentPlates.py does. Tilting down from the
+        # anterior view puts the toes at the top of a view of the sole.
+        forward = (centre - cam.location).normalized()
+        far = mathutils.Vector((math.sin(theta), math.cos(theta), 0.0))
+        up_hint = far if elevation_deg > 0 else -far
+        right = forward.cross(up_hint).normalized()
+        true_up = right.cross(forward).normalized()
+        cam.rotation_euler = mathutils.Matrix((right, true_up, -forward)).transposed().to_euler()
+    else:
+        cam.rotation_euler = (centre - cam.location).to_track_quat("-Z", "Y").to_euler()
     cam_data.ortho_scale = size
     boneLook.aim_lights(cam, sun, fill)
 
@@ -563,14 +579,21 @@ for entry in entries:
           % (key, span * 1000, frame * 1000, len(parts), len(kept_bones),
              ", superficial layer removed" if entry["layer"] else ""), flush=True)
 
-    for angle in (entry["angles"] if not a.dry_run else []):
+    # The turntable, then any tilted views ([azimuth, elevation]) named
+    # aNNNuMMM or aNNNdMMM, which the viewer keeps on their own ladder
+    # (lib/rotationFrames.ts). A sole muscle is read from below, and no turn
+    # about the vertical shows it (user report, 28 Oct 2026: lumbricals).
+    views = [] if a.tilts_only else [(ang, 0) for ang in entry["angles"]]
+    views += [tuple(t) for t in entry.get("tilts", [])]
+    for angle, elev in (views if not a.dry_run else []):
         if only_angles and angle not in only_angles:
             continue
-        leaf = os.path.join(a.out, key, "a%03d" % angle)
+        marker = "a%03d" % angle + (("u" if elev > 0 else "d") + "%03d" % abs(elev) if elev else "")
+        leaf = os.path.join(a.out, key, marker)
         if a.skip_existing and os.path.exists(os.path.join(leaf, "ids.json")):
-            print("[skip] %s a%03d: already rendered" % (key, angle), flush=True)
+            print("[skip] %s %s: already rendered" % (key, marker), flush=True)
             continue
-        frame_camera(lo, hi, angle, a.margin, entry["minFrame"])
+        frame_camera(lo, hi, angle, a.margin, entry["minFrame"], elev)
 
         clear()
         link(bones, "ctx_bones", BONE_MAT, boned=True)

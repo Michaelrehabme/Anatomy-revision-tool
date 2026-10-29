@@ -1,4 +1,4 @@
-import type { Region, SubRegion } from './region';
+import type { Area, Region, SubRegion } from './region';
 
 export type ImageMode = 'single-structure' | 'atlas-slide';
 
@@ -145,6 +145,13 @@ export interface AnatomyImageAsset {
   panelStructureNames?: string[];
   region: Region;
   subregion?: SubRegion;
+  /**
+   * The only areas this picture may be asked in, when narrower than its
+   * structure's. A pedicle revises under all three spine levels, but its plates
+   * are drawn on L4, and a lumbar vertebra in a cervical session is the wrong
+   * bone (user report, 28 Oct 2026). Absent = wherever the structure is asked.
+   */
+  areas?: Area[];
   view: ViewType;
   layer: LayerType;
   /** Absent/empty = usable for flashcard/MCQ image prompts, but no locate questions. */

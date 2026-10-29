@@ -72,6 +72,16 @@ const Z_ANATOMY_CREDIT =
 const Z_ANATOMY_LICENCE = 'CC BY-SA 4.0';
 
 /** The muscles that have a twelve-frame plate, so their old panel is skipped. */
+/**
+ * The generic vertebra parts, every one marked on Vertebra L4 (and the disc on
+ * L4-L5). The structures revise under all three spine levels, their pictures
+ * under the lumbar spine only: see AnatomyImageAsset.areas.
+ */
+const L4_LANDMARKS = new Set([
+  'vertebral-body', 'vertebral-foramen', 'spinous-process', 'transverse-process', 'pedicle', 'lamina',
+  'superior-articular-process', 'inferior-articular-process', 'intervertebral-foramen', 'intervertebral-disc',
+]);
+
 const MUSCLE_PLATE_IDS = new Set(MUSCLE_PLATES.map((p) => p.structureId));
 
 export const IMAGE_ASSETS: AnatomyImageAsset[] = [
@@ -278,7 +288,9 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
   ...[...MUSCLE_PLATES]
     .sort((a, b) => Number(b.primary) - Number(a.primary))
     .map((plate): AnatomyImageAsset => {
-      const marker = `a${String(plate.angle).padStart(3, '0')}`;
+      // aNNN, or aNNNdMMM for a sole muscle seen from below (lib/rotationFrames.ts).
+      const tilt = plate.elevation ?? 0;
+      const marker = `a${String(plate.angle).padStart(3, '0')}${tilt ? `${tilt > 0 ? 'u' : 'd'}${String(Math.abs(tilt)).padStart(3, '0')}` : ''}`;
       const id = `muscle-${plate.structureId}-${marker}-${plate.kind}`;
       const viewLabel = `${plate.view[0].toUpperCase()}${plate.view.slice(1)}`;
       const shared: Omit<AnatomyImageAsset, 'mode'> = {
@@ -344,6 +356,8 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
   // where it is on the near side of the bone are published at all.
   ...LANDMARK_PANELS.map((panel): AnatomyImageAsset => {
     const id = `landmark-${panel.structureId}-${panel.view}`;
+    // Drawn on L4 (landmark-markers.spec.json), so a lumbar picture only.
+    const levelled = L4_LANDMARKS.has(panel.structureId) ? { areas: ['lumbar-spine' as const] } : {};
     return {
       id,
       filePath: `/anatomy/landmarks/${panel.structureId}-${panel.view}.webp`,
@@ -352,6 +366,7 @@ export const IMAGE_ASSETS: AnatomyImageAsset[] = [
       structureId: panel.structureId,
       region: panel.region,
       subregion: panel.subregion,
+      ...levelled,
       view: panel.view,
       layer: 'skeletal',
       width: panel.width,

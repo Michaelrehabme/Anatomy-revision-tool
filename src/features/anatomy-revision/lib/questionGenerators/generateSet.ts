@@ -554,17 +554,35 @@ function generateOneQuestionForStructure(
  * spine levels and is stamped with the first of them by default — so in a session
  * filtered to the lumbar spine the header would otherwise contradict the chip the
  * user picked. A no-op for an unfiltered session, where the default already holds.
+ *
+ * A PICTURE CAN BE NARROWER THAN ITS STRUCTURE (AnatomyImageAsset.areas). The
+ * pedicle is asked at every level, but its plates are L4: a picture question is
+ * stamped only with an area its picture shows, and dropped from a session whose
+ * areas it shows none of — a cervical session asked a lumbar vertebra (user
+ * report, 28 Oct 2026). A due question from outside the session's areas is kept,
+ * as it always was, under an area its picture does show.
  */
 export function stampRequestedArea(
   questions: RevisionQuestion[],
   byId: ReadonlyMap<string, AnatomyStructure>,
   requested: readonly Area[] | undefined,
+  images: readonly AnatomyImageAsset[] = [],
 ): RevisionQuestion[] {
-  if (!requested?.length) return questions;
-  return questions.map((q) => {
+  const imageAreas = new Map(images.filter((i) => i.areas?.length).map((i) => [i.id, i.areas!]));
+  if (!requested?.length && imageAreas.size === 0) return questions;
+  return questions.flatMap((q) => {
     const structure = byId.get(q.structureId);
-    const area = structure ? areasOf(structure).find((a) => requested.includes(a)) : undefined;
-    return area && area !== q.area ? { ...q, area } : q;
+    if (!structure) return [q];
+    const imageId = 'imageId' in q ? q.imageId : 'promptImageId' in q ? q.promptImageId : undefined;
+    const shown = imageId ? imageAreas.get(imageId) : undefined;
+    const fits = (a: Area) => !shown || shown.includes(a);
+    const own = areasOf(structure);
+    const inRequest = requested?.length ? own.filter((a) => requested.includes(a)) : [];
+    const area = inRequest.length
+      ? inRequest.find(fits)
+      : q.area && fits(q.area) ? q.area : own.find(fits);
+    if (!area) return inRequest.length ? [] : [q];
+    return [area !== q.area ? { ...q, area } : q];
   });
 }
 
@@ -812,11 +830,12 @@ export function generateRevisionSet(
         shuffle(takeWithStructureCap(balanced, count, cap, new Map(), true), rng);
 
   // An exam tests rather than teaches, so it never gets a learn card (CR-018).
-  if (config.mode === 'assessment') return stampRequestedArea(selected, indexes.byId, config.areas);
+  if (config.mode === 'assessment') return stampRequestedArea(selected, indexes.byId, config.areas, images);
   return stampRequestedArea(
     withRelearnCards(withLearnCards(selected, indexes, config.factMastery, config.learnCardAttempts), indexes, images),
     indexes.byId,
     config.areas,
+    images,
   );
 }
 

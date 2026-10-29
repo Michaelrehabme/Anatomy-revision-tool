@@ -1,5 +1,5 @@
 import type { HotspotPolygon } from '../../types/image';
-import { pointInAnyPolygon } from './pointInPolygon';
+import { distanceToOutline, pointInAnyPolygon, TAP_SLACK } from './pointInPolygon';
 
 /**
  * Scores how close a tap landed, archery-style, for targets whose shape the
@@ -157,7 +157,10 @@ export function scoreAccuracy(
  * The outline had to be grown to become tappable, so the shape carries two:
  * `targetCore` is the landmark itself and `polygons` is the hitbox around it.
  * Inside the core is full marks; inside the hitbox but outside the core is a
- * bare pass, which is the same thing the rings say about the halo.
+ * bare pass, which is the same thing the rings say about the halo. So is a tap
+ * just outside the hitbox whose dot still touches it: the same TAP_SLACK an
+ * outline target gets. Without it a joint line — a hitbox a few pixels tall —
+ * was the strictest target in the app rather than the most forgiving.
  *
  * Null when there is no core. An outline with nothing to compare against
  * would otherwise score every tap inside it 10 — a claim about precision the
@@ -170,5 +173,6 @@ export function scoreRegion(
   const core = hotspot.targetCore;
   if (!core?.length) return null;
   if (pointInAnyPolygon(point, core)) return RING_COUNT;
-  return pointInAnyPolygon(point, hotspot.polygons) ? PASS_SCORE : 0;
+  if (pointInAnyPolygon(point, hotspot.polygons)) return PASS_SCORE;
+  return distanceToOutline(point, hotspot.polygons) <= TAP_SLACK ? PASS_SCORE : 0;
 }

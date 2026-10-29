@@ -193,6 +193,28 @@ function seedFrom(cohortId: string): number {
 const CORE_POOL_PER_AREA = 6;
 
 /**
+ * Each area's core pool as it stood while version 1 was live, PINNED.
+ *
+ * The pool was ranked by image count, so every new picture could reshuffle a
+ * paper that must never change: the extensor digitorum longus gaining its
+ * tendons and the sole muscles a view from below (29 Oct 2026) pushed flexor
+ * hallucis brevis out of the ankle-and-foot pool and redrew the cohort papers.
+ * These are the pools that reproduced them up to then; the ranking below is
+ * kept only for an area that has no entry here.
+ */
+const V1_CORE_POOLS: Partial<Record<Area, readonly string[]>> = {
+  'ankle-foot': ['dorsal-interossei-foot', 'flexor-digiti-minimi-brevis-foot', 'abductor-digiti-minimi-foot', 'flexor-digitorum-brevis', 'flexor-digitorum-longus', 'flexor-hallucis-brevis'],
+  'cervical-spine': ['iliocostalis', 'intertransversarii', 'longissimus', 'multifidus', 'rotatores', 'scalene-posterior'],
+  'elbow': ['brachialis', 'triceps-brachii', 'brachioradialis', 'biceps-brachii', 'anconeus', 'radius'],
+  'hip': ['adductor-magnus', 'gluteus-maximus', 'obturator-externus', 'obturator-internus', 'piriformis', 'psoas-major'],
+  'knee': ['biceps-femoris', 'popliteus', 'semimembranosus', 'vastus-intermedius', 'vastus-lateralis', 'rectus-femoris'],
+  'lumbar-spine': ['external-oblique', 'iliocostalis', 'internal-oblique', 'intertransversarii', 'longissimus', 'multifidus'],
+  'shoulder': ['latissimus-dorsi', 'levator-scapulae', 'serratus-anterior', 'trapezius', 'deltoid', 'supraspinatus'],
+  'thoracic-spine': ['diaphragm', 'external-intercostals', 'iliocostalis', 'internal-intercostals', 'intertransversarii', 'longissimus'],
+  'wrist-hand': ['dorsal-interossei-hand', 'abductor-digiti-minimi-hand', 'lumbricals-hand', 'opponens-digiti-minimi-hand', 'flexor-digiti-minimi-brevis-hand', 'flexor-digitorum-profundus'],
+};
+
+/**
  * The cohort's fixed item set, AS VERSION 1 DREW IT.
  *
  * No new baseline is built from this: a baseline is now one of the written
@@ -230,6 +252,11 @@ export function buildDiagnostic(
   // ranked by image count, before anything is drawn. Ties break on id so the
   // ranking cannot depend on the order the dataset happens to be in.
   for (const [area, list] of byArea) {
+    const pinned = V1_CORE_POOLS[area];
+    if (pinned) {
+      byArea.set(area, pinned.flatMap((id) => list.filter((s) => s.id === id)));
+      continue;
+    }
     const ranked = [...list].sort(
       (a, b) => (b.imageIds?.length ?? 0) - (a.imageIds?.length ?? 0) || a.id.localeCompare(b.id),
     );

@@ -19,6 +19,8 @@ export interface MusclePlate {
   view: ViewType;
   /** Camera angle around the vertical axis, degrees; 0 is anterior. */
   angle: number;
+  /** Degrees above (+) or below (-) the turntable, on a tilted frame only. */
+  elevation?: number;
   kind: 'context' | 'highlight';
   /** True when the plate was drawn with the superficial layer taken off. */
   deep: boolean;
@@ -40,16 +42,17 @@ export const layerOfPlate = (plate: MusclePlate): LayerType =>
 
 const W = 1500;
 const H = 1500;
-const VIEWS: ViewType[] = ["anterior","anterolateral","anteromedial","lateral","medial","posterior","posterolateral","posteromedial"];
+const VIEWS: ViewType[] = ["anterior","anterolateral","anteromedial","lateral","medial","posterior","posterolateral","posteromedial","plantar"];
 const MUSCLES: Record<string, [string, Region, SubRegion, 0 | 1]> = {"abductor-digiti-minimi-foot":["Abductor Digiti Minimi (Foot)","lower-leg-foot","ankle-foot",1],"abductor-digiti-minimi-hand":["Abductor Digiti Minimi (Hand)","forearm-hand","wrist-hand",1],"abductor-hallucis":["Abductor Hallucis","lower-leg-foot","ankle-foot",1],"abductor-pollicis-brevis":["Abductor Pollicis Brevis","forearm-hand","wrist-hand",1],"abductor-pollicis-longus":["Abductor Pollicis Longus","forearm-hand","wrist-hand",1],"adductor-brevis":["Adductor Brevis","hip-thigh","hip",1],"adductor-hallucis":["Adductor Hallucis","lower-leg-foot","ankle-foot",1],"adductor-longus":["Adductor Longus","hip-thigh","hip",0],"adductor-magnus":["Adductor Magnus","hip-thigh","hip",1],"adductor-pollicis":["Adductor Pollicis","forearm-hand","wrist-hand",1],"anconeus":["Anconeus","shoulder-arm","elbow",0],"biceps-brachii":["Biceps Brachii","shoulder-arm","elbow",0],"biceps-femoris":["Biceps Femoris","hip-thigh","knee",0],"brachialis":["Brachialis","shoulder-arm","elbow",1],"brachioradialis":["Brachioradialis","forearm-hand","elbow",0],"coracobrachialis":["Coracobrachialis","shoulder-arm","shoulder",1],"deltoid":["Deltoid","shoulder-arm","shoulder",0],"diaphragm":["Diaphragm","back-core","spine",1],"dorsal-interossei-foot":["Dorsal Interossei (Foot)","lower-leg-foot","ankle-foot",1],"dorsal-interossei-hand":["Dorsal Interossei (Hand)","forearm-hand","wrist-hand",1],"extensor-carpi-radialis-brevis":["Extensor Carpi Radialis Brevis","forearm-hand","wrist-hand",1],"extensor-carpi-radialis-longus":["Extensor Carpi Radialis Longus","forearm-hand","wrist-hand",0],"extensor-carpi-ulnaris":["Extensor Carpi Ulnaris","forearm-hand","wrist-hand",0],"extensor-digiti-minimi":["Extensor Digiti Minimi","forearm-hand","wrist-hand",1],"extensor-digitorum":["Extensor Digitorum","forearm-hand","wrist-hand",0],"extensor-digitorum-brevis":["Extensor Digitorum Brevis","lower-leg-foot","ankle-foot",1],"extensor-digitorum-longus":["Extensor Digitorum Longus","lower-leg-foot","ankle-foot",0],"extensor-hallucis-brevis":["Extensor Hallucis Brevis","lower-leg-foot","ankle-foot",1],"extensor-hallucis-longus":["Extensor Hallucis Longus","lower-leg-foot","ankle-foot",1],"extensor-indicis":["Extensor Indicis","forearm-hand","wrist-hand",1],"extensor-pollicis-brevis":["Extensor Pollicis Brevis","forearm-hand","wrist-hand",1],"extensor-pollicis-longus":["Extensor Pollicis Longus","forearm-hand","wrist-hand",1],"external-intercostals":["External Intercostals","back-core","spine",1],"external-oblique":["External Oblique","back-core","torso",0],"flexor-carpi-radialis":["Flexor Carpi Radialis","forearm-hand","wrist-hand",0],"flexor-carpi-ulnaris":["Flexor Carpi Ulnaris","forearm-hand","wrist-hand",0],"flexor-digiti-minimi-brevis-foot":["Flexor Digiti Minimi Brevis (Foot)","lower-leg-foot","ankle-foot",1],"flexor-digiti-minimi-brevis-hand":["Flexor Digiti Minimi Brevis (Hand)","forearm-hand","wrist-hand",1],"flexor-digitorum-brevis":["Flexor Digitorum Brevis","lower-leg-foot","ankle-foot",1],"flexor-digitorum-longus":["Flexor Digitorum Longus","lower-leg-foot","ankle-foot",1],"flexor-digitorum-profundus":["Flexor Digitorum Profundus","forearm-hand","wrist-hand",1],"flexor-digitorum-superficialis":["Flexor Digitorum Superficialis","forearm-hand","wrist-hand",1],"flexor-hallucis-brevis":["Flexor Hallucis Brevis","lower-leg-foot","ankle-foot",1],"flexor-hallucis-longus":["Flexor Hallucis Longus","lower-leg-foot","ankle-foot",1],"flexor-pollicis-brevis":["Flexor Pollicis Brevis","forearm-hand","wrist-hand",1],"flexor-pollicis-longus":["Flexor Pollicis Longus","forearm-hand","wrist-hand",1],"gastrocnemius":["Gastrocnemius","lower-leg-foot","ankle-foot",0],"gemelli":["Gemelli (Superior & Inferior)","hip-thigh","hip",1],"gluteus-maximus":["Gluteus Maximus","hip-thigh","hip",0],"gluteus-medius":["Gluteus Medius","hip-thigh","hip",1],"gluteus-minimus":["Gluteus Minimus","hip-thigh","hip",1],"gracilis":["Gracilis","hip-thigh","hip",0],"iliacus":["Iliacus","hip-thigh","hip",1],"iliocostalis":["Iliocostalis","back-core","spine",1],"infraspinatus":["Infraspinatus","shoulder-arm","shoulder",1],"internal-intercostals":["Internal Intercostals","back-core","spine",1],"internal-oblique":["Internal Oblique","back-core","torso",1],"interspinales":["Interspinales","back-core","spine",1],"intertransversarii":["Intertransversarii","back-core","spine",1],"latissimus-dorsi":["Latissimus Dorsi","shoulder-arm","shoulder",0],"levator-scapulae":["Levator Scapulae","shoulder-arm","shoulder",1],"longissimus":["Longissimus","back-core","spine",1],"longus-capitis":["Longus Capitis","back-core","spine",1],"longus-colli":["Longus Colli","back-core","spine",1],"lumbricals-foot":["Lumbricals (Foot)","lower-leg-foot","ankle-foot",1],"lumbricals-hand":["Lumbricals (Hand)","forearm-hand","wrist-hand",1],"multifidus":["Multifidus","back-core","spine",1],"obturator-externus":["Obturator Externus","hip-thigh","hip",1],"obturator-internus":["Obturator Internus","hip-thigh","hip",1],"opponens-digiti-minimi-foot":["Opponens Digiti Minimi (Foot)","lower-leg-foot","ankle-foot",1],"opponens-digiti-minimi-hand":["Opponens Digiti Minimi (Hand)","forearm-hand","wrist-hand",1],"opponens-pollicis":["Opponens Pollicis","forearm-hand","wrist-hand",1],"palmar-interossei":["Palmar Interossei","forearm-hand","wrist-hand",1],"palmaris-longus":["Palmaris Longus","forearm-hand","wrist-hand",0],"pectineus":["Pectineus","hip-thigh","hip",0],"pectoralis-major":["Pectoralis Major","shoulder-arm","shoulder",0],"pectoralis-minor":["Pectoralis Minor","shoulder-arm","shoulder",1],"peroneus-brevis":["Peroneus Brevis","lower-leg-foot","ankle-foot",1],"peroneus-longus":["Peroneus Longus","lower-leg-foot","ankle-foot",0],"peroneus-tertius":["Peroneus Tertius","lower-leg-foot","ankle-foot",1],"piriformis":["Piriformis","hip-thigh","hip",1],"plantar-interossei":["Plantar Interossei","lower-leg-foot","ankle-foot",1],"plantaris":["Plantaris","lower-leg-foot","ankle-foot",1],"popliteus":["Popliteus","lower-leg-foot","knee",1],"pronator-quadratus":["Pronator Quadratus","forearm-hand","wrist-hand",1],"pronator-teres":["Pronator Teres","forearm-hand","wrist-hand",0],"psoas-major":["Psoas Major","hip-thigh","hip",1],"quadratus-femoris":["Quadratus Femoris","hip-thigh","hip",1],"quadratus-lumborum":["Quadratus Lumborum","back-core","torso",1],"quadratus-plantae":["Quadratus Plantae","lower-leg-foot","ankle-foot",1],"rectus-abdominis":["Rectus Abdominis","back-core","torso",1],"rectus-femoris":["Rectus Femoris","hip-thigh","knee",0],"rhomboid-major":["Rhomboid Major","shoulder-arm","shoulder",1],"rhomboid-minor":["Rhomboid Minor","shoulder-arm","shoulder",1],"rotatores":["Rotatores","back-core","spine",1],"sartorius":["Sartorius","hip-thigh","hip",0],"scalene-anterior":["Scalene Anterior","back-core","neck",1],"scalene-middle":["Scalene Middle","back-core","neck",1],"scalene-posterior":["Scalene Posterior","back-core","neck",1],"semimembranosus":["Semimembranosus","hip-thigh","knee",1],"semispinalis":["Semispinalis","back-core","spine",1],"semitendinosus":["Semitendinosus","hip-thigh","knee",0],"serratus-anterior":["Serratus Anterior","shoulder-arm","shoulder",0],"soleus":["Soleus","lower-leg-foot","ankle-foot",1],"spinalis":["Spinalis","back-core","spine",1],"splenius-capitis":["Splenius Capitis","back-core","spine",1],"splenius-cervicis":["Splenius Cervicis","back-core","spine",1],"sternocleidomastoid":["Sternocleidomastoid","back-core","neck",0],"subscapularis":["Subscapularis","shoulder-arm","shoulder",1],"supinator":["Supinator","forearm-hand","wrist-hand",1],"supraspinatus":["Supraspinatus","shoulder-arm","shoulder",1],"tensor-fasciae-latae":["Tensor Fasciae Latae","hip-thigh","hip",0],"teres-major":["Teres Major","shoulder-arm","shoulder",1],"teres-minor":["Teres Minor","shoulder-arm","shoulder",1],"tibialis-anterior":["Tibialis Anterior","lower-leg-foot","ankle-foot",0],"tibialis-posterior":["Tibialis Posterior","lower-leg-foot","ankle-foot",1],"transversus-abdominis":["Transversus Abdominis","back-core","torso",1],"trapezius":["Trapezius","shoulder-arm","shoulder",0],"triceps-brachii":["Triceps Brachii","shoulder-arm","elbow",0],"vastus-intermedius":["Vastus Intermedius","hip-thigh","knee",1],"vastus-lateralis":["Vastus Lateralis","hip-thigh","knee",0],"vastus-medialis":["Vastus Medialis","hip-thigh","knee",0]};
-const ROWS: [string, number, number, 0 | 1][] = [
+const ROWS: [string, number, number, 0 | 1, number?][] = [
 ["abductor-digiti-minimi-foot",120,7,0],
 ["abductor-digiti-minimi-foot",180,5,0],
 ["abductor-digiti-minimi-foot",210,6,0],
-["abductor-digiti-minimi-foot",240,6,1],
+["abductor-digiti-minimi-foot",240,6,0],
 ["abductor-digiti-minimi-foot",270,3,0],
 ["abductor-digiti-minimi-foot",300,1,0],
 ["abductor-digiti-minimi-foot",330,1,0],
+["abductor-digiti-minimi-foot",0,8,1,-90],
 ["abductor-digiti-minimi-hand",0,0,0],
 ["abductor-digiti-minimi-hand",30,2,1],
 ["abductor-digiti-minimi-hand",60,2,0],
@@ -67,6 +70,7 @@ const ROWS: [string, number, number, 0 | 1][] = [
 ["abductor-hallucis",90,4,1],
 ["abductor-hallucis",120,7,0],
 ["abductor-hallucis",150,7,0],
+["abductor-hallucis",0,8,0,-90],
 ["abductor-pollicis-brevis",0,0,1],
 ["abductor-pollicis-brevis",30,2,0],
 ["abductor-pollicis-brevis",60,2,0],
@@ -98,10 +102,11 @@ const ROWS: [string, number, number, 0 | 1][] = [
 ["adductor-hallucis",0,0,0],
 ["adductor-hallucis",90,4,0],
 ["adductor-hallucis",120,7,0],
-["adductor-hallucis",150,7,1],
+["adductor-hallucis",150,7,0],
 ["adductor-hallucis",180,5,0],
 ["adductor-hallucis",210,6,0],
 ["adductor-hallucis",330,1,0],
+["adductor-hallucis",0,8,1,-90],
 ["adductor-longus",0,0,1],
 ["adductor-longus",30,1,0],
 ["adductor-longus",60,1,0],
@@ -286,14 +291,17 @@ const ROWS: [string, number, number, 0 | 1][] = [
 ["extensor-digitorum-brevis",270,3,1],
 ["extensor-digitorum-brevis",300,1,0],
 ["extensor-digitorum-brevis",330,1,0],
-["extensor-digitorum-longus",0,0,0],
+["extensor-digitorum-longus",0,0,1],
 ["extensor-digitorum-longus",30,1,0],
 ["extensor-digitorum-longus",60,1,0],
 ["extensor-digitorum-longus",90,3,0],
 ["extensor-digitorum-longus",120,6,0],
+["extensor-digitorum-longus",150,6,0],
+["extensor-digitorum-longus",180,5,0],
+["extensor-digitorum-longus",210,6,0],
 ["extensor-digitorum-longus",240,6,0],
 ["extensor-digitorum-longus",270,3,0],
-["extensor-digitorum-longus",300,1,1],
+["extensor-digitorum-longus",300,1,0],
 ["extensor-digitorum-longus",330,1,0],
 ["extensor-hallucis-brevis",0,0,0],
 ["extensor-hallucis-brevis",30,2,0],
@@ -384,7 +392,7 @@ const ROWS: [string, number, number, 0 | 1][] = [
 ["flexor-carpi-ulnaris",330,1,0],
 ["flexor-digiti-minimi-brevis-foot",30,2,0],
 ["flexor-digiti-minimi-brevis-foot",60,2,0],
-["flexor-digiti-minimi-brevis-foot",90,4,1],
+["flexor-digiti-minimi-brevis-foot",90,4,0],
 ["flexor-digiti-minimi-brevis-foot",120,7,0],
 ["flexor-digiti-minimi-brevis-foot",150,7,0],
 ["flexor-digiti-minimi-brevis-foot",180,5,0],
@@ -393,6 +401,7 @@ const ROWS: [string, number, number, 0 | 1][] = [
 ["flexor-digiti-minimi-brevis-foot",270,3,0],
 ["flexor-digiti-minimi-brevis-foot",300,1,0],
 ["flexor-digiti-minimi-brevis-foot",330,1,0],
+["flexor-digiti-minimi-brevis-foot",0,8,1,-90],
 ["flexor-digiti-minimi-brevis-hand",0,0,0],
 ["flexor-digiti-minimi-brevis-hand",30,2,0],
 ["flexor-digiti-minimi-brevis-hand",120,7,0],
@@ -403,7 +412,7 @@ const ROWS: [string, number, number, 0 | 1][] = [
 ["flexor-digitorum-brevis",0,0,0],
 ["flexor-digitorum-brevis",30,2,0],
 ["flexor-digitorum-brevis",60,2,0],
-["flexor-digitorum-brevis",90,4,1],
+["flexor-digitorum-brevis",90,4,0],
 ["flexor-digitorum-brevis",120,7,0],
 ["flexor-digitorum-brevis",150,7,0],
 ["flexor-digitorum-brevis",180,5,0],
@@ -412,6 +421,7 @@ const ROWS: [string, number, number, 0 | 1][] = [
 ["flexor-digitorum-brevis",270,3,0],
 ["flexor-digitorum-brevis",300,1,0],
 ["flexor-digitorum-brevis",330,1,0],
+["flexor-digitorum-brevis",0,8,1,-90],
 ["flexor-digitorum-longus",0,0,0],
 ["flexor-digitorum-longus",30,1,0],
 ["flexor-digitorum-longus",60,1,0],
@@ -452,7 +462,7 @@ const ROWS: [string, number, number, 0 | 1][] = [
 ["flexor-hallucis-brevis",30,2,0],
 ["flexor-hallucis-brevis",60,2,0],
 ["flexor-hallucis-brevis",90,4,0],
-["flexor-hallucis-brevis",120,7,1],
+["flexor-hallucis-brevis",120,7,0],
 ["flexor-hallucis-brevis",150,7,0],
 ["flexor-hallucis-brevis",180,5,0],
 ["flexor-hallucis-brevis",210,6,0],
@@ -460,6 +470,7 @@ const ROWS: [string, number, number, 0 | 1][] = [
 ["flexor-hallucis-brevis",270,3,0],
 ["flexor-hallucis-brevis",300,1,0],
 ["flexor-hallucis-brevis",330,1,0],
+["flexor-hallucis-brevis",0,8,1,-90],
 ["flexor-hallucis-longus",0,0,0],
 ["flexor-hallucis-longus",30,1,0],
 ["flexor-hallucis-longus",60,1,0],
@@ -693,8 +704,9 @@ const ROWS: [string, number, number, 0 | 1][] = [
 ["lumbricals-foot",30,2,0],
 ["lumbricals-foot",60,2,0],
 ["lumbricals-foot",90,4,0],
-["lumbricals-foot",120,7,1],
+["lumbricals-foot",120,7,0],
 ["lumbricals-foot",150,7,0],
+["lumbricals-foot",0,8,1,-90],
 ["lumbricals-hand",0,0,0],
 ["lumbricals-hand",30,2,0],
 ["lumbricals-hand",60,2,0],
@@ -749,6 +761,7 @@ const ROWS: [string, number, number, 0 | 1][] = [
 ["opponens-digiti-minimi-foot",270,3,0],
 ["opponens-digiti-minimi-foot",300,1,0],
 ["opponens-digiti-minimi-foot",330,1,0],
+["opponens-digiti-minimi-foot",0,8,0,-90],
 ["opponens-digiti-minimi-hand",0,0,0],
 ["opponens-digiti-minimi-hand",30,2,0],
 ["opponens-digiti-minimi-hand",60,2,1],
@@ -860,10 +873,11 @@ const ROWS: [string, number, number, 0 | 1][] = [
 ["plantar-interossei",30,2,0],
 ["plantar-interossei",60,2,0],
 ["plantar-interossei",90,4,0],
-["plantar-interossei",120,7,1],
+["plantar-interossei",120,7,0],
 ["plantar-interossei",150,7,0],
 ["plantar-interossei",180,5,0],
 ["plantar-interossei",330,1,0],
+["plantar-interossei",0,8,1,-90],
 ["plantaris",30,1,0],
 ["plantaris",60,1,0],
 ["plantaris",90,3,0],
@@ -942,7 +956,7 @@ const ROWS: [string, number, number, 0 | 1][] = [
 ["quadratus-lumborum",300,1,0],
 ["quadratus-lumborum",330,1,0],
 ["quadratus-plantae",30,2,0],
-["quadratus-plantae",60,2,1],
+["quadratus-plantae",60,2,0],
 ["quadratus-plantae",90,4,0],
 ["quadratus-plantae",120,7,0],
 ["quadratus-plantae",150,7,0],
@@ -952,6 +966,7 @@ const ROWS: [string, number, number, 0 | 1][] = [
 ["quadratus-plantae",270,3,0],
 ["quadratus-plantae",300,1,0],
 ["quadratus-plantae",330,1,0],
+["quadratus-plantae",0,8,1,-90],
 ["rectus-abdominis",0,0,1],
 ["rectus-abdominis",30,1,0],
 ["rectus-abdominis",60,1,0],
@@ -1303,7 +1318,7 @@ const ROWS: [string, number, number, 0 | 1][] = [
  * Two plates per row: every published angle has a context picture and a
  * highlight picture, written together by the publisher.
  */
-export const MUSCLE_PLATES: MusclePlate[] = ROWS.flatMap(([structureId, angle, view, primary]) => {
+export const MUSCLE_PLATES: MusclePlate[] = ROWS.flatMap(([structureId, angle, view, primary, elevation]) => {
   const [name, region, subregion, deep] = MUSCLES[structureId];
   const shared = {
     structureId,
@@ -1312,6 +1327,7 @@ export const MUSCLE_PLATES: MusclePlate[] = ROWS.flatMap(([structureId, angle, v
     subregion,
     view: VIEWS[view],
     angle,
+    ...(elevation ? { elevation } : {}),
     deep: deep === 1,
     width: W,
     height: H,

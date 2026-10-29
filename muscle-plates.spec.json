@@ -2305,6 +2305,12 @@
     270,
     300,
     330
+   ],
+   "tilts": [
+    [
+     0,
+     -90
+    ]
    ]
   },
   {
@@ -2334,6 +2340,12 @@
     270,
     300,
     330
+   ],
+   "tilts": [
+    [
+     0,
+     -90
+    ]
    ]
   },
   {
@@ -2365,6 +2377,12 @@
     270,
     300,
     330
+   ],
+   "tilts": [
+    [
+     0,
+     -90
+    ]
    ]
   },
   {
@@ -2431,10 +2449,12 @@
    "region": "lower-leg-foot",
    "subregion": "ankle-foot",
    "objects": [
-    "Extensor digitorum longus.l"
+    "Extensor digitorum longus.l",
+    "Tendon of extensor digitorum longus.l"
    ],
    "twins": [
-    "Extensor digitorum longus.r"
+    "Extensor digitorum longus.r",
+    "Tendon of extensor digitorum longus.r"
    ],
    "side": ".l",
    "layer": 0,
@@ -2539,6 +2559,12 @@
     270,
     300,
     330
+   ],
+   "tilts": [
+    [
+     0,
+     -90
+    ]
    ]
   },
   {
@@ -2568,6 +2594,12 @@
     270,
     300,
     330
+   ],
+   "tilts": [
+    [
+     0,
+     -90
+    ]
    ]
   },
   {
@@ -2628,6 +2660,12 @@
     270,
     300,
     330
+   ],
+   "tilts": [
+    [
+     0,
+     -90
+    ]
    ]
   },
   {
@@ -2717,6 +2755,12 @@
     270,
     300,
     330
+   ],
+   "tilts": [
+    [
+     0,
+     -90
+    ]
    ]
   },
   {
@@ -2746,6 +2790,12 @@
     270,
     300,
     330
+   ],
+   "tilts": [
+    [
+     0,
+     -90
+    ]
    ]
   },
   {
@@ -2862,6 +2912,12 @@
     270,
     300,
     330
+   ],
+   "tilts": [
+    [
+     0,
+     -90
+    ]
    ]
   },
   {
@@ -2949,6 +3005,12 @@
     270,
     300,
     330
+   ],
+   "tilts": [
+    [
+     0,
+     -90
+    ]
    ]
   },
   {

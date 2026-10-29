@@ -154,6 +154,37 @@ const DEPTH: Record<string, number> = {
  * anterior sheath opened, and so does this. The transversus goes with it: its
  * aponeurosis joins the anterior sheath below the arcuate line.
  */
+/**
+ * Atlas objects that belong to a muscle but are not in its TA2 mapping.
+ *
+ * Z-Anatomy models the long extensor's four tendons to the toes as their own
+ * object, and the mapping names only the belly, which stops at the ankle. So
+ * the extensor digitorum longus was framed and drawn without its tendons: its
+ * plates cut off at the ankle with no foot in them, and every other foot plate
+ * had a bare dorsum where four red tendons should be (user report, 28 Oct
+ * 2026: "can't see the foot but it's a foot question"). It is the only muscle
+ * in the atlas with a separate "Tendon of" object.
+ */
+const EXTRA_OBJECTS: Record<string, string[]> = {
+  'extensor-digitorum-longus': ['Tendon of extensor digitorum longus.l', 'Tendon of extensor digitorum longus.r'],
+};
+
+/**
+ * The muscles of the sole, which also get a view from straight below.
+ *
+ * The turntable turns about the vertical, so it only ever sees a sole muscle
+ * edge-on: the lumbricals were thin strands under the metatarsals with half
+ * the frame empty floor (user report, 28 Oct 2026). From below, with the layers
+ * above them taken off, they are the picture. [azimuth, elevation]: tilted down
+ * from the anterior view, which puts the toes at the top.
+ */
+const SOLE_TILTS: [number, number][] = [[0, -90]];
+const SOLE_MUSCLES = new Set([
+  'abductor-hallucis', 'flexor-digitorum-brevis', 'abductor-digiti-minimi-foot',
+  'quadratus-plantae', 'lumbricals-foot', 'flexor-hallucis-brevis', 'adductor-hallucis',
+  'flexor-digiti-minimi-brevis-foot', 'opponens-digiti-minimi-foot', 'plantar-interossei',
+]);
+
 const CUTAWAY: Record<string, string[]> = {
   'rectus-abdominis': ['internal-oblique', 'transversus-abdominis'],
   // The same sheet, one layer down: the transversus is modelled with its
@@ -239,6 +270,8 @@ interface Entry {
   hide?: string[];
   minFrame: number;
   angles: number[];
+  /** Views off the turntable, [azimuth, elevation] in degrees; negative is from below. */
+  tilts?: [number, number][];
 }
 
 const entries: Entry[] = [];
@@ -246,7 +279,7 @@ const skipped: string[] = [];
 
 for (const m of mapping) {
   const structure = byId.get(m.id);
-  const objects = m.blenderObjects ?? [];
+  const objects = [...(m.blenderObjects ?? []), ...(EXTRA_OBJECTS[m.id] ?? [])];
   const layer = DEPTH[m.id] ?? 0;
 
   if (!structure) {
@@ -273,6 +306,7 @@ for (const m of mapping) {
     ...(CUTAWAY[m.id] ? { hide: CUTAWAY[m.id] } : {}),
     minFrame: MIN_FRAME[subregion],
     angles: ANGLES,
+    ...(SOLE_MUSCLES.has(m.id) ? { tilts: SOLE_TILTS } : {}),
   });
 }
 

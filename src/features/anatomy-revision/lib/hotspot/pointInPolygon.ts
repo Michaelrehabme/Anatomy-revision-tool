@@ -45,8 +45,14 @@ export function distanceToOutline(point: [number, number], polygons: number[][][
  * about that much. Without slack the app calls that wrong and then reveals the
  * target directly under their finger, which teaches nothing except that the
  * app is fussy.
+ *
+ * IT IS THE RADIUS OF THE DOT THE ANSWER DRAWS (HotspotOverlay), so the rule a
+ * student can see is the rule that grades: if the dot touches the hitbox, the
+ * tap counts. At 0.01 under a 0.012 dot, a tap on the thin talocrural joint
+ * line showed its dot across the band and was still marked wrong (user report,
+ * 28 Oct 2026).
  */
-export const TAP_SLACK = 0.01;
+export const TAP_SLACK = 0.012;
 
 /**
  * Whether a tap found the structure it was asked for.

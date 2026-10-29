@@ -75,7 +75,9 @@ describe('the setting changes how a question is answered, never which questions 
     expect(on).toBe(off);
     // And no generated question is of the kind an answer in words is recorded as.
     expect(off).not.toContain('described-region');
-    // 672 since 17 Oct 2026, when ligaments stopped being asked from a picture.
-    expect(JSON.parse(off).flat().length).toBeGreaterThan(650);
+    // 672 since 17 Oct 2026, when ligaments stopped being asked from a picture;
+    // 650 since 29 Oct, when the L4 landmark plates stopped being located in the
+    // cervical and thoracic sessions (AnatomyImageAsset.areas).
+    expect(JSON.parse(off).flat().length).toBeGreaterThan(640);
   });
 });

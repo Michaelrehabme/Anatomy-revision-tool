@@ -99,7 +99,7 @@ export function buildStarterSet(
     if (i < chosenMcq.length) out.push(chosenMcq[i]);
     if (i < chosenLocate.length) out.push(chosenLocate[i]);
   }
-  return stampRequestedArea(out.slice(0, count), indexes.byId, config.areas);
+  return stampRequestedArea(out.slice(0, count), indexes.byId, config.areas, images);
 }
 
 function onePerStructure<Q extends MCQQuestion | LocateQuestion>(questions: Q[]): Q[] {

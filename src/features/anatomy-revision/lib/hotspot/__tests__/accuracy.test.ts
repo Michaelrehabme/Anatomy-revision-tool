@@ -11,6 +11,7 @@ import {
   RING_COUNT,
 } from '../accuracy';
 import { ALL_IMAGES } from '../../../data/seed';
+import { TAP_SLACK } from '../pointInPolygon';
 
 const target = { centroid: [0.5, 0.5] as [number, number], targetRadius: 0.1 };
 
@@ -234,6 +235,13 @@ describe('scoreRegion', () => {
   it('fails a tap outside the hitbox', () => {
     expect(scoreRegion([0.05, 0.05], region)).toBe(0);
     expect(isAccuratePass(scoreRegion([0.05, 0.05], region))).toBe(false);
+  });
+
+  // The talocrural report (28 Oct 2026): a joint line is a hitbox a few pixels
+  // tall, and a tap whose drawn dot lay across it was marked wrong.
+  it('passes a tap just off the hitbox whose dot still touches it', () => {
+    expect(scoreRegion([0.2 - TAP_SLACK / 2, 0.5], region)).toBe(PASS_SCORE);
+    expect(scoreRegion([0.2 - TAP_SLACK * 2, 0.5], region)).toBe(0);
   });
 
   /**

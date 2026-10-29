@@ -51,7 +51,7 @@ export const CROSSHAIR_START: Crosshair = { x: 0.5, y: 0.5 };
  *
  * The fine step has to be smaller than anything that can be asked for. The
  * narrowest target a locate question may have is MIN_TAPPABLE_WIDTH (0.0075)
- * and it is graded with TAP_SLACK (0.01) either side, 0.0275 in all; a step
+ * and it is graded with TAP_SLACK (0.012) either side, 0.0315 in all; a step
  * of 0.005 cannot stride over that, and on a scored landmark it is the
  * difference of one ring at most. Zooming makes it finer still, because the
  * step is measured on screen and the picture is larger under it.

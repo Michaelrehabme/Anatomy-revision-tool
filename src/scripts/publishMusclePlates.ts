@@ -208,6 +208,8 @@ mkdirSync(OUT_DIR, { recursive: true });
 interface Row {
   structureId: string; name: string; region: string; subregion: SubRegion;
   view: ViewType; angle: number;
+  /** Degrees above (+) or below (-) the turntable; 0 for a turntable frame. */
+  elevation: number;
   deep: boolean; width: number; height: number;
   /** Every seeded muscle in the context picture, the target first. */
   panelStructureNames: string[];
@@ -220,6 +222,9 @@ interface Row {
   primary: boolean;
 }
 const rows: Row[] = [];
+/** aNNN, or aNNNuMMM / aNNNdMMM for a tilted frame (lib/rotationFrames.ts). */
+const markerOf = (r: { angle: number; elevation?: number }) =>
+  `a${String(r.angle).padStart(3, '0')}${r.elevation ? `${r.elevation > 0 ? 'u' : 'd'}${String(Math.abs(r.elevation)).padStart(3, '0')}` : ''}`;
 const hotspots: Record<string, Hotspot[]> = {};
 const skipped: string[] = [];
 const dropped: string[] = [];
@@ -242,10 +247,12 @@ for (const muscleId of readdirSync(rendersRoot).sort()) {
   const metaPath = join(muscleDir, 'meta.json');
   if (!existsSync(metaPath)) { skipped.push(`${muscleId}: no meta.json, re-render it`); continue; }
   const midline = Boolean(JSON.parse(readFileSync(metaPath, 'utf8')).midline);
-  for (const angleDir of readdirSync(muscleDir).filter((n) => /^a\d{3}$/.test(n)).sort()) {
+  for (const angleDir of readdirSync(muscleDir).filter((n) => /^a\d{3}(?:[ud]\d{3})?$/.test(n)).sort()) {
     const dir = join(muscleDir, angleDir);
-    const angle = Number(angleDir.slice(1));
-    const view = viewForAngle(angle, midline);
+    const angle = Number(angleDir.slice(1, 4));
+    const elevation = angleDir.length > 4 ? (angleDir[4] === 'u' ? 1 : -1) * Number(angleDir.slice(5)) : 0;
+    // From well below, a foot is seen from its sole (generateMusclePlateSpec, SOLE_TILTS).
+    const view: ViewType = elevation <= -60 ? 'plantar' : elevation >= 60 ? 'dorsal' : viewForAngle(angle, midline);
     if (!['context', 'highlight', 'mask'].every((f) => existsSync(join(dir, `${f}.png`)))) {
       skipped.push(`${muscleId} ${angleDir}: render incomplete`);
       continue;
@@ -277,7 +284,7 @@ for (const muscleId of readdirSync(rendersRoot).sort()) {
     }
     rows.push({
       structureId: muscleId, name: muscle.name, region: muscle.region, subregion: muscle.subregion,
-      view, angle, deep: deepLayer.has(muscleId), width: size.width, height: size.height,
+      view, angle, elevation, deep: deepLayer.has(muscleId), width: size.width, height: size.height,
       panelStructureNames: names, primary: false,
     });
     hotspots[`muscle-${muscleId}-${angleDir}-context`] = [target, ...neighbours];
@@ -285,7 +292,7 @@ for (const muscleId of readdirSync(rendersRoot).sort()) {
   if (tracedAreas.length) {
     const best = Math.max(...tracedAreas);
     const biggest = rows.filter((r) => r.structureId === muscleId)
-      .find((r) => hotspots[`muscle-${muscleId}-a${String(r.angle).padStart(3, '0')}-context`]?.[0].area === best);
+      .find((r) => hotspots[`muscle-${muscleId}-${markerOf(r)}-context`]?.[0].area === best);
     if (biggest) biggest.primary = true;
     const pct = (x: number) => `${(x * 100).toFixed(2)}%`;
     areaReport.push(
@@ -305,24 +312,27 @@ if (only) {
     console.error(`--only named muscle(s) with nothing published from ${rendersRoot}: ${missing.join(', ')}`);
     process.exit(1);
   }
-  // Carry every other muscle over from the current seed, untouched.
+  // Carry every other muscle over from the current seed, untouched. From the
+  // HIGHLIGHT plate: that is the one carrying `primary`, and carrying the
+  // context plate quietly cleared every other muscle's card picture.
   for (const plate of MUSCLE_PLATES) {
-    if (only.has(plate.structureId) || plate.kind === 'highlight') continue;
+    if (only.has(plate.structureId) || plate.kind === 'context') continue;
     const { kind: _kind, ...row } = plate;
-    rows.push({ ...row, panelStructureNames: [...plate.panelStructureNames] });
+    rows.push({ ...row, elevation: plate.elevation ?? 0, panelStructureNames: [...plate.panelStructureNames] });
   }
   for (const [imageId, list] of Object.entries(MUSCLE_HOTSPOTS)) {
     const owner = list[0]?.structureId;
     if (owner && only.has(owner)) continue;
     hotspots[imageId] = list.map((h) => ({ structureId: h.structureId, polygons: h.polygons, area: h.area, centroid: h.centroid }));
   }
-  rows.sort((a, b) => a.structureId.localeCompare(b.structureId) || a.angle - b.angle);
+  rows.sort((a, b) => a.structureId.localeCompare(b.structureId) || a.angle - b.angle || a.elevation - b.elevation);
 }
 
 // COMPACT ROWS, for the reason publishLigamentPlates.ts gives: 122 muscles at
 // twelve angles and two kinds is nearly 3,000 plates, and this list lives in the
 // app's ENTRY CHUNK. Each muscle's facts are written once, every plate is square
-// and one size, and a row is [muscle, angle, view, primary].
+// and one size, and a row is [muscle, angle, view, primary], with the elevation
+// as a fifth entry on the few frames that are tilted.
 //
 // NO NEIGHBOUR NAMES. The locate picture used to list every muscle in it, and
 // those lists were 74 kB of the 124 kB this file cost the entry chunk, which had
@@ -338,7 +348,7 @@ const sizes = new Set(rows.map((r) => `${r.width}x${r.height}`));
 if (sizes.size > 1) throw new Error(`plates are not all one size: ${[...sizes].join(', ')}`);
 const [W, H] = rows[0] ? [rows[0].width, rows[0].height] : [1500, 1500];
 const body = rows
-  .map((r) => JSON.stringify([r.structureId, r.angle, VIEWS.indexOf(r.view), r.primary ? 1 : 0]))
+  .map((r) => JSON.stringify([r.structureId, r.angle, VIEWS.indexOf(r.view), r.primary ? 1 : 0, ...(r.elevation ? [r.elevation] : [])]))
   .join(',\n');
 
 writeFileSync(OUT_TS, `import type { LayerType, ViewType } from '../../types/image';
@@ -362,6 +372,8 @@ export interface MusclePlate {
   view: ViewType;
   /** Camera angle around the vertical axis, degrees; 0 is anterior. */
   angle: number;
+  /** Degrees above (+) or below (-) the turntable, on a tilted frame only. */
+  elevation?: number;
   kind: 'context' | 'highlight';
   /** True when the plate was drawn with the superficial layer taken off. */
   deep: boolean;
@@ -385,7 +397,7 @@ const W = ${W};
 const H = ${H};
 const VIEWS: ViewType[] = ${JSON.stringify(VIEWS)};
 const MUSCLES: Record<string, [string, Region, SubRegion, 0 | 1]> = ${JSON.stringify(facts)};
-const ROWS: [string, number, number, 0 | 1][] = [
+const ROWS: [string, number, number, 0 | 1, number?][] = [
 ${body}
 ];
 
@@ -393,7 +405,7 @@ ${body}
  * Two plates per row: every published angle has a context picture and a
  * highlight picture, written together by the publisher.
  */
-export const MUSCLE_PLATES: MusclePlate[] = ROWS.flatMap(([structureId, angle, view, primary]) => {
+export const MUSCLE_PLATES: MusclePlate[] = ROWS.flatMap(([structureId, angle, view, primary, elevation]) => {
   const [name, region, subregion, deep] = MUSCLES[structureId];
   const shared = {
     structureId,
@@ -402,6 +414,7 @@ export const MUSCLE_PLATES: MusclePlate[] = ROWS.flatMap(([structureId, angle, v
     subregion,
     view: VIEWS[view],
     angle,
+    ...(elevation ? { elevation } : {}),
     deep: deep === 1,
     width: W,
     height: H,
@@ -553,9 +566,9 @@ if (skipped.length) {
   for (const s of skipped.filter((x) => !x.includes('hidden') && !x.includes('incomplete'))) console.log(`  ${s}`);
 }
 
-// Delete what nothing points at. A file name is <muscle>-a<angle>-<kind>.webp.
+// Delete what nothing points at. A file name is <muscle>-<marker>-<kind>.webp.
 const wanted = new Set(rows.flatMap((r) => ['context', 'highlight'].map(
-  (kind) => `${r.structureId}-a${String(r.angle).padStart(3, '0')}-${kind}.webp`)));
+  (kind) => `${r.structureId}-${markerOf(r)}-${kind}.webp`)));
 const stale = readdirSync(OUT_DIR).filter((name) => name.endsWith('.webp') && !wanted.has(name));
 for (const name of stale) unlinkSync(join(OUT_DIR, name));
 console.log(`${stale.length} stale image(s) removed from public/anatomy/muscles`);

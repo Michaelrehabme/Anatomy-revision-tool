@@ -10,6 +10,7 @@ import { pointInAnyPolygon } from '../hotspot/pointInPolygon';
 import { isMcqQuestion, isFillBlankQuestion, isOinaQuestion, isFlashcardQuestion, ASKED_FACT_KINDS } from '../../types/question';
 import { correctValuesFor } from '../questionGenerators/oina';
 import type { FactMastery, StructureMastery } from '../../types/attempt';
+import type { RevisionQuestion } from '../../types/question';
 
 describe('generateRevisionSet', () => {
   it('generates flashcards and MCQs for the full seed dataset deterministically', () => {
@@ -724,6 +725,20 @@ describe('question area follows the area the session asked for', () => {
     // Includes the multi-area structures, which default to the cervical spine.
     expect(questions.some((q) => spineIds.has(q.structureId))).toBe(true);
     for (const q of questions) expect(q.area, `${q.structureId}`).toBe(area);
+  });
+
+  // User report, 28 Oct 2026: a cervical session asked the spinous process on L4.
+  it('never shows a picture in an area the picture does not show', () => {
+    const lumbarOnly = new Set(ALL_IMAGES.filter((i) => i.areas?.length).map((i) => i.id));
+    expect(lumbarOnly.size).toBeGreaterThan(0);
+    const pictureOf = (q: RevisionQuestion) =>
+      'imageId' in q ? q.imageId : 'promptImageId' in q ? q.promptImageId : undefined;
+    const ask = (area: 'cervical-spine' | 'lumbar-spine') =>
+      generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, { entitledAreas: AREAS,
+        types: ['locate', 'mcq', 'identify-typed'], areas: [area], mode: 'practice', seed: 7, count: 400,
+      });
+    expect(ask('cervical-spine').some((q) => lumbarOnly.has(pictureOf(q) ?? ''))).toBe(false);
+    expect(ask('lumbar-spine').some((q) => lumbarOnly.has(pictureOf(q) ?? ''))).toBe(true);
   });
 
   it('picks one of the chosen areas when several are selected', () => {

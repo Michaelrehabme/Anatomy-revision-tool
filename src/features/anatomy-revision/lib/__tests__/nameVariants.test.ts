@@ -169,6 +169,13 @@ describe('singular and plural are the same answer', () => {
     expect(accept('carpals', 'carpal')).toBe(true);
   });
 
+  it('takes what students call the tensor fasciae latae', () => {
+    // User report, 28 Oct 2026.
+    expect(accept('tensor-fasciae-latae', 'TFL')).toBe(true);
+    expect(accept('tensor-fasciae-latae', 'tensor fascia latae')).toBe(true);
+    expect(accept('tensor-fasciae-latae', 'tensor fascia lata')).toBe(true);
+  });
+
   it('does not fold two different words together', () => {
     expect(singular('trapezium')).not.toBe(singular('trapezius'));
     expect(accept('lateral-malleolus', 'medial malleoli')).toBe(false);
