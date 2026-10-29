@@ -178,7 +178,6 @@ describe('three-stage fact ladder (29 Sep 2026)', () => {
 });
 
 describe('each fact on its own schedule (2 Oct 2026)', () => {
-  const at = (iso: string) => new Date(iso);
   const DAY = 86_400_000;
   const days = (f: FactMastery) => Math.round((Date.parse(f.dueAt!) - now.getTime()) / DAY);
 
@@ -201,7 +200,8 @@ describe('each fact on its own schedule (2 Oct 2026)', () => {
 
   it('spaces a fact row from before facts were scheduled by the stage it reached', () => {
     const legacy: FactMastery = { ...history(true, true, true), dueAt: undefined, intervalDays: undefined, lastAttemptAt: '2026-09-01T10:00:00.000Z' };
-    expect(factDueAt(legacy)).toBe(at('2026-09-05T10:00:00.000Z').toISOString());
+    // Four days on, from local midnight (lib/dueDay.ts).
+    expect(factDueAt(legacy)).toBe(new Date(2026, 8, 5).toISOString());
   });
 });
 

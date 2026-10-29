@@ -131,3 +131,28 @@ describe('reviewItemsInArea', () => {
     expect(reviewItemsInArea([item('unknown')], 'knee', structuresById)).toEqual([]);
   });
 });
+
+describe('kinds the daily review never asks (owner, 28 Oct 2026)', () => {
+  // Each of these was due and never asked, so its structure stayed in the count for good.
+  const stranded: FactMastery['promptKind'][] = ['blood-supply', 'blood-supply-assisting', 'blood-supply-rating', 'described-region', 'attachment'];
+
+  it('are not due, while an asked fact on the same structure still is', () => {
+    const { due } = buildReviewQueue(
+      [],
+      [...stranded.map((k) => fact('deltoid', k, { dueAt: inDays(-5), intervalDays: 1 })), fact('supraspinatus', 'origin', { dueAt: inDays(-1), intervalDays: 1 })],
+      ELIGIBLE,
+      NOW,
+    );
+    expect(due.map((i) => `${i.structureId}|${i.kind}`)).toEqual(['supraspinatus|origin']);
+  });
+
+  it('give a structure no due date in the Atlas either', () => {
+    const soonest = soonestDueByStructure([], stranded.map((k) => fact('deltoid', k, { dueAt: inDays(-5), intervalDays: 1 })));
+    expect(soonest.has('deltoid')).toBe(false);
+  });
+
+  it('keep clinical facts and joint type, which the review now builds at any rung', () => {
+    const { due } = buildReviewQueue([], [fact('deltoid', 'myotome', { dueAt: inDays(-1), intervalDays: 1 })], ELIGIBLE, NOW);
+    expect(due.map((i) => i.kind)).toEqual(['myotome']);
+  });
+});

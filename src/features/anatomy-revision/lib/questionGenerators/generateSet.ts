@@ -442,6 +442,16 @@ function siteLookup(names: readonly StructureIndexEntry[]): ReadonlyMap<string, 
   return lookup;
 }
 
+/** Facts asked only as multiple choice, so only to a structure the ladder puts on MCQ. */
+const MCQ_ONLY_FACT_KINDS: ReadonlySet<string> = new Set([
+  'myotome',
+  'palpation',
+  'special-test',
+  'injury-mechanism',
+  'functional',
+  'joint-type',
+]);
+
 /**
  * Which name-recall format each structure is asked in a practice session
  * that knows the student: its rung on the difficulty ladder (lib/ladder.ts).
@@ -698,6 +708,35 @@ export function generateRevisionSet(
     // the arteries themselves are facts on the fact track (oina.ts). Neither
     // is asked while blood supply is unscored (types/question.ts).
     if (BLOOD_SUPPLY_SCORED) generated.push(...buildBloodSupplyRatingMcqs(mcqPool));
+  }
+  // Clinical facts and a joint's type are multiple choice only, so above they
+  // are built just for structures the ladder still asks by MCQ. A structure
+  // that has climbed to typed recall keeps those facts on their own schedule,
+  // and until 28 Oct 2026 one falling due was never asked and stayed due for
+  // good (lib/reviewQueue.ts isReviewedKind). The review builds the due ones.
+  if (ladder && config.reviewItems?.length && config.types.includes('mcq')) {
+    const onMcq = new Set(mcqPool.map((s) => s.id));
+    const wanted = new Set(
+      config.reviewItems
+        .filter((i) => i.due && MCQ_ONLY_FACT_KINDS.has(i.kind) && !onMcq.has(i.structureId))
+        .map((i) => `${i.structureId}|${i.kind}`),
+    );
+    // Clinical wrong answers come from the structures passed in, and one area
+    // can hold a single muscle with a myotome, so these are built over every
+    // structure the account may reach and only the due ones kept.
+    if (wanted.size) {
+      generated.push(
+        ...[
+          ...buildMcqQuestions(pool, relevantImages, indexes, rng, {
+            vocabulary,
+            fallbackPool: entitled,
+            sites: siteLookup(names),
+            promptKinds: ['joint-type'],
+          }),
+          ...buildClinicalQuestions(entitled, rng),
+        ].filter((q) => wanted.has(`${q.structureId}|${q.promptKind}`)),
+      );
+    }
   }
   if (config.types.includes('locate')) {
     generated.push(...buildLocateQuestions(pool, relevantImages));

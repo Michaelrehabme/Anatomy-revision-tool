@@ -1,5 +1,6 @@
 import type { StructureMastery, Confidence } from '../types/attempt';
 import { nextRecentAccuracy, promoteOrDemote, type Rung } from './ladder';
+import { dueDateAfter } from './dueDay';
 
 const DEFAULT_EASE_FACTOR = 2.5;
 const MIN_EASE_FACTOR = 1.3;
@@ -61,8 +62,8 @@ export function computeNextReview(
   }
   nextInterval = Math.min(MAX_INTERVAL_DAYS, nextInterval);
 
-  const dueAt = new Date(now.getTime() + nextInterval * 24 * 60 * 60 * 1000);
-  return { intervalDays: nextInterval, easeFactor: nextEase, dueAt: dueAt.toISOString() };
+  // From local midnight on the day it falls due (lib/dueDay.ts).
+  return { intervalDays: nextInterval, easeFactor: nextEase, dueAt: dueDateAfter(now, nextInterval) };
 }
 
 /** Least share of a multi-part answer that counts as "mostly right" — see scheduleConfidence. */
@@ -130,7 +131,7 @@ export function nextSchedule(
   return {
     intervalDays: LEECH_INTERVAL_CAP_DAYS,
     easeFactor,
-    dueAt: new Date(now.getTime() + LEECH_INTERVAL_CAP_DAYS * 24 * 60 * 60 * 1000).toISOString(),
+    dueAt: dueDateAfter(now, LEECH_INTERVAL_CAP_DAYS),
     lapses,
     isLeech,
   };

@@ -3,6 +3,8 @@ import { factDueAt, factIntervalDays } from './factMastery';
 import type { SkillKind } from './masteryLevel';
 import { areasOf, type AnatomyStructure } from '../types/structure';
 import type { Area } from '../types/region';
+import { calendarDaysUntil, endOfLocalToday } from './dueDay';
+import { BLOOD_FACT_KINDS, BLOOD_SUPPLY_SCORED } from '../types/question';
 
 /** One question type of one structure, waiting in the daily review. */
 export interface ReviewItem {
@@ -25,6 +27,39 @@ export const WEAK_INTERVAL_DAYS = 4;
 export const WEAK_ACCURACY = 0.8;
 
 /**
+ * Fact kinds the daily review never asks, so never counted as due (owner, 28
+ * Oct 2026: "why aren't my due structures going down?"). A row of one of
+ * these fell due and stayed due: the session skips a due type it has no
+ * question for, and since Today counts a structure with ANY type due, one
+ * such row held a muscle in the count for good, however often it was revised.
+ *
+ *   blood supply      unscored since 12 Oct (types/question.ts
+ *                     BLOOD_SUPPLY_SCORED), but older answers left rows
+ *   described-region  never generated: a locate answered in words, and since
+ *                     5 Oct credited to the naming row (lib/answerRoute.ts)
+ *   attachment,       fill-blank and multi-select only, neither of which is in
+ *   articulation,     the daily mix (lib/dailySession.ts DEFAULT_TYPES); a
+ *   joint-movement    custom session still asks and schedules them
+ *   group-membership  no generator builds it
+ *
+ * The rows themselves are kept — they are the student's history, and come
+ * back into the count the day their kind is asked again.
+ */
+const NOT_REVIEWED: ReadonlySet<SkillKind> = new Set<SkillKind>([
+  ...(BLOOD_SUPPLY_SCORED ? [] : [...BLOOD_FACT_KINDS, 'blood-supply-rating' as const]),
+  'described-region',
+  'attachment',
+  'articulation',
+  'joint-movement',
+  'group-membership',
+]);
+
+/** Whether the daily review can ask this kind, and so whether its rows count as due. */
+export function isReviewedKind(kind: SkillKind): boolean {
+  return !NOT_REVIEWED.has(kind);
+}
+
+/**
  * The daily review queue, per question type (owner, 2 Oct 2026).
  *
  *   due      every type whose own date has come, most overdue first
@@ -41,7 +76,8 @@ export function buildReviewQueue(
   eligible: ReadonlySet<string>,
   now: Date = new Date(),
 ): { due: ReviewItem[]; forward: ReviewItem[] } {
-  const nowIso = now.toISOString();
+  // Due by the student's day, not to the minute (lib/dueDay.ts).
+  const nowIso = endOfLocalToday(now);
   const items: (ReviewItem & { weak: boolean })[] = [];
 
   for (const m of mastery) {
@@ -56,7 +92,7 @@ export function buildReviewQueue(
     });
   }
   for (const f of facts) {
-    if (!eligible.has(f.structureId) || f.attemptsTotal === 0) continue;
+    if (!eligible.has(f.structureId) || f.attemptsTotal === 0 || !isReviewedKind(f.promptKind)) continue;
     const dueAt = factDueAt(f);
     items.push({
       structureId: f.structureId,
@@ -121,14 +157,14 @@ export function soonestDueByStructure(
     if (m.dueAt && m.attemptsTotal > 0) note(m.structureId, m.dueAt);
   }
   for (const f of facts) {
-    if (f.attemptsTotal > 0) note(f.structureId, factDueAt(f));
+    if (f.attemptsTotal > 0 && isReviewedKind(f.promptKind)) note(f.structureId, factDueAt(f));
   }
   return soonest;
 }
 
 /** "today", "tomorrow", "in 3 days". Overdue reads as today: it is due now. */
 export function relativeDue(dueAt: string, now: Date): string {
-  const days = Math.round((Date.parse(dueAt) - now.getTime()) / 86_400_000);
+  const days = calendarDaysUntil(dueAt, now);
   if (days <= 0) return 'today';
   if (days === 1) return 'tomorrow';
   return `in ${days} days`;

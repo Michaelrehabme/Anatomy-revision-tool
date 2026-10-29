@@ -22,6 +22,7 @@ import { MobileShell } from './MobileShell';
 import { Tour } from '../shared/Tour';
 import type { MobileTab } from './MobileTabBar';
 import { QUESTION_FORMATS } from '../../lib/questionFormats';
+import { endOfLocalToday } from '../../lib/dueDay';
 
 /**
  * The phone reads the same Title-case names as the desktop and the session
@@ -175,7 +176,7 @@ export function MobileRevisionSetup({ access, content, repository, userId, areas
     setStarting(true);
     let dueStructureIds: string[] | undefined;
     if (useSrs && mode !== 'adaptive' && repository && userId) {
-      const due = await repository.listDueMastery(userId, new Date().toISOString());
+      const due = await repository.listDueMastery(userId, endOfLocalToday());
       const pool = new Set(content.structures.filter(inPool).map((s) => s.id));
       const dueInPool = due.map((m) => m.structureId).filter((id) => pool.has(id));
       if (dueInPool.length > 0) dueStructureIds = dueInPool;

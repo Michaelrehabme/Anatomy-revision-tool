@@ -1171,3 +1171,36 @@ describe('the daily review, per question type (2 Oct 2026)', () => {
     });
   });
 });
+
+describe('a due multiple-choice-only fact on a structure past the MCQ rung (owner, 28 Oct 2026)', () => {
+  // Before, it was built only for structures the ladder still asked by MCQ,
+  // so once the name reached typed recall the fact was due and never asked.
+  const NOW = new Date('2026-10-28T09:00:00.000Z');
+  const DAY = 86_400_000;
+  const past = new Date(NOW.getTime() - 3 * DAY).toISOString();
+  const later = new Date(NOW.getTime() + 20 * DAY).toISOString();
+  const cases = [
+    { kind: 'myotome' as const, structure: ALL_STRUCTURES.find((s) => s.category === 'muscle' && s.myotome?.length)! },
+    { kind: 'joint-type' as const, structure: ALL_STRUCTURES.find((s) => s.category === 'joint' && s.jointType)! },
+  ];
+
+  it.each(cases)('asks the due $kind', ({ kind, structure }) => {
+    const result = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+      entitledAreas: AREAS,
+      areas: areasOf(structure),
+      types: ['flashcard', 'mcq', 'locate', 'identify-typed', 'oina'],
+      mode: 'practice',
+      count: 20,
+      seed: 3,
+      mastery: [
+        { structureId: structure.id, userId: 'u', attemptsTotal: 9, attemptsCorrect: 9, lastAttemptAt: past, rung: 'typed-bare', rungStreak: 3, intervalDays: 20, dueAt: later },
+      ],
+      factMastery: [
+        { userId: 'u', structureId: structure.id, promptKind: kind, attemptsTotal: 3, attemptsCorrect: 2, streak: 0, missStreak: 1, lastCorrect: false, lastAttemptAt: past, typed: false, bare: false, intervalDays: 1, dueAt: past },
+      ],
+      now: NOW,
+      reviewItems: [{ structureId: structure.id, kind, dueAt: past, due: true }],
+    });
+    expect(result.some((q) => q.structureId === structure.id && q.promptKind === kind)).toBe(true);
+  });
+});

@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { computeNextReview, deriveImplicitConfidence, MAX_INTERVAL_DAYS, scheduleConfidence, updateMasteryAfterAttempt } from '../mastery';
 import type { StructureMastery } from '../../types/attempt';
+import { dueDateAfter } from '../dueDay';
 
 describe('computeNextReview', () => {
   it('grows the interval on an easy rating', () => {
@@ -178,7 +179,7 @@ describe('updateMasteryAfterAttempt', () => {
     const capped = updateMasteryAfterAttempt({ ...mastery, intervalDays: 10 }, { ...base, correct: true, confidence: 'easy' }, now);
     const cappedIntervalDays = capped.intervalDays!;
     expect(cappedIntervalDays).toBeLessThanOrEqual(7);
-    expect(capped.dueAt).toBe(new Date(now.getTime() + cappedIntervalDays * 24 * 60 * 60 * 1000).toISOString());
+    expect(capped.dueAt).toBe(dueDateAfter(now, cappedIntervalDays));
   });
 
   it('keeps attemptsTotal/attemptsCorrect bookkeeping correct across attempts', () => {
