@@ -2,6 +2,7 @@ import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState } from
 import { createPortal } from 'react-dom';
 import { useIsDesktop } from '../../hooks/useIsDesktop';
 import { markTourSeen, shouldShowTour, stepsFor, type TourKey, type TourStep } from '../../lib/tours';
+import { saveSeenTour } from '../../data/tourRepository';
 import { Button } from './Button';
 import { motionReduced } from './motion';
 
@@ -77,6 +78,8 @@ export function Tour({ tourKey, ready = true }: { tourKey: TourKey; ready?: bool
   useEffect(() => {
     if (!ready || !shouldShowTour(tourKey)) return;
     const timer = window.setTimeout(() => {
+      // Asked again now: the account's record may have arrived while the screen settled.
+      if (!shouldShowTour(tourKey)) return;
       const present = stepsFor(tourKey, desktop ? 'desktop' : 'mobile').filter((s) => targetOf(s));
       if (present.length === 0) return;
       setSteps(present);
@@ -90,6 +93,7 @@ export function Tour({ tourKey, ready = true }: { tourKey: TourKey; ready?: bool
 
   const close = useCallback(() => {
     markTourSeen(tourKey);
+    saveSeenTour(tourKey);
     setOpen(false);
   }, [tourKey]);
 

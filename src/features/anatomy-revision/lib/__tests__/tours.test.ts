@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { TOURS, TOUR_KEYS, markTourSeen, resetTours, shouldShowTour, stepsFor, type TourKey, type TourLayout } from '../tours';
+import { TOURS, TOUR_KEYS, absorbSeenTours, markTourSeen, resetTours, shouldShowTour, stepsFor, type TourKey, type TourLayout } from '../tours';
 
 /**
  * The tours (lib/tours.ts): what each layout is shown, how "seen" is kept, and
@@ -37,6 +37,30 @@ describe('seen state', () => {
     expect(shouldShowTour('today')).toBe(false);
     expect(() => markTourSeen('today')).not.toThrow();
     expect(() => resetTours()).not.toThrow();
+  });
+});
+
+// The account's record (30 Oct 2026): a tour seen on another device is seen here, and what only this device saw goes up.
+describe('absorbSeenTours', () => {
+  it('marks a tour seen on the account as seen on this device', () => {
+    expect(absorbSeenTours({ atlas: true, educator: true })).toEqual([]);
+    expect(shouldShowTour('atlas')).toBe(false);
+    expect(shouldShowTour('educator')).toBe(false);
+    expect(shouldShowTour('today')).toBe(true);
+  });
+
+  it('returns what this device saw that the account does not know about', () => {
+    markTourSeen('today');
+    markTourSeen('atlas');
+    expect(absorbSeenTours({ atlas: true })).toEqual(['today']);
+  });
+
+  it('treats a missing or malformed record as nothing seen on the account', () => {
+    markTourSeen('setup');
+    expect(absorbSeenTours(undefined)).toEqual(['setup']);
+    expect(absorbSeenTours('yes')).toEqual(['setup']);
+    expect(absorbSeenTours({ progress: 'true', nonsense: true })).toEqual(['setup']);
+    expect(shouldShowTour('progress')).toBe(true);
   });
 });
 

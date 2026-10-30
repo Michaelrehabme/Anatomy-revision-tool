@@ -75,7 +75,7 @@ export function PrivacyPage() {
   }, []);
 
   return (
-    <LegalLayout title="Privacy policy" updated="25 October 2026">
+    <LegalLayout title="Privacy policy" updated="30 October 2026">
       <p className="mt-4" style={legalProse}>
         LocusMSK is an anatomy revision app for musculoskeletal students. This policy explains what it collects, why,
         how long it keeps it, and what you can do about it.
@@ -131,6 +131,11 @@ export function PrivacyPage() {
           description of itself. These go to the same database as everything else: no outside analytics service is
           used and no cookie is set. They are included when you download your data and deleted when you delete your
           account.
+        </p>
+        <p>
+          <strong style={{ color: 'var(--ink)' }}>Which guides you have seen.</strong> Each screen has a short guide
+          the first time you open it. Which ones you have finished or skipped is kept on your account, so they do not
+          play again on another device. &ldquo;Replay the tours&rdquo; on your Account screen clears it.
         </p>
         <p>
           <strong style={{ color: 'var(--ink)' }}>A weekly reminder, if you ask for one.</strong> If you tick the

@@ -4,6 +4,7 @@ import { useTheme } from '../../context/ThemeProvider';
 import { getLocateWithoutPicture, getShowLatin, setLocateWithoutPicture, setShowLatin } from '../../lib/preferences';
 import { THEME_PREFERENCES, THEME_PREFERENCE_LABELS } from '../../lib/theme';
 import { resetTours } from '../../lib/tours';
+import { clearSeenTours } from '../../data/tourRepository';
 import { withThemeTransition } from './motion';
 
 /** The knob overshoots slightly as it lands; the track fills behind it. */
@@ -221,7 +222,7 @@ export function ThemeControls({ compact = false }: { compact?: boolean }) {
         </div>
       </div>
 
-      {/* Here because this is where the per-device settings live, and the tours are remembered per device too (lib/tours.ts). */}
+      {/* Beside the other settings; replaying clears the account's record as well as this device's (data/tourRepository.ts). */}
       <div className="mt-7" style={label}>
         Tours
       </div>
@@ -229,6 +230,7 @@ export function ThemeControls({ compact = false }: { compact?: boolean }) {
         type="button"
         onClick={() => {
           resetTours();
+          clearSeenTours();
           setToursReplayed(true);
         }}
         className="mt-2.5 inline-flex min-h-[44px] items-center rounded-[3px] px-4"
