@@ -13,6 +13,8 @@ import {
   type StoredReport,
 } from '../../data/feedbackRepository';
 import { funnelRows, funnelSources } from '../../lib/funnel';
+import { useIsDesktop } from '../../../anatomy-revision/hooks/useIsDesktop';
+import { ADMIN_PAGE_PAD, ADMIN_TITLE_STYLE, Facts, FoldList, FoldRow } from '../shared/AdminMobile';
 
 /**
  * What the app has reported about itself: how far new visitors get, the
@@ -140,7 +142,7 @@ function Funnel() {
               <th style={head}>Step</th>
               <th style={{ ...head, textAlign: 'right' }}>People</th>
               <th style={{ ...head, textAlign: 'right' }}>Of previous</th>
-              <th style={head} aria-hidden="true" />
+              <th className="hidden sm:table-cell" style={head} aria-hidden="true" />
             </tr>
           </thead>
           <tbody>
@@ -151,7 +153,7 @@ function Funnel() {
                 <td style={{ ...cell, textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>
                   {row.ofPrevious === null ? '—' : `${row.ofPrevious}%`}
                 </td>
-                <td style={{ ...cell, width: 160 }} aria-hidden="true">
+                <td className="hidden sm:table-cell" style={{ ...cell, width: 160 }} aria-hidden="true">
                   <div style={{ height: 8, width: `${(row.people / most) * 100}%`, minWidth: row.people ? 2 : 0, background: 'var(--acc)' }} />
                 </td>
               </tr>
@@ -169,6 +171,7 @@ function Funnel() {
 }
 
 function Reports() {
+  const isDesktop = useIsDesktop();
   const { data, error } = useLoad<StoredReport[]>(listQuestionReports, 0);
   const [resolved, setResolved] = useState<Record<string, string>>({});
   const [showResolved, setShowResolved] = useState(false);
@@ -198,7 +201,46 @@ function Reports() {
         </label>
       )}
       {data && shown.length === 0 && <p style={small}>Nothing reported.</p>}
-      {shown.length > 0 && (
+      {shown.length > 0 && !isDesktop && (
+        <FoldList className="mt-1">
+          {shown.map((report) => (
+            <FoldRow
+              key={report.id}
+              title={
+                <span style={{ opacity: report.resolvedAt ? 0.6 : 1 }}>
+                  {STRUCTURE_INDEX_BY_ID.get(report.structureId)?.name ?? report.structureId}
+                </span>
+              }
+              aside={<span style={small}>{when(report.createdAt)}</span>}
+            >
+              <Facts
+                items={[
+                  ['Problem', REASON_LABEL.get(report.reason) ?? report.reason],
+                  ...(report.note ? [['Note', <span style={{ whiteSpace: 'pre-wrap', color: 'var(--ink)' }}>{report.note}</span>] as [string, ReactNode]] : []),
+                  ['Area', report.area ?? '—'],
+                  ['Question', `${report.questionType} · ${report.promptKind}`],
+                  ['Id', <span style={{ font: '400 11.5px/1.4 var(--font-mono)' }}>{report.questionId}</span>],
+                ]}
+              />
+              <div className="mt-3">
+                {report.resolvedAt ? (
+                  <span style={small}>Resolved {when(report.resolvedAt)}</span>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => resolve(report.id)}
+                    className="rounded-[3px] px-3"
+                    style={{ font: '500 12.5px/1 var(--font-ui)', minHeight: 36, background: 'transparent', color: 'var(--ink2)', border: '1.2px solid var(--line)' }}
+                  >
+                    Mark resolved
+                  </button>
+                )}
+              </div>
+            </FoldRow>
+          ))}
+        </FoldList>
+      )}
+      {shown.length > 0 && isDesktop && (
         <table style={{ borderCollapse: 'collapse', width: '100%' }}>
           <thead>
             <tr>
@@ -291,8 +333,8 @@ function Errors() {
 
 export function FeedbackPage() {
   return (
-    <div style={{ maxWidth: 980 }}>
-      <h1 style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 30, letterSpacing: '-.02em', margin: 0, color: 'var(--ink)' }}>
+    <div className={ADMIN_PAGE_PAD} style={{ maxWidth: 980 }}>
+      <h1 style={{ ...ADMIN_TITLE_STYLE, color: 'var(--ink)' }}>
         Feedback
       </h1>
       <Funnel />

@@ -5,6 +5,7 @@ import { useAdminUsers } from '../../hooks/useAdminUsers';
 import { formatDateTime } from '../../lib/formatDate';
 import { countUsers, matchesFilter, userAccess, type UserAccess, type UsersFilter } from '../../lib/userAccess';
 import type { AdminUserRow } from '../../types/adminUser';
+import { ADMIN_PAGE_PAD, ADMIN_TITLE_STYLE } from '../shared/AdminMobile';
 
 type SortColumn = 'name' | 'email' | 'access' | 'totalAttempts' | 'accuracyPct' | 'streak' | 'lastActiveAt';
 
@@ -83,17 +84,8 @@ export function UsersPage() {
   };
 
   return (
-    <div className={isDesktop ? 'px-16 pt-16 pb-16' : 'px-4 pt-6 pb-8'}>
-      <h1
-        style={{
-          fontFamily: 'var(--font-display)',
-          fontWeight: 500,
-          fontSize: isDesktop ? 40 : 30,
-          lineHeight: 1.05,
-          letterSpacing: '-.02em',
-          margin: 0,
-        }}
-      >
+    <div className={ADMIN_PAGE_PAD}>
+      <h1 style={ADMIN_TITLE_STYLE}>
         Users
       </h1>
       <p className="mt-2 text-sm" style={{ color: 'var(--ink2)' }}>
@@ -206,7 +198,7 @@ export function UsersPage() {
   );
 }
 
-/** The phone layout: a sort picker over one card per user, since six columns do not fit. */
+/** The phone layout: a sort picker over one folding row per user, since six columns do not fit. */
 function MobileUserList({ rows, sort, onSort }: { rows: Row[]; sort: SortState; onSort: (sort: SortState) => void }) {
   const label = { font: '500 10px/1 var(--font-mono)', letterSpacing: '.12em', textTransform: 'uppercase', color: 'var(--ink3)' } as const;
   return (
@@ -238,40 +230,64 @@ function MobileUserList({ rows, sort, onSort }: { rows: Row[]; sort: SortState; 
           {sort.direction === 'asc' ? '↑' : '↓'}
         </button>
       </div>
-      <ul className="mt-4 flex flex-col gap-2" style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+      <ul className="mt-4 flex flex-col gap-1.5" style={{ listStyle: 'none', padding: 0, margin: 0 }}>
         {rows.map((row) => (
-          <li key={row.uid}>
-            <Link
-              to={`/admin/users/${row.uid}`}
-              className="block rounded-[4px] px-4 py-3"
-              style={{ background: 'var(--sf)', border: '1px solid var(--line)', textDecoration: 'none' }}
-            >
-              <div className="flex items-baseline justify-between gap-3">
-                <span className="min-w-0 truncate" style={{ font: '500 14.5px/1.3 var(--font-ui)', color: 'var(--accd)' }}>
-                  {row.displayName ?? 'Unnamed user'}
-                </span>
-                <span
-                  className="flex-none"
-                  style={{ font: '500 12px/1.3 var(--font-ui)', color: row.access.fullAccess ? 'var(--accd)' : 'var(--ink3)' }}
-                >
-                  {row.access.label}
-                </span>
-              </div>
-              <div className="mt-1 truncate" style={{ font: '400 12.5px/1.3 var(--font-ui)', color: 'var(--ink2)' }}>
-                {row.email ?? 'Guest'}
-              </div>
-              <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1" style={{ font: '400 12px/1.3 var(--font-mono)', color: 'var(--ink3)' }}>
-                <span>{row.totalAttempts} attempts</span>
-                {row.totalAttempts > 0 && (
-                  <span style={{ color: row.accuracyPct < 60 ? 'var(--acc2d)' : 'var(--accd)' }}>{row.accuracyPct}%</span>
-                )}
-                <span>streak {row.streak}</span>
-                <span>{formatDateTime(row.lastActiveAt)}</span>
-              </div>
-            </Link>
-          </li>
+          <MobileUserRow key={row.uid} row={row} />
         ))}
       </ul>
     </>
+  );
+}
+
+/** A name and its access, folded; open, the rest of what the desktop table shows and a link to the user's page. */
+function MobileUserRow({ row }: { row: Row }) {
+  const [open, setOpen] = useState(false);
+  const detailsId = `user-${row.uid}`;
+  return (
+    <li className="rounded-[4px]" style={{ background: 'var(--sf)', border: '1px solid var(--line)' }}>
+      <button
+        type="button"
+        aria-expanded={open}
+        aria-controls={detailsId}
+        onClick={() => setOpen((o) => !o)}
+        className="flex w-full items-center gap-3 border-0 bg-transparent px-4 py-3 text-left"
+        style={{ cursor: 'pointer' }}
+      >
+        <span className="min-w-0 flex-1 truncate" style={{ font: '500 14.5px/1.3 var(--font-ui)', color: 'var(--ink)' }}>
+          {row.displayName ?? row.email ?? 'Guest'}
+        </span>
+        <span
+          className="flex-none"
+          style={{ font: '500 12px/1.3 var(--font-ui)', color: row.access.fullAccess ? 'var(--accd)' : 'var(--ink3)' }}
+        >
+          {row.access.label}
+        </span>
+        <span aria-hidden="true" className="flex-none" style={{ color: 'var(--ink3)', fontSize: 12 }}>
+          {open ? '▾' : '▸'}
+        </span>
+      </button>
+      {open && (
+        <div id={detailsId} className="px-4 pb-3.5">
+          <div className="truncate" style={{ font: '400 12.5px/1.3 var(--font-ui)', color: 'var(--ink2)' }}>
+            {row.email ?? 'Guest — no email'}
+          </div>
+          <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1" style={{ font: '400 12px/1.3 var(--font-mono)', color: 'var(--ink3)' }}>
+            <span>{row.totalAttempts} attempts</span>
+            {row.totalAttempts > 0 && (
+              <span style={{ color: row.accuracyPct < 60 ? 'var(--acc2d)' : 'var(--accd)' }}>{row.accuracyPct}%</span>
+            )}
+            <span>streak {row.streak}</span>
+            <span>{formatDateTime(row.lastActiveAt)}</span>
+          </div>
+          <Link
+            to={`/admin/users/${row.uid}`}
+            className="mt-3 inline-block"
+            style={{ font: '500 13px/1 var(--font-ui)', color: 'var(--accd)', textDecoration: 'none' }}
+          >
+            Open user →
+          </Link>
+        </div>
+      )}
+    </li>
   );
 }

@@ -2,6 +2,7 @@ import { Link, useParams } from 'react-router-dom';
 import { REGION_LABELS } from '../../../anatomy-revision/types/region';
 import { useAdminUserDetail } from '../../hooks/useAdminUserDetail';
 import { formatDateTime } from '../../lib/formatDate';
+import { ADMIN_PAGE_PAD, ADMIN_TITLE_STYLE } from '../shared/AdminMobile';
 
 const labelStyle = {
   font: '500 10px/1 var(--font-mono)',
@@ -15,7 +16,7 @@ export function UserDetailPage() {
   const { detail, loading, error } = useAdminUserDetail(uid ?? '');
 
   return (
-    <div className="px-4 pt-6 pb-8 lg:px-16 lg:pt-16 lg:pb-16">
+    <div className={ADMIN_PAGE_PAD}>
       <Link to="/admin/users" style={{ font: '400 12.5px/1 var(--font-ui)', color: 'var(--ink3)', textDecoration: 'none' }}>
         ← Users
       </Link>
@@ -35,14 +36,7 @@ export function UserDetailPage() {
         <>
           <h1
             className="mt-4"
-            style={{
-              fontFamily: 'var(--font-display)',
-              fontWeight: 500,
-              fontSize: 40,
-              lineHeight: 1.05,
-              letterSpacing: '-.02em',
-              margin: '16px 0 0',
-            }}
+            style={{ ...ADMIN_TITLE_STYLE, margin: '16px 0 0' }}
           >
             {detail.profile.displayName ?? 'Unnamed user'}
           </h1>

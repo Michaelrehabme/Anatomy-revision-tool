@@ -81,11 +81,11 @@ export function NewChangeRequestForm({ onSubmit, onCancel }: NewChangeRequestFor
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center px-6" role="dialog" aria-label="New change request">
+    <div className="fixed inset-0 z-50 flex items-center justify-center px-3 lg:px-6" role="dialog" aria-label="New change request">
       <div className="absolute inset-0" style={{ background: 'var(--scrim)' }} onClick={onCancel} />
       <form
         onSubmit={handleSubmit}
-        className="relative flex max-h-[88vh] w-[640px] flex-col overflow-y-auto rounded-[4px] px-8 py-8"
+        className="relative flex max-h-[88vh] w-full max-w-[640px] flex-col overflow-y-auto rounded-[4px] px-5 py-6 lg:px-8 lg:py-8"
         style={{ background: 'var(--sf)', boxShadow: 'var(--shadow-card)' }}
       >
         <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 26, margin: 0 }}>New change request</h2>

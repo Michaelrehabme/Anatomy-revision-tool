@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { StructureWeaknessScreen } from './StructureWeaknessScreen';
 import { DistractorAnalysisScreen } from './DistractorAnalysisScreen';
 import { QuestionHealthPanel } from './QuestionHealthPanel';
+import { ADMIN_PAGE_PAD, ADMIN_TITLE_STYLE } from '../shared/AdminMobile';
 import { CohortOverviewScreen } from './CohortOverviewScreen';
 
 type Tab = 'weakness' | 'distractors' | 'health' | 'cohort';
@@ -23,29 +24,20 @@ export function AnalyticsPage() {
   const [tab, setTab] = useState<Tab>('weakness');
 
   return (
-    <div className="px-16 pt-16 pb-16">
-      <h1
-        style={{
-          fontFamily: 'var(--font-display)',
-          fontWeight: 500,
-          fontSize: 40,
-          lineHeight: 1.05,
-          letterSpacing: '-.02em',
-          margin: 0,
-        }}
-      >
+    <div className={ADMIN_PAGE_PAD}>
+      <h1 style={ADMIN_TITLE_STYLE}>
         Analytics
       </h1>
       <p className="mt-2 text-sm" style={{ color: 'var(--ink2)' }}>
         Cohort weakness analytics, aggregated from the most recent attempt data.
       </p>
 
-      <div className="mt-8 flex gap-1 border-b" style={{ borderColor: 'var(--line)' }}>
+      <div className="mt-8 flex gap-1 overflow-x-auto border-b" style={{ borderColor: 'var(--line)' }}>
         {TABS.map((t) => (
           <button
             key={t.key}
             onClick={() => setTab(t.key)}
-            className="px-4 py-2.5"
+            className="flex-none whitespace-nowrap px-4 py-2.5"
             style={{
               font: '500 13px/1 var(--font-ui)',
               color: tab === t.key ? 'var(--accd)' : 'var(--ink3)',

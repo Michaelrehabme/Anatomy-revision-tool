@@ -6,6 +6,7 @@ import { ChangeRequestFilters, type ChangeRequestFilterState } from './ChangeReq
 import { ChangeRequestTable } from './ChangeRequestTable';
 import { ChangeRequestDetailPanel } from './ChangeRequestDetailPanel';
 import { NewChangeRequestForm } from './NewChangeRequestForm';
+import { ADMIN_PAGE_PAD, ADMIN_TITLE_STYLE } from '../shared/AdminMobile';
 import { Button } from '../../../anatomy-revision/components/shared/Button';
 
 const DEFAULT_FILTERS: ChangeRequestFilterState = { status: 'all', category: 'all', priority: 'all' };
@@ -45,23 +46,14 @@ export function ChangeRegisterPage() {
   };
 
   return (
-    <div className="px-16 pt-16 pb-16">
-      <div className="flex items-start justify-between gap-6">
+    <div className={ADMIN_PAGE_PAD}>
+      <div className="flex flex-wrap items-start justify-between gap-4 lg:gap-6">
         <div>
-          <h1
-            style={{
-              fontFamily: 'var(--font-display)',
-              fontWeight: 500,
-              fontSize: 40,
-              lineHeight: 1.05,
-              letterSpacing: '-.02em',
-              margin: 0,
-            }}
-          >
+          <h1 style={ADMIN_TITLE_STYLE}>
             Change Register
           </h1>
           <p className="mt-2 text-sm" style={{ color: 'var(--ink2)' }}>
-            {items.length} change request{items.length === 1 ? '' : 's'} · click a row to copy its prompt
+            {items.length} change request{items.length === 1 ? '' : 's'} · open a row to copy its prompt
           </p>
         </div>
         <Button onClick={() => setShowNewForm(true)} className="min-h-[44px] px-5">

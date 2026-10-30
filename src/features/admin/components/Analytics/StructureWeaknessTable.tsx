@@ -1,4 +1,6 @@
 import { REGION_LABELS } from '../../../anatomy-revision/types/region';
+import { useIsDesktop } from '../../../anatomy-revision/hooks/useIsDesktop';
+import { Facts, FoldList, FoldRow } from '../shared/AdminMobile';
 import type { StructureWeaknessRow } from '../../types/analytics';
 
 function formatDuration(ms: number | null): string {
@@ -20,11 +22,37 @@ function LearningDelta({ row }: { row: StructureWeaknessRow }) {
 }
 
 export function StructureWeaknessTable({ rows }: { rows: StructureWeaknessRow[] }) {
+  const isDesktop = useIsDesktop();
   if (rows.length === 0) {
     return (
       <div className="mt-10 text-sm" style={{ color: 'var(--ink3)' }}>
         No structures match these filters at the current attempt threshold.
       </div>
+    );
+  }
+
+  if (!isDesktop) {
+    return (
+      <FoldList className="mt-6">
+        {rows.map((row) => (
+          <FoldRow
+            key={row.structureId}
+            title={row.name}
+            aside={<span style={{ fontFamily: 'var(--font-mono)', color: row.accuracyPct < 60 ? 'var(--acc2d)' : 'var(--accd)' }}>{row.accuracyPct}%</span>}
+          >
+            <Facts
+              items={[
+                ['Region', REGION_LABELS[row.region]],
+                ['Attempts', row.totalAttempts],
+                ['First attempt', row.firstAttemptAccuracyPct !== null ? `${row.firstAttemptAccuracyPct}%` : '—'],
+                ['Trend', <LearningDelta row={row} />],
+                ['Users', row.distinctUsers],
+                ['Mean time', formatDuration(row.meanAnswerTimeMs)],
+              ]}
+            />
+          </FoldRow>
+        ))}
+      </FoldList>
     );
   }
 

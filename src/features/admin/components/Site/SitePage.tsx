@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { ADMIN_PAGE_PAD, ADMIN_TITLE_STYLE } from '../shared/AdminMobile';
 import { fetchSiteSettings, setMarketingHomeEnabled } from '../../../site/data/siteSettings';
 
 /**
@@ -39,17 +40,8 @@ export function SitePage() {
   }
 
   return (
-    <div style={{ maxWidth: 640 }}>
-      <h1
-        style={{
-          fontFamily: 'var(--font-display)',
-          fontWeight: 500,
-          fontSize: 30,
-          letterSpacing: '-.02em',
-          margin: 0,
-          color: 'var(--ink)',
-        }}
-      >
+    <div className={ADMIN_PAGE_PAD} style={{ maxWidth: 640 }}>
+      <h1 style={{ ...ADMIN_TITLE_STYLE, color: 'var(--ink)' }}>
         Site
       </h1>
 
