@@ -5,6 +5,7 @@ import type { Entitlement, FreeAreaChoice } from '../lib/entitlement';
 import { accessRecord, cohortIdOf, entitlementForDisplay, type StoredAccess } from '../lib/entitlementRecord';
 import { ownFullAccess } from '../../educator/lib/teachingAccess';
 import { parseStoredFreeArea } from '../lib/freeAreaRecord';
+import { syncSeenTours } from './tourRepository';
 
 /**
  * Reading what an account may reach off users/{uid} — and writing the ONE
@@ -43,6 +44,8 @@ export async function readAccess(uid: string): Promise<StoredAccess> {
   // 'estimate' so a choice written a moment ago, and not yet confirmed by the
   // server, reads with a date rather than with none.
   const user = snapshot.data({ serverTimestamps: 'estimate' }) as Record<string, unknown>;
+  // Which tours this account has seen rides along on the same read (data/tourRepository.ts).
+  syncSeenTours(user.toursSeen);
 
   // A student can hold both: their own subscription and a seat on their
   // university's licence. The licence is two documents the student is already

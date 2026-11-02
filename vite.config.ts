@@ -48,6 +48,8 @@ export const educatorDemoAliases = [
   // SDK and is loaded dynamically, so the leak would only appear the day
   // useEntitlement is wired into a gate -- long after whoever wired it.
   { find: /^.*\/data\/entitlementRepository$/, replacement: demoFile('entitlementRepository.demo.ts') },
+  // From the tour overlay on every main screen, and Account's "Replay the tours".
+  { find: /^.*\/data\/tourRepository$/, replacement: demoFile('tourRepository.demo.ts') },
   // And from App.tsx itself, which reads the marketing-page switch on load.
   { find: /^.*\/data\/siteSettings$/, replacement: demoFile('siteSettings.demo.ts') },
   // Screens import the guard as both './components/RequireEducator' and '../RequireEducator'.

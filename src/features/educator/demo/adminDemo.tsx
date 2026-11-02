@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { DEMO_COHORTS, DEMO_EDUCATOR_UID, demoStudentsInCohort } from './demoData';
+import { getRepository } from './repositoryDemo';
 import type { AdminUserProfile } from '../../admin/types/adminUser';
 import type { CurrentRole, RoleGrant, UserRole } from '../../roles/types';
 
@@ -48,6 +49,16 @@ const roles = new Map<string, UserRole>([
 ]);
 
 // --- usersRepository ---------------------------------------------------
+
+/**
+ * Stand-in for the server-side counts usersRepository asks Firestore for
+ * (28 Oct 2026). The demo has no server, so it counts the demo history, which
+ * is what the users page did before the counts existed.
+ */
+export async function countUserAttempts(uid: string): Promise<{ total: number; correct: number }> {
+  const attempts = await (await getRepository()).listAttempts({ userId: uid });
+  return { total: attempts.length, correct: attempts.filter((a) => a.correct).length };
+}
 
 export async function listUserProfiles(): Promise<AdminUserProfile[]> {
   return PEOPLE;

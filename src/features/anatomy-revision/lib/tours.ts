@@ -11,9 +11,11 @@
  * what a tour describes is conditional (the area select needs two areas, the
  * class panel needs a class, the weakest list needs a first session).
  *
- * Seen state is per device in localStorage, like the hints in
- * firstTimeHints.ts: it is about this person's familiarity with the screen,
- * and it must never cost a repository read.
+ * Seen state is kept in localStorage, which is what every check reads, and
+ * since 30 Oct 2026 on the account as well (data/tourRepository.ts), so a tour
+ * seen on a phone does not play again on a laptop. The account copy arrives
+ * with the profile the app already reads on open, so it never costs a read of
+ * its own.
  */
 
 const PREFIX = 'anatomy-revision:v1:tour:';
@@ -303,6 +305,22 @@ export function markTourSeen(key: TourKey): void {
   } catch {
     // Storage unavailable: shouldShowTour already says no.
   }
+}
+
+/**
+ * Folds the account's record into this device's: a tour seen anywhere is seen
+ * here. Returns the tours this device has seen that the account does not know
+ * about yet, which the caller writes up, so tours seen before the account
+ * kept a record are not shown again elsewhere.
+ */
+export function absorbSeenTours(stored: unknown): TourKey[] {
+  const onAccount = stored && typeof stored === 'object' ? (stored as Record<string, unknown>) : {};
+  const missing: TourKey[] = [];
+  for (const key of TOUR_KEYS) {
+    if (onAccount[key] === true) markTourSeen(key);
+    else if (!shouldShowTour(key)) missing.push(key);
+  }
+  return missing;
 }
 
 /** Account's "Replay tours": each screen's tour plays again on its next visit. */
