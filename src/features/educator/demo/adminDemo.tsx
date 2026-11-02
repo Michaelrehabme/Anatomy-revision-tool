@@ -68,11 +68,6 @@ export async function getUserProfile(uid: string): Promise<AdminUserProfile | nu
   return PEOPLE.find((p) => p.uid === uid) ?? null;
 }
 
-/** The demo keeps no attempt rows for the admin side to count. */
-export async function countUserAttempts(): Promise<{ total: number; correct: number }> {
-  return { total: 0, correct: 0 };
-}
-
 // --- rolesRepository ---------------------------------------------------
 
 export async function listRoles(): Promise<UserRole[]> {
