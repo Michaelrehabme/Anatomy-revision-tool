@@ -1,6 +1,6 @@
 {
  "schemaVersion": 1,
- "note": "Specific attachment sites for ligaments whose bone-level list another ligament shares (owner, 17 Oct 2026: 'if its sourced and there is no contesting evidence then im happy to include it'). Researched from Gray's 1918, open-access PubMed Central papers and Radiopaedia; every quote was checked against the page (Radiopaedia quotes re-checked live on 17 Oct). `flagged` lists what was not included and why. 18 Oct 2026: a second round (owner's PIP paper, Allison 2005; Kenhub; Gray's) and owner decisions moved 14 flagged sites into `included`; IMAIOS and Complete Anatomy were used to cross-check only, never cited. 19 Oct 2026: a third round sourced the sacral interspinous and posterior longitudinal sites and the external intercostal membrane's two sites; entries carry `added` so a diagnostic paper published earlier keeps the wording it was published with.",
+ "note": "Specific attachment sites for ligaments whose bone-level list another ligament shares (owner, 17 Oct 2026: 'if its sourced and there is no contesting evidence then im happy to include it'). Researched from Gray's 1918, open-access PubMed Central papers and Radiopaedia; every quote was checked against the page (Radiopaedia quotes re-checked live on 17 Oct). `flagged` lists what was not included and why. 18 Oct 2026: a second round (owner's PIP paper, Allison 2005; Kenhub; Gray's) and owner decisions moved 14 flagged sites into `included`; IMAIOS and Complete Anatomy were used to cross-check only, never cited. 19 Oct 2026: a third round sourced the sacral interspinous and posterior longitudinal sites and the external intercostal membrane's two sites; entries carry `added` so a diagnostic paper published earlier keeps the wording it was published with. 1 Nov 2026: a fourth round after student reports of ligament questions with too little to go on; the quotes came from the review record and three were re-read on the live page. A fifth round the same day, at the owner's request, covered clues that gave no side: 32 ligaments, from the quotes in the review record, with the long plantar, radiate carpal, costotransverse and ulnocapitate quotes read on the live page.",
  "included": {
   "anterior-talocalcaneal-ligament": {
    "talus": {
@@ -1230,6 +1230,553 @@
     "url": "https://www.bartleby.com/107/117.html ; https://www.kenhub.com/en/library/anatomy/external-intercostal-muscles",
     "quote": "Gray's: \"the anterior intercostal membranes, which are continued forward to the sternum\" | Kenhub: \"fills the remainder of the corresponding intercostal space from the costochondral junction to the sternum\"",
     "added": "2026-10-19"
+   }
+  },
+  "annular-ligament-of-radius": {
+   "ulna": {
+    "text": "anterior and posterior margins of the radial notch",
+    "source": "Annular ligament of radius, Wikipedia (text from Gray's Anatomy, public domain)",
+    "url": "https://en.wikipedia.org/wiki/Annular_ligament_of_radius",
+    "quote": "attached by both its ends to the anterior and posterior margins of the radial notch of the ulna",
+    "added": "2026-11-01"
+   }
+  },
+  "dorsal-intercarpal-ligaments": {
+   "scaphoid": {
+    "text": "dorsal groove of the scaphoid",
+    "source": "Radiopaedia, Dorsal intercarpal ligament",
+    "url": "https://radiopaedia.org/articles/dorsal-intercarpal-ligament",
+    "quote": "It runs from the dorsal tubercle of the triquetrum to the dorsal groove of the scaphoid.",
+    "added": "2026-11-01"
+   },
+   "triquetrum": {
+    "text": "dorsal tubercle of the triquetrum",
+    "source": "Radiopaedia, Dorsal intercarpal ligament",
+    "url": "https://radiopaedia.org/articles/dorsal-intercarpal-ligament",
+    "quote": "It runs from the dorsal tubercle of the triquetrum to the dorsal groove of the scaphoid.",
+    "added": "2026-11-01"
+   }
+  },
+  "dorsal-radiocarpal-ligament": {
+   "radius": {
+    "text": "dorsal rim of the radius",
+    "source": "Radiopaedia, Dorsal radiocarpal ligament",
+    "url": "https://radiopaedia.org/articles/dorsal-radiocarpal-ligament",
+    "quote": "connects the dorsal radial rim with the lunate and triquetral bone",
+    "added": "2026-11-01"
+   }
+  },
+  "inferior-pubic-ligament": {
+   "pubis": {
+    "text": "inferior pubic rami, below the symphysis",
+    "source": "Arcuate pubic ligament, Wikipedia",
+    "url": "https://en.wikipedia.org/wiki/Arcuate_pubic_ligament",
+    "quote": "laterally, it is attached to the inferior rami of the pubic bones",
+    "added": "2026-11-01"
+   }
+  },
+  "lateral-meniscus": {
+   "tibia": {
+    "text": "in front of and behind the intercondylar eminence",
+    "source": "Lateral meniscus, Wikipedia (text from Gray's Anatomy, public domain)",
+    "url": "https://en.wikipedia.org/wiki/Lateral_meniscus",
+    "quote": "Its anterior end is attached in front of the intercondyloid eminence of the tibia",
+    "added": "2026-11-01"
+   }
+  },
+  "popliteofibular-ligament": {
+   "head-of-fibula": {
+    "text": "posterior and medial part of the fibular styloid",
+    "source": "Popliteofibular ligament, Wikipedia",
+    "url": "https://en.wikipedia.org/wiki/Popliteofibular_ligament",
+    "quote": "to the posterior and medial portion of the fibular styloid",
+    "added": "2026-11-01"
+   }
+  },
+  "superior-transverse-scapular-ligament": {
+   "coracoid-process": {
+    "text": "base of the process; its other end is at the medial end of the scapular notch",
+    "source": "Superior transverse scapular ligament, Wikipedia (text from Gray's Anatomy, public domain)",
+    "url": "https://en.wikipedia.org/wiki/Superior_transverse_scapular_ligament",
+    "quote": "attached by one end to the base of the coracoid process and by the other to the medial end of the scapular notch",
+    "added": "2026-11-01"
+   }
+  },
+  "anterior-cruciate-ligament": {
+   "tibia": {
+    "text": "in front of the intercondylar eminence",
+    "source": "Anterior cruciate ligament, Wikipedia",
+    "url": "https://en.wikipedia.org/wiki/Anterior_cruciate_ligament",
+    "quote": "The ACL attaches in front of the intercondyloid eminence of the tibia",
+    "added": "2026-11-01"
+   },
+   "lateral-condyle-femur": {
+    "text": "deep within the femoral notch",
+    "source": "Anterior cruciate ligament, Wikipedia",
+    "url": "https://en.wikipedia.org/wiki/Anterior_cruciate_ligament",
+    "quote": "originates from deep within the notch of the distal femur",
+    "added": "2026-11-01"
+   }
+  },
+  "anterior-meniscotibial-ligament-lateral-meniscus": {
+   "tibia": {
+    "text": "in front of the intercondylar eminence, behind the ACL",
+    "source": "Lateral meniscus, Wikipedia",
+    "url": "https://en.wikipedia.org/wiki/Lateral_meniscus",
+    "quote": "Its anterior end is attached in front of the intercondyloid eminence of the tibia, lateral to, and behind, the anterior cruciate ligament",
+    "added": "2026-11-01"
+   }
+  },
+  "anterior-meniscotibial-ligament-medial-meniscus": {
+   "tibia": {
+    "text": "anterior intercondylar area, in front of the ACL",
+    "source": "Medial meniscus, Wikipedia",
+    "url": "https://en.wikipedia.org/wiki/Medial_meniscus",
+    "quote": "attached to the anterior intercondyloid fossa of the tibia, in front of the anterior cruciate ligament",
+    "added": "2026-11-01"
+   }
+  },
+  "arcuate-popliteal-ligament": {
+   "tibia": {
+    "text": "intercondylar area",
+    "source": "Arcuate popliteal ligament, Wikipedia",
+    "url": "https://en.wikipedia.org/wiki/Arcuate_popliteal_ligament",
+    "quote": "attaches to the intercondylar area of the tibia",
+    "added": "2026-11-01"
+   }
+  },
+  "costotransverse-ligament": {
+   "ribs": {
+    "text": "back of the neck of the rib",
+    "source": "Costotransverse ligament, Wikipedia",
+    "url": "https://en.wikipedia.org/wiki/Costotransverse_ligament",
+    "quote": "attaches at (the posterior aspect of) the neck of a rib",
+    "added": "2026-11-01"
+   },
+   "thoracic-vertebrae": {
+    "text": "front of the transverse process",
+    "source": "Costotransverse ligament, Wikipedia",
+    "url": "https://en.wikipedia.org/wiki/Costotransverse_ligament",
+    "quote": "at (the anterior aspect of) the transverse process of its corresponding vertebra",
+    "added": "2026-11-01"
+   }
+  },
+  "cuneometatarsal-interosseous-ligaments": {
+   "medial-cuneiform": {
+    "text": "lateral surface",
+    "source": "Tarsometatarsal joints, Wikipedia",
+    "url": "https://en.wikipedia.org/wiki/Tarsometatarsal_joints",
+    "quote": "passes from the lateral surface of the first cuneiform to the adjacent angle of the second metatarsal",
+    "added": "2026-11-01"
+   },
+   "metatarsals": {
+    "text": "adjacent angle of the second metatarsal",
+    "source": "Tarsometatarsal joints, Wikipedia",
+    "url": "https://en.wikipedia.org/wiki/Tarsometatarsal_joints",
+    "quote": "passes from the lateral surface of the first cuneiform to the adjacent angle of the second metatarsal",
+    "added": "2026-11-01"
+   }
+  },
+  "inferior-glenohumeral-ligament": {
+   "humerus": {
+    "text": "inferomedial part of the humeral neck",
+    "source": "Glenohumeral ligaments, Wikipedia",
+    "url": "https://en.wikipedia.org/wiki/Glenohumeral_ligaments",
+    "quote": "extending between the glenoid labrum and the inferomedial part of the humeral neck",
+    "added": "2026-11-01"
+   }
+  },
+  "inferior-transverse-scapular-ligament": {
+   "spine-of-scapula": {
+    "text": "lateral part of the spine",
+    "source": "Radiopaedia, Spinoglenoid ligament",
+    "url": "https://radiopaedia.org/articles/spinoglenoid-ligament",
+    "quote": "runs from the lateral scapular spine to the posterior glenoid",
+    "added": "2026-11-01"
+   },
+   "glenoid-cavity": {
+    "text": "posterior glenoid",
+    "source": "Radiopaedia, Spinoglenoid ligament",
+    "url": "https://radiopaedia.org/articles/spinoglenoid-ligament",
+    "quote": "runs from the lateral scapular spine to the posterior glenoid",
+    "added": "2026-11-01"
+   }
+  },
+  "intra-articular-ligament-of-head-of-rib": {
+   "ribs": {
+    "text": "crest of the head of the rib",
+    "source": "Intra-articular ligament of head of rib, Wikipedia",
+    "url": "https://en.wikipedia.org/wiki/Intra-articular_ligament_of_head_of_rib",
+    "quote": "It joins the crest of head of rib",
+    "added": "2026-11-01"
+   }
+  },
+  "long-plantar-ligament": {
+   "calcaneus": {
+    "text": "plantar aspect, posterior to anterior tubercle",
+    "source": "Radiopaedia, Long plantar ligament",
+    "url": "https://radiopaedia.org/articles/long-plantar-ligament",
+    "quote": "from the posterior tubercle to the anterior tubercle of the calcaneus on the plantar aspect",
+    "added": "2026-11-01"
+   },
+   "cuboid": {
+    "text": "posterior cuboid ridge",
+    "source": "Radiopaedia, Long plantar ligament",
+    "url": "https://radiopaedia.org/articles/long-plantar-ligament",
+    "quote": "has its deeper insertion on the posterior cuboid ridge",
+    "added": "2026-11-01"
+   },
+   "metatarsals": {
+    "text": "bases of the 2nd to 4th or 5th metatarsals",
+    "source": "Radiopaedia, Long plantar ligament",
+    "url": "https://radiopaedia.org/articles/long-plantar-ligament",
+    "quote": "its superficial insertion to the bases of the 2nd to 4th or 5th metatarsals",
+    "added": "2026-11-01"
+   }
+  },
+  "medial-meniscus": {
+   "tibia": {
+    "text": "anterior and posterior intercondylar areas",
+    "source": "Medial meniscus, Wikipedia",
+    "url": "https://en.wikipedia.org/wiki/Medial_meniscus",
+    "quote": "attached to the anterior intercondyloid fossa of the tibia, in front of the anterior cruciate ligament ... Its posterior end is fixed to the posterior intercondyloid fossa of the tibia",
+    "added": "2026-11-01"
+   }
+  },
+  "middle-glenohumeral-ligament": {
+   "glenoid-cavity": {
+    "text": "anterosuperior glenoid",
+    "source": "Radiopaedia, Glenohumeral ligaments",
+    "url": "https://radiopaedia.org/articles/glenohumeral-ligaments",
+    "quote": "runs from the anterosuperior glenoid, arising just inferior to the superior GHL",
+    "added": "2026-11-01"
+   },
+   "lesser-tubercle-humerus": {
+    "text": "base of the lesser tubercle",
+    "source": "Radiopaedia, Glenohumeral ligaments",
+    "url": "https://radiopaedia.org/articles/glenohumeral-ligaments",
+    "quote": "below the superior GHL attachment at the base of the lesser tubercle",
+    "added": "2026-11-01"
+   }
+  },
+  "pisotriquetral-ligament": {
+   "pisiform": {
+    "text": "dorsal aspect",
+    "source": "WikiSM, Pisotriquetral ligament",
+    "url": "https://wikism.org/Pisotriquetral_Ligament",
+    "quote": "Joins the dorsal aspect of the pisiform to the triquetrum",
+    "added": "2026-11-01"
+   }
+  },
+  "plantar-fascia": {
+   "metatarsals": {
+    "text": "heads of the metatarsals",
+    "source": "Plantar fascia, Wikipedia",
+    "url": "https://en.wikipedia.org/wiki/Plantar_fascia",
+    "quote": "It runs from the tuberosity of the calcaneus (heel bone) forward to the heads of the metatarsal bones",
+    "added": "2026-11-01"
+   }
+  },
+  "plantar-interphalangeal-ligaments": {
+   "phalanges-proximal-foot": {
+    "text": "plantar side of the joint",
+    "source": "Interphalangeal joints of the foot, Wikipedia",
+    "url": "https://en.wikipedia.org/wiki/Interphalangeal_joints_of_the_foot",
+    "quote": "each has a plantar (underside) and two collateral ligaments",
+    "added": "2026-11-01"
+   },
+   "phalanges-middle-foot": {
+    "text": "plantar side of the joint",
+    "source": "Interphalangeal joints of the foot, Wikipedia",
+    "url": "https://en.wikipedia.org/wiki/Interphalangeal_joints_of_the_foot",
+    "quote": "each has a plantar (underside) and two collateral ligaments",
+    "added": "2026-11-01"
+   },
+   "phalanges-distal-foot": {
+    "text": "plantar side of the joint",
+    "source": "Interphalangeal joints of the foot, Wikipedia",
+    "url": "https://en.wikipedia.org/wiki/Interphalangeal_joints_of_the_foot",
+    "quote": "each has a plantar (underside) and two collateral ligaments",
+    "added": "2026-11-01"
+   }
+  },
+  "posterior-cruciate-ligament": {
+   "tibia": {
+    "text": "posterior intercondylar area",
+    "source": "Posterior cruciate ligament, Wikipedia",
+    "url": "https://en.wikipedia.org/wiki/Posterior_cruciate_ligament",
+    "quote": "arises from the posterior intercondylar area of the tibia",
+    "added": "2026-11-01"
+   },
+   "medial-condyle-femur": {
+    "text": "front of its lateral surface",
+    "source": "Posterior cruciate ligament, Wikipedia",
+    "url": "https://en.wikipedia.org/wiki/Posterior_cruciate_ligament",
+    "quote": "on the anterior part of the lateral surface of the medial femoral condyle",
+    "added": "2026-11-01"
+   }
+  },
+  "posterior-tibiotalar-ligament": {
+   "medial-malleolus": {
+    "text": "posterior colliculus",
+    "source": "Deltoid ligament, Wikipedia",
+    "url": "https://en.wikipedia.org/wiki/Deltoid_ligament",
+    "quote": "from the posterior colliculus of the medial malleolus to the posteromedial surface of the talus",
+    "added": "2026-11-01"
+   },
+   "talus": {
+    "text": "posteromedial surface",
+    "source": "Deltoid ligament, Wikipedia",
+    "url": "https://en.wikipedia.org/wiki/Deltoid_ligament",
+    "quote": "from the posterior colliculus of the medial malleolus to the posteromedial surface of the talus",
+    "added": "2026-11-01"
+   }
+  },
+  "radial-collateral-ligament-of-wrist-joint": {
+   "radial-styloid-process": {
+    "text": "tip of the styloid process",
+    "source": "Radial collateral ligament of wrist joint, Wikipedia",
+    "url": "https://en.wikipedia.org/wiki/Radial_collateral_ligament_of_wrist_joint",
+    "quote": "extends from the tip of the styloid process of the radius",
+    "added": "2026-11-01"
+   },
+   "scaphoid": {
+    "text": "radial side",
+    "source": "Radial collateral ligament of wrist joint, Wikipedia",
+    "url": "https://en.wikipedia.org/wiki/Radial_collateral_ligament_of_wrist_joint",
+    "quote": "attaches to the radial side of the scaphoid",
+    "added": "2026-11-01"
+   },
+   "trapezium": {
+    "text": "lateral side",
+    "source": "Radial collateral ligament of wrist joint, Wikipedia",
+    "url": "https://en.wikipedia.org/wiki/Radial_collateral_ligament_of_wrist_joint",
+    "quote": "some fibres extend to the lateral side of the trapezium",
+    "added": "2026-11-01"
+   }
+  },
+  "radiate-carpal-ligament": {
+   "capitate": {
+    "text": "palmar surface, where the bands fan out from",
+    "source": "Radiate carpal ligament, Wikipedia",
+    "url": "https://en.wikipedia.org/wiki/Radiate_carpal_ligament",
+    "quote": "diverge in all directions on the palmar surface of the carpal bones",
+    "added": "2026-11-01"
+   },
+   "scaphoid": {
+    "text": "palmar surface",
+    "source": "Radiate carpal ligament, Wikipedia",
+    "url": "https://en.wikipedia.org/wiki/Radiate_carpal_ligament",
+    "quote": "diverge in all directions on the palmar surface of the carpal bones",
+    "added": "2026-11-01"
+   },
+   "lunate": {
+    "text": "palmar surface",
+    "source": "Radiate carpal ligament, Wikipedia",
+    "url": "https://en.wikipedia.org/wiki/Radiate_carpal_ligament",
+    "quote": "diverge in all directions on the palmar surface of the carpal bones",
+    "added": "2026-11-01"
+   },
+   "triquetrum": {
+    "text": "palmar surface",
+    "source": "Radiate carpal ligament, Wikipedia",
+    "url": "https://en.wikipedia.org/wiki/Radiate_carpal_ligament",
+    "quote": "diverge in all directions on the palmar surface of the carpal bones",
+    "added": "2026-11-01"
+   }
+  },
+  "radiate-ligament-of-head-of-rib": {
+   "ribs": {
+    "text": "anterior surface of the rib head",
+    "source": "Radiate ligament of head of rib, Wikipedia",
+    "url": "https://en.wikipedia.org/wiki/Radiate_ligament_of_head_of_rib",
+    "quote": "span from the anterior surface of each rib heads to the adjacent vertebral bodies and intervertebral disc",
+    "added": "2026-11-01"
+   }
+  },
+  "radiocapitate-ligament": {
+   "capitate": {
+    "text": "palmar aspect",
+    "source": "WikiSM, Radioscaphocapitate ligament",
+    "url": "https://wikism.org/Radioscaphocapitate_Ligament",
+    "quote": "courses distally and ulnarly to insert onto the palmar aspect of the capitate",
+    "added": "2026-11-01"
+   }
+  },
+  "radioscaphocapitate-ligament": {
+   "scaphoid": {
+    "text": "distal aspect",
+    "source": "WikiSM, Radioscaphocapitate ligament",
+    "url": "https://wikism.org/Radioscaphocapitate_Ligament",
+    "quote": "Inserts on distal aspect of scaphoid, proximal capitate",
+    "added": "2026-11-01"
+   },
+   "capitate": {
+    "text": "proximal part",
+    "source": "WikiSM, Radioscaphocapitate ligament",
+    "url": "https://wikism.org/Radioscaphocapitate_Ligament",
+    "quote": "Inserts on distal aspect of scaphoid, proximal capitate",
+    "added": "2026-11-01"
+   }
+  },
+  "sacrospinous-ligament": {
+   "sacrum": {
+    "text": "anterior sacrum (S2-S4)",
+    "source": "Radiopaedia, Sacrospinous ligament",
+    "url": "https://radiopaedia.org/articles/sacrospinous-ligament",
+    "quote": "its base attached to the anterior sacrum (S2-S4) and coccyx, and its apex attached to the ischial spine",
+    "added": "2026-11-01"
+   },
+   "ischium": {
+    "text": "ischial spine",
+    "source": "Radiopaedia, Sacrospinous ligament",
+    "url": "https://radiopaedia.org/articles/sacrospinous-ligament",
+    "quote": "its base attached to the anterior sacrum (S2-S4) and coccyx, and its apex attached to the ischial spine",
+    "added": "2026-11-01"
+   }
+  },
+  "sacrotuberous-ligament": {
+   "sacrum": {
+    "text": "lower transverse tubercles and inferior margin",
+    "source": "Sacrotuberous ligament, Wikipedia",
+    "url": "https://en.wikipedia.org/wiki/Sacrotuberous_ligament",
+    "quote": "It runs from the sacrum (the lower transverse sacral tubercles, the inferior margins sacrum and the upper coccyx) to the tuberosity of the ischium",
+    "added": "2026-11-01"
+   }
+  },
+  "scaphocapitate-ligament": {
+   "scaphoid": {
+    "text": "distal pole",
+    "source": "Radiopaedia, Scaphocapitate ligament",
+    "url": "https://radiopaedia.org/articles/scaphocapitate-ligament",
+    "quote": "attached proximally on the distal pole of the scaphoid and distally on the palmar cortex of the capitate",
+    "added": "2026-11-01"
+   },
+   "capitate": {
+    "text": "palmar cortex",
+    "source": "Radiopaedia, Scaphocapitate ligament",
+    "url": "https://radiopaedia.org/articles/scaphocapitate-ligament",
+    "quote": "attached proximally on the distal pole of the scaphoid and distally on the palmar cortex of the capitate",
+    "added": "2026-11-01"
+   }
+  },
+  "scapholunate-interosseous-ligament": {
+   "scaphoid": {
+    "text": "proximal aspect",
+    "source": "Skeletal Radiology 2010 (open access, PMC)",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC2895879/",
+    "quote": "connecting the proximal aspects of the scaphoid and lunate",
+    "added": "2026-11-01"
+   },
+   "lunate": {
+    "text": "proximal aspect",
+    "source": "Skeletal Radiology 2010 (open access, PMC)",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC2895879/",
+    "quote": "connecting the proximal aspects of the scaphoid and lunate",
+    "added": "2026-11-01"
+   }
+  },
+  "scaphotrapeziotrapezoidal-ligament": {
+   "scaphoid": {
+    "text": "distal pole",
+    "source": "WikiSM, Scaphotrapeziotrapezoid ligament",
+    "url": "https://wikism.org/Scaphotrapeziotrapezoid_Ligament",
+    "quote": "Originates at the radial/ulnar surfaces of the distal pole of the scaphoid",
+    "added": "2026-11-01"
+   },
+   "trapezium": {
+    "text": "palmar (volar) and radial surfaces",
+    "source": "WikiSM, Scaphotrapeziotrapezoid ligament",
+    "url": "https://wikism.org/Scaphotrapeziotrapezoid_Ligament",
+    "quote": "Inserts distally at the volar/radial surfaces off the trapezium, volar surface of the trapezoid",
+    "added": "2026-11-01"
+   },
+   "trapezoid": {
+    "text": "palmar (volar) surface",
+    "source": "WikiSM, Scaphotrapeziotrapezoid ligament",
+    "url": "https://wikism.org/Scaphotrapeziotrapezoid_Ligament",
+    "quote": "Inserts distally at the volar/radial surfaces off the trapezium, volar surface of the trapezoid",
+    "added": "2026-11-01"
+   }
+  },
+  "superior-glenohumeral-ligament": {
+   "glenoid-cavity": {
+    "text": "superior aspect of the glenoid",
+    "source": "Radiopaedia, Glenohumeral ligaments",
+    "url": "https://radiopaedia.org/articles/glenohumeral-ligaments",
+    "quote": "runs from the superior aspect of the glenoid and coracoid process to the superior part of the lesser tubercle of the humerus",
+    "added": "2026-11-01"
+   },
+   "lesser-tubercle-humerus": {
+    "text": "superior part of the lesser tubercle",
+    "source": "Radiopaedia, Glenohumeral ligaments",
+    "url": "https://radiopaedia.org/articles/glenohumeral-ligaments",
+    "quote": "runs from the superior aspect of the glenoid and coracoid process to the superior part of the lesser tubercle of the humerus",
+    "added": "2026-11-01"
+   }
+  },
+  "superior-pubic-ligament": {
+   "pubis": {
+    "text": "across the top, joining the two pubic bones",
+    "source": "Superior pubic ligament, Wikipedia",
+    "url": "https://en.wikipedia.org/wiki/Superior_pubic_ligament",
+    "quote": "connects together the two pubic bones superiorly",
+    "added": "2026-11-01"
+   },
+   "pubic-tubercle": {
+    "text": "reached laterally",
+    "source": "Superior pubic ligament, Wikipedia",
+    "url": "https://en.wikipedia.org/wiki/Superior_pubic_ligament",
+    "quote": "extending laterally as far as the pubic tubercles",
+    "added": "2026-11-01"
+   }
+  },
+  "triquetrocapitate-ligament": {
+   "triquetrum": {
+    "text": "distal and radial corner",
+    "source": "Radiopaedia, Triquetrocapitate ligament",
+    "url": "https://radiopaedia.org/articles/triquetrocapitate-ligament",
+    "quote": "attaches proximally to the triquetrum at its distal and radial corner",
+    "added": "2026-11-01"
+   },
+   "capitate": {
+    "text": "ulnar side",
+    "source": "Radiopaedia, Triquetrocapitate ligament",
+    "url": "https://radiopaedia.org/articles/triquetrocapitate-ligament",
+    "quote": "distally at the ulnar side of the capitate",
+    "added": "2026-11-01"
+   }
+  },
+  "ulnar-collateral-ligament-of-wrist-joint": {
+   "ulnar-styloid-process": {
+    "text": "end of the styloid process",
+    "source": "Ulnar carpal collateral ligament, Wikipedia",
+    "url": "https://en.wikipedia.org/wiki/Ulnar_carpal_collateral_ligament",
+    "quote": "attached above to the end of the styloid process of the ulna",
+    "added": "2026-11-01"
+   },
+   "triquetrum": {
+    "text": "medial side",
+    "source": "Ulnar carpal collateral ligament, Wikipedia",
+    "url": "https://en.wikipedia.org/wiki/Ulnar_carpal_collateral_ligament",
+    "quote": "one of which is attached to the medial side of the triquetral bone",
+    "added": "2026-11-01"
+   }
+  },
+  "ulnocapitate-ligament": {
+   "ulna": {
+    "text": "fovea of the ulnar head",
+    "source": "Radiopaedia, Ulnocapitate ligament",
+    "url": "https://radiopaedia.org/articles/ulnocapitate-ligament",
+    "quote": "originates directly at the fovea of the ulnar head",
+    "added": "2026-11-01"
+   },
+   "capitate": {
+    "text": "body of the capitate",
+    "source": "Radiopaedia, Ulnocapitate ligament",
+    "url": "https://radiopaedia.org/articles/ulnocapitate-ligament",
+    "quote": "Distally ulnocapitate ligament inserts onto the body of the capitate",
+    "added": "2026-11-01"
    }
   }
  },

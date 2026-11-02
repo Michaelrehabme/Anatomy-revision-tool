@@ -185,6 +185,19 @@ const SOLE_MUSCLES = new Set([
   'flexor-digiti-minimi-brevis-foot', 'opponens-digiti-minimi-foot', 'plantar-interossei',
 ]);
 
+/**
+ * A leg muscle that ends under the foot gets the view from below too, with the
+ * sole taken off that view only (`tiltHide`; the turntable keeps its layers).
+ * The peroneus longus tendon crosses the sole deep to all of it, so no angle
+ * showed where it inserts (student report, 1 Nov 2026).
+ */
+const UNDER_THE_SOLE: Record<string, string[]> = {
+  'peroneus-longus': [
+    ...SOLE_MUSCLES,
+    'flexor-digitorum-longus', 'flexor-hallucis-longus', 'tibialis-posterior',
+  ],
+};
+
 const CUTAWAY: Record<string, string[]> = {
   'rectus-abdominis': ['internal-oblique', 'transversus-abdominis'],
   // The same sheet, one layer down: the transversus is modelled with its
@@ -306,7 +319,8 @@ for (const m of mapping) {
     ...(CUTAWAY[m.id] ? { hide: CUTAWAY[m.id] } : {}),
     minFrame: MIN_FRAME[subregion],
     angles: ANGLES,
-    ...(SOLE_MUSCLES.has(m.id) ? { tilts: SOLE_TILTS } : {}),
+    ...(SOLE_MUSCLES.has(m.id) || UNDER_THE_SOLE[m.id] ? { tilts: SOLE_TILTS } : {}),
+    ...(UNDER_THE_SOLE[m.id] ? { tiltHide: UNDER_THE_SOLE[m.id] } : {}),
   });
 }
 
@@ -355,7 +369,7 @@ ${missed.length} muscle(s) with no hotspot on the region plates are still at dep
   for (const e of missed) console.error(`  ${e.key}`);
   process.exit(1);
 }
-const unknown = [...Object.keys(DEPTH), ...Object.keys(CUTAWAY), ...Object.values(CUTAWAY).flat()]
+const unknown = [...Object.keys(DEPTH), ...Object.keys(CUTAWAY), ...Object.values(CUTAWAY).flat(), ...Object.values(UNDER_THE_SOLE).flat()]
   .filter((id) => !entries.some((e) => e.key === id));
 if (unknown.length > 0) {
   console.error(`

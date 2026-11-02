@@ -1,3 +1,5 @@
+import { siteWithoutBone } from '../attachmentSites';
+import { STRUCTURE_INDEX_BY_ID } from '../../data/structureIndex';
 import { isMuscle } from '../../types/structure';
 import type { AnatomyStructure } from '../../types/structure';
 import type { FactMastery } from '../../types/attempt';
@@ -269,14 +271,19 @@ function buildTyped(
 ): OinaTypedQuestion {
   const raws = rawValuesFor(muscle, promptKind);
   const multiple = correctValues.length > 1;
-  const slots = correctValues.map((value, index) => ({
-    // The label states the count. With 104 of 122 insertions having a single
-    // value, a student who sees two boxes should read that as the shape of the
-    // answer, not as a trick.
-    label: multiple ? `${FACT_NOUN[promptKind]} ${index + 1} of ${correctValues.length}` : FACT_NOUN[promptKind],
-    accepted: acceptedVariantsFor(promptKind, raws.get(value) ?? display(value), limbOfStructure(muscle)),
-    ...(isBloodFactKind(promptKind) ? { strict: true } : {}),
-  }));
+  const slots = correctValues.map((value, index) => {
+    const accepted = acceptedVariantsFor(promptKind, raws.get(value) ?? display(value), limbOfStructure(muscle));
+    const withoutBone = accepted.flatMap((form) => siteWithoutBone(form, STRUCTURE_INDEX_BY_ID) ?? []);
+    return {
+      // The label states the count. With 104 of 122 insertions having a single
+      // value, a student who sees two boxes should read that as the shape of the
+      // answer, not as a trick.
+      label: multiple ? `${FACT_NOUN[promptKind]} ${index + 1} of ${correctValues.length}` : FACT_NOUN[promptKind],
+      accepted,
+      ...(withoutBone.length ? { withoutBone } : {}),
+      ...(isBloodFactKind(promptKind) ? { strict: true } : {}),
+    };
+  });
 
   return {
     ...baseFields(muscle, promptKind),

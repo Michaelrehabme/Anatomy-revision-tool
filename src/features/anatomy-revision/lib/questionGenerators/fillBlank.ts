@@ -3,6 +3,8 @@ import type { AnatomyStructure } from '../../types/structure';
 import type { FillBlankQuestion, PromptKind } from '../../types/question';
 import { parseBlank } from './blankParser';
 import { answerItems } from '../answerMatching';
+import { ownBoneNames, siteWithoutBone, withBone } from '../attachmentSites';
+import { STRUCTURE_INDEX_BY_ID } from '../../data/structureIndex';
 import type { Rng } from '../rng';
 import { questionBase } from './questionBase';
 
@@ -16,6 +18,14 @@ const words = (text: string) =>
     .replace(/\([^)]*\)/g, ' ')
     .split(/[^a-z0-9]+/)
     .filter(Boolean);
+
+/** What a student may add to an answer about this structure: its own bone. */
+function ownBonesOf(structure: AnatomyStructure): string[] {
+  if (isLandmark(structure)) return ownBoneNames(structure, STRUCTURE_INDEX_BY_ID);
+  if (!isBone(structure)) return [];
+  const names = [structure.name, ...structure.aliases].map((n) => n.replace(/\s*\([^)]*\)/g, '').trim().toLowerCase());
+  return structure.id === 'pelvis' ? [...names, 'hip bone'] : names;
+}
 
 function buildFor(
   structure: AnatomyStructure,
@@ -58,9 +68,27 @@ function buildFor(
       if (!answers.some((have) => have.toLowerCase() === item.toLowerCase())) answers.push(item);
     }
     const [first] = same;
-    if (answers.length < 2) return first;
-    return { ...first, answer: answers.join(', '), fullStatement: same.map((q) => q.fullStatement).join('\n'), answers };
+    const alsoAccepted = alsoAcceptedFor(structure, answers.length ? answers : [first.answer]);
+    if (answers.length < 2) return { ...first, alsoAccepted };
+    return { ...first, answer: answers.join(', '), fullStatement: same.map((q) => q.fullStatement).join('\n'), answers, alsoAccepted };
   });
+}
+
+const LANDMARK_BY_NAME = new Map(
+  [...STRUCTURE_INDEX_BY_ID.values()].filter((s) => s.category === 'landmark').map((s) => [s.name.replace(/\s*\([^)]*\)/g, '').toLowerCase(), s]),
+);
+
+/** Each answer with the bone of the subject, or its own bone if it is a landmark, said or left off. */
+function alsoAcceptedFor(structure: AnatomyStructure, answers: string[]): Record<string, string[]> {
+  const subjectBones = ownBonesOf(structure);
+  return Object.fromEntries(
+    answers.map((answer) => {
+      const short = siteWithoutBone(answer, STRUCTURE_INDEX_BY_ID);
+      const named = LANDMARK_BY_NAME.get(answer.toLowerCase().replace(/\bthe\s+/g, '')) ?? LANDMARK_BY_NAME.get((short ?? answer).toLowerCase());
+      const bones = [...new Set([...subjectBones, ...(named ? ownBoneNames(named, STRUCTURE_INDEX_BY_ID) : [])])];
+      return [answer, [...(short ? [short, ...withBone(short, bones)] : []), ...withBone(answer, bones)]];
+    }),
+  );
 }
 
 /**

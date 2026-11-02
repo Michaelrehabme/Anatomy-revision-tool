@@ -4,6 +4,7 @@ import { ALL_STRUCTURES } from '../../data/seed';
 import { LIGAMENT_ATTACHMENT_DETAIL } from '../../data/ligamentAttachmentDetail';
 import { isLigament, reviewedAttachmentIds } from '../../types/structure';
 import { buildMcqQuestions } from '../questionGenerators/mcq';
+import { ligamentPromptLines } from '../questionGenerators/ligamentClue';
 import { buildIndexes } from '../indexes';
 import { createRng } from '../rng';
 import { ALL_IMAGES } from '../../data/seed';
@@ -50,5 +51,40 @@ describe('specific attachment sites', () => {
   it('now asks most ligaments by name', () => {
     const asked = ALL_STRUCTURES.filter(isLigament).filter((l) => l.eligibility.identifyByAttachments);
     expect(asked.length).toBeGreaterThan(140);
+  });
+});
+
+describe('clues with enough to go on (student reports, 1 Nov 2026)', () => {
+  const sites = new Map(ALL_STRUCTURES.map((s) => [s.id, s]));
+  const clue = (id: string) => ligamentPromptLines(sites.get(id)!, sites)?.join(' | ') ?? '';
+
+  it('gives both ends of the superior transverse scapular ligament', () => {
+    expect(clue('superior-transverse-scapular-ligament')).toContain('medial end of the scapular notch');
+  });
+
+  it('says which side of the carpus the dorsal intercarpal ligament is on', () => {
+    expect(clue('dorsal-intercarpal-ligaments')).toContain('dorsal tubercle of the triquetrum');
+    expect(clue('dorsal-intercarpal-ligaments')).toContain('dorsal groove of the scaphoid');
+  });
+
+  it('takes the dorsal scaphotriquetral ligament as the same ligament', () => {
+    expect(sites.has('dorsal-scaphotriquetral-ligament')).toBe(false);
+    expect(sites.get('dorsal-intercarpal-ligaments')!.aliases).toContain('Dorsal scaphotriquetral ligament');
+  });
+
+  it.each([
+    ['anterior-cruciate-ligament', 'in front of the intercondylar eminence'],
+    ['posterior-cruciate-ligament', 'posterior intercondylar area'],
+    ['long-plantar-ligament', 'plantar aspect'],
+    ['radiocapitate-ligament', 'palmar aspect'],
+    ['superior-glenohumeral-ligament', 'superior aspect of the glenoid'],
+    ['middle-glenohumeral-ligament', 'anterosuperior glenoid'],
+  ])('says where %s is: %s', (id, part) => {
+    expect(clue(id)).toContain(part);
+  });
+
+  it('leaves a paper published before them as it was', () => {
+    const before = ligamentPromptLines(sites.get('superior-transverse-scapular-ligament')!, sites, '2026-10-17');
+    expect(before).toEqual(['Attaches to: Coracoid Process of the scapula']);
   });
 });

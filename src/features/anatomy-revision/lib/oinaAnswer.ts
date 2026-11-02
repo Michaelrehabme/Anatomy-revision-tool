@@ -71,7 +71,9 @@ export function normalizeForGrading(value: string): string {
     .replace(/[^a-z0-9-]+/g, ' ')
     .replace(/\s+/g, ' ')
     .trim()
-    .replace(/^(the|a|an)\s+/, '');
+    .replace(/^(the|a|an)\s+/, '')
+    // One word for one thing, so it counts as the one spare word a student has.
+    .replace(/\bhip bones?\b/g, 'pelvis');
 }
 
 /** Normalised content tokens. Hyphens are kept inside a token so "c7-t12" stays one identifier. */
@@ -189,6 +191,11 @@ export function acceptedVariantsFor(promptKind: PromptKind, raw: string, limb?: 
     add(canonical);
     const withoutParens = canonical.replace(/\s*\([^)]*\)/g, '');
     add(withoutParens);
+    // How it gets there is not where it inserts: "Tibial tuberosity via the
+    // patellar tendon" is answered by "tibial tuberosity".
+    add(withoutParens.replace(/\s+via\s+.*$/i, ''));
+    // Named in the key's own bracket, so it is the key's answer too.
+    if (/gerdy/i.test(raw)) add("Gerdy's tubercle");
     for (const match of canonical.matchAll(/\(([^)]*)\)/g)) {
       // Only an abbreviation stands alone as an answer ("ASIS", "ITB"); a prose
       // gloss like "(between the anterior and posterior gluteal lines)" does not.
@@ -274,6 +281,13 @@ function arteryForms(raw: string): string[] {
 export interface TypedSlot {
   label: string;
   accepted: string[];
+  /**
+   * The answer with its bone left off (attachmentSites.siteWithoutBone), which
+   * takes no extra words: "lesser trochanter" answers "Lesser trochanter of the
+   * femur", and "medial condyle of femur" still does not answer "Medial condyle
+   * of the tibia" (student report, 1 Nov 2026).
+   */
+  withoutBone?: string[];
   /** No extra words allowed (matchesSlot) — set on artery slots. */
   strict?: boolean;
 }
@@ -304,7 +318,7 @@ export function gradeTypedSlots(inputs: string[], slots: TypedSlot[]): TypedGrad
     let found: number | null = null;
     for (let i = 0; i < inputs.length; i++) {
       if (usedInput.has(i) || !inputs[i]?.trim()) continue;
-      if (matchesSlot(inputs[i], slot.accepted, slot.strict)) {
+      if (matchesSlot(inputs[i], slot.accepted, slot.strict) || matchesSlot(inputs[i], slot.withoutBone ?? [], true)) {
         found = i;
         usedInput.add(i);
         break;

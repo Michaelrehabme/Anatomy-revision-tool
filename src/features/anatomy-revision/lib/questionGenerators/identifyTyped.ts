@@ -1,4 +1,4 @@
-import { isLigament, reviewedAttachmentIds } from '../../types/structure';
+import { isLandmark, isLigament, reviewedAttachmentIds } from '../../types/structure';
 import { structureNameVariants } from '../nameVariants';
 import type { AnatomyStructure } from '../../types/structure';
 import type { StructureIndexEntry } from '../../types/structureIndex';
@@ -6,7 +6,7 @@ import type { AnatomyImageAsset } from '../../types/image';
 import type { TypedIdentifyQuestion } from '../../types/question';
 import { summarizeStructure } from '../facts';
 import { promptImagesFor } from './promptImages';
-import { siteLabel } from '../attachmentSites';
+import { namesWithBone, siteLabel } from '../attachmentSites';
 import { questionBase } from './questionBase';
 import { ligamentPromptLines } from './ligamentClue';
 
@@ -89,6 +89,13 @@ export function buildIdentifyTypedQuestions(
         })
       : [];
 
+    // A landmark may be typed with its bone or without it (namesWithBone).
+    // The bone alone is still not the answer.
+    const acceptedAnswers = structureNameVariants(
+      structure.name,
+      isLandmark(structure) ? [...structure.aliases, siteLabel(structure, byId), ...namesWithBone(structure, byId)] : structure.aliases,
+    );
+
     // One per turntable, on the plate framed for this structure (promptImages.ts).
     for (const image of promptImagesFor(structure, images)) {
       questions.push({
@@ -97,7 +104,7 @@ export function buildIdentifyTypedQuestions(
         id: `identify-typed-${structure.id}-${image.id}`,
         prompt: image.mode === 'atlas-slide' ? 'Which structure is highlighted?' : 'Which structure is shown?',
         promptImageId: image.id,
-        acceptedAnswers: structureNameVariants(structure.name, structure.aliases),
+        acceptedAnswers,
         ...(attachmentSlots.length ? { attachmentSlots } : {}),
         explanation: summarizeStructure(structure, byId),
       });

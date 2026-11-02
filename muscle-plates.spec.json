@@ -2854,6 +2854,27 @@
     270,
     300,
     330
+   ],
+   "tilts": [
+    [
+     0,
+     -90
+    ]
+   ],
+   "tiltHide": [
+    "abductor-hallucis",
+    "flexor-digitorum-brevis",
+    "abductor-digiti-minimi-foot",
+    "quadratus-plantae",
+    "lumbricals-foot",
+    "flexor-hallucis-brevis",
+    "adductor-hallucis",
+    "flexor-digiti-minimi-brevis-foot",
+    "opponens-digiti-minimi-foot",
+    "plantar-interossei",
+    "flexor-digitorum-longus",
+    "flexor-hallucis-longus",
+    "tibialis-posterior"
    ]
   },
   {

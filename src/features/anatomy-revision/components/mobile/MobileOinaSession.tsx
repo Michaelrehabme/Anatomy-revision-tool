@@ -6,6 +6,7 @@ import type { OinaQuestion, OinaSelectQuestion, OinaTypedQuestion } from '../../
 import type { Confidence } from '../../types/attempt';
 import { scoreMultiSelect } from '../../lib/multiSelectScoring';
 import { gradeTypedSlots } from '../../lib/oinaAnswer';
+import { notePendingAnswer } from '../../../feedback/data/pendingAnswer';
 import { ConfidenceButtons } from '../shared/ConfidenceButtons';
 import { BottomSheet } from '../shared/BottomSheet';
 import { ExamAnswerFooter } from '../shared/ExamAnswerFooter';
@@ -219,13 +220,15 @@ function MobileOinaTyped({
 
   const result = gradeTypedSlots(inputs, question.slots);
 
+  const typedAnswer = () => inputs.map((v) => v.trim()).filter(Boolean).join(', ') || '(no answer)';
+
   const submit = (confidence?: Confidence) => {
     onAnswer({
       structureId: question.structureId,
       correct: result.allCorrect,
       partialCredit: result.correctCount / question.slots.length,
       confidence,
-      selectedAnswer: inputs.map((v) => v.trim()).filter(Boolean).join(', ') || '(no answer)',
+      selectedAnswer: typedAnswer(),
       correctAnswer: question.slots.map((s) => s.accepted[0]).join(', '),
     });
   };
@@ -288,6 +291,7 @@ function MobileOinaTyped({
             type="button"
             onClick={() => {
               setChecked(true);
+              notePendingAnswer(question.id, typedAnswer());
               if (examMode) submit();
             }}
             className="mt-6 w-full rounded-[3px] border-0"

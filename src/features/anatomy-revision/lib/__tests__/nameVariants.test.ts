@@ -181,3 +181,20 @@ describe('singular and plural are the same answer', () => {
     expect(accept('lateral-malleolus', 'medial malleoli')).toBe(false);
   });
 });
+
+describe('spinal levels (student report, 1 Nov 2026)', () => {
+  const cervical = ALL_STRUCTURES.find((s) => s.id === 'cervical-vertebrae')!;
+  const accepted = structureNameVariants(cervical.name, cervical.aliases);
+
+  it.each(['C3-C6', 'C3–C6', 'C3 - C6', 'C3-6', 'C3 to C6', 'Cervical vertebrae C3-C6', 'cervical vertebrae (C3-C6)', 'cervical vertebrae'])(
+    'accepts %s',
+    (typed) => {
+      expect(isAnswerMatch(typed, accepted)).toBe(true);
+    },
+  );
+
+  it('does not take the levels of another region', () => {
+    expect(isAnswerMatch('T1-T12', accepted)).toBe(false);
+    expect(isAnswerMatch('L1-L5', accepted)).toBe(false);
+  });
+});

@@ -547,6 +547,10 @@ for entry in entries:
     # A named cutaway goes whatever its depth: a sheet that wraps this muscle
     # rather than lying over it, like the rectus sheath (generateMusclePlateSpec).
     hidden = set(entry.get("hide", []))
+    # A cutaway for the tilted views alone: they are rendered in a run of their
+    # own with --tilts-only, so what is drawn here is drawn for those views.
+    if a.tilts_only:
+        hidden |= set(entry.get("tiltHide", []))
     drawable = [n for n in atlas_muscles
                 if n not in mine and layer_of.get(n, 0) >= entry["layer"]
                 and owner.get(n) not in hidden]

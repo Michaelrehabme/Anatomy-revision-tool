@@ -224,6 +224,7 @@ function Reports() {
                 <td style={{ ...cell, maxWidth: 360 }}>
                   {REASON_LABEL.get(report.reason) ?? report.reason}
                   {report.note && <div style={{ ...small, color: 'var(--ink)', whiteSpace: 'pre-wrap' }}>{report.note}</div>}
+                  {report.shown?.given && <div style={{ ...small, color: 'var(--ink)' }}>Their answer: {report.shown.given}</div>}
                 </td>
                 <td style={{ ...cell, paddingRight: 0, whiteSpace: 'nowrap' }}>
                   {report.resolvedAt ? (

@@ -17,10 +17,11 @@ interface FillBlankSessionProps {
  * not wrong for typing them the other way round. Each thing typed can satisfy
  * one answer only, so the same muscle twice is one right box, not two.
  */
-function gradeBoxes(typed: string[], answers: string[]): boolean[] {
+function gradeBoxes(typed: string[], answers: string[], alsoAccepted: FillBlankQuestion['alsoAccepted'] = {}): boolean[] {
   const right = typed.map(() => false);
   for (const answer of answers) {
-    const i = typed.findIndex((value, index) => !right[index] && isAnswerMatch(value, itemVariants(answer)));
+    const accepted = [...itemVariants(answer), ...(alsoAccepted[answer] ?? [])];
+    const i = typed.findIndex((value, index) => !right[index] && isAnswerMatch(value, accepted));
     if (i >= 0) right[i] = true;
   }
   return right;
@@ -42,7 +43,7 @@ export function FillBlankSession({ question, onAnswer, onNext, examMode }: FillB
 
   const handleSubmit = () => {
     if (submitted || !ready) return;
-    const right = gradeBoxes(typed, answers);
+    const right = gradeBoxes(typed, answers, question.alsoAccepted);
     const correct = right.every(Boolean);
     setSubmitted({ correct, right });
     onAnswer({ structureId: question.structureId, correct, selectedAnswer: typed.join(' / '), correctAnswer: question.answer });

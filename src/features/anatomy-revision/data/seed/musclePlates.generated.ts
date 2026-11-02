@@ -835,6 +835,7 @@ const ROWS: [string, number, number, 0 | 1, number?][] = [
 ["peroneus-brevis",270,3,0],
 ["peroneus-brevis",300,1,0],
 ["peroneus-brevis",330,1,0],
+["peroneus-longus",0,5,1,-90],
 ["peroneus-longus",0,0,0],
 ["peroneus-longus",30,1,0],
 ["peroneus-longus",60,1,0],

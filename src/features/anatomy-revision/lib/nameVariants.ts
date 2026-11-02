@@ -95,6 +95,22 @@ function peel(form: string): string {
 }
 
 /**
+ * THE LEVELS IN A SPINE NAME ARE AN ANSWER IN THEIR OWN RIGHT (student report,
+ * 1 Nov 2026). "C3–C6" names what a plate highlights as well as "Cervical
+ * Vertebrae" does, so a bracket of levels is kept as a form of its own as well
+ * as being peeled off, written the ways people write a range.
+ */
+const LEVEL_RANGE = /\(([CTL])(\d+)[–-]\1(\d+)\)/;
+
+function levelForms(name: string): string[] {
+  const match = name.match(LEVEL_RANGE);
+  if (!match) return [];
+  const [bracket, column, first, last] = match;
+  const range = `${column}${first}–${column}${last}`;
+  return [range, `${column}${first}–${last}`, `${column}${first} to ${column}${last}`, `${name.replace(bracket, '').trim()} ${range}`];
+}
+
+/**
  * Every form of a structure's name that should grade as correct: the fibular/
  * peroneal swap, plus each name with its optional suffixes peeled off.
  */
@@ -115,6 +131,7 @@ export function structureNameVariants(name: string, aliases: readonly string[]):
     add(value);
     const swapped = swapFibularPeroneal(value);
     if (swapped) add(swapped);
+    levelForms(value).forEach(add);
   }
 
   return [...out];

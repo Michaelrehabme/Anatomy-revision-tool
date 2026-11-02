@@ -13,6 +13,7 @@ import { BottomSheet } from '../shared/BottomSheet';
 import { ExamAnswerFooter } from '../shared/ExamAnswerFooter';
 import { isAnswerMatch } from '../../lib/answerMatching';
 import { gradeTypedSlots } from '../../lib/oinaAnswer';
+import { notePendingAnswer } from '../../../feedback/data/pendingAnswer';
 
 interface MobileIdentifyTypedSessionProps {
   question: TypedIdentifyQuestion;
@@ -68,6 +69,7 @@ export function MobileIdentifyTypedSession({ question, imagesById, onAnswer, onN
     const graded = gradeTypedSlots(slotInputs, slots);
     const correct = nameCorrect;
     setSubmitted({ correct, slotCorrect: graded.slotCorrect });
+    notePendingAnswer(question.id, selectedAnswer());
     if (examMode) {
       onAnswer({ structureId: question.structureId, correct, selectedAnswer: selectedAnswer(), correctAnswer });
     }

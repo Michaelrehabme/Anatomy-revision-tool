@@ -1,6 +1,7 @@
 import { useEffect, useId, useRef, useState } from 'react';
 import type { RevisionQuestion } from '../anatomy-revision/types/question';
 import { NOTE_MAX, REPORTING_AVAILABLE, REPORT_REASONS, reportQuestion, type ReportReason } from './data/telemetry';
+import { pendingAnswerFor } from './data/pendingAnswer';
 import { questionShown } from './data/questionShown';
 
 /**
@@ -85,7 +86,7 @@ export function ReportQuestionControl({ question, variant, context }: ReportQues
       area: question.area,
       reason,
       note,
-      shown: questionShown(question, context),
+      shown: questionShown(question, { ...context, given: context?.given ?? pendingAnswerFor(question.id) }),
     });
     setStage(saved ? 'sent' : 'failed');
   };

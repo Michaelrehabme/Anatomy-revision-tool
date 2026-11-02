@@ -200,6 +200,8 @@ const idByMeshName = new Map<string, string>();
  */
 const MERGED_INTO: Record<string, string> = {
   'deep-part-of-tibial-collateral-ligament': 'superficial-part-of-tibial-collateral-ligament',
+  // One ligament under two names (owner, 1 Nov 2026).
+  'dorsal-scaphotriquetral-ligament': 'dorsal-intercarpal-ligaments',
 };
 const asAsked = (id: string) => MERGED_INTO[id] ?? id;
 {

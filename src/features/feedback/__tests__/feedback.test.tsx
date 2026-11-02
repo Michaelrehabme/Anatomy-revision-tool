@@ -1,3 +1,4 @@
+import { notePendingAnswer } from '../data/pendingAnswer';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import type { MCQQuestion } from '../../anatomy-revision/types/question';
@@ -43,6 +44,19 @@ afterEach(() => {
 });
 
 describe('ReportQuestionControl', () => {
+  it('carries a typed answer that was marked but not yet rated', async () => {
+    reportQuestion.mockResolvedValue(true);
+    notePendingAnswer('typed-1', 'Great trochanter');
+    render(<ReportQuestionControl variant="sidebar" question={question('typed-1')} />);
+
+    fireEvent.click(screen.getByRole('button', { name: REPORT_TRIGGER }));
+    fireEvent.click(screen.getByLabelText('The answer marked right is wrong'));
+    fireEvent.click(screen.getByRole('button', { name: 'Send report' }));
+
+    await waitFor(() => expect(screen.getByRole('status').textContent).toBe(REPORT_SENT));
+    expect(reportQuestion.mock.calls[0][0].shown.given).toBe('Great trochanter');
+  });
+
   it('sends the question with the reason and the note, and says so', async () => {
     reportQuestion.mockResolvedValue(true);
     render(<ReportQuestionControl variant="sidebar" question={question('q1')} />);

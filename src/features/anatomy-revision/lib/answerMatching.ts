@@ -7,12 +7,18 @@
  * "the" goes wherever it falls. Names are written without it ("Transverse
  * ligament of atlas", "Distal Phalanges of Hand") and a student who types
  * "of the atlas" has named the same structure.
+ *
+ * A dash is one mark whatever its width and spacing: "C3 - C6" is "C3–C6".
+ * Commas, colons and brackets separate words and nothing more: "trochanter,
+ * femur" and "trochanter (femur)" are the same three words.
  */
 function normalize(value: string): string {
   return value
-    .trim()
     .toLowerCase()
+    .replace(/[,:;()]/g, ' ')
+    .trim()
     .replace(/\s+/g, ' ')
+    .replace(/\s*[–—-]\s*/g, '-')
     .replace(/^(the|a|an)\s+/, '')
     .replace(/ the(?= )/g, '')
     .split(' ')

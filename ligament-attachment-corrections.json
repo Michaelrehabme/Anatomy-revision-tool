@@ -832,24 +832,6 @@
    "checked": "2026-09-22",
    "sites": "Named by the part of the bone, not the bone: 10 Oct 2026, from the sentence already quoted here. \"Pelvis\" is three bones and says nothing a student can be marked on."
   },
-  "dorsal-scaphotriquetral-ligament": {
-   "attachmentStructureIds": [
-    "lunate",
-    "triquetrum",
-    "scaphoid"
-   ],
-   "description": "The dorsal intercarpal ligament: it runs across the back of the carpus from the dorsal tubercle of the triquetrum to the dorsal groove of the scaphoid, attaching to the back of the lunate on its way.",
-   "confirmed": true,
-   "grade": "verified (correction retracted, seed stands)",
-   "source": "Cross-check of the second tranche against named sources, 22 Sep 2026 (review artifact 2ePPLoqndkYYRMrZGwr43G)",
-   "sources": [
-    "Bateni et al., Imaging key wrist ligaments, AJR, doi:10.2214/AJR.12.9738",
-    "Wrist joint anatomy, Medscape",
-    "AAHS 2020 abstract, Anatomy of the dorsal scapholunotriquetral ligament complex"
-   ],
-   "why": "A proposed correction (drop the lunate as passage) was checked and RETRACTED: the lunate footprint is real, measured at 65.0 ± 28.3 mm² against 67.4 ± 26.8 mm² for the scaphoid. The derived 0.60 lunate contact was right.",
-   "checked": "2026-09-22"
-  },
   "anterior-talocalcaneal-ligament": {
    "attachmentStructureIds": [
     "talus",

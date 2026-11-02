@@ -12,6 +12,7 @@ import { Button } from '../shared/Button';
 import { ExamAnswerFooter } from '../shared/ExamAnswerFooter';
 import { isAnswerMatch } from '../../lib/answerMatching';
 import { gradeTypedSlots } from '../../lib/oinaAnswer';
+import { notePendingAnswer } from '../../../feedback/data/pendingAnswer';
 import { questionHeaderLabel } from '../../lib/questionFormats';
 
 interface IdentifyTypedSessionProps {
@@ -73,6 +74,7 @@ export function IdentifyTypedSession({ question, imagesById, onAnswer, onNext, e
     const graded = gradeTypedSlots(slotInputs, slots);
     const correct = nameCorrect;
     setSubmitted({ correct, slotCorrect: graded.slotCorrect });
+    notePendingAnswer(question.id, selectedAnswer());
     if (examMode) {
       onAnswer({ structureId: question.structureId, correct, selectedAnswer: selectedAnswer(), correctAnswer });
     }

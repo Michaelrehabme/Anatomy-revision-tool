@@ -4,6 +4,7 @@ import { FeedbackHeading } from '../shared/FeedbackHeading';
 import type { OinaTypedQuestion } from '../../types/question';
 import type { Confidence } from '../../types/attempt';
 import { gradeTypedSlots } from '../../lib/oinaAnswer';
+import { notePendingAnswer } from '../../../feedback/data/pendingAnswer';
 import { ConfidenceButtons } from '../shared/ConfidenceButtons';
 import { Button } from '../shared/Button';
 import { ExamAnswerFooter } from '../shared/ExamAnswerFooter';
@@ -48,6 +49,7 @@ export function OinaTypedSession({ question, onAnswer, onNext, examMode }: OinaT
 
   const handleCheck = () => {
     setChecked(true);
+    notePendingAnswer(question.id, answerStrings().selectedAnswer);
     if (examMode) submit();
   };
 

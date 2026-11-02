@@ -94,21 +94,21 @@ export const FAMILIES: FamilyProvenance[] = [
   },
   {
     category: "ligament",
-    total: 164,
+    total: 163,
     method: "ai-drafted",
     scope: "Attachments checked against named works. The descriptions are not yet checked.",
-    checked: 164,
+    checked: 163,
     held: 0,
     lastChecked: "2026-10-08",
-    works: [2, 3, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
+    works: [2, 3, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
   },
 ];
 
 export const WORKS: ProvenanceWork[] = [
   { title: "ALL_Muscles_of_the_body — Vinnie Maynard, University of Salford", citations: 202 },
   { title: "Visible Body", url: "https://www.visiblebody.com/learn/", citations: 1 },
-  { title: "Gray's Anatomy (public domain, via Wikipedia)", url: "https://en.wikipedia.org/wiki/Gray%27s_Anatomy", citations: 636 },
-  { title: "Radiopaedia", url: "https://radiopaedia.org/", citations: 137 },
+  { title: "Gray's Anatomy (public domain, via Wikipedia)", url: "https://en.wikipedia.org/wiki/Gray%27s_Anatomy", citations: 674 },
+  { title: "Radiopaedia", url: "https://radiopaedia.org/", citations: 157 },
   { title: "Z-Anatomy (Gauthier Kervyn and contributors), CC BY-SA 4.0", url: "https://github.com/Z-Anatomy/Models-of-human-anatomy", citations: 90 },
   { title: "StatPearls (NCBI Bookshelf)", url: "https://www.ncbi.nlm.nih.gov/books/NBK430685/", citations: 339 },
   { title: "Checked by the project owner, a sports rehabilitation student", citations: 94 },
@@ -120,9 +120,8 @@ export const WORKS: ProvenanceWork[] = [
   { title: "Physiopedia", url: "https://www.physio-pedia.com/", citations: 2 },
   { title: "Anatomy Standard", url: "https://www.anatomystandard.com/", citations: 2 },
   { title: "Human Kinetics", citations: 3 },
-  { title: "Medscape", url: "https://emedicine.medscape.com/", citations: 1 },
   { title: "Wheeless' Textbook of Orthopaedics", url: "https://www.wheelessonline.com/", citations: 1 },
-  { title: "WikiSM (Sports Medicine Wiki)", url: "https://wikism.org/", citations: 5 },
+  { title: "WikiSM (Sports Medicine Wiki)", url: "https://wikism.org/", citations: 12 },
   { title: "scielo.cl", url: "https://www.scielo.cl/pdf/ijmorphol/v31n1/art54.pdf", citations: 1 },
 ];
 
@@ -131,7 +130,7 @@ export const BLOOD_SUPPLY: BloodSupplyProvenance = {
     { category: "muscle", total: 122, reviewed: 122, works: [2, 3, 5, 7] },
     { category: "bone", total: 32, reviewed: 25, works: [3, 5, 7] },
     { category: "joint", total: 34, reviewed: 30, works: [2, 3, 5, 7] },
-    { category: "ligament", total: 164, reviewed: 56, works: [2, 5, 7] },
+    { category: "ligament", total: 163, reviewed: 56, works: [2, 5, 7] },
   ],
   landmarksExcluded: 133,
   arteriesWithheld: 3,

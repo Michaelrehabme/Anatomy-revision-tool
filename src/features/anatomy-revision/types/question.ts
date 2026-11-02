@@ -129,6 +129,13 @@ export interface FillBlankQuestion extends RevisionQuestionBase {
    * make the question right. Absent means one box, taking `answer`.
    */
   answers?: string[];
+  /**
+   * Per answer, the same answer with its bone said or left off: "lesser
+   * trochanter of the femur" fills a blank on the femur, and "manubrium" one
+   * authored as "manubrium of the sternum" (student report, 1 Nov 2026).
+   * Another bone's name is still wrong.
+   */
+  alsoAccepted?: Record<string, string[]>;
 }
 
 export interface TypedIdentifyQuestion extends RevisionQuestionBase {
