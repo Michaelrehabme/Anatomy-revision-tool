@@ -4,6 +4,7 @@ import { listRoles, setRole } from '../../../roles/rolesRepository';
 import { useCurrentRole } from '../../../roles/useCurrentRole';
 import { BOOTSTRAP_ADMIN_EMAIL } from '../../../roles/bootstrap';
 import type { AdminUserProfile } from '../../types/adminUser';
+import { ADMIN_PAGE_PAD, ADMIN_TITLE_STYLE } from '../shared/AdminMobile';
 import type { RoleGrant, UserRole } from '../../../roles/types';
 
 /**
@@ -118,8 +119,8 @@ export function PeoplePage() {
   };
 
   return (
-    <div className="px-16 pt-16 pb-16">
-      <h1 style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 40, lineHeight: 1.05, letterSpacing: '-.02em', margin: 0 }}>
+    <div className={ADMIN_PAGE_PAD}>
+      <h1 style={ADMIN_TITLE_STYLE}>
         People
       </h1>
       <p className="mt-2 max-w-2xl text-sm leading-relaxed" style={{ color: 'var(--ink2)' }}>
@@ -133,7 +134,7 @@ export function PeoplePage() {
         onChange={(e) => setSearch(e.target.value)}
         placeholder="Search name or email"
         className="mt-6"
-        style={{ ...inputStyle, minWidth: 280 }}
+        style={{ ...inputStyle, width: '100%', maxWidth: 360 }}
       />
 
       {error && (
@@ -157,11 +158,11 @@ export function PeoplePage() {
       )}
 
       {visible.length > 0 && (
-        <table className="mt-8 w-full border-collapse text-left">
+        <table className="mt-8 w-full border-collapse text-left" style={{ tableLayout: 'fixed' }}>
           <thead>
             <tr style={{ borderBottom: '1.2px solid var(--line)' }}>
-              {['Person', 'Admin', ''].map((label) => (
-                <th key={label} className="pb-2.5 pr-4 whitespace-nowrap" style={cellHead}>
+              {['Person', 'Admin', ''].map((label, i) => (
+                <th key={label} className="pb-2.5 pr-4 whitespace-nowrap" style={{ ...cellHead, width: i === 0 ? undefined : i === 1 ? 128 : 84 }}>
                   {label}
                 </th>
               ))}
@@ -174,7 +175,7 @@ export function PeoplePage() {
 
               return (
                 <tr key={row.profile.uid} style={{ borderBottom: '1px solid var(--line)' }}>
-                  <td className="py-3 pr-4 align-top">
+                  <td className="min-w-0 py-3 pr-4 align-top" style={{ overflowWrap: 'anywhere' }}>
                     <div style={{ font: '400 14px/1.3 var(--font-ui)', color: 'var(--ink)' }}>
                       {row.profile.displayName ?? '—'}
                       {isOwner && (

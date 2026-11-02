@@ -45,7 +45,7 @@ export function ChangeRequestDetailPanel({
     <div className="fixed inset-0 z-40 flex justify-end" role="dialog" aria-label={`${item.ref} details`}>
       <div className="absolute inset-0" style={{ background: 'var(--scrim)' }} onClick={onClose} />
       <div
-        className="relative flex h-full w-[620px] flex-none flex-col overflow-y-auto px-9 py-9"
+        className="relative flex h-full w-full max-w-[620px] flex-none flex-col overflow-y-auto px-5 py-6 lg:px-9 lg:py-9"
         style={{ background: 'var(--sf)', boxShadow: 'var(--shadow-card)' }}
       >
         <div className="flex items-start justify-between gap-4">

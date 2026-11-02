@@ -1,5 +1,6 @@
 import { collection, doc, getCountFromServer, getDoc, getDocs, query, Timestamp, where } from 'firebase/firestore';
 import { getDb } from '../../anatomy-revision/data/firebase';
+import { parseEntitlement } from '../../anatomy-revision/lib/entitlementRecord';
 import type { AdminUserProfile } from '../types/adminUser';
 
 function toIsoOrNull(value: unknown): string | null {
@@ -13,6 +14,7 @@ function toProfile(uid: string, data: Record<string, unknown>): AdminUserProfile
     email: (data.email as string | null) ?? null,
     createdAt: toIsoOrNull(data.createdAt),
     lastActiveAt: toIsoOrNull(data.lastActiveAt),
+    entitlement: parseEntitlement(data.entitlement),
   };
 }
 

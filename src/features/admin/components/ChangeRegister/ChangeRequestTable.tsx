@@ -9,6 +9,8 @@ import {
 } from '../../types/changeRequest';
 import { findIncompleteDependencies } from '../../lib/statusTransition';
 import { checklistProgress } from '../../lib/checklist';
+import { useIsDesktop } from '../../../anatomy-revision/hooks/useIsDesktop';
+import { Facts, FoldList, FoldRow } from '../shared/AdminMobile';
 import { StatusBadge } from './StatusBadge';
 
 interface ChangeRequestTableProps {
@@ -21,11 +23,65 @@ interface ChangeRequestTableProps {
 const PRIORITY_COLOR: Record<string, string> = { p0: 'var(--acc2d)', p1: 'var(--ink2)', p2: 'var(--ink3)' };
 
 export function ChangeRequestTable({ items, statusByRef, onOpen, onSetStatus }: ChangeRequestTableProps) {
+  const isDesktop = useIsDesktop();
   if (items.length === 0) {
     return (
       <div className="mt-10 text-sm" style={{ color: 'var(--ink3)' }}>
         No change requests match these filters.
       </div>
+    );
+  }
+
+  if (!isDesktop) {
+    return (
+      <FoldList className="mt-6">
+        {items.map((item) => {
+          const progress =
+            item.checklist && item.checklist.length > 0 ? checklistProgress(item.checklist, item.checklistDone) : null;
+          return (
+            <FoldRow
+              key={item.ref}
+              title={
+                <>
+                  <span style={{ font: '500 12px/1 var(--font-mono)', color: 'var(--ink3)' }}>{item.ref}</span> {item.title}
+                </>
+              }
+              aside={<StatusBadge status={item.status} />}
+            >
+              <Facts
+                items={[
+                  ['Category', CHANGE_CATEGORY_LABELS[item.category]],
+                  ['Priority', <span style={{ color: PRIORITY_COLOR[item.priority] }}>{CHANGE_PRIORITY_LABELS[item.priority]}</span>],
+                  ['Effort', CHANGE_EFFORT_LABELS[item.effort]],
+                  ...(progress ? [['Steps', `${progress.completed}/${progress.total}`] as [string, string]] : []),
+                ]}
+              />
+              <div className="mt-3 flex flex-wrap items-center gap-3">
+                <select
+                  aria-label={`Status for ${item.ref}`}
+                  value={item.status}
+                  onChange={(e) => onSetStatus(item.ref, e.target.value as ChangeStatus)}
+                  style={{ font: '400 13px/1 var(--font-ui)', color: 'var(--ink2)', background: 'transparent', border: '1px solid var(--line)', borderRadius: 3, padding: '8px 8px' }}
+                >
+                  {CHANGE_STATUSES.map((status) => (
+                    <option key={status} value={status}>
+                      {CHANGE_STATUS_LABELS[status]}
+                    </option>
+                  ))}
+                </select>
+                <button
+                  type="button"
+                  onClick={() => onOpen(item.ref)}
+                  className="border-0 bg-transparent p-0"
+                  style={{ font: '500 13px/1 var(--font-ui)', color: 'var(--accd)', cursor: 'pointer' }}
+                >
+                  Open details →
+                </button>
+              </div>
+            </FoldRow>
+          );
+        })}
+      </FoldList>
     );
   }
 
