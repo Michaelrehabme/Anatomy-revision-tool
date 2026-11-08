@@ -79,8 +79,8 @@ describe('OinaSession (typed)', () => {
     fireEvent.click(screen.getByText('Check answer'));
     expect(screen.getByText('Not quite')).toBeInTheDocument();
     expect(screen.getByText('1/2 found')).toBeInTheDocument();
-    // Revealed in its authored form, so a missed slot also teaches which head it was.
-    expect(screen.getByText('Short head: linea aspera of the femur')).toBeInTheDocument();
+    // The site first, with its head after it, so a missed slot also teaches which head it was.
+    expect(screen.getByText('Linea aspera of the femur (short head)')).toBeInTheDocument();
   });
 });
 

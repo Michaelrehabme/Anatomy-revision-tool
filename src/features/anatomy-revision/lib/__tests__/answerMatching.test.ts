@@ -51,3 +51,34 @@ describe('two neighbouring letters swapped', () => {
     expect(isAnswerMatch('intretransverasrii', ['Intertransversarii'])).toBe(false);
   });
 });
+
+describe('a hyphen inside a word', () => {
+  it('is optional (student report, 7 Nov 2026)', () => {
+    expect(isAnswerMatch('Interosseous sacroiliac ligament', ['Interosseous sacro-iliac ligament'])).toBe(true);
+    expect(isAnswerMatch('sacro-iliac joint', ['Sacroiliac joint'])).toBe(true);
+  });
+
+  it('still separates a range of levels', () => {
+    expect(isAnswerMatch('C3-C6', ['C3–C6'])).toBe(true);
+    expect(isAnswerMatch('C3 - C6', ['C3–C6'])).toBe(true);
+  });
+});
+
+describe('two slips in a long name', () => {
+  it('count as a misspelling when letters are doubled, dropped or swapped (owner, 8 Nov 2026)', () => {
+    expect(isAnswerMatch('Interroseous sacroiliac ligament', ['Interosseous sacro-iliac ligament'])).toBe(true);
+    expect(isAnswerMatch('interosseus sacroilliac ligament', ['Interosseous sacro-iliac ligament'])).toBe(true);
+  });
+
+  it('never make one structure another', () => {
+    expect(isAnswerMatch('Internal intercostal muscles', ['External intercostal muscles'])).toBe(false);
+    expect(isAnswerMatch('Deep transverse metatarsal ligament', ['Deep transverse metacarpal ligament'])).toBe(false);
+    expect(isAnswerMatch('Musculus gluteus minimus', ['Musculus gluteus maximus'])).toBe(false);
+    expect(isAnswerMatch('Pectoralis minor muscle', ['Pectoralis major muscle'])).toBe(false);
+    expect(isAnswerMatch('Musculus triceps brachii', ['Musculus biceps brachii'])).toBe(false);
+  });
+
+  it('are not forgiven in a short name', () => {
+    expect(isAnswerMatch('interroseus', ['Interosseous'])).toBe(false);
+  });
+});

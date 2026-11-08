@@ -83,6 +83,25 @@ function kindsFor(structure: AnatomyStructure, requested?: PromptKind[]): Prompt
   return requested ? supported.filter((k) => requested.includes(k)) : supported;
 }
 
+/**
+ * An action sentence as an action question offers it: without the attachment
+ * scripts/deriveActionText.mjs added to tell muscles with the same actions
+ * apart ("Laterally flexes the neck and assists inspiration; arises from the
+ * transverse processes C3–C6").
+ *
+ * Taken off here (student report, 3 Nov 2026: "why does an action question
+ * include the origin?"): it gave the question away to anyone who knew the
+ * attachment. The question no longer needs it to stay answerable, because a
+ * muscle whose actions are all this one's is never offered as a wrong answer
+ * (alsoTrue below). The seed keeps the full sentence: the Atlas shows it, and
+ * the published diagnostic papers are built from it and may not change
+ * (diagnosticPapers.ts).
+ */
+export function actionWithoutAttachment(text: string): string {
+  const clause = text.search(/;\s+(?:arises from|inserts on)\b/);
+  return clause < 0 ? text : `${text.slice(0, clause).trimEnd()}.`;
+}
+
 function buildChoices(
   correctValue: string,
   distractors: string[],
@@ -335,7 +354,7 @@ function buildOne(
     }
 
     if (promptKind === 'action') {
-      const correctValue = structure.actionText;
+      const correctValue = actionWithoutAttachment(structure.actionText);
       // Deduped: several muscles share an identical actionText — infraspinatus
       // and teres minor are both "External rotation of the shoulder; stabilises
       // the humeral head." — and sampling a flat list could draw the same
@@ -346,13 +365,13 @@ function buildOne(
       const mine = new Set(structure.actions);
       const alsoTrue = (s: AnatomyStructure) => isMuscle(s) && s.actions.length > 0 && s.actions.every((a) => mine.has(a));
       const otherMuscleActionTexts = all.reduce<Set<string>>((acc, s) => {
-        if (isMuscle(s) && s.id !== structure.id && !alsoTrue(s)) acc.add(s.actionText);
+        if (isMuscle(s) && s.id !== structure.id && !alsoTrue(s)) acc.add(actionWithoutAttachment(s.actionText));
         return acc;
       }, new Set<string>());
       const otherActionTexts = toppedUp(correctValue, sample([...otherMuscleActionTexts], distractorCount, rng), distractorCount, (missing, taken) =>
         // Tiered like the other facts, so the muscle next door is offered
         // before one from the far end of what the student may reach.
-        pickTextFieldDistractors(correctValue, structure, fallback ?? [], (s) => (isMuscle(s) && !alsoTrue(s) ? [s.actionText] : undefined), missing, rng, taken),
+        pickTextFieldDistractors(correctValue, structure, fallback ?? [], (s) => (isMuscle(s) && !alsoTrue(s) ? [actionWithoutAttachment(s.actionText)] : undefined), missing, rng, taken),
       );
       const { choices, correctIndex } = buildChoices(correctValue, otherActionTexts, choiceCount, rng);
       out.push({

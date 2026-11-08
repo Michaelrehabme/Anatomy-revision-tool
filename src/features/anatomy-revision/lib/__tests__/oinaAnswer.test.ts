@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { acceptedVariantsFor, gradeTypedSlots, matchesSlot, normalizeForGrading } from '../oinaAnswer';
-import { conflictsWith, stripHeadPrefix } from '../oinaValues';
+import { conflictsWith, revealedSlotAnswer, stripHeadPrefix } from '../oinaValues';
 import { ALL_STRUCTURES } from '../../data/seed';
 import { isMuscle } from '../../types/structure';
 
@@ -295,5 +295,18 @@ describe('every way of naming each digit', () => {
       expect(matchesSlot(`distal phalanges of ${form}`, fdp), form).toBe(true);
     }
     expect(matchesSlot('distal phalanges of lateral four digits', fdp)).toBe(false);
+  });
+});
+
+describe('a head prefix', () => {
+  it('is not the first accepted form, which the hints count and the answer shows (student report, 4 Nov 2026)', () => {
+    const accepted = acceptedVariantsFor('origin', 'Short head: coracoid process');
+    expect(accepted[0]).toBe('Coracoid process');
+    expect(accepted).toContain('Short head: coracoid process');
+    expect(revealedSlotAnswer(accepted)).toBe('Coracoid process (short head)');
+    expect(revealedSlotAnswer(acceptedVariantsFor('origin', 'Medial epicondyle of humerus (humeral head)'))).toBe(
+      'Medial epicondyle of humerus (humeral head)',
+    );
+    expect(revealedSlotAnswer(acceptedVariantsFor('insertion', 'Radial tuberosity'))).toBe('Radial tuberosity');
   });
 });

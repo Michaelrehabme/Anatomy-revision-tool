@@ -11,6 +11,7 @@ import { ConfidenceButtons } from '../shared/ConfidenceButtons';
 import { BottomSheet } from '../shared/BottomSheet';
 import { ExamAnswerFooter } from '../shared/ExamAnswerFooter';
 import type { OinaAnswerParams } from '../OinaSession/OinaSelectSession';
+import { revealedSlotAnswer } from '../../lib/oinaValues';
 
 interface MobileOinaSessionProps {
   question: OinaQuestion;
@@ -229,7 +230,7 @@ function MobileOinaTyped({
       partialCredit: result.correctCount / question.slots.length,
       confidence,
       selectedAnswer: typedAnswer(),
-      correctAnswer: question.slots.map((s) => s.accepted[0]).join(', '),
+      correctAnswer: question.slots.map((s) => revealedSlotAnswer(s.accepted)).join(', '),
     });
   };
 
@@ -278,7 +279,7 @@ function MobileOinaTyped({
                 {!checked && question.hints === 'full' && <SlotHints accepted={slot.accepted} />}
                   {revealing && !slotCorrect && (
                   <p className="mt-1.5 text-[15px]" style={{ color: 'var(--acc2d)' }}>
-                    {slot.accepted[0]}
+                    {revealedSlotAnswer(slot.accepted)}
                   </p>
                 )}
               </div>
