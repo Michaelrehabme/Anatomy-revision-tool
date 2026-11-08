@@ -62,6 +62,13 @@ describe('clues with enough to go on (student reports, 1 Nov 2026)', () => {
     expect(clue('superior-transverse-scapular-ligament')).toContain('medial end of the scapular notch');
   });
 
+  it('gives each end of it its own line (student report, 2 Nov 2026)', () => {
+    expect(ligamentPromptLines(sites.get('superior-transverse-scapular-ligament')!, sites)).toEqual([
+      'Attaches to: Coracoid Process of the scapula — base of the process',
+      'Attaches to: Scapula — medial end of the scapular notch',
+    ]);
+  });
+
   it('says which side of the carpus the dorsal intercarpal ligament is on', () => {
     expect(clue('dorsal-intercarpal-ligaments')).toContain('dorsal tubercle of the triquetrum');
     expect(clue('dorsal-intercarpal-ligaments')).toContain('dorsal groove of the scaphoid');
