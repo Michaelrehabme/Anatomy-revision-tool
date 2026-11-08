@@ -233,6 +233,35 @@ const PLATE_FRAME_ON: Record<string, string[]> = {
   'back-core__spine__lumbar': ['l4-vertebra', 'l5-vertebra'],
 };
 
+/**
+ * Landmarks drawn as a REGION of their parent bone instead of the atlas's own
+ * object (renderSubRegionPlates.region_on). The atlas's malleoli are flat
+ * plaques that stand off the tibia and fibula like fins, which is what made the
+ * ankle-foot plate "unclear" (student report, 8 Nov 2026; owner chose regions).
+ * The rule language is landmarkRegions.py's: a box in the bone's own bounding-box
+ * fractions, or the extreme slab of the bone along a direction. Numbers measured
+ * on the left tibia (tip at z 75mm, plafond about 83mm, malleolus medial of x 60mm
+ * of 37-116mm) and fibula (tip at z 55mm).
+ */
+const SUBJECT_REGION: Record<string, { parentObjects: string[]; rule: Record<string, unknown> }> = {
+  'medial-malleolus': {
+    parentObjects: ['Tibia.l', 'Tibia.r'],
+    rule: { kind: 'box', lo: [0, 0, 0], hi: [0.3, 1, 0.055], keepLargest: true, close: 2, smoothNormals: 3 },
+  },
+  'lateral-malleolus': {
+    parentObjects: ['Fibula.l', 'Fibula.r'],
+    rule: { kind: 'cap', direction: [0, 0, -1], depth: 0.025, close: 2, smoothNormals: 3 },
+  },
+};
+
+/**
+ * Metres of leg above a plate's highest subject. The ankle-foot plate was framed
+ * to the top of the malleoli and cut the leg off just above them.
+ */
+const PLATE_FRAME_RAISE: Record<string, number> = {
+  'lower-leg-foot__ankle-foot': 0.05,
+};
+
 /** The plate key for a structure — its own subregion unless PLATE_OVERRIDE says otherwise. */
 function plateKeyFor(structure: { id: string; region: string; subregion: string }): string {
   return PLATE_OVERRIDE[structure.id] ?? `${structure.region}__${structure.subregion}`;
@@ -313,9 +342,12 @@ const emitted = [...plates.entries()]
     // From the table, not from the file on disk: the table is the authority and
     // a spec written before it existed simply has no frameOn to preserve.
     ...(PLATE_FRAME_ON[key] ? { frameOn: PLATE_FRAME_ON[key] } : {}),
+    ...(PLATE_FRAME_RAISE[key] ? { frameRaise: PLATE_FRAME_RAISE[key] } : {}),
     ...(PLATE_BACKDROP[key] ? { backdrop: PLATE_BACKDROP[key] } : {}),
     ...(REGION_BONES[p.region] ? { bones: REGION_BONES[p.region].flatMap((id) => meshFor.get(id) ?? []) } : {}),
-    subjects: [...p.subjects].sort((a, b) => a.id.localeCompare(b.id)),
+    subjects: [...p.subjects]
+      .map((s) => (SUBJECT_REGION[s.id] ? { ...s, region: SUBJECT_REGION[s.id] } : s))
+      .sort((a, b) => a.id.localeCompare(b.id)),
   }))
   .sort((a, b) => b.subjects.length - a.subjects.length);
 

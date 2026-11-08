@@ -6,6 +6,7 @@
    "key": "lower-leg-foot__ankle-foot",
    "region": "lower-leg-foot",
    "subregion": "ankle-foot",
+   "frameRaise": 0.05,
    "subjects": [
     {
      "id": "abductor-hallucis",
@@ -126,7 +127,24 @@
      "objects": [
       "Lateral malleolus.l",
       "Lateral malleolus.r"
-     ]
+     ],
+     "region": {
+      "parentObjects": [
+       "Fibula.l",
+       "Fibula.r"
+      ],
+      "rule": {
+       "kind": "cap",
+       "direction": [
+        0,
+        0,
+        -1
+       ],
+       "depth": 0.025,
+       "close": 2,
+       "smoothNormals": 3
+      }
+     }
     },
     {
      "id": "lumbricals-foot",
@@ -153,7 +171,29 @@
      "objects": [
       "Medial malleolus.l",
       "Medial malleolus.r"
-     ]
+     ],
+     "region": {
+      "parentObjects": [
+       "Tibia.l",
+       "Tibia.r"
+      ],
+      "rule": {
+       "kind": "box",
+       "lo": [
+        0,
+        0,
+        0
+       ],
+       "hi": [
+        0.3,
+        1,
+        0.055
+       ],
+       "keepLargest": true,
+       "close": 2,
+       "smoothNormals": 3
+      }
+     }
     },
     {
      "id": "navicular",

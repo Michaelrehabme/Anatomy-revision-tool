@@ -423,6 +423,8 @@
  },
  "anatomical-neck-humerus": {
   "emit": "capsule",
+  "visibleOnly": true,
+  "_visibleWhy": "ONLY THE NEAR SIDE OF THE RING (owner, 8 Nov 2026): the whole rim projected as a hoop whose far arc lay over the surgical neck; each view keeps the longest run of the ring the camera can see, a line along the visible neck.",
   "kind": "rim",
   "of": {
    "kind": "cap",
@@ -943,6 +945,8 @@
  },
  "surgical-neck-humerus": {
   "emit": "capsule",
+  "visibleOnly": true,
+  "_visibleWhy": "ONLY THE NEAR SIDE OF THE RING (owner, 8 Nov 2026): the same hoop as the anatomical neck, its far arc drawn over the shaft below; each view keeps the longest run of the ring the camera can see, a line along the visible neck.",
   "kind": "rim",
   "of": {
    "kind": "cap",

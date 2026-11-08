@@ -241,6 +241,19 @@ const MIN_FRAME: Record<SubRegion, number> = {
   neck: 0.18,
 };
 
+/**
+ * A muscle whose picture has to hold more than its own span, in metres: a
+ * larger floor, so the frame (still centred on the muscle) reaches what the
+ * student needs to see at its far end. Student reports, 8 Nov 2026: flexor
+ * carpi radialis was framed to the base of the second metacarpal and cut the
+ * hand off ("whole hand should be visible"); extensor digitorum longus had
+ * its toe tendons on the bottom edge ("doesn't show the whole foot").
+ */
+const FRAME_FLOOR: Record<string, number> = {
+  'flexor-carpi-radialis': 0.62,
+  'extensor-digitorum-longus': 0.58,
+};
+
 /** Every thirty degrees, the turntable the joints and sub-region plates use. */
 const ANGLES = Array.from({ length: 12 }, (_, i) => i * 30);
 
@@ -317,7 +330,7 @@ for (const m of mapping) {
     ...split(objects),
     layer,
     ...(CUTAWAY[m.id] ? { hide: CUTAWAY[m.id] } : {}),
-    minFrame: MIN_FRAME[subregion],
+    minFrame: FRAME_FLOOR[m.id] ?? MIN_FRAME[subregion],
     angles: ANGLES,
     ...(SOLE_MUSCLES.has(m.id) || UNDER_THE_SOLE[m.id] ? { tilts: SOLE_TILTS } : {}),
     ...(UNDER_THE_SOLE[m.id] ? { tiltHide: UNDER_THE_SOLE[m.id] } : {}),

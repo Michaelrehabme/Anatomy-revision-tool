@@ -27,6 +27,7 @@ import bpy, json, sys, os, math, argparse, mathutils, bmesh, time
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 import boneLook  # noqa: E402
+from landmarkRegions import select_faces  # noqa: E402
 
 argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
 ap = argparse.ArgumentParser()
@@ -136,6 +137,63 @@ def bake(names, mesh_name):
         bm.from_mesh(tmp)
         bpy.data.meshes.remove(tmp)
     mesh = bpy.data.meshes.new(mesh_name)
+    bm.to_mesh(mesh)
+    bm.free()
+    return mesh
+
+
+def region_on(bone_names, rule, anchor):
+    """A landmark that is PART of a bone, grown on that bone's surface.
+
+    The atlas draws some landmarks as their own objects, and for the malleoli
+    those objects are flat plaques that stand off the bone like fins (student
+    report, 8 Nov 2026: "picture unclear"). The landmark panels never use them:
+    landmarkRegions.select_faces grows the region on the parent bone, and the
+    same rule language is used here. The picture then draws the bone alone and
+    the region only exists in the mask, lifted 0.4mm along its normals so it is
+    drawn in front of the bone it was cut from rather than z-fighting with it.
+    Same construction as renderLandmarkMarkers.build_region.
+    """
+    bm = bmesh.new()
+    for n in bone_names:
+        src = bpy.data.objects.get(n)
+        if not src or src.type != "MESH":
+            continue
+        tmp = src.data.copy()
+        for v in tmp.vertices:
+            v.co = src.matrix_world @ v.co
+        bm.from_mesh(tmp)
+        bpy.data.meshes.remove(tmp)
+    if not bm.verts:
+        bm.free()
+        return None
+    # A left-side bone is a mirrored copy of the right, so its winding (and
+    # with it every normal) points inward until recalculated.
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    for _ in range(2):
+        bmesh.ops.subdivide_edges(bm, edges=list(bm.edges), cuts=1, use_grid_fill=True)
+    bm.faces.ensure_lookup_table()
+    bm.verts.ensure_lookup_table()
+    faces = list(bm.faces)
+    index = {f: i for i, f in enumerate(faces)}
+    adjacency = [[] for _ in faces]
+    for i, f in enumerate(faces):
+        for e in f.edges:
+            for other in e.link_faces:
+                if other is not f:
+                    adjacency[i].append(index[other])
+    anchors = {"@subject": anchor} if anchor is not None else {}
+    mask, _ = select_faces([v.co.copy() for v in bm.verts], [v.normal.copy() for v in bm.verts],
+                           [f.calc_center_median() for f in faces], [f.normal.copy() for f in faces],
+                           rule, anchors, adjacency)
+    kill = [f for i, f in enumerate(faces) if not mask[i]]
+    bmesh.ops.delete(bm, geom=kill, context="FACES")
+    if not bm.faces:
+        bm.free()
+        return None
+    for v in bm.verts:
+        v.co = v.co + v.normal * 0.0004
+    mesh = bpy.data.meshes.new("sub_region")
     bm.to_mesh(mesh)
     bm.free()
     return mesh
@@ -367,6 +425,21 @@ for plate in spec["plates"]:
 
     subjects = []
     for s in plate["subjects"]:
+        if s.get("region"):
+            # A region subject is a patch of a backdrop bone: drawn as that bone
+            # on the plate, and only its own surface in the mask. Its atlas
+            # objects (the plaques) are never drawn; their centre is the anchor
+            # a rule may name as "@subject".
+            plaque = bake(restrict(s["objects"]), f"plaque_{s['id']}")
+            anchor = (sum((v.co for v in plaque.vertices), mathutils.Vector()) / len(plaque.vertices)
+                      if plaque.vertices else None)
+            bpy.data.meshes.remove(plaque)
+            mesh = region_on(restrict(s["region"]["parentObjects"]), s["region"]["rule"], anchor)
+            if mesh is not None and mesh.vertices:
+                subjects.append((s["id"], "region", mesh))
+            else:
+                print(f"[warn] {s['id']}: region rule selected nothing", flush=True)
+            continue
         mesh = boneLook.smooth(bake(restrict(s["objects"]), f"sub_{s['id']}"))
         if mesh.vertices:
             subjects.append((s["id"], s["kind"], mesh))
@@ -391,10 +464,25 @@ for plate in spec["plates"]:
         frame_names = [n for s in plate["subjects"] for n in restrict(s["objects"])]
     frame_mesh = bake(frame_names, f"frame_{key}")
     lo, hi = mesh_bbox(frame_mesh)
+    # TALLER THAN ITS SUBJECTS, by `frameRaise` metres above the highest one: the
+    # ankle-foot plate's subjects end at the malleoli, so its top edge cut the leg
+    # just above them (student report, 8 Nov 2026). One point on the frame's own
+    # vertical axis raises the top without widening the turntable's footprint.
+    # THE TURNTABLE ONLY: a view from below looks along the leg, so the extra
+    # height there is empty frame that shrinks the sole (it cost the plantar
+    # interossei their only target).
+    flat_lo, flat_hi = lo, hi
+    if plate.get("frameRaise"):
+        fbm = bmesh.new()
+        fbm.from_mesh(frame_mesh)
+        fbm.verts.new(((lo[0] + hi[0]) / 2, (lo[1] + hi[1]) / 2, hi[2] + float(plate["frameRaise"])))
+        fbm.to_mesh(frame_mesh)
+        fbm.free()
+        lo, hi = mesh_bbox(frame_mesh)
 
     # The skeleton minus every bone subject here, baked once: that is the part
     # of "everything else" that does not change from subject to subject.
-    own = {n for sid, kind, _ in subjects for s in plate["subjects"] if s["id"] == sid and kind == "bone" for n in restrict(s["objects"])}
+    own = {n for sid, kind, _ in subjects for s in plate["subjects"] if s["id"] == sid and kind in ("bone", "region") for n in restrict(s["objects"])}
     # A LIMB PLATE NAMES ITS OWN BONES. Dropping the other side and the axial
     # skeleton is not enough, because ribs and hip bones are PAIRED: they end in
     # .l and .r like a radius does, so "keep this side" keeps the near half of
@@ -429,8 +517,8 @@ for plate in spec["plates"]:
         # it is a property of the key, because the spine plate IS the axial
         # skeleton and dropping it would leave nothing to draw.
         use_span = span if (a.turntable and elev == 0) else None
-        frame_camera(lo, hi, angle, a.limb_margin if tight else a.margin, elev,
-                     fit=True, span=use_span)
+        frame_camera(lo if elev == 0 else flat_lo, hi if elev == 0 else flat_hi, angle,
+                     a.limb_margin if tight else a.margin, elev, fit=True, span=use_span)
 
         # Elevation 0 is the rotation set and is named by its angle, the way the
         # ligament plates already are. Any other elevation keeps the plain
@@ -445,6 +533,8 @@ for plate in spec["plates"]:
         clear()
         link(backdrop, f"plate_backdrop_{key}", BONE_MAT, outline=True)
         for sid, kind, mesh in subjects:
+            if kind == "region":
+                continue
             link(mesh, f"plate_{sid}", BONE_MAT if kind == "bone" else FLESH_MAT,
                  outline=kind == "bone")
         render_to(os.path.join(a.out, key, f"{leaf}.png"), outlines=True)
@@ -459,7 +549,8 @@ for plate in spec["plates"]:
             clear()
             link(backdrop, f"occ_backdrop_{sid}", BONE_MAT, holdout=True)
             for other, okind, omesh in subjects:
-                if other != sid:
+                # A region lies on a backdrop bone, which already holds it out.
+                if other != sid and okind != "region":
                     link(omesh, f"occ_{other}", BONE_MAT, holdout=True)
             link(mesh, f"mask_{sid}", MASK_MAT)
             render_to(os.path.join(a.out, key, "masks", sid, f"{leaf}.png"))
