@@ -18853,51 +18853,55 @@
  },
  "dorsal-radiocarpal-ligament": {
   "build": {
-   "kind": "autoFibres",
+   "kind": "fibres",
    "ligament": [
     "Dorsal radiocarpal ligament.l"
    ],
-   "bones": [
-    "Capitate bone.l",
-    "Hamate bone.l",
-    "Lunate bone.l",
-    "Pisiform bone.l",
-    "Scaphoid bone.l",
-    "Trapezium bone.l",
-    "Trapezoid bone.l",
-    "Triquetrum bone.l",
-    "Fifth metacarpal bone.l",
-    "First metacarpal bone.l",
-    "Fourth metacarpal bone.l",
-    "Second metacarpal bone.l",
-    "Third metacarpal bone.l",
-    "Proximal phalanx of fifth finger of hand.l",
-    "Proximal phalanx of first finger of hand.l",
-    "Proximal phalanx of fourth finger of hand.l",
-    "Proximal phalanx of second finger of hand.l",
-    "Proximal phalanx of third finger of hand.l",
-    "Middle phalanx of fifth finger of hand.l",
-    "Middle phalanx of fourth finger of hand.l",
-    "Middle phalanx of second finger of hand.l",
-    "Middle phalanx of third finger of hand.l",
-    "Distal phalanx of fifth finger of hand.l",
-    "Distal phalanx of first finger of hand.l",
-    "Distal phalanx of fourth finger of hand.l",
-    "Distal phalanx of second finger of hand.l",
-    "Distal phalanx of third finger of hand.l",
-    "Radius.l",
-    "Ulna.l"
+   "from": [
+    "Radius.l"
    ],
-   "count": 12,
+   "to": [
+    "Lunate bone.l",
+    "Triquetrum bone.l"
+   ],
+   "fromSpan": [
+    [
+     259,
+     -6.5,
+     862.5
+    ],
+    [
+     269,
+     -9,
+     860
+    ]
+   ],
+   "toSpan": [
+    [
+     255,
+     -10.5,
+     852
+    ],
+    [
+     246.5,
+     -14,
+     846.5
+    ]
+   ],
+   "count": 14,
+   "bow": 1.2,
    "radius": 0.00075,
-   "samples": 20,
-   "smoothPath": 6,
-   "smoothAcross": 2,
    "lift": 0.1,
-   "near": 2.5,
-   "spread": 4.5
+   "samples": 24,
+   "smooth": {
+    "voxel": 0.13,
+    "iterations": 2,
+    "factor": 0.45
+   },
+   "smoothPath": 6,
+   "smoothAcross": 2
   },
-  "_why": " Added 20 Oct 2026 (owner: wrist and hand ligaments next): each loose piece of the atlas's ligament drawn as fibres between the two bones it touches most, the UCL finish."
+  "_why": " Added 20 Oct 2026 (owner: wrist and hand ligaments next): each loose piece of the atlas's ligament drawn as fibres between the two bones it touches most, the UCL finish. 8 Nov 2026 (student report, 'doesn't show the attachment to the radius'; owner chose a redraw): the atlas piece stops 2mm short of the radius and runs across the carpus, so the auto build drew a carpal band. Now measured spans, the ATFL's method: from the dorsal rim of the radius ulnar to Lister's tubercle (x 259-269mm, probed on Radius.l's distal 12mm) to the dorsal lunate and the dorsal tubercle of the triquetrum (probed dorsal caps), after Radiopaedia: 'connects the dorsal radial rim with the lunate and triquetral bone'."
  },
  "dorsal-scaphotriquetral-ligament": {
   "build": {
