@@ -9,6 +9,8 @@ import { describedFeedback, locateFeedback } from './locateFeedback';
 import { useLocateRoutes } from '../../hooks/useLocateRoutes';
 import { getLocateWithoutPicture } from '../../lib/preferences';
 import { STRUCTURE_INDEX_BY_ID } from '../../data/structureIndex';
+import { notePendingAnswer } from '../../../feedback/data/pendingAnswer';
+import { describeTap } from '../../../feedback/data/tapAnswer';
 
 export interface LocateAnswerParams {
   structureId: string;
@@ -92,6 +94,8 @@ export function useLocateAnswer({
 
   const handleImageAnswer = (r: HotspotAnswerResult) => {
     setResult(r);
+    // For a report sent from the verdict: where the tap landed, on which frame.
+    notePendingAnswer(question.id, describeTap(r.point, imagesById.get(r.imageId)?.filePath ?? ''));
     if (examMode) onAnswer(located(r));
   };
   const handleListAnswer = (structureId: string) => {
@@ -106,6 +110,7 @@ export function useLocateAnswer({
       imageId: question.imageId,
     };
     setResult(r);
+    notePendingAnswer(question.id, `Picked ${structuresById.get(structureId)?.name ?? structureId} from the list`);
     if (examMode) onAnswer(located(r));
   };
   const handleDescribedAnswer = (index: number) => {
