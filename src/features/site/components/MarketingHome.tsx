@@ -32,8 +32,8 @@ import { CLAIM_HREF, CODE_OFFER, codeOfferOpen } from '../../billing/lib/codeOff
  */
 
 const PRICING = {
-  monthly: '£4.99',
-  annual: '£29.99',
+  monthly: '£7.99',
+  annual: '£63.99',
 } as const;
 
 /**

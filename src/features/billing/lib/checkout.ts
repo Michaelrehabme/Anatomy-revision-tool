@@ -29,8 +29,8 @@ export interface Plan {
  * the correct price. The cost is only an embarrassing mismatch.
  */
 export const PLANS: readonly Plan[] = [
-  { id: 'annual', label: 'Annual', price: '£29.99', per: 'a year', note: 'About £2.50 a month. Covers a full academic year.' },
-  { id: 'monthly', label: 'Monthly', price: '£4.99', per: 'a month', note: 'Cancel whenever you like.' },
+  { id: 'annual', label: 'Annual', price: '£63.99', per: 'a year', note: 'About £5.33 a month, a third off paying monthly. Covers a full academic year.' },
+  { id: 'monthly', label: 'Monthly', price: '£7.99', per: 'a month', note: 'Cancel whenever you like.' },
 ];
 
 /**

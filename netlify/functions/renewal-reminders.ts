@@ -39,7 +39,7 @@ import type { Entitlement } from '../../src/features/anatomy-revision/lib/entitl
  */
 
 const MANAGE_URL = 'https://locusmsk.co.uk/account';
-const MONTHLY_PRICE = '£4.99';
+const MONTHLY_PRICE = '£7.99';
 
 /** One run handles at most this many accounts. Netlify stops a scheduled function at 30 seconds. */
 const BATCH = 200;
