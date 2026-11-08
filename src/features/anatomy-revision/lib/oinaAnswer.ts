@@ -185,10 +185,15 @@ export function acceptedVariantsFor(promptKind: PromptKind, raw: string, limb?: 
     if (trimmed) variants.add(trimmed);
   };
 
-  add(raw);
+  if (promptKind !== 'origin' && promptKind !== 'insertion') add(raw);
   if (promptKind === 'origin' || promptKind === 'insertion') {
+    // The site first, the authored form after it: the first form is what the
+    // hints count and what the answer shows. "Short head: coracoid process"
+    // made the hint read "4 words, starts with S" for an answer that is the
+    // coracoid process (student report, 4 Nov 2026).
     const canonical = stripHeadPrefix(raw);
     add(canonical);
+    add(raw);
     const withoutParens = canonical.replace(/\s*\([^)]*\)/g, '');
     add(withoutParens);
     // How it gets there is not where it inserts: "Tibial tuberosity via the

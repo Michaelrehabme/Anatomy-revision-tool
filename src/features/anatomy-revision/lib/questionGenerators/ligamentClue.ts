@@ -31,12 +31,21 @@ export function ligamentPromptLines(
   if (!ids.length) return null;
   const detail = LIGAMENT_ATTACHMENT_DETAIL[structure.id] ?? {};
   const added = LIGAMENT_ATTACHMENT_DETAIL_ADDED[structure.id] ?? {};
-  return ids.map((id) => {
+  return ids.flatMap((id) => {
     const site = sites.get(id);
     const label = site ? siteLabel(site, sites) : id.replace(/-/g, ' ');
     // The part of the bone, where a source names it (data/ligamentAttachmentDetail.ts).
     const part = detail[id] && !(asOf && added[id] && added[id] > asOf) ? detail[id] : null;
-    return `Attaches to: ${label}${part ? ` — ${part}` : ''}`;
+    // A ligament whose two ends are on one bone (the superior transverse
+    // scapular, coracoid to notch) has one site and a part naming both ends.
+    // Each end is its own line: run together after a dash it read as one
+    // muddled place (student report, 2 Nov 2026; owner, 8 Nov 2026).
+    const [here, otherEnd] = part ? part.split(/;\s*its other end is at\s+/) : [null, undefined];
+    const line = `Attaches to: ${label}${here ? ` — ${here}` : ''}`;
+    // The other end is on the same bone, so it is said as that bone.
+    const bone = site?.parentBoneId ? sites.get(site.parentBoneId) : undefined;
+    const boneName = bone?.name ?? label;
+    return otherEnd ? [line, `Attaches to: ${boneName} — ${otherEnd.replace(/^the\s+/i, '')}`] : [line];
   });
 }
 

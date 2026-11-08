@@ -9,6 +9,7 @@
  * "of the atlas" has named the same structure.
  *
  * A dash is one mark whatever its width and spacing: "C3 - C6" is "C3–C6".
+ * Between two letters it is no mark at all: "sacro-iliac" is "sacroiliac".
  * Commas, colons and brackets separate words and nothing more: "trochanter,
  * femur" and "trochanter (femur)" are the same three words.
  */
@@ -19,6 +20,9 @@ function normalize(value: string): string {
     .trim()
     .replace(/\s+/g, ' ')
     .replace(/\s*[–—-]\s*/g, '-')
+    // A hyphen inside a word is optional: "sacro-iliac" is "sacroiliac"
+    // (student report, 7 Nov 2026). Between numbers it is a range and stays.
+    .replace(/(?<=[a-z])-(?=[a-z])/g, '')
     .replace(/^(the|a|an)\s+/, '')
     .replace(/ the(?= )/g, '')
     .split(' ')
@@ -55,7 +59,7 @@ export function singular(word: string): string {
  * swap is the commonest slip in a long Latin name, and a student who typed
  * "intretransversarii" got one letter wrong, not two (owner, 24 Oct 2026).
  */
-export function editDistance(a: string, b: string): number {
+export function editDistance(a: string, b: string, substitution = 1): number {
   if (a === b) return 0;
   if (a.length === 0) return b.length;
   if (b.length === 0) return a.length;
@@ -65,7 +69,7 @@ export function editDistance(a: string, b: string): number {
   for (let i = 1; i <= a.length; i++) {
     const currentRow = [i];
     for (let j = 1; j <= b.length; j++) {
-      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+      const cost = a[i - 1] === b[j - 1] ? 0 : substitution;
       let best = Math.min(prevRow[j] + 1, currentRow[j - 1] + 1, prevRow[j - 1] + cost);
       if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) best = Math.min(best, twoBack[j - 2] + 1);
       currentRow.push(best);
@@ -77,14 +81,55 @@ export function editDistance(a: string, b: string): number {
 }
 
 /**
+ * How long a name has to be, in letters, before two slips are forgiven
+ * rather than one (the owner's call, 8 Nov 2026, after "Interroseous
+ * sacroiliac ligament" was marked wrong). A long Latin name is where a
+ * student who knows the structure misspells it twice; a short one is where
+ * two letters can make it a different structure.
+ */
+export const LONG_NAME_LETTERS = 20;
+
+const digitsOf = (value: string) => value.replace(/\D/g, '');
+
+/**
+ * Whether a typed answer is the key misspelt twice in its long words: word
+ * for word, one slip of any kind in any word, or two in a word of eight
+ * letters or more where neither is a changed letter — a letter doubled,
+ * dropped or swapped with its neighbour, which is how a long Latin word is
+ * misspelt ("interroseous" is interosseous). Two changed letters are how two
+ * structures differ: "internal" and "external", "metacarpal" and
+ * "metatarsal", "minimus" and "maximus" stay wrong.
+ */
+function twoSlipsInLongWords(input: string, key: string): boolean {
+  if (key.replace(/[^a-z]/g, '').length < LONG_NAME_LETTERS || digitsOf(key) !== digitsOf(input)) return false;
+  const typed = input.split(' ');
+  const words = key.split(' ');
+  if (typed.length !== words.length) return false;
+  let total = 0;
+  for (let i = 0; i < words.length; i += 1) {
+    const slips = editDistance(typed[i], words[i]);
+    if (slips <= 1) total += slips;
+    else if (words[i].length >= 8 && editDistance(typed[i], words[i], 2) <= 2) total += 2;
+    else return false;
+  }
+  return total <= 2;
+}
+
+/**
  * Checks a typed answer against a list of accepted strings, tolerant of a
  * single-character typo (insertion, deletion, or substitution) so students
- * aren't marked wrong for one mistyped letter.
+ * aren't marked wrong for one mistyped letter. An answer of LONG_NAME_LETTERS
+ * or more is allowed two where both fall in long words (twoSlipsInLongWords),
+ * and its numbers are the key's exactly: a slip is a misspelling, never a
+ * different level or digit.
  */
 export function isAnswerMatch(input: string, accepted: string[], maxDistance = 1): boolean {
   const normalizedInput = normalize(input);
   if (!normalizedInput) return false;
-  return accepted.some((candidate) => editDistance(normalizedInput, normalize(candidate)) <= maxDistance);
+  return accepted.some((candidate) => {
+    const key = normalize(candidate);
+    return editDistance(normalizedInput, key) <= maxDistance || twoSlipsInLongWords(normalizedInput, key);
+  });
 }
 
 /** Words that say which of a pair, and so take the rest of their partner's name. */

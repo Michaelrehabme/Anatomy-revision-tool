@@ -15,6 +15,7 @@ import {
 import { funnelRows, funnelSources } from '../../lib/funnel';
 import { useIsDesktop } from '../../../anatomy-revision/hooks/useIsDesktop';
 import { ADMIN_PAGE_PAD, ADMIN_TITLE_STYLE, Facts, FoldList, FoldRow } from '../shared/AdminMobile';
+import { ReportScreen, hasScreen } from './ReportScreen';
 
 /**
  * What the app has reported about itself: how far new visitors get, the
@@ -222,6 +223,7 @@ function Reports() {
                   ['Id', <span style={{ font: '400 11.5px/1.4 var(--font-mono)' }}>{report.questionId}</span>],
                 ]}
               />
+              {report.shown && hasScreen(report.shown) && <ReportScreen shown={report.shown} />}
               <div className="mt-3">
                 {report.resolvedAt ? (
                   <span style={small}>Resolved {when(report.resolvedAt)}</span>
@@ -267,6 +269,7 @@ function Reports() {
                   {REASON_LABEL.get(report.reason) ?? report.reason}
                   {report.note && <div style={{ ...small, color: 'var(--ink)', whiteSpace: 'pre-wrap' }}>{report.note}</div>}
                   {report.shown?.given && <div style={{ ...small, color: 'var(--ink)' }}>Their answer: {report.shown.given}</div>}
+                  {report.shown && hasScreen(report.shown) && <ReportScreen shown={report.shown} />}
                 </td>
                 <td style={{ ...cell, paddingRight: 0, whiteSpace: 'nowrap' }}>
                   {report.resolvedAt ? (

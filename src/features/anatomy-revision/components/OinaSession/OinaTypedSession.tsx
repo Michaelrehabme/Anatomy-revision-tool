@@ -9,6 +9,7 @@ import { ConfidenceButtons } from '../shared/ConfidenceButtons';
 import { Button } from '../shared/Button';
 import { ExamAnswerFooter } from '../shared/ExamAnswerFooter';
 import type { OinaAnswerParams } from './OinaSelectSession';
+import { revealedSlotAnswer } from '../../lib/oinaValues';
 
 interface OinaTypedSessionProps {
   question: OinaTypedQuestion;
@@ -40,7 +41,7 @@ export function OinaTypedSession({ question, onAnswer, onNext, examMode }: OinaT
   const result = gradeTypedSlots(inputs, question.slots);
   const answerStrings = () => ({
     selectedAnswer: inputs.map((v) => v.trim()).filter(Boolean).join(', ') || '(no answer)',
-    correctAnswer: question.slots.map((s) => s.accepted[0]).join(', '),
+    correctAnswer: question.slots.map((s) => revealedSlotAnswer(s.accepted)).join(', '),
   });
 
   const submit = (confidence?: Confidence) => {
@@ -118,7 +119,7 @@ export function OinaTypedSession({ question, onAnswer, onNext, examMode }: OinaT
                   {!checked && question.hints === 'full' && <SlotHints accepted={slot.accepted} />}
                   {revealing && !slotCorrect && (
                     <p className="mt-2 text-base" style={{ color: 'var(--acc2d)' }}>
-                      {slot.accepted[0]}
+                      {revealedSlotAnswer(slot.accepted)}
                     </p>
                   )}
                 </div>

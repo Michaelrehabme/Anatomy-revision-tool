@@ -198,15 +198,20 @@ const ROMAN: Record<string, string> = { i: '1', ii: '2', iii: '3', iv: '4', v: '
  * is the pubic symphysis). Left joined: a value whose "and" describes one
  * surface ("Anterior and medial surfaces of ulna", "Medial and lateral sides
  * of the base of the proximal phalanx"), one head's footprint behind a head
- * prefix (biceps brachii's long head, adductor pollicis's oblique head),
- * anconeus's "Lateral olecranon & proximal ulna" (split, "Proximal ulna" is
- * where brachialis inserts too, and was offered as a wrong answer to it), and
+ * prefix (biceps brachii's long head, adductor pollicis's oblique head), and
  * longus colli, whose bodies and transverse processes do not share the one
  * range the value gives them.
+ *
+ * Anconeus's "Lateral olecranon & proximal ulna" was left joined too, because
+ * a bare "Proximal ulna" is where brachialis inserts as well. Joined, it read
+ * as two sites in one choice (student report, 3 Nov 2026), so it is split
+ * with the surface said: anconeus is on the back of the proximal ulna,
+ * brachialis on the front (owner, 8 Nov 2026).
  */
 export const SEPARATE_SITES: Record<string, string[]> = {
   'Superior angle & medial border of scapula': ['Superior angle of scapula', 'Medial border of scapula'],
   'Coronoid process & ulnar tuberosity': ['Coronoid process of ulna', 'Ulnar tuberosity'],
+  'Lateral olecranon & proximal ulna': ['Lateral olecranon', 'Posterior proximal ulna'],
   'Pubic crest & symphysis': ['Pubic crest', 'Pubic symphysis'],
   'Lateral condyle and upper 2/3 of lateral tibia': ['Lateral condyle of tibia', 'Upper 2/3 of lateral tibia'],
   'Head & upper lateral fibula': ['Head of fibula', 'Upper lateral fibula'],
@@ -260,6 +265,25 @@ export function limbExplicitForm(value: string, limb: Limb): string | undefined 
     })
     .replace(/\b(phalanx|phalanges)\s+(\d(?:\s*[–-]\s*\d)?)\b/gi, (_, p: string, d: string) => `${p} of ${toe ? 'toes' : 'fingers'} ${d}`);
   return out === value ? undefined : out;
+}
+
+/**
+ * A typed slot's answer as it is shown once checked: the site, with the head
+ * it belongs to after it, "Coracoid process (short head)". The site comes
+ * first because it is the answer (and the hints count it, student report,
+ * 4 Nov 2026); the head is kept because a missed box should still teach which
+ * head it was.
+ */
+export function revealedSlotAnswer(accepted: readonly string[]): string {
+  const [site = '', ...rest] = accepted;
+  for (const form of rest) {
+    if (stripHeadPrefix(form) !== site) continue;
+    const head = form.match(HEAD_PREFIX)?.[0];
+    if (head) return `${site} (${head.replace(/:\s*$/, '').toLowerCase()})`;
+    const bracket = form.match(HEAD_SUFFIX)?.[0];
+    if (bracket) return `${site} ${bracket.trim()}`;
+  }
+  return site;
 }
 
 /** Strips head/part markers so a value can stand as a choice or a typed slot. */

@@ -5,6 +5,7 @@ import { buildVocabulary } from '../../data/content/vocabulary';
 import { linkImages } from '../linkImages';
 import { generateRevisionSet, type RevisionSetConfig } from '../questionGenerators/generateSet';
 import { buildStarterSet } from '../questionGenerators/starterSet';
+import { actionWithoutAttachment } from '../questionGenerators/mcq';
 import { arteriesOf, choiceName, wrongArteries } from '../questionGenerators/bloodSupply';
 import type { DistractorSources } from '../questionGenerators/sources';
 import { canonicalNerveNames, humanizeActionTag, separateSites, stripHeadPrefix } from '../oinaValues';
@@ -85,7 +86,7 @@ function wrongChoices(q: RevisionQuestion): string[] {
 function factStrings(s: AnatomyStructure): string[] {
   const out: string[] = [];
   if (s.category === 'muscle') {
-    out.push(s.origin.join('; '), s.insertion.join('; '), s.actionText);
+    out.push(s.origin.join('; '), s.insertion.join('; '), s.actionText, actionWithoutAttachment(s.actionText));
     out.push(...s.origin.map(stripHeadPrefix), ...s.insertion.map(stripHeadPrefix));
     out.push(...s.origin.flatMap(separateSites), ...s.insertion.flatMap(separateSites));
     out.push(s.nerve.map((n) => n.name).join('; '), ...s.nerve.map((n) => n.name), ...canonicalNerveNames(s.nerve));
