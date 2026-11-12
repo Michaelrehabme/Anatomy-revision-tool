@@ -41,6 +41,11 @@ import bpy, json, sys, os, math, argparse, mathutils, bmesh, time
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 import boneLook
+import palmarInterossei
+
+# The atlas has one palmar interosseous of three; the other two are added
+# before anything is drawn, so every plate that shows them shows all three.
+palmarInterossei.add_missing()
 
 argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
 ap = argparse.ArgumentParser()
