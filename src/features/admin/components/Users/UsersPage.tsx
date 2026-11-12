@@ -31,7 +31,7 @@ const COLUMNS: { key: SortColumn; label: string }[] = [
 
 type Row = AdminUserRow & { access: UserAccess; group: TrainingGroup; isTest: boolean; isAdmin: boolean };
 
-type Filter = 'all' | 'signed-up' | 'guests' | 'full-access' | 'redeemed' | 'qualified' | 'training';
+type Filter = 'all' | 'signed-up' | 'guests' | 'full-access' | 'redeemed' | 'answered' | 'unanswered' | 'qualified' | 'training';
 
 const FILTERS: { key: Filter; label: string }[] = [
   { key: 'all', label: 'All' },
@@ -39,6 +39,8 @@ const FILTERS: { key: Filter; label: string }[] = [
   { key: 'guests', label: 'Guests' },
   { key: 'full-access', label: 'Full access' },
   { key: 'redeemed', label: 'Redeemed a code' },
+  { key: 'answered', label: 'Answered questionnaire' },
+  { key: 'unanswered', label: 'Not answered' },
   { key: 'qualified', label: 'Qualified' },
   { key: 'training', label: 'In training' },
 ];
@@ -55,6 +57,10 @@ function matches(row: Row, filter: Filter): boolean {
       return row.access.fullAccess;
     case 'redeemed':
       return row.access.accessCode !== null;
+    case 'answered':
+      return row.questionnaire?.status === 'answered';
+    case 'unanswered':
+      return row.questionnaire?.status !== 'answered';
     case 'qualified':
       return row.group === 'qualified';
     case 'training':
