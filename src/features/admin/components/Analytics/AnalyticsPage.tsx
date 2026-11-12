@@ -29,7 +29,7 @@ export function AnalyticsPage() {
         Analytics
       </h1>
       <p className="mt-2 text-sm" style={{ color: 'var(--ink2)' }}>
-        Cohort weakness analytics, aggregated from the most recent attempt data.
+        Cohort weakness analytics, aggregated from the most recent attempt data. Accounts marked as test on the Users page are left out.
       </p>
 
       <div className="mt-8 flex gap-1 overflow-x-auto border-b" style={{ borderColor: 'var(--line)' }}>

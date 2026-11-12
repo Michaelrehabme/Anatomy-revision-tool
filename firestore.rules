@@ -712,6 +712,15 @@ service cloud.firestore {
       allow read, write: if isAdmin();
     }
 
+    // Admin-only list of test and internal accounts, so the owner's own and
+    // testers' accounts can be left out of the Users counts and Analytics
+    // (admin/data/testAccountsRepository.ts). Kept out of users/{uid}: an
+    // admin may not write a student's profile, and a student must not be able
+    // to mark or unmark themselves.
+    match /adminTestAccounts/{uid} {
+      allow read, write: if isAdmin();
+    }
+
     // Admin-only "reviewed" markers for the Question Health screen (CR-005) —
     // keyed by questionId, so a reviewed question doesn't keep resurfacing in
     // the flagged list. Same admin-only shape as changeRequests.

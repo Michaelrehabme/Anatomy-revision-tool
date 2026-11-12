@@ -1,8 +1,11 @@
 import { Link, useParams } from 'react-router-dom';
 import { REGION_LABELS } from '../../../anatomy-revision/types/region';
 import { useAdminUserDetail } from '../../hooks/useAdminUserDetail';
-import { formatDateTime } from '../../lib/formatDate';
+import { useTestAccounts } from '../../hooks/useTestAccounts';
+import { formatDateTime, formatRelativeDay } from '../../lib/formatDate';
+import { COURSE_LABELS, STUDY_LENGTH_LABELS, STUDY_LEVEL_LABELS, TRAINING_GROUP_LABELS, trainingGroup } from '../../lib/questionnaire';
 import { ADMIN_PAGE_PAD, ADMIN_TITLE_STYLE } from '../shared/AdminMobile';
+import { Panel, StatCard, Switch, Tag } from '../shared/AdminUi';
 
 const labelStyle = {
   font: '500 10px/1 var(--font-mono)',
@@ -14,9 +17,12 @@ const labelStyle = {
 export function UserDetailPage() {
   const { uid } = useParams<{ uid: string }>();
   const { detail, loading, error } = useAdminUserDetail(uid ?? '');
+  const { testIds, setMarked } = useTestAccounts();
+  const isTest = uid ? testIds.has(uid) : false;
+  const q = detail?.profile.questionnaire ?? { status: 'none' as const };
 
   return (
-    <div className={ADMIN_PAGE_PAD}>
+    <div className={`${ADMIN_PAGE_PAD} mx-auto w-full max-w-[1240px]`}>
       <Link to="/admin/users" style={{ font: '400 12.5px/1 var(--font-ui)', color: 'var(--ink3)', textDecoration: 'none' }}>
         ← Users
       </Link>
@@ -34,39 +40,49 @@ export function UserDetailPage() {
 
       {detail && (
         <>
-          <h1
-            className="mt-4"
-            style={{ ...ADMIN_TITLE_STYLE, margin: '16px 0 0' }}
-          >
-            {detail.profile.displayName ?? 'Unnamed user'}
-          </h1>
-          <p className="mt-2 text-sm" style={{ color: 'var(--ink2)' }}>
-            {detail.profile.email ?? 'No email on file'} · last active {formatDateTime(detail.profile.lastActiveAt)}
-          </p>
-
-          <div className="mt-8 flex flex-wrap gap-x-12 gap-y-6">
-            <div>
-              <div style={labelStyle}>Total attempts</div>
-              <div className="mt-1.5" style={{ font: '500 22px/1 var(--font-mono)', color: 'var(--ink)' }}>
-                {detail.totalAttempts}
-              </div>
+          <div className="mt-4 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+            <div className="min-w-0">
+              <h1 className="flex flex-wrap items-center gap-3" style={{ ...ADMIN_TITLE_STYLE, margin: '16px 0 0' }}>
+                {detail.profile.displayName ?? detail.profile.email ?? 'Guest'}
+                {isTest && <Tag tone="warn">Test</Tag>}
+              </h1>
+              <p className="mt-2 text-sm" style={{ color: 'var(--ink2)', overflowWrap: 'anywhere' }}>
+                {detail.profile.email ?? 'No email on file'} · joined {formatDateTime(detail.profile.createdAt)}
+              </p>
             </div>
-            <div>
-              <div style={labelStyle}>Accuracy</div>
-              <div
-                className="mt-1.5"
-                style={{ font: '500 22px/1 var(--font-mono)', color: detail.accuracyPct < 60 ? 'var(--acc2d)' : 'var(--accd)' }}
-              >
-                {detail.totalAttempts > 0 ? `${detail.accuracyPct}%` : '—'}
-              </div>
-            </div>
-            <div>
-              <div style={labelStyle}>Streak</div>
-              <div className="mt-1.5" style={{ font: '500 22px/1 var(--font-mono)', color: 'var(--acc2d)' }}>
-                {detail.streak}
-              </div>
-            </div>
+            <Switch
+              checked={isTest}
+              onChange={(next) => void setMarked(detail.profile.uid, next, { email: detail.profile.email, displayName: detail.profile.displayName })}
+              label="Test account"
+            />
           </div>
+
+          <div className="mt-6 grid grid-cols-2 gap-2.5 lg:grid-cols-5 lg:gap-3">
+            <StatCard label="Last session" value={formatRelativeDay(detail.lastSessionAt)} note={formatDateTime(detail.lastSessionAt)} tone="accent" compact />
+            <StatCard label="Last opened app" value={formatRelativeDay(detail.profile.lastActiveAt)} note={formatDateTime(detail.profile.lastActiveAt)} compact />
+            <StatCard label="Attempts" value={detail.totalAttempts} />
+            <StatCard label="Accuracy" value={detail.totalAttempts > 0 ? `${detail.accuracyPct}%` : '—'} />
+            <StatCard className="col-span-2 lg:col-span-1" label="Streak" value={detail.streak} note={detail.streak === 1 ? 'day' : 'days'} />
+          </div>
+
+          <Panel className="mt-3" title="Questionnaire" aside={q.status === 'skipped' ? 'Skipped' : q.status === 'none' ? 'Not answered' : TRAINING_GROUP_LABELS[trainingGroup(q)]}>
+            <dl className="grid gap-x-6 gap-y-3 sm:grid-cols-3" style={{ margin: 0 }}>
+              {(
+                [
+                  ['Level', q.level ? STUDY_LEVEL_LABELS[q.level] : '—'],
+                  ['Course', q.course ? COURSE_LABELS[q.course] : '—'],
+                  ['Studied anatomy for', q.studyLength ? STUDY_LENGTH_LABELS[q.studyLength] : '—'],
+                ] as const
+              ).map(([label, value]) => (
+                <div key={label}>
+                  <dt style={labelStyle}>{label}</dt>
+                  <dd className="mt-1.5" style={{ margin: '6px 0 0', font: '400 14.5px/1.35 var(--font-ui)', color: value === '—' ? 'var(--ink3)' : 'var(--ink)' }}>
+                    {value}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          </Panel>
 
           <div className="mt-13 flex flex-col gap-12 lg:flex-row lg:gap-[88px]">
             <div className="flex-1">
