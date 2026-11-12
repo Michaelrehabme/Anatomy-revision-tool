@@ -19632,51 +19632,54 @@
  },
  "radioscaphocapitate-ligament": {
   "build": {
-   "kind": "autoFibres",
+   "kind": "fibres",
    "ligament": [
     "Radioscaphocapitate ligament.l"
    ],
-   "bones": [
-    "Capitate bone.l",
-    "Hamate bone.l",
-    "Lunate bone.l",
-    "Pisiform bone.l",
-    "Scaphoid bone.l",
-    "Trapezium bone.l",
-    "Trapezoid bone.l",
-    "Triquetrum bone.l",
-    "Fifth metacarpal bone.l",
-    "First metacarpal bone.l",
-    "Fourth metacarpal bone.l",
-    "Second metacarpal bone.l",
-    "Third metacarpal bone.l",
-    "Proximal phalanx of fifth finger of hand.l",
-    "Proximal phalanx of first finger of hand.l",
-    "Proximal phalanx of fourth finger of hand.l",
-    "Proximal phalanx of second finger of hand.l",
-    "Proximal phalanx of third finger of hand.l",
-    "Middle phalanx of fifth finger of hand.l",
-    "Middle phalanx of fourth finger of hand.l",
-    "Middle phalanx of second finger of hand.l",
-    "Middle phalanx of third finger of hand.l",
-    "Distal phalanx of fifth finger of hand.l",
-    "Distal phalanx of first finger of hand.l",
-    "Distal phalanx of fourth finger of hand.l",
-    "Distal phalanx of second finger of hand.l",
-    "Distal phalanx of third finger of hand.l",
-    "Radius.l",
-    "Ulna.l"
+   "from": [
+    "Radius.l"
    ],
-   "count": 12,
-   "radius": 0.00075,
-   "samples": 20,
+   "to": [
+    "Capitate bone.l"
+   ],
+   "over": [
+    "Scaphoid bone.l",
+    "Lunate bone.l"
+   ],
+   "fromSpan": [
+    [
+     279.5,
+     -22.7,
+     864.0
+    ],
+    [
+     282.0,
+     -21.6,
+     862.5
+    ]
+   ],
+   "toSpan": [
+    [
+     265.5,
+     -25.8,
+     843.1
+    ],
+    [
+     268.0,
+     -25.8,
+     841.9
+    ]
+   ],
+   "count": 6,
+   "radius": 0.0005,
+   "samples": 24,
    "smoothPath": 6,
    "smoothAcross": 2,
    "lift": 0.1,
    "near": 2.5,
-   "spread": 4.5
+   "exactCount": true
   },
-  "_why": " Added 20 Oct 2026 (owner: wrist and hand ligaments next): each loose piece of the atlas's ligament drawn as fibres between the two bones it touches most, the UCL finish."
+  "_why": " Added 20 Oct 2026 (owner: wrist and hand ligaments next): each loose piece of the atlas's ligament drawn as fibres between the two bones it touches most, the UCL finish. Rebuilt 12 Nov 2026 (student report: it did not reach the radius): the atlas strip touches radius, scaphoid and capitate equally and autoFibres dropped the radius on the tie, so the fibres now run from measured spans on the palmar radial styloid to the palmar waist of the capitate, laid over the scaphoid and lunate (Berger and Landsmeer 1985). Owner chose the 3 mm band (6 fibres) over 7.2 and 4.7 mm."
  },
  "scaphocapitate-ligament": {
   "build": {
