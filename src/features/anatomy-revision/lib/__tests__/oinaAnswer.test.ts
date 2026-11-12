@@ -310,3 +310,17 @@ describe('a head prefix', () => {
     expect(revealedSlotAnswer(acceptedVariantsFor('insertion', 'Radial tuberosity'))).toBe('Radial tuberosity');
   });
 });
+
+describe('student reports, 11-12 Nov 2026', () => {
+  it('takes a side of the proximal phalanx without "base of"', () => {
+    const accepted = acceptedVariantsFor('insertion', 'Medial side of base of proximal phalanx of big toe', 'foot');
+    expect(matchesSlot('Medial side of proximal phalanx of digit 1', accepted)).toBe(true);
+    expect(matchesSlot('Lateral side of proximal phalanx of digit 1', accepted)).toBe(false);
+    expect(matchesSlot('Medial side of proximal phalanx of digit 2', accepted)).toBe(false);
+  });
+
+  it('treats the lateral olecranon and the olecranon process as one place', () => {
+    expect(conflictsWith('Lateral olecranon', 'Olecranon process of ulna')).toBe(true);
+    expect(conflictsWith('Olecranon process of ulna', 'Lateral olecranon')).toBe(true);
+  });
+});

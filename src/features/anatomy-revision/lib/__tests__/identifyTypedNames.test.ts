@@ -110,3 +110,14 @@ describe('typed origin and insertion boxes', () => {
     expect(grade(id, typed)).toBe(false);
   });
 });
+
+describe('the iliofemoral ligament parts without "part of" (student report, 12 Nov 2026)', () => {
+  const questions = buildIdentifyTypedQuestions(ALL_STRUCTURES, ALL_IMAGES);
+  const acceptedFor = (id: string) => questions.find((q) => q.structureId === id)!.acceptedAnswers;
+
+  it('takes "Transverse iliofemoral ligament" and not the other part', () => {
+    expect(isAnswerMatch('Transverse Iliofemoral ligament', acceptedFor('transverse-part-of-iliofemoral-ligament'))).toBe(true);
+    expect(isAnswerMatch('Transverse Iliofemoral ligament', acceptedFor('descending-part-of-iliofemoral-ligament'))).toBe(false);
+    expect(isAnswerMatch('Descending iliofemoral ligament', acceptedFor('descending-part-of-iliofemoral-ligament'))).toBe(true);
+  });
+});

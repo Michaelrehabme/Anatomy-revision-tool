@@ -277,17 +277,27 @@ function takeWithStructureCap(
   if (count <= 0) return [];
   const taken: RevisionQuestion[] = [];
   const used = new Set<RevisionQuestion>();
-  for (let limit = cap; ; limit++) {
+  // The first pass also keeps a structure to one question of each kind. Its
+  // two questions are meant to catch it from two angles, and two locates of
+  // the surgical neck from two camera views are one question asked twice: a
+  // twenty-question shoulder locate session spent eight slots that way and
+  // read as "the same question three times" (student report, 12 Nov 2026).
+  // Relaxing drops this before it raises the cap.
+  for (let limit = cap, distinctKinds = true; ; distinctKinds ? (distinctKinds = false) : limit++) {
     for (const question of ordered) {
       if (taken.length >= count) break;
       if (used.has(question)) continue;
       const already = counts.get(question.structureId) ?? 0;
       if (already >= limit) continue;
+      const kindKey = `kind:${question.structureId}|${question.type}|${question.promptKind}`;
+      if (distinctKinds && counts.has(kindKey)) continue;
       counts.set(question.structureId, already + 1);
+      counts.set(kindKey, 1);
       used.add(question);
       taken.push(question);
     }
-    if (!relax || taken.length >= count || used.size === ordered.length) break;
+    if (taken.length >= count || used.size === ordered.length) break;
+    if (!relax) break;
   }
   return taken;
 }
