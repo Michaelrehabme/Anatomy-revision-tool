@@ -120,6 +120,7 @@ export function UsersPage() {
   const [sort, setSort] = useState<SortState>({ column: 'lastSessionAt', direction: 'desc' });
   const [filter, setFilter] = useState<Filter>('signed-up');
   const [search, setSearch] = useState('');
+  const [page, setPage] = useState(0);
   const isDesktop = useIsDesktop();
 
   const all = useMemo<Row[]>(() => {
@@ -174,6 +175,12 @@ export function UsersPage() {
         return 0;
       });
   }, [population, filter, search, sort]);
+
+  // Back to the first page whenever what is listed, or its order, changes.
+  useEffect(() => setPage(0), [filter, search, sort, showTest]);
+  const pageCount = Math.max(1, Math.ceil(visible.length / PAGE_SIZE));
+  const currentPage = Math.min(page, pageCount - 1);
+  const pageRows = visible.slice(currentPage * PAGE_SIZE, (currentPage + 1) * PAGE_SIZE);
 
   const toggleSort = (column: SortColumn) => {
     setSort((prev) =>
@@ -239,7 +246,7 @@ export function UsersPage() {
 
           <QuestionnairePanel breakdown={breakdown} />
 
-          <div className="mt-8 flex flex-col gap-3 lg:flex-row lg:items-center">
+          <div id="users-list-top" className="mt-8 flex scroll-mt-4 flex-col gap-3 lg:flex-row lg:items-center">
             <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 lg:mx-0 lg:flex-wrap lg:overflow-visible lg:px-0 lg:pb-0" role="group" aria-label="Show">
               {FILTERS.map((f) => (
                 <Chip key={f.key} active={filter === f.key} onClick={() => setFilter(f.key)}>
@@ -265,9 +272,21 @@ export function UsersPage() {
           )}
 
           {isDesktop ? (
-            visible.length > 0 && <UserTable rows={visible} sort={sort} onSort={toggleSort} onMarkTest={markTest} />
+            visible.length > 0 && <UserTable rows={pageRows} sort={sort} onSort={toggleSort} onMarkTest={markTest} />
           ) : (
-            <MobileUserList rows={visible} sort={sort} onSort={setSort} onMarkTest={markTest} />
+            <MobileUserList rows={pageRows} sort={sort} onSort={setSort} onMarkTest={markTest} />
+          )}
+
+          {visible.length > PAGE_SIZE && (
+            <Pager
+              page={currentPage}
+              pageCount={pageCount}
+              total={visible.length}
+              onPage={(next) => {
+                setPage(next);
+                document.getElementById('users-list-top')?.scrollIntoView({ block: 'start' });
+              }}
+            />
           )}
         </>
       )}
@@ -278,6 +297,46 @@ export function UsersPage() {
         </div>
       )}
     </div>
+  );
+}
+
+const PAGE_SIZE = 25;
+
+function Pager({ page, pageCount, total, onPage }: { page: number; pageCount: number; total: number; onPage: (page: number) => void }) {
+  const from = page * PAGE_SIZE + 1;
+  const to = Math.min(total, (page + 1) * PAGE_SIZE);
+  const button = (disabled: boolean) =>
+    ({
+      font: '500 13px/1 var(--font-ui)',
+      border: '1.2px solid var(--line)',
+      background: 'var(--sf)',
+      color: disabled ? 'var(--ink3)' : 'var(--ink)',
+      opacity: disabled ? 0.5 : 1,
+      cursor: disabled ? 'default' : 'pointer',
+    }) as const;
+  return (
+    <nav aria-label="Pages" className="mt-4 flex items-center justify-between gap-3">
+      <span style={{ font: '400 13px/1.3 var(--font-ui)', color: 'var(--ink3)' }}>
+        {from}–{to} of {total}
+      </span>
+      <span className="flex items-center gap-2">
+        <button type="button" disabled={page === 0} onClick={() => onPage(page - 1)} className="min-h-[38px] rounded-full px-4" style={button(page === 0)}>
+          ← Previous
+        </button>
+        <span style={{ font: '500 12.5px/1 var(--font-mono)', color: 'var(--ink2)' }}>
+          {page + 1} / {pageCount}
+        </span>
+        <button
+          type="button"
+          disabled={page >= pageCount - 1}
+          onClick={() => onPage(page + 1)}
+          className="min-h-[38px] rounded-full px-4"
+          style={button(page >= pageCount - 1)}
+        >
+          Next →
+        </button>
+      </span>
+    </nav>
   );
 }
 
