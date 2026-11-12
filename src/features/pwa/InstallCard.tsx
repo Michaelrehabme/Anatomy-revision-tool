@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { promptInstall, useInstallWay } from './install';
+import { useEffect, useState } from 'react';
+import { markInstallCardShowing, promptInstall, useInstallWay } from './install';
 
 /**
  * "Add LocusMSK to your home screen", on Today, for a student who has
@@ -26,8 +26,10 @@ export const INSTALL_TITLE = 'Add LocusMSK to your home screen';
 export function InstallCard({ className = '' }: { className?: string }) {
   const way = useInstallWay();
   const [dismissed, setDismissed] = useState(wasDismissed);
+  const visible = Boolean(way) && !dismissed;
+  useEffect(() => (visible ? markInstallCardShowing() : undefined), [visible]);
 
-  if (!way || dismissed) return null;
+  if (!visible) return null;
 
   const dismiss = () => {
     try {

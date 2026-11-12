@@ -21,7 +21,7 @@ export function AdminShell() {
   const isDesktop = useIsDesktop();
   if (isDesktop) {
     return (
-      <AppShell sidebar={<AdminSidebar />} stickySidebar>
+      <AppShell sidebar={<AdminSidebar />} stickySidebar showInstall={false}>
         <Outlet />
       </AppShell>
     );

@@ -102,6 +102,7 @@ export function StudySession({ session, content, onEnd, onBackToSetup }: StudySe
   if (!question) {
     return (
       <AppShell
+        showInstall={false}
         sidebar={
           <SessionSidebar current={0} total={session.questions.length} correctCount={0} wrongCount={0} onEnd={onEnd} />
         }
@@ -131,6 +132,7 @@ export function StudySession({ session, content, onEnd, onBackToSetup }: StudySe
 
   return (
     <AppShell
+      showInstall={false}
       sidebar={
         <SessionSidebar
           current={progressCurrent}
