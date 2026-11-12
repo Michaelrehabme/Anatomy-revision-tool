@@ -121,6 +121,7 @@ export function UsersPage() {
   const [filter, setFilter] = useState<Filter>('signed-up');
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState<PageSize>(readPageSize);
   const isDesktop = useIsDesktop();
 
   const all = useMemo<Row[]>(() => {
@@ -177,10 +178,10 @@ export function UsersPage() {
   }, [population, filter, search, sort]);
 
   // Back to the first page whenever what is listed, or its order, changes.
-  useEffect(() => setPage(0), [filter, search, sort, showTest]);
-  const pageCount = Math.max(1, Math.ceil(visible.length / PAGE_SIZE));
+  useEffect(() => setPage(0), [filter, search, sort, showTest, pageSize]);
+  const pageCount = Math.max(1, Math.ceil(visible.length / pageSize));
   const currentPage = Math.min(page, pageCount - 1);
-  const pageRows = visible.slice(currentPage * PAGE_SIZE, (currentPage + 1) * PAGE_SIZE);
+  const pageRows = visible.slice(currentPage * pageSize, (currentPage + 1) * pageSize);
 
   const toggleSort = (column: SortColumn) => {
     setSort((prev) =>
@@ -277,8 +278,13 @@ export function UsersPage() {
             <MobileUserList rows={pageRows} sort={sort} onSort={setSort} onMarkTest={markTest} />
           )}
 
-          {visible.length > PAGE_SIZE && (
+          {visible.length > PAGE_SIZES[0] && (
             <Pager
+              pageSize={pageSize}
+              onPageSize={(size) => {
+                setPageSize(size);
+                writePageSize(size);
+              }}
               page={currentPage}
               pageCount={pageCount}
               total={visible.length}
@@ -300,11 +306,45 @@ export function UsersPage() {
   );
 }
 
-const PAGE_SIZE = 25;
+const PAGE_SIZES = [25, 50, 75, 100] as const;
+type PageSize = (typeof PAGE_SIZES)[number];
+const PAGE_SIZE_KEY = 'admin:users:pageSize';
 
-function Pager({ page, pageCount, total, onPage }: { page: number; pageCount: number; total: number; onPage: (page: number) => void }) {
-  const from = page * PAGE_SIZE + 1;
-  const to = Math.min(total, (page + 1) * PAGE_SIZE);
+/** Remembered on this device only — a convenience, so a failed read just means 25. */
+function readPageSize(): PageSize {
+  try {
+    const stored = Number(localStorage.getItem(PAGE_SIZE_KEY));
+    return (PAGE_SIZES as readonly number[]).includes(stored) ? (stored as PageSize) : PAGE_SIZES[0];
+  } catch {
+    return PAGE_SIZES[0];
+  }
+}
+
+function writePageSize(size: PageSize) {
+  try {
+    localStorage.setItem(PAGE_SIZE_KEY, String(size));
+  } catch {
+    // Private mode or blocked storage: the choice lasts until the page closes.
+  }
+}
+
+function Pager({
+  page,
+  pageCount,
+  pageSize,
+  total,
+  onPage,
+  onPageSize,
+}: {
+  page: number;
+  pageCount: number;
+  pageSize: PageSize;
+  total: number;
+  onPage: (page: number) => void;
+  onPageSize: (size: PageSize) => void;
+}) {
+  const from = page * pageSize + 1;
+  const to = Math.min(total, (page + 1) * pageSize);
   const button = (disabled: boolean) =>
     ({
       font: '500 13px/1 var(--font-ui)',
@@ -315,27 +355,45 @@ function Pager({ page, pageCount, total, onPage }: { page: number; pageCount: nu
       cursor: disabled ? 'default' : 'pointer',
     }) as const;
   return (
-    <nav aria-label="Pages" className="mt-4 flex items-center justify-between gap-3">
-      <span style={{ font: '400 13px/1.3 var(--font-ui)', color: 'var(--ink3)' }}>
+    <nav aria-label="Pages" className="mt-4 flex flex-wrap items-center justify-between gap-3">
+      <span className="flex items-center gap-2" style={{ font: '400 13px/1.3 var(--font-ui)', color: 'var(--ink3)' }}>
         {from}–{to} of {total}
-      </span>
-      <span className="flex items-center gap-2">
-        <button type="button" disabled={page === 0} onClick={() => onPage(page - 1)} className="min-h-[38px] rounded-full px-4" style={button(page === 0)}>
-          ← Previous
-        </button>
-        <span style={{ font: '500 12.5px/1 var(--font-mono)', color: 'var(--ink2)' }}>
-          {page + 1} / {pageCount}
-        </span>
-        <button
-          type="button"
-          disabled={page >= pageCount - 1}
-          onClick={() => onPage(page + 1)}
-          className="min-h-[38px] rounded-full px-4"
-          style={button(page >= pageCount - 1)}
+        <label htmlFor="users-page-size" className="ml-2">
+          Show
+        </label>
+        <select
+          id="users-page-size"
+          value={pageSize}
+          onChange={(e) => onPageSize(Number(e.target.value) as PageSize)}
+          className="min-h-[34px] rounded-[4px] px-2"
+          style={{ font: '400 13px/1 var(--font-ui)', border: '1px solid var(--line)', background: 'var(--sf)', color: 'var(--ink)' }}
         >
-          Next →
-        </button>
+          {PAGE_SIZES.map((size) => (
+            <option key={size} value={size}>
+              {size}
+            </option>
+          ))}
+        </select>
       </span>
+      {pageCount > 1 && (
+        <span className="flex items-center gap-2">
+          <button type="button" disabled={page === 0} onClick={() => onPage(page - 1)} className="min-h-[38px] rounded-full px-4" style={button(page === 0)}>
+            ← Previous
+          </button>
+          <span style={{ font: '500 12.5px/1 var(--font-mono)', color: 'var(--ink2)' }}>
+            {page + 1} / {pageCount}
+          </span>
+          <button
+            type="button"
+            disabled={page >= pageCount - 1}
+            onClick={() => onPage(page + 1)}
+            className="min-h-[38px] rounded-full px-4"
+            style={button(page >= pageCount - 1)}
+          >
+            Next →
+          </button>
+        </span>
+      )}
     </nav>
   );
 }
