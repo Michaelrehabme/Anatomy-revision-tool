@@ -68,7 +68,8 @@
       ],
       "partOf": "Iliopsoas",
       "origin": [
-        "Transverse processes of T12 and all lumbar vertebrae (L1–L5)"
+        "Bodies of T12–L4 and the intervertebral discs between them",
+        "Transverse processes of all lumbar vertebrae"
       ],
       "insertion": [
         "Lesser trochanter of the femur"
@@ -89,7 +90,7 @@
       ],
       "actionText": "The strongest hip flexor, also rotating the femur outward; the lumbar half of iliopsoas.",
       "clinical": null,
-      "notes": null,
+      "notes": "Corrected 12 Nov 2026 from the deck value \"Transverse processes of T12 and all lumbar vertebrae (L1–L5)\": standard texts (Moore Table 5.10; Gray's) give the vertebral bodies of T12–L4 (Moore: to L5) with the intervening discs, and the transverse processes of all lumbar vertebrae.",
       "images": {
         "isolated": null,
         "hotspot": null,
@@ -104,7 +105,14 @@
         "slides": [
           3,
           4
-        ]
+        ],
+        "works": [
+          {
+            "title": "Kenhub — Psoas major muscle",
+            "url": "https://www.kenhub.com/en/library/anatomy/psoas-major-muscle"
+          }
+        ],
+        "checked": "2026-11-12"
       }
     },
     {
@@ -889,8 +897,16 @@
       ],
       "nerve": [
         {
-          "name": "Nerve to obturator internus",
+          "name": "Nerve to obturator internus (superior gemellus)",
           "roots": [
+            "L5",
+            "S1"
+          ]
+        },
+        {
+          "name": "Nerve to quadratus femoris (inferior gemellus)",
+          "roots": [
+            "L4",
             "L5",
             "S1"
           ]
@@ -900,9 +916,9 @@
         "hip-external-rotation",
         "hip-stabilisation"
       ],
-      "actionText": "Externally rotates and stabilises the hip; arises from the superior: ischial spine.",
+      "actionText": "Externally rotates and stabilises the hip; arises from the ischial spine and ischial tuberosity.",
       "clinical": null,
-      "notes": null,
+      "notes": "Nerve corrected 12 Nov 2026: the deck gave the nerve to obturator internus for both. The inferior gemellus is supplied by the nerve to quadratus femoris (Moore Table 7.4; Gray's).",
       "images": {
         "isolated": null,
         "hotspot": null,
@@ -916,7 +932,14 @@
         "author": "Vinnie Maynard",
         "slides": [
           28
-        ]
+        ],
+        "works": [
+          {
+            "title": "Kenhub — Inferior gemellus muscle",
+            "url": "https://www.kenhub.com/en/library/anatomy/inferior-gemellus-muscle"
+          }
+        ],
+        "checked": "2026-11-12"
       }
     },
     {
@@ -3038,12 +3061,13 @@
       ],
       "partOf": null,
       "origin": [
-        "Anterior bodies and transverse processes C3–T3"
+        "Bodies of C5–T3",
+        "Transverse processes C3–C5"
       ],
       "insertion": [
         "Anterior tubercle of C1",
-        "Bodies C1–C3",
-        "Transverse processes C3–C6"
+        "Bodies C2–C4",
+        "Transverse processes C5–C6"
       ],
       "nerve": [
         {
@@ -3057,7 +3081,7 @@
       ],
       "actionText": "Flexes and rotates the neck.",
       "clinical": null,
-      "notes": null,
+      "notes": "Corrected 12 Nov 2026 from the deck values (origin \"Anterior bodies and transverse processes C3–T3\"; insertion \"Bodies C1–C3\"): the atlas has no body. Standard: origin bodies C5–T3 and transverse processes C3–C5; insertion anterior tubercle of C1, bodies C2–C4, transverse processes C5–C6 (Moore Table 9.3; Gray's).",
       "images": {
         "isolated": null,
         "hotspot": null,
@@ -3072,7 +3096,14 @@
         "slides": [
           93,
           94
-        ]
+        ],
+        "works": [
+          {
+            "title": "Longus colli muscle - Wikipedia (Gray's, public domain)",
+            "url": "https://en.wikipedia.org/wiki/Longus_colli_muscle"
+          }
+        ],
+        "checked": "2026-11-12"
       }
     },
     {

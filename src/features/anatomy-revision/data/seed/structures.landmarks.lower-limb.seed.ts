@@ -823,7 +823,7 @@ export const LOWER_LIMB_LANDMARK_STRUCTURES: LandmarkStructure[] = [
     parentBoneId: 'tarsals',
     groups: ['foot'],
     description: 'A shelf-like bony projection on the medial surface of the calcaneus that supports ("sustains") the talus.',
-    attachments: ['Spring (calcaneonavicular) ligament attaches here', 'Flexor hallucis longus tendon grooves along its inferior surface', 'Deltoid ligament (deep part) attaches here'],
+    attachments: ['Spring (calcaneonavicular) ligament attaches here', 'Flexor hallucis longus tendon grooves along its inferior surface', 'Deltoid ligament (superficial part, the tibiocalcaneal band) attaches here'],
     articulations: [],
     palpability: 'palpable-deep',
     aliases: [],
@@ -891,7 +891,7 @@ export const LOWER_LIMB_LANDMARK_STRUCTURES: LandmarkStructure[] = [
     eligibility: { flashcard: true, mcq: true, locate: false },
     difficulty: 'easy',
     tags: ['foot', 'palpable'],
-    clinical: 'A common fracture site: an avulsion fracture from inversion ankle sprains (fibularis brevis pull), or the more proximal, slower-healing Jones fracture.',
+    clinical: 'A common fracture site: an avulsion fracture from inversion ankle sprains (fibularis brevis pull), or the Jones fracture, slightly more distal at the metaphyseal–diaphyseal junction and slower to heal.',
     notes: null,
   },
   {

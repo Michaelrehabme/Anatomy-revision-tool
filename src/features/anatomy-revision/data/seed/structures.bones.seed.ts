@@ -303,7 +303,7 @@ export const BONE_STRUCTURES: BoneStructure[] = [
     eligibility: { flashcard: false, mcq: true, locate: true },
     difficulty: 'medium',
     tags: ['grouped-bone', 'thorax'],
-    clinical: 'Ribs 8–10 are "false ribs" (cartilage joins the rib above rather than the sternum directly); ribs 11–12 are "floating ribs" with no anterior attachment.',
+    clinical: 'Ribs 8–12 are "false ribs", with no direct cartilage joint to the sternum: the cartilages of 8–10 join the cartilage above, and 11–12 are "floating ribs" with no anterior attachment.',
     notes: 'Kept as one grouped structure; first and twelfth ribs are called out individually as landmarks (clinically distinct — thoracic outlet, cervical rib, floating rib).',
   },
   {
@@ -700,7 +700,7 @@ export const BONE_STRUCTURES: BoneStructure[] = [
     eligibility: { flashcard: false, mcq: true, locate: true },
     difficulty: 'easy',
     tags: ['grouped-bone', 'foot'],
-    clinical: 'Fracture of the base of the fifth metatarsal (avulsion, or the more proximal "Jones fracture") is a common lateral ankle sprain-associated injury.',
+    clinical: 'Fracture of the base of the fifth metatarsal is common: the tuberosity avulsion typically follows an inversion ankle sprain, while the "Jones fracture", slightly more distal at the metaphyseal–diaphyseal junction, heals more slowly.',
     notes: 'Kept as one grouped structure per the content rules; base of fifth metatarsal and head of first metatarsal are called out as landmarks given their clinical relevance.',
   },
   {
