@@ -86,15 +86,16 @@ function seedValues(s: AnatomyStructure): Map<string, string[]> {
 }
 
 describe('described-region questions: coverage', () => {
-  it('covers 425 of the 444 locate questions, in every family', () => {
-    // 444 since 17 Oct 2026: no ligament is asked from a picture for now
+  it('covers 416 of the 435 locate questions, in every family', () => {
+    // 444 since 17 Oct 2026: no ligament is asked from a picture for now; 435
+    // since 12 Nov 2026: the three spine ranges are not either
     // (data/clinicalLigaments.ts); there were 151.
-    expect(locate).toHaveLength(444);
-    expect(built).toHaveLength(425);
+    expect(locate).toHaveLength(435);
+    expect(built).toHaveLength(416);
     const perCategory = (rows: { q: { category: string } }[]) =>
       Object.fromEntries(['muscle', 'ligament', 'landmark', 'joint', 'bone'].map((c) => [c, rows.filter((r) => r.q.category === c).length]));
-    expect(perCategory(results)).toEqual({ muscle: 124, ligament: 0, landmark: 202, joint: 34, bone: 84 });
-    expect(perCategory(built)).toEqual({ muscle: 124, ligament: 0, landmark: 192, joint: 34, bone: 75 });
+    expect(perCategory(results)).toEqual({ muscle: 124, ligament: 0, landmark: 202, joint: 34, bone: 75 });
+    expect(perCategory(built)).toEqual({ muscle: 124, ligament: 0, landmark: 192, joint: 34, bone: 66 });
   });
 
   it('and the nineteen it does not are these, each for a reason the list route then covers', () => {
@@ -313,11 +314,11 @@ describe('described-region questions: from one area\'s facts', () => {
         });
       }
     }
-    // 492 because a structure in two areas is asked in each. Fewer are covered
+    // 483 because a structure in two areas is asked in each. Fewer are covered
     // than with everything loaded — an area with two bones cannot supply three
     // wrong descriptions of a bone — and those fall back to the list.
-    expect(total).toBe(492);
-    expect(covered).toBe(325);
+    expect(total).toBe(483);
+    expect(covered).toBe(321);
   });
 
   it('names a bone from another area through the index, with no facts loaded for it', () => {

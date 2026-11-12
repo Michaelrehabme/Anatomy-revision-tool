@@ -330,7 +330,8 @@ export const BONE_STRUCTURES: BoneStructure[] = [
     // to an entry that explicitly excludes C1, C2 and C7.
     aliases: ['Cervical spine (typical)', 'Typical Cervical Vertebra'],
     imageIds: [],
-    eligibility: { flashcard: false, mcq: true, locate: true },
+    // A range of vertebrae is not a thing to find or name from a picture (owner, 12 Nov 2026).
+    eligibility: { flashcard: false, mcq: true, locate: false, picture: false },
     difficulty: 'medium',
     tags: ['grouped-bone', 'vertebra', 'spine'],
     clinical: 'The transverse foramina (present only in cervical vertebrae) transmit the vertebral artery — relevant to cervical manipulation safety screening.',
@@ -462,7 +463,8 @@ export const BONE_STRUCTURES: BoneStructure[] = [
     ],
     aliases: ['Thoracic spine', 'Thoracic Region (T1–T12)', 'Typical Thoracic Vertebra'],
     imageIds: [],
-    eligibility: { flashcard: false, mcq: true, locate: true },
+    // A range of vertebrae is not a thing to find or name from a picture (owner, 12 Nov 2026).
+    eligibility: { flashcard: false, mcq: true, locate: false, picture: false },
     difficulty: 'medium',
     tags: ['grouped-bone', 'vertebra', 'spine'],
     clinical: 'Naturally kyphotic; the least mobile spinal region due to rib cage attachments, which concentrates compensatory movement demand on the cervical and lumbar spine.',
@@ -490,7 +492,8 @@ export const BONE_STRUCTURES: BoneStructure[] = [
     ],
     aliases: ['Lumbar spine', 'Lumbar Region (L1–L5)', 'Typical Lumbar Vertebra'],
     imageIds: [],
-    eligibility: { flashcard: false, mcq: true, locate: true },
+    // A range of vertebrae is not a thing to find or name from a picture (owner, 12 Nov 2026).
+    eligibility: { flashcard: false, mcq: true, locate: false, picture: false },
     difficulty: 'easy',
     tags: ['grouped-bone', 'vertebra', 'spine'],
     clinical: 'The most common site of disc herniation and mechanical low back pain, concentrated at L4-L5 and L5-S1 due to the high shear/compressive load at the lumbosacral junction.',
