@@ -941,8 +941,10 @@
      "why": "The owner confirmed 'not-palpable'. The owner is a sports rehabilitation student, not a qualified therapist — a dated, attributable check rather than expert sign-off, and the best source available for a field published texts do not state."
     },
     "description": {
-     "verdict": "confirmed",
-     "why": "The work defines this landmark in its own words: \"The transverse processes are each pierced by the transverse foramen also known as the foramen transversarium, which, in the upper six vertebrae, gives passage to the vertebral artery and vein, as well as a plexus of sympathetic nerves.\""
+     "verdict": "corrected",
+     "was": "unique to cervical vertebrae (C1-C6)",
+     "now": "found only in cervical vertebrae; C1–C6 transmit the vertebral artery and vein, C7 usually only an accessory vertebral vein",
+     "why": "Accuracy review, 12 Nov 2026: all seven cervical vertebrae have a transverse foramen; the c7-vertebra entry already says so."
     }
    }
   },
@@ -5076,8 +5078,10 @@
    ],
    "facts": {
     "attachments": {
-     "verdict": "confirmed",
-     "why": "Every attachment claim settled by hand against a quoted source (3 works)."
+     "verdict": "corrected",
+     "was": "Deltoid ligament (deep part) attaches here",
+     "now": "Deltoid ligament (superficial part, the tibiocalcaneal band) attaches here",
+     "why": "Accuracy review, 12 Nov 2026: the tibiocalcaneal band that reaches the sustentaculum is one of the superficial deltoid fibres, as the tibiocalcaneal-ligament entry already says."
     },
     "parentBoneId": {
      "verdict": "confirmed",

@@ -452,7 +452,7 @@ export const SPINE_LANDMARK_STRUCTURES: LandmarkStructure[] = [
     subregion: 'neck',
     parentBoneId: 'atlas-c1',
     groups: ['spine', 'craniocervical'],
-    description: 'A small opening in the transverse process, unique to cervical vertebrae (C1-C6), transmitting the vertebral artery and vein.',
+    description: 'A small opening in the transverse process, found only in cervical vertebrae. In C1–C6 it transmits the vertebral artery and vein; in C7 it is small and usually carries only an accessory vertebral vein.',
     attachments: [],
     articulations: [],
     palpability: 'not-palpable',
@@ -462,7 +462,7 @@ export const SPINE_LANDMARK_STRUCTURES: LandmarkStructure[] = [
     difficulty: 'medium',
     tags: ['spine', 'craniocervical'],
     clinical: 'A key structure in pre-manipulative screening for cervical spine treatment, given its transmission of the vertebral artery.',
-    notes: 'Present in every cervical vertebra (C1-C6), not just the atlas — parented here as a representative example.',
+    notes: 'Present in every cervical vertebra (C1–C7), not just the atlas — parented here as a representative example.',
   },
   {
     id: 'bifid-spinous-process',
