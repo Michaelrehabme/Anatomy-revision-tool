@@ -3,6 +3,7 @@ import { AUTH_ENABLED } from '../../context/AuthProvider';
 import { MobileAccountButton } from './MobileAccountButton';
 import { MobileTabBar, type MobileTab } from './MobileTabBar';
 import { useMotionRoot } from '../shared/motion';
+import { InstallStrip } from '../../../pwa/InstallStrip';
 
 interface MobileShellProps {
   children: ReactNode;
@@ -42,7 +43,11 @@ export function MobileShell({ children, tabs }: MobileShellProps) {
       style={{ background: 'var(--pg)', color: 'var(--ink)' }}
     >
       {tabs && AUTH_ENABLED && <MobileAccountButton />}
-      <main className="min-h-0 flex-1 overflow-y-auto">{children}</main>
+      <main className="min-h-0 flex-1 overflow-y-auto">
+        {children}
+        {/* Only on screens with the tab bar: never while a question is being answered. */}
+        {tabs && <InstallStrip className="mt-8" />}
+      </main>
       {tabs && <MobileTabBar active={tabs.active} onNavigate={tabs.onNavigate} />}
     </div>
   );

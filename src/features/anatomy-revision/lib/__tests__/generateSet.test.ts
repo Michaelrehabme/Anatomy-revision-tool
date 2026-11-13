@@ -1064,6 +1064,19 @@ describe('no one structure may take over a capped session', () => {
     expect(new Set(asked(result).map((q) => q.structureId)).size).toBe(few.length);
   });
 
+  it('asks a structure one locate, not the same locate from two views (student report, 12 Nov 2026)', () => {
+    // Shoulder locate, twenty questions: four structures came twice, each pair
+    // the same "find X" from a different camera angle.
+    for (const seed of [71, 72, 73, 74, 75]) {
+      const result = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+        entitledAreas: AREAS, areas: ['shoulder'], types: ['locate'], mode: 'practice', count: 20, seed,
+      });
+      const located = asked(result);
+      expect(located).toHaveLength(20);
+      expect(new Set(located.map((q) => q.structureId)).size).toBe(20);
+    }
+  });
+
   it('leaves an uncapped practice session alone — it means every question', () => {
     const all = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, { ...base, count: undefined, seed: 68 });
     expect(worst(all)).toBeGreaterThan(MAX_QUESTIONS_PER_STRUCTURE);

@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { useMotionRoot } from '../shared/motion';
+import { InstallStrip } from '../../../pwa/InstallStrip';
 
 interface AppShellProps {
   /** Sidebar content is contextual (brand+nav vs. in-session end/progress) — see NavSidebar/SessionSidebar. */
@@ -7,6 +8,8 @@ interface AppShellProps {
   children: ReactNode;
   /** Pin the sidebar to the viewport, so its foot (admin's Back to app) stays in view on a long page. */
   stickySidebar?: boolean;
+  /** The install strip at the foot of the page. Off in a running session and in admin. */
+  showInstall?: boolean;
 }
 
 /**
@@ -15,7 +18,7 @@ interface AppShellProps {
  * shell across screens 02–04 and 09–12; screens 05–08 (an active question)
  * reuse this same shell with a different sidebar via SessionSidebar.
  */
-export function AppShell({ sidebar, children, stickySidebar = false }: AppShellProps) {
+export function AppShell({ sidebar, children, stickySidebar = false, showInstall = true }: AppShellProps) {
   const motionRoot = useMotionRoot<HTMLDivElement>();
   return (
     <div ref={motionRoot} className="flex min-h-screen" style={{ background: 'var(--pg)' }}>
@@ -25,7 +28,10 @@ export function AppShell({ sidebar, children, stickySidebar = false }: AppShellP
       >
         {sidebar}
       </aside>
-      <main className="min-w-0 flex-1">{children}</main>
+      <main className="flex min-w-0 flex-1 flex-col">
+        <div className="flex-1">{children}</div>
+        {showInstall && <InstallStrip className="mt-8" />}
+      </main>
     </div>
   );
 }

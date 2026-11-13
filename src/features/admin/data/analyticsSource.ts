@@ -12,6 +12,7 @@ import {
   computeSessionMetrics,
 } from '../lib/analyticsAggregation';
 import { listReviewedQuestionIds } from './questionReviewsRepository';
+import { loadTestAccountIds, onTestAccountsChanged } from '../hooks/useTestAccounts';
 import type {
   AnalyticsFilters,
   StructureWeaknessRow,
@@ -72,7 +73,12 @@ export class ClientAggregatedAnalytics implements AnalyticsSource {
   /** Cached for the lifetime of this instance (see the module-level `analyticsSource` singleton below) so switching tabs never re-queries. */
   private loadAttempts(): Promise<UserAttempt[]> {
     if (!this.attemptsPromise) {
-      this.attemptsPromise = getRepository().then((repo) => repo.listAttempts({ limit: this.maxAttempts }));
+      // Test and internal accounts (see data/testAccountsRepository.ts) are
+      // dropped here, once, so every figure on the dashboard leaves them out.
+      this.attemptsPromise = Promise.all([
+        getRepository().then((repo) => repo.listAttempts({ limit: this.maxAttempts })),
+        loadTestAccountIds(),
+      ]).then(([attempts, testIds]) => (testIds.size ? attempts.filter((a) => !testIds.has(a.userId)) : attempts));
     }
     return this.attemptsPromise;
   }
@@ -127,3 +133,6 @@ export class ClientAggregatedAnalytics implements AnalyticsSource {
 
 /** Module-level singleton — see loadAttempts' cache comment for why this is what makes "don't re-query on tab switch" hold across the whole admin session. */
 export const analyticsSource: AnalyticsSource = new ClientAggregatedAnalytics();
+
+// Marking or unmarking a test account changes every figure, so the next visit re-reads.
+onTestAccountsChanged(() => analyticsSource.refresh());

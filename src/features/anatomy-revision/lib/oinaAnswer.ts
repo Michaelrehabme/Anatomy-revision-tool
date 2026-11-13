@@ -199,6 +199,12 @@ export function acceptedVariantsFor(promptKind: PromptKind, raw: string, limb?: 
     // How it gets there is not where it inserts: "Tibial tuberosity via the
     // patellar tendon" is answered by "tibial tuberosity".
     add(withoutParens.replace(/\s+via\s+.*$/i, ''));
+    // "Medial side of base of proximal phalanx of big toe" is answered by
+    // "medial side of proximal phalanx of digit 1": the side already places it,
+    // and the base is the only part of a phalanx a tendon there reaches
+    // (student report, 12 Nov 2026). Only after a side, so a bare "Base of 1st
+    // metatarsal" still needs the base.
+    add(withoutParens.replace(/\b(sides?|aspects?|surfaces?) of (the )?base of /i, '$1 of '));
     // Named in the key's own bracket, so it is the key's answer too.
     if (/gerdy/i.test(raw)) add("Gerdy's tubercle");
     for (const match of canonical.matchAll(/\(([^)]*)\)/g)) {
