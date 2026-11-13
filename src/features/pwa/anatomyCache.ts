@@ -19,7 +19,10 @@
  * of forgetting is a student revising from a picture that no longer matches
  * the answer.
  */
-export const ANATOMY_CACHE_VERSION = '2026-10-13a';
+// 2026-11-13a: the 8 and 13 Nov re-renders were published without a bump, so
+// devices showed the old extensor digitorum longus frames under its new
+// tap areas ("the hitbox is completely off the foot", student report).
+export const ANATOMY_CACHE_VERSION = '2026-11-13a';
 
 export const ANATOMY_CACHE_NAME = `locusmsk-anatomy-images-${ANATOMY_CACHE_VERSION}`;
 
