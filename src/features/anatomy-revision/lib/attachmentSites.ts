@@ -105,6 +105,31 @@ export function siteWithoutBone(value: string, byId: ReadonlyMap<string, Structu
   return names.get(lowerNoThe(plain(value))) ?? null;
 }
 
+/**
+ * Attachment sites that are not landmarks of their own but that only one bone
+ * has, so naming the bone adds nothing (student report, 13 Nov 2026:
+ * "Subscapular fossa" was marked wrong for "Subscapular fossa of scapula").
+ * Deliberately a list rather than a rule: "styloid process", "lateral
+ * supracondylar ridge", "pectineal line" and "superior ramus" are each on two
+ * bones, and "medial border" or "posterior surface" name nothing alone.
+ */
+const ONE_BONE_SITES = [
+  'subscapular fossa',
+  'iliac fossa',
+  'gluteal tuberosity',
+  'intertrochanteric crest',
+  'trochanteric fossa',
+  'olecranon process',
+  'floor of intertubercular sulcus',
+  'medial lip of intertubercular sulcus',
+];
+
+/** The value with its bone left off, when the site is one only that bone has (ONE_BONE_SITES). */
+export function oneBoneSiteWithoutBone(value: string): string | null {
+  const match = lowerNoThe(plain(value)).match(/^(.*?)\s+of\s+[a-z]+$/);
+  return match && ONE_BONE_SITES.includes(match[1]) ? match[1] : null;
+}
+
 /** One name written with its bone, every way a student writes the two together. */
 export function withBone(name: string, bones: readonly string[]): string[] {
   return bones.flatMap((bone) => [
