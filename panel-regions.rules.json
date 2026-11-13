@@ -19648,38 +19648,37 @@
    ],
    "fromSpan": [
     [
-     279.5,
-     -22.7,
-     864.0
+     277.0,
+     -23.8,
+     865.5
     ],
     [
-     282.0,
-     -21.6,
-     862.5
+     284.5,
+     -20.5,
+     861.0
     ]
    ],
    "toSpan": [
     [
-     265.5,
+     264.5,
      -25.8,
-     843.1
+     843.5
     ],
     [
-     268.0,
+     269.0,
      -25.8,
-     841.9
+     841.5
     ]
    ],
-   "count": 6,
-   "radius": 0.0005,
+   "count": 12,
+   "radius": 0.00075,
    "samples": 24,
    "smoothPath": 6,
    "smoothAcross": 2,
    "lift": 0.1,
-   "near": 2.5,
-   "exactCount": true
+   "near": 2.5
   },
-  "_why": " Added 20 Oct 2026 (owner: wrist and hand ligaments next): each loose piece of the atlas's ligament drawn as fibres between the two bones it touches most, the UCL finish. Rebuilt 12 Nov 2026 (student report: it did not reach the radius): the atlas strip touches radius, scaphoid and capitate equally and autoFibres dropped the radius on the tie, so the fibres now run from measured spans on the palmar radial styloid to the palmar waist of the capitate, laid over the scaphoid and lunate (Berger and Landsmeer 1985). Owner chose the 3 mm band (6 fibres) over 7.2 and 4.7 mm."
+  "_why": " Added 20 Oct 2026 (owner: wrist and hand ligaments next): each loose piece of the atlas's ligament drawn as fibres between the two bones it touches most, the UCL finish. Rebuilt 12 Nov 2026 (student report: it did not reach the radius): the atlas strip touches radius, scaphoid and capitate equally and autoFibres dropped the radius on the tie, so the fibres now run from measured spans on the palmar radial styloid to the palmar waist of the capitate, laid over the scaphoid and lunate (Berger and Landsmeer 1985). Owner chose the first, broader band (12 fibres, about 7 mm; 13 Nov 2026) over 4.7 and 3 mm; Zumstein et al. 2013 measure its radial origin at 7.4 mm."
  },
  "scaphocapitate-ligament": {
   "build": {
