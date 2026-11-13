@@ -1,4 +1,4 @@
-import { siteWithoutBone } from '../attachmentSites';
+import { siteWithoutBone, oneBoneSiteWithoutBone } from '../attachmentSites';
 import { STRUCTURE_INDEX_BY_ID } from '../../data/structureIndex';
 import { isMuscle } from '../../types/structure';
 import type { AnatomyStructure } from '../../types/structure';
@@ -273,7 +273,7 @@ function buildTyped(
   const multiple = correctValues.length > 1;
   const slots = correctValues.map((value, index) => {
     const accepted = acceptedVariantsFor(promptKind, raws.get(value) ?? display(value), limbOfStructure(muscle));
-    const withoutBone = accepted.flatMap((form) => siteWithoutBone(form, STRUCTURE_INDEX_BY_ID) ?? []);
+    const withoutBone = accepted.flatMap((form) => siteWithoutBone(form, STRUCTURE_INDEX_BY_ID) ?? oneBoneSiteWithoutBone(form) ?? []);
     return {
       // The label states the count. With 104 of 122 insertions having a single
       // value, a student who sees two boxes should read that as the shape of the

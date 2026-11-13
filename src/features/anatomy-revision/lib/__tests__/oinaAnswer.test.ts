@@ -324,3 +324,17 @@ describe('student reports, 11-12 Nov 2026', () => {
     expect(conflictsWith('Olecranon process of ulna', 'Lateral olecranon')).toBe(true);
   });
 });
+
+describe('a site only one bone has, without the bone (student report, 13 Nov 2026)', () => {
+  it('takes "Supscapular fossa" for the subscapular fossa of the scapula', async () => {
+    const { buildOinaQuestions } = await import('../questionGenerators/oina');
+    const { buildIndexes } = await import('../indexes');
+    const { createRng } = await import('../rng');
+    const questions = buildOinaQuestions(ALL_STRUCTURES, ALL_STRUCTURES, buildIndexes(ALL_STRUCTURES), createRng(1), { forceFormat: 'typed' });
+    const q = questions.find((x) => x.id === 'oina-subscapularis-origin-typed');
+    if (!q || q.format !== 'typed') throw new Error('no typed subscapularis origin');
+    expect(gradeTypedSlots(['Subscapular fossa'], q.slots).allCorrect).toBe(true);
+    expect(gradeTypedSlots(['Supscapular fossa'], q.slots).allCorrect).toBe(true);
+    expect(gradeTypedSlots(['Supraspinous fossa'], q.slots).allCorrect).toBe(false);
+  });
+});
