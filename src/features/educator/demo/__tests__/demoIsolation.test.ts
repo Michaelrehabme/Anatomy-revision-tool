@@ -54,6 +54,7 @@ const KNOWN: Record<string, string> = {
   'features/admin/data/changeRequestsRepository.ts': 'Admin-only; VITE_PUBLIC_DEMO drops the /admin route and its chunk.',
   'features/admin/data/questionReviewsRepository.ts': 'Admin-only; same.',
   'features/admin/data/feedbackRepository.ts': 'Admin-only; same.',
+  'features/admin/data/testAccountsRepository.ts': 'Admin-only; same.',
   'scripts/backfillCohortRollups.ts': 'A one-off Node script run with tsx; never imported by the app.',
   'features/site/data/siteSettings.ts': 'Aliased: siteSettings.demo.ts — App.tsx reads it on every load.',
   'features/anatomy-revision/data/tourRepository.ts': 'Aliased: tourRepository.demo.ts — the tour overlay and Replay the tours import it.',

@@ -231,7 +231,7 @@ export function UsersPage() {
                 type="button"
                 onClick={() => unmarkedAdmins.forEach((r) => markTest(r, true))}
                 className="min-h-[36px] rounded-full px-4"
-                style={{ font: '500 13px/1 var(--font-ui)', background: 'var(--acc)', color: 'var(--onacc)', border: 0, cursor: 'pointer' }}
+                style={{ font: '500 13px/1 var(--font-ui)', background: 'var(--acc-fill)', color: 'var(--onacc)', border: 0, cursor: 'pointer' }}
               >
                 Mark as test
               </button>
