@@ -77,6 +77,32 @@ export async function promptInstall(): Promise<boolean> {
   return (await event.userChoice).outcome === 'accepted';
 }
 
+/**
+ * The Today card and the strip at the foot of every page ask the same thing,
+ * so while the card is on screen the strip stands down rather than ask twice.
+ */
+let cardsShowing = 0;
+export function markInstallCardShowing(): () => void {
+  cardsShowing += 1;
+  notify();
+  return () => {
+    cardsShowing -= 1;
+    notify();
+  };
+}
+export function useInstallCardShowing(): boolean {
+  const [showing, setShowing] = useState(cardsShowing > 0);
+  useEffect(() => {
+    const update = () => setShowing(cardsShowing > 0);
+    listeners.add(update);
+    update();
+    return () => {
+      listeners.delete(update);
+    };
+  }, []);
+  return showing;
+}
+
 export function useInstallWay(): InstallWay {
   const [way, setWay] = useState<InstallWay>(installWay);
   useEffect(() => {

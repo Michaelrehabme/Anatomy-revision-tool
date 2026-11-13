@@ -4,6 +4,7 @@ import { STRUCTURE_INDEX_BY_ID } from '../../anatomy-revision/data/structureInde
 import { computeStreak } from '../../anatomy-revision/lib/streak';
 import { REGIONS } from '../../anatomy-revision/types/region';
 import { getUserProfile } from '../data/usersRepository';
+import { lastSessionAt } from '../lib/lastSession';
 import type { AdminUserDetail, RegionAccuracy, WeakStructureRow } from '../types/adminUser';
 
 const WEAKEST_COUNT = 10;
@@ -62,6 +63,7 @@ export function useAdminUserDetail(uid: string) {
           totalAttempts: attempts.length,
           accuracyPct: attempts.length > 0 ? Math.round((correct / attempts.length) * 100) : 0,
           streak: computeStreak(summaries),
+          lastSessionAt: lastSessionAt(summaries),
           byRegion,
           weakestStructures,
         });
