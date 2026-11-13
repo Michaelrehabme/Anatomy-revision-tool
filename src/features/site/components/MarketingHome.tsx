@@ -1,5 +1,6 @@
 import { useTrackStep } from '../../feedback/useTrackStep';
 import { useState } from 'react';
+import { InstallStrip } from '../../pwa/InstallStrip';
 import { Link } from 'react-router-dom';
 import { CLAIM_HREF, CODE_OFFER, codeOfferOpen } from '../../billing/lib/codeOffer';
 
@@ -32,8 +33,8 @@ import { CLAIM_HREF, CODE_OFFER, codeOfferOpen } from '../../billing/lib/codeOff
  */
 
 const PRICING = {
-  monthly: '£4.99',
-  annual: '£29.99',
+  monthly: '£7.99',
+  annual: '£63.99',
 } as const;
 
 /**
@@ -403,6 +404,7 @@ export function MarketingHome() {
               No card needed. Or{' '}
               <Link to="/try" style={{ color: 'var(--accd)' }}>try ten questions first</Link>, without signing up.
             </p>
+            <InstallStrip variant="landing" className="mt-6" />
           </div>
           {codeOpen && <HowTheCodeWorks />}
         </div>

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useRepository } from '../../anatomy-revision/hooks/useRepository';
 import { computeStreak } from '../../anatomy-revision/lib/streak';
 import { countUserAttempts, listUserProfiles } from '../data/usersRepository';
+import { lastSessionAt } from '../lib/lastSession';
 import type { AdminUserRow } from '../types/adminUser';
 
 /**
@@ -33,6 +34,8 @@ export function useAdminUsers() {
               totalAttempts: attempts.total,
               accuracyPct: attempts.total > 0 ? Math.round((attempts.correct / attempts.total) * 100) : 0,
               streak: computeStreak(summaries),
+              lastSessionAt: lastSessionAt(summaries),
+              sessionCount: summaries.length,
             };
             return row;
           }),

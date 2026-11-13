@@ -449,7 +449,22 @@ function contentTokens(value: string): string[] {
  * scapula" share every token but one and neither contains the other — which
  * is exactly the question worth asking.
  */
+/**
+ * Pairs that name one landmark in words the token rule cannot see are the
+ * same. Anconeus's "Lateral olecranon" and triceps's "Olecranon process of
+ * ulna" are both the olecranon, and were offered side by side as two wrong
+ * insertions of brachialis (student report, 11 Nov 2026).
+ */
+const SAME_PLACE: [string, string][] = [['lateral olecranon', 'olecranon process of ulna']];
+
+function samePlace(a: string, b: string): boolean {
+  const x = a.trim().toLowerCase();
+  const y = b.trim().toLowerCase();
+  return SAME_PLACE.some(([p, q]) => (x === p && y === q) || (x === q && y === p));
+}
+
 export function conflictsWith(correct: string, candidate: string): boolean {
+  if (samePlace(correct, candidate)) return true;
   const a = contentTokens(correct);
   const b = contentTokens(candidate);
   if (a.length === 0 || b.length === 0) return true;

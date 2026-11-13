@@ -42,10 +42,10 @@ To add a claim: put it in the table with that evidence format, and the check sta
 
 | Claim | Where it appears | Evidence | Last verified |
 |---|---|---|---|
-| "£4.99 a month", "£29.99 a year" | MarketingHome (`PRICING`), /pricing (`PLANS`) | The two Paddle price records. **These are kept in step with Paddle by hand** — see the note in `checkout.ts`. Re-check both after any price change | 2026-09-20 |
+| "£7.99 a month", "£63.99 a year" | MarketingHome (`PRICING`), /pricing (`PLANS`), renewal reminder emails | The two Paddle price records. **These are kept in step with Paddle by hand** — see the note in `checkout.ts`. Re-check both after any price change | 2026-11-08 |
 | "Prices include VAT" | /pricing, MarketingHome | Paddle is merchant of record and handles VAT — CR-033 item 9 | 2026-09-20 |
-| "£2.50 a month" / "about the price of a coffee a month" | MarketingHome, /pricing | £29.99 ÷ 12 = £2.499, against a high-street coffee at £3–£4. A claim about our own price, not a competitor's | 2026-09-20 |
-| "Annual · best value" | MarketingHome price card | £29.99/yr vs £59.88/yr at the monthly rate — true against our own prices only, which is all it claims | 2026-09-20 |
+| "About £5.33 a month, a third off paying monthly" | /pricing | £63.99 ÷ 12 = £5.33; £63.99 vs £95.88 (12 × £7.99) is 33.3% off. A claim about our own prices only | 2026-11-08 |
+| "Annual · best value" | MarketingHome price card | £63.99/yr vs £95.88/yr at the monthly rate — true against our own prices only, which is all it claims | 2026-11-08 |
 | "one free region, forever, no card" | MarketingHome (FAQ, hero, price card), /pricing | `FREE_AREAS` / `freeAreasFor` in entitlement.ts; checkout is never reached without a deliberate click | 2026-09-20 |
 | "change your free area once after 30 days" | MarketingHome (FAQ), account screen | The 30-day rule in the free-area change logic | 2026-09-20 |
 | "cancel whenever you like, no fee, access to the end of the paid period" | /refunds, /pricing, MarketingHome | Paddle customer portal cancellation + `actionForEvent` granting to `current_billing_period.ends_at` | 2026-09-20 |

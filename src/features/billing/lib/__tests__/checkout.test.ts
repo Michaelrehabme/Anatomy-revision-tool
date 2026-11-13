@@ -92,14 +92,14 @@ describe('renewalTerms', () => {
     const terms = renewalTerms('annual', NOW);
     expect(terms.nextChargeAt.slice(0, 10)).toBe('2027-09-20');
     expect(terms.frequency).toBe('every year');
-    expect(terms.price).toBe('£29.99');
+    expect(terms.price).toBe('£63.99');
   });
 
   it('dates the next monthly charge a month out', () => {
     const terms = renewalTerms('monthly', NOW);
     expect(terms.nextChargeAt.slice(0, 10)).toBe('2026-10-20');
     expect(terms.frequency).toBe('every month');
-    expect(terms.price).toBe('£4.99');
+    expect(terms.price).toBe('£7.99');
   });
 
   it('does not invent a 31st of February', () => {

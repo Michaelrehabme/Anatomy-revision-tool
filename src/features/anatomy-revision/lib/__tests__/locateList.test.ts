@@ -33,9 +33,10 @@ const lists = locate.map((q) => ({ q, list: buildLocateList(q, framesOf(q), STRU
 describe('the list of names a locate question falls back to', () => {
   it('was one name long on 211 of the 444 questions, and under four on 237', () => {
     const sizes = locate.map((q) => onPlate(q).length);
-    // 444 since 17 Oct 2026: no ligament is asked from a picture for now
+    // 444 since 17 Oct 2026: no ligament is asked from a picture for now; 435
+    // since 12 Nov 2026: the three spine ranges are not either
     // (data/clinicalLigaments.ts).
-    expect(locate).toHaveLength(444);
+    expect(locate).toHaveLength(435);
     expect(sizes.filter((n) => n === 1)).toHaveLength(211);
     expect(sizes.filter((n) => n < MIN_LIST_NAMES)).toHaveLength(237);
   });
@@ -135,6 +136,6 @@ describe('the two routes together', () => {
       }
       expect(routes.list.length, q.id).toBeGreaterThanOrEqual(MIN_LIST_NAMES);
     }
-    expect(inWords).toBe(425);
+    expect(inWords).toBe(416);
   });
 });
