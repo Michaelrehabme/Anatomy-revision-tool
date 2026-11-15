@@ -93,6 +93,7 @@ scene.collection.objects.link(sun)
 # key and fill, and a Freestyle pass over `outline_coll` so touching bones are
 # told apart by a drawn edge. Masks are emission and ignore all of it.
 key_light, fill_light = boneLook.add_lights(scene)
+boneLook.configure_eevee(scene)
 CTX_MAT = boneLook.bone_material("joint_ctx_bone")
 outline_coll = bpy.data.collections.new("joint_outlined")
 scene.collection.children.link(outline_coll)
@@ -226,6 +227,7 @@ def bake(object_names, mesh_name):
         mat = src.matrix_world
         for v in tmp.vertices:
             v.co = mat @ v.co
+        boneLook.tag_tone(tmp, n)
         bm.from_mesh(tmp)
         bpy.data.meshes.remove(tmp)
     mesh = bpy.data.meshes.new(mesh_name)
@@ -405,8 +407,11 @@ def frame_camera(lo, hi, angle_deg, margin, frame_size=None):
 
 
 def clear():
+    # Look 2 keeps boneLook's key and fill as well. Unlinking them left the
+    # context render lit by the dim world alone: dark, flat, bones merged.
+    keep = (cam, sun, key_light, fill_light) if boneLook.V2 else (cam, sun)
     for ob in list(scene.collection.objects):
-        if ob not in (cam, sun):
+        if ob not in keep:
             scene.collection.objects.unlink(ob)
 
 
@@ -716,8 +721,32 @@ for jid in wanted:
         outline_coll.objects.link(ctx)
         scene.collection.objects.unlink(ctx)
         boneLook.aim_lights(cam, key_light, fill_light)
-        scene.render.use_freestyle = True
-        render_to(os.path.join(a.out, jid, f"view-{frame:02d}", "context.png"))
+        if boneLook.V2:
+            # LOOK 2 (boneLook.py): no drawn line, and none of this script's
+            # own 0.55 world or extra sun, which is what lit every face from
+            # every side and left the AC joint "lacking definition". The
+            # shared dim world, crisp key and occlusion do the separating.
+            _was = (_bg.inputs[1].default_value if _bg else None,
+                    sun.hide_render, scene.eevee.taa_render_samples,
+                    scene.view_settings.view_transform, scene.view_settings.look)
+            # AgX (Blender's default) rolls a pale bone's highlights off into
+            # a dark flat grey; Standard is what the muscle plates use.
+            scene.view_settings.view_transform = "Standard"
+            scene.view_settings.look = "None"
+            if _bg:
+                _bg.inputs[1].default_value = boneLook.WORLD_STRENGTH
+            sun.hide_render = True
+            scene.eevee.taa_render_samples = 64
+            render_to(os.path.join(a.out, jid, f"view-{frame:02d}", "context.png"))
+            if _bg:
+                _bg.inputs[1].default_value = _was[0]
+            sun.hide_render = _was[1]
+            scene.eevee.taa_render_samples = _was[2]
+            scene.view_settings.view_transform = _was[3]
+            scene.view_settings.look = _was[4]
+        else:
+            scene.render.use_freestyle = True
+            render_to(os.path.join(a.out, jid, f"view-{frame:02d}", "context.png"))
         scene.render.use_freestyle = False
         outline_coll.objects.unlink(ctx)
 

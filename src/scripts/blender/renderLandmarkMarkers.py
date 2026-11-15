@@ -182,6 +182,15 @@ if a.look == "studio":
     _nt.links.new(_gamma.outputs["Color"], _bsdf.inputs["Base Color"])
     _bsdf.inputs["Roughness"].default_value = 0.5
 BONE_MAT.diffuse_color = (0.90, 0.87, 0.80, 1)   # what Workbench draws
+if boneLook.V2 and a.look == "studio":
+    # LOOK 2 (boneLook.py): the shared bone with per-bone tone and deeper
+    # occlusion, and the shared crisp key and weaker fill, so bones are told
+    # apart by light rather than by a drawn outline.
+    BONE_MAT = boneLook.bone_material("landmark_bone_v2")
+    sun.data.energy = 5.0
+    sun.data.angle = math.radians(3)
+    fill.data.energy = 0.3
+    boneLook.configure_eevee(scene)
 
 
 def emission(name, colour):
@@ -213,6 +222,7 @@ def bake(object_names, mesh_name):
         mat = src.matrix_world
         for v in tmp.vertices:
             v.co = mat @ v.co
+        boneLook.tag_tone(tmp, n)
         bm.from_mesh(tmp)
         bpy.data.meshes.remove(tmp)
     mesh = bpy.data.meshes.new(mesh_name)
@@ -290,7 +300,7 @@ if a.look == "studio":
     sh.curvature_ridge_factor = 0.0
     sh.curvature_valley_factor = 1.6
     sh.show_shadows = False
-    sh.show_object_outline = True
+    sh.show_object_outline = not boneLook.V2
     sh.object_outline_color = (0.16, 0.13, 0.11)
     scene.display.render_aa = "16"
 
@@ -322,7 +332,7 @@ def render_to(path, beauty=False):
     scene.render.filepath = path
     scene.render.engine = EEVEE_ENGINE
     bpy.ops.render.render(write_still=True)
-    if beauty and a.look == "studio":
+    if beauty and a.look == "studio" and not boneLook.V2:
         line_path = path[:-4] + ".lines.png"
         scene.render.filepath = line_path
         scene.render.engine = "BLENDER_WORKBENCH"

@@ -117,7 +117,9 @@ _sh.cavity_valley_factor = 2.0
 _sh.curvature_ridge_factor = 0.0
 _sh.curvature_valley_factor = 1.6
 _sh.show_shadows = False
-_sh.show_object_outline = True
+# Look 2 keeps the cavity shading in the creases but draws no outline round
+# each object: the user wants definition from light, not lines (15 Nov 2026).
+_sh.show_object_outline = not boneLook.V2
 _sh.object_outline_color = (0.16, 0.13, 0.11)
 scene.display.render_aa = "16"
 
@@ -197,7 +199,8 @@ BONE_MAT = boneLook.bone_material("muscle_plate_bone")
 # #83372F in the shade, against the bones' #ACA08A. Guessing at this twice
 # produced a plate of black meat and then a plate of pink skin, so the values
 # are measured from a render each time they move.
-REST_MAT = principled("muscle_rest", (0.45, 0.09, 0.07, 1), 0.55)
+REST_MAT = (boneLook.tissue_material("muscle_rest", (0.45, 0.09, 0.07, 1), 0.55)
+            if boneLook.V2 else principled("muscle_rest", (0.45, 0.09, 0.07, 1), 0.55))
 # THE HIGHLIGHT IS THE APP'S HIGHLIGHT. Cyan, the same value the ligament
 # plates and the landmark markers use, so "the highlighted structure" looks the
 # same whichever family the question is about.
@@ -211,7 +214,8 @@ except KeyError:
 # On the highlight render the neighbours go quiet, so the answer stands out.
 # The context render keeps them all alike — a locate question must not give
 # the target away by colour.
-MUTED_MAT = principled("muscle_muted", (0.67, 0.37, 0.32, 1), 0.55)
+MUTED_MAT = (boneLook.tissue_material("muscle_muted", (0.67, 0.37, 0.32, 1), 0.55)
+             if boneLook.V2 else principled("muscle_muted", (0.67, 0.37, 0.32, 1), 0.55))
 
 
 def flat_emission(name, colour):
@@ -252,6 +256,8 @@ def bake(names, mesh_name):
         mat = src.matrix_world
         for v in tmp.vertices:
             v.co = mat @ v.co
+        # One tone per MUSCLE, not per head: two bellies are one answer.
+        boneLook.tag_tone(tmp, owner.get(n, n))
         bm.from_mesh(tmp)
         bpy.data.meshes.remove(tmp)
     mesh = bpy.data.meshes.new(mesh_name)
