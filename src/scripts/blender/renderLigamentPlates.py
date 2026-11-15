@@ -106,6 +106,12 @@ fill.data.angle = 0.6
 if STUDIO:
     fill.data.use_shadow = False
     sun.data.angle = math.radians(12)   # a soft-edged shadow, not a hard cut-out
+if STUDIO and boneLook.V2:
+    # LOOK 2 (boneLook.py): the shared crisp key and weaker fill.
+    sun.data.energy = 5.0
+    sun.data.angle = math.radians(3)
+    fill.data.energy = 0.3
+    boneLook.configure_eevee(scene)
 
 # Where the light travels in the CAMERA's own axes (x right, y up, -z away from
 # the lens): the key over the viewer's left shoulder, the convention of every
@@ -142,7 +148,7 @@ if STUDIO:
     _sh.curvature_ridge_factor = 0.0
     _sh.curvature_valley_factor = 1.6
     _sh.show_shadows = False
-    _sh.show_object_outline = True
+    _sh.show_object_outline = not boneLook.V2
     _sh.object_outline_color = (0.16, 0.13, 0.11)
     scene.display.render_aa = "16"
 scene.collection.objects.link(fill)
@@ -282,6 +288,8 @@ def studio_bone_mat():
 
 
 BONE_MAT = studio_bone_mat() if STUDIO else bone_mat()
+if STUDIO and boneLook.V2:
+    BONE_MAT = boneLook.bone_material("lig_bone_v2")
 # The two ligament colours. Each strap gets its own material instance built
 # from these, because the fibre texture has to be aligned to that strap's own
 # long axis — see fibre_mat.
@@ -533,6 +541,7 @@ def bake(names, mesh_name, skin=False):
         mat = src.matrix_world
         for v in tmp.vertices:
             v.co = mat @ v.co
+        boneLook.tag_tone(tmp, n)
         bm.from_mesh(tmp)
         bpy.data.meshes.remove(tmp)
     mesh = bpy.data.meshes.new(mesh_name)

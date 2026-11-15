@@ -287,6 +287,8 @@ def outline_lineset(scene, collection, thickness=1.1, colour=(0.42, 0.36, 0.28))
     ls.collection = collection
     ls.linestyle.color = colour
     ls.linestyle.thickness = thickness
+    # Look 2 draws no lines: the user wants bones told apart by light alone.
+    ls.show_render = not V2
     return ls
 
 

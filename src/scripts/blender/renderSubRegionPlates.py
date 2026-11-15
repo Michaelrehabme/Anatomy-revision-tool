@@ -134,6 +134,7 @@ def bake(names, mesh_name):
         mat = src.matrix_world
         for v in tmp.vertices:
             v.co = mat @ v.co
+        boneLook.tag_tone(tmp, n)
         bm.from_mesh(tmp)
         bpy.data.meshes.remove(tmp)
     mesh = bpy.data.meshes.new(mesh_name)
@@ -162,6 +163,7 @@ def region_on(bone_names, rule, anchor):
         tmp = src.data.copy()
         for v in tmp.vertices:
             v.co = src.matrix_world @ v.co
+        boneLook.tag_tone(tmp, n)
         bm.from_mesh(tmp)
         bpy.data.meshes.remove(tmp)
     if not bm.verts:
