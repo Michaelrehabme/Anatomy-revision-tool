@@ -9,6 +9,7 @@ import { ConfidenceButtons } from '../shared/ConfidenceButtons';
 import { Button } from '../shared/Button';
 import { ExamAnswerFooter } from '../shared/ExamAnswerFooter';
 import type { OinaAnswerParams } from './OinaSelectSession';
+import { DesktopQuestionLayout, GlanceFacts, StageWords } from '../shared/DesktopQuestionLayout';
 import { revealedSlotAnswer } from '../../lib/oinaValues';
 
 interface OinaTypedSessionProps {
@@ -65,23 +66,9 @@ export function OinaTypedSession({ question, onAnswer, onNext, examMode }: OinaT
   };
 
   return (
-    <div className="flex flex-col">
-      <div className="flex flex-1 flex-col justify-center px-24 py-10">
-        <div className="mx-auto w-full max-w-[760px]">
-          <div
-            className="text-center"
-            style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--accd)' }}
-          >
-            {factEyebrow(question.promptKind)} · from memory
-          </div>
-          <h2
-            className="mx-auto mt-6 text-center"
-            style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 40, lineHeight: 1.15, letterSpacing: '-.018em' }}
-          >
-            {question.prompt}
-          </h2>
+    <DesktopQuestionLayout stage={<StageWords label={<>{factEyebrow(question.promptKind)} · from memory</>} prompt={question.prompt} />}>
 
-          <div className="mt-11 flex flex-col gap-5">
+          <div className="flex flex-col gap-5">
             {question.slots.map((slot, index) => {
               const revealing = checked && !examMode;
               const slotCorrect = result.slotCorrect[index];
@@ -128,27 +115,25 @@ export function OinaTypedSession({ question, onAnswer, onNext, examMode }: OinaT
           </div>
 
           {!checked && (
-            <div className="mt-11 flex justify-center">
-              <Button onClick={handleCheck} className="min-w-[260px] min-h-[58px]">
+            <div className="mt-6 flex">
+              <Button onClick={handleCheck} className="min-h-[58px] w-full">
                 {examMode ? 'Submit' : 'Check answer'}
               </Button>
             </div>
           )}
-        </div>
-      </div>
 
-      {examMode && checked && <ExamAnswerFooter onNext={onNext} />}
+      {examMode && checked && <ExamAnswerFooter onNext={onNext} compact />}
 
       {!examMode && checked && (
-        <div className="flex-none px-24 py-10" style={{ background: result.allCorrect ? 'var(--accs)' : 'var(--acc2s)' }}>
-          <div className="mx-auto flex max-w-[1000px] items-start gap-[72px]">
+        <div className="mt-6 rounded-[3px] px-6 py-5" style={{ background: result.allCorrect ? 'var(--accs)' : 'var(--acc2s)' }}>
+          <div className="flex flex-col">
             <div className="flex-1">
               <div className="flex items-baseline gap-3.5">
                 <FeedbackHeading
                   style={{
                     fontFamily: 'var(--font-display)',
                     fontWeight: 500,
-                    fontSize: 32,
+                    fontSize: 28,
                     color: result.allCorrect ? 'var(--accd)' : 'var(--acc2d)',
                   }}
                 >
@@ -160,23 +145,24 @@ export function OinaTypedSession({ question, onAnswer, onNext, examMode }: OinaT
                   </span>
                 )}
               </div>
-              <p className="mt-3.5 max-w-[56ch] text-lg leading-relaxed" style={{ color: 'var(--ink)' }}>
+              <p className="mt-2 text-[16.5px] leading-relaxed" style={{ color: 'var(--ink)' }}>
                 {question.explanation}
               </p>
               {rated && (
-                <Button onClick={onNext} className="mt-6 min-w-[180px] min-h-[50px]">
+                <Button onClick={onNext} className="mt-4 min-h-[52px] w-full">
                   Next
                 </Button>
               )}
             </div>
             {!rated && (
-              <div className="w-[420px] flex-none">
+              <div className="mt-4">
                 <ConfidenceButtons onRate={handleRate} />
               </div>
             )}
           </div>
         </div>
       )}
-    </div>
+      {!examMode && checked && <GlanceFacts structureId={question.structureId} alreadySaid={question.explanation} />}
+    </DesktopQuestionLayout>
   );
 }

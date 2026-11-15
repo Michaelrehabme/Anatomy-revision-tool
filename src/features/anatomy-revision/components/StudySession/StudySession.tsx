@@ -19,8 +19,8 @@ import { FillBlankSession } from '../FillBlankSession/FillBlankSession';
 import { IdentifyTypedSession } from '../IdentifyTypedSession/IdentifyTypedSession';
 import { MultiSelectSession } from '../MultiSelectSession/MultiSelectSession';
 import { OinaSession } from '../OinaSession/OinaSession';
-import { AppShell } from '../shell/AppShell';
-import { SessionSidebar } from '../shell/SessionSidebar';
+import { SessionShell } from '../shell/SessionShell';
+import { StructureLookupProvider } from '../shared/DesktopQuestionLayout';
 import { useRecoverFocus } from '../shared/useRecoverFocus';
 import { PersistErrorBanner } from '../shared/PersistErrorBanner';
 import { AnswerAnnouncer } from '../shared/AnswerAnnouncer';
@@ -101,12 +101,7 @@ export function StudySession({ session, content, onEnd, onBackToSetup }: StudySe
 
   if (!question) {
     return (
-      <AppShell
-        showInstall={false}
-        sidebar={
-          <SessionSidebar current={0} total={session.questions.length} correctCount={0} wrongCount={0} onEnd={onEnd} />
-        }
-      >
+      <SessionShell bar={{ current: 0, total: session.questions.length, correctCount: 0, wrongCount: 0, onEnd }}>
         <div className="mx-auto max-w-xl p-16 text-center">
           <p style={{ color: 'var(--ink2)' }}>No questions matched this filter — go back and widen your selection.</p>
           <button
@@ -118,7 +113,7 @@ export function StudySession({ session, content, onEnd, onBackToSetup }: StudySe
             Back to setup
           </button>
         </div>
-      </AppShell>
+      </SessionShell>
     );
   }
 
@@ -131,37 +126,33 @@ export function StudySession({ session, content, onEnd, onBackToSetup }: StudySe
   const gradedAnswerCount = session.answers.filter((a) => a.graded !== false).length;
 
   return (
-    <AppShell
-      showInstall={false}
-      sidebar={
-        <SessionSidebar
-          current={progressCurrent}
-          total={progressTotal}
-          correctCount={correctCount}
-          wrongCount={wrongCount}
-          cardsSeen={cardsSeen}
-          cardsTotal={cardsTotal}
-          onEnd={onEnd}
-          answered={session.answers.length}
-          assignment={!!session.setupParams?.assignment}
-          exam={examMode}
-          question={question}
-          reportContext={reportContextFor(question, session.answers, content)}
-          hint={
+    <SessionShell
+      bar={{
+          current: progressCurrent,
+          total: progressTotal,
+          correctCount,
+          wrongCount,
+          cardsSeen,
+          cardsTotal,
+          onEnd,
+          answered: session.answers.length,
+          assignment: !!session.setupParams?.assignment,
+          exam: examMode,
+          question,
+          reportContext: reportContextFor(question, session.answers, content),
+          hint:
             examMode
               ? remainingSeconds !== null
                 ? `Exam · ${formatClock(remainingSeconds)} left`
                 : 'Exam · untimed'
-              : undefined
-          }
-        />
-      }
+              : undefined,
+      }}
     >
       <div
         ref={questionRegion}
         tabIndex={-1}
         aria-label={`Question ${session.currentIndex + 1} of ${session.questions.length}`}
-        className="flex min-h-screen flex-col outline-none"
+        className="flex min-h-0 flex-1 flex-col outline-none"
       >
         {/* Announced to screen readers only; mirrors exactly what the visible
             UI reveals, which in assessment mode is nothing. */}
@@ -184,6 +175,7 @@ export function StudySession({ session, content, onEnd, onBackToSetup }: StudySe
         )}
         {/* What the pictures' long descriptions are written from — see shared/PlateDescription. */}
         <PlateCatalogueProvider value={content}>
+        <StructureLookupProvider value={content.structuresById}>
         {isFlashcardQuestion(question) && (
           <FlashcardSession
             key={question.id}
@@ -219,6 +211,7 @@ export function StudySession({ session, content, onEnd, onBackToSetup }: StudySe
           <FillBlankSession
             key={question.id}
             question={question}
+            desktop
             onAnswer={(params) => session.submitAnswer({ ...params, questionId: question.id })}
             onNext={advance}
             examMode={examMode}
@@ -252,8 +245,9 @@ export function StudySession({ session, content, onEnd, onBackToSetup }: StudySe
             examMode={examMode}
           />
         )}
+        </StructureLookupProvider>
         </PlateCatalogueProvider>
       </div>
-    </AppShell>
+    </SessionShell>
   );
 }

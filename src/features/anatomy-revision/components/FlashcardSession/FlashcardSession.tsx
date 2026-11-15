@@ -5,6 +5,7 @@ import type { AnatomyImageAsset } from '../../types/image';
 import { AnatomyImageFigure } from '../shared/AnatomyImageFigure';
 import { rotationFramesFor } from '../../lib/rotationFrames';
 import { Button } from '../shared/Button';
+import { DesktopQuestionLayout, StagePicture, StageWords } from '../shared/DesktopQuestionLayout';
 
 interface FlashcardSessionProps {
   question: FlashcardQuestion;
@@ -49,50 +50,56 @@ export function FlashcardSession({ question, imagesById, onAnswer, onNext }: Fla
     onAnswer({ structureId: question.structureId, correct: true, graded: false });
   };
 
+  // The picture on show: the front's until it is revealed, then the back's
+  // (which names the structure), or the front's again if the back has none.
+  const shownImage = revealed ? (backImage ?? frontImage) : frontImage;
+  const shownFrames = shownImage === backImage ? backFrames : frontFrames;
+  const front = question.front.text ? (
+    <p className="whitespace-pre-line" style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: shownImage ? 30 : 46, lineHeight: 1.15, letterSpacing: '-.02em' }}>
+      {question.front.text}
+    </p>
+  ) : null;
+
   return (
-    <div className="mx-auto flex w-full max-w-2xl flex-1 flex-col justify-center px-8 py-10">
-      <div
-        className="text-center"
-        style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}
-      >
-        Learn · not scored
-      </div>
-
-      <div
-        className="mt-5 min-h-[26rem] rounded-[3px] p-8"
-        style={{ background: 'var(--sf)', boxShadow: 'var(--shadow-card)' }}
-      >
-        {!revealed ? (
-          <div className="flex h-full flex-col items-center justify-center gap-5 text-center">
-            {frontImage ? (
-              <AnatomyImageFigure image={frontImage} frames={frontFrames} alt="Identify this structure" subjectId={question.structureId} conceal="name" />
-            ) : (
-              <p className="whitespace-pre-line" style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 30 }}>{question.front.text}</p>
-            )}
-            <Button onClick={handleReveal} className="min-w-[200px] min-h-[50px]">
-              Reveal answer
-            </Button>
-          </div>
+    <DesktopQuestionLayout
+      stage={
+        shownImage ? (
+          <StagePicture>
+            <AnatomyImageFigure
+              key={revealed ? 'back' : 'front'}
+              image={shownImage}
+              frames={shownFrames}
+              alt={revealed && shownImage === backImage ? question.structureId : 'Identify this structure'}
+              subjectId={question.structureId}
+              conceal={revealed && shownImage === backImage ? undefined : 'name'}
+            />
+          </StagePicture>
         ) : (
-          <div className="space-y-4">
-            {backImage && <AnatomyImageFigure image={backImage} frames={backFrames} alt={question.structureId} subjectId={question.structureId} />}
-            {question.front.text && (
-              <p className="whitespace-pre-line text-lg" style={{ color: 'var(--ink3)' }}>
-                {question.front.text}
-              </p>
-            )}
-            <div ref={answerRef} tabIndex={-1} className="text-xl leading-snug outline-none" style={{ color: 'var(--ink)' }}>
-              <RichText text={question.back.text} />
-            </div>
-          </div>
-        )}
-      </div>
-
-      {revealed && (
-        <Button onClick={onNext} className="mt-6 min-h-[50px] w-full">
-          Next
-        </Button>
+          <StageWords label="Learn · not scored">
+            <div className="mt-6">{front}</div>
+          </StageWords>
+        )
+      }
+    >
+      {shownImage && (
+        <div style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--ink3)' }}>Learn · not scored</div>
       )}
-    </div>
+      {shownImage && front && <div className="mt-4">{front}</div>}
+
+      {!revealed ? (
+        <Button onClick={handleReveal} className={`${shownImage ? 'mt-8' : ''} min-h-[58px] w-full`}>
+          Reveal answer
+        </Button>
+      ) : (
+        <>
+          <div ref={answerRef} tabIndex={-1} className="mt-6 text-xl leading-snug outline-none" style={{ color: 'var(--ink)' }}>
+            <RichText text={question.back.text} />
+          </div>
+          <Button onClick={onNext} className="mt-8 min-h-[58px] w-full">
+            Next
+          </Button>
+        </>
+      )}
+    </DesktopQuestionLayout>
   );
 }

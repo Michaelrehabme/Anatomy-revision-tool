@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { FeedbackHeading } from '../shared/FeedbackHeading';
+import { DesktopQuestionLayout, RailFeedback, RailHeader, StagePicture, StageWords } from '../shared/DesktopQuestionLayout';
 import type { TypedIdentifyQuestion } from '../../types/question';
 import type { AnatomyImageAsset } from '../../types/image';
 import type { Confidence } from '../../types/attempt';
@@ -7,7 +7,6 @@ import { PromptHighlightOverlay } from '../shared/PromptHighlightOverlay';
 import { ImageViewer } from '../shared/ImageViewer';
 import { rotationFramesFor } from '../../lib/rotationFrames';
 import { promptHighlightFrames } from '../../lib/promptHighlight';
-import { ConfidenceButtons } from '../shared/ConfidenceButtons';
 import { Button } from '../shared/Button';
 import { ExamAnswerFooter } from '../shared/ExamAnswerFooter';
 import { isAnswerMatch } from '../../lib/answerMatching';
@@ -92,33 +91,15 @@ export function IdentifyTypedSession({ question, imagesById, onAnswer, onNext, e
     });
   };
 
-  return (
-    <div className="flex flex-col">
-      <div className="flex flex-1 flex-col justify-center px-24 py-10">
-        <div className="mx-auto w-full max-w-[820px]">
-          <div
-            className="text-center"
-            style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--accd)' }}
-          >
-            {questionHeaderLabel(question)}
-          </div>
-          <h2
-            className="mx-auto mt-6 text-center"
-            style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 52, lineHeight: 1.1, letterSpacing: '-.022em' }}
-          >
-            {question.prompt}
-          </h2>
-          {question.promptLines?.length ? (
-            <ul className="mx-auto mt-6 flex w-fit max-w-full list-disc flex-col gap-2 pl-6 text-left" style={{ font: '400 20px/1.4 var(--font-ui)', color: 'var(--ink)' }}>
-              {question.promptLines.map((line) => (
-                <li key={line}>{line}</li>
-              ))}
-            </ul>
-          ) : null}
+  const header = { label: questionHeaderLabel(question), prompt: question.prompt, promptLines: question.promptLines };
 
-          {promptImage && (
+  return (
+    <DesktopQuestionLayout
+      stage={
+        promptImage ? (
+          <StagePicture>
             <ImageViewer
-              className="mt-8 max-w-md mx-auto"
+              className="w-full"
               image={promptImage}
               frames={promptHighlightFrames(promptFrames, question.structureId)}
               resetKey={question.id}
@@ -127,125 +108,110 @@ export function IdentifyTypedSession({ question, imagesById, onAnswer, onNext, e
               subjectId={question.structureId}
               conceal={submitted && !examMode ? undefined : 'name'}
             />
-          )}
+          </StagePicture>
+        ) : (
+          <StageWords {...header} />
+        )
+      }
+    >
+      {promptImage && <RailHeader {...header} />}
 
-          <input
-            type="text"
-            value={attempt}
-            onChange={(e) => setAttempt(e.target.value)}
-            disabled={!!submitted}
-            placeholder="Type the structure's name…"
-            autoFocus
-            onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
-            className="mt-12 w-full rounded-[3px] px-6 py-5 text-center disabled:opacity-70"
-            style={{
-              fontFamily: 'var(--font-display)',
-              fontSize: 30,
-              border: '1.4px solid var(--acc)',
-              background: 'var(--sf)',
-              color: submitted && !examMode ? (submitted.correct ? 'var(--accd)' : 'var(--acc2d)') : 'var(--ink)',
-              boxSizing: 'border-box',
-            }}
-          />
+      <input
+        type="text"
+        value={attempt}
+        onChange={(e) => setAttempt(e.target.value)}
+        disabled={!!submitted}
+        placeholder="Type the structure's name…"
+        autoFocus
+        onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
+        className={`${promptImage ? 'mt-8' : ''} w-full rounded-[3px] px-6 py-5 text-center disabled:opacity-70`}
+        style={{
+          fontFamily: 'var(--font-display)',
+          fontSize: 30,
+          border: '1.4px solid var(--acc)',
+          background: 'var(--sf)',
+          color: submitted && !examMode ? (submitted.correct ? 'var(--accd)' : 'var(--acc2d)') : 'var(--ink)',
+          boxSizing: 'border-box',
+        }}
+      />
 
-          {slots.length > 0 && (
-            <div className="mx-auto mt-5 grid w-full max-w-[640px] gap-3" style={{ gridTemplateColumns: `repeat(${Math.min(slots.length, 2)}, minmax(0, 1fr))` }}>
-              {slots.map((slot, i) => (
-                <input
-                  key={i}
-                  type="text"
-                  value={slotInputs[i] ?? ''}
-                  onChange={(e) => setSlotInputs((prev) => prev.map((v, j) => (j === i ? e.target.value : v)))}
-                  disabled={!!submitted}
-                  placeholder={`Bonus: ${slot.label.toLowerCase()} (${i + 1} of ${slots.length})`}
-                  aria-label={`${slot.label} ${i + 1}`}
-                  onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
-                  className="w-full rounded-[3px] px-4 py-3 text-center disabled:opacity-70"
-                  style={{
-                    fontFamily: 'var(--font-display)',
-                    fontSize: 22,
-                    border: `1.4px solid ${submitted && !examMode ? (submitted.slotCorrect[i] ? 'var(--acc)' : 'var(--acc2)') : 'var(--line)'}`,
-                    background: 'var(--sf)',
-                    color: submitted && !examMode ? (submitted.slotCorrect[i] ? 'var(--accd)' : 'var(--acc2d)') : 'var(--ink)',
-                    boxSizing: 'border-box',
-                  }}
-                />
-              ))}
-            </div>
-          )}
-
-          {!submitted && question.hints !== 'none' && (
-            <div className="mt-5 flex justify-center gap-2.5">
-              {hints.map((hint) => (
-                <span
-                  key={hint}
-                  className="inline-flex min-h-[40px] items-center justify-center whitespace-nowrap rounded-full px-4"
-                  style={{ fontFamily: 'var(--font-mono)', fontSize: 12.5, border: '1.2px solid var(--line)', color: 'var(--ink3)' }}
-                >
-                  {hint}
-                </span>
-              ))}
-            </div>
-          )}
-          {!submitted && question.hints === 'none' && (
-            <div className="mt-5 flex justify-center">
-              <span
-                className="inline-flex min-h-[40px] items-center justify-center whitespace-nowrap rounded-full px-4"
-                style={{ fontFamily: 'var(--font-mono)', fontSize: 12.5, background: 'var(--accs)', color: 'var(--accd)' }}
-              >
-                No hints · extra XP
-              </span>
-            </div>
-          )}
-
-          {!submitted && (
-            <div className="mt-11 flex justify-center">
-              <Button onClick={handleSubmit} disabled={!attempt.trim()} className="min-w-[220px] min-h-[58px]">
-                Submit
-              </Button>
-            </div>
-          )}
-          {!submitted && (
-            <p className="mt-6 text-center text-sm" style={{ color: 'var(--ink3)' }}>
-              Common aliases and near-misses are accepted; the canonical name is always shown.
-            </p>
-          )}
-        </div>
-      </div>
-
-      {submitted && examMode && <ExamAnswerFooter onNext={onNext} />}
-
-      {submitted && !examMode && (
-        <div className="flex-none px-24 py-10" style={{ background: submitted.correct ? 'var(--accs)' : 'var(--acc2s)' }}>
-          <div className="mx-auto flex max-w-[1000px] items-start gap-[72px]">
-            <div className="flex-1">
-              <FeedbackHeading
-                style={{
-                  fontFamily: 'var(--font-display)',
-                  fontWeight: 500,
-                  fontSize: 32,
-                  color: submitted.correct ? 'var(--accd)' : 'var(--acc2d)',
-                }}
-               label={submitted.correct ? 'Correct' : `Not quite. The answer is ${correctAnswer}.`}>
-                {submitted.correct ? 'Correct' : 'Not quite'}
-              </FeedbackHeading>
-              <p className="mt-3.5 max-w-[56ch] text-lg leading-relaxed" style={{ color: 'var(--ink)' }}>
-                <strong className="font-semibold">{correctAnswer}.</strong> {bonus} {question.explanation}
-              </p>
-              {rated && (
-                <Button onClick={onNext} className="mt-6 min-w-[180px] min-h-[50px]">
-                  Next
-                </Button>
-              )}
-            </div>
-            {!rated && (
-              <div className="w-[420px] flex-none">
-                <ConfidenceButtons onRate={handleRate} />
-              </div>
-            )}
-          </div>
+      {slots.length > 0 && (
+        <div className="mt-4 grid w-full gap-3" style={{ gridTemplateColumns: `repeat(${Math.min(slots.length, 2)}, minmax(0, 1fr))` }}>
+          {slots.map((slot, i) => (
+            <input
+              key={i}
+              type="text"
+              value={slotInputs[i] ?? ''}
+              onChange={(e) => setSlotInputs((prev) => prev.map((v, j) => (j === i ? e.target.value : v)))}
+              disabled={!!submitted}
+              placeholder={`Bonus: ${slot.label.toLowerCase()} (${i + 1} of ${slots.length})`}
+              aria-label={`${slot.label} ${i + 1}`}
+              onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
+              className="w-full rounded-[3px] px-4 py-3 text-center disabled:opacity-70"
+              style={{
+                fontFamily: 'var(--font-display)',
+                fontSize: 22,
+                border: `1.4px solid ${submitted && !examMode ? (submitted.slotCorrect[i] ? 'var(--acc)' : 'var(--acc2)') : 'var(--line)'}`,
+                background: 'var(--sf)',
+                color: submitted && !examMode ? (submitted.slotCorrect[i] ? 'var(--accd)' : 'var(--acc2d)') : 'var(--ink)',
+                boxSizing: 'border-box',
+              }}
+            />
+          ))}
         </div>
       )}
-    </div>
+
+      {!submitted && question.hints !== 'none' && (
+        <div className="mt-4 flex justify-center gap-2.5">
+          {hints.map((hint) => (
+            <span
+              key={hint}
+              className="inline-flex min-h-[40px] items-center justify-center whitespace-nowrap rounded-full px-4"
+              style={{ fontFamily: 'var(--font-mono)', fontSize: 12.5, border: '1.2px solid var(--line)', color: 'var(--ink3)' }}
+            >
+              {hint}
+            </span>
+          ))}
+        </div>
+      )}
+      {!submitted && question.hints === 'none' && (
+        <div className="mt-4 flex justify-center">
+          <span
+            className="inline-flex min-h-[40px] items-center justify-center whitespace-nowrap rounded-full px-4"
+            style={{ fontFamily: 'var(--font-mono)', fontSize: 12.5, background: 'var(--accs)', color: 'var(--accd)' }}
+          >
+            No hints · extra XP
+          </span>
+        </div>
+      )}
+
+      {!submitted && (
+        <Button onClick={handleSubmit} disabled={!attempt.trim()} className="mt-6 min-h-[58px] w-full">
+          Submit
+        </Button>
+      )}
+      {!submitted && (
+        <p className="mt-4 text-center text-sm" style={{ color: 'var(--ink3)' }}>
+          Common aliases and near-misses are accepted; the canonical name is always shown.
+        </p>
+      )}
+
+      {submitted && examMode && <ExamAnswerFooter onNext={onNext} compact />}
+
+      {submitted && !examMode && (
+        <RailFeedback
+          correct={submitted.correct}
+          title={submitted.correct ? 'Correct' : 'Not quite'}
+          label={submitted.correct ? 'Correct' : `Not quite. The answer is ${correctAnswer}.`}
+          rated={rated}
+          onRate={handleRate}
+          onNext={onNext}
+          structureId={question.structureId}
+          explanation={question.explanation}
+        >
+          <strong className="font-semibold">{correctAnswer}.</strong> {bonus} {question.explanation}
+        </RailFeedback>
+      )}
+    </DesktopQuestionLayout>
   );
 }

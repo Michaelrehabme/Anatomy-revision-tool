@@ -1,8 +1,10 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, type CSSProperties } from 'react';
 import { FeedbackHeading } from '../shared/FeedbackHeading';
 import type { FillBlankQuestion } from '../../types/question';
 import { isAnswerMatch, itemVariants } from '../../lib/answerMatching';
 import { ExamAnswerFooter } from '../shared/ExamAnswerFooter';
+import { Button } from '../shared/Button';
+import { DesktopQuestionLayout, GlanceFacts, StageWords } from '../shared/DesktopQuestionLayout';
 
 interface FillBlankSessionProps {
   question: FillBlankQuestion;
@@ -10,6 +12,8 @@ interface FillBlankSessionProps {
   onNext: () => void;
   /** No color reveal, no full statement — answer submits and advances silently. See CR-009. */
   examMode?: boolean;
+  /** The desktop screen's layout: the sentence on the stage, the boxes in the column beside it. The phone keeps the stacked card. */
+  desktop?: boolean;
 }
 
 /**
@@ -27,7 +31,7 @@ function gradeBoxes(typed: string[], answers: string[], alsoAccepted: FillBlankQ
   return right;
 }
 
-export function FillBlankSession({ question, onAnswer, onNext, examMode }: FillBlankSessionProps) {
+export function FillBlankSession({ question, onAnswer, onNext, examMode, desktop = false }: FillBlankSessionProps) {
   // One box for one answer; a box each when the blank holds several things.
   const answers = useMemo(() => question.answers ?? [question.answer], [question.answers, question.answer]);
   const several = answers.length > 1;
@@ -49,7 +53,7 @@ export function FillBlankSession({ question, onAnswer, onNext, examMode }: FillB
     onAnswer({ structureId: question.structureId, correct, selectedAnswer: typed.join(' / '), correctAnswer: question.answer });
   };
 
-  const box = (i: number, label: string, className: string) => (
+  const box = (i: number, label: string, className: string, style?: CSSProperties) => (
     <input
       key={i}
       type="text"
@@ -60,8 +64,88 @@ export function FillBlankSession({ question, onAnswer, onNext, examMode }: FillB
       // The blank had no name at all, and switched its focus outline off.
       aria-label={label}
       className={className}
+      style={style}
     />
   );
+
+  if (desktop) {
+    const shown = submitted && !examMode;
+    return (
+      <DesktopQuestionLayout
+        stage={
+          <StageWords
+            label="Fill in the blank"
+            prompt={
+              <>
+                {/* Which bone or landmark the sentence is about. Without it "____ origin" is not a question. */}
+                {question.subject && (
+                  <span className="mb-4 block text-[22px] font-normal tracking-normal" style={{ fontFamily: 'var(--font-ui)', color: 'var(--ink2)' }}>
+                    About the <span className="font-semibold" style={{ color: 'var(--ink)' }}>{question.subject}</span>:
+                  </span>
+                )}
+                {question.before}{' '}
+                <span aria-hidden="true" className="inline-block min-w-[4.5em] translate-y-[-0.12em] border-b-[3px]" style={{ borderColor: 'var(--line-strong)' }}>
+                  &nbsp;
+                </span>{' '}
+                {question.after}
+              </>
+            }
+          />
+        }
+      >
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSubmit();
+          }}
+          className="flex flex-col gap-3"
+        >
+          {several && <p className="text-base" style={{ color: 'var(--ink2)' }}>Name all {answers.length}, in any order.</p>}
+          {answers.map((_, i) => {
+            const tone = !shown ? 'var(--acc)' : submitted.right[i] ? 'var(--acc)' : 'var(--acc2)';
+            return (
+              box(
+                i,
+                several ? `Answer ${i + 1} of ${answers.length}` : 'The missing word or phrase',
+                'block w-full rounded-[3px] px-6 py-5 text-center text-[26px] disabled:opacity-80',
+                { fontFamily: 'var(--font-display)', border: `1.4px solid ${tone}`, background: 'var(--sf)', color: !shown ? 'var(--ink)' : submitted.right[i] ? 'var(--accd)' : 'var(--acc2d)' },
+              )
+            );
+          })}
+          {!submitted && (
+            <Button type="submit" disabled={!ready} className="mt-3 min-h-[58px] w-full">
+              Check answer
+            </Button>
+          )}
+        </form>
+
+        {submitted && examMode && <ExamAnswerFooter onNext={onNext} compact />}
+
+        {shown && (
+          <>
+            <div className="mt-6 rounded-[3px] px-6 py-5" style={{ background: submitted.correct ? 'var(--accs)' : 'var(--acc2s)' }}>
+              <FeedbackHeading
+                style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 28, color: submitted.correct ? 'var(--accd)' : 'var(--acc2d)' }}
+                label={submitted.correct ? 'Correct' : `Not quite. The ${several ? 'answers are' : 'answer is'} ${question.answer}.`}
+              >
+                {submitted.correct ? 'Correct' : 'Not quite'}
+              </FeedbackHeading>
+              <p className="mt-2 text-[16.5px] leading-relaxed" style={{ color: 'var(--ink)' }}>
+                {several ? 'Answers' : 'Answer'}: <strong className="font-semibold">{question.answer}</strong>
+              </p>
+              <p className="mt-1 whitespace-pre-line text-[16.5px] leading-relaxed" style={{ color: 'var(--ink2)' }}>
+                {question.fullStatement}
+              </p>
+              <Button onClick={onNext} className="mt-4 min-h-[52px] w-full">
+                Next
+              </Button>
+            </div>
+            <GlanceFacts structureId={question.structureId} alreadySaid={question.fullStatement} />
+          </>
+        )}
+      </DesktopQuestionLayout>
+    );
+  }
 
   return (
     <div className="mx-auto max-w-xl space-y-4 p-6">
