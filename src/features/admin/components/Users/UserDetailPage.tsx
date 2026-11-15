@@ -1,4 +1,10 @@
+import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import { getRole } from '../../../roles/rolesRepository';
+import { BOOTSTRAP_ADMIN_EMAIL } from '../../../roles/bootstrap';
+import { useCurrentRole } from '../../../roles/useCurrentRole';
+import { deleteRefusal } from '../../lib/deleteAccountPolicy';
+import { DeleteAccountPanel } from './DeleteAccountPanel';
 import { REGION_LABELS } from '../../../anatomy-revision/types/region';
 import { useAdminUserDetail } from '../../hooks/useAdminUserDetail';
 import { useTestAccounts } from '../../hooks/useTestAccounts';
@@ -20,6 +26,18 @@ export function UserDetailPage() {
   const { testIds, setMarked } = useTestAccounts();
   const isTest = uid ? testIds.has(uid) : false;
   const q = detail?.profile.questionnaire ?? { status: 'none' as const };
+  const { uid: actorUid } = useCurrentRole();
+  const [targetIsAdmin, setTargetIsAdmin] = useState<boolean | null>(null);
+  useEffect(() => {
+    if (!uid) return;
+    let cancelled = false;
+    getRole(uid)
+      .then((role) => !cancelled && setTargetIsAdmin(role?.admin === true))
+      .catch(() => !cancelled && setTargetIsAdmin(false));
+    return () => {
+      cancelled = true;
+    };
+  }, [uid]);
 
   return (
     <div className={`${ADMIN_PAGE_PAD} mx-auto w-full max-w-[1240px]`}>
@@ -155,6 +173,19 @@ export function UserDetailPage() {
               )}
             </div>
           </div>
+          {targetIsAdmin !== null && actorUid && (
+            <DeleteAccountPanel
+              uid={detail.profile.uid}
+              email={detail.profile.email}
+              name={detail.profile.displayName ?? detail.profile.email ?? 'this guest'}
+              refusal={deleteRefusal({
+                actorUid,
+                targetUid: detail.profile.uid,
+                targetIsAdmin: targetIsAdmin || detail.profile.email?.toLowerCase() === BOOTSTRAP_ADMIN_EMAIL,
+                entitlement: detail.profile.entitlement,
+              })}
+            />
+          )}
         </>
       )}
     </div>

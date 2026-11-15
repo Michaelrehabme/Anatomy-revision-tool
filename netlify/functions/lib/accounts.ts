@@ -63,3 +63,22 @@ export async function accountByUid(uid: string): Promise<ToolkitUser | null> {
   };
   return found.users?.[0] ?? null;
 }
+
+/** Removes one sign-in record. An account that is already gone is not an error. */
+export async function deleteAccountRecord(uid: string): Promise<void> {
+  try {
+    await toolkit('accounts:delete', { method: 'POST', body: JSON.stringify({ localId: uid }) });
+  } catch (err) {
+    if (err instanceof Error && /USER_NOT_FOUND/.test(err.message)) return;
+    throw err;
+  }
+}
+
+/** Whether an account holds the legacy `admin` custom claim. */
+export function hasAdminClaim(user: ToolkitUser & { customAttributes?: string }): boolean {
+  try {
+    return JSON.parse(user.customAttributes ?? '{}')?.admin === true;
+  } catch {
+    return false;
+  }
+}
