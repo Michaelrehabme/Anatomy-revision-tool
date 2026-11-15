@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useIsDesktop } from '../../../anatomy-revision/hooks/useIsDesktop';
 import { listRoles } from '../../../roles/rolesRepository';
 import { BOOTSTRAP_ADMIN_EMAIL } from '../../../roles/bootstrap';
@@ -123,6 +123,7 @@ export function UsersPage() {
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState<PageSize>(readPageSize);
   const isDesktop = useIsDesktop();
+  const deletedName = (useLocation().state as { deleted?: string } | null)?.deleted;
 
   const all = useMemo<Row[]>(() => {
     const now = new Date();
@@ -208,6 +209,11 @@ export function UsersPage() {
       {error && (
         <div className="mt-8 text-sm" style={{ color: 'var(--acc2d)' }}>
           {error}
+        </div>
+      )}
+      {deletedName && (
+        <div role="status" className="mt-4 rounded-[4px] px-3.5 py-2.5 text-sm" style={{ color: 'var(--accd)', background: 'var(--accs)' }}>
+          Account deleted: {deletedName}
         </div>
       )}
       {testError && (
