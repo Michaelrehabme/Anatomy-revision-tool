@@ -193,7 +193,7 @@ function Panel({
         className="flex h-16 w-16 items-center justify-center rounded-full md:h-[76px] md:w-[76px]"
         style={{
           background: good ? 'var(--accs)' : 'var(--acc2s)',
-          color: good ? 'var(--acc)' : 'var(--acc2d)',
+          color: good ? 'var(--accd)' : 'var(--acc2d)',
           boxShadow: good ? '0 0 0 8px color-mix(in srgb, var(--acc) 8%, transparent)' : undefined,
         }}
       >

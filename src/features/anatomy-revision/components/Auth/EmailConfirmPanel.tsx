@@ -195,7 +195,7 @@ export default function EmailConfirmPanel({ purpose, onDifferentEmail }: EmailCo
         <div
           aria-hidden="true"
           className="flex h-11 w-11 flex-none items-center justify-center rounded-xl"
-          style={{ background: 'var(--accs)', color: 'var(--acc)' }}
+          style={{ background: 'var(--accs)', color: 'var(--accd)' }}
         >
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
             <rect x="3" y="5" width="18" height="14" rx="2" />
