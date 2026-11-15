@@ -65,7 +65,7 @@ function access(over: Partial<UseEntitlement> = {}): UseEntitlement {
 }
 const PAID: Entitlement = { tier: 'individual', source: 'paddle', expiresAt: '2099-01-01T00:00:00.000Z' };
 
-const CONTINUE = 'I’ve confirmed — continue';
+const CONTINUE = 'I’ve confirmed, continue';
 
 /** As the sign-up leaves things: the email has gone, a moment ago. */
 const emailWasSent = (at = Date.now()) => recordConfirmationSent('u1', 'sam@example.com', at);
@@ -91,7 +91,7 @@ describe('the panel, for a new account', () => {
     emailWasSent();
     open();
     expect(screen.getByTestId('email-confirm-lead').textContent).toBe(
-      'We sent a link to sam@example.com. Open it to confirm your email address, then come back here.',
+      'We sent a link to sam@example.com',
     );
     // The sign-up sent it: the panel does not send a second one by opening.
     expect(auth.sendConfirmationEmail).not.toHaveBeenCalled();
@@ -100,12 +100,12 @@ describe('the panel, for a new account', () => {
   it('says what to do if it does not arrive: spam, resend, a different address', () => {
     emailWasSent();
     open();
-    expect(screen.getByText('If it does not arrive, check your spam or junk folder, resend it, or use a different address.')).toBeTruthy();
+    expect(screen.getByText(/Not there after a minute\? Look in spam or junk, and mark it/)).toBeTruthy();
     expect(screen.getByRole('button', { name: 'Resend the email' })).toBeTruthy();
     expect(screen.getByRole('button', { name: 'Use a different email' })).toBeTruthy();
     // The main button is described by that help, for a screen reader.
     const main = screen.getByRole('button', { name: CONTINUE });
-    expect(document.getElementById(main.getAttribute('aria-describedby')!)?.textContent).toMatch(/check your spam or junk folder/);
+    expect(document.getElementById(main.getAttribute('aria-describedby')!)?.textContent).toMatch(/Look in spam or junk/);
   });
 
   it('never blames: nothing is called wrong, invalid, failed or unverified', () => {
@@ -312,7 +312,7 @@ describe('the screen that stands in for revision', () => {
     expect(screen.getByRole('heading', { level: 1, name: 'Check your inbox' })).toBeTruthy();
     expect(screen.getByText(/Your free area needs a confirmed email address\. It takes a minute, and nothing you have done is lost\./)).toBeTruthy();
     expect(screen.getByText(/Your free area is Knee, and your progress is waiting for you\./)).toBeTruthy();
-    expect(screen.getByTestId('email-confirm-lead').textContent).toMatch(/^We sent a link to sam@example\.com\./);
+    expect(screen.getByTestId('email-confirm-lead').textContent).toBe('We sent a link to sam@example.com');
   });
 
   it('moves focus to the heading for someone who pressed something to get here', () => {
@@ -467,7 +467,7 @@ describe('the account screen', () => {
     expect(screen.getByText(/This is your free area, and it stays yours\. To change it — once, 30 days after you picked it — confirm your email address first\./)).toBeTruthy();
     // Nothing is sent until they ask, and their sign-in is never offered up.
     expect(await screen.findByRole('button', { name: 'Send me the link' })).toBeTruthy();
-    expect(screen.getByTestId('email-confirm-lead').textContent).toMatch(/^We will send a link to sam@example\.com\./);
+    expect(screen.getByTestId('email-confirm-lead').textContent).toBe('We will send a link to sam@example.com');
     expect(auth.sendConfirmationEmail).not.toHaveBeenCalled();
     expect(screen.queryByRole('button', { name: 'Use a different email' })).toBeNull();
   });
@@ -477,7 +477,7 @@ describe('the account screen', () => {
     fireEvent.click(await screen.findByRole('button', { name: 'Send me the link' }));
     await waitFor(() => expect(auth.sendConfirmationEmail).toHaveBeenCalledTimes(1));
     expect(await screen.findByRole('button', { name: CONTINUE })).toBeTruthy();
-    expect(screen.getByText('If it does not arrive, check your spam or junk folder, or resend it.')).toBeTruthy();
+    expect(screen.getByText(/Not there after a minute\? Look in spam or junk/)).toBeTruthy();
     expect(screen.queryByRole('button', { name: 'Use a different email' })).toBeNull();
   });
 

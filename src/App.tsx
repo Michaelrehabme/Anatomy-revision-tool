@@ -101,6 +101,12 @@ const LegalRoutes = lazy(() => import('./features/legal/LegalRoutes'));
  */
 const ComparisonPage = lazy(() => import('./features/site/components/ComparisonPage'));
 const COMPARISON_PATH = '/compare';
+/**
+ * Where the link in the app's own "Confirm your email" leads (Auth/EmailActionPage).
+ * Lazy: almost nobody opening the app is on it.
+ */
+const EmailActionPage = lazy(() => import('./features/anatomy-revision/components/Auth/EmailActionPage'));
+const EMAIL_ACTION_PATH = '/auth/action';
 /** Ten questions with no account (features/trial). Public, like the prices. */
 const TRIAL_PATH = '/try';
 const TrialSession = lazy(() => import('./features/trial/TrialSession'));
@@ -412,6 +418,16 @@ function App() {
     return (
       <Suspense fallback={null}>
         <ComparisonPage />
+      </Suspense>
+    );
+  }
+
+  // Public too: the link is often opened where nobody is signed in, and it
+  // must confirm the address rather than bounce into onboarding.
+  if (location.pathname === EMAIL_ACTION_PATH) {
+    return (
+      <Suspense fallback={null}>
+        <EmailActionPage />
       </Suspense>
     );
   }
@@ -778,7 +794,7 @@ function App() {
           <span>
             {user && !isGuest && user.emailVerified
               ? 'Your email address is confirmed.'
-              : 'Your email address is confirmed. Go back to the app or the tab where you created your account and choose “I’ve confirmed — continue”, or sign in here.'}
+              : 'Your email address is confirmed. Go back to the app or the tab where you created your account and choose “I’ve confirmed, continue”, or sign in here.'}
           </span>
           <button
             type="button"
