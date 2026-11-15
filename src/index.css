@@ -65,6 +65,7 @@
   /* Ground and surfaces. Paper is the page, bone is what sits on it. */
   --pg: #f7f4ec; /* paper — page/app ground */
   --sf: #efe9da; /* bone — cards, secondary surfaces */
+  --stage: #ece5d5; /* the desktop question's picture stage, a step down from the page */
 
   /* Text. Ink navy is for headings and dark surfaces; body copy is slate. */
   --ink: #1f2a44; /* ink navy — headings, dark surfaces */
@@ -125,6 +126,7 @@
 
   --pg: #121927;
   --sf: #1c2537;
+  --stage: #0d1320;
 
   --ink: #f3eee2; /* warm paper, echoing the light ground rather than pure white */
   --ink-pressed: #fffdf7; /* pressed goes brighter in dark, not darker */
@@ -173,6 +175,7 @@
 
   --pg: #ffffff;
   --sf: #f2ece0;
+  --stage: #f2ece0;
 
   --ink: #0b1120;
   --ink-pressed: #000000;
@@ -210,6 +213,7 @@
 
   --pg: #000000;
   --sf: #0c1320;
+  --stage: #000000;
 
   --ink: #ffffff;
   --ink-pressed: #ffffff;

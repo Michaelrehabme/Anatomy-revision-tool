@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { moveFocusWithArrows } from '../shared/arrowFocus';
-import { FeedbackHeading } from '../shared/FeedbackHeading';
+import { DesktopQuestionLayout, RailFeedback, RailHeader, StagePicture, StageWords } from '../shared/DesktopQuestionLayout';
 import type { MCQQuestion } from '../../types/question';
 import type { AnatomyImageAsset } from '../../types/image';
 import type { Confidence } from '../../types/attempt';
@@ -8,7 +8,6 @@ import { PromptHighlightOverlay } from '../shared/PromptHighlightOverlay';
 import { ImageViewer } from '../shared/ImageViewer';
 import { rotationFramesFor } from '../../lib/rotationFrames';
 import { promptHighlightFrames } from '../../lib/promptHighlight';
-import { ConfidenceButtons } from '../shared/ConfidenceButtons';
 import { Button } from '../shared/Button';
 import { ExamAnswerFooter } from '../shared/ExamAnswerFooter';
 import { questionHeaderLabel } from '../../lib/questionFormats';
@@ -78,133 +77,100 @@ export function MCQSession({ question, imagesById, onAnswer, onNext, examMode }:
     });
   };
 
-  return (
-    <div className="flex flex-col">
-      <div className="flex flex-1 flex-col justify-center px-24 py-10">
-        <div className="mx-auto w-full max-w-[920px]">
-          <div
-            className="text-center"
-            style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--accd)' }}
-          >
-            {questionHeaderLabel(question)}
-          </div>
-          <h2
-            className="mx-auto mt-6 text-center"
-            style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 52, lineHeight: 1.1, letterSpacing: '-.022em' }}
-          >
-            {question.prompt}
-          </h2>
-          {question.promptLines?.length ? (
-            <ul className="mx-auto mt-6 flex w-fit max-w-full list-disc flex-col gap-2 pl-6 text-left" style={{ font: '400 20px/1.4 var(--font-ui)', color: 'var(--ink)' }}>
-              {question.promptLines.map((line) => (
-                <li key={line}>{line}</li>
-              ))}
-            </ul>
-          ) : null}
+  const header = { label: questionHeaderLabel(question), prompt: question.prompt, promptLines: question.promptLines };
+  const revealing = checked && !examMode;
 
-          {promptImage && (
+  return (
+    <DesktopQuestionLayout
+      stage={
+        promptImage ? (
+          <StagePicture>
             <ImageViewer
-              className="mt-8 max-w-md mx-auto"
+              className="w-full"
               image={promptImage}
               frames={promptHighlightFrames(promptFrames, question.structureId)}
               resetKey={question.id}
               overlay={(current) => <PromptHighlightOverlay image={current} structureId={question.structureId} />}
               // The name is the answer until it has been checked — and stays so in an exam.
               subjectId={question.structureId}
-              conceal={checked && !examMode ? undefined : 'name'}
+              conceal={revealing ? undefined : 'name'}
             />
-          )}
+          </StagePicture>
+        ) : (
+          <StageWords {...header} />
+        )
+      }
+    >
+      {promptImage && <RailHeader {...header} />}
 
-          <div
-            className="mt-14 grid grid-cols-2 gap-4"
-            role="group"
-            aria-label="Answers"
-            onKeyDown={moveFocusWithArrows}
-            data-fx={checked && !examMode && !isCorrect ? 'shake' : undefined}
-          >
-            {question.choices.map((choice, index) => {
-              const isSelected = index === selectedIndex;
-              const isAnswerCorrect = index === question.correctIndex;
-              const revealing = checked && !examMode;
-              let border = '1.2px solid var(--line)';
-              let background = 'var(--sf)';
-              let color = 'var(--ink)';
-              if (revealing && isAnswerCorrect) {
-                border = '1.4px solid var(--acc)';
-                background = 'var(--accs)';
-                color = 'var(--accd)';
-              } else if (revealing && isSelected && !isAnswerCorrect) {
-                border = '1.4px solid var(--acc2)';
-                background = 'var(--acc2s)';
-                color = 'var(--acc2d)';
-              } else if (isSelected) {
-                border = '1.4px solid var(--acc)';
-                background = 'var(--accs)';
-                color = 'var(--accd)';
-              }
-              return (
-                <button
-                  key={choice}
-                  type="button"
-                  disabled={examMode ? examSubmitted : checked}
-                  aria-pressed={isSelected}
-                  onClick={() => handleSelect(index)}
-                  data-fx={revealing && isAnswerCorrect && isCorrect ? 'pulse' : undefined}
-                  className="flex min-h-[82px] items-center gap-4 rounded-[3px] px-6 text-left text-xl transition-colors duration-200 disabled:cursor-default"
-                  style={{ border, background, color }}
-                >
-                  <span className="w-4 flex-none" style={{ font: '400 12.5px/1 var(--font-mono)', color: checked || isSelected ? color : 'var(--ink3)' }}>
-                    {LETTERS[index]}
-                  </span>
-                  <span className="flex-1">{choice}</span>
-                </button>
-              );
-            })}
-          </div>
-
-          {!examMode && !checked && (
-            <div className="mt-12 flex justify-center">
-              <Button
-                onClick={() => setChecked(true)}
-                disabled={selectedIndex === null}
-                className="min-w-[260px] min-h-[58px]"
-              >
-                Check answer
-              </Button>
-            </div>
-          )}
-        </div>
+      <div
+        className={`${promptImage ? 'mt-8' : ''} grid grid-cols-2 gap-3.5`}
+        role="group"
+        aria-label="Answers"
+        onKeyDown={moveFocusWithArrows}
+        data-fx={revealing && !isCorrect ? 'shake' : undefined}
+      >
+        {question.choices.map((choice, index) => {
+          const isSelected = index === selectedIndex;
+          const isAnswerCorrect = index === question.correctIndex;
+          let border = '1.2px solid var(--line)';
+          let background = 'var(--sf)';
+          let color = 'var(--ink)';
+          if (revealing && isAnswerCorrect) {
+            border = '1.4px solid var(--acc)';
+            background = 'var(--accs)';
+            color = 'var(--accd)';
+          } else if (revealing && isSelected && !isAnswerCorrect) {
+            border = '1.4px solid var(--acc2)';
+            background = 'var(--acc2s)';
+            color = 'var(--acc2d)';
+          } else if (isSelected) {
+            border = '1.4px solid var(--acc)';
+            background = 'var(--accs)';
+            color = 'var(--accd)';
+          }
+          return (
+            <button
+              key={choice}
+              type="button"
+              disabled={examMode ? examSubmitted : checked}
+              aria-pressed={isSelected}
+              onClick={() => handleSelect(index)}
+              data-fx={revealing && isAnswerCorrect && isCorrect ? 'pulse' : undefined}
+              className="flex min-h-[76px] items-center gap-4 rounded-[3px] px-5 text-left text-xl transition-colors duration-200 disabled:cursor-default"
+              style={{ border, background, color }}
+            >
+              <span className="w-4 flex-none" style={{ font: '400 12.5px/1 var(--font-mono)', color: checked || isSelected ? color : 'var(--ink3)' }}>
+                {LETTERS[index]}
+              </span>
+              <span className="flex-1">{choice}</span>
+            </button>
+          );
+        })}
       </div>
 
-      {examMode && examSubmitted && <ExamAnswerFooter onNext={onNext} />}
-
-      {!examMode && checked && (
-        <div className="flex-none px-24 py-10" style={{ background: isCorrect ? 'var(--accs)' : 'var(--acc2s)' }}>
-          <div className="mx-auto flex max-w-[1000px] items-start gap-[72px]">
-            <div className="flex-1">
-              <div className="flex items-baseline gap-3.5">
-                <FeedbackHeading style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 32, color: isCorrect ? 'var(--accd)' : 'var(--acc2d)' }} label={isCorrect ? 'Correct' : `Not quite. The answer is ${question.choices[question.correctIndex]}.`}>
-                  {isCorrect ? 'Correct' : 'Not quite'}
-                </FeedbackHeading>
-              </div>
-              <p className="mt-3.5 max-w-[56ch] text-lg leading-relaxed" style={{ color: 'var(--ink)' }}>
-                <strong className="font-semibold">{question.choices[question.correctIndex].replace(/\.$/, '')}.</strong>{' '}
-                {question.explanation}
-              </p>
-              {rated && (
-                <Button onClick={onNext} className="mt-6 min-w-[180px] min-h-[50px]">
-                  Next
-                </Button>
-              )}
-            </div>
-            {!rated && (
-              <div className="w-[420px] flex-none">
-                <ConfidenceButtons onRate={handleRate} />
-              </div>
-            )}
-          </div>
-        </div>
+      {!examMode && !checked && (
+        <Button onClick={() => setChecked(true)} disabled={selectedIndex === null} className="mt-6 min-h-[58px] w-full">
+          Check answer
+        </Button>
       )}
-    </div>
+
+      {examMode && examSubmitted && <ExamAnswerFooter onNext={onNext} compact />}
+
+      {revealing && (
+        <RailFeedback
+          correct={isCorrect}
+          title={isCorrect ? 'Correct' : 'Not quite'}
+          label={isCorrect ? 'Correct' : `Not quite. The answer is ${question.choices[question.correctIndex]}.`}
+          rated={rated}
+          onRate={handleRate}
+          onNext={onNext}
+          structureId={question.structureId}
+          explanation={question.explanation}
+        >
+          <strong className="font-semibold">{question.choices[question.correctIndex].replace(/\.$/, '')}.</strong> {question.explanation}
+        </RailFeedback>
+      )}
+    </DesktopQuestionLayout>
   );
 }

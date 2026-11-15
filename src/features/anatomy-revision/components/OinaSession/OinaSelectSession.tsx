@@ -8,6 +8,7 @@ import type { Confidence } from '../../types/attempt';
 import { scoreMultiSelect } from '../../lib/multiSelectScoring';
 import { ConfidenceButtons } from '../shared/ConfidenceButtons';
 import { Button } from '../shared/Button';
+import { DesktopQuestionLayout, GlanceFacts, StageWords } from '../shared/DesktopQuestionLayout';
 import { ExamAnswerFooter } from '../shared/ExamAnswerFooter';
 
 export interface OinaAnswerParams {
@@ -77,23 +78,9 @@ export function OinaSelectSession({ question, onAnswer, onNext, examMode }: Oina
   const total = question.correctIndices.length;
 
   return (
-    <div className="flex flex-col">
-      <div className="flex flex-1 flex-col justify-center px-24 py-10">
-        <div className="mx-auto w-full max-w-[920px]">
-          <div
-            className="text-center"
-            style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--accd)' }}
-          >
-            {factEyebrow(question.promptKind)} · {total === 1 ? '1 correct answer' : `${total} correct answers`}
-          </div>
-          <h2
-            className="mx-auto mt-6 text-center"
-            style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 40, lineHeight: 1.15, letterSpacing: '-.018em' }}
-          >
-            {question.prompt}
-          </h2>
+    <DesktopQuestionLayout stage={<StageWords label={<>{factEyebrow(question.promptKind)} · {total === 1 ? '1 correct answer' : `${total} correct answers`}</>} prompt={question.prompt} />}>
 
-          <div className="mt-11 grid grid-cols-2 gap-4" role="group" aria-label="Answers — choose every one that applies" onKeyDown={moveFocusWithArrows}>
+          <div className="grid grid-cols-2 gap-4" role="group" aria-label="Answers — choose every one that applies" onKeyDown={moveFocusWithArrows}>
             {question.choices.map((choice, index) => {
               const isSelected = selectedIndices.has(index);
               const isCorrectChoice = question.correctIndices.includes(index);
@@ -153,30 +140,28 @@ export function OinaSelectSession({ question, onAnswer, onNext, examMode }: Oina
           </div>
 
           {!checked && (
-            <div className="mt-11 flex justify-center">
+            <div className="mt-6 flex">
               <Button
                 onClick={examMode ? handleExamSubmit : () => setChecked(true)}
-                className="min-w-[260px] min-h-[58px]"
+                className="min-h-[58px] w-full"
               >
                 {examMode ? 'Submit' : 'Check answer'}
               </Button>
             </div>
           )}
-        </div>
-      </div>
 
-      {examMode && checked && <ExamAnswerFooter onNext={onNext} />}
+      {examMode && checked && <ExamAnswerFooter onNext={onNext} compact />}
 
       {!examMode && checked && (
-        <div className="flex-none px-24 py-10" style={{ background: score.isFullyCorrect ? 'var(--accs)' : 'var(--acc2s)' }}>
-          <div className="mx-auto flex max-w-[1000px] items-start gap-[72px]">
+        <div className="mt-6 rounded-[3px] px-6 py-5" style={{ background: score.isFullyCorrect ? 'var(--accs)' : 'var(--acc2s)' }}>
+          <div className="flex flex-col">
             <div className="flex-1">
               <div className="flex items-baseline gap-3.5">
                 <FeedbackHeading
                   style={{
                     fontFamily: 'var(--font-display)',
                     fontWeight: 500,
-                    fontSize: 32,
+                    fontSize: 28,
                     color: score.isFullyCorrect ? 'var(--accd)' : 'var(--acc2d)',
                   }}
                 >
@@ -189,23 +174,24 @@ export function OinaSelectSession({ question, onAnswer, onNext, examMode }: Oina
                   </span>
                 )}
               </div>
-              <p className="mt-3.5 max-w-[56ch] text-lg leading-relaxed" style={{ color: 'var(--ink)' }}>
+              <p className="mt-2 text-[16.5px] leading-relaxed" style={{ color: 'var(--ink)' }}>
                 {question.explanation}
               </p>
               {rated && (
-                <Button onClick={onNext} className="mt-6 min-w-[180px] min-h-[50px]">
+                <Button onClick={onNext} className="mt-4 min-h-[52px] w-full">
                   Next
                 </Button>
               )}
             </div>
             {!rated && (
-              <div className="w-[420px] flex-none">
+              <div className="mt-4">
                 <ConfidenceButtons onRate={handleRate} />
               </div>
             )}
           </div>
         </div>
       )}
-    </div>
+      {!examMode && checked && <GlanceFacts structureId={question.structureId} alreadySaid={question.explanation} />}
+    </DesktopQuestionLayout>
   );
 }

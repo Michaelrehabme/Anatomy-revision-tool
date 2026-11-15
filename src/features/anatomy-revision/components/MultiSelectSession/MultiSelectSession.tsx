@@ -8,6 +8,7 @@ import { scoreMultiSelect } from '../../lib/multiSelectScoring';
 import { ConfidenceButtons } from '../shared/ConfidenceButtons';
 import { Button } from '../shared/Button';
 import { ExamAnswerFooter } from '../shared/ExamAnswerFooter';
+import { DesktopQuestionLayout, GlanceFacts, StageWords } from '../shared/DesktopQuestionLayout';
 import { questionHeaderLabel } from '../../lib/questionFormats';
 
 interface MultiSelectSessionProps {
@@ -68,25 +69,11 @@ export function MultiSelectSession({ question, onAnswer, onNext, examMode }: Mul
   };
 
   return (
-    <div className="flex flex-col">
-      <div className="flex flex-1 flex-col justify-center px-24 py-10">
-        <div className="mx-auto w-full max-w-[920px]">
-          <div
-            className="text-center"
-            style={{ font: '500 10px/1 var(--font-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--accd)' }}
-          >
-            {questionHeaderLabel(question)}
-          </div>
-          <h2
-            className="mx-auto mt-6 text-center"
-            style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 44, lineHeight: 1.15, letterSpacing: '-.018em' }}
-          >
-            {question.prompt}
-          </h2>
+    <DesktopQuestionLayout stage={<StageWords label={questionHeaderLabel(question)} prompt={question.prompt} />}>
 
           {/* A labelled group whose options say whether they are chosen, with the
               arrow keys moving between them — as multiple choice already had. */}
-          <div className="mt-12 grid grid-cols-2 gap-4" role="group" aria-label="Answers — choose every one that applies" onKeyDown={moveFocusWithArrows}>
+          <div className="grid grid-cols-2 gap-4" role="group" aria-label="Answers — choose every one that applies" onKeyDown={moveFocusWithArrows}>
             {question.choices.map((choice, index) => {
               const isSelected = selectedIndices.has(index);
               const isCorrectChoice = question.correctIndices.includes(index);
@@ -140,33 +127,31 @@ export function MultiSelectSession({ question, onAnswer, onNext, examMode }: Mul
           </div>
 
           {!examMode && !checked && (
-            <div className="mt-12 flex justify-center">
-              <Button onClick={handleCheck} className="min-w-[260px] min-h-[58px]">
+            <div className="mt-6 flex">
+              <Button onClick={handleCheck} className="min-h-[58px] w-full">
                 Check answer
               </Button>
             </div>
           )}
           {examMode && !checked && (
-            <div className="mt-12 flex justify-center">
-              <Button onClick={handleExamSubmit} className="min-w-[260px] min-h-[58px]">
+            <div className="mt-6 flex">
+              <Button onClick={handleExamSubmit} className="min-h-[58px] w-full">
                 Submit
               </Button>
             </div>
           )}
-        </div>
-      </div>
 
-      {examMode && checked && <ExamAnswerFooter onNext={onNext} />}
+      {examMode && checked && <ExamAnswerFooter onNext={onNext} compact />}
 
       {!examMode && checked && (
-        <div className="flex-none px-24 py-10" style={{ background: score.isFullyCorrect ? 'var(--accs)' : 'var(--acc2s)' }}>
-          <div className="mx-auto flex max-w-[1000px] items-start gap-[72px]">
+        <div className="mt-6 rounded-[3px] px-6 py-5" style={{ background: score.isFullyCorrect ? 'var(--accs)' : 'var(--acc2s)' }}>
+          <div className="flex flex-col">
             <div className="flex-1">
               <div className="flex items-baseline gap-3.5">
                 {/* Takes focus as it appears, like every other format's verdict: it was a
                     plain span, and checking left focus on the page body. */}
                 <FeedbackHeading
-                  style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 32, color: score.isFullyCorrect ? 'var(--accd)' : 'var(--acc2d)' }}
+                  style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 28, color: score.isFullyCorrect ? 'var(--accd)' : 'var(--acc2d)' }}
                   label={score.isFullyCorrect ? 'Correct' : `${Math.round(score.score * 100)}% credit. ${score.correctCount} of ${score.totalCorrect} correct${score.incorrectCount > 0 ? `, ${score.incorrectCount} wrong` : ''}.`}
                 >
                   {score.isFullyCorrect ? 'Correct' : `${Math.round(score.score * 100)}% credit`}
@@ -175,23 +160,24 @@ export function MultiSelectSession({ question, onAnswer, onNext, examMode }: Mul
                   {score.correctCount}/{score.totalCorrect} correct{score.incorrectCount > 0 ? `, ${score.incorrectCount} wrong` : ''}
                 </span>
               </div>
-              <p className="mt-3.5 max-w-[56ch] text-lg leading-relaxed" style={{ color: 'var(--ink)' }}>
+              <p className="mt-2 text-[16.5px] leading-relaxed" style={{ color: 'var(--ink)' }}>
                 {question.explanation}
               </p>
               {rated && (
-                <Button onClick={onNext} className="mt-6 min-w-[180px] min-h-[50px]">
+                <Button onClick={onNext} className="mt-4 min-h-[52px] w-full">
                   Next
                 </Button>
               )}
             </div>
             {!rated && (
-              <div className="w-[420px] flex-none">
+              <div className="mt-4">
                 <ConfidenceButtons onRate={handleRate} />
               </div>
             )}
           </div>
         </div>
       )}
-    </div>
+      {!examMode && checked && <GlanceFacts structureId={question.structureId} alreadySaid={question.explanation} />}
+    </DesktopQuestionLayout>
   );
 }
