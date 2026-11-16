@@ -1039,6 +1039,12 @@ for lm in spec["landmarks"]:
 
         render_to(os.path.join(a.out, lid, f"{vkey}.png"), beauty=True)
         entry = {"u": u, "v": v, "visible": bool(visible and inside)}
+        # THE CAMERA, so a region can be traced on the bone from outlines drawn
+        # on these pictures and projected back through the same view
+        # (traceRegionFromViews.py). Orthographic: the matrix and the scale are
+        # the whole projection.
+        entry["camera"] = {"matrixWorld": [list(r) for r in cam.matrix_world],
+                           "orthoScale": cam.data.ortho_scale, "res": scene.render.resolution_x}
 
         if twin_anchor is not None:
             tco = world_to_camera_view(scene, cam, twin_anchor)

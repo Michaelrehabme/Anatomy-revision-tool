@@ -178,6 +178,9 @@
   "landmark-radial-tuberosity-anterior",
   "landmark-tibial-plateau-anterior",
   "landmark-tibial-plateau-lateral",
-  "landmark-tibial-plateau-posterior"
+  "landmark-tibial-plateau-posterior",
+  "landmark-greater-tubercle-humerus-anterior",
+  "landmark-greater-tubercle-humerus-lateral",
+  "landmark-greater-tubercle-humerus-posterior"
  ]
 }

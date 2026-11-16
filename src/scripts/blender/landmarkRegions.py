@@ -542,6 +542,19 @@ def select_faces(bone_verts, vert_normals, face_centres, face_normals, rule, anc
         elif kind == "ball":
             p = point(rule["from"])
             seeds = [snap(p) if snap else p]
+        elif kind == "points":
+            # A REGION TRACED ON THE BONE ITSELF and saved as surface points
+            # (traceRegionFromViews.py): faces within `width` of any of them.
+            # The greater tubercle (16 Nov 2026) was traced from outlines
+            # drawn on the anterior and posterior pictures after Gray's figs
+            # 207-208 and joined along the lateral side, so every view,
+            # including the lateral one Gray's has no plate for, shows the
+            # same piece of bone.
+            import json as _json, os as _os
+            path = rule["file"]
+            if not _os.path.isabs(path):
+                path = _os.path.join(_os.getcwd(), path)
+            seeds = [mathutils.Vector(q) for q in _json.load(open(path))["points"]]
         else:
             raise ValueError("unknown region kind: " + kind)
 
