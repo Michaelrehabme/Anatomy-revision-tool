@@ -404,6 +404,36 @@
   "facingMin": 0.45,
   "close": 3,
   "smoothNormals": 5,
+  "viewRegions": {
+   "view-00": {
+    "from": {
+     "offset": [
+      0,
+      0,
+      -0.006
+     ],
+     "of": {
+      "snap": "Greater tubercle.j"
+     }
+    },
+    "width": 0.021,
+    "facingMin": -0.55
+   },
+   "view-12": {
+    "from": {
+     "offset": [
+      0,
+      0,
+      -0.006
+     ],
+     "of": {
+      "snap": "Greater tubercle.j"
+     }
+    },
+    "width": 0.021,
+    "facingMin": -0.55
+   }
+  },
   "frameFrom": {
    "from": {
     "offset": [
@@ -418,7 +448,7 @@
    "width": 0.021,
    "facingMin": -0.55
   },
-  "_why": "The green patch on the reviewer's labelled humerus: the lateral shoulder of the proximal humerus, lateral to the intertubercular sulcus. SECOND PASS (passed, with a note): 'can come more distally' — seed dropped 6mm and the patch widened 16 -> 21mm. THIRD PASS (15 Nov 2026, owner): the lateral picture's hitbox 'took up the whole head of humerus'. Seed dropped to 14mm below the anchor, ball 12mm (a ~24mm patch), and only faces turned well lateral (facingMin 0.45), so it sits on the lateral bulge below the articular dome. frameFrom keeps the three approved pictures' camera (checked: alpha identical)."
+  "_why": "The green patch on the reviewer's labelled humerus: the lateral shoulder of the proximal humerus, lateral to the intertubercular sulcus. SECOND PASS (passed, with a note): 'can come more distally' — seed dropped 6mm and the patch widened 16 -> 21mm. THIRD PASS (15 Nov 2026, owner): the lateral picture's hitbox 'took up the whole head of humerus'. Seed dropped to 14mm below the anchor, ball 12mm (a ~24mm patch), and only faces turned well lateral (facingMin 0.45), so it sits on the lateral bulge below the articular dome. frameFrom keeps the three approved pictures' camera (checked: alpha identical). viewRegions keeps the anterior and posterior views on the second-pass ball: those two were approved in October and only the lateral one was wrong."
  },
  "lesser-tubercle-humerus": {
   "kind": "ball",

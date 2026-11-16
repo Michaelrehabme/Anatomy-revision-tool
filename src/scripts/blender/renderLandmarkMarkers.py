@@ -833,6 +833,22 @@ for lm in spec["landmarks"]:
         scene.collection.objects.link(region_ob)
         region_ob.hide_render = True
 
+    # ONE VIEW'S REGION CHANGED, THE OTHERS KEPT. `viewRegions` maps a view
+    # key to rule overrides; that view's mask is drawn from the region those
+    # values grow, every other view from the rule itself. The greater
+    # tubercle's lateral ball covered the whole head and was shrunk (16 Nov
+    # 2026), but its anterior and posterior hitboxes were approved in October
+    # and stay as they were.
+    view_meshes = {}
+    if region_ob is not None and rule.get("viewRegions"):
+        for vk, over in rule["viewRegions"].items():
+            vrule = {k: v for k, v in rule.items() if k not in ("viewRegions", "frameFrom")}
+            vrule.update(over)
+            vbuilt = build_region(parent_name, vrule, region_anchors)
+            if vbuilt is not None:
+                vbuilt[0].materials.append(MASK_ON)
+                view_meshes[vk] = vbuilt[0]
+
     # THE LANDMARK'S OWN BONE, masked through the same camera. The publisher
     # trims a hitbox to the bone silhouette, but the silhouette is every bone
     # in shot: the iliac crest's margin still climbed onto L5 at the peak of
@@ -1069,6 +1085,8 @@ for lm in spec["landmarks"]:
             # whole isolated group is the silhouette the gap is cut from.
             group_hole = bool(rule.get("hole")) and lid in ISOLATE_WITH
             ctx_ob.data.materials[0] = MASK_ON if group_hole else MASK_OFF
+            if vkey in view_meshes:
+                region_ob.data = view_meshes[vkey]
             region_ob.hide_render = False
             if twin_region_ob is not None and twin_fits:
                 twin_region_ob.hide_render = False
@@ -1095,6 +1113,7 @@ for lm in spec["landmarks"]:
                     entry["axis"] = contact
                     entry["axisWidth"] = rule.get("axisHalfWidth")
             ctx_ob.data.materials[0] = BONE_MAT
+            region_ob.data = region_mesh
             region_ob.hide_render = True
             if twin_region_ob is not None:
                 twin_region_ob.hide_render = True
@@ -1194,6 +1213,8 @@ for lm in spec["landmarks"]:
         scene.collection.objects.unlink(region_ob)
         bpy.data.objects.remove(region_ob)
         bpy.data.meshes.remove(region_mesh)
+    for vmesh in view_meshes.values():
+        bpy.data.meshes.remove(vmesh)
     if parent_ob is not None:
         pmesh = parent_ob.data
         scene.collection.objects.unlink(parent_ob)
