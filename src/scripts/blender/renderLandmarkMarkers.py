@@ -696,6 +696,19 @@ for lm in spec["landmarks"]:
             if uncut is not None:
                 bpy.data.meshes.remove(uncut[0])
                 rlo, rhi = uncut[2], uncut[3]
+        # FRAMED AS THE APPROVED PICTURE, for a region that is moved or shrunk
+        # rather than cut. `frameFrom` holds the rule's previous values (the
+        # seed, the width); the camera is fitted to the region those values
+        # grew, so the picture stays the one the owner signed off. The greater
+        # tubercle's lateral ball covered the whole head (15 Nov 2026) and was
+        # shrunk onto the lateral bulge without re-framing its three pictures.
+        if rule.get("frameFrom"):
+            prev = {k: v for k, v in rule.items() if k != "frameFrom"}
+            prev.update(rule["frameFrom"])
+            framed = build_region(parent_name, prev, region_anchors)
+            if framed is not None:
+                bpy.data.meshes.remove(framed[0])
+                rlo, rhi = framed[2], framed[3]
         region_centre = (rlo + rhi) / 2
         extent = max(rhi.x - rlo.x, rhi.y - rlo.y, rhi.z - rlo.z)
         # Context, but bounded by the bone. A small feature wants room around it;
