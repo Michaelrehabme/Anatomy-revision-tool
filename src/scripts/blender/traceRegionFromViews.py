@@ -31,6 +31,11 @@ ap.add_argument("--join", default="", help="view whose camera-facing faces bridg
 ap.add_argument("--facing", type=float, default=0.15, help="min normal toward a camera")
 ap.add_argument("--join-facing", type=float, default=0.35)
 ap.add_argument("--close", type=int, default=2)
+ap.add_argument("--head-anchor", default="", help="e.g. 'Head of humerus': drop the articular sphere")
+ap.add_argument("--head-reach", type=float, default=0.022, help="faces this near the anchor fit the sphere")
+ap.add_argument("--head-lateral", type=float, default=0.0, help="keep the sphere's lateral cap beyond this fraction of r")
+ap.add_argument("--top-gap", type=float, default=0.0, help="leave this band under the bone's summit (m)")
+ap.add_argument("--head-tol", type=float, default=0.002, help="how near the sphere counts as on it")
 ap.add_argument("--out", required=True)
 a = ap.parse_args(argv)
 
@@ -111,6 +116,54 @@ for _ in range(a.close):  # close small gaps: grow then shrink
     sel = sel | np.array([any(sel[j] for j in adj[i]) for i in range(len(sel))])
 for _ in range(a.close):
     sel = sel & np.array([all(sel[j] for j in adj[i]) for i in range(len(sel))])
+
+# OFF THE ARTICULAR HEAD. The head is a near-perfect sphere and the tubercle
+# is not on it: fit a sphere to the bone around the head's anchor, then drop
+# every face lying on that sphere and facing out of it. What is left stops at
+# the anatomical neck, where the articular surface ends.
+if a.head_anchor:
+    cands = [o for o in bpy.data.objects if o.name.startswith(a.head_anchor)]
+    centre_bone = centres.mean(axis=0)
+    ha = min(cands, key=lambda o: np.linalg.norm(np.array(o.matrix_world.translation) - centre_bone))
+    hp = np.array(ha.matrix_world.translation)
+    # The .j anchor is a label position off the bone: snap it to the surface first.
+    hp = centres[np.argmin(np.linalg.norm(centres - hp, axis=1))]
+    near = np.linalg.norm(centres - hp, axis=1) < a.head_reach
+    pts, nrm = centres[near], normals[near]
+    print(f"[trace] head anchor {ha.name} at {np.round(hp*1000,1)} mm; {len(pts)} faces near it", flush=True)
+    keep = np.ones(len(pts), dtype=bool)
+    for it in range(5):
+        A = np.c_[2 * pts[keep], np.ones(keep.sum())]
+        b = (pts[keep] ** 2).sum(axis=1)
+        sol = np.linalg.lstsq(A, b, rcond=None)[0]
+        c, R = sol[:3], float(np.sqrt(max(sol[3] + (sol[:3] ** 2).sum(), 0)))
+        d = np.linalg.norm(pts - c, axis=1)
+        radial = ((pts - c) / np.maximum(d, 1e-9)[:, None] * nrm).sum(axis=1)
+        new_keep = (np.abs(d - R) < 0.003) & (radial > 0.7)
+        print(f"[trace]   fit {it}: r={R*1000:.1f} mm on {keep.sum()} faces", flush=True)
+        if new_keep.sum() < 50:
+            break
+        keep = new_keep
+    dist = np.linalg.norm(centres - c, axis=1)
+    radial = ((centres - c) / dist[:, None] * normals).sum(axis=1)
+    head = (np.abs(dist - R) < a.head_tol) & (radial > 0.8)
+    if a.head_lateral:
+        # The tubercle can sit on the same sphere at its lateral pole; the
+        # articular surface is the dome and the medial side of it. `lateral` is
+        # the direction the join camera looks from.
+        cam = meta["views"][a.join]["camera"]
+        lat = np.array(mathutils.Matrix(cam["matrixWorld"]).col[2][:3])     # camera +Z points back at the viewer
+        lat /= np.linalg.norm(lat)
+        head &= ((centres - c) @ lat) < a.head_lateral * R
+    print(f"[trace] head sphere r={R*1000:.1f} mm; {(sel & head).sum()} faces of the region on it removed", flush=True)
+    sel &= ~head
+
+# BELOW THE TOP OF THE HEAD. In Gray's fig. 207 the tubercle's upper facet sits
+# a few millimetres below the summit of the head; in this model the two meet at
+# the top of the side view, so a band under the summit is left unmarked.
+if a.top_gap:
+    sel &= centres[:, 2] < centres[:, 2].max() - a.top_gap
+    print(f"[trace] kept below {a.top_gap*1000:.0f} mm under the summit", flush=True)
 
 # EACH DRAWN VIEW STAYS EXACTLY AS DRAWN. The join and the closing add faces
 # that the front or back camera can also see; any face a drawing camera sees

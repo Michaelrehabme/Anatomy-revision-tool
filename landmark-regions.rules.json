@@ -388,6 +388,50 @@
   "width": 0.0012,
   "close": 3,
   "smoothNormals": 5,
+  "viewRegions": {
+   "view-00": {
+    "kind": "ball",
+    "from": {
+     "offset": [
+      0,
+      0,
+      -0.006
+     ],
+     "of": {
+      "snap": "Greater tubercle.j"
+     }
+    },
+    "width": 0.021,
+    "outward": true,
+    "facing": [
+     -1,
+     0,
+     0
+    ],
+    "facingMin": -0.55
+   },
+   "view-12": {
+    "kind": "ball",
+    "from": {
+     "offset": [
+      0,
+      0,
+      -0.006
+     ],
+     "of": {
+      "snap": "Greater tubercle.j"
+     }
+    },
+    "width": 0.021,
+    "outward": true,
+    "facing": [
+     -1,
+     0,
+     0
+    ],
+    "facingMin": -0.55
+   }
+  },
   "frameFrom": {
    "kind": "ball",
    "from": {
@@ -409,7 +453,7 @@
    ],
    "facingMin": -0.55
   },
-  "_why": "The green patch on the reviewer's labelled humerus: the lateral shoulder of the proximal humerus, lateral to the intertubercular sulcus. SECOND PASS (passed, with a note): 'can come more distally' — seed dropped 6mm and the patch widened 16 -> 21mm. THIRD PASS (15 Nov 2026, owner): the lateral picture's hitbox 'took up the whole head of humerus'. Seed dropped to 14mm below the anchor, ball 12mm (a ~24mm patch), and only faces turned well lateral (facingMin 0.45), so it sits on the lateral bulge below the articular dome. frameFrom keeps the three approved pictures' camera (checked: alpha identical). viewRegions keeps the anterior and posterior views on the second-pass ball: those two were approved in October and only the lateral one was wrong. FOURTH PASS (16 Nov 2026, owner: 'still looks too big', 'find a reference image and base it off that', then 'the lateral view doesnt match'): ONE region on the bone. Outlines were drawn on the anterior and posterior pictures after Gray's Anatomy (1918) figs 207-208 (public domain): lateral to the intertubercular groove, from just below the anatomical neck down to where the crest of the greater tubercle begins, off the articular head. traceRegionFromViews.py projected them onto the humerus through those pictures' cameras and joined them across the lateral side (the faces the lateral camera sees, within the two patches' height and depth); the result is the point set in `file`, 22 x 36 x 35 mm. Every view, the lateral one included, is drawn from that one region, with no margin (coreOnly). frameFrom keeps the three approved pictures' camera."
+  "_why": "The green patch on the reviewer's labelled humerus: the lateral shoulder of the proximal humerus, lateral to the intertubercular sulcus. SECOND PASS (passed, with a note): 'can come more distally' — seed dropped 6mm and the patch widened 16 -> 21mm. THIRD PASS (15 Nov 2026, owner): the lateral picture's hitbox 'took up the whole head of humerus'. Seed dropped to 14mm below the anchor, ball 12mm (a ~24mm patch), and only faces turned well lateral (facingMin 0.45), so it sits on the lateral bulge below the articular dome. frameFrom keeps the three approved pictures' camera (checked: alpha identical). viewRegions keeps the anterior and posterior views on the second-pass ball: those two were approved in October and only the lateral one was wrong. FOURTH PASS (16 Nov 2026, owner: 'still looks too big', 'find a reference image and base it off that', then 'the lateral view doesnt match'): ONE region on the bone. Outlines were drawn on the anterior and posterior pictures after Gray's Anatomy (1918) figs 207-208 (public domain): lateral to the intertubercular groove, from just below the anatomical neck down to where the crest of the greater tubercle begins, off the articular head. traceRegionFromViews.py projected them onto the humerus through those pictures' cameras and joined them across the lateral side (the faces the lateral camera sees, within the two patches' height and depth); the result is the point set in `file`, 22 x 36 x 35 mm. The LATERAL view is drawn from that one region, with no margin (coreOnly). The anterior and posterior views keep the October-approved ball (viewRegions) and its trimmed margin: the owner, 16 Nov, 'the ant/post views were fine we just need to amend lateral'. frameFrom keeps the three approved pictures' camera."
  },
  "lesser-tubercle-humerus": {
   "kind": "ball",
