@@ -128,6 +128,8 @@ export interface StudyProfile {
    * they have. Unset: 'balanced'. Account's "New structures in each review".
    */
   newMix?: NewMix;
+  /** With newMix 'custom': the student's own percentage, NEW_PERCENT_MIN to NEW_PERCENT_MAX. */
+  newPercent?: number;
   /** Structure ids starred from a card: the student's own list, a filter in the Atlas. */
   starred?: string[];
   /** Local "HH:MM" for the app's "reviews are due" notification. Unset: REMINDER_HOUR. Installed app only. */
@@ -142,17 +144,23 @@ export const DAILY_GOAL_MAX = 300;
 
 export type NewStructureStart = 'show' | 'ask';
 
-export type NewMix = 'fewer' | 'balanced' | 'more';
+export type NewMix = 'fewer' | 'balanced' | 'more' | 'custom';
+
+/** A custom share's bounds, in percent: none at all (review only) up to every question new. */
+export const NEW_PERCENT_MIN = 0;
+export const NEW_PERCENT_MAX = 100;
 
 /**
  * Share of the questions answered in Start review that are about new
  * structures, per `newMix`. An exam date can still raise it (newShareFor);
  * "New set" keeps its own half.
  */
-export const NEW_MIX_SHARE: Record<NewMix, number> = { fewer: 0.1, balanced: 0.25, more: 0.5 };
+export const NEW_MIX_SHARE: Record<Exclude<NewMix, 'custom'>, number> = { fewer: 0.1, balanced: 0.25, more: 0.5 };
 
 export function reviewNewShare(profile: StudyProfile | null): number {
-  return NEW_MIX_SHARE[profile?.newMix ?? 'balanced'];
+  const mix = profile?.newMix ?? 'balanced';
+  if (mix === 'custom') return profile?.newPercent !== undefined ? profile.newPercent / 100 : NEW_MIX_SHARE.balanced;
+  return NEW_MIX_SHARE[mix];
 }
 
 /** Enough for every structure in the app twice over; a cap so a broken client cannot grow the profile forever. */
@@ -213,7 +221,13 @@ export function asStudyProfile(raw: unknown): StudyProfile | null {
     preferredFormats: [...new Set(formats)],
     ...withDefined('examDate', typeof r.examDate === 'string' && ISO_DAY.test(r.examDate) ? r.examDate : undefined),
     ...withDefined('newStructures', oneOf(r.newStructures, ['show', 'ask'] as const)),
-    ...withDefined('newMix', oneOf(r.newMix, Object.keys(NEW_MIX_SHARE) as NewMix[])),
+    ...withDefined('newMix', oneOf(r.newMix, [...(Object.keys(NEW_MIX_SHARE) as NewMix[]), 'custom' as const])),
+    ...withDefined(
+      'newPercent',
+      typeof r.newPercent === 'number' && Number.isInteger(r.newPercent) && r.newPercent >= NEW_PERCENT_MIN && r.newPercent <= NEW_PERCENT_MAX
+        ? r.newPercent
+        : undefined,
+    ),
     ...withDefined(
       'dailyGoal',
       typeof r.dailyGoal === 'number' && Number.isInteger(r.dailyGoal) && r.dailyGoal >= DAILY_GOAL_MIN && r.dailyGoal <= DAILY_GOAL_MAX

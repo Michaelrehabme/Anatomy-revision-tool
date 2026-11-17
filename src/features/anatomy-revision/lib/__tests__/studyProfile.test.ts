@@ -72,6 +72,13 @@ describe('new structures in each review (owner, 17 Nov 2026)', () => {
     expect(reviewNewShare(profile({ newMix: 'fewer' }))).toBe(0.1);
     expect(reviewNewShare(profile({ newMix: 'more' }))).toBe(0.5);
   });
+  it('takes a custom percentage, and only a whole number from 0 to 100', () => {
+    expect(reviewNewShare(profile({ newMix: 'custom', newPercent: 35 }))).toBe(0.35);
+    expect(reviewNewShare(profile({ newMix: 'custom' }))).toBe(0.25);
+    expect(asStudyProfile({ updatedAt: 1, newMix: 'custom', newPercent: 35 })?.newPercent).toBe(35);
+    expect(asStudyProfile({ updatedAt: 1, newMix: 'custom', newPercent: 140 })?.newPercent).toBeUndefined();
+    expect(asStudyProfile({ updatedAt: 1, newMix: 'custom', newPercent: 12.5 })?.newPercent).toBeUndefined();
+  });
 });
 
 describe('newerProfile', () => {

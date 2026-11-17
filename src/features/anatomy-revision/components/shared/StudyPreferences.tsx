@@ -22,6 +22,9 @@ import {
   weekStartOf,
   type Confidence,
   NEW_MIX_SHARE,
+  NEW_PERCENT_MAX,
+  NEW_PERCENT_MIN,
+  reviewNewShare,
   type NewMix,
   type NewStructureStart,
   type StudyProfile,
@@ -44,7 +47,7 @@ const NEW_STRUCTURE_OPTIONS: { value: NewStructureStart | null; label: string }[
 ];
 
 /** Start review's share of new structures (lib/studyProfile.ts NEW_MIX_SHARE). */
-const NEW_MIX_OPTIONS: { value: NewMix; label: string }[] = [
+const NEW_MIX_OPTIONS: { value: Exclude<NewMix, 'custom'>; label: string }[] = [
   { value: 'fewer', label: 'Fewer' },
   { value: 'balanced', label: 'Balanced' },
   { value: 'more', label: 'More' },
@@ -102,7 +105,16 @@ function summaryLines(profile: StudyProfile): string[] {
  * asks, together in one place. Appearance keeps the ones that change how a
  * screen looks.
  */
-export function StudyPreferences({ access, compact = false }: { access: UseEntitlement; compact?: boolean }) {
+/**
+ * Which of these settings to show (owner, 17 Nov 2026: Account split into
+ * pages). 'plan' is what the student is studying: the questionnaire and this
+ * week's focus. 'learning' is how a session runs. 'reminder' is the app's
+ * reminder time.
+ */
+export type StudyPreferencesPart = 'all' | 'plan' | 'learning' | 'reminder';
+
+export function StudyPreferences({ access, compact = false, part = 'all' }: { access: UseEntitlement; compact?: boolean; part?: StudyPreferencesPart }) {
+  const show = (p: Exclude<StudyPreferencesPart, 'all'>) => part === 'all' || part === p;
   const studyProfile = useStudyProfile();
   const { profile, update } = studyProfile;
   const { user } = useAuth();
@@ -113,6 +125,8 @@ export function StudyPreferences({ access, compact = false }: { access: UseEntit
   // "Custom" is lit by a goal already set, or by being pressed before a number is typed.
   const [customOpen, setCustomOpen] = useState(false);
   const customGoal = customOpen || profile?.dailyGoal !== undefined;
+  const [customMixOpen, setCustomMixOpen] = useState(false);
+  const customMix = customMixOpen || profile?.newMix === 'custom';
   const now = new Date();
   const free = access.tier === 'free';
   const focus = currentFocus(profile, now, access.areas);
@@ -142,7 +156,9 @@ export function StudyPreferences({ access, compact = false }: { access: UseEntit
   const isFocus = (o: WeeklyFocus) => !!focus && focus.area === o.area && focus.category === o.category;
 
   return (
-    <div>
+    <div className="[&>:first-child]:!mt-0">
+      {show('plan') && (
+      <>
       <div style={label}>Where you are starting</div>
       {answered ? (
         <ul className="mt-2.5 flex flex-col gap-1" style={{ font: `400 ${compact ? 14 : 14.5}px/1.5 var(--font-ui)`, color: 'var(--ink2)' }}>
@@ -212,6 +228,11 @@ export function StudyPreferences({ access, compact = false }: { access: UseEntit
         </>
       )}
 
+      </>
+      )}
+
+      {show('learning') && (
+      <>
       {/* The daily goal is the minutes answer under another name (owner, 19
           Oct 2026): one setting, read as "how much a day", that sizes both the
           review and the ring on Today. Setting it here counts as answering. */}
@@ -276,10 +297,13 @@ export function StudyPreferences({ access, compact = false }: { access: UseEntit
         </label>
       )}
 
+      </>
+      )}
+
       {/* Only where there is a notification to time: the installed app
           (native/nativeShell.ts). A browser has no reminder, and a setting
           that does nothing is worse than none. */}
-      {isNativeShell() && (
+      {show('reminder') && isNativeShell() && (
         <>
           <div className="mt-7" style={label}>
             Reminder
@@ -300,6 +324,9 @@ export function StudyPreferences({ access, compact = false }: { access: UseEntit
           </label>
         </>
       )}
+
+      {show('learning') && (
+      <>
 
       <div className="mt-7" style={label}>
         Teaching cards
@@ -332,7 +359,10 @@ export function StudyPreferences({ access, compact = false }: { access: UseEntit
       {/* Learn first or test first (owner, 19 Oct 2026), here rather than a
           setting of its own: it is the same question as the row above —
           shown before asked — for a structure met for the first time. */}
-      <p className="mt-5" style={{ fontSize: 13, lineHeight: 1.5, color: 'var(--ink3)' }}>
+      <div className="mt-7" style={label}>
+        Meeting a new structure
+      </div>
+      <p className="mt-2" style={{ fontSize: 13, lineHeight: 1.5, color: 'var(--ink3)' }}>
         A structure you have never met: see it first, or try it straight away on multiple choice.
       </p>
       <div className="mt-2.5 flex flex-wrap gap-2" role="radiogroup" aria-label="New structures">
@@ -356,28 +386,76 @@ export function StudyPreferences({ access, compact = false }: { access: UseEntit
 
       {/* How much of Start review is new (owner, 17 Nov 2026): getting
           through the volume, or bedding in what has been met. */}
-      <p className="mt-5" style={{ fontSize: 13, lineHeight: 1.5, color: 'var(--ink3)' }}>
-        New structures in each review: fewer to bed in what you have met, more to get through them all faster.
+      <div className="mt-7" style={label}>
+        New structures in each review
+      </div>
+      <p className="mt-2" style={{ fontSize: 13, lineHeight: 1.5, color: 'var(--ink3)' }}>
+        Fewer to bed in what you have met, more to get through them all faster.
       </p>
-      <div className="mt-2.5 flex gap-2" role="radiogroup" aria-label="New structures in each review">
+      <div className="mt-2.5 grid grid-cols-4 gap-2" role="radiogroup" aria-label="New structures in each review">
         {NEW_MIX_OPTIONS.map(({ value, label: text }) => {
-          const on = (profile?.newMix ?? 'balanced') === value;
+          const on = !customMix && (profile?.newMix ?? 'balanced') === value;
           return (
             <button
               key={value}
               type="button"
               role="radio"
               aria-checked={on}
-              onClick={() => update((current) => ({ ...current, newMix: value }))}
-              className="inline-flex min-h-[44px] flex-1 flex-col items-center justify-center rounded-[3px] px-2"
+              onClick={() => {
+                setCustomMixOpen(false);
+                update((current) => ({ ...current, newMix: value, newPercent: undefined }));
+              }}
+              className="inline-flex min-h-[44px] flex-col items-center justify-center rounded-[3px] px-1"
               style={chipStyle(on, compact)}
             >
-              <span>{text}</span>
-              <span style={{ fontSize: 11.5, opacity: 0.75 }}>{Math.round(NEW_MIX_SHARE[value] * 100)}% new</span>
+              {text}
+              <span style={{ font: '400 10.5px/1.2 var(--font-mono)', color: 'inherit', opacity: 0.8 }}>{Math.round(NEW_MIX_SHARE[value] * 100)}% new</span>
             </button>
           );
         })}
+        <button
+          type="button"
+          role="radio"
+          aria-checked={customMix}
+          onClick={() => setCustomMixOpen(true)}
+          className="inline-flex min-h-[44px] flex-col items-center justify-center rounded-[3px] px-1"
+          style={chipStyle(customMix, compact)}
+        >
+          {profile?.newMix === 'custom' && profile.newPercent !== undefined ? `${profile.newPercent}%` : 'Custom'}
+          <span style={{ font: '400 10.5px/1.2 var(--font-mono)', color: 'inherit', opacity: 0.8 }}>
+            {profile?.newMix === 'custom' && profile.newPercent !== undefined ? 'custom' : 'your own'}
+          </span>
+        </button>
       </div>
+      {customMix && (
+        <>
+        <label className="mt-3 flex flex-wrap items-center gap-2.5" style={{ fontSize: 13.5, color: 'var(--ink2)' }}>
+          <input
+            id="study-new-percent"
+            type="number"
+            inputMode="numeric"
+            min={NEW_PERCENT_MIN}
+            max={NEW_PERCENT_MAX}
+            step={5}
+            defaultValue={Math.round(reviewNewShare(profile) * 100)}
+            onChange={(e) => {
+              const n = Number.parseInt(e.target.value, 10);
+              if (Number.isInteger(n) && n >= NEW_PERCENT_MIN && n <= NEW_PERCENT_MAX) {
+                update((current) => ({ ...current, newMix: 'custom', newPercent: n }));
+              }
+            }}
+            className="rounded-[3px] px-2.5"
+            style={{ width: 84, minHeight: 42, border: '1.2px solid var(--line)', background: 'var(--sf)', color: 'var(--ink)', fontFamily: 'var(--font-ui)', fontSize: 15 }}
+          />
+          % of each review is new structures
+        </label>
+        <p className="mt-1.5" style={{ fontSize: 13, lineHeight: 1.5, color: 'var(--ink3)' }}>
+          From {NEW_PERCENT_MIN} to {NEW_PERCENT_MAX}. If not much is due, new structures fill the rest.
+        </p>
+        </>
+      )}
+      </>
+      )}
     </div>
   );
 }
