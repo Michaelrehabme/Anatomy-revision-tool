@@ -373,11 +373,23 @@ function blendPriorityWithRest(
 }
 
 /**
- * The daily review's blend (2 Oct 2026). Due types first, most overdue first,
- * up to what NEW_SHARE leaves; then new structures; then the weak types
- * pulled forward; then, if room remains, more due types and more new ones.
- * Nothing else: a question type the student knows well and is not due is
- * never drawn to fill the session.
+ * The daily review's blend: half due, half new (owner, 17 Nov 2026).
+ *
+ *   1. due types, most overdue first, up to what `newShare` leaves
+ *   2. new structures, up to `newShare` of the session
+ *   3. more due types, if the new side ran short
+ *   4. more new structures, if the due side ran short
+ *   5. weak types pulled forward, only once both of those have run out
+ *   6. a second question on a due type, as a last resort
+ *
+ * New material fills the gaps before anything is pulled forward. It used to
+ * be the other way round, so a student with a short due list and a long
+ * history of misses got sessions of nothing but old mistakes ("I've seen 416
+ * structures and only get recycled questions of things I got wrong"). And a
+ * due type used to be asked twice — its MCQ and then its locate — before any
+ * new structure got the slot, which is why a locate answered right kept
+ * coming back. Nothing else: a question type the student knows well and is
+ * not due is never drawn to fill the session.
  */
 function blendReviewItems(
   ordered: RevisionQuestion[],
@@ -397,15 +409,25 @@ function blendReviewItems(
   }
   const counts = new Map<string, number>();
   const picked: RevisionQuestion[] = [];
-  const take = (list: readonly ReviewItem[], limit: number) => {
+  const asked = new Set<string>();
+  // `repeat` lets an item already asked this session be asked again from
+  // another angle (another of its questions); otherwise each item once.
+  const take = (list: readonly ReviewItem[], limit: number, repeat = false) => {
     for (const item of list) {
       if (picked.length >= limit) return;
+      const key = `${item.structureId}|${item.kind}`;
+      if (!repeat && asked.has(key)) continue;
       if ((counts.get(item.structureId) ?? 0) >= cap) continue;
-      const q = byKey.get(`${item.structureId}|${item.kind}`)?.find((c) => !picked.includes(c));
+      const q = byKey.get(key)?.find((c) => !picked.includes(c));
       if (!q) continue;
       picked.push(q);
+      asked.add(key);
       counts.set(item.structureId, (counts.get(item.structureId) ?? 0) + 1);
     }
+  };
+  const takeNew = (limit: number) => {
+    const left = fresh.filter((q) => !picked.includes(q));
+    for (const q of takeWithStructureCap(left, Math.min(limit, count) - picked.length, cap, counts)) picked.push(q);
   };
   const fresh = ordered.filter((q) => newIds?.has(q.structureId) && !items.some((i) => i.structureId === q.structureId));
   const due = items.filter((i) => i.due);
@@ -413,10 +435,11 @@ function blendReviewItems(
   const newSlots = Math.min(Math.round(count * Math.min(1, Math.max(0, newShare))), fresh.length);
 
   take(due, count - newSlots);
-  for (const q of takeWithStructureCap(fresh, Math.min(newSlots, count - picked.length), cap, counts)) picked.push(q);
-  take(forward, count);
+  takeNew(picked.length + newSlots);
   take(due, count);
-  for (const q of takeWithStructureCap(fresh.filter((q) => !picked.includes(q)), count - picked.length, cap, counts)) picked.push(q);
+  takeNew(count);
+  take(forward, count);
+  take(due, count, true);
   return shuffle(picked, rng);
 }
 
