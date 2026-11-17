@@ -373,23 +373,32 @@ function blendPriorityWithRest(
 }
 
 /**
- * The daily review's blend: half due, half new (owner, 17 Nov 2026).
+ * The daily review's blend (2 Oct 2026; reworked 17 Nov 2026).
  *
  *   1. due types, most overdue first, up to what `newShare` leaves
- *   2. new structures, up to `newShare` of the session
+ *   2. new structures, `newShare` of the session (25% on Start review)
  *   3. more due types, if the new side ran short
  *   4. more new structures, if the due side ran short
  *   5. weak types pulled forward, only once both of those have run out
  *   6. a second question on a due type, as a last resort
  *
- * New material fills the gaps before anything is pulled forward. It used to
- * be the other way round, so a student with a short due list and a long
- * history of misses got sessions of nothing but old mistakes ("I've seen 416
- * structures and only get recycled questions of things I got wrong"). And a
- * due type used to be asked twice — its MCQ and then its locate — before any
- * new structure got the slot, which is why a locate answered right kept
- * coming back. Nothing else: a question type the student knows well and is
- * not due is never drawn to fill the session.
+ * THE NEW SHARE IS OF QUESTIONS ANSWERED, ONE PER NEW STRUCTURE. A structure
+ * never met sits on the ladder's flashcard rung, so its slot used to go to its
+ * flashcard: five "new" slots in twenty came out as four flashcards and one
+ * question, and with the learn cards in front of the review's facts a
+ * student saw maybe one new thing to answer in twenty-five ("even when I had
+ * a review I rarely had even 25%", owner, 17 Nov 2026). Now each new
+ * structure's slot is a question about it — its name or its locate, where it
+ * has one — and its flashcard is shown just before it, outside the budget,
+ * the way a fact's learn card is.
+ *
+ * New material also fills the gaps before anything is pulled forward. It used
+ * to be the other way round, so a student with a short due list and a long
+ * history of misses got sessions of nothing but old mistakes. And a due type
+ * used to be asked twice — its MCQ and then its locate — before any new
+ * structure got the slot, which is why a locate answered right kept coming
+ * back. Nothing else: a question type the student knows well and is not due
+ * is never drawn to fill the session.
  */
 function blendReviewItems(
   ordered: RevisionQuestion[],
@@ -425,14 +434,48 @@ function blendReviewItems(
       counts.set(item.structureId, (counts.get(item.structureId) ?? 0) + 1);
     }
   };
+
+  // One unit per new structure, in the weighted order: a question to answer
+  // (naming or locate first, a fact only if it has neither) and the
+  // flashcard that introduces it. A structure with nothing but a flashcard
+  // is introduced by the flashcard alone, and that counts as its question.
+  const freshByStructure = new Map<string, RevisionQuestion[]>();
+  for (const q of ordered) {
+    if (!newIds?.has(q.structureId) || items.some((i) => i.structureId === q.structureId)) continue;
+    const list = freshByStructure.get(q.structureId);
+    if (list) list.push(q);
+    else freshByStructure.set(q.structureId, [q]);
+  }
+  const units: { question: RevisionQuestion; card?: RevisionQuestion; rest: RevisionQuestion[] }[] = [];
+  for (const qs of freshByStructure.values()) {
+    const card = qs.find((q) => q.type === 'flashcard');
+    const answerable = qs.filter((q) => q.type !== 'flashcard');
+    const best = answerable.find((q) => skillOf(q.type, q.promptKind) === 'identify') ?? answerable[0];
+    if (best) units.push({ question: best, card, rest: answerable.filter((q) => q !== best) });
+    else if (card) units.push({ question: card, rest: [] });
+  }
+  // Structures with a question to answer first: the share is of answers, and
+  // a flashcard alone asks nothing. The sort is stable, so the weighting holds.
+  units.sort((a, b) => Number(a.question.type === 'flashcard') - Number(b.question.type === 'flashcard'));
+  const intro = new Map<string, RevisionQuestion>();
+  let nextUnit = 0;
   const takeNew = (limit: number) => {
-    const left = fresh.filter((q) => !picked.includes(q));
-    for (const q of takeWithStructureCap(left, Math.min(limit, count) - picked.length, cap, counts)) picked.push(q);
+    const until = Math.min(limit, count);
+    for (; nextUnit < units.length && picked.length < until; nextUnit++) {
+      const unit = units[nextUnit];
+      picked.push(unit.question);
+      counts.set(unit.question.structureId, (counts.get(unit.question.structureId) ?? 0) + 1);
+      if (unit.card && unit.card !== unit.question) intro.set(unit.question.structureId, unit.card);
+    }
+    // Every new structure has had its turn: second questions on the ones met.
+    if (picked.length < until) {
+      const more = units.slice(0, nextUnit).flatMap((u) => u.rest);
+      for (const q of takeWithStructureCap(more, until - picked.length, cap, counts)) picked.push(q);
+    }
   };
-  const fresh = ordered.filter((q) => newIds?.has(q.structureId) && !items.some((i) => i.structureId === q.structureId));
   const due = items.filter((i) => i.due);
   const forward = items.filter((i) => !i.due);
-  const newSlots = Math.min(Math.round(count * Math.min(1, Math.max(0, newShare))), fresh.length);
+  const newSlots = Math.min(Math.round(count * Math.min(1, Math.max(0, newShare))), units.length);
 
   take(due, count - newSlots);
   takeNew(picked.length + newSlots);
@@ -440,7 +483,17 @@ function blendReviewItems(
   takeNew(count);
   take(forward, count);
   take(due, count, true);
-  return shuffle(picked, rng);
+
+  const out: RevisionQuestion[] = [];
+  for (const q of shuffle(picked, rng)) {
+    const card = intro.get(q.structureId);
+    if (card) {
+      out.push(card);
+      intro.delete(q.structureId);
+    }
+    out.push(q);
+  }
+  return out;
 }
 
 /**

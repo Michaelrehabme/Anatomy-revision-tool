@@ -24,17 +24,14 @@ import {
 // OINA is in the default mix because attachments are the thing students come back
 // to relearn (CR-018); its own learn cards handle teaching, so 'flashcard' stays for
 // the whole-muscle identify cards rather than as the teaching step.
-/** Half of a daily review is new structures, half due ones (owner, 17 Nov 2026). */
-export const DAILY_NEW_SHARE = 0.5;
-
 export const DEFAULT_TYPES: QuestionType[] = ['flashcard', 'mcq', 'locate', 'identify-typed', 'oina'];
 
 /**
  * Which of Today's buttons was pressed.
  *
- *   continue  works down the queue oldest first, half the session due and
- *             half new (owner, 17 Nov 2026); whichever side runs short, the
- *             other fills it.
+ *   continue  works down the queue oldest first, with a quarter of the
+ *             questions on new structures (NEW_SHARE); whichever side runs
+ *             short, the other fills it (owner, 17 Nov 2026).
  *   fresh     the same queue spread out: one question a structure, the ones
  *             answered longest ago first, and half the session new (owner,
  *             3 Oct 2026).
@@ -136,7 +133,7 @@ export function buildDailySession(input: DailySessionInput): DailySession {
     newShare:
       input.style === 'focus'
         ? newShareFor(profile, now, FOCUS_NEW_SHARE, pace)
-        : newShareFor(profile, now, DAILY_NEW_SHARE, pace),
+        : newShareFor(profile, now, input.style === 'fresh' ? 0.5 : undefined, pace),
     count,
     // Without mastery the generator falls back to a uniform shuffle and the
     // scheduler's due/weakness weighting never runs on the daily review.
