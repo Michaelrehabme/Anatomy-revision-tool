@@ -21,6 +21,8 @@ import {
   STUDY_LEVEL_LABELS,
   weekStartOf,
   type Confidence,
+  NEW_MIX_SHARE,
+  type NewMix,
   type NewStructureStart,
   type StudyProfile,
   type WeeklyFocus,
@@ -39,6 +41,13 @@ const NEW_STRUCTURE_OPTIONS: { value: NewStructureStart | null; label: string }[
   { value: null, label: 'From my answers' },
   { value: 'show', label: 'Show me first' },
   { value: 'ask', label: 'Ask me first' },
+];
+
+/** Start review's share of new structures (lib/studyProfile.ts NEW_MIX_SHARE). */
+const NEW_MIX_OPTIONS: { value: NewMix; label: string }[] = [
+  { value: 'fewer', label: 'Fewer' },
+  { value: 'balanced', label: 'Balanced' },
+  { value: 'more', label: 'More' },
 ];
 
 const label = {
@@ -340,6 +349,31 @@ export function StudyPreferences({ access, compact = false }: { access: UseEntit
               style={chipStyle(on, compact)}
             >
               {text}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* How much of Start review is new (owner, 17 Nov 2026): getting
+          through the volume, or bedding in what has been met. */}
+      <p className="mt-5" style={{ fontSize: 13, lineHeight: 1.5, color: 'var(--ink3)' }}>
+        New structures in each review: fewer to bed in what you have met, more to get through them all faster.
+      </p>
+      <div className="mt-2.5 flex gap-2" role="radiogroup" aria-label="New structures in each review">
+        {NEW_MIX_OPTIONS.map(({ value, label: text }) => {
+          const on = (profile?.newMix ?? 'balanced') === value;
+          return (
+            <button
+              key={value}
+              type="button"
+              role="radio"
+              aria-checked={on}
+              onClick={() => update((current) => ({ ...current, newMix: value }))}
+              className="inline-flex min-h-[44px] flex-1 flex-col items-center justify-center rounded-[3px] px-2"
+              style={chipStyle(on, compact)}
+            >
+              <span>{text}</span>
+              <span style={{ fontSize: 11.5, opacity: 0.75 }}>{Math.round(NEW_MIX_SHARE[value] * 100)}% new</span>
             </button>
           );
         })}

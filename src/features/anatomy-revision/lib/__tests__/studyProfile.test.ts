@@ -11,6 +11,7 @@ import {
   newShareFor,
   newStructureBias,
   previousFocus,
+  reviewNewShare,
   sessionCountFor,
   skipsFlashcard,
   starterAreaOrder,
@@ -58,6 +59,18 @@ describe('asStudyProfile', () => {
   it('never writes undefined, which Firestore refuses', () => {
     const p = asStudyProfile({ updatedAt: 1 })!;
     expect(Object.values(p).includes(undefined)).toBe(false);
+  });
+});
+
+describe('new structures in each review (owner, 17 Nov 2026)', () => {
+  it('keeps a known choice and drops anything else', () => {
+    expect(asStudyProfile({ updatedAt: 1, newMix: 'more' })?.newMix).toBe('more');
+    expect(asStudyProfile({ updatedAt: 1, newMix: 'lots' })?.newMix).toBeUndefined();
+  });
+  it('is a quarter unless chosen', () => {
+    expect(reviewNewShare(null)).toBe(0.25);
+    expect(reviewNewShare(profile({ newMix: 'fewer' }))).toBe(0.1);
+    expect(reviewNewShare(profile({ newMix: 'more' }))).toBe(0.5);
   });
 });
 

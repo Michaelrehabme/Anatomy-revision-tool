@@ -132,4 +132,24 @@ describe('buildDailySession', () => {
       }
     }
   });
+
+  it('gives each student the share of new structures they chose (owner, 17 Nov 2026)', () => {
+    const now = new Date('2026-11-17T12:00:00Z');
+    const inAreas = ALL_STRUCTURES.filter((s) => areasOf(s).some((a) => a === 'hip' || a === 'knee'));
+    const unmet = new Set(inAreas.slice(0, 15).map((s) => s.id));
+    const mastery: StructureMastery[] = inAreas
+      .filter((s) => !unmet.has(s.id))
+      .map((s) => ({
+        structureId: s.id, userId: 'u', attemptsTotal: 3, attemptsCorrect: 1, lastAttemptAt: '2026-11-15T12:00:00Z',
+        rung: 'mcq', intervalDays: 1, recentAccuracy: 0.4, dueAt: '2026-11-16T00:00:00Z',
+      }));
+    const { due, forward } = buildReviewQueue(mastery, [], new Set(ALL_STRUCTURES.map((s) => s.id)), now);
+    const newAnswered = (newMix: StudyProfile['newMix']) =>
+      buildDailySession(input({ mastery, reviewItems: [...due, ...forward], now, profile: profile({ skipped: true, newMix }) }))
+        .questions.filter((q) => q.type !== 'flashcard' && unmet.has(q.structureId)).length;
+    expect(newAnswered('fewer')).toBe(2);
+    expect(newAnswered('balanced')).toBe(5);
+    expect(newAnswered(undefined)).toBe(5);
+    expect(newAnswered('more')).toBe(10);
+  });
 });

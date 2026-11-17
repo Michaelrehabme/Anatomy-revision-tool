@@ -122,6 +122,12 @@ export interface StudyProfile {
    * or test first".
    */
   newStructures?: NewStructureStart;
+  /**
+   * How much of Start review goes to structures never met (owner, 17 Nov
+   * 2026): some students want to get through the volume, some to bed in what
+   * they have. Unset: 'balanced'. Account's "New structures in each review".
+   */
+  newMix?: NewMix;
   /** Structure ids starred from a card: the student's own list, a filter in the Atlas. */
   starred?: string[];
   /** Local "HH:MM" for the app's "reviews are due" notification. Unset: REMINDER_HOUR. Installed app only. */
@@ -135,6 +141,19 @@ export const DAILY_GOAL_MIN = 1;
 export const DAILY_GOAL_MAX = 300;
 
 export type NewStructureStart = 'show' | 'ask';
+
+export type NewMix = 'fewer' | 'balanced' | 'more';
+
+/**
+ * Share of the questions answered in Start review that are about new
+ * structures, per `newMix`. An exam date can still raise it (newShareFor);
+ * "New set" keeps its own half.
+ */
+export const NEW_MIX_SHARE: Record<NewMix, number> = { fewer: 0.1, balanced: 0.25, more: 0.5 };
+
+export function reviewNewShare(profile: StudyProfile | null): number {
+  return NEW_MIX_SHARE[profile?.newMix ?? 'balanced'];
+}
 
 /** Enough for every structure in the app twice over; a cap so a broken client cannot grow the profile forever. */
 export const STARRED_LIMIT = 1000;
@@ -194,6 +213,7 @@ export function asStudyProfile(raw: unknown): StudyProfile | null {
     preferredFormats: [...new Set(formats)],
     ...withDefined('examDate', typeof r.examDate === 'string' && ISO_DAY.test(r.examDate) ? r.examDate : undefined),
     ...withDefined('newStructures', oneOf(r.newStructures, ['show', 'ask'] as const)),
+    ...withDefined('newMix', oneOf(r.newMix, Object.keys(NEW_MIX_SHARE) as NewMix[])),
     ...withDefined(
       'dailyGoal',
       typeof r.dailyGoal === 'number' && Number.isInteger(r.dailyGoal) && r.dailyGoal >= DAILY_GOAL_MIN && r.dailyGoal <= DAILY_GOAL_MAX
