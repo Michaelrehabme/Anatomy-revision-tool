@@ -1,4 +1,4 @@
-import { EmailAuthProvider, sendEmailVerification, sendPasswordResetEmail, unlink, type User } from 'firebase/auth';
+import { EmailAuthProvider, applyActionCode, checkActionCode, sendEmailVerification, sendPasswordResetEmail, unlink, type User } from 'firebase/auth';
 import { getFirebaseAuth } from './firebase';
 
 /**
@@ -26,7 +26,8 @@ export function confirmationContinueUrl(): string {
 }
 
 /**
- * Emails the signed-in account a link that confirms its address.
+ * Emails the signed-in account a link that confirms its address: the app's
+ * own email where it can send one (`sentByTheApp`), Firebase's otherwise.
  *
  * ONE REQUEST, AND NO LINK BACK TO THE APP. This used to ask for the email
  * with a "Continue" address on this origin and, if Firebase refused that
@@ -51,8 +52,36 @@ export function confirmationContinueUrl(): string {
 export async function sendConfirmationEmail(): Promise<{ uid: string; email: string | null }> {
   const user = getFirebaseAuth().currentUser;
   if (!user) throw new Error('Nobody is signed in.');
-  await sendEmailVerification(user);
+  if (!(await sentByTheApp(user))) await sendEmailVerification(user);
   return { uid: user.uid, email: user.email };
+}
+
+/**
+ * The branded email, from hello@locusmsk.co.uk with a link to this app's own
+ * page (netlify/functions/send-verification-email.ts;
+ * features/auth-email/verifyEmailMessage.ts says why it beats Firebase's).
+ *
+ * True when it was sent, or the address turned out to be confirmed already.
+ * False when the app could not send it — no function here (the dev server, a
+ * native build), not configured, or Firebase or Resend refused — and
+ * Firebase's own email should go instead, so a student is never left with
+ * no email at all. Its own limit is reported as Firebase's would be, and
+ * nothing else is sent: the last link still works.
+ */
+async function sentByTheApp(user: User): Promise<boolean> {
+  let response: Response;
+  try {
+    response = await fetch('/.netlify/functions/send-verification-email', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${await user.getIdToken()}` },
+    });
+  } catch {
+    return false;
+  }
+  if (response.status === 429) throw Object.assign(new Error('Too many confirmation emails'), { code: 'auth/too-many-requests' });
+  if (!response.ok) return false;
+  // The SPA fallback answers 200 with index.html where there is no function.
+  return ((await response.json().catch(() => null)) as { ok?: unknown } | null)?.ok === true;
 }
 
 /**
@@ -134,4 +163,25 @@ export async function removeEmailSignIn(): Promise<User | null> {
   // So that the address it no longer has is not what the screens are told.
   await user.reload().catch(() => {});
   return user;
+}
+
+/**
+ * Confirms an address from the link in the app's own email
+ * (components/Auth/EmailActionPage.tsx, at /auth/action). Works whether or
+ * not anyone is signed in here: the code alone confirms the account it was
+ * made for. If the account it confirmed is the one signed in on this page,
+ * that account is re-read so every screen sees it confirmed.
+ *
+ * Resolves with the address it confirmed; rejects with Firebase's error —
+ * `auth/expired-action-code` or `auth/invalid-action-code` for a link that
+ * is old, used already, or replaced by a newer one.
+ */
+export async function confirmEmailWithCode(oobCode: string): Promise<{ email: string | null }> {
+  const auth = getFirebaseAuth();
+  const info = await checkActionCode(auth, oobCode);
+  await applyActionCode(auth, oobCode);
+  const email = info.data.email ?? null;
+  const user = auth.currentUser;
+  if (user && !user.isAnonymous) await reloadSignedInUser().catch(() => null);
+  return { email };
 }

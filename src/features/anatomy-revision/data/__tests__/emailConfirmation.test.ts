@@ -15,17 +15,21 @@ import type { User } from 'firebase/auth';
 const sdk = vi.hoisted(() => ({
   sendEmailVerification: vi.fn(),
   unlink: vi.fn(),
+  applyActionCode: vi.fn(),
+  checkActionCode: vi.fn(),
   current: null as unknown,
 }));
 
 vi.mock('firebase/auth', () => ({
   sendEmailVerification: sdk.sendEmailVerification,
   unlink: sdk.unlink,
+  applyActionCode: sdk.applyActionCode,
+  checkActionCode: sdk.checkActionCode,
   EmailAuthProvider: { PROVIDER_ID: 'password' },
 }));
 vi.mock('../firebase', () => ({ getFirebaseAuth: () => ({ currentUser: sdk.current }) }));
 
-const { confirmationContinueUrl, confirmedForRules, reloadSignedInUser, removeEmailSignIn, sendConfirmationEmail } = await import('../emailConfirmation');
+const { confirmEmailWithCode, confirmationContinueUrl, confirmedForRules, reloadSignedInUser, removeEmailSignIn, sendConfirmationEmail } = await import('../emailConfirmation');
 
 function user(over: Record<string, unknown> = {}) {
   return {
@@ -48,8 +52,10 @@ beforeEach(() => {
   sdk.current = null;
   sdk.sendEmailVerification.mockResolvedValue(undefined);
   sdk.unlink.mockResolvedValue(undefined);
+  // No send-verification-email function by default: Firebase's own email goes.
+  vi.stubGlobal('fetch', vi.fn(async () => new Response('Not found', { status: 404 })));
 });
-afterEach(() => vi.restoreAllMocks());
+afterEach(() => { vi.restoreAllMocks(); vi.unstubAllGlobals(); });
 
 describe('the confirmation email', () => {
   it('is asked for once, plainly, with no address to come back to', async () => {
@@ -87,6 +93,60 @@ describe('the confirmation email', () => {
   it('refuses when nobody is signed in', async () => {
     await expect(sendConfirmationEmail()).rejects.toThrow('Nobody is signed in.');
     expect(sdk.sendEmailVerification).not.toHaveBeenCalled();
+  });
+});
+
+describe('the app’s own confirmation email', () => {
+  const answer = (status: number, body: unknown) => vi.mocked(fetch).mockResolvedValueOnce(new Response(JSON.stringify(body), { status }));
+
+  it('is sent by the function with the account’s token, and Firebase sends nothing', async () => {
+    sdk.current = user();
+    answer(200, { ok: true });
+    expect(await sendConfirmationEmail()).toEqual({ uid: 'u1', email: 'sam@example.com' });
+    expect(fetch).toHaveBeenCalledWith('/.netlify/functions/send-verification-email', {
+      method: 'POST',
+      headers: { Authorization: 'Bearer token' },
+    });
+    expect(sdk.sendEmailVerification).not.toHaveBeenCalled();
+  });
+
+  it('reports its own limit as Firebase’s, and sends nothing else', async () => {
+    sdk.current = user();
+    answer(429, { ok: false, reason: 'too-soon' });
+    await expect(sendConfirmationEmail()).rejects.toMatchObject({ code: 'auth/too-many-requests' });
+    expect(sdk.sendEmailVerification).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    ['not configured', () => answer(503, { ok: false })],
+    ['refused', () => answer(502, { ok: false })],
+    ['the SPA page where no function is', () => vi.mocked(fetch).mockResolvedValueOnce(new Response('<!doctype html>', { status: 200 }))],
+    ['unreachable', () => vi.mocked(fetch).mockRejectedValueOnce(new TypeError('Failed to fetch'))],
+  ])('falls back to Firebase’s email when the function is %s', async (_, arrange) => {
+    sdk.current = user();
+    arrange();
+    await sendConfirmationEmail();
+    expect(sdk.sendEmailVerification).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('following the link on /auth/action', () => {
+  it('confirms with the code and re-reads the signed-in account', async () => {
+    const u = user();
+    sdk.current = u;
+    sdk.checkActionCode.mockResolvedValue({ data: { email: 'sam@example.com' } });
+    sdk.applyActionCode.mockResolvedValue(undefined);
+    expect(await confirmEmailWithCode('CODE')).toEqual({ email: 'sam@example.com' });
+    expect(sdk.applyActionCode).toHaveBeenCalledWith(expect.anything(), 'CODE');
+    expect(u.reload).toHaveBeenCalled();
+  });
+
+  it('works with nobody signed in, and passes on an expired link', async () => {
+    sdk.checkActionCode.mockResolvedValueOnce({ data: { email: 'sam@example.com' } });
+    sdk.applyActionCode.mockResolvedValueOnce(undefined);
+    expect(await confirmEmailWithCode('CODE')).toEqual({ email: 'sam@example.com' });
+    sdk.checkActionCode.mockRejectedValueOnce(authError('auth/expired-action-code'));
+    await expect(confirmEmailWithCode('OLD')).rejects.toMatchObject({ code: 'auth/expired-action-code' });
   });
 });
 

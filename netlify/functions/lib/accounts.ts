@@ -64,6 +64,20 @@ export async function accountByUid(uid: string): Promise<ToolkitUser | null> {
   return found.users?.[0] ?? null;
 }
 
+/**
+ * A link that confirms `email`, without Firebase sending anything: the app
+ * sends its own email (send-verification-email.ts). The same request the
+ * Admin SDK's generateEmailVerificationLink makes, over the toolkit.
+ */
+export async function emailVerificationLink(email: string): Promise<string> {
+  const body = (await toolkit('accounts:sendOobCode', {
+    method: 'POST',
+    body: JSON.stringify({ requestType: 'VERIFY_EMAIL', email, returnOobLink: true }),
+  })) as { oobLink?: string };
+  if (!body.oobLink) throw new Error('accounts: sendOobCode returned no link');
+  return body.oobLink;
+}
+
 /** Removes one sign-in record. An account that is already gone is not an error. */
 export async function deleteAccountRecord(uid: string): Promise<void> {
   try {
