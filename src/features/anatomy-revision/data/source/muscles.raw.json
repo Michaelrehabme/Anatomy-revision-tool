@@ -127,7 +127,8 @@
       ],
       "partOf": null,
       "origin": [
-        "Anterior Inferior Iliac Spine (AIIS)"
+        "Anterior Inferior Iliac Spine (AIIS)",
+        "Ilium above the acetabulum"
       ],
       "insertion": [
         "Tibial tuberosity via the patellar tendon"
@@ -148,7 +149,7 @@
       ],
       "actionText": "Flexes the hip and extends the knee; the only quadriceps head that crosses the hip.",
       "clinical": null,
-      "notes": null,
+      "notes": "Origin completed 18 Nov 2026 (deck value: [\"Anterior Inferior Iliac Spine (AIIS)\"]), per Gray's / Moore Table 7.3. Straight head from the AIIS; reflected head from the ilium just above the acetabulum.",
       "images": {
         "isolated": null,
         "hotspot": null,
@@ -164,7 +165,14 @@
           5,
           6,
           33
-        ]
+        ],
+        "works": [
+          {
+            "title": "University of Washington Musculoskeletal Atlas — Rectus femoris",
+            "url": "https://rad.uw.edu/muscle-atlas/rectus-femoris"
+          }
+        ],
+        "checked": "2026-11-18"
       }
     },
     {
@@ -227,9 +235,10 @@
       ],
       "partOf": null,
       "origin": [
-        "Iliac crest",
+        "Posterior ilium",
         "Sacrum",
-        "Coccyx"
+        "Coccyx",
+        "Sacrotuberous ligament"
       ],
       "insertion": [
         "Gluteal tuberosity of the femur",
@@ -250,9 +259,9 @@
         "hip-external-rotation",
         "hip-abduction"
       ],
-      "actionText": "Extends, externally rotates and abducts the hip.",
+      "actionText": "Extends and externally rotates the hip; its upper fibres also abduct it.",
       "clinical": null,
-      "notes": "Largest muscle in the body.",
+      "notes": "Largest muscle in the body. Origin completed 18 Nov 2026 (deck value: [\"Iliac crest\", \"Sacrum\", \"Coccyx\"]), per Gray's / Moore Table 7.4. In full: posterior ilium behind the posterior gluteal line, dorsal sacrum and coccyx, thoracolumbar fascia and sacrotuberous ligament.",
       "images": {
         "isolated": null,
         "hotspot": null,
@@ -267,7 +276,14 @@
         "slides": [
           9,
           10
-        ]
+        ],
+        "works": [
+          {
+            "title": "Kenhub — Gluteus maximus muscle",
+            "url": "https://www.kenhub.com/en/library/anatomy/gluteus-maximus-muscle"
+          }
+        ],
+        "checked": "2026-11-18"
       }
     },
     {
@@ -952,7 +968,7 @@
       ],
       "partOf": null,
       "origin": [
-        "Obturator membrane"
+        "Obturator membrane and surrounding hip bone"
       ],
       "insertion": [
         "Greater trochanter of the femur"
@@ -970,9 +986,9 @@
         "hip-external-rotation",
         "hip-stabilisation"
       ],
-      "actionText": "Externally rotates and stabilises the hip; arises from the obturator membrane.",
+      "actionText": "Externally rotates and stabilises the hip; arises from the obturator membrane and surrounding hip bone.",
       "clinical": null,
-      "notes": null,
+      "notes": "Origin completed 18 Nov 2026 (deck value: [\"Obturator membrane\"]), per Gray's / Moore Table 7.4. In full: inner surface of the obturator membrane and the pelvic surface of the hip bone around the obturator foramen.",
       "images": {
         "isolated": null,
         "hotspot": null,
@@ -986,7 +1002,14 @@
         "author": "Vinnie Maynard",
         "slides": [
           29
-        ]
+        ],
+        "works": [
+          {
+            "title": "University of Washington Musculoskeletal Atlas — Obturator internus",
+            "url": "https://rad.uw.edu/muscle-atlas/obturator-internus"
+          }
+        ],
+        "checked": "2026-11-18"
       }
     },
     {
@@ -1143,7 +1166,8 @@
       ],
       "partOf": null,
       "origin": [
-        "Medial side of the femur"
+        "Intertrochanteric line",
+        "Medial lip of the linea aspera"
       ],
       "insertion": [
         "Tibial tuberosity via the patellar tendon"
@@ -1163,7 +1187,7 @@
       ],
       "actionText": "Extends the knee; its oblique lower fibres are what hold the patella tracking correctly.",
       "clinical": null,
-      "notes": null,
+      "notes": "Origin completed 18 Nov 2026 (deck value: [\"Medial side of the femur\"]), per Gray's / Moore Table 7.3. In full: intertrochanteric line, spiral line, medial lip of the linea aspera and medial supracondylar line.",
       "images": {
         "isolated": null,
         "hotspot": null,
@@ -1177,7 +1201,14 @@
         "author": "Vinnie Maynard",
         "slides": [
           35
-        ]
+        ],
+        "works": [
+          {
+            "title": "University of Washington Musculoskeletal Atlas — Vastus medialis",
+            "url": "https://rad.uw.edu/muscle-atlas/vastus-medialis"
+          }
+        ],
+        "checked": "2026-11-18"
       }
     },
     {
@@ -2839,7 +2870,8 @@
         "Transverse processes of C4–T12"
       ],
       "insertion": [
-        "Spinous processes 4–6 segments above"
+        "Spinous processes 4–6 segments above",
+        "Occipital bone"
       ],
       "nerve": [
         {
@@ -2853,7 +2885,7 @@
       ],
       "actionText": "Extends the spine and rotates the trunk.",
       "clinical": null,
-      "notes": null,
+      "notes": "Insertion completed 18 Nov 2026 (deck value: [\"Spinous processes 4–6 segments above\"]), per Gray's / Moore Table 4.6. Semispinalis capitis inserts on the occipital bone between the superior and inferior nuchal lines.",
       "images": {
         "isolated": null,
         "hotspot": null,
@@ -2868,7 +2900,14 @@
         "slides": [
           86,
           87
-        ]
+        ],
+        "works": [
+          {
+            "title": "Semispinalis muscles - Wikipedia (Gray's, public domain)",
+            "url": "https://en.wikipedia.org/wiki/Semispinalis_muscles"
+          }
+        ],
+        "checked": "2026-11-18"
       }
     },
     {
@@ -3176,6 +3215,12 @@
             "T10",
             "T11"
           ]
+        },
+        {
+          "name": "Subcostal nerve",
+          "roots": [
+            "T12"
+          ]
         }
       ],
       "actions": [
@@ -3184,7 +3229,7 @@
       ],
       "actionText": "Flexes the trunk and stabilises the core.",
       "clinical": null,
-      "notes": null,
+      "notes": "Nerve completed 18 Nov 2026 (deck value: [{\"name\": \"Thoracoabdominal nerves\", \"roots\": [\"T7\", \"T8\", \"T9\", \"T10\", \"T11\"]}]), per Moore Table 2.3.",
       "images": {
         "isolated": null,
         "hotspot": null,
@@ -3199,7 +3244,14 @@
         "slides": [
           96,
           97
-        ]
+        ],
+        "works": [
+          {
+            "title": "Kenhub — Rectus abdominis muscle",
+            "url": "https://www.kenhub.com/en/library/anatomy/rectus-abdominis-muscle"
+          }
+        ],
+        "checked": "2026-11-18"
       }
     },
     {
@@ -3556,7 +3608,7 @@
         "Anterior fibula"
       ],
       "insertion": [
-        "Distal phalanges of toes 2–5"
+        "Middle and distal phalanges of toes 2–5"
       ],
       "nerve": [
         {
@@ -3571,9 +3623,9 @@
         "toe-extension",
         "ankle-dorsiflexion"
       ],
-      "actionText": "Extends the toes and dorsiflexes the ankle; inserts on the distal phalanges of toes 2–5.",
+      "actionText": "Extends the toes and dorsiflexes the ankle; inserts on the middle and distal phalanges of toes 2–5.",
       "clinical": null,
-      "notes": null,
+      "notes": "Insertion completed 18 Nov 2026 (deck value: [\"Distal phalanges of toes 2–5\"]), per Gray's / Moore Table 7.10. Inserts via the dorsal digital expansions.",
       "images": {
         "isolated": null,
         "hotspot": null,
@@ -3588,7 +3640,14 @@
         "slides": [
           121,
           123
-        ]
+        ],
+        "works": [
+          {
+            "title": "University of Washington Musculoskeletal Atlas — Extensor digitorum longus",
+            "url": "https://rad.uw.edu/muscle-atlas/extensor-digitorum-longus"
+          }
+        ],
+        "checked": "2026-11-18"
       }
     },
     {
@@ -5651,6 +5710,13 @@
             "C8",
             "T1"
           ]
+        },
+        {
+          "name": "Ulnar nerve (deep head)",
+          "roots": [
+            "C8",
+            "T1"
+          ]
         }
       ],
       "actions": [
@@ -5658,7 +5724,7 @@
       ],
       "actionText": "Flexes the thumb; inserts on the base of proximal phalanx of thumb.",
       "clinical": null,
-      "notes": null,
+      "notes": "Nerve completed 18 Nov 2026 (deck value: [{\"name\": \"Median nerve\", \"roots\": [\"C8\", \"T1\"]}]), per Gray's / Moore Table 6.13. Superficial head: median nerve; deep head: deep branch of the ulnar nerve.",
       "images": {
         "isolated": null,
         "hotspot": null,
@@ -5673,7 +5739,14 @@
         "slides": [
           194,
           196
-        ]
+        ],
+        "works": [
+          {
+            "title": "Kenhub — Flexor pollicis brevis muscle",
+            "url": "https://www.kenhub.com/en/library/anatomy/flexor-pollicis-brevis-muscle"
+          }
+        ],
+        "checked": "2026-11-18"
       }
     },
     {
