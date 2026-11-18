@@ -4,6 +4,8 @@ import { buildDailySession, type DailySessionInput } from '../dailySession';
 import { emptyStudyProfile, type StudyProfile } from '../studyProfile';
 import { AREAS } from '../../types/region';
 import { areasOf } from '../../types/structure';
+import { buildReviewQueue } from '../reviewQueue';
+import type { StructureMastery } from '../../types/attempt';
 
 const structuresById = new Map(ALL_STRUCTURES.map((s) => [s.id, s]));
 const content = { structures: ALL_STRUCTURES, images: ALL_IMAGES, sources: undefined, structuresById };
@@ -79,8 +81,12 @@ describe('buildDailySession', () => {
   });
 
   it('sizes the review by the minutes a day', () => {
-    expect(buildDailySession(input({ profile: profile({ minutesPerDay: 5 }) })).questions.length).toBeLessThanOrEqual(10);
-    expect(buildDailySession(input({ profile: profile({ minutesPerDay: 30 }) })).questions.length).toBeGreaterThan(20);
+    // Questions answered: flashcards ride along outside the budget, a new
+    // structure's in front of its first question (owner, 17 Nov 2026).
+    const answered = (minutesPerDay: StudyProfile['minutesPerDay']) =>
+      buildDailySession(input({ profile: profile({ minutesPerDay }) })).questions.filter((q) => q.type !== 'flashcard').length;
+    expect(answered(5)).toBeLessThanOrEqual(10);
+    expect(answered(30)).toBeGreaterThan(20);
   });
 
   it('opens never-seen structures on multiple choice, not flashcards, for a student two years in', () => {
@@ -97,5 +103,53 @@ describe('buildDailySession', () => {
     const { questions } = buildDailySession(input({ firstRun: true, profile: p }));
     expect(questions.length).toBeGreaterThan(0);
     for (const q of questions) expect(areasOf(structureOf(q.structureId))).toContain('knee');
+  });
+
+  it('gives a quarter of the questions answered to new structures, each introduced by its flashcard (owner, 17 Nov 2026)', () => {
+    // A long history: everything in the hip and knee met and due but ten.
+    const now = new Date('2026-11-17T12:00:00Z');
+    const inAreas = ALL_STRUCTURES.filter((s) => areasOf(s).some((a) => a === 'hip' || a === 'knee'));
+    const unmet = new Set(inAreas.slice(0, 10).map((s) => s.id));
+    const mastery: StructureMastery[] = inAreas
+      .filter((s) => !unmet.has(s.id))
+      .map((s) => ({
+        structureId: s.id, userId: 'u', attemptsTotal: 3, attemptsCorrect: 1, lastAttemptAt: '2026-11-15T12:00:00Z',
+        rung: 'mcq', intervalDays: 1, recentAccuracy: 0.4, dueAt: '2026-11-16T00:00:00Z',
+      }));
+    const { due, forward } = buildReviewQueue(mastery, [], new Set(ALL_STRUCTURES.map((s) => s.id)), now);
+    for (let seed = 1; seed <= 4; seed++) {
+      const { questions } = buildDailySession(input({ mastery, reviewItems: [...due, ...forward], now, seed }));
+      const answered = questions.filter((q) => q.type !== 'flashcard');
+      const newAnswered = answered.filter((q) => unmet.has(q.structureId));
+      expect(answered.length).toBe(20);
+      expect(newAnswered.length).toBe(5);
+      expect(new Set(newAnswered.map((q) => q.structureId)).size).toBe(5);
+      // A new structure's flashcard comes straight before its question, never after.
+      for (const q of newAnswered) {
+        const at = questions.indexOf(q);
+        const card = questions.findIndex((c) => c.type === 'flashcard' && c.structureId === q.structureId);
+        if (card !== -1) expect(card).toBe(at - 1);
+      }
+    }
+  });
+
+  it('gives each student the share of new structures they chose (owner, 17 Nov 2026)', () => {
+    const now = new Date('2026-11-17T12:00:00Z');
+    const inAreas = ALL_STRUCTURES.filter((s) => areasOf(s).some((a) => a === 'hip' || a === 'knee'));
+    const unmet = new Set(inAreas.slice(0, 15).map((s) => s.id));
+    const mastery: StructureMastery[] = inAreas
+      .filter((s) => !unmet.has(s.id))
+      .map((s) => ({
+        structureId: s.id, userId: 'u', attemptsTotal: 3, attemptsCorrect: 1, lastAttemptAt: '2026-11-15T12:00:00Z',
+        rung: 'mcq', intervalDays: 1, recentAccuracy: 0.4, dueAt: '2026-11-16T00:00:00Z',
+      }));
+    const { due, forward } = buildReviewQueue(mastery, [], new Set(ALL_STRUCTURES.map((s) => s.id)), now);
+    const newAnswered = (newMix: StudyProfile['newMix']) =>
+      buildDailySession(input({ mastery, reviewItems: [...due, ...forward], now, profile: profile({ skipped: true, newMix }) }))
+        .questions.filter((q) => q.type !== 'flashcard' && unmet.has(q.structureId)).length;
+    expect(newAnswered('fewer')).toBe(2);
+    expect(newAnswered('balanced')).toBe(5);
+    expect(newAnswered(undefined)).toBe(5);
+    expect(newAnswered('more')).toBe(10);
   });
 });

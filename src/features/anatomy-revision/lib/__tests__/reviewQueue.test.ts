@@ -17,7 +17,7 @@ function fact(structureId: string, promptKind: FactMastery['promptKind'], o: Par
   };
 }
 
-const ELIGIBLE = new Set(['deltoid', 'supraspinatus', 'teres-minor']);
+const ELIGIBLE = new Set(['deltoid', 'supraspinatus', 'teres-minor', 'infraspinatus']);
 
 describe('buildReviewQueue', () => {
   it('keeps naming and each fact apart, so a known name waits while a shaky origin is due', () => {
@@ -36,7 +36,9 @@ describe('buildReviewQueue', () => {
       [
         naming('deltoid', { dueAt: inDays(10), intervalDays: 10, recentAccuracy: 1 }),
         naming('supraspinatus', { dueAt: inDays(1), intervalDays: 1, recentAccuracy: 0.6 }),
-        naming('teres-minor', { dueAt: inDays(3), intervalDays: 4, recentAccuracy: 0.9 }),
+        naming('teres-minor', { dueAt: inDays(3), intervalDays: 4, recentAccuracy: 0.6 }),
+        // Answered right and rated Medium: four days earned, not weak (owner, 17 Nov 2026).
+        naming('infraspinatus', { dueAt: inDays(2), intervalDays: 4, recentAccuracy: 0.9 }),
       ],
       [],
       ELIGIBLE,

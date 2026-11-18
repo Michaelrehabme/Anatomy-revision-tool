@@ -1145,9 +1145,10 @@ describe('the daily review, per question type (2 Oct 2026)', () => {
     expect(deltoidQs.some((q) => q.promptKind === 'identify' || q.type === 'locate')).toBe(false);
   });
 
-  it('pulls the weak naming question forward and fills the rest only with new structures', () => {
+  it('fills the gaps with new structures before pulling a weak question forward (owner, 17 Nov 2026)', () => {
     const questions = build();
-    expect(questions.some((q) => q.structureId === 'supraspinatus')).toBe(true);
+    // Plenty of new shoulder structures, so the weak supraspinatus waits.
+    expect(questions.some((q) => q.structureId === 'supraspinatus')).toBe(false);
     const known = new Set(['deltoid', 'supraspinatus']);
     for (const q of questions) {
       if (known.has(q.structureId)) continue;
@@ -1155,6 +1156,26 @@ describe('the daily review, per question type (2 Oct 2026)', () => {
     }
     // Learn cards ride along outside the budget (withLearnCards).
     expect(questions.filter((q) => !isFlashcardQuestion(q)).length).toBeLessThanOrEqual(20);
+  });
+
+  it('pulls the weak naming question forward once there is nothing new left', () => {
+    const questions = generateRevisionSet(ALL_STRUCTURES, ALL_IMAGES, {
+      entitledAreas: AREAS,
+      areas: areasOf(deltoid),
+      structureIds: ['deltoid', 'supraspinatus'],
+      types: ['flashcard', 'mcq', 'locate', 'identify-typed', 'oina'],
+      mode: 'practice',
+      count: 20,
+      seed: 3,
+      mastery,
+      factMastery,
+      now: NOW,
+      reviewItems: [
+        { structureId: 'deltoid', kind: 'origin', dueAt: factMastery[0].dueAt!, due: true },
+        { structureId: 'supraspinatus', kind: 'identify', dueAt: mastery[1].dueAt!, due: false },
+      ],
+    });
+    expect(questions.some((q) => q.structureId === 'supraspinatus')).toBe(true);
   });
 
   describe('with study areas saved (owner, 11 Oct 2026)', () => {

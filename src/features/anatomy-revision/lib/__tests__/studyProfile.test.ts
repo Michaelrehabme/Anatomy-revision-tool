@@ -11,6 +11,7 @@ import {
   newShareFor,
   newStructureBias,
   previousFocus,
+  reviewNewShare,
   sessionCountFor,
   skipsFlashcard,
   starterAreaOrder,
@@ -58,6 +59,25 @@ describe('asStudyProfile', () => {
   it('never writes undefined, which Firestore refuses', () => {
     const p = asStudyProfile({ updatedAt: 1 })!;
     expect(Object.values(p).includes(undefined)).toBe(false);
+  });
+});
+
+describe('new structures in each review (owner, 17 Nov 2026)', () => {
+  it('keeps a known choice and drops anything else', () => {
+    expect(asStudyProfile({ updatedAt: 1, newMix: 'more' })?.newMix).toBe('more');
+    expect(asStudyProfile({ updatedAt: 1, newMix: 'lots' })?.newMix).toBeUndefined();
+  });
+  it('is a quarter unless chosen', () => {
+    expect(reviewNewShare(null)).toBe(0.25);
+    expect(reviewNewShare(profile({ newMix: 'fewer' }))).toBe(0.1);
+    expect(reviewNewShare(profile({ newMix: 'more' }))).toBe(0.5);
+  });
+  it('takes a custom percentage, and only a whole number from 0 to 100', () => {
+    expect(reviewNewShare(profile({ newMix: 'custom', newPercent: 35 }))).toBe(0.35);
+    expect(reviewNewShare(profile({ newMix: 'custom' }))).toBe(0.25);
+    expect(asStudyProfile({ updatedAt: 1, newMix: 'custom', newPercent: 35 })?.newPercent).toBe(35);
+    expect(asStudyProfile({ updatedAt: 1, newMix: 'custom', newPercent: 140 })?.newPercent).toBeUndefined();
+    expect(asStudyProfile({ updatedAt: 1, newMix: 'custom', newPercent: 12.5 })?.newPercent).toBeUndefined();
   });
 });
 

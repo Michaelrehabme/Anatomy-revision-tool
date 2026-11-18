@@ -12,6 +12,7 @@ import {
   hasAnswers,
   newShareFor,
   newStructureBias,
+  reviewNewShare,
   sessionCountFor,
   skipsFlashcard,
   starterAreaOrder,
@@ -29,8 +30,10 @@ export const DEFAULT_TYPES: QuestionType[] = ['flashcard', 'mcq', 'locate', 'ide
 /**
  * Which of Today's buttons was pressed.
  *
- *   continue  works down the queue oldest first, up to two questions a
- *             structure, so a structure is finished before the review moves on.
+ *   continue  works down the queue oldest first, with the student's share of
+ *             the questions on new structures (reviewNewShare: 10, 25 or 50%,
+ *             25 unless they chose); whichever side runs short, the other
+ *             fills it (owner, 17 Nov 2026).
  *   fresh     the same queue spread out: one question a structure, the ones
  *             answered longest ago first, and half the session new (owner,
  *             3 Oct 2026).
@@ -132,7 +135,7 @@ export function buildDailySession(input: DailySessionInput): DailySession {
     newShare:
       input.style === 'focus'
         ? newShareFor(profile, now, FOCUS_NEW_SHARE, pace)
-        : newShareFor(profile, now, input.style === 'fresh' ? 0.5 : undefined, pace),
+        : newShareFor(profile, now, input.style === 'fresh' ? 0.5 : reviewNewShare(profile), pace),
     count,
     // Without mastery the generator falls back to a uniform shuffle and the
     // scheduler's due/weakness weighting never runs on the daily review.
