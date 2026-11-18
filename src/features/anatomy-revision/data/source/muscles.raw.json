@@ -128,7 +128,7 @@
       "partOf": null,
       "origin": [
         "Anterior Inferior Iliac Spine (AIIS)",
-        "Ilium just above the acetabulum (reflected head)"
+        "Ilium above the acetabulum"
       ],
       "insertion": [
         "Tibial tuberosity via the patellar tendon"
@@ -149,7 +149,7 @@
       ],
       "actionText": "Flexes the hip and extends the knee; the only quadriceps head that crosses the hip.",
       "clinical": null,
-      "notes": "Origin completed 18 Nov 2026 (deck value: [\"Anterior Inferior Iliac Spine (AIIS)\"]), per Gray's / Moore Table 7.3.",
+      "notes": "Origin completed 18 Nov 2026 (deck value: [\"Anterior Inferior Iliac Spine (AIIS)\"]), per Gray's / Moore Table 7.3. Straight head from the AIIS; reflected head from the ilium just above the acetabulum.",
       "images": {
         "isolated": null,
         "hotspot": null,
@@ -235,10 +235,9 @@
       ],
       "partOf": null,
       "origin": [
-        "Posterior ilium, behind the posterior gluteal line, and the adjoining iliac crest",
+        "Posterior ilium",
         "Sacrum",
         "Coccyx",
-        "Thoracolumbar fascia",
         "Sacrotuberous ligament"
       ],
       "insertion": [
@@ -262,7 +261,7 @@
       ],
       "actionText": "Extends and externally rotates the hip; its upper fibres also abduct it.",
       "clinical": null,
-      "notes": "Largest muscle in the body. Origin completed 18 Nov 2026 (deck value: [\"Iliac crest\", \"Sacrum\", \"Coccyx\"]), per Gray's / Moore Table 7.4.",
+      "notes": "Largest muscle in the body. Origin completed 18 Nov 2026 (deck value: [\"Iliac crest\", \"Sacrum\", \"Coccyx\"]), per Gray's / Moore Table 7.4. In full: posterior ilium behind the posterior gluteal line, dorsal sacrum and coccyx, thoracolumbar fascia and sacrotuberous ligament.",
       "images": {
         "isolated": null,
         "hotspot": null,
@@ -969,8 +968,7 @@
       ],
       "partOf": null,
       "origin": [
-        "Inner surface of the obturator membrane",
-        "Pelvic surface of the hip bone around the obturator foramen"
+        "Obturator membrane and surrounding hip bone"
       ],
       "insertion": [
         "Greater trochanter of the femur"
@@ -988,9 +986,9 @@
         "hip-external-rotation",
         "hip-stabilisation"
       ],
-      "actionText": "Externally rotates and stabilises the hip; arises from the inner surface of the obturator membrane.",
+      "actionText": "Externally rotates and stabilises the hip; arises from the obturator membrane and surrounding hip bone.",
       "clinical": null,
-      "notes": "Origin completed 18 Nov 2026 (deck value: [\"Obturator membrane\"]), per Gray's / Moore Table 7.4.",
+      "notes": "Origin completed 18 Nov 2026 (deck value: [\"Obturator membrane\"]), per Gray's / Moore Table 7.4. In full: inner surface of the obturator membrane and the pelvic surface of the hip bone around the obturator foramen.",
       "images": {
         "isolated": null,
         "hotspot": null,
@@ -1169,8 +1167,7 @@
       "partOf": null,
       "origin": [
         "Intertrochanteric line",
-        "Medial lip of the linea aspera",
-        "Medial supracondylar line"
+        "Linea aspera (medial lip)"
       ],
       "insertion": [
         "Tibial tuberosity via the patellar tendon"
@@ -1190,7 +1187,7 @@
       ],
       "actionText": "Extends the knee; its oblique lower fibres are what hold the patella tracking correctly.",
       "clinical": null,
-      "notes": "Origin completed 18 Nov 2026 (deck value: [\"Medial side of the femur\"]), per Gray's / Moore Table 7.3.",
+      "notes": "Origin completed 18 Nov 2026 (deck value: [\"Medial side of the femur\"]), per Gray's / Moore Table 7.3. In full: intertrochanteric line, spiral line, medial lip of the linea aspera and medial supracondylar line.",
       "images": {
         "isolated": null,
         "hotspot": null,
@@ -2874,7 +2871,7 @@
       ],
       "insertion": [
         "Spinous processes 4–6 segments above",
-        "Occipital bone between the superior and inferior nuchal lines (semispinalis capitis)"
+        "Occipital bone"
       ],
       "nerve": [
         {
@@ -2888,7 +2885,7 @@
       ],
       "actionText": "Extends the spine and rotates the trunk.",
       "clinical": null,
-      "notes": "Insertion completed 18 Nov 2026 (deck value: [\"Spinous processes 4–6 segments above\"]), per Gray's / Moore Table 4.6.",
+      "notes": "Insertion completed 18 Nov 2026 (deck value: [\"Spinous processes 4–6 segments above\"]), per Gray's / Moore Table 4.6. Semispinalis capitis inserts on the occipital bone between the superior and inferior nuchal lines.",
       "images": {
         "isolated": null,
         "hotspot": null,
@@ -3611,7 +3608,7 @@
         "Anterior fibula"
       ],
       "insertion": [
-        "Middle and distal phalanges of toes 2–5 (via the dorsal digital expansions)"
+        "Middle and distal phalanges of toes 2–5"
       ],
       "nerve": [
         {
@@ -3628,7 +3625,7 @@
       ],
       "actionText": "Extends the toes and dorsiflexes the ankle; inserts on the middle and distal phalanges of toes 2–5.",
       "clinical": null,
-      "notes": "Insertion completed 18 Nov 2026 (deck value: [\"Distal phalanges of toes 2–5\"]), per Gray's / Moore Table 7.10.",
+      "notes": "Insertion completed 18 Nov 2026 (deck value: [\"Distal phalanges of toes 2–5\"]), per Gray's / Moore Table 7.10. Inserts via the dorsal digital expansions.",
       "images": {
         "isolated": null,
         "hotspot": null,
@@ -5708,7 +5705,7 @@
       ],
       "nerve": [
         {
-          "name": "Median nerve (superficial head)",
+          "name": "Median nerve",
           "roots": [
             "C8",
             "T1"
@@ -5727,7 +5724,7 @@
       ],
       "actionText": "Flexes the thumb; inserts on the base of proximal phalanx of thumb.",
       "clinical": null,
-      "notes": "Nerve completed 18 Nov 2026 (deck value: [{\"name\": \"Median nerve\", \"roots\": [\"C8\", \"T1\"]}]), per Gray's / Moore Table 6.13.",
+      "notes": "Nerve completed 18 Nov 2026 (deck value: [{\"name\": \"Median nerve\", \"roots\": [\"C8\", \"T1\"]}]), per Gray's / Moore Table 6.13. Superficial head: median nerve; deep head: deep branch of the ulnar nerve.",
       "images": {
         "isolated": null,
         "hotspot": null,
