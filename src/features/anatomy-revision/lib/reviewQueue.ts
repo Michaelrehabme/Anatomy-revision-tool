@@ -16,14 +16,17 @@ export interface ReviewItem {
 }
 
 /**
- * What makes a not-yet-due question type worth pulling forward: it is on a
- * short interval — it was missed, or rated Medium or Hard, recently — or its
- * recent answers are shaky. A type answered right and rated Easy has earned a
+ * What makes a not-yet-due question type worth pulling forward: it is on the
+ * shortest interval — it was missed, or rated Hard, last time — or its recent
+ * answers are shaky. Until 17 Nov 2026 this was 4 days, so a question answered
+ * RIGHT and rated Medium (which earns 4 days) counted as weak and was pulled
+ * straight back into the next session: "tap to locate questions recur a lot
+ * even when I get them right" (owner). A type answered right and rated Easy has earned a
  * long interval and is left alone until it is due (owner, 2 Oct 2026: "if I'm
  * consistently getting the identify question for the deltoid right and finding
  * it easy I shouldn't see that question for another 10 days").
  */
-export const WEAK_INTERVAL_DAYS = 4;
+export const WEAK_INTERVAL_DAYS = 1;
 export const WEAK_ACCURACY = 0.8;
 
 /**

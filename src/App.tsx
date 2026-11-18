@@ -1113,6 +1113,16 @@ function App() {
           }
         />
         <Route
+          path="/account/:page"
+          element={
+            isDesktop ? (
+              <Account content={content} repository={repository} userId={userId} access={entitlement} onNavigate={onNavigateSection} />
+            ) : (
+              <MobileAccount content={content} repository={repository} userId={userId} access={entitlement} onNavigateTab={mobileNavigate} />
+            )
+          }
+        />
+        <Route
           path="/pricing"
           element={
             <Suspense fallback={null}>

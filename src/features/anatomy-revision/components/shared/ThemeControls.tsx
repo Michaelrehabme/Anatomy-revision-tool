@@ -23,7 +23,16 @@ const TRACK_TRANSITION = 'background 220ms';
  * in a line underneath instead, with "Use my device setting" appearing only
  * once an explicit choice has been made.
  */
-export function ThemeControls({ compact = false }: { compact?: boolean }) {
+/**
+ * Which of these settings to show (owner, 17 Nov 2026: Account split into
+ * pages). 'appearance' is theme and accessibility, 'learning' is Latin names
+ * and the tours, which belong with how the student studies.
+ */
+export type ThemeControlsPart = 'all' | 'appearance' | 'learning';
+
+export function ThemeControls({ compact = false, part = 'all' }: { compact?: boolean; part?: ThemeControlsPart }) {
+  const showAppearance = part !== 'learning';
+  const showLearning = part !== 'appearance';
   const contrastLabelId = useId();
   const latinLabelId = useId();
   const wordsLabelId = useId();
@@ -47,7 +56,9 @@ export function ThemeControls({ compact = false }: { compact?: boolean }) {
   } as const;
 
   return (
-    <div>
+    <div className="[&>:first-child]:!mt-0">
+      {showAppearance && (
+      <>
       <div style={label}>Theme</div>
       <div className="mt-2.5 flex gap-2" role="radiogroup" aria-label="Theme">
         {THEME_PREFERENCES.map((preference) => {
@@ -177,6 +188,11 @@ export function ThemeControls({ compact = false }: { compact?: boolean }) {
         </div>
       </div>
 
+      </>
+      )}
+
+      {showLearning && (
+      <>
       <div className="mt-7" style={label}>
         Names
       </div>
@@ -243,6 +259,8 @@ export function ThemeControls({ compact = false }: { compact?: boolean }) {
           ? 'Done. Each screen’s tour will play the next time you open it.'
           : 'The step-by-step guide to each screen, shown the first time you open it.'}
       </p>
+      </>
+      )}
     </div>
   );
 }

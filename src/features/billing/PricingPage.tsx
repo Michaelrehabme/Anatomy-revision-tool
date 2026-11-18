@@ -321,7 +321,7 @@ export function PricingPage({ onQuickStart, onCustomSession }: PricingPageProps 
                     <strong style={{ color: 'var(--ink)' }}>{formatDate(terms.nextChargeAt)}</strong>.
                   </li>
                   <li>
-                    Cancel any time from <strong style={{ color: 'var(--ink)' }}>Account → Subscription → Manage
+                    Cancel any time from <strong style={{ color: 'var(--ink)' }}>Account → Subscription &amp; account → Manage
                     subscription</strong>. It takes effect at the end of the period you have paid for, and costs
                     nothing.
                   </li>
