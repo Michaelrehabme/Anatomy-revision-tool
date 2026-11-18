@@ -334,8 +334,11 @@ function buildOne(
       // (long head)" was offered beside "Tibial nerve", and as a wrong answer
       // to a muscle the tibial nerve supplies. Named as the fact cards name
       // them, on both sides of the question.
+      // One nerve on each button (owner, 18 Nov 2026), as origins and
+      // insertions are: a muscle with two nerves is asked for one of them,
+      // and no wrong answer is the other.
       const nerves = canonicalNerveNames(structure.nerve);
-      const correctValue = nerves.join('; ');
+      const correctValue = nerves.length === 1 ? nerves[0] : sample(nerves, 1, rng)[0];
       const others = [...indexes.byNerve.keys(), ...(vocabulary?.nerves ?? [])]
         .flatMap((name) => canonicalNerveNames([{ name, roots: [] }]))
         // Nor one the muscle is authored with at all, hedged or not: pectineus
@@ -346,7 +349,7 @@ function buildOne(
       if (nerves.length) out.push({
         ...baseFields(structure, promptKind),
         id: `mcq-${structure.id}-nerve`,
-        prompt: `What nerve innervates ${structure.name}?`,
+        prompt: nerves.length === 1 ? `What nerve innervates ${structure.name}?` : `Which of these nerves supplies ${structure.name}?`,
         choices,
         correctIndex,
         explanation: summarizeStructure(structure, siteLookup),
