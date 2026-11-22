@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { structureNameVariants, swapFibularPeroneal } from '../nameVariants';
-import { isAnswerMatch, singular } from '../answerMatching';
+import { isAnswerMatch, singular, wordsInAnyOrder } from '../answerMatching';
 import { ALL_STRUCTURES } from '../../data/seed';
 
 describe('swapFibularPeroneal', () => {
@@ -124,6 +124,43 @@ describe('"of the hand" and "of the foot" are optional too', () => {
       new Set(ids.map((id) => id.replace(/-(hand|foot|sacrum)$/, ''))).size === 1;
     const bad = [...byForm.entries()].filter(([, ids]) => ids.length > 1 && !twinned(ids));
     expect(bad.map(([form, ids]) => `${form}: ${ids.join(', ')}`)).toEqual([]);
+  });
+
+  it('never lets one structure answer for another with its words in another order', () => {
+    // Grading forgives word order (wordsInAnyOrder), so the same words in any
+    // order must still belong to one structure only.
+    const byWords = new Map<string, string[]>();
+    for (const s of ALL_STRUCTURES) {
+      for (const form of structureNameVariants(s.name, s.aliases)) {
+        const key = wordsInAnyOrder(form.toLowerCase().replace(/[,:;()]/g, ' ').trim().split(/\s+/).map(singular).join(' '));
+        byWords.set(key, [...new Set([...(byWords.get(key) ?? []), s.id])]);
+      }
+    }
+    const twinned = (ids: string[]) =>
+      new Set(ids.map((id) => id.replace(/-(hand|foot|sacrum)$/, ''))).size === 1;
+    const bad = [...byWords.entries()].filter(([, ids]) => ids.length > 1 && !twinned(ids));
+    expect(bad.map(([form, ids]) => `${form}: ${ids.join(', ')}`)).toEqual([]);
+  });
+});
+
+describe('word order (student reports, 20–21 Nov 2026)', () => {
+  const accept = (id: string, typed: string) => {
+    const s = ALL_STRUCTURES.find((x) => x.id === id)!;
+    return isAnswerMatch(typed, structureNameVariants(s.name, s.aliases));
+  };
+
+  it('accepts a ligament name with its words the other way round', () => {
+    const sacroiliac = ALL_STRUCTURES.find((x) => x.name === 'Interosseous sacro-iliac ligament')!;
+    const intercuneiform = ALL_STRUCTURES.find((x) => x.name === 'Intercuneiform interosseous ligaments')!;
+    expect(accept(sacroiliac.id, 'Sacroiliac Interosseous ligament')).toBe(true);
+    expect(accept(sacroiliac.id, 'Sacro-iliac Interosseous ligament')).toBe(true);
+    expect(accept(intercuneiform.id, 'Interosseous intercuneiform ligament')).toBe(true);
+  });
+
+  it('still refuses a different word', () => {
+    const sacroiliac = ALL_STRUCTURES.find((x) => x.name === 'Interosseous sacro-iliac ligament')!;
+    expect(accept(sacroiliac.id, 'Sacroiliac anterior ligament')).toBe(false);
+    expect(accept(sacroiliac.id, 'Posterior sacroiliac ligament')).toBe(false);
   });
 });
 

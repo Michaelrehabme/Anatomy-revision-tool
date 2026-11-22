@@ -5,7 +5,11 @@ import {
   actionsConflict,
   canonicalNerveNames,
   conflictsWith,
+  ribsNamed,
 } from '../oinaValues';
+import { buildMcqQuestions } from '../questionGenerators/mcq';
+import { buildIndexes } from '../indexes';
+import { createRng } from '../rng';
 import { ALL_STRUCTURES } from '../../data/seed';
 import { isMuscle } from '../../types/structure';
 
@@ -140,5 +144,32 @@ describe('action tags', () => {
   it('keeps opposing movements distinct', () => {
     expect(actionsConflict('hip-internal-rotation', 'hip-external-rotation')).toBe(false);
     expect(actionsConflict('knee-flexion', 'knee-extension')).toBe(false);
+  });
+});
+
+describe('rib ranges (student report, 17 Nov 2026)', () => {
+  it('reads the ribs a value names', () => {
+    expect([...ribsNamed('12th rib')]).toEqual([12]);
+    expect([...ribsNamed('Ribs 10–12')]).toEqual([10, 11, 12]);
+    expect([...ribsNamed('Costal cartilages of ribs 7–12')]).toEqual([7, 8, 9, 10, 11, 12]);
+    expect([...ribsNamed('Iliac crest')]).toEqual([]);
+  });
+
+  it('treats a range that takes in the right rib as the same answer', () => {
+    expect(conflictsWith('12th rib', 'Ribs 10–12')).toBe(true);
+    expect(conflictsWith('Ribs 10–12', '12th rib')).toBe(true);
+    expect(conflictsWith('12th rib', 'Ribs 3–5')).toBe(false);
+    expect(conflictsWith('1st rib', '2nd rib')).toBe(false);
+  });
+
+  it('never offers ribs 10–12 as a wrong insertion of quadratus lumborum', () => {
+    const ql = byId.get('quadratus-lumborum')!;
+    const indexes = buildIndexes(ALL_STRUCTURES);
+    for (let seed = 1; seed <= 40; seed += 1) {
+      const questions = buildMcqQuestions([ql], [], indexes, createRng(seed), { distractorPool: ALL_STRUCTURES });
+      const insertion = questions.find((q) => q.id === 'mcq-quadratus-lumborum-insertion');
+      expect(insertion).toBeDefined();
+      expect(insertion!.choices.map((c) => c.toLowerCase())).not.toContain('ribs 10–12');
+    }
   });
 });

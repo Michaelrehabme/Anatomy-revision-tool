@@ -243,52 +243,52 @@ function Reports() {
         </FoldList>
       )}
       {shown.length > 0 && isDesktop && (
-        <table style={{ borderCollapse: 'collapse', width: '100%' }}>
-          <thead>
-            <tr>
-              <th style={head}>When</th>
-              <th style={head}>Structure</th>
-              <th style={head}>Question</th>
-              <th style={head}>Problem</th>
-              <th style={head} />
-            </tr>
-          </thead>
-          <tbody>
-            {shown.map((report) => (
-              <tr key={report.id} style={{ borderTop: '1px solid var(--line)', opacity: report.resolvedAt ? 0.6 : 1 }}>
-                <td style={{ ...cell, whiteSpace: 'nowrap' }}>{when(report.createdAt)}</td>
-                <td style={{ ...cell, color: 'var(--ink)' }}>
-                  {STRUCTURE_INDEX_BY_ID.get(report.structureId)?.name ?? report.structureId}
-                  <div style={small}>{report.area ?? ''}</div>
-                </td>
-                <td style={cell}>
-                  {report.questionType} · {report.promptKind}
-                  <div style={{ ...small, font: '400 11.5px/1.4 var(--font-mono)', wordBreak: 'break-all' }}>{report.questionId}</div>
-                </td>
-                <td style={{ ...cell, maxWidth: 360 }}>
-                  {REASON_LABEL.get(report.reason) ?? report.reason}
-                  {report.note && <div style={{ ...small, color: 'var(--ink)', whiteSpace: 'pre-wrap' }}>{report.note}</div>}
-                  {report.shown?.given && <div style={{ ...small, color: 'var(--ink)' }}>Their answer: {report.shown.given}</div>}
-                  {report.shown && hasScreen(report.shown) && <ReportScreen shown={report.shown} />}
-                </td>
-                <td style={{ ...cell, paddingRight: 0, whiteSpace: 'nowrap' }}>
-                  {report.resolvedAt ? (
-                    <span style={small}>Resolved {when(report.resolvedAt)}</span>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={() => resolve(report.id)}
-                      className="rounded-[3px] px-3"
-                      style={{ font: '500 12.5px/1 var(--font-ui)', minHeight: 32, background: 'transparent', color: 'var(--ink2)', border: '1.2px solid var(--line)' }}
-                    >
-                      Mark resolved
-                    </button>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        // Cards in columns, not a table (owner, 22 Nov 2026): a report with
+        // its picture is tall and narrow, so a table row left two thirds of a
+        // wide screen empty. Two or three to a row fit a screenshot.
+        <ul className="m-0 grid list-none p-0" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 12 }}>
+          {shown.map((report) => (
+            <li
+              key={report.id}
+              className="flex flex-col p-4"
+              style={{ border: '1.2px solid var(--line)', background: 'var(--bg)', opacity: report.resolvedAt ? 0.6 : 1, minWidth: 0 }}
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div style={{ minWidth: 0 }}>
+                  <div style={{ font: '500 14.5px/1.35 var(--font-ui)', color: 'var(--ink)' }}>
+                    {STRUCTURE_INDEX_BY_ID.get(report.structureId)?.name ?? report.structureId}
+                  </div>
+                  <div style={small}>
+                    {when(report.createdAt)}
+                    {report.area ? ` · ${report.area}` : ''}
+                  </div>
+                </div>
+                {report.resolvedAt ? (
+                  <span style={{ ...small, whiteSpace: 'nowrap' }}>Resolved {when(report.resolvedAt)}</span>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => resolve(report.id)}
+                    className="shrink-0 rounded-[3px] px-3"
+                    style={{ font: '500 12.5px/1 var(--font-ui)', minHeight: 32, background: 'transparent', color: 'var(--ink2)', border: '1.2px solid var(--line)' }}
+                  >
+                    Mark resolved
+                  </button>
+                )}
+              </div>
+              <div className="mt-2" style={{ ...cell, padding: 0 }}>
+                {report.questionType} · {report.promptKind}
+                <div style={{ ...small, font: '400 11.5px/1.4 var(--font-mono)', wordBreak: 'break-all' }}>{report.questionId}</div>
+              </div>
+              <div className="mt-2" style={{ ...cell, padding: 0, color: 'var(--ink)' }}>
+                {REASON_LABEL.get(report.reason) ?? report.reason}
+                {report.note && <div style={{ ...small, color: 'var(--ink)', whiteSpace: 'pre-wrap' }}>{report.note}</div>}
+                {report.shown?.given && <div style={{ ...small, color: 'var(--ink)' }}>Their answer: {report.shown.given}</div>}
+              </div>
+              {report.shown && hasScreen(report.shown) && <ReportScreen shown={report.shown} />}
+            </li>
+          ))}
+        </ul>
       )}
     </Panel>
   );
@@ -337,7 +337,8 @@ function Errors() {
 
 export function FeedbackPage() {
   return (
-    <div className={ADMIN_PAGE_PAD} style={{ maxWidth: 980 }}>
+    // Wide enough for three report cards to a row on a laptop screen.
+    <div className={ADMIN_PAGE_PAD} style={{ maxWidth: 1240 }}>
       <h1 style={{ ...ADMIN_TITLE_STYLE, color: 'var(--ink)' }}>
         Feedback
       </h1>

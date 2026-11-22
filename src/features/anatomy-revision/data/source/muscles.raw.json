@@ -495,7 +495,7 @@
       ],
       "partOf": null,
       "origin": [
-        "Outer surface of the ilium, just below the gluteus medius"
+        "Outer surface of the ilium"
       ],
       "insertion": [
         "Greater trochanter of the femur"
@@ -517,7 +517,7 @@
       ],
       "actionText": "Abducts and internally rotates the hip; stabilises the pelvis; arises from the outer surface of the ilium, just below the gluteus medius.",
       "clinical": null,
-      "notes": null,
+      "notes": "Arises from the outer surface of the ilium between the anterior and inferior gluteal lines, just below the gluteus medius. Answer trimmed 22 Nov 2026 (student report): the position is detail, not the answer.",
       "images": {
         "isolated": null,
         "hotspot": null,

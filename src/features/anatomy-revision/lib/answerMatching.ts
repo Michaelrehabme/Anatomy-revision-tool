@@ -126,10 +126,26 @@ function twoSlipsInLongWords(input: string, key: string): boolean {
 export function isAnswerMatch(input: string, accepted: string[], maxDistance = 1): boolean {
   const normalizedInput = normalize(input);
   if (!normalizedInput) return false;
+  const inputInAnyOrder = wordsInAnyOrder(normalizedInput);
   return accepted.some((candidate) => {
     const key = normalize(candidate);
-    return editDistance(normalizedInput, key) <= maxDistance || twoSlipsInLongWords(normalizedInput, key);
+    if (editDistance(normalizedInput, key) <= maxDistance || twoSlipsInLongWords(normalizedInput, key)) return true;
+    const keyInAnyOrder = wordsInAnyOrder(key);
+    return editDistance(inputInAnyOrder, keyInAnyOrder) <= maxDistance || twoSlipsInLongWords(inputInAnyOrder, keyInAnyOrder);
   });
+}
+
+/**
+ * The same words in alphabetical order. WORD ORDER IS NOT THE ANSWER (the
+ * owner's call, 22 Nov 2026, after "Sacroiliac interosseous ligament" and
+ * "Interosseous intercuneiform ligament" were marked wrong): a ligament named
+ * by where it runs and what kind it is gets written both ways round, in
+ * lectures and in textbooks. The same words in another order never name a
+ * different structure in this dataset; the collision test in
+ * nameVariants.test.ts holds that true.
+ */
+export function wordsInAnyOrder(normalized: string): string {
+  return normalized.split(' ').sort().join(' ');
 }
 
 /** Words that say which of a pair, and so take the rest of their partner's name. */
