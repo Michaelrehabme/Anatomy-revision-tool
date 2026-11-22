@@ -337,8 +337,9 @@ function Errors() {
 
 export function FeedbackPage() {
   return (
-    // Wide enough for three report cards to a row on a laptop screen.
-    <div className={ADMIN_PAGE_PAD} style={{ maxWidth: 1240 }}>
+    // The whole tab, no cap (owner, 22 Nov 2026): report cards fill it, three
+    // to a row on a laptop and more on a wide monitor.
+    <div className={ADMIN_PAGE_PAD}>
       <h1 style={{ ...ADMIN_TITLE_STYLE, color: 'var(--ink)' }}>
         Feedback
       </h1>
