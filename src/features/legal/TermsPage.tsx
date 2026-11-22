@@ -62,7 +62,8 @@ export function TermsPage() {
           Use <strong style={strong}>Report a problem</strong> in the app, or email{' '}
           <a href={`mailto:${EMAIL}?subject=LocusMSK%20content%20correction`} style={link}>{EMAIL}</a>. We check every
           report against a published source, aim to look at it within 14 days, and correct confirmed errors for
-          everyone. Please don&rsquo;t include personal or patient information in a report.
+          everyone. Please don&rsquo;t include personal or patient information in a report. Every correction is listed on
+          the <Link to="/corrections" style={link}>corrections page</Link>.
         </p>
         <p>
           If you send us feedback, error reports or suggestions, you allow us to use them to improve LocusMSK without

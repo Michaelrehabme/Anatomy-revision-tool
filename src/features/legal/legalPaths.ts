@@ -20,4 +20,5 @@ export const LEGAL_PATHS = [
   '/accessibility',
   '/refunds',
   '/sources',
+  '/corrections',
 ] as const;
