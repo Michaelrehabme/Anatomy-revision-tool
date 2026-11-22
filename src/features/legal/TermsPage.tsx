@@ -16,9 +16,8 @@ import { LegalLayout, legalHeading, legalProse } from './LegalLayout';
 
 const CONTROLLER = 'Michael Neary, trading as Neary’s Sport Rehab';
 const EMAIL = 'michael@rehabme.uk';
-// TODO before going live: a geographic address is required for a trader selling online
-// (Consumer Contracts Regulations 2013). A business address service is fine.
-const ADDRESS = '[business address to be added]';
+// A geographic address is required for a trader selling online (Consumer Contracts Regulations 2013).
+const ADDRESS = 'Marsh House, Marsh Road, Little Kimble, Aylesbury, Buckinghamshire HP22 5XS';
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
