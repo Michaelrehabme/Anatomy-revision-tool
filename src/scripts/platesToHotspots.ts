@@ -238,6 +238,16 @@ const hotspots: Record<string, Hotspot[]> = {};
 interface Plate { slug: string; region: string; subregion: string; view: string; angle?: number; title: string; width: number; height: number }
 const plates: Plate[] = [];
 const dropped: string[] = [];
+/**
+ * HIDDEN BEHIND SOMETHING THE MASKS CANNOT SEE. A subject can pass every test
+ * above and still be the wrong thing to ask for on one frame: on the ankle-foot
+ * plate turned to 240 degrees extensor digitorum brevis lies over the cuboid,
+ * so "tap the cuboid" there means tapping a muscle (student report, 23 Nov
+ * 2026). Listed by image id; the subject keeps its other frames.
+ */
+const HIDDEN_ON: Record<string, string[]> = {
+  'sub-ankle-foot-a240-plate': ['cuboid'],
+};
 
 for (const dirName of readdirSync(masksRoot).sort()) {
   // Sub-region plates are named "<region>__<subregion>" because one region has
@@ -289,6 +299,10 @@ for (const dirName of readdirSync(masksRoot).sort()) {
     for (const subjectId of readdirSync(masksDir).sort()) {
       const maskPath = join(masksDir, subjectId, `${viewDir}.png`);
       if (!existsSync(maskPath)) continue;
+      if (HIDDEN_ON[imageId]?.includes(subjectId)) {
+        dropped.push(`${region} ${view} ${subjectId}: hidden on this frame (HIDDEN_ON)`);
+        continue;
+      }
 
       const png = decodePng(maskPath);
       const mask = binariseAlpha(png.data, png.width, png.height);

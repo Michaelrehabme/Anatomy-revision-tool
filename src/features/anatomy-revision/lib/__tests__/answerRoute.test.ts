@@ -77,7 +77,8 @@ describe('the setting changes how a question is answered, never which questions 
     expect(off).not.toContain('described-region');
     // 672 since 17 Oct 2026, when ligaments stopped being asked from a picture;
     // 650 since 29 Oct, when the L4 landmark plates stopped being located in the
-    // cervical and thoracic sessions (AnatomyImageAsset.areas).
-    expect(JSON.parse(off).flat().length).toBeGreaterThan(640);
+    // cervical and thoracic sessions (AnatomyImageAsset.areas); one fewer since
+    // 23 Nov, when two views that hide their structure were dropped.
+    expect(JSON.parse(off).flat().length).toBeGreaterThan(630);
   });
 });

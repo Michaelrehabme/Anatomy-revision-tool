@@ -31,14 +31,15 @@ const onPlate = (q: LocateQuestion) => [...new Set(framesOf(q).flatMap((f) => (f
 const lists = locate.map((q) => ({ q, list: buildLocateList(q, framesOf(q), STRUCTURE_INDEX) }));
 
 describe('the list of names a locate question falls back to', () => {
-  it('was one name long on 211 of the 444 questions, and under four on 237', () => {
+  it('was one name long on 210 of the 434 questions, and under four on 236', () => {
     const sizes = locate.map((q) => onPlate(q).length);
     // 444 since 17 Oct 2026: no ligament is asked from a picture for now; 435
     // since 12 Nov 2026: the three spine ranges are not either
-    // (data/clinicalLigaments.ts).
-    expect(locate).toHaveLength(435);
-    expect(sizes.filter((n) => n === 1)).toHaveLength(211);
-    expect(sizes.filter((n) => n < MIN_LIST_NAMES)).toHaveLength(237);
+    // (data/clinicalLigaments.ts). 434 since 23 Nov 2026: the medial condyle
+    // of the femur is not asked on the lateral view.
+    expect(locate).toHaveLength(434);
+    expect(sizes.filter((n) => n === 1)).toHaveLength(210);
+    expect(sizes.filter((n) => n < MIN_LIST_NAMES)).toHaveLength(236);
   });
 
   it('is never shorter than four now, on any locate question', () => {
@@ -100,7 +101,7 @@ describe('the list of names a locate question falls back to', () => {
       padded += 1;
       position[list.findIndex((s) => s.id === q.targetStructureId)] += 1;
     }
-    expect(padded).toBe(237);
+    expect(padded).toBe(236);
     for (const count of position) {
       expect(count / padded).toBeGreaterThan(0.12);
       expect(count / padded).toBeLessThan(0.4);
@@ -136,6 +137,6 @@ describe('the two routes together', () => {
       }
       expect(routes.list.length, q.id).toBeGreaterThanOrEqual(MIN_LIST_NAMES);
     }
-    expect(inWords).toBe(416);
+    expect(inWords).toBe(415);
   });
 });

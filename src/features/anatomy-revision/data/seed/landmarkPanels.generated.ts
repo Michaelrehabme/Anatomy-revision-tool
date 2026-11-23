@@ -126,7 +126,6 @@ export const LANDMARK_PANELS: LandmarkPanel[] = [
   { structureId: 'manubrium', name: "Manubrium", region: 'back-core', subregion: 'torso', view: 'anterior', width: 1400, height: 1400 },
   { structureId: 'manubrium', name: "Manubrium", region: 'back-core', subregion: 'torso', view: 'lateral', width: 1400, height: 1400 },
   { structureId: 'medial-condyle-femur', name: "Medial Condyle of Femur", region: 'hip-thigh', subregion: 'knee', view: 'anterior', width: 1400, height: 1400 },
-  { structureId: 'medial-condyle-femur', name: "Medial Condyle of Femur", region: 'hip-thigh', subregion: 'knee', view: 'lateral', width: 1400, height: 1400 },
   { structureId: 'medial-condyle-femur', name: "Medial Condyle of Femur", region: 'hip-thigh', subregion: 'knee', view: 'posterior', width: 1400, height: 1400 },
   { structureId: 'medial-condyle-tibia', name: "Medial Condyle of Tibia", region: 'hip-thigh', subregion: 'knee', view: 'anterior', width: 1400, height: 1400 },
   { structureId: 'medial-condyle-tibia', name: "Medial Condyle of Tibia", region: 'hip-thigh', subregion: 'knee', view: 'posterior', width: 1400, height: 1400 },
