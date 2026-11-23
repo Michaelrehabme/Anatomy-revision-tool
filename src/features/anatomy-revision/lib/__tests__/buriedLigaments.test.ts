@@ -138,7 +138,7 @@ describe('the interosseous ligaments of the wrist', () => {
         // which the owner asked for on 13 October 2026 so that the thumb side
         // can be told, the narrowest band is 2.25% even with a wider catch
         // area (carpal-gaps.spec.json catchMargin); a wider one still would
-        // pass taps that are not on the gap. The viewer zooms to 4x.
+        // pass taps that are not on the gap. The viewer zooms to 6x.
         expect(polygonsWidth(h.polygons, h.area), `${plate.id} ${h.structureId}`).toBeGreaterThanOrEqual(0.022);
       }
     }

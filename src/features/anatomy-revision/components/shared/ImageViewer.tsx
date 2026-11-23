@@ -13,7 +13,13 @@ import { PlateDescription } from './PlateDescription';
 import { CROSSHAIR_START, crosshairClientPoint, isCrosshairKey, moveCrosshair, type Crosshair } from '../../lib/hotspot/keyboardCrosshair';
 
 export const MIN_ZOOM = 1;
-export const MAX_ZOOM = 4;
+/**
+ * 6x since the wrist, hand and ankle pictures were reframed on the whole hand
+ * or foot (owner, 22 Nov 2026): a thumb CMC joint is small in a whole-hand
+ * picture, so the viewer has to go closer. The hand and foot joint plates were
+ * re-rendered at 1600px so the extra zoom stays sharp.
+ */
+export const MAX_ZOOM = 6;
 /** Under this many pixels of movement a pointer gesture is a click, not a drag. */
 const DRAG_THRESHOLD_PX = 8;
 /** One frame of rotation per this many pixels of sideways drag. */
