@@ -19,8 +19,10 @@
    ],
    "facts": {
     "attachments": {
-     "verdict": "confirmed",
-     "why": "All 5 attachment(s) corroborated exactly: the source places the named structure on this feature."
+     "verdict": "corrected",
+     "was": "Quadriceps origins — linea aspera and anterior shaft",
+     "now": "Vastus lateralis, medialis and intermedius origins — linea aspera, intertrochanteric line and anterior shaft (rectus femoris arises from the pelvis)",
+     "why": "Accuracy review, 18 Nov 2026: only the three vasti arise from the femur; rectus femoris arises from the AIIS and the ilium above the acetabulum."
     },
     "articulations": {
      "verdict": "confirmed",
@@ -448,8 +450,15 @@
      "why": "All 1 attachment(s) corroborated exactly: the source places the named structure on this feature."
     },
     "articulations": {
-     "verdict": "confirmed",
-     "why": "All 1 articulation(s) corroborated exactly: each names a joint whose articulating surfaces were settled in the joint pass."
+     "verdict": "corrected",
+     "was": [
+      "Atlanto-axial joint with the atlas (C1)"
+     ],
+     "now": [
+      "Atlanto-axial joint with the atlas (C1)",
+      "Zygapophyseal (facet) joints and intervertebral disc with C3 below"
+     ],
+     "why": "Accuracy review, 18 Nov 2026: the C2–C3 facet joints and disc were missing."
     },
     "description": {
      "verdict": "confirmed",
@@ -714,8 +723,10 @@
    ],
    "facts": {
     "attachments": {
-     "verdict": "confirmed",
-     "why": "Every attachment claim settled by hand against a quoted source (1 work). The work places the retinaculum on the pisiform and triquetrum, two dorsal-ulnar carpals, rather than \"across the dorsal carpals\" as a whole."
+     "verdict": "corrected",
+     "was": "Extensor retinaculum attaches across the dorsal carpals",
+     "now": "Extensor retinaculum attaches to the triquetrum and pisiform on the ulnar side (and to the distal radius laterally)",
+     "why": "Accuracy review, 18 Nov 2026: matches the extensor-retinaculum-hand entry and its Radiopaedia source."
     },
     "articulations": {
      "verdict": "confirmed",

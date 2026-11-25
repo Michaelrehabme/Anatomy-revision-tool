@@ -42,7 +42,7 @@ export const BONE_STRUCTURES: BoneStructure[] = [
       'Gluteus maximus insertion — gluteal tuberosity',
       'Gluteus medius/minimus insertion — greater trochanter',
       'Iliopsoas insertion — lesser trochanter',
-      'Quadriceps origins — linea aspera and anterior shaft',
+      'Vastus lateralis, medialis and intermedius origins — linea aspera, intertrochanteric line and anterior shaft (rectus femoris arises from the pelvis)',
       'Adductor magnus insertion — adductor tubercle and linea aspera',
     ],
     articulations: [
@@ -398,7 +398,7 @@ export const BONE_STRUCTURES: BoneStructure[] = [
     description:
       'The second cervical vertebra, distinguished by the dens (odontoid process) projecting superiorly, around which the atlas rotates.',
     attachments: ['Alar and apical ligaments attach to the dens'],
-    articulations: ['Atlanto-axial joint with the atlas (C1)'],
+    articulations: ['Atlanto-axial joint with the atlas (C1)', 'Zygapophyseal (facet) joints and intervertebral disc with C3 below'],
     aliases: ['C2', 'C2 Axis'],
     imageIds: [],
     eligibility: { flashcard: false, mcq: true, locate: true },
@@ -612,7 +612,7 @@ export const BONE_STRUCTURES: BoneStructure[] = [
       'The 8 small bones of the wrist, arranged in two rows of four (proximal: scaphoid, lunate, triquetrum, pisiform; distal: trapezium, trapezoid, capitate, hamate), linking the forearm to the hand.',
     attachments: [
       'Flexor retinaculum attaches across the palmar carpals, forming the carpal tunnel',
-      'Extensor retinaculum attaches across the dorsal carpals',
+      'Extensor retinaculum attaches to the triquetrum and pisiform on the ulnar side (and to the distal radius laterally)',
     ],
     articulations: [
       'Radiocarpal (wrist) joint with the radius',

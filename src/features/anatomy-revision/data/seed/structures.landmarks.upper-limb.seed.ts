@@ -215,7 +215,7 @@ export const UPPER_LIMB_LANDMARK_STRUCTURES: LandmarkStructure[] = [
     parentBoneId: 'humerus',
     groups: ['shoulder'],
     description: 'The groove running between the greater and lesser tubercles of the humerus.',
-    attachments: ['Tendon of the long head of biceps brachii runs through it', 'Latissimus dorsi and teres major insert along its margins'],
+    attachments: ['Tendon of the long head of biceps brachii runs through it', 'Pectoralis major inserts on its lateral lip, teres major on its medial lip and latissimus dorsi on its floor'],
     articulations: [],
     // Corrected 25 Sep 2026: the groove is palpated directly in shoulder exam
     // (StatPearls: 'Direct palpation over the patient's bicipital groove elicits a
@@ -484,7 +484,7 @@ export const UPPER_LIMB_LANDMARK_STRUCTURES: LandmarkStructure[] = [
     groups: ['wrist'],
     description: 'A crescent-moon-shaped carpal bone in the proximal row, between the scaphoid and triquetrum.',
     attachments: [],
-    articulations: ['Radiocarpal joint with the radius'],
+    articulations: ['Radiocarpal joint with the radius', 'Intercarpal joints with the scaphoid and triquetrum', 'Midcarpal joint with the capitate (and often the hamate)'],
     // Palpability corrected 2026-09-27 from the owner's review of all 89 unsourced
     // values: was 'not-palpable'. The owner is a sports rehabilitation student and palpates
     // these in practicals; no published work consulted states this one.
@@ -756,7 +756,7 @@ export const UPPER_LIMB_LANDMARK_STRUCTURES: LandmarkStructure[] = [
     groups: ['hand', 'joint'],
     description: 'The longest metacarpal. With the third it forms the fixed central pillar of the hand, against which the mobile thumb and little finger work.',
     attachments: [],
-    articulations: ['Carpometacarpal joint with the trapezoid', 'Metacarpophalangeal joint with the proximal phalanx of the index finger'],
+    articulations: ['Carpometacarpal joint with the trapezoid, and also the trapezium and capitate', 'Metacarpophalangeal joint with the proximal phalanx of the index finger'],
     palpability: 'easily-palpable',
     aliases: ['Metacarpal 2', 'MC2'],
     imageIds: [],

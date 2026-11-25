@@ -512,7 +512,7 @@ export const LOWER_LIMB_LANDMARK_STRUCTURES: LandmarkStructure[] = [
     parentBoneId: 'tibia',
     groups: ['knee'],
     description: 'A raised, twin-peaked area between the medial and lateral tibial condyles, at the centre of the tibial plateau.',
-    attachments: ['Anterior and posterior cruciate ligaments insert near its slopes', 'Menisci attach near its margins'],
+    attachments: ['Anterior and posterior cruciate ligaments attach to the intercondylar areas in front of and behind it', 'Menisci attach near its margins'],
     articulations: [],
     palpability: 'not-palpable',
     aliases: [],

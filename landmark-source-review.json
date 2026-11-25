@@ -2257,8 +2257,10 @@
    ],
    "facts": {
     "attachments": {
-     "verdict": "confirmed",
-     "why": "Every attachment claim settled by hand against a quoted source (1 work)."
+     "verdict": "corrected",
+     "was": "Latissimus dorsi and teres major insert along its margins",
+     "now": "Pectoralis major inserts on its lateral lip, teres major on its medial lip and latissimus dorsi on its floor",
+     "why": "Accuracy review, 18 Nov 2026: pectoralis major was missing; latissimus inserts into the floor (matches the muscle entries)."
     },
     "parentBoneId": {
      "verdict": "confirmed",
@@ -2803,6 +2805,18 @@
     "description": {
      "verdict": "confirmed",
      "why": "The work defines this structure in its own words: \"The lunate bone (semilunar bone) is a carpal bone in the human hand.\""
+    },
+    "articulations": {
+     "verdict": "corrected",
+     "was": [
+      "Radiocarpal joint with the radius"
+     ],
+     "now": [
+      "Radiocarpal joint with the radius",
+      "Intercarpal joints with the scaphoid and triquetrum",
+      "Midcarpal joint with the capitate (and often the hamate)"
+     ],
+     "why": "Accuracy review, 18 Nov 2026: the intercarpal and midcarpal articulations were missing."
     }
    }
   },
@@ -3261,6 +3275,12 @@
     "description": {
      "verdict": "confirmed",
      "why": "The work's collective definition covers each metacarpal: \"the metacarpal bones, or palm bones, collectively the metacarpus, are the appendicular bones that form the intermediate part of the hand between the phalanges (fingers) and the carpal bones (wrist bones)\""
+    },
+    "articulations": {
+     "verdict": "corrected",
+     "was": "Carpometacarpal joint with the trapezoid",
+     "now": "Carpometacarpal joint with the trapezoid, and also the trapezium and capitate",
+     "why": "Accuracy review, 18 Nov 2026: the base also articulates with the trapezium and capitate (matches the dorsal carpometacarpal ligament entry)."
     }
    }
   },
@@ -4469,8 +4489,10 @@
    ],
    "facts": {
     "attachments": {
-     "verdict": "confirmed",
-     "why": "Every attachment claim settled by hand against a quoted source (3 works). The ACL and both meniscal horns attach in front of and behind the eminence; the PCL attaches further back on the posterior tibia."
+     "verdict": "corrected",
+     "was": "Anterior and posterior cruciate ligaments insert near its slopes",
+     "now": "Anterior and posterior cruciate ligaments attach to the intercondylar areas in front of and behind it",
+     "why": "Accuracy review, 18 Nov 2026: the cruciates attach to the anterior and posterior intercondylar areas (matches the ACL and PCL entries)."
     },
     "parentBoneId": {
      "verdict": "confirmed",

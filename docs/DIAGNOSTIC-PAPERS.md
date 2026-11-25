@@ -30,7 +30,7 @@ Sat by anyone holding every area. Built from all nine areas.
 | 6 | Gluteus Maximus | muscle | nerve: What nerve innervates Gluteus Maximus? | Inferior gluteal nerve | Gluteus Medius; Iliacus; Gracilis |
 | 7 | Sartorius | muscle | origin: What is the origin of Sartorius? | Anterior superior iliac spine (ASIS) | Gracilis; Piriformis; Quadratus Femoris |
 | 8 | Anterior cruciate ligament | ligament | name the ligament from its attachments: What ligament is this? | Anterior cruciate ligament | Posterior cruciate ligament; Transverse ligament of knee; Oblique popliteal ligament |
-| 9 | Rectus Femoris | muscle | origin: What is the origin of Rectus Femoris? | Anterior Inferior Iliac Spine (AIIS) | Vastus Lateralis; Semitendinosus; Popliteus |
+| 9 | Rectus Femoris | muscle | origin: What is the origin of Rectus Femoris? | Anterior Inferior Iliac Spine (AIIS); Ilium above the acetabulum | Vastus Lateralis; Semitendinosus; Popliteus |
 | 10 | Gastrocnemius | muscle | action: What is the action of Gastrocnemius? | Plantarflexes the ankle — most powerfully with the knee extended — and flexes the knee. | Plantaris; Tibialis Posterior; Flexor Hallucis Longus |
 | 11 | Anterior talofibular ligament | ligament | name the ligament from its attachments: What ligament is this? | Anterior talofibular ligament | Posterior talofibular ligament; Calcaneofibular ligament; Anterior tibiofibular ligament |
 | 12 | Atlas (C1) | bone | name the picture: Which structure is shown? | Atlas (C1) | Axis (C2); C7 Vertebra; Occipital Bone |
@@ -132,7 +132,7 @@ Sat by a free account whose free area is Knee. Built from that area alone.
 
 | # | Structure | Kind of thing | Question | Right answer (as the seed states it) | Wrong answers are those of |
 | --- | --- | --- | --- | --- | --- |
-| 1 | Rectus Femoris | muscle | origin: What is the origin of Rectus Femoris? | Anterior Inferior Iliac Spine (AIIS) | Vastus Lateralis; Semitendinosus; Popliteus |
+| 1 | Rectus Femoris | muscle | origin: What is the origin of Rectus Femoris? | Anterior Inferior Iliac Spine (AIIS); Ilium above the acetabulum | Vastus Lateralis; Semitendinosus; Popliteus |
 | 2 | Vastus Lateralis | muscle | name the picture: Which structure is shown? | Vastus Lateralis | Vastus Medialis; Rectus Femoris; Biceps Femoris |
 | 3 | Vastus Medialis | muscle | action: What is the action of Vastus Medialis? | Extends the knee; its oblique lower fibres are what hold the patella tracking correctly. | Rectus Femoris; Semimembranosus; Popliteus |
 | 4 | Vastus Intermedius | muscle | origin: What is the origin of Vastus Intermedius? | Anterior and lateral surfaces of the femur | Vastus Medialis; Biceps Femoris; Popliteus |
