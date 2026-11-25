@@ -463,8 +463,41 @@ function samePlace(a: string, b: string): boolean {
   return SAME_PLACE.some(([p, q]) => (x === p && y === q) || (x === q && y === p));
 }
 
+/**
+ * The ribs a value names: "12th rib" is {12}, "Ribs 10–12" is {10, 11, 12},
+ * "ribs 1–8/9" is 1 to 9. Empty when it names no rib by number.
+ */
+export function ribsNamed(value: string): Set<number> {
+  const ribs = new Set<number>();
+  const text = value.toLowerCase().replace(/[–—]/g, '-');
+  if (!/\bribs?\b/.test(text)) return ribs;
+  for (const m of text.matchAll(/\bribs?\s+(\d+)(?:\s*-\s*(\d+))?(?:\/(\d+))?/g)) {
+    const first = Number(m[1]);
+    const last = Number(m[3] ?? m[2] ?? m[1]);
+    for (let n = first; n <= last; n += 1) ribs.add(n);
+  }
+  for (const m of text.matchAll(/\b(\d+)(?:st|nd|rd|th)?(?:\s*(?:-|to|and)\s*(\d+)(?:st|nd|rd|th)?)?\s+ribs?\b/g)) {
+    const first = Number(m[1]);
+    const last = Number(m[2] ?? m[1]);
+    for (let n = first; n <= last; n += 1) ribs.add(n);
+  }
+  return ribs;
+}
+
+/**
+ * A rib range that takes in the right rib is half right, not wrong: "Ribs
+ * 10–12" beside "12th rib" for quadratus lumborum (student report, 17 Nov
+ * 2026). Two values that name an overlapping set of ribs are one answer.
+ */
+function ribsOverlap(a: string, b: string): boolean {
+  const x = ribsNamed(a);
+  if (!x.size) return false;
+  return [...ribsNamed(b)].some((n) => x.has(n));
+}
+
 export function conflictsWith(correct: string, candidate: string): boolean {
   if (samePlace(correct, candidate)) return true;
+  if (ribsOverlap(correct, candidate)) return true;
   const a = contentTokens(correct);
   const b = contentTokens(candidate);
   if (a.length === 0 || b.length === 0) return true;
