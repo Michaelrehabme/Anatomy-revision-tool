@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { AccessibilityPage } from './AccessibilityPage';
 import { AttributionsPage } from './AttributionsPage';
+import { CorrectionsPage } from './CorrectionsPage';
 import { PrivacyPage } from './PrivacyPage';
 import { RefundsPage } from './RefundsPage';
 import { SourcesPage } from './SourcesPage';
@@ -26,6 +27,7 @@ export default function LegalRoutes() {
       <Route path="/accessibility" element={<AccessibilityPage />} />
       <Route path="/refunds" element={<RefundsPage />} />
       <Route path="/sources" element={<SourcesPage />} />
+      <Route path="/corrections" element={<CorrectionsPage />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

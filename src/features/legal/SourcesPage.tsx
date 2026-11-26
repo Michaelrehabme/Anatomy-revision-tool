@@ -389,6 +389,10 @@ export function SourcesPage() {
           source, so the fix reaches everyone rather than one answer.
         </p>
         <p>
+          Every correction made so far is listed on the{' '}
+          <Link to="/corrections" style={{ color: 'var(--accd)' }}>corrections page</Link>.
+        </p>
+        <p>
           <a href={`mailto:${EMAIL}?subject=LocusMSK%20content%20correction`} style={{ color: 'var(--accd)' }}>
             {EMAIL}
           </a>
